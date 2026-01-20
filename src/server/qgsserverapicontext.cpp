@@ -15,10 +15,10 @@
  ***************************************************************************/
 #include "qgsserverapicontext.h"
 
-#include "qgsserverrequest.h"
-#include "qgsserverresponse.h"
 #include "qgsproject.h"
 #include "qgsserverinterface.h"
+#include "qgsserverrequest.h"
+#include "qgsserverresponse.h"
 
 QgsServerApiContext::QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface )
   : mApiRootPath( apiRootPath ), mRequest( request ), mResponse( response ), mProject( project ), mServerInterface( serverInterface )

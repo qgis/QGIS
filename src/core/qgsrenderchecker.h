@@ -18,15 +18,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
+#include "qgsdartmeasurement.h"
 #include "qgslogger.h"
 #include "qgsmapsettings.h"
-#include "qgsdartmeasurement.h"
 
 #include <QDir>
-#include <QString>
-#include <QRegularExpression>
 #include <QList>
+#include <QRegularExpression>
+#include <QString>
 
 class QImage;
 
@@ -329,7 +328,7 @@ class CORE_EXPORT QgsRenderChecker
     int mMaxSizeDifferenceY = 0;
     int mElapsedTimeTarget = 0;
     QgsMapSettings mMapSettings;
-    QString mControlExtension = QStringLiteral( "png" );
+    QString mControlExtension = u"png"_s;
     QString mControlPathPrefix;
     QString mControlPathSuffix;
     bool mIsCiRun = false;
@@ -352,14 +351,14 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderChecker::Flags )
 
 inline bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 )
 {
-  QgsDebugMsgLevel( QStringLiteral( "a:%1 b:%2 tol:%3" ).arg( a, b ).arg( tolerance ), 2 );
+  QgsDebugMsgLevel( u"a:%1 b:%2 tol:%3"_s.arg( a, b ).arg( tolerance ), 2 );
   const thread_local QRegularExpression re( "-?\\d+(?:\\.\\d+)?(?:[eE]\\d+)?" );
 
   QString a0( a ), b0( b );
-  a0.replace( re, QStringLiteral( "#" ) );
-  b0.replace( re, QStringLiteral( "#" ) );
+  a0.replace( re, u"#"_s );
+  b0.replace( re, u"#"_s );
 
-  QgsDebugMsgLevel( QStringLiteral( "a0:%1 b0:%2" ).arg( a0, b0 ), 2 );
+  QgsDebugMsgLevel( u"a0:%1 b0:%2"_s.arg( a0, b0 ), 2 );
 
   if ( a0 != b0 )
     return false;

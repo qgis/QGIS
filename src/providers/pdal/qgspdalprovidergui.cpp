@@ -14,16 +14,14 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgsproviderguimetadata.h"
-
 #include "qgspdalprovider.h"
-
+#include "qgsproviderguimetadata.h"
 
 class QgsPdalProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsPdalProviderGuiMetadata()
-      : QgsProviderGuiMetadata( QStringLiteral( "pdal" ) )
+      : QgsProviderGuiMetadata( u"pdal"_s )
     {
     }
 };

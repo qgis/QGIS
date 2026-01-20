@@ -18,9 +18,9 @@
 
 #include "ui_qgsjsoneditwidget.h"
 
-#include "qgseditorconfigwidget.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 

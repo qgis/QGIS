@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgscolorbuttonplugin.h"
-#include "moc_qgscolorbuttonplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgscolorbutton.h"
 
+#include "moc_qgscolorbuttonplugin.cpp"
 
 QgsColorButtonPlugin::QgsColorButtonPlugin( QObject *parent )
   : QObject( parent )

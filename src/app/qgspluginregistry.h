@@ -19,9 +19,10 @@
 #ifndef QGSPLUGINREGISTRY_H
 #define QGSPLUGINREGISTRY_H
 
-#include <QMap>
-#include "qgspluginmetadata.h"
 #include "qgis_app.h"
+#include "qgspluginmetadata.h"
+
+#include <QMap>
 
 class QgsPythonUtils;
 class QgisPlugin;

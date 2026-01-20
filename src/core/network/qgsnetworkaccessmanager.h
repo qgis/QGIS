@@ -18,22 +18,23 @@
 #ifndef QGSNETWORKACCESSMANAGER_H
 #define QGSNETWORKACCESSMANAGER_H
 
-#include <QList>
-#include "qgsnetworkreply.h"
+#include <memory>
+
+#include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QStringList>
+#include "qgsnetworkreply.h"
+
+#include <QList>
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
-#include <QMutex>
-#include <QWaitCondition>
 #include <QSemaphore>
-#include <memory>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
+#include <QStringList>
+#include <QWaitCondition>
 
 class QgsFeedback;
 class QgsSettingsEntryInteger;
@@ -118,7 +119,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
 
   private:
 
-    QNetworkAccessManager::Operation mOperation;
+    QNetworkAccessManager::Operation mOperation = QNetworkAccessManager::Operation::UnknownOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
     int mRequestId = 0;
@@ -477,10 +478,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      *
      * The contents of the reply will be returned after the request is completed or an error occurs.
      *
+     * The \a flags argument was added in QGIS 4.0.
+     *
      * \see blockingPost()
      * \since QGIS 3.6
      */
-    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr, Qgis::NetworkRequestFlags flags = Qgis::NetworkRequestFlags() );
 
     /**
      * Posts a POST request to obtain the contents of the target \a request, using the given \a data, and returns a new
@@ -499,10 +502,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      *
      * The contents of the reply will be returned after the request is completed or an error occurs.
      *
+     * The \a flags argument was added in QGIS 4.0.
+     *
      * \see blockingGet()
      * \since QGIS 3.6
      */
-    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr, Qgis::NetworkRequestFlags flags = Qgis::NetworkRequestFlags() );
 
     /**
      * Sets a request pre-processor function, which allows manipulation of a network request before it is processed.
@@ -564,7 +569,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -656,7 +661,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -713,7 +718,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End

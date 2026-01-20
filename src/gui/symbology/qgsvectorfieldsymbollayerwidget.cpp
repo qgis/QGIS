@@ -13,9 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorfieldsymbollayerwidget.h"
-#include "moc_qgsvectorfieldsymbollayerwidget.cpp"
+
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorfieldsymbollayerwidget.cpp"
 
 QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )
@@ -53,7 +55,7 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer
 
 void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "VectorField" ) )
+  if ( layer->layerType() != "VectorField"_L1 )
   {
     return;
   }

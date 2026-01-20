@@ -14,50 +14,35 @@
  ***************************************************************************/
 
 #include "qgsframegraph.h"
-#include "moc_qgsframegraph.cpp"
-#include "qgsdirectionallightsettings.h"
-#include "qgspostprocessingentity.h"
+
 #include "qgs3dutils.h"
-#include "qgsframegraphutils.h"
 #include "qgsabstractrenderview.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgsdebugtextureentity.h"
+#include "qgsdebugtexturerenderview.h"
+#include "qgsdepthentity.h"
+#include "qgsdepthrenderview.h"
+#include "qgsdirectionallightsettings.h"
+#include "qgsforwardrenderview.h"
+#include "qgsframegraphutils.h"
+#include "qgspostprocessingentity.h"
 #include "qgsshadowrenderview.h"
 
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QColorMask>
-#include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QNoDepthMask>
-#include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QAbstractTexture>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QNoDraw>
-#include "qgsshadowrenderview.h"
-#include "qgsforwardrenderview.h"
-#include "qgsdepthrenderview.h"
-#include "qgsdepthentity.h"
-#include "qgsdebugtexturerenderview.h"
-#include "qgsdebugtextureentity.h"
-#include "qgsambientocclusionrenderview.h"
+#include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QTechnique>
+
+#include "moc_qgsframegraph.cpp"
 
 const QString QgsFrameGraph::FORWARD_RENDERVIEW = "forward";
 const QString QgsFrameGraph::SHADOW_RENDERVIEW = "shadow";
@@ -394,6 +379,9 @@ void QgsFrameGraph::updateShadowSettings( const QgsShadowSettings &shadowSetting
 void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settings )
 {
   QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( mRenderViewMap[DEBUG_RENDERVIEW].get() );
+  if ( !debugRenderView )
+    return;
+
   if ( !mShadowTextureDebugging && settings.debugShadowMapEnabled() )
   {
     Qt3DRender::QTexture2D *shadowDepthTexture = shadowRenderView().mapTexture();
@@ -418,6 +406,9 @@ void QgsFrameGraph::updateDebugShadowMapSettings( const Qgs3DMapSettings &settin
 void QgsFrameGraph::updateDebugDepthMapSettings( const Qgs3DMapSettings &settings )
 {
   QgsDebugTextureRenderView *debugRenderView = dynamic_cast<QgsDebugTextureRenderView *>( mRenderViewMap[DEBUG_RENDERVIEW].get() );
+  if ( !debugRenderView )
+    return;
+
   if ( !mDepthTextureDebugging && settings.debugDepthMapEnabled() )
   {
     Qt3DRender::QTexture2D *forwardDepthTexture = forwardRenderView().depthTexture();

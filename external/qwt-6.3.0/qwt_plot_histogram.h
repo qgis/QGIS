@@ -81,7 +81,7 @@ class QWT_EXPORT QwtPlotHistogram
 
     explicit QwtPlotHistogram( const QString& title = QString() );
     explicit QwtPlotHistogram( const QwtText& title );
-    virtual ~QwtPlotHistogram();
+    ~QwtPlotHistogram() override;
 
     virtual int rtti() const QWT_OVERRIDE;
 

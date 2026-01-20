@@ -15,11 +15,12 @@
 
 extern "C"
 {
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
 #include <assert.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -139,13 +140,16 @@ int main( int argc, char **argv )
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
+  if ( !stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered ) )
+  {
+    G_fatal_error( "Could not open stdout for write" );
+  }
   QDataStream stdoutStream( &stdoutFile );
 
   // global finalName, tmpName are used by checkStream()
   sFinalName = QString( mapOption->answer );
   QDateTime now = QDateTime::currentDateTime();
-  sTmpName = QStringLiteral( "qgis_import_tmp_%1_%2" ).arg( mapOption->answer, now.toString( QStringLiteral( "yyyyMMddhhmmss" ) ) );
+  sTmpName = u"qgis_import_tmp_%1_%2"_s.arg( mapOption->answer, now.toString( u"yyyyMMddhhmmss"_s ) );
 
   qint32 typeQint32;
   stdinStream >> typeQint32;

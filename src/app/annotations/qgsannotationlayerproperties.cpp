@@ -14,25 +14,27 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerproperties.h"
-#include "moc_qgsannotationlayerproperties.cpp"
-#include "qgshelp.h"
-#include "qgsmaplayerstyleguiutils.h"
-#include "qgsgui.h"
+
 #include "qgsapplication.h"
-#include "qgsmaplayerconfigwidget.h"
 #include "qgsdatumtransformdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QDesktopServices>
 #include <QUrl>
 
+#include "moc_qgsannotationlayerproperties.cpp"
+
 QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
-  : QgsLayerPropertiesDialog( layer, canvas, QStringLiteral( "AnnotationLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( layer, canvas, u"AnnotationLayerProperties"_s, parent, flags )
   , mLayer( layer )
 {
   setupUi( this );
@@ -57,9 +59,9 @@ QgsAnnotationLayerProperties::QgsAnnotationLayerProperties( QgsAnnotationLayer *
   syncToLayer();
 
   QgsSettings settings;
-  if ( !settings.contains( QStringLiteral( "/Windows/AnnotationLayerProperties/tab" ) ) )
+  if ( !settings.contains( u"/Windows/AnnotationLayerProperties/tab"_s ) )
   {
-    settings.setValue( QStringLiteral( "Windows/AnnotationLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Information ) );
+    settings.setValue( u"Windows/AnnotationLayerProperties/tab"_s, mOptStackedWidget->indexOf( mOptsPage_Information ) );
   }
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
@@ -125,7 +127,7 @@ void QgsAnnotationLayerProperties::syncToLayer()
    * Information Tab
    */
   QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  myStyle.append( u"body { margin: 10px; }\n "_s );
   mInformationTextBrowser->clear();
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mInformationTextBrowser->setHtml( mLayer->htmlMetadata() );
@@ -175,7 +177,7 @@ void QgsAnnotationLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
+    QgsHelp::openHelp( u"working_with_vector_tiles/vector_tiles_properties.html"_s );
   }
 }
 

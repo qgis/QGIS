@@ -16,16 +16,17 @@
 #ifndef QGSACTION_H
 #define QGSACTION_H
 
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgsexpressioncontext.h"
+#include <memory>
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgsexpressioncontext.h"
+#include "qgsreadwritecontext.h"
+
+#include <QIcon>
 #include <QSet>
 #include <QString>
-#include <QIcon>
 #include <QUuid>
-
-#include <memory>
 
 class QgsExpressionContextScope;
 
@@ -202,9 +203,10 @@ class CORE_EXPORT QgsAction
     /**
      * Reads an XML definition from actionNode
      * into this object.
-     *
+     * \param actionNode the action's xml node
+     * \param context The readwrite context (Since QGIS 4.0)
      */
-    void readXml( const QDomNode &actionNode );
+    void readXml( const QDomNode &actionNode, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
      * Appends an XML definition for this action as a new

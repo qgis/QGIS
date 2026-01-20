@@ -16,33 +16,35 @@
  ***************************************************************************/
 
 #include "qgshandlebadlayers.h"
-#include "moc_qgshandlebadlayers.cpp"
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgsauthconfigselect.h"
 #include "qgsdataprovider.h"
-#include "qgsguiutils.h"
-#include "qgslogger.h"
-#include "qgsproviderregistry.h"
-#include "qgsmessagebar.h"
-#include "qgssettings.h"
-#include "qgslayertreeregistrybridge.h"
-#include "qgsapplication.h"
 #include "qgsfileutils.h"
-#include "qgsprovidermetadata.h"
+#include "qgsguiutils.h"
+#include "qgslayertreeregistrybridge.h"
+#include "qgslogger.h"
 #include "qgsmaplayerfactory.h"
+#include "qgsmessagebar.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgssettings.h"
 
+#include <QDialogButtonBox>
+#include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QProgressDialog>
 #include <QPushButton>
 #include <QToolButton>
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QDialogButtonBox>
 #include <QUrl>
-#include <QDir>
-#include <QProgressDialog>
 #include <QUrlQuery>
+
+#include "moc_qgshandlebadlayers.cpp"
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {
@@ -54,7 +56,7 @@ void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
   dialog->buttonBox->button( QDialogButtonBox::Ignore )->setText( tr( "Keep Unavailable Layers" ) );
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setToolTip( tr( "Remove all unavailable layers from the project" ) );
   dialog->buttonBox->button( QDialogButtonBox::Discard )->setText( tr( "Remove Unavailable Layers" ) );
-  dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
+  dialog->buttonBox->button( QDialogButtonBox::Discard )->setIcon( QgsApplication::getThemeIcon( u"/mActionDeleteSelected.svg"_s ) );
 
   if ( dialog->layerCount() < layers.size() )
     QgisApp::instance()->messageBar()->pushMessage(
@@ -115,11 +117,11 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
   {
     const QDomNode &node = mLayers[i];
 
-    const QString name = node.namedItem( QStringLiteral( "layername" ) ).toElement().text();
-    const QString type = node.toElement().attribute( QStringLiteral( "type" ) );
-    const QString layerId = node.namedItem( QStringLiteral( "id" ) ).toElement().text();
-    const QString datasource = node.namedItem( QStringLiteral( "datasource" ) ).toElement().text();
-    const QString provider = node.namedItem( QStringLiteral( "provider" ) ).toElement().text();
+    const QString name = node.namedItem( u"layername"_s ).toElement().text();
+    const QString type = node.toElement().attribute( u"type"_s );
+    const QString layerId = node.namedItem( u"id"_s ).toElement().text();
+    const QString datasource = node.namedItem( u"datasource"_s ).toElement().text();
+    const QString provider = node.namedItem( u"provider"_s ).toElement().text();
 
     bool providerFileBased = false;
     if ( const QgsProviderMetadata *metadata = QgsProviderRegistry::instance()->providerMetadata( provider ) )
@@ -128,7 +130,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers )
     const QString basepath = QFileInfo( datasource ).absolutePath();
     mOriginalFileBase[layerId].append( basepath );
 
-    QgsDebugMsgLevel( QStringLiteral( "name=%1 type=%2 provider=%3 datasource='%4'" ).arg( name, type, provider, datasource ), 2 );
+    QgsDebugMsgLevel( u"name=%1 type=%2 provider=%3 datasource='%4'"_s.arg( name, type, provider, datasource ), 2 );
 
     mLayerList->setRowCount( j + 1 );
 
@@ -192,7 +194,7 @@ QString QgsHandleBadLayers::filename( int row )
   const QString datasource = mLayerList->item( row, 4 )->text();
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
-  return parts.value( QStringLiteral( "path" ) ).toString();
+  return parts.value( u"path"_s ).toString();
 }
 
 void QgsHandleBadLayers::setFilename( int row, const QString &filename )
@@ -206,7 +208,7 @@ void QgsHandleBadLayers::setFilename( int row, const QString &filename )
   const QString datasource = item->text();
 
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
-  parts.insert( QStringLiteral( "path" ), filename );
+  parts.insert( u"path"_s, filename );
 
   item->setText( QgsProviderRegistry::instance()->encodeUri( provider, parts ) );
 }
@@ -266,23 +268,23 @@ void QgsHandleBadLayers::browseClicked()
     switch ( layerType )
     {
       case Qgis::LayerType::Vector:
-        memoryQualifier = QStringLiteral( "lastVectorFileFilter" );
+        memoryQualifier = u"lastVectorFileFilter"_s;
         fileFilter = metadata->filters( Qgis::FileFilterType::Vector );
         break;
       case Qgis::LayerType::Raster:
-        memoryQualifier = QStringLiteral( "lastRasterFileFilter" );
+        memoryQualifier = u"lastRasterFileFilter"_s;
         fileFilter = metadata->filters( Qgis::FileFilterType::Raster );
         break;
       case Qgis::LayerType::Mesh:
-        memoryQualifier = QStringLiteral( "lastMeshFileFilter" );
+        memoryQualifier = u"lastMeshFileFilter"_s;
         fileFilter = QgsProviderRegistry::instance()->fileMeshFilters();
         break;
       case Qgis::LayerType::VectorTile:
-        memoryQualifier = QStringLiteral( "lastVectorTileFileFilter" );
+        memoryQualifier = u"lastVectorTileFileFilter"_s;
         fileFilter = metadata ? metadata->filters( Qgis::FileFilterType::VectorTile ) : QObject::tr( "All files (*.*)" );
         break;
       case Qgis::LayerType::PointCloud:
-        memoryQualifier = QStringLiteral( "lastPointCloudFileFilter" );
+        memoryQualifier = u"lastPointCloudFileFilter"_s;
         fileFilter = metadata->filters( Qgis::FileFilterType::PointCloud );
         break;
 
@@ -315,7 +317,7 @@ void QgsHandleBadLayers::browseClicked()
     QString title = tr( "Select New Directory of Selected Files" );
 
     QgsSettings settings;
-    QString lastDir = settings.value( QStringLiteral( "UI/missingDirectory" ), QDir::homePath() ).toString();
+    QString lastDir = settings.value( u"UI/missingDirectory"_s, QDir::homePath() ).toString();
     QString selectedFolder = QFileDialog::getExistingDirectory( this, title, lastDir );
     if ( selectedFolder.isEmpty() )
     {
@@ -402,7 +404,7 @@ void QgsHandleBadLayers::apply()
     if ( providerFileBased && !dataSourceWasAutoRepaired )
     {
       QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, datasource );
-      const QString filePath = providerMap[QStringLiteral( "path" )].toString();
+      const QString filePath = providerMap[u"path"_s].toString();
       const QFileInfo dataInfo = QFileInfo( filePath );
 
       bool fixedPath = false;
@@ -410,7 +412,7 @@ void QgsHandleBadLayers::apply()
       if ( fixedPath && correctedPath != filePath )
       {
         // re-encode uri for provider
-        providerMap.insert( QStringLiteral( "path" ), correctedPath );
+        providerMap.insert( u"path"_s, correctedPath );
         datasource = QgsProviderRegistry::instance()->encodeUri( provider, providerMap );
       }
     }
@@ -453,7 +455,7 @@ void QgsHandleBadLayers::apply()
     }
     else
     {
-      node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
+      node.namedItem( u"datasource"_s ).toElement().firstChild().toText().setData( datasource );
       if ( QgsProject::instance()->readLayer( node ) )
       {
         mLayerList->removeRow( i-- );
@@ -567,8 +569,8 @@ void QgsHandleBadLayers::autoFind()
     progressDialog.open();
 
     QVariantMap providerMap = QgsProviderRegistry::instance()->decodeUri( provider, dataInfo.absoluteFilePath() );
-    if ( providerMap.contains( QStringLiteral( "path" ) ) )
-      fileName = QFileInfo( providerMap[QStringLiteral( "path" )].toString() ).fileName();
+    if ( providerMap.contains( u"path"_s ) )
+      fileName = QFileInfo( providerMap[u"path"_s].toString() ).fileName();
     else
     {
       item->setForeground( QBrush( Qt::red ) );
@@ -639,7 +641,7 @@ void QgsHandleBadLayers::autoFind()
     }
     else
     {
-      node.namedItem( QStringLiteral( "datasource" ) ).toElement().firstChild().toText().setData( datasource );
+      node.namedItem( u"datasource"_s ).toElement().firstChild().toText().setData( datasource );
       if ( QgsProject::instance()->readLayer( node ) )
       {
         mLayerList->removeRow( i-- );

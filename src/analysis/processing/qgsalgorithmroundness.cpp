@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmroundness.h"
+
 #include "qgscurvepolygon.h"
 
 ///@cond PRIVATE
 
 QString QgsRoundnessAlgorithm::name() const
 {
-  return QStringLiteral( "roundness" );
+  return u"roundness"_s;
 }
 
 QString QgsRoundnessAlgorithm::displayName() const
@@ -42,7 +43,7 @@ QString QgsRoundnessAlgorithm::group() const
 
 QString QgsRoundnessAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsRoundnessAlgorithm::outputName() const
@@ -79,7 +80,7 @@ Qgis::ProcessingSourceType QgsRoundnessAlgorithm::outputLayerType() const
 QgsFields QgsRoundnessAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
   QgsFields newFields;
-  newFields.append( QgsField( QStringLiteral( "roundness" ), QMetaType::Type::Double ) );
+  newFields.append( QgsField( u"roundness"_s, QMetaType::Type::Double ) );
   return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 

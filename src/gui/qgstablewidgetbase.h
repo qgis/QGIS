@@ -17,9 +17,11 @@
 #define QGSTABLEWIDGETBASE_H
 
 #include "ui_qgstablewidgetuibase.h"
+
+#include "qgis_gui.h"
+
 #include <QAbstractTableModel>
 #include <QVariant>
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui
@@ -29,7 +31,7 @@
  * Child classes must call init(QAbstractTableModel*) from their constructor.
  *
  */
-class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidgetUiBase
+class GUI_EXPORT QgsTableWidgetBase : public QWidget, public Ui::QgsTableWidgetUiBase
 {
     Q_OBJECT
   public:

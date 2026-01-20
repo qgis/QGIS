@@ -17,10 +17,11 @@
 #ifndef QGSMENUHEADER_H
 #define QGSMENUHEADER_H
 
-#include <QWidget>
-#include <QWidgetAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
+#include <QWidgetAction>
 
 /**
  * \ingroup gui

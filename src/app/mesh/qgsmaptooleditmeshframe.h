@@ -16,11 +16,6 @@
 #ifndef QGSMAPTOOLEDITMESHFRAME_H
 #define QGSMAPTOOLEDITMESHFRAME_H
 
-#include <QWidget>
-#include <QPointer>
-#include <QDialog>
-#include <QWidgetAction>
-
 #include "qgis_app.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmeshdataprovider.h"
@@ -28,6 +23,10 @@
 #include "qgsmeshlayer.h"
 #include "qgspointlocator.h"
 
+#include <QDialog>
+#include <QPointer>
+#include <QWidget>
+#include <QWidgetAction>
 
 class QgsRubberBand;
 class QgsVertexMarker;
@@ -162,7 +161,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
   public:
     //! Constructor
     QgsMapToolEditMeshFrame( QgsMapCanvas *canvas );
-    ~QgsMapToolEditMeshFrame();
+    ~QgsMapToolEditMeshFrame() override;
 
     QList<QAction *> mapToolActions();
     QAction *digitizeAction() const;

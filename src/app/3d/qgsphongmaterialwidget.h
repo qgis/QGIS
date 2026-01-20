@@ -16,10 +16,10 @@
 #ifndef QGSPHONGMATERIALWIDGET_H
 #define QGSPHONGMATERIALWIDGET_H
 
-#include "qgsmaterialsettingswidget.h"
-#include "qgsabstractmaterialsettings.h"
+#include "ui_phongmaterialwidget.h"
 
-#include <ui_phongmaterialwidget.h>
+#include "qgsabstractmaterialsettings.h"
+#include "qgsmaterialsettingswidget.h"
 
 class QgsPhongMaterialSettings;
 

@@ -15,11 +15,11 @@
 #ifndef QGSFEATUREPICKERMODEL_H
 #define QGSFEATUREPICKERMODEL_H
 
-#include <QAbstractItemModel>
-
 #include "qgsconditionalstyle.h"
 #include "qgsfeatureexpressionvaluesgatherer.h"
 #include "qgsfeaturepickermodelbase.h"
+
+#include <QAbstractItemModel>
 
 /**
  * \ingroup core

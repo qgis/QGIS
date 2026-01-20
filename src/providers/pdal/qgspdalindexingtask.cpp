@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgspdalindexingtask.h"
-#include "moc_qgspdalindexingtask.cpp"
 
-#include <vector>
 #include <string>
-#include <QDebug>
-#include <QThread>
-#include <QFileInfo>
-#include <QDir>
-#include <QProcessEnvironment>
-#include <QTemporaryDir>
+#include <vector>
 
-#include "qgsapplication.h"
 #include "QgisUntwine.hpp"
 #include "qgis.h"
+#include "qgsapplication.h"
+
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
+#include <QProcessEnvironment>
+#include <QTemporaryDir>
+#include <QThread>
+
+#include "moc_qgspdalindexingtask.cpp"
 
 QgsPdalIndexingTask::QgsPdalIndexingTask( const QString &file, const QString &outputPath, const QString &name )
   : QgsTask( tr( "Creating indexed COPC (%1)" ).arg( name ) )
@@ -51,7 +53,7 @@ bool QgsPdalIndexingTask::run()
 
 void QgsPdalIndexingTask::cleanup()
 {
-  QFile::remove( QStringLiteral( "%1-indexing" ).arg( mFile ) );
+  QFile::remove( u"%1-indexing"_s.arg( mFile ) );
 }
 
 bool QgsPdalIndexingTask::runUntwine()
@@ -64,7 +66,7 @@ bool QgsPdalIndexingTask::runUntwine()
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Using executable %1" ).arg( mUntwineExecutableBinary ), 2 );
+    QgsDebugMsgLevel( u"Using executable %1"_s.arg( mUntwineExecutableBinary ), 2 );
   }
 
   untwine::QgisUntwine untwineProcess( mUntwineExecutableBinary.toStdString() );
@@ -129,7 +131,7 @@ void QgsPdalIndexingTask::setUntwineExecutableBinary( const QString &untwineExec
 
 QString QgsPdalIndexingTask::guessUntwineExecutableBinary() const
 {
-  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_UNTWINE_EXECUTABLE" ) );
+  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( u"QGIS_UNTWINE_EXECUTABLE"_s );
   if ( untwineExecutable.isEmpty() )
   {
 #if defined( Q_OS_WIN )
@@ -162,14 +164,14 @@ bool QgsPdalIndexingTask::prepareOutputPath()
     return false;
   }
 
-  QFile marker( QStringLiteral( "%1-indexing" ).arg( mFile ) );
+  QFile marker( u"%1-indexing"_s.arg( mFile ) );
   if ( marker.exists() )
   {
     mErrorMessage = tr( "Another indexing process is running (or finished with crash) for file %1" ).arg( mFile );
     return false;
   }
 
-  // this check is last so we only create the marker file if no error occured
+  // this check is last so we only create the marker file if no error occurred
   if ( !marker.open( QIODevice::WriteOnly ) )
   {
     mErrorMessage = tr( "Directory is not writable: %1" ).arg( fi.canonicalPath() );

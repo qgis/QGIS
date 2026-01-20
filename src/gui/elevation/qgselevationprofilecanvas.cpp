@@ -16,32 +16,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgselevationprofilecanvas.h"
-#include "moc_qgselevationprofilecanvas.cpp"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsplotcanvasitem.h"
-#include "qgsprofilerequest.h"
-#include "qgsabstractprofilesource.h"
-#include "qgscurve.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgsabstractprofilegenerator.h"
-#include "qgsprofilerenderer.h"
-#include "qgspoint.h"
-#include "qgsgeos.h"
-#include "qgsplot.h"
-#include "qgsnumericformat.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsprofilesnapping.h"
-#include "qgsmaplayerelevationproperties.h"
-#include "qgsscreenhelper.h"
-#include "qgsfillsymbol.h"
-#include "qgsprofilesourceregistry.h"
 
-#include <QWheelEvent>
-#include <QTimer>
+#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesource.h"
+#include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsnumericformat.h"
+#include "qgsplot.h"
+#include "qgsplotcanvasitem.h"
+#include "qgspoint.h"
+#include "qgsprofilerenderer.h"
+#include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
+#include "qgsprofilesourceregistry.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsscreenhelper.h"
+#include "qgsterrainprovider.h"
+
 #include <QPalette>
+#include <QTimer>
+#include <QWheelEvent>
+
+#include "moc_qgselevationprofilecanvas.cpp"
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
@@ -151,7 +153,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
         case Qgis::DistanceUnit::MilesUSSurvey:
         case Qgis::DistanceUnit::Fathoms:
         case Qgis::DistanceUnit::MetersGermanLegal:
-          return QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
+          return u" %1"_s.arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
 
         case Qgis::DistanceUnit::Degrees:
           return QObject::tr( "°" );
@@ -235,6 +237,7 @@ class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
       }
     }
 
+    using QgsPlotCanvasItem::paint;
     void paint( QPainter *painter ) override
     {
       // cache rendering to an image, so we don't need to redraw the plot
@@ -322,6 +325,7 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       return mRect;
     }
 
+    using QgsPlotCanvasItem::paint;
     void paint( QPainter *painter ) override
     {
       const QgsPointXY crossHairPlotPoint = mPlotItem->plotPointToCanvasPoint( mPoint );
@@ -444,6 +448,11 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mDeferredRedrawTimer->setSingleShot( true );
   mDeferredRedrawTimer->stop();
   connect( mDeferredRedrawTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredRedraw );
+
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+
+  setSourcesPrivate(); // Initialize with registered sources
 }
 
 QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
@@ -811,8 +820,8 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
-  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
@@ -915,19 +924,10 @@ void QgsElevationProfileCanvas::refresh()
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   request.setExpressionContext( context );
 
-  const QList<QgsMapLayer *> layersToGenerate = layers();
-  QList<QgsAbstractProfileSource *> sources;
-  const QList<QgsAbstractProfileSource *> registrySources = QgsApplication::profileSourceRegistry()->profileSources();
-  sources.reserve( layersToGenerate.size() + registrySources.size() );
+  QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+  std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-  sources << registrySources;
-  for ( QgsMapLayer *layer : layersToGenerate )
-  {
-    if ( QgsAbstractProfileSource *source = layer->profileSource() )
-      sources.append( source );
-  }
-
-  mCurrentJob = new QgsProfilePlotRenderer( sources, request );
+  mCurrentJob = new QgsProfilePlotRenderer( sourcesToRender, request );
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
@@ -1215,6 +1215,39 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
   return _qgis_listQPointerToRaw( mLayers );
 }
 
+void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
+{
+  mSources = sources;
+}
+
+QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
+{
+  if ( mSources.isEmpty() && !mLayers.isEmpty() )
+  {
+    // Legacy: If we have layers, extract their sources and return them.
+    // We don't set mSources here, because we want the previous check to
+    // continue failing if only layers are set.
+    // TODO: Remove in QGIS 5.0.
+    QList< QgsAbstractProfileSource * > sources;
+    const QList<QgsMapLayer *> layersToGenerate = layers();
+    sources.reserve( layersToGenerate.size() );
+
+    for ( QgsMapLayer *layer : layersToGenerate )
+    {
+      if ( QgsAbstractProfileSource *source = layer->profileSource() )
+        sources << source;
+    }
+
+    // More legacy: canvas layers are in the same direction as the renderer
+    // expects, but since we reverse sources() (i.e., layers) before passing
+    // them to the renderer, then we need to reverse them here first.
+    std::reverse( sources.begin(), sources.end() );
+    return sources;
+  }
+
+  return mSources;
+}
+
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 {
   QgsPlotCanvas::resizeEvent( event );
@@ -1427,7 +1460,7 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
 
   // quick and nasty way to transfer settings from another plot class -- in future we probably want to improve this, but let's let the API settle first...
   QDomDocument doc;
-  QDomElement elem = doc.createElement( QStringLiteral( "plot" ) );
+  QDomElement elem = doc.createElement( u"plot"_s );
   QgsReadWriteContext rwContext;
   plotSettings.writeXml( elem, doc, rwContext );
   profilePlot.readXml( elem, rwContext );
@@ -1489,4 +1522,9 @@ void QgsElevationProfileCanvas::setSubsectionsSymbol( QgsLineSymbol *symbol )
   mSubsectionsSymbol.reset( symbol );
   std::unique_ptr<QgsLineSymbol> plotItemSymbol( mSubsectionsSymbol ? mSubsectionsSymbol->clone() : nullptr );
   mPlotItem->setSubsectionsSymbol( plotItemSymbol.release() );
+}
+
+void QgsElevationProfileCanvas::setSourcesPrivate()
+{
+  mSources = QgsApplication::profileSourceRegistry()->profileSources();
 }

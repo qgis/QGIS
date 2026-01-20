@@ -13,20 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsoracleprojectstoragedialog.h"
-#include "moc_qgsoracleprojectstoragedialog.cpp"
-
-#include "qgsoracleconn.h"
-#include "qgsoracleconnpool.h"
-#include "qgsoracleproviderconnection.h"
-#include "qgsoracleprojectstorage.h"
 
 #include "qgsapplication.h"
+#include "qgsoracleconn.h"
+#include "qgsoracleconnpool.h"
+#include "qgsoracleprojectstorage.h"
+#include "qgsoracleproviderconnection.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
 
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+
+#include "moc_qgsoracleprojectstoragedialog.cpp"
 
 QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )
@@ -127,7 +127,7 @@ void QgsOracleProjectStorageDialog::populateProjects()
   mExistingProjects.clear();
 
   const QString uri = currentProjectUri();
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracle" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"oracle"_s );
   Q_ASSERT( storage );
   mExistingProjects = storage->listProjects( uri );
   mCboProject->addItems( mExistingProjects );
@@ -164,7 +164,7 @@ void QgsOracleProjectStorageDialog::removeProject()
   if ( res != QMessageBox::Yes )
     return;
 
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "oracle" ) );
+  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"oracle"_s );
   Q_ASSERT( storage );
   storage->removeProject( currentProjectUri() );
   populateProjects();

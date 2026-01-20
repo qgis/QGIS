@@ -20,19 +20,19 @@
 #ifndef QGSWMSPROVIDER_H
 #define QGSWMSPROVIDER_H
 
-#include "qgsrasterdataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkreplyparser.h"
-#include "qgswmscapabilities.h"
 #include "qgsprovidermetadata.h"
+#include "qgsrasterdataprovider.h"
+#include "qgswmscapabilities.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
-#include <QVector>
+#include <QString>
+#include <QStringList>
 #include <QUrl>
+#include <QVector>
 
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;
@@ -94,7 +94,7 @@ class QgsCachedImageFetcher : public QgsImageFetcher
   private slots:
     void send()
     {
-      QgsDebugMsgLevel( QStringLiteral( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ), 2 );
+      QgsDebugMsgLevel( u"XXX Sending %1x%2 image"_s.arg( _img.width() ).arg( _img.height() ), 2 );
       emit finish( _img );
     }
 };
@@ -138,7 +138,7 @@ class QgsWmsInterpretationConverterMapTilerTerrainRGB : public QgsWmsInterpretat
     bool representsElevation() const override;
 
     static QString displayName() { return QObject::tr( "MapTiler Terrain RGB" ); }
-    static QString interpretationKey() { return QStringLiteral( "maptilerterrain" ); }
+    static QString interpretationKey() { return u"maptilerterrain"_s; }
 };
 
 //! Class to convert color to float value following the terrarium terrain RGB interpretation
@@ -154,7 +154,7 @@ class QgsWmsInterpretationConverterTerrariumRGB : public QgsWmsInterpretationCon
     bool representsElevation() const override;
 
     static QString displayName() { return QObject::tr( "Terrarium Terrain RGB" ); }
-    static QString interpretationKey() { return QStringLiteral( "terrariumterrain" ); }
+    static QString interpretationKey() { return u"terrariumterrain"_s; }
 };
 
 /**
@@ -174,7 +174,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     static QString WMS_KEY;
     static QString WMS_DESCRIPTION;
 
-    static inline QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
+    static inline QString DEFAULT_LATLON_CRS = u"CRS:84"_s;
 
     /**
      * Constructor for the provider.
@@ -212,6 +212,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
 
     Qgis::DataProviderFlags flags() const override;
 
+    using QgsRasterDataProvider::readBlock;
     bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
@@ -227,10 +228,10 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     virtual bool hasTiles() const;
 #endif
 
-    virtual QString getMapUrl() const;
-    virtual QString getFeatureInfoUrl() const;
-    virtual QString getTileUrl() const;
-    virtual QString getLegendGraphicUrl() const;
+    QString getMapUrl() const;
+    QString getFeatureInfoUrl() const;
+    QString getTileUrl() const;
+    QString getLegendGraphicUrl() const;
 
     //! Gets WMS version string
     QString wmsVersion();
@@ -355,7 +356,7 @@ class QgsWmsProvider final : public QgsRasterDataProvider
 
     static bool isUrlForWMTS( const QString &url );
 
-    virtual QVariantMap metadata() const override;
+    QVariantMap metadata() const override;
 
   private slots:
     void identifyReplyFinished();

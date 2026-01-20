@@ -14,29 +14,30 @@
  ***************************************************************************/
 
 #include "qgs3dmapconfigwidget.h"
-#include "moc_qgs3dmapconfigwidget.cpp"
 
+#include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsambientocclusionsettingswidget.h"
 #include "qgsdemterrainsettings.h"
 #include "qgsflatterrainsettings.h"
-#include "qgsonlinedemterrainsettings.h"
-#include "qgsmeshterrainsettings.h"
-#include "qgs3dutils.h"
 #include "qgsguiutils.h"
 #include "qgsmapcanvas.h"
+#include "qgsmesh3dsymbolwidget.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshterrainsettings.h"
+#include "qgsonlinedemterrainsettings.h"
+#include "qgsproject.h"
 #include "qgsquantizedmeshterrainsettings.h"
 #include "qgsrasterlayer.h"
-#include "qgsmeshlayer.h"
-#include "qgsproject.h"
-#include "qgsmesh3dsymbolwidget.h"
 #include "qgssettings.h"
-#include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsshadowrenderingsettingswidget.h"
-#include "qgsambientocclusionsettingswidget.h"
-#include "qgs3dmapcanvas.h"
+#include "qgsskyboxrenderingsettingswidget.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
-#include "qgsabstractterrainsettings.h"
+
+#include "moc_qgs3dmapconfigwidget.cpp"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )
@@ -58,18 +59,18 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
-  m3DOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/3DMapConfig/Tab" ), 0 ).toInt() );
+  m3DOptionsListWidget->setCurrentRow( settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt() );
   connect( m3DOptionsListWidget, &QListWidget::currentRowChanged, this, [this]( int index ) { m3DOptionsStackedWidget->setCurrentIndex( index ); } );
   m3DOptionsStackedWidget->setCurrentIndex( m3DOptionsListWidget->currentRow() );
 
-  if ( !settings.contains( QStringLiteral( "Windows/3DMapConfig/OptionsSplitState" ) ) )
+  if ( !settings.contains( u"Windows/3DMapConfig/OptionsSplitState"_s ) )
   {
     // set left list widget width on initial showing
     QList<int> splitsizes;
     splitsizes << 115;
     m3DOptionsSplitter->setSizes( splitsizes );
   }
-  m3DOptionsSplitter->restoreState( settings.value( QStringLiteral( "Windows/3DMapConfig/OptionsSplitState" ) ).toByteArray() );
+  m3DOptionsSplitter->restoreState( settings.value( u"Windows/3DMapConfig/OptionsSplitState"_s ).toByteArray() );
 
   mMeshSymbolWidget = new QgsMesh3DSymbolWidget( nullptr, groupMeshTerrainShading );
   mMeshSymbolWidget->configureForTerrain();
@@ -118,7 +119,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     spinGroundError->setValue( terrainSettings->maximumGroundError() );
   }
 
-  if ( terrainSettings && terrainSettings->type() == QLatin1String( "dem" ) )
+  if ( terrainSettings && terrainSettings->type() == "dem"_L1 )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Dem ) );
     const QgsDemTerrainSettings *demTerrainSettings = qgis::down_cast<const QgsDemTerrainSettings *>( terrainSettings );
@@ -127,14 +128,14 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     cboTerrainLayer->setFilters( Qgis::LayerFilter::RasterLayer );
     cboTerrainLayer->setLayer( demTerrainSettings->layer() );
   }
-  else if ( terrainSettings && terrainSettings->type() == QLatin1String( "online" ) )
+  else if ( terrainSettings && terrainSettings->type() == "online"_L1 )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Online ) );
     const QgsOnlineDemTerrainSettings *demTerrainSettings = qgis::down_cast<const QgsOnlineDemTerrainSettings *>( terrainSettings );
     spinTerrainResolution->setValue( demTerrainSettings->resolution() );
     spinTerrainSkirtHeight->setValue( demTerrainSettings->skirtHeight() );
   }
-  else if ( terrainSettings && terrainSettings->type() == QLatin1String( "mesh" ) )
+  else if ( terrainSettings && terrainSettings->type() == "mesh"_L1 )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Mesh ) );
     const QgsMeshTerrainSettings *meshTerrainSettings = qgis::down_cast<const QgsMeshTerrainSettings *>( terrainSettings );
@@ -144,14 +145,14 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
     mMeshSymbolWidget->setSymbol( meshTerrainSettings->symbol() );
     spinTerrainScale->setValue( meshTerrainSettings->symbol()->verticalScale() );
   }
-  else if ( terrainSettings && terrainSettings->type() == QLatin1String( "quantizedmesh" ) )
+  else if ( terrainSettings && terrainSettings->type() == "quantizedmesh"_L1 )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::QuantizedMesh ) );
     const QgsQuantizedMeshTerrainSettings *quantizedMeshTerrainSettings = qgis::down_cast<const QgsQuantizedMeshTerrainSettings *>( terrainSettings );
     cboTerrainLayer->setFilters( Qgis::LayerFilter::TiledSceneLayer );
     cboTerrainLayer->setLayer( quantizedMeshTerrainSettings->layer() );
   }
-  else if ( terrainSettings && terrainSettings->type() == QLatin1String( "flat" ) )
+  else if ( terrainSettings && terrainSettings->type() == "flat"_L1 )
   {
     cboTerrainType->setCurrentIndex( cboTerrainType->findData( QgsTerrainGenerator::Flat ) );
     cboTerrainLayer->setLayer( nullptr );
@@ -174,6 +175,7 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   widgetTerrainMaterial->setSettings( &terrainShadingMaterial, nullptr );
 
   widgetLights->setLights( mMap->lightSources() );
+  widgetLights->setPointLightCrs( mMap->crs() );
 
   connect( cboTerrainType, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainTypeChanged );
   connect( cboTerrainLayer, static_cast<void ( QComboBox::* )( int )>( &QgsMapLayerComboBox::currentIndexChanged ), this, &Qgs3DMapConfigWidget::onTerrainLayerChanged );
@@ -260,8 +262,8 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 Qgs3DMapConfigWidget::~Qgs3DMapConfigWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/3DMapConfig/OptionsSplitState" ), m3DOptionsSplitter->saveState() );
-  settings.setValue( QStringLiteral( "Windows/3DMapConfig/Tab" ), m3DOptionsListWidget->currentRow() );
+  settings.setValue( u"Windows/3DMapConfig/OptionsSplitState"_s, m3DOptionsSplitter->saveState() );
+  settings.setValue( u"Windows/3DMapConfig/Tab"_s, m3DOptionsListWidget->currentRow() );
 }
 
 void Qgs3DMapConfigWidget::apply()
@@ -433,7 +435,7 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
 
   const double tile0width = std::max( te.width(), te.height() );
   const int zoomLevel = Qgs3DUtils::maxZoomLevel( tile0width, spinMapResolution->value(), spinGroundError->value() );
-  labelZoomLevels->setText( QStringLiteral( "0 - %1" ).arg( zoomLevel ) );
+  labelZoomLevels->setText( u"0 - %1"_s.arg( zoomLevel ) );
 }
 
 void Qgs3DMapConfigWidget::validate()

@@ -81,7 +81,7 @@ Append a message to the context
 .. versionadded:: 3.2
 %End
 
-QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
+      QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
 %Docstring
 Push a category to the stack
 
@@ -101,6 +101,7 @@ Push a category to the stack
 
 .. versionadded:: 3.2
 %End
+
 
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 %Docstring
@@ -141,6 +142,21 @@ Sets data coordinate transform context to ``transformContext``
 .. seealso:: :py:func:`transformContext`
 
 .. versionadded:: 3.8
+%End
+
+    const QString currentLayerId() const;
+%Docstring
+Returns the currently used layer id as string.
+
+.. versionadded:: 4.0
+%End
+
+    void setCurrentLayerId( const QString &layerId );
+%Docstring
+Sets the current layer id. So functions are able to emit the layer that
+is currently relevant.
+
+.. versionadded:: 4.0
 %End
 
 };

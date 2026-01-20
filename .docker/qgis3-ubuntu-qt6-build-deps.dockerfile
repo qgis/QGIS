@@ -1,6 +1,5 @@
 
-ARG DISTRO_VERSION=25.04
-ARG PDAL_VERSION=2.8.4
+ARG DISTRO_VERSION=25.10
 
 # Oracle Docker image is too large, so we add as less dependencies as possible
 # so there is enough space on GitHub runner
@@ -8,8 +7,6 @@ FROM      ubuntu:${DISTRO_VERSION} AS binary-for-oracle
 LABEL org.opencontainers.image.authors="Denis Rouzaud <denis@opengis.ch>"
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
-
-ARG PDAL_VERSION
 
 # && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
 # && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
@@ -34,6 +31,7 @@ RUN  apt-get update \
     'libdraco4|libdraco8' \
     libexiv2-28 \
     'libfcgi0ldbl|libfcgi0t64' \
+    libgeographiclib26 \
     libgsl28 \
     'libprotobuf-lite17|libprotobuf-lite23|libprotobuf-lite32t64' \
     libqca-qt6-plugins \
@@ -86,6 +84,7 @@ RUN  apt-get update \
     python3-pyqt6.qtwebengine \
     python3-requests \
     python3-shapely  \
+    python3-geopandas \
     python3-sphinx \
     python3-six \
     python3-termcolor \
@@ -109,7 +108,8 @@ RUN  apt-get update \
 RUN  pip3 install --break-system-packages \
     future \
     capturer \
-    hdbcli
+    hdbcli \
+    pyarrow
 RUN  apt-get clean
 
 # Node.js and Yarn for server landingpage webapp
@@ -141,37 +141,13 @@ RUN locale-gen
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
-# PDAL is not available in ubuntu 24.04
-# Install it from source
-# PDAL dependencies
 RUN  apt-get update \
      && DEBIAN_FRONTEND=noninteractive apt-get install -y \
      ninja-build \
      libgdal-dev \
      libproj-dev
-# download PDAL and compile it
-RUN curl -L https://github.com/PDAL/PDAL/releases/download/${PDAL_VERSION}/PDAL-${PDAL_VERSION}-src.tar.gz --output PDAL-${PDAL_VERSION}-src.tar.gz \
-    && mkdir pdal \
-    && tar zxf PDAL-${PDAL_VERSION}-src.tar.gz -C pdal --strip-components=1 \
-    && rm -f PDAL-${PDAL_VERSION}-src.tar.gz \
-    && mkdir -p pdal/build \
-    && cd pdal/build \
-    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local -DWITH_TESTS=OFF .. \
-    && ninja \
-    && ninja install
 
-# download spatialindex and compile it
-RUN curl -L https://github.com/libspatialindex/libspatialindex/releases/download/2.0.0/spatialindex-src-2.0.0.tar.gz --output spatialindex-src-2.0.0.tar.gz \
-    && mkdir spatialindex \
-    && tar zxf spatialindex-src-2.0.0.tar.gz -C spatialindex --strip-components=1 \
-    && rm -f spatialindex-src-2.0.0.tar.gz \
-    && mkdir -p spatialindex/build \
-    && cd spatialindex/build \
-    && cmake -GNinja -DCMAKE_INSTALL_PREFIX=/usr/local .. \
-    && ninja \
-    && ninja install
-
-RUN 
+RUN
 FROM binary-for-oracle AS binary-only
 
 RUN  apt-get update \
@@ -217,6 +193,7 @@ RUN  apt-get update \
     libexiv2-dev \
     libexpat1-dev \
     libfcgi-dev \
+    libgeographiclib-dev \
     libgeos-dev \
     libgsl-dev \
     libpq-dev \

@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsactionlocatorfilter.h"
-#include "moc_qgsactionlocatorfilter.cpp"
+
+#include "qgsstringutils.h"
 
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
 
+#include "moc_qgsactionlocatorfilter.cpp"
 
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )
@@ -63,8 +65,8 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     searchActions( string, widget, found );
   }
 
-  const thread_local QRegularExpression extractFromTooltip( QStringLiteral( "<b>(.*)</b>" ) );
-  const thread_local QRegularExpression newLineToSpace( QStringLiteral( "[\\s\\n\\r]+" ) );
+  const thread_local QRegularExpression extractFromTooltip( u"<b>(.*)</b>"_s );
+  const thread_local QRegularExpression newLineToSpace( u"[\\s\\n\\r]+"_s );
 
   const auto constActions = parent->actions();
   for ( QAction *action : constActions )
@@ -84,31 +86,31 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
     searchText.replace( '&', QString() );
 
     QString tooltip = action->toolTip();
-    tooltip.replace( newLineToSpace, QStringLiteral( " " ) );
+    tooltip.replace( newLineToSpace, u" "_s );
     QRegularExpressionMatch match = extractFromTooltip.match( tooltip );
     if ( match.hasMatch() )
     {
       tooltip = match.captured( 1 );
     }
-    tooltip.replace( QLatin1String( "..." ), QString() );
+    tooltip.replace( "..."_L1, QString() );
     tooltip.replace( QString( QChar( 0x2026 ) ), QString() );
-    searchText.replace( QLatin1String( "..." ), QString() );
+    searchText.replace( "..."_L1, QString() );
     searchText.replace( QString( QChar( 0x2026 ) ), QString() );
     bool uniqueTooltip = searchText.trimmed().compare( tooltip.trimmed(), Qt::CaseInsensitive ) != 0;
     if ( action->isChecked() )
     {
-      searchText += QStringLiteral( " [%1]" ).arg( tr( "Active" ) );
+      searchText += u" [%1]"_s.arg( tr( "Active" ) );
     }
     if ( uniqueTooltip )
     {
-      searchText += QStringLiteral( " (%1)" ).arg( tooltip.trimmed() );
+      searchText += u" (%1)"_s.arg( tooltip.trimmed() );
     }
 
     QgsLocatorResult result;
     result.displayString = searchText;
     result.setUserData( QVariant::fromValue( action ) );
     result.icon = action->icon();
-    result.score = fuzzyScore( result.displayString, string );
+    result.score = fuzzyScore( QgsStringUtils::unaccent( result.displayString ), QgsStringUtils::unaccent( string ) );
 
     if ( result.score > 0 )
     {

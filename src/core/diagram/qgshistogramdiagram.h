@@ -16,11 +16,12 @@
 #ifndef QGSHISTOGRAMDIAGRAM_H
 #define QGSHISTOGRAMDIAGRAM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsdiagram.h"
-#include <QPen>
+
 #include <QBrush>
+#include <QPen>
 
 class QgsFeature;
 class QPainter;

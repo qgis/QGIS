@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapSettingsUtils
 {
 %Docstring(signature="appended")

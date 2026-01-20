@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgstriangle.h"
+
+#include <memory>
+
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
-
-#include <memory>
 
 QgsTriangle::QgsTriangle()
 {
@@ -93,7 +94,7 @@ bool QgsTriangle::operator!=( const QgsAbstractGeometry &other ) const
 
 QString QgsTriangle::geometryType() const
 {
-  return QStringLiteral( "Triangle" );
+  return u"Triangle"_s;
 }
 
 QgsTriangle *QgsTriangle::createEmptyWithSameType() const
@@ -173,11 +174,11 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  const QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  const QString defaultChildWkbType = u"LineString%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -201,21 +202,14 @@ bool QgsTriangle::fromWkt( const QString &wkt )
   }
 
   mExteriorRing.reset( mInteriorRings.takeFirst() );
-  if ( ( mExteriorRing->numPoints() < 3 ) || ( mExteriorRing->numPoints() > 4 ) || ( mExteriorRing->numPoints() == 4 && mExteriorRing->startPoint() != mExteriorRing->endPoint() ) )
+  if ( !mExteriorRing || ( mExteriorRing->numPoints() < 3 ) || ( mExteriorRing->numPoints() > 4 ) || ( mExteriorRing->numPoints() == 4 && mExteriorRing->startPoint() != mExteriorRing->endPoint() ) )
   {
     clear();
     return false;
   }
 
-  //scan through rings and check if dimensionality of rings is different to CurvePolygon.
-  //if so, update the type dimensionality of the CurvePolygon to match
-  bool hasZ = false;
-  bool hasM = false;
-  if ( mExteriorRing )
-  {
-    hasZ = hasZ || mExteriorRing->is3D();
-    hasM = hasM || mExteriorRing->isMeasure();
-  }
+  bool hasZ = mExteriorRing->is3D();
+  bool hasM = mExteriorRing->isMeasure();
   if ( hasZ )
     addZValue( 0 );
   if ( hasM )
@@ -227,16 +221,16 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
 
-  QDomElement elemTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );
+  QDomElement elemTriangle = doc.createElementNS( ns, u"Triangle"_s );
 
   if ( isEmpty() )
     return elemTriangle;
 
-  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
+  QDomElement elemExterior = doc.createElementNS( ns, u"exterior"_s );
   QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns, axisOrder );
-  if ( curveElem.tagName() == QLatin1String( "LineString" ) )
+  if ( curveElem.tagName() == "LineString"_L1 )
   {
-    curveElem.setTagName( QStringLiteral( "LinearRing" ) );
+    curveElem.setTagName( u"LinearRing"_s );
   }
   elemExterior.appendChild( curveElem );
   elemTriangle.appendChild( elemExterior );

@@ -16,29 +16,31 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestsourceselect.h"
-#include "moc_qgsarcgisrestsourceselect.cpp"
-#include "qgsowsconnection.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsproject.h"
+
+#include "qgsafsprovider.h"
+#include "qgsarcgisrestdataitems.h"
+#include "qgsbrowserguimodel.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgsexception.h"
 #include "qgsmapcanvas.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsbrowserguimodel.h"
-#include "qgsarcgisrestdataitems.h"
 #include "qgsnewarcgisrestconnection.h"
-#include "qgsafsprovider.h"
+#include "qgsowsconnection.h"
+#include "qgsproject.h"
 
 #include <QButtonGroup>
+#include <QFileDialog>
+#include <QImageReader>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QRadioButton>
-#include <QImageReader>
+
+#include "moc_qgsarcgisrestsourceselect.cpp"
 
 //
 // QgsArcGisRestBrowserProxyModel
@@ -83,7 +85,7 @@ QgsArcGisRestSourceSelect::QgsArcGisRestSourceSelect( QWidget *parent, Qt::Windo
   connect( cmbConnections, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsArcGisRestSourceSelect::cmbConnections_activated );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsArcGisRestSourceSelect::showHelp );
-  setWindowTitle( QStringLiteral( "Add ArcGIS REST Layer" ) );
+  setWindowTitle( u"Add ArcGIS REST Layer"_s );
 
   mBuildQueryButton = buttonBox->addButton( tr( "Add with Filter" ), QDialogButtonBox::ActionRole );
   mBuildQueryButton->setDisabled( true );
@@ -181,9 +183,9 @@ void QgsArcGisRestSourceSelect::showEvent( QShowEvent * )
   mBrowserView->expand( mProxyModel->index( 0, 0 ) );
   mBrowserView->setHeaderHidden( true );
 
-  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << QStringLiteral( "AFS" ) << QStringLiteral( "arcgisfeatureserver" ) << QStringLiteral( "AMS" ) << QStringLiteral( "arcgismapserver" ) );
+  mProxyModel->setShownDataItemProviderKeyFilter( QStringList() << u"AFS"_s << u"arcgisfeatureserver"_s << u"AMS"_s << u"arcgismapserver"_s << u"I3S"_s << u"esrii3s"_s );
 
-  const QModelIndex afsSourceIndex = mBrowserModel->findPath( QStringLiteral( "arcgisfeatureserver:" ) );
+  const QModelIndex afsSourceIndex = mBrowserModel->findPath( u"arcgisfeatureserver:"_s );
   mBrowserView->setRootIndex( mProxyModel->mapFromSource( afsSourceIndex ) );
 
   // don't show anything till connect is clicked!
@@ -318,7 +320,7 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
         QgsCoordinateTransform extentTransform = QgsCoordinateTransform( canvasCrs, crs, QgsProject::instance()->transformContext() );
         extentTransform.setBallparkTransformsAreAppropriate( true );
         extent = extentTransform.transformBoundingBox( extent );
-        QgsDebugMsgLevel( QStringLiteral( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" ).arg( canvasCrs.authid(), crs.authid(), extent.asWktCoordinates() ), 3 );
+        QgsDebugMsgLevel( u"canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3"_s.arg( canvasCrs.authid(), crs.authid(), extent.asWktCoordinates() ), 3 );
       }
       catch ( const QgsCsException & )
       {
@@ -338,14 +340,18 @@ void QgsArcGisRestSourceSelect::addButtonClicked()
         Q_NOWARN_DEPRECATED_PUSH
         emit addVectorLayer( uri, layerName );
         Q_NOWARN_DEPRECATED_POP
-        emit addLayer( Qgis::LayerType::Vector, uri, layerName, QStringLiteral( "arcgisfeatureserver" ) );
+        emit addLayer( Qgis::LayerType::Vector, uri, layerName, u"arcgisfeatureserver"_s );
         break;
 
       case Qgis::ArcGisRestServiceType::MapServer:
         Q_NOWARN_DEPRECATED_PUSH
-        emit addRasterLayer( uri, layerName, QStringLiteral( "arcgismapserver" ) );
+        emit addRasterLayer( uri, layerName, u"arcgismapserver"_s );
         Q_NOWARN_DEPRECATED_POP
-        emit addLayer( Qgis::LayerType::Raster, uri, layerName, QStringLiteral( "arcgismapserver" ) );
+        emit addLayer( Qgis::LayerType::Raster, uri, layerName, u"arcgismapserver"_s );
+        break;
+
+      case Qgis::ArcGisRestServiceType::SceneServer:
+        emit addLayer( Qgis::LayerType::TiledScene, uri, layerName, u"esrii3s"_s );
         break;
 
       case Qgis::ArcGisRestServiceType::ImageServer:
@@ -394,7 +400,7 @@ void QgsArcGisRestSourceSelect::cmbConnections_activated( int index )
 void QgsArcGisRestSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsgLevel( QStringLiteral( "treeWidget_currentRowChanged called" ), 3 );
+  QgsDebugMsgLevel( u"treeWidget_currentRowChanged called"_s, 3 );
   updateCrsLabel();
   updateImageEncodings();
 
@@ -431,7 +437,7 @@ void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
 
   // Query available fields
   QgsDataSourceUri ds( uri );
-  ds.setSql( QStringLiteral( "1=0" ) ); // don't retrieve any records
+  ds.setSql( u"1=0"_s ); // don't retrieve any records
 
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
   QgsDataProvider::ProviderOptions providerOptions;
@@ -455,7 +461,7 @@ void QgsArcGisRestSourceSelect::buildQueryButtonClicked()
     Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( ds.uri( false ), layerName );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Vector, ds.uri( false ), layerName, QStringLiteral( "arcgisfeatureserver" ) );
+    emit addLayer( Qgis::LayerType::Vector, ds.uri( false ), layerName, u"arcgisfeatureserver"_s );
   }
 }
 
@@ -466,7 +472,7 @@ void QgsArcGisRestSourceSelect::filterChanged( const QString &text )
 
 void QgsArcGisRestSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/index.html" ) );
+  QgsHelp::openHelp( u"managing_data_source/index.html"_s );
 }
 
 void QgsArcGisRestSourceSelect::btnSave_clicked()
@@ -570,15 +576,19 @@ QString QgsArcGisRestSourceSelect::indexToUri( const QModelIndex &proxyIndex, QS
     {
       if ( !extent.isNull() )
       {
-        uri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( extent.xMinimum() ).arg( extent.yMinimum() ).arg( extent.xMaximum() ).arg( extent.yMaximum() ) );
+        uri.setParam( u"bbox"_s, u"%1,%2,%3,%4"_s.arg( extent.xMinimum() ).arg( extent.yMinimum() ).arg( extent.xMaximum() ).arg( extent.yMaximum() ) );
       }
       serviceType = Qgis::ArcGisRestServiceType::FeatureServer;
     }
     else if ( qobject_cast<QgsArcGisMapServiceLayerItem *>( layerItem ) )
     {
-      uri.removeParam( QStringLiteral( "format" ) );
-      uri.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
+      uri.removeParam( u"format"_s );
+      uri.setParam( u"format"_s, getSelectedImageEncoding() );
       serviceType = Qgis::ArcGisRestServiceType::MapServer;
+    }
+    else if ( qobject_cast<QgsArcGisSceneServiceLayerItem *>( layerItem ) )
+    {
+      serviceType = Qgis::ArcGisRestServiceType::SceneServer;
     }
     return uri.uri( false );
   }

@@ -21,7 +21,7 @@
 
 QString QgsMergeLinesAlgorithm::name() const
 {
-  return QStringLiteral( "mergelines" );
+  return u"mergelines"_s;
 }
 
 QString QgsMergeLinesAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsMergeLinesAlgorithm::group() const
 
 QString QgsMergeLinesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsMergeLinesAlgorithm::outputName() const

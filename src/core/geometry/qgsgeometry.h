@@ -16,26 +16,24 @@ email                : morb at ozemail dot com dot au
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H
 
+#include <climits>
 #include <functional>
+#include <limits>
+#include <memory>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsabstractgeometry.h"
+#include "qgsfeatureid.h"
+#include "qgspoint.h"
+#include "qgspointxy.h"
+#include "qgsvertexid.h"
 
 #include <QDomDocument>
 #include <QJsonObject>
 #include <QSet>
 #include <QString>
 #include <QVector>
-
-#include <climits>
-#include <limits>
-#include <memory>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
-
-#include "qgsabstractgeometry.h"
-#include "qgspointxy.h"
-#include "qgspoint.h"
-#include "qgsfeatureid.h"
-#include "qgsvertexid.h"
 
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>
@@ -239,7 +237,7 @@ class CORE_EXPORT QgsGeometry
      * Sets the underlying geometry store. Ownership of geometry is transferred.
      *
      * \note In QGIS 2.x this method was named setGeometry().
-     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 4.
+     * \note This method is deprecated for usage in Python and will be removed from Python bindings with QGIS 5.
      *       Using this method will confuse Python's memory management and type information system.
      *       Better create a new QgsGeometry object instead.
      *
@@ -316,7 +314,7 @@ class CORE_EXPORT QgsGeometry
      *
      * \code{.py}
      *   # Create a polygon geometry with a single exterior ring (a triangle)
-     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]]))
+     *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 2)]])
      *
      *   # Create a donut shaped polygon geometry with an interior ring
      *   polygon = QgsGeometry.fromPolygonXY([[QgsPointXY(1, 2), QgsPointXY(5, 2), QgsPointXY(5, 10), QgsPointXY(1, 10), QgsPointXY(1, 2)],
@@ -435,7 +433,7 @@ class CORE_EXPORT QgsGeometry
      * Compares the geometry with another geometry using GEOS.
      *
      * This method performs a slow, topological check, where geometries
-     * are considered equal if all of the their component edges overlap. E.g.
+     * are considered equal if all of their component edges overlap. E.g.
      * lines with the same vertex locations but opposite direction will be
      * considered equal by this method.
      *
@@ -490,8 +488,24 @@ class CORE_EXPORT QgsGeometry
      * celestial body).
      *
      * \see length()
+     * \see area3D()
      */
     double area() const;
+
+    /**
+     * Returns the 3-dimensional surface area of the geometry.
+     *
+     * \warning QgsGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics.
+     *
+     * \warning This method assumes the horizontal and vertical coordinates are in the same unit.
+     *
+     * \throws QgsInvalidArgumentException if the area cannot be calculated.
+     * \see area()
+     *
+     * \since QGIS 4.0
+     */
+    double area3D() const SIP_THROW( QgsInvalidArgumentException );
 
     /**
      * Returns the planar, 2-dimensional length of geometry.
@@ -519,7 +533,7 @@ class CORE_EXPORT QgsGeometry
 
 #ifndef SIP_RUN
 
-    // TODO QGIS 4: consider renaming vertices_begin, vertices_end, parts_begin, parts_end, etc
+    // TODO QGIS 5: consider renaming vertices_begin, vertices_end, parts_begin, parts_end, etc
     // to camelCase
 
     /**
@@ -623,7 +637,7 @@ class CORE_EXPORT QgsGeometry
      *   # parts can be modified during the iteration
      *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
      *   for part in geometry.parts():
-     *       part.transform(ct)
+     *       part.transform(ct=QgsCoordinateTransform()) # Dummy transform
      *
      *   # part iteration can also be combined with vertex iteration
      *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
@@ -851,15 +865,16 @@ class CORE_EXPORT QgsGeometry
     bool moveVertex( const QgsPoint &p, int atVertex );
 
     /**
-     * Deletes the vertex at the given position number and item
-     * (first number is index 0)
-     * \returns FALSE if atVertex does not correspond to a valid vertex
-     * on this geometry (including if this geometry is a Point),
-     * or if the number of remaining vertices in the linestring
-     * would be less than two.
-     * It is up to the caller to distinguish between
-     * these error conditions.  (Or maybe we add another method to this
-     * object to help make the distinction?)
+     * Deletes the vertex at the given position number and item (first number is index 0)
+     *
+     * For Point geometries, this clears the geometry.
+     * For MultiPoint geometries, this removes the point geometry at the specified index.
+     * For other geometry types, this removes the vertex at the specified index.
+     * If the removal of the vertex would result in an invalid geometry (e.g. a LineString with less than 2 vertices),
+     * the geometry is cleared instead.
+     *
+     * \returns FALSE if atVertex does not correspond to a valid vertex on this geometry or if the geometry is null,
+     * TRUE if the vertex was successfully deleted or the geometry was cleared.
      */
     bool deleteVertex( int atVertex );
 
@@ -943,7 +958,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPointsXY ) SIP_DEPRECATED;
 
@@ -961,7 +976,7 @@ class CORE_EXPORT QgsGeometry
      * \param points points describing part to add
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_PYNAME( addPoints ) SIP_DEPRECATED;
 
@@ -979,7 +994,7 @@ class CORE_EXPORT QgsGeometry
      * \param part part to add (ownership is transferred)
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
+     * \deprecated QGIS 3.38. Will be removed in QGIS 5.0. Use addPartV2 which accepts Qgis::WkbType geometry type instead of Qgis::GeometryType.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part SIP_TRANSFER, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) SIP_DEPRECATED;
 
@@ -1054,7 +1069,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \param splitFeature Set to TRUE if you want to split a feature, otherwise set to FALSE to split parts
      * \returns Qgis::GeometryOperationResult a result code: success or reason of failure
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED Qgis::GeometryOperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints, bool splitFeature = true ) SIP_SKIP;
 
@@ -1084,8 +1099,8 @@ class CORE_EXPORT QgsGeometry
 
     /*
      This SIP code is to support overloaded methods of splitGeometry.
-     When the deprecated method is removed in QGIS 4.0 this code can be dropped
-     TODO QGIS 4 remove MethodCode
+     When the deprecated method is removed in QGIS 5.0 this code can be dropped
+     TODO QGIS 5 remove MethodCode
     */
 #ifdef SIP_RUN
 
@@ -1164,13 +1179,13 @@ class CORE_EXPORT QgsGeometry
         else
         {
           sipIsErr = 1;
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Could not convert first argument to a list of QgsPoint or QgsPointXY." ).toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Could not convert first argument to a list of QgsPoint or QgsPointXY."_s.toUtf8().constData() );
         }
       }
       else
       {
         sipIsErr = 1;
-        PyErr_SetString( PyExc_TypeError, QStringLiteral( "First argument is not a list of points or is empty." ).toUtf8().constData() );
+        PyErr_SetString( PyExc_TypeError, u"First argument is not a list of points or is empty."_s.toUtf8().constData() );
       }
     }
     % End
@@ -2156,12 +2171,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::GeometryType type = sipCpp->type();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Cannot generate points inside a null geometry." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Cannot generate points inside a null geometry."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( type != Qgis::GeometryType::Polygon )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "Cannot generate points inside a %1 geometry. Only Polygon types are permitted." ).arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"Cannot generate points inside a %1 geometry. Only Polygon types are permitted."_s.arg( QgsWkbTypes::displayString( sipCpp->wkbType() ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2204,13 +2219,13 @@ class CORE_EXPORT QgsGeometry
     % MethodCode
     QString str;
     if ( sipCpp->isNull() )
-      str = QStringLiteral( "<QgsGeometry: null>" );
+      str = u"<QgsGeometry: null>"_s;
     else
     {
       QString wkt = sipCpp->asWkt();
       if ( wkt.length() > 1000 )
-        wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-      str = QStringLiteral( "<QgsGeometry: %1>" ).arg( wkt );
+        wkt = wkt.left( 1000 ) + u"..."_s;
+      str = u"<QgsGeometry: %1>"_s.arg( wkt );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
@@ -2302,7 +2317,7 @@ class CORE_EXPORT QgsGeometry
     % MethodCode
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a point." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a point."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2310,7 +2325,7 @@ class CORE_EXPORT QgsGeometry
       const QgsAbstractGeometry *geom = sipCpp->constGet();
       if ( QgsWkbTypes::flatType( geom->simplifiedTypeRef()->wkbType() ) != Qgis::WkbType::Point )
       {
-        PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a point. Only Point types are permitted." ).arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
+        PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a point. Only Point types are permitted."_s.arg( QgsWkbTypes::displayString( geom->wkbType() ) ).toUtf8().constData() );
         sipIsErr = 1;
       }
       else
@@ -2350,12 +2365,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polyline." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polyline."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a polyline. Only single line or curve types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2395,12 +2410,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a polygon." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a polygon."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a polygon. Only single polygon or curve polygon types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2438,12 +2453,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipoint." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipoint."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Point || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multipoint. Only multipoint types are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2483,12 +2498,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multilinestring." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multilinestring."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Line || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multilinestring. Only multi linestring or curves are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2528,12 +2543,12 @@ class CORE_EXPORT QgsGeometry
     const Qgis::WkbType type = sipCpp->wkbType();
     if ( sipCpp->isNull() )
     {
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Null geometry cannot be converted to a multipolygon." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Null geometry cannot be converted to a multipolygon."_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else if ( QgsWkbTypes::geometryType( type ) != Qgis::GeometryType::Polygon || !QgsWkbTypes::isMultiType( type ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted." ).arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"%1 geometry cannot be converted to a multipolygon. Only multi polygon or curves are permitted."_s.arg( QgsWkbTypes::displayString( type ) ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -2770,7 +2785,7 @@ class CORE_EXPORT QgsGeometry
     {
       public:
         Error()
-          : mMessage( QStringLiteral( "none" ) )
+          : mMessage( u"none"_s )
         {}
 
         explicit Error( const QString &m )
@@ -2800,7 +2815,7 @@ class CORE_EXPORT QgsGeometry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsGeometry.Error: %1>" ).arg( sipCpp->what() );
+        QString str = u"<QgsGeometry.Error: %1>"_s.arg( sipCpp->what() );
         sipRes = PyUnicode_FromString( str.toUtf8().data() );
         % End
 #endif
@@ -3201,18 +3216,14 @@ class CORE_EXPORT QgsGeometry
      * Privatly used in chamfer/fillet functions
      * \note not available in Python bindings
      */
-    enum ChamferFilletOperationType : int SIP_SKIP
+    enum class ChamferFilletOperationType : int SIP_SKIP
     {
       Chamfer = 1,
       Fillet,
     };
-
-    /**
-     * Returns string version for the enum \a op else returns 'unknown'.
-     * \param op the enum to translate to string
-     * \since QGIS 4.0
-     */
-    static QString chamferFilletOperationToString( ChamferFilletOperationType op ) SIP_SKIP;
+#ifndef SIP_RUN
+    Q_ENUM( ChamferFilletOperationType )
+#endif
 
     /**
      * Creates a fillet (rounded corner) at the specified vertex.

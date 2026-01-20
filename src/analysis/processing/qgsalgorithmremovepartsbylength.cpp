@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsalgorithmremovepartsbylength.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurve.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 
 QString QgsRemovePartsByLengthAlgorithm::name() const
 {
-  return QStringLiteral( "removepartsbylength" );
+  return u"removepartsbylength"_s;
 }
 
 QString QgsRemovePartsByLengthAlgorithm::displayName() const
@@ -43,7 +44,7 @@ QString QgsRemovePartsByLengthAlgorithm::group() const
 
 QString QgsRemovePartsByLengthAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsRemovePartsByLengthAlgorithm::outputName() const
@@ -90,19 +91,19 @@ Qgis::ProcessingFeatureSourceFlags QgsRemovePartsByLengthAlgorithm::sourceFlags(
 
 void QgsRemovePartsByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance > minLength = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with lengths less than" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto minLength = std::make_unique< QgsProcessingParameterDistance >( u"MIN_LENGTH"_s, QObject::tr( "Remove parts with lengths less than" ), 0.0, u"INPUT"_s, false, 0 );
   minLength->setIsDynamic( true );
-  minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_LENGTH" ), QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
-  minLength->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  minLength->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_LENGTH"_s, QObject::tr( "Remove parts with length less than" ), QgsPropertyDefinition::DoublePositive ) );
+  minLength->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( minLength.release() );
 }
 
 bool QgsRemovePartsByLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMinLength = parameterAsDouble( parameters, QStringLiteral( "MIN_LENGTH" ), context );
-  mDynamicMinLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MIN_LENGTH" ) );
+  mMinLength = parameterAsDouble( parameters, u"MIN_LENGTH"_s, context );
+  mDynamicMinLength = QgsProcessingParameters::isDynamic( parameters, u"MIN_LENGTH"_s );
   if ( mDynamicMinLength )
-    mMinLengthProperty = parameters.value( QStringLiteral( "MIN_LENGTH" ) ).value< QgsProperty >();
+    mMinLengthProperty = parameters.value( u"MIN_LENGTH"_s ).value< QgsProperty >();
 
   return true;
 }
@@ -120,21 +121,20 @@ QgsFeatureList QgsRemovePartsByLengthAlgorithm::processFeature( const QgsFeature
     QgsGeometry outputGeometry;
     if ( const QgsGeometryCollection *inputCollection = qgsgeometry_cast< const QgsGeometryCollection * >( geometry.constGet() ) )
     {
-      std::unique_ptr< QgsAbstractGeometry> filteredGeometry( geometry.constGet()->createEmptyWithSameType() );
-      QgsGeometryCollection *collection = qgsgeometry_cast< QgsGeometryCollection * >( filteredGeometry.get() );
+      std::unique_ptr< QgsGeometryCollection > filteredGeometry( inputCollection->createEmptyWithSameType() );
       const int size = inputCollection->numGeometries();
-      collection->reserve( size );
+      filteredGeometry->reserve( size );
       for ( int i = 0; i < size; ++i )
       {
         if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( inputCollection->geometryN( i ) ) )
         {
           if ( curve->length() >= minLength )
           {
-            collection->addGeometry( curve->clone() );
+            filteredGeometry->addGeometry( curve->clone() );
           }
         }
       }
-      if ( collection->numGeometries() == 0 )
+      if ( filteredGeometry->numGeometries() == 0 )
       {
         // skip empty features
         return {};

@@ -13,28 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptooloffsetcurve.h"
+
+#include "qgisapp.h"
+#include "qgsavoidintersectionsoperation.h"
+#include "qgsdoublespinbox.h"
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssnapindicator.h"
+#include "qgssnappingutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+
 #include <QGraphicsProxyWidget>
 #include <QGridLayout>
 #include <QLabel>
 
-#include "qgsavoidintersectionsoperation.h"
-#include "qgsdoublespinbox.h"
-#include "qgsfeatureiterator.h"
-#include "qgsmaptooloffsetcurve.h"
 #include "moc_qgsmaptooloffsetcurve.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsrubberband.h"
-#include "qgssnappingutils.h"
-#include "qgsvectorlayer.h"
-#include "qgssnapindicator.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgssettingsentryimpl.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
-#include "qgslogger.h"
-#include "qgsvectorlayerutils.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
@@ -109,7 +111,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
         const bool hasM = QgsWkbTypes::hasZ( mSourceLayer->wkbType() );
         if ( hasZ || hasM )
         {
-          emit messageEmitted( QStringLiteral( "layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool." ).arg( mSourceLayer->name(), hasZ ? QStringLiteral( "Z" ) : QString(), hasZ && hasM ? QStringLiteral( "/" ) : QString(), hasM ? QStringLiteral( "M" ) : QString() ), Qgis::MessageLevel::Warning );
+          emit messageEmitted( u"layer %1 has %2%3%4 geometry. %2%3%4 values be set to 0 when using offset tool."_s.arg( mSourceLayer->name(), hasZ ? u"Z"_s : QString(), hasZ && hasM ? u"/"_s : QString(), hasM ? u"M"_s : QString() ), Qgis::MessageLevel::Warning );
         }
       }
     }
@@ -410,7 +412,7 @@ void QgsMapToolOffsetCurve::applyOffset( double offset, Qt::KeyboardModifiers mo
   else
   {
     destLayer->destroyEditCommand();
-    emit messageEmitted( QStringLiteral( "Could not apply offset" ), Qgis::MessageLevel::Critical );
+    emit messageEmitted( u"Could not apply offset"_s, Qgis::MessageLevel::Critical );
   }
 
   deleteRubberBandAndGeometry();

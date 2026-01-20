@@ -27,6 +27,7 @@ set(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscustomization.cpp
   qgsdatumtransformtablewidget.cpp
+  qgscontributorsmapcanvas.cpp
   qgsdevtoolspanelwidget.cpp
   qgsdiscoverrelationsdialog.cpp
   qgsdxfexportdialog.cpp
@@ -79,6 +80,7 @@ set(QGIS_APP_SRCS
   qgsmaptooladdfeature.cpp
   qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolchamferfillet.cpp
   qgsmaptoolfillring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptooldeletering.cpp
@@ -91,6 +93,7 @@ set(QGIS_APP_SRCS
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmeasurebearing.cpp
   qgsmaptoolmovefeature.cpp
+  qgsmaptoolfeaturearray.cpp
   qgsmaptooloffsetcurve.cpp
   qgsmaptooloffsetpointsymbol.cpp
   qgsmaptoolpointsymbol.cpp
@@ -168,11 +171,6 @@ set(QGIS_APP_SRCS
   browser/qgsinbuiltdataitemproviders.cpp
 
   devtools/qgsappdevtoolutils.cpp
-  devtools/qgsdevtoolsmodelnode.cpp
-  devtools/networklogger/qgsnetworklogger.cpp
-  devtools/networklogger/qgsnetworkloggernode.cpp
-  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
-  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
   devtools/documentation/qgsdocumentationpanelwidget.cpp
@@ -310,6 +308,17 @@ set(QGIS_APP_SRCS
   vector/qgsvectorelevationpropertieswidget.cpp
 )
 
+set(APP_DWG_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND APP_DWG_COMPILE_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND APP_DWG_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (APP_DWG_COMPILE_OPTIONS)
+  set_source_files_properties(dwg/qgsdwgimportdialog.cpp dwg/qgsdwgimporter.cpp PROPERTIES COMPILE_OPTIONS "${APP_DWG_COMPILE_OPTIONS}")
+endif()
+
 if (WITH_SPATIALITE)
   set(QGIS_APP_SRCS
     ${QGIS_APP_SRCS}
@@ -358,6 +367,7 @@ if (WITH_3D)
     3d/qgs3dmodelsourcelineedit.cpp
     3d/qgs3dnavigationwidget.cpp
     3d/qgs3doptions.cpp
+    3d/qgsannotationlayer3drendererwidget.cpp
     3d/qgsgoochmaterialwidget.cpp
     3d/qgslightswidget.cpp
     3d/qgsline3dsymbolwidget.cpp
@@ -468,7 +478,7 @@ if (ANDROID)
 else()
   add_executable(qgis WIN32 ${QGIS_APPMAIN_SRCS})
 
-  if(WIN32 AND BUILD_WITH_QT6)
+  if(WIN32)
     qt_disable_unicode_defines(qgis)
   endif()
 
@@ -507,7 +517,6 @@ target_include_directories(qgis_app PUBLIC
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/decorations
   ${CMAKE_SOURCE_DIR}/src/app/devtools
-  ${CMAKE_SOURCE_DIR}/src/app/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/app/georeferencer
   ${CMAKE_SOURCE_DIR}/src/app/labeling
   ${CMAKE_SOURCE_DIR}/src/app/layout
@@ -551,7 +560,6 @@ target_link_libraries(qgis_app
   ${QWT_LIBRARY}
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::UiTools
-  ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
   ${QGIS_RC_LIBS}

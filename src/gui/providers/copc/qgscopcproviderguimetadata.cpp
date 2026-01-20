@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscopcproviderguimetadata.h"
+
+#include "qgsapplication.h"
 
 ///@cond PRIVATE
 
 QgsCopcProviderGuiMetadata::QgsCopcProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QStringLiteral( "copc" ) )
+  : QgsProviderGuiMetadata( u"copc"_s )
 {
 }
 

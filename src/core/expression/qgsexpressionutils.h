@@ -19,19 +19,20 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeature.h"
+#include <functional>
+
+#include "qgscoordinatereferencesystem.h"
 #include "qgsexpression.h"
-#include "qgsvariantutils.h"
+#include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsreferencedgeometry.h"
-#include "qgscoordinatereferencesystem.h"
+#include "qgsvariantutils.h"
 
 #include <QDate>
 #include <QDateTime>
-#include <QTime>
-#include <QThread>
 #include <QLocale>
-#include <functional>
+#include <QThread>
+#include <QTime>
 
 class QgsMapLayer;
 class QgsGradientColorRamp;
@@ -352,7 +353,7 @@ class CORE_EXPORT QgsExpressionUtils
         return value.value<QgsGeometry>();
 
       if ( !tolerant && parent )
-        parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
+        parent->setEvalErrorString( u"Cannot convert to geometry"_s );
       return QgsGeometry();
     }
 
@@ -362,7 +363,7 @@ class CORE_EXPORT QgsExpressionUtils
         return value.value<QgsFeature>();
 
       if ( parent )
-        parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );
+        parent->setEvalErrorString( u"Cannot convert to feature"_s );
       return 0;
     }
 
@@ -386,7 +387,7 @@ class CORE_EXPORT QgsExpressionUtils
         return value.value<QgsExpressionNode *>();
 
       if ( parent )
-        parent->setEvalErrorString( QStringLiteral( "Cannot convert to node" ) );
+        parent->setEvalErrorString( u"Cannot convert to node"_s );
       return nullptr;
     }
 

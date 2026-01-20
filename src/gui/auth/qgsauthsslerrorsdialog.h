@@ -18,11 +18,13 @@
 #ifndef QGSAUTHSSLERRORSDIALOG_H
 #define QGSAUTHSSLERRORSDIALOG_H
 
-#include <QDialog>
-#include <QSslError>
 #include "ui_qgsauthsslerrorsdialog.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDialog>
+#include <QSslError>
 
 class QNetworkReply;
 class QPushButton;

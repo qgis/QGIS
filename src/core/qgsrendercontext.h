@@ -18,26 +18,27 @@
 #ifndef QGSRENDERCONTEXT_H
 #define QGSRENDERCONTEXT_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QColor>
-#include <QPainter>
-#include <QPainterPath>
 #include <memory>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgslabelsink.h"
 #include "qgsmaptopixel.h"
 #include "qgsmapunitscale.h"
-#include "qgsrectangle.h"
-#include "qgsvectorsimplifymethod.h"
-#include "qgsdistancearea.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgspathresolver.h"
-#include "qgstemporalrangeobject.h"
 #include "qgsmaskrendersettings.h"
+#include "qgspathresolver.h"
+#include "qgsrectangle.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsvectorsimplifymethod.h"
+
+#include <QColor>
+#include <QPainter>
+#include <QPainterPath>
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -65,7 +66,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     ~QgsRenderContext() override;
 
     QgsRenderContext( const QgsRenderContext &rh );
+    SIP_SKIP QgsRenderContext( QgsRenderContext &&rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
+    QgsRenderContext &operator=( QgsRenderContext &&rh );
 
     /**
      * Set combination of flags that will be used for rendering.
@@ -162,7 +165,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     QPainter *maskPainter( int id = 0 ) { return mMaskPainter.value( id, nullptr ); }
 
-    // TODO QGIS 4 : remove the V2 from method name
+    // TODO QGIS 5 : remove the V2 from method name
 
     /**
      * When rendering a map layer in a second pass (for selective masking),

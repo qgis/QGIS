@@ -18,9 +18,9 @@
 #ifndef QGSPLOTTOOLXAXISZOOM_H
 #define QGSPLOTTOOLXAXISZOOM_H
 
-#include "qgsplottoolzoom.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsplottoolzoom.h"
 
 // we probably want to generalize this in future to allow for y/other axis constrained
 // zooms, so let's not get locked to stable api...

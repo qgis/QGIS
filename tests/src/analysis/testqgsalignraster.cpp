@@ -13,22 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <gdal.h>
 
+#include "qgis.h"
 #include "qgsalignraster.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgis.h"
+#include "qgstest.h"
 
 #include <QDir>
 
-#include <gdal.h>
-
-
 static QString _tempFile( const QString &name )
 {
-  return QStringLiteral( "%1/aligntest-%2.tif" ).arg( QDir::tempPath(), name );
+  return u"%1/aligntest-%2.tif"_s.arg( QDir::tempPath(), name );
 }
 
 
@@ -38,7 +36,7 @@ class TestAlignRaster : public QgsTest
 
   public:
     TestAlignRaster()
-      : QgsTest( QStringLiteral( "Align Raster Tests" ) )
+      : QgsTest( u"Align Raster Tests"_s )
     {}
 
     QString SRC_FILE;
@@ -69,7 +67,7 @@ class TestAlignRaster : public QgsTest
 
     void testClip()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "clip" ) ) );
+      const QString tmpFile( _tempFile( u"clip"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -90,7 +88,7 @@ class TestAlignRaster : public QgsTest
 
     void testClipOutside()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "clip-outside" ) ) );
+      const QString tmpFile( _tempFile( u"clip-outside"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -104,7 +102,7 @@ class TestAlignRaster : public QgsTest
 
     void testChangeGridOffsetNN()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "change-grid-offset-nn" ) ) );
+      const QString tmpFile( _tempFile( u"change-grid-offset-nn"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -128,7 +126,7 @@ class TestAlignRaster : public QgsTest
 
     void testChangeGridOffsetBilinear()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "change-grid-offset-bilinear" ) ) );
+      const QString tmpFile( _tempFile( u"change-grid-offset-bilinear"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -151,7 +149,7 @@ class TestAlignRaster : public QgsTest
 
     void testSmallerCellSize()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "smaller-cell-size" ) ) );
+      const QString tmpFile( _tempFile( u"smaller-cell-size"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -173,7 +171,7 @@ class TestAlignRaster : public QgsTest
 
     void testBiggerCellSize()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "bigger-cell-size" ) ) );
+      const QString tmpFile( _tempFile( u"bigger-cell-size"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -194,7 +192,7 @@ class TestAlignRaster : public QgsTest
 
     void testRescaleBiggerCellSize()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "rescale-bigger-cell-size" ) ) );
+      const QString tmpFile( _tempFile( u"rescale-bigger-cell-size"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -215,12 +213,12 @@ class TestAlignRaster : public QgsTest
 
     void testReprojectToOtherCRS()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "reproject-utm-47n" ) ) );
+      const QString tmpFile( _tempFile( u"reproject-utm-47n"_s ) );
 
       // reproject from WGS84 to UTM zone 47N
       // (the true UTM zone for this raster is 48N, but here it is
       // more obvious the different shape of the resulting raster)
-      const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:32647" ) );
+      const QgsCoordinateReferenceSystem destCRS( u"EPSG:32647"_s );
       QVERIFY( destCRS.isValid() );
 
       QgsAlignRaster align;

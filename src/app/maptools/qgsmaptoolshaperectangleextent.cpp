@@ -15,15 +15,18 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperectangleextent.h"
-#include "moc_qgsmaptoolshaperectangleextent.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include <memory>
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeRectangleExtentMetadata::TOOL_ID = QStringLiteral( "rectangle-from-extent" );
+#include "moc_qgsmaptoolshaperectangleextent.cpp"
+
+const QString QgsMapToolShapeRectangleExtentMetadata::TOOL_ID = u"rectangle-from-extent"_s;
 
 QString QgsMapToolShapeRectangleExtentMetadata::id() const
 {
@@ -37,7 +40,7 @@ QString QgsMapToolShapeRectangleExtentMetadata::name() const
 
 QIcon QgsMapToolShapeRectangleExtentMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRectangleExtent.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRectangleExtent.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRectangleExtentMetadata::category() const
@@ -95,7 +98,12 @@ void QgsMapToolShapeRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e, Qg
         const double angle = mPoints.at( 0 ).azimuth( point );
 
         mRectangle = QgsQuadrilateral::rectangleFromExtent( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
-        mTempRubberBand->setGeometry( mRectangle.toPolygon() );
+        const QgsGeometry newGeometry( mRectangle.toPolygon() );
+        if ( !newGeometry.isEmpty() )
+        {
+          mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+          setTransientGeometry( newGeometry );
+        }
       }
       break;
       default:

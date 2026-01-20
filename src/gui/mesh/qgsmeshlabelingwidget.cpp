@@ -13,18 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDialogButtonBox>
-#include <QDomElement>
-
 #include "qgsmeshlabelingwidget.h"
-#include "moc_qgsmeshlabelingwidget.cpp"
 
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgslabelinggui.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabeling.h"
 #include "qgsmeshlayerlabelprovider.h"
 #include "qgsproject.h"
-#include "qgsapplication.h"
+
+#include <QDialogButtonBox>
+#include <QDomElement>
+
+#include "moc_qgsmeshlabelingwidget.cpp"
 
 QgsMeshLabelingWidget::QgsMeshLabelingWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -35,9 +38,9 @@ QgsMeshLabelingWidget::QgsMeshLabelingWidget( QgsMeshLayer *layer, QgsMapCanvas 
 {
   setupUi( this );
 
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingNone.svg" ) ), tr( "No Labels" ), ModeNone );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Labels on Vertices" ), ModeVertices );
-  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Labels on Faces" ), ModeFaces );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingNone.svg"_s ), tr( "No Labels" ), ModeNone );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), tr( "Labels on Vertices" ), ModeVertices );
+  mLabelModeComboBox->addItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), tr( "Labels on Faces" ), ModeFaces );
 
   connect( mLabelModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMeshLabelingWidget::labelModeChanged );
   setLayer( layer );
@@ -173,7 +176,7 @@ void QgsMeshLabelingWidget::labelModeChanged( int index )
       QgsMeshLayerSimpleLabeling *labeling = dynamic_cast<QgsMeshLayerSimpleLabeling *>( mLayer->labeling() );
       if ( labeling )
       {
-        mSettings.reset( new QgsPalLayerSettings( labeling->settings() ) );
+        mSettings = std::make_unique<QgsPalLayerSettings>( labeling->settings() );
       }
       else
       {

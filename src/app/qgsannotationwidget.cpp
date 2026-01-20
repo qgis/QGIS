@@ -16,24 +16,25 @@
  ***************************************************************************/
 
 #include "qgsannotationwidget.h"
-#include "moc_qgsannotationwidget.cpp"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsannotation.h"
-#include "qgsstyle.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
-#include "qgssymbolselectordialog.h"
+
 #include "qgisapp.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgsannotation.h"
 #include "qgsdoublespinbox.h"
+#include "qgsfillsymbol.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsmarkersymbol.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
 
 #include <QColorDialog>
 
+#include "moc_qgsannotationwidget.cpp"
 
-const QgsSettingsEntryBool *QgsAnnotationWidget::settingLiveUpdate = new QgsSettingsEntryBool( QStringLiteral( "live-update" ), QgsSettingsTree::sTreeAnnotations, false, QObject::tr( "Whether the annotations are dynamically updated while they are edited" ) );
+const QgsSettingsEntryBool *QgsAnnotationWidget::settingLiveUpdate = new QgsSettingsEntryBool( u"live-update"_s, QgsSettingsTree::sTreeAnnotations, false, QObject::tr( "Whether the annotations are dynamically updated while they are edited" ) );
 
 
 QgsAnnotationWidget::QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )

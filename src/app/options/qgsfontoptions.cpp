@@ -13,14 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfontoptions.h"
-#include "moc_qgsfontoptions.cpp"
 
-#include "qgsbabelgpsdevice.h"
-#include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsbabelgpsdevice.h"
 #include "qgsfontmanager.h"
+#include "qgssettings.h"
 
 #include <QDir>
+
+#include "moc_qgsfontoptions.cpp"
 
 //
 // QgsFontOptionsWidget
@@ -103,7 +104,7 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
 
 QString QgsFontOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#fonts-options" );
+  return u"introduction/qgis_configuration.html#fonts-options"_s;
 }
 
 void QgsFontOptionsWidget::apply()
@@ -142,13 +143,13 @@ void QgsFontOptionsWidget::apply()
 // QgsFontOptionsFactory
 //
 QgsFontOptionsFactory::QgsFontOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon(), QStringLiteral( "fonts" ) )
+  : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon(), u"fonts"_s )
 {
 }
 
 QIcon QgsFontOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFonts.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconFonts.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsFontOptionsFactory::createWidget( QWidget *parent ) const
@@ -158,5 +159,5 @@ QgsOptionsPageWidget *QgsFontOptionsFactory::createWidget( QWidget *parent ) con
 
 QString QgsFontOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsPageComposer" );
+  return u"mOptionsPageComposer"_s;
 }

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dsymbolregistry.h"
+
 #include "qgsabstract3dsymbol.h"
 
 Qgs3DSymbolRegistry::Qgs3DSymbolRegistry()
@@ -47,11 +48,11 @@ QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::Ge
   switch ( type )
   {
     case Qgis::GeometryType::Point:
-      return createSymbol( QStringLiteral( "point" ) );
+      return createSymbol( u"point"_s );
     case Qgis::GeometryType::Line:
-      return createSymbol( QStringLiteral( "line" ) );
+      return createSymbol( u"line"_s );
     case Qgis::GeometryType::Polygon:
-      return createSymbol( QStringLiteral( "polygon" ) );
+      return createSymbol( u"polygon"_s );
     default:
       return nullptr;
   }
@@ -62,10 +63,11 @@ QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( QgsVectorLayer
   if ( !symbol )
     return nullptr;
 
-  if ( !mMetadata.contains( symbol->type() ) )
+  auto it = mMetadata.constFind( symbol->type() );
+  if ( it == mMetadata.constEnd() )
     return nullptr;
 
-  return mMetadata.value( symbol->type() )->createFeatureHandler( layer, symbol );
+  return it.value()->createFeatureHandler( layer, symbol );
 }
 
 Qgs3DSymbolAbstractMetadata *Qgs3DSymbolRegistry::symbolMetadata( const QString &type ) const

@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgswfssubsetstringeditor.h"
-#include "moc_qgswfssubsetstringeditor.cpp"
+
+#include "qgssqlstatement.h"
 #include "qgswfsprovider.h"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
-#include "qgssqlstatement.h"
+
+#include "moc_qgswfssubsetstringeditor.cpp"
 
 QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer *layer, QgsWFSProvider *provider, QWidget *parent, Qt::WindowFlags fl )
 {
@@ -119,7 +121,7 @@ QgsSubsetStringEditorInterface *QgsWfsSubsetStringEditor::create( QgsVectorLayer
   if ( !provider->geometryColumnName().isEmpty() )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( provider->geometryColumnName() ) );
-    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, u"geometry"_s );
   }
   fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );
 
@@ -192,7 +194,7 @@ void QgsWFSTableSelectedCallback::tableSelected( const QString &name )
   if ( !p.geometryColumnName().isEmpty() )
   {
     QString fieldName( fieldNamePrefix + QgsSQLStatement::quotedIdentifierIfNeeded( p.geometryColumnName() ) );
-    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, QStringLiteral( "geometry" ) );
+    fieldList << QgsSQLComposerDialog::PairNameType( fieldName, u"geometry"_s );
   }
   fieldList << QgsSQLComposerDialog::PairNameType( fieldNamePrefix + "*", QString() );
 

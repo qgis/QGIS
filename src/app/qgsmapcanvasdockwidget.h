@@ -17,11 +17,13 @@
 
 #include "ui_qgsmapcanvasdockwidgetbase.h"
 
-#include "qgspointxy.h"
-#include "qgis_app.h"
-#include <QWidgetAction>
-#include <QTimer>
 #include <memory>
+
+#include "qgis_app.h"
+#include "qgspointxy.h"
+
+#include <QTimer>
+#include <QWidgetAction>
 
 class QgsMapCanvas;
 class QgsScaleComboBox;

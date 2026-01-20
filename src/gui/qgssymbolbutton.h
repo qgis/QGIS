@@ -15,13 +15,14 @@
 #ifndef QGSSYMBOLBUTTON_H
 #define QGSSYMBOLBUTTON_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-#include <QToolButton>
 #include <QPointer>
-#include <memory>
+#include <QToolButton>
 
 class QgsMapCanvas;
 class QgsVectorLayer;
@@ -53,7 +54,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      * Use \a dialogTitle string to define the title to show in the symbol settings dialog.
      */
     QgsSymbolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
-    ~QgsSymbolButton();
+    ~QgsSymbolButton() override;
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
@@ -199,7 +200,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     /**
      * Returns TRUE if the widget adopts fixed size constraints.
-     * 
+     *
      * \since QGIS 4.0
      */
     bool fixedSizeConstraints() const;
@@ -277,10 +278,10 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     /**
      * Sets whether the widget adopts fixed size constraints.
-     * 
+     *
      * \since QGIS 4.0
      */
-    void setFixedSizeContraints( bool fixedSizeConstraints );
+    void setFixedSizeConstraints( bool fixedSizeConstraints );
 
   signals:
 
@@ -356,7 +357,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     bool mShowNull = false;
 
-    bool mFixedSizeContraints = true;
+    bool mFixedSizeConstraints = true;
 
     std::unique_ptr<QgsSymbol> mDefaultSymbol;
 

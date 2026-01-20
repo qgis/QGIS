@@ -38,14 +38,14 @@ std::string HdfFile::filePath() const
 }
 
 HdfGroup::HdfGroup( HdfFile::SharedHandle file, const std::string &path )
-  : mFile( file )
 {
   d = std::make_shared< Handle >( H5Gopen( file->id, path.c_str() ) );
+  mFile = std::move( file );
 }
 
 HdfGroup::HdfGroup( std::shared_ptr<Handle> handle, HdfFile::SharedHandle file )
-  : mFile( file )
-  , d( handle )
+  : mFile( std::move( file ) )
+  , d( std::move( handle ) )
 {
 }
 
@@ -89,7 +89,8 @@ std::vector<std::string> HdfGroup::objects( H5G_obj_t type ) const
 }
 
 HdfAttribute::HdfAttribute( hid_t obj_id, const std::string &attr_name, HdfDataType type )
-  : mType( type )
+  : m_objId( obj_id )
+  , mType( type )
 {
   std::vector<hsize_t> dimsSingle = {1};
   HdfDataspace dsc( dimsSingle );
@@ -192,7 +193,17 @@ hid_t HdfDataset::id() const { return d->id; }
 std::vector<hsize_t> HdfDataset::dims() const
 {
   hid_t sid = H5Dget_space( d->id );
-  std::vector<hsize_t> ret( static_cast<size_t>( H5Sget_simple_extent_ndims( sid ) ) );
+  if ( sid == H5I_INVALID_HID )
+    return std::vector<hsize_t>();
+
+  int ndims = H5Sget_simple_extent_ndims( sid );
+  if ( ndims < 0 )
+  {
+    H5Sclose( sid );
+    return std::vector<hsize_t>();
+  }
+
+  std::vector<hsize_t> ret( static_cast<size_t>( ndims ) );
   H5Sget_simple_extent_dims( sid, ret.data(), nullptr );
   H5Sclose( sid );
   return ret;
@@ -217,13 +228,13 @@ H5T_class_t HdfDataset::type() const
   }
 }
 
-std::vector<uchar> HdfDataset::readArrayUint8( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const { return readArray<uchar>( H5T_NATIVE_UINT8, offsets, counts ); }
+std::vector<uchar> HdfDataset::readArrayUint8( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const { return readArray<uchar>( H5T_NATIVE_UINT8, offsets, counts ); }
 
-std::vector<float> HdfDataset::readArray( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const { return readArray<float>( H5T_NATIVE_FLOAT, offsets, counts ); }
+std::vector<float> HdfDataset::readArray( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const { return readArray<float>( H5T_NATIVE_FLOAT, offsets, counts ); }
 
-std::vector<double> HdfDataset::readArrayDouble( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const { return readArray<double>( H5T_NATIVE_DOUBLE, offsets, counts ); }
+std::vector<double> HdfDataset::readArrayDouble( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const { return readArray<double>( H5T_NATIVE_DOUBLE, offsets, counts ); }
 
-std::vector<int> HdfDataset::readArrayInt( const std::vector<hsize_t> offsets, const std::vector<hsize_t> counts ) const { return readArray<int>( H5T_NATIVE_INT, offsets, counts ); }
+std::vector<int> HdfDataset::readArrayInt( const std::vector<hsize_t> &offsets, const std::vector<hsize_t> &counts ) const { return readArray<int>( H5T_NATIVE_INT, offsets, counts ); }
 
 std::vector<uchar> HdfDataset::readArrayUint8() const { return readArray<uchar>( H5T_NATIVE_UINT8 ); }
 

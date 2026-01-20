@@ -16,10 +16,11 @@
 #ifndef QGSCUSTOMLAYERORDERWIDGET_H
 #define QGSCUSTOMLAYERORDERWIDGET_H
 
-#include <QWidget>
 #include "qgis.h"
-#include <QAbstractListModel>
 #include "qgis_gui.h"
+
+#include <QAbstractListModel>
+#include <QWidget>
 
 class CustomLayerOrderModel;
 class QgsLayerTreeMapCanvasBridge;

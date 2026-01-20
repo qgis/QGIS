@@ -14,15 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrlayermetadataprovider.h"
+
+#include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsfeedback.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsfeedback.h"
-#include "qgsabstractdatabaseproviderconnection.h"
-
 
 QString QgsOgrLayerMetadataProvider::id() const
 {
-  return QStringLiteral( "ogr" );
+  return u"ogr"_s;
 }
 
 QgsLayerMetadataSearchResults QgsOgrLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const

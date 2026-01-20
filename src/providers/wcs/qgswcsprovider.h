@@ -22,27 +22,26 @@
 #ifndef QGSWCSPROVIDER_H
 #define QGSWCSPROVIDER_H
 
-#include "qgserror.h"
-#include "qgswcscapabilities.h"
-#include "qgsauthmanager.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsgdalproviderbase.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatetransform.h"
-#include "qgsogrutils.h"
 #include "qgsapplication.h"
+#include "qgsauthmanager.h"
 #include "qgsauthorizationsettings.h"
-
+#include "qgscoordinatetransform.h"
+#include "qgserror.h"
+#include "qgsgdalproviderbase.h"
+#include "qgsogrutils.h"
 #include "qgsprovidermetadata.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrectangle.h"
+#include "qgswcscapabilities.h"
 
-#include <QString>
-#include <QStringList>
 #include <QDomElement>
 #include <QHash>
 #include <QMap>
 #include <QNetworkRequest>
-#include <QVector>
+#include <QString>
+#include <QStringList>
 #include <QUrl>
+#include <QVector>
 
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;
@@ -119,11 +118,6 @@ class QgsWcsProvider final : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRectangle extent() const override;
 
     bool isValid() const override;
-
-    /**
-     * Returns the base url
-     */
-    virtual QString baseUrl() const;
 
     //! Gets WCS version string
     QString wcsVersion();

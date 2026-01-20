@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmovelabel.h"
-#include "moc_qgsmaptoolmovelabel.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
+
 #include "qgisapp.h"
-#include "qgsmessagebar.h"
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsvectorlayerlabeling.h"
 #include "qgscallout.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
+#include "qgsrubberband.h"
 #include "qgsstatusbar.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include "moc_qgsmaptoolmovelabel.cpp"
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -473,15 +475,17 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           double lineAnchorPercent = 0.0;
           if ( feature.geometry().type() == Qgis::GeometryType::Polygon )
           {
-            QgsGeometry boundary( feature.geometry().constGet()->boundary() );
-            lineAnchorPercent = boundary.lineLocatePoint( releaseCoordsGeometry ) / boundary.length();
+            const QgsGeometry boundary( feature.geometry().constGet()->boundary() );
+            const double boundaryLength = boundary.length();
+            lineAnchorPercent = boundaryLength > 0 ? boundary.lineLocatePoint( releaseCoordsGeometry ) / boundaryLength : 0.5;
           }
           else
           {
-            lineAnchorPercent = feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / feature.geometry().length();
+            const double length = feature.geometry().length();
+            lineAnchorPercent = length > 0 ? feature.geometry().lineLocatePoint( releaseCoordsGeometry ) / length : 0.5;
           }
 
-          vlayer->beginEditCommand( tr( "Moved curved label offset" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+          vlayer->beginEditCommand( tr( "Moved curved label offset" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
           bool success = false;
 
           if ( mCurrentLabel.settings.dataDefinedProperties().isActive( QgsPalLayerSettings::Property::LineAnchorPercent ) )
@@ -542,7 +546,7 @@ void QgsMapToolMoveLabel::cadCanvasPressEvent( QgsMapMouseEvent *e )
           }
 
           if ( !isCalloutMove )
-            vlayer->beginEditCommand( tr( "Moved label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+            vlayer->beginEditCommand( tr( "Moved label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
           else
             vlayer->beginEditCommand( tr( "Moved callout" ) );
 
@@ -754,7 +758,7 @@ void QgsMapToolMoveLabel::keyReleaseEvent( QKeyEvent *e )
           }
           else
           {
-            vlayer->beginEditCommand( !isCalloutMove ? tr( "Delete Label Position" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) : tr( "Delete Callout Position" ) );
+            vlayer->beginEditCommand( !isCalloutMove ? tr( "Delete Label Position" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) : tr( "Delete Callout Position" ) );
             bool success = vlayer->changeAttributeValue( featureId, xCol, QVariant() );
             success = vlayer->changeAttributeValue( featureId, yCol, QVariant() ) && success;
             if ( !success )
@@ -873,6 +877,8 @@ bool QgsMapToolMoveLabel::currentCalloutDataDefinedPosition( double &x, bool &xS
 QgsPointXY QgsMapToolMoveLabel::snapCalloutPointToCommonAngle( const QgsPointXY &mapPoint, bool showStatusMessage ) const
 {
   const int index = mCurrentCalloutMoveOrigin ? 0 : 1;
+  if ( !mCalloutMoveRubberBand )
+    return mapPoint;
 
   const QgsPointXY start = *mCalloutMoveRubberBand->getPoint( 0, index == 0 ? 1 : 0 );
   const double cursorDistance = start.distance( mapPoint );

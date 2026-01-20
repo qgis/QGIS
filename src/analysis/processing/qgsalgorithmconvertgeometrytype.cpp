@@ -21,7 +21,7 @@
 
 QString QgsConvertGeometryTypeAlgorithm::name() const
 {
-  return QStringLiteral( "convertgeometrytype" );
+  return u"convertgeometrytype"_s;
 }
 
 QString QgsConvertGeometryTypeAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsConvertGeometryTypeAlgorithm::group() const
 
 QString QgsConvertGeometryTypeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsConvertGeometryTypeAlgorithm::shortHelpString() const
@@ -64,7 +64,7 @@ QgsConvertGeometryTypeAlgorithm *QgsConvertGeometryTypeAlgorithm::createInstance
 
 void QgsConvertGeometryTypeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
   QStringList geometryTypes = QStringList() << QObject::tr( "Centroids" )
                                             << QObject::tr( "Nodes" )
@@ -72,19 +72,19 @@ void QgsConvertGeometryTypeAlgorithm::initAlgorithm( const QVariantMap & )
                                             << QObject::tr( "Multilinestrings" )
                                             << QObject::tr( "Polygons" );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TYPE" ), QObject::tr( "New geometry type" ), geometryTypes ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Converted" ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"TYPE"_s, QObject::tr( "New geometry type" ), geometryTypes ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Converted" ) ) );
 }
 
 QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
   {
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
   }
 
-  const int typeIndex = parameterAsEnum( parameters, QStringLiteral( "TYPE" ), context );
+  const int typeIndex = parameterAsEnum( parameters, u"TYPE"_s, context );
   Qgis::WkbType outputWkbType = Qgis::WkbType::Unknown;
 
   if ( typeIndex == 0 ) // centroids
@@ -123,10 +123,10 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
   }
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), outputWkbType, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, source->fields(), outputWkbType, source->sourceCrs() ) );
   if ( !sink )
   {
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
   }
 
   QgsFeatureIterator features = source->getFeatures();
@@ -142,7 +142,7 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
     if ( !f.hasGeometry() )
     {
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
     }
     else
     {
@@ -153,7 +153,7 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
         feat.setGeometry( g );
         feat.setAttributes( f.attributes() );
         if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       }
     }
 
@@ -164,7 +164,7 @@ QVariantMap QgsConvertGeometryTypeAlgorithm::processAlgorithm( const QVariantMap
   sink->finalize();
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), dest );
+  results.insert( u"OUTPUT"_s, dest );
   return results;
 }
 

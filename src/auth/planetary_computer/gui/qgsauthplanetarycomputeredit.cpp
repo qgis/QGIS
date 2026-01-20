@@ -14,14 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthplanetarycomputeredit.h"
-#include "moc_qgsauthplanetarycomputeredit.cpp"
 #include "ui_qgsauthplanetarycomputeredit.h"
+#include "qgsauthplanetarycomputeredit.h"
 
+#include "moc_qgsauthplanetarycomputeredit.cpp"
 
-const QString QgsAuthPlanetaryComputerEdit::REQUEST_URL_TEMPLATE = QStringLiteral( "https://login.microsoftonline.com/%1/oauth2/v2.0/authorize" );
-const QString QgsAuthPlanetaryComputerEdit::TOKEN_URL_TEMPLATE = QStringLiteral( "https://login.microsoftonline.com/%1/oauth2/v2.0/token" );
-const QString QgsAuthPlanetaryComputerEdit::SCOPE = QStringLiteral( "https://geocatalog.spatio.azure.com/.default" );
+const QString QgsAuthPlanetaryComputerEdit::REQUEST_URL_TEMPLATE = u"https://login.microsoftonline.com/%1/oauth2/v2.0/authorize"_s;
+const QString QgsAuthPlanetaryComputerEdit::TOKEN_URL_TEMPLATE = u"https://login.microsoftonline.com/%1/oauth2/v2.0/token"_s;
+const QString QgsAuthPlanetaryComputerEdit::SCOPE = u"https://geocatalog.spatio.azure.com/.default"_s;
 
 QgsAuthPlanetaryComputerEdit::QgsAuthPlanetaryComputerEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
@@ -66,8 +66,8 @@ QgsStringMap QgsAuthPlanetaryComputerEdit::configMap() const
 
   if ( isPro )
   {
-    const QString requestUrl = REQUEST_URL_TEMPLATE.arg( tenantId.isEmpty() ? QStringLiteral( "organizations" ) : tenantId );
-    const QString tokenUrl = TOKEN_URL_TEMPLATE.arg( tenantId.isEmpty() ? QStringLiteral( "organizations" ) : tenantId );
+    const QString requestUrl = REQUEST_URL_TEMPLATE.arg( tenantId.isEmpty() ? u"organizations"_s : tenantId );
+    const QString tokenUrl = TOKEN_URL_TEMPLATE.arg( tenantId.isEmpty() ? u"organizations"_s : tenantId );
     const QString json = QStringLiteral(
                            "{"
                            "\"accessMethod\": 0,"
@@ -85,7 +85,7 @@ QgsStringMap QgsAuthPlanetaryComputerEdit::configMap() const
                            "\"password\": null,"
                            "\"persistToken\": false,"
                            "\"queryPairs\": {},"
-                           "\"redirectHost\": \"127.0.0.1\","
+                           "\"redirectHost\": \"localhost\","
                            "\"redirectPort\": 7070,"
                            "\"redirectUrl\": null,"
                            "\"refreshTokenUrl\": null,"
@@ -100,15 +100,15 @@ QgsStringMap QgsAuthPlanetaryComputerEdit::configMap() const
                            .arg( clientId, requestUrl, tokenUrl, SCOPE );
 
 
-    config.insert( QStringLiteral( "oauth2config" ), json );
-    config.insert( QStringLiteral( "serverType" ), QStringLiteral( "pro" ) );
-    config.insert( QStringLiteral( "clientId" ), clientId );
-    config.insert( QStringLiteral( "rootUrl" ), rootUrl );
-    config.insert( QStringLiteral( "tenantId" ), tenantId );
+    config.insert( u"oauth2config"_s, json );
+    config.insert( u"serverType"_s, u"pro"_s );
+    config.insert( u"clientId"_s, clientId );
+    config.insert( u"rootUrl"_s, rootUrl );
+    config.insert( u"tenantId"_s, tenantId );
   }
   else
   {
-    config.insert( QStringLiteral( "serverType" ), QStringLiteral( "open" ) );
+    config.insert( u"serverType"_s, u"open"_s );
   }
   return config;
 }
@@ -119,10 +119,10 @@ void QgsAuthPlanetaryComputerEdit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  whileBlocking( leClientId )->setText( configmap.value( QStringLiteral( "clientId" ) ) );
-  whileBlocking( leRootUrl )->setText( configmap.value( QStringLiteral( "rootUrl" ) ) );
-  whileBlocking( leTenantId )->setText( configmap.value( QStringLiteral( "tenantId" ) ) );
-  updateServerType( configmap.value( QStringLiteral( "serverType" ) ) == QLatin1String( "pro" ) ? 1 : 0 );
+  whileBlocking( leClientId )->setText( configmap.value( u"clientId"_s ) );
+  whileBlocking( leRootUrl )->setText( configmap.value( u"rootUrl"_s ) );
+  whileBlocking( leTenantId )->setText( configmap.value( u"tenantId"_s ) );
+  updateServerType( configmap.value( u"serverType"_s ) == "pro"_L1 ? 1 : 0 );
 }
 
 
@@ -157,14 +157,10 @@ void QgsAuthPlanetaryComputerEdit::updateServerType( int indx )
   lblTenantId->setVisible( isPro );
   leTenantId->setVisible( isPro );
 
-  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( QStringLiteral( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>" ) );
-  const QString proHelp = tr(
-    "Use this server type for <a href=\"https://learn.microsoft.com/en-us/azure/planetary-computer/get-started-planetary-computer\">Planetary Computer Pro</a> instances.<br/>"
-    "The Directory (tenant) and Application (client) IDs can be found in your organization's Microsoft Entra ID main and application page respectively.<br/>"
-    "This authentication method expects to receive an OAuth2 token using the redirect url http://127.0.0.1:7070/"
-  );
+  const QString openHelp = tr( "Use this server type for %1 - the data are publicly accessible and do not require an account." ).arg( "<a href=\"https://planetarycomputer.microsoft.com/\">https://planetarycomputer.microsoft.com/</a>"_L1 );
+  const QString proHelp = u"%1<br/>%2: <a href=\"%3\">%3</a>"_s.arg( tr( "Contact your Microsoft Entra admin for App Registration details." ), tr( "Setup guide" ), u"http://aka.ms/qgis"_s );
 
-  lblHelp->setText( QStringLiteral( "<html><head/><body><p><span style=\" font-style:italic;\">%1</span></p></body></html>" ).arg( isPro ? proHelp : openHelp ) );
+  lblHelp->setText( u"<html><head/><body><p><span style=\" font-style:italic;\">%1</span></p></body></html>"_s.arg( isPro ? proHelp : openHelp ) );
 
   validateConfig(); // NOLINT
 }

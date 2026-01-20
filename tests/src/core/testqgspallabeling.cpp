@@ -12,18 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfontutils.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsmapsettings.h"
+#include "qgsnullsymbolrenderer.h"
+#include "qgspallabeling.h"
 #include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerlabeling.h"
+
+#include <QMimeData>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-
-#include "qgspallabeling.h"
-#include "qgsfontutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsnullsymbolrenderer.h"
-#include "qgsvectorlayerlabeling.h"
-#include "qgsmapsettings.h"
-#include "qgsmaprenderersequentialjob.h"
 
 class TestQgsPalLabeling : public QgsTest
 {
@@ -31,16 +32,14 @@ class TestQgsPalLabeling : public QgsTest
 
   public:
     TestQgsPalLabeling()
-      : QgsTest( QStringLiteral( "PAL labeling Tests" ), QStringLiteral( "pallabeling" ) ) {}
+      : QgsTest( u"PAL labeling Tests"_s, u"pallabeling"_s ) {}
 
   private slots:
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void wrapChar();        //test wrapping text lines
     void graphemes();       //test splitting strings to graphemes
     void testGeometryGenerator();
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    void testPolygonWithEmptyRing();
-#endif
+    void testLabelSettingsToFromMime();
 };
 
 void TestQgsPalLabeling::cleanupTestCase()
@@ -62,11 +61,11 @@ void TestQgsPalLabeling::wrapChar()
   QCOMPARE( QgsPalLabeling::splitToLines( "with auto wrap", QString(), 6, false ), QStringList() << "with auto" << "wrap" );
 
   // manual wrap character should take precedence
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, true ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with automatic-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, true ), QStringList() << "with" << "automatic" << "wrap and" << "manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with automatic-wrap and manual-wrap" ), QStringLiteral( "-" ), 6, true ), QStringList() << "with" << "automatic" << "wrap" << "and" << "manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 12, false ), QStringList() << "with auto" << "wrap and manual" << "wrap" );
-  QCOMPARE( QgsPalLabeling::splitToLines( QStringLiteral( "with auto-wrap and manual-wrap" ), QStringLiteral( "-" ), 6, false ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 12, true ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with automatic-wrap and manual-wrap"_s, u"-"_s, 12, true ), QStringList() << "with" << "automatic" << "wrap and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with automatic-wrap and manual-wrap"_s, u"-"_s, 6, true ), QStringList() << "with" << "automatic" << "wrap" << "and" << "manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 12, false ), QStringList() << "with auto" << "wrap and manual" << "wrap" );
+  QCOMPARE( QgsPalLabeling::splitToLines( u"with auto-wrap and manual-wrap"_s, u"-"_s, 6, false ), QStringList() << "with auto" << "wrap and" << "manual" << "wrap" );
 }
 
 void TestQgsPalLabeling::graphemes()
@@ -171,13 +170,13 @@ void TestQgsPalLabeling::testGeometryGenerator()
   QgsPalLayerSettings settings;
 
   QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setFont( QgsFontUtils::getStandardTestFont( u"Bold"_s ).family() );
   format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setNamedStyle( u"Bold"_s );
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
 
   settings.placement = Qgis::LabelPlacement::OverPoint;
@@ -185,7 +184,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   settings.geometryGeneratorType = Qgis::GeometryType::Point;
   settings.geometryGenerator = "translate($geometry, 1, 0)";
 
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( u"Point?crs=epsg:4326&field=id:integer"_s, u"vl"_s, u"memory"_s );
 
   vl2->setRenderer( new QgsNullSymbolRenderer() );
 
@@ -212,7 +211,7 @@ void TestQgsPalLabeling::testGeometryGenerator()
   const QSize size( 640, 480 );
   QgsMapSettings mapSettings;
   QgsCoordinateReferenceSystem tgtCrs;
-  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  tgtCrs.createFromString( u"EPSG:4326"_s );
   mapSettings.setDestinationCrs( tgtCrs );
 
   mapSettings.setOutputSize( size );
@@ -237,59 +236,25 @@ void TestQgsPalLabeling::testGeometryGenerator()
   QGSVERIFYIMAGECHECK( "rotated_geometry_generator_translated", "expected_rotated_geometry_generator_translated", img, "expected_rotated_geometry_generator_translated", 20, QSize(), 2 );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-void TestQgsPalLabeling::testPolygonWithEmptyRing()
+void TestQgsPalLabeling::testLabelSettingsToFromMime()
 {
-  // test that no labels are drawn outside of the specified label boundary
-  // TODO: fix on QGIS built against Qt6
   QgsPalLayerSettings settings;
 
-  QgsTextFormat format;
-  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
-  format.setSize( 12 );
-  format.setNamedStyle( QStringLiteral( "Bold" ) );
-  format.setColor( QColor( 0, 0, 0 ) );
-  settings.setFormat( format );
-
-  settings.fieldName = QStringLiteral( "'X'" );
+  settings.fieldName = u"'X'"_s;
   settings.isExpression = true;
-
   settings.placement = Qgis::LabelPlacement::OverPoint;
 
-  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  const QMimeData *md = settings.toMimeData();
 
-  vl2->setRenderer( new QgsNullSymbolRenderer() );
-
-  QgsFeature f( vl2->fields(), 1 );
-  QgsPolygon *polygon = new QgsPolygon();
-  QVector<QgsPoint> points;
-  points << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 ) << QgsPoint( 10, 10 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 );
-  polygon->setExteriorRing( new QgsLineString( points ) );
-  polygon->addInteriorRing( new QgsLineString() );
-  f.setGeometry( QgsGeometry( polygon ) );
-  vl2->dataProvider()->addFeature( f );
-
-  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
-  vl2->setLabelsEnabled( true );
-
-  // make a fake render context
-  const QSize size( 640, 480 );
-  QgsMapSettings mapSettings;
-  QgsCoordinateReferenceSystem tgtCrs;
-  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
-  mapSettings.setDestinationCrs( tgtCrs );
-
-  mapSettings.setOutputSize( size );
-  mapSettings.setExtent( vl2->extent() );
-  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
-  mapSettings.setOutputDpi( 96 );
-
-  // insure that no crash occurs
-  QgsMapRendererSequentialJob job( mapSettings );
-  job.start();
-  job.waitForFinished();
+  bool ok = false;
+  QgsPalLayerSettings from_mime = QgsPalLayerSettings::fromMimeData( nullptr, &ok );
+  QVERIFY( !ok );
+  from_mime = QgsPalLayerSettings::fromMimeData( md, &ok );
+  QVERIFY( ok );
+  QCOMPARE( from_mime.fieldName, settings.fieldName );
+  QCOMPARE( from_mime.isExpression, settings.isExpression );
+  QCOMPARE( from_mime.placement, settings.placement );
 }
-#endif
 
 QGSTEST_MAIN( TestQgsPalLabeling )
 #include "testqgspallabeling.moc"

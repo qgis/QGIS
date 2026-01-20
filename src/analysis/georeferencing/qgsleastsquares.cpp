@@ -13,14 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsleastsquares.h"
 #include "qgsconfig.h"
-#include "qgsexception.h"
-
-#include <QObject>
+#include "qgsleastsquares.h"
 
 #include <cmath>
 #include <stdexcept>
+
+#include "qgsexception.h"
+
+#include <QObject>
 
 #ifdef HAVE_GSL
 #include <gsl/gsl_linalg.h>

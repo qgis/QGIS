@@ -37,7 +37,10 @@ class ANALYSIS_EXPORT QgsVectorDataProviderFeaturePool : public QgsFeaturePool
     QgsVectorDataProviderFeaturePool( QgsVectorLayer *layer, bool selectedOnly = false );
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
+    using QgsFeaturePool::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
     void updateFeature( QgsFeature &feature ) override;
     void deleteFeature( QgsFeatureId fid ) override;
 

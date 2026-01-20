@@ -14,34 +14,36 @@
  ***************************************************************************/
 
 #include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsexpressionutils.h"
-#include "qgsgeometry.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgspolygon.h"
-#include "qgslegendpatchshape.h"
-#include "qgsstyle.h"
-#include "qgsunittypes.h"
+
+#include <memory>
 
 #include "qgsexpressioncontextutils.h"
+#include "qgsexpressionutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeometry.h"
+#include "qgslegendpatchshape.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+#include "qgspolygon.h"
+#include "qgsstyle.h"
+#include "qgsunittypes.h"
 
 QgsGeometryGeneratorSymbolLayer::~QgsGeometryGeneratorSymbolLayer() = default;
 
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &properties )
 {
-  QString expression = properties.value( QStringLiteral( "geometryModifier" ) ).toString();
+  QString expression = properties.value( u"geometryModifier"_s ).toString();
   if ( expression.isEmpty() )
   {
-    expression = QStringLiteral( "@geometry" );
+    expression = u"@geometry"_s;
   }
   QgsGeometryGeneratorSymbolLayer *symbolLayer = new QgsGeometryGeneratorSymbolLayer( expression );
 
-  if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Marker" ) )
+  if ( properties.value( u"SymbolType"_s ) == "Marker"_L1 )
   {
     symbolLayer->setSubSymbol( QgsMarkerSymbol::createSimple( properties ).release() );
   }
-  else if ( properties.value( QStringLiteral( "SymbolType" ) ) == QLatin1String( "Line" ) )
+  else if ( properties.value( u"SymbolType"_s ) == "Line"_L1 )
   {
     symbolLayer->setSubSymbol( QgsLineSymbol::createSimple( properties ).release() );
   }
@@ -49,7 +51,7 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
   {
     symbolLayer->setSubSymbol( QgsFillSymbol::createSimple( properties ).release() );
   }
-  symbolLayer->setUnits( QgsUnitTypes::decodeRenderUnit( properties.value( QStringLiteral( "units" ), QStringLiteral( "mapunits" ) ).toString() ) );
+  symbolLayer->setUnits( QgsUnitTypes::decodeRenderUnit( properties.value( u"units"_s, u"mapunits"_s ).toString() ) );
 
   symbolLayer->restoreOldDataDefinedProperties( properties );
 
@@ -59,14 +61,13 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::create( const QVariantMap &prop
 QgsGeometryGeneratorSymbolLayer::QgsGeometryGeneratorSymbolLayer( const QString &expression )
   : QgsSymbolLayer( Qgis::SymbolType::Hybrid )
   , mExpression( new QgsExpression( expression ) )
-  , mSymbolType( Qgis::SymbolType::Marker )
 {
 
 }
 
 QString QgsGeometryGeneratorSymbolLayer::layerType() const
 {
-  return QStringLiteral( "GeometryGenerator" );
+  return u"GeometryGenerator"_s;
 }
 
 void QgsGeometryGeneratorSymbolLayer::setSymbolType( Qgis::SymbolType symbolType )
@@ -178,6 +179,15 @@ QgsMapUnitScale QgsGeometryGeneratorSymbolLayer::mapUnitScale() const
   return QgsMapUnitScale();
 }
 
+bool QgsGeometryGeneratorSymbolLayer::rendersIdenticallyTo( const QgsSymbolLayer * ) const
+{
+  // since rendersIdenticallyTo must be pessimistic, we always return FALSE here as it's
+  // non-trivial to determine if a QGIS expression will always return the same result
+  // TODO: we could potentially investigate the actual expression and catch cases where we
+  // are CERTAIN that the result will always be the same
+  return false;
+}
+
 QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 {
   QgsGeometryGeneratorSymbolLayer *clone = new QgsGeometryGeneratorSymbolLayer( mExpression->expression() );
@@ -201,20 +211,20 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
 QVariantMap QgsGeometryGeneratorSymbolLayer::properties() const
 {
   QVariantMap props;
-  props.insert( QStringLiteral( "geometryModifier" ), mExpression->expression() );
+  props.insert( u"geometryModifier"_s, mExpression->expression() );
   switch ( mSymbolType )
   {
     case Qgis::SymbolType::Marker:
-      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Marker" ) );
+      props.insert( u"SymbolType"_s, u"Marker"_s );
       break;
     case Qgis::SymbolType::Line:
-      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Line" ) );
+      props.insert( u"SymbolType"_s, u"Line"_s );
       break;
     default:
-      props.insert( QStringLiteral( "SymbolType" ), QStringLiteral( "Fill" ) );
+      props.insert( u"SymbolType"_s, u"Fill"_s );
       break;
   }
-  props.insert( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
+  props.insert( u"units"_s, QgsUnitTypes::encodeUnit( mUnits ) );
 
   return props;
 }
@@ -270,7 +280,7 @@ void QgsGeometryGeneratorSymbolLayer::drawPreviewIcon( QgsSymbolRenderContext &c
 
 void QgsGeometryGeneratorSymbolLayer::setGeometryExpression( const QString &exp )
 {
-  mExpression.reset( new QgsExpression( exp ) );
+  mExpression = std::make_unique<QgsExpression>( exp );
 }
 
 QString QgsGeometryGeneratorSymbolLayer::geometryExpression() const
@@ -450,7 +460,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+      QgsDebugError( u"Could no transform generated geometry to layer CRS"_s );
     }
 
     f.setGeometry( coerceToExpectedType( result ) );
@@ -476,7 +486,15 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       {
         // convert feature geometry to painter units
         QgsGeometry transformed = f.geometry();
-        transformed.transform( context.renderContext().coordinateTransform() );
+
+        try
+        {
+          transformed.transform( context.renderContext().coordinateTransform() );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( u"Could no transform generated geometry to layer CRS"_s );
+        }
         const QTransform mapToPixel = context.renderContext().mapToPixel().transform();
         transformed.transform( mapToPixel );
 
@@ -493,7 +511,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         }
         catch ( QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "Could no transform generated geometry to layer CRS" ) );
+          QgsDebugError( u"Could no transform generated geometry to layer CRS"_s );
         }
         f.setGeometry( coerceToExpectedType( result ) );
         break;

@@ -16,11 +16,11 @@
 #ifndef QGSPROVIDERSUBLAYERDETAILS_H
 #define QGSPROVIDERSUBLAYERDETAILS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgswkbtypes.h"
+#include "qgis_core.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsmimedatautils.h"
+#include "qgswkbtypes.h"
 
 #include <QString>
 #include <QStringList>
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsProviderSublayerDetails
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProviderSublayerDetails: %1 - %2>" ).arg( sipCpp->providerKey(), sipCpp->name() );
+    QString str = u"<QgsProviderSublayerDetails: %1 - %2>"_s.arg( sipCpp->providerKey(), sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

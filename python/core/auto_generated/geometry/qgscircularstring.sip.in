@@ -10,7 +10,6 @@
 
 
 
-
 class QgsCircularString: QgsCurve
 {
 %Docstring(signature="appended")
@@ -182,11 +181,15 @@ circular string.
 
     virtual void sumUpArea( double &sum /Out/ ) const;
 
+    virtual void sumUpArea3D( double &sum /Out/ ) const;
+
     virtual bool hasCurvedSegments() const;
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
     virtual double segmentLength( QgsVertexId startVertex ) const;
+
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const;
 
     virtual QgsCircularString *reversed() const  /Factory/;
 

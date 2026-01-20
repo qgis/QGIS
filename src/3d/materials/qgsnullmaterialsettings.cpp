@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgsnullmaterialsettings.h"
-#include "qgsmaterial.h"
-#include <QMap>
 
+#include "qgsmaterial.h"
+
+#include <QMap>
 
 QString QgsNullMaterialSettings::type() const
 {
-  return QStringLiteral( "null" );
+  return u"null"_s;
 }
 
 bool QgsNullMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTechnique technique )

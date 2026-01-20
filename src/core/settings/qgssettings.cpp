@@ -14,16 +14,18 @@
  ***************************************************************************/
 
 
+#include "qgssettings.h"
+
 #include <cstdlib>
 
+#include "qgssettingsproxy.h"
+#include "qgsvariantutils.h"
+
+#include <QDir>
 #include <QFileInfo>
 #include <QSettings>
-#include <QDir>
 
-#include "qgssettings.h"
 #include "moc_qgssettings.cpp"
-#include "qgsvariantutils.h"
-#include "qgssettingsproxy.h"
 
 Q_GLOBAL_STATIC( QString, sGlobalSettingsPath )
 
@@ -44,9 +46,6 @@ void QgsSettings::init()
   if ( ! sGlobalSettingsPath()->isEmpty() )
   {
     mGlobalSettings = std::make_unique<QSettings>( *sGlobalSettingsPath(), QSettings::IniFormat );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    mGlobalSettings->setIniCodec( "UTF-8" );
-#endif
   }
 }
 
@@ -210,34 +209,34 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   switch ( section )
   {
     case Section::Core:
-      prefix = QStringLiteral( "core" );
+      prefix = u"core"_s;
       break;
     case Section::Server:
-      prefix = QStringLiteral( "server" );
+      prefix = u"server"_s;
       break;
     case Section::Gui:
-      prefix = QStringLiteral( "gui" );
+      prefix = u"gui"_s;
       break;
     case Section::Plugins:
-      prefix = QStringLiteral( "plugins" );
+      prefix = u"plugins"_s;
       break;
     case Section::Misc:
-      prefix = QStringLiteral( "misc" );
+      prefix = u"misc"_s;
       break;
     case Section::Auth:
-      prefix = QStringLiteral( "auth" );
+      prefix = u"auth"_s;
       break;
     case Section::App:
-      prefix = QStringLiteral( "app" );
+      prefix = u"app"_s;
       break;
     case Section::Providers:
-      prefix = QStringLiteral( "providers" );
+      prefix = u"providers"_s;
       break;
     case Section::Expressions:
-      prefix = QStringLiteral( "expressions" );
+      prefix = u"expressions"_s;
       break;
     case Section::Gps:
-      prefix = QStringLiteral( "gps" );
+      prefix = u"gps"_s;
       break;
     case Section::NoSection:
       return sanitizeKey( key );

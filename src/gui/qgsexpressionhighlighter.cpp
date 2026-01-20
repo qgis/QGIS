@@ -14,7 +14,10 @@
  ***************************************************************************/
 
 #include "qgsexpressionhighlighter.h"
+
 #include "moc_qgsexpressionhighlighter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   : QSyntaxHighlighter( parent )
@@ -24,8 +27,8 @@ QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
   keywordFormat.setForeground( Qt::darkBlue );
   keywordFormat.setFontWeight( QFont::Bold );
   QStringList keywordPatterns;
-  keywordPatterns << QStringLiteral( "\\bCASE\\b" ) << QStringLiteral( "\\bWHEN\\b" ) << QStringLiteral( "\\bTHEN\\b" )
-                  << QStringLiteral( "\\bELSE\\b" ) << QStringLiteral( "\\bEND\\b" );
+  keywordPatterns << u"\\bCASE\\b"_s << u"\\bWHEN\\b"_s << u"\\bTHEN\\b"_s
+                  << u"\\bELSE\\b"_s << u"\\bEND\\b"_s;
 
   const auto constKeywordPatterns = keywordPatterns;
   for ( const QString &pattern : constKeywordPatterns )

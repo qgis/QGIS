@@ -78,7 +78,7 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         generator = pcl.createProfileGenerator(req)
         self.assertFalse(generator.generateProfile())
         results = generator.takeResults()
-        self.assertTrue(results is None)
+        self.assertFalse(results.distanceToHeightMap())
 
         req.setTolerance(0.05)
         generator = pcl.createProfileGenerator(req)
@@ -1195,6 +1195,60 @@ class TestQgsPointCloudLayerProfileGenerator(QgisTestCase):
         self.assertEqual(features[-1].geometry.asWkt(3), "Point Z (7.44 2.71 -5.41)")
         self.assertAlmostEqual(features[-1].attributes["distance"], 0.063658039178, 4)
         self.assertAlmostEqual(features[-1].attributes["elevation"], -5.409997397, 4)
+
+    @unittest.skipIf(
+        "copc" not in QgsProviderRegistry.instance().providerList(),
+        "COPC provider not available",
+    )
+    def test_54349_regression(self):
+        # https://github.com/qgis/QGIS/issues/54349
+        pcl = QgsPointCloudLayer(
+            "https://github.com/PDAL/data/raw/refs/heads/main/autzen/autzen-classified.copc.laz",
+            providerLib="copc",
+        )
+        self.assertTrue(pcl.isValid())
+
+        pcl.elevationProperties().setMaximumScreenError(30)
+        pcl.elevationProperties().setMaximumScreenErrorUnit(
+            QgsUnitTypes.RenderUnit.RenderMillimeters
+        )
+
+        # curve in pcl extent
+        curve = QgsLineString()
+        curve.fromWkt("LineString (637780 850995, 637785 850995)")
+
+        req = QgsProfileRequest(curve)
+        req.setCrs(pcl.crs())
+        req.setTolerance(0.5)
+        generator = pcl.createProfileGenerator(req)
+
+        context = QgsProfileGenerationContext()
+        context.setMapUnitsPerDistancePixel(0.50)
+
+        self.assertTrue(generator.generateProfile(context))
+        results = generator.takeResults()
+        self.assertEqual(
+            self.round_dict(results.distanceToHeightMap(), 1),
+            {
+                1.5: 420.4,
+                2.5: 420.4,
+                2.6: 420.4,
+                3.9: 420.2,
+            },
+        )
+
+        # curve outside pcl extent
+        curve = QgsLineString()
+        curve.fromWkt("LineString (639000 850722, 639005 850722)")
+
+        req = QgsProfileRequest(curve)
+        req.setCrs(pcl.crs())
+        req.setTolerance(0.5)
+        generator = pcl.createProfileGenerator(req)
+
+        self.assertFalse(generator.generateProfile(context))
+        results = generator.takeResults()
+        self.assertFalse(results)
 
 
 if __name__ == "__main__":

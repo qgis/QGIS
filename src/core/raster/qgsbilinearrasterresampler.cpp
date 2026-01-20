@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgsbilinearrasterresampler.h"
-#include "qgsgdalutils.h"
-#include <QImage>
+
 #include <cmath>
+
+#include "qgsgdalutils.h"
+
+#include <QImage>
 
 QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
 {
@@ -44,5 +47,5 @@ QImage QgsBilinearRasterResampler::resampleV2( const QImage &source, const QSize
 
 QString QgsBilinearRasterResampler::type() const
 {
-  return QStringLiteral( "bilinear" );
+  return u"bilinear"_s;
 }

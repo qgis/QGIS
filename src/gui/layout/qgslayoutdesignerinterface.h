@@ -19,6 +19,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgslayoutexporter.h"
+
 #include <QObject>
 
 class QgsLayout;

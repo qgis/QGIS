@@ -17,19 +17,18 @@
 #define QGS3DUTILS_H
 #define SIP_NO_FILE
 
+#include <memory>
+
+#include "qgs3danimationsettings.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
-#include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
 #include "qgsaabb.h"
 #include "qgsray3d.h"
-#include "qgsraycastingutils.h"
+#include "qgsraycastresult.h"
 
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QCullFace>
-
-#include <memory>
-
 
 class QgsCameraPose;
 class QgsLineString;
@@ -49,6 +48,7 @@ namespace Qt3DExtras
 
 class QSurface;
 class Qgs3DRenderContext;
+class QgsRayCastContext;
 
 /**
  * \ingroup qgis_3d
@@ -66,10 +66,18 @@ class _3D_EXPORT Qgs3DUtils
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
 
     /**
-     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates
+     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates.
+     * \warning Not to be used outside of tests!
      * \since QGIS 3.42
      */
     static void waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
+     * Waits for all entities in the scene to be loaded.
+     * \warning Not to be used outside of tests!
+     * \since QGIS 4.0
+     */
+    static void waitForEntitiesLoaded( Qgs3DMapScene *scene );
 
     /**
      * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
@@ -205,6 +213,10 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Converts the clicked mouse position to the corresponding 3D world coordinates
+     * \param screenPoint point on screen in pixel from top-left corner
+     * \param depth value from depth buffer in [0.0, 1.0] interval
+     * \param screenSize size of screen in pixels
+     * \param camera camera whose view/projection matrices are used
      * \since QGIS 3.24
      */
     static QVector3D screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera );
@@ -251,12 +263,10 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
-     * The resulting hits are grouped by layer in a QHash.
-     * \note Hits on the terrain have nullptr as their key in the returning QHash.
      *
      * \since QGIS 3.32
      */
-    static QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context );
+    static QgsRayCastResult castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastContext &context );
 
     /**
      * Reprojects \a extent from \a crs1 to \a crs2 coordinate reference system with context \a context.

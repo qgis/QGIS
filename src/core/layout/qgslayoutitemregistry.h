@@ -16,15 +16,16 @@
 #ifndef QGSLAYOUTITEMREGISTRY_H
 #define QGSLAYOUTITEMREGISTRY_H
 
+#include <functional>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsapplication.h"
+#include "qgslayoutitem.h"
 #include "qgspathresolver.h"
-#include <QGraphicsItem> //for QGraphicsItem::UserType
-#include <QIcon>
-#include <functional>
 
-#include "qgslayoutitem.h" // temporary
+#include <QGraphicsItem>
+#include <QIcon>
 
 class QgsLayout;
 class QgsLayoutView;
@@ -206,7 +207,7 @@ class CORE_EXPORT QgsLayoutMultiFrameAbstractMetadata
     /**
      * Returns an icon representing the layout multiframe type.
      */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( u"/mActionAddBasicRectangle.svg"_s ); }
 
     /**
      * Returns a translated, user visible name for the layout multiframe class.

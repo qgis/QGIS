@@ -13,21 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QKeyEvent>
-
 #include "qgs3dmaptoolmeasureline.h"
-#include "moc_qgs3dmaptoolmeasureline.cpp"
-#include "qgs3dutils.h"
-#include "qgs3dmapscene.h"
+
+#include <memory>
+
 #include "qgs3dmapcanvas.h"
-#include "qgspoint.h"
-#include "qgsmaplayer.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dmeasuredialog.h"
+#include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsframegraph.h"
+#include "qgsmaplayer.h"
+#include "qgspoint.h"
+#include "qgsraycastcontext.h"
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
-#include "qgsframegraph.h"
-#include "qgsabstractterrainsettings.h"
 
+#include <QKeyEvent>
+
+#include "moc_qgs3dmaptoolmeasureline.cpp"
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
@@ -42,7 +46,7 @@ Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
 
 void Qgs3DMapToolMeasureLine::activate()
 {
-  mRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() ) );
+  mRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() );
 
   restart();
   updateSettings();
@@ -72,25 +76,27 @@ void Qgs3DMapToolMeasureLine::handleClick( const QPoint &screenPos )
     restart();
   }
 
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPos, mCanvas->size(), mCanvas->cameraController()->camera() );
-  const QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, QgsRayCastingUtils::RayCastContext( true, mCanvas->size(), mCanvas->cameraController()->camera()->farPlane() ) );
+  QgsRayCastContext context;
+  context.setSingleResult( false );
+  context.setMaximumDistance( mCanvas->cameraController()->camera()->farPlane() );
+  context.setAngleThreshold( 0.5f );
+  const QgsRayCastResult results = mCanvas->castRay( screenPos, context );
 
-  if ( allHits.isEmpty() )
+  if ( results.isEmpty() )
     return;
 
-  QgsVector3D worldIntersection;
-  float minDist = -1;
-  for ( const QVector<QgsRayCastingUtils::RayHit> &results : allHits )
+  QgsVector3D mapCoords;
+  double minDist = -1;
+  const QList<QgsRayCastHit> allHits = results.allHits();
+  for ( const QgsRayCastHit &hit : allHits )
   {
-    const QgsRayCastingUtils::RayHit &result = results.first();
-    const float resDist = result.distance;
+    const double resDist = hit.distance();
     if ( minDist < 0 || resDist < minDist )
     {
       minDist = resDist;
-      worldIntersection = QgsVector3D( result.pos.x(), result.pos.y(), result.pos.z() );
+      mapCoords = hit.mapCoordinates();
     }
   }
-  const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( worldIntersection, mCanvas->mapSettings()->origin() );
   addPoint( QgsPoint( mapCoords.x(), mapCoords.y(), mapCoords.z() ) );
   mDialog->show();
 }
@@ -100,9 +106,9 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   if ( mRubberBand )
   {
     const QgsSettings settings;
-    const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-    const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-    const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
+    const int myRed = settings.value( u"qgis/default_measure_color_red"_s, 222 ).toInt();
+    const int myGreen = settings.value( u"qgis/default_measure_color_green"_s, 155 ).toInt();
+    const int myBlue = settings.value( u"qgis/default_measure_color_blue"_s, 67 ).toInt();
 
     mRubberBand->setWidth( 3 );
     mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );

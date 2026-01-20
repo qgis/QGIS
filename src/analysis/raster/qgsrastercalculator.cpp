@@ -15,21 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
 #include "qgsrastercalculator.h"
+
+#include <cpl_string.h>
+#include <gdalwarper.h>
+
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgsogrutils.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsproject.h"
 
 #include <QFile>
-
-#include <cpl_string.h>
-#include <gdalwarper.h>
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -192,6 +193,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
   GDALSetRasterNoDataValue( outputRasterBand, mNoDataValue );
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
+
   // Take the fast route (process one line at a time) if we can
   if ( !requiresMatrix )
   {
@@ -225,7 +233,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     {
       if ( feedback )
       {
-        feedback->setProgress( 100.0 * static_cast<double>( row ) / mNumOutputRows );
+        feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( row ) / mNumOutputRows );
       }
 
       if ( feedback && feedback->isCanceled() )
@@ -270,7 +278,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         std::copy( resultMatrix.data(), resultMatrix.data() + mNumOutputColumns, castedResult.begin() );
         if ( GDALRasterIO( outputRasterBand, GF_Write, 0, row, mNumOutputColumns, 1, castedResult.data(), mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
-          QgsDebugError( QStringLiteral( "RasterIO error!" ) );
+          QgsDebugError( u"RasterIO error!"_s );
         }
       }
       else
@@ -283,7 +291,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 );
+      feedback->setProgress( maxProgressDuringBlockWriting );
     }
   }
   else // Original code (memory inefficient route)
@@ -331,7 +339,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
     {
       if ( feedback )
       {
-        feedback->setProgress( 100.0 * static_cast<double>( i ) / mNumOutputRows );
+        feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( i ) / mNumOutputRows );
       }
 
       if ( feedback && feedback->isCanceled() )
@@ -352,7 +360,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
         //write scanline to the dataset
         if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, mNumOutputColumns, 1, calcData, mNumOutputColumns, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
-          QgsDebugError( QStringLiteral( "RasterIO error!" ) );
+          QgsDebugError( u"RasterIO error!"_s );
         }
 
         delete[] calcData;
@@ -368,7 +376,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 );
+      feedback->setProgress( maxProgressDuringBlockWriting );
     }
 
     //close datasets and release memory
@@ -385,6 +393,20 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculation( QgsFeedback
   }
 
   GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  if ( hasReportsDuringClose && feedback )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      return feedback->isCanceled() ? QgsRasterCalculator::Result::Canceled : QgsRasterCalculator::Result::CreateOutputError;
+    }
+  }
+#endif
 
   return QgsRasterCalculator::Result::Success;
 }
@@ -441,31 +463,31 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     switch ( entry.layer->dataProvider()->dataType( entry.band ) )
     {
       case Qgis::DataType::Byte:
-        entry.typeName = QStringLiteral( "unsigned char" );
+        entry.typeName = u"unsigned char"_s;
         break;
       case Qgis::DataType::Int8:
-        entry.typeName = QStringLiteral( "char" );
+        entry.typeName = u"char"_s;
         break;
       case Qgis::DataType::UInt16:
-        entry.typeName = QStringLiteral( "unsigned short" );
+        entry.typeName = u"unsigned short"_s;
         break;
       case Qgis::DataType::Int16:
-        entry.typeName = QStringLiteral( "short" );
+        entry.typeName = u"short"_s;
         break;
       case Qgis::DataType::UInt32:
-        entry.typeName = QStringLiteral( "unsigned int" );
+        entry.typeName = u"unsigned int"_s;
         break;
       case Qgis::DataType::Int32:
-        entry.typeName = QStringLiteral( "int" );
+        entry.typeName = u"int"_s;
         break;
       case Qgis::DataType::Float32:
-        entry.typeName = QStringLiteral( "float" );
+        entry.typeName = u"float"_s;
         break;
       // FIXME: not sure all OpenCL implementations support double
       //        maybe safer to fall back to the CPU implementation
       //        after a compatibility check
       case Qgis::DataType::Float64:
-        entry.typeName = QStringLiteral( "double" );
+        entry.typeName = u"double"_s;
         break;
       case Qgis::DataType::CInt16:
       case Qgis::DataType::CInt32:
@@ -478,7 +500,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     }
     entry.bufferSize = entry.dataSize * mNumOutputColumns;
     entry.index = refCounter;
-    entry.varName = QStringLiteral( "input_raster_%1_band_%2" )
+    entry.varName = u"input_raster_%1_band_%2"_s
                       .arg( refCounter++ )
                       .arg( entry.band );
     inputRefs.push_back( entry );
@@ -497,8 +519,8 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     QStringList inputArgs;
     for ( const auto &ref : inputRefs )
     {
-      cExpression.replace( QStringLiteral( "\"%1\"" ).arg( ref.name ), QStringLiteral( "%1[i]" ).arg( ref.varName ) );
-      inputArgs.append( QStringLiteral( "__global %1 *%2" )
+      cExpression.replace( u"\"%1\""_s.arg( ref.name ), u"%1[i]"_s.arg( ref.varName ) );
+      inputArgs.append( u"__global %1 *%2"_s
                           .arg( ref.typeName, ref.varName ) );
       inputBuffers.push_back( cl::Buffer( ctx, CL_MEM_READ_ONLY, ref.bufferSize, nullptr, nullptr ) );
     }
@@ -529,18 +551,18 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     QStringList inputNoDataCheck;
     for ( const auto &ref : inputRefs )
     {
-      inputDesc.append( QStringLiteral( "  // %1 = %2" ).arg( ref.varName, ref.name ) );
+      inputDesc.append( u"  // %1 = %2"_s.arg( ref.varName, ref.name ) );
       if ( ref.layer->dataProvider()->sourceHasNoDataValue( ref.band ) )
       {
-        inputNoDataCheck.append( QStringLiteral( "(float) %1[i] == (float) %2" ).arg( ref.varName, QString::number( ref.layer->dataProvider()->sourceNoDataValue( ref.band ), 'g', 10 ) ) );
+        inputNoDataCheck.append( u"(float) %1[i] == (float) %2"_s.arg( ref.varName, QString::number( ref.layer->dataProvider()->sourceNoDataValue( ref.band ), 'g', 10 ) ) );
       }
     }
 
-    programTemplate = programTemplate.replace( QLatin1String( "##INPUT_NODATA_CHECK##" ), inputNoDataCheck.isEmpty() ? QStringLiteral( "false" ) : inputNoDataCheck.join( QLatin1String( " || " ) ) );
-    programTemplate = programTemplate.replace( QLatin1String( "##INPUT_DESC##" ), inputDesc.join( '\n' ) );
-    programTemplate = programTemplate.replace( QLatin1String( "##INPUT##" ), !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
-    programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION##" ), cExpression );
-    programTemplate = programTemplate.replace( QLatin1String( "##EXPRESSION_ORIGINAL##" ), calcNode->toString() );
+    programTemplate = programTemplate.replace( "##INPUT_NODATA_CHECK##"_L1, inputNoDataCheck.isEmpty() ? u"false"_s : inputNoDataCheck.join( " || "_L1 ) );
+    programTemplate = programTemplate.replace( "##INPUT_DESC##"_L1, inputDesc.join( '\n' ) );
+    programTemplate = programTemplate.replace( "##INPUT##"_L1, !inputArgs.isEmpty() ? ( inputArgs.join( ',' ).append( ',' ) ) : QChar( ' ' ) );
+    programTemplate = programTemplate.replace( "##EXPRESSION##"_L1, cExpression );
+    programTemplate = programTemplate.replace( "##EXPRESSION_ORIGINAL##"_L1, calcNode->toString() );
 
     // qDebug() << programTemplate;
 
@@ -578,6 +600,13 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
       return QgsRasterCalculator::Result::CreateOutputError;
     }
 
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+    const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+    const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+#else
+    constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
+
     GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt( Qgis::CrsWktVariant::PreferredGdal ).toLocal8Bit().data() );
 
 
@@ -601,7 +630,7 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
 
       if ( feedback )
       {
-        feedback->setProgress( 100.0 * static_cast<double>( line ) / mNumOutputRows );
+        feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( line ) / mNumOutputRows );
       }
 
       // Read lines from rasters into the buffers
@@ -663,6 +692,20 @@ QgsRasterCalculator::Result QgsRasterCalculator::processCalculationGPU( std::uni
     inputBuffers.clear();
 
     GDALComputeRasterStatistics( outputRasterBand, true, nullptr, nullptr, nullptr, nullptr, GdalProgressCallback, feedback );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+    if ( hasReportsDuringClose && feedback )
+    {
+      QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+      if ( GDALDatasetRunCloseWithoutDestroyingEx(
+             outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+           )
+           != CE_None )
+      {
+        return feedback->isCanceled() ? QgsRasterCalculator::Result::Canceled : QgsRasterCalculator::Result::CreateOutputError;
+      }
+    }
+#endif
   }
   catch ( cl::Error &e )
   {
@@ -733,7 +776,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
 
   auto uniqueRasterBandIdentifier = [&]( QgsRasterCalculatorEntry &entry ) -> bool {
     unsigned int i( 1 );
-    entry.ref = QStringLiteral( "%1@%2" ).arg( entry.raster->name() ).arg( entry.bandNumber );
+    entry.ref = u"%1@%2"_s.arg( entry.raster ? entry.raster->name() : QString() ).arg( entry.bandNumber );
     while ( true )
     {
       bool unique( true );
@@ -758,7 +801,7 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalculatorEntry::rasterEntries()
         if ( ref.ref == entry.ref )
         {
           unique = false;
-          entry.ref = QStringLiteral( "%1_%2@%3" ).arg( entry.raster->name() ).arg( i++ ).arg( entry.bandNumber );
+          entry.ref = u"%1_%2@%3"_s.arg( entry.raster->name() ).arg( i++ ).arg( entry.bandNumber );
         }
       }
       if ( unique )

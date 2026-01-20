@@ -16,13 +16,14 @@
 #ifndef QGSEDITORWIDGETREGISTRY_H
 #define QGSEDITORWIDGETREGISTRY_H
 
-#include <QObject>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QMap>
-#include "qgseditorwidgetfactory.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetautoconf.h"
-#include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
+
+#include <QMap>
+#include <QObject>
 
 class QgsMapLayer;
 class QDomNode;
@@ -125,13 +126,24 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS ) SIP_FACTORY;
 
     /**
-     * Gets the human readable name for a widget type
+     * Returns the human readable name for a widget type
      *
      * \param widgetId The widget type to get the name for
      *
      * \returns A human readable name
      */
     QString name( const QString &widgetId );
+
+    /**
+     * Returns the icon for a widget type
+     *
+     * \param widgetId The widget type to get the icon for
+     *
+     * \returns An icon
+     *
+     * \since QGIS 4.0
+     */
+    QIcon icon( const QString &widgetId );
 
     /**
      * Gets the widget's read-only flag

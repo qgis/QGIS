@@ -21,8 +21,15 @@
 
 #include "qgswmsrequest.h"
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
+
 namespace QgsWms
 {
+  class QgsWmsRequest;
 
   /**
    * Output GetFeatureInfo response

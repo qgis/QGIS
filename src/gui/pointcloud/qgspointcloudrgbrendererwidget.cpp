@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgspointcloudrgbrendererwidget.h"
-#include "moc_qgspointcloudrgbrendererwidget.cpp"
+
 #include "qgscontrastenhancement.h"
+#include "qgsdoublevalidator.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrgbrenderer.h"
-#include "qgsdoublevalidator.h"
+
+#include "moc_qgspointcloudrgbrendererwidget.cpp"
 
 ///@cond PRIVATE
 
@@ -327,11 +329,11 @@ void QgsPointCloudRgbRendererWidget::setFromRenderer( const QgsPointCloudRendere
   }
   else
   {
-    if ( mRedAttributeComboBox->findText( QStringLiteral( "Red" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Green" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Blue" ) ) > -1 )
+    if ( mRedAttributeComboBox->findText( u"Red"_s ) > -1 && mRedAttributeComboBox->findText( u"Green"_s ) > -1 && mRedAttributeComboBox->findText( u"Blue"_s ) > -1 )
     {
-      mRedAttributeComboBox->setAttribute( QStringLiteral( "Red" ) );
-      mGreenAttributeComboBox->setAttribute( QStringLiteral( "Green" ) );
-      mBlueAttributeComboBox->setAttribute( QStringLiteral( "Blue" ) );
+      mRedAttributeComboBox->setAttribute( u"Red"_s );
+      mGreenAttributeComboBox->setAttribute( u"Green"_s );
+      mBlueAttributeComboBox->setAttribute( u"Blue"_s );
     }
     else
     {

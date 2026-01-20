@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
 
 //qgis includes...
 #include "qgsmaplayer.h"
@@ -45,7 +46,7 @@ class TestQgsRenderers : public QgsTest
 
   public:
     TestQgsRenderers()
-      : QgsTest( QStringLiteral( "Vector Renderer Tests" ) ) {}
+      : QgsTest( u"Vector Renderer Tests"_s ) {}
 
     ~TestQgsRenderers() override
     {
@@ -94,7 +95,7 @@ void TestQgsRenderers::initTestCase()
   mTestDataDir = myDataDir + '/';
   const QString myPointsFileName = mTestDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPointsLayer
@@ -105,7 +106,7 @@ void TestQgsRenderers::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpPolysLayer
@@ -117,7 +118,7 @@ void TestQgsRenderers::initTestCase()
   //
   const QString myLinesFileName = mTestDataDir + "lines.shp";
   const QFileInfo myLineFileInfo( myLinesFileName );
-  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(), myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(), myLineFileInfo.completeBaseName(), u"ogr"_s );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mpLinesLayer
@@ -151,7 +152,7 @@ void TestQgsRenderers::emptyGeometry()
   // layer's feature request. The purpose of this test is to ensure that we do not crash for empty geometries,
   // as it's possible that malformed providers OR bugs in underlying libraries will still return empty geometries
   // even when a filter rect request was made, and we shouldn't crash for these.
-  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( u"MultiPolygon?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
 
@@ -163,7 +164,7 @@ void TestQgsRenderers::emptyGeometry()
   QVERIFY( checkEmptyRender( "Multipolygon", vl ) );
 
   // polygon
-  vl = new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  vl = new QgsVectorLayer( u"Polygon?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
   f.setGeometry( QgsGeometry( new QgsPolygon() ) );
@@ -171,7 +172,7 @@ void TestQgsRenderers::emptyGeometry()
   QVERIFY( checkEmptyRender( "Polygon", vl ) );
 
   // linestring
-  vl = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  vl = new QgsVectorLayer( u"LineString?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
   f.setGeometry( QgsGeometry( new QgsLineString() ) );
@@ -179,7 +180,7 @@ void TestQgsRenderers::emptyGeometry()
   QVERIFY( checkEmptyRender( "LineString", vl ) );
 
   // multilinestring
-  vl = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  vl = new QgsVectorLayer( u"MultiLineString?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
   auto mls = std::make_unique<QgsMultiLineString>();
@@ -189,7 +190,7 @@ void TestQgsRenderers::emptyGeometry()
   QVERIFY( checkEmptyRender( "MultiLineString", vl ) );
 
   // multipoint
-  vl = new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  vl = new QgsVectorLayer( u"MultiPoint?crs=epsg:4326&field=pk:int&field=col1:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
   auto mlp = std::make_unique<QgsMultiPoint>();

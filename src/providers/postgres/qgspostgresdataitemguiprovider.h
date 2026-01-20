@@ -31,7 +31,7 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "PostGIS" ); }
+    QString name() override { return u"PostGIS"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
@@ -63,7 +63,11 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
     static void deleteProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
     static void duplicateProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
-    static void moveProjectToSchema( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static void moveProjectsToSchema( const QList<QgsPGProjectItem *> &selection, QgsDataItemGuiContext context );
+    static void saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
+    static void saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
+    static void setProjectComment( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static bool enableProjectsVersioning( const QString connectionName, const QString &schemaName, QgsDataItemGuiContext context );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H

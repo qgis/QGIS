@@ -18,18 +18,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshttpheaderwidget.h"
-#include "moc_qgshttpheaderwidget.cpp"
 #include "ui_qgshttpheaderwidget.h"
+#include "qgshttpheaderwidget.h"
+
 #include "qgsapplication.h"
 
+#include "moc_qgshttpheaderwidget.cpp"
 
 QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
-  btnAddQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
-  btnRemoveQueryPair->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
+  btnAddQueryPair->setIcon( QgsApplication::getThemeIcon( u"/symbologyAdd.svg"_s ) );
+  btnRemoveQueryPair->setIcon( QgsApplication::getThemeIcon( u"/symbologyRemove.svg"_s ) );
   grpbxAdvanced->setCollapsed( true );
 
   // Action and interaction connections

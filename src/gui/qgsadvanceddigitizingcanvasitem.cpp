@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
+#include "qgsadvanceddigitizingcanvasitem.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsadvanceddigitizingcanvasitem.h"
 #include "qgsmapcanvas.h"
 
+#include <QPainter>
 
 QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapCanvasItem( canvas )

@@ -18,9 +18,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
 #include <gdal.h>
 
+#include "qgis_core.h"
+#include "qgsfeedback.h"
 #include "qgsogrutils.h"
 
 class QgsRasterBlock;
@@ -377,6 +378,43 @@ class CORE_EXPORT QgsGdalUtils
     static QString gdalDocumentationUrlForDriver( GDALDriverH hDriver );
 
     friend class TestQgsGdalUtils;
+};
+
+/**
+ * \ingroup core
+ * \class QgsGdalProgressAdapter
+ * \brief Utility class to map from GDALProgressFunc to QgsFeedback
+ *
+ * Typically used like the following snippet:
+ * \code{.cpp}
+ * QgsGdalProgressAdapter progress(feedback);
+ * GDALSomeCall( ... , QgsGdalProgressAdapter::progressCallback, &sProgress );
+ * \endcode
+ *
+ * \note not available in Python bindings
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsGdalProgressAdapter
+{
+  public:
+
+    /**
+     * Constructor from \a feedback (which may be NULL).
+     *
+     * The \a startPercentage and \a endPercentage passed to the feedback may be
+     * specified.
+     */
+    explicit QgsGdalProgressAdapter( QgsFeedback *feedback, double startPercentage = 0.0, double endPercentage = 100.0 );
+
+    /**
+     * GDAL progress callback
+     */
+    static int CPL_STDCALL progressCallback( double dfComplete, const char *pszMessage, void *pProgressArg );
+
+  private:
+    QgsFeedback *mFeedback = nullptr;
+    double mStartPercentage;
+    double mEndPercentage;
 };
 
 #endif // QGSGDALUTILS_H

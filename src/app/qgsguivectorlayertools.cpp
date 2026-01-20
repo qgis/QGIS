@@ -13,21 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QToolButton>
-
 #include "qgsguivectorlayertools.h"
-#include "moc_qgsguivectorlayertools.cpp"
 
-#include "qgsavoidintersectionsoperation.h"
 #include "qgisapp.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsfeatureaction.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsvectorlayertoolscontext.h"
+#include "qgsvectorlayerutils.h"
+
+#include <QMessageBox>
+#include <QToolButton>
+
+#include "moc_qgsguivectorlayertools.cpp"
 
 bool QgsGuiVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
 {
@@ -207,14 +208,14 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit Errors" ) );
-  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ) + "\n\n" + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QLatin1String( "\n  " ) ) ) );
+  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ) + "\n\n" + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( "\n  "_L1 ) ) );
 
   QToolButton *showMore = new QToolButton();
   // store pointer to vlayer in data of QAction
   QAction *act = new QAction( showMore );
   act->setData( QVariant::fromValue( vlayer ) );
   act->setText( tr( "Show more" ) );
-  showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+  showMore->setStyleSheet( u"background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;"_s );
   showMore->setCursor( Qt::PointingHandCursor );
   showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMore->addAction( act );

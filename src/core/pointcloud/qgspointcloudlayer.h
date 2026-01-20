@@ -20,14 +20,15 @@
 
 class QgsPointCloudLayerRenderer;
 
-#include "qgspointclouddataprovider.h"
-#include "qgsmaplayer.h"
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsabstractprofilesource.h"
+#include "qgsmaplayer.h"
+#include "qgspointclouddataprovider.h"
 #include "qgspointcloudstatistics.h"
 
 #include <QString>
-#include <memory>
 
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;
@@ -111,7 +112,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     explicit QgsPointCloudLayer( const QString &uri = QString(),
                                  const QString &baseName = QString(),
-                                 const QString &providerLib = QStringLiteral( "pointcloud" ),
+                                 const QString &providerLib = u"pointcloud"_s,
                                  const QgsPointCloudLayer::LayerOptions &options = QgsPointCloudLayer::LayerOptions() );
 
     ~QgsPointCloudLayer() override;
@@ -122,7 +123,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointCloudLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsPointCloudLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -131,6 +132,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsAbstractProfileSource *profileSource() override {return this;}
+    QString profileSourceId() const override {return id();}
+    QString profileSourceName() const override {return name();}
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
     QgsPointCloudDataProvider *dataProvider() override;
@@ -146,17 +149,17 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 
     bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) override;
-    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) FINAL;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) final;
 
     bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context,
                          StyleCategories categories = AllStyleCategories ) const override;
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const FINAL;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context, StyleCategories categories = AllStyleCategories ) const final;
 
     void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
     QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const override;
     QString decodedSource( const QString &source, const QString &dataProvider, const QgsReadWriteContext &context ) const override;
-    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) final;
     QString htmlMetadata() const override;
     QgsMapLayerElevationProperties *elevationProperties() override;
 

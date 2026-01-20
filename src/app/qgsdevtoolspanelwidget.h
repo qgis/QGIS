@@ -16,6 +16,7 @@
 #define QGSDEVTOOLSPANELWIDGET_H
 
 #include "ui_qgsdevtoolswidgetbase.h"
+
 #include "qgis_app.h"
 #include "qgssettingstree.h"
 
@@ -26,7 +27,7 @@ class APP_EXPORT QgsDevToolsPanelWidget : public QWidget, private Ui::QgsDevTool
 {
     Q_OBJECT
   public:
-    static inline QgsSettingsTreeNode *sTreeDevTools = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "devtools" ) );
+    static inline QgsSettingsTreeNode *sTreeDevTools = QgsSettingsTree::sTreeApp->createChildNode( u"devtools"_s );
     static const QgsSettingsEntryString *settingLastActiveTab;
 
     QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFactory *> &factories, QWidget *parent = nullptr );

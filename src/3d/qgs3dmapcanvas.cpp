@@ -13,30 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <Qt3DCore/QAspectEngine>
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DCore/QCoreAspect>
-#endif
-#include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QRenderAspect>
-#include <Qt3DInput/QInputAspect>
-#include <Qt3DInput/QInputSettings>
-#include <Qt3DLogic/QLogicAspect>
-#include <Qt3DLogic/QFrameAction>
+#include "qgs3dmapcanvas.h"
 
 #include "qgs3daxis.h"
-#include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
-#include "qgswindow3dengine.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
-#include "qgstemporalcontroller.h"
+#include "qgs3dutils.h"
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
+#include "qgsraycastcontext.h"
 #include "qgsrubberband3d.h"
+#include "qgstemporalcontroller.h"
+#include "qgswindow3dengine.h"
+
+#include <Qt3DCore/QAspectEngine>
+#include <Qt3DCore/QCoreAspect>
+#include <Qt3DInput/QInputAspect>
+#include <Qt3DInput/QInputSettings>
+#include <Qt3DLogic/QFrameAction>
+#include <Qt3DLogic/QLogicAspect>
+#include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QRenderSettings>
 
 #include "moc_qgs3dmapcanvas.cpp"
-
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -47,15 +47,11 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   , m_defaultCamera( new Qt3DRender::QCamera )
   , m_inputSettings( new Qt3DInput::QInputSettings )
   , m_root( new Qt3DCore::QEntity )
-  , m_userRoot( nullptr )
-  , m_initialized( false )
 {
   setSurfaceType( QSurface::OpenGLSurface );
 
   // register aspects
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   m_aspectEngine->registerAspect( new Qt3DCore::QCoreAspect );
-#endif
   m_aspectEngine->registerAspect( m_renderAspect );
   m_aspectEngine->registerAspect( m_inputAspect );
   m_aspectEngine->registerAspect( m_logicAspect );
@@ -185,6 +181,67 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 QgsCameraController *Qgs3DMapCanvas::cameraController()
 {
   return mScene ? mScene->cameraController() : nullptr;
+}
+
+QgsRayCastResult Qgs3DMapCanvas::castRay( const QPoint &screenPoint, QgsRayCastContext context )
+{
+  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( screenPoint, size(), camera() );
+  if ( context.maximumDistance() < 0 )
+    context.setMaximumDistance( camera()->farPlane() );
+  const QgsRayCastResult res = Qgs3DUtils::castRay( mScene, ray, context );
+  return res;
+}
+
+void Qgs3DMapCanvas::enableCrossSection( const QgsPointXY &startPoint, const QgsPointXY &endPoint, double width, bool setSideView )
+{
+  if ( !mScene )
+    return;
+
+  const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
+  const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
+  const QList<QVector4D> clippingPlanes = Qgs3DUtils::lineSegmentToClippingPlanes(
+    startVec,
+    endVec,
+    width,
+    mMapSettings->origin()
+  );
+
+  if ( setSideView )
+  {
+    // calculate the middle of the front side defined by clipping planes
+    QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+    linePerpVec = -linePerpVec.normalized().perpVector();
+    const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+    const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
+    const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
+
+    const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
+      frontStartPoint,
+      frontEndPoint,
+      mScene->elevationRange( true ),
+      mScene->cameraController()->camera()->fieldOfView(),
+      mMapSettings->origin()
+    );
+
+    mScene->cameraController()->setCameraPose( camPose );
+  }
+
+  mScene->enableClipping( clippingPlanes );
+  emit crossSectionEnabledChanged( true );
+}
+
+void Qgs3DMapCanvas::disableCrossSection()
+{
+  if ( !mScene )
+    return;
+
+  mScene->disableClipping();
+  emit crossSectionEnabledChanged( false );
+}
+
+bool Qgs3DMapCanvas::crossSectionEnabled() const
+{
+  return mScene ? !mScene->clipPlaneEquations().isEmpty() : false;
 }
 
 void Qgs3DMapCanvas::resetView()
@@ -372,7 +429,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
     QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
 
     const QgsSettings settings;
-    const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+    const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
     band->setColor( color );
     band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
     if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )

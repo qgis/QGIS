@@ -18,10 +18,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QMap>
+#include <QObject>
 
 class QgsProject;
 

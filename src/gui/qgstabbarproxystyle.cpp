@@ -13,11 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstabbarproxystyle.h"
-#include "moc_qgstabbarproxystyle.cpp"
+
+#include <QDebug>
 #include <QPainter>
 #include <QStyleOption>
-#include <QDebug>
 
+#include "moc_qgstabbarproxystyle.cpp"
 
 ///@cond PRIVATE
 

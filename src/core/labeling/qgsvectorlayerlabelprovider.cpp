@@ -15,31 +15,29 @@
 
 #include "qgsvectorlayerlabelprovider.h"
 
-#include "qgsgeometry.h"
-#include "qgslabelsearchtree.h"
-#include "qgspallabeling.h"
-#include "qgstextlabelfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsrenderer.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmaskidprovider.h"
-#include "qgstextcharacterformat.h"
-#include "qgstextfragment.h"
-#include "qgslabelingresults.h"
-#include "qgstextrenderer.h"
-
+#include "callouts/qgscallout.h"
 #include "feature.h"
 #include "labelposition.h"
-#include "callouts/qgscallout.h"
-#include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-
 #include "pal/layer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgeometry.h"
+#include "qgslabelingresults.h"
+#include "qgslabelsearchtree.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmaskidprovider.h"
+#include "qgsmultipolygon.h"
+#include "qgspallabeling.h"
+#include "qgspolygon.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgstextcharacterformat.h"
+#include "qgstextfragment.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 #include <QPicture>
 #include <QTextDocument>
@@ -69,7 +67,6 @@ QgsVectorLayerLabelProvider::QgsVectorLayerLabelProvider( Qgis::GeometryType geo
   : QgsAbstractLabelProvider( layer, providerId )
   , mSettings( settings ? * settings : QgsPalLayerSettings() ) // TODO: all providers should have valid settings?
   , mLayerGeometryType( geometryType )
-  , mRenderer( nullptr )
   , mFields( fields )
   , mCrs( crs )
 {
@@ -196,12 +193,15 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
 
 QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
   QList< QgsLabelFeature * > res;
-  if ( label )
+  for ( auto &it : labels )
   {
-    res << label.get();
-    mLabels << label.release();
+    if ( it )
+    {
+      res << it.get();
+      mLabels << it.release();
+    }
   }
   return res;
 }
@@ -339,7 +339,7 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
     QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
     g.transform( xform.transform() );
     QgsCallout::QgsCalloutContext calloutContext;
-    calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->labelAllParts();
+    calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->multiPartBehavior() != Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
     calloutContext.originalFeatureCrs = label->getFeaturePart()->feature()->originalFeatureCrs();
     mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
 
@@ -361,6 +361,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
     return;
 
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !lf )
+    return;
 
   // Copy to temp, editable layer settings
   // these settings will be changed by any data defined values, then used for rendering label components
@@ -372,8 +374,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 
   //font
   QFont dFont = lf->definedFont();
-  QgsDebugMsgLevel( QStringLiteral( "PAL font tmpLyr: %1, Style: %2" ).arg( tmpLyr.format().font().toString(), tmpLyr.format().font().styleName() ), 4 );
-  QgsDebugMsgLevel( QStringLiteral( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString(), dFont.styleName() ), 4 );
+  QgsDebugMsgLevel( u"PAL font tmpLyr: %1, Style: %2"_s.arg( tmpLyr.format().font().toString(), tmpLyr.format().font().styleName() ), 4 );
+  QgsDebugMsgLevel( u"PAL font definedFont: %1, Style: %2"_s.arg( dFont.toString(), dFont.styleName() ), 4 );
 
   QgsTextFormat format = tmpLyr.format();
   format.setFont( dFont );
@@ -474,6 +476,8 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
 void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, LabelPosition *label ) const
 {
   QgsTextLabelFeature *lf = dynamic_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
+  if ( !lf )
+    return;
 
   QgsTextFormat format = mSettings.format();
   if ( mSettings.drawLabels

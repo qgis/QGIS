@@ -10,7 +10,8 @@
 
 %ModuleHeaderCode
 // For ConvertToSubClassCode.
-#include <qgsmapcanvasannotationitem.h>
+#include "qgsmapcanvasannotationitem.h"
+
 %End
 
 

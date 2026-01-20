@@ -27,7 +27,7 @@ try:
 except (NameError, AttributeError):
     pass
 try:
-    QgsAbstractMetadataBase.__virtual_methods__ = ['readMetadataXml', 'writeMetadataXml', 'combine']
+    QgsAbstractMetadataBase.__virtual_methods__ = ['readMetadataXml', 'writeMetadataXml', 'combine', 'registerTranslations']
     QgsAbstractMetadataBase.__abstract_methods__ = ['clone']
     QgsAbstractMetadataBase.__group__ = ['metadata']
 except (NameError, AttributeError):

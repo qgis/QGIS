@@ -20,25 +20,26 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QMimeData>
-#include <QPushButton>
-#include <QTableWidget>
-#include <QTreeWidget>
-#include <QWidget>
-#include <QSpinBox>
-#include <QTreeWidgetItem>
-#include <QDropEvent>
-#include <QTableWidgetItem>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QFormLayout>
-
 #include "ui_qgssourcefieldsproperties.h"
+
 #include "qgis_gui.h"
-#include "qgslogger.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
+#include "qgslogger.h"
+
+#include <QDropEvent>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QTableWidget>
+#include <QTableWidgetItem>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -112,6 +113,10 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
 
     void attributesListCellChanged( int row, int column );
     void attributesListCellPressed( int row, int column );
+
+    void applyToLayer( QgsVectorLayer *layer );
+
+    friend class QgsAttributesFormProperties;
 };
 
 #endif // QGSSOURCEFIELDSPROPERTIES_H

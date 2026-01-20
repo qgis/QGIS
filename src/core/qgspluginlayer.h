@@ -16,8 +16,8 @@
 #define QGSPLUGINLAYER_H
 
 #include "qgis_core.h"
-#include "qgsmaplayer.h"
 #include "qgsdataprovider.h"
+#include "qgsmaplayer.h"
 
 /**
  * \ingroup core
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPluginLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsPluginLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     QgsPluginLayer *clone() const override = 0;
 
     //! Returns plugin layer type (the same as used in QgsPluginLayerRegistry)
-    QString pluginLayerType();
+    QString pluginLayerType() const;
 
     //! Sets extent of the layer
     void setExtent( const QgsRectangle &extent ) override;

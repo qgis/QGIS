@@ -15,14 +15,16 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygon2points.h"
-#include "moc_qgsmaptoolshaperegularpolygon2points.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeRegularPolygon2PointsMetadata::TOOL_ID = QStringLiteral( "regular-polygon-from-2-points" );
+#include "moc_qgsmaptoolshaperegularpolygon2points.cpp"
+
+const QString QgsMapToolShapeRegularPolygon2PointsMetadata::TOOL_ID = u"regular-polygon-from-2-points"_s;
 
 QString QgsMapToolShapeRegularPolygon2PointsMetadata::id() const
 {
@@ -36,7 +38,7 @@ QString QgsMapToolShapeRegularPolygon2PointsMetadata::name() const
 
 QIcon QgsMapToolShapeRegularPolygon2PointsMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRegularPolygon2Points.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRegularPolygon2Points.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRegularPolygon2PointsMetadata::category() const
@@ -98,6 +100,11 @@ void QgsMapToolShapeRegularPolygon2Points::cadCanvasMoveEvent( QgsMapMouseEvent 
   if ( mTempRubberBand && !mPoints.isEmpty() )
   {
     mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), point, mNumberSidesSpinBox->value() );
-    mTempRubberBand->setGeometry( mRegularPolygon.toPolygon() );
+    const QgsGeometry newGeometry( mRegularPolygon.toPolygon() );
+    if ( !newGeometry.isEmpty() )
+    {
+      mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+      setTransientGeometry( newGeometry );
+    }
   }
 }

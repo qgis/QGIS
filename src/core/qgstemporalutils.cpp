@@ -14,13 +14,14 @@
  ***************************************************************************/
 
 #include "qgstemporalutils.h"
-#include "qgsproject.h"
-#include "qgsmaplayertemporalproperties.h"
-#include "qgstemporalnavigationobject.h"
-#include "qgsmapdecoration.h"
-#include "qgsmapsettings.h"
-#include "qgsmaprenderercustompainterjob.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsmapdecoration.h"
+#include "qgsmaplayertemporalproperties.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgstemporalnavigationobject.h"
 
 #include <QRegularExpression>
 
@@ -72,13 +73,13 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     error = QObject::tr( "Filename template is empty" );
     return false;
   }
-  const int numberOfDigits = settings.fileNameTemplate.count( QLatin1Char( '#' ) );
+  const int numberOfDigits = settings.fileNameTemplate.count( '#'_L1 );
   if ( numberOfDigits < 0 )
   {
     error = QObject::tr( "Wrong filename template format (must contain #)" );
     return false;
   }
-  const QString token( numberOfDigits, QLatin1Char( '#' ) );
+  const QString token( numberOfDigits, '#'_L1 );
   if ( !settings.fileNameTemplate.contains( token ) )
   {
     error = QObject::tr( "Filename template must contain all # placeholders in one continuous group." );
@@ -94,7 +95,10 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
   navigator.setTemporalExtents( settings.animationRange );
   navigator.setFrameDuration( settings.frameDuration );
   if ( settings.frameDuration.originalUnit() == Qgis::TemporalUnit::IrregularStep )
+  {
     navigator.setAvailableTemporalRanges( settings.availableTemporalRanges );
+  }
+  navigator.setTemporalRangeCumulative( settings.temporalRangeCumulative );
 
   QgsMapSettings ms = mapSettings;
   const QgsExpressionContext context = ms.expressionContext();
@@ -127,7 +131,7 @@ bool QgsTemporalUtils::exportAnimation( const QgsMapSettings &mapSettings, const
     ms.setExpressionContext( frameContext );
 
     QString fileName( settings.fileNameTemplate );
-    const QString frameNoPaddedLeft( QStringLiteral( "%1" ).arg( currentFrame, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
+    const QString frameNoPaddedLeft( u"%1"_s.arg( currentFrame, numberOfDigits, 10, QChar( '0' ) ) ); // e.g. 0001
     fileName.replace( token, frameNoPaddedLeft );
     const QString path = QDir( settings.outputDirectory ).filePath( fileName );
 
@@ -329,22 +333,22 @@ long long QgsTimeDuration::toSeconds() const
   long long secs = 0.0;
 
   if ( years )
-    secs += years * QgsInterval::YEARS;
+    secs += years * static_cast< long long >( QgsInterval::YEARS );
   if ( months )
-    secs += months * QgsInterval::MONTHS;
+    secs += months * static_cast< long long >( QgsInterval::MONTHS );
   if ( days )
-    secs += days * QgsInterval::DAY;
+    secs += days * static_cast< long long >( QgsInterval::DAY );
   if ( hours )
-    secs += hours * QgsInterval::HOUR;
+    secs += hours * static_cast< long long >( QgsInterval::HOUR );
   if ( minutes )
-    secs += minutes * QgsInterval::MINUTE;
+    secs += minutes * static_cast< long long >( QgsInterval::MINUTE );
   if ( seconds )
     secs += seconds;
 
   return secs;
 }
 
-QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime )
+QDateTime QgsTimeDuration::addToDateTime( const QDateTime &dateTime ) const
 {
   QDateTime resultDateTime = dateTime;
 

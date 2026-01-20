@@ -13,34 +13,36 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDesktopServices>
-#include <QKeyEvent>
-#include <QHeaderView>
-#include <QMenu>
-#include <QToolButton>
-#include <QHBoxLayout>
+#include "qgsattributetableview.h"
 
 #include "qgsactionmanager.h"
-#include "qgsattributetableview.h"
-#include "moc_qgsattributetableview.cpp"
-#include "qgsattributetablemodel.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeatureselectionmodel.h"
+#include "qgsgui.h"
+#include "qgsmaplayeraction.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsstringutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
 #include "qgsvectorlayerselectionmanager.h"
-#include "qgsfeatureselectionmodel.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgsfeatureiterator.h"
-#include "qgsstringutils.h"
-#include "qgsgui.h"
-#include "qgsmaplayeraction.h"
+
+#include <QDesktopServices>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QToolButton>
+
+#include "moc_qgsattributetableview.cpp"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QgsTableView( parent )
 {
   const QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "BetterAttributeTable/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( u"BetterAttributeTable/geometry"_s ).toByteArray() );
 
   //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
@@ -250,7 +252,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
   QAction *defaultAction = nullptr;
 
   // first add user created layer actions
-  const QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( QStringLiteral( "Feature" ) );
+  const QList<QgsAction> actions = mFilterModel->layer()->actions()->actions( u"Feature"_s );
   const auto constActions = actions;
   for ( const QgsAction &action : constActions )
   {
@@ -267,7 +269,7 @@ QWidget *QgsAttributeTableView::createActionWidget( QgsFeatureId fid )
     connect( act, &QAction::triggered, this, &QgsAttributeTableView::actionTriggered );
     actionList << act;
 
-    if ( mFilterModel->layer()->actions()->defaultAction( QStringLiteral( "Feature" ) ).id() == action.id() )
+    if ( mFilterModel->layer()->actions()->defaultAction( u"Feature"_s ).id() == action.id() )
       defaultAction = act;
   }
 
@@ -329,7 +331,7 @@ void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
   Q_UNUSED( e )
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "BetterAttributeTable/geometry" ), QVariant( saveGeometry() ) );
+  settings.setValue( u"BetterAttributeTable/geometry"_s, QVariant( saveGeometry() ) );
 }
 
 void QgsAttributeTableView::mousePressEvent( QMouseEvent *event )
@@ -506,11 +508,11 @@ void QgsAttributeTableView::actionTriggered()
   QgsFeature f;
   mFilterModel->layerCache()->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
 
-  if ( action->data().toString() == QLatin1String( "user_action" ) )
+  if ( action->data().toString() == "user_action"_L1 )
   {
     mFilterModel->layer()->actions()->doAction( action->property( "action_id" ).toUuid(), f );
   }
-  else if ( action->data().toString() == QLatin1String( "map_layer_action" ) )
+  else if ( action->data().toString() == "map_layer_action"_L1 )
   {
     QObject *object = action->property( "action" ).value<QObject *>();
     QgsMapLayerAction *layerAction = qobject_cast<QgsMapLayerAction *>( object );

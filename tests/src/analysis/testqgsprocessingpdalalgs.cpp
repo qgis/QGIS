@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "limits"
+#include <limits>
 
-#include "qgstest.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingcontext.h"
-#include "qgspdalalgorithms.h"
 #include "qgspdalalgorithmbase.h"
+#include "qgspdalalgorithms.h"
 #include "qgspointcloudlayer.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingregistry.h"
+#include "qgstest.h"
 
 #include <QThread>
 
@@ -32,7 +32,7 @@ class TestQgsProcessingPdalAlgs : public QgsTest
 
   public:
     TestQgsProcessingPdalAlgs()
-      : QgsTest( QStringLiteral( "Processing PDAL Algorithms Test" ) )
+      : QgsTest( u"Processing PDAL Algorithms Test"_s )
     {}
 
   private slots:
@@ -57,6 +57,12 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void thinByDecimate();
     void thinByRadius();
     void tile();
+    void heightAboveGroundTriangulation();
+    void heightAboveGroundNearestNeighbour();
+    void classifyGround();
+    void filterNoiseStatistical();
+    void filterNoiseRadius();
+    void transformCoordinates();
 
     void useIndexCopcFile();
 
@@ -72,9 +78,9 @@ void TestQgsProcessingPdalAlgs::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::processingRegistry()->addProvider( new QgsPdalAlgorithms( QgsApplication::processingRegistry() ) );
 
@@ -110,13 +116,13 @@ void TestQgsProcessingPdalAlgs::updateFileListArg( QStringList &args, const QStr
 
   if ( found )
   {
-    args[i] = QStringLiteral( "--input-file-list=%1" ).arg( fileName );
+    args[i] = u"--input-file-list=%1"_s.arg( fileName );
   }
 }
 
 void TestQgsProcessingPdalAlgs::info()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:info" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:info"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -126,16 +132,16 @@ void TestQgsProcessingPdalAlgs::info()
   const QString outputHtml = QDir::tempPath() + "/report.html";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputHtml );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputHtml );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "info" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) );
+  QCOMPARE( args, QStringList() << u"info"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) );
 }
 
 void TestQgsProcessingPdalAlgs::convertFormat()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:convertformat" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:convertformat"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -146,11 +152,11 @@ void TestQgsProcessingPdalAlgs::convertFormat()
   const QString outputPointCloud = QDir::tempPath() + "/converted.las";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) );
 
   bool ok;
   alg->run( parameters, *context, &feedback, &ok );
@@ -161,7 +167,7 @@ void TestQgsProcessingPdalAlgs::convertFormat()
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--threads=2"_s );
 
   // run the alg
   ok = false;
@@ -176,11 +182,11 @@ void TestQgsProcessingPdalAlgs::convertFormat()
   context->setMaximumThreads( 0 );
 
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputCopc );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputCopc );
 
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopc ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputCopc ) );
 
   ok = false;
   alg->run( parameters, *context, &feedback, &ok );
@@ -191,7 +197,7 @@ void TestQgsProcessingPdalAlgs::convertFormat()
 
 void TestQgsProcessingPdalAlgs::reproject()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:reproject" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:reproject"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -202,12 +208,12 @@ void TestQgsProcessingPdalAlgs::reproject()
   const QString outputPointCloud = QDir::tempPath() + "/reprojected.las";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"CRS"_s, u"EPSG:4326"_s );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-crs=%1"_s.arg( "EPSG:4326"_L1 ) );
 
   // run the alg
   bool ok;
@@ -219,7 +225,7 @@ void TestQgsProcessingPdalAlgs::reproject()
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-crs=%1"_s.arg( "EPSG:4326"_L1 ) << u"--threads=2"_s );
 
   // version with run and output to COPC
   QString outputCopcPointCloud = QDir::tempPath() + "/reprojected.copc.laz";
@@ -227,12 +233,12 @@ void TestQgsProcessingPdalAlgs::reproject()
   context->setMaximumThreads( 0 );
 
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputCopcPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"CRS"_s, u"EPSG:4326"_s );
+  parameters.insert( u"OUTPUT"_s, outputCopcPointCloud );
 
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopcPointCloud ) << QStringLiteral( "--transform-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputCopcPointCloud ) << u"--transform-crs=%1"_s.arg( "EPSG:4326"_L1 ) );
 
   ok = false;
   alg->run( parameters, *context, &feedback, &ok );
@@ -243,7 +249,7 @@ void TestQgsProcessingPdalAlgs::reproject()
 
 void TestQgsProcessingPdalAlgs::assignProjection()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:assignprojection" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:assignprojection"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -254,22 +260,22 @@ void TestQgsProcessingPdalAlgs::assignProjection()
   const QString outputPointCloud = QDir::tempPath() + "/reprojected.las";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"CRS"_s, u"EPSG:4326"_s );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--assign-crs=%1"_s.arg( "EPSG:4326"_L1 ) );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--assign-crs=%1" ).arg( QLatin1String( "EPSG:4326" ) ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--assign-crs=%1"_s.arg( "EPSG:4326"_L1 ) << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::thinByDecimate()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:thinbydecimate" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:thinbydecimate"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -281,35 +287,35 @@ void TestQgsProcessingPdalAlgs::thinByDecimate()
 
   // default values
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=every-nth" ) << QStringLiteral( "--step-every-nth=1" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=every-nth"_s << u"--step-every-nth=1"_s );
 
   // set points number
-  parameters.insert( QStringLiteral( "POINTS_NUMBER" ), 200 );
+  parameters.insert( u"POINTS_NUMBER"_s, 200 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=every-nth" ) << QStringLiteral( "--step-every-nth=200" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=every-nth"_s << u"--step-every-nth=200"_s );
 
   // filter exression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=every-nth" ) << QStringLiteral( "--step-every-nth=200" ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=every-nth"_s << u"--step-every-nth=200"_s << u"--filter=Intensity > 50"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=every-nth" ) << QStringLiteral( "--step-every-nth=200" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=every-nth"_s << u"--step-every-nth=200"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=every-nth" ) << QStringLiteral( "--step-every-nth=200" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=every-nth"_s << u"--step-every-nth=200"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::thinByRadius()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:thinbyradius" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:thinbyradius"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -321,35 +327,35 @@ void TestQgsProcessingPdalAlgs::thinByRadius()
 
   // default values
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=sample" ) << QStringLiteral( "--step-sample=1" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=sample"_s << u"--step-sample=1"_s );
 
   // set sampling radius
-  parameters.insert( QStringLiteral( "SAMPLING_RADIUS" ), 2.5 );
+  parameters.insert( u"SAMPLING_RADIUS"_s, 2.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=sample" ) << QStringLiteral( "--step-sample=2.5" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=sample"_s << u"--step-sample=2.5"_s );
 
   // filter exression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=sample" ) << QStringLiteral( "--step-sample=2.5" ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=sample"_s << u"--step-sample=2.5"_s << u"--filter=Intensity > 50"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=sample" ) << QStringLiteral( "--step-sample=2.5" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=sample"_s << u"--step-sample=2.5"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "thin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--mode=sample" ) << QStringLiteral( "--step-sample=2.5" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"thin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--mode=sample"_s << u"--step-sample=2.5"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::boundary()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:boundary" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:boundary"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -360,40 +366,40 @@ void TestQgsProcessingPdalAlgs::boundary()
   const QString outputGpkg = QDir::tempPath() + "/boundary.gpkg";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputGpkg );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputGpkg );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputGpkg ) );
+  QCOMPARE( args, QStringList() << u"boundary"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputGpkg ) );
 
   // threshold requires resolution parameter
-  parameters.insert( QStringLiteral( "THRESHOLD" ), 10 );
+  parameters.insert( u"THRESHOLD"_s, 10 );
   QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 3000 );
+  parameters.insert( u"RESOLUTION"_s, 3000 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputGpkg ) << QStringLiteral( "--resolution=%1" ).arg( 3000 ) << QStringLiteral( "--threshold=%1" ).arg( 10 ) );
+  QCOMPARE( args, QStringList() << u"boundary"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputGpkg ) << u"--resolution=%1"_s.arg( 3000 ) << u"--threshold=%1"_s.arg( 10 ) );
 
   // with filter expression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputGpkg ) << QStringLiteral( "--resolution=%1" ).arg( 3000 ) << QStringLiteral( "--threshold=%1" ).arg( 10 ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"boundary"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputGpkg ) << u"--resolution=%1"_s.arg( 3000 ) << u"--threshold=%1"_s.arg( 10 ) << u"--filter=Intensity > 50"_s );
 
   // with filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputGpkg ) << QStringLiteral( "--resolution=%1" ).arg( 3000 ) << QStringLiteral( "--threshold=%1" ).arg( 10 ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"boundary"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputGpkg ) << u"--resolution=%1"_s.arg( 3000 ) << u"--threshold=%1"_s.arg( 10 ) << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "boundary" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputGpkg ) << QStringLiteral( "--resolution=%1" ).arg( 3000 ) << QStringLiteral( "--threshold=%1" ).arg( 10 ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"boundary"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputGpkg ) << u"--resolution=%1"_s.arg( 3000 ) << u"--threshold=%1"_s.arg( 10 ) << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::density()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:density" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:density"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -405,56 +411,56 @@ void TestQgsProcessingPdalAlgs::density()
 
   QVariantMap parameters;
   // defaults
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "density" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=1" ) << QStringLiteral( "--tile-size=1000" ) );
+  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=1"_s << u"--tile-size=1000"_s );
 
   // change resolution
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 0.5 );
+  parameters.insert( u"RESOLUTION"_s, 0.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "density" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=1000" ) );
+  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=1000"_s );
 
   // set tile size
-  parameters.insert( QStringLiteral( "TILE_SIZE" ), 100 );
+  parameters.insert( u"TILE_SIZE"_s, 100 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "density" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) );
+  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s );
 
   // set X tile origin
-  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  parameters.insert( u"ORIGIN_X"_s, 1 );
   QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
   // set Y tile origin
-  parameters.remove( QStringLiteral( "ORIGIN_X" ) );
-  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
+  parameters.remove( u"ORIGIN_X"_s );
+  parameters.insert( u"ORIGIN_Y"_s, 10 );
   QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
   // set both X and Y tile origin
-  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
-  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  parameters.insert( u"ORIGIN_Y"_s, 10 );
+  parameters.insert( u"ORIGIN_X"_s, 1 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "density" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) );
+  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s );
 
   // filter expression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "density" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "density" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "density" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"density"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::exportRasterTin()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportrastertin" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:exportrastertin"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -466,56 +472,65 @@ void TestQgsProcessingPdalAlgs::exportRasterTin()
 
   QVariantMap parameters;
   // defaults
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=1" ) << QStringLiteral( "--tile-size=1000" ) );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=1"_s << u"--tile-size=1000"_s );
 
   // change resolution
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 0.5 );
+  parameters.insert( u"RESOLUTION"_s, 0.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=1000" ) );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=1000"_s );
 
   // set tile size
-  parameters.insert( QStringLiteral( "TILE_SIZE" ), 100 );
+  parameters.insert( u"TILE_SIZE"_s, 100 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s );
 
   // set X tile origin
-  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  parameters.insert( u"ORIGIN_X"_s, 1 );
   QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
   // set Y tile origin
-  parameters.remove( QStringLiteral( "ORIGIN_X" ) );
-  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
+  parameters.remove( u"ORIGIN_X"_s );
+  parameters.insert( u"ORIGIN_Y"_s, 10 );
   QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
   // set both X and Y tile origin
-  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
-  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  parameters.insert( u"ORIGIN_Y"_s, 10 );
+  parameters.insert( u"ORIGIN_X"_s, 1 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s );
+
+#ifdef HAVE_PDAL_QGIS
+#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 6 )
+  parameters.insert( u"MAX_EDGE_LENGTH"_s, 25 );
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--max_triangle_edge_length=25"_s );
+  parameters.remove( u"MAX_EDGE_LENGTH"_s );
+#endif
+#endif
 
   // filter expression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster_tin" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"to_raster_tin"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::tile()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:tile" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:tile"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -529,41 +544,41 @@ void TestQgsProcessingPdalAlgs::tile()
   QString tempFolder = QgsProcessingUtils::tempFolder();
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputDir );
+  parameters.insert( u"LAYERS"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputDir );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "tile" ) << QStringLiteral( "--length=1000" ) << QStringLiteral( "--output=%1" ).arg( outputDir ) << QStringLiteral( "--temp_dir=%1" ).arg( tempFolder ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"tile"_s << u"--length=1000"_s << u"--output=%1"_s.arg( outputDir ) << u"--temp_dir=%1"_s.arg( tempFolder ) << u"--input-file-list=inputFiles.txt"_s );
 
   // override temp folder
   context->setTemporaryFolder( tempDir );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "tile" ) << QStringLiteral( "--length=1000" ) << QStringLiteral( "--output=%1" ).arg( outputDir ) << QStringLiteral( "--temp_dir=%1" ).arg( tempDir ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"tile"_s << u"--length=1000"_s << u"--output=%1"_s.arg( outputDir ) << u"--temp_dir=%1"_s.arg( tempDir ) << u"--input-file-list=inputFiles.txt"_s );
 
   // set tile length
-  parameters.insert( QStringLiteral( "LENGTH" ), 150 );
+  parameters.insert( u"LENGTH"_s, 150 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "tile" ) << QStringLiteral( "--length=150" ) << QStringLiteral( "--output=%1" ).arg( outputDir ) << QStringLiteral( "--temp_dir=%1" ).arg( tempDir ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"tile"_s << u"--length=150"_s << u"--output=%1"_s.arg( outputDir ) << u"--temp_dir=%1"_s.arg( tempDir ) << u"--input-file-list=inputFiles.txt"_s );
 
   // assign crs
-  parameters.insert( QStringLiteral( "CRS" ), QStringLiteral( "EPSG:4326" ) );
+  parameters.insert( u"CRS"_s, u"EPSG:4326"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "tile" ) << QStringLiteral( "--length=150" ) << QStringLiteral( "--output=%1" ).arg( outputDir ) << QStringLiteral( "--temp_dir=%1" ).arg( tempDir ) << QStringLiteral( "--a_srs=EPSG:4326" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"tile"_s << u"--length=150"_s << u"--output=%1"_s.arg( outputDir ) << u"--temp_dir=%1"_s.arg( tempDir ) << u"--a_srs=EPSG:4326"_s << u"--input-file-list=inputFiles.txt"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "tile" ) << QStringLiteral( "--length=150" ) << QStringLiteral( "--output=%1" ).arg( outputDir ) << QStringLiteral( "--temp_dir=%1" ).arg( tempDir ) << QStringLiteral( "--a_srs=EPSG:4326" ) << QStringLiteral( "--threads=2" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"tile"_s << u"--length=150"_s << u"--output=%1"_s.arg( outputDir ) << u"--temp_dir=%1"_s.arg( tempDir ) << u"--a_srs=EPSG:4326"_s << u"--threads=2"_s << u"--input-file-list=inputFiles.txt"_s );
 }
 
 void TestQgsProcessingPdalAlgs::exportRaster()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportraster" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:exportraster"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -575,61 +590,61 @@ void TestQgsProcessingPdalAlgs::exportRaster()
 
   // defaults
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=Z" ) << QStringLiteral( "--resolution=1" ) << QStringLiteral( "--tile-size=1000" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=Z"_s << u"--resolution=1"_s << u"--tile-size=1000"_s );
 
   // specify attribute to use
-  parameters.insert( QStringLiteral( "ATTRIBUTE" ), QStringLiteral( "ReturnNumber" ) );
+  parameters.insert( u"ATTRIBUTE"_s, u"ReturnNumber"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=ReturnNumber" ) << QStringLiteral( "--resolution=1" ) << QStringLiteral( "--tile-size=1000" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=1"_s << u"--tile-size=1000"_s );
 
   // change resolution
-  parameters.insert( QStringLiteral( "RESOLUTION" ), 0.5 );
+  parameters.insert( u"RESOLUTION"_s, 0.5 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=ReturnNumber" ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=1000" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=1000"_s );
 
   // set tile size
-  parameters.insert( QStringLiteral( "TILE_SIZE" ), 100 );
+  parameters.insert( u"TILE_SIZE"_s, 100 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=ReturnNumber" ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=100"_s );
 
   // set X tile origin
-  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  parameters.insert( u"ORIGIN_X"_s, 1 );
   QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
   // set Y tile origin
-  parameters.remove( QStringLiteral( "ORIGIN_X" ) );
-  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
+  parameters.remove( u"ORIGIN_X"_s );
+  parameters.insert( u"ORIGIN_Y"_s, 10 );
   QVERIFY_EXCEPTION_THROWN( alg->createArgumentLists( parameters, *context, &feedback ), QgsProcessingException );
 
   // set both X and Y tile origin
-  parameters.insert( QStringLiteral( "ORIGIN_Y" ), 10 );
-  parameters.insert( QStringLiteral( "ORIGIN_X" ), 1 );
+  parameters.insert( u"ORIGIN_Y"_s, 10 );
+  parameters.insert( u"ORIGIN_X"_s, 1 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=ReturnNumber" ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s );
 
   // filter expression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=ReturnNumber" ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=ReturnNumber" ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_raster" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=ReturnNumber" ) << QStringLiteral( "--resolution=0.5" ) << QStringLiteral( "--tile-size=100" ) << QStringLiteral( "--tile-origin-x=1" ) << QStringLiteral( "--tile-origin-y=10" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"to_raster"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=ReturnNumber"_s << u"--resolution=0.5"_s << u"--tile-size=100"_s << u"--tile-origin-x=1"_s << u"--tile-origin-y=10"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::exportVector()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportvector" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:exportvector"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -641,36 +656,36 @@ void TestQgsProcessingPdalAlgs::exportVector()
 
   // defaults
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) );
+  QCOMPARE( args, QStringList() << u"to_vector"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) );
 
   // set attribute
-  parameters.insert( QStringLiteral( "ATTRIBUTE" ), QStringLiteral( "Z" ) );
+  parameters.insert( u"ATTRIBUTE"_s, u"Z"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=Z" ) );
+  QCOMPARE( args, QStringList() << u"to_vector"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=Z"_s );
 
   // filter expression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=Z" ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"to_vector"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=Z"_s << u"--filter=Intensity > 50"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=Z" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"to_vector"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=Z"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--attribute=Z" ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"to_vector"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--attribute=Z"_s << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::merge()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:merge" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:merge"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -682,37 +697,37 @@ void TestQgsProcessingPdalAlgs::merge()
 
   // default parameters
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"LAYERS"_s, QStringList() << mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "merge" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"merge"_s << u"--output=%1"_s.arg( outputFile ) << u"--input-file-list=inputFiles.txt"_s );
 
   // filter expression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "merge" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"merge"_s << u"--output=%1"_s.arg( outputFile ) << u"--filter=Intensity > 50"_s << u"--input-file-list=inputFiles.txt"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "merge" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"merge"_s << u"--output=%1"_s.arg( outputFile ) << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--input-file-list=inputFiles.txt"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "merge" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"merge"_s << u"--output=%1"_s.arg( outputFile ) << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s << u"--input-file-list=inputFiles.txt"_s );
 
   // version with run and output to COPC
   QString outputCopcPointCloud = QDir::tempPath() + "/merged.copc.laz";
 
   parameters.clear();
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputCopcPointCloud );
+  parameters.insert( u"LAYERS"_s, QStringList() << mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputCopcPointCloud );
 
   bool ok;
   alg->run( parameters, *context, &feedback, &ok );
@@ -723,7 +738,7 @@ void TestQgsProcessingPdalAlgs::merge()
 
 void TestQgsProcessingPdalAlgs::buildVpc()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:virtualpointcloud" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:virtualpointcloud"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -735,41 +750,41 @@ void TestQgsProcessingPdalAlgs::buildVpc()
 
   // default parameters
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "LAYERS" ), QStringList() << mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"LAYERS"_s, QStringList() << mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--input-file-list=inputFiles.txt"_s );
 
   // calculate exact boundaries
-  parameters.insert( QStringLiteral( "BOUNDARY" ), true );
+  parameters.insert( u"BOUNDARY"_s, true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--boundary" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--input-file-list=inputFiles.txt"_s );
 
   // calculate statistics
-  parameters.insert( QStringLiteral( "STATISTICS" ), true );
+  parameters.insert( u"STATISTICS"_s, true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--boundary" ) << QStringLiteral( "--stats" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--stats"_s << u"--input-file-list=inputFiles.txt"_s );
 
   // build overview
-  parameters.insert( QStringLiteral( "OVERVIEW" ), true );
+  parameters.insert( u"OVERVIEW"_s, true );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--boundary" ) << QStringLiteral( "--stats" ) << QStringLiteral( "--overview" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--stats"_s << u"--overview"_s << u"--input-file-list=inputFiles.txt"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  updateFileListArg( args, QStringLiteral( "inputFiles.txt" ) );
-  QCOMPARE( args, QStringList() << QStringLiteral( "build_vpc" ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--boundary" ) << QStringLiteral( "--stats" ) << QStringLiteral( "--overview" ) << QStringLiteral( "--threads=2" ) << QStringLiteral( "--input-file-list=inputFiles.txt" ) );
+  updateFileListArg( args, u"inputFiles.txt"_s );
+  QCOMPARE( args, QStringList() << u"build_vpc"_s << u"--output=%1"_s.arg( outputFile ) << u"--boundary"_s << u"--stats"_s << u"--overview"_s << u"--threads=2"_s << u"--input-file-list=inputFiles.txt"_s );
 }
 
 void TestQgsProcessingPdalAlgs::clip()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:clip" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:clip"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -781,27 +796,27 @@ void TestQgsProcessingPdalAlgs::clip()
   const QString polygonsFile = QString( TEST_DATA_DIR ) + "/polys.shp";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OVERLAY" ), polygonsFile );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OVERLAY"_s, polygonsFile );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "clip" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--polygon=%1" ).arg( polygonsFile ) );
+  QCOMPARE( args, QStringList() << u"clip"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--polygon=%1"_s.arg( polygonsFile ) );
 
   // filter expression
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Intensity > 50" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Intensity > 50"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "clip" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--polygon=%1" ).arg( polygonsFile ) << QStringLiteral( "--filter=Intensity > 50" ) );
+  QCOMPARE( args, QStringList() << u"clip"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--polygon=%1"_s.arg( polygonsFile ) << u"--filter=Intensity > 50"_s );
 
   // filter extent
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "clip" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--polygon=%1" ).arg( polygonsFile ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"clip"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--polygon=%1"_s.arg( polygonsFile ) << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "clip" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputFile ) << QStringLiteral( "--polygon=%1" ).arg( polygonsFile ) << QStringLiteral( "--filter=Intensity > 50" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"clip"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputFile ) << u"--polygon=%1"_s.arg( polygonsFile ) << u"--filter=Intensity > 50"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 
   // version with run and output to COPC
   QString pointCloudLayerPath = QString( TEST_DATA_DIR ) + "/point_clouds/copc/sunshine-coast.copc.laz";
@@ -811,12 +826,12 @@ void TestQgsProcessingPdalAlgs::clip()
   context->setMaximumThreads( 0 );
 
   parameters.clear();
-  parameters.insert( QStringLiteral( "INPUT" ), pointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OVERLAY" ), polygonSunshineCoast );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputCopcPointCloud );
+  parameters.insert( u"INPUT"_s, pointCloudLayerPath );
+  parameters.insert( u"OVERLAY"_s, polygonSunshineCoast );
+  parameters.insert( u"OUTPUT"_s, outputCopcPointCloud );
 
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "clip" ) << QStringLiteral( "--input=%1" ).arg( pointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputCopcPointCloud ) << QStringLiteral( "--polygon=%1" ).arg( polygonSunshineCoast ) );
+  QCOMPARE( args, QStringList() << u"clip"_s << u"--input=%1"_s.arg( pointCloudLayerPath ) << u"--output=%1"_s.arg( outputCopcPointCloud ) << u"--polygon=%1"_s.arg( polygonSunshineCoast ) );
 
   bool ok;
   alg->run( parameters, *context, &feedback, &ok );
@@ -827,7 +842,7 @@ void TestQgsProcessingPdalAlgs::clip()
 
 void TestQgsProcessingPdalAlgs::filter()
 {
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:filter" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:filter"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
@@ -838,24 +853,24 @@ void TestQgsProcessingPdalAlgs::filter()
   const QString outputPointCloud = QDir::tempPath() + "/filtered.laz";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), mPointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputPointCloud );
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) );
 
-  parameters.insert( QStringLiteral( "FILTER_EXPRESSION" ), QStringLiteral( "Classification = 7 OR Classification = 8" ) );
+  parameters.insert( u"FILTER_EXPRESSION"_s, u"Classification = 7 OR Classification = 8"_s );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--filter=Classification == 7 || Classification == 8" ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--filter=Classification == 7 || Classification == 8"_s );
 
-  parameters.insert( QStringLiteral( "FILTER_EXTENT" ), QgsRectangle( 1, 2, 3, 4 ) );
+  parameters.insert( u"FILTER_EXTENT"_s, QgsRectangle( 1, 2, 3, 4 ) );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--filter=Classification == 7 || Classification == 8" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--filter=Classification == 7 || Classification == 8"_s << u"--bounds=([1, 3], [2, 4])"_s );
 
   // set max threads to 2, a --threads argument should be added
   context->setMaximumThreads( 2 );
   args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "translate" ) << QStringLiteral( "--input=%1" ).arg( mPointCloudLayerPath ) << QStringLiteral( "--output=%1" ).arg( outputPointCloud ) << QStringLiteral( "--filter=Classification == 7 || Classification == 8" ) << QStringLiteral( "--bounds=([1, 3], [2, 4])" ) << QStringLiteral( "--threads=2" ) );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--filter=Classification == 7 || Classification == 8"_s << u"--bounds=([1, 3], [2, 4])"_s << u"--threads=2"_s );
 }
 
 void TestQgsProcessingPdalAlgs::useIndexCopcFile()
@@ -865,7 +880,7 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   const QString pointCloudLayerPath = pointCloudFileInfo.filePath();
   const QString copcIndexFileName = pointCloudFileInfo.absolutePath() + "/" + pointCloudFileInfo.completeBaseName() + ".copc.laz";
 
-  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "pdal:exportvector" ) ) ) );
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:exportvector"_s ) ) );
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setMaximumThreads( 0 );
@@ -886,11 +901,188 @@ void TestQgsProcessingPdalAlgs::useIndexCopcFile()
   const QString outputFile = QDir::tempPath() + "/points.gpkg";
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), pointCloudLayerPath );
-  parameters.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  parameters.insert( u"INPUT"_s, pointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputFile );
 
   QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
-  QCOMPARE( args, QStringList() << QStringLiteral( "to_vector" ) << QStringLiteral( "--input=%1" ).arg( copcIndexFileName ) << QStringLiteral( "--output=%1" ).arg( outputFile ) );
+  QCOMPARE( args, QStringList() << u"to_vector"_s << u"--input=%1"_s.arg( copcIndexFileName ) << u"--output=%1"_s.arg( outputFile ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::heightAboveGroundTriangulation()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundtriangulation"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/heightabovegroundtriangulation.laz";
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"height_above_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=delaunay"_s << u"--replace-z=true"_s << u"--delaunay-count=10"_s );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::heightAboveGroundNearestNeighbour()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:heightabovegroundbynearestneighbor"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/heightabovegroundnn.laz";
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REPLACE_Z"_s, false );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"height_above_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=nn"_s << u"--replace-z=false"_s << u"--nn-count=1"_s << u"--nn-max-distance=0"_s );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::classifyGround()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:classifyground"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/classifyground.laz";
+
+  double cellSize = 1.5;
+  double scalar = 1.3;
+  double slope = 0.2;
+  double threshold = 0.55;
+  double windowSize = 20;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"CELL_SIZE"_s, cellSize );
+  parameters.insert( u"SCALAR"_s, scalar );
+  parameters.insert( u"SLOPE"_s, slope );
+  parameters.insert( u"THRESHOLD"_s, threshold );
+  parameters.insert( u"WINDOW_SIZE"_s, windowSize );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"classify_ground"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--cell-size=%1"_s.arg( cellSize ) << u"--scalar=%1"_s.arg( scalar ) << u"--slope=%1"_s.arg( slope ) << u"--threshold=%1"_s.arg( threshold ) << u"--window-size=%1"_s.arg( windowSize ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::filterNoiseStatistical()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:filternoisestatistical"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/filternoisestatistical.laz";
+
+  double meanK = 10;
+  double multiplier = 3.0;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REMOVE_NOISE_POINTS"_s, true );
+  parameters.insert( u"MEAN_K"_s, meanK );
+  parameters.insert( u"MULTIPLIER"_s, multiplier );
+
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=statistical"_s << u"--remove-noise-points=true"_s << u"--statistical-mean-k=%1"_s.arg( meanK ) << u"--statistical-multiplier=%1"_s.arg( multiplier ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::filterNoiseRadius()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:filternoiseradius"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/filternoiseradius.laz";
+
+  double minK = 2.5;
+  double radius = 1.5;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"REMOVE_NOISE_POINTS"_s, false );
+  parameters.insert( u"MIN_K"_s, minK );
+  parameters.insert( u"RADIUS"_s, radius );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"filter_noise"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--algorithm=radius"_s << u"--remove-noise-points=false"_s << u"--radius-min-k=%1"_s.arg( minK ) << u"--radius-radius=%1"_s.arg( radius ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+}
+
+void TestQgsProcessingPdalAlgs::transformCoordinates()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:transformpointcloud"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  const QString outputPointCloud = QDir::tempPath() + "/transformcoordinates.laz";
+
+  double translateX = 10.0;
+  double translateY = 20.0;
+  double translateZ = 30.0;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"TRANSLATE_X"_s, translateX );
+  parameters.insert( u"TRANSLATE_Y"_s, translateY );
+  parameters.insert( u"TRANSLATE_Z"_s, translateZ );
+
+  QString transformMatrix = u"1 0 0 %1 0 1 0 %2 0 0 1 %3 0 0 0 1"_s.arg( translateX ).arg( translateY ).arg( translateZ );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-matrix=%1"_s.arg( transformMatrix ) );
+  QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
+
+  double scaleX = 2.0;
+  double scaleY = 3.0;
+  double scaleZ = 4.0;
+
+  parameters.clear();
+  parameters.insert( u"INPUT"_s, mPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputPointCloud );
+  parameters.insert( u"SCALE_X"_s, scaleX );
+  parameters.insert( u"SCALE_Y"_s, scaleY );
+  parameters.insert( u"SCALE_Z"_s, scaleZ );
+
+  transformMatrix = u"%1 0 0 0 0 %2 0 0 0 0 %3 0 0 0 0 1"_s.arg( scaleX ).arg( scaleY ).arg( scaleZ );
+
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mPointCloudLayerPath ) << u"--output=%1"_s.arg( outputPointCloud ) << u"--transform-matrix=%1"_s.arg( transformMatrix ) );
   QVERIFY( args.at( 1 ).endsWith( "copc.laz" ) );
 }
 

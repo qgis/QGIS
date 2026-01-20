@@ -18,10 +18,10 @@
 #ifndef QGSGPSCONNECTIONREGISTRY_H
 #define QGSGPSCONNECTIONREGISTRY_H
 
+#include "qgis_core.h"
+
 #include <QList>
 #include <QSet>
-
-#include "qgis_core.h"
 
 class QgsGpsConnection;
 

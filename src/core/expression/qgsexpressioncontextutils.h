@@ -17,10 +17,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfeature.h"
-#include "qgspointlocator.h"
 #include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
 #include "qgsmeshdataprovider.h"
+#include "qgspointlocator.h"
 
 #include <QString>
 #include <QVariantMap>
@@ -357,7 +357,7 @@ class LoadLayerFunction : public QgsScopedExpressionFunction
 {
   public:
     LoadLayerFunction()
-      : QgsScopedExpressionFunction( QStringLiteral( "load_layer" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "uri" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "provider" ) ), QStringLiteral( "Map Layers" ) )
+      : QgsScopedExpressionFunction( u"load_layer"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"uri"_s ) << QgsExpressionFunction::Parameter( u"provider"_s ), u"Map Layers"_s )
     {}
 
     QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * ) override;

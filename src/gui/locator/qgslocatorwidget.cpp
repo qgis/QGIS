@@ -15,25 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslocatorwidget.h"
+
+#include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
+#include "qgsguiutils.h"
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
-#include "qgslocatorwidget.h"
-#include "moc_qgslocatorwidget.cpp"
 #include "qgslocatormodelbridge.h"
-#include "qgsfilterlineedit.h"
-#include "qgsmapcanvas.h"
-#include "qgsapplication.h"
 #include "qgslogger.h"
-#include "qgsguiutils.h"
+#include "qgsmapcanvas.h"
 
-#include <QLayout>
 #include <QCompleter>
+#include <QLayout>
 #include <QMenu>
 #include <QTextLayout>
 #include <QTextLine>
 
+#include "moc_qgslocatorwidget.cpp"
+
 ///@cond PRIVATE
-const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( QStringLiteral( "tree-height" ), sTreeGuiLocator, 20, QStringLiteral( "Number of rows to show in the locator tree (requires a restart)" ), Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );
+const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( u"tree-height"_s, sTreeGuiLocator, 20, u"Number of rows to show in the locator tree (requires a restart)"_s, Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );
 ///@endcond PRIVATE
 
 QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
@@ -42,7 +44,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   , mLineEdit( new QgsLocatorLineEdit( this ) )
   , mResultsView( new QgsLocatorResultsView() )
 {
-  setObjectName( QStringLiteral( "LocatorWidget" ) );
+  setObjectName( u"LocatorWidget"_s );
   mLineEdit->setShowClearButton( true );
 #ifdef Q_OS_MACOS
   mLineEdit->setPlaceholderText( tr( "Type to locate (⌘K)" ) );
@@ -112,7 +114,7 @@ QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   mModelBridge->locator()->registerFilter( new QgsLocatorFilterFilter( this, this ) );
 
   mMenu = new QMenu( this );
-  QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) ), QLineEdit::LeadingPosition );
+  QAction *menuAction = mLineEdit->addAction( QgsApplication::getThemeIcon( u"/search.svg"_s ), QLineEdit::LeadingPosition );
   connect( menuAction, &QAction::triggered, this, [this] {
     mFocusTimer.stop();
     mResultsContainer->hide();
@@ -401,11 +403,7 @@ QgsLocatorResultsView::QgsLocatorResultsView( QWidget *parent )
 void QgsLocatorResultsView::recalculateSize()
 {
   QStyleOptionViewItem optView;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-  optView.init( this );
-#else
   optView.initFrom( this );
-#endif
 
   // try to show about 20 rows
   int rowSize = QgsLocatorWidget::settingLocatorTreeHeight->value() * itemDelegate()->sizeHint( optView, model()->index( 0, 0 ) ).height();
@@ -483,7 +481,7 @@ void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocat
     result.displayString = filter->activePrefix();
     result.description = filter->displayName();
     result.setUserData( QString( filter->activePrefix() + ' ' ) );
-    result.icon = QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
+    result.icon = QgsApplication::getThemeIcon( u"/search.svg"_s );
     emit resultFetched( result );
   }
 }

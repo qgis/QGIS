@@ -10,6 +10,7 @@
 
 
 
+
 class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
 {
 %Docstring(signature="appended")
@@ -214,6 +215,20 @@ Enables or disables snap to grid of mouse events. The snapping will
 occur in the layer's CRS.
 
 .. versionadded:: 3.4
+%End
+
+  signals:
+
+    void transientGeometryChanged( const QgsReferencedGeometry &geometry );
+%Docstring
+Emitted whenever the ``geometry`` associated with the tool is changed,
+including transient (i.e. non-finalized, hover state) changes.
+
+Connections to this signal should take care to check the CRS of
+``geometry``, as it may be either in the canvas CRS or an associated
+layer's CRS.
+
+.. versionadded:: 4.0
 %End
 
 };

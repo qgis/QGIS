@@ -12,18 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-
 #include <gdal.h>
 
-#include "qgsgdalutils.h"
 #include "qgsapplication.h"
+#include "qgsgdalutils.h"
 #include "qgsrasterlayer.h"
+#include "qgstest.h"
 
+#include <QObject>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
 
 class TestQgsGdalUtils : public QObject
 {
@@ -44,6 +43,7 @@ class TestQgsGdalUtils : public QObject
     void testPathIsCheapToOpen();
     void testVrtMatchesLayerType();
     void testMultilayerExtensions();
+    void testResampleSingleBandRasterNoData();
 
   private:
     double identify( GDALDatasetH dataset, int band, int px, int py );
@@ -295,19 +295,19 @@ void TestQgsGdalUtils::testVrtMatchesLayerType()
 void TestQgsGdalUtils::testMultilayerExtensions()
 {
   const QStringList extensions = QgsGdalUtils::multiLayerFileExtensions();
-  QVERIFY( extensions.contains( QStringLiteral( "gpkg" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "sqlite" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "db" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "kml" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "ods" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "osm" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "mdb" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "xls" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "xlsx" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "gpx" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "pdf" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "nc" ) ) );
-  QVERIFY( extensions.contains( QStringLiteral( "gdb" ) ) );
+  QVERIFY( extensions.contains( u"gpkg"_s ) );
+  QVERIFY( extensions.contains( u"sqlite"_s ) );
+  QVERIFY( extensions.contains( u"db"_s ) );
+  QVERIFY( extensions.contains( u"kml"_s ) );
+  QVERIFY( extensions.contains( u"ods"_s ) );
+  QVERIFY( extensions.contains( u"osm"_s ) );
+  QVERIFY( extensions.contains( u"mdb"_s ) );
+  QVERIFY( extensions.contains( u"xls"_s ) );
+  QVERIFY( extensions.contains( u"xlsx"_s ) );
+  QVERIFY( extensions.contains( u"gpx"_s ) );
+  QVERIFY( extensions.contains( u"pdf"_s ) );
+  QVERIFY( extensions.contains( u"nc"_s ) );
+  QVERIFY( extensions.contains( u"gdb"_s ) );
 }
 
 double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int py )
@@ -321,6 +321,33 @@ double TestQgsGdalUtils::identify( GDALDatasetH dataset, int band, int px, int p
 
   return value;
 }
+
+void TestQgsGdalUtils::testResampleSingleBandRasterNoData()
+{
+  // Create 2x2 integer raster with values 1, 65535, 65535, 65535 and nodata=65535
+  QTemporaryDir tempDir;
+  const QString tempPath = tempDir.path();
+  const QString inputFilename = tempPath + "/input.tif";
+
+  gdal::dataset_unique_ptr ds1 = QgsGdalUtils::createSingleBandTiffDataset( inputFilename, GDT_UInt16, QgsRectangle( 1, 1, 3, 3 ), 2, 2, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QVERIFY( ds1 );
+
+  GDALRasterBandH band = GDALGetRasterBand( ds1.get(), 1 );
+  GDALSetRasterNoDataValue( band, 65535 );
+  GUInt16 buffer[4] = { 1, 65535, 65535, 65535 };
+  const CPLErr err = GDALRasterIO( band, GF_Write, 0, 0, 2, 2, buffer, 2, 2, GDT_UInt16, 0, 0 );
+  QCOMPARE( err, CE_None );
+
+  // Create destination GDAL DS
+  auto dstBlock = std::make_unique<QgsRasterBlock>( Qgis::DataType::UInt16, 4, 4 );
+  dstBlock->setNoDataValue( 65535.0 );
+  gdal::dataset_unique_ptr gdalDsOutput = QgsGdalUtils::blockToSingleBandMemoryDataset( QgsRectangle( 1, 1, 3, 3 ), dstBlock.get() );
+
+  QVERIFY( QgsGdalUtils::resampleSingleBandRaster( ds1.get(), gdalDsOutput.get(), GRA_NearestNeighbour, nullptr ) );
+  QCOMPARE( identify( gdalDsOutput.get(), 1, 0, 0 ), 1.0 );
+  QCOMPARE( identify( gdalDsOutput.get(), 1, 2, 2 ), 65535.0 );
+}
+
 
 QGSTEST_MAIN( TestQgsGdalUtils )
 #include "testqgsgdalutils.moc"

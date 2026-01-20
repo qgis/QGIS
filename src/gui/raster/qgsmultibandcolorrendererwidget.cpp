@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmultibandcolorrendererwidget.h"
-#include "moc_qgsmultibandcolorrendererwidget.cpp"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterminmaxwidget.h"
+
 #include "qgsdoublevalidator.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterminmaxwidget.h"
+
+#include "moc_qgsmultibandcolorrendererwidget.cpp"
 
 QgsMultiBandColorRendererWidget::QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
   connect( mRedMinLineEdit, &QLineEdit::textChanged, this, &QgsMultiBandColorRendererWidget::mRedMinLineEdit_textChanged );
@@ -247,7 +248,7 @@ void QgsMultiBandColorRendererWidget::minMaxModified()
 
 void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double max )
 {
-  QgsDebugMsgLevel( QStringLiteral( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ), 2 );
+  QgsDebugMsgLevel( u"theBandNo = %1 min = %2 max = %3"_s.arg( bandNo ).arg( min ).arg( max ), 2 );
 
   QLineEdit *myMinLineEdit, *myMaxLineEdit;
 
@@ -268,7 +269,7 @@ void QgsMultiBandColorRendererWidget::loadMinMax( int bandNo, double min, double
   }
   else // should not happen
   {
-    QgsDebugError( QStringLiteral( "Band not found" ) );
+    QgsDebugError( u"Band not found"_s );
     return;
   }
 

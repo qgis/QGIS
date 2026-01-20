@@ -16,20 +16,22 @@
  ***************************************************************************/
 
 #include "qgsbasenetworkrequest.h"
-#include "moc_qgsbasenetworkrequest.cpp"
+
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgssettings.h"
+#include "qgstestutils.h"
 #include "qgsvariantutils.h"
 
 #include <QCache>
 #include <QEventLoop>
-#include <QNetworkCacheMetaData>
-#include <QCryptographicHash> // just for testing file:// fake_qgis_http_endpoint hack
 #include <QFuture>
+#include <QNetworkCacheMetaData>
 #include <QtConcurrent>
+
+#include "moc_qgsbasenetworkrequest.cpp"
 
 static QMutex gMemoryCacheMmutex;
 static QCache<QUrl, std::pair<QDateTime, QByteArray>> gCache( 10 * 1024 * 1024 );
@@ -41,10 +43,10 @@ static QByteArray getFromMemoryCache( const QUrl &url )
   if ( entry )
   {
     QgsSettings s;
-    const int delayOfCachingInSecs = s.value( QStringLiteral( "qgis/wfsMemoryCacheDelay" ), 60 ).toInt();
+    const int delayOfCachingInSecs = s.value( u"qgis/wfsMemoryCacheDelay"_s, 60 ).toInt();
     if ( entry->first.secsTo( QDateTime::currentDateTime() ) < delayOfCachingInSecs )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Reusing cached response from memory cache for %1" ).arg( url.toString() ), 4 );
+      QgsDebugMsgLevel( u"Reusing cached response from memory cache for %1"_s.arg( url.toString() ), 4 );
       return entry->second;
     }
   }
@@ -92,6 +94,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = forceRefresh;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   if ( synchronous )
   {
@@ -107,12 +110,14 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   QUrl modifiedUrl( url );
 
   // Specific code for testing
-  if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
+  if ( modifiedUrl.toString().contains( "fake_qgis_http_endpoint"_L1 ) )
   {
+    mIsSimulatedMode = true;
+
     // Just for testing with local files instead of http:// resources
     QString modifiedUrlString;
 
-    if ( modifiedUrl.toString().contains( QLatin1String( "fake_qgis_http_endpoint_encoded_query" ) ) )
+    if ( modifiedUrl.toString().contains( "fake_qgis_http_endpoint_encoded_query"_L1 ) )
     {
       // Get encoded representation (used by test_provider_oapif.py testSimpleQueryableFiltering())
       modifiedUrlString = modifiedUrl.toEncoded();
@@ -127,28 +132,28 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     {
       if ( modifiedUrlString.indexOf( '?' ) > 0 )
       {
-        modifiedUrlString += QStringLiteral( "&Accept=" ) + acceptHeader;
+        modifiedUrlString += u"&Accept="_s + acceptHeader;
       }
       else
       {
-        modifiedUrlString += QStringLiteral( "?Accept=" ) + acceptHeader;
+        modifiedUrlString += u"?Accept="_s + acceptHeader;
       }
     }
     for ( const QNetworkReply::RawHeaderPair &headerPair : extraHeaders )
     {
       if ( modifiedUrlString.indexOf( '?' ) > 0 )
       {
-        modifiedUrlString += QLatin1Char( '&' );
+        modifiedUrlString += '&'_L1;
       }
       else
       {
-        modifiedUrlString += QLatin1Char( '?' );
+        modifiedUrlString += '?'_L1;
       }
-      modifiedUrlString += QString::fromUtf8( headerPair.first ) + QStringLiteral( "=" ) + QString::fromUtf8( headerPair.second );
+      modifiedUrlString += QString::fromUtf8( headerPair.first ) + u"="_s + QString::fromUtf8( headerPair.second );
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "Get %1" ).arg( modifiedUrlString ), 4 );
-    modifiedUrlString = modifiedUrlString.mid( QStringLiteral( "http://" ).size() );
+    QgsDebugMsgLevel( u"Get %1"_s.arg( modifiedUrlString ), 4 );
+    modifiedUrlString = modifiedUrlString.mid( u"http://"_s.size() );
 #ifdef Q_OS_WIN
     // Passing "urls" like "http://c:/path" to QUrl 'eats' the : after c,
     // so we must restore it
@@ -158,37 +163,12 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     }
 #endif
 
-    // For REST API using URL subpaths, normalize the subpaths
-    const int afterEndpointStartPos = static_cast<int>( modifiedUrlString.indexOf( "fake_qgis_http_endpoint" ) + strlen( "fake_qgis_http_endpoint" ) );
-    QString afterEndpointStart = modifiedUrlString.mid( afterEndpointStartPos );
-    afterEndpointStart.replace( QLatin1String( "/" ), QLatin1String( "_" ) );
-    modifiedUrlString = modifiedUrlString.mid( 0, afterEndpointStartPos ) + afterEndpointStart;
-
     const auto posQuotationMark = modifiedUrlString.indexOf( '?' );
     if ( posQuotationMark > 0 )
     {
-      QString args = modifiedUrlString.mid( posQuotationMark );
-      if ( modifiedUrlString.size() > 256 )
-      {
-        QgsDebugMsgLevel( QStringLiteral( "Args before MD5: %1" ).arg( args ), 4 );
-        args = QCryptographicHash::hash( args.toUtf8(), QCryptographicHash::Md5 ).toHex();
-      }
-      else
-      {
-        args.replace( '?', '_' );
-        args.replace( '&', '_' );
-        args.replace( '<', '_' );
-        args.replace( '>', '_' );
-        args.replace( '\'', '_' );
-        args.replace( '\"', '_' );
-        args.replace( ' ', '_' );
-        args.replace( ':', '_' );
-        args.replace( '/', '_' );
-        args.replace( '\n', '_' );
-      }
-      modifiedUrlString = modifiedUrlString.mid( 0, modifiedUrlString.indexOf( '?' ) ) + args;
+      modifiedUrlString = QgsTestUtils::sanitizeFakeHttpEndpoint( modifiedUrlString );
     }
-    QgsDebugMsgLevel( QStringLiteral( "Get %1 (after laundering)" ).arg( modifiedUrlString ), 4 );
+    QgsDebugMsgLevel( u"Get %1 (after laundering)"_s.arg( modifiedUrlString ), 4 );
     modifiedUrl = QUrl::fromLocalFile( modifiedUrlString );
   }
   else
@@ -200,7 +180,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     modifiedUrl = modifiedUrl.adjusted( QUrl::EncodeSpaces );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( modifiedUrl.toDisplayString( QUrl::EncodeSpaces ) ), 4 );
+  QgsDebugMsgLevel( u"Calling: %1"_s.arg( modifiedUrl.toDisplayString( QUrl::EncodeSpaces ) ), 4 );
 
   QNetworkRequest request( modifiedUrl );
 
@@ -213,7 +193,7 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
   for ( const QNetworkReply::RawHeaderPair &headerPair : std::as_const( mRequestHeaders ) )
     request.setRawHeader( headerPair.first, headerPair.second );
 
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsBaseNetworkRequest"_s );
   if ( !mAuth.setAuthorization( request ) )
   {
     mErrorCode = QgsBaseNetworkRequest::NetworkError;
@@ -240,10 +220,10 @@ bool QgsBaseNetworkRequest::sendGET( const QUrl &url, const QString &acceptHeade
     // with a COUNT=1 into a short-lived memory cache, as they are emitted
     // repeatedly in interactive scenarios when adding a WFS layer.
     QString urlString = url.toString();
-    if ( urlString.contains( QStringLiteral( "REQUEST=GetCapabilities" ) ) || urlString.contains( QStringLiteral( "REQUEST=DescribeFeatureType" ) ) || ( urlString.contains( QStringLiteral( "REQUEST=GetFeature" ) ) && urlString.contains( QStringLiteral( "COUNT=1" ) ) ) )
+    if ( urlString.contains( u"REQUEST=GetCapabilities"_s ) || urlString.contains( u"REQUEST=DescribeFeatureType"_s ) || ( urlString.contains( u"REQUEST=GetFeature"_s ) && urlString.contains( u"COUNT=1"_s ) ) )
     {
       QgsSettings s;
-      if ( s.value( QStringLiteral( "qgis/wfsMemoryCacheAllowed" ), true ).toBool() )
+      if ( s.value( u"qgis/wfsMemoryCacheAllowed"_s, true ).toBool() )
       {
         insertIntoMemoryCache( url, mResponse );
       }
@@ -375,6 +355,40 @@ bool QgsBaseNetworkRequest::issueRequest( QNetworkRequest &request, const QByteA
   return success;
 }
 
+void QgsBaseNetworkRequest::extractResponseHeadersForUnitTests()
+{
+  if ( mFakeResponseHasHeaders )
+  {
+    // Expect the file content to be formatted like:
+    // header1: value1\r\n
+    // headerN: valueN\r\n
+    // \r\n
+    // content
+    int from = 0;
+    while ( true )
+    {
+      const int pos = static_cast<int>( mResponse.indexOf( QByteArray( "\r\n" ), from ) );
+      if ( pos < 0 )
+      {
+        break;
+      }
+      QByteArray line = mResponse.mid( from, pos - from );
+      const int posColon = static_cast<int>( line.indexOf( QByteArray( ":" ) ) );
+      if ( posColon > 0 )
+      {
+        mResponseHeaders.append( QNetworkReply::RawHeaderPair( line.mid( 0, posColon ), line.mid( posColon + 1 ).trimmed() ) );
+      }
+      from = pos + 2;
+      if ( from + 2 < mResponse.size() && mResponse[from] == '\r' && mResponse[from] == '\n' )
+      {
+        from += 2;
+        break;
+      }
+    }
+    mResponse = mResponse.mid( from );
+  }
+}
+
 bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteArray &verb, const QString &contentTypeHeader, const QByteArray &data, bool synchronous, const QList<QNetworkReply::RawHeaderPair> &extraHeaders )
 {
   abort(); // cancel previous
@@ -386,13 +400,15 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = true;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
-    query.addQueryItem( QString( QString::fromUtf8( verb ) + QStringLiteral( "DATA" ) ), QString::fromUtf8( data ) );
+    query.addQueryItem( QString( QString::fromUtf8( verb ) + u"DATA"_s ), QString::fromUtf8( data ) );
     modifiedUrl.setQuery( query );
     QList<QNetworkReply::RawHeaderPair> extraHeadersModified( extraHeaders );
     if ( mFakeURLIncludesContentType && !contentTypeHeader.isEmpty() )
@@ -401,41 +417,12 @@ bool QgsBaseNetworkRequest::sendPOSTOrPUTOrPATCH( const QUrl &url, const QByteAr
     }
     bool ret = sendGET( modifiedUrl, QString(), true, true, false, extraHeadersModified );
 
-    if ( mFakeResponseHasHeaders )
-    {
-      // Expect the file content to be formatted like:
-      // header1: value1\r\n
-      // headerN: valueN\r\n
-      // \r\n
-      // content
-      int from = 0;
-      while ( true )
-      {
-        int pos = mResponse.indexOf( QByteArray( "\r\n" ), from );
-        if ( pos < 0 )
-        {
-          break;
-        }
-        QByteArray line = mResponse.mid( from, pos - from );
-        int posColon = line.indexOf( QByteArray( ":" ) );
-        if ( posColon > 0 )
-        {
-          mResponseHeaders.append( QNetworkReply::RawHeaderPair( line.mid( 0, posColon ), line.mid( posColon + 1 ).trimmed() ) );
-        }
-        from = pos + 2;
-        if ( from + 2 < mResponse.size() && mResponse[from] == '\r' && mResponse[from] == '\n' )
-        {
-          from += 2;
-          break;
-        }
-      }
-      mResponse = mResponse.mid( from );
-    }
+    extractResponseHeadersForUnitTests();
     return ret;
   }
 
   QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsBaseNetworkRequest"_s );
   if ( !mAuth.setAuthorization( request ) )
   {
     mErrorCode = QgsBaseNetworkRequest::NetworkError;
@@ -485,14 +472,17 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = true;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   QByteArray allowValue;
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
-    query.addQueryItem( QStringLiteral( "VERB" ), QStringLiteral( "OPTIONS" ) );
+    query.addQueryItem( u"VERB"_s, u"OPTIONS"_s );
     modifiedUrl.setQuery( query );
     if ( !sendGET( modifiedUrl, QString(), true, true, false ) )
       return QStringList();
@@ -501,7 +491,7 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   else
   {
     QNetworkRequest request( url );
-    QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
+    QgsSetRequestInitiatorClass( request, u"QgsBaseNetworkRequest"_s );
     if ( !mAuth.setAuthorization( request ) )
     {
       mErrorCode = QgsBaseNetworkRequest::NetworkError;
@@ -526,7 +516,7 @@ QStringList QgsBaseNetworkRequest::sendOPTIONS( const QUrl &url )
   }
 
   QStringList res;
-  QStringList l = QString::fromLatin1( allowValue ).split( QLatin1Char( ',' ) );
+  QStringList l = QString::fromLatin1( allowValue ).split( ','_L1 );
   for ( const QString &s : l )
   {
     res.append( s.trimmed() );
@@ -546,19 +536,22 @@ bool QgsBaseNetworkRequest::sendDELETE( const QUrl &url )
   mErrorCode = QgsBaseNetworkRequest::NoError;
   mForceRefresh = true;
   mResponse.clear();
+  mResponseHeaders.clear();
 
   if ( url.toEncoded().contains( "fake_qgis_http_endpoint" ) )
   {
+    mIsSimulatedMode = true;
+
     // Hack for testing purposes
     QUrl modifiedUrl( url );
     QUrlQuery query( modifiedUrl );
-    query.addQueryItem( QStringLiteral( "VERB" ), QString::fromUtf8( "DELETE" ) );
+    query.addQueryItem( u"VERB"_s, QString::fromUtf8( "DELETE" ) );
     modifiedUrl.setQuery( query );
     return sendGET( modifiedUrl, QString(), true, true, false );
   }
 
   QNetworkRequest request( url );
-  QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
+  QgsSetRequestInitiatorClass( request, u"QgsBaseNetworkRequest"_s );
   if ( !mAuth.setAuthorization( request ) )
   {
     mErrorCode = QgsBaseNetworkRequest::NetworkError;
@@ -592,7 +585,7 @@ void QgsBaseNetworkRequest::replyReadyRead()
 
 void QgsBaseNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) ), 4 );
+  QgsDebugMsgLevel( u"%1 of %2 bytes downloaded."_s.arg( bytesReceived ).arg( bytesTotal < 0 ? u"unknown number of"_s : QString::number( bytesTotal ) ), 4 );
 
   if ( !mIsAborted && mReply )
   {
@@ -605,6 +598,9 @@ void QgsBaseNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTot
         return;
       }
     }
+
+    if ( !mIsSimulatedMode && mResponseHeaders.empty() )
+      mResponseHeaders = mReply->rawHeaderPairs();
   }
 
   emit downloadProgress( bytesReceived, bytesTotal );
@@ -616,11 +612,11 @@ void QgsBaseNetworkRequest::replyFinished()
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 4 );
+      QgsDebugMsgLevel( u"reply OK"_s, 4 );
       const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !QgsVariantUtils::isNull( redirect ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 4 );
+        QgsDebugMsgLevel( u"Request redirected."_s, 4 );
 
         const QUrl &toUrl = redirect.toUrl();
         mReply->request();
@@ -633,7 +629,7 @@ void QgsBaseNetworkRequest::replyFinished()
         else
         {
           QNetworkRequest request( toUrl );
-          QgsSetRequestInitiatorClass( request, QStringLiteral( "QgsBaseNetworkRequest" ) );
+          QgsSetRequestInitiatorClass( request, u"QgsBaseNetworkRequest"_s );
           if ( !mAuth.setAuthorization( request ) )
           {
             mResponse.clear();
@@ -653,7 +649,7 @@ void QgsBaseNetworkRequest::replyFinished()
           mReply->deleteLater();
           mReply = nullptr;
 
-          QgsDebugMsgLevel( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 4 );
+          QgsDebugMsgLevel( u"redirected: %1 forceRefresh=%2"_s.arg( redirect.toString() ).arg( mForceRefresh ), 4 );
           mReply = QgsNetworkAccessManager::instance()->get( request );
           if ( !mAuth.setAuthorizationReply( mReply ) )
           {
@@ -676,7 +672,7 @@ void QgsBaseNetworkRequest::replyFinished()
 
         if ( nam->cache() )
         {
-          QgsDebugMsgLevel( QStringLiteral( "request url:%1" ).arg( mReply->request().url().toString() ), 4 );
+          QgsDebugMsgLevel( u"request url:%1"_s.arg( mReply->request().url().toString() ), 4 );
           QNetworkCacheMetaData cmd = nam->cache()->metaData( mReply->request().url() );
 
           QNetworkCacheMetaData::RawHeaderList hl;
@@ -688,7 +684,7 @@ void QgsBaseNetworkRequest::replyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsgLevel( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ), 4 );
+          QgsDebugMsgLevel( u"expirationDate:%1"_s.arg( cmd.expirationDate().toString() ), 4 );
           if ( cmd.expirationDate().isNull() )
           {
             cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( defaultExpirationInSec() ) );
@@ -698,15 +694,18 @@ void QgsBaseNetworkRequest::replyFinished()
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "No cache!" ), 4 );
+          QgsDebugMsgLevel( u"No cache!"_s, 4 );
         }
 
 #ifdef QGISDEBUG
         const bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsgLevel( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ), 4 );
+        QgsDebugMsgLevel( u"Reply was cached: %1"_s.arg( fromCache ), 4 );
 #endif
 
         mResponse = mReply->readAll();
+
+        if ( mIsSimulatedMode )
+          extractResponseHeadersForUnitTests();
 
         if ( mResponse.isEmpty() && !mGotNonEmptyResponse && !mEmptyResponseIsValid )
         {
@@ -725,12 +724,16 @@ void QgsBaseNetworkRequest::replyFinished()
       if ( exceptionDoc.setContent( replyContent, true, &errorMsg ) )
       {
         const QDomElement exceptionElem = exceptionDoc.documentElement();
-        if ( !exceptionElem.isNull() && exceptionElem.tagName() == QLatin1String( "ExceptionReport" ) )
+        if ( !exceptionElem.isNull() && exceptionElem.tagName() == "ExceptionReport"_L1 )
         {
-          const QDomElement exception = exceptionElem.firstChildElement( QStringLiteral( "Exception" ) );
+          const QDomElement exception = exceptionElem.firstChildElement( u"Exception"_s );
           mErrorMessage = tr( "WFS exception report (code=%1 text=%2)" )
-                            .arg( exception.attribute( QStringLiteral( "exceptionCode" ), tr( "missing" ) ), exception.firstChildElement( QStringLiteral( "ExceptionText" ) ).text() );
+                            .arg( exception.attribute( u"exceptionCode"_s, tr( "missing" ) ), exception.firstChildElement( u"ExceptionText"_s ).text() );
         }
+      }
+      else if ( !replyContent.isEmpty() )
+      {
+        mErrorMessage += tr( "\nServer response: %1" ).arg( replyContent );
       }
       mErrorCode = QgsBaseNetworkRequest::ServerExceptionError;
       logMessageIfEnabled();
@@ -742,7 +745,8 @@ void QgsBaseNetworkRequest::replyFinished()
 
   if ( mReply )
   {
-    mResponseHeaders = mReply->rawHeaderPairs();
+    if ( !mIsSimulatedMode && mResponseHeaders.empty() )
+      mResponseHeaders = mReply->rawHeaderPairs();
 
     mReply->deleteLater();
     mReply = nullptr;

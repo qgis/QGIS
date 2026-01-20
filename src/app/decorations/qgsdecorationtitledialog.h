@@ -17,6 +17,7 @@
 #define QGSDECORATIONTITLEDIALOG_H
 
 #include "ui_qgsdecorationtitledialog.h"
+
 #include "qgis_app.h"
 
 class QColor;

@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerstylewidget.h"
-#include "moc_qgstiledscenelayerstylewidget.cpp"
-#include "qgstiledscenerendererpropertieswidget.h"
-#include "qgsstyle.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
+#include "qgsstyle.h"
 #include "qgstiledscenelayer.h"
+#include "qgstiledscenerendererpropertieswidget.h"
+
+#include "moc_qgstiledscenelayerstylewidget.cpp"
 
 QgsTiledSceneRendererWidgetFactory::QgsTiledSceneRendererWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Symbology" ) );
 }
 
@@ -50,5 +52,5 @@ bool QgsTiledSceneRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) con
 
 QString QgsTiledSceneRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }

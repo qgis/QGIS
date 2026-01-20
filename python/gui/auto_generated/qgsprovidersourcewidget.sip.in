@@ -9,6 +9,7 @@
 
 
 
+
 class QgsProviderSourceWidget : QWidget
 {
 %Docstring(signature="appended")

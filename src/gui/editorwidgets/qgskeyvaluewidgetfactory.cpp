@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgskeyvaluewidgetfactory.h"
-#include "qgskeyvaluewidgetwrapper.h"
+
 #include "qgsdummyconfigdlg.h"
 #include "qgsfields.h"
+#include "qgskeyvaluewidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
-#include <QVariant>
 #include <QSettings>
+#include <QVariant>
 
-QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsKeyValueWidgetFactory::QgsKeyValueWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 
@@ -43,7 +44,7 @@ QgsEditorConfigWidget *QgsKeyValueWidgetFactory::configWidget( QgsVectorLayer *v
 unsigned int QgsKeyValueWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
   const QgsField field = vl->fields().field( fieldIdx );
-  if ( field.type() == QMetaType::Type::QVariantMap && ( field.typeName().compare( QStringLiteral( "JSON" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 || field.subType() == QMetaType::Type::QString ) )
+  if ( field.type() == QMetaType::Type::QVariantMap && ( field.typeName().compare( u"JSON"_s, Qt::CaseSensitivity::CaseInsensitive ) == 0 || field.subType() == QMetaType::Type::QString ) )
   {
     // Look for the first not-null value (limiting to the first 20 features) and check if it is really a map
     const int MAX_FEATURE_LIMIT { 20 };

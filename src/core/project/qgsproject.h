@@ -21,42 +21,41 @@
 #ifndef QGSPROJECT_H
 #define QGSPROJECT_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+#include "qgsabstractsensor.h"
+#include "qgsarchive.h"
+#include "qgscolorscheme.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
+#include "qgsmaplayerstore.h"
+#include "qgsmapthemecollection.h"
+#include "qgsprojectdisplaysettings.h"
+#include "qgsprojectmetadata.h"
+#include "qgsprojectproperty.h"
+#include "qgsprojecttranslator.h"
+#include "qgsprojectversion.h"
+#include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrelationmanager.h"
+#include "qgssettings.h"
+#include "qgssnappingconfig.h"
+#include "qgstranslationcontext.h"
+#include "qgsvectorlayereditbuffergroup.h"
 
-#include <memory>
+#include <QFileInfo>
 #include <QHash>
 #include <QList>
 #include <QObject>
 #include <QPair>
-#include <QFileInfo>
 #include <QStringList>
 #include <QTranslator>
-
-#include "qgssnappingconfig.h"
-#include "qgsprojectversion.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsexpressioncontextscopegenerator.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgsprojectproperty.h"
-#include "qgsmaplayerstore.h"
-#include "qgsarchive.h"
-#include "qgsreadwritecontext.h"
-#include "qgsprojectmetadata.h"
-#include "qgstranslationcontext.h"
-#include "qgsprojectdisplaysettings.h"
-#include "qgsprojecttranslator.h"
-#include "qgscolorscheme.h"
-#include "qgssettings.h"
-#include "qgspropertycollection.h"
-#include "qgsvectorlayereditbuffergroup.h"
-#include "qgselevationshadingrenderer.h"
-#include "qgsabstractsensor.h"
-
-#include "qgsrelationmanager.h"
-#include "qgsmapthemecollection.h"
 
 class QFileInfo;
 class QDomDocument;
@@ -90,6 +89,8 @@ class QgsMapViewsManager;
 class QgsProjectElevationProperties;
 class QgsProjectGpsSettings;
 class QgsSensorManager;
+class QgsObjectEntityVisitorInterface;
+class QgsObjectVisitorContext;
 
 /**
  * \ingroup core
@@ -108,6 +109,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 {
     Q_OBJECT
     Q_PROPERTY( QStringList nonIdentifiableLayers READ nonIdentifiableLayers WRITE setNonIdentifiableLayers NOTIFY nonIdentifiableLayersChanged )
+    Q_PROPERTY( QString title READ title WRITE setTitle  NOTIFY titleChanged )
     Q_PROPERTY( QString fileName READ fileName WRITE setFileName NOTIFY fileNameChanged )
     Q_PROPERTY( QString homePath READ homePath WRITE setPresetHomePath NOTIFY homePathChanged )
     Q_PROPERTY( QgsCoordinateReferenceSystem crs READ crs WRITE setCrs NOTIFY crsChanged )
@@ -678,7 +680,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool removeEntry( const QString &scope, const QString &key );
 
     /**
-     * Returns a list of child keys with values which exist within the the specified \a scope and \a key.
+     * Returns a list of child keys with values which exist within the specified \a scope and \a key.
      *
      * This method does not return keys that contain other keys. See subkeyList() to retrieve keys
      * which contain other keys.
@@ -688,7 +690,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QStringList entryList( const QString &scope, const QString &key ) const;
 
     /**
-     * Returns a list of child keys which contain other keys that exist within the the specified \a scope and \a key.
+     * Returns a list of child keys which contain other keys that exist within the specified \a scope and \a key.
      *
      * This method only returns keys with keys, it will not return keys that contain only values. See
      * entryList() to retrieve keys with values.
@@ -756,7 +758,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * The optional \a flags argument can be used to control layer reading behavior.
      *
      */
-    QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
+    std::unique_ptr< QgsLayerTreeGroup > createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers,  Qgis::ProjectReadFlags flags = Qgis::ProjectReadFlags() );
 
     //! Convenience function to set topological editing
     void setTopologicalEditing( bool enabled );
@@ -1405,7 +1407,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void removeMapLayers( const QStringList &layerIds );
 
-    //TODO QGIS 4.0 - add PyName alias to avoid list type conversion error
+    //TODO QGIS 5.0 - add PyName alias to avoid list type conversion error
 
     /**
      * \brief
@@ -1778,6 +1780,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
     /**
+     * Accepts the specified object entity \a visitor, causing it to visit all object entities associated
+     * with the project.
+     *
+     * Returns TRUE if the visitor should continue visiting other objects, or FALSE if visiting
+     * should be canceled.
+     *
+     * \since QGIS 4.0
+     */
+    bool accept( QgsObjectEntityVisitorInterface *visitor, const QgsObjectVisitorContext &context ) const;
+
+    /**
      * Returns the elevation shading renderer used for map shading
      *
      * \since QGIS 3.30
@@ -1810,12 +1823,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
       */
     void cleanFunctionsFromProject() SIP_SKIP;
 
-
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProject: '%1'%2>" ).arg( sipCpp->fileName(),
-                  sipCpp == QgsProject::instance() ? QStringLiteral( " (singleton instance)" ) : QString() ); // skip-keyword-check
+    QString str = u"<QgsProject: '%1'%2>"_s.arg( sipCpp->fileName(),
+                  sipCpp == QgsProject::instance() ? u" (singleton instance)"_s : QString() ); // skip-keyword-check
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -1921,6 +1933,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \deprecated QGIS 3.4
      */
     Q_DECL_DEPRECATED void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
+
+    /**
+     * Emitted when the title of the project changes.
+     * \since QGIS 4.0
+     */
+    void titleChanged();
 
     //! Emitted when the file name of the project changes
     void fileNameChanged();
@@ -2170,7 +2188,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void layerRemoved( const QString &layerId );
 
-    //TODO QGIS 4.0 - rename to past tense
+    //TODO QGIS 5.0 - rename to past tense
 
     /**
      * Emitted when all layers are removed, before layersWillBeRemoved() and
@@ -2201,14 +2219,27 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void layerWasAdded( QgsMapLayer *layer );
 
     /**
-     * Emitted, when a layer was added to the registry and the legend.
+     * Emitted when \a layers were added to the registry and the legend.
+     *
      * Layers can also be private layers, which are signalled by
      * layersAdded() and layerWasAdded() but will not be
      * advertised by this signal.
      *
      * \param layers List of QgsMapLayer which were added to the legend.
+     *
+     * \see layersAddedWithoutLegend()
      */
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
+
+    /**
+     * Emitted when \a layers were added to the registry without adding to the legend.
+     *
+     * \param layers List of QgsMapLayer which were added to the project but not the legend.
+     *
+     * \see legendLayersAdded()
+     * \since QGIS 4.0
+     */
+    void layersAddedWithoutLegend( const QList<QgsMapLayer *> &layers );
 
     /**
      * Emitted when the project dirty status changes.
@@ -2253,7 +2284,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setSnappingConfig( const QgsSnappingConfig &snappingConfig );
 
-    // TODO QGIS 4.0 - rename b to dirty
+    // TODO QGIS 5.0 - rename b to dirty
 
     /**
      * Flag the project as dirty (modified). If this flag is set, the user will

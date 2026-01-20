@@ -14,23 +14,27 @@
  ***************************************************************************/
 
 #include "qgsvariableeditorwidget.h"
-#include "moc_qgsvariableeditorwidget.cpp"
-#include "qgsexpressioncontext.h"
-#include "qgsapplication.h"
-#include "qgssettings.h"
-#include "qgsexpression.h"
-#include "qgsrendercontext.h"
 
-#include <QVBoxLayout>
-#include <QTreeWidget>
-#include <QPainter>
-#include <QKeyEvent>
-#include <QMouseEvent>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QHeaderView>
-#include <QMessageBox>
+#include <memory>
+
+#include "qgsapplication.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsrendercontext.h"
+#include "qgssettings.h"
+
 #include <QClipboard>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QPushButton>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include "moc_qgsvariableeditorwidget.cpp"
 
 //
 // QgsVariableEditorWidget
@@ -50,12 +54,12 @@ QgsVariableEditorWidget::QgsVariableEditorWidget( QWidget *parent )
   QSpacerItem *horizontalSpacer = new QSpacerItem( 40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   horizontalLayout->addItem( horizontalSpacer );
   mAddButton = new QPushButton();
-  mAddButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyAdd.svg" ) ) );
+  mAddButton->setIcon( QgsApplication::getThemeIcon( u"/symbologyAdd.svg"_s ) );
   mAddButton->setEnabled( false );
   mAddButton->setToolTip( tr( "Add variable" ) );
   horizontalLayout->addWidget( mAddButton );
   mRemoveButton = new QPushButton();
-  mRemoveButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/symbologyRemove.svg" ) ) );
+  mRemoveButton->setIcon( QgsApplication::getThemeIcon( u"/symbologyRemove.svg"_s ) );
   mRemoveButton->setEnabled( false );
   mRemoveButton->setToolTip( tr( "Remove variable" ) );
   horizontalLayout->addWidget( mRemoveButton );
@@ -103,7 +107,7 @@ void QgsVariableEditorWidget::showEvent( QShowEvent *event )
 
 void QgsVariableEditorWidget::setContext( QgsExpressionContext *context )
 {
-  mContext.reset( new QgsExpressionContext( *context ) );
+  mContext = std::make_unique<QgsExpressionContext>( *context );
   reloadContext();
 }
 
@@ -170,9 +174,9 @@ void QgsVariableEditorWidget::mAddButton_clicked()
     return;
 
   QgsExpressionContextScope *scope = mContext->scope( mEditableScopeIndex );
-  scope->setVariable( QStringLiteral( "new_variable" ), QVariant() );
+  scope->setVariable( u"new_variable"_s, QVariant() );
   mTreeWidget->refreshTree();
-  QTreeWidgetItem *item = mTreeWidget->itemFromVariable( scope, QStringLiteral( "new_variable" ) );
+  QTreeWidgetItem *item = mTreeWidget->itemFromVariable( scope, u"new_variable"_s );
   const QModelIndex index = mTreeWidget->itemToIndex( item );
   mTreeWidget->selectionModel()->select( index, QItemSelectionModel::ClearAndSelect );
   mTreeWidget->editItem( item, 0 );
@@ -260,10 +264,10 @@ QgsVariableEditorTree::QgsVariableEditorTree( QWidget *parent )
   {
     QPixmap pix( 14, 14 );
     pix.fill( Qt::transparent );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpandSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Normal, QIcon::Off );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpandSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Selected, QIcon::Off );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapseSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Normal, QIcon::On );
-    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mIconCollapseSmall.svg" ) ).pixmap( 14, 14 ), QIcon::Selected, QIcon::On );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( u"/mIconExpandSmall.svg"_s ).pixmap( 14, 14 ), QIcon::Normal, QIcon::Off );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( u"/mIconExpandSmall.svg"_s ).pixmap( 14, 14 ), QIcon::Selected, QIcon::Off );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( u"/mIconCollapseSmall.svg"_s ).pixmap( 14, 14 ), QIcon::Normal, QIcon::On );
+    mExpandIcon.addPixmap( QgsApplication::getThemeIcon( u"/mIconCollapseSmall.svg"_s ).pixmap( 14, 14 ), QIcon::Selected, QIcon::On );
   }
 
   setIconSize( QSize( 18, 18 ) );

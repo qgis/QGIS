@@ -36,7 +36,7 @@ class QWT_EXPORT QwtPlotPicker : public QwtPicker
 
   public:
     explicit QwtPlotPicker( QWidget* canvas );
-    virtual ~QwtPlotPicker();
+    ~QwtPlotPicker() override;
 
     explicit QwtPlotPicker( QwtAxisId xAxisId, QwtAxisId yAxisId, QWidget* );
 

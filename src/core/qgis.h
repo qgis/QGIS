@@ -19,14 +19,18 @@
 #define QGIS_H
 
 
-#include <QMetaEnum>
-#include <QTimeZone>
 #include <cfloat>
-#include <memory>
 #include <cmath>
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QMetaEnum>
+#include <QString>
+#include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -160,6 +164,25 @@ class CORE_EXPORT Qgis
       NoLevel = 4, //!< No level
     };
     Q_ENUM( MessageLevel )
+
+    /**
+     * \brief Flags controlling behavior of network requests.
+     *
+     * \since QGIS 4.0
+     */
+    enum class NetworkRequestFlag : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      DisableMessageLogging = 1 << 0, //!< If present, indicates that no message logging should be performed when network errors are encountered
+    };
+    Q_ENUM( NetworkRequestFlag )
+
+    /**
+     * \brief Flags controlling behavior of network requests.
+     *
+     * \since QGIS 3.40
+     */
+    Q_DECLARE_FLAGS( NetworkRequestFlags, NetworkRequestFlag )
+    Q_FLAG( NetworkRequestFlags )
 
     /**
      * Types of layers that can be added to a map
@@ -397,29 +420,44 @@ class CORE_EXPORT Qgis
     Q_FLAG( VectorLayerTypeFlags )
 
     /**
-     * Authorisation to run Python Embedded in projects
+     * Authorisation to run script embedded in projects
      * \since QGIS 3.40
      */
-    enum class PythonEmbeddedMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
+    enum class EmbeddedScriptMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( Qgis, PythonMacroMode ) : int
       {
-      Never = 0, //!< Python embedded never run
-      Ask = 1, //!< User is prompt before running
-      SessionOnly = 2, //!< Only during this session
-      Always = 3, //!< Python embedded is always run
-      NotForThisSession, //!< Python embedded will not be run for this session
+      Never = 0,              //!< Embedded scripts never run
+      Ask = 1,                //!< User is prompted before running scripts
+      SessionOnly = 2,        //!< Only during this session (only used prior to QGIS 4.0)
+      Always = 3,             //!< Embedded scripts are always run
+      NotForThisSession = 4,  //!< Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
+      NeverAsk = 5,           //!< The user is never prompted, embedded scripts are only run on trusted projects and folders \since QGIS 4.0
     };
-    Q_ENUM( PythonEmbeddedMode )
+    Q_ENUM( EmbeddedScriptMode )
 
     /**
      * Type of Python Embedded in projects
      * \since QGIS 3.40
      */
-    enum class PythonEmbeddedType : int
+    enum class EmbeddedScriptType : int
     {
-      Macro = 0,
-      ExpressionFunction = 1,
+      Macro = 0,              //! Project macros
+      ExpressionFunction = 1, //! Expression functions
+      Action = 2,             //! Map layers' action \since QGIS 4.0
+      FormInitCode = 3,       //! Attribute forms' initiation code \since QGIS 4.0
     };
-    Q_ENUM( PythonEmbeddedType )
+    Q_ENUM( EmbeddedScriptType )
+
+    /**
+     * Project trust status
+     * \since QGIS 4.0
+     */
+    enum class ProjectTrustStatus : int
+    {
+      Undetermined = 0, //! The project trust has not yet been determined by the user
+      Trusted = 1,      //! The project has been determined by the user as trusted
+      Untrusted = 2,    //! The project has been determined by the user as untrusted
+    };
+    Q_ENUM( ProjectTrustStatus )
 
     /**
      * Flags which control data provider construction.
@@ -451,7 +489,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( DataProviderReadFlags, DataProviderReadFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsDataProvider, ReadFlags )
     Q_FLAG( DataProviderReadFlags )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on VectorProviderCapabilities() instead
 
     /**
      * Vector data provider capabilities.
@@ -915,7 +953,7 @@ class CORE_EXPORT Qgis
     enum class BrowserItemCapability SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsDataItem, Capability ) : int SIP_ENUM_BASETYPE( IntFlag )
     {
       NoCapabilities = 0, //!< Item has no capabilities
-      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+      SetCrs = 1 << 0, //!< Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
       Fertile = 1 << 1, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast = 1 << 2, //!< CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
       Collapse = 1 << 3, //!< The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -1137,6 +1175,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelOverlapHandling )
 
     /**
+     * Label whitespace collision handling.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LabelWhitespaceCollisionHandling : int
+    {
+      TreatWhitespaceAsCollision, //!< Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions
+      IgnoreWhitespaceCollisions, //!< Ignore overlapping whitespace text in labels and whitespace overlapping obstacles
+    };
+    Q_ENUM( LabelWhitespaceCollisionHandling )
+
+    /**
      * Label prioritization.
      *
      * \since QGIS 3.38
@@ -1170,6 +1220,20 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelPlacement )
 
     /**
+     * Modes which determine how curved labels are generated and placed.
+     *
+     * \since QGIS 4.0
+     */
+    enum class CurvedLabelMode : int
+    {
+      Default, //!< Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing.
+      PlaceCharactersAtVertices, //!< Each individual character from the label text is placed such that their left-baseline position is located at a corresponding vertex from the line geometry. If the line geometry does not contain sufficient vertices for the characters present in the label text then the excess characters will be ignored.
+      StretchCharacterSpacingToFitLine, //!< Increases (or decreases) the character spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+      StretchWordSpacingToFitLine, //!< Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+    };
+    Q_ENUM( CurvedLabelMode )
+
+    /**
      * Positions for labels when using the Qgis::LabelPlacement::OrderedPositionsAroundPoint placement mode.
      *
      * \note Prior to QGIS 3.26 this was available as QgsPalLayerSettings::PredefinedPointPosition
@@ -1193,6 +1257,19 @@ class CORE_EXPORT Qgis
       OverPoint, //!< Label directly centered over point \since QGIS 3.38
     };
     Q_ENUM( LabelPredefinedPointPosition )
+
+    /**
+     * Behavior modifier for labeling features with multi-part geometries.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MultiPartLabelingBehavior : int
+    {
+      LabelLargestPartOnly, //!< Place a label only on the largest part from the geometry
+      LabelEveryPartWithEntireLabel, //!< Place the (same) entire label over every part from the geometry
+      SplitLabelTextLinesOverParts, //!< Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
+    };
+    Q_ENUM( MultiPartLabelingBehavior )
 
     /**
      * Behavior modifier for label offset and distance, only applies in some
@@ -1358,6 +1435,7 @@ class CORE_EXPORT Qgis
       ResolveGeometryType = 1 << 1, //!< Attempt to resolve the geometry type for vector sublayers
       CountFeatures = 1 << 2, //!< Count features in vector sublayers
       IncludeSystemTables = 1 << 3, //!< Include system or internal tables (these are not included by default)
+      OpenLayersToResolveDescriptions = 1 << 4, //!< Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \since QGIS 4.0
     };
     //! Sublayer query flags
     Q_DECLARE_FLAGS( SublayerQueryFlags, SublayerQueryFlag )
@@ -2805,7 +2883,7 @@ class CORE_EXPORT Qgis
     {
       UseAllLabels          = 1 << 1, //!< Whether to draw all labels even if there would be collisions
       UsePartialCandidates  = 1 << 2, //!< Whether to use also label candidates that are partially outside of the map view
-      // TODO QGIS 4.0: remove
+      // TODO QGIS 5.0: remove
       RenderOutlineLabels   = 1 << 3, //!< Whether to render labels as text or outlines. Deprecated and of QGIS 3.4.3 - use defaultTextRenderFormat() instead.
       DrawLabelRectOnly     = 1 << 4, //!< Whether to only draw the label rect and not the actual label text (used for unit tests)
       DrawCandidates        = 1 << 5, //!< Whether to draw rectangles of generated candidates (good for debugging)
@@ -2944,6 +3022,27 @@ class CORE_EXPORT Qgis
       SubScript, //!< Characters are placed below the base line for normal text.
     };
     Q_ENUM( TextCharacterVerticalAlignment )
+
+    /**
+     * Flags controlling behavior of curved text generation.
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsTextRendererUtils::CurvedTextFlag
+     */
+    enum class CurvedTextFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRendererUtils, CurvedTextFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      TruncateStringWhenLineIsTooShort = 1 << 0, //!< When a string is too long for the line, truncate characters instead of aborting the placement
+      UseBaselinePlacement = 1 << 1, //!< Generate placement based on the character baselines instead of centers
+      UprightCharactersOnly = 1 << 2, //!< Permit upright characters only. If not present then upside down text placement is permitted.
+      ExtendLineToFitText = 1 << 3, //!< When a string is too long for the line, extend the line's final segment to fit the entire string. \since QGIS 4.0
+    };
+    Q_ENUM( CurvedTextFlag )
+
+    /**
+     * Flags controlling behavior of curved text generation.
+     *
+     * \since QGIS 4.0. Prior to QGIS 4.0 this was available as QgsTextRendererUtils::CurvedTextFlags
+     */
+    Q_DECLARE_FLAGS( CurvedTextFlags, CurvedTextFlag )SIP_MONKEYPATCH_FLAGS_UNNEST( QgsTextRendererUtils, CurvedTextFlags )
 
     /**
      * Simplification algorithms for vector features.
@@ -3484,7 +3583,8 @@ class CORE_EXPORT Qgis
       Plugin SIP_MONKEYPATCH_COMPAT_NAME( TypePlugin ) = 7, //!< Plugin layers \since QGIS 3.22
       PointCloud SIP_MONKEYPATCH_COMPAT_NAME( TypePointCloud ) = 8, //!< Point cloud layers \since QGIS 3.22
       Annotation SIP_MONKEYPATCH_COMPAT_NAME( TypeAnnotation ) = 9, //!< Annotation layers \since QGIS 3.22
-      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10 //!< Vector tile layers \since QGIS 3.32
+      VectorTile SIP_MONKEYPATCH_COMPAT_NAME( TypeVectorTile ) = 10, //!< Vector tile layers \since QGIS 3.32
+      TiledScene = 11 //!< Tiled scene layers \since QGIS 4.0
     };
     Q_ENUM( ProcessingSourceType )
 
@@ -4318,6 +4418,7 @@ class CORE_EXPORT Qgis
       GPServer, //!< GPServer
       GeocodeServer, //!< GeocodeServer
       Unknown, //!< Other unknown/unsupported type
+      SceneServer, //!< SceneServer
     };
     Q_ENUM( ArcGisRestServiceType )
 
@@ -4524,6 +4625,19 @@ class CORE_EXPORT Qgis
     };
     // !!! WARNING: If adding new values to this enum, make sure you update QgsLegendSettings constructor accordingly!!
     Q_ENUM( LegendComponent )
+
+    /**
+     * Legend synchronization mode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LegendSyncMode : int
+    {
+      AllProjectLayers, //!< Synchronize to all project layers.
+      VisibleLayers, //!< Synchronize to map layers. The legend will include layers which are included in the linked map only.
+      Manual, //!< No automatic synchronization of legend layers. The legend will be manually populated.
+    };
+    Q_ENUM( LegendSyncMode )
 
     /**
      * Legend JSON export flags.
@@ -4779,7 +4893,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( RasterIdentifyFormat )
 
-    // TODO QGIS 4 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
+    // TODO QGIS 5 -- remove NoCapabilities and rely on RasterInterfaceCapabilities() instead
     // remove deprecated members
     // Remove "Identify" member, and replace with combinations of IdentifyValue/IdentifyText/etc
 
@@ -4794,8 +4908,8 @@ class CORE_EXPORT Qgis
     {
       NoCapabilities = 0, //!< No capabilities
       Size = 1 << 1, //!< Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
-      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
+      Create = 1 << 2, //!< Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
+      Remove = 1 << 3, //!< Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
       BuildPyramids = 1 << 4, //!< Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability::BuildPyramids instead)
       Identify = 1 << 5, //!< At least one identify format supported
       IdentifyValue = 1 << 6, //!< Numerical values
@@ -4814,7 +4928,7 @@ class CORE_EXPORT Qgis
     Q_DECLARE_FLAGS( RasterInterfaceCapabilities, RasterInterfaceCapability )
     Q_FLAG( RasterInterfaceCapabilities )
 
-    // TODO QGIS 4 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
+    // TODO QGIS 5 -- remove NoProviderCapabilities and rely on RasterProviderCapabilities() instead
 
     /**
      * Raster data provider capabilities.
@@ -5289,6 +5403,200 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( ScaleBarDistanceLabelHorizontalPlacement )
 
+
+    /**
+     * Units for map grid values.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::GridUnit.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridUnit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, GridUnit ) : int
+      {
+      MapUnits SIP_MONKEYPATCH_COMPAT_NAME( MapUnit ), //!< Grid units follow map units
+      Millimeters SIP_MONKEYPATCH_COMPAT_NAME( MM ), //!< Grid units in millimeters
+      Centimeters SIP_MONKEYPATCH_COMPAT_NAME( CM ), //!< Grid units in centimeters
+      DynamicPageSizeBased, //!< Dynamically sized, based on a on-page size range
+    };
+    Q_ENUM( MapGridUnit )
+
+    /**
+     * Map grid drawing styles.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::GridStyle.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, GridStyle ) : int
+      {
+      Lines SIP_MONKEYPATCH_COMPAT_NAME( Solid ) = 0, //!< Draw lines for grid
+      LineCrosses SIP_MONKEYPATCH_COMPAT_NAME( Cross ), //!< Draw line crosses at intersections of grid lines
+      Markers, //!< Draw markers at intersections of grid lines
+      FrameAndAnnotationsOnly SIP_MONKEYPATCH_COMPAT_NAME( FrameAnnotationsOnly ) //!< No grid lines over the map, only draw frame and annotations
+    };
+    Q_ENUM( MapGridStyle )
+
+    /**
+     * Visibility display settings for map grid annotations and frames.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::DisplayMode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridComponentVisibility SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, DisplayMode ) : int
+      {
+      ShowAll = 0, //!< Show both latitude and longitude annotations/divisions
+      LatitudeOnly, //!< Show latitude/y annotations/divisions only
+      LongitudeOnly, //!< Show longitude/x annotations/divisions only
+      HideAll //!< No annotations
+    };
+    Q_ENUM( MapGridComponentVisibility )
+
+    /**
+     * Position for map grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationPosition.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationPosition SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationPosition ) : int
+      {
+      InsideMapFrame = 0, //!< Draw annotations inside the map frame
+      OutsideMapFrame, //!< Draw annotations outside the map frame
+    };
+    Q_ENUM( MapGridAnnotationPosition )
+
+    /**
+     * Direction of grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationDirection.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationDirection SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationDirection ) : int
+      {
+      Horizontal = 0, //!< Draw annotations horizontally
+      Vertical, //!< Draw annotations vertically, ascending
+      VerticalDescending, //!< Draw annotations vertically, descending
+      BoundaryDirection, //!< Annotations follow the boundary direction
+      AboveTick, //!< Draw annotations parallel to tick (above the line)
+      OnTick, //!< Draw annotations parallel to tick (on the line)
+      UnderTick, //!< Draw annotations parallel to tick (under the line)
+    };
+    Q_ENUM( MapGridAnnotationDirection )
+
+    /**
+     * Format for displaying map grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationFormat.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationFormat SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationFormat ) : int
+      {
+      Decimal = 0, //!< Decimal degrees, use - for S/W coordinates
+      DegreeMinute, //!< Degree/minutes, use NSEW suffix
+      DegreeMinuteSecond, //!< Degree/minutes/seconds, use NSEW suffix
+      DecimalWithSuffix, //!< Decimal degrees, use NSEW suffix
+      DegreeMinuteNoSuffix, //!< Degree/minutes, use - for S/W coordinates
+      DegreeMinutePadded, //!< Degree/minutes, with minutes using leading zeros where required
+      DegreeMinuteSecondNoSuffix, //!< Degree/minutes/seconds, use - for S/W coordinates
+      DegreeMinuteSecondPadded, //!< Degree/minutes/seconds, with minutes using leading zeros where required
+      CustomFormat //!< Custom expression-based format
+    };
+    Q_ENUM( MapGridAnnotationFormat )
+
+    /**
+     * Border sides for map grid annotations.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::BorderSide.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridBorderSide SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, BorderSide ) : int
+      {
+      Left, //!< Left border
+      Right, //!< Right border
+      Bottom, //!< Bottom border
+      Top, //!< Top border
+    };
+    Q_ENUM( MapGridBorderSide )
+
+    /**
+     * Style for map grid frames.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::FrameStyle.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridFrameStyle SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, FrameStyle ) : int
+      {
+      NoFrame = 0, //!< Disable grid frame
+      Zebra, //!< Black/white pattern
+      InteriorTicks,  //!< Tick markers drawn inside map frame
+      ExteriorTicks,  //!< Tick markers drawn outside map frame
+      InteriorExteriorTicks, //!< Tick markers drawn both inside and outside the map frame
+      LineBorder, //!< Simple solid line frame
+      LineBorderNautical, //!< Simple solid line frame, with nautical style diagonals on corners
+      ZebraNautical, //!< Black/white pattern, with nautical style diagonals on corners
+    };
+    Q_ENUM( MapGridFrameStyle )
+
+    /**
+     * Map grid tick length mode (useful for rotated grids).
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::TickLengthMode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridTickLengthMode SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, TickLengthMode ) : int
+      {
+      OrthogonalTicks = 0, //!< Align ticks orthogonaly
+      NormalizedTicks, //!< Constant tick lengths
+    };
+    Q_ENUM( MapGridTickLengthMode )
+
+
+    /**
+     * Flags for controlling which side of the map a frame is drawn on.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::FrameSideFlag.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridFrameSideFlag SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, FrameSideFlag ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Left SIP_MONKEYPATCH_COMPAT_NAME( FrameLeft ) = 0x01, //!< Left side of map
+      Right SIP_MONKEYPATCH_COMPAT_NAME( FrameRight ) = 0x02, //!< Right side of map
+      Top SIP_MONKEYPATCH_COMPAT_NAME( FrameTop ) = 0x04, //!< Top side of map
+      Bottom SIP_MONKEYPATCH_COMPAT_NAME( FrameBottom ) = 0x08 //!< Bottom side of map
+    };
+    Q_ENUM( MapGridFrameSideFlag )
+
+    /**
+     * Flags for controlling which side of the map a frame is drawn on.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::FrameSideFlags.
+     *
+     * \since QGIS 4.0
+     */
+    Q_DECLARE_FLAGS( MapGridFrameSideFlags, MapGridFrameSideFlag ) SIP_MONKEYPATCH_FLAGS_UNNEST( QgsLayoutItemMapGrid, FrameSideFlags )
+    Q_FLAG( MapGridFrameSideFlags )
+
+    /**
+     * Annotation coordinate type.
+     *
+     * \note Prior to QGIS 4.0 this was available as QgsLayoutItemMapGrid::AnnotationCoordinate.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MapGridAnnotationType SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsLayoutItemMapGrid, AnnotationCoordinate ) : int
+      {
+      Longitude = 0, //!< Coordinate is a longitude value
+      Latitude //!< Coordinate is a latitude value
+    };
+    Q_ENUM( MapGridAnnotationType )
+
     /**
      * Input controller types.
      *
@@ -5332,6 +5640,8 @@ class CORE_EXPORT Qgis
       SetFieldComment = 1 << 0, //!< Can set comments for fields via setFieldComment()
       SetFieldAlias = 1 << 1, //!< Can set aliases for fields via setFieldAlias()
       SetTableComment = 1 << 2, //!< Can set comments for tables via setTableComment() \since QGIS 3.44
+      EditFieldDomain = 1 << 3,   //!< Can edit existing field domain \since QGIS 4.0
+      DeleteFieldDomain = 1 << 4, //!< Can delete existing field domain \since QGIS 4.0
     };
     Q_ENUM( DatabaseProviderConnectionCapability2 )
     Q_DECLARE_FLAGS( DatabaseProviderConnectionCapabilities2, DatabaseProviderConnectionCapability2 )
@@ -5458,6 +5768,19 @@ class CORE_EXPORT Qgis
       Environment SIP_MONKEYPATCH_COMPAT_NAME( CodeSourceEnvironment ) = 3 //!< Use the Python code available in the Python environment
     };
     Q_ENUM( AttributeFormPythonInitCodeSource )
+
+    /**
+     * Attribute form policy for reusing last entered values.
+     *
+     * \since QGIS 4.0
+     */
+    enum class AttributeFormReuseLastValuePolicy : int
+    {
+      NotAllowed = 0,       //!< Reuse of last values not allowed
+      AllowedDefaultOn = 1, //!< Reuse of last values allowed and enabled by default
+      AllowedDefaultOff = 2, //!< Reuse of last values allowed and disabled by default
+    };
+    Q_ENUM( AttributeFormReuseLastValuePolicy )
 
     /**
      * Expression types
@@ -5677,7 +6000,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VsiHandlerType )
 
-    // TODO QGIS 4: make All include all values (we can't do this before 4.0, as we need to keep
+    // TODO QGIS 5: make All include all values (we can't do this before 4.0, as we need to keep
     // compatibility with code which expects all these statistics to give numeric results)
 
     /**
@@ -6060,6 +6383,52 @@ class CORE_EXPORT Qgis
     Q_FLAG( RasterProcessingParameterCapabilities )
 
     /**
+     * Dev tools node custom data roles.
+     * \since QGIS 4.0
+     */
+    enum class DevToolsNodeRole
+    {
+      Status = Qt::UserRole + 1, //!< Request status role
+      Id,                        //!< Request ID role
+      ElapsedTime,               //!< Elapsed time
+      MaximumTime,               //!< Maximum encountered elapsed time
+      Sort,                      //!< Sort order role
+    };
+    Q_ENUM( DevToolsNodeRole )
+
+    /**
+     * Extrusion face types for the QgsTessellator.
+     *
+     * \since QGIS 4.0
+     */
+    enum class ExtrusionFace : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      NoFace = 0,
+      Walls = 1 << 0,
+      Roof = 1 << 1,
+      Floor = 1 << 2
+    };
+    Q_ENUM( ExtrusionFace )
+
+    /**
+    * Tessellator extrusion face types.
+    * \since QGIS 4.0
+    */
+    Q_DECLARE_FLAGS( ExtrusionFaces, ExtrusionFace )
+    Q_FLAG( ExtrusionFaces )
+
+    /**
+     * Triangulation algorithms.
+     * \since QGIS 4.0
+     */
+    enum class TriangulationAlgorithm : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      ConstrainedDelaunay = 0,
+      Earcut = 1 << 0
+    };
+    Q_ENUM( TriangulationAlgorithm )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -6089,7 +6458,7 @@ class CORE_EXPORT Qgis
      *  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
      *  To avoid that, use this factor instead of using <= or >=.
      *
-     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static const double SCALE_PRECISION;
 
@@ -6185,11 +6554,41 @@ class CORE_EXPORT Qgis
     static QString geosVersion();
 
     /**
-     * Returns TRUE if the QGIS build contains QtWebkit.
+     * Returns TRUE if the QGIS build contains SFCGAL.
      *
      * \since QGIS 4.0
      */
-    static bool hasQtWebkit();
+    static bool hasSfcgal();
+
+    /**
+     * Returns the version of the SFCGAL library if QGIS is built with SFCGAL. Else throws an exception.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based without SFCGAL.
+     * \since QGIS 4.0
+     */
+    static int sfcgalVersionInt();
+
+    /**
+     * Returns TRUE if the QGIS build contains GeographicLib.
+     *
+     * \since QGIS 4.0
+     */
+    static bool hasGeographicLib();
+
+    /**
+     * Returns the version of the GeographicLib library if QGIS is built with GeographicLib support.
+     *
+     * \throws QgsNotSupportedException on QGIS builds based without GeographicLib.
+     * \since QGIS 4.0
+     */
+    static int geographicLibVersion();
+
+    /**
+     * Returns FALSE.
+     *
+     * \deprecated QGIS 4.0. WebKit-Support was removed.
+     */
+    Q_DECL_DEPRECATED static bool hasQtWebkit();
 
     /**
      * Constant that holds the string representation for "No ellipse/No CRS".
@@ -6198,7 +6597,7 @@ class CORE_EXPORT Qgis
      */
     static QString geoNone()
     {
-      return QStringLiteral( "NONE" );
+      return u"NONE"_s;
     }
 
     /**
@@ -6208,12 +6607,12 @@ class CORE_EXPORT Qgis
      */
     static QString geographicCrsAuthId()
     {
-      return QStringLiteral( "EPSG:4326" );
+      return u"EPSG:4326"_s;
     }
 
     /**
     * WKT string that represents a geographic coord system
-    * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+    * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
     */
     Q_DECL_DEPRECATED static QString geoWkt()
     {
@@ -6224,11 +6623,11 @@ class CORE_EXPORT Qgis
 
     /**
      * PROJ4 string that represents a geographic coord system.
-     * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static QString geoProj4()
     {
-      return QStringLiteral( "+proj=longlat +datum=WGS84 +no_defs" );
+      return u"+proj=longlat +datum=WGS84 +no_defs"_s;
     }
 
 };
@@ -6236,6 +6635,7 @@ class CORE_EXPORT Qgis
 QHASH_FOR_CLASS_ENUM( Qgis::CaptureTechnique )
 QHASH_FOR_CLASS_ENUM( Qgis::RasterAttributeTableFieldUsage )
 
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::NetworkRequestFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AnnotationItemGuiFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::AuthConfigurationStorageCapabilities )
@@ -6322,6 +6722,9 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::VectorProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapCanvasFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::LayoutRenderFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapLayerLegendFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::CurvedTextFlags )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::ExtrusionFaces )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::MapGridFrameSideFlags )
 Q_DECLARE_METATYPE( Qgis::LayoutRenderFlags )
 Q_DECLARE_METATYPE( QTimeZone )
 
@@ -6407,7 +6810,7 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
     else
     {
       str = QString::number( a, 'f', precision );
-      if ( str.contains( QLatin1Char( '.' ) ) )
+      if ( str.contains( '.'_L1 ) )
       {
         // remove ending 0s
         int idx = str.length() - 1;
@@ -6426,9 +6829,9 @@ inline QString qgsDoubleToString( double a, int precision = 17 )
   }
   // avoid printing -0
   // see https://bugreports.qt.io/browse/QTBUG-71439
-  if ( str == QLatin1String( "-0" ) )
+  if ( str == "-0"_L1 )
   {
-    return QLatin1String( "0" );
+    return "0"_L1;
   }
   return str;
 }
@@ -6880,8 +7283,6 @@ CORE_EXPORT bool qgsVariantEqual( const QVariant &lhs, const QVariant &rhs );
  */
 CORE_EXPORT bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-
 /**
  * Compares two QVariant values and returns whether the first is greater than the second.
  *
@@ -6913,16 +7314,6 @@ inline bool operator< ( const QVariant &v1, const QVariant &v2 )
 {
   return qgsVariantCompare( v1, v2, true ) < 0;
 }
-#endif
-
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-
-/**
- * Compares two QVariantList values and returns whether the first is less than the second.
- */
-template<> CORE_EXPORT bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 ) SIP_SKIP;
-#endif
 
 /**
  * Returns a the vsi prefix which corresponds to a file \a path, or an empty
@@ -6984,21 +7375,21 @@ class ScopedIntIncrementor
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOSRID = 4326;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system in QGIS internal srs database.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEOCRS_ID = 3452;
 
 /**
  * Numeric ID for the EPSG:4326 geographic coordinate system.
  *
- * \deprecated QGIS 3.44. Will be removed in QGIS 4.0.
+ * \deprecated QGIS 3.44. Will be removed in QGIS 5.0.
  */
 Q_DECL_DEPRECATED const long GEO_EPSG_CRS_ID = 4326;
 
@@ -7058,45 +7449,6 @@ typedef unsigned long long qgssize;
 #  endif
 #endif
 #endif
-#endif
-
-// see https://infektor.net/posts/2017-01-19-using-cpp17-attributes-today.html#using-the-nodiscard-attribute
-#if __cplusplus >= 201703L
-#define NODISCARD [[nodiscard]]
-#elif defined(__clang__)
-#define NODISCARD [[nodiscard]]
-#elif defined(_MSC_VER)
-#define NODISCARD // no support
-#elif defined(__has_cpp_attribute)
-#if __has_cpp_attribute(nodiscard)
-#define NODISCARD [[nodiscard]]
-#elif __has_cpp_attribute(gnu::warn_unused_result)
-#define NODISCARD [[gnu::warn_unused_result]]
-#else
-#define NODISCARD Q_REQUIRED_RESULT
-#endif
-#else
-#define NODISCARD Q_REQUIRED_RESULT
-#endif
-
-#if __cplusplus >= 201703L
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(__clang__)
-#define MAYBE_UNUSED [[maybe_unused]]
-#elif defined(_MSC_VER)
-#define MAYBE_UNUSED // no support
-#elif defined(__has_cpp_attribute)
-#if __has_cpp_attribute(gnu::unused)
-#define MAYBE_UNUSED [[gnu::unused]]
-#else
-#define MAYBE_UNUSED
-#endif
-#else
-#define MAYBE_UNUSED
-#endif
-
-#ifndef FINAL
-#define FINAL final
 #endif
 
 #ifndef SIP_RUN

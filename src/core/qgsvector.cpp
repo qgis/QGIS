@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsvector.h"
+
 #include "qgis.h"
 #include "qgsexception.h"
 
@@ -31,7 +32,7 @@ QgsVector QgsVector::normalized() const
 
   if ( len == 0.0 )
   {
-    throw QgsException( QStringLiteral( "normalized vector of null vector undefined" ) );
+    throw QgsException( u"normalized vector of null vector undefined"_s );
   }
 
   return *this / len;

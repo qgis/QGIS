@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLabelObstacleSettingsWidget : QgsLabelSettingsWidgetBase
 {
 %Docstring(signature="appended")

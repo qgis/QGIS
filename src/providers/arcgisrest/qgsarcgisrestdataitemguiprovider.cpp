@@ -14,24 +14,24 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestdataitemguiprovider.h"
-#include "moc_qgsarcgisrestdataitemguiprovider.cpp"
 
+#include "qgsafsprovider.h"
 #include "qgsapplication.h"
 #include "qgsarcgisrestdataitems.h"
+#include "qgsbrowsertreeview.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsguiutils.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsnewarcgisrestconnection.h"
 #include "qgsowsconnection.h"
-#include "qgsafsprovider.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsbrowsertreeview.h"
-#include "qgsguiutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsdataitemguiproviderutils.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "moc_qgsarcgisrestdataitemguiprovider.cpp"
 
 void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -109,6 +109,14 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     } );
     menu->addAction( viewInfo );
   }
+  else if ( QgsArcGisSceneServiceItem *serviceItem = qobject_cast<QgsArcGisSceneServiceItem *>( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [serviceItem] {
+      QDesktopServices::openUrl( QUrl( serviceItem->path() ) );
+    } );
+    menu->addAction( viewInfo );
+  }
   else if ( QgsArcGisRestParentLayerItem *layerItem = qobject_cast<QgsArcGisRestParentLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
@@ -137,6 +145,15 @@ void QgsArcGisRestDataItemGuiProvider::populateContextMenu( QgsDataItem *item, Q
     } );
   }
   else if ( QgsArcGisMapServiceLayerItem *layerItem = qobject_cast<QgsArcGisMapServiceLayerItem *>( item ) )
+  {
+    QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
+    connect( viewInfo, &QAction::triggered, this, [layerItem] {
+      QDesktopServices::openUrl( QUrl( layerItem->path() ) );
+    } );
+    menu->addAction( viewInfo );
+    menu->addSeparator();
+  }
+  else if ( QgsArcGisSceneServiceLayerItem *layerItem = qobject_cast<QgsArcGisSceneServiceLayerItem *>( item ) )
   {
     QAction *viewInfo = new QAction( tr( "View Service Info" ), menu );
     connect( viewInfo, &QAction::triggered, this, [layerItem] {
@@ -226,7 +243,7 @@ void QgsArcGisRestDataItemGuiProvider::addFilteredLayer( const QgsMimeDataUtils:
 {
   // Query available fields
   QgsDataSourceUri ds( uri.uri );
-  ds.setSql( QStringLiteral( "1=0" ) ); // don't retrieve any records
+  ds.setSql( u"1=0"_s ); // don't retrieve any records
 
   QgsDataProvider::ProviderOptions providerOptions;
   QgsTemporaryCursorOverride cursor( Qt::WaitCursor );
@@ -249,7 +266,7 @@ void QgsArcGisRestDataItemGuiProvider::addFilteredLayer( const QgsMimeDataUtils:
     const QString sql = w->expressionText();
     ds.setSql( sql );
 
-    auto layer = std::make_unique<QgsVectorLayer>( ds.uri( false ), uri.name, QStringLiteral( "arcgisfeatureserver" ) );
+    auto layer = std::make_unique<QgsVectorLayer>( ds.uri( false ), uri.name, u"arcgisfeatureserver"_s );
     QgsProject::instance()->addMapLayer( layer.release() );
   }
 }

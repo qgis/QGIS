@@ -19,17 +19,18 @@
 #ifndef QGSVECTORFILEWRITER_H
 #define QGSVECTORFILEWRITER_H
 
+#include <ogr_api.h>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsfields.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsrenderer.h"
-#include "qgsgeometryengine.h"
 #include "qgsfeaturesink.h"
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgsgeometryengine.h"
+#include "qgsogrutils.h"
 #include "qgsrendercontext.h"
-#include <ogr_api.h>
+#include "qgsrenderer.h"
 
 class QgsSymbolLayer;
 class QTextCodec;
@@ -128,7 +129,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     {
       public:
         BoolOption( const QString &docString, bool defaultValue )
-          : SetOption( docString, QStringList() << QStringLiteral( "YES" ) << QStringLiteral( "NO" ), defaultValue ? "YES" : "NO" )
+          : SetOption( docString, QStringList() << u"YES"_s << u"NO"_s, defaultValue ? "YES" : "NO" )
         {}
     };
 
@@ -879,6 +880,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     Qgis::VectorFileWriterCapabilities capabilities() const;
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     QString lastError() const override;
 

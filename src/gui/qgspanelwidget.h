@@ -15,10 +15,11 @@
 #ifndef QGSPANELWIDGET_H
 #define QGSPANELWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
+
 #include <QKeyEvent>
 #include <QStack>
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QMenu;
 
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * The title of the panel.
      * \returns The title pf the panel.
      */
-    QString panelTitle() { return mPanelTitle; }
+    QString panelTitle() const { return mPanelTitle; }
 
     /**
     * Connect the given sub panel widgets showPanel signals to this current panels
@@ -89,7 +90,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * will emit the showPanel signal to handle panel opening
      * If FALSE it will open dialogs when openPanel is called.
      */
-    bool dockMode() { return mDockMode; }
+    bool dockMode() const { return mDockMode; }
 
     /**
      * The the auto delete property on the widget. TRUE by default.
@@ -105,7 +106,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * it will be deleted.
      * \returns The auto delete value for the widget.
      */
-    bool autoDelete() { return mAutoDelete; }
+    bool autoDelete() const { return mAutoDelete; }
 
     /**
      * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget

@@ -13,11 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
+
 #include <QApplication>
 #include <QFileInfo>
-
+#include <QObject>
+#include <QString>
 #include <qwt_global.h>
 
 //qgis includes...
@@ -249,7 +249,7 @@ int TestRasterHistogram::testFile( QString testType, QString rendererName, QgsRa
 
   // setup histogram widget
   mHistogramWidget->setRendererWidget( rendererName, rendererWidget );
-  foreach ( QString actionName, actionsList )
+  for ( QString actionName : actionsList )
   {
     mHistogramWidget->histoAction( actionName );
   }

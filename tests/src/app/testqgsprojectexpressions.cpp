@@ -12,15 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+
 #include <QApplication>
 #include <QObject>
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include "qgstest.h"
-
-#include <qgisapp.h>
-#include <qgsapplication.h>
 
 /**
  * \ingroup UnitTests
@@ -52,9 +55,9 @@ void TestQgsProjectExpressions::initTestCase()
   qputenv( "QGIS_CUSTOM_CONFIG_PATH", configPath );
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   qDebug() << "TestQgsProjectExpressions::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -73,28 +76,31 @@ void TestQgsProjectExpressions::cleanupTestCase()
 void TestQgsProjectExpressions::projectExpressions()
 {
   const int count_before_project = QgsExpression::functionCount();
-  QVERIFY( QgsExpression::functionIndex( QStringLiteral( "mychoice" ) ) != -1 ); // User expression loaded
+  QVERIFY( QgsExpression::functionIndex( u"mychoice"_s ) != -1 ); // User expression loaded
 
-  const QString myExpression = QStringLiteral( "mychoice(1, 2)" );
-  QgsExpression exp( QStringLiteral( "mychoice(1, 2)" ) );
+  const QString myExpression = u"mychoice(1, 2)"_s;
+  QgsExpression exp( u"mychoice(1, 2)"_s );
   QCOMPARE( exp.evaluate().toInt(), 1 );
 
   // Load expressions from project
   // Project registers 2 functions: mychoice (overwriting it) and myprojectfunction
   const QByteArray projectPath = QByteArray( TEST_DATA_DIR ) + "/projects/test_project_functions.qgz";
 
-  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-  QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Never );
+  const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+
+  QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( Qgis::EmbeddedScriptMode::Never );
   QgsProject::instance()->read( projectPath );
-  QCOMPARE( QgsExpression::functionIndex( QStringLiteral( "myprojectfunction" ) ), -1 );
+  QCOMPARE( QgsExpression::functionIndex( u"myprojectfunction"_s ), -1 );
 
-  // Set the global setting to accept expression functions
-  QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::SessionOnly );
+  QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( Qgis::EmbeddedScriptMode::NeverAsk );
+  QgsApplication::setTemporarilyUntrustedProjectsFolders( QStringList() << projectPath );
   QgsProject::instance()->loadFunctionsFromProject();
-  QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), pythonEmbeddedMode );
-
-  QVERIFY( QgsExpression::functionIndex( QStringLiteral( "myprojectfunction" ) ) != -1 );
-  QVERIFY( QgsExpression::functionIndex( QStringLiteral( "mychoice" ) ) != -1 ); // Overwritten function
+  QCOMPARE( QgsExpression::functionIndex( u"myprojectfunction"_s ), -1 );
+  QgsApplication::setTemporarilyUntrustedProjectsFolders( QStringList() );
+  QgsApplication::setTemporarilyTrustedProjectsFolders( QStringList() << projectPath );
+  QgsProject::instance()->loadFunctionsFromProject();
+  QVERIFY( QgsExpression::functionIndex( u"myprojectfunction"_s ) != -1 );
+  QVERIFY( QgsExpression::functionIndex( u"mychoice"_s ) != -1 ); // Overwritten function
   const int count_project_loaded = QgsExpression::functionCount();
 
   QCOMPARE( count_project_loaded - count_before_project, 1 ); // myprojectfunction
@@ -107,9 +113,11 @@ void TestQgsProjectExpressions::projectExpressions()
   const int count_project_unloaded = QgsExpression::functionCount();
   QCOMPARE( count_before_project, count_project_unloaded ); // myprojectfunction is gone
 
-  QCOMPARE( QgsExpression::functionIndex( QStringLiteral( "myprojectfunction" ) ), -1 );
+  QCOMPARE( QgsExpression::functionIndex( u"myprojectfunction"_s ), -1 );
   exp = myExpression;                    // Re-parse it
   QCOMPARE( exp.evaluate().toInt(), 1 ); // Original result, coming from user function
+
+  QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->setValue( embeddedScriptMode );
 }
 
 

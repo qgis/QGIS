@@ -14,9 +14,10 @@ email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************/
 
 #include "qgsgeometryutils_base.h"
-#include "qgsvector3d.h"
-#include "qgsvector.h"
+
 #include "qgsexception.h"
+#include "qgsvector.h"
+#include "qgsvector3d.h"
 
 double QgsGeometryUtilsBase::sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX, double &minDistY, double epsilon )
 {
@@ -220,6 +221,74 @@ double QgsGeometryUtilsBase::circleLength( double x1, double y1, double x2, doub
     length = -length;
   }
   return length;
+}
+
+double QgsGeometryUtilsBase::calculateArcLength( double centerX, double centerY, double radius,
+    double x1, double y1, double x2, double y2,
+    double x3, double y3, int fromVertex, int toVertex )
+{
+  if ( fromVertex == toVertex )
+    return 0.0;
+
+  if ( fromVertex < 0 || fromVertex > 2 || toVertex < 0 || toVertex > 2 )
+    return 0.0;
+
+  // Calculate angles for all three points (in degrees)
+  const double angle1 = QgsGeometryUtilsBase::ccwAngle( y1 - centerY, x1 - centerX );
+  const double angle2 = QgsGeometryUtilsBase::ccwAngle( y2 - centerY, x2 - centerX );
+  const double angle3 = QgsGeometryUtilsBase::ccwAngle( y3 - centerY, x3 - centerX );
+
+  // Determine the direction of the arc using the sweep angle
+  const double totalSweepAngle = QgsGeometryUtilsBase::sweepAngle( centerX, centerY, x1, y1, x2, y2, x3, y3 );
+  bool clockwise = totalSweepAngle < 0;
+
+  // Map vertex indices to angles
+  double fromAngle, toAngle;
+  if ( fromVertex == 0 )
+    fromAngle = angle1;
+  else if ( fromVertex == 1 )
+    fromAngle = angle2;
+  else
+    fromAngle = angle3;
+
+  if ( toVertex == 0 )
+    toAngle = angle1;
+  else if ( toVertex == 1 )
+    toAngle = angle2;
+  else
+    toAngle = angle3;
+
+  // Calculate the arc angle between the two points following the arc direction (in degrees)
+  double arcAngleDegrees;
+  if ( clockwise )
+  {
+    arcAngleDegrees = fromAngle - toAngle;
+    if ( arcAngleDegrees <= 0 )
+    {
+      arcAngleDegrees += 360.0;
+    }
+  }
+  else
+  {
+    arcAngleDegrees = toAngle - fromAngle;
+    if ( arcAngleDegrees <= 0 )
+    {
+      arcAngleDegrees += 360.0;
+    }
+  }
+
+  // Make sure we follow the arc in the right direction
+  // For a 3-point arc, we should never have an angle > the total arc
+  double totalArcAngleDegrees = std::abs( totalSweepAngle );
+  if ( arcAngleDegrees > totalArcAngleDegrees && ( fromVertex == 0 && toVertex == 2 ) == false )
+  {
+    // We went the wrong way around the circle, take the shorter arc
+    arcAngleDegrees = 360.0 - arcAngleDegrees;
+  }
+
+  // Convert to radians for arc length calculation
+  const double arcAngleRadians = arcAngleDegrees * M_PI / 180.0;
+  return radius * arcAngleRadians;
 }
 
 double QgsGeometryUtilsBase::sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 )
@@ -683,6 +752,17 @@ bool QgsGeometryUtilsBase::pointsAreCollinear( double x1, double y1, double x2, 
   return qgsDoubleNear( x1 * ( y2 - y3 ) + x2 * ( y3 - y1 ) + x3 * ( y1 - y2 ), 0, epsilon );
 };
 
+bool QgsGeometryUtilsBase::points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon )
+{
+  // crossproduct
+  const double cx = ( y2 - y1 ) * ( z3 - z1 ) - ( z2 - z1 ) * ( y3 - y1 );
+  const double cy = ( z2 - z1 ) * ( x3 - x1 ) - ( x2 - x1 ) * ( z3 - z1 );
+  const double cz = ( x2 - x1 ) * ( y3 - y1 ) - ( y2 - y1 ) * ( x3 - x1 );
+
+  // The magnitude of the cross product must be close to 0
+  return qgsDoubleNear( cx * cx + cy * cy + cz * cz, 0.0, epsilon * epsilon );
+}
+
 double QgsGeometryUtilsBase::azimuth( double x1, double y1, double x2, double y2 )
 {
   const double dx = x2 - x1;
@@ -739,6 +819,90 @@ bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY,
   return intersection;
 }
 
+
+double QgsGeometryUtilsBase::maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+    const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+    double epsilon )
+{
+  double intersectionX, intersectionY;
+  bool isIntersection;
+  QgsGeometryUtilsBase::segmentIntersection(
+    segment1StartX, segment1StartY, segment1EndX, segment1EndY,
+    segment2StartX, segment2StartY, segment2EndX, segment2EndY,
+    intersectionX, intersectionY, isIntersection, epsilon, true );
+
+  if ( !isIntersection )
+  {
+    return -1.0;
+  }
+
+  const double dist1ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1StartX, segment1StartY );
+  const double dist1ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment1EndX, segment1EndY );
+  const double dist2ToStart = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2StartX, segment2StartY );
+  const double dist2ToEnd = QgsGeometryUtilsBase::distance2D( intersectionX, intersectionY, segment2EndX, segment2EndY );
+
+  const double dir1X = dist1ToStart > epsilon ? segment1StartX : segment1EndX;
+  const double dir1Y = dist1ToStart > epsilon ? segment1StartY : segment1EndY;
+  const double dir2X = dist2ToStart > epsilon ? segment2StartX : segment2EndX;
+  const double dir2Y = dist2ToStart > epsilon ? segment2StartY : segment2EndY;
+
+  const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints(
+                         dir1X, dir1Y,
+                         intersectionX, intersectionY,
+                         dir2X, dir2Y
+                       );
+
+  if ( std::abs( angle ) < epsilon || std::abs( angle - M_PI ) < epsilon )
+  {
+    return -1.0;
+  }
+
+  double workingAngle = angle;
+  if ( workingAngle > M_PI )
+  {
+    workingAngle = 2 * M_PI - workingAngle;
+  }
+
+  const double halfAngle = workingAngle / 2.0;
+  if ( std::abs( std::sin( halfAngle ) ) < epsilon )
+  {
+    return -1.0;
+  }
+
+  const double maxDist1 = ( dist1ToStart > epsilon ) ? dist1ToStart : dist1ToEnd;
+  const double maxDist2 = ( dist2ToStart > epsilon ) ? dist2ToStart : dist2ToEnd;
+
+  const double seg1Length = QgsGeometryUtilsBase::distance2D( segment1StartX, segment1StartY, segment1EndX, segment1EndY );
+  const double seg2Length = QgsGeometryUtilsBase::distance2D( segment2StartX, segment2StartY, segment2EndX, segment2EndY );
+
+  const bool intersectionOnSeg1 = std::abs( ( dist1ToStart + dist1ToEnd ) - seg1Length ) < epsilon;
+  const bool intersectionOnSeg2 = std::abs( ( dist2ToStart + dist2ToEnd ) - seg2Length ) < epsilon;
+
+  double maxDistanceToTangent = std::numeric_limits<double>::max();
+
+  if ( intersectionOnSeg1 )
+  {
+    maxDistanceToTangent = std::min( maxDistanceToTangent, maxDist1 - epsilon );
+  }
+
+  if ( intersectionOnSeg2 )
+  {
+    maxDistanceToTangent = std::min( maxDistanceToTangent, maxDist2 - epsilon );
+  }
+
+  if ( maxDistanceToTangent == std::numeric_limits<double>::max() )
+  {
+    maxDistanceToTangent = std::min( maxDist1, maxDist2 ) - epsilon;
+  }
+
+  if ( maxDistanceToTangent <= 0 )
+  {
+    return -1.0;
+  }
+
+  return maxDistanceToTangent * std::tan( halfAngle );
+}
+
 bool QgsGeometryUtilsBase::createFillet(
   const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
@@ -774,25 +938,10 @@ bool QgsGeometryUtilsBase::createFillet(
 
   // Determine directional points for angle calculation
   // These points define the rays extending from the intersection
-  double dir1X, dir1Y, dir2X, dir2Y;
-
-  if ( dist1ToStart > epsilon )
-  {
-    dir1X = segment1StartX; dir1Y = segment1StartY;
-  }
-  else
-  {
-    dir1X = segment1EndX; dir1Y = segment1EndY;
-  }
-
-  if ( dist2ToStart > epsilon )
-  {
-    dir2X = segment2StartX; dir2Y = segment2StartY;
-  }
-  else
-  {
-    dir2X = segment2EndX; dir2Y = segment2EndY;
-  }
+  const double dir1X = dist1ToStart > epsilon ? segment1StartX : segment1EndX;
+  const double dir1Y = dist1ToStart > epsilon ? segment1StartY : segment1EndY;
+  const double dir2X = dist2ToStart > epsilon ? segment2StartX : segment2EndX;
+  const double dir2Y = dist2ToStart > epsilon ? segment2StartY : segment2EndY;
 
   // Calculate the angle between the two rays
   const double angle = QgsGeometryUtilsBase::angleBetweenThreePoints(

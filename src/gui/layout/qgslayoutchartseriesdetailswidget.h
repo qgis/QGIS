@@ -24,8 +24,8 @@
 #include "ui_qgslayoutchartseriesdetailswidgetbase.h"
 
 #include "qgis_gui.h"
-#include "qgspanelwidget.h"
 #include "qgslayoutitemchart.h"
+#include "qgspanelwidget.h"
 
 /**
  * \ingroup gui

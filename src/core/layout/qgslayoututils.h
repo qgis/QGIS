@@ -19,8 +19,9 @@
 
 #include "qgis_core.h"
 #include "qgslayoutitempage.h"
-#include <QFont>
+
 #include <QColor>
+#include <QFont>
 
 class QgsRenderContext;
 class QgsLayout;

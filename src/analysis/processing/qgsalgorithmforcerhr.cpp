@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgsalgorithmforcerhr.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsForceRHRAlgorithm::name() const
 {
-  return QStringLiteral( "forcerhr" );
+  return u"forcerhr"_s;
 }
 
 QString QgsForceRHRAlgorithm::displayName() const
@@ -44,7 +45,7 @@ QString QgsForceRHRAlgorithm::group() const
 
 QString QgsForceRHRAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsForceRHRAlgorithm::sourceFlags() const

@@ -17,14 +17,13 @@
 #ifndef QGSGLOWEFFECT_H
 #define QGSGLOWEFFECT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgspainteffect.h"
+#include "qgis_core.h"
 #include "qgscolorramp.h"
 #include "qgsmapunitscale.h"
+#include "qgspainteffect.h"
 
 #include <QPainter>
-
 
 /**
  * \ingroup core
@@ -52,6 +51,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
     Qgis::PaintEffectFlags flags() const override;
     QVariantMap properties() const override;
+
+    using QgsPaintEffect::readProperties;
     void readProperties( const QVariantMap &props ) override;
 
     /**
@@ -309,7 +310,7 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 
     QgsOuterGlowEffect();
 
-    QString type() const override { return QStringLiteral( "outerGlow" ); }
+    QString type() const override { return u"outerGlow"_s; }
     QgsOuterGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
@@ -340,7 +341,7 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
 
     QgsInnerGlowEffect();
 
-    QString type() const override { return QStringLiteral( "innerGlow" ); }
+    QString type() const override { return u"innerGlow"_s; }
     QgsInnerGlowEffect *clone() const override SIP_FACTORY;
 
   protected:

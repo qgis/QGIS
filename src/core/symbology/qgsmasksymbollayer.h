@@ -16,8 +16,8 @@
 #ifndef QGSMASKSYMBOLLAYER_H
 #define QGSMASKSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 class QgsPaintEffect;
@@ -65,9 +65,9 @@ class CORE_EXPORT QgsMaskMarkerSymbolLayer : public QgsMarkerSymbolLayer
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     QColor color() const override;
 
-    virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
+    void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
-    // TODO QGIS 4.0 rename to avoid collision with base class member
+    // TODO QGIS 5.0 rename to avoid collision with base class member
 
     //! Whether some masked symbol layers are defined
     bool enabled() const; // cppcheck-suppress duplInheritedMember

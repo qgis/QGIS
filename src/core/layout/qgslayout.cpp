@@ -15,33 +15,37 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
-#include "moc_qgslayout.cpp"
-#include "qgslayoutframe.h"
-#include "qgslayoutitem.h"
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutmodel.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutguidecollection.h"
-#include "qgsreadwritecontext.h"
-#include "qgsproject.h"
-#include "qgslayoutitemundocommand.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutitemgroupundocommand.h"
-#include "qgslayoutmultiframe.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutundostack.h"
+
+#include <memory>
+
 #include "qgscompositionconverter.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsstyleentityvisitor.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutguidecollection.h"
+#include "qgslayoutitem.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemgroupundocommand.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemundocommand.h"
+#include "qgslayoutmodel.h"
+#include "qgslayoutmultiframe.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayoutundostack.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
-#include "qgslayoutrendercontext.h"
-#include "qgslayoutreportcontext.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgsunittypes.h"
 
-const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates = new QgsSettingsEntryStringList( QStringLiteral( "search-paths-for-templates" ), QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
+#include "moc_qgslayout.cpp"
+
+const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates = new QgsSettingsEntryStringList( u"search-paths-for-templates"_s, QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -54,7 +58,7 @@ QgsLayout::QgsLayout( QgsProject *project )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
-  mItemsModel.reset( new QgsLayoutModel( this ) );
+  mItemsModel = std::make_unique<QgsLayoutModel>( this );
 }
 
 QgsLayout::~QgsLayout()
@@ -432,7 +436,7 @@ void QgsLayout::setCustomProperty( const QString &key, const QVariant &value )
 {
   mCustomProperties.setValue( key, value );
 
-  if ( key.startsWith( QLatin1String( "variable" ) ) )
+  if ( key.startsWith( "variable"_L1 ) )
     emit variablesChanged();
 }
 
@@ -583,7 +587,7 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
   if ( !mUndoStack->isBlocked() )
   {
     mUndoStack->beginMacro( tr( "Delete Items" ) );
-    deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Delete Item" ) ) );
+    deleteCommand = std::make_unique<QgsLayoutItemDeleteUndoCommand>( item, tr( "Delete Item" ) );
   }
   removeLayoutItemPrivate( item );
   if ( deleteCommand )
@@ -655,27 +659,27 @@ QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &docume
   }
 
   // remove all uuid attributes since we don't want duplicates UUIDS
-  QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  QDomNodeList itemsNodes = doc.elementsByTagName( u"LayoutItem"_s );
   for ( int i = 0; i < itemsNodes.count(); ++i )
   {
     QDomNode itemNode = itemsNodes.at( i );
     if ( itemNode.isElement() )
     {
-      itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      itemNode.toElement().removeAttribute( u"uuid"_s );
     }
   }
-  QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  QDomNodeList multiFrameNodes = doc.elementsByTagName( u"LayoutMultiFrame"_s );
   for ( int i = 0; i < multiFrameNodes.count(); ++i )
   {
     QDomNode multiFrameNode = multiFrameNodes.at( i );
     if ( multiFrameNode.isElement() )
     {
-      multiFrameNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
-      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( QStringLiteral( "childFrame" ) );
+      multiFrameNode.toElement().removeAttribute( u"uuid"_s );
+      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( u"childFrame"_s );
       QDomNode itemNode = frameNodes.at( i );
       if ( itemNode.isElement() )
       {
-        itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+        itemNode.toElement().removeAttribute( u"uuid"_s );
       }
     }
   }
@@ -732,7 +736,7 @@ class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
     void saveState( QDomDocument &stateDoc ) const override
     {
       stateDoc.clear();
-      QDomElement documentElement = stateDoc.createElement( QStringLiteral( "UndoState" ) );
+      QDomElement documentElement = stateDoc.createElement( u"UndoState"_s );
       mLayout->writeXmlLayoutSettings( documentElement, stateDoc, QgsReadWriteContext() );
       stateDoc.appendChild( documentElement );
     }
@@ -840,14 +844,14 @@ void QgsLayout::refresh()
 void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   mCustomProperties.writeXml( element, document );
-  element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
-  element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
-  element.setAttribute( QStringLiteral( "printResolution" ), mRenderContext->dpi() );
+  element.setAttribute( u"units"_s, QgsUnitTypes::encodeUnit( mUnits ) );
+  element.setAttribute( u"worldFileMap"_s, mWorldFileMapId );
+  element.setAttribute( u"printResolution"_s, mRenderContext->dpi() );
 }
 
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = document.createElement( QStringLiteral( "Layout" ) );
+  QDomElement element = document.createElement( u"Layout"_s );
   auto save = [&]( const QgsLayoutSerializableObject * object )->bool
   {
     return object->writeXml( element, document, context );
@@ -883,9 +887,9 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
 bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &, const QgsReadWriteContext & )
 {
   mCustomProperties.readXml( layoutElement );
-  setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
-  mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
-  mRenderContext->setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), QStringLiteral( "300" ) ).toDouble() );
+  setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( u"units"_s ) ) );
+  mWorldFileMapId = layoutElement.attribute( u"worldFileMap"_s );
+  mRenderContext->setDpi( layoutElement.attribute( u"printResolution"_s, u"300"_s ).toDouble() );
   emit changed();
 
   return true;
@@ -925,13 +929,13 @@ QPointF QgsLayout::minPointFromXml( const QDomElement &elem ) const
 {
   double minX = std::numeric_limits<double>::max();
   double minY = std::numeric_limits<double>::max();
-  const QDomNodeList itemList = elem.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  const QDomNodeList itemList = elem.elementsByTagName( u"LayoutItem"_s );
   bool found = false;
   for ( int i = 0; i < itemList.size(); ++i )
   {
     const QDomElement currentItemElem = itemList.at( i ).toElement();
 
-    QgsLayoutPoint pos = QgsLayoutPoint::decodePoint( currentItemElem.attribute( QStringLiteral( "position" ) ) );
+    QgsLayoutPoint pos = QgsLayoutPoint::decodePoint( currentItemElem.attribute( u"position"_s ) );
     QPointF layoutPoint = convertToLayoutUnits( pos );
 
     minX = std::min( minX, layoutPoint.x() );
@@ -974,7 +978,7 @@ void QgsLayout::updateZValues( const bool addUndoCommands )
 
 bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
 {
-  if ( layoutElement.nodeName() != QLatin1String( "Layout" ) )
+  if ( layoutElement.nodeName() != "Layout"_L1 )
   {
     return false;
   }
@@ -985,8 +989,8 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
   };
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
-  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read layout settings" ), QStringLiteral( "projectload" ) );
+  if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read layout settings" ), u"projectload"_s );
 
   blockSignals( true ); // defer changed signal to end
   readXmlLayoutSettings( layoutElement, document, context );
@@ -1039,17 +1043,17 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   }
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
-  if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read items" ), QStringLiteral( "projectload" ) );
+  if ( QgsApplication::profiler()->groupIsActive( u"projectload"_s ) )
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Read items" ), u"projectload"_s );
 
   // multiframes
 
   //TODO - fix this. pasting multiframe frame items has no effect
-  const QDomNodeList multiFrameList = parentElement.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  const QDomNodeList multiFrameList = parentElement.elementsByTagName( u"LayoutMultiFrame"_s );
   for ( int i = 0; i < multiFrameList.size(); ++i )
   {
     const QDomElement multiFrameElem = multiFrameList.at( i ).toElement();
-    const int itemType = multiFrameElem.attribute( QStringLiteral( "type" ) ).toInt();
+    const int itemType = multiFrameElem.attribute( u"type"_s ).toInt();
 
     if ( profile )
     {
@@ -1090,10 +1094,10 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( int i = 0; i < layoutItemList.size(); ++i )
   {
     const QDomElement currentItemElem = layoutItemList.at( i ).toElement();
-    if ( currentItemElem.nodeName() != QLatin1String( "LayoutItem" ) )
+    if ( currentItemElem.nodeName() != "LayoutItem"_L1 )
       continue;
 
-    const int itemType = currentItemElem.attribute( QStringLiteral( "type" ) ).toInt();
+    const int itemType = currentItemElem.attribute( u"type"_s ).toInt();
 
     if ( profile )
     {
@@ -1115,7 +1119,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     {
       if ( pasteInPlace )
       {
-        QgsLayoutPoint posOnPage = QgsLayoutPoint::decodePoint( currentItemElem.attribute( QStringLiteral( "positionOnPage" ) ) );
+        QgsLayoutPoint posOnPage = QgsLayoutPoint::decodePoint( currentItemElem.attribute( u"positionOnPage"_s ) );
         item->attemptMove( posOnPage, true, false, pageNumber );
       }
       else
@@ -1142,15 +1146,17 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
           addMultiFrame( html );
           if ( item->isGroupMember() )
           {
-            QgsLayoutItemGroup *group = item->parentGroup();
-            QList<QgsLayoutItem *> groupItems = group->items();
-            groupItems.removeAll( item.get() );
-            group->removeItems();
-            for ( QgsLayoutItem *groupItem : std::as_const( groupItems ) )
+            if ( QgsLayoutItemGroup *group = item->parentGroup() )
             {
-              group->addItem( groupItem );
+              QList<QgsLayoutItem *> groupItems = group->items();
+              groupItems.removeAll( item.get() );
+              group->removeItems();
+              for ( QgsLayoutItem *groupItem : std::as_const( groupItems ) )
+              {
+                group->addItem( groupItem );
+              }
+              group->addItem( html->frame( 0 ) );
             }
-            group->addItem( html->frame( 0 ) );
           }
           newMultiFrames << html;
           continue;
@@ -1176,7 +1182,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutItem *item : std::as_const( newItems ) )
   {
     if ( profile )
-      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( item->displayName(), QStringLiteral( "projectload" ) );
+      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( item->displayName(), u"projectload"_s );
     item->finalizeRestoreFromXml();
     if ( itemProfile )
       itemProfile.reset();
@@ -1184,7 +1190,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutMultiFrame *mf : std::as_const( newMultiFrames ) )
   {
     if ( profile )
-      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( mf->displayName(), QStringLiteral( "projectload" ) );
+      itemProfile = std::make_unique< QgsScopedRuntimeProfile >( mf->displayName(), u"projectload"_s );
     mf->finalizeRestoreFromXml();
     if ( itemProfile )
       itemProfile.reset();

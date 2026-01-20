@@ -83,7 +83,7 @@ if __name__ == '__main__':
     api_files = [
         os.path.join(api_bin_dir, 'PyQGIS.api'),
         os.path.join(api_src_dir, 'Python-3.6.api'),
-        os.path.join(api_src_dir, 'PyQt5.api'),
+        os.path.join(api_src_dir, 'PyQt6.api'),
         os.path.join(api_src_dir, 'OSGeo_GEOS-3.6.2.api'),
         os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-2.2.3.api')
     ]

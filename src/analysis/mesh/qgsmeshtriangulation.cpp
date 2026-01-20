@@ -16,22 +16,26 @@
  ***************************************************************************/
 
 #include "qgsmeshtriangulation.h"
-#include "moc_qgsmeshtriangulation.cpp"
-#include "qgsdualedgetriangulation.h"
+
+#include <memory>
+
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
-#include "qgsmultisurface.h"
-#include "qgsmulticurve.h"
+#include "qgsdualedgetriangulation.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgsmesheditor.h"
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
+#include "qgsmulticurve.h"
+#include "qgsmultisurface.h"
+
+#include "moc_qgsmeshtriangulation.cpp"
 
 QgsMeshTriangulation::QgsMeshTriangulation()
   : QObject()
 {
-  mTriangulation.reset( new QgsDualEdgeTriangulation() );
+  mTriangulation = std::make_unique<QgsDualEdgeTriangulation>();
 }
 
 
@@ -122,7 +126,7 @@ void QgsMeshTriangulation::addVerticesFromFeature( const QgsFeature &feature, in
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugMsgLevel( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ), 4 );
+    QgsDebugMsgLevel( u"Caught CRS exception %1"_s.arg( cse.what() ), 4 );
     return;
   }
 
@@ -162,7 +166,7 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse )
-    QgsDebugMsgLevel( QStringLiteral( "Caught CRS exception %1" ).arg( cse.what() ), 4 );
+    QgsDebugMsgLevel( u"Caught CRS exception %1"_s.arg( cse.what() ), 4 );
     return;
   }
 

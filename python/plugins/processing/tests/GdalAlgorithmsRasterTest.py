@@ -83,6 +83,8 @@ from processing.algs.gdal.viewshed import viewshed
 from processing.algs.gdal.roughness import roughness
 from processing.algs.gdal.pct2rgb import pct2rgb
 from processing.algs.gdal.rgb2pct import rgb2pct
+from processing.algs.gdal.CreateCloudOptimizedGeoTiff import CreateCloudOptimizedGeoTIFF
+from processing.algs.gdal.DatasetIdentify import DatasetIdentify
 
 testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
 
@@ -4866,6 +4868,8 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         alg = merge()
         alg.initAlgorithm()
 
+        merge_command = alg.commandName() + alg.command_ext()
+
         with tempfile.TemporaryDirectory() as outdir:
             # this algorithm creates temporary text file with input layers
             # so we strip its path, leaving only filename
@@ -4877,7 +4881,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-ot Float32 -of GTiff "
                     + "-o "
                     + outdir
@@ -4896,7 +4900,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-separate -ot Float32 -of GTiff "
                     + "-o "
                     + outdir
@@ -4920,7 +4924,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-ot Float32 -of GTiff -tap -ps 0.1 0.1 "
                     + "-o "
                     + outdir
@@ -4944,7 +4948,7 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
             self.assertEqual(
                 cmd,
                 [
-                    "gdal_merge.py",
+                    merge_command,
                     "-a_nodata -9999.0 -ot Float32 -of GTiff "
                     + "-o "
                     + outdir
@@ -6584,6 +6588,62 @@ class TestGdalRasterAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
                     + outdir
                     + "/check.tif "
                     + "-of GTiff -b 1 --config X Y --config Z A",
+                ],
+            )
+
+    def testRunCreateCloudOptimizedGeoTIFF(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+        source_dem = os.path.join(testDataPath, "dem.tif")
+        source_raster = os.path.join(testDataPath, "raster.tif")
+        alg = CreateCloudOptimizedGeoTIFF()
+        alg.initAlgorithm()
+
+        with tempfile.TemporaryDirectory() as outdir:
+
+            rlayer = QgsRasterLayer(source_dem, "Input dem")
+            self.assertTrue(rlayer.isValid())
+
+            res = alg.run({"LAYERS": [rlayer], "OUTPUT": outdir}, context, feedback)
+            self.assertTrue(os.path.exists(os.path.join(outdir, "dem.tif")))
+
+        with tempfile.TemporaryDirectory() as outdir:
+
+            rlayer1 = QgsRasterLayer(source_dem, "Input dem")
+            self.assertTrue(rlayer1.isValid())
+            rlayer2 = QgsRasterLayer(source_raster, "Input raster")
+            self.assertTrue(rlayer2.isValid())
+
+            alg.run({"LAYERS": [rlayer1, rlayer2], "OUTPUT": outdir}, context, feedback)
+
+            files = os.listdir(outdir)
+            self.assertEqual(len(files), 2)
+
+            self.assertTrue(os.path.exists(os.path.join(outdir, "dem.tif")))
+            self.assertTrue(os.path.exists(os.path.join(outdir, "raster.tif")))
+
+    def testDatasetIdentify(self):
+        context = QgsProcessingContext()
+        feedback = QgsProcessingFeedback()
+
+        with tempfile.TemporaryDirectory() as indir, tempfile.TemporaryDirectory() as outdir:
+            outsource = outdir + "/out.csv"
+            alg = DatasetIdentify()
+            alg.initAlgorithm()
+
+            # defaults
+            self.assertEqual(
+                alg.getConsoleCommands(
+                    {
+                        "INPUT": indir,
+                        "OUTPUT": outsource,
+                    },
+                    context,
+                    feedback,
+                ),
+                [
+                    "gdal dataset identify",
+                    f"--recursive --detailed --input {indir} --output {outsource}",
                 ],
             )
 

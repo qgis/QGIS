@@ -16,9 +16,9 @@
 #ifndef QGSRELATIONREFERENCEFACTORY_H
 #define QGSRELATIONREFERENCEFACTORY_H
 
+#include "qgis_gui.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetfactory.h"
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -34,7 +34,15 @@ class QgsMessageBar;
 class GUI_EXPORT QgsRelationReferenceFactory : public QgsEditorWidgetFactory
 {
   public:
-    QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
+    /**
+     * Constructor for QgsRelationReferenceFactory, where \a name is a human-readable
+     * name for the factory and \a icon provides a visual representation of this widget type.
+     *
+     * The \a canvas argument is used to interact with the main map canvas and
+     * the \a messageBar argument can be used to link the widget to a QgsMessageBar
+     * for providing user feedback.
+     */
+    QgsRelationReferenceFactory( const QString &name, QgsMapCanvas *canvas, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );
 
     /**
      * Override this in your implementation.

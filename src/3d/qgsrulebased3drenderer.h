@@ -17,11 +17,11 @@
 #define QGSRULEBASED3DRENDERER_H
 
 #include "qgis_3d.h"
-
 #include "qgs3drendererregistry.h"
-#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsmaplayerref.h"
+
 #include <QUuid>
 
 class Qgs3DRenderContext;
@@ -245,7 +245,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * call prepare() on handlers and populate attributeNames
          * \note not available in Python bindings
          */
-        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, RuleToHandlerMap &handlers ) const SIP_SKIP;
+        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent, RuleToHandlerMap &handlers ) const SIP_SKIP;
 
         /**
          * register individual features

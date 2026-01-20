@@ -16,26 +16,28 @@
 
 #include "qgsinternalgeometryengine.h"
 
+#include <functional>
+#include <geos_c.h>
+#include <memory>
+#include <random>
+
+#include "qgscircle.h"
+#include "qgscircularstring.h"
+#include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgslinesegment.h"
 #include "qgslinestring.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include "qgsmulticurve.h"
-#include "qgscircularstring.h"
-#include "qgsgeometry.h"
-#include "qgsgeometryutils.h"
-#include "qgslinesegment.h"
-#include "qgscircle.h"
 #include "qgstessellator.h"
-#include "qgsfeedback.h"
-#include "qgsgeometryengine.h"
-#include "qgsmultilinestring.h"
-#include "qgsgeos.h"
+
 #include <QTransform>
-#include <functional>
-#include <memory>
 #include <queue>
-#include <random>
-#include <geos_c.h>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
   : mGeometry( geometry.constGet() )
@@ -768,6 +770,12 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
 
 QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extraNodesPerSegment = 1, double distance = 1 )
 {
+  if ( extraNodesPerSegment < 0 && qgsDoubleNear( distance, 0 ) )
+  {
+    // no change
+    return geom->clone();
+  }
+
   std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
   {
@@ -1098,7 +1106,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
   if ( linesToProcess.empty() )
   {
     QgsGeometry g;
-    g.mLastError = QStringLiteral( "Input geometry was not a curve type geometry" );
+    g.mLastError = u"Input geometry was not a curve type geometry"_s;
     return g;
   }
 
@@ -1229,8 +1237,9 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 {
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
-  QgsTessellator t( bounds, false, false, false, true );
-  t.setOutputZUp( true );
+  QgsTessellator t;
+  t.setBounds( bounds );
+  t.setInputZValueIgnored( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {
@@ -1820,7 +1829,11 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
   QgsPoint pt1;
   QgsPoint pt2;
   // get first point
-  hull->nextVertex( vertexId, pt0 );
+  if ( !hull->nextVertex( vertexId, pt0 ) )
+  {
+    return QgsGeometry();
+  }
+
   pt1 = pt0;
   double totalRotation = 0;
   while ( hull->nextVertex( vertexId, pt2 ) )
@@ -2492,14 +2505,7 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
       const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
       const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
 
-      if ( bufferIndex == 0 )
-      {
-        xOutBuffer[0] = pX + side * amplitude * sinAngle;
-        yOutBuffer[0] = pY + side * amplitude * cosAngle;
-        bufferIndex = 1;
-        distanceToNextPointFromStartOfSegment += wavelength / 4;
-      }
-      else if ( bufferIndex == 1 && isFirstPart )
+      if ( bufferIndex == 1 && isFirstPart )
       {
         xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
         yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;
@@ -2621,14 +2627,7 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
       const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
       const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
 
-      if ( bufferIndex == 0 )
-      {
-        xOutBuffer[0] = pX + side * amplitude * sinAngle;
-        yOutBuffer[0] = pY + side * amplitude * cosAngle;
-        bufferIndex = 1;
-        distanceToNextPointFromStartOfSegment += wavelength / 4;
-      }
-      else if ( bufferIndex == 1 && isFirstPart )
+      if ( bufferIndex == 1 && isFirstPart )
       {
         xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
         yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;

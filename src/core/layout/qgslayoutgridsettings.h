@@ -19,8 +19,9 @@
 #include "qgis_core.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
-#include "qgslayoutundocommand.h"
 #include "qgslayoutserializableobject.h"
+#include "qgslayoutundocommand.h"
+
 #include <QPen>
 
 class QgsLayout;
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
      */
     QgsLayoutGridSettings( QgsLayout *layout );
 
-    QString stringType() const override { return QStringLiteral( "LayoutGrid" ); }
+    QString stringType() const override { return u"LayoutGrid"_s; }
     QgsLayout *layout() override;
 
     /**

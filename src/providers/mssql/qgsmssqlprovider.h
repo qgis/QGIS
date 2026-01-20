@@ -18,22 +18,21 @@
 #ifndef QGSMSSQLPROVIDER_H
 #define QGSMSSQLPROVIDER_H
 
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfields.h"
-#include "qgsprovidermetadata.h"
-#include "qgsmssqldatabase.h"
 #include "qgsdatasourceuri.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
+#include "qgsmssqldatabase.h"
 #include "qgsmssqlgeometryparser.h"
+#include "qgsprovidermetadata.h"
+#include "qgsvectordataprovider.h"
 
-#include <QStringList>
 #include <QFile>
+#include <QStringList>
 #include <QVariantMap>
 #include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
-
+#include <QtSql/QSqlQuery>
 
 class QgsFeature;
 class QgsField;
@@ -107,6 +106,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
 
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     bool deleteFeatures( const QgsFeatureIds &id ) override;
@@ -305,7 +305,7 @@ class QgsMssqlProviderMetadata final : public QgsProviderMetadata
       QString &createdLayerUri
     ) override;
     QgsMssqlProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    virtual QList<QgsDataItemProvider *> dataItemProviders() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsTransaction *createTransaction( const QString &connString ) override;
 
     // Connections API

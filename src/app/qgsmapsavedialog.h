@@ -21,9 +21,9 @@
 #include "ui_qgsmapsavedialog.h"
 
 #include "qgisapp.h"
+#include "qgshelp.h"
 #include "qgsmapdecoration.h"
 #include "qgsrectangle.h"
-#include "qgshelp.h"
 
 #include <QDialog>
 #include <QSize>
@@ -82,8 +82,9 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
 
   private slots:
     void onAccepted();
-
     void updatePdfExportWarning();
+    void lockScaleChanged( bool locked );
+    void showHelp();
 
   private:
     void lockChanged( bool locked );
@@ -109,9 +110,7 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
 
     QString mInfoDetails;
 
-  private slots:
-
-    void showHelp();
+    friend class TestQgsMapSaveDialog;
 };
 
 #endif // QGSMAPSAVEDIALOG_H

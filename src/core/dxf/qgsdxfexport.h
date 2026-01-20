@@ -18,12 +18,12 @@
 #ifndef QGSDXFEXPORT_H
 #define QGSDXFEXPORT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsgeometry.h"
-#include "qgsmapsettings.h"
 #include "qgslabelsink.h"
+#include "qgsmapsettings.h"
 #include "qgsrendercontext.h"
 
 #include <QColor>
@@ -561,7 +561,7 @@ class CORE_EXPORT QgsDxfExport : public QgsLabelSink
      * \param fid id of feature
      * \param layer dxf layer of feature
      *
-     * \deprecated QGIS 3.40. Will be made private in QGIS 4.
+     * \deprecated QGIS 3.40. Will be made private in QGIS 5.
      */
     Q_DECL_DEPRECATED void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 

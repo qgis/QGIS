@@ -17,11 +17,12 @@
 #ifndef QGSCODEEDITOR_H
 #define QGSCODEEDITOR_H
 
-#include <QString>
-#include "qgscodeeditorcolorscheme.h"
 #include "qgis.h"
-#include "qgssettingstree.h"
+#include "qgscodeeditorcolorscheme.h"
 #include "qgspanelwidget.h"
+#include "qgssettingstree.h"
+
+#include <QString>
 
 // qscintilla includes
 #include <Qsci/qsciapis.h>
@@ -82,7 +83,7 @@ class GUI_EXPORT QgsCodeInterpreter
 };
 
 
-// TODO QGIS 4.0 -- Consider making QgsCodeEditor inherit QWidget only,
+// TODO QGIS 5.0 -- Consider making QgsCodeEditor inherit QWidget only,
 // with a separate getter for the QsciScintilla child widget. This
 // would give us more flexibility to add functionality to the base
 // QgsCodeEditor class, eg adding a message bar or other child widgets
@@ -101,7 +102,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
   public:
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "code-editor" ) );
+    static inline QgsSettingsTreeNode *sTreeCodeEditor = QgsSettingsTree::sTreeGui->createChildNode( u"code-editor"_s );
     static const QgsSettingsEntryBool *settingContextHelpHover;
 #endif
 
@@ -404,7 +405,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void setLinearSelection( int start, int end );
 
     // Override QsciScintilla::callTip to handle wrapping
-    virtual void callTip() override;
+    void callTip() override;
 
     /**
      * Returns the linear position of the start of the last wrapped part for the specified line, or
@@ -613,6 +614,7 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void contextMenuEvent( QContextMenuEvent *event ) override;
     bool event( QEvent *event ) override;
     bool eventFilter( QObject *watched, QEvent *event ) override;
+
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
      *

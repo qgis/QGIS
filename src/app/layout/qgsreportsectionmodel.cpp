@@ -14,9 +14,12 @@
  ***************************************************************************/
 
 #include "qgsreportsectionmodel.h"
-#include "moc_qgsreportsectionmodel.cpp"
-#include "functional"
+
+#include <functional>
+
 #include "qgsguiutils.h"
+
+#include "moc_qgsreportsectionmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -73,7 +76,7 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
             QPixmap pixmap( icon.pixmap( iconSize, iconSize ) );
 
             QPainter painter( &pixmap );
-            painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( QStringLiteral( "/mActionToggleEditing.svg" ) ) );
+            painter.drawPixmap( 0, 0, iconSize, iconSize, QgsApplication::getThemePixmap( u"/mActionToggleEditing.svg"_s ) );
             painter.end();
 
             return QIcon( pixmap );
@@ -241,7 +244,7 @@ bool QgsReportSectionModel::removeRows( int row, int count, const QModelIndex &p
 {
   QgsAbstractReportSection *parentSection = sectionForIndex( parent );
 
-  if ( row < 0 || row >= parentSection->childCount() )
+  if ( !parentSection || row < 0 || row >= parentSection->childCount() )
     return false;
 
   beginRemoveRows( parent, row, row + count - 1 );

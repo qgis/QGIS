@@ -236,26 +236,6 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <item>
-      <property name="text">
-       <string>No Facades</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Walls</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Roofs</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Walls and Roofs</string>
-      </property>
-     </item>
     </widget>
    </item>
   </layout>

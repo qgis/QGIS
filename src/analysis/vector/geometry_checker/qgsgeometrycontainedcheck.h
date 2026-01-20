@@ -19,8 +19,8 @@
 #define QGS_GEOMETRY_COVER_CHECK_H
 
 #include "qgsgeometrycheck.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup analysis
@@ -61,7 +61,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
     explicit QgsGeometryContainedCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration ) {}
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     QString id() const override { return factoryId(); }
@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Within" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    static QString factoryId() { return u"QgsGeometryContainedCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 };
 

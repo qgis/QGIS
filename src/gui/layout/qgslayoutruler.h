@@ -15,12 +15,14 @@
 #ifndef QGSLAYOUTRULER_H
 #define QGSLAYOUTRULER_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QWidget>
-#include <QPointer>
+
 #include <QMenu>
-#include <memory>
+#include <QPointer>
+#include <QWidget>
 
 class QgsLayout;
 class QGraphicsLineItem;

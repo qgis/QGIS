@@ -15,16 +15,17 @@
 #ifndef QGSFIELDCONDITIONALFORMATWIDGET_H
 #define QGSFIELDCONDITIONALFORMATWIDGET_H
 
-#include <QWidget>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "ui_qgseditconditionalformatrulewidget.h"
+#include "ui_qgsfieldconditionalformatwidget.h"
+
+#include "qgis_gui.h"
+#include "qgsconditionalstyle.h"
 #include "qgspanelwidget.h"
 #include "qgspanelwidgetstack.h"
 
-#include "ui_qgsfieldconditionalformatwidget.h"
-#include "ui_qgseditconditionalformatrulewidget.h"
-#include "qgsconditionalstyle.h"
-#include "qgis_gui.h"
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QWidget>
 
 /**
  * \ingroup gui
@@ -43,7 +44,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     /**
      * Switches the widget to the rules page.
      *
-     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void viewRules() SIP_DEPRECATED;
 
@@ -52,7 +53,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     */
     void setLayer( QgsVectorLayer *layer );
 
-    // TODO QGIS 4.0 - make private
+    // TODO QGIS 5.0 - make private
 
     /**
      * Switches the widget to the edit style mode for the specified style,
@@ -69,7 +70,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     /**
      * Resets the formatting options to their default state.
      *
-     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer used, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void reset() SIP_DEPRECATED;
 

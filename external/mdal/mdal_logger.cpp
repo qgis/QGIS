@@ -29,14 +29,14 @@ void MDAL::Log::error( MDAL::Error e )
 
 void MDAL::Log::error( MDAL::Error err, std::string driver )
 {
-  err.setDriver( driver );
-  error( err );
+  err.setDriver( std::move( driver ) );
+  error( std::move( err ) );
 }
 
 void MDAL::Log::error( MDAL_Status status, std::string mssg )
 {
   sLastStatus = status;
-  _log( MDAL_LogLevel::Error, status, mssg );
+  _log( MDAL_LogLevel::Error, status, std::move( mssg ) );
 }
 
 void MDAL::Log::error( MDAL_Status status, std::string driverName, std::string mssg )
@@ -47,7 +47,7 @@ void MDAL::Log::error( MDAL_Status status, std::string driverName, std::string m
 void MDAL::Log::warning( MDAL_Status status, std::string mssg )
 {
   sLastStatus = status;
-  _log( MDAL_LogLevel::Warn, status, mssg );
+  _log( MDAL_LogLevel::Warn, status, std::move( mssg ) );
 }
 
 void MDAL::Log::warning( MDAL_Status status, std::string driverName, std::string mssg )
@@ -57,12 +57,12 @@ void MDAL::Log::warning( MDAL_Status status, std::string driverName, std::string
 
 void MDAL::Log::info( std::string mssg )
 {
-  _log( MDAL_LogLevel::Info, MDAL_Status::None, mssg );
+  _log( MDAL_LogLevel::Info, MDAL_Status::None, std::move( mssg ) );
 }
 
 void MDAL::Log::debug( std::string mssg )
 {
-  _log( MDAL_LogLevel::Debug, MDAL_Status::None, mssg );
+  _log( MDAL_LogLevel::Debug, MDAL_Status::None, std::move( mssg ) );
 }
 
 MDAL_Status MDAL::Log::getLastStatus()

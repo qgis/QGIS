@@ -94,6 +94,29 @@ Ownership of ``symbol`` is transferred to the plot. If ``symbol`` is
 .. seealso:: :py:func:`selectionSymbol`
 %End
 
+  signals:
+
+    void selectionRenderingModeChanged();
+%Docstring
+Emitted whenever the selection rendering mode changes.
+
+.. versionadded:: 4.0
+%End
+
+    void selectionColorChanged();
+%Docstring
+Emitted whenever the selection color changes.
+
+.. versionadded:: 4.0
+%End
+
+    void selectionSymbolChanged();
+%Docstring
+Emitted whenever the selection symbol changes.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************

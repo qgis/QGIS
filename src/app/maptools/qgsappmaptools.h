@@ -16,10 +16,9 @@
 #ifndef QGSAPPMAPTOOLS_H
 #define QGSAPPMAPTOOLS_H
 
-#include <QList>
 #include <QHash>
+#include <QList>
 #include <QPointer>
-
 
 class QgsMapTool;
 class QgsMapToolCapture;
@@ -44,7 +43,9 @@ class QgsAppMapTools
       AddFeature,
       MoveFeature,
       MoveFeatureCopy,
+      FeatureArrayCopy,
       OffsetCurve,
+      ChamferFillet,
       ReshapeFeatures,
       SplitFeatures,
       SplitParts,
@@ -78,7 +79,8 @@ class QgsAppMapTools
       ReverseLine,
       TrimExtendFeature,
       EditMeshFrame,
-      AnnotationEdit
+      AnnotationEdit,
+      AnnotationSelect
     };
 
     QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );

@@ -16,20 +16,23 @@
  ***************************************************************************/
 
 
-#include <QScreen>
-#include <QMessageBox>
-
 #include "qgsgui.h"
-#include "moc_qgsgui.cpp"
+
+#include "callouts/qgscalloutwidget.h"
+#include "qgsadvanceddigitizingtoolsregistry.h"
+#include "qgsannotationitemguiregistry.h"
+#include "qgscalloutsregistry.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
+#include "qgslayoutitemguiregistry.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgssourceselectproviderregistry.h"
-#include "qgslayoutitemguiregistry.h"
-#include "qgsannotationitemguiregistry.h"
-#include "qgsadvanceddigitizingtoolsregistry.h"
-#include "qgscalloutsregistry.h"
-#include "callouts/qgscalloutwidget.h"
+
+#include <QMessageBox>
+#include <QScreen>
+
+#include "moc_qgsgui.cpp"
+
 #ifdef Q_OS_MACOS
 #include "qgsmacnative.h"
 #elif defined( Q_OS_WIN )
@@ -53,7 +56,10 @@
 #include "qgssettings.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsproviderguiregistry.h"
+#include "qgsproject.h"
 #include "qgsprojectstorageguiregistry.h"
+#include "qgsprojecttrustdialog.h"
+#include "qgsprojectutils.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsnumericformatguiregistry.h"
@@ -70,10 +76,14 @@
 #include "qgshistoryentry.h"
 #include "qgsstacsourceselectprovider.h"
 #include "qgsstoredquerymanager.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 #include "qgssettingseditorwidgetregistry.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsplotregistry.h"
 #include "qgsplotwidget.h"
 
+#include <QFileInfo>
 #include <QPushButton>
 #include <QToolButton>
 
@@ -212,7 +222,7 @@ void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
   if ( widget->objectName().isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" ) );
+    QgsDebugError( u"WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore"_s );
   }
   instance()->mWidgetStateHelper->registerWidget( widget, key );
 }
@@ -239,7 +249,7 @@ void QgsGui::setWindowManager( QgsWindowManagerInterface *manager )
 
 QgsGui::HigFlags QgsGui::higFlags()
 {
-  if ( QgsApplication::settingsLocaleUserLocale->value().startsWith( QLatin1String( "en" ) ) )
+  if ( QgsApplication::settingsLocaleUserLocale->value().startsWith( "en"_L1 ) )
   {
     return HigMenuTextIsTitleCase | HigDialogTitleIsTitleCase;
   }
@@ -313,7 +323,7 @@ QgsGui::QgsGui()
 {
 #ifdef Q_OS_MAC
   QgsMacNative *macNative = new QgsMacNative();
-  macNative->setIconPath( QgsApplication::iconsPath() + QStringLiteral( "qgis-icon-macos.png" ) );
+  macNative->setIconPath( QgsApplication::iconsPath() + u"qgis-icon-macos.png"_s );
   mNative = macNative;
 #elif defined( Q_OS_WIN )
 #ifndef __MINGW32__
@@ -381,122 +391,38 @@ QgsGui::QgsGui()
   qRegisterMetaType<QgsHistoryEntry>( "QgsHistoryEntry" );
 }
 
-bool QgsGui::pythonEmbeddedInProjectAllowed( void ( *lambda )(), QgsMessageBar *messageBar, Qgis::PythonEmbeddedType embeddedType )
+bool QgsGui::allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar )
 {
-  const Qgis::PythonEmbeddedMode pythonEmbeddedMode = QgsSettings().enumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::Ask );
-
-  switch ( pythonEmbeddedMode )
+  const Qgis::EmbeddedScriptMode embeddedScriptMode = QgsSettingsRegistryCore::settingsCodeExecutionBehaviorUndeterminedProjects->value();
+  Qgis::ProjectTrustStatus trustStatus = QgsProjectUtils::checkUserTrust( project );
+  if ( trustStatus == Qgis::ProjectTrustStatus::Undetermined && embeddedScriptMode == Qgis::EmbeddedScriptMode::Ask )
   {
-    case Qgis::PythonEmbeddedMode::SessionOnly:
-    case Qgis::PythonEmbeddedMode::Always:
-      if ( embeddedType == Qgis::PythonEmbeddedType::Macro )
-      {
-        if ( lambda )
-          lambda();
-      }
-      // If this is the case, expression functions
-      // are loaded directly by the QGIS project.
-      return true;
-    case Qgis::PythonEmbeddedMode::Never:
-    case Qgis::PythonEmbeddedMode::NotForThisSession:
-      if ( messageBar )
-      {
-        switch ( embeddedType )
-        {
-          case Qgis::PythonEmbeddedType::Macro:
-            messageBar->pushMessage( tr( "Python Macros" ), tr( "Python macros are currently disabled and will not be run" ), Qgis::MessageLevel::Warning );
-            break;
-          case Qgis::PythonEmbeddedType::ExpressionFunction:
-            messageBar->pushMessage( tr( "Python Expressions" ), tr( "Python expressions from project are currently disabled and will not be loaded" ), Qgis::MessageLevel::Warning );
-            break;
-        }
-      }
-      return false;
-    case Qgis::PythonEmbeddedMode::Ask:
-      if ( embeddedType == Qgis::PythonEmbeddedType::Macro )
-      {
-        if ( !lambda )
-        {
-          QMessageBox msgBox( QMessageBox::Information, tr( "Python Macros" ), tr( "Python macros are currently disabled. Do you allow this macro to run?" ) );
-          QAbstractButton *stopSessionButton = msgBox.addButton( tr( "Disable for this Session" ), QMessageBox::DestructiveRole );
-          msgBox.addButton( tr( "No" ), QMessageBox::NoRole );
-          QAbstractButton *yesButton = msgBox.addButton( tr( "Yes" ), QMessageBox::YesRole );
-          msgBox.exec();
-
-          QAbstractButton *clicked = msgBox.clickedButton();
-          if ( clicked == stopSessionButton )
-          {
-            QgsSettings().setEnumValue( QStringLiteral( "qgis/enablePythonEmbedded" ), Qgis::PythonEmbeddedMode::NotForThisSession );
-          }
-          return clicked == yesButton;
-        }
-        else
-        {
-          // create the notification widget for macros
-          Q_ASSERT( messageBar );
-          if ( messageBar )
-          {
-            QToolButton *btnEnableMacros = new QToolButton();
-            btnEnableMacros->setText( tr( "Enable Macros" ) );
-            btnEnableMacros->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
-            btnEnableMacros->setCursor( Qt::PointingHandCursor );
-            btnEnableMacros->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-
-            QgsMessageBarItem *macroMsg = new QgsMessageBarItem(
-              tr( "Security warning" ),
-              tr( "Python macros cannot currently be run." ),
-              btnEnableMacros,
-              Qgis::MessageLevel::Warning,
-              0,
-              messageBar
-            );
-
-            connect( btnEnableMacros, &QToolButton::clicked, messageBar, [lambda, messageBar, macroMsg]() {
-              lambda();
-              messageBar->popWidget( macroMsg );
-            } );
-
-            // display the macros notification widget
-            messageBar->pushItem( macroMsg );
-          }
-
-          return false;
-        }
-      }
-      else if ( embeddedType == Qgis::PythonEmbeddedType::ExpressionFunction )
-      {
-        // create the notification widget for expressions from project
-        Q_ASSERT( messageBar );
-        if ( messageBar )
-        {
-          QToolButton *btnEnableExpressionsFromProject = new QToolButton();
-          btnEnableExpressionsFromProject->setText( tr( "Enable python expressions from project" ) );
-          btnEnableExpressionsFromProject->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
-          btnEnableExpressionsFromProject->setCursor( Qt::PointingHandCursor );
-          btnEnableExpressionsFromProject->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
-
-          QgsMessageBarItem *expressionFromProjectMsg = new QgsMessageBarItem(
-            tr( "Security warning" ),
-            tr( "Python expressions from project cannot currently be loaded." ),
-            btnEnableExpressionsFromProject,
-            Qgis::MessageLevel::Warning,
-            0,
-            messageBar
-          );
-
-          connect( btnEnableExpressionsFromProject, &QToolButton::clicked, messageBar, [messageBar, expressionFromProjectMsg]() {
-            QgsProject::instance()->loadFunctionsFromProject( true );
-            messageBar->popWidget( expressionFromProjectMsg );
-          } );
-
-          // display the notification widget
-          messageBar->pushItem( expressionFromProjectMsg );
-        }
-
-        return false;
-      }
+    QgsProjectTrustDialog dialog( project );
+    dialog.exec();
+    trustStatus = QgsProjectUtils::checkUserTrust( project );
   }
-  return false;
+
+  if ( messageBar )
+  {
+    if ( trustStatus == Qgis::ProjectTrustStatus::Trusted )
+    {
+      messageBar->pushMessage(
+        tr( "Security warning" ),
+        tr( "The loaded project contains embedded scripts which have been allowed execution." ),
+        embeddedScriptMode == Qgis::EmbeddedScriptMode::Always ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
+      );
+    }
+    else
+    {
+      messageBar->pushMessage(
+        tr( "Security warning" ),
+        tr( "The loaded project contains embedded scripts which have been denied execution." ),
+        embeddedScriptMode == Qgis::EmbeddedScriptMode::Never ? Qgis::MessageLevel::Warning : Qgis::MessageLevel::Info
+      );
+    }
+  }
+
+  return trustStatus == Qgis::ProjectTrustStatus::Trusted;
 }
 
 void QgsGui::initCalloutWidgets()
@@ -509,12 +435,12 @@ void QgsGui::initCalloutWidgets()
       QgsCalloutAbstractMetadata *abstractMetadata = registry->calloutMetadata( name );
       if ( !abstractMetadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to find callout entry in registry: %1" ).arg( name ) );
+        QgsDebugError( u"Failed to find callout entry in registry: %1"_s.arg( name ) );
       }
       QgsCalloutMetadata *metadata = dynamic_cast<QgsCalloutMetadata *>( abstractMetadata );
       if ( !metadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to cast callout's metadata: " ).arg( name ) );
+        QgsDebugError( u"Failed to cast callout's metadata: "_s.arg( name ) );
       }
       else
       {
@@ -522,10 +448,10 @@ void QgsGui::initCalloutWidgets()
       }
     };
 
-    _initCalloutWidgetFunction( QStringLiteral( "simple" ), QgsSimpleLineCalloutWidget::create );
-    _initCalloutWidgetFunction( QStringLiteral( "manhattan" ), QgsManhattanLineCalloutWidget::create );
-    _initCalloutWidgetFunction( QStringLiteral( "curved" ), QgsCurvedLineCalloutWidget::create );
-    _initCalloutWidgetFunction( QStringLiteral( "balloon" ), QgsBalloonCalloutWidget::create );
+    _initCalloutWidgetFunction( u"simple"_s, QgsSimpleLineCalloutWidget::create );
+    _initCalloutWidgetFunction( u"manhattan"_s, QgsManhattanLineCalloutWidget::create );
+    _initCalloutWidgetFunction( u"curved"_s, QgsCurvedLineCalloutWidget::create );
+    _initCalloutWidgetFunction( u"balloon"_s, QgsBalloonCalloutWidget::create );
   } );
 }
 
@@ -539,22 +465,22 @@ void QgsGui::initPlotWidgets()
       QgsPlotAbstractMetadata *abstractMetadata = registry->plotMetadata( name );
       if ( !abstractMetadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to find plot entry in registry: %1" ).arg( name ) );
+        QgsDebugError( u"Failed to find plot entry in registry: %1"_s.arg( name ) );
       }
       QgsPlotMetadata *metadata = dynamic_cast<QgsPlotMetadata *>( abstractMetadata );
       if ( !metadata )
       {
-        QgsDebugError( QStringLiteral( "Failed to cast plot's metadata: " ).arg( name ) );
+        QgsDebugError( u"Failed to cast plot's metadata: "_s.arg( name ) );
       }
       else
       {
-        metadata->setWidgetCreateFunction( f );
+        metadata->setWidgetCreateFunction( std::move( f ) );
       }
     };
 
-    _initPlotWidgetFunction( QStringLiteral( "bar" ), QgsBarChartPlotWidget::create );
-    _initPlotWidgetFunction( QStringLiteral( "line" ), QgsLineChartPlotWidget::create );
-    _initPlotWidgetFunction( QStringLiteral( "pie" ), QgsPieChartPlotWidget::create );
+    _initPlotWidgetFunction( u"bar"_s, QgsBarChartPlotWidget::create );
+    _initPlotWidgetFunction( u"line"_s, QgsLineChartPlotWidget::create );
+    _initPlotWidgetFunction( u"pie"_s, QgsPieChartPlotWidget::create );
   } );
 }
 

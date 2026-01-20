@@ -15,11 +15,12 @@
 #ifndef QGSFRACTIONNUMERICFORMAT_H
 #define QGSFRACTIONNUMERICFORMAT_H
 
+#include <cmath>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsnumericformat.h"
-#include <cmath>
 
 /**
  * \ingroup core

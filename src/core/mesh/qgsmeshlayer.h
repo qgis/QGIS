@@ -21,14 +21,14 @@
 #include <memory>
 
 #include "qgis_core.h"
+#include "qgsabstractprofilesource.h"
+#include "qgscoordinatetransform.h"
 #include "qgsinterval.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
-#include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
-#include "qgscoordinatetransform.h"
-#include "qgsabstractprofilesource.h"
+#include "qgsmeshtimesettings.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      * \param options general mesh layer options
      */
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = u"mesh_memory"_s,
                            const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
 
     ~QgsMeshLayer() override;
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMeshLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsMeshLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -178,6 +178,8 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
     QgsAbstractProfileSource *profileSource() override {return this;}
+    QString profileSourceId() const override {return id();}
+    QString profileSourceName() const override {return name();}
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -196,10 +198,10 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QString htmlMetadata() const override;
     bool isEditable() const override;
     bool supportsEditing() const override;
-    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) final;
 
     /**
-     * Adds datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
+     * Adds datasets to the mesh from file with \a path. Use the time \a defaultReferenceTime as reference time is not provided in the file
      *
      * \param path the path to the datasets file
      * \param defaultReferenceTime reference time used if not provided in the file
@@ -1002,6 +1004,13 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \since QGIS 3.42
      */
     bool datasetsPathUnique( const QString &path );
+
+    /**
+     * Returns the list of extra dataset URIs associated with this layer
+     *
+     * \since QGIS 4.0
+     */
+    QStringList extraDatasetUris() const { return mExtraDatasetUri; }
 
   public slots:
 

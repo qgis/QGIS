@@ -14,21 +14,24 @@
  ***************************************************************************/
 
 #include "qgs3danimationwidget.h"
-#include "moc_qgs3danimationwidget.cpp"
 
-#include "qgs3danimationsettings.h"
-#include "qgsapplication.h"
-#include "qgscameracontroller.h"
+#include <memory>
+
 #include "qgs3danimationexportdialog.h"
+#include "qgs3danimationsettings.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgsapplication.h"
+#include "qgscameracontroller.h"
 #include "qgsfeedback.h"
 #include "qgsproxyprogresstask.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTimer>
 #include <QProgressDialog>
+#include <QTimer>
+
+#include "moc_qgs3danimationwidget.cpp"
 
 Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   : QWidget( parent )
@@ -78,7 +81,7 @@ void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSetti
   cboKeyframe->addItem( tr( "<none>" ) );
   for ( const Qgs3DAnimationSettings::Keyframe &keyframe : animSettings.keyFrames() )
   {
-    cboKeyframe->addItem( QStringLiteral( "%1 s" ).arg( keyframe.time ) );
+    cboKeyframe->addItem( u"%1 s"_s.arg( keyframe.time ) );
     const int lastIndex = cboKeyframe->count() - 1;
     cboKeyframe->setItemData( lastIndex, QVariant::fromValue<Qgs3DAnimationSettings::Keyframe>( keyframe ), Qt::UserRole + 1 );
   }
@@ -88,7 +91,7 @@ void Qgs3DAnimationWidget::setAnimation( const Qgs3DAnimationSettings &animSetti
 
 void Qgs3DAnimationWidget::initializeController( const Qgs3DAnimationSettings &animSettings )
 {
-  mAnimationSettings.reset( new Qgs3DAnimationSettings( animSettings ) );
+  mAnimationSettings = std::make_unique<Qgs3DAnimationSettings>( animSettings );
 
   sliderTime->setMaximum( animSettings.duration() * 100 );
 }
@@ -321,7 +324,7 @@ void Qgs3DAnimationWidget::onAddKeyframe()
   kf.pitch = mCameraController->pitch();
   kf.yaw = mCameraController->yaw();
 
-  cboKeyframe->insertItem( index + 1, QStringLiteral( "%1 s" ).arg( kf.time ) );
+  cboKeyframe->insertItem( index + 1, u"%1 s"_s.arg( kf.time ) );
   cboKeyframe->setItemData( index + 1, QVariant::fromValue<Qgs3DAnimationSettings::Keyframe>( kf ), Qt::UserRole + 1 );
 
   initializeController( animation() );
@@ -366,7 +369,7 @@ void Qgs3DAnimationWidget::onEditKeyframe()
 
   kf.time = t;
 
-  cboKeyframe->insertItem( newIndex + 1, QStringLiteral( "%1 s" ).arg( kf.time ) );
+  cboKeyframe->insertItem( newIndex + 1, u"%1 s"_s.arg( kf.time ) );
   cboKeyframe->setItemData( newIndex + 1, QVariant::fromValue<Qgs3DAnimationSettings::Keyframe>( kf ), Qt::UserRole + 1 );
 
   initializeController( animation() );
@@ -392,7 +395,7 @@ void Qgs3DAnimationWidget::onDuplicateKeyframe()
 
   kf.time = t;
 
-  cboKeyframe->insertItem( newIndex + 1, QStringLiteral( "%1 s" ).arg( kf.time ) );
+  cboKeyframe->insertItem( newIndex + 1, u"%1 s"_s.arg( kf.time ) );
   cboKeyframe->setItemData( newIndex + 1, QVariant::fromValue<Qgs3DAnimationSettings::Keyframe>( kf ), Qt::UserRole + 1 );
 
   initializeController( animation() );

@@ -14,10 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "characterwidget.h"
 #include "qgscharacterselectordialog.h"
-#include "moc_qgscharacterselectordialog.cpp"
 
+#include "characterwidget.h"
+
+#include "moc_qgscharacterselectordialog.cpp"
 
 QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -32,7 +33,7 @@ QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::Win
 
 QChar QgsCharacterSelectorDialog::selectCharacter( bool *gotChar, const QFont &font, const QString &style, QChar initialSelection )
 {
-  mCharSelectLabelFont->setText( QStringLiteral( "%1 %2" ).arg( font.family(), style ) );
+  mCharSelectLabelFont->setText( u"%1 %2"_s.arg( font.family(), style ) );
   mCharWidget->setFont( font );
   mCharWidget->setFontStyle( style );
   mCharWidget->setFontSize( 22.0 );

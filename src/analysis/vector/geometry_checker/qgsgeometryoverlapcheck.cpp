@@ -13,30 +13,42 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryoverlapcheck.h"
+
+#include "qgsapplication.h"
+#include "qgsfeaturepool.h"
+#include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryengine.h"
-#include "qgsgeometryoverlapcheck.h"
-#include "qgsfeaturepool.h"
 #include "qgsvectorlayer.h"
-#include "qgsfeedback.h"
-#include "qgsapplication.h"
 
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
-  , mOverlapThresholdMapUnits( configurationValue<double>( QStringLiteral( "maxOverlapArea" ) ) )
+  , mOverlapThresholdMapUnits( configurationValue<double>( u"maxOverlapArea"_s ) )
 
 {
 }
 
-void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
+  QMap<QString, QSet<QVariant>> uniqueIds;
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
     if ( feedback && feedback->isCanceled() )
-      break;
+      return QgsGeometryCheck::Result::Canceled;
+
+
+    if ( context()->uniqueIdFieldIndex != -1 )
+    {
+      QgsGeometryCheck::Result result = checkUniqueId( layerFeatureA, uniqueIds );
+      if ( result != QgsGeometryCheck::Result::Success )
+      {
+        return result;
+      }
+    }
 
     // Ensure each pair of layers only gets compared once: remove the current layer from the layerIds, but add it to the layerList for layerFeaturesB
     layerIds.removeOne( layerFeatureA.layer()->id() );
@@ -55,9 +67,9 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
     for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
     {
       if ( feedback && feedback->isCanceled() )
-        break;
+        return QgsGeometryCheck::Result::Canceled;
 
-      // > : only report overlaps within same layer once
+      // only report overlaps within same layer once
       if ( layerFeatureA.layerId() == layerFeatureB.layerId() && layerFeatureB.feature().id() >= layerFeatureA.feature().id() )
       {
         continue;
@@ -89,6 +101,7 @@ void QgsGeometryOverlapCheck::collectErrors( const QMap<QString, QgsFeaturePool 
       }
     }
   }
+  return QgsGeometryCheck::Result::Success;
 }
 
 void QgsGeometryOverlapCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
@@ -242,7 +255,7 @@ QgsGeometryCheck::CheckType QgsGeometryOverlapCheck::factoryCheckType()
 
 QString QgsGeometryOverlapCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryOverlapCheck" );
+  return u"QgsGeometryOverlapCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryOverlapCheck::factoryFlags()
@@ -308,7 +321,7 @@ QMap<QString, QgsFeatureIds> QgsGeometryOverlapCheckError::involvedFeatures() co
 QIcon QgsGeometryOverlapCheckError::icon() const
 {
   if ( status() == QgsGeometryCheckError::StatusFixed )
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s );
   else
-    return QgsApplication::getThemeIcon( QStringLiteral( "/checks/Overlap.svg" ) );
+    return QgsApplication::getThemeIcon( u"/checks/Overlap.svg"_s );
 }

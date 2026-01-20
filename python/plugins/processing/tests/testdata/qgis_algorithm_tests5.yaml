@@ -421,3 +421,241 @@ tests:
       OUTPUT:
         name: expected/remove_multipolygon_parts_by_area.gml
         type: vector
+
+  - algorithm: native:totalcurvature
+    name: Total curvature from QGIS analysis library
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+      NODATA: -9999.0
+    results:
+      OUTPUT:
+        hash: fc06f1af668bbfc6ee4fb6d421a4f561265ee20578a074eb763ae380
+        type: rasterhash
+
+  - algorithm: native:rastergaussianblur
+    name: Gaussian blur
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+      NODATA: -9999.0
+      RADIUS: 8
+    results:
+      OUTPUT:
+        hash: a8962717af6fe2db0125f4d3cce29e9f0fce5a4bc980c4e01ebbbac1
+        type: rasterhash
+
+  - algorithm: native:rastergaussianblur
+    name: Gaussian blur with nodata
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_gaps.tif
+        type: raster
+      RADIUS: 16
+    results:
+      OUTPUT:
+        hash: d179014b5485417288018515557ace20ed493f355878827069309a56
+        type: rasterhash
+
+  - algorithm: native:rasterfeaturepreservingsmoothing
+    name: Feature preserving smoothing with z factor
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      ITERATIONS: 3
+      RADIUS: 5
+      THRESHOLD: 8.0
+      Z_FACTOR: 8.983112e-06
+    results:
+      OUTPUT:
+        hash: efce6692d593fce01f6d1e09367f2412728e8f251ab683a060f7f387
+        type: rasterhash
+
+  - algorithm: native:rasterfeaturepreservingsmoothing
+    name: Feature preserving smoothing with max elevation change
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      ITERATIONS: 3
+      MAX_ELEVATION_CHANGE: 23.0
+      RADIUS: 5
+      THRESHOLD: 15.0
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: 58b18561b99c002035173067f525f687bc5148b8eb7b3d85818e1bb2
+        type: rasterhash
+
+  - algorithm: native:rasterfeaturepreservingsmoothing
+    name: Feature preserving smoothing with nodata
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_gaps.tif
+        type: raster
+      ITERATIONS: 3
+      RADIUS: 5
+      THRESHOLD: 15.0
+      Z_FACTOR: 8.983112e-06
+    results:
+      OUTPUT:
+        hash: 211771cb725c1e8b26f699b75cd80c5445fa52e328e96b548627f777
+        type: rasterhash
+
+  - algorithm: native:validatenetwork
+    name: Test network validation direction attributes
+    params:
+      DIRECTION_FIELD: direction
+      INPUT:
+        name: custom/network_validation.gml
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 1.0e-05
+      TOLERANCE_NODE_SEGMENT: 1.0e-05
+      VALUE_BACKWARD: R
+      VALUE_BOTH: B
+      VALUE_FORWARD: F
+    results:
+      OUTPUT_INVALID_NETWORK:
+        name: expected/network_validation_direction.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to node
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 5
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_node.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to node, with graph building tolerance
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 5.0
+      TOLERANCE_NODE_NODE: 20.0
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_node_with_tolerance.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to segment
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_SEGMENT: 4.0
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_segment.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to segment, with graph building tolerance
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 5.0
+      TOLERANCE_NODE_SEGMENT: 8.0
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_segment_with_tolerance.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:extractnetworkendpoints
+    name: Network endpoints (single edge)
+    params:
+      DEFAULT_DIRECTION: 2
+      DIRECTION_FIELD: DIRECTION
+      ENDPOINT_DEFINITION: 1
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: R
+      VALUE_BOTH: B
+      VALUE_FORWARD: F
+    results:
+      OUTPUT:
+        name: expected/network_endpoints_single_edge.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:extractnetworkendpoints
+    name: Network endpoints (directional)
+    params:
+      DEFAULT_DIRECTION: 2
+      DIRECTION_FIELD: DIRECTION
+      ENDPOINT_DEFINITION: 0
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: R
+      VALUE_BOTH: B
+      VALUE_FORWARD: F
+    results:
+      OUTPUT:
+        name: expected/network_endpoints_directional.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip

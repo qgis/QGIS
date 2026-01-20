@@ -18,8 +18,8 @@
 
 #include "qgis_app.h"
 #include "qgscamerapose.h"
-#include "qobjectuniqueptr.h"
 #include "qgsrectangle.h"
+#include "qobjectuniqueptr.h"
 
 #include <QComboBox>
 #include <QMenu>
@@ -96,8 +96,6 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
-    void enableClippingPlanes( const QList<QVector4D> &clippingPlanes, const QgsCameraPose &cameraPose );
-
   private slots:
     void resetView();
     void configure();
@@ -120,7 +118,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
     void setClippingPlanesOn2DCanvas();
-    void disableClippingPlanes() const;
+    void disableCrossSection() const;
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
@@ -138,7 +136,8 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void onGpuMemoryLimitReached();
 
     void onPointCloudChangeAttributeSettingsChanged();
-    // void onPointCloudChangeAttributePointFilterChanged();
+
+    void onCrossSectionToolFinished();
 
   private:
     void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;

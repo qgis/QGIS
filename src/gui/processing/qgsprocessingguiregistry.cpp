@@ -16,20 +16,21 @@
  ***************************************************************************/
 
 #include "qgsprocessingguiregistry.h"
-#include "qgsprocessingalgorithmconfigurationwidget.h"
-#include "qgsprocessingconfigurationwidgets.h"
-#include "qgsprocessingalignrasterlayerswidgetwrapper.h"
-#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
-#include "qgsprocessingfieldmapwidgetwrapper.h"
-#include "qgsprocessingaggregatewidgetwrapper.h"
-#include "qgsprocessingdxflayerswidgetwrapper.h"
-#include "qgsprocessingwidgetwrapperimpl.h"
-#include "qgsprocessingtininputlayerswidget.h"
-#include "qgsprocessingmeshdatasetwidget.h"
-#include "qgsprocessingrasteroptionswidgetwrapper.h"
-#include "qgsprocessingparameters.h"
+
 #include "qgis.h"
 #include "qgslogger.h"
+#include "qgsprocessingaggregatewidgetwrapper.h"
+#include "qgsprocessingalgorithmconfigurationwidget.h"
+#include "qgsprocessingalignrasterlayerswidgetwrapper.h"
+#include "qgsprocessingconfigurationwidgets.h"
+#include "qgsprocessingdxflayerswidgetwrapper.h"
+#include "qgsprocessingfieldmapwidgetwrapper.h"
+#include "qgsprocessingmeshdatasetwidget.h"
+#include "qgsprocessingparameters.h"
+#include "qgsprocessingrasteroptionswidgetwrapper.h"
+#include "qgsprocessingtininputlayerswidget.h"
+#include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
+#include "qgsprocessingwidgetwrapperimpl.h"
 
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
@@ -136,7 +137,7 @@ bool QgsProcessingGuiRegistry::addParameterWidgetFactory( QgsProcessingParameter
 
   if ( mParameterWidgetFactories.contains( factory->parameterType() ) )
   {
-    QgsLogger::warning( QStringLiteral( "Duplicate parameter factory for %1 registered" ).arg( factory->parameterType() ) );
+    QgsLogger::warning( u"Duplicate parameter factory for %1 registered"_s.arg( factory->parameterType() ) );
     return false;
   }
 
@@ -159,12 +160,16 @@ QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingGuiRegistry::createPar
     return nullptr;
 
   const QVariantMap metadata = parameter->metadata();
-  const QString widgetType = metadata.value( QStringLiteral( "widget_wrapper" ) ).toMap().value( QStringLiteral( "widget_type" ) ).toString();
+  const QString widgetType = metadata.value( u"widget_wrapper"_s ).toMap().value( u"widget_type"_s ).toString();
   const QString parameterType = !widgetType.isEmpty() ? widgetType : parameter->type();
   if ( !mParameterWidgetFactories.contains( parameterType ) )
     return nullptr;
 
-  return mParameterWidgetFactories.value( parameterType )->createWidgetWrapper( parameter, type );
+  if ( QgsProcessingParameterWidgetFactoryInterface *factory = mParameterWidgetFactories.value( parameterType ) )
+  {
+    return factory->createWidgetWrapper( parameter, type );
+  }
+  return nullptr;
 }
 
 QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
@@ -173,16 +178,18 @@ QgsProcessingModelerParameterWidget *QgsProcessingGuiRegistry::createModelerPara
     return nullptr;
 
   const QString parameterType = parameter->type();
-  if ( !mParameterWidgetFactories.contains( parameterType ) )
+  auto it = mParameterWidgetFactories.constFind( parameterType );
+  if ( it == mParameterWidgetFactories.constEnd() )
     return nullptr;
 
-  return mParameterWidgetFactories.value( parameterType )->createModelerWidgetWrapper( model, childId, parameter, context );
+  return it.value()->createModelerWidgetWrapper( model, childId, parameter, context );
 }
 
 QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingGuiRegistry::createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition, const QgsProcessingAlgorithm *algorithm )
 {
-  if ( !mParameterWidgetFactories.contains( type ) )
+  auto it = mParameterWidgetFactories.constFind( type );
+  if ( it == mParameterWidgetFactories.constEnd() )
     return nullptr;
 
-  return mParameterWidgetFactories.value( type )->createParameterDefinitionWidget( context, widgetContext, definition, algorithm );
+  return it.value()->createParameterDefinitionWidget( context, widgetContext, definition, algorithm );
 }

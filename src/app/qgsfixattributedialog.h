@@ -16,15 +16,15 @@
 #ifndef QGSFIXATTRIBUTEDIALOG_H
 #define QGSFIXATTRIBUTEDIALOG_H
 
-#include "qgsattributeeditorcontext.h"
+#include "qgis_app.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsattributeform.h"
 #include "qgstrackedvectorlayertools.h"
 
 #include <QDialog>
 #include <QGridLayout>
 #include <QProgressBar>
-#include "qgis_app.h"
 
 /**
  * \ingroup app
@@ -56,12 +56,12 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
     /**
      * Returns fixed features
      */
-    QgsFeatureList fixedFeatures() { return mFixedFeatures; }
+    QgsFeatureList fixedFeatures() const { return mFixedFeatures; }
 
     /**
      * Returns unfixed features (canceled or not handled)
      */
-    QgsFeatureList unfixedFeatures() { return mUnfixedFeatures; }
+    QgsFeatureList unfixedFeatures() const { return mUnfixedFeatures; }
 
   public slots:
     void accept() override;

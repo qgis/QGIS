@@ -13,24 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <string>
-
-#include "qgsvectortileloader.h"
 #include "qgsvectortilemvtdecoder.h"
 
-#include "qgsvectortilemvtutils.h"
-#include "qgsvectortileutils.h"
+#include <string>
 
-#include "qgslogger.h"
-#include "qgsmultipoint.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
+#include "qgsvectortileloader.h"
+#include "qgsvectortilemvtutils.h"
+#include "qgsvectortileutils.h"
+#include "qgsziputils.h"
 
-#include <QPointer>
 #include <QNetworkRequest>
-
+#include <QPointer>
 
 QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &structure )
   : mStructure( structure )
@@ -42,28 +41,43 @@ bool QgsVectorTileMVTDecoder::decode( const QgsVectorTileRawData &rawTileData )
 {
   mLayerNameToIndex.clear();
 
-  QMap<QString, QByteArray>::const_iterator it = rawTileData.data.constBegin();
-  for ( ; it != rawTileData.data.constEnd(); ++it )
+  for ( auto it = rawTileData.data.constBegin(); it != rawTileData.data.constEnd(); ++it )
   {
-    QString sourceId = it.key();
+    const QString sourceId = it.key();
+    const QByteArray &raw = it.value();
+
+    QByteArray pbf;
+    const bool isGzip = raw.size() >= 2
+                        && static_cast<uchar>( raw[0] ) == 0x1f
+                        && static_cast<uchar>( raw[1] ) == 0x8b;
+
+    if ( isGzip )
+    {
+      if ( !QgsZipUtils::decodeGzip( raw, pbf ) )
+      {
+        QgsDebugMsgLevel( u"Failed to gunzip tile data"_s, 2 );
+        return false;
+      }
+    }
+    else
+    {
+      pbf = raw;
+    }
 
     vector_tile::Tile tile;
-    if ( !tile.ParseFromArray( it.value().constData(), it.value().count() ) )
+    if ( !tile.ParseFromArray( pbf.constData(), static_cast<int>( pbf.size() ) ) )
       return false;
 
-    for ( int layerNum = 0; layerNum < tile.layers_size(); layerNum++ )
+    for ( int layerNum = 0; layerNum < tile.layers_size(); ++layerNum )
     {
       const ::vector_tile::Tile_Layer &layer = tile.layers( layerNum );
-      const QString layerName = layer.name().c_str();
-      mLayerNameToIndex[sourceId][layerName] = layerNum;
+      mLayerNameToIndex[sourceId][ QString::fromStdString( layer.name() ) ] = layerNum;
     }
 
     tiles[sourceId] = std::move( tile );
-
   }
 
   mTileID = rawTileData.tileGeometryId;
-
   return true;
 }
 
@@ -194,7 +208,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           const int valueIndex = static_cast<int>( feature.tags( tagNum + 1 ) );
           if ( valueIndex >= layer.values_size() )
           {
-            QgsDebugError( QStringLiteral( "Invalid value index for attribute" ) );
+            QgsDebugError( u"Invalid value index for attribute"_s );
             continue;
           }
           const ::vector_tile::Tile_Value &value = layer.values( valueIndex );
@@ -215,7 +229,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
             f.setAttribute( fieldIndex, static_cast<bool>( value.bool_value() ) );
           else
           {
-            QgsDebugError( QStringLiteral( "Unexpected attribute value" ) );
+            QgsDebugError( u"Unexpected attribute value"_s );
           }
         }
 
@@ -240,7 +254,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
             {
-              QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+              QgsDebugError( u"Malformed geometry: invalid cmdCount"_s );
               break;
             }
 
@@ -284,7 +298,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           {
             if ( i + static_cast<int>( cmdCount ) * 2 >= feature.geometry_size() )
             {
-              QgsDebugError( QStringLiteral( "Malformed geometry: invalid cmdCount" ) );
+              QgsDebugError( u"Malformed geometry: invalid cmdCount"_s );
               break;
             }
             tmpPoints.reserve( tmpPoints.size() + cmdCount );
@@ -328,7 +342,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
                 }
                 else
                 {
-                  QgsDebugError( QStringLiteral( "Malformed geometry: first ring of a polygon is interior ring" ) );
+                  QgsDebugError( u"Malformed geometry: first ring of a polygon is interior ring"_s );
                 }
               }
             }
@@ -336,14 +350,14 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           }
           else
           {
-            QgsDebugError( QStringLiteral( "Unexpected command ID: %1" ).arg( cmdId ) );
+            QgsDebugError( u"Unexpected command ID: %1"_s.arg( cmdId ) );
           }
         }
 
         QString geomType;
         if ( feature.type() == vector_tile::Tile_GeomType_POINT )
         {
-          geomType = QStringLiteral( "Point" );
+          geomType = u"Point"_s;
           if ( outputPoints.count() == 1 )
             f.setGeometry( QgsGeometry( outputPoints.at( 0 ) ) );
           else
@@ -357,7 +371,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else if ( feature.type() == vector_tile::Tile_GeomType_LINESTRING )
         {
-          geomType = QStringLiteral( "LineString" );
+          geomType = u"LineString"_s;
 
           // finish the linestring we have started
           outputLinestrings.append( new QgsLineString( tmpPoints ) );
@@ -375,7 +389,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
         }
         else if ( feature.type() == vector_tile::Tile_GeomType_POLYGON )
         {
-          geomType = QStringLiteral( "Polygon" );
+          geomType = u"Polygon"_s;
 
           if ( outputPolygons.count() == 1 )
             f.setGeometry( QgsGeometry( outputPolygons.at( 0 ) ) );
@@ -389,7 +403,7 @@ QgsVectorTileFeatures QgsVectorTileMVTDecoder::layerFeatures( const QMap<QString
           }
         }
 
-        f.setAttribute( QStringLiteral( "_geom_type" ), geomType );
+        f.setAttribute( u"_geom_type"_s, geomType );
         f.geometry().transform( ct );
 
         layerFeatures.append( f );

@@ -18,13 +18,12 @@
 #ifndef QGSPOINTCLOUDRENDERER_H
 #define QGSPOINTCLOUDRENDERER_H
 
-#include "qgsrendercontext.h"
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgsrendercontext.h"
 #include "qgsstyle.h"
+#include "qgsvector3d.h"
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
@@ -326,13 +325,13 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "rgb" ) )
+    if ( type == "rgb"_L1 )
       sipType = sipType_QgsPointCloudRgbRenderer;
-    else if ( type == QLatin1String( "ramp" ) )
+    else if ( type == "ramp"_L1 )
       sipType = sipType_QgsPointCloudAttributeByRampRenderer;
-    else if ( type == QLatin1String( "classified" ) )
+    else if ( type == "classified"_L1 )
       sipType = sipType_QgsPointCloudClassifiedRenderer;
-    else if ( type == QLatin1String( "extent" ) )
+    else if ( type == "extent"_L1 )
       sipType = sipType_QgsPointCloudExtentRenderer;
     else
       sipType = 0;

@@ -13,11 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgscompoundcolorwidget.h"
-#include "qgssettings.h"
 #include "qgsdoublespinbox.h"
+#include "qgssettings.h"
+#include "qgstest.h"
 
 Q_DECLARE_METATYPE( QgsColorWidget::ColorComponent )
 
@@ -32,7 +31,7 @@ class TestQgsCompoundColorWidget : public QgsTest
 
   public:
     TestQgsCompoundColorWidget()
-      : QgsTest( QStringLiteral( "Compound color widget Tests" ) ) {}
+      : QgsTest( u"Compound color widget Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -53,9 +52,9 @@ class TestQgsCompoundColorWidget : public QgsTest
 void TestQgsCompoundColorWidget::initTestCase()
 {
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 }
 
 void TestQgsCompoundColorWidget::cleanupTestCase()
@@ -135,7 +134,7 @@ void TestQgsCompoundColorWidget::testComponentSettings()
   QFETCH( QgsColorWidget::ColorComponent, newComponent );
   QFETCH( int, newSettingsComponent );
 
-  QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), settingsComponent );
+  QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? u"Windows/ColorDialog/activeCmykComponent"_s : u"Windows/ColorDialog/activeComponent"_s, settingsComponent );
 
   QgsCompoundColorWidget w( nullptr, QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QColor::fromCmyk( 1, 2, 3, 4 ) : QColor( 10, 20, 30, 50 ) );
   w.setVisible( true );
@@ -148,13 +147,13 @@ void TestQgsCompoundColorWidget::testComponentSettings()
   QCOMPARE( w.mVerticalRamp->component(), newComponent );
 
   w.saveSettings();
-  const int newValue = QgsSettings().value( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), -1 ).toInt();
+  const int newValue = QgsSettings().value( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? u"Windows/ColorDialog/activeCmykComponent"_s : u"Windows/ColorDialog/activeComponent"_s, -1 ).toInt();
   QCOMPARE( newValue, newSettingsComponent );
 }
 
 void TestQgsCompoundColorWidget::testComponentChange()
 {
-  QgsSettings().setValue( QStringLiteral( "Windows/ColorDialog/activeComponent" ), 3 );
+  QgsSettings().setValue( u"Windows/ColorDialog/activeComponent"_s, 3 );
 
   QgsCompoundColorWidget w( nullptr, QColor( 10, 20, 30, 50 ) );
   w.setVisible( true );
@@ -257,7 +256,7 @@ void TestQgsCompoundColorWidget::testSliderWidgets()
   QgsCompoundColorWidget w( nullptr, QColor::fromRgbF( 0.12f, 0.34f, 0.56f, 0.78f ) );
   w.setVisible( true );
 
-  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   // NOLINTBEGIN(bugprone-narrowing-conversions)
   QCOMPARE( w.mRedSlider->mSpinBox->value(), 30.6 );
   compareFloat( w.mRedSlider->mRampWidget->color().redF(), 0.12f );
@@ -300,7 +299,7 @@ void TestQgsCompoundColorWidget::testSliderWidgetsCmyk()
   QgsCompoundColorWidget w( nullptr, QColor::fromCmykF( 0.12f, 0.34f, 0.56f, 0.78f, 0.91f ) );
   w.setVisible( true );
 
-  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   // NOLINTBEGIN(bugprone-narrowing-conversions)
   QCOMPARE( w.mCyanSlider->mSpinBox->value(), 12 );
   compareFloat( w.mCyanSlider->mRampWidget->color().cyanF(), 0.12f );

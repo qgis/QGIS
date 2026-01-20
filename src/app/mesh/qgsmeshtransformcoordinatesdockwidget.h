@@ -19,9 +19,9 @@
 
 #include "ui_qgsmeshtransformcoordinatesdockwidgetbase.h"
 
+#include "qgisapp.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsmeshadvancedediting.h"
-#include "qgisapp.h"
 
 class QgsMeshLayer;
 
@@ -37,7 +37,7 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, p
     //! Constructor
     QgsMeshTransformCoordinatesDockWidget( QWidget *parent );
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
     //! Returns the vertex with index \a vertexIndex after calculation
     QgsMeshVertex transformedVertex( int vertexIndex );

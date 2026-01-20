@@ -77,21 +77,9 @@ if(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
   set(DOCSTRINGSTEMPLATE "")
 endif()
 
-if(${SIP_VERSION_STR} VERSION_GREATER 4.19.0)
-  set(SIP_FINAL "final")
-else()
-  set(SIP_FINAL "")
-endif()
-
-IF(BUILD_WITH_QT6)
-  SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
-  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
-  SET(pyqtdist "PyQt6")
-ELSE()
-  SET(QSCI_SIP_MOD_NAME Qsci/qscimod5.sip)
-  SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-  SET(pyqtdist "PyQt5")
-ENDIF()
+SET(QSCI_SIP_MOD_NAME Qsci/qscimod6.sip)
+SET(BINDING_FILES_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/PyQt6)
+ SET(pyqtdist "PyQt6")
 
 set(QGIS_PYTHON_DIR ${QGIS_PYTHON_INSTALL_DIR}/qgis)
 
@@ -134,14 +122,16 @@ if(NOT WITH_SFCGAL)
     set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_SFCGAL_SIP)
 endif()
 
+# sip 6.11 has support for the Movable Mapped Type Annotation
+if(${SIP_VERSION_STR} VERSION_LESS 6.11.0)
+  set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} MOVABLE_MAPPED_TYPE)
+endif()
 
 # Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
 if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
   set(sipabi "")
-elseif(BUILD_WITH_QT6)
-  set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
 else()
-  set(sipabi "\n[tool.sip.project]\nabi-version = \"12.16\"")
+  set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
 endif()
 
 set(toml "
@@ -185,13 +175,6 @@ execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BI
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
 BUILD_SIP_PYTHON_MODULE(qgis._core core/core.sip ${cpp_files} "" qgis_core)
 set(SIP_CORE_CPP_FILES ${cpp_files})
-
-# TODO QGIS 4 : remove this hack when we switch completely to Qt 6 which supports only c++17
-if( ${QT_VERSION_MAJOR} EQUAL 5 AND ( "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" ) )
-  # Bad hack to fix compilation with gcc 11 - for some reason it's ignoring
-  # the c++ standard version set for the target in BUILD_SIP_PYTHON_MODULE!
-  add_definitions(-std=c++14)
-endif()
 
 if((UNIX OR MINGW) AND SIP_VERSION_STR VERSION_GREATER_EQUAL 4.10 AND SIP_VERSION_STR VERSION_LESS 5.0)
   set(SIP_EXTRA_OPTIONS -P ${SIP_EXTRA_OPTIONS})
@@ -262,7 +245,7 @@ if (WITH_3D)
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/3d/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/3d/project.py @ONLY)
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp" "${toml}")
   execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml.temp ${CMAKE_CURRENT_BINARY_DIR}/3d/pyproject.toml)
-  SET(SIP_CONCAT_PARTS 10) # 3D doesn't have enough .sip files to fill 15+ .cpp files
+  SET(SIP_CONCAT_PARTS 8) # 3D doesn't have enough .sip files to fill 15+ .cpp files
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._3d_p 3d/3d.sip "${sip_files_3d}" cpp_files)
   BUILD_SIP_PYTHON_MODULE(qgis._3d_p 3d/3d.sip ${cpp_files} "" qgis_core qgis_3d)
 endif()
@@ -469,3 +452,6 @@ foreach(module ${PY_MODULES})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
   endif()
 endforeach(module)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml DESTINATION "${QGIS_PYTHON_INSTALL_DIR}/")

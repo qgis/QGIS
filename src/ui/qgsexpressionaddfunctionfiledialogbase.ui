@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>265</width>
+    <width>326</width>
     <height>135</height>
    </rect>
   </property>
@@ -27,20 +27,20 @@
    <item row="0" column="1">
     <widget class="QComboBox" name="cboFileOptions"/>
    </item>
-   <item row="2" column="1">
+   <item row="1" column="0">
+    <widget class="QLabel" name="lblNewFileName">
+     <property name="text">
+      <string>File name</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="lblNewFileName">
-     <property name="text">
-      <string>File name</string>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

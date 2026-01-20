@@ -106,14 +106,6 @@ if (UNIX AND NOT APPLE AND NOT ANDROID)
   target_link_libraries(qgis_native ${QT_VERSION_BASE}::DBus)
 endif()
 
-if (MSVC AND NOT BUILD_WITH_QT6)
-  find_package(${QT_VERSION_BASE}WinExtras)
-
-  target_link_libraries(qgis_native shell32)
-  target_link_libraries(qgis_native ${QT_VERSION_BASE}::Widgets ${QT_QTMAIN_LIBRARY})
-  target_link_libraries(qgis_native ${QT_VERSION_BASE}::WinExtras)
-
-endif()
 # install
 if(NOT QGIS_MAC_BUNDLE)
   install(FILES ${QGIS_NATIVE_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})

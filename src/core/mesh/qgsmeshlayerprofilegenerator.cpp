@@ -15,18 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmeshlayerprofilegenerator.h"
-#include "qgsprofilerequest.h"
-#include "qgscurve.h"
-#include "qgsmeshlayer.h"
+
 #include "qgscoordinatetransform.h"
-#include "qgsgeos.h"
-#include "qgsterrainprovider.h"
-#include "qgsmeshlayerutils.h"
-#include "qgslinesymbol.h"
+#include "qgscurve.h"
 #include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgslinesymbol.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayerelevationproperties.h"
-#include "qgsprofilesnapping.h"
+#include "qgsmeshlayerutils.h"
 #include "qgsprofilepoint.h"
+#include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
+#include "qgsterrainprovider.h"
 
 //
 // QgsMeshLayerProfileGenerator
@@ -34,7 +35,7 @@
 
 QString QgsMeshLayerProfileResults::type() const
 {
-  return QStringLiteral( "mesh" );
+  return u"mesh"_s;
 }
 
 QVector<QgsProfileIdentifyResults> QgsMeshLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
@@ -99,7 +100,7 @@ bool QgsMeshLayerProfileGenerator::generateProfile( const QgsProfileGenerationCo
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to mesh CRS" ) );
+    QgsDebugError( u"Error transforming profile line to mesh CRS"_s );
     return false;
   }
 

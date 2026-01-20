@@ -19,11 +19,11 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QDialog>
-
 #include "ui_qgsvectortileconnectiondialog.h"
 
 #include "qgssettingsentryenumflag.h"
+
+#include <QDialog>
 
 class QgsVectorTileConnectionDialog : public QDialog, public Ui::QgsVectorTileConnectionDialog
 {

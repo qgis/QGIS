@@ -22,8 +22,9 @@
 #include "qgis_sip.h"
 #include "qgsdatumtransform.h"
 
-#include <QMetaType>
 #include <QExplicitlySharedDataPointer>
+#include <QMetaType>
+
 class QgsCoordinateReferenceSystem;
 class QgsReadWriteContext;
 class QgsCoordinateTransformContextPrivate;
@@ -65,7 +66,9 @@ class CORE_EXPORT QgsCoordinateTransformContext
     ~QgsCoordinateTransformContext() ;
 
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
+    SIP_SKIP QgsCoordinateTransformContext( QgsCoordinateTransformContext &&rhs );
     QgsCoordinateTransformContext &operator=( const QgsCoordinateTransformContext &rhs ) SIP_SKIP;
+    QgsCoordinateTransformContext &operator=( QgsCoordinateTransformContext &&rhs );
 
     bool operator==( const QgsCoordinateTransformContext &rhs ) const;
     bool operator!=( const QgsCoordinateTransformContext &rhs ) const;
@@ -234,7 +237,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     bool mustReverseCoordinateOperation( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const;
 
-    // TODO QGIS 4.0 - remove missingTransforms, not used for Proj >= 6.0 builds
+    // TODO QGIS 5.0 - remove missingTransforms, not used for Proj >= 6.0 builds
 
     /**
      * Reads the context's state from a DOM \a element.

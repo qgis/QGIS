@@ -9,6 +9,7 @@
 
 
 
+
 class QgsDetailedItemDelegate : QAbstractItemDelegate
 {
 %Docstring(signature="appended")

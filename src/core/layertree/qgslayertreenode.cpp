@@ -14,19 +14,20 @@
  ***************************************************************************/
 
 #include "qgslayertreenode.h"
-#include "moc_qgslayertreenode.cpp"
 
 #include "qgslayertree.h"
+#include "qgslayertreecustomnode.h"
 #include "qgslayertreeutils.h"
 
 #include <QDomElement>
 #include <QStringList>
 
+#include "moc_qgslayertreenode.cpp"
 
 QgsLayerTreeNode::QgsLayerTreeNode( QgsLayerTreeNode::NodeType t, bool checked )
   : mNodeType( t )
   , mChecked( checked )
-  , mExpanded( true )
+
 {
 }
 
@@ -69,10 +70,12 @@ void QgsLayerTreeNode::makeOrphan()
 QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsReadWriteContext &context )
 {
   QgsLayerTreeNode *node = nullptr;
-  if ( element.tagName() == QLatin1String( "layer-tree-group" ) )
+  if ( element.tagName() == "layer-tree-group"_L1 )
     node = QgsLayerTreeGroup::readXml( element, context );
-  else if ( element.tagName() == QLatin1String( "layer-tree-layer" ) )
+  else if ( element.tagName() == "layer-tree-layer"_L1 )
     node = QgsLayerTreeLayer::readXml( element, context );
+  else if ( element.tagName() == "layer-tree-custom-node"_L1 )
+    node = QgsLayerTreeCustomNode::readXml( element, context );
 
   return node;
 }
@@ -87,7 +90,7 @@ QgsLayerTreeNode *QgsLayerTreeNode::readXml( QDomElement &element, const QgsProj
   context.setProjectTranslator( const_cast<QgsProject *>( project ) );
 
   QgsLayerTreeNode *node = readXml( element, context );
-  if ( node )
+  if ( node && node->nodeType() != NodeCustom )
     node->resolveReferences( project );
   return node;
 }

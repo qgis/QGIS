@@ -14,24 +14,26 @@
  ***************************************************************************/
 
 #include "qgsvectortilebasicrendererwidget.h"
-#include "moc_qgsvectortilebasicrendererwidget.cpp"
+
+#include <memory>
 
 #include "qgsguiutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsprojectutils.h"
+#include "qgsstyle.h"
 #include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilelayer.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
-#include "qgsmapcanvas.h"
 #include "qgsvectortileutils.h"
-#include "qgsprojectutils.h"
 
 #include <QAbstractListModel>
 #include <QInputDialog>
 #include <QMenu>
-#include <QScreen>
 #include <QPointer>
+#include <QScreen>
 
+#include "moc_qgsvectortilebasicrendererwidget.cpp"
 
 ///@cond PRIVATE
 
@@ -234,7 +236,7 @@ Qt::DropActions QgsVectorTileBasicRendererListModel::supportedDropActions() cons
 QStringList QgsVectorTileBasicRendererListModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/vnd.text.list" );
+  types << u"application/vnd.text.list"_s;
   return types;
 }
 
@@ -255,14 +257,14 @@ QMimeData *QgsVectorTileBasicRendererListModel::mimeData( const QModelIndexList 
     const QgsVectorTileBasicRendererStyle style = mRenderer->style( index.row() );
 
     QDomDocument doc;
-    QDomElement rootElem = doc.createElement( QStringLiteral( "vector_tile_basic_renderer_style_mime" ) );
+    QDomElement rootElem = doc.createElement( u"vector_tile_basic_renderer_style_mime"_s );
     style.writeXml( rootElem, QgsReadWriteContext() );
     doc.appendChild( rootElem );
 
     stream << doc.toString( -1 );
   }
 
-  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
+  mimeData->setData( u"application/vnd.text.list"_s, encodedData );
   return mimeData;
 }
 
@@ -273,13 +275,13 @@ bool QgsVectorTileBasicRendererListModel::dropMimeData( const QMimeData *data, Q
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
+  if ( !data->hasFormat( u"application/vnd.text.list"_s ) )
     return false;
 
   if ( parent.column() > 0 )
     return false;
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
+  QByteArray encodedData = data->data( u"application/vnd.text.list"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
@@ -298,7 +300,7 @@ bool QgsVectorTileBasicRendererListModel::dropMimeData( const QMimeData *data, Q
     if ( !doc.setContent( text ) )
       continue;
     const QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != QLatin1String( "vector_tile_basic_renderer_style_mime" ) )
+    if ( rootElem.tagName() != "vector_tile_basic_renderer_style_mime"_L1 )
       continue;
 
     QgsVectorTileBasicRendererStyle style;
@@ -375,13 +377,13 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
 
   mVTLayer = vtLayer;
 
-  if ( layer && vtLayer->renderer() && vtLayer->renderer()->type() == QLatin1String( "basic" ) )
+  if ( layer && vtLayer->renderer() && vtLayer->renderer()->type() == "basic"_L1 )
   {
     mRenderer.reset( static_cast<QgsVectorTileBasicRenderer *>( vtLayer->renderer()->clone() ) );
   }
   else
   {
-    mRenderer.reset( new QgsVectorTileBasicRenderer() );
+    mRenderer = std::make_unique<QgsVectorTileBasicRenderer>();
   }
 
   mModel = new QgsVectorTileBasicRendererListModel( mRenderer.get(), viewStyles, screen() );
@@ -424,13 +426,13 @@ void QgsVectorTileBasicRendererWidget::addStyle( Qgis::GeometryType geomType )
   switch ( geomType )
   {
     case Qgis::GeometryType::Point:
-      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Point'" ) );
+      style.setFilterExpression( u"geometry_type(@geometry)='Point'"_s );
       break;
     case Qgis::GeometryType::Line:
-      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Line'" ) );
+      style.setFilterExpression( u"geometry_type(@geometry)='Line'"_s );
       break;
     case Qgis::GeometryType::Polygon:
-      style.setFilterExpression( QStringLiteral( "geometry_type(@geometry)='Polygon'" ) );
+      style.setFilterExpression( u"geometry_type(@geometry)='Polygon'"_s );
       break;
     case Qgis::GeometryType::Unknown:
     case Qgis::GeometryType::Null:

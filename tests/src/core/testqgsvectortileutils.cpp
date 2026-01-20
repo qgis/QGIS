@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QTemporaryFile>
@@ -68,11 +69,12 @@ void TestQgsVectorTileUtils::test_urlsFromStyle()
 {
   QString dataDir( TEST_DATA_DIR );
   QFile style1File( dataDir + "/vector_tile/styles/style1.json" );
-  style1File.open( QIODevice::Text | QIODevice::ReadOnly );
+  QVERIFY( style1File.open( QIODevice::Text | QIODevice::ReadOnly ) );
   QString style1Content = style1File.readAll();
   style1File.close();
   style1Content.replace( QString( "_TILE_SOURCE_TEST_PATH_" ), "file://" + dataDir + "/vector_tile/styles" );
-  QFile fixedStyleFilePath( QDir::tempPath() + QStringLiteral( "/style1.json" ) );
+  style1Content.replace( QString( "_TILE_SOURCE_EXTERNE_TEST_PATH_" ), "file://" + dataDir + "/vector_tile/styles_externe" );
+  QFile fixedStyleFilePath( QDir::tempPath() + u"/style1.json"_s );
   if ( fixedStyleFilePath.open( QFile::WriteOnly | QFile::Truncate ) )
   {
     QTextStream out( &fixedStyleFilePath );
@@ -81,15 +83,19 @@ void TestQgsVectorTileUtils::test_urlsFromStyle()
   fixedStyleFilePath.close();
 
   auto sources = QgsVectorTileUtils::parseStyleSourceUrl( "file://" + fixedStyleFilePath.fileName() );
-  QCOMPARE( sources.count(), 2 );
+  QCOMPARE( sources.count(), 3 );
   QVERIFY( sources.contains( "base_v1.0.0" ) );
   QString sourceUrl = sources.value( "base_v1.0.0" );
-  sourceUrl.replace( QRegularExpression( "vectortiles[0-9]" ), QStringLiteral( "vectortilesX" ) );
+  sourceUrl.replace( QRegularExpression( "vectortiles[0-9]" ), u"vectortilesX"_s );
   QCOMPARE( sourceUrl, "https://vectortilesX.geo.admin.ch/tiles/ch.swisstopo.base.vt/v1.0.0/{z}/{x}/{y}.pbf" );
   QVERIFY( sources.contains( "terrain_v1.0.0" ) );
   sourceUrl = sources.value( "terrain_v1.0.0" );
-  sourceUrl.replace( QRegularExpression( "vectortiles[0-9]" ), QStringLiteral( "vectortilesX" ) );
+  sourceUrl.replace( QRegularExpression( "vectortiles[0-9]" ), u"vectortilesX"_s );
   QCOMPARE( sourceUrl, "https://vectortilesX.geo.admin.ch/tiles/ch.swisstopo.relief.vt/v1.0.0/{z}/{x}/{y}.pbf" );
+  QVERIFY( sources.contains( "terrain_externe_v1.0.0" ) );
+  sourceUrl = sources.value( "terrain_externe_v1.0.0" );
+  QCOMPARE( sourceUrl, "file://" + dataDir + "/vector_tile/styles_externe/VectorTileServer/tile/{z}/{y}/{x}.pbf" );
+
 
   sources = QgsVectorTileUtils::parseStyleSourceUrl( "file://" + dataDir + "/vector_tile/styles/style2.json" );
   QCOMPARE( sources.count(), 2 );

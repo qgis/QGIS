@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolmeasureangle.h"
-#include "moc_qgsmaptoolmeasureangle.cpp"
+
+#include <cmath>
+
 #include "qgsdisplayangle.h"
 #include "qgsdistancearea.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgssettings.h"
 #include "qgssnapindicator.h"
-#include "qgsmapmouseevent.h"
 
-#include <cmath>
+#include "moc_qgsmaptoolmeasureangle.cpp"
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -182,9 +184,9 @@ void QgsMapToolMeasureAngle::createRubberBand()
   mRubberBand = new QgsRubberBand( mCanvas, Qgis::GeometryType::Line );
 
   const QgsSettings settings;
-  const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 180 ).toInt();
-  const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 180 ).toInt();
-  const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 180 ).toInt();
+  const int myRed = settings.value( u"qgis/default_measure_color_red"_s, 180 ).toInt();
+  const int myGreen = settings.value( u"qgis/default_measure_color_green"_s, 180 ).toInt();
+  const int myBlue = settings.value( u"qgis/default_measure_color_blue"_s, 180 ).toInt();
   mRubberBand->setColor( QColor( myRed, myGreen, myBlue, 100 ) );
   mRubberBand->setWidth( 3 );
 }

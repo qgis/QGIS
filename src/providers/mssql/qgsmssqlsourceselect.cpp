@@ -17,30 +17,31 @@
  ***************************************************************************/
 
 #include "qgsmssqlsourceselect.h"
-#include "moc_qgsmssqlsourceselect.cpp"
 
-#include "qgslogger.h"
-#include "qgsmssqlgeomcolumntypethread.h"
-#include "qgsmssqlnewconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsquerybuilder.h"
-#include "qgsvectorlayer.h"
-#include "qgssettings.h"
-#include "qgsmssqlconnection.h"
-#include "qgsmssqldatabase.h"
-#include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsmssqlconnection.h"
+#include "qgsmssqldatabase.h"
+#include "qgsmssqlgeomcolumntypethread.h"
+#include "qgsmssqlnewconnection.h"
 #include "qgsmssqlprovider.h"
+#include "qgsproject.h"
+#include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTextStream>
-#include <QHeaderView>
-#include <QStringList>
 #include <QSqlDatabase>
 #include <QSqlError>
+#include <QStringList>
+#include <QTextStream>
+
+#include "moc_qgsmssqlsourceselect.cpp"
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsMssqlSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -140,7 +141,7 @@ void QgsMssqlSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemM
     model->setData( index, le->text() );
 }
 
-static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "MSSQLSourceSelect" );
+static const QString SETTINGS_WINDOWS_PATH = u"MSSQLSourceSelect"_s;
 
 QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
@@ -263,7 +264,7 @@ void QgsMssqlSourceSelect::cmbConnections_activated( int )
 {
   // Remember which database was selected.
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "MSSQL/connections/selected" ), cmbConnections->currentText() );
+  settings.setValue( u"MSSQL/connections/selected"_s, cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
   cbxAllowGeometrylessTables->setChecked( QgsMssqlConnection::allowGeometrylessTables( cmbConnections->currentText() ) );
@@ -302,7 +303,7 @@ QgsMssqlSourceSelect::~QgsMssqlSourceSelect()
 void QgsMssqlSourceSelect::populateConnectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "MSSQL/connections" ) );
+  settings.beginGroup( u"MSSQL/connections"_s );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
@@ -324,7 +325,7 @@ void QgsMssqlSourceSelect::populateConnectionList()
 // Slot for performing action when the Add button is clicked
 void QgsMssqlSourceSelect::addButtonClicked()
 {
-  QgsDebugMsgLevel( QStringLiteral( "mConnInfo:%1" ).arg( mConnInfo ), 2 );
+  QgsDebugMsgLevel( u"mConnInfo:%1"_s.arg( mConnInfo ), 2 );
   mSelectedTables.clear();
 
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
@@ -348,7 +349,7 @@ void QgsMssqlSourceSelect::addButtonClicked()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "mssql" ) );
+    emit addDatabaseLayers( mSelectedTables, u"mssql"_s );
     if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
     {
       accept();
@@ -378,12 +379,12 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   const QString database = settings.value( key + "/database" ).toString();
   QString username;
   QString password;
-  if ( settings.value( key + "/saveUsername" ).toString() == QLatin1String( "true" ) )
+  if ( settings.value( key + "/saveUsername" ).toString() == "true"_L1 )
   {
     username = settings.value( key + "/username" ).toString();
   }
 
-  if ( settings.value( key + "/savePassword" ).toString() == QLatin1String( "true" ) )
+  if ( settings.value( key + "/savePassword" ).toString() == "true"_L1 )
   {
     password = settings.value( key + "/password" ).toString();
   }
@@ -403,7 +404,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
   if ( !service.isEmpty() )
     mConnInfo += " service='" + service + '\'';
 
-  QgsDebugMsgLevel( QStringLiteral( "GetDatabase" ), 2 );
+  QgsDebugMsgLevel( u"GetDatabase"_s, 2 );
 
   QgsDataSourceUri uri;
   uri.setService( service );
@@ -426,11 +427,11 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
 
   if ( useGeometryColumns )
   {
-    const QString testquery( QStringLiteral( "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'geometry_columns'" ) );
+    const QString testquery( u"SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'geometry_columns'"_s );
     if ( !q.exec( testquery ) || !q.first() || q.value( 0 ).toInt() == 0 )
     {
       QMessageBox::StandardButtons reply;
-      reply = QMessageBox::question( this, QStringLiteral( "Scan full database?" ), QStringLiteral( "No geometry_columns table found. \nWould you like to search full database (might be slower)? " ), QMessageBox::Yes | QMessageBox::No );
+      reply = QMessageBox::question( this, u"Scan full database?"_s, u"No geometry_columns table found. \nWould you like to search full database (might be slower)? "_s, QMessageBox::Yes | QMessageBox::No );
       if ( reply == QMessageBox::Yes )
         useGeometryColumns = false;
       else
@@ -468,7 +469,7 @@ void QgsMssqlSourceSelect::btnConnect_clicked()
 
       if ( !layer.geometryColName.isNull() )
       {
-        if ( type == QLatin1String( "GEOMETRY" ) || type.isNull() || srid.isEmpty() )
+        if ( type == "GEOMETRY"_L1 || type.isNull() || srid.isEmpty() )
         {
           addSearchGeometryColumn( service, host, database, username, password, layer, estimateMetadata, disableInvalidGeometryHandling );
           type.clear();
@@ -531,12 +532,12 @@ void QgsMssqlSourceSelect::columnThreadFinished()
   finishList();
 }
 
-QStringList QgsMssqlSourceSelect::selectedTables()
+QStringList QgsMssqlSourceSelect::selectedTables() const
 {
   return mSelectedTables;
 }
 
-QString QgsMssqlSourceSelect::connectionInfo()
+QString QgsMssqlSourceSelect::connectionInfo() const
 {
   return mConnInfo;
 }
@@ -560,14 +561,14 @@ void QgsMssqlSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "schema item found" ), 2 );
+    QgsDebugMsgLevel( u"schema item found"_s, 2 );
     return;
   }
 
   const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsMssqlTableModel::DbtmTable ) )->text();
   const bool disableInvalidGeometryHandling = QgsMssqlConnection::isInvalidGeometryHandlingDisabled( cmbConnections->currentText() );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  auto vlayer = std::make_unique<QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, QStringLiteral( "mssql" ), options );
+  auto vlayer = std::make_unique<QgsVectorLayer>( mTableModel->layerURI( index, mConnInfo, mUseEstimatedMetadata, disableInvalidGeometryHandling ), tableName, u"mssql"_s, options );
 
   if ( !vlayer->isValid() )
   {
@@ -610,7 +611,7 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
   const QgsSettings settings;
-  const QString toSelect = settings.value( QStringLiteral( "MSSQL/connections/selected" ) ).toString();
+  const QString toSelect = settings.value( u"MSSQL/connections/selected"_s ).toString();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )
@@ -623,11 +624,6 @@ void QgsMssqlSourceSelect::setConnectionListPosition()
   cmbConnections_activated( cmbConnections->currentIndex() );
 }
 
-void QgsMssqlSourceSelect::setSearchExpression( const QString &regexp )
-{
-  Q_UNUSED( regexp )
-}
-
 void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, const QItemSelection & )
 {
   emit enableButtons( !mTablesTreeView->selectionModel()->selection().isEmpty() );
@@ -635,5 +631,5 @@ void QgsMssqlSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, c
 
 void QgsMssqlSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-database-layer"_s );
 }

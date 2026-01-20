@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
 #include "qgsbox3d.h"
+
 #include <QPainterPath>
 
 class QgsLineString;
@@ -135,6 +136,13 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
     virtual void sumUpArea( double &sum SIP_OUT ) const = 0;
+
+    /**
+     * Sums up the 3d area of the curve by iterating over the vertices (shoelace formula).
+     *
+     * \since QGIS 4.0
+     */
+    virtual void sumUpArea3D( double &sum SIP_OUT ) const = 0;
 
     QgsCoordinateSequence coordinateSequence() const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
@@ -292,6 +300,22 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      */
     virtual void scroll( int firstVertexIndex ) = 0;
 
+    /**
+     * Returns the distance along the curve between two vertices.
+     *
+     * This method calculates the accumulated distance along the curve from one vertex to another.
+     * For circular strings, this includes following the arc path precisely.
+     *
+     * \note For 3D geometries, the distance calculation includes the Z coordinate component.
+     *
+     * \param fromVertex the starting vertex ID
+     * \param toVertex the ending vertex ID
+     * \returns distance along the curve between the vertices, or -1 if either vertex is invalid
+     *
+     * \since QGIS 4.00
+     */
+    virtual double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const = 0;
+
 #ifndef SIP_RUN
 
     /**
@@ -376,6 +400,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 
     mutable bool mHasCachedSummedUpArea = false;
     mutable double mSummedUpArea = 0;
+    mutable bool mHasCachedSummedUpArea3D = false;
+    mutable double mSummedUpArea3D = 0;
 
   private:
 

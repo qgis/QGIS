@@ -16,12 +16,13 @@
 #ifndef QGSSERVEROGCAPIHANDLER_H
 #define QGSSERVEROGCAPIHANDLER_H
 
-#include <QRegularExpression>
-#include "qgis_server.h"
-#include "qgsserverquerystringparameter.h"
-#include "qgsserverogcapi.h"
 #include <nlohmann/json_fwd.hpp>
-#include "inja/inja.hpp"
+
+#include "qgis_server.h"
+#include "qgsserverogcapi.h"
+#include "qgsserverquerystringparameter.h"
+
+#include <QRegularExpression>
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -233,7 +234,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = u"application/json"_s ) const;
 
     /**
      * Writes \a data as HTML to the response stream in \a context using a template.

@@ -16,11 +16,11 @@
 #ifndef QGSMESSAGELOG_H
 #define QGSMESSAGELOG_H
 
-#include <QString>
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
+#include <QObject>
+#include <QString>
 
 /**
  * \ingroup core
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
      */
     void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
-    //TODO QGIS 4.0 - remove received argument
+    //TODO QGIS 5.0 - remove received argument
 
     /**
      * Emitted whenever the log receives a message which is not a Qgis::MessageLevel::Info level message

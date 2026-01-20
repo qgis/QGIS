@@ -13,25 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QItemSelectionModel>
-#include <QApplication>
+#include "qgsattributetablefiltermodel.h"
 
 #include "qgis.h"
-#include "qgsattributetablefiltermodel.h"
-#include "moc_qgsattributetablefiltermodel.cpp"
 #include "qgsattributetablemodel.h"
-#include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorlayertemporalproperties.h"
-#include "qgsfeature.h"
-#include "qgsmapcanvas.h"
-#include "qgslogger.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayereditbuffer.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayercache.h"
-#include "qgsrendercontext.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapcanvasutils.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayercache.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayertemporalproperties.h"
+
+#include <QApplication>
+#include <QItemSelectionModel>
+
+#include "moc_qgsattributetablefiltermodel.cpp"
 
 //////////////////
 // Filter Model //
@@ -242,7 +244,9 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   }
 
   if ( !config.sortExpression().isEmpty() )
+  {
     sort( config.sortExpression(), config.sortOrder() );
+  }
 }
 
 void QgsAttributeTableFilterModel::setFilterExpression( const QgsExpression &expression, const QgsExpressionContext &context )
@@ -297,11 +301,6 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel *sourc
 
   QSortFilterProxyModel::setSourceModel( sourceModel );
 
-  // Disconnect any code to update columns in the parent, we handle this manually
-  disconnect( mTableModel, SIGNAL( columnsAboutToBeInserted( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsAboutToBeInserted( QModelIndex, int, int ) ) );
-  disconnect( mTableModel, SIGNAL( columnsInserted( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsInserted( QModelIndex, int, int ) ) );
-  disconnect( mTableModel, SIGNAL( columnsAboutToBeRemoved( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsAboutToBeRemoved( QModelIndex, int, int ) ) );
-  disconnect( mTableModel, SIGNAL( columnsRemoved( QModelIndex, int, int ) ), this, SLOT( _q_sourceColumnsRemoved( QModelIndex, int, int ) ) );
   // The following connections are needed in order to keep the filter model in sync, see: regression #15974
   connect( mTableModel, &QAbstractItemModel::columnsAboutToBeInserted, this, &QgsAttributeTableFilterModel::onColumnsChanged );
   connect( mTableModel, &QAbstractItemModel::columnsAboutToBeRemoved, this, &QgsAttributeTableFilterModel::onColumnsChanged );
@@ -598,7 +597,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   mFilteredFeatures.clear();
   if ( !layer()->renderer() )
   {
-    QgsDebugError( QStringLiteral( "Cannot get renderer" ) );
+    QgsDebugError( u"Cannot get renderer"_s );
     return;
   }
 
@@ -607,7 +606,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   const QgsMapSettings &ms = mCanvas->mapSettings();
   if ( !layer()->isInScaleRange( ms.scale() ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Out of scale limits" ), 2 );
+    QgsDebugMsgLevel( u"Out of scale limits"_s, 2 );
   }
   else
   {
@@ -638,7 +637,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
   }
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mCanvas, layer() );
-  if ( canvasFilter == QLatin1String( "FALSE" ) )
+  if ( canvasFilter == "FALSE"_L1 )
     return;
   if ( !canvasFilter.isEmpty() )
     r.setFilterExpression( canvasFilter );

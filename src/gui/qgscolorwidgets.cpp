@@ -14,42 +14,35 @@
  ***************************************************************************/
 
 #include "qgscolorwidgets.h"
-#include "moc_qgscolorwidgets.cpp"
-#include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
-#include "qgssettings.h"
-#include "qgslogger.h"
-#include "qgsguiutils.h"
-#include "qgsdoublespinbox.h"
-
-#include <QResizeEvent>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <QStyleOptionFrameV3>
-#else
-#include <QStyleOptionFrame>
-#endif
-#include <QPainter>
-#include <QHBoxLayout>
-#include <QLineEdit>
-#include <QFontMetrics>
-#include <QToolButton>
-#include <QMenu>
-#include <QDrag>
-#include <QRectF>
-#include <QLineF>
 
 #include <cmath>
+
+#include "qgsapplication.h"
+#include "qgsdoublespinbox.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgssymbollayerutils.h"
+
+#include <QDrag>
+#include <QFontMetrics>
+#include <QHBoxLayout>
+#include <QLineEdit>
+#include <QLineF>
+#include <QMenu>
+#include <QPainter>
+#include <QRectF>
+#include <QResizeEvent>
+#include <QStyleOptionFrame>
+#include <QToolButton>
+
+#include "moc_qgscolorwidgets.cpp"
 
 #define HUE_MAX 360
 
 
-// TODO QGIS 4 remove typedef, QColor was qreal (double) and is now float
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-typedef qreal float_type;
-#else
+// TODO QGIS 5 remove typedef, QColor was qreal (double) and is now float
 typedef float float_type;
-#endif
 
 
 //
@@ -131,7 +124,7 @@ float QgsColorWidget::componentValueF( const QgsColorWidget::ColorComponent comp
     return -1;
   }
 
-  // TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+  // TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   // NOLINTBEGIN(bugprone-narrowing-conversions)
   switch ( component )
   {
@@ -198,7 +191,7 @@ float QgsColorWidget::hueF() const
 {
   if ( mCurrentColor.hueF() >= 0 )
   {
-    return mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    return mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   }
   else
   {
@@ -311,7 +304,7 @@ const QPixmap &QgsColorWidget::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -416,7 +409,7 @@ void QgsColorWidget::setComponentValueF( const float value )
   //update recorded hue
   if ( mCurrentColor.hue() >= 0 )
   {
-    mExplicitHue = mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    mExplicitHue = mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   }
 
   update();
@@ -434,7 +427,7 @@ void QgsColorWidget::setColor( const QColor &color, const bool emitSignals )
   //update recorded hue
   if ( color.hue() >= 0 )
   {
-    mExplicitHue = color.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    mExplicitHue = color.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   }
 
   if ( emitSignals )
@@ -664,7 +657,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
   {
     //use hue angle
     s = mCurrentColor.hsvSaturationF();
-    const float v = mCurrentColor.valueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    const float v = mCurrentColor.valueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
     const qreal newHue = line.angle() / HUE_MAX;
     newColor = QColor::fromHsvF( static_cast<float>( newHue ), s, v, alpha );
     //hue has changed, need to redraw triangle
@@ -679,7 +672,7 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
     if ( mCurrentColor.hueF() >= 0 )
     {
       //color has a valid hue, so update the QgsColorWidget's explicit hue
-      mExplicitHue = mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+      mExplicitHue = mCurrentColor.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
     }
 
     update();
@@ -1083,7 +1076,7 @@ void QgsColorBox::setColorFromPoint( QPoint point )
 
   if ( color.hueF() >= 0 )
   {
-    mExplicitHue = color.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 4 remove the nolint instructions, QColor was qreal (double) and is now float
+    mExplicitHue = color.hueF(); // NOLINT(bugprone-narrowing-conversions): TODO QGIS 5 remove the nolint instructions, QColor was qreal (double) and is now float
   }
 
   mCurrentColor = color;
@@ -1448,7 +1441,7 @@ QgsColorSliderWidget::QgsColorSliderWidget( QWidget *parent, const ColorComponen
   mSpinBox = new QgsDoubleSpinBox();
   mSpinBox->setShowClearButton( false );
   //set spinbox to a reasonable width
-  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( QStringLiteral( "888%" ) );
+  const int largestCharWidth = mSpinBox->fontMetrics().horizontalAdvance( u"888%"_s );
   mSpinBox->setMinimumWidth( largestCharWidth + 35 );
   mSpinBox->setMinimum( 0 );
   mSpinBox->setMaximum( convertRealToDisplay( 1.f ) );
@@ -1573,15 +1566,15 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
   hLayout->addWidget( mLineEdit );
 
   mMenuButton = new QToolButton( mLineEdit );
-  mMenuButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconDropDownMenu.svg" ) ) );
+  mMenuButton->setIcon( QgsApplication::getThemeIcon( u"/mIconDropDownMenu.svg"_s ) );
   mMenuButton->setCursor( Qt::ArrowCursor );
   mMenuButton->setFocusPolicy( Qt::NoFocus );
-  mMenuButton->setStyleSheet( QStringLiteral( "QToolButton { border: none; padding: 0px; }" ) );
+  mMenuButton->setStyleSheet( u"QToolButton { border: none; padding: 0px; }"_s );
 
   setLayout( hLayout );
 
   const int frameWidth = mLineEdit->style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
-  mLineEdit->setStyleSheet( QStringLiteral( "QLineEdit { padding-right: %1px; } " )
+  mLineEdit->setStyleSheet( u"QLineEdit { padding-right: %1px; } "_s
                               .arg( mMenuButton->sizeHint().width() + frameWidth + 1 ) );
 
   connect( mLineEdit, &QLineEdit::editingFinished, this, &QgsColorTextWidget::textChanged );
@@ -1589,7 +1582,7 @@ QgsColorTextWidget::QgsColorTextWidget( QWidget *parent )
 
   //restore format setting
   QgsSettings settings;
-  mFormat = settings.enumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), HexRgb );
+  mFormat = settings.enumValue( u"ColorWidgets/textWidgetFormat"_s, HexRgb );
 
   updateText();
 }
@@ -1616,7 +1609,7 @@ void QgsColorTextWidget::updateText()
       mLineEdit->setText( mCurrentColor.name() );
       break;
     case HexRgbA:
-      mLineEdit->setText( mCurrentColor.name() + QStringLiteral( "%1" ).arg( mCurrentColor.alpha(), 2, 16, QChar( '0' ) ) );
+      mLineEdit->setText( mCurrentColor.name() + u"%1"_s.arg( mCurrentColor.alpha(), 2, 16, QChar( '0' ) ) );
       break;
     case Rgb:
       mLineEdit->setText( tr( "rgb( %1, %2, %3 )" ).arg( mCurrentColor.red() ).arg( mCurrentColor.green() ).arg( mCurrentColor.blue() ) );
@@ -1695,7 +1688,7 @@ void QgsColorTextWidget::showMenu()
 
   //save format setting
   QgsSettings settings;
-  settings.setEnumValue( QStringLiteral( "ColorWidgets/textWidgetFormat" ), mFormat );
+  settings.setEnumValue( u"ColorWidgets/textWidgetFormat"_s, mFormat );
 
   updateText();
 }
@@ -1861,8 +1854,6 @@ QgsColorWidgetAction::QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *
   : QWidgetAction( parent )
   , mMenu( menu )
   , mColorWidget( colorWidget )
-  , mSuppressRecurse( false )
-  , mDismissOnColorSelection( true )
 {
   setDefaultWidget( mColorWidget );
   connect( mColorWidget, &QgsColorWidget::colorChanged, this, &QgsColorWidgetAction::setColor );

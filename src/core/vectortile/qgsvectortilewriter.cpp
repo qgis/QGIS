@@ -15,6 +15,9 @@
 
 #include "qgsvectortilewriter.h"
 
+#include <memory>
+#include <nlohmann/json.hpp>
+
 #include "qgsdatasourceuri.h"
 #include "qgsfeedback.h"
 #include "qgsjsonutils.h"
@@ -26,13 +29,10 @@
 #include "qgsvectortileutils.h"
 #include "qgsziputils.h"
 
-#include <nlohmann/json.hpp>
-
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QUrl>
-
 
 QgsVectorTileWriter::QgsVectorTileWriter()
 {
@@ -69,9 +69,9 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
   QgsDataSourceUri dsUri;
   dsUri.setEncodedUri( mDestinationUri );
 
-  QString sourceType = dsUri.param( QStringLiteral( "type" ) );
-  QString sourcePath = dsUri.param( QStringLiteral( "url" ) );
-  if ( sourceType == QLatin1String( "xyz" ) )
+  QString sourceType = dsUri.param( u"type"_s );
+  QString sourcePath = dsUri.param( u"url"_s );
+  if ( sourceType == "xyz"_L1 )
   {
     // remove the initial file:// scheme
     sourcePath = QUrl( sourcePath ).toLocalFile();
@@ -82,9 +82,9 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
       return false;
     }
   }
-  else if ( sourceType == QLatin1String( "mbtiles" ) )
+  else if ( sourceType == "mbtiles"_L1 )
   {
-    mbtiles.reset( new QgsMbTiles( sourcePath ) );
+    mbtiles = std::make_unique<QgsMbTiles>( sourcePath );
   }
   else
   {
@@ -210,7 +210,7 @@ bool QgsVectorTileWriter::writeTiles( QgsFeedback *feedback )
           continue;
         }
 
-        if ( sourceType == QLatin1String( "xyz" ) )
+        if ( sourceType == "xyz"_L1 )
         {
           if ( !writeTileFileXYZ( sourcePath, tileID, tileMatrix, tileData ) )
             return false;  // error message already set
@@ -280,7 +280,7 @@ bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXY
 }
 
 
-QString QgsVectorTileWriter::mbtilesJsonSchema()
+QString QgsVectorTileWriter::mbtilesJsonSchema() const
 {
   QVariantList arrayLayers;
   for ( const Layer &layer : std::as_const( mLayers ) )
@@ -293,11 +293,11 @@ QString QgsVectorTileWriter::mbtilesJsonSchema()
     {
       QString fieldTypeStr;
       if ( field.type() == QMetaType::Type::Bool )
-        fieldTypeStr = QStringLiteral( "Boolean" );
+        fieldTypeStr = u"Boolean"_s;
       else if ( field.type() == QMetaType::Type::Int || field.type() == QMetaType::Type::Double )
-        fieldTypeStr = QStringLiteral( "Number" );
+        fieldTypeStr = u"Number"_s;
       else
-        fieldTypeStr = QStringLiteral( "String" );
+        fieldTypeStr = u"String"_s;
 
       fieldsObj[field.name()] = fieldTypeStr;
     }

@@ -13,6 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssearchquerybuilder.h"
+
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgshelp.h"
+#include "qgsquerybuilder.h"
+#include "qgsvectorlayer.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
@@ -23,17 +34,7 @@
 #include <QStandardItem>
 #include <QTextStream>
 
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
-#include "qgssearchquerybuilder.h"
 #include "moc_qgssearchquerybuilder.cpp"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
-#include "qgshelp.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsquerybuilder.h"
-
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -157,7 +158,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
     if ( !numeric )
     {
       // put string in single quotes and escape single quotes in the string
-      value = '\'' + value.replace( '\'', QLatin1String( "''" ) ) + '\'';
+      value = '\'' + value.replace( '\'', "''"_L1 ) + '\'';
     }
 
     // add item only if it's not there already
@@ -281,37 +282,37 @@ void QgsSearchQueryBuilder::btnOk_clicked()
 
 void QgsSearchQueryBuilder::btnEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " = " ) );
+  mTxtSql->insertText( u" = "_s );
 }
 
 void QgsSearchQueryBuilder::btnLessThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " < " ) );
+  mTxtSql->insertText( u" < "_s );
 }
 
 void QgsSearchQueryBuilder::btnGreaterThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " > " ) );
+  mTxtSql->insertText( u" > "_s );
 }
 
 void QgsSearchQueryBuilder::btnPct_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "%" ) );
+  mTxtSql->insertText( u"%"_s );
 }
 
 void QgsSearchQueryBuilder::btnIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " IN " ) );
+  mTxtSql->insertText( u" IN "_s );
 }
 
 void QgsSearchQueryBuilder::btnNotIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " NOT IN " ) );
+  mTxtSql->insertText( u" NOT IN "_s );
 }
 
 void QgsSearchQueryBuilder::btnLike_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " LIKE " ) );
+  mTxtSql->insertText( u" LIKE "_s );
 }
 
 QString QgsSearchQueryBuilder::searchString()
@@ -336,32 +337,32 @@ void QgsSearchQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 
 void QgsSearchQueryBuilder::btnLessEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " <= " ) );
+  mTxtSql->insertText( u" <= "_s );
 }
 
 void QgsSearchQueryBuilder::btnGreaterEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " >= " ) );
+  mTxtSql->insertText( u" >= "_s );
 }
 
 void QgsSearchQueryBuilder::btnNotEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " != " ) );
+  mTxtSql->insertText( u" != "_s );
 }
 
 void QgsSearchQueryBuilder::btnAnd_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " AND " ) );
+  mTxtSql->insertText( u" AND "_s );
 }
 
 void QgsSearchQueryBuilder::btnNot_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " NOT " ) );
+  mTxtSql->insertText( u" NOT "_s );
 }
 
 void QgsSearchQueryBuilder::btnOr_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " OR " ) );
+  mTxtSql->insertText( u" OR "_s );
 }
 
 void QgsSearchQueryBuilder::btnClear_clicked()
@@ -371,7 +372,7 @@ void QgsSearchQueryBuilder::btnClear_clicked()
 
 void QgsSearchQueryBuilder::btnILike_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " ILIKE " ) );
+  mTxtSql->insertText( u" ILIKE "_s );
 }
 
 void QgsSearchQueryBuilder::saveQuery()
@@ -391,5 +392,5 @@ void QgsSearchQueryBuilder::loadQuery()
 
 void QgsSearchQueryBuilder::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#query-builder"_s );
 }

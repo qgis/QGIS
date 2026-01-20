@@ -20,9 +20,9 @@
 
 #define SIP_NO_FILE
 
-#include <QMutex>
-
 #include "qgis_core.h"
+
+#include <QMutex>
 
 /**
  * \ingroup core

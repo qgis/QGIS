@@ -599,6 +599,9 @@ class TestQgsProject(QgisTestCase):
         layer_was_added_spy = QSignalSpy(QgsProject.instance().layerWasAdded)
         layers_added_spy = QSignalSpy(QgsProject.instance().layersAdded)
         legend_layers_added_spy = QSignalSpy(QgsProject.instance().legendLayersAdded)
+        layers_added_without_legend_spy = QSignalSpy(
+            QgsProject.instance().layersAddedWithoutLegend
+        )
 
         l1 = createLayer("test")
         QgsProject.instance().addMapLayer(l1)
@@ -608,12 +611,14 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 1)
         self.assertEqual(len(layers_added_spy), 1)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 0)
 
         # layer not added to legend
         QgsProject.instance().addMapLayer(createLayer("test2"), False)
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
         # try readding a layer already in the registry
         QgsProject.instance().addMapLayer(l1)
@@ -621,6 +626,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
     def test_addMapLayers(self):
         """test adding multiple map layers to registry"""
@@ -1425,6 +1431,27 @@ class TestQgsProject(QgisTestCase):
             self.assertIn('source="./lines.shp"', content)
             self.assertIn('source="./points.shp"', content)
             self.assertIn('source="./landsat_4326.tif"', content)
+
+    def testTitle(self):
+        p = QgsProject()
+        title_changed_spy = QSignalSpy(p.titleChanged)
+        self.assertFalse(p.title())
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+        self.assertEqual(p.title(), "QGIS rocks!")
+
+        p.setTitle("QGIS rocks!")
+        self.assertEqual(len(title_changed_spy), 1)
+
+        project_metadata = p.metadata()
+        project_metadata.setTitle("QGIS rules!")
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
+        self.assertEqual(p.title(), "QGIS rules!")
+
+        p.setMetadata(project_metadata)
+        self.assertEqual(len(title_changed_spy), 2)
 
     def testHomePath(self):
         p = QgsProject()

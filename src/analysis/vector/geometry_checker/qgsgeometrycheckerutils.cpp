@@ -14,18 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerutils.h"
-#include "qgsgeometry.h"
-#include "qgsgeometryutils.h"
+
 #include "qgsfeaturepool.h"
-#include "qgspolygon.h"
-#include "qgsgeos.h"
+#include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycollection.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgspolygon.h"
 #include "qgssurface.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeedback.h"
 
 #include <qmath.h>
 
@@ -44,7 +45,7 @@ QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool,
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Shrug. What shall we do with a geometry that cannot be converted?" ) );
+      QgsDebugError( u"Shrug. What shall we do with a geometry that cannot be converted?"_s );
     }
   }
 }
@@ -76,7 +77,7 @@ QgsGeometry QgsGeometryCheckerUtils::LayerFeature::geometry() const
 
 QString QgsGeometryCheckerUtils::LayerFeature::id() const
 {
-  return QStringLiteral( "%1:%2" ).arg( mFeaturePool->layerName() ).arg( mFeature.id() );
+  return u"%1:%2"_s.arg( mFeaturePool->layerName() ).arg( mFeature.id() );
 }
 
 bool QgsGeometryCheckerUtils::LayerFeature::operator==( const LayerFeature &other ) const
@@ -225,7 +226,6 @@ QgsGeometryCheckerUtils::LayerFeatures::LayerFeatures( const QMap<QString, QgsFe
   , mExtent( extent )
   , mGeometryTypes( geometryTypes )
   , mContext( context )
-  , mUseMapCrs( true )
 {
   for ( const QString &layerId : layerIds )
   {

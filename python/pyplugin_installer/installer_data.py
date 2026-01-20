@@ -43,7 +43,6 @@ from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 from qgis.core import Qgis, QgsSettings, QgsSettingsTree, QgsNetworkRequestParameters
 import sys
 import os
-import codecs
 import re
 import configparser
 import qgis.utils
@@ -790,7 +789,7 @@ class Plugins(QObject):
             global errorDetails
             cp = configparser.ConfigParser()
             try:
-                with codecs.open(metadataFile, "r", "utf8") as f:
+                with open(metadataFile, encoding="utf8") as f:
                     cp.read_file(f)
                 return cp.get("general", fct)
             except Exception as e:
@@ -860,7 +859,10 @@ class Plugins(QObject):
                 pyQgisVersion(), qgisMinimumVersion, qgisMaximumVersion
             ):
                 error = "incompatible"
-                errorDetails = f"{qgisMinimumVersion} - {qgisMaximumVersion}"
+                errorDetails = QCoreApplication.translate(
+                    "QgsPluginInstaller",
+                    "Plugin designed for QGIS {minVersion} - {maxVersion}",
+                ).format(minVersion=qgisMinimumVersion, maxVersion=qgisMaximumVersion)
         elif not os.path.exists(metadataFile):
             error = "broken"
             errorDetails = QCoreApplication.translate(

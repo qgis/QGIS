@@ -18,15 +18,15 @@
 
 #include <functional>
 
-#include <QString>
-#include <QVariant>
-#include <QSet>
-#include <QJsonDocument>
-#include <QJsonObject>
-
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgsexpressionnode.h"
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QSet>
+#include <QString>
+#include <QVariant>
 
 class QgsExpressionNodeFunction;
 class QgsExpression;

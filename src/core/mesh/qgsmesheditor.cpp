@@ -14,22 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsmesheditor.h"
-#include "moc_qgsmesheditor.cpp"
-#include "qgsmeshdataprovider.h"
-#include "qgstriangularmesh.h"
-#include "qgsmeshlayer.h"
-#include "qgsgeometryengine.h"
-#include "qgsmeshadvancedediting.h"
-#include "qgsgeometryutils.h"
-#include "qgspolygon.h"
-#include "qgsmeshutils.h"
 
-#include <poly2tri.h>
+#include "poly2tri.h"
+#include "qgis.h"
+#include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
+#include "qgsmeshadvancedediting.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshutils.h"
+#include "qgspolygon.h"
+#include "qgstriangularmesh.h"
 
 #include <QSet>
 
+#include "moc_qgsmesheditor.cpp"
 
 QgsMeshEditor::QgsMeshEditor( QgsMeshLayer *meshLayer )
   : QObject( meshLayer )
@@ -53,7 +53,7 @@ QgsMeshEditor::QgsMeshEditor( QgsMesh *nativeMesh, QgsTriangularMesh *triangular
   connect( mUndoStack, &QUndoStack::indexChanged, this, &QgsMeshEditor::meshEdited );
 }
 
-QgsMeshDatasetGroup *QgsMeshEditor::createZValueDatasetGroup()
+std::unique_ptr< QgsMeshDatasetGroup > QgsMeshEditor::createZValueDatasetGroup()
 {
   std::unique_ptr<QgsMeshDatasetGroup> zValueDatasetGroup = std::make_unique<QgsMeshVerticesElevationDatasetGroup>( tr( "vertices Z value" ), mMesh );
 
@@ -63,7 +63,7 @@ QgsMeshDatasetGroup *QgsMeshEditor::createZValueDatasetGroup()
   // cppcheck-suppress danglingLifetime
   mZValueDatasetGroup = zValueDatasetGroup.get();
 
-  return zValueDatasetGroup.release();
+  return zValueDatasetGroup;
 }
 
 QgsMeshEditor::~QgsMeshEditor() = default;
@@ -1225,7 +1225,7 @@ void QgsMeshLayerUndoCommandRemoveFaces::redo()
   }
 }
 
-QgsMeshEditingError::QgsMeshEditingError(): errorType( Qgis::MeshEditingErrorType::NoError ), elementIndex( -1 ) {}
+QgsMeshEditingError::QgsMeshEditingError() {}
 
 QgsMeshEditingError::QgsMeshEditingError( Qgis::MeshEditingErrorType type, int elementIndex ): errorType( type ), elementIndex( elementIndex ) {}
 

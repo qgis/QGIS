@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgsrecentprojectsitemsmodel.h"
-#include "moc_qgsrecentprojectsitemsmodel.cpp"
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
-#include "qgsprojectstorageregistry.h"
 #include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
-#include "qgsdatasourceuri.h"
+#include "qgsprojectstorageregistry.h"
 
-#include <QApplication>
 #include <QAbstractTextDocumentLayout>
-#include <QPixmap>
+#include <QApplication>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QPainter>
+#include <QPixmap>
 #include <QTextDocument>
-#include <QDir>
+
+#include "moc_qgsrecentprojectsitemsmodel.cpp"
 
 QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )
@@ -76,7 +77,7 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
-        return QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
+        return u"%1 (%2)"_s.arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
       }
       else
       {
@@ -132,7 +133,7 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
     if ( storage )
     {
       QString path = storage->filePath( projectData.path );
-      if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
+      if ( storage->type() == "geopackage"_L1 && path.isEmpty() )
         projectData.exists = false;
       else
         projectData.exists = true;
@@ -195,7 +196,7 @@ void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
   if ( storage )
   {
     path = storage->filePath( projectData.path );
-    if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
+    if ( storage->type() == "geopackage"_L1 && path.isEmpty() )
       projectData.exists = false;
     else
       projectData.exists = true;

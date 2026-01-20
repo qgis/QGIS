@@ -17,13 +17,14 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgsmimedatautils.h"
 #include "qgis.h"
-#include <QObject>
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmimedatautils.h"
+
 #include <QFutureWatcher>
 #include <QIcon>
+#include <QObject>
 
 class QgsDataItem;
 class QMenu;
@@ -94,12 +95,15 @@ class CORE_EXPORT QgsDataItem : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
 
-    bool hasChildren();
+    /**
+     * Returns whether this item has children.
+     */
+    bool hasChildren() const;
 
     /**
      * Returns TRUE if the data item is a collection of layers
@@ -108,12 +112,15 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual bool layerCollection() const;
 
-    int rowCount();
+    /**
+     * Returns the number of rows of this item
+     */
+    int rowCount() const;
 
     /**
      * Create children. Children are not expected to have parent set.
      * \warning This method MUST BE THREAD SAFE.
-    */
+     */
     virtual QVector<QgsDataItem *> createChildren() SIP_TRANSFERBACK;
 #ifdef SIP_RUN
     SIP_VIRTUAL_CATCHER_CODE
@@ -267,7 +274,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
      *
-     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
@@ -285,7 +292,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED virtual bool rename( const QString &name ) SIP_DEPRECATED;
 
-    // ### QGIS 4 - rename to capabilities()
+    // ### QGIS 5 - rename to capabilities()
 
     /**
      * Returns the capabilities for the data item.
@@ -443,14 +450,16 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void refresh( const QVector<QgsDataItem *> &children );
 
     /**
-     * The item is scheduled to be deleted. E.g. if deleteLater() is called when
+     * Returns TRUE if the item is scheduled to be deleted.
+     *
+     * E.g. if deleteLater() is called when
      * item is in Populating state (createChildren() running in another thread),
      * the deferredDelete() returns TRUE and item will be deleted once Populating finished.
      * Items with slow reateChildren() (for example network or database based) may
      * check during createChildren() if deferredDelete() returns TRUE and return from
      * createChildren() immediately because result will be useless.
     */
-    bool deferredDelete() { return mDeferredDelete; }
+    bool deferredDelete() const { return mDeferredDelete; }
 
     Qgis::BrowserItemType mType;
     Qgis::BrowserItemCapabilities mCapabilities = Qgis::BrowserItemCapability::NoCapabilities;
@@ -601,7 +610,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsErrorItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

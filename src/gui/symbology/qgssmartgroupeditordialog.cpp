@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgssmartgroupeditordialog.h"
-#include "moc_qgssmartgroupeditordialog.cpp"
 
-#include "qgsstyle.h"
 #include "qgsapplication.h"
 #include "qgsgui.h"
+#include "qgsstyle.h"
 
-#include <QVariant>
 #include <QMessageBox>
+#include <QVariant>
+
+#include "moc_qgssmartgroupeditordialog.cpp"
 
 // -------------------------- //
 // Condition Widget functions //
@@ -162,7 +163,7 @@ QString QgsSmartGroupEditorDialog::conditionOperator()
 void QgsSmartGroupEditorDialog::setConditionMap( const QgsSmartConditionMap &map )
 {
   QStringList constraints;
-  constraints << QStringLiteral( "tag" ) << QStringLiteral( "name" ) << QStringLiteral( "!tag" ) << QStringLiteral( "!name" );
+  constraints << u"tag"_s << u"name"_s << u"!tag"_s << u"!name"_s;
 
   // clear any defaults
   qDeleteAll( mConditionMap );

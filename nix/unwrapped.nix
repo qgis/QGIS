@@ -1,14 +1,14 @@
 { lib
+, stdenv
+
+, fetchFromGitHub
 , makeWrapper
-, mkDerivation
 , replaceVars
-, runCommand
 , wrapGAppsHook3
 , wrapQtAppsHook
 
 , withGrass
 , withServer
-, withWebKit
 
 , bison
 , cmake
@@ -31,17 +31,18 @@
 , proj
 , protobuf
 , python3
-, qca-qt5
+, qca
 , qscintilla
 , qt3d
+, qt5compat
 , qtbase
 , qtkeychain
 , qtlocation
 , qtmultimedia
 , qtsensors
 , qtserialport
-, qtwebkit
-, qtxmlpatterns
+, qttools
+, qtwebengine
 , qwt
 , sqlite
 , txt2tags
@@ -49,10 +50,19 @@
 }:
 
 let
-  versionSourceFiles = lib.fileset.toSource {
-    root = ../.;
-    fileset = ../CMakeLists.txt;
-  };
+  # Override libspatialindex to use version 2.0.0
+  # See https://github.com/libspatialindex/libspatialindex/issues/276
+  # An alternative would be to make this available/downgrade the version
+  # from the nixpkgs side.
+  libspatialindex_2_0 = libspatialindex.overrideAttrs (oldAttrs: rec {
+    version = "2.0.0";
+    src = fetchFromGitHub {
+      owner = "libspatialindex";
+      repo = "libspatialindex";
+      rev = version;
+      sha256 = "sha256-hZyAXz1ddRStjZeqDf4lYkV/g0JLqLy7+GrSUh75k20=";
+    };
+  });
 
   qgisSourceFiles =
     lib.fileset.difference
@@ -62,31 +72,36 @@ let
         ./.
         ../flake.nix
         ../flake.lock
+        ../.docker
+        ../.github
+        ../.ci
+        ../debian
+        ../editors
+        ../ms-windows
+        ../rpm
+        ../vcpkg
       ]);
 
   # Version parsing taken from
   # https://github.com/qgis/QGIS/blob/1f0328cff6a8b4cf8a4f8d44a4304b9d9706aa72/rpm/buildrpms.sh#L118
+  cmakeListsFile = lib.readFile ../CMakeLists.txt;
+  extractVersion = pattern:
+    let
+      matches = lib.match ".*[sS][eE][tT]\\(${pattern}[[:space:]]+\"([0-9]+)\".*" cmakeListsFile;
+    in
+      if matches != null then lib.head matches else "0";
   qgisVersion =
-    lib.replaceStrings [ "\n" ] [ "" ]
-      (lib.readFile (
-        runCommand "qgis-version" { } ''
-          major=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MAJOR' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-          minor=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_MINOR' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-          patch=$(grep -ie 'SET(CPACK_PACKAGE_VERSION_PATCH' ${versionSourceFiles}/CMakeLists.txt |
-            sed -r 's/.*\"([0-9]+)\".*/\1/g')
-
-          version=$major.$minor.$patch
-          echo $version > $out
-        ''
-      ));
+    let
+      major = extractVersion "CPACK_PACKAGE_VERSION_MAJOR";
+      minor = extractVersion "CPACK_PACKAGE_VERSION_MINOR";
+      patch = extractVersion "CPACK_PACKAGE_VERSION_PATCH";
+    in
+      "${major}.${minor}.${patch}";
 
   py = python3.override {
     self = py;
     packageOverrides = self: super: {
-      pyqt5 = super.pyqt5.override {
-        withLocation = true;
+      pyqt6 = super.pyqt6.override {
         withSerialPort = true;
       };
     };
@@ -100,12 +115,12 @@ let
     owslib
     psycopg2
     pygments
-    pyqt5
+    pyqt6
     pyqt-builder
     python-dateutil
     pytz
     pyyaml
-    qscintilla-qt5
+    qscintilla-qt6
     requests
     setuptools
     sip
@@ -117,10 +132,10 @@ in
 
 # Print the list of included source files
 # lib.fileset.trace qgisSourceFiles
-mkDerivation
+stdenv.mkDerivation
 {
   pname = "qgis-unwrapped";
-  version = qgisVersion;  # this is a "Import from derivation (IFD)" !
+  version = qgisVersion;
   src = lib.fileset.toSource {
     root = ../.;
     fileset = qgisSourceFiles;
@@ -144,37 +159,41 @@ mkDerivation
     geos
     gsl
     hdf5
-    libspatialindex
+    libpq
+    libspatialindex_2_0
     libspatialite
     libzip
     netcdf
     openssl
     pdal
-    libpq
     proj
     protobuf
-    qca-qt5
+    qca
     qscintilla
     qt3d
+    qt5compat
     qtbase
     qtkeychain
     qtlocation
     qtmultimedia
     qtsensors
     qtserialport
-    qtxmlpatterns
+    qttools
+    qtwebengine
     qwt
     sqlite
     txt2tags
     zstd
   ] ++ lib.optional withGrass grass
-  ++ lib.optional withWebKit qtwebkit
   ++ pythonBuildInputs;
 
   patches = [
-    (replaceVars ./set-pyqt-package-dirs.patch {
-      pyQt5PackageDir = "${py.pkgs.pyqt5}/${py.pkgs.python.sitePackages}";
-      qsciPackageDir = "${py.pkgs.qscintilla-qt5}/${py.pkgs.python.sitePackages}";
+    (replaceVars ./set-pyqt6-package-dirs.patch {
+      pyQt6PackageDir = "${py.pkgs.pyqt6}/${py.pkgs.python.sitePackages}";
+      qsciPackageDir = "${py.pkgs.qscintilla-qt6}/${py.pkgs.python.sitePackages}";
+    })
+    (replaceVars ./spatialite-path.patch {
+      spatialiteLib = "${libspatialite}/lib/mod_spatialite.so";
     })
   ];
 
@@ -183,12 +202,13 @@ mkDerivation
   env.QT_QPA_PLATFORM_PLUGIN_PATH = "${qtbase}/${qtbase.qtPluginPrefix}/platforms";
 
   cmakeFlags = [
+    "-DWITH_QTWEBENGINE=True"
+
     "-DWITH_3D=True"
     "-DWITH_PDAL=True"
     "-DENABLE_TESTS=False"
     "-DQT_PLUGINS_DIR=${qtbase}/${qtbase.qtPluginPrefix}"
-  ] ++ lib.optional (!withWebKit) "-DWITH_QTWEBKIT=OFF"
-  ++ lib.optional withServer [
+  ] ++ lib.optional withServer [
     "-DWITH_SERVER=True"
     "-DQGIS_CGIBIN_SUBDIR=${placeholder "out"}/lib/cgi-bin"
   ]
@@ -206,11 +226,10 @@ mkDerivation
 
   dontWrapGApps = true; # wrapper params passed below
 
+  # GRASS has to be available on the command line even though we baked in the
+  # path at build time using GRASS_PREFIX. Using wrapGAppsHook also prevents
+  # file dialogs from crashing the program on non-NixOS.
   postFixup = lib.optionalString withGrass ''
-    # GRASS has to be availble on the command line even though we baked in
-    # the path at build time using GRASS_PREFIX.
-    # Using wrapGAppsHook also prevents file dialogs from crashing the program
-    # on non-NixOS.
     for program in $out/bin/*; do
       wrapProgram $program \
         "''${gappsWrapperArgs[@]}" \

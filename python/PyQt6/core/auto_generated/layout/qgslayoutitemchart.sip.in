@@ -23,7 +23,7 @@ A layout item subclass that renders chart plots.
   public:
 
     class SeriesDetails
-{
+    {
 %Docstring(signature="appended")
 Chart series details covering all supported series types.
 
@@ -35,9 +35,6 @@ Chart series details covering all supported series types.
 .. versionadded:: 4.0
 %End
 
-%TypeHeaderCode
-#include "qgslayoutitemchart.h"
-%End
       public:
 
         explicit SeriesDetails( const QString &name = QString() );
@@ -127,7 +124,7 @@ Returns the plot used to render the chart.
 
     void setSourceLayer( QgsVectorLayer *layer );
 %Docstring
-Sets the source vector ``layer`` from which the plot data wil be
+Sets the source vector ``layer`` from which the plot data will be
 gathered from.
 
 .. seealso:: :py:func:`sourceLayer`
@@ -144,7 +141,7 @@ gathered from.
     void setSortFeatures( bool sorted );
 %Docstring
 Sets whether features should be ``sorted`` when iterating through the
-vector layer from which the plot data wil be gathered from.
+vector layer from which the plot data will be gathered from.
 
 .. seealso:: :py:func:`setSortAscending`
 
@@ -156,7 +153,7 @@ vector layer from which the plot data wil be gathered from.
     bool sortFeatures() const;
 %Docstring
 Returns ``True`` if features should be sorted when iterating through the
-vector layer from which the plot data wil be gathered from.
+vector layer from which the plot data will be gathered from.
 
 .. seealso:: :py:func:`sortAscending`
 
@@ -168,7 +165,7 @@ vector layer from which the plot data wil be gathered from.
     void setSortAscending( bool ascending );
 %Docstring
 Sets whether features should be sorted in an ``ascending`` order when
-iterating through the vector layer from which the plot data wil be
+iterating through the vector layer from which the plot data will be
 gathered from.
 
 This property has no effect is
@@ -184,7 +181,7 @@ This property has no effect is
     bool sortAscending() const;
 %Docstring
 Returns ``True`` if features should be sorted in an ascending order when
-iterating through the vector layer from which the plot data wil be
+iterating through the vector layer from which the plot data will be
 gathered from.
 
 This property has no effect is
@@ -200,7 +197,7 @@ This property has no effect is
     void setSortExpression( const QString &expression );
 %Docstring
 Sets the ``expression`` used to sort features when iterating through the
-vector layer from which the plot data wil be gathered from.
+vector layer from which the plot data will be gathered from.
 
 .. seealso:: :py:func:`setSortFeatures`
 
@@ -212,7 +209,7 @@ vector layer from which the plot data wil be gathered from.
     QString sortExpression() const;
 %Docstring
 Returns the expression used to sort features when iterating through the
-vector layer from which the plot data wil be gathered from.
+vector layer from which the plot data will be gathered from.
 
 .. seealso:: :py:func:`sortFeatures`
 

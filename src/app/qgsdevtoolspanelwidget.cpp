@@ -13,17 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsdevtoolspanelwidget.h"
-#include "moc_qgsdevtoolspanelwidget.cpp"
+
+#include "devtools/documentation/qgsdocumentationpanelwidget.h"
 #include "qgisapp.h"
-#include "qgsdevtoolwidgetfactory.h"
+#include "qgsapplication.h"
 #include "qgsdevtoolwidget.h"
+#include "qgsdevtoolwidgetfactory.h"
+#include "qgsdockwidget.h"
 #include "qgspanelwidgetstack.h"
 #include "qgssettingsentryimpl.h"
-#include "qgsapplication.h"
-#include "qgsdockwidget.h"
-#include "devtools/documentation/qgsdocumentationpanelwidget.h"
 
-const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab = new QgsSettingsEntryString( QStringLiteral( "last-active-tab" ), QgsDevToolsPanelWidget::sTreeDevTools, QString(), QStringLiteral( "Last visible tab in developer tools panel" ) );
+#include "moc_qgsdevtoolspanelwidget.cpp"
+
+const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab = new QgsSettingsEntryString( u"last-active-tab"_s, QgsDevToolsPanelWidget::sTreeDevTools, QString(), u"Last visible tab in developer tools panel"_s );
 
 
 QgsDevToolsPanelWidget::QgsDevToolsPanelWidget( const QList<QgsDevToolWidgetFactory *> &factories, QWidget *parent )
@@ -141,9 +143,9 @@ void QgsDevToolsPanelWidget::showApiDocumentation(
   }
   else
   {
-    if ( Qgis::version().toLower().contains( QStringLiteral( "master" ) ) )
+    if ( Qgis::version().toLower().contains( u"master"_s ) )
     {
-      version = QStringLiteral( "master" );
+      version = u"master"_s;
     }
     else
     {
@@ -153,7 +155,7 @@ void QgsDevToolsPanelWidget::showApiDocumentation(
     if ( api == Qgis::DocumentationApi::PyQgis || api == Qgis::DocumentationApi::PyQgisSearch )
     {
       QgsSettings settings;
-      baseUrl = settings.value( QStringLiteral( "qgis/PyQgisApiUrl" ), QString( "https://qgis.org/pyqgis/%1/" ).arg( version ) ).toString();
+      baseUrl = settings.value( u"qgis/PyQgisApiUrl"_s, QString( "https://qgis.org/pyqgis/%1/" ).arg( version ) ).toString();
     }
     else
     {
@@ -165,7 +167,7 @@ void QgsDevToolsPanelWidget::showApiDocumentation(
       else
       {
         QgsSettings settings;
-        baseUrl = settings.value( QStringLiteral( "qgis/QgisApiUrl" ), QString( "https://qgis.org/api/%1/" ).arg( version ) ).toString();
+        baseUrl = settings.value( u"qgis/QgisApiUrl"_s, QString( "https://qgis.org/api/%1/" ).arg( version ) ).toString();
       }
     }
   }

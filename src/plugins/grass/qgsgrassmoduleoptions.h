@@ -24,9 +24,8 @@
 //#include <QVBoxLayout>
 
 #include "qgis.h"
-#include "qgsfields.h"
 #include "qgscoordinatereferencesystem.h"
-
+#include "qgsfields.h"
 #include "qgsgrassmoduleparam.h"
 #include "qgsgrassprovider.h"
 #include "qgsgrassrasterprovider.h"

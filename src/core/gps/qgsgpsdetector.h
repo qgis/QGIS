@@ -20,9 +20,10 @@
 
 #include "qgsconfig.h"
 
-#include <QObject>
 #include <QList>
+#include <QObject>
 #include <QPair>
+
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
 #endif
@@ -49,7 +50,7 @@ class CORE_EXPORT QgsGpsDetector : public QObject
     Q_OBJECT
   public:
 
-    // TODO QGIS 4.0 -- remove useUnsafeSignals option
+    // TODO QGIS 5.0 -- remove useUnsafeSignals option
 
     /**
      * Constructor for QgsGpsDetector.

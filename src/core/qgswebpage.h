@@ -20,19 +20,13 @@
 
 #include "qgis_core.h"
 #include "qgsmessagelog.h"
-#include <QObject>
-
-#ifdef WITH_QTWEBKIT
-#include <QWebPage>
-#else
-
 #include "qgswebframe.h"
 
 #include <QMenu>
 #include <QNetworkAccessManager>
+#include <QObject>
 #include <QPalette>
 #include <QTextBrowser>
-
 
 /**
  * \ingroup core
@@ -128,7 +122,7 @@ class CORE_EXPORT QWebPage : public QObject
       connect( mFrame, &QWebFrame::loadFinished, this, &QWebPage::loadFinished );
     }
 
-    ~QWebPage()
+    ~QWebPage() override
     {
       delete mFrame;
       delete mSettings;
@@ -205,7 +199,6 @@ class CORE_EXPORT QWebPage : public QObject
     QWebFrame *mFrame = nullptr;
 /// @endcond
 };
-#endif
 
 /**
  * \ingroup core
@@ -260,4 +253,3 @@ class CORE_EXPORT QgsWebPage : public QWebPage
 };
 
 #endif // QGSWEBPAGE_H
-

@@ -17,10 +17,11 @@
 #define QGSLAYOUTSNAPPER_H
 
 #include "qgis_core.h"
+#include "qgslayoutguidecollection.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
-#include "qgslayoutguidecollection.h"
 #include "qgslayoutserializableobject.h"
+
 #include <QPen>
 
 class QgsLayout;
@@ -42,7 +43,7 @@ class CORE_EXPORT QgsLayoutSnapper: public QgsLayoutSerializableObject
      */
     QgsLayoutSnapper( QgsLayout *layout );
 
-    QString stringType() const override { return QStringLiteral( "LayoutSnapper" ); }
+    QString stringType() const override { return u"LayoutSnapper"_s; }
     QgsLayout *layout() override;
 
     /**

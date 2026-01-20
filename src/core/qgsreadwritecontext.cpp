@@ -63,7 +63,7 @@ QgsReadWriteContextCategoryPopper QgsReadWriteContext::enterCategory( const QStr
 {
   QString message = category;
   if ( !details.isEmpty() )
-    message.append( QStringLiteral( " :: %1" ).arg( details ) );
+    message.append( u" :: %1"_s.arg( details ) );
   mCategories.push_back( message );
   return QgsReadWriteContextCategoryPopper( *this );
 }
@@ -87,8 +87,9 @@ void QgsReadWriteContext::setTransformContext( const QgsCoordinateTransformConte
 void QgsReadWriteContext::setProjectTranslator( QgsProjectTranslator *projectTranslator )
 {
   mProjectTranslator = projectTranslator;
+  if ( !mProjectTranslator )
+    mProjectTranslator = sDefaultTranslator();
 }
-
 
 QList<QgsReadWriteContext::ReadWriteMessage > QgsReadWriteContext::takeMessages()
 {

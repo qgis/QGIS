@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmexplode.h"
-#include "qgscurve.h"
-#include "qgslinestring.h"
+
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 
 QString QgsExplodeAlgorithm::name() const
 {
-  return QStringLiteral( "explodelines" );
+  return u"explodelines"_s;
 }
 
 QString QgsExplodeAlgorithm::displayName() const
@@ -46,7 +47,7 @@ QString QgsExplodeAlgorithm::group() const
 
 QString QgsExplodeAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsExplodeAlgorithm::shortHelpString() const
@@ -130,7 +131,7 @@ std::vector<QgsGeometry> QgsExplodeAlgorithm::extractAsParts( const QgsGeometry 
   if ( geometry.isMultipart() )
   {
     std::vector<QgsGeometry> parts;
-    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() );
+    const QgsGeometryCollection *collection = qgis::down_cast< const QgsGeometryCollection * >( geometry.constGet() );
     for ( int part = 0; part < collection->numGeometries(); ++part )
     {
       std::vector<QgsGeometry> segments = curveAsSingleSegments( qgsgeometry_cast<const QgsCurve *>( collection->geometryN( part ) ) );

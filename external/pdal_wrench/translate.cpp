@@ -34,12 +34,15 @@ namespace fs = std::filesystem;
 void Translate::addArgs()
 {
     argOutput = &programArgs.add("output,o", "Output point cloud file", outputFile);
-    argOutputFormat = &programArgs.add("output-format", "Output format (las/laz/copc)", outputFormat);
+    argOutputFormatVpc = &programArgs.add("vpc-output-format", "Output format (las/laz/copc)", outputFormatVpc, "copc");
     programArgs.add("assign-crs", "Assigns CRS to data (no reprojection)", assignCrs);
     programArgs.add("transform-crs", "Transforms (reprojects) data to another CRS", transformCrs);
     programArgs.add("transform-coord-op", "Details on how to do the transform of coordinates when --transform-crs is used. "
                     "It can be a PROJ pipeline or a WKT2 CoordinateOperation. "
                     "When not specified, PROJ will pick the default transform.", transformCoordOp);
+    programArgs.add("transform-matrix", "A whitespace-delimited transformation matrix. "
+                    "The matrix is assumed to be presented in row-major order. "
+                    "Only matrices with sixteen elements are allowed.", transformMatrix);
 }
 
 bool Translate::checkArgs()
@@ -51,16 +54,19 @@ bool Translate::checkArgs()
     }
 
     // TODO: or use the same format as the reader?
-    if (argOutputFormat->set())
+    if (argOutputFormatVpc->set())
     {
-        if (outputFormat != "las" && outputFormat != "laz")
+        if (outputFormatVpc != "las" && outputFormatVpc != "laz" && outputFormatVpc != "copc")
         {
-            std::cerr << "unknown output format: " << outputFormat << std::endl;
+            std::cerr << "unknown output format: " << outputFormatVpc << std::endl;
             return false;
         }
     }
-    else
-        outputFormat = "las";  // uncompressed by default
+
+    if ( ends_with(outputFile, ".vpc") && outputFormatVpc == "copc" )
+    {
+        isStreaming = false;
+    }
 
     if (!transformCoordOp.empty() && transformCrs.empty())
     {
@@ -72,7 +78,7 @@ bool Translate::checkArgs()
 }
 
 
-static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string assignCrs, std::string transformCrs, std::string transformCoordOp)
+static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::string assignCrs, std::string transformCrs, std::string transformCoordOp, std::string transformMatrix)
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
@@ -80,7 +86,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
     if (!assignCrs.empty())
         reader_opts.add(pdal::Option("override_srs", assignCrs));
 
-    Stage& r = manager->makeReader( tile->inputFilenames[0], "", reader_opts);
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0], reader_opts);
 
     Stage *last = &r;
 
@@ -126,6 +132,14 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         last = reproject;
     }
 
+    if (!transformMatrix.empty())
+    {
+        Options matrix_opts;
+        matrix_opts.add(pdal::Option("matrix", transformMatrix));
+        Stage* matrixTransform = &manager->makeFilter( "filters.transformation", *last, matrix_opts);
+        last = matrixTransform;
+    }
+
     pdal::Options writer_opts;
     if (!reproject)
     {
@@ -142,7 +156,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, std::str
         writer_opts.add(pdal::Option("offset_z", "auto"));
     }
 
-    (void)manager->makeWriter( tile->outputFilename, "", *last, writer_opts);
+    makeWriter(manager.get(), tile->outputFilename, last, writer_opts);
 
     return manager;
 }
@@ -167,18 +181,11 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
             ParallelJobInfo tile(ParallelJobInfo::FileBased, BOX2D(), filterExpression, filterBounds);
             tile.inputFilenames.push_back(f.filename);
 
-            // for input file /x/y/z.las that goes to /tmp/hello.vpc,
-            // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fileStem(f.filename);
-
-            if (!ends_with(outputFile, ".vpc"))
-                tile.outputFilename = (outputSubdir / inputBasename).string() + ".las";
-            else
-                tile.outputFilename = (outputSubdir / inputBasename).string() + "." + outputFormat;
+            tile.outputFilename = tileOutputFileName(outputFile, outputFormatVpc, outputSubdir, f.filename);
 
             tileOutputFiles.push_back(tile.outputFilename);
 
-            pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp));
+            pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
         }
     }
     else
@@ -190,7 +197,7 @@ void Translate::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& 
         ParallelJobInfo tile(ParallelJobInfo::Single, BOX2D(), filterExpression, filterBounds);
         tile.inputFilenames.push_back(inputFile);
         tile.outputFilename = outputFile;
-        pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp));
+        pipelines.push_back(pipeline(&tile, assignCrs, transformCrs, transformCoordOp, transformMatrix));
     }
 }
 
@@ -199,28 +206,5 @@ void Translate::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
     if (tileOutputFiles.empty())
         return;
 
-    std::vector<std::string> args;
-    args.push_back("--output=" + outputFile);
-    for (std::string f : tileOutputFiles)
-        args.push_back(f);
-
-    if (ends_with(outputFile, ".vpc"))
-    {
-        // now build a new output VPC
-        buildVpc(args);
-    }
-    else
-    {
-        // merge all the output files into a single file        
-        Merge merge;
-        // for copc set isStreaming to false
-        if (ends_with(outputFile, ".copc.laz"))
-        {
-            merge.isStreaming = false;
-        }
-        runAlg(args, merge);
-
-        // remove files as they are not needed anymore - they are merged
-        removeFiles(tileOutputFiles, true);
-    }
+    buildOutput(outputFile, tileOutputFiles);
 }

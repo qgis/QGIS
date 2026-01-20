@@ -13,26 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
-#include "qgssnappingconfig.h"
-#include "qgssnappingutils.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptooladdfeature.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
 
 #include <QSignalSpy>
-
 
 /**
  * \ingroup UnitTests
@@ -70,15 +68,15 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -87,7 +85,7 @@ void TestQgsMapToolAddFeaturePoint::initTestCase()
   mCanvas->hide();
 
   // make testing M layer
-  mLayerPoint = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:27700" ), QStringLiteral( "layer point" ), QStringLiteral( "memory" ) );
+  mLayerPoint = new QgsVectorLayer( u"Point?crs=EPSG:27700"_s, u"layer point"_s, u"memory"_s );
   QVERIFY( mLayerPoint->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPoint );
 
@@ -144,7 +142,7 @@ void TestQgsMapToolAddFeaturePoint::testPoint()
 
 void TestQgsMapToolAddFeaturePoint::testMultiPoint()
 {
-  QgsVectorLayer layerMultiPoint { QStringLiteral( "MultiPoint?crs=EPSG:27700" ), QStringLiteral( "layer multi point" ), QStringLiteral( "memory" ) };
+  QgsVectorLayer layerMultiPoint { u"MultiPoint?crs=EPSG:27700"_s, u"layer multi point"_s, u"memory"_s };
   layerMultiPoint.startEditing();
   mCanvas->setCurrentLayer( &layerMultiPoint );
 

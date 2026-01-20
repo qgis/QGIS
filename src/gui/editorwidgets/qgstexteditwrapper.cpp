@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgstexteditwrapper.h"
-#include "moc_qgstexteditwrapper.cpp"
 
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
-#include "qgsapplication.h"
 #include "qgsjsonutils.h"
-#include "qgsmessagebar.h"
 #include "qgslogger.h"
+#include "qgsmessagebar.h"
 
 #include <QSettings>
-#include <nlohmann/json.hpp>
+
+#include "moc_qgstexteditwrapper.cpp"
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -39,7 +41,7 @@ QVariant QgsTextEditWrapper::value() const
 
   if ( mTextEdit )
   {
-    if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
+    if ( config( u"UseHtml"_s ).toBool() )
     {
       if ( mTextEdit->toPlainText().isEmpty() )
       {
@@ -127,9 +129,9 @@ QVariant QgsTextEditWrapper::value() const
 QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 {
   mForm = qobject_cast<QgsAttributeForm *>( parent );
-  if ( config( QStringLiteral( "IsMultiline" ) ).toBool() )
+  if ( config( u"IsMultiline"_s ).toBool() )
   {
-    if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
+    if ( config( u"UseHtml"_s ).toBool() )
     {
       return new QTextBrowser( parent );
     }
@@ -256,7 +258,7 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
   }
 }
 
-bool QgsTextEditWrapper::isInvalidJSON()
+bool QgsTextEditWrapper::isInvalidJSON() const
 {
   return mInvalidJSON;
 }
@@ -284,7 +286,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     // uses QJsonDocument which doesn't recognise this as valid JSON although it technically is
     if ( field().displayString( val ).isEmpty() )
     {
-      if ( val.userType() == QMetaType::Type::QString && val.toString() != QLatin1String( "\"\"" ) )
+      if ( val.userType() == QMetaType::Type::QString && val.toString() != "\"\""_L1 )
       {
         v = val.toString().append( "\"" ).insert( 0, "\"" );
       }
@@ -333,7 +335,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   {
     if ( mTextEdit )
     {
-      if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
+      if ( config( u"UseHtml"_s ).toBool() )
       {
         mTextEdit->setHtml( v );
         if ( mTextBrowser )

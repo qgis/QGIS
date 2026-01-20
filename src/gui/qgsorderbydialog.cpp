@@ -15,14 +15,15 @@
  ***************************************************************************/
 
 #include "qgsorderbydialog.h"
-#include "moc_qgsorderbydialog.cpp"
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldexpressionwidget.h"
 #include "qgsvectorlayer.h"
 
-#include <QTableWidget>
 #include <QKeyEvent>
+#include <QTableWidget>
+
+#include "moc_qgsorderbydialog.cpp"
 
 QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -156,5 +157,5 @@ bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
 
 void QgsOrderByDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#layer-rendering" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#layer-rendering"_s );
 }

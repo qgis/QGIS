@@ -16,63 +16,51 @@
 
 #include "qgsgltf3dutils.h"
 
-#include "qgsgltfutils.h"
+#include <memory>
+
 #include "qgsblockingnetworkrequest.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgltfutils.h"
 #include "qgslogger.h"
 #include "qgsmetalroughmaterial.h"
 #include "qgstexturematerial.h"
-
-#include <Qt3DCore/QEntity>
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QGeometry>
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTexture>
+#include "qgsziputils.h"
 
 #include <QFile>
 #include <QFileInfo>
 #include <QMatrix4x4>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QGeometry>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QTexture>
 
 ///@cond PRIVATE
 
-static Qt3DQAttribute::VertexBaseType parseVertexBaseType( int componentType )
+static Qt3DCore::QAttribute::VertexBaseType parseVertexBaseType( int componentType )
 {
   switch ( componentType )
   {
     case TINYGLTF_COMPONENT_TYPE_BYTE:
-      return Qt3DQAttribute::Byte;
+      return Qt3DCore::QAttribute::Byte;
     case TINYGLTF_COMPONENT_TYPE_UNSIGNED_BYTE:
-      return Qt3DQAttribute::UnsignedByte;
+      return Qt3DCore::QAttribute::UnsignedByte;
     case TINYGLTF_COMPONENT_TYPE_SHORT:
-      return Qt3DQAttribute::Short;
+      return Qt3DCore::QAttribute::Short;
     case TINYGLTF_COMPONENT_TYPE_UNSIGNED_SHORT:
-      return Qt3DQAttribute::UnsignedShort;
+      return Qt3DCore::QAttribute::UnsignedShort;
     case TINYGLTF_COMPONENT_TYPE_INT:
-      return Qt3DQAttribute::Int;
+      return Qt3DCore::QAttribute::Int;
     case TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT:
-      return Qt3DQAttribute::UnsignedInt;
+      return Qt3DCore::QAttribute::UnsignedInt;
     case TINYGLTF_COMPONENT_TYPE_FLOAT:
-      return Qt3DQAttribute::Float;
+      return Qt3DCore::QAttribute::Float;
     case TINYGLTF_COMPONENT_TYPE_DOUBLE:
-      return Qt3DQAttribute::Double;
+      return Qt3DCore::QAttribute::Double;
   }
   Q_ASSERT( false );
-  return Qt3DQAttribute::UnsignedInt;
+  return Qt3DCore::QAttribute::UnsignedInt;
 }
 
 
@@ -115,7 +103,7 @@ static Qt3DRender::QTextureWrapMode::WrapMode parseTextureWrapMode( int wrapMode
 }
 
 
-static Qt3DQAttribute *parseAttribute( tinygltf::Model &model, int accessorIndex )
+static Qt3DCore::QAttribute *parseAttribute( tinygltf::Model &model, int accessorIndex )
 {
   tinygltf::Accessor &accessor = model.accessors[accessorIndex];
   tinygltf::BufferView &bv = model.bufferViews[accessor.bufferView];
@@ -124,16 +112,16 @@ static Qt3DQAttribute *parseAttribute( tinygltf::Model &model, int accessorIndex
   // TODO: only ever create one QBuffer for a buffer even if it is used multiple times
   QByteArray byteArray( reinterpret_cast<const char *>( b.data.data() ),
                         static_cast<int>( b.data.size() ) ); // makes a deep copy
-  Qt3DQBuffer *buffer = new Qt3DQBuffer();
+  Qt3DCore::QBuffer *buffer = new Qt3DCore::QBuffer();
   buffer->setData( byteArray );
 
-  Qt3DQAttribute *attribute = new Qt3DQAttribute();
+  Qt3DCore::QAttribute *attribute = new Qt3DCore::QAttribute();
 
   // "target" is optional, can be zero
   if ( bv.target == TINYGLTF_TARGET_ARRAY_BUFFER )
-    attribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+    attribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   else if ( bv.target == TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER )
-    attribute->setAttributeType( Qt3DQAttribute::IndexAttribute );
+    attribute->setAttributeType( Qt3DCore::QAttribute::IndexAttribute );
 
   attribute->setBuffer( buffer );
   attribute->setByteOffset( bv.byteOffset + accessor.byteOffset );
@@ -146,7 +134,7 @@ static Qt3DQAttribute *parseAttribute( tinygltf::Model &model, int accessorIndex
 }
 
 
-static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QMatrix4x4 *matrix )
+static Qt3DCore::QAttribute *reprojectPositions( tinygltf::Model &model, int accessorIndex, const QgsGltf3DUtils::EntityTransform &transform, const QgsVector3D &tileTranslationEcef, QMatrix4x4 *matrix )
 {
   tinygltf::Accessor &accessor = model.accessors[accessorIndex];
 
@@ -171,16 +159,16 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
     out[i * 3 + 2] = static_cast<float>( z );
   }
 
-  Qt3DQBuffer *buffer = new Qt3DQBuffer();
+  Qt3DCore::QBuffer *buffer = new Qt3DCore::QBuffer();
   buffer->setData( byteArray );
 
-  Qt3DQAttribute *attribute = new Qt3DQAttribute();
-  attribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  Qt3DCore::QAttribute *attribute = new Qt3DCore::QAttribute();
+  attribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   attribute->setBuffer( buffer );
   attribute->setByteOffset( 0 );
   attribute->setByteStride( 12 );
   attribute->setCount( accessor.count );
-  attribute->setVertexBaseType( Qt3DQAttribute::Float );
+  attribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   attribute->setVertexSize( 3 );
 
   return attribute;
@@ -199,11 +187,7 @@ class TinyGltfTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGe
 
     qintptr id() const override
     {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-      return reinterpret_cast<qintptr>( &Qt3DRender::FunctorType<TinyGltfTextureImageDataGenerator>::id );
-#else
       return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TinyGltfTextureImageDataGenerator>::id );
-#endif
     }
 
     bool operator==( const QTextureImageDataGenerator &other ) const override
@@ -262,7 +246,7 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
     if ( networkRequest.get( request ) != QgsBlockingNetworkRequest::NoError )
     {
       if ( errors )
-        *errors << QStringLiteral( "Failed to download image: %1" ).arg( url.toString() );
+        *errors << u"Failed to download image: %1"_s.arg( url.toString() );
     }
     else
     {
@@ -270,17 +254,46 @@ static QByteArray fetchUri( const QUrl &url, QStringList *errors )
       return content.content();
     }
   }
-  else if ( url.isLocalFile() && QFile::exists( url.toLocalFile() ) )
+  else if ( url.isLocalFile() )
   {
-    QFile f( url.toLocalFile() );
-    if ( f.open( QIODevice::ReadOnly ) )
+    QString localFilePath = url.toLocalFile();
+    if ( localFilePath.contains( ".slpk/" ) ) // we need to extract the image from SLPK archive
     {
-      return f.readAll();
+      const QStringList parts = localFilePath.split( u".slpk/"_s );
+      if ( parts.size() == 2 )
+      {
+        QString slpkPath = parts[0] + ".slpk";
+        QString imagePath = parts[1];
+
+        QByteArray imageData;
+        if ( QgsZipUtils::extractFileFromZip( slpkPath, imagePath, imageData ) )
+        {
+          return imageData;
+        }
+        else
+        {
+          if ( errors )
+            *errors << u"Unable to extract image '%1' from SLPK archive: %2"_s.arg( imagePath ).arg( slpkPath );
+        }
+      }
+      else
+      {
+        if ( errors )
+          *errors << u"Missing image path in SLPK archive: %1"_s.arg( localFilePath );
+      }
+    }
+    else if ( QFile::exists( localFilePath ) )
+    {
+      QFile f( localFilePath );
+      if ( f.open( QIODevice::ReadOnly ) )
+      {
+        return f.readAll();
+      }
     }
     else
     {
       if ( errors )
-        *errors << QStringLiteral( "Unable to open image: %1" ).arg( url.toString() );
+        *errors << u"Unable to open image: %1"_s.arg( url.toString() );
     }
   }
   return QByteArray();
@@ -328,7 +341,7 @@ static QgsMaterial *parseMaterial( tinygltf::Model &model, int materialIndex, QS
         if ( !QgsGltfUtils::loadImageDataWithQImage( &img, -1, nullptr, nullptr, 0, 0, ( const unsigned char * ) ba.constData(), ba.size(), nullptr ) )
         {
           if ( errors )
-            *errors << QStringLiteral( "Failed to load image: %1" ).arg( imgUri );
+            *errors << u"Failed to load image: %1"_s.arg( imgUri );
         }
       }
     }
@@ -397,7 +410,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       *matrix = parentTransform * *matrix;
     else
     {
-      matrix.reset( new QMatrix4x4( parentTransform ) );
+      matrix = std::make_unique<QMatrix4x4>( parentTransform );
     }
   }
 
@@ -411,7 +424,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       if ( primitive.mode != TINYGLTF_MODE_TRIANGLES )
       {
         if ( errors )
-          *errors << QStringLiteral( "Unsupported mesh primitive: %1" ).arg( primitive.mode );
+          *errors << u"Unsupported mesh primitive: %1"_s.arg( primitive.mode );
         continue;
       }
 
@@ -423,7 +436,7 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       if ( posAccessor.componentType != TINYGLTF_PARAMETER_TYPE_FLOAT || posAccessor.type != TINYGLTF_TYPE_VEC3 )
       {
         if ( errors )
-          *errors << QStringLiteral( "Unsupported position accessor type: %1 / %2" ).arg( posAccessor.componentType ).arg( posAccessor.type );
+          *errors << u"Unsupported position accessor type: %1 / %2"_s.arg( posAccessor.componentType ).arg( posAccessor.type );
         continue;
       }
 
@@ -434,18 +447,18 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
         continue;
       }
 
-      Qt3DQGeometry *geom = new Qt3DQGeometry;
+      Qt3DCore::QGeometry *geom = new Qt3DCore::QGeometry;
 
-      Qt3DQAttribute *positionAttribute = reprojectPositions( model, positionAccessorIndex, transform, tileTranslationEcef, matrix.get() );
-      positionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+      Qt3DCore::QAttribute *positionAttribute = reprojectPositions( model, positionAccessorIndex, transform, tileTranslationEcef, matrix.get() );
+      positionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
       geom->addAttribute( positionAttribute );
 
       auto normalIt = primitive.attributes.find( "NORMAL" );
       if ( normalIt != primitive.attributes.end() )
       {
         int normalAccessorIndex = normalIt->second;
-        Qt3DQAttribute *normalAttribute = parseAttribute( model, normalAccessorIndex );
-        normalAttribute->setName( Qt3DQAttribute::defaultNormalAttributeName() );
+        Qt3DCore::QAttribute *normalAttribute = parseAttribute( model, normalAccessorIndex );
+        normalAttribute->setName( Qt3DCore::QAttribute::defaultNormalAttributeName() );
         geom->addAttribute( normalAttribute );
 
         // TODO: we may need to transform normal vectors when we are altering positions
@@ -456,12 +469,12 @@ static QVector<Qt3DCore::QEntity *> parseNode( tinygltf::Model &model, int nodeI
       if ( texIt != primitive.attributes.end() )
       {
         int texAccessorIndex = texIt->second;
-        Qt3DQAttribute *texAttribute = parseAttribute( model, texAccessorIndex );
-        texAttribute->setName( Qt3DQAttribute::defaultTextureCoordinateAttributeName() );
+        Qt3DCore::QAttribute *texAttribute = parseAttribute( model, texAccessorIndex );
+        texAttribute->setName( Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName() );
         geom->addAttribute( texAttribute );
       }
 
-      Qt3DQAttribute *indexAttribute = nullptr;
+      Qt3DCore::QAttribute *indexAttribute = nullptr;
       if ( primitive.indices != -1 )
       {
         indexAttribute = parseAttribute( model, primitive.indices );
@@ -541,17 +554,17 @@ Qt3DCore::QEntity *QgsGltf3DUtils::gltfToEntity( const QByteArray &data, const Q
   bool res = QgsGltfUtils::loadGltfModel( data, model, &gltfErrors, &gltfWarnings );
   if ( !gltfErrors.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Error raised reading %1: %2" ).arg( baseUri, gltfErrors ) );
+    QgsDebugError( u"Error raised reading %1: %2"_s.arg( baseUri, gltfErrors ) );
   }
   if ( !gltfWarnings.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Warnings raised reading %1: %2" ).arg( baseUri, gltfWarnings ) );
+    QgsDebugError( u"Warnings raised reading %1: %2"_s.arg( baseUri, gltfWarnings ) );
   }
   if ( !res )
   {
     if ( errors )
     {
-      errors->append( QStringLiteral( "GLTF load error: " ) + gltfErrors );
+      errors->append( u"GLTF load error: "_s + gltfErrors );
     }
     return nullptr;
   }

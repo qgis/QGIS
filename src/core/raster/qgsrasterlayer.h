@@ -21,22 +21,21 @@
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsabstractprofilesource.h"
+#include "qgscontrastenhancement.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterviewport.h"
+
 #include <QColor>
 #include <QDateTime>
 #include <QList>
 #include <QMap>
 #include <QPair>
 #include <QVector>
-
-#include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsmaplayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasterviewport.h"
-#include "qgscontrastenhancement.h"
-#include "qgsabstractprofilesource.h"
 
 class QgsMapToPixel;
 class QgsRasterRenderer;
@@ -171,7 +170,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRasterLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsRasterLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -184,6 +183,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     QgsRasterLayer *clone() const override SIP_FACTORY;
 
     QgsAbstractProfileSource *profileSource() override {return this;}
+    QString profileSourceId() const override {return id();}
+    QString profileSourceName() const override {return name();}
 
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
 
@@ -194,7 +195,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      * returned in \a retError.
      */
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
-    // TODO QGIS 4.0 - rename fileNameQString to fileName
+    // TODO QGIS 5.0 - rename fileNameQString to fileName
 
     static bool isValidRasterFileName( const QString &fileNameQString );
 
@@ -386,8 +387,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      */
     double rasterUnitsPerPixelY() const;
 
-    void setOpacity( double opacity ) FINAL;
-    double opacity() const FINAL;
+    void setOpacity( double opacity ) final;
+    double opacity() const final;
 
     /**
      * \brief Set contrast enhancement algorithm
@@ -448,6 +449,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
     void setLayerOrder( const QStringList &layers ) override;
     void setSubLayerVisibility( const QString &name, bool vis ) override;
     QDateTime timestamp() const override;
+
+    using QgsMapLayer::accept;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
@@ -560,7 +563,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer, public QgsAbstractProfile
      *
      * \since QGIS 3.8
      */
-    virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
+    void setTransformContext( const QgsCoordinateTransformContext &transformContext ) override;
 
   signals:
 

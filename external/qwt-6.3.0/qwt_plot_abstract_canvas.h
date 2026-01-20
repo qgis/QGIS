@@ -122,7 +122,7 @@ class QWT_EXPORT QwtPlotAbstractGLCanvas : public QwtPlotAbstractCanvas
     Q_DECLARE_FLAGS( PaintAttributes, PaintAttribute )
 
     explicit QwtPlotAbstractGLCanvas( QWidget* canvasWidget );
-    virtual ~QwtPlotAbstractGLCanvas();
+    ~QwtPlotAbstractGLCanvas() override;
 
     void setPaintAttribute( PaintAttribute, bool on = true );
     bool testPaintAttribute( PaintAttribute ) const;

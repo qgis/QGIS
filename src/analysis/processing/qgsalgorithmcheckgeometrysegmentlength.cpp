@@ -16,18 +16,19 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcheckgeometrysegmentlength.h"
+
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerror.h"
 #include "qgsgeometrysegmentlengthcheck.h"
 #include "qgspoint.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsGeometryCheckSegmentLengthAlgorithm::name() const
 {
-  return QStringLiteral( "checkgeometrysegmentlength" );
+  return u"checkgeometrysegmentlength"_s;
 }
 
 QString QgsGeometryCheckSegmentLengthAlgorithm::displayName() const
@@ -52,7 +53,7 @@ QString QgsGeometryCheckSegmentLengthAlgorithm::group() const
 
 QString QgsGeometryCheckSegmentLengthAlgorithm::groupId() const
 {
-  return QStringLiteral( "checkgeometry" );
+  return u"checkgeometry"_s;
 }
 
 QString QgsGeometryCheckSegmentLengthAlgorithm::shortHelpString() const
@@ -63,7 +64,7 @@ QString QgsGeometryCheckSegmentLengthAlgorithm::shortHelpString() const
 
 Qgis::ProcessingAlgorithmFlags QgsGeometryCheckSegmentLengthAlgorithm::flags() const
 {
-  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading;
+  return QgsProcessingAlgorithm::flags() | Qgis::ProcessingAlgorithmFlag::NoThreading | Qgis::ProcessingAlgorithmFlag::RequiresProject;
 }
 
 QgsGeometryCheckSegmentLengthAlgorithm *QgsGeometryCheckSegmentLengthAlgorithm::createInstance() const
@@ -76,25 +77,25 @@ void QgsGeometryCheckSegmentLengthAlgorithm::initAlgorithm( const QVariantMap &c
   Q_UNUSED( configuration )
 
   addParameter( new QgsProcessingParameterFeatureSource(
-    QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
+    u"INPUT"_s, QObject::tr( "Input layer" ),
     QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) << static_cast<int>( Qgis::ProcessingSourceType::VectorLine )
   ) );
   addParameter( new QgsProcessingParameterField(
-    QStringLiteral( "UNIQUE_ID" ), QObject::tr( "Unique feature identifier" ), QString(), QStringLiteral( "INPUT" )
+    u"UNIQUE_ID"_s, QObject::tr( "Unique feature identifier" ), QString(), u"INPUT"_s
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "ERRORS" ), QObject::tr( "Short segments errors" ), Qgis::ProcessingSourceType::VectorPoint
+    u"ERRORS"_s, QObject::tr( "Short segments errors" ), Qgis::ProcessingSourceType::VectorPoint
   ) );
   addParameter( new QgsProcessingParameterFeatureSink(
-    QStringLiteral( "OUTPUT" ), QObject::tr( "Short segments features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
+    u"OUTPUT"_s, QObject::tr( "Short segments features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false
   ) );
 
   addParameter( new QgsProcessingParameterNumber(
-    QStringLiteral( "MIN_SEGMENT_LENGTH" ), QObject::tr( "minimum segment length" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
+    u"MIN_SEGMENT_LENGTH"_s, QObject::tr( "Minimum segment length" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0.0
   ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> tolerance = std::make_unique<QgsProcessingParameterNumber>(
-    QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
+  auto tolerance = std::make_unique<QgsProcessingParameterNumber>(
+    u"TOLERANCE"_s, QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1, 13
   );
   tolerance->setFlags( tolerance->flags() | Qgis::ProcessingParameterFlag::Advanced );
   tolerance->setHelp( QObject::tr( "The \"Tolerance\" advanced parameter defines the numerical precision of geometric operations, "
@@ -104,7 +105,7 @@ void QgsGeometryCheckSegmentLengthAlgorithm::initAlgorithm( const QVariantMap &c
 
 bool QgsGeometryCheckSegmentLengthAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mTolerance = parameterAsInt( parameters, QStringLiteral( "TOLERANCE" ), context );
+  mTolerance = parameterAsInt( parameters, u"TOLERANCE"_s, context );
 
   return true;
 }
@@ -112,27 +113,26 @@ bool QgsGeometryCheckSegmentLengthAlgorithm::prepareAlgorithm( const QVariantMap
 QgsFields QgsGeometryCheckSegmentLengthAlgorithm::outputFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "gc_layerid" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_layername" ), QMetaType::QString ) );
-  fields.append( QgsField( QStringLiteral( "gc_partidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_ringidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_vertidx" ), QMetaType::Int ) );
-  fields.append( QgsField( QStringLiteral( "gc_errorx" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_errory" ), QMetaType::Double ) );
-  fields.append( QgsField( QStringLiteral( "gc_error" ), QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layerid"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_layername"_s, QMetaType::QString ) );
+  fields.append( QgsField( u"gc_partidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_ringidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_vertidx"_s, QMetaType::Int ) );
+  fields.append( QgsField( u"gc_errorx"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_errory"_s, QMetaType::Double ) );
+  fields.append( QgsField( u"gc_error"_s, QMetaType::QString ) );
   return fields;
 }
-
 
 QVariantMap QgsGeometryCheckSegmentLengthAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest_output;
   QString dest_errors;
-  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  const std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QString uniqueIdFieldName( parameterAsString( parameters, QStringLiteral( "UNIQUE_ID" ), context ) );
+  const QString uniqueIdFieldName( parameterAsString( parameters, u"UNIQUE_ID"_s, context ) );
   const int uniqueIdFieldIdx = input->fields().indexFromName( uniqueIdFieldName );
   if ( uniqueIdFieldIdx == -1 )
     throw QgsProcessingException( QObject::tr( "Missing field %1 in input layer" ).arg( uniqueIdFieldName ) );
@@ -143,25 +143,23 @@ QVariantMap QgsGeometryCheckSegmentLengthAlgorithm::processAlgorithm( const QVar
   fields.append( uniqueIdField );
 
   const std::unique_ptr<QgsFeatureSink> sink_output(
-    parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest_output, fields, input->wkbType(), input->sourceCrs() )
+    parameterAsSink( parameters, u"OUTPUT"_s, context, dest_output, fields, input->wkbType(), input->sourceCrs() )
   );
   const std::unique_ptr<QgsFeatureSink> sink_errors(
-    parameterAsSink( parameters, QStringLiteral( "ERRORS" ), context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() )
+    parameterAsSink( parameters, u"ERRORS"_s, context, dest_errors, fields, Qgis::WkbType::Point, input->sourceCrs() )
   );
   if ( !sink_errors )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ERRORS" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"ERRORS"_s ) );
 
   QgsProcessingMultiStepFeedback multiStepFeedback( 3, feedback );
 
-  const QgsProject *project = QgsProject::instance();
-
-  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), project->transformContext(), project );
+  QgsGeometryCheckContext checkContext = QgsGeometryCheckContext( mTolerance, input->sourceCrs(), context.transformContext(), context.project(), uniqueIdFieldIdx );
 
   // Test detection
   QList<QgsGeometryCheckError *> checkErrors;
   QStringList messages;
 
-  const double segmentLength = parameterAsDouble( parameters, QStringLiteral( "MIN_SEGMENT_LENGTH" ), context );
+  const double segmentLength = parameterAsDouble( parameters, u"MIN_SEGMENT_LENGTH"_s, context );
 
   QVariantMap configurationCheck;
   configurationCheck.insert( "minSegmentLength", segmentLength );
@@ -177,7 +175,19 @@ QVariantMap QgsGeometryCheckSegmentLengthAlgorithm::processAlgorithm( const QVar
 
   multiStepFeedback.setCurrentStep( 2 );
   feedback->setProgressText( QObject::tr( "Collecting errors…" ) );
-  check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  QgsGeometryCheck::Result res = check.collectErrors( checkerFeaturePools, checkErrors, messages, feedback );
+  if ( res == QgsGeometryCheck::Result::Success )
+  {
+    feedback->pushInfo( QObject::tr( "Errors collected successfully." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::Canceled )
+  {
+    throw QgsProcessingException( QObject::tr( "Operation was canceled." ) );
+  }
+  else if ( res == QgsGeometryCheck::Result::DuplicatedUniqueId )
+  {
+    throw QgsProcessingException( QObject::tr( "Field '%1' contains non-unique values and can not be used as unique ID." ).arg( uniqueIdFieldName ) );
+  }
 
   multiStepFeedback.setCurrentStep( 3 );
   feedback->setProgressText( QObject::tr( "Exporting errors…" ) );
@@ -207,11 +217,11 @@ QVariantMap QgsGeometryCheckSegmentLengthAlgorithm::processAlgorithm( const QVar
 
     f.setGeometry( error->geometry() );
     if ( sink_output && !sink_output->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_output.get(), parameters, u"OUTPUT"_s ) );
 
     f.setGeometry( QgsGeometry::fromPoint( QgsPoint( error->location().x(), error->location().y() ) ) );
     if ( !sink_errors->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, QStringLiteral( "ERRORS" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink_errors.get(), parameters, u"ERRORS"_s ) );
 
     i++;
     feedback->setProgress( 100.0 * step * static_cast<double>( i ) );
@@ -232,8 +242,8 @@ QVariantMap QgsGeometryCheckSegmentLengthAlgorithm::processAlgorithm( const QVar
 
   QVariantMap outputs;
   if ( sink_output )
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest_output );
-  outputs.insert( QStringLiteral( "ERRORS" ), dest_errors );
+    outputs.insert( u"OUTPUT"_s, dest_output );
+  outputs.insert( u"ERRORS"_s, dest_errors );
 
   return outputs;
 }

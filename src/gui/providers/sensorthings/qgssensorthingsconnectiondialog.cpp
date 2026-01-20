@@ -14,14 +14,16 @@
  ***************************************************************************/
 
 #include "qgssensorthingsconnectiondialog.h"
-#include "moc_qgssensorthingsconnectiondialog.cpp"
-#include "qgssensorthingsconnection.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectionwidget.h"
 
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgssensorthingsconnectiondialog.cpp"
 
 ///@cond PRIVATE
 
@@ -38,7 +40,7 @@ QgsSensorThingsConnectionDialog::QgsSensorThingsConnectionDialog( QWidget *paren
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
+    QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsSensorThingsConnectionDialog::updateOkButtonState );
   connect( mConnectionWidget, &QgsSensorThingsConnectionWidget::validChanged, this, &QgsSensorThingsConnectionDialog::updateOkButtonState );

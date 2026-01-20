@@ -20,8 +20,9 @@
 
 #include "qgis_app.h"
 #include "qgsdataitemguiprovider.h"
-#include "qgsweakrelation.h"
 #include "qgsmimedatautils.h"
+#include "qgsweakrelation.h"
+
 #include <QObject>
 
 class QgsDirectoryItem;
@@ -31,6 +32,7 @@ class QgsFieldsItem;
 class QgsFieldItem;
 class QgsFieldDomain;
 class QgsField;
+class QgsAbstractDatabaseProviderConnection;
 
 class QgsAppDirectoryItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
@@ -261,6 +263,14 @@ class QgsDatabaseItemGuiProvider : public QObject, public QgsDataItemGuiProvider
   public slots:
 
     void openSqlDialogGeneric( const QString &connectionUri, const QString &provider, const QString &query );
+
+  private:
+    /**
+     * Move table to target schema.
+     *
+     * \since QGIS 4.0
+    */
+    bool moveTableToSchema( std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn, const QString &originalSchema, const QString &table, const QString &targetSchema, const QgsDataItemGuiContext &context, bool notifyUser = true );
 };
 
 

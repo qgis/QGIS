@@ -11,6 +11,7 @@
 
 
 
+
 class QgsLayerTreeViewDefaultActions : QObject
 {
 %Docstring(signature="appended")
@@ -24,13 +25,58 @@ tree view.
 #include "qgslayertreeviewdefaultactions.h"
 %End
   public:
-    QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view );
+    QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view );
+%Docstring
+Constructor for QgsLayerTreeViewDefaultActions, creating actions for a
+``view``.
+
+The object will be parented to the specified ``view``.
+%End
 
     QAction *actionAddGroup( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action which adds a group.
+%End
+
     QAction *actionRemoveGroupOrLayer( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action which removes either a group or layer, depending on
+the selected node.
+
+If a group is removed, all children for that group will also be removed.
+
+.. seealso:: :py:func:`actionRemoveGroupPromoteLayers`
+%End
+
+    QAction *actionRemoveGroupPromoteLayers( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action which removes a group.
+
+Any existing children in the group will be moved up to the parent of the
+removed group.
+
+.. seealso:: :py:func:`actionRemoveGroupOrLayer`
+
+.. versionadded:: 4.0
+%End
+
     QAction *actionShowInOverview( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action for toggling whether a layer is shown in the map
+overview.
+%End
+
     QAction *actionRenameGroupOrLayer( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action for renaming a group or layer, depending on the
+selected node.
+%End
+
     QAction *actionShowFeatureCount( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action for toggling whether the feature count is shown for
+a layer.
+%End
 
     QAction *actionCheckAndAllChildren( QObject *parent = 0 );
 %Docstring
@@ -139,6 +185,15 @@ Zooms a map ``canvas`` to all the selected layer(s) in the layer tree
 
   protected slots:
     void removeGroupOrLayer();
+
+    void removeGroupPromoteLayers();
+%Docstring
+Removes the selected group node, promoting all child nodes up into the
+removed group's parent node.
+
+.. versionadded:: 4.0
+%End
+
     void renameGroupOrLayer();
     void showFeatureCount();
 

@@ -12,16 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
+#include <memory>
 
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
+#include "qgstest.h"
 #include "qgstriangle.h"
-
 #include "testgeometryutils.h"
+
+#include <QObject>
+#include <QString>
 
 class TestQgsTriangle : public QObject
 {
@@ -61,6 +62,7 @@ class TestQgsTriangle : public QObject
     void inscribedCircle();
     void circumscribedCircle();
     void boundary();
+    void area3D();
 };
 
 void TestQgsTriangle::constructor()
@@ -80,6 +82,7 @@ void TestQgsTriangle::constructor()
   QCOMPARE( tr.dimension(), 2 );
   QVERIFY( !tr.hasCurvedSegments() );
   QCOMPARE( tr.area(), 0.0 );
+  QCOMPARE( tr.area3D(), 0.0 );
   QCOMPARE( tr.perimeter(), 0.0 );
   QVERIFY( !tr.exteriorRing() );
   QVERIFY( !tr.interiorRing( 0 ) );
@@ -248,7 +251,7 @@ void TestQgsTriangle::exteriorRing()
   QCOMPARE( *( static_cast<const QgsLineString *>( tr.exteriorRing() ) ), *ext );
 
   //set new ExteriorRing
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 10 ) << QgsPoint( 5, 5 ) << QgsPoint( 10, 10 ) << QgsPoint( 0, 10 ) );
   QVERIFY( ext->isClosed() );
 
@@ -346,14 +349,14 @@ void TestQgsTriangle::invalidExteriorRing()
 
   QVERIFY( tr.isEmpty() );
 
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
   tr.setExteriorRing( ext.release() );
 
   QVERIFY( tr.isEmpty() );
 
   // degenerate case
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 0, 0 ) );
   tr.setExteriorRing( ext.release() );
 
@@ -380,7 +383,7 @@ void TestQgsTriangle::invalidNumberOfPoints()
 
   QVERIFY( tr.isEmpty() );
 
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   tr.clear();
   ext->setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 0, 10 ) << QgsPoint( 10, 10 ) << QgsPoint( 5, 10 ) << QgsPoint( 8, 10 ) );
   tr.setExteriorRing( ext.release() );
@@ -423,7 +426,7 @@ void TestQgsTriangle::conversion()
   tr.setExteriorRing( ext.release() );
 
   QgsPolygon polyExpected;
-  ext.reset( new QgsLineString() );
+  ext = std::make_unique<QgsLineString>();
   ext->setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 0, 0, 1, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 0, 10, 2, 6 ) << QgsPoint( Qgis::WkbType::PointZM, 10, 10, 3, 7 ) );
   polyExpected.setExteriorRing( ext.release() );
 
@@ -642,22 +645,22 @@ void TestQgsTriangle::exportImport()
   QgsTriangle exportTriangle( QgsPoint( 1, 2 ), QgsPoint( 3, 4 ), QgsPoint( 6, 5 ) );
   QgsTriangle exportTriangleZ( QgsPoint( 1, 2, 3 ), QgsPoint( 11, 12, 13 ), QgsPoint( 1, 12, 23 ) );
   QgsTriangle exportTriangleFloat( QgsPoint( 1 + 1 / 3.0, 2 + 2 / 3.0 ), QgsPoint( 3 + 1 / 3.0, 4 + 2 / 3.0 ), QgsPoint( 6 + 1 / 3.0, 5 + 2 / 3.0 ) );
-  QDomDocument doc( QStringLiteral( "gml" ) );
-  QString expectedGML2( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2 3,4 6,5 1,2</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QDomDocument doc( u"gml"_s );
+  QString expectedGML2( u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2 3,4 6,5 1,2</coordinates></LinearRing></outerBoundaryIs></Polygon>"_s );
   QGSCOMPAREGML( elemToString( exportTriangle.asGml2( doc ) ), expectedGML2 );
-  QString expectedGML2prec3( QStringLiteral( "<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,2.667 3.333,4.667 6.333,5.667 1.333,2.667</coordinates></LinearRing></outerBoundaryIs></Polygon>" ) );
+  QString expectedGML2prec3( u"<Polygon xmlns=\"gml\"><outerBoundaryIs xmlns=\"gml\"><LinearRing xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1.333,2.667 3.333,4.667 6.333,5.667 1.333,2.667</coordinates></LinearRing></outerBoundaryIs></Polygon>"_s );
   QGSCOMPAREGML( elemToString( exportTriangleFloat.asGml2( doc, 3 ) ), expectedGML2prec3 );
-  QString expectedGML2empty( QStringLiteral( "<Polygon xmlns=\"gml\"/>" ) );
+  QString expectedGML2empty( u"<Polygon xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsTriangle().asGml2( doc ) ), expectedGML2empty );
 
   //asGML3
-  QString expectedGML3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 2 3 4 6 5 1 2</posList></LinearRing></exterior></Triangle>" ) );
+  QString expectedGML3( u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1 2 3 4 6 5 1 2</posList></LinearRing></exterior></Triangle>"_s );
   QCOMPARE( elemToString( exportTriangle.asGml3( doc ) ), expectedGML3 );
-  QString expectedGML3prec3( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.333 2.667 3.333 4.667 6.333 5.667 1.333 2.667</posList></LinearRing></exterior></Triangle>" ) );
+  QString expectedGML3prec3( u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"2\">1.333 2.667 3.333 4.667 6.333 5.667 1.333 2.667</posList></LinearRing></exterior></Triangle>"_s );
   QCOMPARE( elemToString( exportTriangleFloat.asGml3( doc, 3 ) ), expectedGML3prec3 );
-  QString expectedGML3empty( QStringLiteral( "<Triangle xmlns=\"gml\"/>" ) );
+  QString expectedGML3empty( u"<Triangle xmlns=\"gml\"/>"_s );
   QGSCOMPAREGML( elemToString( QgsTriangle().asGml3( doc ) ), expectedGML3empty );
-  QString expectedGML3Z( QStringLiteral( "<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">1 2 3 11 12 13 1 12 23 1 2 3</posList></LinearRing></exterior></Triangle>" ) );
+  QString expectedGML3Z( u"<Triangle xmlns=\"gml\"><exterior xmlns=\"gml\"><LinearRing xmlns=\"gml\"><posList xmlns=\"gml\" srsDimension=\"3\">1 2 3 11 12 13 1 12 23 1 2 3</posList></LinearRing></exterior></Triangle>"_s );
   QCOMPARE( elemToString( exportTriangleZ.asGml3( doc ) ), expectedGML3Z );
 }
 
@@ -1042,6 +1045,15 @@ void TestQgsTriangle::boundary()
   QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 1 ) ), QgsPoint( 13, 3 ) );
   QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 2 ) ), QgsPoint( 9, 6 ) );
   QCOMPARE( boundary->vertexAt( QgsVertexId( 0, 0, 3 ) ), QgsPoint( 7, 4 ) );
+}
+
+void TestQgsTriangle::area3D()
+{
+  const QgsTriangle triangle1( QgsPoint( 0, 0, 0 ), QgsPoint( 0, 0, 1 ), QgsPoint( 0, 1, 0 ) );
+  QCOMPARE( triangle1.area3D(), 0.5 );
+
+  const QgsTriangle triangle2( QgsPoint( 0.0, 0.0, 0.0 ), QgsPoint( 0.0, 0.0, 4.0 ), QgsPoint( 0.0, 4.0, 0.0 ) );
+  QCOMPARE( triangle2.area3D(), 8.0 );
 }
 
 QGSTEST_MAIN( TestQgsTriangle )

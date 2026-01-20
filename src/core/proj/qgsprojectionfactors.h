@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include <QString>
 
 /**
@@ -78,11 +79,11 @@ class CORE_EXPORT QgsProjectionFactors
     QString str;
     if ( !sipCpp->isValid() )
     {
-      str = QStringLiteral( "<QgsProjectionFactors: invalid>" );
+      str = u"<QgsProjectionFactors: invalid>"_s;
     }
     else
     {
-      str = QStringLiteral( "<QgsProjectionFactors>" );
+      str = u"<QgsProjectionFactors>"_s;
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

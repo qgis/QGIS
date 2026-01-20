@@ -21,7 +21,8 @@
 #ifdef SIP_RUN
 //%ModuleHeaderCode
 // For ConvertToSubClassCode.
-#include <qgsmapcanvasannotationitem.h>
+#include "qgsmapcanvasannotationitem.h"
+
 //%End
 #endif
 
@@ -91,6 +92,7 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanva
 
     QRectF boundingRect() const override;
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     /**

@@ -13,26 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsqueryloggerpanelwidget.h"
+
+#include <nlohmann/json.hpp>
+
 #include "qgsapplication.h"
+#include "qgsappquerylogger.h"
+#include "qgsdatabasequeryloggernode.h"
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
-#include "qgsqueryloggerpanelwidget.h"
-#include "moc_qgsqueryloggerpanelwidget.cpp"
-#include "qgsdatabasequeryloggernode.h"
-#include "qgsappquerylogger.h"
 #include "qgssettings.h"
 
+#include <QCheckBox>
 #include <QFileDialog>
 #include <QFontDatabase>
+#include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
-#include <QToolButton>
-#include <QCheckBox>
 #include <QTextStream>
-#include <QHeaderView>
+#include <QToolButton>
 
-#include <nlohmann/json.hpp>
+#include "moc_qgsqueryloggerpanelwidget.cpp"
 
 //
 // QgsDatabaseQueryLoggerTreeView
@@ -48,7 +50,7 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
   setFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
 
   mProxyModel = new QgsDatabaseQueryLoggerProxyModel( mLogger, this );
-  mProxyModel->setSortRole( QgsDevToolsModelNode::RoleSort );
+  mProxyModel->setSortRole( static_cast<int>( Qgis::DevToolsNodeRole::Sort ) );
   setModel( mProxyModel );
 
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, [this]( const QModelIndex &parent, int first, int last ) {
@@ -168,7 +170,7 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   setupUi( this );
 
   mTreeView = new QgsDatabaseQueryLoggerTreeView( mLogger );
-  mTreeView->setItemDelegateForColumn( 1, new QueryCostDelegate( QgsDevToolsModelNode::RoleElapsedTime, QgsDevToolsModelNode::RoleMaximumTime, mTreeView ) );
+  mTreeView->setItemDelegateForColumn( 1, new QueryCostDelegate( static_cast<int>( Qgis::DevToolsNodeRole::ElapsedTime ), static_cast<int>( Qgis::DevToolsNodeRole::MaximumTime ), mTreeView ) );
   mTreeView->setSortingEnabled( true );
   mTreeView->sortByColumn( 0, Qt::SortOrder::AscendingOrder );
 
@@ -184,7 +186,7 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, mTreeView, &QgsDatabaseQueryLoggerTreeView::setFilterString );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsAppQueryLogger::clear );
   connect( mActionRecord, &QAction::toggled, this, []( bool enabled ) {
-    QgsSettings().setValue( QStringLiteral( "logDatabaseQueries" ), enabled, QgsSettings::App );
+    QgsSettings().setValue( u"logDatabaseQueries"_s, enabled, QgsSettings::App );
     QgsApplication::databaseQueryLog()->setEnabled( enabled );
   } );
   connect( mActionSaveLog, &QAction::triggered, this, [this]() {
@@ -211,11 +213,11 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
   } );
 
   QgsSettings settings;
-  mTreeView->header()->restoreState( settings.value( QStringLiteral( "UI/queryLogger/treeState" ), QByteArray(), QgsSettings::Gui ).toByteArray() );
+  mTreeView->header()->restoreState( settings.value( u"UI/queryLogger/treeState"_s, QByteArray(), QgsSettings::Gui ).toByteArray() );
 }
 
 QgsDatabaseQueryLoggerPanelWidget::~QgsDatabaseQueryLoggerPanelWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/queryLogger/treeState" ), mTreeView->header()->saveState(), QgsSettings::Gui );
+  settings.setValue( u"UI/queryLogger/treeState"_s, mTreeView->header()->saveState(), QgsSettings::Gui );
 }

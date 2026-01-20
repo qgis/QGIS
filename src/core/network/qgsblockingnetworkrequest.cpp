@@ -14,24 +14,28 @@
  ***************************************************************************/
 
 #include "qgsblockingnetworkrequest.h"
-#include "moc_qgsblockingnetworkrequest.cpp"
-#include "qgslogger.h"
+
 #include "qgsapplication.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsauthmanager.h"
-#include "qgsmessagelog.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsvariantutils.h"
-#include <QUrl>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QMutex>
-#include <QWaitCondition>
-#include <QNetworkCacheMetaData>
+
 #include <QAuthenticator>
 #include <QBuffer>
+#include <QMutex>
+#include <QNetworkCacheMetaData>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QUrl>
+#include <QWaitCondition>
 
-QgsBlockingNetworkRequest::QgsBlockingNetworkRequest()
+#include "moc_qgsblockingnetworkrequest.cpp"
+
+QgsBlockingNetworkRequest::QgsBlockingNetworkRequest( Qgis::NetworkRequestFlags flags )
+  : mFlags( flags )
 {
   connect( QgsNetworkAccessManager::instance(), qOverload< QNetworkReply * >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsBlockingNetworkRequest::requestTimedOut );
 }
@@ -158,11 +162,14 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( Qgis:
   {
     mErrorCode = NetworkError;
     mErrorMessage = errorMessageFailedAuth();
-    QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+    if ( !mFlags.testFlag( Qgis::NetworkRequestFlag::DisableMessageLogging ) )
+    {
+      QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+    }
     return NetworkError;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Calling: %1" ).arg( request.url().toString() ), 2 );
+  QgsDebugMsgLevel( u"Calling: %1"_s.arg( request.url().toString() ), 2 );
 
   request.setAttribute( QNetworkRequest::RedirectPolicyAttribute, QNetworkRequest::ManualRedirectPolicy );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, forceRefresh ? QNetworkRequest::AlwaysNetwork : QNetworkRequest::PreferCache );
@@ -198,7 +205,10 @@ QgsBlockingNetworkRequest::ErrorCode QgsBlockingNetworkRequest::doRequest( Qgis:
     {
       mErrorCode = NetworkError;
       mErrorMessage = errorMessageFailedAuth();
-      QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+      if ( !mFlags.testFlag( Qgis::NetworkRequestFlag::DisableMessageLogging ) )
+      {
+        QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+      }
       if ( requestMadeFromMainThread )
         authRequestBufferNotEmpty.wakeAll();
       success = false;
@@ -323,7 +333,7 @@ void QgsBlockingNetworkRequest::abort()
 
 void QgsBlockingNetworkRequest::replyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  QgsDebugMsgLevel( QStringLiteral( "%1 of %2 bytes downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QStringLiteral( "unknown number of" ) : QString::number( bytesTotal ) ), 2 );
+  QgsDebugMsgLevel( u"%1 of %2 bytes downloaded."_s.arg( bytesReceived ).arg( bytesTotal < 0 ? u"unknown number of"_s : QString::number( bytesTotal ) ), 2 );
 
   if ( bytesReceived != 0 )
     mGotNonEmptyResponse = true;
@@ -354,18 +364,21 @@ void QgsBlockingNetworkRequest::replyFinished()
 
     if ( mReply->error() == QNetworkReply::NoError && ( !mFeedback || !mFeedback->isCanceled() ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "reply OK" ), 2 );
+      QgsDebugMsgLevel( u"reply OK"_s, 2 );
       const QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !QgsVariantUtils::isNull( redirect ) )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Request redirected." ), 2 );
+        QgsDebugMsgLevel( u"Request redirected."_s, 2 );
 
         const QUrl &toUrl = redirect.toUrl();
         mReply->request();
         if ( toUrl == mReply->url() )
         {
           mErrorMessage = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
-          QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+          if ( !mFlags.testFlag( Qgis::NetworkRequestFlag::DisableMessageLogging ) )
+          {
+            QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+          }
           mReplyContent.clear();
         }
         else
@@ -377,7 +390,10 @@ void QgsBlockingNetworkRequest::replyFinished()
             mReplyContent.clear();
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = NetworkError;
-            QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            if ( !mFlags.testFlag( Qgis::NetworkRequestFlag::DisableMessageLogging ) )
+            {
+              QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            }
             emit finished();
             Q_NOWARN_DEPRECATED_PUSH
             emit downloadFinished();
@@ -396,7 +412,7 @@ void QgsBlockingNetworkRequest::replyFinished()
           mReply->deleteLater();
           mReply = nullptr;
 
-          QgsDebugMsgLevel( QStringLiteral( "redirected: %1 forceRefresh=%2" ).arg( redirect.toString() ).arg( mForceRefresh ), 2 );
+          QgsDebugMsgLevel( u"redirected: %1 forceRefresh=%2"_s.arg( redirect.toString() ).arg( mForceRefresh ), 2 );
 
           sendRequestToNetworkAccessManager( request );
 
@@ -408,7 +424,10 @@ void QgsBlockingNetworkRequest::replyFinished()
             mReplyContent.clear();
             mErrorMessage = errorMessageFailedAuth();
             mErrorCode = NetworkError;
-            QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            if ( !mFlags.testFlag( Qgis::NetworkRequestFlag::DisableMessageLogging ) )
+            {
+              QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+            }
             emit finished();
             Q_NOWARN_DEPRECATED_PUSH
             emit downloadFinished();
@@ -443,7 +462,7 @@ void QgsBlockingNetworkRequest::replyFinished()
           }
           cmd.setRawHeaders( hl );
 
-          QgsDebugMsgLevel( QStringLiteral( "expirationDate:%1" ).arg( cmd.expirationDate().toString() ), 2 );
+          QgsDebugMsgLevel( u"expirationDate:%1"_s.arg( cmd.expirationDate().toString() ), 2 );
           if ( cmd.expirationDate().isNull() )
           {
             cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( mExpirationSec ) );
@@ -453,12 +472,12 @@ void QgsBlockingNetworkRequest::replyFinished()
         }
         else
         {
-          QgsDebugMsgLevel( QStringLiteral( "No cache!" ), 2 );
+          QgsDebugMsgLevel( u"No cache!"_s, 2 );
         }
 
 #ifdef QGISDEBUG
         const bool fromCache = mReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
-        QgsDebugMsgLevel( QStringLiteral( "Reply was cached: %1" ).arg( fromCache ), 2 );
+        QgsDebugMsgLevel( u"Reply was cached: %1"_s.arg( fromCache ), 2 );
 #endif
 
         mReplyContent = QgsNetworkReplyContent( mReply );
@@ -467,7 +486,10 @@ void QgsBlockingNetworkRequest::replyFinished()
         {
           mErrorMessage = tr( "empty response: %1" ).arg( mReply->errorString() );
           mErrorCode = ServerExceptionError;
-          QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+          if ( !mFlags.testFlag( Qgis::NetworkRequestFlag::DisableMessageLogging ) )
+          {
+            QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+          }
         }
         mReplyContent.setContent( content );
       }
@@ -478,7 +500,10 @@ void QgsBlockingNetworkRequest::replyFinished()
       {
         mErrorMessage = mReply->errorString();
         mErrorCode = ServerExceptionError;
-        QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+        if ( !mFlags.testFlag( Qgis::NetworkRequestFlag::DisableMessageLogging ) )
+        {
+          QgsMessageLog::logMessage( mErrorMessage, tr( "Network" ) );
+        }
       }
       mReplyContent = QgsNetworkReplyContent( mReply );
       mReplyContent.setContent( mReply->readAll() );

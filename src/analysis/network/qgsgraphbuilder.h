@@ -16,11 +16,10 @@
 #ifndef QGSGRAPHBUILDER_H
 #define QGSGRAPHBUILDER_H
 
-#include "qgsgraphbuilderinterface.h"
-#include "qgis_sip.h"
-
-#include "qgsspatialindex.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgsgraphbuilderinterface.h"
+#include "qgsspatialindex.h"
 
 class QgsDistanceArea;
 class QgsCoordinateTransform;

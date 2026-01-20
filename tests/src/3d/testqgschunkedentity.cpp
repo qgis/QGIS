@@ -13,18 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgs3d.h"
 #include "qgs3dmapsettings.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
 #include "qgspolygon3dsymbol.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsvectorlayerchunkloader_p.h"
-
 
 class TestQgsChunkedEntity : public QgsTest
 {
@@ -32,7 +32,7 @@ class TestQgsChunkedEntity : public QgsTest
 
   public:
     TestQgsChunkedEntity()
-      : QgsTest( QStringLiteral( "3D Rendering Tests" ), QStringLiteral( "3d" ) )
+      : QgsTest( u"3D Rendering Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -57,7 +57,7 @@ void TestQgsChunkedEntity::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( mLayerDtm->isValid() );
