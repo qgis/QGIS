@@ -44,21 +44,21 @@ QgsMessageOutput *QgsMessageOutput::createMessageOutput()
   return mMessageOutputCreator();
 }
 
-void QgsMessageOutput::showMessage( const QString &title, const QString &message, Qgis::MessageType msgType )
+void QgsMessageOutput::showMessage( const QString &title, const QString &message, Qgis::StringFormat format )
 {
   QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
   output->setTitle( title );
-  output->setMessage( message, msgType );
+  output->setMessage( message, format );
   output->showMessage();
 }
 
 ////////////////////////////////
 // QgsMessageOutputConsole
 
-void QgsMessageOutputConsole::setMessage( const QString &message, Qgis::MessageType msgType )
+void QgsMessageOutputConsole::setMessage( const QString &message, Qgis::StringFormat format )
 {
   mMessage = message;
-  mMsgType = msgType;
+  mFormat = format;
 }
 
 void QgsMessageOutputConsole::appendMessage( const QString &message )
@@ -68,7 +68,7 @@ void QgsMessageOutputConsole::appendMessage( const QString &message )
 
 void QgsMessageOutputConsole::showMessage( bool )
 {
-  QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle, Qgis::MessageLevel::Info, mMsgType );
+  QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );
   emit destroyed();
   delete this;
 }

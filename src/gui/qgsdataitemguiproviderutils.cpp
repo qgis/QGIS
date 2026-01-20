@@ -96,7 +96,7 @@ bool QgsDataItemGuiProviderUtils::handleDropUriForConnection( std::unique_ptr<Qg
     QObject::connect( detailsButton, &QPushButton::clicked, detailsButton, [longTitle, error] {
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( longTitle );
-      output->setMessage( error, QgsMessageOutput::MessageText );
+      output->setMessage( error, Qgis::StringFormat::PlainText );
       output->showMessage();
     } );
     item->layout()->addWidget( detailsButton );
@@ -176,7 +176,7 @@ void QgsDataItemGuiProviderUtils::handleImportVectorLayerForConnection( std::uni
     QObject::connect( detailsButton, &QPushButton::clicked, detailsButton, [longTitle, error] {
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( longTitle );
-      output->setMessage( error, QgsMessageOutput::MessageText );
+      output->setMessage( error, Qgis::StringFormat::PlainText );
       output->showMessage();
     } );
     item->layout()->addWidget( detailsButton );
