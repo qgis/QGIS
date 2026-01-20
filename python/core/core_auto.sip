@@ -619,6 +619,7 @@
 %Include auto_generated/project/qgsprojectfiletransform.sip
 %Include auto_generated/project/qgsprojectgpssettings.sip
 %Include auto_generated/project/qgsprojectproperty.sip
+%Include auto_generated/project/qgsselectivemaskingsourcesetmanager.sip
 %Include auto_generated/project/qgsprojectservervalidator.sip
 %Include auto_generated/project/qgsprojectstorage.sip
 %Include auto_generated/project/qgsprojectstorageregistry.sip
