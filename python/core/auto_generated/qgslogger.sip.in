@@ -101,8 +101,6 @@ written to the log file.
 Returns the log file path used by QgsLogger.
 %End
 
-    static QString logFile();
-
 };
 
 class QgsScopeLogger
