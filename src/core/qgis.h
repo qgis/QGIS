@@ -3117,6 +3117,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( RenderSubcomponentProperty )
 
     /**
+     * Selective masking source types.
+     *
+     * \since QGIS 4.0
+     */
+    enum class SelectiveMaskSourceType : int
+    {
+      SymbolLayer, //!< A mask generated from a symbol layer
+      Label, //!< A mask generated from a labeling provider
+    };
+    Q_ENUM( SelectiveMaskSourceType )
+
+    /**
      * Types of vertex.
      * \since QGIS 3.22
      */

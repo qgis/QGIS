@@ -1,0 +1,120 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsselectivemaskingsource.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsSelectiveMaskSource
+{
+%Docstring(signature="appended")
+Encapsulates a single source for selective masking (e.g. a symbol layer
+or label rule).
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsselectivemaskingsource.h"
+%End
+  public:
+
+    QgsSelectiveMaskSource();
+%Docstring
+Constructor for an invalid QgsSelectiveMaskSource.
+%End
+
+    QgsSelectiveMaskSource( const QString &layerId, Qgis::SelectiveMaskSourceType sourceType, const QString &sourceId = QString() );
+%Docstring
+Constructor for QgsSelectiveMaskSource.
+
+:param layerId: source layer ID
+:param sourceType: masking source type
+:param sourceId: optional ID for the symbol layer or label rule
+%End
+
+    bool isValid() const;
+%Docstring
+Returns ``True`` if the source is valid (i.e. has a non-empty layer ID).
+%End
+
+    QString layerId() const;
+%Docstring
+Returns the source layer id.
+
+.. seealso:: :py:func:`setLayerId`
+%End
+
+    void setLayerId( const QString &id );
+%Docstring
+Sets the source layer ``id``.
+
+.. seealso:: :py:func:`layerId`
+%End
+
+    Qgis::SelectiveMaskSourceType sourceType() const;
+%Docstring
+Returns the type of masking source.
+
+.. seealso:: :py:func:`setSourceType`
+%End
+
+    void setSourceType( Qgis::SelectiveMaskSourceType type );
+%Docstring
+Sets the source ``type``.
+
+.. seealso:: :py:func:`sourceType`
+%End
+
+    QString sourceId() const;
+%Docstring
+Returns the symbol layer or label rule ID.
+
+.. seealso:: :py:func:`setSourceId`
+%End
+
+    void setSourceId( const QString &id );
+%Docstring
+Sets the symbol layer or label rule ``id``.
+
+.. seealso:: :py:func:`sourceId`
+%End
+
+    SIP_PYOBJECT __repr__();
+%MethodCode
+    if ( !sipCpp->isValid() )
+    {
+      sipRes = PyUnicode_FromString( "<QgsSelectiveMaskSource: invalid>" );
+    }
+    else if ( sipCpp->sourceId().isEmpty() )
+    {
+      const QString str = QStringLiteral( "<QgsSelectiveMaskSource: %1 (%2)>" ).arg(
+                            sipCpp->layerId(),
+                            qgsEnumValueToKey( sipCpp->sourceType() ) );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    }
+    else
+    {
+      const QString str = QStringLiteral( "<QgsSelectiveMaskSource: %1 - %2 (%3)>" ).arg(
+                            sipCpp->layerId(),
+                            sipCpp->sourceId(),
+                            qgsEnumValueToKey( sipCpp->sourceType() ) );
+      sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    }
+%End
+
+    bool operator==( const QgsSelectiveMaskSource &other ) const;
+    bool operator!=( const QgsSelectiveMaskSource &other ) const;
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/symbology/qgsselectivemaskingsource.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
