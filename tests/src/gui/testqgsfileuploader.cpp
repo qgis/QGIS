@@ -18,7 +18,6 @@
 #include "qgsfileuploader.h"
 #include "qgstest.h"
 
-#include <QEventLoop>
 #include <QObject>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
@@ -36,11 +35,6 @@ class TestQgsFileUploader : public QObject
     void uploadCompleted()
     {
       mCompleted = true;
-    }
-    //! Called when the download exits
-    void uploadExited()
-    {
-      mExited = true;
     }
     //! Called when the download was canceled by the user
     void uploadCanceled()
@@ -83,28 +77,21 @@ class TestQgsFileUploader : public QObject
     bool mProgress = false;
     bool mError = false;
     bool mCompleted = false;
-    bool mExited = false;
     QgsFileUploader *mFileUploader = nullptr;
 };
 
 void TestQgsFileUploader::makeCall( QUrl url, QString fileName, bool cancel )
 {
-  QEventLoop loop;
   mFileUploader = new QgsFileUploader( fileName, url );
   connect( mFileUploader, &QgsFileUploader::uploadCompleted, this, &TestQgsFileUploader::uploadCompleted );
   connect( mFileUploader, &QgsFileUploader::uploadCanceled, this, &TestQgsFileUploader::uploadCanceled );
-  connect( mFileUploader, &QgsFileUploader::uploadExited, this, &TestQgsFileUploader::uploadExited );
   connect( mFileUploader, &QgsFileUploader::uploadError, this, &TestQgsFileUploader::uploadError );
   connect( mFileUploader, &QgsFileUploader::uploadProgress, this, &TestQgsFileUploader::uploadProgress );
-
-  connect( mFileUploader, &QgsFileUploader::uploadExited, this, [&loop]() { loop.exit(); } );
 
   if ( cancel )
     QTimer::singleShot( 1000, mFileUploader, &QgsFileUploader::cancelUpload );
 
   mFileUploader->startUpload();
-
-  loop.exec();
 }
 
 void TestQgsFileUploader::initTestCase()
@@ -125,7 +112,6 @@ void TestQgsFileUploader::init()
   mProgress = false;
   mError = false;
   mCompleted = false;
-  mExited = false;
   mTempFile = new QTemporaryFile();
   QVERIFY( mTempFile->open() );
   mTempFile->close();
@@ -141,23 +127,21 @@ void TestQgsFileUploader::testInvalidHttpMethod()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
   makeCall( QUrl( u"http://example.com"_s ), mTempFile->fileName() );
-  QVERIFY( mExited );
   QVERIFY( !mCompleted );
-  QVERIFY( mProgress );
+  QVERIFY( !mProgress );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage.left( 62 ), u"Server returned: <HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</H"_s );
+  QCOMPARE( mErrorMessage.left( 62 ), u"Upload failed: Error transferring http://example.com - server "_s );
 }
 
 void TestQgsFileUploader::testBlankUrl()
 {
   QVERIFY( !mTempFile->fileName().isEmpty() );
   makeCall( QUrl( QString() ), mTempFile->fileName() );
-  QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QCOMPARE( mErrorMessage, QString( "Server returned: ;Upload failed: Protocol \"\" is unknown" ) );
+  QCOMPARE( mErrorMessage, QString( "Upload failed: Protocol \"\" is unknown" ) );
 }
 
 #ifndef QT_NO_SSL
