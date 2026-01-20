@@ -232,7 +232,7 @@ void TestQgsCustomization::init()
   QVERIFY( findQWidget<QMenu>( "Menus/mHelpMenu" ) );
 
   mCustomizationFile = std::make_unique<QTemporaryFile>();
-  mCustomizationFile->open(); // fileName is not available until open
+  QVERIFY( mCustomizationFile->open() ); // fileName is not available until open
   auto customization = std::make_unique<QgsCustomization>( mCustomizationFile->fileName() );
   mQgisApp->setCustomization( std::move( customization ) );
 }
@@ -485,7 +485,7 @@ void TestQgsCustomization::testBackwardCompatibility()
   QSettings().setValue( "UI/Customization/enabled", true );
 
   QTemporaryFile iniFile;
-  iniFile.open(); // fileName is not available until open
+  QVERIFY( iniFile.open() ); // fileName is not available until open
   const QString iniFileName = iniFile.fileName();
 
   {
