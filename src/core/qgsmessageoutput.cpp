@@ -68,6 +68,13 @@ void QgsMessageOutputConsole::appendMessage( const QString &message )
 
 void QgsMessageOutputConsole::showMessage( bool )
 {
+  if ( mFormat == Qgis::StringFormat::Html )
+  {
+    mMessage.replace( "<br>"_L1, "\n"_L1 );
+    mMessage.replace( "&nbsp;"_L1, " "_L1 );
+    const thread_local QRegularExpression tagRX( u"</?[^>]+>"_s );
+    mMessage.replace( tagRX, QString() );
+  }
   QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );
   emit destroyed();
   delete this;
