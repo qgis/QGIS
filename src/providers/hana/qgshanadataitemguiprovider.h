@@ -47,7 +47,6 @@ class QgsHanaDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
     static void createSchema( QgsDataItem *item, QgsDataItemGuiContext context );
     static void deleteSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void renameSchema( QgsHanaSchemaItem *schemaItem, QgsDataItemGuiContext context );
-    static void renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context );
 
     bool handleDrop( QgsHanaConnectionItem *connectionItem, const QMimeData *data, const QString &toSchema, QgsDataItemGuiContext context );
     bool handleDropUri( QgsHanaConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, const QString &toSchema, QgsDataItemGuiContext context );
