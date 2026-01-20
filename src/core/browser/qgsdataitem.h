@@ -472,6 +472,13 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const SIP_FACTORY;
 
+    // TODO should be private, but MSSQL data item provider is badly behaved and needs to
+    // manually manipulate this!
+    /**
+     * Creator ancestor depth.
+     */
+    SIP_SKIP int mCreatorAncestorDepth = 0;
+
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
 
@@ -623,8 +630,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     // Set to true if object has to be deleted when possible (nothing running in threads)
     bool mDeferredDelete = false;
     std::unique_ptr<QFutureWatcher<QVector<QgsDataItem *> >> mFutureWatcher;
-
-    int mCreatorAncestorDepth = 0;
 
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
