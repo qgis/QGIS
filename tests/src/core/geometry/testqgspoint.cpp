@@ -1244,8 +1244,8 @@ void TestQgsPoint::cast()
 }
 
 // compares 3D vector/point and handles nan values
-template<typename POINT_3D>
-bool isEqual3D( const POINT_3D &pt1, const POINT_3D &pt2 )
+template<typename ANY_3D>
+bool isEqual3D( const ANY_3D &pt1, const ANY_3D &pt2 )
 {
   bool ret = true;
   ret = pt1.x() == pt2.x() || ( std::isnan( pt1.x() ) && std::isnan( pt2.x() ) );
