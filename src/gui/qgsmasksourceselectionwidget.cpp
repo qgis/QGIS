@@ -19,11 +19,13 @@
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
 #include "qgsproject.h"
+#include "qgsrenderer.h"
+#include "qgsselectivemaskingsource.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "symbology/qgsrenderer.h"
-#include "symbology/qgssymbollayerutils.h"
 
 #include <QPointer>
 #include <QScreen>
@@ -250,27 +252,34 @@ void QgsMaskSourceSelectionWidget::update()
   expandAll( mTree->invisibleRootItem() );
 }
 
-//! Returns the current selection
-QList<QgsMaskSourceSelectionWidget::MaskSource> QgsMaskSourceSelectionWidget::selection() const
+QgsSelectiveMaskingSourceSet QgsMaskSourceSelectionWidget::sourceSet() const
 {
-  QList<QgsMaskSourceSelectionWidget::MaskSource> sel;
+  QgsSelectiveMaskingSourceSet set;
   for ( auto it = mItems.begin(); it != mItems.end(); it++ )
   {
     if ( it.value()->checkState( 0 ) == Qt::Checked )
     {
       const QgsSymbolLayerReference &ref = it.key();
-      QgsMaskSourceSelectionWidget::MaskSource source;
-      source.isLabeling = ref.layerId().startsWith( "__labels__" );
-      source.layerId = source.isLabeling ? ref.layerId().mid( 10 ) : ref.layerId();
-      source.symbolLayerId = ref.symbolLayerIdV2();
-      sel.append( source );
+      QgsSelectiveMaskSource source;
+      const bool isLabeling = ref.layerId().startsWith( "__labels__" );
+      if ( isLabeling )
+      {
+        source.setSourceType( Qgis::SelectiveMaskSourceType::Label );
+        source.setLayerId( ref.layerId().mid( 10 ) );
+      }
+      else
+      {
+        source.setSourceType( Qgis::SelectiveMaskSourceType::SymbolLayer );
+        source.setLayerId( ref.layerId() );
+      }
+      source.setSourceId( ref.symbolLayerIdV2() );
+      set.append( source );
     }
   }
-  return sel;
+  return set;
 }
 
-//! Sets the symbol layer selection
-void QgsMaskSourceSelectionWidget::setSelection( const QList<QgsMaskSourceSelectionWidget::MaskSource> &sel )
+void QgsMaskSourceSelectionWidget::setSourceSet( const QgsSelectiveMaskingSourceSet &set )
 {
   // Clear current selection
   for ( auto it = mItems.begin(); it != mItems.end(); it++ )
@@ -278,10 +287,20 @@ void QgsMaskSourceSelectionWidget::setSelection( const QList<QgsMaskSourceSelect
     it.value()->setCheckState( 0, Qt::Unchecked );
   }
 
-  for ( const MaskSource &src : sel )
+  const QVector< QgsSelectiveMaskSource > sources = set.sources();
+  for ( const QgsSelectiveMaskSource &source : sources )
   {
-    const QString layerId = ( src.isLabeling ? "__labels__" : "" ) + src.layerId;
-    const auto it = mItems.find( QgsSymbolLayerReference( layerId, src.symbolLayerId ) );
+    QString layerId;
+    switch ( source.sourceType() )
+    {
+      case Qgis::SelectiveMaskSourceType::SymbolLayer:
+        layerId = source.layerId();
+        break;
+      case Qgis::SelectiveMaskSourceType::Label:
+        layerId = u"__labels__%1"_s.arg( source.layerId() );
+        break;
+    }
+    const auto it = mItems.find( QgsSymbolLayerReference( layerId, source.sourceId() ) );
     if ( it != mItems.end() )
     {
       it.value()->setCheckState( 0, Qt::Checked );
