@@ -102,6 +102,21 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      */
     QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const;
 
+  protected:
+    /**
+     * Runs pdal_wrench process with given \a processArgs command line arguments. Can communicate using \a feedback.
+     *
+     * \since QGIS 4.0
+     */
+    void runWrenchProcess( const QStringList &processArgs, QgsProcessingFeedback *feedback );
+
+    /**
+     * Builds QVariantMap of outputs from algorithm.
+     *
+     * \since QGIS 4.0
+     */
+    QVariantMap getOutputs( const QVariantMap &parameters, QgsProcessingContext &context );
+
   private:
     QMap<QString, QVariant> mOutputValues;
     bool mEnableElevationProperties = false;
