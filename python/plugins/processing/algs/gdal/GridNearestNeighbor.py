@@ -48,7 +48,6 @@ class GridNearestNeighbor(GdalAlgorithm):
     RADIUS_2 = "RADIUS_2"
     ANGLE = "ANGLE"
     NODATA = "NODATA"
-    OPTIONS = "OPTIONS"
     CREATION_OPTIONS = "CREATION_OPTIONS"
     EXTRA = "EXTRA"
     DATA_TYPE = "DATA_TYPE"
@@ -262,9 +261,7 @@ class GridNearestNeighbor(GdalAlgorithm):
             arguments.extend(input_details.open_options_as_arguments())
 
         options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
-        # handle backwards compatibility parameter OPTIONS
-        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
-            options = self.parameterAsString(parameters, self.OPTIONS, context)
+
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
