@@ -20,6 +20,8 @@
 #include "qgsserverstatichandler.h"
 #include "qgswfs3handlers.h"
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup server
  * \class QgsWfsModule
@@ -41,7 +43,7 @@ class QgsWfs3Module : public QgsServiceModule
       {
         rootPath = serverIface->serverSettings()->apiWfs3RootPath();
       }
-      auto wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, u"OAPIF"_s, u"OGC WFS3 (Draft)"_s, u"1.0.0"_s );
+      auto wfs3Api = std::make_unique<QgsServerOgcApi>( serverIface, rootPath, u"OAPIF"_s, u"OGC API Features (WFS3)"_s, u"1.0.0"_s );
       // Register handlers
       wfs3Api->registerHandler<QgsWfs3CollectionsItemsHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsFeatureHandler>();
