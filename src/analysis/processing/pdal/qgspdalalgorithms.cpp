@@ -124,12 +124,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalFilterNoiseRadiusAlgorithm() );
   addAlgorithm( new QgsPdalClassifyGroundAlgorithm() );
   addAlgorithm( new QgsPdalTransformAlgorithm() );
-//only add algorithm if PDAL version is 2.10 or higher - can be removed when PDAL 2.10 is minimum requirement
-#ifdef HAVE_PDAL_QGIS
-#if PDAL_VERSION_MAJOR_INT > 2 || ( PDAL_VERSION_MAJOR_INT == 2 && PDAL_VERSION_MINOR_INT >= 10 )
   addAlgorithm( new QgsPdalCompareAlgorithm() );
-#endif
-#endif
 }
 
 ///@endcond
