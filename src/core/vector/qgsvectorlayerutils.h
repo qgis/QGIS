@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsfeaturesink.h"
 #include "qgsgeometry.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include <QString>
@@ -374,24 +375,35 @@ class CORE_EXPORT QgsVectorLayerUtils
     static bool fieldEditabilityDependsOnFeature( const QgsVectorLayer *layer, int fieldIndex );
 
     /**
-      * Returns masks defined in labeling options of a layer.
+      * Returns all objects that will be masked by the labels for a given vector \a layer.
+      *
       * The returned type associates a labeling rule identifier to a set of layers that are masked given by their layer id,
       * and a set of masked symbol layers if associated to each masked layers.
+      *
+      * - Returned hash keys are the label rule ID, or an empty string for simple labeling
+      * - Returned values are hashes of the form:
+      * - The hash keys are the layer IDs for layers that will be masked.
+      * - The hash value is the set of symbol layers that will be masked in that key's layer.
+      *
       * \note Not available in Python bindings
       * \since QGIS 3.12
       */
-    static QHash<QString, QgsMaskedLayers> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QHash<QString, QgsMaskedLayers> collectObjectsMaskedByLabelsFromLayer( const QgsVectorLayer *layer,
+        const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets,
+        const QVector< QgsVectorLayer * > &allRenderedVectorLayers ) SIP_SKIP;
 
     /**
      * Returns all objects that will be masked by the symbol layers for a given vector \a layer.
      *
      * - The hash keys are the layer IDs for layers that will be masked.
-     * - The hash value is the set of symbol layers that will be masked in the key's layer.
+     * - The hash value is the set of symbol layers that will be masked in that key's layer.
      *
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    static QgsMaskedLayers collectObjectsMaskedBySymbolLayersFromLayer( const QgsVectorLayer *layer ) SIP_SKIP;
+    static QgsMaskedLayers collectObjectsMaskedBySymbolLayersFromLayer( const QgsVectorLayer *layer,
+        const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets,
+        const QVector< QgsVectorLayer * > &allRenderedVectorLayers ) SIP_SKIP;
 
     /**
      * Returns a descriptive string for a \a feature, suitable for displaying to the user.
