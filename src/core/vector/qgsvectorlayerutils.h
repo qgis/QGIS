@@ -37,10 +37,10 @@ struct QgsMaskedLayer
   bool hasEffects = false;
 
   // masked symbol layers
-  QSet<QString> symbolLayerIds;
+  QSet<QString> symbolLayerIdsToMask;
 };
 
-//! masked layers where key is the layer id
+//! masked layers where key is the layer id of the layer that WILL be masked
 typedef QHash<QString, QgsMaskedLayer> QgsMaskedLayers;
 
 #endif
@@ -383,13 +383,15 @@ class CORE_EXPORT QgsVectorLayerUtils
     static QHash<QString, QgsMaskedLayers> labelMasks( const QgsVectorLayer * ) SIP_SKIP;
 
     /**
-     * Returns all masks that may be defined on symbol layers for a given vector layer.
-     * The hash key is a layer id.
-     * The hash value is the set of symbol layers masked in the key's layer.
+     * Returns all objects that will be masked by the symbol layers for a given vector \a layer.
+     *
+     * - The hash keys are the layer IDs for layers that will be masked.
+     * - The hash value is the set of symbol layers that will be masked in the key's layer.
+     *
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    static QgsMaskedLayers symbolLayerMasks( const QgsVectorLayer * ) SIP_SKIP;
+    static QgsMaskedLayers collectObjectsMaskedBySymbolLayersFromLayer( const QgsVectorLayer *layer ) SIP_SKIP;
 
     /**
      * Returns a descriptive string for a \a feature, suitable for displaying to the user.
