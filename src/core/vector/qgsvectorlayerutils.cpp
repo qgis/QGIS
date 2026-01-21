@@ -1073,7 +1073,7 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
             for ( const auto &r : maskSettings.maskedSymbolLayers() )
             {
               QgsMaskedLayer &maskedLayer = maskedLayers[currentRule][r.layerId()];
-              maskedLayer.symbolLayerIds.insert( r.symbolLayerIdV2() );
+              maskedLayer.symbolLayerIdsToMask.insert( r.symbolLayerIdV2() );
               maskedLayer.hasEffects = hasEffects;
             }
           }
@@ -1094,7 +1094,7 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
   return std::move( visitor.maskedLayers );
 }
 
-QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *layer )
+QgsMaskedLayers QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( const QgsVectorLayer *layer )
 {
   if ( ! layer->renderer() )
     return {};
@@ -1124,11 +1124,11 @@ QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *lay
           if ( subSymbol )
             slHasEffects |= visitSymbol( subSymbol );
 
-          for ( const auto &mask : sl->masks() )
+          for ( const QgsSymbolLayerReference &thingToMask : sl->masks() )
           {
-            QgsMaskedLayer &maskedLayer = maskedLayers[mask.layerId()];
+            QgsMaskedLayer &maskedLayer = maskedLayers[thingToMask.layerId()];
             maskedLayer.hasEffects |= slHasEffects;
-            maskedLayer.symbolLayerIds.insert( mask.symbolLayerIdV2() );
+            maskedLayer.symbolLayerIdsToMask.insert( thingToMask.symbolLayerIdV2() );
           }
         }
 

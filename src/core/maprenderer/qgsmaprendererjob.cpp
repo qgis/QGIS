@@ -790,9 +790,16 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       layerId( layerId_ ), labelRuleId( labelRuleId_ ), labelMaskId( labelMaskId_ ), hasEffects( hasEffects_ ) {}
   };
 
+  struct MaskedSymbolLayers
+  {
+    QSet<QString> maskedSymbolLayerIds;
+    QList<MaskSource> maskSourceList;
+  };
+
   // We collect for each layer, the set of symbol layers that will be "masked"
   // and the list of source layers that have a mask
-  QHash<QString, QPair<QSet<QString>, QList<MaskSource>>> maskedSymbolLayers;
+  // Hash keys are the layer ID of the layer that WILL be masked
+  QHash<QString, MaskedSymbolLayers> maskedSymbolLayers;
 
   const bool forceVector = mapSettings().testFlag( Qgis::MapSettingsFlag::ForceVectorOutput )
                            && !mapSettings().testFlag( Qgis::MapSettingsFlag::ForceRasterMasks );
@@ -812,30 +819,34 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     if ( ! vl )
       continue;
 
-    // lambda function to factor code for both label masks and symbol layer masks
-    auto collectMasks = [&]( QgsMaskedLayers * masks, QString sourceLayerId, QString ruleId = QString(), int labelMaskId = -1 )
+    // lambda function to factor code for both labels and symbol layers
+    auto collectMasks = [&maskedSymbolLayers, &maskLayerHasEffects]( const QgsMaskedLayers & objectsToBeMaskedByLayer, const QString & idOfLayerCreatingMask, const QString &ruleId = QString(), int labelMaskId = -1 )
     {
       bool hasEffects = false;
-      for ( auto it = masks->begin(); it != masks->end(); ++it )
+      for ( auto it = objectsToBeMaskedByLayer.begin(); it != objectsToBeMaskedByLayer.end(); ++it )
       {
-        auto lit = maskedSymbolLayers.find( it.key() );
+        const QString maskedLayerId = it.key();
+        auto lit = maskedSymbolLayers.find( maskedLayerId );
         if ( lit == maskedSymbolLayers.end() )
         {
-          maskedSymbolLayers[it.key()] = qMakePair( it.value().symbolLayerIds, QList<MaskSource>() << MaskSource( sourceLayerId, ruleId, labelMaskId, it.value().hasEffects ) );
+          MaskedSymbolLayers maskedObjects;
+          maskedObjects.maskedSymbolLayerIds = it.value().symbolLayerIdsToMask;
+          maskedObjects.maskSourceList = QList<MaskSource>() << MaskSource( idOfLayerCreatingMask, ruleId, labelMaskId, it.value().hasEffects );
+          maskedSymbolLayers[maskedLayerId] = maskedObjects;
         }
         else
         {
-          if ( lit->first != it.value().symbolLayerIds )
+          if ( lit->maskedSymbolLayerIds != it.value().symbolLayerIdsToMask )
           {
             QgsLogger::warning( u"Layer %1 : Different sets of symbol layers are masked by different sources ! Only one (arbitrary) set will be retained !"_s.arg( it.key() ) );
             continue;
           }
-          lit->second.push_back( MaskSource( sourceLayerId, ruleId, labelMaskId, hasEffects ) );
+          lit->maskSourceList.push_back( MaskSource( idOfLayerCreatingMask, ruleId, labelMaskId, hasEffects ) );
         }
         hasEffects |= it.value().hasEffects;
       }
-      if ( ! masks->isEmpty() && labelMaskId == -1 )
-        maskLayerHasEffects[ sourceLayerId ] = hasEffects;
+      if ( ! objectsToBeMaskedByLayer.isEmpty() && labelMaskId == -1 )
+        maskLayerHasEffects[ idOfLayerCreatingMask ] = hasEffects;
     };
 
     // collect label masks
@@ -871,7 +882,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
         if ( !layerJobMapping.contains( sourceLayerId ) )
           continue;
 
-        for ( const QString &symbolLayerId : mit.value().symbolLayerIds )
+        for ( const QString &symbolLayerId : mit.value().symbolLayerIdsToMask )
           slRefs.insert( QgsSymbolLayerReference( sourceLayerId, symbolLayerId ) );
 
         hasEffects |= mit.value().hasEffects;
@@ -881,12 +892,12 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
       labelHasEffects[ labelMaskId ] = hasEffects;
 
       // now collect masks
-      collectMasks( &usableMasks, vl->id(), labelRule, labelMaskId );
+      collectMasks( usableMasks, vl->id(), labelRule, labelMaskId );
     }
 
     // collect symbol layer masks
-    QgsMaskedLayers symbolLayerMasks = QgsVectorLayerUtils::symbolLayerMasks( vl );
-    collectMasks( &symbolLayerMasks, vl->id() );
+    const QgsMaskedLayers objectsToBeMaskedByLayer = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( vl );
+    collectMasks( objectsToBeMaskedByLayer, vl->id() );
   }
 
   if ( maskedSymbolLayers.isEmpty() )
@@ -954,7 +965,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     auto it = maskedSymbolLayers.find( job.layerId );
     if ( it != maskedSymbolLayers.end() )
     {
-      const QList<MaskSource> &sourceList = it->second;
+      const QList<MaskSource> &sourceList = it->maskSourceList;
       for ( const MaskSource &source : sourceList )
       {
         job.maskRequiresLayerRasterization |= source.hasEffects;
@@ -1020,8 +1031,8 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     if ( it == maskedSymbolLayers.end() )
       continue;
 
-    QList<MaskSource> &sourceList = it->second;
-    const QSet<QString> symbolList = it->first;
+    const QList<MaskSource> maskedSourceList = it->maskSourceList;
+    const QSet<QString> maskedSymbolLayerIds = it->maskedSymbolLayerIds;
 
     secondPassJobs.emplace_back( LayerRenderJob() );
     LayerRenderJob &job2 = secondPassJobs.back();
@@ -1029,7 +1040,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     job2.maskRequiresLayerRasterization = job.maskRequiresLayerRasterization;
 
     // Points to the masking jobs. This will be needed during the second pass composition.
-    for ( MaskSource &source : sourceList )
+    for ( const MaskSource &source : maskedSourceList )
     {
       if ( source.labelMaskId != -1 )
         job2.maskJobs.push_back( qMakePair( nullptr, source.labelMaskId ) );
@@ -1081,7 +1092,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
 
     // Render only the non masked symbol layer and we will compose 2nd pass with mask and first pass rendering in composeSecondPass
     // If vector output is enabled, disabled symbol layers would be actually rendered and masked with clipping path set in QgsMapRendererJob::initSecondPassJobs
-    job2.context()->setDisabledSymbolLayersV2( symbolList );
+    job2.context()->setDisabledSymbolLayersV2( maskedSymbolLayerIds );
   }
 
   return secondPassJobs;
