@@ -328,6 +328,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::deleteUserItems( const QMode
   QHash<QgsCustomization::QgsItem *, QModelIndex>::iterator it = toDelete.begin();
   while ( it != toDelete.end() )
   {
+    // NOLINTBEGIN(bugprone-branch-clone)
     if ( alreadyDeleted( it.key() ) )
     {
       it = toDelete.erase( it );
@@ -336,6 +337,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::deleteUserItems( const QMode
     {
       ++it;
     }
+    // NOLINTEND(bugprone-branch-clone)
   }
 
   for ( QHash<QgsCustomization::QgsItem *, QModelIndex>::const_iterator it = toDelete.cbegin(); it != toDelete.cend(); ++it )

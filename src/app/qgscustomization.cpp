@@ -340,7 +340,7 @@ QgsCustomization::QgsActionRefItem::QgsActionRefItem( const QString &name, const
   : QgsActionItem( name, title, parent )
   , mPath( path ) {}
 
-const QString &QgsCustomization::QgsActionRefItem::path() const
+const QString &QgsCustomization::QgsActionRefItem::actionRefPath() const
 {
   return mPath;
 }
@@ -1308,7 +1308,7 @@ void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *pa
     }
     else if ( QgsCustomization::QgsActionRefItem *actionRef = dynamic_cast<QgsCustomization::QgsActionRefItem *>( childItem.get() ) )
     {
-      if ( QAction *action = findQAction( actionRef->path() ) )
+      if ( QAction *action = findQAction( actionRef->actionRefPath() ) )
       {
         parentWidget->addAction( action );
       }
@@ -1406,14 +1406,16 @@ void QgsCustomization::applyToToolBars() const
   const auto toolBarWidgets = mQgisApp->findChildren<QToolBar *>( QString(), Qt::FindDirectChildrenOnly );
   for ( QToolBar *tb : toolBarWidgets )
   {
-    const QString name = tb->objectName();
-    if ( tb && tb->property( "__usertoolbar__" ).toBool() )
+    if ( !tb )
+      continue;
+
+    if ( tb->property( "__usertoolbar__" ).toBool() )
     {
       // delete old toolbar, will recreate it later
       QgisApp::instance()->removeToolBar( tb );
       delete tb;
     }
-    else if ( QgsToolBarItem *t = mToolBars->getChild<QgsToolBarItem>( name ) )
+    else if ( QgsToolBarItem *t = mToolBars->getChild<QgsToolBarItem>( tb->objectName() ) )
     {
       tb->setVisible( t->wasVisible() && t->isVisible() );
       tb->toggleViewAction()->setVisible( t->isVisible() );
@@ -1434,7 +1436,7 @@ void QgsCustomization::applyToToolBars() const
       {
         if ( QgsCustomization::QgsActionRefItem *actionRef = dynamic_cast<QgsCustomization::QgsActionRefItem *>( actionRefItem.get() ) )
         {
-          if ( QAction *action = findQAction( actionRef->path() ) )
+          if ( QAction *action = findQAction( actionRef->actionRefPath() ) )
           {
             toolBar->addAction( action );
           }
@@ -1686,26 +1688,31 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   settings.endGroup();
 }
 
-static int maxSuffixNum( const QgsCustomization::QgsItem *item, const QString &baseName )
+namespace
 {
-  int max = 0;
 
-  if ( item->name().startsWith( baseName ) )
+  int maxSuffixNum( const QgsCustomization::QgsItem *item, const QString &baseName )
   {
-    bool ok = false;
-    const int suffixNum = item->name().mid( baseName.length() ).toInt( &ok );
-    if ( ok )
-      max = suffixNum;
+    int max = 0;
+
+    if ( item->name().startsWith( baseName ) )
+    {
+      bool ok = false;
+      const int suffixNum = item->name().mid( baseName.length() ).toInt( &ok );
+      if ( ok )
+        max = suffixNum;
+    }
+
+    for ( const std::unique_ptr<QgsCustomization::QgsItem> &childItem : item->childItemList() )
+    {
+      const int childSuffixNum = maxSuffixNum( childItem.get(), baseName );
+      max = std::max( childSuffixNum, max );
+    }
+
+    return max;
   }
 
-  for ( const std::unique_ptr<QgsCustomization::QgsItem> &childItem : item->childItemList() )
-  {
-    const int childSuffixNum = maxSuffixNum( childItem.get(), baseName );
-    max = std::max( childSuffixNum, max );
-  }
-
-  return max;
-}
+} //namespace
 
 QString QgsCustomization::uniqueItemName( const QString &baseName ) const
 {

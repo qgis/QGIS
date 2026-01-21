@@ -365,7 +365,7 @@ class APP_EXPORT QgsCustomization
          * Returns referenced action path. Path is a '/' separated list of
          * items name representing the targeted item in its hierarchy
          */
-        const QString &path() const;
+        const QString &actionRefPath() const;
 
         std::unique_ptr<QgsCustomization::QgsItem> clone( QgsCustomization::QgsItem *parent = nullptr ) const override;
 
