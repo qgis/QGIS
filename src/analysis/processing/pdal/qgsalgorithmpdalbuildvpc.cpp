@@ -129,13 +129,24 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Could not create input file list %1" ).arg( fileName ) );
   }
 
+  bool containsNonDisplayableFiles = false;
   QTextStream out( &listFile );
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
-    out << layer->source() << "\n";
+    const QString source = layer->source();
+    out << source << "\n";
+    if ( !mConvertToCopc && ( source.endsWith( u".laz"_s, Qt::CaseInsensitive ) || source.endsWith( u".las"_s, Qt::CaseInsensitive ) ) )
+    {
+      containsNonDisplayableFiles = true;
+    }
   }
 
   args << u"--input-file-list=%1"_s.arg( fileName );
+
+  if ( containsNonDisplayableFiles )
+  {
+    feedback->pushWarning( QObject::tr( "The input layers contain LAZ or LAS files. The resulting VPC layer data will be not displayed in QGIS." ) );
+  }
 
   return args;
 }
