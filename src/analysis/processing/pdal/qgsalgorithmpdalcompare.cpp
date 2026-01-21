@@ -52,18 +52,18 @@ QStringList QgsPdalCompareAlgorithm::tags() const
 
 QString QgsPdalCompareAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm compares two point clouds using M3C2 algorithm and outputs a point cloud." )
+  return QObject::tr( "This algorithm compares two point clouds using an M3C2 (Multiscale Model-to-Model Cloud Comparison) algorithm and outputs a point cloud." )
          + u"\n\n"_s
-         + QObject::tr( "Resulting point clouds will have several new dimensions: m3c2_distance, m3c2_uncertainty, m3c2_significant, m3c2_std_dev1, m3c2_std_dev2, m3c2_count1 and m3c2_count2." )
+         + QObject::tr( "The output point cloud will have several new dimensions: m3c2_distance, m3c2_uncertainty, m3c2_significant, m3c2_std_dev1, m3c2_std_dev2, m3c2_count1 and m3c2_count2." )
          + u"\n\n"_s
-         + QObject::tr( "Algorithm calculates the distance between two point clouds by considering the local orientation of the surface. It estimates surface normals at a user-defined scale and measures the average distance between clouds within a cylindrical projection along those normals." )
+         + QObject::tr( "The M3C2 algorithm calculates the distance between two point clouds by considering the local orientation of the surface. It estimates surface normals at a user-defined scale and measures the average distance between clouds within a cylindrical projection along those normals." )
          + u"\n\n"_s
          + QObject::tr( "The approach is highly robust against sensor noise and surface roughness, making it the standard for detecting change in complex natural environments. It also provides a sign (indicating whether a surface has moved in or out) and a statistically significant level of detection to distinguish real change from measurement error." );
 }
 
 QString QgsPdalCompareAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Compares two point clouds using M3C2 algorithm and outputs a point cloud." );
+  return QObject::tr( "Compares two point clouds using M3C2 algorithm and outputs a point cloud containing the differences?." );
 }
 
 QgsPdalCompareAlgorithm *QgsPdalCompareAlgorithm::createInstance() const
@@ -77,7 +77,7 @@ void QgsPdalCompareAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT-COMPARE"_s, QObject::tr( "Compare layer" ) ) );
 
-  auto subsamplingCellSize = std::make_unique<QgsProcessingParameterNumber>( u"SUBSAMPLING-CELL-SIZE"_s, QObject::tr( "Subsampling Cell Size" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto subsamplingCellSize = std::make_unique<QgsProcessingParameterNumber>( u"SUBSAMPLING-CELL-SIZE"_s, QObject::tr( "Subsampling cell size" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   subsamplingCellSize->setHelp( QObject::tr( "Minimum spacing between points (in map units)." ) );
   addParameter( subsamplingCellSize.release() );
 
@@ -97,7 +97,7 @@ void QgsPdalCompareAlgorithm::initAlgorithm( const QVariantMap & )
   regError->setHelp( QObject::tr( "The estimated registration error between the two point clouds." ) );
   addParameter( regError.release() );
 
-  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYL-ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << u"up"_s << u"origin"_s << u"none"_s, false, u"up"_s );
+  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYL-ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << u"up"_s << u"origin"_s << u"none"_s, false, 0 );
   cylOrientation->setHelp( QObject::tr( "Which direction to orient the cylinder/normal vector used for comparison between the two point clouds." ) );
   addParameter( cylOrientation.release() );
 
