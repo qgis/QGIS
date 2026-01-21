@@ -77,19 +77,19 @@ void QgsPdalCompareAlgorithm::initAlgorithm( const QVariantMap & )
 
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT_COMPARE"_s, QObject::tr( "Compare layer" ) ) );
 
-  auto subsamplingCellSize = std::make_unique<QgsProcessingParameterNumber>( u"SUBSAMPLING_CELL_SIZE"_s, QObject::tr( "Subsampling cell size" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto subsamplingCellSize = std::make_unique<QgsProcessingParameterDistance>( u"SUBSAMPLING_CELL_SIZE"_s, QObject::tr( "Subsampling cell size" ), 0.0, u"INPUT"_s );
   subsamplingCellSize->setHelp( QObject::tr( "Minimum spacing between points (in map units)." ) );
   addParameter( subsamplingCellSize.release() );
 
-  auto normalRadius = std::make_unique<QgsProcessingParameterNumber>( u"NORMAL_RADIUS"_s, QObject::tr( "Normal Radius" ), Qgis::ProcessingNumberParameterType::Double, 2.0 );
+  auto normalRadius = std::make_unique<QgsProcessingParameterDistance>( u"NORMAL_RADIUS"_s, QObject::tr( "Normal Radius" ), 2.0, u"INPUT"_s );
   normalRadius->setHelp( QObject::tr( "Radius of the sphere around each core point that defines the neighbors from which normals are calculated." ) );
   addParameter( normalRadius.release() );
 
-  auto cylRadius = std::make_unique<QgsProcessingParameterNumber>( u"CYLINDER_RADIUS"_s, QObject::tr( "Cylinder Radius" ), Qgis::ProcessingNumberParameterType::Double, 2.0 );
+  auto cylRadius = std::make_unique<QgsProcessingParameterDistance>( u"CYLINDER_RADIUS"_s, QObject::tr( "Cylinder Radius" ), 2.0, u"INPUT"_s );
   cylRadius->setHelp( QObject::tr( "Radius of the cylinder inside of which points are searched for when calculating change." ) );
   addParameter( cylRadius.release() );
 
-  auto cylHalflen = std::make_unique<QgsProcessingParameterNumber>( u"CYLINDER_HALF_LENGTH"_s, QObject::tr( "Cylinder Half-Length" ), Qgis::ProcessingNumberParameterType::Double, 5.0 );
+  auto cylHalflen = std::make_unique<QgsProcessingParameterDistance>( u"CYLINDER_HALF_LENGTH"_s, QObject::tr( "Cylinder Half-Length" ), 5.0, u"INPUT"_s );
   cylHalflen->setHelp( QObject::tr( "The half-length of the cylinder of neighbors used for calculating change." ) );
   addParameter( cylHalflen.release() );
 
