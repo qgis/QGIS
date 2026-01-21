@@ -21,6 +21,7 @@
 #include "qgsdoublespinbox.h"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
+#include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsmessagebar.h"
@@ -286,8 +287,24 @@ void QgsMapToolShapeCircle2PointsRadius::createRadiusSpinBox()
   }
   else
   {
-    mRadiusSpinBox->setValue( 1.0 );
-    mRadius = 1.0;
+    // Default radius: half of the smallest canvas dimension, rounded to lower multiple of 10
+    QgsMapCanvas *canvas = mParentTool->canvas();
+    const QgsRectangle extent = canvas->extent();
+    double defaultRadius = std::min( extent.width(), extent.height() ) / 2.0;
+
+    if ( defaultRadius >= 10.0 )
+    {
+      // Round down to nearest multiple of 10
+      defaultRadius = std::floor( defaultRadius / 10.0 ) * 10.0;
+    }
+    else
+    {
+      // Between 0 and 10: round to nearest integer, minimum 1
+      defaultRadius = std::max( 1.0, std::round( defaultRadius ) );
+    }
+
+    mRadiusSpinBox->setValue( defaultRadius );
+    mRadius = defaultRadius;
   }
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
