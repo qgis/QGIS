@@ -94,6 +94,7 @@ class QgsProjectGpsSettings;
 class QgsSensorManager;
 class QgsObjectEntityVisitorInterface;
 class QgsObjectVisitorContext;
+class QgsSelectiveMaskingSourceSetManager;
 
 /**
  * \ingroup core
@@ -871,6 +872,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * \since QGIS 4.0
      */
     QgsElevationProfileManager *elevationProfileManager();
+
+    /**
+     * Returns the project's selective masking set manager, which manages storage of a set of selective masking source sets within
+     * the project.
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    const QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager() const SIP_SKIP;
+
+    /**
+     * Returns the project's selective masking set manager, which manages storage of a set of selective masking source sets within
+     * the project.
+     * \since QGIS 4.0
+     */
+    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager();
 
     /**
      * Returns the project's views manager, which manages map views (including 3d maps)
@@ -2534,6 +2550,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     std::unique_ptr<QgsAnnotationManager> mAnnotationManager;
     std::unique_ptr<QgsLayoutManager> mLayoutManager;
     std::unique_ptr<QgsElevationProfileManager> mElevationProfileManager;
+    std::unique_ptr<QgsSelectiveMaskingSourceSetManager> mSelectiveMaskingSourceSetManager;
     std::unique_ptr<QgsMapViewsManager> m3DViewsManager;
 
     QgsBookmarkManager *mBookmarkManager = nullptr;
