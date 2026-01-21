@@ -5737,11 +5737,6 @@
           <Option type="Map">
             <Option name="name" type="QString" value=""/>
             <Option name="properties" type="Map">
-              <Option name="interval" type="Map">
-                <Option name="active" type="bool" value="false"/>
-                <Option name="type" type="int" value="1"/>
-                <Option name="val" type="QString" value=""/>
-              </Option>
             </Option>
             <Option name="type" type="QString" value="collection"/>
           </Option>
