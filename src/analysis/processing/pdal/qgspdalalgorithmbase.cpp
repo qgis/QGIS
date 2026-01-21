@@ -338,11 +338,17 @@ QString QgsPdalAlgorithmBase::copcIndexFile( const QString &filename )
   return outputFile;
 }
 
-void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context )
+void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   if ( outputFilename.endsWith( u".vpc"_s, Qt::CaseInsensitive ) )
   {
     QString vpcOutputFormat = parameterAsEnumString( parameters, u"VPC_OUTPUT_FORMAT"_s, context );
+
+    if ( vpcOutputFormat == "LAZ"_L1 || vpcOutputFormat == "LAS"_L1 )
+    {
+      feedback->pushWarning( QObject::tr( "The VPC file will contain LAS or LAZ files, such files are not completely supported in QGIS and the point cloud will not be displayed. Use COPC as VPC Output Format for better compatibility." ) );
+    }
+
     arguments << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() );
   }
 }

@@ -68,7 +68,7 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      * Adds "--vpc-output-format" parameter to the pdal_wrench command line if the \a outputFilename is a VPC file.
      * \since QGIS 4.0
      */
-    void applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context );
+    void applyVpcOutputFormatParameter( const QString &outputFilename, QStringList &arguments, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     /**
      * "Fixes" output file name by changing suffix to .vpc if input file
