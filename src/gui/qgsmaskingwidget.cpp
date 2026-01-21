@@ -162,7 +162,7 @@ void QgsMaskingWidget::populate()
       }
 
       // collect label masks
-      QHash<QString, QgsMaskedLayers> labelMasks = QgsVectorLayerUtils::labelMasks( vl );
+      QHash<QString, QgsMaskedLayers> labelMasks = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( vl, {}, {} );
       for ( auto it = labelMasks.begin(); it != labelMasks.end(); it++ )
       {
         const QString &ruleKey = it.key();
