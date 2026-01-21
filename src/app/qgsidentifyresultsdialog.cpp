@@ -35,7 +35,6 @@
 #include <QNetworkRequest>
 #include <QPixmap>
 #include <QPushButton>
-#include <QRegExp>
 #include <QScreen>
 #include <QTextDocument>
 #include <QToolButton>
