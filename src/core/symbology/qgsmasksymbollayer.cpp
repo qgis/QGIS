@@ -183,9 +183,6 @@ void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   if ( !renderContext.maskPainter() )
     return;
 
-  if ( mMaskedSymbolLayers.isEmpty() )
-    return;
-
   // Otherwise switch to the mask painter before rendering
   const QgsPainterSwapper swapper( renderContext, renderContext.maskPainter() );
 
