@@ -100,7 +100,7 @@ void QgsPdalCompareAlgorithm::initAlgorithm( const QVariantMap & )
   regError->setHelp( QObject::tr( "The estimated registration error between the two point clouds." ) );
   addParameter( regError.release() );
 
-  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYLINDER_ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << u"Up"_s << u"Origin"_s << u"None"_s, false, u"Up"_s );
+  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYLINDER_ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << QObject::tr( "Up" ) << QObject::tr( "Origin" ) << QObject::tr( "None" ), false, 0 );
   cylOrientation->setHelp( QObject::tr( "Which direction to orient the cylinder/normal vector used for comparison between the two point clouds." ) );
   addParameter( cylOrientation.release() );
 
@@ -164,7 +164,8 @@ QStringList QgsPdalCompareAlgorithm::createArgumentLists( const QVariantMap &par
   const double cylRadius = parameterAsDouble( parameters, u"CYLINDER_RADIUS"_s, context );
   const double cylHalflen = parameterAsDouble( parameters, u"CYLINDER_HALF_LENGTH"_s, context );
   const double regError = parameterAsDouble( parameters, u"REGISTRATION_ERROR"_s, context );
-  const QString cylOrientation = parameterAsEnumString( parameters, u"CYLINDER_ORIENTATION"_s, context );
+  const int cylOrientationIndex = parameterAsEnum( parameters, u"CYLINDER_ORIENTATION"_s, context );
+  const QString cylOrientation = mCylinderOrientationOptions.at( cylOrientationIndex );
 
   const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( inputLayer->source(), outputName, context );

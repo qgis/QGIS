@@ -45,6 +45,9 @@ class QgsPdalCompareAlgorithm : public QgsPdalAlgorithmBase
 
     QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+  private:
+    QStringList mCylinderOrientationOptions = { u"up"_s, u"origin"_s, u"none"_s };
+
     friend class TestQgsProcessingPdalAlgs;
 };
 
