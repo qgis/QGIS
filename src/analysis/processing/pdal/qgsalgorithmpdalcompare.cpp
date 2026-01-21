@@ -97,7 +97,7 @@ void QgsPdalCompareAlgorithm::initAlgorithm( const QVariantMap & )
   regError->setHelp( QObject::tr( "The estimated registration error between the two point clouds." ) );
   addParameter( regError.release() );
 
-  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYLINDER_ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << u"Up"_s << u"Origin"_s << u"None"_s, false, 0 );
+  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYLINDER_ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << u"Up"_s << u"Origin"_s << u"None"_s, false, u"Up"_s );
   cylOrientation->setHelp( QObject::tr( "Which direction to orient the cylinder/normal vector used for comparison between the two point clouds." ) );
   addParameter( cylOrientation.release() );
 
