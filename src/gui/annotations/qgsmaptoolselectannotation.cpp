@@ -93,7 +93,6 @@ QgsMapToolSelectAnnotation::QgsMapToolSelectAnnotation( QgsMapCanvas *canvas, Qg
   : QgsAnnotationMapTool( canvas, cadDockWidget )
 {
   connect( QgsMapToolSelectAnnotation::canvas(), &QgsMapCanvas::mapCanvasRefreshed, this, &QgsMapToolSelectAnnotation::onCanvasRefreshed );
-  connect( this, &QgsMapToolSelectAnnotation::selectedItemsChanged, this, &QgsMapToolSelectAnnotation::updateSelectedItem );
 
   setAdvancedDigitizingAllowed( false );
 }
@@ -309,6 +308,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
       }
     }
     emit selectedItemsChanged();
+    updateSelectedItem();
     event->ignore();
     return;
   }
@@ -324,6 +324,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
       mSelectedItems.pop_back();
     }
     emit selectedItemsChanged();
+    updateSelectedItem();
     event->ignore();
   }
   else if ( event->key() == Qt::Key_Left
@@ -465,6 +466,7 @@ void QgsMapToolSelectAnnotation::setSelectedItemsFromRect( const QgsRectangle &m
     }
   }
   emit selectedItemsChanged();
+  updateSelectedItem();
 }
 
 void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &mapPoint, bool toggleSelection )
@@ -519,6 +521,7 @@ void QgsMapToolSelectAnnotation::setSelectedItemFromPoint( const QgsPointXY &map
     mSelectedItems.back()->updateBoundingBox( closestItem->boundingBox() );
   }
   emit selectedItemsChanged();
+  updateSelectedItem();
 }
 
 void QgsMapToolSelectAnnotation::updateSelectedItem()
@@ -545,6 +548,7 @@ void QgsMapToolSelectAnnotation::clearSelectedItems()
   if ( hadSelection )
   {
     emit selectedItemsChanged();
+    updateSelectedItem();
   }
 }
 
@@ -588,37 +592,24 @@ void QgsMapToolSelectAnnotation::attemptMoveBy( QgsAnnotationItemRubberBand *ann
 
 void QgsMapToolSelectAnnotation::attemptRotateBy( QgsAnnotationItemRubberBand *annotationItemRubberBand, double deltaDegree )
 {
-  if ( QgsAnnotationItem *annotationItem = annotationItemRubberBand->item() )
+  if ( QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer() )
   {
-    QgsAnnotationLayer *annotationLayer = annotationItemRubberBand->layer();
     const QgsRectangle boundingBox = mCanvas->mapSettings().mapToLayerCoordinates( annotationLayer, annotationItemRubberBand->boundingBox() );
-    const QgsPointXY centroid = boundingBox.center();
-
     QgsAnnotationItemEditContext context;
     context.setCurrentItemBounds( boundingBox );
     context.setRenderContext( QgsRenderContext::fromMapSettings( mCanvas->mapSettings() ) );
 
-    const double deltaRadian = -deltaDegree * M_PI / 180;
-    const QList<QgsAnnotationItemNode> itemNodes = annotationItem->nodesV2( context );
-    for ( const QgsAnnotationItemNode &node : itemNodes )
+    QgsAnnotationItemEditOperationRotateItem operation( annotationItemRubberBand->itemId(), deltaDegree );
+    switch ( annotationLayer->applyEditV2( &operation, context ) )
     {
-      const double translatedX = node.point().x() - centroid.x();
-      const double translatedY = node.point().y() - centroid.y();
-      const double rotatedX = translatedX * std::cos( deltaRadian ) - translatedY * std::sin( deltaRadian );
-      const double rotatedY = translatedX * std::sin( deltaRadian ) + translatedY * std::cos( deltaRadian );
-      QgsPointXY modifiedPoint( rotatedX + centroid.x(), rotatedY + centroid.y() );
-      QgsAnnotationItemEditOperationMoveNode operation( annotationItemRubberBand->itemId(), node.id(), QgsPoint( node.point() ), QgsPoint( modifiedPoint ) );
-      switch ( annotationLayer->applyEditV2( &operation, context ) )
-      {
-        case Qgis::AnnotationItemEditOperationResult::Success:
-          QgsProject::instance()->setDirty( true );
-          annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
-          break;
+      case Qgis::AnnotationItemEditOperationResult::Success:
+        QgsProject::instance()->setDirty( true );
+        annotationItemRubberBand->setNeedsUpdatedBoundingBox( true );
+        break;
 
-        case Qgis::AnnotationItemEditOperationResult::Invalid:
-        case Qgis::AnnotationItemEditOperationResult::ItemCleared:
-          break;
-      }
+      case Qgis::AnnotationItemEditOperationResult::Invalid:
+      case Qgis::AnnotationItemEditOperationResult::ItemCleared:
+        break;
     }
   }
 }
