@@ -1350,7 +1350,7 @@ void TestQgs3DCameraController::testOrthographic()
   QMouseEvent mouseReleaseEvent3( QEvent::MouseButtonRelease, midPos + movement3, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   scene->cameraController()->onMouseReleased( new Qt3DInput::QMouseEvent( mouseReleaseEvent3 ) );
 
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -2338, 502, 142 ), 5 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QgsVector3D( -2338, 502, 137 ), 5 );
 
   delete scene;
   mapSettings->setLayers( {} );

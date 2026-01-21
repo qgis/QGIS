@@ -644,8 +644,8 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
           cameraBeforeToDragPointPos = cameraBeforeToDragPointPos.normalized();
         }
 
-        double d1 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToMoveToPos.z();
-        double d2 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToDragPointPos.z();
+        float d1 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToMoveToPos.z();
+        float d2 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToDragPointPos.z();
 
         QVector3D from = cameraBeforeDragPos + d1 * cameraBeforeToMoveToPos;
         QVector3D to = cameraBeforeDragPos + d2 * cameraBeforeToDragPointPos;
@@ -654,7 +654,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
         break;
       }
       default:
-        QgsDebugError("Unhandled 3D projection type");
+        QgsDebugError( "Unhandled 3D projection type" );
     }
 
     mCameraPose.setCenterPoint( mCameraBefore->viewCenter() + shiftVector );
