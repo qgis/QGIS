@@ -26,9 +26,13 @@
 
 class QTreeWidget;
 class QTreeWidgetItem;
+class QComboBox;
+class QToolButton;
 class QgsSymbolLayer;
 class QgsSelectiveMaskingSource;
 class QgsSelectiveMaskingSourceSet;
+class QgsSelectiveMaskingSourceSetManagerModel;
+class QgsSelectiveMaskingSourceSetManagerProxyModel;
 
 /**
  * \ingroup gui
@@ -66,9 +70,28 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
     //! Emitted when an item was changed
     void changed();
 
+  private slots:
+
+    void selectedSetChanged();
+    void emitChanged();
+    void onItemChanged();
+    void newSet();
+    void removeSet();
+    void renameSet();
+
   private:
-    QTreeWidget *mTree;
+    bool isCustomSet() const;
+
+    QComboBox *mSetComboBox = nullptr;
+    QTreeWidget *mTree = nullptr;
     QHash<QgsSymbolLayerReference, QTreeWidgetItem *> mItems;
+    QgsSelectiveMaskingSourceSetManagerModel *mManagerModel = nullptr;
+    QgsSelectiveMaskingSourceSetManagerProxyModel *mManagerProxyModel = nullptr;
+    QToolButton *mSetsToolButton = nullptr;
+    QAction *mRemoveAction = nullptr;
+    QAction *mRenameAction = nullptr;
+
+    int mBlockChangedSignals = 0;
 
     friend class TestQgsMaskingWidget;
 };
