@@ -25,6 +25,7 @@
 #include "qgsrenderer.h"
 #include "qgsselectivemaskingsource.h"
 #include "qgsselectivemaskingsourceset.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgsstyleentityvisitor.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerreference.h"
@@ -81,12 +82,29 @@ QList<QPair<QString, QList<QgsSymbolLayerReference>>> symbolLayerMasks( const Qg
     return {};
 
   QList<QPair<QString, QList<QgsSymbolLayerReference>>> mMasks;
-  SymbolLayerVisitor collector( [&]( const QgsSymbolLayer *sl, const QString &lid ) {
+  SymbolLayerVisitor collector( [&]( const QgsSymbolLayer *sl ) {
     if ( !sl->masks().isEmpty() )
-      mMasks.push_back( qMakePair( lid, sl->masks() ) );
+      mMasks.push_back( qMakePair( sl->id(), sl->masks() ) );
   } );
   layer->renderer()->accept( &collector );
   return mMasks;
+}
+
+QString symbolLayerSelectiveMaskingSourceId( const QgsVectorLayer *layer, QSet<QString> &maskedSymbolLayers )
+{
+  if ( !layer->renderer() )
+    return {};
+
+  QString maskingSourceSetId;
+  SymbolLayerVisitor collector( [&]( const QgsSymbolLayer *sl ) {
+    if ( !sl->selectiveMaskingSourceSetId().isEmpty() )
+    {
+      maskingSourceSetId = sl->selectiveMaskingSourceSetId();
+      maskedSymbolLayers.insert( sl->id() );
+    }
+  } );
+  layer->renderer()->accept( &collector );
+  return maskingSourceSetId;
 }
 
 void QgsMaskingWidget::setLayer( QgsVectorLayer *layer )
@@ -103,48 +121,60 @@ void QgsMaskingWidget::populate()
   mMaskSourcesWidget->update();
   mMaskTargetsWidget->setLayer( mLayer );
 
-  // collect masks and filter on those which have the current layer as destination
-  QSet<QString> maskedSymbolLayers;
   QgsSelectiveMaskingSourceSet maskSources;
-  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  QSet<QString> maskedSymbolLayers;
 
-  for ( auto layerIt = layers.begin(); layerIt != layers.end(); layerIt++ )
+  // The widget only allows a single set of masking sources for ALL the symbol layers in a target layer.
+  // So if ANY of the symbols layers in the target layer have an explicit selective masking source set id present,
+  // then use this as the SOURCE for all the masked symbol layers in that map layer.
+  const QString selectiveMaskingSourceSetId = symbolLayerSelectiveMaskingSourceId( mLayer, maskedSymbolLayers );
+  if ( !selectiveMaskingSourceSetId.isEmpty() )
   {
-    const QString layerId = layerIt.key();
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
-    if ( !vl )
-      continue;
+    maskSources = QgsProject::instance()->selectiveMaskingSourceSetManager()->setById( selectiveMaskingSourceSetId );
+  }
+  else
+  {
+    // collect masks and filter on those which have the current layer as destination
+    QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
 
-    // collect symbol layer masks
-    const QList<QPair<QString, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
-    for ( const QPair<QString, QList<QgsSymbolLayerReference>> &p : slMasks )
+    for ( auto layerIt = layers.begin(); layerIt != layers.end(); layerIt++ )
     {
-      const QString &sourceSymbolLayerId = p.first;
-      for ( const QgsSymbolLayerReference &ref : p.second )
+      const QString layerId = layerIt.key();
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layerIt.value() );
+      if ( !vl )
+        continue;
+
+      // collect symbol layer masks
+      const QList<QPair<QString, QList<QgsSymbolLayerReference>>> slMasks = symbolLayerMasks( vl );
+      for ( const QPair<QString, QList<QgsSymbolLayerReference>> &p : slMasks )
       {
-        if ( ref.layerId() == mLayer->id() )
+        const QString &sourceSymbolLayerId = p.first;
+        for ( const QgsSymbolLayerReference &ref : p.second )
         {
-          // add to the set of destinations
-          maskedSymbolLayers.insert( ref.symbolLayerIdV2() );
-          // add to the list of mask sources
-          maskSources.append( QgsSelectiveMaskSource( layerId, Qgis::SelectiveMaskSourceType::SymbolLayer, sourceSymbolLayerId ) );
+          if ( ref.layerId() == mLayer->id() )
+          {
+            // add to the set of destinations
+            maskedSymbolLayers.insert( ref.symbolLayerIdV2() );
+            // add to the list of mask sources
+            maskSources.append( QgsSelectiveMaskSource( layerId, Qgis::SelectiveMaskSourceType::SymbolLayer, sourceSymbolLayerId ) );
+          }
         }
       }
-    }
 
-    // collect label masks
-    QHash<QString, QgsMaskedLayers> labelMasks = QgsVectorLayerUtils::labelMasks( vl );
-    for ( auto it = labelMasks.begin(); it != labelMasks.end(); it++ )
-    {
-      const QString &ruleKey = it.key();
-      for ( auto it2 = it.value().begin(); it2 != it.value().end(); it2++ )
+      // collect label masks
+      QHash<QString, QgsMaskedLayers> labelMasks = QgsVectorLayerUtils::labelMasks( vl );
+      for ( auto it = labelMasks.begin(); it != labelMasks.end(); it++ )
       {
-        if ( it2.key() == mLayer->id() )
+        const QString &ruleKey = it.key();
+        for ( auto it2 = it.value().begin(); it2 != it.value().end(); it2++ )
         {
-          // merge with masked symbol layers
-          maskedSymbolLayers.unite( it2.value().symbolLayerIds );
-          // add the mask source
-          maskSources.append( QgsSelectiveMaskSource( layerId, Qgis::SelectiveMaskSourceType::Label, ruleKey ) );
+          if ( it2.key() == mLayer->id() )
+          {
+            // merge with masked symbol layers
+            maskedSymbolLayers.unite( it2.value().symbolLayerIdsToMask );
+            // add the mask source
+            maskSources.append( QgsSelectiveMaskSource( layerId, Qgis::SelectiveMaskSourceType::Label, ruleKey ) );
+          }
         }
       }
     }
@@ -156,10 +186,34 @@ void QgsMaskingWidget::populate()
 
 void QgsMaskingWidget::apply()
 {
-  const QVector<QgsSelectiveMaskSource> maskSources = mMaskSourcesWidget->sourceSet().sources();
-  const QSet<QString> maskedSymbolLayers = mMaskTargetsWidget->selection();
+  if ( !mLayer )
+    return;
 
   QSet<QString> layersToRefresh;
+  const QSet<QString> maskedSymbolLayerIds = mMaskTargetsWidget->selection();
+
+  const QgsSelectiveMaskingSourceSet maskSourceSet = mMaskSourcesWidget->sourceSet();
+
+  SymbolLayerVisitor selectiveMaskingSourceSetter( [&]( const QgsSymbolLayer *sl ) {
+    QgsSymbolLayer *mutableSl = const_cast<QgsSymbolLayer *>( sl );
+    if ( !maskSourceSet.isValid() )
+    {
+      mutableSl->setSelectiveMaskingSourceSetId( QString() );
+    }
+    else
+    {
+      const bool isMasked = maskedSymbolLayerIds.contains( sl->id() );
+      mutableSl->setSelectiveMaskingSourceSetId( isMasked ? maskSourceSet.id() : QString() );
+    }
+  } );
+  if ( mLayer && mLayer->renderer() )
+  {
+    mLayer->renderer()->accept( &selectiveMaskingSourceSetter );
+  }
+  for ( const QgsSelectiveMaskSource &source : maskSourceSet.sources() )
+  {
+    layersToRefresh.insert( source.layerId() );
+  }
 
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
   for ( auto layerIt = layers.begin(); layerIt != layers.end(); layerIt++ )
@@ -170,7 +224,7 @@ void QgsMaskingWidget::apply()
 
     //
     // First reset symbol layer masks
-    SymbolLayerVisitor maskSetter( [&]( const QgsSymbolLayer *sl, const QString &slId ) {
+    SymbolLayerVisitor maskSetter( [&]( const QgsSymbolLayer *sl ) {
       if ( sl->layerType() == "MaskMarker" )
       {
         QgsMaskMarkerSymbolLayer *maskSl = const_cast<QgsMaskMarkerSymbolLayer *>( static_cast<const QgsMaskMarkerSymbolLayer *>( sl ) );
@@ -183,24 +237,27 @@ void QgsMaskingWidget::apply()
           if ( ref.layerId() != mLayer->id() )
             newMasks.append( ref );
         }
-        for ( const QgsSelectiveMaskSource &source : maskSources )
+        if ( !maskSourceSet.isValid() )
         {
-          switch ( source.sourceType() )
+          for ( const QgsSelectiveMaskSource &source : maskSourceSet.sources() )
           {
-            case Qgis::SelectiveMaskSourceType::SymbolLayer:
-              if ( source.layerId() == layerIt.key() && source.sourceId() == slId )
-              {
-                // ... then add the new masked symbol layers, if any
-                for ( const QString &maskedId : maskedSymbolLayers )
+            switch ( source.sourceType() )
+            {
+              case Qgis::SelectiveMaskSourceType::SymbolLayer:
+                if ( source.layerId() == layerIt.key() && source.sourceId() == sl->id() )
                 {
-                  newMasks.append( QgsSymbolLayerReference( mLayer->id(), maskedId ) );
+                  // ... then add the new masked symbol layers, if any
+                  for ( const QString &maskedId : maskedSymbolLayerIds )
+                  {
+                    newMasks.append( QgsSymbolLayerReference( mLayer->id(), maskedId ) );
+                  }
+                  // invalidate the cache of the source layer
+                  layersToRefresh.insert( source.layerId() );
                 }
-                // invalidate the cache of the source layer
-                layersToRefresh.insert( source.layerId() );
-              }
-              break;
-            case Qgis::SelectiveMaskSourceType::Label:
-              break;
+                break;
+              case Qgis::SelectiveMaskSourceType::Label:
+                break;
+            }
           }
         }
         maskSl->setMasks( newMasks );
@@ -228,25 +285,28 @@ void QgsMaskingWidget::apply()
         if ( ref.layerId() != mLayer->id() )
           newMasks.append( ref );
       }
-      for ( const QgsSelectiveMaskSource &source : maskSources )
+      if ( !maskSourceSet.isValid() )
       {
-        // ... then add the new masked symbol layers, if any
-        switch ( source.sourceType() )
+        for ( const QgsSelectiveMaskSource &source : maskSourceSet.sources() )
         {
-          case Qgis::SelectiveMaskSourceType::Label:
-            if ( source.layerId() == layerIt.key() && source.sourceId() == labelProvider )
-            {
-              for ( const QString &maskedId : maskedSymbolLayers )
+          // ... then add the new masked symbol layers, if any
+          switch ( source.sourceType() )
+          {
+            case Qgis::SelectiveMaskSourceType::Label:
+              if ( source.layerId() == layerIt.key() && source.sourceId() == labelProvider )
               {
-                newMasks.append( QgsSymbolLayerReference( mLayer->id(), maskedId ) );
+                for ( const QString &maskedId : maskedSymbolLayerIds )
+                {
+                  newMasks.append( QgsSymbolLayerReference( mLayer->id(), maskedId ) );
+                }
+                // invalidate the cache of the source layer
+                layersToRefresh.insert( source.layerId() );
               }
-              // invalidate the cache of the source layer
-              layersToRefresh.insert( source.layerId() );
-            }
-            break;
+              break;
 
-          case Qgis::SelectiveMaskSourceType::SymbolLayer:
-            break;
+            case Qgis::SelectiveMaskSourceType::SymbolLayer:
+              break;
+          }
         }
       }
       format.mask().setMaskedSymbolLayers( newMasks );
@@ -284,7 +344,7 @@ void SymbolLayerVisitor::visitSymbol( const QgsSymbol *symbol, const QString &le
   {
     const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
 
-    mCallback( sl, sl->id() );
+    mCallback( sl );
 
     // recurse over sub symbols
     const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
