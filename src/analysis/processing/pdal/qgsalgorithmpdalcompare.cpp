@@ -58,7 +58,10 @@ QString QgsPdalCompareAlgorithm::shortHelpString() const
          + u"\n\n"_s
          + QObject::tr( "The M3C2 algorithm calculates the distance between two point clouds by considering the local orientation of the surface. It estimates surface normals at a user-defined scale and measures the average distance between clouds within a cylindrical projection along those normals." )
          + u"\n\n"_s
-         + QObject::tr( "The approach is highly robust against sensor noise and surface roughness, making it the standard for detecting change in complex natural environments. It also provides a sign (indicating whether a surface has moved in or out) and a statistically significant level of detection to distinguish real change from measurement error." );
+         + QObject::tr( "The approach is highly robust against sensor noise and surface roughness, making it the standard for detecting change in complex natural environments. It also provides a sign (indicating whether a surface has moved in or out) and a statistically significant level of detection to distinguish real change from measurement error." )
+         + u"\n\n"_s
+         + QObject::tr( "References: Lague, Dimitri, Nicolas Brodu, and Jérôme Leroux. Accurate 3D Comparison of Complex Topography with Terrestrial Laser Scanner: Application to the Rangitikei Canyon (N-Z). arXiv, 2013, https://arxiv.org/abs/1302.1183." );
+  ;
 }
 
 QString QgsPdalCompareAlgorithm::shortDescription() const
