@@ -987,3 +987,18 @@ void QgsMapSettings::setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPoli
   }
 }
 
+QHash<QString, QgsSelectiveMaskingSourceSet> QgsMapSettings::selectiveMaskingSourceSets() const
+{
+  return mSelectiveMaskingSourceSets;
+}
+
+void QgsMapSettings::setSelectiveMaskingSourceSets( const QVector<QgsSelectiveMaskingSourceSet> &sets )
+{
+  mSelectiveMaskingSourceSets.clear();
+  mSelectiveMaskingSourceSets.reserve( sets.size() );
+  for ( const QgsSelectiveMaskingSourceSet &set : sets )
+  {
+    mSelectiveMaskingSourceSets.insert( set.id(), set );
+  }
+}
+
