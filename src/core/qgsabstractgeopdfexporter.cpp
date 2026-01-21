@@ -257,7 +257,7 @@ void sortTreeNodeList( std::vector<std::unique_ptr<TreeNode>> &nodeList, QString
   } );
 }
 
-QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details )
+QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const
 {
   QDomDocument doc;
   QDomElement compositionElem = doc.createElement( u"PDFComposition"_s );
