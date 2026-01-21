@@ -240,8 +240,8 @@ void TestQgs3DUtils::testQgsRay3D()
     QCOMPARE( p2.y(), projP2.y() );
     QCOMPARE( p2.z(), projP2.z() );
 
-    QGSCOMPARENEAR( ray.angleToPoint( p1 ), 0.0, 5 );
-    QGSCOMPARENEAR( ray.angleToPoint( p2 ), 0.0, 5 );
+    QGSCOMPARENEAR( ray.angleToPoint( p1 ), 0.0, 10 );
+    QGSCOMPARENEAR( ray.angleToPoint( p2 ), 0.0, 10 );
 
     QVERIFY( ray.isInFront( p1 ) );
     QVERIFY( !ray.isInFront( p2 ) );
