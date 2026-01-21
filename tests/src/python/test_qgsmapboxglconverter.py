@@ -896,7 +896,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            '-57.2957795 * "drehwinkel"',
+            '(-57.2957795 * "drehwinkel")',
         )
 
         self.assertEqual(
@@ -905,7 +905,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            '10 + "offset_a" + "offset_b"',
+            '(10 + "offset_a" + "offset_b")',
         )
 
         self.assertEqual(
@@ -914,7 +914,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            "(10 + 10) * (1 + 2)",
+            "((10 + 10) * (1 + 2))",
         )
 
     def testConvertLabels(self):

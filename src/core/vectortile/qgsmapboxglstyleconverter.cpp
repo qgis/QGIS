@@ -3299,12 +3299,8 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
       context.pushWarning( QObject::tr( "%1: Operator %2 requires exactly two operands, skipping extra operands" ).arg( context.layerId() ).arg( op ) );
     }
     QString v1 = parseValue( expression.value( 1 ), context, colorExpected );
-    if ( v1.contains( ' ' ) )
-      v1 = u"(%1)"_s.arg( v1 );
     QString v2 = parseValue( expression.value( 2 ), context, colorExpected );
-    if ( v2.contains( ' ' ) )
-      v2 = u"(%1)"_s.arg( v2 );
-    return u"%1 %2 %3"_s.arg( v1, op, v2 );
+    return u"(%1 %2 %3)"_s.arg( v1, op, v2 );
   }
   else if ( ( op == "*"_L1 || op == "+"_L1 ) && expression.size() >= 3 )
   {
@@ -3313,12 +3309,9 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
                     std::back_inserter( operands ),
                     [&context, colorExpected]( const QVariant & val )
     {
-      QString v = parseValue( val, context, colorExpected );
-      if ( v.contains( ' ' ) )
-        v = u"(%1)"_s.arg( v );
-      return v;
+      return parseValue( val, context, colorExpected );
     } );
-    return operands.join( u" %1 "_s.arg( op ) );
+    return u"(%s)"_s.arg( operands.join( u" %1 "_s.arg( op ) ) );
   }
   else if ( op == "to-number"_L1 )
   {
