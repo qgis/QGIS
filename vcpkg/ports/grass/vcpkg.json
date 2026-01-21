@@ -1,0 +1,50 @@
+{
+  "name": "grass",
+  "version": "8.4.2",
+  "description": "GRASS - free and open-source geospatial processing engine",
+  "homepage": "https://grass.osgeo.org/",
+  "license": "GPL-2.0-or-later",
+  "dependencies": [
+    {
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+    {
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
+    "proj",
+    {
+      "name": "gdal",
+      "default-features": false
+    },
+    "fftw3",
+    "openblas"
+  ],
+  "features": {
+    "postgres": {
+      "description": "Build with Postgres support",
+      "dependencies": [
+        "libpq"
+      ]
+    },
+    "sqlite": {
+      "description": "Build with SQLite support",
+      "dependencies": [
+        "sqlite3"
+      ]
+    },
+    "zstd": {
+      "description": "Build with Zstd support",
+      "dependencies": [
+        "zstd"
+      ]
+    },
+    "geos": {
+      "description": "Build with GEOS support",
+      "dependencies": [
+        "geos"
+      ] 
+    }
+  }
+}

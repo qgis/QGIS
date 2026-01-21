@@ -233,53 +233,30 @@ class GrassUtils:
             return ""
 
         folder = None
-        # Under MS-Windows, we use GISBASE or QGIS Path for folder
-        if isWindows():
-            if "GISBASE" in os.environ:
-                folder = os.environ["GISBASE"]
-            else:
-                testfolder = os.path.join(
-                    os.path.dirname(QgsApplication.prefixPath()), "grass"
+        # the GISBASE env var always takes precedence
+        if "GISBASE" in os.environ:
+            folder = os.environ["GISBASE"]
+        elif isWindows():
+            testfolder = os.path.join(
+                os.path.dirname(QgsApplication.prefixPath()), "grass"
+            )
+            if os.path.isdir(testfolder):
+                grassfolders = sorted(
+                    [
+                        f
+                        for f in os.listdir(testfolder)
+                        if f.startswith("grass-7.")
+                        and os.path.isdir(os.path.join(testfolder, f))
+                    ],
+                    reverse=True,
+                    key=lambda x: [
+                        int(v) for v in x[len("grass-") :].split(".") if v != "svn"
+                    ],
                 )
-                if os.path.isdir(testfolder):
-                    grassfolders = sorted(
-                        [
-                            f
-                            for f in os.listdir(testfolder)
-                            if f.startswith("grass-7.")
-                            and os.path.isdir(os.path.join(testfolder, f))
-                        ],
-                        reverse=True,
-                        key=lambda x: [
-                            int(v) for v in x[len("grass-") :].split(".") if v != "svn"
-                        ],
-                    )
-                    if grassfolders:
-                        folder = os.path.join(testfolder, grassfolders[0])
+                if grassfolders:
+                    folder = os.path.join(testfolder, grassfolders[0])
         elif isMac():
-            # For MacOSX, first check environment
-            if "GISBASE" in os.environ:
-                folder = os.environ["GISBASE"]
-            else:
-                # Find grass folder if it exists inside QGIS bundle
-                for version in ["", "8", "7", "80", "78", "76", "74", "72", "71", "70"]:
-                    testfolder = os.path.join(
-                        str(QgsApplication.prefixPath()), f"grass{version}"
-                    )
-                    if os.path.isdir(testfolder):
-                        folder = testfolder
-                        break
-                    # If nothing found, try standalone GRASS installation
-                    if folder is None:
-                        for version in ["8", "6", "4", "2", "1", "0"]:
-                            testfolder = (
-                                "/Applications/GRASS-7.{}.app/Contents/MacOS".format(
-                                    version
-                                )
-                            )
-                            if os.path.isdir(testfolder):
-                                folder = testfolder
-                                break
+            folder = str(Path(QgsApplication.prefixPath()) / "Contents" / "MacOS")
 
         if folder is not None:
             GrassUtils.path = folder

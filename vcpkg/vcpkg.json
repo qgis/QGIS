@@ -232,6 +232,12 @@
         }
       ]
     },
+    "grass": {
+      "description": "Determines whether GRASS should be built",
+      "dependencies": [
+        "grass"
+      ]
+    },
     "gui": {
       "description": "Determines whether QGIS gui should be built",
       "dependencies": [

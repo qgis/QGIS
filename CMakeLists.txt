@@ -25,6 +25,7 @@ set (WITH_BINDINGS ${WITH_PYTHON} CACHE BOOL "Determines whether Python bindings
 set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 set (WITH_EXIV2 TRUE CACHE BOOL "Determines whether exiv2 functionality should be added")
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
+set (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS should be built")
 set (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 set (WITH_PDAL TRUE CACHE BOOL "Determines whether PDAL support should be built")
 set (WITH_QGIS_PROCESS TRUE CACHE BOOL "Determines whether the standalone \"qgis_process\" tool should be built")
