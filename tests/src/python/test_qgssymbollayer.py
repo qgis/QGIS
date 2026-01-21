@@ -299,6 +299,10 @@ class TestQgsSymbolLayer(QgisTestCase):
         layer.setRenderingPass(5)
         self.assertEqual(layer.renderingPass(), 5)
 
+        self.assertFalse(layer.selectiveMaskingSourceSetId())
+        layer.setSelectiveMaskingSourceSetId("xxxx")
+        self.assertEqual(layer.selectiveMaskingSourceSetId(), "xxxx")
+
     def testSaveRestore(self):
         """Test saving and restoring base symbol layer properties to xml"""
 
@@ -307,6 +311,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         layer.setLocked(True)
         layer.setRenderingPass(5)
         layer.setUserFlags(Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring)
+        layer.setSelectiveMaskingSourceSetId("xxxx")
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
@@ -325,6 +330,7 @@ class TestQgsSymbolLayer(QgisTestCase):
             restored_layer.userFlags(),
             Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring,
         )
+        self.assertEqual(restored_layer.selectiveMaskingSourceSetId(), "xxxx")
 
     def testClone(self):
         """test that base symbol layer properties are cloned with layer"""
@@ -334,6 +340,7 @@ class TestQgsSymbolLayer(QgisTestCase):
         layer.setLocked(True)
         layer.setRenderingPass(5)
         layer.setUserFlags(Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring)
+        layer.setSelectiveMaskingSourceSetId("xxxx")
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
@@ -347,6 +354,7 @@ class TestQgsSymbolLayer(QgisTestCase):
             cloned_layer.userFlags(),
             Qgis.SymbolLayerUserFlag.DisableSelectionRecoloring,
         )
+        self.assertEqual(cloned_layer.selectiveMaskingSourceSetId(), "xxxx")
 
     def testRenderFillLayerDisabled(self):
         """test that rendering a fill symbol with disabled layer works"""

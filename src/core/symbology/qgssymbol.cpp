@@ -1449,6 +1449,7 @@ QgsSymbolLayerList QgsSymbol::cloneLayers() const
     layer->setRenderingPass( ( *it )->renderingPass() );
     layer->setEnabled( ( *it )->enabled() );
     layer->setId( ( *it )->id() );
+    layer->setSelectiveMaskingSourceSetId( ( *it )->selectiveMaskingSourceSetId() );
     layer->setUserFlags( ( *it )->userFlags() );
     lst.append( layer );
   }
