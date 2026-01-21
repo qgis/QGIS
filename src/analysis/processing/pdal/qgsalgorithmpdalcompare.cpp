@@ -52,7 +52,7 @@ QStringList QgsPdalCompareAlgorithm::tags() const
 
 QString QgsPdalCompareAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm compares two point clouds using an M3C2 (Multiscale Model-to-Model Cloud Comparison) algorithm and outputs a point cloud." )
+  return QObject::tr( "This algorithm compares two point clouds using an M3C2 (Multiscale Model-to-Model Cloud Comparison) algorithm and outputs a subset (filtered using Poisson sampling, based on Subsampling cell size parameter ) of the original point cloud." )
          + u"\n\n"_s
          + QObject::tr( "The output point cloud will have several new dimensions: m3c2_distance, m3c2_uncertainty, m3c2_significant, m3c2_std_dev1, m3c2_std_dev2, m3c2_count1 and m3c2_count2." )
          + u"\n\n"_s
