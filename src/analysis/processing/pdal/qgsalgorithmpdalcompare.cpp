@@ -66,7 +66,7 @@ QString QgsPdalCompareAlgorithm::shortHelpString() const
 
 QString QgsPdalCompareAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Compares two point clouds using M3C2 algorithm and outputs a point cloud containing the differences?." );
+  return QObject::tr( "Compares two point clouds using M3C2 algorithm and outputs a subsample of the input point cloud containing additional dimensions describing the differences." );
 }
 
 QgsPdalCompareAlgorithm *QgsPdalCompareAlgorithm::createInstance() const
