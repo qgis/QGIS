@@ -1415,6 +1415,7 @@ std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::loadSymbolLayer( QDomElem
   const bool enabled = element.attribute( u"enabled"_s, u"1"_s ).toInt();
   const int pass = element.attribute( u"pass"_s ).toInt();
   const QString id = element.attribute( u"id"_s );
+  const QString selectiveMaskingSetId = element.attribute( u"selectiveMaskingSet"_s );
   const Qgis::SymbolLayerUserFlags userFlags = qgsFlagKeysToValue( element.attribute( u"userFlags"_s ), Qgis::SymbolLayerUserFlags() );
 
   // parse properties
@@ -1432,6 +1433,7 @@ std::unique_ptr< QgsSymbolLayer > QgsSymbolLayerUtils::loadSymbolLayer( QDomElem
     layer->setRenderingPass( pass );
     layer->setEnabled( enabled );
     layer->setUserFlags( userFlags );
+    layer->setSelectiveMaskingSourceSetId( selectiveMaskingSetId );
 
     // old project format, empty is missing, keep the actual layer one
     if ( !id.isEmpty() )
@@ -1528,6 +1530,8 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
     layerEl.setAttribute( u"id"_s, layer->id() );
     if ( layer->userFlags() != Qgis::SymbolLayerUserFlags() )
       layerEl.setAttribute( u"userFlags"_s, qgsFlagValueToKeys( layer->userFlags() ) );
+    if ( !layer->selectiveMaskingSourceSetId().isEmpty() )
+      layerEl.setAttribute( u"selectiveMaskingSet"_s, layer->selectiveMaskingSourceSetId() );
 
     QVariantMap props = layer->properties();
 

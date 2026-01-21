@@ -246,6 +246,7 @@ QgsSymbolLayer::QgsSymbolLayer( const QgsSymbolLayer &other )
   , mRenderingPass( other.mRenderingPass )
   , mId( other.mId )
   , mDataDefinedProperties( other.mDataDefinedProperties )
+  , mSelectiveMaskingSourceSetId( other.mSelectiveMaskingSourceSetId )
   , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
   , mFields( other.mFields )
   , mClipPath( other.mClipPath )
@@ -542,6 +543,7 @@ void QgsSymbolLayer::copyCommonProperties( QgsSymbolLayer *destLayer ) const
 {
   copyDataDefinedProperties( destLayer );
   copyPaintEffect( destLayer );
+  destLayer->mSelectiveMaskingSourceSetId = mSelectiveMaskingSourceSetId;
 }
 
 void QgsSymbolLayer::copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const
@@ -1012,6 +1014,16 @@ bool QgsMarkerSymbolLayer::writeSldMarker( QDomDocument &, QDomElement &, QgsSld
 QList<QgsSymbolLayerReference> QgsSymbolLayer::masks() const
 {
   return {};
+}
+
+QString QgsSymbolLayer::selectiveMaskingSourceSetId() const
+{
+  return mSelectiveMaskingSourceSetId;
+}
+
+void QgsSymbolLayer::setSelectiveMaskingSourceSetId( const QString &id )
+{
+  mSelectiveMaskingSourceSetId = id;
 }
 
 double QgsMarkerSymbolLayer::dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const

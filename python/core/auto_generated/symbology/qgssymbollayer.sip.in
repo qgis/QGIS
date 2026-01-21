@@ -703,6 +703,32 @@ layers of other layers that should be occluded.
 .. versionadded:: 3.12
 %End
 
+    QString selectiveMaskingSourceSetId() const;
+%Docstring
+Returns the selective masking source set ID for this symbol layer.
+
+If non-empty, the symbols from this symbol layer will be masked by
+objects from the matching selective masking source set (see
+:py:class:`QgsSelectiveMaskingSourceSetManager`).
+
+.. seealso:: :py:func:`setSelectiveMaskingSourceSetId`
+
+.. versionadded:: 4.0
+%End
+
+    void setSelectiveMaskingSourceSetId( const QString &id );
+%Docstring
+Sets the selective masking source set \id for this symbol layer.
+
+If non-empty, the symbols from this symbol layer will be masked by
+objects from the matching selective masking source set (see
+:py:class:`QgsSelectiveMaskingSourceSetManager`).
+
+.. seealso:: :py:func:`selectiveMaskingSourceSetId`
+
+.. versionadded:: 4.0
+%End
+
     virtual void prepareMasks( const QgsSymbolRenderContext &context );
 %Docstring
 Prepares all mask internal objects according to what is defined in
@@ -761,6 +787,7 @@ Constructor for QgsSymbolLayer.
 :param locked: if ``True``, then symbol layer colors will be locked and
                will ignore any symbol-level color changes.
 %End
+
 
 
 

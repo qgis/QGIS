@@ -661,6 +661,30 @@ class CORE_EXPORT QgsSymbolLayer
     virtual QList<QgsSymbolLayerReference> masks() const;
 
     /**
+     * Returns the selective masking source set ID for this symbol layer.
+     *
+     * If non-empty, the symbols from this symbol layer will be masked
+     * by objects from the matching selective masking source set
+     * (see QgsSelectiveMaskingSourceSetManager).
+     *
+     * \see setSelectiveMaskingSourceSetId()
+     * \since QGIS 4.0
+     */
+    QString selectiveMaskingSourceSetId() const;
+
+    /**
+     * Sets the selective masking source set \id for this symbol layer.
+     *
+     * If non-empty, the symbols from this symbol layer will be masked
+     * by objects from the matching selective masking source set
+     * (see QgsSelectiveMaskingSourceSetManager).
+     *
+     * \see selectiveMaskingSourceSetId()
+     * \since QGIS 4.0
+     */
+    void setSelectiveMaskingSourceSetId( const QString &id );
+
+    /**
      * Prepares all mask internal objects according to what is defined in \a context
      * This should be called prior to calling startRender() method.
      * \see QgsRenderContext::addSymbolLayerClipPath()
@@ -723,6 +747,8 @@ class CORE_EXPORT QgsSymbolLayer
     int mRenderingPass = 0;
     QString mId;
     QgsPropertyCollection mDataDefinedProperties;
+
+    QString mSelectiveMaskingSourceSetId;
 
     std::unique_ptr< QgsPaintEffect > mPaintEffect;
     QgsFields mFields;
