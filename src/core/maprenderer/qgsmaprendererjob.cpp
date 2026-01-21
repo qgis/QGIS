@@ -811,6 +811,18 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     layerJobMapping[job.layerId] = &job;
   }
 
+  const QHash<QString, QgsSelectiveMaskingSourceSet> selectiveMaskingSourceSets = mapSettings().selectiveMaskingSourceSets();
+
+  QVector< QgsVectorLayer * > allRenderedVectorLayers;
+  for ( LayerRenderJob &job : firstPassJobs )
+  {
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( job.layer );
+    if ( ! vl )
+      continue;
+
+    allRenderedVectorLayers << vl;
+  }
+
   // next, collate a master list of masked layers, skipping over any which refer to layers
   // which don't have a corresponding render job
   for ( LayerRenderJob &job : firstPassJobs )
@@ -850,7 +862,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     };
 
     // collect label masks
-    QHash<QString, QgsMaskedLayers> labelMasks = QgsVectorLayerUtils::labelMasks( vl );
+    QHash<QString, QgsMaskedLayers> labelMasks = QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( vl, selectiveMaskingSourceSets, allRenderedVectorLayers );
     for ( auto it = labelMasks.begin(); it != labelMasks.end(); it++ )
     {
       QString labelRule = it.key();
@@ -896,7 +908,7 @@ std::vector< LayerRenderJob > QgsMapRendererJob::prepareSecondPassJobs( std::vec
     }
 
     // collect symbol layer masks
-    const QgsMaskedLayers objectsToBeMaskedByLayer = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( vl );
+    const QgsMaskedLayers objectsToBeMaskedByLayer = QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( vl, selectiveMaskingSourceSets, allRenderedVectorLayers );
     collectMasks( objectsToBeMaskedByLayer, vl->id() );
   }
 
