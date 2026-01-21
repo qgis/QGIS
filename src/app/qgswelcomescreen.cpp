@@ -81,7 +81,6 @@ void QgsWelcomeScreenController::hideScene()
 QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
   : QQuickWidget( parent )
 {
-  setWindowFlag( Qt::SubWindow );
   setAttribute( Qt::WA_AlwaysStackOnTop );
   setAttribute( Qt::WA_TranslucentBackground );
   setClearColor( Qt::transparent );
