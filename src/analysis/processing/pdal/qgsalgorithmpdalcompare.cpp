@@ -75,29 +75,29 @@ void QgsPdalCompareAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
 
-  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT-COMPARE"_s, QObject::tr( "Compare layer" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT_COMPARE"_s, QObject::tr( "Compare layer" ) ) );
 
-  auto subsamplingCellSize = std::make_unique<QgsProcessingParameterNumber>( u"SUBSAMPLING-CELL-SIZE"_s, QObject::tr( "Subsampling cell size" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto subsamplingCellSize = std::make_unique<QgsProcessingParameterNumber>( u"SUBSAMPLING_CELL_SIZE"_s, QObject::tr( "Subsampling cell size" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   subsamplingCellSize->setHelp( QObject::tr( "Minimum spacing between points (in map units)." ) );
   addParameter( subsamplingCellSize.release() );
 
-  auto normalRadius = std::make_unique<QgsProcessingParameterNumber>( u"NORMAL-RADIUS"_s, QObject::tr( "Normal Radius" ), Qgis::ProcessingNumberParameterType::Double, 2.0 );
+  auto normalRadius = std::make_unique<QgsProcessingParameterNumber>( u"NORMAL_RADIUS"_s, QObject::tr( "Normal Radius" ), Qgis::ProcessingNumberParameterType::Double, 2.0 );
   normalRadius->setHelp( QObject::tr( "Radius of the sphere around each core point that defines the neighbors from which normals are calculated." ) );
   addParameter( normalRadius.release() );
 
-  auto cylRadius = std::make_unique<QgsProcessingParameterNumber>( u"CYL-RADIUS"_s, QObject::tr( "Cylinder Radius" ), Qgis::ProcessingNumberParameterType::Double, 2.0 );
+  auto cylRadius = std::make_unique<QgsProcessingParameterNumber>( u"CYLINDER_RADIUS"_s, QObject::tr( "Cylinder Radius" ), Qgis::ProcessingNumberParameterType::Double, 2.0 );
   cylRadius->setHelp( QObject::tr( "Radius of the cylinder inside of which points are searched for when calculating change." ) );
   addParameter( cylRadius.release() );
 
-  auto cylHalflen = std::make_unique<QgsProcessingParameterNumber>( u"CYL-HALFLEN"_s, QObject::tr( "Cylinder Half-Length" ), Qgis::ProcessingNumberParameterType::Double, 5.0 );
+  auto cylHalflen = std::make_unique<QgsProcessingParameterNumber>( u"CYLINDER_HALF_LENGTH"_s, QObject::tr( "Cylinder Half-Length" ), Qgis::ProcessingNumberParameterType::Double, 5.0 );
   cylHalflen->setHelp( QObject::tr( "The half-length of the cylinder of neighbors used for calculating change." ) );
   addParameter( cylHalflen.release() );
 
-  auto regError = std::make_unique<QgsProcessingParameterNumber>( u"REG-ERROR"_s, QObject::tr( "Registration Error" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto regError = std::make_unique<QgsProcessingParameterNumber>( u"REGISTRATION_ERROR"_s, QObject::tr( "Registration Error" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   regError->setHelp( QObject::tr( "The estimated registration error between the two point clouds." ) );
   addParameter( regError.release() );
 
-  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYL-ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << u"up"_s << u"origin"_s << u"none"_s, false, 0 );
+  auto cylOrientation = std::make_unique<QgsProcessingParameterEnum>( u"CYLINDER_ORIENTATION"_s, QObject::tr( "Cylinder Orientation" ), QStringList() << u"Up"_s << u"Origin"_s << u"None"_s, false, 0 );
   cylOrientation->setHelp( QObject::tr( "Which direction to orient the cylinder/normal vector used for comparison between the two point clouds." ) );
   addParameter( cylOrientation.release() );
 
@@ -112,9 +112,9 @@ bool QgsPdalCompareAlgorithm::checkParameterValues( const QVariantMap &parameter
   if ( !inputLayer )
     throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  QgsPointCloudLayer *inputCompareLayer = parameterAsPointCloudLayer( parameters, u"INPUT-COMPARE"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *inputCompareLayer = parameterAsPointCloudLayer( parameters, u"INPUT_COMPARE"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !inputCompareLayer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT-COMPARE"_s ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT_COMPARE"_s ) );
 
   const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
 
@@ -147,23 +147,23 @@ QStringList QgsPdalCompareAlgorithm::createArgumentLists( const QVariantMap &par
   if ( !inputLayer )
     throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  QgsPointCloudLayer *inputCompareLayer = parameterAsPointCloudLayer( parameters, u"INPUT-COMPARE"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *inputCompareLayer = parameterAsPointCloudLayer( parameters, u"INPUT_COMPARE"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !inputCompareLayer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT-COMPARE"_s ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT_COMPARE"_s ) );
 
-  const double subsamplingCellSize = parameterAsDouble( parameters, u"SUBSAMPLING-CELL-SIZE"_s, context );
-  const double normalRadius = parameterAsDouble( parameters, u"NORMAL-RADIUS"_s, context );
-  const double cylRadius = parameterAsDouble( parameters, u"CYL-RADIUS"_s, context );
-  const double cylHalflen = parameterAsDouble( parameters, u"CYL-HALFLEN"_s, context );
-  const double regError = parameterAsDouble( parameters, u"REG-ERROR"_s, context );
-  const QString cylOrientation = parameterAsEnumString( parameters, u"CYL-ORIENTATION"_s, context );
+  const double subsamplingCellSize = parameterAsDouble( parameters, u"SUBSAMPLING_CELL_SIZE"_s, context );
+  const double normalRadius = parameterAsDouble( parameters, u"NORMAL_RADIUS"_s, context );
+  const double cylRadius = parameterAsDouble( parameters, u"CYLINDER_RADIUS"_s, context );
+  const double cylHalflen = parameterAsDouble( parameters, u"CYLINDER_HALF_LENGTH"_s, context );
+  const double regError = parameterAsDouble( parameters, u"REGISTRATION_ERROR"_s, context );
+  const QString cylOrientation = parameterAsEnumString( parameters, u"CYLINDER_ORIENTATION"_s, context );
 
   const QString outputName = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
   QString outputFile = fixOutputFileName( inputLayer->source(), outputName, context );
   checkOutputFormat( inputLayer->source(), outputFile );
   setOutputValue( u"OUTPUT"_s, outputFile );
 
-  QStringList args = { u"compare"_s, u"--input=%1"_s.arg( inputLayer->source() ), u"--input-compare=%1"_s.arg( inputCompareLayer->source() ), u"--output=%1"_s.arg( outputFile ), u"--subsampling-cell-size=%1"_s.arg( subsamplingCellSize ), u"--normal-radius=%1"_s.arg( normalRadius ), u"--cyl-radius=%1"_s.arg( cylRadius ), u"--cyl-halflen=%1"_s.arg( cylHalflen ), u"--reg-error=%1"_s.arg( regError ), u"--cyl-orientation=%1"_s.arg( cylOrientation ) };
+  QStringList args = { u"compare"_s, u"--input=%1"_s.arg( inputLayer->source() ), u"--input-compare=%1"_s.arg( inputCompareLayer->source() ), u"--output=%1"_s.arg( outputFile ), u"--subsampling-cell-size=%1"_s.arg( subsamplingCellSize ), u"--normal-radius=%1"_s.arg( normalRadius ), u"--cyl-radius=%1"_s.arg( cylRadius ), u"--cyl-halflen=%1"_s.arg( cylHalflen ), u"--reg-error=%1"_s.arg( regError ), u"--cyl-orientation=%1"_s.arg( cylOrientation.toLower() ) };
 
   applyCommonParameters( args, inputLayer->crs(), parameters, context );
   applyThreadsParameter( args, context );
