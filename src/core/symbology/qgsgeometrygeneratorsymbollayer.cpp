@@ -206,8 +206,7 @@ QgsSymbolLayer *QgsGeometryGeneratorSymbolLayer::clone() const
   clone->setSymbolType( mSymbolType );
   clone->setUnits( mUnits );
 
-  copyDataDefinedProperties( clone );
-  copyPaintEffect( clone );
+  copyCommonProperties( clone );
 
   return clone;
 }

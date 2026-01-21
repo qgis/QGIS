@@ -774,12 +774,24 @@ Constructor for QgsSymbolLayer.
 Restores older data defined properties from string map.
 %End
 
+    void copyCommonProperties( QgsSymbolLayer *destLayer ) const;
+%Docstring
+Copies all common base class properties from this layer to another
+symbol layer.
+
+Includes data defined properties and paint effects.
+
+.. versionadded:: 4.0
+%End
+
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
 %Docstring
 Copies all data defined properties of this layer to another symbol
 layer.
 
 :param destLayer: destination layer
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
@@ -787,6 +799,8 @@ layer.
 Copies paint effect of this layer to another symbol layer
 
 :param destLayer: destination layer
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     void removeMasks( QgsRenderContext &context, bool recursive );

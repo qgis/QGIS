@@ -214,8 +214,7 @@ QgsLinearReferencingSymbolLayer *QgsLinearReferencingSymbolLayer::clone() const
   if ( mNumericFormat )
     res->mNumericFormat.reset( mNumericFormat->clone() );
 
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
+  copyCommonProperties( res.get() );
 
   return res.release();
 }

@@ -538,6 +538,12 @@ void QgsSymbolLayer::restoreOldDataDefinedProperties( const QVariantMap &stringM
   }
 }
 
+void QgsSymbolLayer::copyCommonProperties( QgsSymbolLayer *destLayer ) const
+{
+  copyDataDefinedProperties( destLayer );
+  copyPaintEffect( destLayer );
+}
+
 void QgsSymbolLayer::copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const
 {
   if ( !destLayer )
