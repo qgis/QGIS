@@ -64,6 +64,10 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 1 );
   }
 
+  mGeospatialPDFCustomConfigRadioButton->setChecked( true );
+  mGeospatialPDFCustomConfigFrame->setEnabled( true );
+  connect( mGeospatialPDFQgisConfigRadioButton, &QRadioButton::toggled, this, &QgsLayoutPdfExportOptionsDialog::toggleQgisConfig );
+
   mComboImageCompression->addItem( tr( "Lossy (JPEG)" ), false );
   mComboImageCompression->addItem( tr( "Lossless" ), true );
 
@@ -203,6 +207,23 @@ bool QgsLayoutPdfExportOptionsDialog::exportGeospatialPdf() const
   return mGeospatialPDFGroupBox->isChecked();
 }
 
+void QgsLayoutPdfExportOptionsDialog::setUseQgisLayerTreeConfig( bool enabled )
+{
+  if ( !mGeospatialPdfAvailable )
+    return;
+
+  mGeospatialPDFQgisConfigRadioButton->setChecked( enabled );
+  mGeospatialPDFCustomConfigFrame->setEnabled( !enabled );
+}
+
+bool QgsLayoutPdfExportOptionsDialog::useQgisLayerTreeConfig() const
+{
+  if ( !mGeospatialPdfAvailable )
+    return false;
+
+  return mGeospatialPDFQgisConfigRadioButton->isChecked();
+}
+
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
 {
   if ( !mGeospatialPdfAvailable )
@@ -305,4 +326,9 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( 
   {
     mGeospatialPdfStructureTreeMenu->exec( mGeospatialPdfStructureTree->mapToGlobal( point ) );
   }
+}
+
+void QgsLayoutPdfExportOptionsDialog::toggleQgisConfig()
+{
+  mGeospatialPDFCustomConfigFrame->setEnabled( !mGeospatialPDFQgisConfigRadioButton->isChecked() );
 }
