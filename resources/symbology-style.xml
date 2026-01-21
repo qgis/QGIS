@@ -5742,16 +5742,6 @@
                 <Option name="type" type="int" value="1"/>
                 <Option name="val" type="QString" value=""/>
               </Option>
-              <Option name="trimEnd" type="Map">
-                <Option name="active" type="bool" value="false"/>
-                <Option name="expression" type="QString" value="(($length/@map_scale*1000)-9)%6/2+4.5"/>
-                <Option name="type" type="int" value="3"/>
-              </Option>
-              <Option name="trimStart" type="Map">
-                <Option name="active" type="bool" value="false"/>
-                <Option name="expression" type="QString" value="(($length/@map_scale*1000))%6/2+4.5"/>
-                <Option name="type" type="int" value="3"/>
-              </Option>
             </Option>
             <Option name="type" type="QString" value="collection"/>
           </Option>
