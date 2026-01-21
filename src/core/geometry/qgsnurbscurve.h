@@ -325,8 +325,8 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      *
      * The generated knot vector has size = numControlPoints + degree + 1, with:
      *
-     * - First (degree+1) knots equal to 0
-     * - Last (degree+1) knots equal to 1
+     * - The first (degree + 1) knots are set to 0.0 (indices 0 to degree).
+     * - The last (degree + 1) knots are set to 1.0 (indices numControlPoints to numControlPoints + degree).
      * - Interior knots uniformly spaced
      *
      * \param numControlPoints number of control points
@@ -370,8 +370,8 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * Generates a uniform knot vector based on current degree and control points count.
      * Clears the existing knot vector and generates a new one following the formula:
      *
-     * - First (degree+1) knots are 0
-     * - Last (degree+1) knots are 1
+     * - The first (degree + 1) knots are set to 0.0 (indices 0 to degree).
+     * - The last (degree + 1) knots are set to 1.0 (indices numControlPoints to numControlPoints + degree).
      * - Interior knots are uniformly spaced
      */
     void generateUniformKnots();

@@ -352,8 +352,9 @@ Generates a uniform clamped knot vector for a NURBS curve.
 The generated knot vector has size = numControlPoints + degree + 1,
 with:
 
-- First (degree+1) knots equal to 0
-- Last (degree+1) knots equal to 1
+- The first (degree + 1) knots are set to 0.0 (indices 0 to degree).
+- The last (degree + 1) knots are set to 1.0 (indices numControlPoints
+  to numControlPoints + degree).
 - Interior knots uniformly spaced
 
 :param numControlPoints: number of control points
