@@ -227,7 +227,9 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     removed_imports = defaultdict(set)
     import_offsets = {}
     has_unfixed_errors = False  # True if there is at least one error impossible to fix
-    fix_full_enums = {}  # Full replacements for enums (Owner.Value -> Fully.Qualified.Value)
+    fix_full_enums = (
+        {}
+    )  # Full replacements for enums (Owner.Value -> Fully.Qualified.Value)
     object_types = {}
 
     def visit_assign(_node: ast.Assign, _parent):
@@ -527,7 +529,10 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 off = Offset(node.lineno, node.col_offset)
 
                 # Special-case for QGIS Processing enums: suggested owner is wrong
-                if node.value.id == "QgsProcessing" and enum_type == "ProcessingSourceType":
+                if (
+                    node.value.id == "QgsProcessing"
+                    and enum_type == "ProcessingSourceType"
+                ):
                     if qgis3_compat:
                         fix_full_enums[off] = f"QgsProcessing.SourceType.{node.attr}"
 
@@ -540,9 +545,13 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                     and enum_type == "ProcessingNumberParameterType"
                 ):
                     if qgis3_compat:
-                        fix_full_enums[off] = f"QgsProcessingParameterNumber.Type.{node.attr}"
+                        fix_full_enums[off] = (
+                            f"QgsProcessingParameterNumber.Type.{node.attr}"
+                        )
                     else:
-                        fix_full_enums[off] = f"Qgis.ProcessingNumberParameterType.{node.attr}"
+                        fix_full_enums[off] = (
+                            f"Qgis.ProcessingNumberParameterType.{node.attr}"
+                        )
                     continue
 
                 fix_qt_enums[off] = (
@@ -550,7 +559,6 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                     enum_type,
                     node.attr,
                 )
-
 
             if (
                 isinstance(node, ast.Attribute)
@@ -574,8 +582,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 f"{filename}: Missing import, manually add {import_statement}"
             )
             has_unfixed_errors = True
-   
-    
+
     if dry_run:
         for key, value in fix_qt_enums.items():
             logging.warning(
@@ -644,7 +651,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         # Special-case: QGIS Processing enums have wrong suggested owner
         # Replace "QgsProcessing.TypeVectorLine" -> "QgsProcessing.SourceType.TypeVectorLine"
         # Replace "QgsProcessingParameterNumber.Double" -> "QgsProcessingParameterNumber.Type.Double"
-        
+
         if token.offset in fix_full_enums:
             # Replace "Owner.Value" with full qualified name
             # tokens[i] should be Owner, tokens[i+1] '.', tokens[i+2] Value

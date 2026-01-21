@@ -1,20 +1,16 @@
 import shutil
 import subprocess
 import sys
-from pathlib import Path
 import tempfile
+
+from pathlib import Path
 
 
 def test_processing_enums_are_rewritten():
     repo_root = Path(__file__).resolve().parents[3]  # .../QGIS
     script = repo_root / "scripts" / "pyqt5_to_pyqt6" / "pyqt5_to_pyqt6.py"
     fixture_dir = (
-        repo_root
-        / "scripts"
-        / "pyqt5_to_pyqt6"
-        / "tests"
-        / "fixtures"
-        / "repro"
+        repo_root / "scripts" / "pyqt5_to_pyqt6" / "tests" / "fixtures" / "repro"
     )
 
     assert script.exists(), f"Missing script: {script}"
