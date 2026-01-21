@@ -242,6 +242,8 @@ distance comparison
 Multiply x and y by the given value
 %End
 
+    bool operator<( const QgsPointXY &other ) const /HoldGIL/;
+
 
     QgsVector operator-( const QgsPointXY &p ) const;
 

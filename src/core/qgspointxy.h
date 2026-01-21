@@ -301,6 +301,34 @@ class CORE_EXPORT QgsPointXY
       mY *= scalar;
     }
 
+    /**
+     * Compares if this point is less than other point
+     * \param other point to compare with
+     *
+     * Points are ordered first by x coordinate, then by y coordinate.
+     *
+     * \since QGIS 4.0
+     */
+    bool operator<( const QgsPointXY &other ) const SIP_HOLDGIL
+    {
+      constexpr double epsilon = 1E-8;
+
+      // Handle empty points: empty points are "less than" non-empty points
+      if ( isEmpty() && !other.isEmpty() )
+        return true;
+      if ( !isEmpty() && other.isEmpty() )
+        return false;
+      if ( isEmpty() && other.isEmpty() )
+        return false;
+
+      if ( mX < other.mX - epsilon )
+        return true;
+      if ( mX > other.mX + epsilon )
+        return false;
+
+      return mY < other.mY - epsilon;
+    }
+
     QgsPointXY &operator=( const QgsPointXY &other ) SIP_HOLDGIL
     {
       if ( &other != this )
