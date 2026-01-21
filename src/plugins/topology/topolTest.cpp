@@ -115,7 +115,7 @@ ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer 
   QgsPointXY startPoint;
   QgsPointXY endPoint;
 
-  std::multimap<QgsPointXY, QgsFeatureId, PointComparer> endVerticesMap;
+  std::multimap<QgsPointXY, QgsFeatureId> endVerticesMap;
 
   for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
@@ -165,7 +165,7 @@ ErrorList topolTest::checkDanglingLines( QgsVectorLayer *layer1, QgsVectorLayer 
   const QgsGeometry canvasExtentPoly = QgsGeometry::fromRect( qgsInterface->mapCanvas()->extent() );
 
 
-  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
+  for ( std::multimap<QgsPointXY, QgsFeatureId>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
   {
     const QgsPointXY p = pointIt->first;
     const QgsFeatureId k = pointIt->second;
@@ -580,7 +580,7 @@ ErrorList topolTest::checkPseudos( QgsVectorLayer *layer1, QgsVectorLayer *layer
   QgsPointXY startPoint;
   QgsPointXY endPoint;
 
-  std::multimap<QgsPointXY, QgsFeatureId, PointComparer> endVerticesMap;
+  std::multimap<QgsPointXY, QgsFeatureId> endVerticesMap;
 
   for ( it = mFeatureList1.begin(); it != mFeatureList1.end(); ++it )
   {
@@ -631,7 +631,7 @@ ErrorList topolTest::checkPseudos( QgsVectorLayer *layer1, QgsVectorLayer *layer
   const QgsGeometry canvasExtentPoly = QgsGeometry::fromRect( qgsInterface->mapCanvas()->extent() );
 
 
-  for ( std::multimap<QgsPointXY, QgsFeatureId, PointComparer>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
+  for ( std::multimap<QgsPointXY, QgsFeatureId>::iterator pointIt = endVerticesMap.begin(), end = endVerticesMap.end(); pointIt != end; pointIt = endVerticesMap.upper_bound( pointIt->first ) )
   {
     const QgsPointXY p = pointIt->first;
     const QgsFeatureId k = pointIt->second;

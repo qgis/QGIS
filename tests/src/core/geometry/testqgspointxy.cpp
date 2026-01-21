@@ -12,6 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <algorithm>
+
 #include "qgstest.h"
 
 #include <QApplication>
@@ -54,6 +56,7 @@ class TestQgsPointXY : public QgsTest
     void asVariant();
     void referenced();
     void isEmpty();
+    void lessThanOperator();
 
   private:
     QgsPointXY mPoint1;
@@ -378,6 +381,95 @@ void TestQgsPointXY::isEmpty()
   // "can't" be empty
   QVERIFY( !QgsPointXY( QPoint() ).isEmpty() );
   QVERIFY( !QgsPointXY( QPointF() ).isEmpty() );
+}
+
+void TestQgsPointXY::lessThanOperator()
+{
+  // Test basic comparison - different x coordinates
+  QgsPointXY p1( 1.0, 2.0 );
+  QgsPointXY p2( 3.0, 2.0 );
+  QVERIFY( p1 < p2 );
+  QVERIFY( !( p2 < p1 ) );
+
+  // Test comparison with same x, different y
+  QgsPointXY p3( 1.0, 1.0 );
+  QgsPointXY p4( 1.0, 3.0 );
+  QVERIFY( p3 < p4 );
+  QVERIFY( !( p4 < p3 ) );
+
+  // Test identical points
+  QgsPointXY p5( 1.0, 2.0 );
+  QgsPointXY p6( 1.0, 2.0 );
+  QVERIFY( !( p5 < p6 ) );
+  QVERIFY( !( p6 < p5 ) );
+
+  // Test with negative coordinates
+  QgsPointXY p7( -1.0, 2.0 );
+  QgsPointXY p8( 1.0, -2.0 );
+  QVERIFY( p7 < p8 );
+  QVERIFY( !( p8 < p7 ) );
+
+  // Test with floating point precision
+  QgsPointXY p9( 1.0000001, 2.0 );
+  QgsPointXY p10( 1.0000002, 2.0 );
+  QVERIFY( p9 < p10 );
+  QVERIFY( !( p10 < p9 ) );
+
+  // Test with epsilon tolerance - points very close
+  QgsPointXY p11( 1.0, 2.0 );
+  QgsPointXY p12( 1.0 + 0.5e-8, 2.0 ); // Within epsilon of 1e-8
+  QVERIFY( !( p11 < p12 ) );
+  QVERIFY( !( p12 < p11 ) );
+
+  // Test with same x but y within epsilon
+  QgsPointXY p13( 1.0, 2.0 );
+  QgsPointXY p14( 1.0, 2.0 + 0.5e-8 ); // Within epsilon of 1e-8
+  QVERIFY( !( p13 < p14 ) );
+  QVERIFY( !( p14 < p13 ) );
+
+  // Default constructed points have coordinates (0,0) and are not empty
+  QgsPointXY pointA( 1.0, 2.0 );
+
+  QgsPointXY emptyPoint = QgsPointXY();
+  QVERIFY( emptyPoint.isEmpty() );
+
+  // Empty point should be "less than" non-empty point
+  QVERIFY( emptyPoint < pointA );
+  QVERIFY( !( pointA < emptyPoint ) );
+
+  // Two empty points should not be less than each other
+  QgsPointXY emptyPoint2 = QgsPointXY();
+  QVERIFY( emptyPoint2.isEmpty() );
+  QVERIFY( !( emptyPoint < emptyPoint2 ) );
+  QVERIFY( !( emptyPoint2 < emptyPoint ) );
+
+  // Test consistency with sorting logic: x coordinate first, then y coordinate
+  QgsPointXY origin( 0.0, 0.0 );
+  QgsPointXY right( 1.0, 0.0 );
+  QgsPointXY left( -1.0, 0.0 );
+  QgsPointXY up( 0.0, 1.0 );
+  QgsPointXY down( 0.0, -1.0 );
+
+  QVERIFY( left < origin );
+  QVERIFY( origin < right );
+  QVERIFY( down < origin );
+  QVERIFY( origin < up );
+
+  QVERIFY( left < right );
+
+  QVERIFY( down < up );
+
+  // Additional test to ensure the ordering is consistent with intended sort behavior
+  QVector<QgsPointXY> points = { right, left, up, down, origin };
+  std::sort( points.begin(), points.end() );
+
+  QVector<QgsPointXY> expectedOrder = { left, down, origin, up, right };
+
+  for ( int i = 0; i < points.size(); ++i )
+  {
+    QVERIFY( !( points[i] < expectedOrder[i] ) );
+    QVERIFY( !( expectedOrder[i] < points[i] ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsPointXY )

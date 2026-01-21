@@ -70,29 +70,6 @@ class TopologyRule
     {}
 };
 
-/**
- * helper class to pass as comparator to map,set etc..
-  */
-class PointComparer
-{
-  public:
-    bool operator()( const QgsPointXY &p1, const QgsPointXY &p2 ) const
-    {
-      if ( p1.x() < p2.x() )
-      {
-        return true;
-      }
-
-      if ( p1.x() == p2.x() && p1.y() < p2.y() )
-      {
-        return true;
-      }
-
-      return false;
-    }
-};
-
-
 class topolTest : public QObject
 {
     Q_OBJECT
