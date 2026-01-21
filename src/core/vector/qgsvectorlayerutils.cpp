@@ -1194,7 +1194,9 @@ QgsMaskedLayers QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer
           // recurse over sub symbols
           const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
           if ( subSymbol )
-            slHasEffects |= visitSymbol( subSymbol );
+          {
+            slHasEffects = visitSymbol( subSymbol ) || slHasEffects;
+          }
 
           for ( const QgsSymbolLayerReference &thingToMask : sl->masks() )
           {
