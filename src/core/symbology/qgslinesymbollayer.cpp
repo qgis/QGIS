@@ -581,8 +581,7 @@ QgsSimpleLineSymbolLayer *QgsSimpleLineSymbolLayer::clone() const
   l->setAlignDashPattern( mAlignDashPattern );
   l->setTweakDashPatternOnCorners( mPatternCartographicTweakOnSharpCorners );
 
-  copyDataDefinedProperties( l );
-  copyPaintEffect( l );
+  copyCommonProperties( l );
   return l;
 }
 
@@ -1556,8 +1555,7 @@ void QgsTemplatedLineSymbolLayerBase::copyTemplateSymbolProperties( QgsTemplated
   destLayer->setRingFilter( mRingFilter );
   destLayer->setPlaceOnEveryPart( mPlaceOnEveryPart );
 
-  copyDataDefinedProperties( destLayer );
-  copyPaintEffect( destLayer );
+  copyCommonProperties( destLayer );
 }
 
 void QgsTemplatedLineSymbolLayerBase::setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties )
@@ -3501,8 +3499,7 @@ QgsRasterLineSymbolLayer *QgsRasterLineSymbolLayer::clone() const
   res->setOffsetMapUnitScale( mOffsetMapUnitScale );
   res->setOffset( mOffset );
   res->setOpacity( mOpacity );
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
+  copyCommonProperties( res.get() );
   return res.release();
 }
 
@@ -3768,8 +3765,7 @@ QgsLineburstSymbolLayer *QgsLineburstSymbolLayer::clone() const
   res->setGradientColorType( mGradientColorType );
   if ( mGradientRamp )
     res->setColorRamp( mGradientRamp->clone() );
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
+  copyCommonProperties( res.get() );
   return res.release();
 }
 
@@ -4143,8 +4139,7 @@ QVariantMap QgsFilledLineSymbolLayer::properties() const
 QgsFilledLineSymbolLayer *QgsFilledLineSymbolLayer::clone() const
 {
   std::unique_ptr< QgsFilledLineSymbolLayer > res( qgis::down_cast< QgsFilledLineSymbolLayer * >( QgsFilledLineSymbolLayer::create( properties() ) ) );
-  copyPaintEffect( res.get() );
-  copyDataDefinedProperties( res.get() );
+  copyCommonProperties( res.get() );
   res->setSubSymbol( mFill->clone() );
   return res.release();
 }

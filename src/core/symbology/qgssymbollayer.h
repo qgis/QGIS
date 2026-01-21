@@ -744,14 +744,27 @@ class CORE_EXPORT QgsSymbolLayer
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 
     /**
+     * Copies all common base class properties from this layer to another symbol layer.
+     *
+     * Includes data defined properties and paint effects.
+     *
+     * \since QGIS 4.0
+     */
+    void copyCommonProperties( QgsSymbolLayer *destLayer ) const;
+
+    /**
      * Copies all data defined properties of this layer to another symbol layer.
      * \param destLayer destination layer
+     *
+     * \see copyCommonProperties()
      */
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
 
     /**
      * Copies paint effect of this layer to another symbol layer
      * \param destLayer destination layer
+     *
+     * \see copyCommonProperties()
      */
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 
