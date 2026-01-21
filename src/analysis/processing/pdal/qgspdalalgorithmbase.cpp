@@ -179,6 +179,14 @@ class EnableElevationPropertiesPostProcessor : public QgsProcessingLayerPostProc
 QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
+
+  runWrenchProcess( processArgs, feedback );
+
+  return getOutputs( parameters, context );
+}
+
+void QgsPdalAlgorithmBase::runWrenchProcess( const QStringList &processArgs, QgsProcessingFeedback *feedback )
+{
   const QString wrenchPath = wrenchExecutableBinary();
 
   if ( !QFileInfo::exists( wrenchPath ) )
@@ -271,7 +279,10 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   {
     throw QgsProcessingException( QObject::tr( "Process returned error code %1" ).arg( res ) );
   }
+}
 
+QVariantMap QgsPdalAlgorithmBase::getOutputs( const QVariantMap &parameters, QgsProcessingContext &context )
+{
   QVariantMap outputs;
   QgsProcessingOutputDefinitions outDefinitions = outputDefinitions();
   for ( const QgsProcessingOutputDefinition *output : outDefinitions )
@@ -298,7 +309,6 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
 
   return outputs;
 }
-
 QgsPointCloudLayer *QgsPdalAlgorithmBase::parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const
 {
   QgsPointCloudLayer *layer = QgsProcessingParameters::parameterAsPointCloudLayer( parameterDefinition( name ), parameters, context, flags );
