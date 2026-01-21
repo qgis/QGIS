@@ -221,9 +221,9 @@ QString QgsCustomization::QgsItem::readXml( const QDomElement &elem )
   return QString();
 }
 
-bool QgsCustomization::QgsItem::hasCapability( QgsCustomization::QgsItem::ItemCapability pcapability ) const
+bool QgsCustomization::QgsItem::hasCapability( QgsCustomization::QgsItem::ItemCapability capability ) const
 {
-  return static_cast<int>( capabilities() ) & static_cast<int>( pcapability );
+  return static_cast<int>( capabilities() ) & static_cast<int>( capability );
 }
 
 std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsItem::createChildItem( const QDomElement & )
@@ -328,9 +328,7 @@ void QgsCustomization::QgsActionItem::copyItemAttributes( const QgsItem *other )
 
 QgsCustomization::QgsItem::ItemCapability QgsCustomization::QgsActionItem::capabilities() const
 {
-  return static_cast<ItemCapability>(
-    static_cast<int>( ItemCapability::Drag )
-  );
+  return ItemCapability::Drag;
 }
 
 ////////////////
@@ -376,9 +374,7 @@ void QgsCustomization::QgsActionRefItem::writeXmlItem( QDomElement &elem ) const
 
 QgsCustomization::QgsItem::ItemCapability QgsCustomization::QgsActionRefItem::capabilities() const
 {
-  return static_cast<ItemCapability>(
-    static_cast<int>( ItemCapability::Delete )
-  );
+  return ItemCapability::Delete;
 };
 
 void QgsCustomization::QgsActionRefItem::copyItemAttributes( const QgsItem *other )
@@ -423,7 +419,7 @@ std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsMenuItem::create
 
 QgsCustomization::QgsItem::ItemCapability QgsCustomization::QgsMenuItem::capabilities() const
 {
-  return static_cast<ItemCapability>( ItemCapability::None );
+  return ItemCapability::None;
 }
 
 ////////////////
@@ -439,8 +435,8 @@ QgsCustomization::QgsUserMenuItem::QgsUserMenuItem( const QString &name, const Q
 QgsCustomization::QgsItem::ItemCapability QgsCustomization::QgsUserMenuItem::capabilities() const
 {
   return static_cast<ItemCapability>(
-    static_cast<int>( ItemCapability::ActionRefChild )
-    | static_cast<int>( ItemCapability::UserMenuChild )
+    static_cast<int>( ItemCapability::AddActionRefChild )
+    | static_cast<int>( ItemCapability::AddUserMenuChild )
     | static_cast<int>( ItemCapability::Rename )
     | static_cast<int>( ItemCapability::Delete )
   );
@@ -571,7 +567,7 @@ std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsUserToolBarItem:
 QgsCustomization::QgsItem::ItemCapability QgsCustomization::QgsUserToolBarItem::capabilities() const
 {
   return static_cast<ItemCapability>(
-    static_cast<int>( ItemCapability::ActionRefChild )
+    static_cast<int>( ItemCapability::AddActionRefChild )
     | static_cast<int>( ItemCapability::Rename )
     | static_cast<int>( ItemCapability::Delete )
   );
@@ -610,9 +606,7 @@ std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsToolBarsItem::cr
 
 QgsCustomization::QgsItem::ItemCapability QgsCustomization::QgsToolBarsItem::capabilities() const
 {
-  return static_cast<ItemCapability>(
-    static_cast<int>( ItemCapability::UserToolBarChild )
-  );
+  return ItemCapability::AddUserToolBarChild;
 }
 
 ////////////////
@@ -648,9 +642,7 @@ std::unique_ptr<QgsCustomization::QgsItem> QgsCustomization::QgsMenusItem::creat
 
 QgsCustomization::QgsItem::ItemCapability QgsCustomization::QgsMenusItem::capabilities() const
 {
-  return static_cast<ItemCapability>(
-    static_cast<int>( ItemCapability::UserMenuChild )
-  );
+  return ItemCapability::AddUserMenuChild;
 }
 
 ////////////////
@@ -1229,7 +1221,8 @@ QWidget *QgsCustomization::findQWidget( const QString &path )
   if ( pathElems.isEmpty() )
     return nullptr;
 
-  const QHash<QString, QWidget *> rootWidgets = { { "Menus", QgisApp::instance()->menuBar() }, { "ToolBars", QgisApp::instance() }, { "Docks", QgisApp::instance() }, { "StatusBarWidgets", QgisApp::instance()->statusBarIface() } };
+  QgisApp *app = QgisApp::instance();
+  const QHash<QString, QWidget *> rootWidgets = { { "Menus", app->menuBar() }, { "ToolBars", app }, { "Docks", app }, { "StatusBarWidgets", app->statusBarIface() } };
 
   const QString rootElem = pathElems.takeFirst();
   QWidget *currentWidget = rootWidgets.value( rootElem );
@@ -1242,9 +1235,9 @@ QWidget *QgsCustomization::findQWidget( const QString &path )
          || dynamic_cast<QMenu *>( currentWidget )
          || dynamic_cast<QMenuBar *>( currentWidget ) )
     {
-      QgsCustomization::QgsQActionsIterator actionsIterator( currentWidget );
+      QgsQActionsIterator actionsIterator( currentWidget );
       currentWidget = nullptr;
-      for ( QgsCustomization::QgsQActionsIterator::Info it : actionsIterator )
+      for ( QgsQActionsIterator::Info it : actionsIterator )
       {
         if ( it.name == pathElem )
         {
@@ -1257,7 +1250,7 @@ QWidget *QgsCustomization::findQWidget( const QString &path )
     {
       QList<QObject *> children = currentWidget->children();
       QList<QObject *>::const_iterator it = std::find_if( children.cbegin(), children.cend(), [&pathElem]( QObject *obj ) { return dynamic_cast<QWidget *>( obj ) && obj->objectName() == pathElem; } );
-      currentWidget = dynamic_cast<QWidget *>( *it );
+      currentWidget = it == children.cend() ? nullptr : dynamic_cast<QWidget *>( *it );
     }
 
     if ( !currentWidget )
@@ -1269,10 +1262,6 @@ QWidget *QgsCustomization::findQWidget( const QString &path )
 
 QAction *QgsCustomization::findQAction( const QString &path )
 {
-  QStringList pathElems = path.split( "/" );
-  if ( pathElems.isEmpty() )
-    return nullptr;
-
   qsizetype lastSlashIndex = path.lastIndexOf( "/" );
   if ( lastSlashIndex < 0 )
     return nullptr;
@@ -1697,7 +1686,7 @@ void QgsCustomization::loadOldIniFile( const QString &filePath )
   settings.endGroup();
 }
 
-int maxSuffixNum( const QgsCustomization::QgsItem *item, const QString &baseName )
+static int maxSuffixNum( const QgsCustomization::QgsItem *item, const QString &baseName )
 {
   int max = 0;
 
@@ -1746,7 +1735,7 @@ QString QgsCustomization::uniqueActionName( const QString &originalActionName ) 
 
 QgsCustomization::QgsItem *QgsCustomization::getItem( const QString &path ) const
 {
-  QStringList pathElems = path.split( "/" );
+  const QStringList pathElems = path.split( "/" );
   if ( pathElems.isEmpty() )
     return nullptr;
 

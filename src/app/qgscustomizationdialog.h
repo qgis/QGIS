@@ -23,6 +23,7 @@
 #include "qgssettingstree.h"
 
 class QgisApp;
+class QSortFilterProxyModel;
 
 /**
  * \ingroup app
@@ -148,7 +149,15 @@ class APP_EXPORT QgsCustomizationDialog : public QMainWindow, private Ui::QgsCus
      */
     bool selectWidget( QWidget *widget );
 
-    const std::unique_ptr<QgsCustomization> &customization() const;
+    /**
+     * Returns current customization object
+     */
+    QgsCustomization *customization() const;
+
+    /**
+     * Returns items visibility tree view sort filter proxy model
+     */
+    QSortFilterProxyModel *treeViewModel() const;
 
     /**
      * \ingroup app

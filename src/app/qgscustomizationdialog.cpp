@@ -275,18 +275,18 @@ QModelIndex QgsCustomizationDialog::QgsCustomizationModel::addUserItem( const QM
 {
   QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
 
-  if ( !item || ( !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::UserMenuChild ) && !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::UserToolBarChild ) ) )
+  if ( !item || ( !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) && !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) ) )
     return {};
 
   const int nbChildren = static_cast<int>( item->childItemList().size() );
   beginInsertRows( parent, nbChildren, nbChildren );
 
-  if ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::UserMenuChild ) )
+  if ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) )
   {
     const QString name = mCustomization->uniqueMenuName();
     item->addChild( std::make_unique<QgsCustomization::QgsUserMenuItem>( name, name, item ) );
   }
-  else if ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::UserToolBarChild ) )
+  else if ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) )
   {
     const QString name = mCustomization->uniqueToolBarName();
     item->addChild( std::make_unique<QgsCustomization::QgsUserToolBarItem>( name, name, item ) );
@@ -309,7 +309,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::deleteUserItems( const QMode
   for ( const QModelIndex &index : indexes )
   {
     QgsCustomization::QgsItem *item = index.isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
-    allAcceptDelete = item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Delete );
+    allAcceptDelete = item && item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Delete );
     if ( !allAcceptDelete )
       break;
 
@@ -320,7 +320,7 @@ void QgsCustomizationDialog::QgsCustomizationModel::deleteUserItems( const QMode
   if ( !allAcceptDelete )
     return;
 
-  // We need to remove item which parent is already in deleted list
+  // We need to remove all items whose parent is already in deleted list
   std::function<bool( QgsCustomization::QgsItem * )> alreadyDeleted = [&alreadyDeleted, &toDelete]( QgsCustomization::QgsItem *item ) {
     return item && ( toDelete.contains( item->parent() ) || alreadyDeleted( item->parent() ) );
   };
@@ -388,7 +388,7 @@ bool QgsCustomizationDialog::QgsCustomizationModel::canDropMimeData( const QMime
   // QgsCustomization::Item *item = parent.isValid() ? static_cast<QgsCustomization::Item *>( parent.internalPointer() ) : nullptr;
   return ( action == Qt::DropAction::LinkAction || action == Qt::DropAction::MoveAction || action == Qt::DropAction::CopyAction )
          // TODO Qt issue https://qt-project.atlassian.net/browse/QTBUG-76418?focusedCommentId=465643
-         // canDropMimeData() doesn't work if the reslt value differs from on index to another, specially
+         // canDropMimeData() doesn't work if the result value differs from one index to another, specially
          // when we start with a cannot-drop-item after we start dragging
          // Try to see if we can workaround thin in dragEnterEvent
          // uncomment the following lines when fixed
@@ -402,7 +402,7 @@ bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeDat
     return true;
 
   QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
-  if ( !item || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::ActionRefChild ) || !data || !data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) ) )
+  if ( !item || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddActionRefChild ) || !data || !data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) ) )
     return false;
 
   QDataStream dataStreamRead( data->data( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) ) );
@@ -627,10 +627,10 @@ void QgsCustomizationDialog::showHelp()
 
 void QgsCustomizationDialog::currentItemChanged()
 {
-  const QModelIndex index = static_cast<QSortFilterProxyModel *>( mTreeView->model() )->mapToSource( mTreeView->currentIndex() );
+  const QModelIndex index = treeViewModel()->mapToSource( mTreeView->currentIndex() );
   QgsCustomization::QgsItem *item = index.isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
 
-  const bool isEnabled = item && ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::UserMenuChild ) || item->hasCapability( QgsCustomization::QgsItem::ItemCapability::UserToolBarChild ) );
+  const bool isEnabled = item && ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) || item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) );
   mAddAction->setEnabled( isEnabled );
 
   QString tooltip = tr( "Add a user defined menu or toolbar" );
@@ -645,9 +645,9 @@ void QgsCustomizationDialog::selectedItemsChanged()
   bool allAcceptDelete = false;
   for ( const QModelIndex &index : mTreeView->selectionModel()->selectedIndexes() )
   {
-    const QModelIndex sourceIndex = static_cast<QSortFilterProxyModel *>( mTreeView->model() )->mapToSource( index );
+    const QModelIndex sourceIndex = treeViewModel()->mapToSource( index );
     QgsCustomization::QgsItem *item = sourceIndex.isValid() ? static_cast<QgsCustomization::QgsItem *>( sourceIndex.internalPointer() ) : nullptr;
-    allAcceptDelete = item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Delete );
+    allAcceptDelete = item && item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Delete );
     if ( !allAcceptDelete )
       break;
   }
@@ -663,9 +663,9 @@ void QgsCustomizationDialog::selectedItemsChanged()
 
 void QgsCustomizationDialog::addUserItem()
 {
-  const QModelIndex parentIndex = static_cast<QSortFilterProxyModel *>( mTreeView->model() )->mapToSource( mTreeView->selectionModel()->currentIndex() );
+  const QModelIndex parentIndex = treeViewModel()->mapToSource( mTreeView->selectionModel()->currentIndex() );
   const QModelIndex userItemIndex = mItemsVisibilityModel->addUserItem( parentIndex );
-  const QModelIndex viewUserItemIndex = static_cast<QSortFilterProxyModel *>( mTreeView->model() )->mapFromSource( userItemIndex );
+  const QModelIndex viewUserItemIndex = treeViewModel()->mapFromSource( userItemIndex );
   mTreeView->scrollTo( viewUserItemIndex );
   mTreeView->setCurrentIndex( viewUserItemIndex );
 }
@@ -675,7 +675,7 @@ void QgsCustomizationDialog::deleteSelectedItems()
   QModelIndexList sourceIndexes;
   for ( const QModelIndex &index : mTreeView->selectionModel()->selectedIndexes() )
   {
-    sourceIndexes << static_cast<QSortFilterProxyModel *>( mTreeView->model() )->mapToSource( index );
+    sourceIndexes << treeViewModel()->mapToSource( index );
   }
 
   mItemsVisibilityModel->deleteUserItems( sourceIndexes );
@@ -741,7 +741,7 @@ bool QgsCustomizationDialog::selectWidget( QWidget *widget )
   if ( items.isEmpty() )
     return false;
 
-  const QModelIndex currentIndex = static_cast<QSortFilterProxyModel *>( mTreeView->model() )->mapFromSource( items.first() );
+  const QModelIndex currentIndex = treeViewModel()->mapFromSource( items.first() );
   mTreeView->selectionModel()->setCurrentIndex( currentIndex, QItemSelectionModel::SelectCurrent );
 
   raise();
@@ -765,7 +765,12 @@ void QgsCustomizationDialog::preNotify( QObject *receiver, QEvent *event, bool *
   }
 }
 
-const std::unique_ptr<QgsCustomization> &QgsCustomizationDialog::customization() const
+QgsCustomization *QgsCustomizationDialog::customization() const
 {
-  return mItemsVisibilityModel->customization();
+  return mItemsVisibilityModel->customization().get();
+}
+
+QSortFilterProxyModel *QgsCustomizationDialog::treeViewModel() const
+{
+  return static_cast<QSortFilterProxyModel *>( mTreeView->model() );
 }

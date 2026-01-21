@@ -240,19 +240,19 @@ class APP_EXPORT QgsCustomization
          */
         enum class ItemCapability : int
         {
-          None = 0,                  //! No capability
-          UserMenuChild = 1 << 0,    //! Support adding UserMenu item as child
-          ActionRefChild = 1 << 1,   //! Support adding ActionRef as child
-          UserToolBarChild = 1 << 2, //! Support adding UserToolBar as child
-          Rename = 1 << 3,           //! Support renaming
-          Delete = 1 << 4,           //! Support delete
-          Drag = 1 << 5              //! Support dragging for later droping
+          None = 0,                     //! No capability
+          AddUserMenuChild = 1 << 0,    //! Support adding UserMenu item as child
+          AddActionRefChild = 1 << 1,   //! Support adding ActionRef as child
+          AddUserToolBarChild = 1 << 2, //! Support adding UserToolBar as child
+          Rename = 1 << 3,              //! Support renaming
+          Delete = 1 << 4,              //! Support delete
+          Drag = 1 << 5                 //! Support dragging for later droping
         };
 
         /**
-         * Returns TRUE if \a pcapability is active
+         * Returns TRUE if \a capability is active
          */
-        bool hasCapability( ItemCapability pcapability ) const;
+        bool hasCapability( ItemCapability capability ) const;
 
       protected:
         /**
@@ -810,7 +810,7 @@ class APP_EXPORT QgsCustomization
     QString uniqueToolBarName() const;
 
     /**
-     * Returns an action  unique name within the entire application
+     * Returns an action unique name within the entire application
      */
     QString uniqueActionName( const QString &originalActionName ) const;
 
