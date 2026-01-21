@@ -616,13 +616,34 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
     QString geomConversionFn;
     const Qgis::WkbType flatGeomType = QgsWkbTypes::flatType( mSource->mDetectedGeomType );
 
-    // For TIN and PolyhedralSurface: use ST_Dump + ST_Collect to convert to geometry collection
+    // For TIN and PolyhedralSurface: convert to MultiPolygon for GEOS compatibility
     // This is a workaround since GEOS doesn't support these types directly
-    // and PostGIS doesn't yet have a simple PHS/TIN to MultiPolygon for example
-    // ST_Dump extracts individual polygons, ST_Collect combines them into a compatible geometry
     if ( flatGeomType == Qgis::WkbType::TIN || flatGeomType == Qgis::WkbType::PolyhedralSurface )
     {
-      geomConversionFn = u"(SELECT ST_Collect(d.geom) FROM ST_Dump(%1) AS d)"_s;
+      if ( mConn->majorVersion() >= 3 )
+      {
+        // PostGIS 3.0+: TIN works directly with GEOS, only PolyhedralSurface needs conversion
+        if ( flatGeomType == Qgis::WkbType::PolyhedralSurface )
+        {
+          geomConversionFn = u"(SELECT ST_Collect(d.geom) FROM ST_Dump(%1) AS d)"_s;
+        }
+      }
+      else
+      {
+        // PostGIS < 3.0: Both TIN and PolyhedralSurface need full conversion
+        // ST_Dump extracts individual triangles/polygons, then convert each to simple polygon
+        // using ST_MakePolygon to avoid Triangle type (unsupported by GEOS in PostGIS < 3.0)
+        if ( flatGeomType == Qgis::WkbType::TIN )
+        {
+          // Triangles have no interior rings (holes)
+          geomConversionFn = u"(SELECT ST_Multi(ST_Collect(ST_MakePolygon(ST_ExteriorRing(d.geom)))) FROM ST_Dump(%1) AS d)"_s;
+        }
+        else
+        {
+          // PolyhedralSurface: preserve interior rings (holes)
+          geomConversionFn = u"(SELECT ST_Multi(ST_Collect(ST_MakePolygon(ST_ExteriorRing(d.geom), ARRAY(SELECT ST_InteriorRingN(d.geom, i) FROM generate_series(1, ST_NumInteriorRings(d.geom)) AS i)))) FROM ST_Dump(%1) AS d)"_s;
+        }
+      }
     }
     // For curve types use st_curvetoline to linearize
     else if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
