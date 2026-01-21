@@ -93,7 +93,7 @@ QStringList QgsPdalReprojectAlgorithm::createArgumentLists( const QVariantMap &p
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--transform-crs=%1"_s.arg( crs.authid() ) };
 
-  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
 
   const QString coordOp = parameterAsString( parameters, u"OPERATION"_s, context );
   if ( !coordOp.isEmpty() )

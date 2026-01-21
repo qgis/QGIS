@@ -111,7 +111,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
     args << u"--a_srs=%1"_s.arg( crs.authid() );
   }
 
-  applyVpcOutputFormatParameter( outputDir, args, parameters, context );
+  applyVpcOutputFormatParameter( outputDir, args, parameters, context, feedback );
 
   applyThreadsParameter( args, context );
 

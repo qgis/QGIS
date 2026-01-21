@@ -90,7 +90,7 @@ QStringList QgsPdalThinByDecimateAlgorithm::createArgumentLists( const QVariantM
 
   QStringList args = { u"thin"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--mode=every-nth"_s, u"--step-every-nth=%1"_s.arg( step ) };
 
-  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

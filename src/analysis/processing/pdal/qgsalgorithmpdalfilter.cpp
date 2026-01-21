@@ -89,7 +89,7 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ) };
 
-  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
 
   const QString filterExpression = parameterAsString( parameters, u"FILTER_EXPRESSION"_s, context ).trimmed();
   if ( !filterExpression.isEmpty() )

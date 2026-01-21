@@ -101,7 +101,7 @@ QStringList QgsPdalFilterNoiseRadiusAlgorithm::createArgumentLists( const QVaria
 
   QStringList args = { u"filter_noise"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=radius"_s, u"--remove-noise-points=%1"_s.arg( removeNoisePoints ), u"--radius-min-k=%1"_s.arg( minK ), u"--radius-radius=%1"_s.arg( radius ) };
 
-  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

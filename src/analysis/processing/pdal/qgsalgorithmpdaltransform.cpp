@@ -144,7 +144,7 @@ QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &p
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--transform-matrix=%1"_s.arg( transformString ) };
 
-  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

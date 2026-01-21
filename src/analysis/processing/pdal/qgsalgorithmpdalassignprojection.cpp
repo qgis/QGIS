@@ -89,7 +89,7 @@ QStringList QgsPdalAssignProjectionAlgorithm::createArgumentLists( const QVarian
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--assign-crs=%1"_s.arg( crs.authid() ) };
 
-  applyVpcOutputFormatParameter( outputFile, args, parameters, context );
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyThreadsParameter( args, context );
   return args;
 }
