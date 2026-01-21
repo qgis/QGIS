@@ -27,6 +27,8 @@
 class QTreeWidget;
 class QTreeWidgetItem;
 class QgsSymbolLayer;
+class QgsSelectiveMaskingSource;
+class QgsSelectiveMaskingSourceSet;
 
 /**
  * \ingroup gui
@@ -40,29 +42,25 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
 {
     Q_OBJECT
   public:
-    struct MaskSource
-    {
-        //! The source layer id
-        QString layerId;
-
-        //! Whether it is a labeling mask or not
-        bool isLabeling = false;
-
-        //! The symbol layer id
-        QString symbolLayerId;
-    };
-
     //! constructor
     explicit QgsMaskSourceSelectionWidget( QWidget *parent = nullptr );
 
     //! Updates the possible sources, from the project layers
     void update();
 
-    //! Returns the current selection
-    QList<MaskSource> selection() const;
+    /**
+     * Returns the current masking source set.
+     *
+     * \see setSourceSet()
+     */
+    QgsSelectiveMaskingSourceSet sourceSet() const;
 
-    //! Sets the symbol layer selection
-    void setSelection( const QList<MaskSource> &sel );
+    /**
+     * Sets the current masking source \a set.
+     *
+     * \see sourceSet()
+     */
+    void setSourceSet( const QgsSelectiveMaskingSourceSet &set );
 
   signals:
     //! Emitted when an item was changed
