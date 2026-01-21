@@ -43,7 +43,7 @@ QString QgsFileUploaderAlgorithm::displayName() const
 
 QString QgsFileUploaderAlgorithm::shortDescription() const
 {
-  return tr( "Upload a file to the URL with an HTTP(S) request." );
+  return tr( "Uploads a file to the URL with an HTTP(S) request." );
 }
 
 QStringList QgsFileUploaderAlgorithm::tags() const
