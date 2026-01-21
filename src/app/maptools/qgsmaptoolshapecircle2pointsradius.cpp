@@ -349,6 +349,7 @@ void QgsMapToolShapeCircle2PointsRadius::clean()
   mCenters.clear();
   deleteSegmentRubberBand();
   deleteRadiusSpinBox();
+  mRadius = 0.0; // Reset to recalculate default based on current canvas extent
   QgsMapToolShapeCircleAbstract::clean();
 }
 
