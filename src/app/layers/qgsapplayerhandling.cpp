@@ -899,6 +899,14 @@ QList<QgsMapLayer *> QgsAppLayerHandling::openLayer( const QString &fileName, bo
         {
           ok = true;
           openedLayers << layer;
+
+          if ( QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( layer->dataProvider() ) )
+          {
+            if ( vpcProvider->containsUnsupportedFiles() )
+            {
+              QgisApp::instance()->visibleMessageBar()->pushWarning( QObject::tr( "Unsupported files in VPC" ), QObject::tr( "Some files (i.e. LAZ or LAS files) referenced by the virtual point cloud are unsupported and cannot be displayed." ) );
+            }
+          }
         }
         else
         {
