@@ -112,8 +112,9 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
 
           QSet<QString> attributeNames;
           const QgsGeometry geom = feature.geometry();
-          const QgsVector3D origin( geom.boundingBox().center().x(), geom.boundingBox().center().y(), 0 );
-          if ( !handler->prepare( renderContext, attributeNames, origin ) )
+          // We want to ignore the geometry's elevation and use a box with symmetric +Z/-Z extents so the chunk origin has Z == 0.
+          QgsBox3D box = geom.boundingBox().toBox3d( 0, 0 );
+          if ( !handler->prepare( renderContext, attributeNames, box ) )
           {
             QgsDebugError( u"Failed to prepare 3D feature handler!"_s );
             return;
@@ -134,8 +135,9 @@ void Qgs3DHighlightFeatureHandler::highlightFeature( QgsFeature feature, QgsMapL
           rootRule->createHandlers( vLayer, handlers );
           QSet<QString> attributeNames;
           const QgsGeometry geom = feature.geometry();
-          const QgsVector3D origin( geom.boundingBox().center().x(), geom.boundingBox().center().y(), 0 );
-          rootRule->prepare( renderContext, attributeNames, origin, handlers );
+          // We want to ignore the geometry's elevation and use a box with symmetric +Z/-Z extents so the chunk origin has Z == 0.
+          QgsBox3D box = geom.boundingBox().toBox3d( 0, 0 );
+          rootRule->prepare( renderContext, attributeNames, box, handlers );
           mHighlightRuleBasedHandlers[layer] = handlers;
         }
 
