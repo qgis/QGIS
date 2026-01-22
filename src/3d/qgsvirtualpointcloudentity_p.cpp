@@ -194,7 +194,7 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
   if ( provider()->overview() && rendererBehavior && ( rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview || rendererBehavior->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) )
   {
     // no need to render the overview if all sub indexes are shown
-    if ( subIndexesRendered == mChunkedEntitiesMap.size() )
+    if ( !mChunkedEntitiesMap.isEmpty() && subIndexesRendered == mChunkedEntitiesMap.size() )
       mOverviewEntity->setEnabled( false );
     else
       mOverviewEntity->setEnabled( true );
