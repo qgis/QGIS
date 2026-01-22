@@ -108,7 +108,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
   }
 
   QStringList args;
-  args.reserve( layers.count() + 5 );
+  args.reserve( 7 );
 
   args << u"build_vpc"_s;
 
