@@ -1221,6 +1221,9 @@ int main( int argc, char *argv[] )
   QgsDebugMsgLevel( u"\t - %1"_s.arg( profileFolder ), 2 );
   QgsDebugMsgLevel( u"\t - %1"_s.arg( rootProfileFolder ), 2 );
 
+  // Insures QML widgets don't trigger a "black rectangle flash" on first load
+  QCoreApplication::setAttribute( Qt::AA_ShareOpenGLContexts );
+
   // Redefine QgsApplication::libraryPaths as necessary.
   // IMPORTANT: Do *after* QgsApplication myApp(...), but *before* Qt uses any plugins,
   //            e.g. loading splash screen, setting window icon, etc.
