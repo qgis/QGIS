@@ -71,7 +71,7 @@ void QgsPdalAlgorithmBase::createVpcOutputFormatParameter()
 {
   const QStringList outputFormats { u"COPC"_s, u"LAZ"_s, u"LAS"_s };
   auto paramVpcOutputFormat = std::make_unique<QgsProcessingParameterEnum>( u"VPC_OUTPUT_FORMAT"_s, QObject::tr( "VPC Output Format" ), outputFormats, false, u"COPC"_s );
-  paramVpcOutputFormat->setHelp( QObject::tr( "Specify the format in which data are stored for VPC output." ) );
+  paramVpcOutputFormat->setHelp( QObject::tr( "Specify the underlying format in which data are stored for VPC output.\nSelect COPC if you need to render the output VPC in QGIS. LAZ/LAS may be faster to process, however only allow rendering of the point cloud extents." ) );
   paramVpcOutputFormat->setFlags( paramVpcOutputFormat->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramVpcOutputFormat.release() );
 }
@@ -346,7 +346,7 @@ void QgsPdalAlgorithmBase::applyVpcOutputFormatParameter( const QString &outputF
 
     if ( vpcOutputFormat == "LAZ"_L1 || vpcOutputFormat == "LAS"_L1 )
     {
-      feedback->pushWarning( QObject::tr( "The VPC file will contain LAS or LAZ files, such files are not completely supported in QGIS and the point cloud will not be displayed. Use COPC as VPC Output Format for better compatibility." ) );
+      feedback->pushWarning( QObject::tr( "The VPC file will contain LAS or LAZ files. Such files cannot be properly rendered in QGIS, only the point cloud extents will be displayed. Use COPC as VPC Output Format for proper rendering." ) );
     }
 
     arguments << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() );
