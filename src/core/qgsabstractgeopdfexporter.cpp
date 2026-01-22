@@ -24,6 +24,7 @@
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -797,7 +798,6 @@ std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes
   pdfTreeNodes->id = id;
   pdfTreeNodes->name = layerTreeGroup->name();
   pdfTreeNodes->initiallyVisible = layerTreeGroup->itemVisibilityChecked();
-  groupNameToTreeNode[ pdfTreeNodes->name ] = pdfTreeNodes.get();
 
   const QList<QgsLayerTreeNode *> groupChildren = layerTreeGroup->children();
 
@@ -808,6 +808,18 @@ std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes
       case QgsLayerTreeNode::NodeLayer:
       {
         QgsLayerTreeLayer *layerTreeLayer = qobject_cast<QgsLayerTreeLayer *>( qgisNode );
+
+        // Skip invalid layers, tables and unknown geometry types, since they won't appear in the PDF
+        if ( !layerTreeLayer->layer()->isValid() )
+          break;
+
+        if ( layerTreeLayer->layer()->type() == Qgis::LayerType::Vector )
+        {
+          QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( layerTreeLayer->layer() );
+          if ( vectorLayer->geometryType() == Qgis::GeometryType::Unknown || vectorLayer->geometryType() == Qgis::GeometryType::Null )
+            break;
+        }
+
         auto pdfLayerNode = std::make_unique< TreeNode >();
         pdfLayerNode->id = layerTreeLayer->layerId();
         pdfLayerNode->name = layerTreeLayer->name();
@@ -820,17 +832,33 @@ std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes
 
       case QgsLayerTreeNode::NodeGroup:
       {
-        QgsLayerTreeGroup *layerTreeGroup = qobject_cast<QgsLayerTreeGroup *>( qgisNode );
-        std::unique_ptr< TreeNode > pdfGroupNode = createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, layerTreeGroup );
-        pdfTreeNodes->addChild( std::move( pdfGroupNode ) );
+        QgsLayerTreeGroup *childLayerTreeGroup = qobject_cast<QgsLayerTreeGroup *>( qgisNode );
+        // Skip empty groups
+        if ( !childLayerTreeGroup->children().empty() )
+        {
+          std::unique_ptr< TreeNode > pdfGroupNode = createPdfTreeNodes( groupNameToTreeNode, layerIdToTreeNode, childLayerTreeGroup );
+
+          // A group that is not empty in the QGIS layer tree, may be emptied
+          // if it only contais invalid and/or geometryless layers. Skip it!
+          if ( !pdfGroupNode->children.empty() )
+          {
+            pdfTreeNodes->addChild( std::move( pdfGroupNode ) );
+          }
+        }
         break;
       }
 
       case QgsLayerTreeNode::NodeCustom:
-      default:
         break;
     }
   }
+
+  // Now we know if our group is not empty. Add it to the groupNameToTreeNode then.
+  if ( !pdfTreeNodes->children.empty() )
+  {
+    groupNameToTreeNode[ pdfTreeNodes->name ] = pdfTreeNodes.get();
+  }
+
   return pdfTreeNodes;
 }
 
