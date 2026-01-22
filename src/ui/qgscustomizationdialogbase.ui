@@ -27,7 +27,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -40,9 +40,9 @@
      </layout>
     </item>
     <item>
-     <widget class="QSplitter" name="splitter">
+     <widget class="QSplitter" name="mSplitter">
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -51,15 +51,60 @@
           <property name="placeholderText">
            <string>Search…</string>
           </property>
-          <property name="showSearchIcon">
+          <property name="showSearchIcon" stdset="0">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QTreeView" name="mTreeView">
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::DragDropMode::DragDrop</enum>
+          </property>
+          <property name="defaultDropAction">
+           <enum>Qt::DropAction::LinkAction</enum>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
+          </property>
           <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectItems</enum>
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="layoutWidget2">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QgsFilterLineEdit" name="mFilterActionsLe">
+          <property name="placeholderText">
+           <string>Search…</string>
+          </property>
+          <property name="showSearchIcon" stdset="0">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTreeView" name="mActionsTreeView">
+          <property name="toolTip">
+           <string>Drag and drop existing actions onto user created menu or toolbar in the left panel</string>
+          </property>
+          <property name="dragEnabled">
+           <bool>true</bool>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::DragDropMode::DragOnly</enum>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SelectionMode::ExtendedSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
+          </property>
+          <property name="headerHidden">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -70,10 +115,10 @@
     <item>
      <widget class="QDialogButtonBox" name="buttonBox">
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
       <property name="standardButtons">
-       <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Reset</set>
+       <set>QDialogButtonBox::StandardButton::Apply|QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Help|QDialogButtonBox::StandardButton::Ok|QDialogButtonBox::StandardButton::Reset</set>
       </property>
      </widget>
     </item>
@@ -104,6 +149,9 @@
    <addaction name="actionExpandAll"/>
    <addaction name="actionCollapseAll"/>
    <addaction name="actionSelectAll"/>
+   <addaction name="mDeleteAction"/>
+   <addaction name="mAddAction"/>
+   <addaction name="mListActionsAction"/>
   </widget>
   <action name="actionCatch">
    <property name="checkable">
@@ -169,6 +217,48 @@
    </property>
    <property name="text">
     <string>Check All</string>
+   </property>
+  </action>
+  <action name="mDeleteAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Delete user item</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="mAddAction">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAdd.svg</normaloff>:/images/themes/default/mActionAdd.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Add user item</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::TextHeuristicRole</enum>
+   </property>
+  </action>
+  <action name="mListActionsAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionListActions.svg</normaloff>:/images/themes/default/mActionListActions.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Display action panel</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display action panel from which you can drag and drop existing actions onto user created menu or toolbar in the left panel&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::MenuRole::NoRole</enum>
    </property>
   </action>
  </widget>

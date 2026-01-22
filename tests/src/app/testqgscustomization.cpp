@@ -79,98 +79,17 @@ class TestQgsCustomization : public QgsTest
 
 QgsCustomization::QgsItem *TestQgsCustomization::getItem( QgsCustomization *customization, const QString &path ) const
 {
-  QStringList pathElems = path.split( "/" );
-  if ( pathElems.isEmpty() )
-    return nullptr;
-
-  const QHash<QString, QgsCustomization::QgsItem *> rootItems = {
-    { "Menus", customization->menusItem() },
-    { "ToolBars", customization->toolBarsItem() },
-    { "Docks", customization->docksItem() },
-    { "BrowserItems", customization->browserElementsItem() },
-    { "StatusBarWidgets", customization->statusBarWidgetsItem() }
-  };
-
-  QgsCustomization::QgsItem *currentItem = nullptr;
-  for ( const QString &pathElem : pathElems )
-  {
-    if ( currentItem )
-    {
-      currentItem = currentItem->getChild( pathElem );
-    }
-    else
-    {
-      currentItem = rootItems.value( pathElem );
-    }
-
-    if ( !currentItem )
-      return nullptr;
-  }
-
-  return currentItem;
+  return customization->getItem( path );
 }
 
 QWidget *TestQgsCustomization::findQWidget( const QString &path )
 {
-  QStringList pathElems = path.split( "/" );
-  if ( pathElems.isEmpty() )
-    return nullptr;
-
-  const QHash<QString, QWidget *> rootWidgets = { { "Menus", QgisApp::instance()->menuBar() }, { "ToolBars", QgisApp::instance() }, { "Docks", QgisApp::instance() }, { "StatusBarWidgets", QgisApp::instance()->statusBarIface() } };
-
-  const QString rootElem = pathElems.takeFirst();
-  QWidget *currentWidget = rootWidgets.value( rootElem );
-  if ( !currentWidget )
-    return nullptr;
-
-  for ( const QString &pathElem : pathElems )
-  {
-    if ( dynamic_cast<QToolBar *>( currentWidget )
-         || dynamic_cast<QMenu *>( currentWidget )
-         || dynamic_cast<QMenuBar *>( currentWidget ) )
-    {
-      for ( QgsCustomization::QgsQActionsIterator::Info it : QgsCustomization::QgsQActionsIterator( currentWidget ) )
-      {
-        if ( it.name == pathElem )
-        {
-          currentWidget = it.widget;
-          break;
-        }
-      }
-    }
-    else
-    {
-      QList<QObject *> children = currentWidget->children();
-      QList<QObject *>::const_iterator it = std::find_if( children.cbegin(), children.cend(), [&pathElem]( QObject *obj ) { return dynamic_cast<QWidget *>( obj ) && obj->objectName() == pathElem; } );
-      currentWidget = dynamic_cast<QWidget *>( *it );
-    }
-
-    if ( !currentWidget )
-      return nullptr;
-  }
-
-  return currentWidget;
+  return QgsCustomization::findQWidget( path );
 }
 
 QAction *TestQgsCustomization::findQAction( const QString &path )
 {
-  QStringList pathElems = path.split( "/" );
-  if ( pathElems.isEmpty() )
-    return nullptr;
-
-  qsizetype lastSlashIndex = path.lastIndexOf( "/" );
-  if ( lastSlashIndex < 0 )
-    return nullptr;
-
-  QWidget *currentWidget = findQWidget( path.first( lastSlashIndex ) );
-  if ( !currentWidget )
-    return nullptr;
-
-  const QString actionName = path.mid( lastSlashIndex + 1 );
-
-  const QList<QAction *> actions = currentWidget->actions();
-  const QList<QAction *>::const_iterator actionIt = std::find_if( actions.cbegin(), actions.cend(), [&actionName]( QAction *action ) { return action->objectName() == actionName; } );
-  return actionIt != actions.cend() ? *actionIt : nullptr;
+  return QgsCustomization::findQAction( path );
 }
 
 long long TestQgsCustomization::qactionPosition( const QString &path )
@@ -807,6 +726,25 @@ void TestQgsCustomization::testModel()
 
   // the action is no longer visible
   QVERIFY( !findQAction( "ToolBars/mLayerToolBar/mActionAddRasterLayer" ) );
+
+  // test add/delete
+  {
+    const QModelIndex menusIndex = model.index( 2, 0 );
+    QCOMPARE( model.data( menusIndex, Qt::ItemDataRole::DisplayRole ), u"Menus"_s );
+
+    const QModelIndex newItemIndex = model.addUserItem( menusIndex );
+    QCOMPARE( model.data( newItemIndex, Qt::ItemDataRole::DisplayRole ), u"UserMenu_1"_s );
+
+    model.apply();
+    QVERIFY( getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QVERIFY( findQWidget( "Menus/UserMenu_1" ) );
+
+    model.deleteUserItems( QList<QModelIndex>() << newItemIndex );
+
+    model.apply();
+    QVERIFY( !getItem<QgsCustomization::QgsUserMenuItem>( "Menus/UserMenu_1" ) );
+    QVERIFY( !findQWidget( "Menus/UserMenu_1" ) );
+  }
 }
 
 
