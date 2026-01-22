@@ -1989,6 +1989,7 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
       mHashLengthUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
       mPlacementLabel->setText( tr( "Hash placement" ) );
       chkRotateMarker->setText( tr( "Rotate hash to follow line direction" ) );
+      mSpinOffsetAlongLine->setToolTip( tr( "Offset hashes in line direction if positive or in opposite line direction if negative" ) );
       mHashLengthLabel->setVisible( true );
       mSpinHashLength->setVisible( true );
       mHashLengthUnitWidget->setVisible( true );
@@ -2002,6 +2003,7 @@ QgsTemplatedLineSymbolLayerWidget::QgsTemplatedLineSymbolLayerWidget( TemplatedS
     case TemplatedSymbolType::Marker:
       mPlacementLabel->setText( tr( "Marker placement" ) );
       chkRotateMarker->setText( tr( "Rotate marker to follow line direction" ) );
+      mSpinOffsetAlongLine->setToolTip( tr( "Offset markers in line direction if positive or in opposite line direction if negative" ) );
       mHashLengthLabel->setVisible( false );
       mSpinHashLength->setVisible( false );
       mHashLengthUnitWidget->setVisible( false );

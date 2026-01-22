@@ -977,7 +977,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     */
     void setTrimDistanceEndMapUnitScale( const QgsMapUnitScale &scale ) { mTrimDistanceEndMapUnitScale = scale; }
 
-    void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
+    void renderPolyline( const QPolygonF &pts, QgsSymbolRenderContext &context ) override;
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) final;
     Qgis::RenderUnit outputUnit() const final;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
