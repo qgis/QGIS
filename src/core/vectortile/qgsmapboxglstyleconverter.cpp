@@ -3311,7 +3311,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     {
       return parseValue( val, context, colorExpected );
     } );
-    return u"(%s)"_s.arg( operands.join( u" %1 "_s.arg( op ) ) );
+    return u"(%1)"_s.arg( operands.join( u" %1 "_s.arg( op ) ) );
   }
   else if ( op == "to-number"_L1 )
   {
