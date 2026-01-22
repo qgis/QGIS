@@ -88,6 +88,9 @@
         </item>
         <item>
          <widget class="QTreeView" name="mActionsTreeView">
+          <property name="toolTip">
+           <string>Drag and drop existing actions onto user created menu or toolbar in the left panel</string>
+          </property>
           <property name="dragEnabled">
            <bool>true</bool>
           </property>
@@ -250,6 +253,9 @@
    </property>
    <property name="text">
     <string>Display action panel</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Display action panel from which you can drag and drop existing actions onto user created menu or toolbar in the left panel&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="menuRole">
     <enum>QAction::MenuRole::NoRole</enum>
