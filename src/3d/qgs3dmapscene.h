@@ -371,6 +371,8 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     bool updateCameraNearFarPlanes();
 
+    void applyPendingOverlayUpdate();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapScene();
@@ -391,6 +393,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;
 
+    void schedule2DMapOverlayUpdate();
     void update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints );
 
   private:
@@ -401,7 +404,6 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     QgsCameraController *mCameraController = nullptr;
     QgsTerrainEntity *mTerrain = nullptr;
     QgsGlobeEntity *mGlobe = nullptr;
-    QgsMapOverlayEntity *mMapOverlayEntity = nullptr;
     QList<Qgs3DMapSceneEntity *> mSceneEntities;
     //! Entity that shows view center - useful for debugging camera issues
     Qt3DCore::QEntity *mEntityCameraViewCenter = nullptr;
@@ -424,6 +426,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     QList<QVector4D> mClipPlanesEquations;
     int mMaxClipPlanes = 6;
+
+    //! 2d map overlay
+    QgsMapOverlayEntity *mMapOverlayEntity = nullptr;
+    QTimer *mOverlayUpdateTimer = nullptr;
 
     friend class TestQgs3DRendering;
 };
