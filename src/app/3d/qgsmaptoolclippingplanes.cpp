@@ -117,6 +117,9 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     const QgsPointXY point = toMapCoordinates( e->pos() );
+    if ( mRubberBandPoints->numberOfVertices() > 0 && *mRubberBandPoints->getPoint( 0, mRubberBandPoints->numberOfVertices() - 1 ) == point )
+      return;
+
     if ( mRubberBandPoints->numberOfVertices() == 1 && !mToleranceLocked )
     {
       QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );
@@ -177,19 +180,8 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       {
         mRubberBandLines->addPoint( point );
         mRubberBandLines->addPoint( point );
-        mRubberBandPoints->addPoint( point );
       }
-      else
-      {
-        QgsPointXY previousPoint = *mRubberBandPoints->getPoint( 0, 0 );
-        if ( previousPoint == point )
-        {
-          clear();
-          emit messageEmitted( tr( "Cross section cannot be defined by identical points, please select a new one!" ), Qgis::MessageLevel::Info );
-        }
-        else
-          mRubberBandPoints->addPoint( point );
-      }
+      mRubberBandPoints->addPoint( point );
     }
   }
   else if ( e->button() == Qt::RightButton )
