@@ -59,26 +59,23 @@ void QgsStringStatisticalSummary::calculate( const QStringList &values )
   const auto constValues = values;
   for ( const QString &string : constValues )
   {
-    testString( string );
+    testString( string, QgsVariantUtils::isNull( string ) );
   }
   finalize();
 }
 
 void QgsStringStatisticalSummary::addString( const QString &string )
 {
-  testString( string );
+  testString( string, QgsVariantUtils::isNull( string ) );
 }
 
 void QgsStringStatisticalSummary::addValue( const QVariant &value )
 {
-  if ( QgsVariantUtils::isNull( value ) )
+  if ( value.userType() == QMetaType::Type::QString || value.isNull() )
   {
-    testString( QString() );
+    testString( value.toString(), QgsVariantUtils::isNull( value ) );
   }
-  else if ( value.userType() == QMetaType::Type::QString )
-  {
-    testString( value.toString() );
-  }
+
 }
 
 void QgsStringStatisticalSummary::finalize()
@@ -107,22 +104,18 @@ void QgsStringStatisticalSummary::calculateFromVariants( const QVariantList &val
   const auto constValues = values;
   for ( const QVariant &variant : constValues )
   {
-    if ( QgsVariantUtils::isNull( variant ) )
+    if ( variant.userType() == QMetaType::Type::QString || variant.isNull() )
     {
-      testString( QString() );
-    }
-    else if ( variant.userType() == QMetaType::Type::QString )
-    {
-      testString( variant.toString() );
+      testString( variant.toString(), QgsVariantUtils::isNull( variant ) );
     }
   }
 
   finalize();
 }
 
-void QgsStringStatisticalSummary::testString( const QString &string )
+void QgsStringStatisticalSummary::testString( const QString &string, bool isNull )
 {
-  if ( string.isNull() )
+  if ( isNull )
   {
     mCountMissing++;
     return;
