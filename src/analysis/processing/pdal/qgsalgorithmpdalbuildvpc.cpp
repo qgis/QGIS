@@ -188,6 +188,8 @@ QVariantMap QgsPdalBuildVpcAlgorithm::processAlgorithm( const QVariantMap &param
     multiStepFeedback->setCurrentStep( 1 );
 
     QStringList args;
+    args.reserve( 5 );
+
     args << u"translate"_s;
     args << u"--vpc-output-format=copc"_s;
     args << u"--input=%1"_s.arg( mTemporaryVpcFile );
