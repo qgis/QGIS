@@ -75,7 +75,7 @@ QHash<int, QByteArray> QgsTemplateProjectsModel::roleNames() const
   roles[static_cast<int>( CustomRole::TypeRole )] = "Type";
   roles[static_cast<int>( CustomRole::TitleRole )] = "Title";
   roles[static_cast<int>( CustomRole::PathRole )] = "TemplatePath";
-  roles[static_cast<int>( CustomRole::NativePathRole )] = "TemplateNativePath";
+  roles[static_cast<int>( CustomRole::NativePathRole )] = "TemplateNativePath"; //#spellok
   roles[static_cast<int>( CustomRole::CrsRole )] = "Crs";
   roles[static_cast<int>( CustomRole::PreviewImagePathRole )] = "PreviewImagePath";
   return roles;
