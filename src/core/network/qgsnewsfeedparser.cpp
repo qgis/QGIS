@@ -59,7 +59,7 @@ QgsNewsFeedParser::QgsNewsFeedParser( const QUrl &feedUrl, const QString &authcf
   , mFeedKey( keyForFeed( mBaseUrl ) )
 {
   // Synchronize enabled/disabled state
-  mEnabled = !QgsSettings().value( QStringLiteral( "%1/disabled" ).arg( mFeedKey ), false, QgsSettings::Core ).toBool();
+  mEnabled = !QgsSettings().value( u"%1/disabled"_s.arg( mFeedKey ), false, QgsSettings::Core ).toBool();
 
   // first thing we do is populate with existing entries
   readStoredEntries();
@@ -118,7 +118,7 @@ void QgsNewsFeedParser::setEnabled( bool enabled )
   mEnabled = enabled;
   emit enabledChanged();
 
-  QgsSettings().setValue( QStringLiteral( "%1/disabled" ).arg( mFeedKey ), !mEnabled, QgsSettings::Core );
+  QgsSettings().setValue( u"%1/disabled"_s.arg( mFeedKey ), !mEnabled, QgsSettings::Core );
 }
 
 QList<QgsNewsFeedParser::Entry> QgsNewsFeedParser::entries() const

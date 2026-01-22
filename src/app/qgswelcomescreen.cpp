@@ -27,6 +27,8 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
+#include "moc_qgswelcomescreen.cpp"
+
 #define FEED_URL "https://feed.qgis.org/"
 
 

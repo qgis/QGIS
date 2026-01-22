@@ -64,7 +64,7 @@ class QgsWelcomeScreen : public QQuickWidget
 
   public:
     QgsWelcomeScreen( bool skipVersionCheck = false, QWidget *parent = nullptr );
-    ~QgsWelcomeScreen() = default;
+    ~QgsWelcomeScreen() override = default;
 
     /**
      * Shows the welcome screen.
