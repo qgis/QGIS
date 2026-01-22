@@ -495,14 +495,7 @@ ErrorList topolTest::checkGaps( QgsVectorLayer *layer1, QgsVectorLayer *layer2, 
     return errorList;
   }
 
-  GEOSGeometry **geomArray = new GEOSGeometry *[geomList.size()];
-  for ( int i = 0; i < geomList.size(); ++i )
-  {
-    geomArray[i] = geomList.at( i );
-  }
-
-  GEOSGeometry *collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomArray, geomList.size() );
-  delete[] geomArray;
+  GEOSGeometry *collection = GEOSGeom_createCollection_r( geosctxt, GEOS_MULTIPOLYGON, geomList.data(), geomList.size() );
 
   if ( !collection )
   {
@@ -1234,10 +1227,7 @@ void topolTest::fillFeatureMap( QgsVectorLayer *layer, const QgsRectangle &exten
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1260,10 +1250,7 @@ void topolTest::fillFeatureList( QgsVectorLayer *layer, const QgsRectangle &exte
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
   QgsFeature f;
@@ -1288,10 +1275,7 @@ QgsSpatialIndex *topolTest::createIndex( QgsVectorLayer *layer, const QgsRectang
   }
   else
   {
-    fit = layer->getFeatures( QgsFeatureRequest()
-                                .setFilterRect( extent )
-                                .setFlags( Qgis::FeatureRequestFlag::ExactIntersect )
-                                .setNoAttributes() );
+    fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( extent ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setNoAttributes() );
   }
 
 
