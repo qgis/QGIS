@@ -177,8 +177,19 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
       {
         mRubberBandLines->addPoint( point );
         mRubberBandLines->addPoint( point );
+        mRubberBandPoints->addPoint( point );
       }
-      mRubberBandPoints->addPoint( point );
+      else
+      {
+        QgsPointXY previousPoint = *mRubberBandPoints->getPoint( 0, 0 );
+        if ( previousPoint == point )
+        {
+          clear();
+          emit messageEmitted( tr( "Cross section cannot be defined by identical points, please select a new one!" ), Qgis::MessageLevel::Info );
+        }
+        else
+          mRubberBandPoints->addPoint( point );
+      }
     }
   }
   else if ( e->button() == Qt::RightButton )
