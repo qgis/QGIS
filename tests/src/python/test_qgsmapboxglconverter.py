@@ -642,7 +642,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         )
         self.assertEqual(
             prop.expressionString(),
-            'CASE WHEN @vector_tile_zoom >= 12 AND @vector_tile_zoom <= 13 THEN (CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END) * 0.264583 WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,13,14,CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END)) * 0.264583 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 14.5 THEN (scale_linear(@vector_tile_zoom,14,14.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1 ELSE 0 END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 14.5 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14.5,15,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.5 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 0.75 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16.5 THEN (scale_linear(@vector_tile_zoom,15,16.5,CASE WHEN (to_real("ele") % 100 IS 0) THEN 1.75 ELSE CASE WHEN (to_real("ele") % 20 IS 0) THEN 1 ELSE 0 END END,CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 16.5 THEN ( ( CASE WHEN (to_real("ele") % 100 IS 0) THEN 2 ELSE CASE WHEN (to_real("ele") % 10 IS 0) THEN 1 ELSE 0 END END ) * 0.264583 ) END',
+            'CASE WHEN @vector_tile_zoom >= 12 AND @vector_tile_zoom <= 13 THEN (CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END) * 0.264583 WHEN @vector_tile_zoom > 13 AND @vector_tile_zoom <= 14 THEN (scale_linear(@vector_tile_zoom,13,14,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1 ELSE 0 END)) * 0.264583 WHEN @vector_tile_zoom > 14 AND @vector_tile_zoom <= 14.5 THEN (scale_linear(@vector_tile_zoom,14,14.5,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1 ELSE 0 END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.5 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 0.75 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 14.5 AND @vector_tile_zoom <= 15 THEN (scale_linear(@vector_tile_zoom,14.5,15,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.5 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 0.75 ELSE 0 END END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.75 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 15 AND @vector_tile_zoom <= 16.5 THEN (scale_linear(@vector_tile_zoom,15,16.5,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 1.75 ELSE CASE WHEN ((to_real("ele") % 20) IS 0) THEN 1 ELSE 0 END END,CASE WHEN ((to_real("ele") % 100) IS 0) THEN 2 ELSE CASE WHEN ((to_real("ele") % 10) IS 0) THEN 1 ELSE 0 END END)) * 0.264583 WHEN @vector_tile_zoom > 16.5 THEN ( ( CASE WHEN ((to_real("ele") % 100) IS 0) THEN 2 ELSE CASE WHEN ((to_real("ele") % 10) IS 0) THEN 1 ELSE 0 END END ) * 0.264583 ) END',
         )
 
     def testParseExpression(self):
@@ -774,7 +774,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             QgsMapBoxGlStyleConverter.parseExpression(
                 ["%", 100, 20], conversion_context
             ),
-            """100 % 20""",
+            """(100 % 20)""",
         )
         self.assertEqual(
             QgsMapBoxGlStyleConverter.parseExpression(
@@ -797,7 +797,7 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 conversion_context,
                 False,
             ),
-            """CASE WHEN (to_real("ele") % 100 IS 0) THEN 0.75 ELSE 0 END""",
+            """CASE WHEN ((to_real("ele") % 100) IS 0) THEN 0.75 ELSE 0 END""",
         )
 
         self.assertEqual(
