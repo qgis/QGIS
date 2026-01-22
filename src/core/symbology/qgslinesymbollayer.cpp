@@ -724,18 +724,14 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
 
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CustomDash ) )
   {
+    const QString customDashString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodeRealVector( mCustomDashVector ) );
+    const QStringList dashList = customDashString.split( ';' );
     QVector<qreal> dashVector;
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::CustomDash, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
+    for ( const QString &dash : dashList )
     {
-      QStringList dashList = exprVal.toString().split( ';' );
-      QStringList::const_iterator dashIt = dashList.constBegin();
-      for ( ; dashIt != dashList.constEnd(); ++dashIt )
-      {
-        dashVector.push_back( context.renderContext().convertToPainterUnits( dashIt->toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
-      }
-      pen.setDashPattern( dashVector );
+      dashVector.push_back( context.renderContext().convertToPainterUnits( dash.toDouble(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
     }
+    pen.setDashPattern( dashVector );
   }
   else if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeWidth ) && mUseCustomDashPattern )
   {
