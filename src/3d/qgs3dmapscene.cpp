@@ -218,6 +218,14 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   // force initial update of ambient occlusion settings
   onAmbientOcclusionSettingsChanged();
 
+  // timer used to refresh the map overlay every 250 ms while the camera is moving.
+  // schedule2DMapOverlayUpdate() is called to schedule the update.
+  // At the end of the delay, applyPendingOverlayUpdate() performs the update.
+  mOverlayUpdateTimer = new QTimer( this );
+  mOverlayUpdateTimer->setSingleShot( true );
+  mOverlayUpdateTimer->setInterval( 250 );
+  connect( mOverlayUpdateTimer, &QTimer::timeout, this, &Qgs3DMapScene::applyPendingOverlayUpdate );
+
   // force initial update of map overlay entity
   onShowMapOverlayChanged();
 
@@ -339,7 +347,7 @@ void Qgs3DMapScene::onCameraChanged()
 
   const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
   emit viewed2DExtentFrom3DChanged( extent2D );
-  update2DMapOverlay( extent2D );
+  schedule2DMapOverlayUpdate();
 
   // The magic to make things work better in large scenes (e.g. more than 50km across)
   // is here: we will simply move the origin of the scene, and update transforms
@@ -1512,4 +1520,22 @@ void Qgs3DMapScene::disableClipping()
 void Qgs3DMapScene::onStopUpdatesChanged()
 {
   mSceneUpdatesEnabled = !mMap.stopUpdates();
+}
+
+void Qgs3DMapScene::schedule2DMapOverlayUpdate()
+{
+  // Start the overlay update timer if overlay is active and not already running
+  if ( mMap.is2DMapOverlayEnabled() && mOverlayUpdateTimer && !mOverlayUpdateTimer->isActive() )
+  {
+    mOverlayUpdateTimer->start();
+  }
+}
+
+void Qgs3DMapScene::applyPendingOverlayUpdate()
+{
+  if ( mMap.is2DMapOverlayEnabled() )
+  {
+    const QVector<QgsPointXY> extent2D = viewFrustum2DExtent();
+    update2DMapOverlay( extent2D );
+  }
 }
