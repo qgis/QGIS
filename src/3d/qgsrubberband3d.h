@@ -203,6 +203,13 @@ class _3D_EXPORT QgsRubberBand3D
 
     bool isEmpty() const { return mGeometry.isEmpty(); }
 
+    /**
+     * Sets whether the rubberband is enabled.
+     *
+     * \since QGIS 4.0
+     */
+    void setEnabled( bool enabled );
+
   private:
     void updateGeometry();
     void updateMarkerMaterial();

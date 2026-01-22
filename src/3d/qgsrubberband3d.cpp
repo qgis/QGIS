@@ -503,4 +503,23 @@ void QgsRubberBand3D::updateMarkerMaterial()
     mMarkerMaterial = nullptr;
   }
 }
+
+void QgsRubberBand3D::setEnabled( bool enabled )
+{
+  if ( mMarkerEntity )
+  {
+    mMarkerEntity->setEnabled( enabled );
+  }
+
+  if ( mLineEntity )
+  {
+    mLineEntity->setEnabled( enabled );
+  }
+
+  if ( mPolygonEntity )
+  {
+    mPolygonEntity->setEnabled( enabled );
+  }
+}
+
 /// @endcond
