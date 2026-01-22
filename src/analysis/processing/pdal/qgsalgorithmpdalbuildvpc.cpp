@@ -197,6 +197,8 @@ QVariantMap QgsPdalBuildVpcAlgorithm::processAlgorithm( const QVariantMap &param
     args << u"--input=%1"_s.arg( mTemporaryVpcFile );
     args << u"--output=%1"_s.arg( mConvertToCopcFile );
 
+    applyThreadsParameter( args, context );
+
     runWrenchProcess( args, multiStepFeedback );
   }
 
