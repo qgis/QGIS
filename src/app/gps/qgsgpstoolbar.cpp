@@ -56,6 +56,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mConnectAction->setToolTip( tr( "Connect to GPS" ) );
   mConnectAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mIconGpsConnect.svg"_s ) );
   mConnectAction->setCheckable( true );
+  mConnectAction->setObjectName( u"mConnectAction"_s );
   addAction( mConnectAction );
 
   connect( mConnectAction, &QAction::toggled, this, [this]( bool connect ) {
@@ -66,6 +67,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   } );
 
   mRecenterAction = new QAction( tr( "Recenter" ), this );
+  mRecenterAction->setObjectName( u"mRecenterAction"_s );
   mRecenterAction->setToolTip( tr( "Recenter map on GPS location" ) );
   mRecenterAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mActionRecenter.svg"_s ) );
   mRecenterAction->setEnabled( false );
@@ -102,22 +104,26 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mDestinationLayerButton->setMenu( mDestinationLayerMenu );
   mDestinationLayerButton->setPopupMode( QToolButton::InstantPopup );
   mDestinationLayerButton->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mIconGpsDestinationLayer.svg"_s ) );
-  addWidget( mDestinationLayerButton );
+  QAction *action = addWidget( mDestinationLayerButton );
+  action->setObjectName( u"mDestinationLayerButtonAction"_s );
 
   mAddTrackVertexAction = new QAction( tr( "Add Track Vertex" ), this );
   mAddTrackVertexAction->setToolTip( tr( "Add vertex to GPS track using current GPS location" ) );
   mAddTrackVertexAction->setEnabled( false );
   mAddTrackVertexAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mActionAddTrackPoint.svg"_s ) );
+  mAddTrackVertexAction->setObjectName( u"mAddTrackVertexAction"_s );
   connect( mAddTrackVertexAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
   addAction( mAddTrackVertexAction );
 
   mCreateFeatureAction = new QAction( tr( "Create Feature from Track" ), this );
   mCreateFeatureAction->setIcon( QgsApplication::getThemeIcon( u"mActionCaptureLine.svg"_s ) );
+  mCreateFeatureAction->setObjectName( u"mCreateFeatureAction"_s );
   connect( mCreateFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
   addAction( mCreateFeatureAction );
 
   mResetFeatureAction = new QAction( tr( "Reset Track" ), this );
   mResetFeatureAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mActionReset.svg"_s ) );
+  mResetFeatureAction->setObjectName( u"mResetFeatureAction"_s );
   connect( mResetFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::resetFeatureClicked );
   addAction( mResetFeatureAction );
 
@@ -127,6 +133,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mShowInfoAction->setIcon( QgsApplication::getThemeIcon( u"mActionPropertiesWidget.svg"_s ) );
   mShowInfoAction->setToolTip( tr( "Show GPS Information Panel" ) );
   mShowInfoAction->setCheckable( true );
+  mShowInfoAction->setObjectName( u"mShowInfoAction"_s );
   addAction( mShowInfoAction );
 
   connect( mConnection, &QgsAppGpsConnection::positionChanged, this, &QgsGpsToolBar::updateLocationLabel );
@@ -140,6 +147,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   settingsButton->setPopupMode( QToolButton::InstantPopup );
   settingsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mSettingsMenuAction = addWidget( settingsButton );
+  mSettingsMenuAction->setObjectName( u"mSettingsMenuAction"_s );
 
   mRecenterAction->setEnabled( false );
   mCreateFeatureAction->setEnabled( false );

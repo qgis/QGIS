@@ -129,10 +129,14 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mAvoidIntersectionsModeButton->setToolTip( tr( "When avoid overlap is enabled, digitized features will be clipped to not overlapped existing ones." ) );
   mAvoidIntersectionsModeButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *avoidIntersectionsModeMenu = new QMenu( tr( "Set Avoid Overlap Mode" ), this );
+  avoidIntersectionsModeMenu->setObjectName( u"avoidIntersectionsModeMenu"_s );
   mAllowIntersectionsAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAllowIntersections.svg" ) ), tr( "Allow Overlap" ), avoidIntersectionsModeMenu );
+  mAllowIntersectionsAction->setObjectName( u"mAllowIntersectionsAction"_s );
   mAvoidIntersectionsCurrentLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsCurrentLayer.svg" ) ), tr( "Avoid Overlap on Active Layer" ), avoidIntersectionsModeMenu );
   mAvoidIntersectionsCurrentLayerAction->setToolTip( tr( "Avoid Overlap on Active Layer.\nBeware that this option will be applied on all vertices of the edited geometries, even if outside the current view extent" ) );
+  mAvoidIntersectionsCurrentLayerAction->setObjectName( u"mAvoidIntersectionsCurrentLayerAction"_s );
   mAvoidIntersectionsLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mActionAvoidIntersectionsLayers.svg" ) ), tr( "Follow Advanced Configuration" ), avoidIntersectionsModeMenu );
+  mAvoidIntersectionsLayersAction->setObjectName( u"mAvoidIntersectionsLayersAction"_s );
   avoidIntersectionsModeMenu->addAction( mAllowIntersectionsAction );
   avoidIntersectionsModeMenu->addAction( mAvoidIntersectionsCurrentLayerAction );
   avoidIntersectionsModeMenu->addAction( mAvoidIntersectionsLayersAction );
@@ -150,8 +154,11 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mModeButton->setPopupMode( QToolButton::InstantPopup );
   QMenu *modeMenu = new QMenu( tr( "Set Snapping Mode" ), this );
   mAllLayersAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAllLayers.svg" ) ), tr( "All Layers" ), modeMenu );
+  mAllLayersAction->setObjectName( u"mAllLayersAction"_s );
   mActiveLayerAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingActiveLayer.svg" ) ), tr( "Active Layer" ), modeMenu );
+  mActiveLayerAction->setObjectName( u"mActiveLayerAction"_s );
   mAdvancedModeAction = new QAction( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingAdvanced.svg" ) ), tr( "Advanced Configuration" ), modeMenu );
+  mAdvancedModeAction->setObjectName( u"mAdvancedModeAction"_s );
   modeMenu->addAction( mAllLayersAction );
   modeMenu->addAction( mActiveLayerAction );
   modeMenu->addAction( mAdvancedModeAction );
@@ -159,6 +166,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   {
     modeMenu->addSeparator();
     QAction *openDialogAction = new QAction( tr( "Open Snapping Options…" ), modeMenu );
+    openDialogAction->setObjectName( u"openDialogAction"_s );
     connect( openDialogAction, &QAction::triggered, QgisApp::instance(), &QgisApp::snappingOptions );
     modeMenu->addAction( openDialogAction );
   }
@@ -182,6 +190,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     if ( type == Qgis::SnappingType::NoSnap )
       continue;
     QAction *action = new QAction( QgsSnappingConfig::snappingTypeToIcon( type ), QgsSnappingConfig::snappingTypeToString( type ), typeMenu );
+    action->setObjectName( QgsSnappingConfig::snappingTypeToString( type ) );
     action->setData( QVariant::fromValue( type ) );
     action->setCheckable( true );
     typeMenu->addAction( action );
@@ -256,7 +265,9 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   // See https://github.com/qgis/QGIS/pull/8266 for some more context
   mTracingOffsetSpinBox->setShowClearButton( false );
   QMenu *tracingMenu = new QMenu( this );
+  tracingMenu->setObjectName( u"tracingMenu"_s );
   QWidgetAction *widgetAction = new QWidgetAction( tracingMenu );
+  widgetAction->setObjectName( u"tracingWidgetAction"_s );
   QVBoxLayout *tracingWidgetLayout = new QVBoxLayout;
   tracingWidgetLayout->addWidget( new QLabel( "Offset" ) );
   tracingWidgetLayout->addWidget( mTracingOffsetSpinBox );
@@ -280,6 +291,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     // hiding widget in a toolbar is not possible, actions are required
     tb->addAction( mEnabledAction );
     mModeAction = tb->addWidget( mModeButton );
+    mModeAction->setObjectName( u"mModeAction"_s );
 
     // edit advanced config button
     QToolButton *advConfigButton = new QToolButton( this );
@@ -293,14 +305,19 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     advConfigButton->setObjectName( u"EditAdvancedConfigurationButton"_s );
     advConfigButton->setMenu( advConfigMenu );
     mEditAdvancedConfigAction = tb->addWidget( advConfigButton );
+    mEditAdvancedConfigAction->setObjectName( u"mEditAdvancedConfigAction"_s );
 
     // other buttons / actions
     mTypeAction = tb->addWidget( mTypeButton );
+    mTypeAction->setObjectName( u"mTypeAction"_s );
     mToleranceAction = tb->addWidget( mToleranceSpinBox );
+    mToleranceAction->setObjectName( u"mToleranceAction"_s );
     mUnitAction = tb->addWidget( mUnitsComboBox );
+    mUnitAction->setObjectName( u"mUnitAction"_s );
 
     tb->addAction( mTopologicalEditingAction );
     mAvoidIntersectionsModeAction = tb->addWidget( mAvoidIntersectionsModeButton );
+    mAvoidIntersectionsModeAction->setObjectName( u"mAvoidIntersectionsModeAction"_s );
     tb->addAction( mIntersectionSnappingAction );
     tb->addAction( mEnableTracingAction );
     tb->addAction( mSelfSnappingAction );
