@@ -227,9 +227,8 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     removed_imports = defaultdict(set)
     import_offsets = {}
     has_unfixed_errors = False  # True if there is at least one error impossible to fix
-    fix_full_enums = (
-        {}
-    )  # Full replacements for enums (Owner.Value -> Fully.Qualified.Value)
+    fix_full_enums = {}
+    # Full replacements for enums (Owner.Value -> Fully.Qualified.Value)
     object_types = {}
 
     def visit_assign(_node: ast.Assign, _parent):
@@ -477,7 +476,6 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 visit_subscript(node, parent)
             elif isinstance(node, ast.Assign):
                 visit_assign(node, parent)
-
             if (
                 isinstance(node, ast.FunctionDef)
                 and node.name in rename_function_definitions
@@ -526,40 +524,31 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 and (node.value.id, node.attr) in qt_enums
             ):
                 enum_type = qt_enums[(node.value.id, node.attr)]
-                off = Offset(node.lineno, node.col_offset)
+                offset = Offset(node.lineno, node.col_offset)
 
+                # Cache resolved enum type to avoid repeating the lookup and to make the special-casing clearer.
                 # Special-case for QGIS Processing enums: suggested owner is wrong
-                if (
-                    node.value.id == "QgsProcessing"
-                    and enum_type == "ProcessingSourceType"
-                ):
-                    if qgis3_compat:
-                        fix_full_enums[off] = f"QgsProcessing.SourceType.{node.attr}"
-
-                    else:
-                        fix_full_enums[off] = f"Qgis.ProcessingSourceType.{node.attr}"
+                if node.value.id == "QgsProcessing" and enum_type == "ProcessingSourceType":
+                    fix_full_enums[offset] = (
+                        f"QgsProcessing.SourceType.{node.attr}"
+                        if qgis3_compat
+                        else f"Qgis.ProcessingSourceType.{node.attr}"
+                    )
                     continue
 
-                if (
-                    node.value.id == "QgsProcessingParameterNumber"
-                    and enum_type == "ProcessingNumberParameterType"
-                ):
-                    if qgis3_compat:
-                        fix_full_enums[off] = (
-                            f"QgsProcessingParameterNumber.Type.{node.attr}"
-                        )
-                    else:
-                        fix_full_enums[off] = (
-                            f"Qgis.ProcessingNumberParameterType.{node.attr}"
-                        )
+                if node.value.id == "QgsProcessingParameterNumber" and enum_type == "ProcessingNumberParameterType":
+                    fix_full_enums[offset] = (
+                        f"QgsProcessingParameterNumber.Type.{node.attr}"
+                        if qgis3_compat
+                        else f"Qgis.ProcessingNumberParameterType.{node.attr}"
+                    )
                     continue
 
-                fix_qt_enums[off] = (
+                fix_qt_enums[offset] = (
                     node.value.id,
                     enum_type,
                     node.attr,
-                )
-
+                )               
             if (
                 isinstance(node, ast.Attribute)
                 and isinstance(node.value, ast.Name)
@@ -651,7 +640,6 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         # Special-case: QGIS Processing enums have wrong suggested owner
         # Replace "QgsProcessing.TypeVectorLine" -> "QgsProcessing.SourceType.TypeVectorLine"
         # Replace "QgsProcessingParameterNumber.Double" -> "QgsProcessingParameterNumber.Type.Double"
-
         if token.offset in fix_full_enums:
             # Replace "Owner.Value" with full qualified name
             # tokens[i] should be Owner, tokens[i+1] '.', tokens[i+2] Value
