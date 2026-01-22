@@ -573,6 +573,9 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="toolTip">
+           <string>Allows for the line rendering to trim off the start from the actual line string when drawing the line</string>
+          </property>
           <property name="decimals">
            <number>6</number>
           </property>
@@ -614,6 +617,9 @@
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Allows for the line rendering to trim off the end from the actual line string when drawing the line</string>
           </property>
           <property name="decimals">
            <number>6</number>
