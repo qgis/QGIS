@@ -357,18 +357,20 @@ void QgsPolygon3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Qgs
   QgsMaterial *mat = material( mSymbol.get(), selected, context );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( reinterpret_cast<const char *>( polyData.tessellator->data().constData() ), static_cast<int>( polyData.tessellator->data().count() * sizeof( float ) ) );
-  const int nVerts = data.count() / polyData.tessellator->stride();
+  const QByteArray vertexBuffer( reinterpret_cast<const char *>( polyData.tessellator->vertexBuffer().constData() ), static_cast<int>( polyData.tessellator->vertexBuffer().count() * sizeof( float ) ) );
+  const QByteArray indexBuffer( reinterpret_cast<const char *>( polyData.tessellator->indexBuffer().constData() ), static_cast<int>( polyData.tessellator->indexBuffer().count() * polyData.tessellator->indexStride() ) );
+  const int vertexCount = vertexBuffer.count() / polyData.tessellator->stride();
+  const size_t indexCount = polyData.tessellator->dataVerticesCount();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, mSymbol->invertNormals(), mSymbol->addBackFaces(), texturedMaterialSettings && texturedMaterialSettings->requiresTextureCoordinates() );
 
-  geometry->setData( data, nVerts, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
+  geometry->setVertexBufferData( vertexBuffer, vertexCount, polyData.triangleIndexFids, polyData.triangleIndexStartingIndices );
+  geometry->setIndexBufferData( indexBuffer, indexCount );
 
   if ( mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties() )
-    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, nVerts, polyData.materialDataDefined );
-
+    mSymbol->materialSettings()->applyDataDefinedToGeometry( geometry, vertexCount, polyData.materialDataDefined );
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
 
