@@ -33,7 +33,7 @@ Holds information about fetched network content.
     };
 
     explicit QgsFetchedContent( const QString &url, QTemporaryFile *file /Transfer/ = 0, ContentStatus status = NotStarted,
-                                const QString &authConfig = QString() );
+                                const QString &authConfig = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
 %Docstring
 Constructs a FetchedContent with pointer to the downloaded file and
 status of the download
@@ -120,7 +120,7 @@ Create the registry for temporary downloaded files
 
     ~QgsNetworkContentFetcherRegistry();
 
-    QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred, const QString &authConfig = QString() );
+    QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred, const QString &authConfig = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
 %Docstring
 Initialize a download for the given URL
 
@@ -129,6 +129,8 @@ Initialize a download for the given URL
                      shall be manually triggered
 :param authConfig: authentication configuration id to be used while
                    fetching
+:param headers: optional HTTP headers to add to the request (since QGIS
+                3.44)
 
 .. note::
 

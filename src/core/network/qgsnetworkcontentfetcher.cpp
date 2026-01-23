@@ -40,10 +40,13 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 
 }
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg )
+void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg, const QgsHttpHeaders &headers )
 {
   QNetworkRequest req( url );
   QgsSetRequestInitiatorClass( req, u"QgsNetworkContentFetcher"_s );
+
+  // Apply custom headers
+  headers.updateNetworkRequest( req );
 
   fetchContent( req, authcfg );
 }

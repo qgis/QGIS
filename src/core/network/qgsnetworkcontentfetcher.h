@@ -21,6 +21,7 @@
 #define QGSNETWORKCONTENTFETCHER_H
 
 #include "qgis_core.h"
+#include "qgshttpheaders.h"
 
 #include <QNetworkReply>
 #include <QUrl>
@@ -53,8 +54,10 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      * signal will be emitted when content has been fetched.
      * \param url URL to fetch
      * \param authcfg optional authentication configuration
+     * \param headers optional HTTP headers to add to the request (since QGIS 3.44)
+     *
      */
-    void fetchContent( const QUrl &url, const QString &authcfg = QString() );
+    void fetchContent( const QUrl &url, const QString &authcfg = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
 
     /**
      * Fetches content using a network \a request and handles redirects. The finished()
