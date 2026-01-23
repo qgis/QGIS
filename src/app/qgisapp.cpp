@@ -2040,6 +2040,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
     updateRecentProjectPaths();
   } );
   connect( mWelcomeScreen, &QgsWelcomeScreen::projectsCleared, this, [this]( bool clearPinned ) {
+    // NOLINTBEGIN(bugprone-branch-clone)
     if ( clearPinned )
     {
       mRecentProjects.clear();
@@ -2055,6 +2056,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
         mRecentProjects.end()
       );
     }
+    // NOLINTEND(bugprone-branch-clone)
     saveRecentProjects();
     updateRecentProjectPaths();
   } );
