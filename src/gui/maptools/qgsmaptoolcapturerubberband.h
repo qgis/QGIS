@@ -109,7 +109,7 @@ class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
     bool setWeight( int index, double weight );
 
     /**
-     * Returns all weights.
+     * \returns all weights.
      * \since QGIS 4.0
      */
     const QVector<double> &weights() const { return mWeights; }
