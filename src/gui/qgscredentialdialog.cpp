@@ -198,7 +198,7 @@ void QgsCredentialDialog::requestCredentialsMasterPassword( QString *password, b
   mIgnoreButton->hide();
   leMasterPass->setFocus();
 
-  const QString titletxt( stored ? tr( "Enter CURRENT master authentication password" ) : tr( "Set NEW master authentication password" ) );
+  const QString titletxt( stored ? tr( "Enter CURRENT master authentication password for QGIS" ) : tr( "Set NEW master authentication password for QGIS" ) );
   lblPasswordTitle->setText( titletxt );
 
   chkbxPasswordHelperEnable->setChecked( QgsApplication::authManager()->passwordHelperEnabled() );
