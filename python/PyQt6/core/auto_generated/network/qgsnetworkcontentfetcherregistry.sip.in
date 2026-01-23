@@ -130,7 +130,7 @@ Initialize a download for the given URL
 :param authConfig: authentication configuration id to be used while
                    fetching
 :param headers: optional HTTP headers to add to the request (since QGIS
-                3.44)
+                3.44.8)
 
 .. note::
 

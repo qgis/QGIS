@@ -43,7 +43,7 @@ when content has been fetched.
 :param url: URL to fetch
 :param authcfg: optional authentication configuration
 :param headers: optional HTTP headers to add to the request (since QGIS
-                3.44)
+                3.44.8)
 %End
 
     void fetchContent( const QNetworkRequest &request, const QString &authcfg = QString() );

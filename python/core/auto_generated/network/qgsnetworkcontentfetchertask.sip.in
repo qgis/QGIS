@@ -48,8 +48,8 @@ argument.
 Since QGIS 3.28 the optional ``description`` can be explicitly set. If
 not specified, a default task description will be generated.
 
-Since QGIS 3.44 the optional ``headers`` can be used to add custom HTTP
-headers to the request.
+Since QGIS 3.44.8 the optional ``headers`` can be used to add custom
+HTTP headers to the request.
 %End
 
     QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
@@ -64,8 +64,8 @@ argument.
 Since QGIS 3.28 the optional ``description`` can be explicitly set. If
 not specified, a default task description will be generated.
 
-Since QGIS 3.44 the optional ``headers`` can be used to add custom HTTP
-headers to the request.
+Since QGIS 3.44.8 the optional ``headers`` can be used to add custom
+HTTP headers to the request.
 %End
 
     ~QgsNetworkContentFetcherTask();

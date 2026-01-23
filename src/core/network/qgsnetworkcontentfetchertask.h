@@ -60,7 +60,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      *
      * Since QGIS 3.28 the optional \a description can be explicitly set. If not specified, a default task description will be generated.
      *
-     * Since QGIS 3.44 the optional \a headers can be used to add custom HTTP headers to the request.
+     * Since QGIS 3.44.8 the optional \a headers can be used to add custom HTTP headers to the request.
      */
     QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
                                   const QString &description = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
      *
      * Since QGIS 3.28 the optional \a description can be explicitly set. If not specified, a default task description will be generated.
      *
-     * Since QGIS 3.44 the optional \a headers can be used to add custom HTTP headers to the request.
+     * Since QGIS 3.44.8 the optional \a headers can be used to add custom HTTP headers to the request.
      */
     QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
                                   const QString &description = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );

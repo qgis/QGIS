@@ -54,7 +54,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      * signal will be emitted when content has been fetched.
      * \param url URL to fetch
      * \param authcfg optional authentication configuration
-     * \param headers optional HTTP headers to add to the request (since QGIS 3.44)
+     * \param headers optional HTTP headers to add to the request (since QGIS 3.44.8)
      *
      */
     void fetchContent( const QUrl &url, const QString &authcfg = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );

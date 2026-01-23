@@ -155,7 +155,7 @@ class CORE_EXPORT QgsNetworkContentFetcherRegistry : public QObject
      * \param url the URL to be fetched
      * \param fetchingMode defines if the download will start immediately or shall be manually triggered
      * \param authConfig authentication configuration id to be used while fetching
-     * \param headers optional HTTP headers to add to the request (since QGIS 3.44)
+     * \param headers optional HTTP headers to add to the request (since QGIS 3.44.8)
      * \note If the download starts immediately, it will not redownload any already fetched or currently fetching file.
      */
     QgsFetchedContent *fetch( const QString &url, Qgis::ActionStart fetchingMode = Qgis::ActionStart::Deferred, const QString &authConfig = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
