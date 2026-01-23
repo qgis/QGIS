@@ -20,9 +20,9 @@
 #define QGSNETWORKCONTENTFETCHERREGISTRY_H
 
 #include "qgis_core.h"
+#include "qgshttpheaders.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgstaskmanager.h"
-#include "qgshttpheaders.h"
 
 #include <QFile>
 #include <QMap>
