@@ -8430,6 +8430,43 @@ void QgisApp::saveAsLayerDefinition()
   settings.setValue( u"UI/lastQLRDir"_s, fi.path() );
 }
 
+void QgisApp::loadStyleFromFile( QgsMapLayer *layer )
+{
+  if ( !layer )
+    return;
+
+  switch ( layer->type() )
+  {
+    case Qgis::LayerType::Vector:
+    {
+      QgsVectorLayerProperties( mMapCanvas, visibleMessageBar(), qobject_cast<QgsVectorLayer *>( layer ) ).loadStyle();
+      break;
+    }
+    case Qgis::LayerType::Raster:
+      QgsRasterLayerProperties( layer, mMapCanvas ).loadStyleFromFile();
+      break;
+
+    case Qgis::LayerType::Mesh:
+      QgsMeshLayerProperties( layer, mMapCanvas ).loadStyleFromFile();
+      break;
+
+    case Qgis::LayerType::VectorTile:
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( layer ), mMapCanvas, visibleMessageBar() ).loadStyleFromFile();
+      break;
+
+    case Qgis::LayerType::PointCloud:
+      QgsPointCloudLayerProperties( qobject_cast<QgsPointCloudLayer *>( layer ), mMapCanvas, visibleMessageBar() ).loadStyleFromFile();
+      break;
+
+    // Not available for these
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::TiledScene:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+      break;
+  }
+}
+
 void QgisApp::saveStyleFile( QgsMapLayer *layer )
 {
   if ( !layer )
