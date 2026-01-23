@@ -165,11 +165,11 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
     const float epsilon = static_cast<float>( std::min( box3D.width(), box3D.height() ) ) / SPAN;
     const float distance = static_cast<float>( box3D.distanceTo( cameraPosMapCoords ) );
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
-    const float THRESHOLD = .2 / overviewSwitchingScale;
+    const double THRESHOLD = 0.2 / overviewSwitchingScale;
 
     // always display as bbox for the initial temporary camera pos (0, 0, 0)
     // then once the camera changes we display as bbox depending on screen space error
-    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < THRESHOLD;
+    const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < static_cast<float>( THRESHOLD );
     if ( !displayAsBbox )
     {
       subIndexesRendered += 1;
