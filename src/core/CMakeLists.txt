@@ -2797,8 +2797,6 @@ if (WITH_SPATIALITE)
   target_link_libraries(qgis_core spatialite::spatialite)
 endif()
 
-target_link_libraries(qgis_core Qt6::Core5Compat)
-
 if (WITH_EPT)
   target_link_libraries(qgis_core
     ${ZSTD_LIBRARY}
