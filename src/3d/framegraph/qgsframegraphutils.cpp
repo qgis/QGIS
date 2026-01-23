@@ -31,6 +31,8 @@
 #include <Qt3DRender/QSortPolicy>
 #include <Qt3DRender/QTechnique>
 
+using namespace Qt::StringLiterals;
+
 QStringList QgsFrameGraphUtils::dumpSceneGraph( const Qt3DCore::QNode *node, FgDumpContext context )
 {
   return dumpSG( context, node );
