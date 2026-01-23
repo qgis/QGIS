@@ -37,6 +37,7 @@
 #include <QDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QStandardPaths>
 #include <QTimer>
 #include <QUrlQuery>
