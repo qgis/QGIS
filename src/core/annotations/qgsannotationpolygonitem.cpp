@@ -164,6 +164,17 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPolygonItem::applyEditV2( Q
       mPolygon->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      QgsPointXY center = mPolygon->boundingBox().center();
+      QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
+      transform.rotate( -rotateOperation->angle() );
+      transform.translate( -center.x(), -center.y() );
+      mPolygon->transform( transform );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -189,6 +200,18 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPolygonItem::transi
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      modifiedPolygon->transform( transform );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      std::unique_ptr< QgsCurvePolygon > modifiedPolygon( mPolygon->clone() );
+      QgsPointXY center = modifiedPolygon->boundingBox().center();
+      QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
+      transform.rotate( -rotateOperation->angle() );
+      transform.translate( -center.x(), -center.y() );
       modifiedPolygon->transform( transform );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedPolygon ) ) );
     }

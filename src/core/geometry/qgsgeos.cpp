@@ -112,22 +112,14 @@ QThreadStorage< QgsGeosContext * > QgsGeosContext::sGeosContext;
 
 QgsGeosContext::QgsGeosContext()
 {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=5 )
   mContext = GEOS_init_r();
   GEOSContext_setNoticeHandler_r( mContext, printGEOSNotice );
   GEOSContext_setErrorHandler_r( mContext, throwQgsGeosException );
-#else
-  mContext = initGEOS_r( printGEOSNotice, throwQgsGeosException );
-#endif
 }
 
 QgsGeosContext::~QgsGeosContext()
 {
-#if GEOS_VERSION_MAJOR>3 || ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR>=5 )
   GEOS_finish_r( mContext );
-#else
-  finishGEOS_r( mContext );
-#endif
 }
 
 GEOSContextHandle_t QgsGeosContext::get()

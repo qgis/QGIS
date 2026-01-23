@@ -18,6 +18,8 @@
 
 #include "moc_qgspluginsortfilterproxymodel.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {

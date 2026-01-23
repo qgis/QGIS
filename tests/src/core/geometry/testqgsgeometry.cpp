@@ -38,6 +38,8 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 #include "qgstriangle.h"
+#include "qgstriangulatedsurface.h"
+#include "qgspolyhedralsurface.h"
 #include "qgsgeometryengine.h"
 #include "qgscircle.h"
 #include "qgsmultipoint.h"
@@ -177,6 +179,8 @@ class TestQgsGeometry : public QgsTest
     void wktParser();
 
     void chamferFillet();
+
+    void collectTinPatches();
 
   private:
     //! Must be called before each render test
@@ -3320,6 +3324,98 @@ void TestQgsGeometry::chamferFillet()
   g2 = g.fillet( 6, 2.0, 4 );
   QCOMPARE( g.lastError(), "" );
   QCOMPARE( g2.asWkt( 2 ), "MultiPolygon (((5 15, 10 15, 10 20, 5 20, 5 15)),((105 15, 108 15, 108.77 15.15, 109.41 15.59, 109.85 16.23, 110 17, 110 20, 105 20, 105 15)))" );
+}
+
+void TestQgsGeometry::collectTinPatches()
+{
+  QgsTriangle triangle1( QgsPoint( 0, 0, 0 ), QgsPoint( 1, 0, 0 ), QgsPoint( 0.5, 1, 0 ) );
+  QgsTriangle triangle2( QgsPoint( 1, 0, 0 ), QgsPoint( 2, 0, 0 ), QgsPoint( 1.5, 1, 0 ) );
+
+  QgsGeometry geom1( triangle1.clone() );
+  QgsGeometry geom2( triangle2.clone() );
+
+  QVector<QgsGeometry> geometries;
+  geometries << geom1 << geom2;
+
+  QgsGeometry result = QgsGeometry::collectTinPatches( geometries );
+
+  QVERIFY( !result.isNull() );
+
+  QVERIFY( result.wkbType() == Qgis::WkbType::TINZ );
+
+  const QgsTriangulatedSurface *tin = qgsgeometry_cast<const QgsTriangulatedSurface *>( result.constGet() );
+  QVERIFY( tin != nullptr );
+  QCOMPARE( tin->numPatches(), 2 );
+
+  // Test with mixed TIN and Triangle inputs
+  QgsTriangulatedSurface tinSurface;
+  QgsTriangle triangle3( QgsPoint( 2, 0, 0 ), QgsPoint( 3, 0, 0 ), QgsPoint( 2.5, 1, 0 ) );
+  tinSurface.addPatch( triangle3.clone() );
+
+  QgsGeometry geom3( tinSurface.clone() );
+  QgsGeometry geom4( triangle1.clone() );
+
+  QVector<QgsGeometry> mixedGeometries;
+  mixedGeometries << geom3 << geom4;
+
+  QgsGeometry mixedResult = QgsGeometry::collectTinPatches( mixedGeometries );
+  QVERIFY( !mixedResult.isNull() );
+  QVERIFY( mixedResult.wkbType() == Qgis::WkbType::TINZ );
+
+  const QgsTriangulatedSurface *mixedTin = qgsgeometry_cast<const QgsTriangulatedSurface *>( mixedResult.constGet() );
+  QVERIFY( mixedTin != nullptr );
+  QCOMPARE( mixedTin->numPatches(), 2 ); // 1 from the TIN + 1 from the triangle
+
+  // Test with null geometries
+  QgsGeometry nullGeom;
+  QVector<QgsGeometry> geometriesWithNull;
+  geometriesWithNull << geom1 << nullGeom << geom2;
+
+  QgsGeometry resultWithNull = QgsGeometry::collectTinPatches( geometriesWithNull );
+  QVERIFY( !resultWithNull.isNull() );
+  QVERIFY( resultWithNull.wkbType() == Qgis::WkbType::TINZ );
+
+  const QgsTriangulatedSurface *tinWithNull = qgsgeometry_cast<const QgsTriangulatedSurface *>( resultWithNull.constGet() );
+  QVERIFY( tinWithNull != nullptr );
+  QCOMPARE( tinWithNull->numPatches(), 2 ); // Should still have 2 patches
+
+  // Test with empty input
+  QVector<QgsGeometry> emptyGeometries;
+  QgsGeometry emptyResult = QgsGeometry::collectTinPatches( emptyGeometries );
+  QVERIFY( emptyResult.isNull() );
+
+  // Test with only null geometries
+  QVector<QgsGeometry> onlyNulls;
+  onlyNulls << nullGeom << nullGeom;
+  QgsGeometry onlyNullResult = QgsGeometry::collectTinPatches( onlyNulls );
+  QVERIFY( onlyNullResult.isNull() );
+
+  // Test with non-TIN/non-triangle geometries
+  QgsGeometry pointGeom = QgsGeometry::fromPointXY( QgsPointXY( 0, 0 ) );
+  QgsGeometry lineGeom = QgsGeometry::fromPolylineXY( QgsPolylineXY() << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 ) );
+
+  QVector<QgsGeometry> nonTinGeometries;
+  nonTinGeometries << pointGeom << lineGeom;
+
+  QgsGeometry nonTinResult = QgsGeometry::collectTinPatches( nonTinGeometries );
+  QVERIFY( nonTinResult.isNull() );
+
+  // Test preserving Z and M values from first valid geometry
+  QgsTriangle triangleZM( QgsPoint( 0, 0, 10, 20 ), QgsPoint( 1, 0, 11, 21 ), QgsPoint( 0.5, 1, 12, 22 ) );
+  QgsGeometry geomZM( triangleZM.clone() );
+
+  QVector<QgsGeometry> zmGeometries;
+  zmGeometries << geomZM << geom1; // geom1 has no Z/M
+
+  QgsGeometry zmResult = QgsGeometry::collectTinPatches( zmGeometries );
+  QVERIFY( !zmResult.isNull() );
+  QCOMPARE( zmResult.wkbType(), Qgis::WkbType::TINZM );
+
+  const QgsTriangulatedSurface *zmTin = qgsgeometry_cast<const QgsTriangulatedSurface *>( zmResult.constGet() );
+  QVERIFY( zmTin != nullptr );
+  QCOMPARE( zmTin->numPatches(), 2 );
+  QVERIFY( zmTin->is3D() );
+  QVERIFY( zmTin->isMeasure() );
 }
 
 QGSTEST_MAIN( TestQgsGeometry )

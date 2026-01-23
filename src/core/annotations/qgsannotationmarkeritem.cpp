@@ -106,6 +106,17 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationMarkerItem::applyEditV2( Qg
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      if ( mSymbol )
+      {
+        mSymbol->setAngle( std::fmod( mSymbol->angle() + rotateOperation->angle(), 360.0 ) );
+        return Qgis::AnnotationItemEditOperationResult::Success;
+      }
+      break;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
@@ -129,6 +140,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationMarkerItem::transie
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;

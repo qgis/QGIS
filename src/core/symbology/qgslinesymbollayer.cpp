@@ -769,27 +769,24 @@ void QgsSimpleLineSymbolLayer::applyDataDefinedSymbology( QgsSymbolRenderContext
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::StrokeStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( exprVal.toString() ) );
+    const QString lineStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::StrokeStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenStyle( mPenStyle ) );
+    pen.setStyle( QgsSymbolLayerUtils::decodePenStyle( lineStyleString ) );
   }
 
   //join style
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::JoinStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( exprVal.toString() ) );
+    const QString joinStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::JoinStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenJoinStyle( mPenJoinStyle ) );
+    pen.setJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( joinStyleString ) );
   }
 
   //cap style
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::CapStyle ) )
   {
     context.setOriginalValueVariable( QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
-    QVariant exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext() );
-    if ( !QgsVariantUtils::isNull( exprVal ) )
-      pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( exprVal.toString() ) );
+    const QString capStyleString = mDataDefinedProperties.valueAsString( QgsSymbolLayer::Property::CapStyle, context.renderContext().expressionContext(), QgsSymbolLayerUtils::encodePenCapStyle( mPenCapStyle ) );
+    pen.setCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( capStyleString ) );
   }
 }
 

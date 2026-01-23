@@ -1241,6 +1241,8 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   QString fontName;
   QString fontStyleName;
 
+  bool allowOverlap = jsonLayout.contains( u"text-allow-overlap"_s ) && jsonLayout.value( u"text-allow-overlap"_s ).toBool();
+
   if ( jsonLayout.contains( u"text-font"_s ) )
   {
     auto splitFontFamily = []( const QString & fontName, QString & family, QString & style ) -> bool
@@ -1616,6 +1618,13 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
   }
 
   QgsPalLayerSettings labelSettings;
+  if ( allowOverlap )
+  {
+    QgsLabelPlacementSettings placementSettings = labelSettings.placementSettings();
+    placementSettings.setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost );
+    placementSettings.setAllowDegradedPlacement( true );
+    labelSettings.setPlacementSettings( placementSettings );
+  }
 
   if ( textMaxWidth > 0 )
   {
@@ -3283,11 +3292,26 @@ Qt::PenJoinStyle QgsMapBoxGlStyleConverter::parseJoinStyle( const QString &style
 QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expression, QgsMapBoxGlStyleConversionContext &context, bool colorExpected )
 {
   QString op = expression.value( 0 ).toString();
-  if ( op == "%"_L1 && expression.size() >= 3 )
+  if ( ( op == "%"_L1 || op == "/"_L1 || op == "-"_L1 || op == "^"_L1 ) && expression.size() >= 3 )
   {
-    return u"%1 %2 %3"_s.arg( parseValue( expression.value( 1 ), context ),
-                              op,
-                              parseValue( expression.value( 2 ), context ) );
+    if ( expression.size() != 3 )
+    {
+      context.pushWarning( QObject::tr( "%1: Operator %2 requires exactly two operands, skipping extra operands" ).arg( context.layerId() ).arg( op ) );
+    }
+    QString v1 = parseValue( expression.value( 1 ), context, colorExpected );
+    QString v2 = parseValue( expression.value( 2 ), context, colorExpected );
+    return u"(%1 %2 %3)"_s.arg( v1, op, v2 );
+  }
+  else if ( ( op == "*"_L1 || op == "+"_L1 ) && expression.size() >= 3 )
+  {
+    QStringList operands;
+    std::transform( std::next( expression.begin() ), expression.end(),
+                    std::back_inserter( operands ),
+                    [&context, colorExpected]( const QVariant & val )
+    {
+      return parseValue( val, context, colorExpected );
+    } );
+    return u"(%1)"_s.arg( operands.join( u" %1 "_s.arg( op ) ) );
   }
   else if ( op == "to-number"_L1 )
   {

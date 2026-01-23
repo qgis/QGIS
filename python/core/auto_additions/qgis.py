@@ -316,6 +316,9 @@ QgsWkbTypes.PolyhedralSurface.__doc__ = "PolyhedralSurface \n.. versionadded:: 3
 QgsWkbTypes.TIN = Qgis.WkbType.TIN
 QgsWkbTypes.TIN.is_monkey_patched = True
 QgsWkbTypes.TIN.__doc__ = "TIN \n.. versionadded:: 3.40"
+QgsWkbTypes.NurbsCurve = Qgis.WkbType.NurbsCurve
+QgsWkbTypes.NurbsCurve.is_monkey_patched = True
+QgsWkbTypes.NurbsCurve.__doc__ = "NurbsCurve \n.. versionadded:: 4.0"
 QgsWkbTypes.NoGeometry = Qgis.WkbType.NoGeometry
 QgsWkbTypes.NoGeometry.is_monkey_patched = True
 QgsWkbTypes.NoGeometry.__doc__ = "No geometry"
@@ -364,6 +367,9 @@ QgsWkbTypes.PolyhedralSurfaceZ.__doc__ = "PolyhedralSurfaceZ"
 QgsWkbTypes.TINZ = Qgis.WkbType.TINZ
 QgsWkbTypes.TINZ.is_monkey_patched = True
 QgsWkbTypes.TINZ.__doc__ = "TINZ"
+QgsWkbTypes.NurbsCurveZ = Qgis.WkbType.NurbsCurveZ
+QgsWkbTypes.NurbsCurveZ.is_monkey_patched = True
+QgsWkbTypes.NurbsCurveZ.__doc__ = "NurbsCurveZ \n.. versionadded:: 4.0"
 QgsWkbTypes.PointM = Qgis.WkbType.PointM
 QgsWkbTypes.PointM.is_monkey_patched = True
 QgsWkbTypes.PointM.__doc__ = "PointM"
@@ -409,6 +415,9 @@ QgsWkbTypes.PolyhedralSurfaceM.__doc__ = "PolyhedralSurfaceM"
 QgsWkbTypes.TINM = Qgis.WkbType.TINM
 QgsWkbTypes.TINM.is_monkey_patched = True
 QgsWkbTypes.TINM.__doc__ = "TINM"
+QgsWkbTypes.NurbsCurveM = Qgis.WkbType.NurbsCurveM
+QgsWkbTypes.NurbsCurveM.is_monkey_patched = True
+QgsWkbTypes.NurbsCurveM.__doc__ = "NurbsCurveM \n.. versionadded:: 4.0"
 QgsWkbTypes.PointZM = Qgis.WkbType.PointZM
 QgsWkbTypes.PointZM.is_monkey_patched = True
 QgsWkbTypes.PointZM.__doc__ = "PointZM"
@@ -454,6 +463,9 @@ QgsWkbTypes.TINZM.__doc__ = "TINZM"
 QgsWkbTypes.TriangleZM = Qgis.WkbType.TriangleZM
 QgsWkbTypes.TriangleZM.is_monkey_patched = True
 QgsWkbTypes.TriangleZM.__doc__ = "TriangleZM"
+QgsWkbTypes.NurbsCurveZM = Qgis.WkbType.NurbsCurveZM
+QgsWkbTypes.NurbsCurveZM.is_monkey_patched = True
+QgsWkbTypes.NurbsCurveZM.__doc__ = "NurbsCurveZM \n.. versionadded:: 4.0"
 QgsWkbTypes.Point25D = Qgis.WkbType.Point25D
 QgsWkbTypes.Point25D.is_monkey_patched = True
 QgsWkbTypes.Point25D.__doc__ = "Point25D"
@@ -522,6 +534,10 @@ a different mode.
 
   .. versionadded:: 3.40
 
+* ``NurbsCurve``: NurbsCurve
+
+  .. versionadded:: 4.0
+
 * ``NoGeometry``: No geometry
 * ``PointZ``: PointZ
 * ``LineStringZ``: LineStringZ
@@ -538,6 +554,10 @@ a different mode.
 * ``MultiSurfaceZ``: MultiSurfaceZ
 * ``PolyhedralSurfaceZ``: PolyhedralSurfaceZ
 * ``TINZ``: TINZ
+* ``NurbsCurveZ``: NurbsCurveZ
+
+  .. versionadded:: 4.0
+
 * ``PointM``: PointM
 * ``LineStringM``: LineStringM
 * ``PolygonM``: PolygonM
@@ -553,6 +573,10 @@ a different mode.
 * ``MultiSurfaceM``: MultiSurfaceM
 * ``PolyhedralSurfaceM``: PolyhedralSurfaceM
 * ``TINM``: TINM
+* ``NurbsCurveM``: NurbsCurveM
+
+  .. versionadded:: 4.0
+
 * ``PointZM``: PointZM
 * ``LineStringZM``: LineStringZM
 * ``PolygonZM``: PolygonZM
@@ -568,6 +592,10 @@ a different mode.
 * ``PolyhedralSurfaceZM``: PolyhedralSurfaceM
 * ``TINZM``: TINZM
 * ``TriangleZM``: TriangleZM
+* ``NurbsCurveZM``: NurbsCurveZM
+
+  .. versionadded:: 4.0
+
 * ``Point25D``: Point25D
 * ``LineString25D``: LineString25D
 * ``Polygon25D``: Polygon25D
@@ -2180,6 +2208,19 @@ Qgis.LabelOverlapHandling.__doc__ = """Label overlap handling.
 # --
 Qgis.LabelOverlapHandling.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LabelWhitespaceCollisionHandling.TreatWhitespaceAsCollision.__doc__ = "Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions"
+Qgis.LabelWhitespaceCollisionHandling.IgnoreWhitespaceCollisions.__doc__ = "Ignore overlapping whitespace text in labels and whitespace overlapping obstacles"
+Qgis.LabelWhitespaceCollisionHandling.__doc__ = """Label whitespace collision handling.
+
+.. versionadded:: 4.0
+
+* ``TreatWhitespaceAsCollision``: Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions
+* ``IgnoreWhitespaceCollisions``: Ignore overlapping whitespace text in labels and whitespace overlapping obstacles
+
+"""
+# --
+Qgis.LabelWhitespaceCollisionHandling.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LabelPrioritization.PreferCloser.__doc__ = "Prefer closer labels, falling back to alternate positions before larger distances"
 Qgis.LabelPrioritization.PreferPositionOrdering.__doc__ = "Prefer labels follow position ordering, falling back to more distance labels before alternate positions"
 Qgis.LabelPrioritization.__doc__ = """Label prioritization.
@@ -2331,6 +2372,21 @@ Qgis.LabelPredefinedPointPosition.__doc__ = """Positions for labels when using t
 """
 # --
 Qgis.LabelPredefinedPointPosition.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MultiPartLabelingBehavior.LabelLargestPartOnly.__doc__ = "Place a label only on the largest part from the geometry"
+Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel.__doc__ = "Place the (same) entire label over every part from the geometry"
+Qgis.MultiPartLabelingBehavior.SplitLabelTextLinesOverParts.__doc__ = "Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text"
+Qgis.MultiPartLabelingBehavior.__doc__ = """Behavior modifier for labeling features with multi-part geometries.
+
+.. versionadded:: 4.0
+
+* ``LabelLargestPartOnly``: Place a label only on the largest part from the geometry
+* ``LabelEveryPartWithEntireLabel``: Place the (same) entire label over every part from the geometry
+* ``SplitLabelTextLinesOverParts``: Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
+
+"""
+# --
+Qgis.MultiPartLabelingBehavior.baseClass = Qgis
 QgsPalLayerSettings.OffsetType = Qgis.LabelOffsetType
 # monkey patching scoped based enum
 QgsPalLayerSettings.FromPoint = Qgis.LabelOffsetType.FromPoint
@@ -5632,6 +5688,10 @@ QgsVertexId.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.VertexType.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.CurveVertex.is_monkey_patched = True
 QgsVertexId.CurveVertex.__doc__ = "An intermediate point on a segment defining the curvature of the segment"
+QgsVertexId.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.VertexType.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.ControlPointVertex.is_monkey_patched = True
+QgsVertexId.ControlPointVertex.__doc__ = "A NURBS control point (does not lie on the curve) \n.. versionadded:: 4.0"
 Qgis.VertexType.__doc__ = """Types of vertex.
 
 .. versionadded:: 3.22
@@ -5643,6 +5703,13 @@ Qgis.VertexType.__doc__ = """Types of vertex.
 * ``Curve``: An intermediate point on a segment defining the curvature of the segment
 
   Available as ``QgsVertexId.CurveVertex`` in older QGIS releases.
+
+* ``ControlPoint``: A NURBS control point (does not lie on the curve)
+
+  .. versionadded:: 4.0
+
+
+  Available as ``QgsVertexId.ControlPointVertex`` in older QGIS releases.
 
 
 """
@@ -8099,6 +8166,21 @@ Prior to QGIS 3.42 this was available as :py:class:`QgsLegendStyle`.Style
 """
 # --
 Qgis.LegendComponent.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LegendSyncMode.AllProjectLayers.__doc__ = "Synchronize to all project layers."
+Qgis.LegendSyncMode.VisibleLayers.__doc__ = "Synchronize to map layers. The legend will include layers which are included in the linked map only."
+Qgis.LegendSyncMode.Manual.__doc__ = "No automatic synchronization of legend layers. The legend will be manually populated."
+Qgis.LegendSyncMode.__doc__ = """Legend synchronization mode.
+
+.. versionadded:: 4.0
+
+* ``AllProjectLayers``: Synchronize to all project layers.
+* ``VisibleLayers``: Synchronize to map layers. The legend will include layers which are included in the linked map only.
+* ``Manual``: No automatic synchronization of legend layers. The legend will be manually populated.
+
+"""
+# --
+Qgis.LegendSyncMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
 Qgis.LegendJsonRenderFlag.__doc__ = """Legend JSON export flags.

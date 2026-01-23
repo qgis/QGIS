@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
+#include "qgscrosssection.h"
 #include "qgseventtracing.h"
 #include "qgslogger.h"
 #include "qgsray3d.h"
@@ -480,7 +481,7 @@ void QgsCameraController::updateCameraFromPose()
   }
 }
 
-void QgsCameraController::moveCameraPositionBy( const QVector3D &posDiff )
+void QgsCameraController::moveCenterPoint( const QVector3D &posDiff )
 {
   mCameraPose.setCenterPoint( mCameraPose.centerPoint() + posDiff );
   updateCameraFromPose();
@@ -604,31 +605,69 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     }
 
     QVector3D cameraBeforeDragPos = mCameraBefore->position();
-
     QVector3D moveToPosition = Qgs3DUtils::screenPointToWorldPos( { mouse->x(), mouse->y() }, mDragDepth, mScene->engine()->size(), mCameraBefore.get() );
-    QVector3D cameraBeforeToMoveToPos = ( moveToPosition - mCameraBefore->position() ).normalized();
-    QVector3D cameraBeforeToDragPointPos = ( mDragPoint - mCameraBefore->position() ).normalized();
 
-    // Make sure the rays are not horizontal (add small z shift if it is)
-    if ( cameraBeforeToMoveToPos.z() == 0 )
+    QVector3D shiftVector;
+    // Compute angle of camera's view vector to ground and decide if moving
+    // the cursor up-down should change altitude or latitude/longitude.
+    float angle = std::fabs( std::acos( QVector3D::dotProduct( QVector3D( 0, 0, 1 ), mCameraBefore->viewVector().normalized() ) ) - M_PI / 2 );
+    bool changeAltitude = false;
+    // Choose threshold angle based on projection type so it "feels right".
+    switch ( mScene->mapSettings()->projectionType() )
     {
-      cameraBeforeToMoveToPos.setZ( 0.01 );
-      cameraBeforeToMoveToPos = cameraBeforeToMoveToPos.normalized();
+      case Qt3DRender::QCameraLens::PerspectiveProjection:
+        changeAltitude = angle < M_PI / 30;
+        break;
+      case Qt3DRender::QCameraLens::OrthographicProjection:
+        changeAltitude = angle < M_PI / 3;
+        break;
+      default:
+        QgsDebugError( "Unhandled 3D projection type" );
     }
 
-    if ( cameraBeforeToDragPointPos.z() == 0 )
-    {
-      cameraBeforeToDragPointPos.setZ( 0.01 );
-      cameraBeforeToDragPointPos = cameraBeforeToDragPointPos.normalized();
-    }
+    if ( changeAltitude )
+      shiftVector = mDragPoint - moveToPosition;
+    else
+      switch ( mScene->mapSettings()->projectionType() )
+      {
+        case Qt3DRender::QCameraLens::OrthographicProjection:
+        {
+          // Project change to XY plane.
+          // This isn't quite accurate at higher angles, "desyncing" the mouse
+          // cursor and the dragged point.
+          shiftVector = { mDragPoint.x() - moveToPosition.x(), mDragPoint.y() - moveToPosition.y(), 0 };
+          break;
+        }
+        case Qt3DRender::QCameraLens::PerspectiveProjection:
+        {
+          QVector3D cameraBeforeToMoveToPos = ( moveToPosition - mCameraBefore->position() ).normalized();
+          QVector3D cameraBeforeToDragPointPos = ( mDragPoint - mCameraBefore->position() ).normalized();
 
-    double d1 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToMoveToPos.z();
-    double d2 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToDragPointPos.z();
+          // Make sure the rays are not horizontal (add small z shift if it is)
+          if ( cameraBeforeToMoveToPos.z() == 0 )
+          {
+            cameraBeforeToMoveToPos.setZ( 0.01 );
+            cameraBeforeToMoveToPos = cameraBeforeToMoveToPos.normalized();
+          }
 
-    QVector3D from = cameraBeforeDragPos + d1 * cameraBeforeToMoveToPos;
-    QVector3D to = cameraBeforeDragPos + d2 * cameraBeforeToDragPointPos;
+          if ( cameraBeforeToDragPointPos.z() == 0 )
+          {
+            cameraBeforeToDragPointPos.setZ( 0.01 );
+            cameraBeforeToDragPointPos = cameraBeforeToDragPointPos.normalized();
+          }
 
-    QVector3D shiftVector = to - from;
+          float d1 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToMoveToPos.z();
+          float d2 = ( mDragPoint.z() - cameraBeforeDragPos.z() ) / cameraBeforeToDragPointPos.z();
+
+          QVector3D from = cameraBeforeDragPos + d1 * cameraBeforeToMoveToPos;
+          QVector3D to = cameraBeforeDragPos + d2 * cameraBeforeToDragPointPos;
+
+          shiftVector = to - from;
+          break;
+        }
+        default:
+          QgsDebugError( "Unhandled 3D projection type" );
+      }
 
     mCameraPose.setCenterPoint( mCameraBefore->viewCenter() + shiftVector );
     updateCameraFromPose();
@@ -1114,7 +1153,7 @@ void QgsCameraController::walkView( double tx, double ty, double tz )
     cameraPosDiff += static_cast<float>( tz ) * QVector3D( 0.0f, 0.0f, 1.0f );
   }
 
-  moveCameraPositionBy( cameraPosDiff );
+  moveCenterPoint( cameraPosDiff );
 }
 
 void QgsCameraController::applyFlyModeKeyMovements()
@@ -1197,14 +1236,14 @@ void QgsCameraController::onPositionChangedFlyNavigation( Qt3DInput::QMouseEvent
     const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
     const QVector3D cameraLeft = QVector3D::crossProduct( cameraUp, cameraFront );
     const QVector3D cameraPosDiff = -dx * cameraLeft - dy * cameraUp;
-    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 10.0 );
+    moveCenterPoint( static_cast<float>( mCameraMovementSpeed ) * cameraPosDiff / 10.0 );
   }
   else if ( hasRightButton )
   {
     // right button drag = camera dolly
     const QVector3D cameraFront = ( QVector3D( mCameraPose.centerPoint().x(), mCameraPose.centerPoint().y(), mCameraPose.centerPoint().z() ) - mCamera->position() ).normalized();
     const QVector3D cameraPosDiff = dy * cameraFront;
-    moveCameraPositionBy( mCameraMovementSpeed * cameraPosDiff / 5.0 );
+    moveCenterPoint( static_cast<float>( mCameraMovementSpeed ) * cameraPosDiff / 5.0 );
   }
   else
   {
@@ -1482,4 +1521,34 @@ void QgsCameraController::rotateToRespectingTerrain( float pitch, float yaw )
   pos.set( pos.x(), pos.y(), elevation + mScene->terrainEntity()->terrainElevationOffset() );
 
   setLookingAtPoint( pos, ( mCamera->position() - pos.toVector3D() ).length(), pitch, yaw );
+}
+
+void QgsCameraController::setCrossSectionSideView( const QgsCrossSection &crossSection )
+{
+  if ( !crossSection.isValid() )
+    return;
+
+  const QgsPoint startPoint = crossSection.startPoint();
+  const QgsPoint endPoint = crossSection.endPoint();
+  const double width = crossSection.halfWidth();
+
+  const QgsVector3D startVec { startPoint.x(), startPoint.y(), 0 };
+  const QgsVector3D endVec { endPoint.x(), endPoint.y(), 0 };
+
+  QgsVector linePerpVec( ( endPoint - startPoint ).x(), ( endPoint - startPoint ).y() );
+  linePerpVec = -linePerpVec.normalized().perpVector();
+
+  const QgsVector3D linePerpVec3D( linePerpVec.x(), linePerpVec.y(), 0 );
+  const QgsVector3D frontStartPoint( startVec + linePerpVec3D * width );
+  const QgsVector3D frontEndPoint( endVec + linePerpVec3D * width );
+
+  const QgsCameraPose camPose = Qgs3DUtils::lineSegmentToCameraPose(
+    frontStartPoint,
+    frontEndPoint,
+    mScene->elevationRange( true ),
+    mCamera->fieldOfView(),
+    mOrigin
+  );
+
+  setCameraPose( camPose );
 }

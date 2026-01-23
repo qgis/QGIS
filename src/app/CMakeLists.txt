@@ -26,6 +26,7 @@ set(QGIS_APP_SRCS
   qgsbookmarkeditordialog.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
+  qgscustomizationdialog.cpp
   qgsdatumtransformtablewidget.cpp
   qgscontributorsmapcanvas.cpp
   qgsdevtoolspanelwidget.cpp

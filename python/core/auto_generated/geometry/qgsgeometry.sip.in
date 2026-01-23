@@ -41,7 +41,6 @@ Encapsulates parameters under which a geometry operation is performed.
 #include "qgsgeometry.h"
 %End
   public:
-
     double gridSize() const;
 %Docstring
 Returns the grid size which will be used to snap vertices of a geometry.
@@ -105,7 +104,6 @@ as the point, line, polygon, curve or other geometry subclasses.
     static const QMetaObject staticMetaObject;
 
   public:
-
     QgsGeometry() /HoldGIL/;
 
     QgsGeometry( const QgsGeometry & );
@@ -290,8 +288,31 @@ surface geometry.
 Creates a new multipart geometry from a list of QgsGeometry objects
 %End
 
-    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth,
-                                          double outerRadius, double innerRadius = 0 );
+    static QgsGeometry collectTinPatches( const QVector<QgsGeometry> &geometries );
+%Docstring
+Collects all patches from a list of TIN or Triangle geometries into a
+single TIN geometry.
+
+This method iterates through the input ``geometries`` and extracts all
+triangle patches, combining them into a single
+:py:class:`QgsTriangulatedSurface`. Input geometries can be either
+:py:class:`QgsTriangulatedSurface` (TIN) or :py:class:`QgsTriangle`
+objects. Other geometry types are ignored.
+
+The resulting TIN will preserve Z and M values if present in the first
+valid input geometry.
+
+:param geometries: list of input geometries (should be TIN or Triangle
+                   types)
+
+:return: a QgsGeometry containing a QgsTriangulatedSurface with all
+         collected patches, or a null geometry if no valid TIN/Triangle
+         geometries were found
+
+.. versionadded:: 4.0
+%End
+
+    static QgsGeometry createWedgeBuffer( const QgsPoint &center, double azimuth, double angularWidth, double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
 
@@ -310,8 +331,7 @@ Polygon geometry.
 .. versionadded:: 3.2
 %End
 
-    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle,
-        double outerRadius, double innerRadius = 0 );
+    static QgsGeometry createWedgeBufferFromAngles( const QgsPoint &center, double startAngle, double endAngle, double outerRadius, double innerRadius = 0 );
 %Docstring
 Creates a wedge shaped buffer from a ``center`` point.
 
@@ -1111,8 +1131,7 @@ Example:
       if ( PyList_Check( a0 ) && PyList_GET_SIZE( a0 ) )
       {
         PyObject *p0 = PyList_GetItem( a0, 0 );
-        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-             sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+        if ( sipCanConvertToType( p0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
         {
           QVector<QgsGeometry> newGeometries;
           QVector<QgsPointXY> topologyTestPoints;
@@ -1134,8 +1153,7 @@ Example:
           sipReleaseType( splitLine, sipType_QVector_0100QgsPointXY, state );
         }
 
-        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) &&
-                  sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
+        else if ( sipCanConvertToType( p0, sipType_QgsPoint, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPoint, SIP_NOT_NONE ) )
         {
           QVector<QgsGeometry> newGeometries;
           QVector<QgsPoint> topologyTestPoints;
@@ -1170,7 +1188,7 @@ Example:
     }
 %End
 
-    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve,  QVector<QgsGeometry> &newGeometries /Out/, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
+    Qgis::GeometryOperationResult splitGeometry( const QgsCurve *curve, QVector<QgsGeometry> &newGeometries /Out/, bool preserveCircular, bool topological, QgsPointSequence &topologyTestPoints /Out/, bool splitFeature = true );
 %Docstring
 Splits this geometry according to a given curve.
 
@@ -1391,11 +1409,7 @@ will be generated.
 .. versionadded:: 3.24
 %End
 
-    QgsGeometry applyDashPattern( const QVector< double > &pattern,
-                                  Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule,
-                                  Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap,
-                                  double patternOffset = 0 ) const;
+    QgsGeometry applyDashPattern( const QVector< double > &pattern, Qgis::DashPatternLineEndingRule startRule = Qgis::DashPatternLineEndingRule::NoRule, Qgis::DashPatternLineEndingRule endRule = Qgis::DashPatternLineEndingRule::NoRule, Qgis::DashPatternSizeAdjustment adjustment = Qgis::DashPatternSizeAdjustment::ScaleBothDashAndGap, double patternOffset = 0 ) const;
 %Docstring
 Applies a dash pattern to a geometry, returning a MultiLineString
 geometry which is the input geometry stroked along each line/ring with
@@ -1629,9 +1643,7 @@ Returns an offset line at a given distance and side from an input line.
                    (JoinStyleMiter only)
 %End
 
-    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
-                                   Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round,
-                                   double miterLimit = 2.0 ) const;
+    QgsGeometry singleSidedBuffer( double distance, int segments, Qgis::BufferSide side, Qgis::JoinStyle joinStyle = Qgis::JoinStyle::Round, double miterLimit = 2.0 ) const;
 %Docstring
 Returns a single sided buffer for a (multi)line geometry. The buffer is
 only applied to one side of the line.
@@ -2358,6 +2370,8 @@ the specified type. E.g.
 - curved geometries will be segmented if ``type`` is non-curved.
 - multi geometries will be converted to a list of single geometries
 - single geometries will be upgraded to multi geometries
+- PolyhedralSurface/TIN will be converted to multi polygon
+- multipolygon, polygon and triangle will be converted to TIN
 - z or m values will be added or dropped as required.
 
 Since QGIS 3.24, the parameters ``defaultZ`` and ``defaultM`` control
@@ -2374,6 +2388,12 @@ geometries to points. By default duplicated nodes are ignored.
    of geometries instead of the geometry family (point/line/polygon), and tries more exhaustively
    to coerce geometries to the desired ``type``. It also correctly maintains curves and z/m values
    wherever appropriate.
+
+.. note::
+
+   If an error occurs during conversion (e.g., attempting to convert a polygon with
+   non-triangular vertices to a Triangle or TIN geometry), an empty vector will be returned and the
+   error message can be retrieved by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 
 .. versionadded:: 3.14
 %End
@@ -3093,18 +3113,14 @@ should match.
       int state1;
       int sipIsErr = 0;
 
-      if ( PyList_Check( a0 ) && PyList_Check( a1 ) &&
-           PyList_GET_SIZE( a0 ) && PyList_GET_SIZE( a1 ) )
+      if ( PyList_Check( a0 ) && PyList_Check( a1 ) && PyList_GET_SIZE( a0 ) && PyList_GET_SIZE( a1 ) )
       {
         PyObject *o0 = PyList_GetItem( a0, 0 );
         PyObject *o1 = PyList_GetItem( a1, 0 );
         if ( o0 && o1 )
         {
           // compare polyline - polyline
-          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-               sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+          if ( sipCanConvertToType( o0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( o1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
             QgsPolylineXY *p0;
             QgsPolylineXY *p1;
@@ -3117,18 +3133,14 @@ should match.
             sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
             sipReleaseType( p1, sipType_QVector_0100QgsPointXY, state1 );
           }
-          else if ( PyList_Check( o0 ) && PyList_Check( o1 ) &&
-                    PyList_GET_SIZE( o0 ) && PyList_GET_SIZE( o1 ) )
+          else if ( PyList_Check( o0 ) && PyList_Check( o1 ) && PyList_GET_SIZE( o0 ) && PyList_GET_SIZE( o1 ) )
           {
             PyObject *oo0 = PyList_GetItem( o0, 0 );
             PyObject *oo1 = PyList_GetItem( o1, 0 );
             if ( oo0 && oo1 )
             {
               // compare polygon - polygon
-              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-                   sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+              if ( sipCanConvertToType( oo0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( oo1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
                 QgsPolygonXY *p0;
                 QgsPolygonXY *p1;
@@ -3141,18 +3153,14 @@ should match.
                 sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
                 sipReleaseType( p1, sipType_QVector_0600QVector_0100QgsPointXY, state1 );
               }
-              else if ( PyList_Check( oo0 ) && PyList_Check( oo1 ) &&
-                        PyList_GET_SIZE( oo0 ) && PyList_GET_SIZE( oo1 ) )
+              else if ( PyList_Check( oo0 ) && PyList_Check( oo1 ) && PyList_GET_SIZE( oo0 ) && PyList_GET_SIZE( oo1 ) )
               {
                 PyObject *ooo0 = PyList_GetItem( oo0, 0 );
                 PyObject *ooo1 = PyList_GetItem( oo1, 0 );
                 if ( ooo0 && ooo1 )
                 {
                   // compare multipolygon - multipolygon
-                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
-                       sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
+                  if ( sipCanConvertToType( ooo0, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( ooo1, sipType_QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) && sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
                     QgsMultiPolygonXY *p0;
                     QgsMultiPolygonXY *p1;
@@ -3174,8 +3182,7 @@ should match.
     }
 %End
 
-    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25,
-                        double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
+    QgsGeometry smooth( unsigned int iterations = 1, double offset = 0.25, double minimumDistance = -1.0, double maxAngle = 180.0 ) const;
 %Docstring
 Smooths a geometry by rounding off corners using the Chaikin algorithm.
 This operation roughly doubles the number of vertices in a geometry.

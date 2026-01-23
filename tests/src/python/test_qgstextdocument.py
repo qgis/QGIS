@@ -597,6 +597,31 @@ class TestQgsTextDocument(QgisTestCase):
             doc.toPlainText(), ["Abc Def Ghi", "More Text", "Another Block"]
         )
 
+    def testSplitDocument(self):
+        doc = QgsTextDocument.fromHtml(
+            [
+                """<div><span style="color: red">first line</span> second part</div><div>second line<span style="color: blue"> last part</span></div><div>third block</div>"""
+            ]
+        )
+        self.assertEqual(len(doc), 3)
+        doc1, doc2, doc3 = doc.splitBlocksToDocuments()
+        self.assertIsInstance(doc1, QgsTextDocument)
+        self.assertEqual(len(doc1), 1)
+        self.assertEqual(len(doc1[0]), 2)
+        self.assertEqual(doc1[0][0].text(), "first line")
+        self.assertEqual(doc1[0][0].characterFormat().textColor().name(), "#ff0000")
+        self.assertEqual(doc1[0][1].text(), " second part")
+        self.assertIsInstance(doc2, QgsTextDocument)
+        self.assertEqual(len(doc2), 1)
+        self.assertEqual(len(doc2[0]), 2)
+        self.assertEqual(doc2[0][0].text(), "second line")
+        self.assertEqual(doc2[0][1].text(), " last part")
+        self.assertEqual(doc2[0][1].characterFormat().textColor().name(), "#0000ff")
+        self.assertIsInstance(doc3, QgsTextDocument)
+        self.assertEqual(len(doc3), 1)
+        self.assertEqual(len(doc3[0]), 1)
+        self.assertEqual(doc3[0][0].text(), "third block")
+
 
 if __name__ == "__main__":
     unittest.main()

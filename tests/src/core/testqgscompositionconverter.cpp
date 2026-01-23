@@ -431,7 +431,7 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
 
   QgsLayoutItemLegend *item = items.at( 0 );
   QVERIFY( item->isVisible() );
-  QVERIFY( !item->autoUpdateModel() );
+  QCOMPARE( item->syncMode(), Qgis::LegendSyncMode::Manual );
 
   QGSVERIFYLAYOUTCHECK( "importComposerTemplateLegend_0", layout.get(), 0, 0, renderedPageSize( layout.get(), 0 ), 0 );
 

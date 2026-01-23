@@ -49,7 +49,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   QgsGui::enableAutoGeometryRestore( this );
 
   // set defaults to layer defaults
-  mLabelAllPartsCheckBox->setChecked( layerSettings.labelPerPart );
+  mLabelAllPartsCheckBox->setChecked( layerSettings.placementSettings().multiPartBehavior() == Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel );
 
   connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLabelPropertyDialog::showHelp );

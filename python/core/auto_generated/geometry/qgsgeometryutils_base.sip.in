@@ -14,6 +14,11 @@ class QgsGeometryUtilsBase
 %Docstring(signature="appended")
 Convenience functions for geometry utils.
 
+.. note::
+
+   This class contains the low-level mathematical implementations using primitive types (like double),
+   avoiding the use of QGIS geometry classes (like :py:class:`QgsPoint`).
+
 .. versionadded:: 3.34
 %End
 
@@ -82,6 +87,7 @@ If the return value is 0, then the test was unsuccessful (e.g. due to
 testing a point exactly on the line, or exactly in line with the
 segment) and the result is undefined.
 %End
+
 
 
     static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x /Out/, double *y /Out/ );

@@ -165,6 +165,8 @@ class QgsAppGpsSettingsMenu;
 class Qgs3DMapScene;
 class Qgs3DMapCanvas;
 class QgsAppCanvasFiltering;
+class QgsCustomization;
+class QgsCustomizationDialog;
 
 #include "qgsconfig.h"
 #include "ui_qgisapp.h"
@@ -182,9 +184,9 @@ class QgsAppCanvasFiltering;
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgspointxy.h"
-#include "qgsrasterminmaxorigin.h"
 #include "qgsrecentprojectsitemsmodel.h"
 #include "qgsvectorlayersaveasdialog.h"
+#include "qobjectuniqueptr.h"
 
 #include <QAbstractSocket>
 #include <QDateTime>
@@ -980,6 +982,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QString getVersionString();
 
+    /**
+     * Sets customization
+     */
+    void setCustomization( std::unique_ptr<QgsCustomization> customization );
+
+    /**
+     * Returns customization. Ownership is not transferred.
+     */
+    QgsCustomization *customization() const;
+
   public slots:
     //! save current vector layer
     QString saveAsFile( QgsMapLayer *layer = nullptr, bool onlySelected = false, bool defaultToAddToMap = true );
@@ -1351,7 +1363,26 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     */
     void refreshActionFeatureAction();
 
+    /**
+     * Returns menu allowing to show/hide application dock widgets
+     */
     QMenu *panelMenu() { return mPanelMenu; }
+
+    /**
+     * Returns menu allowing to show/hide application tool bars
+     */
+    QMenu *toolBarMenu() { return mToolbarMenu; }
+
+    /**
+     * Returns browser widget
+     */
+    QgsBrowserDockWidget *browserWidget() { return mBrowserWidget; }
+
+    /**
+     * Returns second instance of the same browser widget
+     */
+    QgsBrowserDockWidget *browserWidget2() { return mBrowserWidget2; }
+
 
     void renameView();
 
@@ -2848,6 +2879,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     int mFreezeCount = 0;
 
     QgsAbout *mAboutDialog = nullptr;
+    std::unique_ptr<QgsCustomization> mCustomization;
+    QObjectUniquePtr<QgsCustomizationDialog> mCustomizationDialog;
 
     friend class QgsCanvasRefreshBlocker;
     friend class QgsMapToolsDigitizingTechniqueManager;
@@ -2855,6 +2888,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     friend class TestQgisAppPython;
     friend class TestQgisApp;
     friend class TestQgsProjectExpressions;
+    friend class TestQgsCustomization;
     friend class QgisAppInterface;
     friend class QgsAppScreenShots;
 };

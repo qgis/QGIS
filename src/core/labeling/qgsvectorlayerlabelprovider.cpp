@@ -193,12 +193,15 @@ QList<QgsLabelFeature *> QgsVectorLayerLabelProvider::labelFeatures( QgsRenderCo
 
 QList< QgsLabelFeature * > QgsVectorLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
   QList< QgsLabelFeature * > res;
-  if ( label )
+  for ( auto &it : labels )
   {
-    res << label.get();
-    mLabels << label.release();
+    if ( it )
+    {
+      res << it.get();
+      mLabels << it.release();
+    }
   }
   return res;
 }
@@ -336,7 +339,7 @@ void QgsVectorLayerLabelProvider::drawCallout( QgsRenderContext &context, pal::L
     QgsGeometry g( QgsGeos::fromGeos( label->getFeaturePart()->feature()->geometry() ) );
     g.transform( xform.transform() );
     QgsCallout::QgsCalloutContext calloutContext;
-    calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->labelAllParts();
+    calloutContext.allFeaturePartsLabeled = label->getFeaturePart()->feature()->multiPartBehavior() != Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
     calloutContext.originalFeatureCrs = label->getFeaturePart()->feature()->originalFeatureCrs();
     mSettings.callout()->render( context, rect, label->getAlpha() * 180 / M_PI, g, calloutContext );
 

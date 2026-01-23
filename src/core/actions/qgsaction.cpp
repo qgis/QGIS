@@ -332,7 +332,7 @@ void QgsAction::setActionScopes( const QSet<QString> &actionScopes )
   mActionScopes = actionScopes;
 }
 
-void QgsAction::readXml( const QDomNode &actionNode )
+void QgsAction::readXml( const QDomNode &actionNode, const QgsReadWriteContext &context )
 {
   QDomElement actionElement = actionNode.toElement();
   const QDomNodeList actionScopeNodes = actionElement.elementsByTagName( u"actionScope"_s );
@@ -354,11 +354,13 @@ void QgsAction::readXml( const QDomNode &actionNode )
   }
 
   mType = static_cast< Qgis::AttributeActionType >( actionElement.attributeNode( u"type"_s ).value().toInt() );
-  mDescription = actionElement.attributeNode( u"name"_s ).value();
+  mDescription = context.projectTranslator()->translate( u"project:layers:%1:actiondescriptions"_s.arg( context.currentLayerId() ), actionElement.attributeNode( u"name"_s ).value() );
+  QgsDebugMsgLevel( "context" + u"project:layers:%1:actiondescriptions"_s.arg( context.currentLayerId() ) + " source " + actionElement.attributeNode( u"name"_s ).value(), 3 );
   mCommand = actionElement.attributeNode( u"action"_s ).value();
   mIcon = actionElement.attributeNode( u"icon"_s ).value();
   mCaptureOutput = actionElement.attributeNode( u"capture"_s ).value().toInt() != 0;
-  mShortTitle = actionElement.attributeNode( u"shortTitle"_s ).value();
+  mShortTitle = context.projectTranslator()->translate( u"project:layers:%1:actionshorttitles"_s.arg( context.currentLayerId() ), actionElement.attributeNode( u"shortTitle"_s ).value() );
+  QgsDebugMsgLevel( "context" + u"project:layers:%1:actionshorttitles"_s.arg( context.currentLayerId() ) + " source " + actionElement.attributeNode( u"shortTitle"_s ).value(), 3 );
   mNotificationMessage = actionElement.attributeNode( u"notificationMessage"_s ).value();
   mIsEnabledOnlyWhenEditable = actionElement.attributeNode( u"isEnabledOnlyWhenEditable"_s ).value().toInt() != 0;
   mId = QUuid( actionElement.attributeNode( u"id"_s ).value() );

@@ -62,11 +62,6 @@ QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::removeRule );
 }
 
-QgsRuleBased3DRendererWidget::~QgsRuleBased3DRendererWidget()
-{
-  delete mRootRule;
-}
-
 void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
@@ -75,15 +70,15 @@ void QgsRuleBased3DRendererWidget::setLayer( QgsVectorLayer *layer )
   if ( r && r->type() == "rulebased"_L1 )
   {
     QgsRuleBased3DRenderer *ruleRenderer = static_cast<QgsRuleBased3DRenderer *>( r );
-    mRootRule = ruleRenderer->rootRule()->clone();
+    mRootRule.reset( ruleRenderer->rootRule()->clone() );
   }
   else
   {
     // TODO: handle the special case when switching from single symbol renderer
-    mRootRule = new QgsRuleBased3DRenderer::Rule( nullptr );
+    mRootRule = std::make_unique<QgsRuleBased3DRenderer::Rule>( nullptr );
   }
 
-  mModel = new QgsRuleBased3DRendererModel( mRootRule );
+  mModel.reset( new QgsRuleBased3DRendererModel( mRootRule.get() ) );
   viewRules->setModel( mModel );
 
   connect( mModel, &QAbstractItemModel::dataChanged, this, &QgsRuleBased3DRendererWidget::widgetChanged );

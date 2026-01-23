@@ -69,13 +69,19 @@ class CORE_EXPORT QgsLabelFeature
      * a vector layer feature this will generally be the feature's geometry.
      *
      * The \a size argument dictates the size of the label's content (e.g. text width and height).
+     *
+     * The optional \a subPartId argument can be used to identify unique labels for features which
+     * register multiple labels with the same \a id.
      */
-    QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size );
+    QgsLabelFeature( QgsFeatureId id, geos::unique_ptr geometry, QSizeF size, int subPartId = 0 );
 
     virtual ~QgsLabelFeature();
 
     //! Identifier of the label (unique within the parent label provider)
     QgsFeatureId id() const { return mId; }
+
+    //! Sub part identifier (for features which register multiple labels)
+    int subPartId() const { return mSubPartId; }
 
     //! Gets access to the associated geometry
     GEOSGeometry *geometry() const { return mGeometry.get(); }
@@ -583,18 +589,22 @@ class CORE_EXPORT QgsLabelFeature
     void setCurvedLabelMode( Qgis::CurvedLabelMode mode ) { mCurvedLabelMode = mode; }
 
     /**
-     * Returns TRUE if all parts of the feature should be labeled.
-     * \see setLabelAllParts()
-     * \since QGIS 3.10
+     * Returns the multipart labeling behavior.
+     *
+     * \see setMultiPartBehavior()
+     *
+     * \since QGIS 4.0
      */
-    bool labelAllParts() const { return mLabelAllParts; }
+    Qgis::MultiPartLabelingBehavior multiPartBehavior() const { return mMultiPartBehavior; }
 
     /**
-     * Sets whether all parts of the feature should be labeled.
-     * \see labelAllParts()
-     * \since QGIS 3.10
+     * Sets the multipart labeling \a behavior.
+     *
+     * \see multiPartBehavior()
+     *
+     * \since QGIS 4.0
      */
-    void setLabelAllParts( bool labelAllParts ) { mLabelAllParts = labelAllParts; }
+    void setMultiPartBehavior( Qgis::MultiPartLabelingBehavior behavior ) { mMultiPartBehavior = behavior; }
 
     /**
      * Sets an alternate label \a size to be used when a label rotation angle is between 45 to 135
@@ -723,12 +733,32 @@ class CORE_EXPORT QgsLabelFeature
      */
     void setAllowDegradedPlacement( bool allow ) { mAllowDegradedPlacement = allow; }
 
+    /**
+     * Returns the whitespace collision handling.
+     *
+     * \see setWhitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    Qgis::LabelWhitespaceCollisionHandling whitespaceCollisionHandling() const { return mWhitespaceCollisionHandling; }
+
+    /**
+     * Sets the whitespace collision \a handling.
+     *
+     * \see whitespaceCollisionHandling()
+     *
+     * \since QGIS 4.0
+     */
+    void setWhitespaceCollisionHandling( Qgis::LabelWhitespaceCollisionHandling handling ) { mWhitespaceCollisionHandling = handling; }
+
   protected:
     //! Pointer to PAL layer (assigned when registered to PAL)
     pal::Layer *mLayer = nullptr;
 
     //! Associated ID unique within the parent label provider
     QgsFeatureId mId;
+    //! Associated sub part ID, for features which register multiple different labels
+    int mSubPartId = 0;
     //! Geometry of the feature to be labelled
     geos::unique_ptr mGeometry;
     //! Optional geometry to use for label's permissible zone
@@ -798,7 +828,7 @@ class CORE_EXPORT QgsLabelFeature
 
     const QgsSymbol *mSymbol = nullptr;
 
-    bool mLabelAllParts = false;
+    Qgis::MultiPartLabelingBehavior mMultiPartBehavior = Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly;
 
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelFeatureThinningSettings mThinningSettings;
@@ -817,6 +847,8 @@ class CORE_EXPORT QgsLabelFeature
     QgsCoordinateReferenceSystem mOriginalFeatureCrs;
 
     double mMinimumSize = 0.0;
+
+    Qgis::LabelWhitespaceCollisionHandling mWhitespaceCollisionHandling = Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision;
 
 };
 
