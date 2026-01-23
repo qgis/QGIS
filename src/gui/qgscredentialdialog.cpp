@@ -106,7 +106,7 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   } );
 
   leMasterPass->setPlaceholderText( tr( "Required" ) );
-  chkbxPasswordHelperEnable->setText( tr( "Store/update the master password in your %1" )
+  chkbxPasswordHelperEnable->setText( tr( "Store/update the master password in your QGIS %1" )
                                         .arg( QgsAuthManager::passwordHelperDisplayName() ) );
   leUsername->setFocus();
 }
