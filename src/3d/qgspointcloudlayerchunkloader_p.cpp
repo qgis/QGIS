@@ -299,7 +299,7 @@ QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettin
 
     mChunkUpdaterFactory = std::make_unique<QgsChunkUpdaterFactory>( mChunkLoaderFactory );
 
-    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QString uri, const QgsPointCloudNodeId &n ) {
+    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QString &uri, const QgsPointCloudNodeId &n ) {
       const QString indexUri = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex.uri();
       if ( indexUri != uri )
         return;
@@ -321,7 +321,7 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 
 void QgsPointCloudLayerChunkedEntity::updateIndex()
 {
-  QString uri = "";
+  QString uri;
   QgsPointCloudIndex pc = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex;
   if ( pc.isValid() )
     uri = pc.uri();
