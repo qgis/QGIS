@@ -634,6 +634,8 @@ void QgsNurbsCurve::filterVertices( const std::function<bool( const QgsPoint & )
 
 QVector<double> QgsNurbsCurve::generateUniformKnots( int numControlPoints, int degree )
 {
+  Q_ASSERT( numControlPoints > degree );
+
   const int knotsSize = numControlPoints + degree + 1;
   QVector<double> knots;
   knots.reserve( knotsSize );
