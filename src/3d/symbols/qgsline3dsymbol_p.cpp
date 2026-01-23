@@ -218,13 +218,16 @@ void QgsBufferedLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, cons
   QgsMaterial *material = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
   // extract vertex buffer data from tessellator
-  const QByteArray data( ( const char * ) lineData.tessellator->data().constData(), static_cast<int>( lineData.tessellator->data().count() * sizeof( float ) ) );
-  const int nVerts = data.count() / lineData.tessellator->stride();
+  const QByteArray vertexBuffer( ( const char * ) lineData.tessellator->vertexBuffer().constData(), static_cast<int>( lineData.tessellator->vertexBuffer().count() * sizeof( float ) ) );
+  const QByteArray indexBuffer( ( const char * ) lineData.tessellator->indexBuffer().constData(), static_cast<int>( lineData.tessellator->indexBuffer().count() * lineData.tessellator->indexStride() ) );
+  const int vertexCount = vertexBuffer.count() / lineData.tessellator->stride();
+  const size_t indexCount = lineData.tessellator->dataVerticesCount();
 
   const QgsPhongTexturedMaterialSettings *texturedMaterialSettings = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( mSymbol->materialSettings() );
 
   QgsTessellatedPolygonGeometry *geometry = new QgsTessellatedPolygonGeometry( true, false, false, texturedMaterialSettings ? texturedMaterialSettings->requiresTextureCoordinates() : false );
-  geometry->setData( data, nVerts, lineData.triangleIndexFids, lineData.triangleIndexStartingIndices );
+  geometry->setVertexBufferData( vertexBuffer, vertexCount, lineData.triangleIndexFids, lineData.triangleIndexStartingIndices );
+  geometry->setIndexBufferData( indexBuffer, indexCount );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;
   renderer->setGeometry( geometry );
