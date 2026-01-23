@@ -1979,7 +1979,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = False
-        settings.useQGISLayerTreeProperties = True
+        settings.useQgisLayerTreeProperties = True
 
         ds, i = exportLayout(
             "test_nested_groups_no_graphics.qgz",
@@ -2003,7 +2003,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = True
-        settings.useQGISLayerTreeProperties = True
+        settings.useQgisLayerTreeProperties = True
 
         ds, i = exportLayout(
             "test_nested_groups_no_graphics.qgz",
@@ -2017,7 +2017,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = False
-        settings.useQGISLayerTreeProperties = True
+        settings.useQgisLayerTreeProperties = True
 
         ds, i = exportLayout(
             "test_nested_groups_with_grouped_graphics.qgz",
@@ -2042,7 +2042,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = True
-        settings.useQGISLayerTreeProperties = True
+        settings.useQgisLayerTreeProperties = True
 
         ds, i = exportLayout(
             "test_nested_groups_with_grouped_graphics.qgz",

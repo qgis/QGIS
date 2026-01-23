@@ -220,7 +220,7 @@ set to the error description.
 
       QVector<qreal> predefinedMapScales;
 
-      bool useQGISLayerTreeProperties;
+      bool useQgisLayerTreeProperties;
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
