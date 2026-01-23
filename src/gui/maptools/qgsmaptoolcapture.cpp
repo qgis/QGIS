@@ -997,7 +997,7 @@ void QgsMapToolCapture::undo( bool isAutoRepeat )
     }
 
     // Handle NURBS ControlPoints mode: remove last control point
-    if ( mTempRubberBand->stringType() == Qgis::WkbType::NurbsCurve && mTempRubberBand->pointsCount() > 1 )
+    if ( QgsWkbTypes::isNurbsType( mTempRubberBand->stringType() ) && mTempRubberBand->pointsCount() > 1 )
     {
       mTempRubberBand->removeLastPoint();
       mTempRubberBand->movePoint( lastPoint );

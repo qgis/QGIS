@@ -315,7 +315,7 @@ void QgsMapToolCaptureRubberBand::updateControlPolygon()
     return;
 
   // Only show control polygon for NURBS curves
-  if ( mStringType != Qgis::WkbType::NurbsCurve || mPoints.size() < 2 )
+  if ( !QgsWkbTypes::isNurbsType( mStringType ) || mPoints.size() < 2 )
   {
     mControlPolygonRubberBand->reset( Qgis::GeometryType::Line );
     mControlPolygonRubberBand->setVisible( false );

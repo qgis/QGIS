@@ -667,7 +667,7 @@ bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
   const unsigned char headerEndianness = *static_cast<const unsigned char *>( wkb );
 
   Qgis::WkbType type = wkb.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::NurbsCurve )
+  if ( !QgsWkbTypes::isNurbsType( type ) )
     return false;
 
   mWkbType = type;

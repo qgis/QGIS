@@ -1815,12 +1815,11 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
 
   // Handle NurbsCurve: if target is curved but NOT NurbsCurve, and source contains NurbsCurve,
   // we need to segmentize the NURBS parts first
-  if ( QgsWkbTypes::isCurvedType( type ) && QgsWkbTypes::flatType( type ) != Qgis::WkbType::NurbsCurve )
+  if ( QgsWkbTypes::isCurvedType( type ) && !QgsWkbTypes::isNurbsType( type ) )
   {
     // Check if geometry contains NurbsCurve that needs conversion
     bool hasNurbs = false;
-    const Qgis::WkbType flatGeomType = QgsWkbTypes::flatType( newGeom.wkbType() );
-    if ( flatGeomType == Qgis::WkbType::NurbsCurve )
+    if ( QgsWkbTypes::isNurbsType( newGeom.wkbType() ) )
     {
       hasNurbs = true;
     }
@@ -1828,7 +1827,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     {
       for ( int i = 0; i < collection->numGeometries(); ++i )
       {
-        if ( QgsWkbTypes::flatType( collection->geometryN( i )->wkbType() ) == Qgis::WkbType::NurbsCurve )
+        if ( QgsWkbTypes::isNurbsType( collection->geometryN( i )->wkbType() ) )
         {
           hasNurbs = true;
           break;
@@ -1837,11 +1836,11 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     }
     else if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( newGeom.constGet() ) )
     {
-      if ( cp->exteriorRing() && QgsWkbTypes::flatType( cp->exteriorRing()->wkbType() ) == Qgis::WkbType::NurbsCurve )
+      if ( cp->exteriorRing() && QgsWkbTypes::isNurbsType( cp->exteriorRing()->wkbType() ) )
         hasNurbs = true;
       for ( int i = 0; !hasNurbs && i < cp->numInteriorRings(); ++i )
       {
-        if ( QgsWkbTypes::flatType( cp->interiorRing( i )->wkbType() ) == Qgis::WkbType::NurbsCurve )
+        if ( QgsWkbTypes::isNurbsType( cp->interiorRing( i )->wkbType() ) )
           hasNurbs = true;
       }
     }
@@ -1849,7 +1848,7 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
     {
       for ( int i = 0; i < cc->nCurves(); ++i )
       {
-        if ( QgsWkbTypes::flatType( cc->curveAt( i )->wkbType() ) == Qgis::WkbType::NurbsCurve )
+        if ( QgsWkbTypes::isNurbsType( cc->curveAt( i )->wkbType() ) )
         {
           hasNurbs = true;
           break;
