@@ -165,26 +165,17 @@ void QgsVirtualPointCloudEntity::handleSceneUpdate( const SceneContext &sceneCon
     const float epsilon = static_cast<float>( std::min( box3D.width(), box3D.height() ) ) / SPAN;
     const float distance = static_cast<float>( box3D.distanceTo( cameraPosMapCoords ) );
     const float sse = Qgs3DUtils::screenSpaceError( epsilon, distance, sceneContext.screenSizePx, sceneContext.cameraFov );
-    constexpr float THRESHOLD = .2;
-
-    QgsBox3D scaledBox = box3D;
-    scaledBox.scale( overviewSwitchingScale );
-    const bool zoomedOut = !scaledBox.contains( cameraPosMapCoords.x(), cameraPosMapCoords.y(), cameraPosMapCoords.z() );
-
-    if ( zoomedOut )
-    {
-      setRenderSubIndexAsBbox( i, true );
-      continue;
-    }
-
-    subIndexesRendered += 1;
+    const float THRESHOLD = .2 / overviewSwitchingScale;
 
     // always display as bbox for the initial temporary camera pos (0, 0, 0)
     // then once the camera changes we display as bbox depending on screen space error
     const bool displayAsBbox = sceneContext.cameraPos.isNull() || sse < THRESHOLD;
-    if ( !displayAsBbox && !subIndexes.at( i ).index() )
-      emit subIndexNeedsLoading( i );
-
+    if ( !displayAsBbox )
+    {
+      subIndexesRendered += 1;
+      if ( !subIndexes.at( i ).index() )
+        emit subIndexNeedsLoading( i );
+    }
     setRenderSubIndexAsBbox( i, displayAsBbox );
     if ( !displayAsBbox && mChunkedEntitiesMap.contains( i ) )
       mChunkedEntitiesMap[i]->handleSceneUpdate( sceneContext );
