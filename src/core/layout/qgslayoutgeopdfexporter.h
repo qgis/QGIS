@@ -94,11 +94,11 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
 
     /**
      * Sets QGIS project layers (including invisible ones) to layout item maps before rendering.
-     * Only map items that do not follow map themes nor have locked layers/styles are altered.
+     * Only map items that do not follow map themes nor locked layers are altered.
      *
      * Used by Geospatial PDF exports that should follow QGIS layer tree properties.
      *
-     * \return whether at least one map was found not following map themes nor having locked layers.
+     * \return whether at least one map was found not following map themes nor locked layers.
      *
      * \see restoreMapItemLayersAfterRendering()
      * \since QGIS 4.0
