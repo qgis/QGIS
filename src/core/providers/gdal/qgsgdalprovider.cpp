@@ -500,7 +500,7 @@ void QgsGdalProvider::loadMetadata()
     // read ESRI FileGeodatabase/Personal Geodatabase layer metadata
     // (This branch is only possible on GDAL 3.7+, in earlier releases there was
     // no raster OpenFileGDB driver)
-    if ( char **GDALmetadata = GDALGetMetadata( mGdalDataset, "xml:documentation" ) )
+    if ( CSLConstList GDALmetadata = GDALGetMetadata( mGdalDataset, "xml:documentation" ) )
     {
       const QString metadata( GDALmetadata[0] );
       if ( !metadata.isEmpty() )
@@ -548,7 +548,7 @@ QString QgsGdalProvider::htmlMetadata() const
   for ( int i = 1; i <= GDALGetRasterCount( dsForMetadata ); ++i )
   {
     GDALRasterBandH gdalBand = GDALGetRasterBand( dsForMetadata, i );
-    char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band %1" ).arg( i ) + QStringLiteral( "</td><td>" );
     if ( GDALmetadata )
     {
@@ -579,7 +579,7 @@ QString QgsGdalProvider::htmlMetadata() const
     myMetadata += tr( "Mask band (exposed as alpha band)" ) + QStringLiteral( "<br />\n" );
   }
 
-  char **GDALmetadata = GDALGetMetadata( dsForMetadata, nullptr );
+  CSLConstList GDALmetadata = GDALGetMetadata( dsForMetadata, nullptr );
   if ( GDALmetadata )
   {
     QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
@@ -1280,7 +1280,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
 
   if ( mDriverName == QLatin1String( "netCDF" ) || mDriverName == QLatin1String( "GTiff" ) )
   {
-    char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
     if ( GDALmetadata )
     {
       QStringList metadata = QgsOgrUtils::cStringListToQStringList( GDALmetadata );
@@ -1820,7 +1820,7 @@ QList<QgsProviderSublayerDetails> QgsGdalProvider::sublayerDetails( GDALDatasetH
 
   QList<QgsProviderSublayerDetails> res;
 
-  char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
+  CSLConstList metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
 
   QVariantMap uriParts = decodeGdalUri( baseUri );
   const QString datasetPath = uriParts.value( QStringLiteral( "path" ) ).toString();
