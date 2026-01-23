@@ -211,6 +211,7 @@ void QgsWelcomeScreen::clearRecentProjects()
     emit projectsCleared( clearPinned );
   }
 }
+
 void QgsWelcomeScreen::versionInfoReceived()
 {
   if ( !mWelcomeScreenController )
@@ -223,12 +224,17 @@ void QgsWelcomeScreen::versionInfoReceived()
 
   if ( versionInfo->newVersionAvailable() )
   {
+    QString latestVersion;
     const QString latestVersionCode = QString::number( versionInfo->latestVersionCode() );
-    int major = latestVersionCode.mid( 0, latestVersionCode.size() - 4 ).toInt();
-    int minor = latestVersionCode.mid( latestVersionCode.size() - 4, 2 ).toInt();
-    int patch = latestVersionCode.mid( latestVersionCode.size() - 2, 2 ).toInt();
+    if ( latestVersionCode.size() >= 5 )
+    {
+      int major = latestVersionCode.mid( 0, latestVersionCode.size() - 4 ).toInt();
+      int minor = latestVersionCode.mid( latestVersionCode.size() - 4, 2 ).toInt();
+      int patch = latestVersionCode.mid( latestVersionCode.size() - 2, 2 ).toInt();
 
-    emit mWelcomeScreenController->newVersionAvailable( u"%1.%2.%3"_s.arg( major ).arg( minor ).arg( patch ) );
+      latestVersion = u"%1.%2.%3"_s.arg( major ).arg( minor ).arg( patch );
+    }
+    emit mWelcomeScreenController->newVersionAvailable( latestVersion );
   }
 }
 
