@@ -97,7 +97,7 @@ void TestQgsProcessingPdalAlgs::initTestCase()
   const QFileInfo pointCloudFileInfo( pointCloudFileName );
   mPointCloudLayerPath = pointCloudFileInfo.filePath();
 
-  const QString vpcPointCloudFileName = dataDir + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc";
+  const QString vpcPointCloudFileName = mDataDir + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc";
   const QFileInfo vpcPointCloudFileInfo( vpcPointCloudFileName );
   mVpcPointCloudLayerPath = vpcPointCloudFileInfo.filePath();
 }
