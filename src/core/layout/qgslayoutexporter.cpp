@@ -620,11 +620,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     {
       bool res = geospatialPdfExporter->setMapItemLayersBeforeRendering();
       // If no map was found to set project layers, it means that all of them
-      // have map theme presets or have locked layers/styles. That's not supported
+      // have map theme presets or have locked layers, which is not supported
       // when exporting a Geospatial PDF following QGIS layer tree properties.
       if ( !res )
       {
-        mErrorMessage = u"Geospatial PDF cannot be exported following QGIS project configuration. At least one map layout item must not follow map themes nor locked layers/styles."_s;
+        mErrorMessage = u"The Geospatial PDF cannot be exported following QGIS project configuration: At least one map layout item must not follow map themes nor locked layers."_s;
         return PrintError;
       }
     }
@@ -675,7 +675,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
     if ( settings.writeGeoPdf && settings.useQgisLayerTreeProperties )
     {
-      // Immediately after the layer rendering, restore map item layers
+      // Restore map item layers right after the layer rendering
       geospatialPdfExporter->restoreMapItemLayersAfterRendering();
     }
     if ( result != Success )

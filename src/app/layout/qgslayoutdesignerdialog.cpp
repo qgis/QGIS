@@ -4404,6 +4404,8 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   if ( mLayout )
     mLayout->layoutItems( maps );
 
+  bool mapWithNoPresets = false;
+
   for ( const QgsLayoutItemMap *map : maps )
   {
     if ( !map->crs().isValid() )
@@ -4422,6 +4424,9 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
       break;
     }
 #endif
+
+    if ( !map->followVisibilityPreset() && !map->keepLayerSet() )
+      mapWithNoPresets = true;
   }
 
   QgsLayoutPdfExportOptionsDialog dialog( this, allowGeospatialPdfExport, dialogGeospatialPdfReason, geospatialPdfLayerOrder );
@@ -4434,10 +4439,16 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   dialog.setRasterTilingDisabled( disableRasterTiles );
   dialog.setGeometriesSimplified( simplify );
   dialog.setExportGeospatialPdf( geospatialPdf );
-  dialog.setUseQgisLayerTreeConfig( useQgisLayerTreeConfig );
   dialog.setExportThemes( exportThemes );
   dialog.setLosslessImageExport( losslessImages );
   dialog.setOpenAfterExporting( QgsLayoutExporter::settingOpenAfterExportingPdf->value() );
+
+  // The Follow QGIS layer tree configuration radio button is only enabled
+  // if there is at least one map that does not follow map themes or locked layers.
+  if ( !mapWithNoPresets )
+    dialog.disableUseQgisLayerTreeConfig();
+  else
+    dialog.setUseQgisLayerTreeConfig( useQgisLayerTreeConfig );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;

@@ -204,14 +204,14 @@ bool QgsLayoutGeospatialPdfExporter::setMapItemLayersBeforeRendering()
 {
   bool res = false;
 
-  // Set project layers (including invisible ones) to all maps that don't
-  // follow themes nor locked layers/styles. We'll restore their previous
-  // layer set after the rendering.
+  // Set project layers (including invisible ones) to all maps that
+  // don't follow themes nor locked layers. We'll restore their
+  // previous layer sets right after the rendering.
   QList< QgsLayoutItemMap * > maps;
   mLayout->layoutItems( maps );
   for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
-    if ( !( map->followVisibilityPreset() && !map->followVisibilityPresetName().isEmpty() ) && !map->keepLayerSet() && !map->keepLayerStyles() )
+    if ( !map->followVisibilityPreset() && !map->keepLayerSet() )
     {
       // Store previous list of layers to restore it after the rendering
       mTemporaryLayersToRender.insert( map->uuid(), map->layers() );

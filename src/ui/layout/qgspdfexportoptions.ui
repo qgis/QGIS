@@ -191,7 +191,7 @@
               <item row="0" column="0">
                <widget class="QRadioButton" name="mGeospatialPDFQgisConfigRadioButton">
                 <property name="toolTip">
-                 <string>Prefer QGIS Layer Tree properties for layer and group names, order, etc.</string>
+                 <string>Prefer QGIS Layer Tree properties for layer and group names, order, and visibility.</string>
                 </property>
                 <property name="text">
                  <string>Follow QGIS layer tree configuration</string>
