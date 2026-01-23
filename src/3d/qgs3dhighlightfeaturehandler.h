@@ -16,6 +16,7 @@
 #ifndef QGS3DHIGHLIGHTFEATUREHANDLER_H
 #define QGS3DHIGHLIGHTFEATUREHANDLER_H
 
+#include "qgis_3d.h"
 #include "qgsrulebased3drenderer.h"
 
 #include <QMap>
@@ -39,7 +40,7 @@ class QgsRubberBand3D;
  *
  * \since QGIS 4.0
  */
-class Qgs3DHighlightFeatureHandler : public QObject
+class _3D_EXPORT Qgs3DHighlightFeatureHandler : public QObject
 {
     Q_OBJECT
 
