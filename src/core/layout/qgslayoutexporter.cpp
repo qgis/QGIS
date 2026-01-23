@@ -599,7 +599,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
-  if ( settings.writeGeoPdf && !settings.useQGISLayerTreeProperties )
+  if ( settings.writeGeoPdf && !settings.useQgisLayerTreeProperties )
   {
     mLayout->renderContext().setExportThemes( settings.exportThemes );
   }
@@ -615,6 +615,19 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     subSettings.exportLayersAsSeperateFiles = false;  //#spellok
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
+
+    if ( settings.writeGeoPdf && settings.useQgisLayerTreeProperties )
+    {
+      bool res = geospatialPdfExporter->setMapItemLayersBeforeRendering();
+      // If no map was found to set project layers, it means that all of them
+      // have map theme presets or have locked layers/styles. That's not supported
+      // when exporting a Geospatial PDF following QGIS layer tree properties.
+      if ( !res )
+      {
+        mErrorMessage = u"Geospatial PDF cannot be exported following QGIS project configuration. At least one map layout item must not follow map themes nor locked layers/styles."_s;
+        return PrintError;
+      }
+    }
 
     QList< QgsLayoutGeospatialPdfExporter::ComponentLayerDetail > pdfComponents;
 
@@ -659,6 +672,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       return item->customProperty( u"pdfExportGroup"_s ).toString();
     };
     result = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
+
+    if ( settings.writeGeoPdf && settings.useQgisLayerTreeProperties )
+    {
+      // Immediately after the layer rendering, restore map item layers
+      geospatialPdfExporter->restoreMapItemLayersAfterRendering();
+    }
     if ( result != Success )
       return result;
 
@@ -723,7 +742,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         }
       }
 
-      if ( !settings.useQGISLayerTreeProperties )
+      if ( !settings.useQgisLayerTreeProperties )
       {
         details.customLayerTreeGroups = geospatialPdfExporter->customLayerTreeGroups();
         details.initialLayerVisibility = geospatialPdfExporter->initialLayerVisibility();
@@ -739,7 +758,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       }
       details.includeFeatures = settings.includeGeoPdfFeatures;
       details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
-      details.useQGISLayerTreeProperties = settings.useQGISLayerTreeProperties;
+      details.useQgisLayerTreeProperties = settings.useQgisLayerTreeProperties;
 
       if ( !geospatialPdfExporter->finalize( pdfComponents, filePath, details ) )
       {

@@ -393,12 +393,12 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
       QSet< QString > mutuallyExclusiveGroups;
 
       /**
-       * TRUE if the QGIS layer tree configuration should be used.
+       * If set to TRUE, the layer tree from the QGIS project should be used when creating a Geospatial PDF.
+       * In that case, layer/group names, order, and visibility from the QGIS project will be reflected in the output PDF.
        *
        * When active, other settings like layerOrder, customLayerTreeGroups,
        * layerTreeGroupOrder, initialLayerVisibility, mutuallyExclusiveGroups, and
-       * layerIdToPdfLayerTreeNameMap have no effect, and group/layer properties like names,
-       * order and visibility are obtained from the main QGIS layer tree.
+       * layerIdToPdfLayerTreeNameMap have no effect.
        *
        * \see layerOrder
        * \see customLayerTreeGroups
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        *
        * \since QGIS 4.0
        */
-      bool useQGISLayerTreeProperties = false;
+      bool useQgisLayerTreeProperties = false;
 
     };
 

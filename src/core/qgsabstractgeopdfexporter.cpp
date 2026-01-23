@@ -257,7 +257,7 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
 
   // layer tree and content
   QgsLayerTree *layerTree = qgisLayerTree();
-  if ( details.useQGISLayerTreeProperties && layerTree )
+  if ( details.useQgisLayerTreeProperties && layerTree )
   {
     createLayerTreeAndContentXmlSectionsFromLayerTree( layerTree, compositionElem, page, doc, components, details );
   }

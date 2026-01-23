@@ -1170,7 +1170,7 @@ void TestQgsGeospatialPdfExport::testUseQgisLayerTree()
   }
 
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
-  details.useQGISLayerTreeProperties = true;
+  details.useQgisLayerTreeProperties = true;
   details.includeFeatures = false;
 
   // Check the composition XML

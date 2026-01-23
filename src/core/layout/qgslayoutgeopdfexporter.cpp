@@ -199,3 +199,38 @@ QgsLayerTree *QgsLayoutGeospatialPdfExporter::qgisLayerTree() const
 {
   return mLayout->project()->layerTreeRoot();
 }
+
+bool QgsLayoutGeospatialPdfExporter::setMapItemLayersBeforeRendering()
+{
+  bool res = false;
+
+  // Set project layers (including invisible ones) to all maps that don't
+  // follow themes nor locked layers/styles. We'll restore their previous
+  // layer set after the rendering.
+  QList< QgsLayoutItemMap * > maps;
+  mLayout->layoutItems( maps );
+  for ( QgsLayoutItemMap *map : std::as_const( maps ) )
+  {
+    if ( !( map->followVisibilityPreset() && !map->followVisibilityPresetName().isEmpty() ) && !map->keepLayerSet() && !map->keepLayerStyles() )
+    {
+      // Store previous list of layers to restore it after the rendering
+      mTemporaryLayersToRender.insert( map->uuid(), map->layers() );
+      map->setLayers( mLayout->project()->layerTreeRoot()->layerOrder() );
+      res = true;
+    }
+  }
+  return res;
+}
+
+void QgsLayoutGeospatialPdfExporter::restoreMapItemLayersAfterRendering()
+{
+  for ( auto it = mTemporaryLayersToRender.constBegin(); it != mTemporaryLayersToRender.constEnd(); it++ )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( it.key() );
+    if ( item && item->type() == QgsLayoutItemRegistry::ItemType::LayoutMap )
+    {
+      static_cast< QgsLayoutItemMap * >( item )->setLayers( it.value() );
+    }
+  }
+  mTemporaryLayersToRender.clear();
+}

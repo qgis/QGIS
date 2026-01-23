@@ -4478,7 +4478,7 @@ bool QgsLayoutDesignerDialog::getPdfExportSettings( QgsLayoutExporter::PdfExport
   settings.textRenderFormat = textRenderFormat;
   settings.simplifyGeometries = simplify;
   settings.writeGeoPdf = geospatialPdf;
-  settings.useQGISLayerTreeProperties = useQgisLayerTreeConfig;
+  settings.useQgisLayerTreeProperties = useQgisLayerTreeConfig;
   settings.useIso32000ExtensionFormatGeoreferencing = true;
   settings.exportThemes = exportThemes;
   settings.predefinedMapScales = QgsLayoutUtils::predefinedScales( mLayout );
