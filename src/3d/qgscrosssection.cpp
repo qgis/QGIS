@@ -28,6 +28,9 @@ QgsCrossSection::QgsCrossSection( const QgsPoint &p1, const QgsPoint &p2, double
 
 QgsGeometry QgsCrossSection::asGeometry( const QgsCoordinateTransform *ct ) const
 {
+  if ( !isValid() )
+    return QgsGeometry();
+
   QgsVector vec( mEndPoint - mStartPoint );
   vec = vec.normalized().perpVector();
 
@@ -74,6 +77,9 @@ void QgsCrossSection::nudgeRight( double distance )
 
 void QgsCrossSection::nudge( double distance )
 {
+  if ( !isValid() )
+    return;
+
   QgsVector vec( mEndPoint - mStartPoint );
   vec = vec.normalized().perpVector();
 
