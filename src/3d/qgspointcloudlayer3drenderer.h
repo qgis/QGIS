@@ -317,6 +317,11 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
 
     /**
       * Sets the overview switching scale
+      *
+      * Used to determine when point clouds
+      * switch from rendering bounding boxes to displaying full point data.
+      * The value is compared against screen space error (SSE) calculated from
+      * camera distance and node size.
       * \since QGIS 4.0
       */
     void setOverviewSwitchingScale( double scale ) { mOverviewSwitchingScale = scale; }

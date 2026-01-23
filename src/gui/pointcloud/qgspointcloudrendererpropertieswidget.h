@@ -64,6 +64,7 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
     void emitWidgetChanged();
 
   private:
+    // for 3D rendering, see values in qgspointcloud3dsymbolwidget.h
     const QMap<double, QString> mOverviewSwitchingScaleMap {
       { 5.0, "Much earlier" },
       { 2.0, "Earlier" },

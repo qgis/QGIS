@@ -212,7 +212,15 @@
           <widget class="QComboBox" name="mZoomOutOptions"/>
          </item>
          <item row="1" column="1" colspan="2">
-          <widget class="QComboBox" name="mOverviewSwitchingScale"/>
+          <widget class="QComboBox" name="mOverviewSwitchingScale">
+           <property name="toolTip">
+            <string>Sets the screen space error threshold at which detailed 3D point cloud tiles are rendered instead of their bounding boxes.
+
+Normal means tiles switch to detailed rendering once they occupy a noticeable portion of the screen.
+
+Select Earlier to load detailed tiles at a greater distance (zoomed out), or Later to switch only when zoomed in very close.</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>

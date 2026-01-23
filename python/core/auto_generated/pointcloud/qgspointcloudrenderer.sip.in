@@ -629,6 +629,12 @@ Returns the renderer behavior when zoomed out
 %Docstring
 Sets the overview switching scale
 
+Point clouds whose extents intersect the map extent are considered
+visible. When zoomed out beyond the overview switching scale (render
+extent exceeds average point cloud dimensions by the scale factor), and
+overview zoom-out behavior is enabled, the overview is rendered instead
+of an individual point cloud.
+
 .. versionadded:: 4.0
 %End
 
