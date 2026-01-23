@@ -286,8 +286,6 @@ Stops a current editing operation and discards any uncommitted edits.
 
 
 
-
-
     QgsPointCloudIndex index( const QString &uri = QString() ) const;
 %Docstring
 Returns the point cloud index associated with the layer. If the layer is
@@ -320,7 +318,7 @@ Emitted when statistics calculation state has changed
 .. versionadded:: 3.26
 %End
 
-    void chunkAttributeValuesChanged( const QString uri, const QgsPointCloudNodeId &n );
+    void chunkAttributeValuesChanged( const QString &uri, const QgsPointCloudNodeId &n );
 %Docstring
 Emitted when a node gets some attribute values of some points changed
 
