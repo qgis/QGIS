@@ -718,6 +718,11 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     /**
       * Sets the overview switching scale
+      *
+      * Point clouds whose extents intersect the map extent are considered visible.
+      * When zoomed out beyond the overview switching scale (render extent exceeds average
+      * point cloud dimensions by the scale factor), and overview zoom-out behavior is enabled,
+      * the overview is rendered instead of an individual point cloud.
       * \since QGIS 4.0
       */
     void setOverviewSwitchingScale( const double value );

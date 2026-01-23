@@ -80,6 +80,7 @@ class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DS
     void setColorRampMinMax( double min, double max );
 
   private:
+    // for 2D rendering, see values in qgspointcloudrendererpropertieswidget.h
     const QMap<double, QString> mOverviewSwitchingScaleMap {
       { 5.0, "Much earlier" },
       { 2.0, "Earlier" },

@@ -226,7 +226,15 @@
            </widget>
           </item>
           <item row="2" column="1" colspan="2">
-           <widget class="QComboBox" name="mOverviewSwitchingScale"/>
+           <widget class="QComboBox" name="mOverviewSwitchingScale">
+            <property name="toolTip">
+             <string>Sets the zoom level at which the individual point cloud files will get rendered instead of the overview or their extents.
+
+Normal means roughly when the point cloud extent no longer fits the map extent.
+
+Select Earlier to switch at a smaller scale (zoomed out) or Later to switch at a larger scale (zoomed in). </string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
