@@ -15,13 +15,12 @@
 
 #include "qgsdepthentity.h"
 
-#include "qgsabstractrenderview.h"
-#include "qgsframegraph.h"
-
 #include <QUrl>
 #include <Qt3DRender/QParameter>
 
 #include "moc_qgsdepthentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDepthEntity::QgsDepthEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
