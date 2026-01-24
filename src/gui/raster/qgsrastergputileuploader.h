@@ -104,6 +104,30 @@ class GUI_EXPORT QgsRasterGPUTileUploader : protected QOpenGLFunctions
      */
     void getCacheStats( int &cachedCount, qint64 &memoryBytes ) const;
 
+    /**
+     * \brief Get tile info for overview level (delegates to reader)
+     */
+    QgsCOGTileReader::TileInfo tileInfo( int overviewLevel = 0 ) const;
+
+    /**
+     * \brief Get raster extent (delegates to reader)
+     */
+    QgsRectangle rasterExtent() const;
+
+    /**
+     * \brief Select best overview based on map units per pixel
+     */
+    int selectBestOverview( double targetMupp ) const;
+
+    /**
+     * \brief Calculate georeferenced extent for a specific tile
+     * \param overviewLevel Overview level
+     * \param tileX Tile X index
+     * \param tileY Tile Y index
+     * \returns Tile extent in raster CRS
+     */
+    QgsRectangle tileExtent( int overviewLevel, int tileX, int tileY ) const;
+
   private:
 
     /**

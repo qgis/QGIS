@@ -206,3 +206,61 @@ void QgsRasterGPUTileUploader::getCacheStats( int &cachedCount, qint64 &memoryBy
     }
   }
 }
+
+QgsCOGTileReader::TileInfo QgsRasterGPUTileUploader::tileInfo( int overviewLevel ) const
+{
+  if ( mReader && mReader->isValid() )
+  {
+    return mReader->tileInfo( overviewLevel );
+  }
+  return QgsCOGTileReader::TileInfo();
+}
+
+QgsRectangle QgsRasterGPUTileUploader::rasterExtent() const
+{
+  if ( mReader && mReader->isValid() )
+  {
+    return mReader->extent();
+  }
+  return QgsRectangle();
+}
+
+int QgsRasterGPUTileUploader::selectBestOverview( double targetMupp ) const
+{
+  if ( mReader && mReader->isValid() )
+  {
+    return mReader->selectBestOverview( targetMupp );
+  }
+  return 0;
+}
+
+QgsRectangle QgsRasterGPUTileUploader::tileExtent( int overviewLevel, int tileX, int tileY ) const
+{
+  if ( !mReader || !mReader->isValid() )
+  {
+    return QgsRectangle();
+  }
+
+  // Get tile info
+  const auto info = mReader->tileInfo( overviewLevel );
+  if ( !info.isTiled )
+  {
+    return QgsRectangle();
+  }
+
+  // Get full raster extent
+  const QgsRectangle extent = mReader->extent();
+
+  // Calculate tile size in georeferenced units
+  const double tileWidth = extent.width() / info.tilesX;
+  const double tileHeight = extent.height() / info.tilesY;
+
+  // Calculate tile extent
+  // Note: Y axis is inverted (tile 0 is at top)
+  const double minX = extent.xMinimum() + ( tileX * tileWidth );
+  const double maxX = minX + tileWidth;
+  const double maxY = extent.yMaximum() - ( tileY * tileHeight );
+  const double minY = maxY - tileHeight;
+
+  return QgsRectangle( minX, minY, maxX, maxY );
+}
