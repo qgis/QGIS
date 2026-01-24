@@ -39,13 +39,13 @@ std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createAnchorMarker()
 {
   auto marker = std::make_unique<QgsVertexMarker>( mCanvas );
   marker->setIconType( QgsVertexMarker::ICON_BOX );
-  marker->setIconSize( 10 );
+  marker->setIconSize( MarkerConfig::AnchorMarkerSize );
   const QColor snapColor = QgsSettingsRegistryCore::settingsDigitizingSnapColor->value();
   marker->setColor( snapColor );
   QColor fillColor = snapColor;
-  fillColor.setAlpha( 100 );
+  fillColor.setAlpha( MarkerConfig::FillAlpha );
   marker->setFillColor( fillColor );
-  marker->setPenWidth( 2 );
+  marker->setPenWidth( MarkerConfig::MarkerPenWidth );
   return marker;
 }
 
@@ -53,16 +53,16 @@ std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createHandleMarker()
 {
   auto marker = std::make_unique<QgsVertexMarker>( mCanvas );
   marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
-  marker->setIconSize( 8 );
+  marker->setIconSize( MarkerConfig::HandleMarkerSize );
   QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
   int h, s, v, a;
   lineColor.getHsv( &h, &s, &v, &a );
   QColor handleColor = QColor::fromHsv( ( h + 120 ) % 360, s, v, a );
   marker->setColor( handleColor );
   QColor fillColor = handleColor;
-  fillColor.setAlpha( 100 );
+  fillColor.setAlpha( MarkerConfig::FillAlpha );
   marker->setFillColor( fillColor );
-  marker->setPenWidth( 2 );
+  marker->setPenWidth( MarkerConfig::MarkerPenWidth );
   return marker;
 }
 
@@ -70,9 +70,9 @@ std::unique_ptr<QgsRubberBand> QgsBezierMarker::createHandleLine()
 {
   auto rb = std::make_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Line );
   QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
-  lineColor.setAlpha( 150 );
+  lineColor.setAlpha( MarkerConfig::HandleLineAlpha );
   rb->setColor( lineColor );
-  rb->setWidth( 1 );
+  rb->setWidth( MarkerConfig::HandleLineWidth );
   rb->setLineStyle( Qt::DashLine );
   return rb;
 }
@@ -128,7 +128,7 @@ void QgsBezierMarker::updateAnchorMarkers( const QgsBezierData &data )
       const QColor selColor = mCanvas->selectionColor();
       mAnchorMarkers[i]->setColor( selColor );
       QColor selFillColor = selColor;
-      selFillColor.setAlpha( 150 );
+      selFillColor.setAlpha( MarkerConfig::SelectionAlpha );
       mAnchorMarkers[i]->setFillColor( selFillColor );
     }
     else
@@ -178,7 +178,7 @@ void QgsBezierMarker::updateHandleMarkers( const QgsBezierData &data )
       const QColor selColor = mCanvas->selectionColor();
       mHandleMarkers[i]->setColor( selColor );
       QColor selFillColor = selColor;
-      selFillColor.setAlpha( 150 );
+      selFillColor.setAlpha( MarkerConfig::SelectionAlpha );
       mHandleMarkers[i]->setFillColor( selFillColor );
     }
     else

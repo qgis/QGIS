@@ -47,6 +47,20 @@ class GUI_EXPORT QgsBezierMarker : public QObject
 
   public:
     /**
+     * Configuration constants for marker appearance.
+     */
+    struct MarkerConfig
+    {
+        static constexpr int AnchorMarkerSize = 10;
+        static constexpr int HandleMarkerSize = 8;
+        static constexpr int MarkerPenWidth = 2;
+        static constexpr int HandleLineWidth = 1;
+        static constexpr int FillAlpha = 100;
+        static constexpr int HandleLineAlpha = 150;
+        static constexpr int SelectionAlpha = 150;
+    };
+
+    /**
      * Constructor.
      * \param canvas the map canvas for rendering
      * \param parent parent object
