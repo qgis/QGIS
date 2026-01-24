@@ -86,6 +86,8 @@ void QgsPdalTransformAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( u"ROTATE_Y"_s, QObject::tr( "Y Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
   addParameter( new QgsProcessingParameterNumber( u"ROTATE_Z"_s, QObject::tr( "Z Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Transformed" ) ) );
 }
 
@@ -142,6 +144,7 @@ QStringList QgsPdalTransformAlgorithm::createArgumentLists( const QVariantMap &p
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--transform-matrix=%1"_s.arg( transformString ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

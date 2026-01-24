@@ -72,6 +72,8 @@ void QgsPdalHeightAboveGroundTriangulationAlgorithm::initAlgorithm( const QVaria
   addParameter( new QgsProcessingParameterBoolean( u"REPLACE_Z"_s, QObject::tr( "Replace Z values with height above ground" ), true ) );
   addParameter( new QgsProcessingParameterNumber( u"COUNT"_s, QObject::tr( "Number of ground neighbors for terrain construction" ), Qgis::ProcessingNumberParameterType::Integer, 10 ) );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Height above ground (delaunay algorithm)" ) ) );
 }
 
@@ -98,6 +100,7 @@ QStringList QgsPdalHeightAboveGroundTriangulationAlgorithm::createArgumentLists(
 
   QStringList args = { u"height_above_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=delaunay"_s, u"--replace-z=%1"_s.arg( replaceZ ), u"--delaunay-count=%1"_s.arg( count ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

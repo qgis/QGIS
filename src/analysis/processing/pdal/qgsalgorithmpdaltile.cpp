@@ -72,6 +72,8 @@ void QgsPdalTileAlgorithm::initAlgorithm( const QVariantMap & )
   paramCrs->setFlags( paramCrs->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramCrs.release() );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT"_s, QObject::tr( "Output directory" ) ) );
 }
 
@@ -108,6 +110,8 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
     QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, u"CRS"_s, context );
     args << u"--a_srs=%1"_s.arg( crs.authid() );
   }
+
+  applyVpcOutputFormatParameter( outputDir, args, parameters, context, feedback );
 
   applyThreadsParameter( args, context );
 

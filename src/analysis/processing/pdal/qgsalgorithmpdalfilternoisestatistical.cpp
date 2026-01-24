@@ -72,6 +72,8 @@ void QgsPdalFilterNoiseStatisticalAlgorithm::initAlgorithm( const QVariantMap & 
   addParameter( new QgsProcessingParameterNumber( u"MEAN_K"_s, QObject::tr( "Mean number of neighbors" ), Qgis::ProcessingNumberParameterType::Integer, 8 ) );
   addParameter( new QgsProcessingParameterNumber( u"MULTIPLIER"_s, QObject::tr( "Standard deviation multiplier" ), Qgis::ProcessingNumberParameterType::Double, 2.0 ) );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered (statistical algorithm)" ) ) );
 }
 
@@ -99,6 +101,7 @@ QStringList QgsPdalFilterNoiseStatisticalAlgorithm::createArgumentLists( const Q
 
   QStringList args = { u"filter_noise"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=statistical"_s, u"--remove-noise-points=%1"_s.arg( removeNoisePoints ), u"--statistical-mean-k=%1"_s.arg( meanK ), u"--statistical-multiplier=%1"_s.arg( multiplier ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

@@ -75,6 +75,8 @@ void QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::initAlgorithm( const QVa
   addParameter( new QgsProcessingParameterNumber( u"COUNT"_s, QObject::tr( "Number of neighbors for terrain interpolation" ), Qgis::ProcessingNumberParameterType::Integer, 1 ) );
   addParameter( new QgsProcessingParameterNumber( u"MAX_DISTANCE"_s, QObject::tr( "Maximum search distance" ), Qgis::ProcessingNumberParameterType::Double, 0.0 ) );
 
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Height above ground (nearest neighbour)" ) ) );
 }
 
@@ -102,6 +104,7 @@ QStringList QgsPdalHeightAboveGroundNearestNeighbourAlgorithm::createArgumentLis
 
   QStringList args = { u"height_above_ground"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--algorithm=nn"_s, u"--replace-z=%1"_s.arg( replaceZ ), u"--nn-count=%1"_s.arg( count ), u"--nn-max-distance=%1"_s.arg( maxDistance ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;

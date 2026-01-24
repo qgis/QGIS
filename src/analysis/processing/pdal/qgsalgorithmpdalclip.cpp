@@ -67,7 +67,10 @@ void QgsPdalClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterVectorLayer( u"OVERLAY"_s, QObject::tr( "Clipping polygons" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+
   createCommonParameters();
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Clipped" ) ) );
 }
 
@@ -86,6 +89,7 @@ QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parame
 
   QStringList args = { u"clip"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ), u"--polygon=%1"_s.arg( overlayPath ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );
   return args;
