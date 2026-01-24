@@ -202,26 +202,7 @@ std::unique_ptr<QgsNurbsCurve> QgsBezierData::asNurbsCurve() const
     ctrlPts.append( mData[i + 1].anchor );
   }
 
-  // Build knot vector with multiplicity 3 at junctions for C0 continuity
-  // Format: [0,0,0,0, 1,1,1, 2,2,2, ..., n-1,n-1,n-1,n-1]
-  // Total knots: 4 + 3*(n-2) + 4 = 3n + 2
-  // Actually for n-1 segments with degree 3: ctrlPts.count() + 4 = 3n-2+4 = 3n+2
-  QVector<double> knots;
-
-  // First 4 knots are 0
-  for ( int i = 0; i < 4; ++i )
-    knots.append( 0.0 );
-
-  // Interior knots with multiplicity 3
-  for ( int i = 1; i < n - 1; ++i )
-  {
-    for ( int j = 0; j < 3; ++j )
-      knots.append( static_cast<double>( i ) );
-  }
-
-  // Last 4 knots are n-1
-  for ( int i = 0; i < 4; ++i )
-    knots.append( static_cast<double>( n - 1 ) );
+  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( n );
 
   // Uniform weights (non-rational B-spline)
   QVector<double> weights( ctrlPts.count(), 1.0 );
