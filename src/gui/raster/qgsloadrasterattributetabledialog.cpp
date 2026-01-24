@@ -95,7 +95,7 @@ void QgsLoadRasterAttributeTableDialog::accept()
     {
       if ( !rat->isValid( &errorMessage ) )
       {
-        switch ( QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
+        switch ( QMessageBox::warning( nullptr, tr( "Invalid Raster Attribute Table" ), tr( "The raster attribute table is not valid:\n%1\nLoad anyway?" ).arg( errorMessage ), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel ) )
         {
           case QMessageBox::Cancel:
             return;
