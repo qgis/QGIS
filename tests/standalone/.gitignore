@@ -1,0 +1,7 @@
+# Standalone test build artifacts
+test_cog_reader
+*.o
+*.dSYM/
+
+# Local Makefile (copied from build.mk)
+Makefile

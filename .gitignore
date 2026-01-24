@@ -113,3 +113,8 @@ tests/testdata/test_qgis_config_path/profiles/default/*
 tests/testdata/widget_config.qlr
 tests/testdata/zip/testtar.tgz.properties
 venv
+# GPU rendering test artifacts
+tests/standalone/benchmark_gpu_upload
+tests/standalone/check_gpu_init
+tests/standalone/create_continuous_cog
+tests/standalone/benchmark_results/

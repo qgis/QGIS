@@ -1,0 +1,204 @@
+name: GPU Rendering Benchmarks
+
+on:
+  push:
+    branches: [ feat/fast-cog-reader ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+    inputs:
+      tile_count:
+        description: 'Number of tiles to benchmark'
+        required: false
+        default: '100'
+
+jobs:
+  # macOS with Apple Silicon (M-series GPU)
+  benchmark-macos-arm:
+    runs-on: macos-14  # M1 runners
+    name: "Benchmark: macOS Apple Silicon"
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: System Info
+      run: |
+        echo "=== Hardware Info ==="
+        sysctl -n machdep.cpu.brand_string
+        system_profiler SPDisplaysDataType | grep -E "Chipset|VRAM|Metal"
+
+    - name: Install Dependencies
+      run: |
+        brew install gdal
+
+    - name: Download Test COG
+      run: |
+        mkdir -p tests/data
+        # Download a sample COG or create one
+        curl -L -o tests/data/test_cog.tif \
+          "https://github.com/GeoTIFF/test-data/raw/main/data/cog/byte.tif" || \
+          gdal_translate -of COG tests/data/byte.tif tests/data/test_cog.tif
+
+    - name: Build Standalone Benchmark
+      run: |
+        cd tests/standalone
+        make -f build_benchmark.mk
+
+    - name: Run Benchmark
+      run: |
+        cd tests/standalone
+        ./benchmark_gpu_upload tests/data/test_cog.tif ${{ github.event.inputs.tile_count || '100' }} | tee benchmark_results.txt
+
+    - name: Parse Results
+      id: results
+      run: |
+        cd tests/standalone
+        GPU_TIME=$(grep "Read + GPU upload:" benchmark_results.txt | awk '{print $5}')
+        CPU_TIME=$(grep "Read + CPU rendering:" benchmark_results.txt | awk '{print $5}')
+        SPEEDUP=$(grep "GPU vs CPU speedup:" benchmark_results.txt | awk '{print $5}')
+
+        echo "gpu_time=$GPU_TIME" >> $GITHUB_OUTPUT
+        echo "cpu_time=$CPU_TIME" >> $GITHUB_OUTPUT
+        echo "speedup=$SPEEDUP" >> $GITHUB_OUTPUT
+
+    - name: Upload Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-macos-arm-results
+        path: tests/standalone/benchmark_results.txt
+
+    - name: Comment Results on PR
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const results = fs.readFileSync('tests/standalone/benchmark_results.txt', 'utf8');
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: `## 🚀 GPU Rendering Benchmark Results (macOS Apple Silicon)\n\n\`\`\`\n${results}\n\`\`\`\n\nSpeedup: **${{ steps.results.outputs.speedup }}x** faster`
+          });
+
+  # macOS with Intel (Intel Iris GPU)
+  benchmark-macos-intel:
+    runs-on: macos-13  # Intel runners
+    name: "Benchmark: macOS Intel"
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: System Info
+      run: |
+        echo "=== Hardware Info ==="
+        sysctl -n machdep.cpu.brand_string
+        system_profiler SPDisplaysDataType | grep -E "Chipset|VRAM|Metal"
+
+    - name: Install Dependencies
+      run: |
+        brew install gdal
+
+    - name: Build and Run Benchmark
+      run: |
+        cd tests/standalone
+        make -f build_benchmark.mk
+        ./benchmark_gpu_upload tests/data/test_cog.tif 100 | tee benchmark_results.txt
+
+    - name: Upload Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-macos-intel-results
+        path: tests/standalone/benchmark_results.txt
+
+  # Ubuntu with various GPU configurations
+  benchmark-ubuntu:
+    runs-on: ubuntu-latest
+    name: "Benchmark: Ubuntu (CPU only baseline)"
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: System Info
+      run: |
+        echo "=== Hardware Info ==="
+        lscpu | grep "Model name"
+        lspci | grep -i vga || echo "No GPU detected"
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgdal-dev gdal-bin g++
+
+    - name: Build and Run Benchmark
+      run: |
+        cd tests/standalone
+        make -f build_benchmark.mk
+        ./benchmark_gpu_upload tests/data/test_cog.tif 100 | tee benchmark_results.txt
+
+    - name: Upload Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: benchmark-ubuntu-results
+        path: tests/standalone/benchmark_results.txt
+
+  # Compare all results
+  compare-results:
+    needs: [benchmark-macos-arm, benchmark-macos-intel, benchmark-ubuntu]
+    runs-on: ubuntu-latest
+    name: "Compare Cross-Platform Results"
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+
+    - name: Generate Comparison Report
+      run: |
+        cat > comparison.md << 'EOF'
+        # GPU Rendering Performance Comparison
+
+        ## macOS Apple Silicon (M1/M2)
+        ```
+        EOF
+        cat benchmark-macos-arm-results/benchmark_results.txt >> comparison.md
+        cat >> comparison.md << 'EOF'
+        ```
+
+        ## macOS Intel
+        ```
+        EOF
+        cat benchmark-macos-intel-results/benchmark_results.txt >> comparison.md
+        cat >> comparison.md << 'EOF'
+        ```
+
+        ## Ubuntu (CPU Baseline)
+        ```
+        EOF
+        cat benchmark-ubuntu-results/benchmark_results.txt >> comparison.md
+        echo '```' >> comparison.md
+
+        cat comparison.md
+
+    - name: Upload Comparison
+      uses: actions/upload-artifact@v4
+      with:
+        name: cross-platform-comparison
+        path: comparison.md
+
+    - name: Check Performance Threshold
+      run: |
+        # Fail if GPU speedup is less than 2x
+        SPEEDUP=$(grep "GPU vs CPU speedup:" benchmark-macos-arm-results/benchmark_results.txt | grep -oE '[0-9]+\.[0-9]+')
+        echo "Detected speedup: ${SPEEDUP}x"
+
+        if (( $(echo "$SPEEDUP < 2.0" | bc -l) )); then
+          echo "❌ GPU speedup ${SPEEDUP}x is below threshold (2.0x)"
+          exit 1
+        else
+          echo "✅ GPU speedup ${SPEEDUP}x meets threshold"
+        fi
