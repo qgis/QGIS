@@ -397,6 +397,7 @@ QgsNurbsDigitizingSettingsAction::QgsNurbsDigitizingSettingsAction( QWidget *par
 
   // Mode ComboBox
   mNurbsModeComboBox = new QComboBox();
+  mNurbsModeComboBox->addItem( tr( "Poly-Bézier" ), static_cast<int>( Qgis::NurbsMode::PolyBezier ) );
   mNurbsModeComboBox->addItem( tr( "Control Points" ), static_cast<int>( Qgis::NurbsMode::ControlPoints ) );
 
   // Set current index based on saved setting

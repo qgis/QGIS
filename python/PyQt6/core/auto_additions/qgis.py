@@ -762,11 +762,13 @@ Qgis.CaptureTechnique.__doc__ = """Capture technique.
 Qgis.CaptureTechnique.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NurbsMode.ControlPoints.__doc__ = "Direct control points mode - the curve is attracted to control points but does not pass through them"
+Qgis.NurbsMode.PolyBezier.__doc__ = "Poly-Bézier mode (vector graphics style) - anchors with tangent handles, the curve passes through anchor points"
 Qgis.NurbsMode.__doc__ = """NURBS digitizing mode.
 
 .. versionadded:: 4.0
 
 * ``ControlPoints``: Direct control points mode - the curve is attracted to control points but does not pass through them
+* ``PolyBezier``: Poly-Bézier mode (vector graphics style) - anchors with tangent handles, the curve passes through anchor points
 
 """
 # --

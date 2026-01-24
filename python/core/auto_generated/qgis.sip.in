@@ -290,6 +290,7 @@ The development version
     enum class NurbsMode
     {
       ControlPoints,
+      PolyBezier,
     };
 
     enum class VectorLayerTypeFlag
