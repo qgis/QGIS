@@ -3,8 +3,8 @@
 
 CXX = clang++
 CXXFLAGS = -std=c++17 -O3 -Wall
-GDAL_CFLAGS = $(shell /opt/homebrew/bin/gdal-config --cflags 2>/dev/null || echo "-I/opt/homebrew/include")
-GDAL_LIBS = $(shell /opt/homebrew/bin/gdal-config --libs 2>/dev/null || echo "-L/opt/homebrew/lib -lgdal")
+GDAL_CFLAGS = -I/opt/homebrew/include
+GDAL_LIBS = -L/opt/homebrew/lib -lgdal
 
 TARGET = test_cog_reader
 SOURCE = test_cog_reader_standalone.cpp
