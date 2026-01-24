@@ -500,6 +500,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
     void createMetadataXmlSection( QDomElement &compositionElem, QDomDocument &doc, const ExportDetails &details ) const;
     void createPageDimensionXmlSection( QDomElement &pageElem, QDomDocument &doc, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const;
     void createGeoreferencingXmlSection( QDomElement &pageElem, QDomDocument &doc, const ExportDetails &details, const double pageWidthPdfUnits, const double pageHeightPdfUnits ) const;
+    void createContentXmlSection( QDomElement &contentElem, QDomDocument &doc, const QMap< QString, TreeNode * > &groupNameToTreeNode, const QMap< QString, TreeNode * > &layerIdToTreeNode, const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const;
 
     void createLayerTreeAndContentXmlSections( QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const;
     void createLayerTreeAndContentXmlSectionsFromLayerTree( const QgsLayerTree *layerTree, QDomElement &compositionElem, QDomElement &pageElem, QDomDocument &doc,  const QList<ComponentLayerDetail> &components, const ExportDetails &details ) const;
