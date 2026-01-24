@@ -43,7 +43,9 @@ class TestQgsMapToolNurbs : public QObject
     void cleanupTestCase();
 
     void testNurbsControlPointsMode();
+    void testNurbsPolyBezierMode();
     void testNurbsControlPointsNotEnoughPoints();
+    void testNurbsPolyBezierNotEnoughPoints();
 
   private:
     QgisApp *mQgisApp = nullptr;
@@ -120,6 +122,35 @@ void TestQgsMapToolNurbs::testNurbsControlPointsMode()
   mLineLayer->rollBack();
 }
 
+void TestQgsMapToolNurbs::testNurbsPolyBezierMode()
+{
+  mLineLayer->startEditing();
+  mLineLayer->dataProvider()->truncate();
+
+  resetMapTool( Qgis::NurbsMode::PolyBezier );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 5, 5 );
+  utils.mouseClick( 10, 0, Qt::LeftButton );
+  utils.mouseMove( 15, -5 );
+  utils.mouseClick( 20, 0, Qt::RightButton );
+
+  const QgsFeatureId newFid = utils.newFeatureId();
+  const QgsFeature f = mLineLayer->getFeature( newFid );
+
+  QVERIFY( f.isValid() );
+  QVERIFY( !f.geometry().isNull() );
+
+  const QgsAbstractGeometry *geom = f.geometry().constGet();
+  QVERIFY( geom != nullptr );
+
+  QCOMPARE( mLineLayer->featureCount(), 1LL );
+
+  mLineLayer->rollBack();
+}
+
 void TestQgsMapToolNurbs::testNurbsControlPointsNotEnoughPoints()
 {
   mLineLayer->startEditing();
@@ -127,6 +158,28 @@ void TestQgsMapToolNurbs::testNurbsControlPointsNotEnoughPoints()
   const long long count = mLineLayer->featureCount();
 
   resetMapTool( Qgis::NurbsMode::ControlPoints );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLineLayer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( mLineLayer->featureCount(), count );
+
+  mLineLayer->rollBack();
+}
+
+void TestQgsMapToolNurbs::testNurbsPolyBezierNotEnoughPoints()
+{
+  mLineLayer->startEditing();
+  mLineLayer->dataProvider()->truncate();
+  const long long count = mLineLayer->featureCount();
+
+  resetMapTool( Qgis::NurbsMode::PolyBezier );
 
   TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
 
