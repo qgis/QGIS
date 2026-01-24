@@ -340,6 +340,23 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
     static QVector<double> generateUniformKnots( int numControlPoints, int degree );
 
     /**
+     * Generates a knot vector for converting piecewise cubic Bézier curves to NURBS.
+     *
+     * This creates a knot vector with multiplicity 3 at junctions for C0 continuity,
+     * suitable for representing a sequence of cubic Bézier segments as a single NURBS curve.
+     * For n anchors (n-1 cubic Bézier segments), this generates the appropriate knot vector
+     * with degree 3.
+     *
+     * Format: [0,0,0,0, 1,1,1, 2,2,2, ..., n-1,n-1,n-1,n-1]
+     * Total knots: 4 + 3*(n-2) + 4 = 3n + 2
+     *
+     * \param nAnchors number of anchor points (defines n-1 cubic Bézier segments)
+     * \returns the generated knot vector
+     * \since QGIS 4.0
+     */
+    static QVector<double> generateKnotsForBezierConversion( int nAnchors );
+
+    /**
      * Cast the \a geom to a QgsNurbsCurve.
      * Should be used by qgsgeometry_cast<QgsNurbsCurve *>( geometry ).
      * \note Not available in Python.

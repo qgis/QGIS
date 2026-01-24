@@ -366,6 +366,27 @@ with:
 .. versionadded:: 4.0
 %End
 
+    static QVector<double> generateKnotsForBezierConversion( int nAnchors );
+%Docstring
+Generates a knot vector for converting piecewise cubic Bézier curves to
+NURBS.
+
+This creates a knot vector with multiplicity 3 at junctions for C0
+continuity, suitable for representing a sequence of cubic Bézier
+segments as a single NURBS curve. For n anchors (n-1 cubic Bézier
+segments), this generates the appropriate knot vector with degree 3.
+
+Format: [0,0,0,0, 1,1,1, 2,2,2, ..., n-1,n-1,n-1,n-1] Total knots: 4 +
+3*(n-2) + 4 = 3n + 2
+
+:param nAnchors: number of anchor points (defines n-1 cubic Bézier
+                 segments)
+
+:return: the generated knot vector
+
+.. versionadded:: 4.0
+%End
+
 
 
   protected:
