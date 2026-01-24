@@ -801,10 +801,12 @@ Open a _Developer PowerShell for VS 2022_
 ```ps
 # We assume you have a copy of the QGIS source code available
 # and have changed the working directory into it
+# All paths with forward slashes
 
 # Configure
 cmake -S . `
       -B build `
+      -DCMAKE_TOOLCHAIN_FILE="path/to/vcpkg-export-[date]/scripts/buildsystems/vcpkg.cmake" `
       -DSDK_PATH="path/to/vcpkg-export-[date]" `
       -DVCPKG_TARGET_TRIPLET=x64-windows-release `
       -DFLEX_EXECUTABLE="path/to/flex-executable" `
