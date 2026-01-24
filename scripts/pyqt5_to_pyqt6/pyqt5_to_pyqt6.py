@@ -528,7 +528,10 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
                 # Cache resolved enum type to avoid repeating the lookup and to make the special-casing clearer.
                 # Special-case for QGIS Processing enums: suggested owner is wrong
-                if node.value.id == "QgsProcessing" and enum_type == "ProcessingSourceType":
+                if (
+                    node.value.id == "QgsProcessing"
+                    and enum_type == "ProcessingSourceType"
+                ):
                     fix_full_enums[offset] = (
                         f"QgsProcessing.SourceType.{node.attr}"
                         if qgis3_compat
@@ -536,7 +539,10 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                     )
                     continue
 
-                if node.value.id == "QgsProcessingParameterNumber" and enum_type == "ProcessingNumberParameterType":
+                if (
+                    node.value.id == "QgsProcessingParameterNumber"
+                    and enum_type == "ProcessingNumberParameterType"
+                ):
                     fix_full_enums[offset] = (
                         f"QgsProcessingParameterNumber.Type.{node.attr}"
                         if qgis3_compat
@@ -548,7 +554,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                     node.value.id,
                     enum_type,
                     node.attr,
-                )               
+                )
             if (
                 isinstance(node, ast.Attribute)
                 and isinstance(node.value, ast.Name)
