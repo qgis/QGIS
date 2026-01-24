@@ -442,6 +442,19 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, isCommonAngleSnappingChecked );
   }
 
+  {
+    QAction *action = new QAction( tr( "Show weight" ), mFloaterActionsMenu );
+    action->setCheckable( true );
+    mFloaterActionsMenu->addAction( action );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Weight, checked );
+    } );
+    const bool isWeightChecked = QgsSettings().value( u"/Cad/WeightShowInFloater"_s, true ).toBool();
+    action->setChecked( isWeightChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Weight, isWeightChecked );
+  }
+
   updateCapacity( true );
   connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [this] { updateCapacity( true ); } );
 
@@ -2496,6 +2509,24 @@ double QgsAdvancedDigitizingDockWidget::getLineM() const
   return mMLineEdit->isEnabled() ? QLocale().toDouble( mMLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
 
+void QgsAdvancedDigitizingDockWidget::setWeight( const QString &value, bool enabled )
+{
+  mWeightValue = value;
+  const bool wasEnabled = mWeightEnabled;
+  mWeightEnabled = enabled;
+
+  emit valueWeightChanged( value );
+  if ( wasEnabled != enabled )
+  {
+    emit enabledChangedWeight( enabled );
+  }
+}
+
+QString QgsAdvancedDigitizingDockWidget::weight() const
+{
+  return mWeightValue;
+}
+
 bool QgsAdvancedDigitizingDockWidget::showConstructionGuides() const
 {
   return mShowConstructionGuides ? mShowConstructionGuides->isChecked() : false;
@@ -2546,4 +2577,9 @@ void QgsAdvancedDigitizingDockWidget::resetConstructionGuides()
 
   const QgsVectorLayer::LayerOptions options( QgsProject::instance()->transformContext(), false, false );
   mConstructionGuidesLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=%1"_s.arg( mMapCanvas->mapSettings().destinationCrs().authid() ), u"constructionGuides"_s, u"memory"_s, options );
+}
+
+QgsAdvancedDigitizingFloater *QgsAdvancedDigitizingDockWidget::floater() const
+{
+  return mFloater;
 }

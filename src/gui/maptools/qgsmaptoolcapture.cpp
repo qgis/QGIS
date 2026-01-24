@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "qgsadvanceddigitizingdockwidget.h"
+#include "qgsadvanceddigitizingfloater.h"
 #include "qgsapplication.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
@@ -1114,7 +1115,12 @@ void QgsMapToolCapture::keyPressEvent( QKeyEvent *e )
       mWeightEditMode = true;
       // Edit the last control point by default (the one being digitized)
       mWeightEditControlPointIndex = mTempRubberBand->pointsCount() - 2; // -2 because last point is the cursor position
-      emit messageEmitted( tr( "NURBS weight editing: Use mouse wheel to adjust weight (Ctrl=fine, Shift=coarse). Current weight: %1" ).arg( mTempRubberBand->weight( mWeightEditControlPointIndex ), 0, 'f', 2 ), Qgis::MessageLevel::Info );
+
+      // Enable and update weight via CAD dock widget (which will notify the floater)
+      if ( cadDockWidget() )
+      {
+        cadDockWidget()->setWeight( QString::number( mTempRubberBand->weight( mWeightEditControlPointIndex ), 'f', 2 ), true );
+      }
       e->ignore();
     }
   }
@@ -1128,7 +1134,13 @@ void QgsMapToolCapture::keyReleaseEvent( QKeyEvent *e )
     {
       mWeightEditMode = false;
       mWeightEditControlPointIndex = -1;
-      emit messageEmitted( QString() ); // Clear the message
+
+      // Disable weight editing via CAD dock widget
+      if ( cadDockWidget() )
+      {
+        cadDockWidget()->setWeight( QString(), false );
+      }
+
       e->accept();
       return;
     }
@@ -1139,22 +1151,27 @@ void QgsMapToolCapture::keyReleaseEvent( QKeyEvent *e )
 
 void QgsMapToolCapture::wheelEvent( QWheelEvent *e )
 {
-  if ( mWeightEditMode && mWeightEditControlPointIndex >= 0 && mTempRubberBand )
+  if ( mWeightEditMode )
   {
+    // Adjust weight with mouse wheel
+    // Base adjustment: 0.1 per wheel step
+    // Ctrl modifier: fine adjustment (0.01 per step)
+    // Shift modifier: coarse adjustment (1.0 per step)
     double adjustment = e->angleDelta().y() > 0 ? 0.1 : -0.1;
     if ( e->modifiers() & Qt::ControlModifier )
-      adjustment *= 0.1; // fine adjustment
+      adjustment *= 0.1;
     else if ( e->modifiers() & Qt::ShiftModifier )
-      adjustment *= 10.0; // coarse adjustment
+      adjustment *= 10.0;
 
-    // Get current weight and apply adjustment
     const double currentWeight = mTempRubberBand->weight( mWeightEditControlPointIndex );
     const double newWeight = std::max( 0.01, currentWeight + adjustment );
 
-    // Apply the new weight
     if ( mTempRubberBand->setWeight( mWeightEditControlPointIndex, newWeight ) )
     {
-      emit messageEmitted( tr( "NURBS weight: %1" ).arg( newWeight, 0, 'f', 2 ), Qgis::MessageLevel::Info );
+      if ( cadDockWidget() )
+      {
+        cadDockWidget()->setWeight( QString::number( newWeight, 'f', 2 ), true );
+      }
     }
 
     e->accept();
@@ -1179,6 +1196,17 @@ void QgsMapToolCapture::stopCapturing()
   mRubberBand.reset();
 
   deleteTempRubberBand();
+
+  // Reset weight editing mode when stopping capture
+  if ( mWeightEditMode )
+  {
+    mWeightEditMode = false;
+    mWeightEditControlPointIndex = -1;
+    if ( cadDockWidget() )
+    {
+      cadDockWidget()->setWeight( QString(), false );
+    }
+  }
 
   qDeleteAll( mGeomErrorMarkers );
   mGeomErrorMarkers.clear();

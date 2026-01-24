@@ -24,6 +24,8 @@
 #include "qgspointlocator.h"
 #include "qobjectuniqueptr.h"
 
+class QgsAdvancedDigitizingFloater;
+
 #include <QList>
 #include <QPoint>
 
