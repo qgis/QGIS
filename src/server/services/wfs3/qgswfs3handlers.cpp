@@ -36,8 +36,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
-#include <QTextCodec>
-
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"
 #include "qgsaccesscontrol.h"
@@ -1269,8 +1267,8 @@ void QgsWfs3CollectionsItemsHandler::handleRequest( const QgsServerApiContext &c
         json postData = json::parse( context.request()->data().toStdString() );
 
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
-        const QgsFields fields = QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) );
-        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QTextCodec::codecForName( "UTF-8" ) );
+        const QgsFields fields = QgsOgrUtils::stringToFields( context.request()->data(), QStringConverter::Encoding::Utf8 );
+        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QStringConverter::Encoding::Utf8 );
         if ( features.isEmpty() )
         {
           throw QgsServerApiBadRequestException( u"Posted data does not contain any feature"_s );
@@ -1525,8 +1523,8 @@ void QgsWfs3CollectionsFeatureHandler::handleRequest( const QgsServerApiContext 
         // Parse
         json postData = json::parse( context.request()->data().toStdString() );
         // Process data: extract geometry (because we need to process attributes in a much more complex way)
-        const QgsFields fields( QgsOgrUtils::stringToFields( context.request()->data(), QTextCodec::codecForName( "UTF-8" ) ) );
-        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QTextCodec::codecForName( "UTF-8" ) );
+        const QgsFields fields( QgsOgrUtils::stringToFields( context.request()->data(), QStringConverter::Encoding::Utf8 ) );
+        const QgsFeatureList features = QgsOgrUtils::stringToFeatureList( context.request()->data(), fields, QStringConverter::Encoding::Utf8 );
         if ( features.isEmpty() )
         {
           throw QgsServerApiBadRequestException( u"Posted data does not contain any feature"_s );
