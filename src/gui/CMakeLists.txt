@@ -35,6 +35,7 @@ set(QGIS_GUI_SRCS
   raster/qgsrastergputileuploader.cpp
   raster/qgsrastergpushaders.cpp
   raster/qgsrastergpurenderer.cpp
+  raster/qgsrastergpufactory.cpp
 
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp

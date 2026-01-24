@@ -85,7 +85,10 @@ void QgsRasterLayerRendererFeedback::onNewData()
 }
 
 ///@endcond
-///
+
+// Initialize static GPU factory to nullptr
+QgsRasterLayerRenderer::GpuRendererFactory QgsRasterLayerRenderer::sGpuRendererFactory = nullptr;
+
 QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext )
   : QgsMapLayerRenderer( layer->id(), &rendererContext )
   , mLayerName( layer->name() )
@@ -501,6 +504,33 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
 
   mPipe->moveToThread( nullptr );
 
+  // Determine if GPU rendering should be attempted
+  // Enable GPU path if:
+  // 1. GPU factory is registered
+  // 2. Provider is GDAL (likely to support fast tile access)
+  // 3. No reprojection needed (GPU reprojection not yet implemented)
+  if ( sGpuRendererFactory )
+  {
+    QgsRasterDataProvider *provider = layer->dataProvider();
+    if ( provider && provider->name() == QLatin1String( "gdal" ) )
+    {
+      // Check if same CRS (no reprojection)
+      if ( mRasterViewPort && mRasterViewPort->mSrcCRS == mRasterViewPort->mDestCRS )
+      {
+        mTryGpuPath = true;
+        QgsDebugMsgLevel( u"GPU rendering path enabled for this layer"_s, 3 );
+      }
+      else
+      {
+        QgsDebugMsgLevel( u"GPU rendering disabled: reprojection required"_s, 3 );
+      }
+    }
+    else
+    {
+      QgsDebugMsgLevel( u"GPU rendering disabled: non-GDAL provider"_s, 3 );
+    }
+  }
+
   mPreparationTime = timer.elapsed();
 }
 
@@ -509,6 +539,16 @@ QgsRasterLayerRenderer::~QgsRasterLayerRenderer()
   delete mFeedback;
 
   delete mRasterViewPort;
+}
+
+void QgsRasterLayerRenderer::setGpuRendererFactory( GpuRendererFactory factory )
+{
+  sGpuRendererFactory = factory;
+}
+
+bool QgsRasterLayerRenderer::gpuRenderingAvailable()
+{
+  return sGpuRendererFactory != nullptr;
 }
 
 bool QgsRasterLayerRenderer::render()
@@ -595,6 +635,50 @@ bool QgsRasterLayerRenderer::render()
     renderingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering" ), u"rendering"_s );
   }
 
+  // Try GPU rendering path if available and enabled
+  if ( sGpuRendererFactory && mTryGpuPath )
+  {
+    QgsDebugMsgLevel( u"Attempting GPU-accelerated raster rendering"_s, 3 );
+
+    if ( sGpuRendererFactory( *renderContext(), mRasterViewPort, mPipe.get(), mFeedback ) )
+    {
+      QgsDebugMsgLevel( u"GPU rendering succeeded"_s, 3 );
+      // GPU rendering succeeded, skip CPU path
+      renderingProfile.reset();
+
+      if ( mDrawElevationMap )
+        drawElevationMap();
+
+      if ( mLabelProvider && !renderContext()->renderingStopped() )
+      {
+        std::unique_ptr< QgsScopedRuntimeProfile > labelingProfile;
+        if ( mEnableProfile )
+        {
+          labelingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Labeling" ), u"rendering"_s );
+        }
+        drawLabeling();
+      }
+
+      if ( restoreOldResamplingStage )
+      {
+        mPipe->setResamplingStage( oldResamplingState );
+      }
+
+      const QStringList errors = mFeedback->errors();
+      for ( const QString &error : errors )
+      {
+        mErrors.append( error );
+      }
+
+      mReadyToCompose = true;
+      mPipe->moveToThread( nullptr );
+      return !mFeedback->isCanceled();
+    }
+
+    QgsDebugMsgLevel( u"GPU rendering failed, falling back to CPU"_s, 3 );
+  }
+
+  // CPU rendering path (default and fallback)
   // Drawer to pipe?
   QgsRasterIterator iterator( mPipe->last() );
 
