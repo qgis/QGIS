@@ -33,6 +33,7 @@ set(QGIS_GUI_SRCS
   raster/qgsresamplingutils.cpp
   raster/qgsrastertextureformats.cpp
   raster/qgsrastergputileuploader.cpp
+  raster/qgsrastergpushaders.cpp
 
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp
