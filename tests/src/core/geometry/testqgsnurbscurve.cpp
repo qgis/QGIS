@@ -76,6 +76,7 @@ class TestQgsNurbsCurve : public QObject
     void isValidTests();
     void weightAccessTests();
     void evaluateInvalidNurbs();
+    void generateKnotsForBezierConversion();
 };
 
 void TestQgsNurbsCurve::emptyConstructor()
@@ -845,6 +846,49 @@ void TestQgsNurbsCurve::evaluateInvalidNurbs()
 
   QgsPoint result = invalidCurve.evaluate( 0.5 );
   QVERIFY( result.isEmpty() );
+}
+
+void TestQgsNurbsCurve::generateKnotsForBezierConversion()
+{
+  // Test with insufficient anchors
+  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( 1 );
+  QVERIFY( knots.isEmpty() );
+
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 0 );
+  QVERIFY( knots.isEmpty() );
+
+  // Test with 2 anchors (1 cubic Bézier segment)
+  // Expected: [0,0,0,0, 1,1,1,1] (8 knots total: 4 + 4)
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 2 );
+  QCOMPARE( knots.size(), 8 );
+  for ( int i = 0; i < 4; ++i )
+    QCOMPARE( knots[i], 0.0 );
+  for ( int i = 4; i < 8; ++i )
+    QCOMPARE( knots[i], 1.0 );
+
+  // Test with 3 anchors (2 cubic Bézier segments)
+  // Expected: [0,0,0,0, 1,1,1, 2,2,2,2] (11 knots total: 4 + 3 + 4)
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 3 );
+  QCOMPARE( knots.size(), 11 );
+  for ( int i = 0; i < 4; ++i )
+    QCOMPARE( knots[i], 0.0 );
+  for ( int i = 4; i < 7; ++i )
+    QCOMPARE( knots[i], 1.0 );
+  for ( int i = 7; i < 11; ++i )
+    QCOMPARE( knots[i], 2.0 );
+
+  // Test with 4 anchors (3 cubic Bézier segments)
+  // Expected: [0,0,0,0, 1,1,1, 2,2,2, 3,3,3,3] (14 knots total: 4 + 3 + 3 + 4)
+  knots = QgsNurbsCurve::generateKnotsForBezierConversion( 4 );
+  QCOMPARE( knots.size(), 14 );
+  for ( int i = 0; i < 4; ++i )
+    QCOMPARE( knots[i], 0.0 );
+  for ( int i = 4; i < 7; ++i )
+    QCOMPARE( knots[i], 1.0 );
+  for ( int i = 7; i < 10; ++i )
+    QCOMPARE( knots[i], 2.0 );
+  for ( int i = 10; i < 14; ++i )
+    QCOMPARE( knots[i], 3.0 );
 }
 
 QGSTEST_MAIN( TestQgsNurbsCurve )
