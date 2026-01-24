@@ -769,10 +769,8 @@ QStringList QgsTextCodec::availableCodecs()
   QStringList codecs = QStringConverter::availableCodecs();
   codecs.append( "system" );
   codecs.append( "latin1" );
-  for ( const QString &codec : sOldToNewEncoding.keys() )
-  {
-    codecs.append( codec );
-  }
+  codecs.append( sOldToNewEncoding.keys() );
+  codecs.removeDuplicates();
   return codecs;
 }
 
