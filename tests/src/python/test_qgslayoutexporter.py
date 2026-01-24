@@ -2046,6 +2046,111 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
         check_feature_info(ds)
 
+        # Check export with no features (invisible nodes)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = False
+        settings.useQgisLayerTreeProperties = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_no_graphics_invisible_layers.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_no_features_invisible_layers.pdf",
+            settings,
+        )
+
+        expected_metadata_layers = {
+            "LAYER_00_NAME": "points",
+            "LAYER_01_NAME": "group1",
+            "LAYER_02_NAME": "group1.multipoint",
+            "LAYER_03_NAME": "group1.sub-group1",
+            "LAYER_04_NAME": "group1.sub-group1.lines",
+            "LAYER_05_NAME": "group1.polys",
+            "LAYER_06_NAME": "raster_layer",
+        }
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_no_feature_info(ds)
+
+        # Check export with features (invisible nodes)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = True
+        settings.useQgisLayerTreeProperties = True
+
+        ds, i = exportLayout(
+            "test_nested_groups_no_graphics_invisible_layers.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_invisible_layers.pdf",
+            settings,
+        )
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_feature_info(ds)
+
+        # Check export with no features (with grouplayer)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = False
+        settings.useQgisLayerTreeProperties = True
+
+        ds, i = exportLayout(
+            "test_non_nested_group_no_graphics_with_grouplayer.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_no_features_group_layer.pdf",
+            settings,
+        )
+
+        expected_metadata_layers = {
+            "LAYER_00_NAME": "points",
+            "LAYER_01_NAME": "group1",
+            "LAYER_02_NAME": "polys",
+            "LAYER_03_NAME": "raster_layer",
+        }
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_no_feature_info(ds)
+
+        # Check export with features (with grouplayer)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.includeGeoPdfFeatures = True
+        settings.useQgisLayerTreeProperties = True
+
+        ds, i = exportLayout(
+            "test_non_nested_group_no_graphics_with_grouplayer.qgz",
+            "test_geospatial_pdf_qgis_layer_tree_group_layer.pdf",
+            settings,
+        )
+        self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
+        check_feature_info(ds)
+
+    def testErrorGeospatialPdfQgisLayerTreeAndThemes(self):
+        p = QgsProject()
+        p.read(
+            os.path.join(
+                TEST_DATA_DIR,
+                "geospatial_pdf_projects",
+                "test_nested_groups_no_graphics.qgz",
+            )
+        )
+        l = p.layoutManager().layoutByName("layout")
+
+        # Make the map item follow a locked set, which is
+        # incompatible with the Follo QGIS layer tree option
+        map = l.referenceMap()
+        map.setKeepLayerSet(True)
+
+        exporter = QgsLayoutExporter(l)
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.writeGeoPdf = True
+        settings.useQgisLayerTreeProperties = True
+
+        # Check that we get an error and an error message
+        pdf_file_path = os.path.join(
+            self.basetestpath,
+            "test_error_export_geospatial_pdf_qgis_layer_tree_and_themes.pdf",
+        )
+        self.assertEqual(
+            exporter.exportToPdf(pdf_file_path, settings),
+            QgsLayoutExporter.ExportResult.PrintError,
+        )
+        self.assertTrue(len(exporter.errorMessage()) > 0)
+
 
 if __name__ == "__main__":
     unittest.main()
