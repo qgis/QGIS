@@ -833,6 +833,21 @@ std::unique_ptr< TreeNode > QgsAbstractGeospatialPdfExporter::createPdfTreeNodes
       case QgsLayerTreeNode::NodeGroup:
       {
         QgsLayerTreeGroup *childLayerTreeGroup = qobject_cast<QgsLayerTreeGroup *>( qgisNode );
+
+        // GroupLayers support
+        if ( QgsGroupLayer *groupLayer = childLayerTreeGroup->groupLayer() )
+        {
+          // We deal with it as another map layer
+          auto pdfLayerNode = std::make_unique< TreeNode >();
+          pdfLayerNode->id = groupLayer->id();
+          pdfLayerNode->name = childLayerTreeGroup->name();
+          pdfLayerNode->initiallyVisible = childLayerTreeGroup->itemVisibilityChecked();
+          pdfLayerNode->mapLayerId = groupLayer->id();
+          layerIdToTreeNode.insert( pdfLayerNode->id, pdfLayerNode.get() );
+          pdfTreeNodes->addChild( std::move( pdfLayerNode ) );
+          break;
+        }
+
         // Skip empty groups
         if ( !childLayerTreeGroup->children().empty() )
         {
