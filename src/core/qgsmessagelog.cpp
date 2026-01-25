@@ -88,7 +88,6 @@ void QgsMessageLog::logMessageWithFormat( const QString &message, const QString 
 
 void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, bool notifyUser, Qgis::StringFormat format )
 {
-  emit messageReceived( message, tag, level );
   emit messageReceivedWithFormat( message, tag, level, format );
   if ( level != Qgis::MessageLevel::Info && notifyUser && mAdviseBlockCount == 0 )
   {
