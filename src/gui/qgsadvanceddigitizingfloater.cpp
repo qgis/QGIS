@@ -53,6 +53,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   mYLineEdit->installEventFilter( cadDockWidget );
   mZLineEdit->installEventFilter( cadDockWidget );
   mMLineEdit->installEventFilter( cadDockWidget );
+  mWeightLineEdit->installEventFilter( cadDockWidget );
 
   // Connect all cadDockWidget's signals to update the widget's display
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::cadEnabledChanged, this, &QgsAdvancedDigitizingFloater::hideIfDisabled );
@@ -66,6 +67,8 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueCommonAngleSnappingChanged, this, &QgsAdvancedDigitizingFloater::changeCommonAngleSnapping );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::commonAngleSnappingShowInFloaterChanged, this, &QgsAdvancedDigitizingFloater::enabledCommonAngleSnapping );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueDistanceChanged, this, &QgsAdvancedDigitizingFloater::changeDistance );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::valueWeightChanged, this, &QgsAdvancedDigitizingFloater::changeWeight );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedWeight, this, &QgsAdvancedDigitizingFloater::enabledChangedWeight );
 
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::lockXChanged, this, &QgsAdvancedDigitizingFloater::changeLockX );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::lockYChanged, this, &QgsAdvancedDigitizingFloater::changeLockY );
@@ -87,6 +90,7 @@ QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnMRequested, this, &QgsAdvancedDigitizingFloater::focusOnM );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnAngleRequested, this, &QgsAdvancedDigitizingFloater::focusOnAngle );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnDistanceRequested, this, &QgsAdvancedDigitizingFloater::focusOnDistance );
+  connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::focusOnWeightRequested, this, &QgsAdvancedDigitizingFloater::focusOnWeight );
 
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedX, this, &QgsAdvancedDigitizingFloater::enabledChangedX );
   connect( cadDockWidget, &QgsAdvancedDigitizingDockWidget::enabledChangedY, this, &QgsAdvancedDigitizingFloater::enabledChangedY );
@@ -226,6 +230,9 @@ void QgsAdvancedDigitizingFloater::setItemVisibility( const QgsAdvancedDigitizin
       break;
     case FloaterItem::Bearing:
       enabledChangedBearing( visible );
+      break;
+    case FloaterItem::Weight:
+      enabledChangedWeight( visible );
       break;
   }
 }
@@ -494,6 +501,15 @@ void QgsAdvancedDigitizingFloater::focusOnAngle()
   }
 }
 
+void QgsAdvancedDigitizingFloater::focusOnWeight()
+{
+  if ( mActive )
+  {
+    mWeightLineEdit->setFocus();
+    mWeightLineEdit->selectAll();
+  }
+}
+
 
 void QgsAdvancedDigitizingFloater::enabledChangedX( bool enabled )
 {
@@ -548,5 +564,19 @@ void QgsAdvancedDigitizingFloater::enabledChangedBearing( bool enabled )
 {
   mBearingLineEdit->setVisible( enabled && itemVisibility( FloaterItem::Bearing ) );
   mBearingLabel->setVisible( enabled && itemVisibility( FloaterItem::Bearing ) );
+  adjustSize();
+}
+
+void QgsAdvancedDigitizingFloater::changeWeight( const QString &text )
+{
+  mWeightLineEdit->setText( text );
+}
+
+void QgsAdvancedDigitizingFloater::enabledChangedWeight( bool enabled )
+{
+  // Always show weight when enabled, regardless of user preference
+  // This is because weight editing is a temporary mode (activated with W key)
+  mWeightLineEdit->setVisible( enabled );
+  mWeightLabel->setVisible( enabled );
   adjustSize();
 }

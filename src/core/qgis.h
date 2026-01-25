@@ -406,8 +406,20 @@ class CORE_EXPORT Qgis
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
       Shape, //!< Digitize shapes.
+      NurbsCurve, //!< Digitizes NURBS curves with control points. \since QGIS 4.0
     };
     Q_ENUM( CaptureTechnique )
+
+    /**
+     * NURBS digitizing mode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class NurbsMode : int
+    {
+      ControlPoints, //!< Direct control points mode - the curve is attracted to control points but does not pass through them
+    };
+    Q_ENUM( NurbsMode )
 
     /**
      * Vector layer type flags.
