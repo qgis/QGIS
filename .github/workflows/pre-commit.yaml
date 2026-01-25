@@ -33,7 +33,7 @@ jobs:
 
       - name: Run pre-commit
         run: |
-            if [ "${{ github.event_name }}" == "pull_request_target" ]; then
+            if [ "${{ github.event_name }}" == "pull_request" ]; then
               git fetch origin ${{ github.event.pull_request.base.ref }}
               git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
               git checkout pr-head
