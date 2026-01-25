@@ -169,9 +169,8 @@ class CORE_EXPORT QgsGeometryParameters
  *
  * \section polyline_multilinestring Polyline vs MultiLineString
  *
- * In the QGIS API and PyQGIS, there is an important distinction between
- * geometry construction methods and vector layer geometry types which
- * can be confusing for users.
+ * There is an important distinction between geometry construction methods
+ * and vector layer geometry types.
  *
  * A Polyline represents a single-part line geometry composed of one
  * continuous sequence of vertices. Geometry construction methods such as
