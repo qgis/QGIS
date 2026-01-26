@@ -100,6 +100,16 @@ static void setupIntEditor( const QVariant &min, const QVariant &max, const QVar
   QObject::connect( slider, qOverload<int>( &T::valueChanged ), wrapper, &QgsRangeWidgetWrapper::emitValueChanged );
 }
 
+template<class T>
+static void setupVariantEditor( const QVariant &min, const QVariant &max, const QVariant &step, T *slider, QgsRangeWidgetWrapper *wrapper )
+{
+  // must use a template function because those methods are overloaded and not inherited by some classes
+  slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest() );
+  slider->setMaximum( max.isValid() ? max.toInt() : std::numeric_limits<int>::max() );
+  slider->setSingleStep( step.isValid() ? step.toInt() : 1 );
+  QObject::connect( slider, qOverload<const QVariant &>( &T::valueChanged ), wrapper, &QgsRangeWidgetWrapper::emitValueChanged );
+}
+
 void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
 {
   mDoubleSpinBox = qobject_cast<QDoubleSpinBox *>( editor );
@@ -195,9 +205,9 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     ( void ) field().convertCompatible( max );
     ( void ) field().convertCompatible( step );
     if ( mQgsDial )
-      setupIntEditor<QDial>( min, max, step, mQgsDial, this );
+      setupVariantEditor( min, max, step, mQgsDial, this );
     else if ( mQgsSlider )
-      setupIntEditor<QSlider>( min, max, step, mQgsSlider, this );
+      setupVariantEditor( min, max, step, mQgsSlider, this );
     else if ( mDial )
       setupIntEditor( min, max, step, mDial, this );
     else if ( mSlider )
