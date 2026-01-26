@@ -11,6 +11,11 @@
 %End
 };
 
+%TypeHintCode
+class QgsCsException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
 %Exception QgsProcessingException(SIP_Exception) /PyName=QgsProcessingException/
 {
 %TypeHeaderCode
@@ -22,6 +27,11 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+%TypeHintCode
+class QgsProcessingException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 %Exception QgsProviderConnectionException(SIP_Exception) /PyName=QgsProviderConnectionException/
 {
@@ -35,6 +45,11 @@
 %End
 };
 
+%TypeHintCode
+class QgsProviderConnectionException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
 %Exception QgsNotSupportedException(SIP_Exception) /PyName=QgsNotSupportedException/
 {
 %TypeHeaderCode
@@ -47,6 +62,11 @@
 %End
 };
 
+%TypeHintCode
+class QgsNotSupportedException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
 %Exception QgsSettingsException(SIP_Exception) /PyName=QgsSettingsException/
 {
 %TypeHeaderCode
@@ -58,6 +78,11 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+%TypeHintCode
+class QgsSettingsException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 %If ( HAVE_SFCGAL_SIP )
 %Exception QgsSfcgalException(SIP_Exception) /PyName=QgsSfcgalException/
@@ -73,6 +98,11 @@
 };
 %End
 
+%TypeHintCode
+class QgsSfcgalException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
+
 %Exception QgsInvalidArgumentException(SIP_Exception) /PyName=QgsInvalidArgumentException/
 {
 %TypeHeaderCode
@@ -84,6 +114,11 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+%TypeHintCode
+class QgsInvalidArgumentException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 // IMPORTANT -- QgsException MUST be last listed, or it will greedily prevent the more
 // specialized exceptions from being raised
@@ -99,6 +134,11 @@
   SIP_UNBLOCK_THREADS
 %End
 };
+
+%TypeHintCode
+class QgsException(Exception):
+    def __init__(self, *args, **kwargs) -> None: ...
+%End
 
 // IMPORTANT -- QgsException MUST be last listed, or it will greedily prevent the more
 // specialized exceptions from being raised
