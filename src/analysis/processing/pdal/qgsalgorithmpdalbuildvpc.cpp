@@ -75,7 +75,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
 {
   Q_UNUSED( feedback );
 
-  const QStringList layers = parameterAsFileList( parameters, u"LAYERS"_s ), context );
+  const QStringList layers = parameterAsFileList( parameters, u"LAYERS"_s, context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
