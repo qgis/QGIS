@@ -514,10 +514,13 @@ void QgsModelGraphicsView::friendlySetSceneRect()
 
   QRectF modelSceneRect = modelScene()->sceneRect();
   QRectF viewSceneRect = sceneRect();
-  viewSceneRect.setLeft( std::min( modelSceneRect.left(), viewSceneRect.left() ) );
-  viewSceneRect.setRight( std::max( modelSceneRect.right(), viewSceneRect.right() ) );
-  viewSceneRect.setTop( std::min( modelSceneRect.top(), viewSceneRect.top() ) );
-  viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), viewSceneRect.bottom() ) );
+
+  QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+
+  viewSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
+  viewSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
+  viewSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
+  viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
 
   mBlockScrollbarSignals++;
   setSceneRect( viewSceneRect );
