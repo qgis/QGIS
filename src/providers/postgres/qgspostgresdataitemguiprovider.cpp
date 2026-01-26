@@ -954,6 +954,22 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
     return;
   }
 
+  // if column exist copy from old project to the newly saved one prior to deleting the old one
+  if ( QgsPostgresUtils::columnExists( conn, projectItem->schemaName(), u"qgis_projects"_s, u"comment"_s ) )
+  {
+    const QString sql = u"UPDATE %1.%2 SET comment = (SELECT comment FROM %1.%2 WHERE name = %3) WHERE name = %4"_s
+                          .arg( QgsPostgresConn::quotedIdentifier( projectItem->schemaName() ), QgsPostgresConn::quotedIdentifier( u"qgis_projects"_s ), QgsPostgresConn::quotedValue( projectItem->name() ), QgsPostgresConn::quotedValue( dlg.name() ) );
+
+    QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
+
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
+      conn->unref();
+      return;
+    }
+  }
+
   if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
