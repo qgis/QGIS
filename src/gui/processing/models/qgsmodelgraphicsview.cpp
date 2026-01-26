@@ -509,19 +509,29 @@ void QgsModelGraphicsView::friendlySetSceneRect()
   if ( mBlockScrollbarSignals )
     return;
 
-  QRectF modelSceneRect = modelScene()->sceneRect();
-  QRectF viewSceneRect = sceneRect();
+  const QRectF currentSceneRect = sceneRect();
 
-  QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+  const QRectF modelSceneRect = modelScene()->sceneRect();
+  const QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+  QRectF newSceneRect;
+  newSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
+  newSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
+  newSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
+  newSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
 
-  viewSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
-  viewSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
-  viewSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
-  viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
-
-  mBlockScrollbarSignals++;
-  setSceneRect( viewSceneRect );
-  mBlockScrollbarSignals--;
+  // the above conversions may involve small rounding errors which stack up and could
+  // result in unwanted small shifts of the visible scene area => only update the
+  // scene rect if the visible area change is sufficiently large to warrant this:
+  constexpr int MIN_VIEW_SHIFT_THRESHOLD_PIXELS = 20;
+  if ( std::abs( newSceneRect.left() - currentSceneRect.left() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS
+       || std::abs( newSceneRect.right() - currentSceneRect.right() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS
+       || std::abs( newSceneRect.top() - currentSceneRect.top() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS
+       || std::abs( newSceneRect.bottom() - currentSceneRect.bottom() ) > MIN_VIEW_SHIFT_THRESHOLD_PIXELS )
+  {
+    mBlockScrollbarSignals++;
+    setSceneRect( newSceneRect );
+    mBlockScrollbarSignals--;
+  }
 }
 
 void QgsModelGraphicsView::copySelectedItems( QgsModelGraphicsView::ClipboardOperation operation )
