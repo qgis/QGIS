@@ -153,7 +153,7 @@ void TestQgsFileUploader::testSslError_data()
   QTest::newRow( "expired" ) << "https://expired.badssl.com/"
                              << "Upload failed: SSL handshake failed: The certificate has expired";
   QTest::newRow( "self-signed" ) << "https://self-signed.badssl.com/"
-                                 << "Upload failed: SSL handshake failed: The certificate has expired";
+                                 << "Upload failed: SSL handshake failed: The certificate is self-signed, and untrusted";
 }
 
 void TestQgsFileUploader::testSslError()
