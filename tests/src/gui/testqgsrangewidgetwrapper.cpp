@@ -19,11 +19,13 @@
 
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsdial.h"
 #include "qgsdoublespinbox.h"
 #include "qgsfilterlineedit.h"
 #include "qgslogger.h"
 #include "qgsrangeconfigdlg.h"
 #include "qgsrangewidgetwrapper.h"
+#include "qgsslider.h"
 #include "qgsspinbox.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
@@ -55,12 +57,15 @@ class TestQgsRangeWidgetWrapper : public QObject
     void test_negativeIntegers(); // see GH issue #32149
     void test_focus();
     void testLongLong();
+    void testSlider();
+    void testDial();
 
   private:
     std::unique_ptr<QgsRangeWidgetWrapper> widget0; // For field 0
     std::unique_ptr<QgsRangeWidgetWrapper> widget1; // For field 1
     std::unique_ptr<QgsRangeWidgetWrapper> widget2; // For field 2
     std::unique_ptr<QgsRangeWidgetWrapper> widget3; // For field 3
+    std::unique_ptr<QgsRangeWidgetWrapper> widget4; // For field 4
     std::unique_ptr<QgsVectorLayer> vl;
 };
 
@@ -97,6 +102,7 @@ void TestQgsRangeWidgetWrapper::init()
   // simple int
   fields.append( QgsField( "simplenumber", QMetaType::Type::Int ) );
   fields.append( QgsField( "longlong", QMetaType::Type::LongLong ) );
+  fields.append( QgsField( "longlongtwo", QMetaType::Type::LongLong ) );
   vl->dataProvider()->addAttributes( fields );
   vl->updateFields();
   QVERIFY( vl.get() );
@@ -128,6 +134,7 @@ void TestQgsRangeWidgetWrapper::init()
   widget1 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 1, nullptr, nullptr );
   widget2 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 2, nullptr, nullptr );
   widget3 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 3, nullptr, nullptr );
+  widget4 = std::make_unique<QgsRangeWidgetWrapper>( vl.get(), 4, nullptr, nullptr );
   QVERIFY( widget1.get() );
 }
 
@@ -540,6 +547,42 @@ void TestQgsRangeWidgetWrapper::testLongLong()
 
   // wrapper value must be a long long type, not double
   QCOMPARE( wrapper->value(), 1234567890123LL );
+}
+
+void TestQgsRangeWidgetWrapper::testSlider()
+{
+  QVariantMap cfg;
+  cfg.insert( u"Style"_s, u"Slider"_s );
+  cfg.insert( u"Min"_s, 10 );
+  cfg.insert( u"Max"_s, 20 );
+  cfg.insert( u"Step"_s, 5 );
+  widget4->setConfig( cfg );
+
+  QgsSlider *slider = qobject_cast<QgsSlider *>( widget4->createWidget( nullptr ) );
+  QVERIFY( slider );
+  widget4->initWidget( slider );
+
+  QCOMPARE( slider->minimum(), 10 );
+  QCOMPARE( slider->maximum(), 20 );
+  QCOMPARE( slider->singleStep(), 5 );
+}
+
+void TestQgsRangeWidgetWrapper::testDial()
+{
+  QVariantMap cfg;
+  cfg.insert( u"Style"_s, u"Dial"_s );
+  cfg.insert( u"Min"_s, 10 );
+  cfg.insert( u"Max"_s, 20 );
+  cfg.insert( u"Step"_s, 5 );
+  widget4->setConfig( cfg );
+
+  QgsDial *dial = qobject_cast<QgsDial *>( widget4->createWidget( nullptr ) );
+  QVERIFY( dial );
+  widget4->initWidget( dial );
+
+  QCOMPARE( dial->minimum(), 10 );
+  QCOMPARE( dial->maximum(), 20 );
+  QCOMPARE( dial->singleStep(), 5 );
 }
 
 QGSTEST_MAIN( TestQgsRangeWidgetWrapper )
