@@ -16,6 +16,7 @@
 #include "qgsrasterattributetableaddrowdialog.h"
 
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include "moc_qgsrasterattributetableaddrowdialog.cpp"
 
@@ -23,6 +24,9 @@ QgsRasterAttributeTableAddRowDialog::QgsRasterAttributeTableAddRowDialog( QWidge
   : QDialog( parent )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_raster/raster_properties.html#raster-attribute-tables"_s );
+  } );
   QgsGui::enableAutoGeometryRestore( this );
 }
 
