@@ -160,7 +160,6 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
   mLineStyleButton->setSymbol( properties->profileLineSymbol()->clone() );
   mFillStyleButton->setSymbol( properties->profileFillSymbol()->clone() );
-  mMarkerStyleButton->setSymbol( properties->profileMarkerSymbol()->clone() );
 
   switch ( properties->renderType() )
   {
@@ -197,18 +196,16 @@ void QgsPointCloudElevationPropertiesWidget::apply()
   properties->setPointColor( mPointColorButton->color() );
   properties->setRespectLayerColors( mCheckBoxRespectLayerColors->isChecked() );
   properties->setApplyOpacityByDistanceEffect( mOpacityByDistanceCheckBox->isChecked() );
-  properties->setRenderType( static_cast<Qgis::PointCloudProfileType>( mTypeCombobox->currentData().toInt() ) );
+  properties->setType( static_cast<Qgis::PointCloudProfileType>( mTypeCombobox->currentData().toInt() ) );
 
   if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
     properties->setElevationLimit( mElevationLimitSpinBox->value() );
   else
     properties->setElevationLimit( std::numeric_limits<double>::quiet_NaN() );
 
-  properties->setShowMarkerSymbolInSurfacePlots( mCheckBoxShowMarkersAtSampledPoints->isChecked() );
   properties->setProfileSymbology( static_cast<Qgis::ProfileSurfaceSymbology>( mSurfaceStyleCombobox->currentData().toInt() ) );
   properties->setProfileLineSymbol( mLineStyleButton->clonedSymbol<QgsLineSymbol>() );
   properties->setProfileFillSymbol( mFillStyleButton->clonedSymbol<QgsFillSymbol>() );
-  properties->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol<QgsMarkerSymbol>() );
 
   mLayer->setVerticalCrs( mVerticalCrsWidget->crs() );
 

@@ -234,7 +234,7 @@ profile plots.
 .. seealso:: :py:func:`respectLayerColors`
 %End
 
-    void setRenderType( Qgis::PointCloudProfileType type );
+    void setType( Qgis::PointCloudProfileType type );
 %Docstring
 Sets the profile ``type`` used when generating elevation profile plots.
 
@@ -257,6 +257,10 @@ Returns the profile type used when generating elevation profile plots.
 Returns the symbol used to render lines for the layer in elevation
 profile plots.
 
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
 .. seealso:: :py:func:`setProfileLineSymbol`
 
 .. versionadded:: 4.0
@@ -268,6 +272,10 @@ Sets the line ``symbol`` used to render lines for the layer in elevation
 profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
 
 .. seealso:: :py:func:`profileLineSymbol`
 
@@ -300,36 +308,6 @@ Ownership of ``symbol`` is transferred to the plot.
    This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
 
 .. seealso:: :py:func:`profileFillSymbol`
-
-.. versionadded:: 4.0
-%End
-
-    QgsMarkerSymbol *profileMarkerSymbol() const;
-%Docstring
-Returns the symbol used to render points for the layer in elevation
-profile plots.
-
-.. note::
-
-   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
-
-.. seealso:: :py:func:`setProfileMarkerSymbol`
-
-.. versionadded:: 4.0
-%End
-
-    void setProfileMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
-%Docstring
-Sets the marker ``symbol`` used to render points for the layer in
-elevation profile plots.
-
-Ownership of ``symbol`` is transferred to the plot.
-
-.. note::
-
-   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
-
-.. seealso:: :py:func:`profileMarkerSymbol`
 
 .. versionadded:: 4.0
 %End
@@ -400,35 +378,6 @@ Set to NaN to indicate that there is no elevation limit.
 
 .. versionadded:: 4.0
 %End
-
-    bool showMarkerSymbolInSurfacePlots() const;
-%Docstring
-Returns ``True`` if the marker symbol should also be shown in continuous
-surface plots.
-
-.. note::
-
-   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
-
-.. seealso:: :py:func:`setShowMarkerSymbolInSurfacePlots`
-
-.. versionadded:: 4.0
-%End
-
-    void setShowMarkerSymbolInSurfacePlots( bool show );
-%Docstring
-Sets whether the marker symbol should also be shown in continuous
-surface plots.
-
-.. note::
-
-   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
-
-.. seealso:: :py:func:`showMarkerSymbolInSurfacePlots`
-
-.. versionadded:: 4.0
-%End
-
 
 };
 

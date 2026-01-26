@@ -217,7 +217,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      * \see renderType()
      * \since QGIS 4.0
      */
-    void setRenderType( Qgis::PointCloudProfileType type ) { mRenderType = type; }
+    void setType( Qgis::PointCloudProfileType type ) { mType = type; }
 
     /**
      * Returns the profile type used when generating elevation profile plots.
@@ -225,10 +225,12 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      * \see setRenderType()
      * \since QGIS 4.0
      */
-    Qgis::PointCloudProfileType renderType() const { return mRenderType; }
+    Qgis::PointCloudProfileType renderType() const { return mType; }
 
     /**
      * Returns the symbol used to render lines for the layer in elevation profile plots.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
      *
      * \see setProfileLineSymbol()
      * \since QGIS 4.0
@@ -239,6 +241,8 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      * Sets the line \a symbol used to render lines for the layer in elevation profile plots.
      *
      * Ownership of \a symbol is transferred to the plot.
+     *
+     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
      *
      * \see profileLineSymbol()
      * \since QGIS 4.0
@@ -266,28 +270,6 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      * \since QGIS 4.0
      */
     void setProfileFillSymbol( QgsFillSymbol *symbol SIP_TRANSFER );
-
-    /**
-     * Returns the symbol used to render points for the layer in elevation profile plots.
-     *
-     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
-     *
-     * \see setProfileMarkerSymbol()
-     * \since QGIS 4.0
-     */
-    QgsMarkerSymbol *profileMarkerSymbol() const;
-
-    /**
-     * Sets the marker \a symbol used to render points for the layer in elevation profile plots.
-     *
-     * Ownership of \a symbol is transferred to the plot.
-     *
-     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
-     *
-     * \see profileMarkerSymbol()
-     * \since QGIS 4.0
-     */
-    void setProfileMarkerSymbol( QgsMarkerSymbol *symbol SIP_TRANSFER );
 
     /**
      * Returns the symbology option used to render the point cloud profile in elevation profile plots.
@@ -337,27 +319,6 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
      */
     void setElevationLimit( double limit );
 
-    /**
-     * Returns TRUE if the marker symbol should also be shown in continuous surface plots.
-     *
-     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
-     *
-     * \see setShowMarkerSymbolInSurfacePlots()
-     * \since QGIS 4.0
-     */
-    bool showMarkerSymbolInSurfacePlots() const { return mShowMarkerSymbolInSurfacePlots; }
-
-    /**
-     * Sets whether the marker symbol should also be shown in continuous surface plots.
-     *
-     * \note This setting is only used when type() is Qgis::PointCloudProfileType::TriangulatedSurface.
-     *
-     * \see showMarkerSymbolInSurfacePlots()
-     * \since QGIS 4.0
-     */
-    void setShowMarkerSymbolInSurfacePlots( bool show );
-
-
   private:
     void setDefaultProfileLineSymbol( const QColor &color );
     void setDefaultProfileMarkerSymbol( const QColor &color );
@@ -371,14 +332,12 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
-    std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
     Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::FillBelow;
     double mElevationLimit = std::numeric_limits<double>::quiet_NaN();
-    bool mShowMarkerSymbolInSurfacePlots = false;
     QColor mPointColor;
     bool mRespectLayerColors = true;
     bool mApplyOpacityByDistanceEffect = false;
-    Qgis::PointCloudProfileType mRenderType = Qgis::PointCloudProfileType::IndividualPoints;
+    Qgis::PointCloudProfileType mType = Qgis::PointCloudProfileType::IndividualPoints;
 };
 
 #endif // QGSPOINTCLOUDLAYERELEVATIONPROPERTIES_H
