@@ -1579,8 +1579,8 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
                 "circle-stroke-width": {"stops": [[16, 0.125], [17, 0.25], [18, 0.5]]},
                 "circle-stroke-opacity": 1,
                 "circle-radius": {
-                "stops": [[16, 2.375], [17, 4.75], [18, 9.5], [19, 19]]
-                }
+                    "stops": [[16, 2.375], [17, 4.75], [18, 9.5], [19, 19]]
+                },
             },
         }
         has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseCircleLayer(
