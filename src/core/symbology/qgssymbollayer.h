@@ -673,7 +673,7 @@ class CORE_EXPORT QgsSymbolLayer
     QString selectiveMaskingSourceSetId() const;
 
     /**
-     * Sets the selective masking source set \id for this symbol layer.
+     * Sets the selective masking source set \a id for this symbol layer.
      *
      * If non-empty, the symbols from this symbol layer will be masked
      * by objects from the matching selective masking source set
