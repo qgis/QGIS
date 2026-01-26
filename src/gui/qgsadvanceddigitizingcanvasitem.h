@@ -16,28 +16,26 @@
 #ifndef QGSADVANCEDDIGITIZINGCANVASITEM_H
 #define QGSADVANCEDDIGITIZINGCANVASITEM_H
 
-#include <QPen>
-
-#include "qgsmapcanvasitem.h"
 #include "qgis_gui.h"
+#include "qgsmapcanvasitem.h"
 
+#include <QPen>
 
 class QgsAdvancedDigitizingDockWidget;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsadvanceddigitizingcanvasitem.h>
-% End
+//%End
 #endif
 
 /**
  * \ingroup gui
- * \brief The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (\see QgsAdvancedDigitizingDockWidget) on the map canvas.
+ * \brief Draws the graphical elements of the CAD tools (\see QgsAdvancedDigitizingDockWidget) on the map canvas.
  */
 class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsAdvancedDigitizingCanvasItem *>( sipCpp ) )
@@ -50,6 +48,7 @@ class GUI_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
     void updatePosition() override;
 

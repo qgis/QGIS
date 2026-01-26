@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspolygon.h"
+
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
@@ -41,7 +42,7 @@ QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &r
 
 QString QgsPolygon::geometryType() const
 {
-  return QStringLiteral( "Polygon" );
+  return u"Polygon"_s;
 }
 
 QgsPolygon *QgsPolygon::createEmptyWithSameType() const
@@ -101,7 +102,7 @@ bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
   wkbPtr >> nRings;
   for ( int i = 0; i < nRings; ++i )
   {
-    std::unique_ptr< QgsLineString > line( new QgsLineString() );
+    auto line = std::make_unique<QgsLineString>();
     line->fromWkbPoints( ringType, wkbPtr );
     /*if ( !line->isRing() )
     {
@@ -190,10 +191,10 @@ QString QgsPolygon::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
   {
-    wkt += QLatin1String( " (" );
+    wkt += " ("_L1;
     if ( mExteriorRing )
     {
       QString childWkt = mExteriorRing->asWkt( precision );
@@ -209,7 +210,7 @@ QString QgsPolygon::asWkt( int precision ) const
       if ( !curve->isEmpty() )
       {
         QString childWkt;
-        if ( ! qgsgeometry_cast<QgsLineString *>( curve ) )
+        if ( ! qgsgeometry_cast< const QgsLineString *>( curve ) )
         {
           std::unique_ptr<QgsLineString> line( curve->curveToLine() );
           childWkt = line->asWkt( precision );

@@ -24,7 +24,7 @@
 /**
  * \ingroup core
  * \class QgsEffectStack
- * \brief A paint effect which consists of a stack of other chained paint effects
+ * \brief A paint effect which consists of a stack of other chained paint effects.
  *
  * Effect stacks can be used to apply multiple paint effects to a QPicture. For
  * instance, an effect stack may blur then apply a drop shadow.
@@ -71,7 +71,8 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect SIP_NODEFAULTCTORS
 
     ~QgsEffectStack() override;
 
-    QString type() const override { return QStringLiteral( "effectStack" ); }
+    Qgis::PaintEffectFlags flags() const override;
+    QString type() const override { return u"effectStack"_s; }
     QgsEffectStack *clone() const override SIP_FACTORY;
     bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
     bool readProperties( const QDomElement &element ) override;

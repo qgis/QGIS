@@ -18,8 +18,9 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QWidget>
+
 #include <QString>
+#include <QWidget>
 
 class QgsFilterLineEdit;
 class QToolButton;
@@ -29,7 +30,7 @@ class QgsPropertyOverrideButton;
 /**
  * \ingroup gui
  * \class QgsAbstractFileContentSourceLineEdit
- * \brief Abstract base class for a widgets which allows users to select content from a file, embedding a file, etc.
+ * \brief Abstract base class for widgets which allow users to select content from a file, embedding a file, etc.
  *
  * This class is designed to be used by content which is managed by a QgsAbstractContentCache,
  * i.e. it can handle either direct file paths, base64 encoded contents, or remote HTTP
@@ -43,7 +44,6 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     Q_PROPERTY( QString source READ source WRITE setSource NOTIFY sourceChanged )
 
   public:
-
     /**
      * Constructor for QgsAbstractFileContentSourceLineEdit, with the specified \a parent widget.
      */
@@ -79,7 +79,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
      * Returns the property override tool button
      * \since QGIS 3.16
      */
-    QgsPropertyOverrideButton *propertyOverrideToolButton() const {return mPropertyOverrideButton;}
+    QgsPropertyOverrideButton *propertyOverrideToolButton() const { return mPropertyOverrideButton; }
 
     /**
      * Sets the visibility of the property override tool button
@@ -104,44 +104,43 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     void sourceChanged( const QString &source );
 
   private:
-
 #ifndef SIP_RUN
-///@cond PRIVATE
+    ///@cond PRIVATE
 
     /**
      * Returns the widget's file filter string.
      */
-    virtual QString fileFilter() const = 0;  // cppcheck-suppress pureVirtualCall
+    virtual QString fileFilter() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the select file dialog.
      */
-    virtual QString selectFileTitle() const = 0;  // cppcheck-suppress pureVirtualCall
+    virtual QString selectFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the file from URL dialog.
      */
-    virtual QString fileFromUrlTitle() const = 0;  // cppcheck-suppress pureVirtualCall
+    virtual QString fileFromUrlTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated descriptive text to use for the file from URL dialog.
      */
-    virtual QString fileFromUrlText() const = 0;  // cppcheck-suppress pureVirtualCall
+    virtual QString fileFromUrlText() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the embed file dialog.
      */
-    virtual QString embedFileTitle() const = 0;  // cppcheck-suppress pureVirtualCall
+    virtual QString embedFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the translated title to use for the extract file dialog.
      */
-    virtual QString extractFileTitle() const = 0;  // cppcheck-suppress pureVirtualCall
+    virtual QString extractFileTitle() const = 0; // cppcheck-suppress pureVirtualCall
 
     /**
      * Returns the default settings key to use for the widget's settings.
      */
-    virtual QString defaultSettingsKey() const = 0;  // cppcheck-suppress pureVirtualCall
+    virtual QString defaultSettingsKey() const = 0; // cppcheck-suppress pureVirtualCall
 
 ///@endcond
 #endif
@@ -154,7 +153,6 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
     void mFileLineEdit_textEdited( const QString &text );
 
   private:
-
     enum Mode
     {
       ModeFile,
@@ -173,9 +171,7 @@ class GUI_EXPORT QgsAbstractFileContentSourceLineEdit : public QWidget SIP_ABSTR
 
     QString defaultPath() const;
     QString settingsKey() const;
-
 };
-
 
 
 /**
@@ -191,14 +187,13 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
 {
     Q_OBJECT
   public:
-
     /**
      * Format of source image
      */
     enum Format
     {
-      Svg, //!< SVG image
-      Image, //!< Raster image
+      Svg,           //!< SVG image
+      Image,         //!< Raster image
       AnimatedImage, //!< Animated image \since QGIS 3.26
     };
 
@@ -211,10 +206,9 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
     {}
 
     //! Defines the mode of the source line edit
-    void setMode( Format format ) {mFormat = format;}
+    void setMode( Format format ) { mFormat = format; }
 
   protected:
-
     /**
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
@@ -227,7 +221,7 @@ class GUI_EXPORT QgsPictureSourceLineEditBase : public QgsAbstractFileContentSou
     Format mFormat = Svg;
 
 #ifndef SIP_RUN
-///@cond PRIVATE
+    ///@cond PRIVATE
     QString fileFilter() const override;
     QString selectFileTitle() const override;
     QString fileFromUrlTitle() const override;
@@ -255,7 +249,6 @@ class GUI_EXPORT QgsSvgSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsSvgSourceLineEdit, with the specified \a parent widget.
      */
@@ -279,7 +272,6 @@ class GUI_EXPORT QgsImageSourceLineEdit : public QgsPictureSourceLineEditBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsImageSourceLineEdit, with the specified \a parent widget.
      */
@@ -304,7 +296,6 @@ class GUI_EXPORT QgsAnimatedImageSourceLineEdit : public QgsPictureSourceLineEdi
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsAnimatedImageSourceLineEdit, with the specified \a parent widget.
      */

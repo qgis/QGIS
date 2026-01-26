@@ -16,14 +16,13 @@
 #ifndef QGSPOINTCLOUDLAYERPROPERTIES_H
 #define QGSPOINTCLOUDLAYERPROPERTIES_H
 
-#include "qgslayerpropertiesdialog.h"
-
 #include "ui_qgspointcloudlayerpropertiesbase.h"
 
-#include <QAbstractTableModel>
-
 #include "qgis_app.h"
+#include "qgslayerpropertiesdialog.h"
 #include "qgspointcloudlayer.h"
+
+#include <QAbstractTableModel>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -39,7 +38,6 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     enum Columns
     {
       Name,
@@ -53,10 +51,9 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
-  private:
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
+  private:
     QgsPointCloudLayer *mLayer = nullptr;
     QgsPointCloudAttributeCollection mAttributes;
 };
@@ -66,7 +63,6 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
-
     enum Columns
     {
       Value,
@@ -79,10 +75,9 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
-  private:
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
+  private:
     QgsPointCloudLayer *mLayer = nullptr;
     QString mAttribute;
     QList<int> mClassifications;
@@ -95,8 +90,8 @@ class APP_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog,
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
   private slots:
-    void apply() FINAL;
-    void rollback() FINAL;
+    void apply() final;
+    void rollback() final;
 
     void aboutToShowStyleMenu();
     void showHelp();
@@ -104,7 +99,7 @@ class APP_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog,
     void crsChanged( const QgsCoordinateReferenceSystem &crs );
 
   private:
-    void syncToLayer() FINAL;
+    void syncToLayer() final;
 
   private:
     QgsPointCloudLayer *mLayer = nullptr;
@@ -115,7 +110,6 @@ class APP_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog,
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsCoordinateReferenceSystem mBackupCrs;
-
 };
 
 #endif // QGSPOINTCLOUDLAYERPROPERTIES_H

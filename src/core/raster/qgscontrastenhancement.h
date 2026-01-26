@@ -1,4 +1,4 @@
-/* **************************************************************************
+/***************************************************************************
                 qgscontrastenhancement.h -  description
                        -------------------
 begin                : Mon Oct 22 2007
@@ -9,7 +9,7 @@ This class contains code that was originally part of the larger QgsRasterLayer
 class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 ****************************************************************************/
 
-/* **************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,12 +21,12 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #ifndef QGSCONTRASTENHANCEMENT_H
 #define QGSCONTRASTENHANCEMENT_H
 
-#include "qgis_core.h"
 #include <limits>
+#include <memory>
 
+#include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsraster.h"
-#include <memory>
 
 class QgsContrastEnhancementFunction;
 class QDomDocument;
@@ -35,7 +35,9 @@ class QString;
 
 /**
  * \ingroup core
- * \brief Manipulates raster or point cloud pixel values so that they enhanceContrast or clip into a
+ * \brief Handles contrast enhancement and clipping.
+ *
+ * Manipulates raster or point cloud pixel values so that they enhance contrast or clip into a
  * specified numerical range according to the specified
  * ContrastEnhancementAlgorithm.
  */
@@ -164,7 +166,7 @@ class CORE_EXPORT QgsContrastEnhancement
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
 
     /**
-     * Applies the contrast enhancement to a \a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
+     * Applies the contrast enhancement to a \a value. Return values are 0 - 255, -1 means the pixel was clipped and should not be displayed.
      */
     int enhanceContrast( double value );
 
@@ -242,7 +244,7 @@ class CORE_EXPORT QgsContrastEnhancement
     bool mEnhancementDirty = false;
 
     //! \brief Pointer to the lookup table
-    int *mLookupTable = nullptr;
+    std::unique_ptr<int[]> mLookupTable;
 
     //! \brief User defineable minimum value for the band, used for enhanceContrasting
     double mMinimumValue;

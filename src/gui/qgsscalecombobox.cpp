@@ -15,14 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsscalecombobox.h"
+
+#include "qgis.h"
+#include "qgsmathutils.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 #include <QAbstractItemView>
-#include <QLocale>
 #include <QLineEdit>
+#include <QLocale>
+
+#include "moc_qgsscalecombobox.cpp"
 
 QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
   : QComboBox( parent )
@@ -32,7 +36,7 @@ QgsScaleComboBox::QgsScaleComboBox( QWidget *parent )
   setEditable( true );
   setInsertPolicy( QComboBox::NoInsert );
   setCompleter( nullptr );
-  connect( this, qOverload< int >( &QComboBox::activated ), this, &QgsScaleComboBox::fixupScale );
+  connect( this, qOverload<int>( &QComboBox::activated ), this, &QgsScaleComboBox::fixupScale );
   connect( lineEdit(), &QLineEdit::editingFinished, this, &QgsScaleComboBox::fixupScale );
   fixupScale();
 }
@@ -139,7 +143,7 @@ void QgsScaleComboBox::showPopup()
 
 QString QgsScaleComboBox::scaleString() const
 {
-  return toString( mScale );
+  return toString( mScale, mMode );
 }
 
 bool QgsScaleComboBox::setScaleString( const QString &string )
@@ -147,7 +151,7 @@ bool QgsScaleComboBox::setScaleString( const QString &string )
   const double oldScale = mScale;
   if ( mAllowNull && string.trimmed().isEmpty() )
   {
-    mScale = std::numeric_limits< double >::quiet_NaN();
+    mScale = std::numeric_limits<double>::quiet_NaN();
     setEditText( toString( mScale ) );
     clearFocus();
     if ( !std::isnan( oldScale ) )
@@ -163,14 +167,14 @@ bool QgsScaleComboBox::setScaleString( const QString &string )
   {
     newScale = mMinScale;
   }
-  if ( ! ok )
+  if ( !ok )
   {
     return false;
   }
   else
   {
     mScale = newScale;
-    setEditText( toString( mScale ) );
+    setEditText( toString( mScale, mMode ) );
     clearFocus();
     if ( mScale != oldScale )
     {
@@ -192,14 +196,14 @@ bool QgsScaleComboBox::isNull() const
 
 void QgsScaleComboBox::setScale( double scale )
 {
-  setScaleString( toString( scale ) );
+  setScaleString( toString( scale, mMode ) );
 }
 
 void QgsScaleComboBox::fixupScale()
 {
   if ( mAllowNull && currentText().trimmed().isEmpty() )
   {
-    setScale( std::numeric_limits< double >::quiet_NaN() );
+    setScale( std::numeric_limits<double>::quiet_NaN() );
     return;
   }
 
@@ -212,11 +216,21 @@ void QgsScaleComboBox::fixupScale()
   // Valid string representation
   if ( ok )
   {
-    // if a user types scale = 2345, we transform to 1:2345
-    if ( userSetScale && newScale < 1.0 && !qgsDoubleNear( newScale, 0.0 ) )
+    switch ( mMode )
     {
-      newScale = 1 / newScale;
+      case RatioMode::ForceUnitNumerator:
+      {
+        // if a user types scale = 2345, we transform to 1:2345
+        if ( userSetScale && newScale < 1.0 && !qgsDoubleNear( newScale, 0.0 ) )
+        {
+          newScale = 1 / newScale;
+        }
+        break;
+      }
+      case RatioMode::Flexible:
+        break;
     }
+
     setScale( newScale );
   }
   else
@@ -225,7 +239,22 @@ void QgsScaleComboBox::fixupScale()
   }
 }
 
-QString QgsScaleComboBox::toString( double scale )
+QgsScaleComboBox::RatioMode QgsScaleComboBox::ratioMode() const
+{
+  return mMode;
+}
+
+void QgsScaleComboBox::setRatioMode( QgsScaleComboBox::RatioMode mode )
+{
+  if ( mode == mMode )
+    return;
+
+  mMode = mode;
+  setScale( mScale );
+  emit ratioModeChanged( mMode );
+}
+
+QString QgsScaleComboBox::toString( double scale, RatioMode mode )
 {
   if ( std::isnan( scale ) )
   {
@@ -233,16 +262,33 @@ QString QgsScaleComboBox::toString( double scale )
   }
   if ( scale == 0 )
   {
-    return QStringLiteral( "0" );
+    return u"0"_s;
   }
-  else if ( scale <= 1 )
+
+  switch ( mode )
   {
-    return QStringLiteral( "%1:1" ).arg( QLocale().toString( static_cast< int >( std::round( 1.0 / scale ) ) ) );
+    case RatioMode::ForceUnitNumerator:
+      if ( scale <= 1 )
+      {
+        return u"%1:1"_s.arg( QLocale().toString( static_cast<int>( std::round( 1.0 / scale ) ) ) );
+      }
+      else
+      {
+        return u"1:%1"_s.arg( QLocale().toString( static_cast<float>( std::round( scale ) ), 'f', 0 ) );
+      }
+
+    case RatioMode::Flexible:
+    {
+      qlonglong numerator = 0;
+      qlonglong denominator = 0;
+      QgsMathUtils::doubleToRational( 1.0 / scale, numerator, denominator, 0.01 );
+      return u"%1:%2"_s.arg(
+        QLocale().toString( numerator ),
+        QLocale().toString( denominator )
+      );
+    }
   }
-  else
-  {
-    return QStringLiteral( "1:%1" ).arg( QLocale().toString( static_cast< float >( std::round( scale ) ), 'f', 0 ) );
-  }
+  return QString();
 }
 
 double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
@@ -266,12 +312,12 @@ double QgsScaleComboBox::toDouble( const QString &scaleString, bool *returnOk )
     {
       bool okX = false;
       bool okY = false;
-      const int x = qgsPermissiveToInt( txtList[ 0 ], okX );
-      const int y = qgsPermissiveToInt( txtList[ 1 ], okY );
+      const int x = qgsPermissiveToInt( txtList[0], okX );
+      const int y = qgsPermissiveToInt( txtList[1], okY );
       if ( okX && okY && x != 0 )
       {
         // Scale is fraction of x and y
-        scale = static_cast<  double >( y ) / static_cast< double >( x );
+        scale = static_cast<double>( y ) / static_cast<double>( x );
         ok = true;
       }
     }
@@ -309,5 +355,5 @@ void QgsScaleComboBox::setMinScale( double scale )
 void QgsScaleComboBox::setNull()
 {
   if ( allowNull() )
-    setScale( std::numeric_limits< double >::quiet_NaN() );
+    setScale( std::numeric_limits<double>::quiet_NaN() );
 }

@@ -20,10 +20,10 @@
 #include "qgsexpressioncontext.h"
 #include "qgsproperty.h"
 
-#include <QString>
-#include <QVariant>
 #include <QColor>
 #include <QDateTime>
+#include <QString>
+#include <QVariant>
 
 class QDomElement;
 class QDomDocument;
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
 /**
  * \ingroup core
  * \class QgsPropertyCollection
- * \brief A grouped map of multiple QgsProperty objects, each referenced by a integer key value.
+ * \brief A grouped map of multiple QgsProperty objects, each referenced by an integer key value.
  *
  * Properties within a collection are referenced by an integer key. This is done to avoid the cost of
  * string creation and comparisons which would be required by a string key. The intended use case is that
@@ -502,7 +502,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
     /**
      * Removes all collections from the stack.
      */
-    void clear() FINAL;
+    void clear() final;
 
     /**
      * Appends a collection to the end of the stack, and transfers ownership of the collection to the stack. Properties

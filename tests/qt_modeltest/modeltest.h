@@ -26,11 +26,11 @@
 #ifndef MODELTEST_H
 #define MODELTEST_H
 
+#include "qgis_core.h"
+
 #include <QAbstractItemModel>
 #include <QObject>
 #include <QStack>
-
-#include "qgis_core.h"
 
 class CORE_EXPORT ModelTest : public QObject
 {
@@ -64,10 +64,10 @@ class CORE_EXPORT ModelTest : public QObject
 
     struct Changing
     {
-      QModelIndex parent;
-      int oldSize;
-      QVariant last;
-      QVariant next;
+        QModelIndex parent;
+        int oldSize;
+        QVariant last;
+        QVariant next;
     };
     QStack<Changing> insert;
     QStack<Changing> remove;

@@ -12,7 +12,7 @@
 class QgsNmeaConnection: QgsGpsConnection
 {
 %Docstring(signature="appended")
-Evaluates NMEA sentences coming from a GPS device
+Evaluates NMEA sentences coming from a GPS device.
 %End
 
 %TypeHeaderCode
@@ -70,10 +70,6 @@ process HDT sentence
     void processHchdgSentence( const char *data, int len );
 %Docstring
 process HCHDG sentence
-%End
-    void processHchdtSentence( const char *data, int len );
-%Docstring
-process HCHDT sentence
 %End
 };
 

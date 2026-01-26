@@ -178,12 +178,30 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
      * Cast the \a geom to a QgsTriangulatedSurface.
      * Should be used by qgsgeometry_cast<QgsTriangulatedSurface *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
-    inline static const QgsTriangulatedSurface *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsTriangulatedSurface *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::TIN )
         return static_cast<const QgsTriangulatedSurface *>( geom );
+
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsTriangulatedSurface.
+     * Should be used by qgsgeometry_cast<QgsTriangulatedSurface *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsTriangulatedSurface *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::TIN )
+        return static_cast<QgsTriangulatedSurface *>( geom );
 
       return nullptr;
     }
@@ -196,8 +214,8 @@ class CORE_EXPORT QgsTriangulatedSurface: public QgsPolyhedralSurface
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsTriangulatedSurface: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsTriangulatedSurface: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

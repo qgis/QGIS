@@ -16,35 +16,35 @@
 #ifndef QGSNETWORKSTRATERGY_H
 #define QGSNETWORKSTRATERGY_H
 
+#include "qgis_analysis.h"
+#include "qgsfeature.h"
+
 #include <QVariant>
 
-#include "qgsfeature.h"
-#include "qgis_analysis.h"
-
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include <qgsnetworkspeedstrategy.h>
 #include <qgsnetworkdistancestrategy.h>
-% End
+//%End
 #endif
 
 /**
  * \ingroup analysis
  * \class QgsNetworkStrategy
- * \brief QgsNetworkStrategy defines strategy used for calculation of the edge cost. For example it can
- * take into account travel distance, amount of time or money. Currently there are two strategies
+ * \brief Defines strategy used for calculation of the edge cost in networks.
+ *
+ * For example it can take into account travel distance, amount of time or money. Currently there are two strategies
  * implemented in the analysis library: QgsNetworkDistanceStrategy and QgsNetworkSpeedStrategy.
  * QgsNetworkStrategy implemented using "strategy" design pattern.
  */
 
 class ANALYSIS_EXPORT QgsNetworkStrategy
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( dynamic_cast< QgsNetworkDistanceStrategy * >( sipCpp ) != NULL )
+    if ( dynamic_cast<QgsNetworkDistanceStrategy *>( sipCpp ) != NULL )
       sipType = sipType_QgsNetworkDistanceStrategy;
-    else if ( dynamic_cast< QgsNetworkSpeedStrategy * >( sipCpp ) != NULL )
+    else if ( dynamic_cast<QgsNetworkSpeedStrategy *>( sipCpp ) != NULL )
       sipType = sipType_QgsNetworkSpeedStrategy;
     else
       sipType = NULL;
@@ -52,7 +52,6 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
 #endif
 
   public:
-
     QgsNetworkStrategy() = default;
 
     virtual ~QgsNetworkStrategy() = default;
@@ -61,7 +60,7 @@ class ANALYSIS_EXPORT QgsNetworkStrategy
      * Returns a list of the source layer attributes needed for cost calculation.
      * This is method called by QgsGraphDirector.
      */
-    virtual QSet< int > requiredAttributes() const { return QSet< int >(); }
+    virtual QSet<int> requiredAttributes() const { return QSet<int>(); }
 
     /**
      * Returns edge cost

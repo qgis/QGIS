@@ -13,7 +13,8 @@
 class QgsProcessingAlgRunnerTask : QgsTask
 {
 %Docstring(signature="appended")
-:py:class:`QgsTask` task which runs a :py:class:`QgsProcessingAlgorithm` in a background task.
+:py:class:`QgsTask` task which runs a :py:class:`QgsProcessingAlgorithm`
+in a background task.
 %End
 
 %TypeHeaderCode
@@ -27,8 +28,8 @@ class QgsProcessingAlgRunnerTask : QgsTask
                                 QgsProcessingFeedback *feedback = 0,
                                 QgsTask::Flags flags = QgsTask::CanCancel );
 %Docstring
-Constructor for QgsProcessingAlgRunnerTask. Takes an ``algorithm``, algorithm ``parameters``
-and processing ``context``.
+Constructor for QgsProcessingAlgRunnerTask. Takes an ``algorithm``,
+algorithm ``parameters`` and processing ``context``.
 
 Since QGIS 3.26, the ``flags`` argument allows control over task flags.
 %End
@@ -47,9 +48,9 @@ Returns ``True`` if the algorithm was canceled.
 
     void executed( bool successful, const QVariantMap &results );
 %Docstring
-Emitted when the algorithm has finished execution. If the algorithm completed
-execution without errors then ``successful`` will be ``True``. The ``results`` argument
-contains the results reported by the algorithm.
+Emitted when the algorithm has finished execution. If the algorithm
+completed execution without errors then ``successful`` will be ``True``.
+The ``results`` argument contains the results reported by the algorithm.
 %End
 
   protected:

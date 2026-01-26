@@ -30,9 +30,7 @@
  */
 class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsRasterLayerUniqueValuesReportAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,17 +39,15 @@ class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterLayerUniqueValuesReportAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsRasterInterface > mInterface;
+    std::unique_ptr<QgsRasterInterface> mInterface;
     bool mHasNoDataValue = false;
     int mBand = 1;
     int mLayerWidth = 0;
@@ -61,11 +57,8 @@ class QgsRasterLayerUniqueValuesReportAlgorithm : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelX = 0;
     double mRasterUnitsPerPixelY = 0;
     QString mSource;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRASTERLAYERUNIQUEVALUES_H
-
-

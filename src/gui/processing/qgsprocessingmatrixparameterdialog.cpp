@@ -14,12 +14,16 @@
  ***************************************************************************/
 
 #include "qgsprocessingmatrixparameterdialog.h"
+
 #include "qgsgui.h"
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QPushButton>
+
 #include <QLineEdit>
+#include <QPushButton>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QToolButton>
+
+#include "moc_qgsprocessingmatrixparameterdialog.cpp"
 
 ///@cond NOT_STABLE
 
@@ -44,13 +48,11 @@ QgsProcessingMatrixParameterPanelWidget::QgsProcessingMatrixParameterPanelWidget
   mButtonBox->addButton( mButtonRemoveAll, QDialogButtonBox::ActionRole );
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QPushButton::clicked, this, &QgsPanelWidget::acceptPanel );
-  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [ = ]
-  {
+  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [this] {
     mWasCanceled = true;
     acceptPanel();
   } );
-  connect( this, &QgsPanelWidget::panelAccepted, this, [ = ]()
-  {
+  connect( this, &QgsPanelWidget::panelAccepted, this, [this]() {
     // save any current cell edits
     mTblView->setCurrentIndex( QModelIndex() );
 
@@ -91,7 +93,7 @@ QVariantList QgsProcessingMatrixParameterPanelWidget::table() const
 
 void QgsProcessingMatrixParameterPanelWidget::addRow()
 {
-  QList< QStandardItem * > items;
+  QList<QStandardItem *> items;
   for ( int i = 0; i < mTblView->model()->columnCount(); ++i )
   {
     items << new QStandardItem( '0' );
@@ -102,12 +104,12 @@ void QgsProcessingMatrixParameterPanelWidget::addRow()
 void QgsProcessingMatrixParameterPanelWidget::deleteRow()
 {
   QModelIndexList selected = mTblView->selectionModel()->selectedRows();
-  QSet< int > rows;
+  QSet<int> rows;
   rows.reserve( selected.count() );
   for ( const QModelIndex &i : selected )
     rows << i.row();
 
-  QList< int > rowsToDelete = qgis::setToList( rows );
+  QList<int> rowsToDelete = qgis::setToList( rows );
   std::sort( rowsToDelete.begin(), rowsToDelete.end(), std::greater<int>() );
   mTblView->setUpdatesEnabled( false );
   for ( int i : std::as_const( rowsToDelete ) )
@@ -180,6 +182,15 @@ QgsProcessingMatrixParameterPanel::QgsProcessingMatrixParameterPanel( QWidget *p
   connect( mToolButton, &QToolButton::clicked, this, &QgsProcessingMatrixParameterPanel::showDialog );
 }
 
+QVariantList QgsProcessingMatrixParameterPanel::value() const
+{
+  // if editing widget is still open, use the value currently shown in that widget
+  if ( mPanelWidget )
+    return mPanelWidget->table();
+
+  return mTable;
+}
+
 void QgsProcessingMatrixParameterPanel::setValue( const QVariantList &value )
 {
   mTable = value;
@@ -191,15 +202,14 @@ void QgsProcessingMatrixParameterPanel::showDialog()
 {
   if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this ) )
   {
-    QgsProcessingMatrixParameterPanelWidget *widget = new QgsProcessingMatrixParameterPanelWidget( this, mParam, mTable );
+    mPanelWidget = new QgsProcessingMatrixParameterPanelWidget( this, mParam, mTable );
 
-    widget->setPanelTitle( mParam->description() );
+    mPanelWidget->setPanelTitle( mParam->description() );
 
-    panel->openPanel( widget );
+    panel->openPanel( mPanelWidget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]
-    {
-      setValue( widget->table() );
+    connect( mPanelWidget, &QgsPanelWidget::widgetChanged, this, [this] {
+      setValue( mPanelWidget->table() );
     } );
   }
 }

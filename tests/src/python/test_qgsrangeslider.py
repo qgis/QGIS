@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '2020-11-25'
-__copyright__ = 'Copyright 2020, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "2020-11-25"
+__copyright__ = "Copyright 2020, The QGIS Project"
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtTest import QSignalSpy
@@ -323,5 +324,5 @@ class TestQgsRangeSlider(QgisTestCase):
         self.assertEqual(w.lowerValue(), 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -18,13 +18,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgslayoutobject.h"
 #include "qgslayoutundocommand.h"
-#include "qgsapplication.h"
+
 #include <QIcon>
 #include <QObject>
-#include <QSizeF>
 #include <QPointF>
+#include <QSizeF>
 
 class QgsLayoutFrame;
 class QgsLayoutItem;
@@ -46,13 +47,10 @@ class QgsLayoutItemRenderContext;
 
 class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface
 {
-#ifdef SIP_RUN
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgslayoutitemmanualtable.h"
-#include "qgslayoutitemtexttable.h"
-#endif
-
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemhtml.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemattributetable.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmanualtable.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemtexttable.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -150,7 +148,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     /**
      * Returns the item's icon.
      */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) ); }
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItem.svg"_s ); }
 
     /**
      * Returns the fixed size for a frame, if desired. If the fixed frame size changes,

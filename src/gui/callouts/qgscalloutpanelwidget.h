@@ -15,11 +15,12 @@
 #ifndef QGSCALLOUTPANELWIDGET_H
 #define QGSCALLOUTPANELWIDGET_H
 
-#include "qgis_sip.h"
+#include "ui_qgscalloutpanelwidget.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
-#include "ui_qgscalloutpanelwidget.h"
 
 #include <QPointer>
 
@@ -37,7 +38,6 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCalloutPanelWidget, with the specified \a parent widget
      *
@@ -104,8 +104,7 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
     void updateCalloutWidget( const QgsCallout *callout );
 
   private:
-
-    QPointer< QgsMapLayer > mLayer;
+    QPointer<QgsMapLayer> mLayer;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
 
     //! Context in which widget is shown

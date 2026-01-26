@@ -14,10 +14,12 @@
 ***************************************************************************/
 
 
-#include "qgiscustomwidgets.h"
 #include "qgsscrollareawidgetplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsscrollarea.h"
 
+#include "moc_qgsscrollareawidgetplugin.cpp"
 
 QgsScrollAreaWidgetPlugin::QgsScrollAreaWidgetPlugin( QObject *parent )
   : QObject( parent )
@@ -104,5 +106,5 @@ QString QgsScrollAreaWidgetPlugin::domXml() const
                   "  </widget>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

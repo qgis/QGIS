@@ -13,12 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSMEMORYPROVIDER_H
+#define QGSMEMORYPROVIDER_H
+
 #define SIP_NO_FILE
 
-#include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsfields.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectordataprovider.h"
 
 ///@cond PRIVATE
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
@@ -52,6 +55,8 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsFields fields() const override;
+
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -93,7 +98,7 @@ class QgsMemoryProvider final: public QgsVectorDataProvider
     QgsFeatureId mNextFeatureId;
 
     // indexing
-    QgsSpatialIndex *mSpatialIndex = nullptr;
+    std::unique_ptr<QgsSpatialIndex> mSpatialIndex;
 
     QString mSubsetString;
 
@@ -113,3 +118,4 @@ class QgsMemoryProviderMetadata final: public QgsProviderMetadata
 };
 
 ///@endcond
+#endif // QGSMEMORYPROVIDER_H

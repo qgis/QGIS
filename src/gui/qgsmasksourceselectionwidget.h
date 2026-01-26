@@ -18,10 +18,11 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QWidget>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgssymbollayerreference.h"
+
+#include <QWidget>
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -41,14 +42,14 @@ class GUI_EXPORT QgsMaskSourceSelectionWidget : public QWidget
   public:
     struct MaskSource
     {
-      //! The source layer id
-      QString layerId;
+        //! The source layer id
+        QString layerId;
 
-      //! Whether it is a labeling mask or not
-      bool isLabeling = false;
+        //! Whether it is a labeling mask or not
+        bool isLabeling = false;
 
-      //! The symbol layer id
-      QString symbolLayerId;
+        //! The symbol layer id
+        QString symbolLayerId;
     };
 
     //! constructor

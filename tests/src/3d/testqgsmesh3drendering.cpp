@@ -13,24 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
-#include "qgstest.h"
+#include <memory>
 
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsmeshlayer3drenderer.h"
-#include "qgsmaplayertemporalproperties.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
-#include "qgs3drendercontext.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsMesh3DRendering : public QgsTest
 {
@@ -38,24 +39,23 @@ class TestQgsMesh3DRendering : public QgsTest
 
   public:
     TestQgsMesh3DRendering()
-      : QgsTest( QStringLiteral( "Mesh 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"Mesh 3D Rendering Tests"_s, u"3d"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testMeshTerrain();
     void testMesh();
     void testMesh_datasetOnFaces();
     void testMeshSimplified();
     void testFilteredMesh();
+    void testMeshClipping();
 
   private:
-
     std::unique_ptr<QgsProject> mProject;
     QgsMeshLayer *mLayerMeshTerrain = nullptr;
     QgsMeshLayer *mLayerMeshDataset = nullptr;
     QgsMeshLayer *mLayerMeshSimplified = nullptr;
-
 };
 
 //runs before all tests
@@ -66,7 +66,7 @@ void TestQgsMesh3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerMeshTerrain = new QgsMeshLayer( testDataPath( "/mesh/quad_flower.2dm" ), "mesh", "mdal" );
   QVERIFY( mLayerMeshTerrain->isValid() );
@@ -92,7 +92,7 @@ void TestQgsMesh3DRendering::initTestCase()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -152,11 +152,11 @@ void TestQgsMesh3DRendering::testMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -182,7 +182,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -194,11 +194,11 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -246,6 +246,11 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     map->setLayers( QList<QgsMapLayer *>() << mLayerMeshSimplified );
     map->setExtent( fullExtent );
 
+    QgsPointLightSettings defaultLight;
+    defaultLight.setIntensity( 0.5 );
+    defaultLight.setPosition( map->origin() + QgsVector3D( 10, 0, 10 ) );
+    map->setLightSources( { defaultLight.clone() } );
+
     QgsMesh3DSymbol *symbolDataset = new QgsMesh3DSymbol;
     symbolDataset->setVerticalDatasetGroupIndex( 11 );
     symbolDataset->setVerticalScale( 1 );
@@ -270,7 +275,6 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     QgsOffscreen3DEngine engine;
     Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
     engine.setRootEntity( scene );
-
     // look from the top
     scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 1000, 25, 45 );
 
@@ -282,20 +286,19 @@ void TestQgsMesh3DRendering::testMeshSimplified()
     delete scene;
     delete map;
 
-    QGSVERIFYIMAGECHECK( QString( "mesh_simplified_%1" ).arg( i ), QString( "mesh_simplified_%1" ).arg( i ), img, QString(), 40, QSize( 0, 0 ), 2 );
+    QGSVERIFYIMAGECHECK( QString( "mesh_simplified_%1" ).arg( i ), QString( "mesh_simplified_%1" ).arg( i ), img, QString(), 250, QSize( 0, 0 ), 2 );
   }
 }
 
 void TestQgsMesh3DRendering::testFilteredMesh()
 {
   const QgsRectangle fullExtent = mLayerMeshDataset->extent();
-  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
-                                      fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
+  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(), fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
 
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -307,11 +310,11 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -329,6 +332,57 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   delete map;
 
   QGSVERIFYIMAGECHECK( "mesh3d_filtered", "mesh3d_filtered", img, QString(), 40, QSize( 0, 0 ), 2 );
+}
+
+void TestQgsMesh3DRendering::testMeshClipping()
+{
+  QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
+  symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
+  symbolMesh3d->setVerticalScale( 10 );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
+  symbolMesh3d->setArrowsEnabled( true );
+  symbolMesh3d->setArrowsSpacing( 300 );
+  QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
+  mLayerMeshDataset->setRenderer3D( meshDatasetRenderer3d );
+
+  Qgs3DMapSettings *map = new Qgs3DMapSettings;
+  map->setCrs( mProject->crs() );
+  map->setExtent( mLayerMeshDataset->extent() );
+  map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
+  QgsPointLightSettings defaultLight;
+  defaultLight.setIntensity( 0.5 );
+  defaultLight.setPosition( map->origin() + QgsVector3D( 0, 0, 1000 ) );
+  map->setLightSources( { defaultLight.clone() } );
+
+  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  map->setTerrainGenerator( flatTerrain );
+
+  QgsOffscreen3DEngine engine;
+  Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
+  engine.setRootEntity( scene );
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 3000, 25, 45 );
+
+  QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
+                                         << QVector4D( 1.0, 0, 0.0, 1.0 );
+  scene->enableClipping( clipPlanesEquations );
+
+  // When running the test on Travis, it would initially return empty rendered image.
+  // Capturing the initial image and throwing it away fixes that. Hopefully we will
+  // find a better fix in the future.
+  Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+
+  QGSVERIFYIMAGECHECK( "mesh3d_clipping", "mesh3d_clipping", img, QString(), 40, QSize( 0, 0 ), 2 );
+
+  scene->disableClipping();
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img2 = Qgs3DUtils::captureSceneImage( engine, scene );
+  delete scene;
+  delete map;
+  QGSVERIFYIMAGECHECK( "mesh3dOnFace", "mesh3dOnFace", img2, QString(), 40, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgsMesh3DRendering )

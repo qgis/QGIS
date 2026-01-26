@@ -20,12 +20,14 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
+#include <memory>
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QPointer>
-#include <memory>
-
-#include "qgis_gui.h"
 
 class QGraphicsView;
 class QInputEvent;
@@ -42,27 +44,10 @@ class QInputEvent;
  *
  * \since QGIS 3.14
 */
-class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRectItem
+class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
   public:
-
-    //! Describes the action (move or resize in different direction) to be done during mouse move
-    enum MouseAction
-    {
-      MoveItem,
-      ResizeUp,
-      ResizeDown,
-      ResizeLeft,
-      ResizeRight,
-      ResizeLeftUp,
-      ResizeRightUp,
-      ResizeLeftDown,
-      ResizeRightDown,
-      SelectItem,
-      NoAction
-    };
-
     enum ItemPositionMode
     {
       UpperLeft,
@@ -85,7 +70,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     QgsGraphicsViewMouseHandles( QGraphicsView *view );
 
     //! Finds out which mouse move action to choose depending on the scene cursor position
-    QgsGraphicsViewMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
+    Qgis::MouseHandlesAction mouseActionForScenePos( QPointF sceneCoordPos );
 
     //! Returns TRUE is user is currently dragging the handles
     bool isDragging() const { return mIsDragging; }
@@ -93,10 +78,36 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Returns TRUE is user is currently resizing with the handles
     bool isResizing() const { return mIsResizing; }
 
+    /**
+     * Returns TRUE is user is currently rotating with the handles.
+     *
+     * \since QGIS 4.0
+     */
+    bool isRotating() const { return mIsRotating; }
+
     bool shouldBlockEvent( QInputEvent *event ) const;
 
     //! Initializes a drag operation \since QGIS 3.34
     void startMove( QPointF sceneCoordPos );
+
+    /**
+     * Returns TRUE if rotation functionality is enabled.
+     *
+     * Rotation is not enabled by default.
+     *
+     * \since QGIS 4.0
+     */
+    bool isRotationEnabled() const { return mRotationEnabled; }
+
+    /**
+     * Sets whether rotation functionality is enabled.
+     *
+     * Rotation is not enabled by default. Subclasses must implement the
+     * rotateItem() method in order to support rotation.
+     *
+     * \since QGIS 4.0
+     */
+    void setRotationEnabled( bool enable );
 
   public slots:
 
@@ -107,20 +118,27 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     void selectedItemRotationChanged();
 
   protected:
-
-    void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes,
-                        bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
+    void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
 
     //! Sets the mouse cursor for the QGraphicsView attached to the composition
     virtual void setViewportCursor( Qt::CursorShape cursor ) = 0;
 
     virtual QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) = 0;
     virtual QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const = 0;
-    virtual bool itemIsLocked( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
-    virtual bool itemIsGroupMember( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
+    virtual bool itemIsLocked( QGraphicsItem *item )
+    {
+      Q_UNUSED( item );
+      return false;
+    }
+    virtual bool itemIsGroupMember( QGraphicsItem *item )
+    {
+      Q_UNUSED( item );
+      return false;
+    }
     virtual QRectF itemRect( QGraphicsItem *item ) const = 0;
     virtual QRectF storedItemRect( QGraphicsItem *item ) const;
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
+    virtual void rotateItem( QGraphicsItem *item, double deltaDegree, double deltaCenterX, double deltaCenterY );
     virtual void previewItemMove( QGraphicsItem *item, double deltaX, double deltaY );
     virtual void setItemRect( QGraphicsItem *item, QRectF rect ) = 0;
 
@@ -144,7 +162,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     virtual QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true );
 
     //! Collects all items from a list of \a items, exploring for any group members and adding them too
-    virtual void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const;
+    virtual void expandItemList( const QList<QGraphicsItem *> &items, QList<QGraphicsItem *> &collected ) const;
 
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
@@ -168,10 +186,13 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     //! Handles resizing of items during mouse move
     void resizeMouseMove( QPointF currentPosition, bool lockAspect, bool fromCenter );
 
+    //! Handles rotating of tiems during mouse move
+    void rotateMouseMove( QPointF currentPosition, bool snapToCommonAngles );
+
     void setHandleSize( double size );
 
     //! Finds out which mouse move action to choose depending on the cursor position inside the widget
-    MouseAction mouseActionForPosition( QPointF itemCoordPos );
+    Qgis::MouseHandlesAction mouseActionForPosition( QPointF itemCoordPos );
 
     //! Calculates the distance of the mouse cursor from thed edge of the mouse handles
     QSizeF calcCursorEdgeOffset( QPointF cursorPos );
@@ -201,10 +222,11 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 
   private:
-
     QGraphicsView *mView = nullptr;
 
     double mHandleSize = 10;
+    double mRotationHandleSize = 20;
+    QPainterPath mRotationHandlePath;
 
     QSizeF mCursorOffset;
     double mResizeMoveX = 0;
@@ -216,15 +238,28 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 
     QRectF mResizeRect;
 
+    bool mRotationEnabled = false;
+    //! Center point around which rotation occurs
+    QPointF mRotationCenter;
+    //! The starting rotation angle from center point
+    double mRotationBegin = 0.0;
+    //! The current rotation angle from center point
+    double mRotationCurrent = 0.0;
+    //! The rotation angle delta to be applied (can be snapped to common angle)
+    double mRotationDelta = 0.0;
+
     //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
 
-    MouseAction mCurrentMouseMoveAction = NoAction;
+    Qgis::MouseHandlesAction mCurrentMouseMoveAction = Qgis::MouseHandlesAction::NoAction;
+    bool mDoubleClickInProgress = false;
 
     //! True if user is currently dragging items
     bool mIsDragging = false;
     //! True is user is currently resizing items
     bool mIsResizing = false;
+    //! True is user is currently rotating items
+    bool mIsRotating = false;
 
     //! Position of the mouse at beginning of move/resize (in scene coordinates)
     QPointF mBeginMouseEventPos;
@@ -242,13 +277,12 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
      * Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
      * item border for resizing.
     */
-    double rectHandlerBorderTolerance();
+    double rectHandlerBorderTolerance() const;
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
 
-
-
+    friend class QgsMapToolSelectAnnotation;
 };
 
 ///@endcond PRIVATE

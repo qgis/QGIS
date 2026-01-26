@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import warnings
@@ -33,7 +33,8 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
+        os.path.join(pluginPath, "ui", "widgetBaseSelector.ui")
+    )
 
 
 class FileSelectionPanel(BASE, WIDGET):
@@ -42,7 +43,7 @@ class FileSelectionPanel(BASE, WIDGET):
         super().__init__(None)
         self.setupUi(self)
 
-        self.ext = ext or '*'
+        self.ext = ext or "*"
         self.isFolder = isFolder
 
         self.btnSelect.clicked.connect(self.showSelectionDialog)
@@ -55,30 +56,38 @@ class FileSelectionPanel(BASE, WIDGET):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
             path = os.path.dirname(text)
-        elif settings.contains('/Processing/LastInputPath'):
-            path = settings.value('/Processing/LastInputPath')
+        elif settings.contains("/Processing/LastInputPath"):
+            path = settings.value("/Processing/LastInputPath")
         else:
-            path = ''
+            path = ""
 
         if self.isFolder:
-            folder = QFileDialog.getExistingDirectory(self,
-                                                      self.tr('Select Folder'), path)
+            folder = QFileDialog.getExistingDirectory(
+                self, self.tr("Select Folder"), path
+            )
             if folder:
                 self.leText.setText(folder)
-                settings.setValue('/Processing/LastInputPath',
-                                  os.path.dirname(folder))
+                settings.setValue("/Processing/LastInputPath", os.path.dirname(folder))
         else:
-            filenames, selected_filter = QFileDialog.getOpenFileNames(self,
-                                                                      self.tr('Select File'), path, self.tr('{} files').format(self.ext.upper()) + ' (*.' + self.ext + self.tr(');;All files (*.*)'))
+            filenames, selected_filter = QFileDialog.getOpenFileNames(
+                self,
+                self.tr("Select File"),
+                path,
+                self.tr("{} files").format(self.ext.upper())
+                + " (*."
+                + self.ext
+                + self.tr(");;All files (*.*)"),
+            )
             if filenames:
-                self.leText.setText(';'.join(filenames))
-                settings.setValue('/Processing/LastInputPath',
-                                  os.path.dirname(filenames[0]))
+                self.leText.setText(";".join(filenames))
+                settings.setValue(
+                    "/Processing/LastInputPath", os.path.dirname(filenames[0])
+                )
 
     def getValue(self):
         s = self.leText.text()
         if isWindows():
-            s = s.replace('\\', '/')
+            s = s.replace("\\", "/")
         return s
 
     def setText(self, text):

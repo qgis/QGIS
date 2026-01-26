@@ -19,17 +19,17 @@
 #ifndef QGSPLUGINLAYERREGSITRY_H
 #define QGSPLUGINLAYERREGSITRY_H
 
-#include <QMap>
-#include "qgis_sip.h"
-#include <QDomNode>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QDomNode>
+#include <QMap>
 
 class QgsPluginLayer;
 
 /**
  * \ingroup core
- * \brief Class for creating plugin specific layers
+ * \brief Responsible for creating plugin specific map layers.
 */
 class CORE_EXPORT QgsPluginLayerType
 {

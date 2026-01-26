@@ -16,8 +16,9 @@
 #define QGSGPSDEVICEOPTIONS_H
 
 #include "ui_qgsgpsdevicedialogbase.h"
-#include "qgsoptionswidgetfactory.h"
+
 #include "qgscodeeditor.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QgsBabelGpsDeviceFormat;
 
@@ -33,7 +34,6 @@ class QgsGpsDeviceOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGp
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGpsDeviceOptionsWidget with the specified \a parent widget.
      */
@@ -50,7 +50,7 @@ class QgsGpsDeviceOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsGp
     void renameCurrentDevice();
 
   private:
-    QMap<QString, QStringList > mDevices;
+    QMap<QString, QStringList> mDevices;
     bool mBlockStoringChanges = false;
 };
 
@@ -60,13 +60,11 @@ class QgsGpsDeviceOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsGpsDeviceOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QStringList path() const override;
-
 };
 
 

@@ -15,6 +15,7 @@
 
 #include "qgsimagetexture.h"
 
+#include "moc_qgsimagetexture.cpp"
 
 QgsImageTexture::QgsImageTexture( const QImage &image, Qt3DCore::QNode *parent )
   : Qt3DRender::QPaintedTextureImage( parent )

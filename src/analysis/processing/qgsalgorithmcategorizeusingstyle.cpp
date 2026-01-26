@@ -16,10 +16,11 @@
  ***************************************************************************/
 
 #include "qgsalgorithmcategorizeusingstyle.h"
-#include "qgsstyle.h"
+
 #include "qgscategorizedsymbolrenderer.h"
-#include "qgsvectorlayer.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsstyle.h"
+#include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
@@ -29,24 +30,21 @@ QgsCategorizeUsingStyleAlgorithm::~QgsCategorizeUsingStyleAlgorithm() = default;
 
 void QgsCategorizeUsingStyleAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FIELD" ), QObject::tr( "Categorize using expression" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterExpression( u"FIELD"_s, QObject::tr( "Categorize using expression" ), QVariant(), u"INPUT"_s ) );
 
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style database (leave blank to use saved symbols)" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "xml" ), QVariant(), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "CASE_SENSITIVE" ), QObject::tr( "Use case-sensitive match to symbol names" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "TOLERANT" ), QObject::tr( "Ignore non-alphanumeric characters while matching" ), false ) );
+  addParameter( new QgsProcessingParameterFile( u"STYLE"_s, QObject::tr( "Style database (leave blank to use saved symbols)" ), Qgis::ProcessingFileParameterBehavior::File, u"xml"_s, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"CASE_SENSITIVE"_s, QObject::tr( "Use case-sensitive match to symbol names" ), false ) );
+  addParameter( new QgsProcessingParameterBoolean( u"TOLERANT"_s, QObject::tr( "Ignore non-alphanumeric characters while matching" ), false ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Categorized layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Categorized layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > failCategories = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_CATEGORIES" ),  QObject::tr( "Non-matching categories" ),
-      Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
+  auto failCategories = std::make_unique<QgsProcessingParameterFeatureSink>( u"NON_MATCHING_CATEGORIES"_s, QObject::tr( "Non-matching categories" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
   // not supported for outputs yet!
   //failCategories->setFlags( failCategories->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( failCategories.release() );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > failSymbols = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "NON_MATCHING_SYMBOLS" ),  QObject::tr( "Non-matching symbol names" ),
-      Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
+  auto failSymbols = std::make_unique<QgsProcessingParameterFeatureSink>( u"NON_MATCHING_SYMBOLS"_s, QObject::tr( "Non-matching symbol names" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, false );
   //failSymbols->setFlags( failSymbols->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( failSymbols.release() );
 }
@@ -60,7 +58,7 @@ Qgis::ProcessingAlgorithmFlags QgsCategorizeUsingStyleAlgorithm::flags() const
 
 QString QgsCategorizeUsingStyleAlgorithm::name() const
 {
-  return QStringLiteral( "categorizeusingstyle" );
+  return u"categorizeusingstyle"_s;
 }
 
 QString QgsCategorizeUsingStyleAlgorithm::displayName() const
@@ -80,12 +78,12 @@ QString QgsCategorizeUsingStyleAlgorithm::group() const
 
 QString QgsCategorizeUsingStyleAlgorithm::groupId() const
 {
-  return QStringLiteral( "cartography" );
+  return u"cartography"_s;
 }
 
 QString QgsCategorizeUsingStyleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Sets a vector layer's renderer to a categorized renderer using matching symbols from a style database. If no "
+  return QObject::tr( "This algorithm sets a vector layer's renderer to a categorized renderer using matching symbols from a style database. If no "
                       "style file is specified, symbols from the user's current style library are used instead.\n\n"
                       "The specified expression (or field name) is used to create categories for the renderer. A category will be "
                       "created for each unique value within the layer.\n\n"
@@ -96,7 +94,7 @@ QString QgsCategorizeUsingStyleAlgorithm::shortHelpString() const
                       "while performing the match. This allows for greater tolerance when matching categories to symbols.\n\n"
                       "If desired, tables can also be output containing lists of the categories which could not be matched "
                       "to symbols, and symbols which were not matched to categories."
-                    );
+  );
 }
 
 QString QgsCategorizeUsingStyleAlgorithm::shortDescription() const
@@ -112,23 +110,20 @@ QgsCategorizeUsingStyleAlgorithm *QgsCategorizeUsingStyleAlgorithm::createInstan
 class SetCategorizedRendererPostProcessor : public QgsProcessingLayerPostProcessorInterface
 {
   public:
-
-    SetCategorizedRendererPostProcessor( std::unique_ptr< QgsCategorizedSymbolRenderer > renderer )
+    SetCategorizedRendererPostProcessor( std::unique_ptr<QgsCategorizedSymbolRenderer> renderer )
       : mRenderer( std::move( renderer ) )
     {}
 
     void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
     {
-      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
       {
-
         vl->setRenderer( mRenderer.release() );
         vl->triggerRepaint();
       }
     }
 
   private:
-
     std::unique_ptr<QgsCategorizedSymbolRenderer> mRenderer;
 };
 
@@ -136,11 +131,11 @@ class SetCategorizedRendererPostProcessor : public QgsProcessingLayerPostProcess
 
 bool QgsCategorizeUsingStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *layer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !layer )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  mField = parameterAsString( parameters, QStringLiteral( "FIELD" ), context );
+  mField = parameterAsString( parameters, u"FIELD"_s, context );
 
   mLayerId = layer->id();
   mLayerName = layer->name();
@@ -166,15 +161,15 @@ bool QgsCategorizeUsingStyleAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString styleFile = parameterAsFile( parameters, QStringLiteral( "STYLE" ), context );
-  const bool caseSensitive = parameterAsBoolean( parameters, QStringLiteral( "CASE_SENSITIVE" ), context );
-  const bool tolerant = parameterAsBoolean( parameters, QStringLiteral( "TOLERANT" ), context );
+  const QString styleFile = parameterAsFile( parameters, u"STYLE"_s, context );
+  const bool caseSensitive = parameterAsBoolean( parameters, u"CASE_SENSITIVE"_s, context );
+  const bool tolerant = parameterAsBoolean( parameters, u"TOLERANT"_s, context );
 
   QgsStyle *style = nullptr;
-  std::unique_ptr< QgsStyle >importedStyle;
+  std::unique_ptr<QgsStyle> importedStyle;
   if ( !styleFile.isEmpty() )
   {
-    importedStyle = std::make_unique< QgsStyle >();
+    importedStyle = std::make_unique<QgsStyle>();
     if ( !importedStyle->importXml( styleFile ) )
     {
       throw QgsProcessingException( QObject::tr( "An error occurred while reading style file: %1" ).arg( importedStyle->errorString() ) );
@@ -187,18 +182,18 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   }
 
   QgsFields nonMatchingCategoryFields;
-  nonMatchingCategoryFields.append( QgsField( QStringLiteral( "category" ), QMetaType::Type::QString ) );
+  nonMatchingCategoryFields.append( QgsField( u"category"_s, QMetaType::Type::QString ) );
   QString nonMatchingCategoriesDest;
-  std::unique_ptr< QgsFeatureSink > nonMatchingCategoriesSink( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING_CATEGORIES" ), context, nonMatchingCategoriesDest, nonMatchingCategoryFields, Qgis::WkbType::NoGeometry ) );
-  if ( !nonMatchingCategoriesSink && parameters.contains( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ) && parameters.value( QStringLiteral( "NON_MATCHING_CATEGORIES" ) ).isValid() )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING_CATEGORIES" ) ) );
+  std::unique_ptr<QgsFeatureSink> nonMatchingCategoriesSink( parameterAsSink( parameters, u"NON_MATCHING_CATEGORIES"_s, context, nonMatchingCategoriesDest, nonMatchingCategoryFields, Qgis::WkbType::NoGeometry ) );
+  if ( !nonMatchingCategoriesSink && parameters.contains( u"NON_MATCHING_CATEGORIES"_s ) && parameters.value( u"NON_MATCHING_CATEGORIES"_s ).isValid() )
+    throw QgsProcessingException( invalidSinkError( parameters, u"NON_MATCHING_CATEGORIES"_s ) );
 
   QgsFields nonMatchingSymbolFields;
-  nonMatchingSymbolFields.append( QgsField( QStringLiteral( "name" ), QMetaType::Type::QString ) );
+  nonMatchingSymbolFields.append( QgsField( u"name"_s, QMetaType::Type::QString ) );
   QString nonMatchingSymbolsDest;
-  std::unique_ptr< QgsFeatureSink > nonMatchingSymbolsSink( parameterAsSink( parameters, QStringLiteral( "NON_MATCHING_SYMBOLS" ), context, nonMatchingSymbolsDest, nonMatchingSymbolFields, Qgis::WkbType::NoGeometry ) );
-  if ( !nonMatchingSymbolsSink && parameters.contains( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ) && parameters.value( QStringLiteral( "NON_MATCHING_SYMBOLS" ) ).isValid() )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NON_MATCHING_SYMBOLS" ) ) );
+  std::unique_ptr<QgsFeatureSink> nonMatchingSymbolsSink( parameterAsSink( parameters, u"NON_MATCHING_SYMBOLS"_s, context, nonMatchingSymbolsDest, nonMatchingSymbolFields, Qgis::WkbType::NoGeometry ) );
+  if ( !nonMatchingSymbolsSink && parameters.contains( u"NON_MATCHING_SYMBOLS"_s ) && parameters.value( u"NON_MATCHING_SYMBOLS"_s ).isValid() )
+    throw QgsProcessingException( invalidSinkError( parameters, u"NON_MATCHING_SYMBOLS"_s ) );
 
   QSet<QVariant> uniqueVals;
   QgsFeature feature;
@@ -216,17 +211,17 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
 
   QgsCategoryList cats;
   cats.reserve( uniqueVals.count() );
-  std::unique_ptr< QgsSymbol > defaultSymbol( QgsSymbol::defaultSymbol( mLayerGeometryType ) );
+  std::unique_ptr<QgsSymbol> defaultSymbol( QgsSymbol::defaultSymbol( mLayerGeometryType ) );
   for ( const QVariant &val : std::as_const( sortedUniqueVals ) )
   {
     cats.append( QgsRendererCategory( val, defaultSymbol->clone(), val.toString() ) );
   }
 
-  mRenderer = std::make_unique< QgsCategorizedSymbolRenderer >( mField, cats );
+  mRenderer = std::make_unique<QgsCategorizedSymbolRenderer>( mField, cats );
 
-  const Qgis::SymbolType type = mLayerGeometryType == Qgis::GeometryType::Point ? Qgis::SymbolType::Marker
+  const Qgis::SymbolType type = mLayerGeometryType == Qgis::GeometryType::Point  ? Qgis::SymbolType::Marker
                                 : mLayerGeometryType == Qgis::GeometryType::Line ? Qgis::SymbolType::Line
-                                : Qgis::SymbolType::Fill;
+                                                                                 : Qgis::SymbolType::Fill;
 
   QVariantList unmatchedCategories;
   QStringList unmatchedSymbols;
@@ -247,13 +242,13 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
     std::sort( unmatchedCategories.begin(), unmatchedCategories.end() );
     for ( const QVariant &cat : std::as_const( unmatchedCategories ) )
     {
-      feedback->pushInfo( QStringLiteral( "∙ “%1”" ).arg( cat.toString() ) );
+      feedback->pushInfo( u"∙ “%1”"_s.arg( cat.toString() ) );
       if ( nonMatchingCategoriesSink )
       {
         QgsFeature f;
         f.setAttributes( QgsAttributes() << cat.toString() );
         if ( !nonMatchingCategoriesSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( nonMatchingCategoriesSink.get(), parameters, QStringLiteral( "NON_MATCHING_CATEGORIES" ) ) );
+          throw QgsProcessingException( writeFeatureError( nonMatchingCategoriesSink.get(), parameters, u"NON_MATCHING_CATEGORIES"_s ) );
       }
     }
   }
@@ -264,13 +259,13 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
     std::sort( unmatchedSymbols.begin(), unmatchedSymbols.end() );
     for ( const QString &name : std::as_const( unmatchedSymbols ) )
     {
-      feedback->pushInfo( QStringLiteral( "∙ “%1”" ).arg( name ) );
+      feedback->pushInfo( u"∙ “%1”"_s.arg( name ) );
       if ( nonMatchingSymbolsSink )
       {
         QgsFeature f;
         f.setAttributes( QgsAttributes() << name );
         if ( !nonMatchingSymbolsSink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( nonMatchingSymbolsSink.get(), parameters, QStringLiteral( "NON_MATCHING_SYMBOLS" ) ) );
+          throw QgsProcessingException( writeFeatureError( nonMatchingSymbolsSink.get(), parameters, u"NON_MATCHING_SYMBOLS"_s ) );
       }
     }
   }
@@ -278,16 +273,18 @@ QVariantMap QgsCategorizeUsingStyleAlgorithm::processAlgorithm( const QVariantMa
   context.addLayerToLoadOnCompletion( mLayerId, QgsProcessingContext::LayerDetails( mLayerName, context.project(), mLayerName ) );
   context.layerToLoadOnCompletionDetails( mLayerId ).setPostProcessor( new SetCategorizedRendererPostProcessor( std::move( mRenderer ) ) );
 
-  QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
   if ( nonMatchingCategoriesSink )
-    results.insert( QStringLiteral( "NON_MATCHING_CATEGORIES" ), nonMatchingCategoriesDest );
+    nonMatchingCategoriesSink->finalize();
   if ( nonMatchingSymbolsSink )
-    results.insert( QStringLiteral( "NON_MATCHING_SYMBOLS" ), nonMatchingSymbolsDest );
+    nonMatchingSymbolsSink->finalize();
+
+  QVariantMap results;
+  results.insert( u"OUTPUT"_s, mLayerId );
+  if ( nonMatchingCategoriesSink )
+    results.insert( u"NON_MATCHING_CATEGORIES"_s, nonMatchingCategoriesDest );
+  if ( nonMatchingSymbolsSink )
+    results.insert( u"NON_MATCHING_SYMBOLS"_s, nonMatchingSymbolsDest );
   return results;
 }
 
 ///@endcond
-
-
-

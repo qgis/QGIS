@@ -29,11 +29,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgschunkedentity.h"
-#include "qgschunkqueuejob.h"
-
 #include <memory>
 
+#include "qgschunkedentity.h"
+#include "qgschunkqueuejob.h"
 
 namespace Qt3DCore
 {
@@ -48,7 +47,7 @@ class QgsTerrainGenerator;
 class TerrainMapUpdateJobFactory;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Controller for terrain - decides on what terrain tiles to show based on camera position
  * and creates them using map's terrain tile generator.
  */
@@ -69,16 +68,15 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! Returns the terrain elevation offset (adjusts the terrain position up and down)
     float terrainElevationOffset() const;
 
-    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
   private slots:
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
     void onLayersChanged();
-    void onTerrainElevationOffsetChanged( float newOffset );
+    void onTerrainElevationOffsetChanged();
 
   private:
-
     void connectToLayersRepaintRequest();
 
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
@@ -91,13 +89,14 @@ class QgsTerrainEntity : public QgsChunkedEntity
 };
 
 
-
 //! Handles asynchronous updates of terrain's map images when layers change
 class TerrainMapUpdateJob : public QgsChunkQueueJob
 {
     Q_OBJECT
   public:
     TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGenerator, QgsChunkNode *mNode );
+
+    void start() override;
 
     void cancel() override;
 
@@ -106,7 +105,7 @@ class TerrainMapUpdateJob : public QgsChunkQueueJob
 
   private:
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
-    int mJobId;
+    int mJobId = -1;
 };
 
 /// @endcond

@@ -16,12 +16,12 @@
 #ifndef QGSMAPLAYERPROXYMODEL_H
 #define QGSMAPLAYERPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
-#include <QStringList>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
+#include <QSortFilterProxyModel>
+#include <QStringList>
 
 class QgsMapLayerModel;
 class QgsMapLayer;
@@ -29,7 +29,7 @@ class QgsProject;
 
 /**
  * \ingroup core
- * \brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
+ * \brief A proxy model which provides an easy to use model to display the list of layers in widgets.
  */
 class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 {
@@ -79,7 +79,7 @@ class CORE_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
     /**
      * Sets the \a project from which map layers are shown.
      *
-     * If \a project is NULLPTR then QgsProject::instance() will be used.
+     * If \a project is NULLPTR then QgsProject.instance() will be used.
      *
      * \since QGIS 3.24
      */

@@ -8,23 +8,24 @@
 
 
 
+
 class QgsInvertedPolygonRendererWidget : QgsRendererWidget
 {
 %Docstring(signature="appended")
-A widget used represent options of a :py:class:`QgsInvertedPolygonRenderer`
+A widget for configuring options for a
+:py:class:`QgsInvertedPolygonRenderer`.
 %End
 
 %TypeHeaderCode
 #include "qgsinvertedpolygonrendererwidget.h"
 %End
   public:
-
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method
 
 :param layer: the layer where this renderer is applied
-:param style:
+:param style: 
 :param renderer: the mask renderer (will not take ownership)
 %End
 
@@ -33,7 +34,7 @@ Static creation method
 Constructor
 
 :param layer: the layer where this renderer is applied
-:param style:
+:param style: 
 :param renderer: the mask renderer (will not take ownership)
 %End
     ~QgsInvertedPolygonRendererWidget();

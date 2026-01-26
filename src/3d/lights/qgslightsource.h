@@ -18,8 +18,8 @@
 #ifndef QGSLIGHTSOURCE_H
 #define QGSLIGHTSOURCE_H
 
-#include "qgis_3d.h"
 #include "qgis.h"
+#include "qgis_3d.h"
 #include "qgis_sip.h"
 #include "qgsreadwritecontext.h"
 
@@ -38,16 +38,14 @@ namespace Qt3DCore
 #endif
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for light sources in 3d scenes.
  *
  * \since QGIS 3.26
  */
 class _3D_EXPORT QgsLightSource SIP_ABSTRACT
 {
-
   public:
-
     virtual ~QgsLightSource();
 
     /**

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------
 #
 # Copyright (C) 2012  Radim Blazek
@@ -35,15 +34,15 @@
  - writes out report
 ***************************************************************************
 """
-__author__ = 'Radim Blazek'
-__date__ = 'December 2012'
-__copyright__ = '(C) 2012, Radim Blazek'
+__author__ = "Radim Blazek"
+__date__ = "December 2012"
+__copyright__ = "(C) 2012, Radim Blazek"
 
 import os
-import sys
-import subprocess
-import time
 import re
+import subprocess
+import sys
+import time
 
 
 class Test:
@@ -71,7 +70,7 @@ class Test:
     def test(self):
         print("GRASS Direct test")
 
-        tmp_dir = os.path.abspath("qgis-grass-test-%s" % time.strftime('%y%m%d-%H%M%S'))
+        tmp_dir = os.path.abspath("qgis-grass-test-%s" % time.strftime("%y%m%d-%H%M%S"))
         tmp_dir = os.path.abspath("qgis-grass-test-debug")  # debug
         print("Output will be written to %s" % tmp_dir)
 
@@ -82,14 +81,21 @@ class Test:
         print("Getting list of rasters ...")
         rasters = self.srun(["g.mlist", "type=rast"]).splitlines()
         max_rasters = 1
-        print("%s rasters found, using first %s" % (len(rasters), max_rasters))
+        print(f"{len(rasters)} rasters found, using first {max_rasters}")
         rasters = rasters[0:1]
 
         print("Exporting rasters")
         for raster in rasters:
             print(raster)
-            output = "%s/%s.tif" % (files_dir, raster)
-            self.srun(["g.region", "rast=%s" % raster, "cols=%s" % self.size, "rows=%s" % self.size])
+            output = f"{files_dir}/{raster}.tif"
+            self.srun(
+                [
+                    "g.region",
+                    "rast=%s" % raster,
+                    "cols=%s" % self.size,
+                    "rows=%s" % self.size,
+                ]
+            )
             self.srun(["r.out.gdal", "input=%s" % raster, "output=%s" % output])
 
         # run modules
@@ -98,26 +104,49 @@ class Test:
                 module = re.sub("  *", " ", module)
                 module_name = module.split(" ")[0]
                 # --- native ---
-                self.srun(["g.region", "rast=%s" % raster, "cols=%s" % self.size, "rows=%s" % self.size])
+                self.srun(
+                    [
+                        "g.region",
+                        "rast=%s" % raster,
+                        "cols=%s" % self.size,
+                        "rows=%s" % self.size,
+                    ]
+                )
                 output = "qgistest1"
                 # clean old
                 self.srun(["g.remove", "-f", "rast=%s" % output])
                 # substitute rasters
-                native_args = module.replace("R1", raster).replace("RO1", output).split(" ")
+                native_args = (
+                    module.replace("R1", raster).replace("RO1", output).split(" ")
+                )
                 (code, out, err) = self.run(native_args)
                 if code != 0:
                     self.report("Native failed: %s" % " ".join(native_args))
                 # export
-                native_output_file = "%s/%s-%s-native.tif" % (files_dir, module_name, raster)
-                self.srun(["r.out.gdal", "input=%s" % output, "output=%s" % native_output_file])
+                native_output_file = "{}/{}-{}-native.tif".format(
+                    files_dir, module_name, raster
+                )
+                self.srun(
+                    [
+                        "r.out.gdal",
+                        "input=%s" % output,
+                        "output=%s" % native_output_file,
+                    ]
+                )
                 self.srun(["g.remove", "-f", "rast=%s" % output])
 
                 # --- direct ---
-                direct_input_file = "%s/%s.tif" % (files_dir, raster)
-                direct_output_file = "%s/%s-%s-direct.tif" % (files_dir, module_name, raster)
+                direct_input_file = f"{files_dir}/{raster}.tif"
+                direct_output_file = "{}/{}-{}-direct.tif".format(
+                    files_dir, module_name, raster
+                )
 
                 # substitute rasters
-                direct_args = module.replace("R1", direct_input_file).replace("RO1", direct_output_file).split(" ")
+                direct_args = (
+                    module.replace("R1", direct_input_file)
+                    .replace("RO1", direct_output_file)
+                    .split(" ")
+                )
                 env = os.environ
 
                 # CRS
@@ -126,38 +155,57 @@ class Test:
                 proj = proj.splitlines()
                 proj = " ".join(proj)
                 print(proj)
-                env['QGIS_GRASS_CRS'] = proj
+                env["QGIS_GRASS_CRS"] = proj
 
                 # set GRASS region as environment variable
                 reg = self.srun(["g.region", "-g"])
                 reg_dict = dict(item.split("=") for item in reg.splitlines())
-                reg_var = {'n': 'north', 's': 'south', 'e': 'east', 'w': 'west', 'nsres': 'n-s resol', 'ewres': 'e-w resol'}
+                reg_var = {
+                    "n": "north",
+                    "s": "south",
+                    "e": "east",
+                    "w": "west",
+                    "nsres": "n-s resol",
+                    "ewres": "e-w resol",
+                }
                 if longlat:
                     region = "proj:3;zone:-1"  # longlat
                 else:
                     region = "proj:99;zone:-1"  # other projection
                 for k, v in reg_dict.iteritems():
-                    if k == 'cells':
+                    if k == "cells":
                         continue
                     kn = k
                     if k in reg_var:
                         kn = reg_var[k]
-                    region += ";%s:%s" % (kn, v)
+                    region += f";{kn}:{v}"
                 print(region)
-                env['GRASS_REGION'] = region
+                env["GRASS_REGION"] = region
 
                 # add path to fake GRASS gis library
-                env['LD_LIBRARY_PATH'] = "%s/lib/qgis/plugins/:%s" % (env['QGIS_PREFIX_PATH'], env['LD_LIBRARY_PATH'])
+                env["LD_LIBRARY_PATH"] = "{}/lib/qgis/plugins/:{}".format(
+                    env["QGIS_PREFIX_PATH"], env["LD_LIBRARY_PATH"]
+                )
                 (code, out, err) = self.run(direct_args, env)
                 print("code = %s" % code)
                 if code != 0:
-                    self.report("Direct failed: %s\n%s\n%s" % (" ".join(direct_args), out, err))
+                    self.report(
+                        "Direct failed: {}\n{}\n{}".format(
+                            " ".join(direct_args), out, err
+                        )
+                    )
                 # TODO: compare native x direct output
 
     def run(self, args, env=None, input=None, exit_on_error=False):
         cmd = " ".join(args)
         print(cmd)
-        p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, env=env)
+        p = subprocess.Popen(
+            args,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            env=env,
+        )
         com = p.communicate(input)
         p.wait()
 
@@ -174,13 +222,11 @@ class Test:
     def modules(self):
         # R1 - input raster 1
         # RO1 - output raster 1
-        modules = [
-            "r.slope.aspect elevation=R1 aspect=RO1"
-        ]
+        modules = ["r.slope.aspect elevation=R1 aspect=RO1"]
         return modules
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test = Test()
     test.test()
     test.writeReport()

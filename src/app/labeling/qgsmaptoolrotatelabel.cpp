@@ -16,14 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmaptoolrotatelabel.h"
+
+#include "qgisapp.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmessagebar.h"
 #include "qgspallabeling.h"
 #include "qgspointrotationitem.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
-#include "qgisapp.h"
-#include "qgsmessagebar.h"
+
+#include "moc_qgsmaptoolrotatelabel.cpp"
 
 QgsMapToolRotateLabel::QgsMapToolRotateLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -62,7 +65,7 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QgsMapMouseEvent *e )
     }
     else
     {
-      displayValue = static_cast< int >( mCurrentRotation );
+      displayValue = static_cast<int>( mCurrentRotation );
       mCtrlPressed = false;
     }
 
@@ -160,8 +163,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
 
         // Convert to degree
         mCurrentRotation = mCurrentRotation
-                           * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(),
-                               Qgis::AngleUnit::Degrees );
+                           * QgsUnitTypes::fromUnitToUnitFactor( mCurrentLabel.settings.rotationUnit(), Qgis::AngleUnit::Degrees );
 
         mStartRotation = mCurrentRotation;
         createRubberBands();
@@ -172,7 +174,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         mRotationItem->setOrientation( QgsPointRotationItem::Clockwise );
         mRotationItem->setPointLocation( mRotationPoint );
         mRotationItem->setRotationUnit( mCurrentLabel.settings.rotationUnit() );
-        mRotationItem->setSymbolRotation( static_cast< int >( mCurrentRotation ) );
+        mRotationItem->setSymbolRotation( static_cast<int>( mCurrentRotation ) );
       }
     }
   }
@@ -217,10 +219,9 @@ void QgsMapToolRotateLabel::canvasPressEvent( QgsMapMouseEvent *e )
         }
 
         // Convert back to settings unit
-        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees,
-                                mCurrentLabel.settings.rotationUnit() );
+        const double rotation = rotationDegree * QgsUnitTypes::fromUnitToUnitFactor( Qgis::AngleUnit::Degrees, mCurrentLabel.settings.rotationUnit() );
 
-        vlayer->beginEditCommand( tr( "Rotated label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+        vlayer->beginEditCommand( tr( "Rotated label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
         if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, rotation ) )
         {
           if ( !vlayer->isEditable() )
@@ -251,7 +252,7 @@ void QgsMapToolRotateLabel::keyPressEvent( QKeyEvent *e )
     {
       case Qt::Key_Delete:
       {
-        e->ignore();  // Override default shortcut management
+        e->ignore(); // Override default shortcut management
         return;
       }
     }
@@ -275,7 +276,7 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
           int rotationCol;
           if ( labelRotatableStatus( vlayer, mCurrentLabel.settings, rotationCol ) == PropertyStatus::Valid )
           {
-            vlayer->beginEditCommand( tr( "Delete Label Rotation" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+            vlayer->beginEditCommand( tr( "Delete Label Rotation" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
             if ( !vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, rotationCol, QVariant() ) )
             {
               // if the edit command fails, it's likely because the label x/y is being stored in a physical field (not a auxiliary one!)
@@ -288,7 +289,6 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
               {
                 QgisApp::instance()->messageBar()->pushWarning( tr( "Delete Label Rotation" ), tr( "Error encountered while storing new label position" ) );
               }
-
             }
             vlayer->endEditCommand();
             deleteRubberBands();
@@ -298,7 +298,7 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
             vlayer->triggerRepaint();
           }
         }
-        e->ignore();  // Override default shortcut management
+        e->ignore(); // Override default shortcut management
         break;
       }
 
@@ -316,7 +316,7 @@ void QgsMapToolRotateLabel::keyReleaseEvent( QKeyEvent *e )
 
 int QgsMapToolRotateLabel::roundTo15Degrees( double n )
 {
-  const int m = static_cast< int >( n / 15.0 + 0.5 );
+  const int m = static_cast<int>( n / 15.0 + 0.5 );
   return ( m * 15 );
 }
 
@@ -329,7 +329,7 @@ double QgsMapToolRotateLabel::convertAzimuth( double a )
 void QgsMapToolRotateLabel::createRotationPreviewBox()
 {
   mRotationPreviewBox.reset();
-  const QVector< QgsPointXY > boxPoints = mCurrentLabel.pos.cornerPoints;
+  const QVector<QgsPointXY> boxPoints = mCurrentLabel.pos.cornerPoints;
   if ( boxPoints.empty() )
     return;
 
@@ -350,7 +350,7 @@ void QgsMapToolRotateLabel::setRotationPreviewBox( double rotation )
   if ( mCurrentLabel.pos.cornerPoints.empty() )
     return;
 
-  const QVector< QgsPointXY > cornerPoints = mCurrentLabel.pos.cornerPoints;
+  const QVector<QgsPointXY> cornerPoints = mCurrentLabel.pos.cornerPoints;
   for ( const QgsPointXY &cornerPoint : cornerPoints )
     mRotationPreviewBox->addPoint( rotatePointClockwise( cornerPoint, mRotationPoint, rotation ) );
   mRotationPreviewBox->addPoint( rotatePointClockwise( mCurrentLabel.pos.cornerPoints.at( 0 ), mRotationPoint, rotation ) );

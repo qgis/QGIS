@@ -16,12 +16,12 @@
 #ifndef QGSFIELDCONSTRAINTS_H
 #define QGSFIELDCONSTRAINTS_H
 
-#include <QString>
-#include <QHash>
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QHash>
+#include <QObject>
+#include <QString>
 
 /**
  * \class QgsFieldConstraints
@@ -89,7 +89,8 @@ class CORE_EXPORT QgsFieldConstraints
 
     /**
      * Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
-     * is not present on this field.
+     * is not present on this field. If the strength is not set returns ConstraintStrengthNotSet
+     * for anything but ConstraintExpression which returns ConstraintStrengthHard.
      * \see constraints()
      * \see setConstraintStrength()
      */

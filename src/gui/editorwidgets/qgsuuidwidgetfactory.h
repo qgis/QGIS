@@ -16,32 +16,33 @@
 #ifndef QGSUUIDWIDGETFACTORY_H
 #define QGSUUIDWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsUuidWidgetFactory
+ * \brief Editor widget factory for UUID widgets.
+ *
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsUuidWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-
     /**
      * Constructor for QgsUuidWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      */
-    explicit QgsUuidWidgetFactory( const QString &name );
+    explicit QgsUuidWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
     QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
     unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
+    bool isReadOnly() const override;
 };
 
 #endif // QGSUUIDWIDGETFACTORY_H

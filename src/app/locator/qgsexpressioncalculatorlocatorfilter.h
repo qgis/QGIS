@@ -21,20 +21,17 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
-
-
 class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
   public:
-
     QgsExpressionCalculatorLocatorFilter( QObject *parent = nullptr );
     QgsExpressionCalculatorLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "calculator" ); }
+    QString name() const override { return u"calculator"_s; }
     QString displayName() const override { return tr( "Calculator" ); }
     Priority priority() const override { return Highest; }
-    QString prefix() const override { return QStringLiteral( "=" ); }
+    QString prefix() const override { return u"="_s; }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

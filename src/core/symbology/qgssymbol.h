@@ -16,8 +16,8 @@
 #ifndef QGSSYMBOL_H
 #define QGSSYMBOL_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgspropertycollection.h"
 #include "qgsrendercontext.h"
 #include "qgsscreenproperties.h"
@@ -269,6 +269,7 @@ class CORE_EXPORT QgsSymbol
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, Property ) : int
     {
       Opacity SIP_MONKEYPATCH_COMPAT_NAME( PropertyOpacity ), //!< Opacity
+      ExtentBuffer, //!< Extent buffer \since QGIS 3.42
     };
     // *INDENT-ON*
 
@@ -555,7 +556,7 @@ class CORE_EXPORT QgsSymbol
     QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, const QgsScreenProperties &screen = QgsScreenProperties() ) SIP_PYNAME( bigSymbolPreviewImageV2 );
 
     /**
-     * \deprecated QGIS 3.40. Use bigSymbolPreviewImageV2 instead.
+     * \deprecated QGIS 3.40. Use bigSymbolPreviewImageV2() instead.
      */
     Q_DECL_DEPRECATED QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) SIP_DEPRECATED;
 
@@ -563,6 +564,21 @@ class CORE_EXPORT QgsSymbol
      * Returns a string dump of the symbol's properties.
      */
     QString dump() const;
+
+    /**
+     * Returns TRUE if this symbol will always render identically
+     * to an \a other symbol.
+     *
+     * \note This method is pessimistic, in that it will return FALSE in circumstances
+     * where it is not possible to guarantee that in 100% of cases the symbol will
+     * render pixel-identically to the other symbol. For instance, calling
+     * rendersIdenticallyTo() with the same symbol as \a other may
+     * return FALSE if the symbol contains data-defined overrides, such
+     * as those using feature attributes or expression variables.
+     *
+     * \since QGIS 4.0
+     */
+    bool rendersIdenticallyTo( const QgsSymbol *other ) const;
 
     /**
      * Returns a deep copy of this symbol.
@@ -573,8 +589,19 @@ class CORE_EXPORT QgsSymbol
 
     /**
      * Converts the symbol to a SLD representation.
+     *
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const SIP_DEPRECATED;
+
+    /**
+     * Converts the symbol to a SLD representation.
+     *
+     * Returns TRUE if the symbol was successfully converted.
+     *
+     * \since QGIS 3.44
+     */
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     /**
      * Returns the units to use for sizes and widths within the symbol. Individual
@@ -791,7 +818,7 @@ class CORE_EXPORT QgsSymbol
      * \see setDataDefinedProperties()
      * \since QGIS 3.18
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
      * Sets the symbol's property collection, used for data defined overrides.
@@ -818,13 +845,15 @@ class CORE_EXPORT QgsSymbol
     bool canCauseArtifactsBetweenAdjacentTiles() const;
 
     /**
+     * Sets the vector \a layer associated with the symbol.
+     *
      * \note the layer will be NULLPTR after stopRender
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void setLayer( const QgsVectorLayer *layer ) SIP_DEPRECATED;
 
     /**
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED const QgsVectorLayer *layer() const SIP_DEPRECATED;
 
@@ -866,6 +895,43 @@ class CORE_EXPORT QgsSymbol
      * \since QGIS 3.20
      */
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
+
+    /**
+     * Returns the symbol's extent buffer.
+     *
+     * Units are retrieved via extentBufferSizeUnit().
+     * \since QGIS 3.42
+     */
+    double extentBuffer() const;
+
+    /**
+     * Sets the symbol's extent buffer.
+     *
+     * Units are set via setExtentBufferSizeUnit().
+     * \param extentBuffer buffer distance.
+     * \see extentBuffer()
+     * \note Negative values are not supported and will be changed to 0.
+     * \since QGIS 3.42
+     */
+    void setExtentBuffer( double extentBuffer );
+
+    /**
+     * Returns the units for the buffer size.
+     *
+     * \see extentBuffer()
+     * \see setExtentBufferSizeUnit()
+     * \since QGIS 3.42
+     */
+    Qgis::RenderUnit extentBufferSizeUnit() const { return mExtentBufferSizeUnit; }
+
+    /**
+     * Sets the \a unit used for the extent buffer.
+     *
+     * \see setExtentBuffer()
+     * \see extentBufferSizeUnit()
+     * \since QGIS 3.42
+     */
+    void setExtentBufferSizeUnit( Qgis::RenderUnit unit ) { mExtentBufferSizeUnit = unit; }
 
   protected:
 
@@ -954,6 +1020,9 @@ class CORE_EXPORT QgsSymbol
 
     Qgis::SymbolType mType;
     QgsSymbolLayerList mLayers;
+
+    double mExtentBuffer = 0;
+    Qgis::RenderUnit mExtentBufferSizeUnit = Qgis::RenderUnit::MapUnits;
 
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;

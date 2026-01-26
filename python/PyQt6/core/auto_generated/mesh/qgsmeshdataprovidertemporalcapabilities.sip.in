@@ -13,7 +13,8 @@
 class QgsMeshDataProviderTemporalCapabilities: QgsDataProviderTemporalCapabilities
 {
 %Docstring(signature="appended")
-Class for handling properties relating to a mesh data provider's temporal capabilities.
+Handles properties relating to a mesh data provider's temporal
+capabilities.
 
 .. versionadded:: 3.14
 %End
@@ -36,9 +37,11 @@ Constructor for QgsMeshDataProviderTemporalCapabilities
 
     QgsMeshDatasetIndex datasetIndexClosestBeforeRelativeTime( int group, qint64 timeSinceGlobalReference ) const;
 %Docstring
-Returns the last dataset with time less than or equal to ``timeSinceGlobalReference``
+Returns the last dataset with time less than or equal to
+``timeSinceGlobalReference``
 
-Returns invalid dataset index if ``timeSinceGlobalReference`` is outside the time extent of the dataset group
+Returns invalid dataset index if ``timeSinceGlobalReference`` is outside
+the time extent of the dataset group
 
 .. note::
 
@@ -49,7 +52,8 @@ Returns invalid dataset index if ``timeSinceGlobalReference`` is outside the tim
 %Docstring
 Returns the closest dataset index from the ``timeSinceGlobalReference``
 
-Returns invalid dataset index if ``timeSinceGlobalReference`` is outside the time extent of the dataset group
+Returns invalid dataset index if ``timeSinceGlobalReference`` is outside
+the time extent of the dataset group
 
 .. note::
 
@@ -71,21 +75,23 @@ Returns the reference time
 
     QgsDateTimeRange timeExtent() const;
 %Docstring
-Returns the time extent using the internal reference time
-and the first and last times available from the all the dataset
+Returns the time extent using the internal reference time and the first
+and last times available from the all the dataset
 %End
 
     QgsDateTimeRange timeExtent( const QDateTime &reference ) const;
 %Docstring
-Returns the time extent using an external ``reference`` date time
-and the first and last times available from the all the dataset
+Returns the time extent using an external ``reference`` date time and
+the first and last times available from the all the dataset
 %End
 
     void setTemporalUnit( Qgis::TemporalUnit temporalUnit );
 %Docstring
-Sets the temporal unit (``temporalUnit``) used to read data by the data provider
+Sets the temporal unit (``temporalUnit``) used to read data by the data
+provider
 
-Temporal units supported are milliseconds, seconds, minutes, hors, days and weeks
+Temporal units supported are milliseconds, seconds, minutes, hors, days
+and weeks
 %End
 
     Qgis::TemporalUnit temporalUnit() const;
@@ -105,9 +111,11 @@ Clears all stored reference times and dataset times
 
     qint64 firstTimeStepDuration( int group ) const;
 %Docstring
-Returns the duration of the first time step of the dataset group with index ``group``
+Returns the duration of the first time step of the dataset group with
+index ``group``
 
-The value is -1 if the dataset group is not present or if it contains only one dataset (non temporal dataset)
+The value is -1 if the dataset group is not present or if it contains
+only one dataset (non temporal dataset)
 %End
 
 };

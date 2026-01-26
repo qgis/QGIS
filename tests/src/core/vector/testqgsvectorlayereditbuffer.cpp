@@ -13,19 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
 
-class TestQgsVectorLayerEditBuffer: public QObject
+#include <QObject>
+#include <QString>
+
+class TestQgsVectorLayerEditBuffer : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void constructor();
+
   private:
     QgsVectorLayer *mLayerPoint = nullptr;
 };
@@ -52,7 +53,7 @@ void TestQgsVectorLayerEditBuffer::cleanupTestCase()
 void TestQgsVectorLayerEditBuffer::constructor()
 {
   QgsVectorLayerEditBuffer buf( mLayerPoint );
-  QVERIFY( ! buf.isModified() );
+  QVERIFY( !buf.isModified() );
 
   // TODO: buf.addedFeatures().isEmpty()
   // TODO: buf.allAddedOrEditedFeatures().isEmpty()
@@ -63,7 +64,3 @@ void TestQgsVectorLayerEditBuffer::constructor()
 
 QGSTEST_MAIN( TestQgsVectorLayerEditBuffer )
 #include "testqgsvectorlayereditbuffer.moc"
-
-
-
-

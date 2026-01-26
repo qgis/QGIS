@@ -19,10 +19,11 @@
 #define QGSCUSTOMPROJECTIONOPTIONS_H
 
 #include "ui_qgscustomprojectiondialogbase.h"
-#include "qgsoptionswidgetfactory.h"
-#include "qgshelp.h"
-#include "qgscoordinatereferencesystem.h"
+
 #include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgshelp.h"
+#include "qgsoptionswidgetfactory.h"
 
 class QDir;
 
@@ -33,7 +34,7 @@ class QDir;
  *
  * The resulting projection will be stored in an sqlite backend.
  */
-class QgsCustomProjectionOptionsWidget: public QgsOptionsPageWidget, private Ui::QgsCustomProjectionWidgetBase
+class QgsCustomProjectionOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsCustomProjectionWidgetBase
 {
     Q_OBJECT
   public:
@@ -50,23 +51,22 @@ class QgsCustomProjectionOptionsWidget: public QgsOptionsPageWidget, private Ui:
     void updateListFromCurrentItem();
 
   private:
-
     //helper functions
     void populateList();
     bool saveCrs( const QgsCoordinateReferenceSystem &crs, const QString &name, const QString &id, bool newEntry, Qgis::CrsDefinitionFormat format );
     QString multiLineWktToSingleLine( const QString &wkt );
 
     //These two QMap store the values as they are on the database when loading
-    QMap <QString, QString> mExistingCRSproj;
-    QMap <QString, QString> mExistingCRSwkt;
-    QMap <QString, QString> mExistingCRSnames;
+    QMap<QString, QString> mExistingCRSproj;
+    QMap<QString, QString> mExistingCRSwkt;
+    QMap<QString, QString> mExistingCRSnames;
 
     struct Definition
     {
-      QString name;
-      QString id;
-      QString wkt;
-      QString proj;
+        QString name;
+        QString id;
+        QString wkt;
+        QString proj;
     };
 
     enum Roles
@@ -74,16 +74,20 @@ class QgsCustomProjectionOptionsWidget: public QgsOptionsPageWidget, private Ui:
       FormattedWktRole = Qt::UserRole + 1,
     };
 
-    QList< Definition > mDefinitions;
+    QList<Definition> mDefinitions;
 
     //vector saving the CRS to be deleted
     QStringList mDeletedCRSs;
 
     //Columns in the tree widget
-    enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };
+    enum Columns
+    {
+      QgisCrsNameColumn,
+      QgisCrsIdColumn,
+      QgisCrsParametersColumn
+    };
 
     int mBlockUpdates = 0;
-
 };
 
 
@@ -92,13 +96,11 @@ class QgsCustomProjectionOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsCustomProjectionOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QStringList path() const override;
-
 };
 
 

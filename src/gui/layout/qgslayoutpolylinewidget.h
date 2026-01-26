@@ -20,10 +20,11 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutpolylinewidgetbase.h"
-#include "qgslayoutitemwidget.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitempolyline.h"
+#include "qgslayoutitemwidget.h"
 
 /**
  * \ingroup gui
@@ -32,7 +33,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolylineWidgetBase
+class GUI_EXPORT QgsLayoutPolylineWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutPolylineWidgetBase
 {
     Q_OBJECT
   public:
@@ -41,11 +42,10 @@ class GUI_EXPORT QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, privat
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QPointer< QgsLayoutItemPolyline > mPolyline;
+    QPointer<QgsLayoutItemPolyline> mPolyline;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     void enableStartSvgInputElements( bool enable );

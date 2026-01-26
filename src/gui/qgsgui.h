@@ -18,12 +18,14 @@
 #ifndef QGSGUI_H
 #define QGSGUI_H
 
+#include <memory>
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgssettingstree.h"
 #include "qgis_sip.h"
+#include "qgssettingstree.h"
+
 #include <QWidget>
-#include <memory>
 
 class QgsSettingsRegistryGui;
 class QgsEditorWidgetRegistry;
@@ -42,6 +44,7 @@ class QgsProcessingRecentAlgorithmLog;
 class QgsWindowManagerInterface;
 class QgsDataItemGuiProviderRegistry;
 class QgsProviderGuiRegistry;
+class QgsProject;
 class QgsProjectStorageGuiRegistry;
 class QgsNumericFormatGuiRegistry;
 class QgsCodeEditorColorSchemeRegistry;
@@ -54,10 +57,11 @@ class QgsHistoryProviderRegistry;
 class QgsSensorGuiRegistry;
 class QgsSettingsEditorWidgetRegistry;
 class QgsInputControllerManager;
+class QgsStoredQueryManager;
 
 /**
  * \ingroup gui
- * \brief QgsGui is a singleton class containing various registry and other global members
+ * \brief A singleton class containing various registry and other global members
  * related to GUI classes.
  */
 class GUI_EXPORT QgsGui : public QObject
@@ -65,8 +69,8 @@ class GUI_EXPORT QgsGui : public QObject
     Q_OBJECT
 
   public:
-
-    static inline QgsSettingsTreeNode *sTtreeWidgetLastUsedValues = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "widget-last-used-values" ) ) SIP_SKIP;
+    static inline QgsSettingsTreeNode *sTtreeWidgetGeometry = QgsSettingsTree::sTreeApp->createChildNode( u"widget-geometry"_s ) SIP_SKIP;
+    static inline QgsSettingsTreeNode *sTtreeWidgetLastUsedValues = QgsSettingsTree::sTreeApp->createChildNode( u"widget-last-used-values"_s ) SIP_SKIP;
 
     /**
      * Defines the behavior to use when setting the CRS for a newly created project.
@@ -74,7 +78,7 @@ class GUI_EXPORT QgsGui : public QObject
     enum ProjectCrsBehavior
     {
       UseCrsOfFirstLayerAdded = 1, //!< Set the project CRS to the CRS of the first layer added to a new project
-      UsePresetCrs = 2, //!< Always set new projects to use a preset default CRS
+      UsePresetCrs = 2,            //!< Always set new projects to use a preset default CRS
     };
     Q_ENUM( ProjectCrsBehavior )
 
@@ -262,13 +266,19 @@ class GUI_EXPORT QgsGui : public QObject
     static QgsInputControllerManager *inputControllerManager() SIP_KEEPREFERENCE;
 
     /**
+     * Returns the global stored SQL query manager.
+     * \since QGIS 3.44
+     */
+    static QgsStoredQueryManager *storedQueryManager() SIP_KEEPREFERENCE;
+
+    /**
      * HIG flags, which indicate the Human Interface Guidelines for the current platform.
      * \since QGIS 3.4
     */
     enum HigFlag SIP_ENUM_BASETYPE( IntFlag )
     {
-      HigMenuTextIsTitleCase = 1 << 0,       //!< Menu action texts should be title case
-      HigDialogTitleIsTitleCase = 1 << 1     //!< Dialog titles should be title case
+      HigMenuTextIsTitleCase = 1 << 0,   //!< Menu action texts should be title case
+      HigDialogTitleIsTitleCase = 1 << 1 //!< Dialog titles should be title case
     };
     Q_DECLARE_FLAGS( HigFlags, HigFlag )
 
@@ -278,7 +288,7 @@ class GUI_EXPORT QgsGui : public QObject
     */
     static QgsGui::HigFlags higFlags();
 
-    ~QgsGui();
+    ~QgsGui() override;
 
     /**
      * Samples the color on screen at the specified global \a point (pixel).
@@ -296,19 +306,14 @@ class GUI_EXPORT QgsGui : public QObject
 
     /**
      * Returns TRUE if python embedded in a project is currently allowed to be loaded.
-     * If the global option is to ask user, a modal dialog will be shown for macros
-     * or a button to enable Python expressions will be shown in a message bar.
-     * \param lambda a pointer to a lambda method. If specified, the dialog is not modal,
-     * a message is shown with a button to enable macro.
-     * The lambda will be run either if macros are currently allowed or if the user accepts the message.
-     * The \a messageBar must be given in such case.
+     * If the global option is to ask user, a modal dialog will be shown.
+     * \param  project  a pointer to the project.
      * \param messageBar the message bar must be provided if a lambda method is used.
-     * \param embeddedType enum value to identify if macros or expression functions should be checked.
      *
      * \note Not available in Python bindings
      * \since QGIS 3.40
      */
-    static bool pythonEmbeddedInProjectAllowed( void ( *lambda )() = nullptr, QgsMessageBar *messageBar = nullptr, Qgis::PythonEmbeddedType embeddedType = Qgis::PythonEmbeddedType::Macro ) SIP_SKIP;
+    static bool allowExecutionOfEmbeddedScripts( QgsProject *project, QgsMessageBar *messageBar = nullptr ) SIP_SKIP;
 
     /**
      * Initializes callout widgets.
@@ -317,6 +322,21 @@ class GUI_EXPORT QgsGui : public QObject
      * \since QGIS 3.40
      */
     static void initCalloutWidgets() SIP_SKIP;
+
+    /**
+     * Initializes plot widgets.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static void initPlotWidgets() SIP_SKIP;
+
+    /**
+     *  Checks whether QWebEngineView is available to display HTML content.
+     *
+     * \since QGIS 3.42
+     */
+    static bool hasWebEngine();
 
     ///@cond PRIVATE
     void emitOptionsChanged() SIP_SKIP;
@@ -337,7 +357,6 @@ class GUI_EXPORT QgsGui : public QObject
     void optionsChanged();
 
   private:
-
     QgsGui();
 
     QgsSettingsRegistryGui *mSettingsRegistryGui = nullptr;
@@ -367,12 +386,12 @@ class GUI_EXPORT QgsGui : public QObject
     QgsSensorGuiRegistry *mSensorGuiRegistry = nullptr;
     QgsSettingsEditorWidgetRegistry *mSettingsEditorRegistry = nullptr;
     QgsInputControllerManager *mInputControllerManager = nullptr;
-    std::unique_ptr< QgsWindowManagerInterface > mWindowManager;
+    QgsStoredQueryManager *mStoredQueryManager = nullptr;
+    std::unique_ptr<QgsWindowManagerInterface> mWindowManager;
 
 #ifdef SIP_RUN
     QgsGui( const QgsGui &other );
 #endif
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsGui::HigFlags )

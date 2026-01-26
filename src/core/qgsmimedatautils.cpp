@@ -12,17 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QStringList>
-
 #include "qgsmimedatautils.h"
 
 #include "qgslayertree.h"
 #include "qgslogger.h"
+#include "qgsmaplayerfactory.h"
+#include "qgsmeshlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
-#include "qgsmeshlayer.h"
 
 #include <QRegularExpression>
+#include <QStringList>
 
 static const char *QGIS_URILIST_MIMETYPE = "application/x-vnd.qgis.qgis.uri";
 
@@ -38,7 +38,7 @@ QgsMimeDataUtils::Uri::Uri( const QString &encData )
   name = decoded[2];
   uri = decoded[3];
 
-  if ( layerType == QLatin1String( "raster" ) && decoded.size() >= 6 )
+  if ( layerType == "raster"_L1 && decoded.size() >= 6 )
   {
     supportedCrs = decode( decoded[4] );
     supportedFormats = decode( decoded[5] );
@@ -58,7 +58,7 @@ QgsMimeDataUtils::Uri::Uri( const QString &encData )
   if ( decoded.size() > 9 )
     filePath = decoded.at( 9 );
 
-  QgsDebugMsgLevel( QStringLiteral( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
+  QgsDebugMsgLevel( u"type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6"_s
                     .arg( layerType, providerKey, name, uri,
                           supportedCrs.join( ',' ),
                           supportedFormats.join( ',' ) ), 2 );
@@ -71,38 +71,20 @@ QgsMimeDataUtils::Uri::Uri( QgsMapLayer *layer )
   , layerId( layer->id() )
   , pId( QString::number( QCoreApplication::applicationPid() ) )
 {
+  layerType = QgsMapLayerFactory::typeToString( layer->type() );
   switch ( layer->type() )
   {
     case Qgis::LayerType::Vector:
     {
-      layerType = QStringLiteral( "vector" );
       wkbType = qobject_cast< QgsVectorLayer *>( layer )->wkbType();
       break;
     }
     case Qgis::LayerType::Raster:
-    {
-      layerType = QStringLiteral( "raster" );
-      break;
-    }
-
     case Qgis::LayerType::Mesh:
-    {
-      layerType = QStringLiteral( "mesh" );
-      break;
-    }
     case Qgis::LayerType::PointCloud:
-    {
-      layerType = QStringLiteral( "pointcloud" );
-      break;
-    }
     case Qgis::LayerType::VectorTile:
-    {
-      layerType = QStringLiteral( "vector-tile" );
-      break;
-    }
     case Qgis::LayerType::TiledScene:
     {
-      layerType = QStringLiteral( "tiled-scene" );
       break;
     }
 
@@ -135,7 +117,7 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
 {
   owner = false;
   error.clear();
-  if ( layerType != QLatin1String( "vector" ) )
+  if ( layerType != "vector"_L1 )
   {
     error = QObject::tr( "%1: Not a vector layer." ).arg( name );
     return nullptr;
@@ -143,19 +125,19 @@ QgsVectorLayer *QgsMimeDataUtils::Uri::vectorLayer( bool &owner, QString &error 
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsVectorLayer *vectorLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId ) )
+    if ( QgsVectorLayer *vectorLayer = QgsProject::instance()->mapLayer<QgsVectorLayer *>( layerId ) ) // skip-keyword-check
     {
       return vectorLayer;
     }
   }
-  if ( providerKey == QLatin1String( "memory" ) )
+  if ( providerKey == "memory"_L1 )
   {
     error = QObject::tr( "Cannot get memory layer." );
     return nullptr;
   }
 
   owner = true;
-  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
+  const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() }; // skip-keyword-check
   return new QgsVectorLayer( uri, name, providerKey, options );
 }
 
@@ -163,7 +145,7 @@ QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error 
 {
   owner = false;
   error.clear();
-  if ( layerType != QLatin1String( "raster" ) )
+  if ( layerType != "raster"_L1 )
   {
     error = QObject::tr( "%1: Not a raster layer." ).arg( name );
     return nullptr;
@@ -171,7 +153,7 @@ QgsRasterLayer *QgsMimeDataUtils::Uri::rasterLayer( bool &owner, QString &error 
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsRasterLayer *rasterLayer = QgsProject::instance()->mapLayer<QgsRasterLayer *>( layerId ) )
+    if ( QgsRasterLayer *rasterLayer = QgsProject::instance()->mapLayer<QgsRasterLayer *>( layerId ) ) // skip-keyword-check
     {
       return rasterLayer;
     }
@@ -185,7 +167,7 @@ QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) co
 {
   owner = false;
   error.clear();
-  if ( layerType != QLatin1String( "mesh" ) )
+  if ( layerType != "mesh"_L1 )
   {
     error = QObject::tr( "%1: Not a mesh layer." ).arg( name );
     return nullptr;
@@ -193,7 +175,7 @@ QgsMeshLayer *QgsMimeDataUtils::Uri::meshLayer( bool &owner, QString &error ) co
 
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    if ( QgsMeshLayer *meshLayer = QgsProject::instance()->mapLayer<QgsMeshLayer *>( layerId ) )
+    if ( QgsMeshLayer *meshLayer = QgsProject::instance()->mapLayer<QgsMeshLayer *>( layerId ) ) // skip-keyword-check
     {
       return meshLayer;
     }
@@ -207,7 +189,7 @@ QgsMapLayer *QgsMimeDataUtils::Uri::mapLayer() const
 {
   if ( !layerId.isEmpty() && QgsMimeDataUtils::hasOriginatedFromCurrentAppInstance( *this ) )
   {
-    return QgsProject::instance()->mapLayer( layerId );
+    return QgsProject::instance()->mapLayer( layerId ); // skip-keyword-check
   }
   return nullptr;
 }
@@ -288,13 +270,13 @@ QString QgsMimeDataUtils::encode( const QStringList &items )
 {
   QString encoded;
   // Do not escape colon twice
-  const thread_local QRegularExpression re( QStringLiteral( "(?<!\\\\):" ) );
+  const thread_local QRegularExpression re( u"(?<!\\\\):"_s );
   const auto constItems = items;
   for ( const QString &item : constItems )
   {
     QString str = item;
-    str.replace( '\\', QLatin1String( "\\\\" ) );
-    str.replace( re, QStringLiteral( "\\:" ) );
+    str.replace( '\\', "\\\\"_L1 );
+    str.replace( re, u"\\:"_s );
     encoded += str + ':';
   }
   return encoded.left( encoded.length() - 1 );

@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsrasterbandcombobox.h"
-#include "qgsrasterlayer.h"
+
 #include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+
+#include "moc_qgsrasterbandcombobox.cpp"
 
 QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   : QComboBox( parent )
   , mNotSetString( tr( "Not set" ) )
 {
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
-  {
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] {
     if ( mLayer && mLayer->isValid() )
     {
-      const int newBand = currentIndex() >= 0 ? currentData().toInt() : -1 ;
+      const int newBand = currentIndex() >= 0 ? currentData().toInt() : -1;
       if ( newBand != mPrevBand )
       {
         emit bandChanged( currentIndex() >= 0 ? currentData().toInt() : -1 );
@@ -34,8 +36,7 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
     }
   } );
 
-  connect( this, &QComboBox::currentTextChanged, this, [ = ]( const QString & value )
-  {
+  connect( this, &QComboBox::currentTextChanged, this, [this]( const QString &value ) {
     if ( !mLayer || !mLayer->isValid() )
     {
       bool ok = false;
@@ -55,6 +56,8 @@ QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
 
   // default to editable, until a layer is set
   setEditable( true );
+
+  setSizeAdjustPolicy( QComboBox::SizeAdjustPolicy::AdjustToMinimumContentsLengthWithIcon );
 }
 
 QgsRasterLayer *QgsRasterBandComboBox::layer() const
@@ -85,7 +88,7 @@ void QgsRasterBandComboBox::setLayer( QgsMapLayer *layer )
 {
   const int oldBand = currentBand();
 
-  QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer );
+  QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
   mLayer = rl;
 
   blockSignals( true );
@@ -166,14 +169,14 @@ QString QgsRasterBandComboBox::displayBandName( QgsRasterDataProvider *provider,
   if ( !provider )
     return QString();
 
-  QString name {  provider->displayBandName( band ) };
+  QString name { provider->displayBandName( band ) };
   const QString description { provider->bandDescription( band ) };
   // displayBandName() includes band description and this description can be the same
   // as a band description from the metadata, so let's not append description to the band
   // name if it is already there
   if ( !description.isEmpty() )
   {
-    return name.contains( description, Qt::CaseInsensitive ) ? name : QStringLiteral( "%1 - %2" ).arg( name, description );
+    return name.contains( description, Qt::CaseInsensitive ) ? name : u"%1 - %2"_s.arg( name, description );
   }
   return name;
 }

@@ -19,7 +19,9 @@
 #define QGSMAPLAYERREFRESHSETTINGSWIDGET_H
 
 #include "ui_qgslayerrefreshwidgetbase.h"
+
 #include "qgis_gui.h"
+
 #include <QPointer>
 
 #define SIP_NO_FILE
@@ -38,7 +40,6 @@ class GUI_EXPORT QgsMapLayerRefreshSettingsWidget : public QWidget, private Ui::
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsMapLayerRefreshSettingsWidget.
      */
@@ -66,8 +67,6 @@ class GUI_EXPORT QgsMapLayerRefreshSettingsWidget : public QWidget, private Ui::
     void updateHelp();
 
   private:
-
-    QPointer< QgsMapLayer > mLayer;
-
+    QPointer<QgsMapLayer> mLayer;
 };
 #endif // QGSMAPLAYERREFRESHSETTINGSWIDGET_H

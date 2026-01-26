@@ -247,3 +247,415 @@ tests:
         name: expected/create_grid_negative_overlay.gml
         type: vector
 
+  - algorithm: native:surfacetopolygon
+    name: Create polygon from surface of Mesh layer
+    params:
+      INPUT:
+        name: quad_and_triangle.2dm
+        type: mesh
+    results:
+      OUTPUT:
+        name: expected/mesh_surface_to_polygon.gml
+        type: vector
+
+  - algorithm: native:surfacetopolygon
+    name: Create polygon from surface of Mesh layer - multiple parts with hole
+    params:
+      INPUT:
+        name: mesh_two_part_with_hole.2dm
+        type: mesh
+    results:
+      OUTPUT:
+        name: expected/mesh_surface_to_polygon_complex_mesh_hole.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster min max
+    params:
+      BAND: 1
+      EXTRACT: 0
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_min_max.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster min
+    params:
+      BAND: 1
+      EXTRACT: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_min.gml
+        type: vector
+
+  - algorithm: native:rasterminmax
+    name: Raster max
+    params:
+      BAND: 1
+      EXTRACT: 2
+      INPUT:
+        name: dem.tif
+        type: raster
+    results:
+      OUTPUT:
+        name: expected/raster_max.gml
+        type: vector
+
+  - algorithm: native:zonalminmaxpoint
+    name: Raster zonal min max
+    params:
+      INPUT:
+        name: custom/dem_zones.geojson
+        type: vector
+      INPUT_RASTER:
+        name: custom/dem_crs.tif
+        type: raster
+      RASTER_BAND: 1
+    results:
+      OUTPUT:
+        name: expected/raster_zonal_extremum.gml
+        type: vector
+
+  - algorithm: native:fillsinkswangliu
+    name: Fill sinks W&L
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      MIN_SLOPE: 0.1
+    results:
+      OUTPUT_FILLED_DEM:
+        hash: 2a436a9a5f2b0c4e5369868649ff2bf7d9e69d9fa71e21beb6ebd34c
+        type: rasterhash
+      OUTPUT_FLOW_DIRECTIONS:
+        hash: 47e3bd73b8aa8e64f726515a650fa1dfb4d14581e1b3a949182bd28b
+        type: rasterhash
+      OUTPUT_WATERSHED_BASINS:
+        hash: 38169bd8e8ff1400109936c8de70e429ab319926a053ab5142791010
+        type: rasterhash
+
+  - algorithm: native:fillsinkswangliu
+    name: Fill sinks W&L no min slope
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      MIN_SLOPE: 0.0
+    results:
+      OUTPUT_FILLED_DEM:
+        hash: 10aa3f7961764f420a6eaf19718faef69a943364d171e1242f415945
+        type: rasterhash
+      OUTPUT_FLOW_DIRECTIONS:
+        hash: 8a5f49fbcb14f7a84c59ee9952173600c6b2bd675ed59bef5c7260f0
+        type: rasterhash
+      OUTPUT_WATERSHED_BASINS:
+        hash: 38169bd8e8ff1400109936c8de70e429ab319926a053ab5142791010
+        type: rasterhash
+
+  - algorithm: native:concavehullbyfeature
+    name: Concave hull by feature
+    params:
+      ALPHA: 0.3
+      HOLES: true
+      INPUT:
+        name: custom/concave_hull_points.gml|layername=concave_hull_points
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/concave_hull_by_feature.gml
+        type: vector
+
+  - algorithm: native:removepartsbylength
+    name: Remove line parts by length
+    params:
+      INPUT:
+        name: custom/line_3857.gml|layername=line_3857
+        type: vector
+      MIN_LENGTH: 550000.0
+    results:
+      OUTPUT:
+        name: expected/remove_line_parts_by_length.gml
+        type: vector
+
+  - algorithm: native:removepartsbylength
+    name: Remove multiline parts by length
+    params:
+      INPUT:
+        name: multilines.gml|layername=multilines
+        type: vector
+      MIN_LENGTH: 3.0
+    results:
+      OUTPUT:
+        name: expected/remove_multiline_parts_by_length.gml
+        type: vector
+
+  - algorithm: native:removepartsbyarea
+    name: Remove polygon parts by area
+    params:
+      INPUT:
+        name: custom/polys_epsg31256.shp
+        type: vector
+      MIN_AREA: 9999000000.0
+    results:
+      OUTPUT:
+        name: expected/remove_polygon_parts_by_area.gml
+        type: vector
+
+  - algorithm: native:removepartsbyarea
+    name: Remove multipolygon parts by area
+    params:
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+      MIN_AREA: 4.0
+    results:
+      OUTPUT:
+        name: expected/remove_multipolygon_parts_by_area.gml
+        type: vector
+
+  - algorithm: native:totalcurvature
+    name: Total curvature from QGIS analysis library
+    params:
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+      NODATA: -9999.0
+    results:
+      OUTPUT:
+        hash: fc06f1af668bbfc6ee4fb6d421a4f561265ee20578a074eb763ae380
+        type: rasterhash
+
+  - algorithm: native:rastergaussianblur
+    name: Gaussian blur
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      Z_FACTOR: 1.0
+      NODATA: -9999.0
+      RADIUS: 8
+    results:
+      OUTPUT:
+        hash: a8962717af6fe2db0125f4d3cce29e9f0fce5a4bc980c4e01ebbbac1
+        type: rasterhash
+
+  - algorithm: native:rastergaussianblur
+    name: Gaussian blur with nodata
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_gaps.tif
+        type: raster
+      RADIUS: 16
+    results:
+      OUTPUT:
+        hash: d179014b5485417288018515557ace20ed493f355878827069309a56
+        type: rasterhash
+
+  - algorithm: native:rasterfeaturepreservingsmoothing
+    name: Feature preserving smoothing with z factor
+    params:
+      BAND: 1
+      INPUT:
+        name: dem.tif
+        type: raster
+      ITERATIONS: 3
+      RADIUS: 5
+      THRESHOLD: 8.0
+      Z_FACTOR: 8.983112e-06
+    results:
+      OUTPUT:
+        hash: efce6692d593fce01f6d1e09367f2412728e8f251ab683a060f7f387
+        type: rasterhash
+
+  - algorithm: native:rasterfeaturepreservingsmoothing
+    name: Feature preserving smoothing with max elevation change
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_crs.tif
+        type: raster
+      ITERATIONS: 3
+      MAX_ELEVATION_CHANGE: 23.0
+      RADIUS: 5
+      THRESHOLD: 15.0
+      Z_FACTOR: 1.0
+    results:
+      OUTPUT:
+        hash: 58b18561b99c002035173067f525f687bc5148b8eb7b3d85818e1bb2
+        type: rasterhash
+
+  - algorithm: native:rasterfeaturepreservingsmoothing
+    name: Feature preserving smoothing with nodata
+    params:
+      BAND: 1
+      INPUT:
+        name: custom/dem_gaps.tif
+        type: raster
+      ITERATIONS: 3
+      RADIUS: 5
+      THRESHOLD: 15.0
+      Z_FACTOR: 8.983112e-06
+    results:
+      OUTPUT:
+        hash: 211771cb725c1e8b26f699b75cd80c5445fa52e328e96b548627f777
+        type: rasterhash
+
+  - algorithm: native:validatenetwork
+    name: Test network validation direction attributes
+    params:
+      DIRECTION_FIELD: direction
+      INPUT:
+        name: custom/network_validation.gml
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 1.0e-05
+      TOLERANCE_NODE_SEGMENT: 1.0e-05
+      VALUE_BACKWARD: R
+      VALUE_BOTH: B
+      VALUE_FORWARD: F
+    results:
+      OUTPUT_INVALID_NETWORK:
+        name: expected/network_validation_direction.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to node
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_NODE: 5
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_node.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to node, with graph building tolerance
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 5.0
+      TOLERANCE_NODE_NODE: 20.0
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_node_with_tolerance.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to segment
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      TOLERANCE_NODE_SEGMENT: 4.0
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_segment.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:validatenetwork
+    name: Network validation node to segment, with graph building tolerance
+    params:
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 5.0
+      TOLERANCE_NODE_SEGMENT: 8.0
+    results:
+      OUTPUT_INVALID_NODES:
+        name: expected/network_validation_node_to_segment_with_tolerance.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:extractnetworkendpoints
+    name: Network endpoints (single edge)
+    params:
+      DEFAULT_DIRECTION: 2
+      DIRECTION_FIELD: DIRECTION
+      ENDPOINT_DEFINITION: 1
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: R
+      VALUE_BOTH: B
+      VALUE_FORWARD: F
+    results:
+      OUTPUT:
+        name: expected/network_endpoints_single_edge.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip
+
+  - algorithm: native:extractnetworkendpoints
+    name: Network endpoints (directional)
+    params:
+      DEFAULT_DIRECTION: 2
+      DIRECTION_FIELD: DIRECTION
+      ENDPOINT_DEFINITION: 0
+      INPUT:
+        name: custom/network_validation.gml|layername=network_validation
+        type: vector
+      TOLERANCE: 0.0
+      VALUE_BACKWARD: R
+      VALUE_BOTH: B
+      VALUE_FORWARD: F
+    results:
+      OUTPUT:
+        name: expected/network_endpoints_directional.gml
+        type: vector
+        compare:
+          ignore_crs_check: true
+          geometry:
+            precision: 2
+          fields:
+            fid: skip

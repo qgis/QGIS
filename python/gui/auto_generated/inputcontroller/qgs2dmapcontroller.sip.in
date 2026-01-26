@@ -20,17 +20,16 @@ Abstract base class for all 2D map controllers.
 #include "qgs2dmapcontroller.h"
 %End
   public:
-
     QgsAbstract2DMapController( QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsAbstract2DMapController, with the specified ``parent`` object.
+Constructor for QgsAbstract2DMapController, with the specified
+``parent`` object.
 %End
 
     virtual Qgis::InputControllerType type() const;
 
 
   signals:
-
 
 };
 

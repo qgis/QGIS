@@ -17,11 +17,14 @@
  ***************************************************************************/
 
 #include "qgsprovidermetadata.h"
-#include "qgsdataprovider.h"
-#include "qgsmaplayer.h"
-#include "qgsexception.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsdataprovider.h"
+#include "qgsexception.h"
+#include "qgsmaplayer.h"
 #include "qgsprovidersublayerdetails.h"
+
+#include "moc_qgsprovidermetadata.cpp"
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,
@@ -145,15 +148,15 @@ QgsDataProvider *QgsProviderMetadata::createProvider( const QString &uri,
 
 void QgsProviderMetadata::setBoolParameter( QVariantMap &uri, const QString &parameter, const QVariant &value )
 {
-  if ( value.toString().compare( QStringLiteral( "yes" ), Qt::CaseInsensitive ) == 0 ||
-       value.toString().compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0 ||
-       value.toString().compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( value.toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 ||
+       value.toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0 ||
+       value.toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
   {
     uri[ parameter ] = true;
   }
-  else if ( value.toString().compare( QStringLiteral( "no" ), Qt::CaseInsensitive ) == 0 ||
-            value.toString().compare( QStringLiteral( "0" ), Qt::CaseInsensitive ) == 0 ||
-            value.toString().compare( QStringLiteral( "false" ), Qt::CaseInsensitive ) == 0 )
+  else if ( value.toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 ||
+            value.toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0 ||
+            value.toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
     uri[ parameter ] = false;
   }
@@ -161,15 +164,15 @@ void QgsProviderMetadata::setBoolParameter( QVariantMap &uri, const QString &par
 
 bool QgsProviderMetadata::boolParameter( const QVariantMap &uri, const QString &parameter, bool defaultValue )
 {
-  if ( uri.value( parameter, QString() ).toString().compare( QStringLiteral( "yes" ), Qt::CaseInsensitive ) == 0 ||
-       uri.value( parameter, QString() ).toString().compare( QStringLiteral( "1" ), Qt::CaseInsensitive ) == 0 ||
-       uri.value( parameter, QString() ).toString().compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( uri.value( parameter, QString() ).toString().compare( u"yes"_s, Qt::CaseInsensitive ) == 0 ||
+       uri.value( parameter, QString() ).toString().compare( u"1"_s, Qt::CaseInsensitive ) == 0 ||
+       uri.value( parameter, QString() ).toString().compare( u"true"_s, Qt::CaseInsensitive ) == 0 )
   {
     return true;
   }
-  else if ( uri.value( parameter, QString() ).toString().compare( QStringLiteral( "no" ), Qt::CaseInsensitive ) == 0 ||
-            uri.value( parameter, QString() ).toString().compare( QStringLiteral( "0" ), Qt::CaseInsensitive ) == 0 ||
-            uri.value( parameter, QString() ).toString().compare( QStringLiteral( "false" ), Qt::CaseInsensitive ) == 0 )
+  else if ( uri.value( parameter, QString() ).toString().compare( u"no"_s, Qt::CaseInsensitive ) == 0 ||
+            uri.value( parameter, QString() ).toString().compare( u"0"_s, Qt::CaseInsensitive ) == 0 ||
+            uri.value( parameter, QString() ).toString().compare( u"false"_s, Qt::CaseInsensitive ) == 0 )
   {
     return false;
   }
@@ -197,12 +200,22 @@ QString QgsProviderMetadata::relativeToAbsoluteUri( const QString &uri, const Qg
   return context.pathResolver().readPath( uri );
 }
 
+QString QgsProviderMetadata::cleanUri( const QString &uri, Qgis::UriCleaningFlags flags ) const
+{
+  if ( flags.testFlag( Qgis::UriCleaningFlag::RemoveCredentials ) )
+    return QgsDataSourceUri::removePassword( uri );
+  else if ( flags.testFlag( Qgis::UriCleaningFlag::RedactCredentials ) )
+    return QgsDataSourceUri::removePassword( uri, true );
+  return uri;
+}
+
 Qgis::VectorExportResult QgsProviderMetadata::createEmptyLayer( const QString &, const QgsFields &,
     Qgis::WkbType, const QgsCoordinateReferenceSystem &,
     bool, QMap<int, int> &,
-    QString &errorMessage, const QMap<QString, QVariant> * )
+    QString &errorMessage, const QMap<QString, QVariant> *,
+    QString & )
 {
-  errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createEmptyLayer" ) );
+  errorMessage = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createEmptyLayer"_s );
   return Qgis::VectorExportResult::ErrorProviderUnsupportedFeature;
 }
 
@@ -252,7 +265,7 @@ QList<QgsDataItemProvider *> QgsProviderMetadata::dataItemProviders() const
 int QgsProviderMetadata::listStyles( const QString &, QStringList &, QStringList &,
                                      QStringList &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "listStyles" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"listStyles"_s );
   return -1;
 }
 
@@ -265,32 +278,32 @@ bool QgsProviderMetadata::styleExists( const QString &, const QString &, QString
 
 QString QgsProviderMetadata::getStyleById( const QString &, const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "getStyleById" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"getStyleById"_s );
   return QString();
 }
 
 bool QgsProviderMetadata::deleteStyleById( const QString &, const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteStyleById" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"deleteStyleById"_s );
   return false;
 }
 
 bool QgsProviderMetadata::saveStyle( const QString &, const QString &, const QString &, const QString &,
                                      const QString &, const QString &, bool, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveStyle" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"saveStyle"_s );
   return false;
 }
 
 QString QgsProviderMetadata::loadStyle( const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStyle" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"loadStyle"_s );
   return QString();
 }
 
 QString QgsProviderMetadata::loadStoredStyle( const QString &, QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "loadStoredStyle" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"loadStoredStyle"_s );
   return QString();
 }
 
@@ -301,7 +314,7 @@ bool QgsProviderMetadata::saveLayerMetadata( const QString &, const QgsLayerMeta
 
 bool QgsProviderMetadata::createDb( const QString &, QString &errCause )
 {
-  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createDb" ) );
+  errCause = QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createDb"_s );
   return false;
 }
 
@@ -313,7 +326,7 @@ QgsTransaction *QgsProviderMetadata::createTransaction( const QString & )
 QMap<QString, QgsAbstractProviderConnection *> QgsProviderMetadata::connections( bool cached )
 {
   Q_UNUSED( cached );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "connections" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"connections"_s ) );
 }
 
 QMap<QString, QgsAbstractDatabaseProviderConnection *> QgsProviderMetadata::dbConnections( bool cached )
@@ -338,7 +351,7 @@ QgsAbstractProviderConnection *QgsProviderMetadata::findConnection( const QStrin
 QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QString &name )
 {
   Q_UNUSED( name );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createConnection"_s ) );
 }
 
 
@@ -346,20 +359,20 @@ QgsAbstractProviderConnection *QgsProviderMetadata::createConnection( const QStr
 {
   Q_UNUSED( configuration );
   Q_UNUSED( uri );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "createConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"createConnection"_s ) );
 }
 
 void QgsProviderMetadata::deleteConnection( const QString &name )
 {
   Q_UNUSED( name );
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "deleteConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"deleteConnection"_s ) );
 }
 
 void QgsProviderMetadata::saveConnection( const QgsAbstractProviderConnection *connection, const QString &name )
 {
   Q_UNUSED( connection )
   Q_UNUSED( name )
-  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), QStringLiteral( "saveConnection" ) ) );
+  throw QgsProviderConnectionException( QObject::tr( "Provider %1 has no %2 method" ).arg( key(), u"saveConnection"_s ) );
 }
 
 ///@cond PRIVATE

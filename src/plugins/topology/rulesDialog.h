@@ -18,12 +18,12 @@
 #ifndef RULESDIALOG_H_
 #define RULESDIALOG_H_
 
+#include "ui_rulesDialog.h"
+
+#include "topolTest.h"
+
 #include <QDialog>
 #include <QMenu>
-
-
-#include "ui_rulesDialog.h"
-#include "topolTest.h"
 
 class QgisInterface;
 class QgsProject;
@@ -106,9 +106,6 @@ class rulesDialog : public QDialog, private Ui::rulesDialog
     void updateRuleItems( const QString &layerName );
     //! Open the associated help
     void showHelp();
-
-
-
 };
 
 #endif

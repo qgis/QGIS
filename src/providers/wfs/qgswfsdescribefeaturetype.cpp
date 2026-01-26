@@ -14,42 +14,72 @@
  ***************************************************************************/
 
 #include "qgswfsdescribefeaturetype.h"
-#include "qgsmessagelog.h"
+
 #include <QUrlQuery>
+
+#include "moc_qgswfsdescribefeaturetype.cpp"
 
 QgsWFSDescribeFeatureType::QgsWFSDescribeFeatureType( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )
 {
 }
 
-bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion,
-    const QString &typeName, const QgsWfsCapabilities::Capabilities &caps )
+bool QgsWFSDescribeFeatureType::requestFeatureType( const QString &WFSVersion, const QString &typeName, const QgsWfsCapabilities &caps )
 {
-  QUrl url( mUri.requestUrl( QStringLiteral( "DescribeFeatureType" ) ) );
-  QUrlQuery query( url );
-  query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+  QUrl url( mUri.requestUrl( u"DescribeFeatureType"_s, mUri.httpMethod() ) );
 
-  const QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
-
-  if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+  switch ( mUri.httpMethod() )
   {
-    query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
-    if ( !namespaceValue.isEmpty() )
+    case Qgis::HttpMethod::Get:
     {
-      query.addQueryItem( QStringLiteral( "NAMESPACES" ), namespaceValue );
+      QUrlQuery query( url );
+      query.addQueryItem( u"VERSION"_s, WFSVersion );
+
+      const QString namespaceValue( caps.getNamespaceParameterValue( WFSVersion, typeName ) );
+
+      if ( WFSVersion.startsWith( "2.0"_L1 ) )
+      {
+        query.addQueryItem( u"TYPENAMES"_s, typeName );
+        if ( !namespaceValue.isEmpty() )
+        {
+          query.addQueryItem( u"NAMESPACES"_s, namespaceValue );
+        }
+      }
+      else
+      {
+        if ( !namespaceValue.isEmpty() )
+        {
+          query.addQueryItem( u"NAMESPACE"_s, namespaceValue );
+        }
+      }
+
+      // Always add singular form for broken servers
+      // See: https://github.com/qgis/QGIS/issues/41087
+      query.addQueryItem( u"TYPENAME"_s, typeName );
+
+      url.setQuery( query );
+      return sendGET( url, QString(), true, false );
     }
-  }
 
-  // Always add singular form for broken servers
-  // See: https://github.com/qgis/QGIS/issues/41087
-  query.addQueryItem( QStringLiteral( "TYPENAME" ), typeName );
-  if ( !namespaceValue.isEmpty() )
-  {
-    query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
-  }
+    case Qgis::HttpMethod::Post:
+    {
+      QDomDocument postDocument = createPostDocument();
+      QDomElement describeFeatureTypeElement = createRootPostElement( caps, WFSVersion, postDocument, u"wfs:DescribeFeatureType"_s, { typeName } );
 
-  url.setQuery( query );
-  return sendGET( url, QString(), true, false );
+      QDomElement typeNameElement = postDocument.createElement( u"wfs:TypeName"_s );
+      typeNameElement.appendChild( postDocument.createTextNode( typeName ) );
+      describeFeatureTypeElement.appendChild( typeNameElement );
+
+      return sendPOST( url, u"application/xml; charset=utf-8"_s, postDocument.toByteArray(), true, { QNetworkReply::RawHeaderPair { "Accept", "application/xml" } } );
+    }
+
+    case Qgis::HttpMethod::Head:
+    case Qgis::HttpMethod::Put:
+    case Qgis::HttpMethod::Delete:
+      // not supported, impossible to hit
+      break;
+  }
+  return false;
 }
 
 QString QgsWFSDescribeFeatureType::errorMessageWithReason( const QString &reason )

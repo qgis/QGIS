@@ -15,18 +15,27 @@
 
 #include "qgsmssqldatabase.h"
 
+#include <memory>
+
 #include "qgsdatasourceuri.h"
+#include "qgsdbquerylog.h"
 #include "qgslogger.h"
+#include "qgsmssqlprovider.h"
+#include "qgsmssqlutils.h"
+#include "qgsvariantutils.h"
 
 #include <QCoreApplication>
-#include <QtDebug>
 #include <QFile>
 #include <QThread>
+#include <QtDebug>
+
+constexpr int sMssqlDatabaseQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
+#define LoggedExec( query, sql ) execLogged( query, sql, QString( QString( __FILE__ ).mid( sMssqlDatabaseQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
 
 
 QRecursiveMutex QgsMssqlDatabase::sMutex;
 
-QMap<QString, std::weak_ptr<QgsMssqlDatabase> > QgsMssqlDatabase::sConnections;
+QMap<QString, std::weak_ptr<QgsMssqlDatabase>> QgsMssqlDatabase::sConnections;
 
 
 QString QgsMssqlDatabase::connectionName( const QString &service, const QString &host, const QString &database, bool transaction )
@@ -39,7 +48,7 @@ QString QgsMssqlDatabase::connectionName( const QString &service, const QString 
 
     if ( database.isEmpty() )
     {
-      QgsDebugError( QStringLiteral( "QgsMssqlProvider database name not specified" ) );
+      QgsDebugError( u"QgsMssqlProvider database name not specified"_s );
       return QString();
     }
 
@@ -49,7 +58,7 @@ QString QgsMssqlDatabase::connectionName( const QString &service, const QString 
     connName = service;
 
   if ( !transaction )
-    connName += QStringLiteral( ":0x%1" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
+    connName += u":0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, '0'_L1 );
   else
     connName += ":transaction";
   return connName;
@@ -59,23 +68,24 @@ QString QgsMssqlDatabase::connectionName( const QString &service, const QString 
 std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QString &uri, bool transaction )
 {
   QgsDataSourceUri dsUri( uri );
-  return connectDb( dsUri.service(), dsUri.host(), dsUri.database(), dsUri.username(), dsUri.password(), transaction );
+  return connectDb( dsUri, transaction );
 }
 
-std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction )
+std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QgsDataSourceUri &uri, bool transaction )
 {
   // try to use existing conn or create a new one
 
   QMutexLocker locker( &sMutex );
 
-  QString connName = connectionName( service, host, database, transaction );
+  const QString connName = connectionName( uri.service(), uri.host(), uri.database(), transaction );
 
-  if ( sConnections.contains( connName ) && !sConnections[connName].expired() )
-    return sConnections[connName].lock();
+  auto existingConnectionIt = sConnections.constFind( connName );
+  if ( existingConnectionIt != sConnections.constEnd() && !existingConnectionIt->expired() )
+    return existingConnectionIt->lock();
 
-  QSqlDatabase db = getDatabase( service, host, database, username, password, transaction );
+  QSqlDatabase db = getDatabase( uri.service(), uri.host(), uri.database(), uri.username(), uri.password(), transaction, uri.hasParam( u"timeout"_s ) ? uri.param( u"timeout"_s ).toInt() : 0 );
 
-  std::shared_ptr<QgsMssqlDatabase> c( new QgsMssqlDatabase( db, transaction ) );
+  std::shared_ptr<QgsMssqlDatabase> c( new QgsMssqlDatabase( db, uri, transaction ) );
 
   // we return connection even if it failed to open (because the error message may be useful)
   // but do not add it to connections as it is not useful
@@ -86,14 +96,15 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlDatabase::connectDb( const QString &se
   return c;
 }
 
-QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, bool transaction )
+QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, const QgsDataSourceUri &uri, bool transaction )
+  : mUri( uri )
 {
   mTransaction = transaction;
   mDB = db;
 
   if ( mTransaction )
   {
-    mTransactionMutex.reset( new QRecursiveMutex );
+    mTransactionMutex = std::make_unique<QRecursiveMutex>();
   }
 
   if ( !mDB.isOpen() )
@@ -105,6 +116,29 @@ QgsMssqlDatabase::QgsMssqlDatabase( const QSqlDatabase &db, bool transaction )
   }
 }
 
+bool QgsMssqlDatabase::execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin ) const
+{
+  QgsDatabaseQueryLogWrapper logWrapper { sql, mUri.uri(), u"mssql"_s, u"QgsMssqlProvider"_s, queryOrigin };
+  const bool res { qry.exec( sql ) };
+  if ( !res )
+  {
+    logWrapper.setError( qry.lastError().text() );
+  }
+  else
+  {
+    if ( qry.isSelect() )
+    {
+      logWrapper.setFetchedRows( qry.size() );
+    }
+    else
+    {
+      logWrapper.setFetchedRows( qry.numRowsAffected() );
+    }
+  }
+  logWrapper.setQuery( qry.lastQuery() );
+  return res;
+}
+
 QgsMssqlDatabase::~QgsMssqlDatabase()
 {
   // close DB if it is open
@@ -114,11 +148,278 @@ QgsMssqlDatabase::~QgsMssqlDatabase()
   }
 }
 
+QSqlQuery QgsMssqlDatabase::createQuery()
+{
+  QSqlDatabase d = db();
+  if ( !d.isOpen() )
+  {
+    QgsDebugError( "Creating query, but the database is not open!" );
+  }
+  return QSqlQuery( d );
+}
+
+bool QgsMssqlDatabase::loadFields( FieldDetails &details, const QString &schema, const QString &tableName, QString &error )
+{
+  error.clear();
+
+  bool isIdentity = false;
+  details.attributeFields.clear();
+  details.defaultValues.clear();
+  details.computedColumns.clear();
+
+  // get field spec
+  QSqlQuery query = createQuery();
+  query.setForwardOnly( true );
+
+  const QString sql { u"SELECT name FROM sys.columns WHERE is_computed = 1 AND object_id = OBJECT_ID('[%1].[%2]')"_s.arg( schema, tableName ) };
+
+  // Get computed columns which need to be ignored on insert or update.
+  if ( !LoggedExec( query, sql ) )
+  {
+    error = query.lastError().text();
+    return false;
+  }
+
+  while ( query.next() )
+  {
+    details.computedColumns.append( query.value( 0 ).toString() );
+  }
+
+  // Field has unique constraint
+  QSet<QString> setColumnUnique;
+  {
+    const QString sql2 { QStringLiteral( "SELECT * FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS TC"
+                                         " INNER JOIN INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE CC ON TC.CONSTRAINT_NAME = CC.CONSTRAINT_NAME"
+                                         " WHERE TC.CONSTRAINT_SCHEMA = %1 AND TC.TABLE_NAME = %2 AND TC.CONSTRAINT_TYPE = 'unique'" )
+                           .arg( QgsMssqlUtils::quotedValue( schema ), QgsMssqlUtils::quotedValue( tableName ) ) };
+    if ( !LoggedExec( query, sql2 ) )
+    {
+      error = query.lastError().text();
+      return false;
+    }
+
+    while ( query.next() )
+    {
+      setColumnUnique.insert( query.value( u"COLUMN_NAME"_s ).toString() );
+    }
+  }
+
+  const QString sql3 { u"exec sp_columns @table_name = %1, @table_owner = %2"_s.arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
+  if ( !LoggedExec( query, sql3 ) )
+  {
+    error = query.lastError().text();
+    return false;
+  }
+
+  int i = 0;
+  QStringList pkCandidates;
+  while ( query.next() )
+  {
+    const QString colName = query.value( u"COLUMN_NAME"_s ).toString();
+    const QString sqlTypeName = query.value( u"TYPE_NAME"_s ).toString();
+    bool columnIsIdentity = false;
+
+    // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
+    // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
+    if ( ( details.geometryColumnName.isEmpty() && ( sqlTypeName == "geometry"_L1 || sqlTypeName == "geography"_L1 ) )
+         || colName == details.geometryColumnName )
+    {
+      details.geometryColumnName = colName;
+      details.geometryColumnType = sqlTypeName;
+      details.isGeography = sqlTypeName == "geography"_L1;
+    }
+    else
+    {
+      if ( sqlTypeName == "int identity"_L1 || sqlTypeName == "bigint identity"_L1 )
+      {
+        details.primaryKeyType = PrimaryKeyType::Int;
+        details.primaryKeyAttrs << details.attributeFields.size();
+        columnIsIdentity = true;
+        isIdentity = true;
+      }
+      else if ( sqlTypeName == "int"_L1 || sqlTypeName == "bigint"_L1 )
+      {
+        pkCandidates << colName;
+      }
+
+      const int precision = query.value( 6 ).toInt();
+      const int length = query.value( 7 ).toInt();
+      const int scale = query.value( u"SCALE"_s ).toInt();
+      const bool nullable = query.value( u"NULLABLE"_s ).toBool();
+      const bool unique = setColumnUnique.contains( colName );
+      const bool readOnly = columnIsIdentity;
+
+      const QgsField field = QgsMssqlUtils::createField( colName, sqlTypeName, length, precision, scale, nullable, unique, readOnly );
+
+      details.attributeFields.append( field );
+
+      // Default value
+      if ( !QgsVariantUtils::isNull( query.value( u"COLUMN_DEF"_s ) ) )
+      {
+        details.defaultValues.insert( i, query.value( u"COLUMN_DEF"_s ).toString() );
+      }
+      else if ( columnIsIdentity )
+      {
+        // identity column types don't report a default value clause in the COLUMN_DEF attribute. So we need to fake
+        // one, so that we can correctly indicate that the database is responsible for populating this column.
+        details.defaultValues.insert( i, u"Autogenerate"_s );
+      }
+
+      ++i;
+    }
+  }
+
+  // get primary key
+  if ( details.primaryKeyAttrs.isEmpty() )
+  {
+    query.clear();
+    query.setForwardOnly( true );
+    const QString sql4 { u"exec sp_pkeys @table_name = %1, @table_owner = %2 "_s.arg( QgsMssqlUtils::quotedValue( tableName ), QgsMssqlUtils::quotedValue( schema ) ) };
+    if ( !LoggedExec( query, sql4 ) )
+    {
+      QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
+    }
+
+    if ( query.isActive() )
+    {
+      details.primaryKeyType = PrimaryKeyType::Int;
+
+      while ( query.next() )
+      {
+        const QString fidColName = query.value( 3 ).toString();
+        const int idx = details.attributeFields.indexFromName( fidColName );
+        const QgsField &fld = details.attributeFields.at( idx );
+
+        if ( !details.primaryKeyAttrs.isEmpty() || ( fld.type() != QMetaType::Type::Int && fld.type() != QMetaType::Type::LongLong && ( fld.type() != QMetaType::Type::Double || fld.precision() != 0 ) ) )
+          details.primaryKeyType = PrimaryKeyType::FidMap;
+
+        details.primaryKeyAttrs << idx;
+      }
+
+      if ( details.primaryKeyAttrs.isEmpty() )
+      {
+        details.primaryKeyType = PrimaryKeyType::Unknown;
+      }
+    }
+  }
+
+  if ( details.primaryKeyAttrs.isEmpty() )
+  {
+    const auto constPkCandidates = pkCandidates;
+    for ( const QString &pk : constPkCandidates )
+    {
+      query.clear();
+      query.setForwardOnly( true );
+      const QString sql5 { u"select count(distinct [%1]), count([%1]) from [%2].[%3]"_s
+                             .arg( pk, schema, tableName ) };
+      if ( !LoggedExec( query, sql5 ) )
+      {
+        QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
+      }
+
+      if ( query.isActive() && query.next() && query.value( 0 ).toInt() == query.value( 1 ).toInt() )
+      {
+        details.primaryKeyType = PrimaryKeyType::Int;
+        details.primaryKeyAttrs << details.attributeFields.indexFromName( pk );
+        return true;
+      }
+    }
+  }
+
+  if ( details.primaryKeyAttrs.size() == 1 && !isIdentity )
+  {
+    // primary key has unique constraints
+    QgsFieldConstraints constraints = details.attributeFields.at( details.primaryKeyAttrs[0] ).constraints();
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    details.attributeFields[details.primaryKeyAttrs[0]].setConstraints( constraints );
+  }
+  return true;
+}
+
+bool QgsMssqlDatabase::loadQueryFields( FieldDetails &details, const QString &query, QString &error )
+{
+  error.clear();
+
+  details.attributeFields.clear();
+  details.defaultValues.clear();
+  details.computedColumns.clear();
+
+  // get field spec
+  QSqlQuery dbQuery = createQuery();
+  dbQuery.setForwardOnly( true );
+
+  // TODO SQL server >= 2012 only!
+
+  const QString sql { QStringLiteral( R"raw(
+    EXEC sp_describe_first_result_set
+      %1
+    )raw" )
+                        .arg( QgsMssqlUtils::quotedValue( query ) ) };
+  if ( !LoggedExec( dbQuery, sql ) )
+  {
+    error = dbQuery.lastError().text();
+    return false;
+  }
+
+  int fieldIndex = 0;
+  while ( dbQuery.next() )
+  {
+    fieldIndex++;
+
+    // consider all columns as computed
+    // NOTE: for some queries some fields are updateable. We can determine this through the "is_updateable" column in sp_describe_first_result_set
+    // However the provider has no way to selectively say some columns are updateable but not others, so we treat all queries as completely read-only
+    const int columnOrdinal = dbQuery.value( 1 ).toInt();
+    if ( columnOrdinal != fieldIndex )
+    {
+      QgsDebugError( u"sp_describe_first_result_set returned out of order results!"_s );
+    }
+
+    const bool isHidden = dbQuery.value( 0 ).toInt();
+    if ( isHidden )
+      continue;
+
+    QString name = dbQuery.value( 2 ).toString();
+    if ( name.isEmpty() )
+      name = u"__unnamed__%1"_s.arg( fieldIndex );
+    const bool isNullable = dbQuery.value( 3 ).toInt();
+    const QString systemTypeName = dbQuery.value( 5 ).toString();
+    const int maxLength = dbQuery.value( 6 ).toInt();
+    const int precision = dbQuery.value( 7 ).toInt();
+    const int scale = dbQuery.value( 8 ).toInt();
+
+    // if we don't have an explicitly set geometry column name, and this is a geometry column, then use it
+    // but if we DO have an explicitly set geometry column name, then load the other information if this is that column
+    if ( ( details.geometryColumnName.isEmpty() && ( systemTypeName == "geometry"_L1 || systemTypeName == "geography"_L1 ) )
+         || ( !name.isEmpty() && name == details.geometryColumnName ) )
+    {
+      details.geometryColumnName = name;
+      details.geometryColumnType = systemTypeName;
+
+      // some versions/setups of SQL Server incorrectly report geometry columns as 'image' types in sp_describe_first_result_set results!
+      // let's just fix that up here...
+      if ( details.geometryColumnType == "image"_L1 )
+      {
+        details.geometryColumnType = u"geometry"_s;
+      }
+
+      details.isGeography = systemTypeName == "geography"_L1;
+    }
+    else
+    {
+      const QgsField field = QgsMssqlUtils::createField( name, systemTypeName, maxLength, precision, scale, isNullable, false, true );
+      details.attributeFields.append( field );
+    }
+  }
+
+  return true;
+}
+
 
 // -------------------
 
 
-QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction )
+QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool transaction, int timeout )
 {
   QSqlDatabase db;
 
@@ -130,13 +431,17 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
 
   if ( !QSqlDatabase::contains( threadSafeConnectionName ) )
   {
-    db = QSqlDatabase::addDatabase( QStringLiteral( "QODBC" ), threadSafeConnectionName );
-    db.setConnectOptions( QStringLiteral( "SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV" ) );
+    db = QSqlDatabase::addDatabase( u"QODBC"_s, threadSafeConnectionName );
+    QString connectOptions = u"SQL_ATTR_CONNECTION_POOLING=SQL_CP_ONE_PER_HENV"_s;
+    if ( timeout != 0 )
+      connectOptions += u";SQL_ATTR_LOGIN_TIMEOUT=%1;SQL_ATTR_CONNECTION_TIMEOUT=%1"_s.arg( timeout );
+
+    db.setConnectOptions( connectOptions );
 
     // for background threads, remove database when current thread finishes
     if ( QThread::currentThread() != QCoreApplication::instance()->thread() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 2 );
+      QgsDebugMsgLevel( u"Scheduled auth db remove on thread close"_s, 2 );
 
       // IMPORTANT - we use a direct connection here, because the database removal must happen immediately
       // when the thread finishes, and we cannot let this get queued on the main thread's event loop.
@@ -144,11 +449,9 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
       // and a subsequent call to QSqlDatabase::database with the same thread address (yep it happens, actually a lot)
       // triggers a condition in QSqlDatabase which detects the nullptr private thread data and returns an invalid database instead.
       // QSqlDatabase::removeDatabase is thread safe, so this is ok to do.
-      QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [threadSafeConnectionName]
-      {
+      QObject::connect( QThread::currentThread(), &QThread::finished, QThread::currentThread(), [threadSafeConnectionName] {
         const QMutexLocker locker( &sMutex );
-        QSqlDatabase::removeDatabase( threadSafeConnectionName );
-      }, Qt::DirectConnection );
+        QSqlDatabase::removeDatabase( threadSafeConnectionName ); }, Qt::DirectConnection );
     }
   }
   else
@@ -168,15 +471,15 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
   {
 #ifdef Q_OS_WIN
     connectionString = "driver={SQL Server}";
-#elif defined (Q_OS_MAC)
+#elif defined( Q_OS_MAC )
     QString freeTDSDriver( QCoreApplication::applicationDirPath().append( "/lib/libtdsodbc.so" ) );
     if ( QFile::exists( freeTDSDriver ) )
     {
-      connectionString = QStringLiteral( "driver=%1;port=1433;TDS_Version=auto" ).arg( freeTDSDriver );
+      connectionString = u"driver=%1;port=1433;TDS_Version=auto"_s.arg( freeTDSDriver );
     }
     else
     {
-      connectionString = QStringLiteral( "driver={FreeTDS};port=1433;TDS_Version=auto" );
+      connectionString = u"driver={FreeTDS};port=1433;TDS_Version=auto"_s;
     }
 #else
     // It seems that FreeTDS driver by default uses an ancient TDS protocol version (4.2) to communicate with MS SQL
@@ -184,7 +487,7 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
     // - truncating data from varchar columns to 255 chars - failing to read WKT for CRS
     // - truncating binary data to 4096 bytes (see @@TEXTSIZE) - failing to parse larger geometries
     // The added "TDS_Version=auto" should negotiate more recent version (manually setting e.g. 7.2 worked fine too)
-    connectionString = QStringLiteral( "driver={FreeTDS};port=1433;TDS_Version=auto" );
+    connectionString = u"driver={FreeTDS};port=1433;TDS_Version=auto"_s;
 #endif
   }
 
@@ -195,7 +498,7 @@ QSqlDatabase QgsMssqlDatabase::getDatabase( const QString &service, const QStrin
     connectionString += ";database=" + database;
 
   if ( password.isEmpty() )
-    connectionString += QLatin1String( ";trusted_connection=yes" );
+    connectionString += ";trusted_connection=yes"_L1;
   else
     connectionString += ";uid=" + username + ";pwd=" + password;
 

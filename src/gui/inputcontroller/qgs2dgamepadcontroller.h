@@ -16,8 +16,9 @@
 #ifndef QGS2DGAMEPADCONTROLLER_H
 #define QGS2DGAMEPADCONTROLLER_H
 
-#include "qgis_sip.h"
 #include "qgsconfig.h"
+
+#include "qgis_sip.h"
 
 SIP_IF_MODULE( HAVE_QTGAMEPAD )
 
@@ -31,9 +32,9 @@ SIP_IF_MODULE( HAVE_QTGAMEPAD )
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgs2dgamepadcontroller.h"
-% End
+//%End
 #endif
 
 class QGamepad;
@@ -52,7 +53,7 @@ class GUI_EXPORT QgsGamepad2DMapController : public QgsAbstract2DMapController
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast< QgsGamepad2DMapController * >( sipCpp ) )
+    if ( qobject_cast<QgsGamepad2DMapController *>( sipCpp ) )
 
       sipType = sipType_QgsGamepad2DMapController;
     else
@@ -61,7 +62,6 @@ class GUI_EXPORT QgsGamepad2DMapController : public QgsAbstract2DMapController
 #endif
 
   public:
-
     /**
      * Constructor for QgsGamepad2DMapController, with the specified \a gamepadDeviceId and \a parent object.
      */
@@ -367,7 +367,7 @@ class GUI_EXPORT QgsGamepad2DMapController : public QgsAbstract2DMapController
 
   private:
     int mGamepadDeviceId = -1;
-    QPointer< QGamepad> mGamepad;
+    QPointer<QGamepad> mGamepad;
 };
 
 #endif

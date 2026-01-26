@@ -16,8 +16,11 @@
 
 #include "qgsnullsymbolrenderer.h"
 #include "qgssymbol.h"
-#include <QLayout>
+
 #include <QLabel>
+#include <QLayout>
+
+#include "moc_qgsnullsymbolrendererwidget.cpp"
 
 QgsRendererWidget *QgsNullSymbolRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -33,7 +36,7 @@ QgsNullSymbolRendererWidget::QgsNullSymbolRendererWidget( QgsVectorLayer *layer,
   }
   if ( !mRenderer )
   {
-    mRenderer = std::make_unique< QgsNullSymbolRenderer >();
+    mRenderer = std::make_unique<QgsNullSymbolRenderer>();
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }

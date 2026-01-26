@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsfiledownloaderdialog.h"
+
 #include "qgsfiledownloader.h"
 #include "qgsfileutils.h"
+
 #include <QMessageBox>
 
+#include "moc_qgsfiledownloaderdialog.cpp"
+
 QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg )
-  : mOutputFileName( outputFileName ),
-    mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )
+  : mOutputFileName( outputFileName ), mDownloader( new QgsFileDownloader( url, outputFileName, authcfg, true ) )
 {
   setWindowTitle( tr( "Download" ) );
   setLabelText( tr( "Downloading %1." ).arg( outputFileName ) );
@@ -41,7 +44,7 @@ QgsFileDownloaderDialog::QgsFileDownloaderDialog( const QUrl &url, const QString
 
 void QgsFileDownloaderDialog::onError( const QStringList &errors )
 {
-  QMessageBox::warning( nullptr, tr( "Download File" ), errors.join( QLatin1String( "<br>" ) ) );
+  QMessageBox::warning( nullptr, tr( "Download File" ), errors.join( "<br>"_L1 ) );
 }
 
 void QgsFileDownloaderDialog::onDownloadProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -50,4 +53,3 @@ void QgsFileDownloaderDialog::onDownloadProgress( qint64 bytesReceived, qint64 b
   setValue( bytesReceived );
   setLabelText( tr( "Downloading %1 of %2 %3." ).arg( QgsFileUtils::representFileSize( bytesReceived ), QgsFileUtils::representFileSize( bytesTotal ), mOutputFileName ) );
 }
-

@@ -15,21 +15,24 @@
 
 #include "qgstracer.h"
 
+#include <memory>
+#include <vector>
 
+#include "qgsexpressioncontextutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgsgeos.h"
 #include "qgslogger.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 #include <queue>
-#include <vector>
+
+#include "moc_qgstracer.cpp"
 
 typedef std::pair<int, double> DijkstraQueueItem; // first = vertex index, second = distance
 
@@ -496,7 +499,7 @@ bool QgsTracer::initGraph()
     if ( !enableInvisibleFeature && mRenderContext && vl->renderer() )
     {
       renderer.reset( vl->renderer()->clone() );
-      ctx.reset( new QgsRenderContext( *mRenderContext.get() ) );
+      ctx = std::make_unique<QgsRenderContext>( *mRenderContext.get() );
       ctx->expressionContext() << QgsExpressionContextUtils::layerScope( vl );
 
       // setup scale for scale dependent visibility (rule based)
@@ -559,20 +562,33 @@ bool QgsTracer::initGraph()
     // GEOSNode_r may throw an exception
     geos::unique_ptr allGeomGeos( QgsGeos::asGeos( allGeom ) );
     geos::unique_ptr allNoded( GEOSNode_r( QgsGeosContext::get(), allGeomGeos.get() ) );
+
+    if ( mAddPointsOnIntersections )
+    {
+      mIntersections = QgsGeometry();
+    }
+    else
+    {
+      geos::unique_ptr allPoints( GEOSGeom_extractUniquePoints_r( QgsGeosContext::get(), allGeomGeos.get() ) );
+      geos::unique_ptr nodedPoints( GEOSGeom_extractUniquePoints_r( QgsGeosContext::get(), allNoded.get() ) );
+      geos::unique_ptr intersectionNodes( GEOSDifference_r( QgsGeosContext::get(), nodedPoints.get(), allPoints.get() ) );
+      mIntersections = QgsGeos::geometryFromGeos( intersectionNodes.release() );
+    }
+
     timeNodingCall = t2a.elapsed();
 
     QgsGeometry noded = QgsGeos::geometryFromGeos( allNoded.release() );
 
     mpl = noded.asMultiPolyline();
   }
-  catch ( GEOSException &e )
+  catch ( QgsGeosException &e )
   {
     // no big deal... we will just not have nicely noded linework, potentially
     // missing some intersections
 
     mHasTopologyProblem = true;
 
-    QgsDebugError( QStringLiteral( "Tracer Noding Exception: %1" ).arg( e.what() ) );
+    QgsDebugError( u"Tracer Noding Exception: %1"_s.arg( e.what() ) );
   }
 #endif
 
@@ -588,7 +604,7 @@ bool QgsTracer::initGraph()
   Q_UNUSED( timeNoding )
   Q_UNUSED( timeNodingCall )
   Q_UNUSED( timeMake )
-  QgsDebugMsgLevel( QStringLiteral( "tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms" )
+  QgsDebugMsgLevel( u"tracer extract %1 ms, noding %2 ms (call %3 ms), make %4 ms"_s
                     .arg( timeExtract ).arg( timeNoding ).arg( timeNodingCall ).arg( timeMake ), 2 );
 
   return true;
@@ -640,7 +656,7 @@ void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, cons
 
 void QgsTracer::setRenderContext( const QgsRenderContext *renderContext )
 {
-  mRenderContext.reset( new QgsRenderContext( *renderContext ) );
+  mRenderContext = std::make_unique<QgsRenderContext>( *renderContext );
   invalidateGraph();
 }
 
@@ -766,7 +782,34 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
 
   Q_UNUSED( tPrep )
   Q_UNUSED( tPath )
-  QgsDebugMsgLevel( QStringLiteral( "path timing: prep %1 ms, path %2 ms" ).arg( tPrep ).arg( tPath ), 2 );
+  QgsDebugMsgLevel( u"path timing: prep %1 ms, path %2 ms"_s.arg( tPrep ).arg( tPath ), 2 );
+
+  if ( points.size() > 2 && !mIntersections.isEmpty() )
+  {
+    QVector<QgsPointXY> noInts;
+    noInts.reserve( points.size() );
+    noInts.append( points.first() );
+    for ( auto it = std::next( points.begin() ), end = std::prev( points.end() ); it != end; ++it )
+    {
+      if ( mIntersections.contains( it->x(), it->y() ) )
+      {
+        // we skip points that are on a straight segment and were not on the original geometries
+        QgsPointXY nearest;
+        if ( 0 == it->sqrDistToSegment( std::prev( it )->x(),
+                                        std::prev( it )->y(),
+                                        std::next( it )->x(),
+                                        std::next( it )->y(),
+                                        nearest, 1E-12 ) )
+        {
+          continue;
+        }
+      }
+      noInts << *it;
+    }
+    noInts.append( points.last() );
+    points = noInts;
+    QgsDebugMsgLevel( u"intersection point removal timing: %1 ms"_s.arg( t2.elapsed() - tPath ), 2 );
+  }
 
   resetGraph( *mGraph );
 
@@ -812,4 +855,13 @@ bool QgsTracer::isPointSnapped( const QgsPointXY &pt )
   int lineVertexAfter;
   int e = point2edge( *mGraph, pt, lineVertexAfter );
   return e != -1;
+}
+
+void QgsTracer::setAddPointsOnIntersectionsEnabled( bool enable )
+{
+  if ( enable == mAddPointsOnIntersections )
+    return;
+
+  mAddPointsOnIntersections = enable;
+  invalidateGraph();
 }

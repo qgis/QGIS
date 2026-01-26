@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgsprovidersourcewidgetprovider.h"
-#include "qgsproviderguiregistry.h"
 
 #include <memory>
+
+#include "qgsproviderguiregistry.h"
+#include "qgsprovidersourcewidgetprovider.h"
 
 QgsProviderSourceWidgetProviderRegistry::QgsProviderSourceWidgetProviderRegistry() = default;
 
@@ -69,7 +70,7 @@ void QgsProviderSourceWidgetProviderRegistry::initializeFromProviderGuiRegistry(
 QgsProviderSourceWidgetProvider *QgsProviderSourceWidgetProviderRegistry::providerByName( const QString &name )
 {
   const QList<QgsProviderSourceWidgetProvider *> providerList = providers();
-  for ( QgsProviderSourceWidgetProvider *provider :  providerList )
+  for ( QgsProviderSourceWidgetProvider *provider : providerList )
   {
     if ( provider->name() == name )
     {

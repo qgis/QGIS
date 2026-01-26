@@ -13,12 +13,14 @@
 class QgsVectorLayerTools : QObject
 {
 %Docstring(signature="appended")
-Methods in this class are used to handle basic operations on vector layers.
-With an implementation of this class, parts of the application can ask for
-an operation to be done and the implementation will then take care of it.
+Used to handle basic editing operations on vector layers.
 
-Reimplement this class, if you need to have custom checks or GUI elements
-in your application.
+With an implementation of this class, parts of the application can ask
+for an operation to be done and the implementation will then take care
+of it.
+
+Reimplement this class, if you need to have custom checks or GUI
+elements in your application.
 %End
 
 %TypeHeaderCode
@@ -30,17 +32,22 @@ in your application.
 
     virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0, QWidget *parentWidget = 0, bool showModal = true, bool hideParent = false ) const;
 %Docstring
-This method should/will be called, whenever a new feature will be added to the layer
+This method should/will be called, whenever a new feature will be added
+to the layer
 
 :param layer: The layer to which the feature should be added
 :param defaultValues: Default values for the feature to add
 :param defaultGeometry: A default geometry to add to the feature
-:param parentWidget: The widget calling this function to be passed to the used dialog
+:param parentWidget: The widget calling this function to be passed to
+                     the used dialog
 :param showModal: If the used dialog should be modal or not
-:param hideParent: If the parent widget should be hidden, when the used dialog is opened
+:param hideParent: If the parent widget should be hidden, when the used
+                   dialog is opened
 
-:return: - ``True`` in case of success, ``False`` if the operation failed/was aborted
-         - feature: Updated feature after adding will be written back to this
+:return: - ``True`` in case of success, ``False`` if the operation
+           failed/was aborted
+         - feature: Updated feature after adding will be written back to
+           this
 
 .. note::
 
@@ -49,15 +56,19 @@ This method should/will be called, whenever a new feature will be added to the l
 
     virtual bool addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0, const QgsVectorLayerToolsContext &context = QgsVectorLayerToolsContext() ) const;
 %Docstring
-This method should/will be called, whenever a new feature will be added to the layer
+This method should/will be called, whenever a new feature will be added
+to the layer
 
 :param layer: The layer to which the feature should be added
 :param defaultValues: Default values for the feature to add
 :param defaultGeometry: A default geometry to add to the feature
-:param context: A context object to be used for e.g. to calculate feature expression-based values (since QGIS 3.38)
+:param context: A context object to be used for e.g. to calculate
+                feature expression-based values (since QGIS 3.38)
 
-:return: - ``True`` in case of success, ``False`` if the operation failed/was aborted
-         - feature: Updated feature after adding will be written back to this
+:return: - ``True`` in case of success, ``False`` if the operation
+           failed/was aborted
+         - feature: Updated feature after adding will be written back to
+           this
 
 .. note::
 
@@ -69,9 +80,10 @@ This method should/will be called, whenever a new feature will be added to the l
 
     virtual bool startEditing( QgsVectorLayer *layer ) const = 0;
 %Docstring
-This will be called, whenever a vector layer should be switched to edit mode. Check the providers
-capability to edit in here.
-If successful layer->:py:func:`~QgsVectorLayerTools.startEditing` will be called and ``True`` returned.
+This will be called, whenever a vector layer should be switched to edit
+mode. Check the providers capability to edit in here. If successful
+layer->:py:func:`~QgsVectorLayerTools.startEditing` will be called and
+``True`` returned.
 
 :param layer: The layer on which to start an edit session
 
@@ -81,8 +93,8 @@ If successful layer->:py:func:`~QgsVectorLayerTools.startEditing` will be called
 
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const = 0;
 %Docstring
-Will be called, when an editing session is ended and the features should be committed.
-Appropriate dialogs should be shown like
+Will be called, when an editing session is ended and the features should
+be committed. Appropriate dialogs should be shown like
 
 :param layer: The layer to commit
 :param allowCancel: ``True`` if a cancel button should be offered
@@ -93,7 +105,8 @@ Appropriate dialogs should be shown like
 
     virtual bool saveEdits( QgsVectorLayer *layer ) const = 0;
 %Docstring
-Should be called, when the features should be committed but the editing session is not ended.
+Should be called, when the features should be committed but the editing
+session is not ended.
 
 :param layer: The layer to commit
 
@@ -106,13 +119,19 @@ Should be called, when the features should be committed but the editing session 
 Copy and move features with defined translation.
 
 :param layer: The layer
-:param request: The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
+:param request: The request for the features to be moved. It will be
+                assigned to a new feature request with the newly copied
+                features.
 :param dx: The translation on x
 :param dy: The translation on y
-:param topologicalEditing: If ``True``, the function will perform topological
-                           editing of the vertices of ``layer`` on ``layer`` and ``topologicalLayer``
-:param topologicalLayer: The layer where vertices from the moved features of ``layer`` will be added
-:param childrenInfoMsg: If given, it will contain messages related to the creation of child features
+:param topologicalEditing: If ``True``, the function will perform
+                           topological editing of the vertices of
+                           ``layer`` on ``layer`` and
+                           ``topologicalLayer``
+:param topologicalLayer: The layer where vertices from the moved
+                         features of ``layer`` will be added
+:param childrenInfoMsg: If given, it will contain messages related to
+                        the creation of child features
 
 :return: - ``True`` if all features could be copied.
          - errorMsg: If given, it will contain the error message
@@ -131,8 +150,9 @@ Returns force suppress form popup status.
 %Docstring
 Sets force suppress form popup status to ``forceSuppressFormPopup``.
 
-This flag will override the layer and general settings regarding the automatic
-opening of the attribute form dialog when digitizing is completed.
+This flag will override the layer and general settings regarding the
+automatic opening of the attribute form dialog when digitizing is
+completed.
 
 .. versionadded:: 3.14
 %End

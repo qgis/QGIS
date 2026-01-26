@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include "qgis.h"
 #include "qgsapplication.h"
-#include "qgsmeshlayer.h"
+#include "qgsfeedback.h"
+#include "qgsmapcanvas.h"
 #include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayerproperties.h"
 #include "qgsmeshrendereractivedatasetwidget.h"
-#include "qgsfeedback.h"
-#include "qgis.h"
-#include "qgsmapcanvas.h"
+#include "qgstest.h"
 
 #include <QTemporaryFile>
 
@@ -35,10 +35,10 @@ class TestQgsMeshLayerPropertiesDialog : public QObject
     TestQgsMeshLayerPropertiesDialog();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testInvalidLayer();
     void testCrs();
@@ -58,12 +58,13 @@ void TestQgsMeshLayerPropertiesDialog::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/"_s;
   const QString uri( testDataDir + "/quad_and_triangle.2dm" );
   mpMeshLayer = new QgsMeshLayer( uri, "Triangle and Quad MDAL", "mdal" );
 
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpMeshLayer );
+    QList<QgsMapLayer *>() << mpMeshLayer
+  );
 }
 
 //runs after all tests
@@ -76,8 +77,7 @@ void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
 {
   QgsMeshLayer invalidLayer;
   QgsMapCanvas mapCanvas;
-  const std::unique_ptr< QgsMeshLayerProperties > dialog = std::make_unique< QgsMeshLayerProperties > ( &invalidLayer,
-      &mapCanvas );
+  const std::unique_ptr<QgsMeshLayerProperties> dialog = std::make_unique<QgsMeshLayerProperties>( &invalidLayer, &mapCanvas );
 
   QVERIFY( dialog );
 }
@@ -85,8 +85,7 @@ void TestQgsMeshLayerPropertiesDialog::testInvalidLayer()
 void TestQgsMeshLayerPropertiesDialog::testCrs()
 {
   QgsMapCanvas mapCanvas;
-  std::unique_ptr< QgsMeshLayerProperties > dialog = std::make_unique< QgsMeshLayerProperties > ( mpMeshLayer,
-      &mapCanvas );
+  auto dialog = std::make_unique<QgsMeshLayerProperties>( mpMeshLayer, &mapCanvas );
   QCOMPARE( dialog->mCrsSelector->crs(), mpMeshLayer->crs() );
   const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromEpsgId( 27700 );
   dialog->mCrsSelector->setCrs( crs );
@@ -95,7 +94,7 @@ void TestQgsMeshLayerPropertiesDialog::testCrs()
 
 void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
 {
-  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/mesh/" );
+  const QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + u"/mesh/"_s;
   const QString uri( testDataDir + "/trap_steady_05_3D.nc" );
   QgsMeshLayer meshLayer( uri, "", "mdal" );
 
@@ -115,7 +114,6 @@ void TestQgsMeshLayerPropertiesDialog::testDatasetGroupTree()
   meshLayer.setDatasetGroupTreeRootItem( rootItem.get() );
 
   QCOMPARE( activeDatasetWidget.activeScalarDatasetGroup(), 0 );
-
 }
 
 QGSTEST_MAIN( TestQgsMeshLayerPropertiesDialog )

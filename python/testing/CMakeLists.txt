@@ -1,6 +1,6 @@
 # See ../CMakeLists.txt for info on staged-plugins* and clean-staged-plugins targets
 
-set(QGIS_PYTHON_DIR ${Python_SITEARCH}/qgis)
+set(QGIS_PYTHON_DIR ${QGIS_PYTHON_INSTALL_DIR}/qgis)
 
 set(PY_FILES
   __init__.py
@@ -19,7 +19,7 @@ foreach(pyfile ${PY_FILES})
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} "${QGIS_PYTHON_OUTPUT_DIRECTORY}/testing"
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DEPENDS ${pyfile}
+    # DEPENDS ${pyfile}
   )
   PY_COMPILE(pyutils "${QGIS_PYTHON_OUTPUT_DIRECTORY}/testing/${pyfile}")
 endforeach(pyfile)

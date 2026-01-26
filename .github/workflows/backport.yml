@@ -20,6 +20,6 @@ jobs:
       - name: Backport Bot
         id: backport
         if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( join( github.event.pull_request.labels.*.name ), 'backport') ) || contains( github.event.label.name, 'backport' ) )
-        uses: m-kuhn/backport@v1.2.7
+        uses: m-kuhn/backport@7f3cab83e4b3b26aefcffda21851c3dc3d389f45 #v1.2.7
         with:
           github_token: ${{ secrets.GH_TOKEN_BOT }}

@@ -14,22 +14,26 @@
  ***************************************************************************/
 
 #include "qgsgeometrywidgetwrapper.h"
-#include "qgsvectorlayer.h"
-#include "qgsmessagebar.h"
+
 #include "qgsgeometrywidget.h"
-#include <QHBoxLayout>
-#include <QFileDialog>
-#include <QLabel>
-#include <QToolButton>
+#include "qgsmessagebar.h"
+#include "qgsvectorlayer.h"
+
 #include <QAction>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QToolButton>
 #include <QUrl>
+
+#include "moc_qgsgeometrywidgetwrapper.cpp"
 
 QgsGeometryWidgetWrapper::QgsGeometryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
-  , mMessageBar( messageBar )
 {
+  Q_UNUSED( messageBar )
 }
 
 
@@ -80,11 +84,11 @@ void QgsGeometryWidgetWrapper::updateValues( const QVariant &value, const QVaria
   {
     if ( value.userType() == qMetaTypeId<QgsReferencedGeometry>() )
     {
-      geom = value.value< QgsReferencedGeometry >();
+      geom = value.value<QgsReferencedGeometry>();
     }
-    else if ( value.userType() == qMetaTypeId< QgsGeometry>() )
+    else if ( value.userType() == qMetaTypeId<QgsGeometry>() )
     {
-      geom = QgsReferencedGeometry( value.value< QgsGeometry >(), QgsCoordinateReferenceSystem() );
+      geom = QgsReferencedGeometry( value.value<QgsGeometry>(), QgsCoordinateReferenceSystem() );
     }
   }
 
@@ -93,4 +97,3 @@ void QgsGeometryWidgetWrapper::updateValues( const QVariant &value, const QVaria
     mWidget->setGeometryValue( geom );
   }
 }
-

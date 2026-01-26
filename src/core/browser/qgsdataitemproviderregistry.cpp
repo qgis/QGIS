@@ -18,9 +18,11 @@
 #include "qgsdataitem.h"
 #include "qgsdataitemprovider.h"
 #include "qgsdataprovider.h"
+#include "qgsfilebaseddataitemprovider.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
-#include "qgsfilebaseddataitemprovider.h"
+
+#include "moc_qgsdataitemproviderregistry.cpp"
 
 QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 {

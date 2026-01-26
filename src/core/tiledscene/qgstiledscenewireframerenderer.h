@@ -18,9 +18,9 @@
 #ifndef QGSTILEDSCENEWIREFRAMERENDERER_H
 #define QGSTILEDSCENEWIREFRAMERENDERER_H
 
-#include "qgstiledscenerenderer.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgstiledscenerenderer.h"
 
 class QgsFillSymbol;
 class QgsLineSymbol;
@@ -39,7 +39,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      * Constructor for QgsTiledSceneWireframeRenderer.
      */
     QgsTiledSceneWireframeRenderer();
-    ~QgsTiledSceneWireframeRenderer();
+    ~QgsTiledSceneWireframeRenderer() override;
 
     QString type() const override;
     QgsTiledSceneRenderer *clone() const override;
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setFillSymbol()
      */
-    static QgsFillSymbol *createDefaultFillSymbol() SIP_FACTORY;
+    static std::unique_ptr< QgsFillSymbol > createDefaultFillSymbol();
 
     /**
      * Returns the fill symbol used to render triangles in the wireframe.
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsTiledSceneWireframeRenderer : public QgsTiledSceneRenderer
      *
      * \see setLineSymbol()
      */
-    static QgsLineSymbol *createDefaultLineSymbol() SIP_FACTORY;
+    static std::unique_ptr< QgsLineSymbol > createDefaultLineSymbol();
 
     /**
      * Returns the line symbol used to render lines in the wireframe.

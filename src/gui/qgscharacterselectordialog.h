@@ -17,18 +17,20 @@
 #ifndef QGSCHARACTERSELECTORDIALOG_H
 #define QGSCHARACTERSELECTORDIALOG_H
 
-#include <QDialog>
-#include <QChar>
-#include "qgsguiutils.h"
 #include "ui_qgscharacterselectdialogbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsguiutils.h"
+
+#include <QChar>
+#include <QDialog>
 
 class CharacterWidget;
 
 /**
  * \ingroup gui
- * \brief A dialog for selecting a single character from a single font
+ * \brief A dialog for selecting a single character from a single font.
   */
 
 class GUI_EXPORT QgsCharacterSelectorDialog : public QDialog, private Ui::QgsCharacterSelectorBase

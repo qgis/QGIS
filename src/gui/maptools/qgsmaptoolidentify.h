@@ -16,6 +16,7 @@
 #ifndef QGSMAPTOOLIDENTIFY_H
 #define QGSMAPTOOLIDENTIFY_H
 
+#include "qgis_gui.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsidentifycontext.h"
@@ -24,7 +25,6 @@
 
 #include <QObject>
 #include <QPointer>
-#include "qgis_gui.h"
 
 class QgsRasterLayer;
 class QgsVectorLayer;
@@ -42,9 +42,9 @@ class QgsCoordinateReferenceSystem;
 
 /**
  * \ingroup gui
- * \brief Map tool for identifying features in layers
+ * \brief Map tool for identifying features in layers.
  *
- * after selecting a point, performs the identification:
+ * After the tool is used to select a point, this map tool performs the identification:
  *
  * - for raster layers shows value of underlying pixel
  * - for vector layers shows feature attributes within search radius
@@ -55,7 +55,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     Q_OBJECT
 
   public:
-
     enum IdentifyMode
     {
       DefaultQgsSetting = -1,
@@ -70,7 +69,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     {
       VectorLayer = 1,
       RasterLayer = 2,
-      MeshLayer = 4, //!< \since QGIS 3.6
+      MeshLayer = 4,        //!< \since QGIS 3.6
       VectorTileLayer = 8,  //!< \since QGIS 3.14
       PointCloudLayer = 16, //!< \since QGIS 3.18
       AllLayers = VectorLayer | RasterLayer | MeshLayer | VectorTileLayer | PointCloudLayer
@@ -80,25 +79,32 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     struct IdentifyResult
     {
+        IdentifyResult() = default;
 
-      IdentifyResult() = default;
+        IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap<QString, QString> &derivedAttributes )
+          : mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
-        : mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+        IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes )
+          : mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes )
-        : mLayer( layer ), mLabel( label ), mAttributes( attributes ), mDerivedAttributes( derivedAttributes ) {}
+        IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap<QString, QString> &derivedAttributes )
+          : mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
 
-      IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
-        : mLayer( layer ), mLabel( label ), mFields( fields ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
+        QgsMapLayer *mLayer = nullptr;
+        QString mLabel;
+        QgsFields mFields;
+        QgsFeature mFeature;
+        QMap<QString, QString> mAttributes;
+        QMap<QString, QString> mDerivedAttributes;
+        QMap<QString, QVariant> mParams;
+    };
 
-      QgsMapLayer *mLayer = nullptr;
-      QString mLabel;
-      QgsFields mFields;
-      QgsFeature mFeature;
-      QMap< QString, QString > mAttributes;
-      QMap< QString, QString > mDerivedAttributes;
-      QMap< QString, QVariant > mParams;
+    struct IdentifyProperties
+    {
+        //! Identify search radius is map units. Use negative value to ignore
+        double searchRadiusMapUnits = -1;
+        //! Skip identify results from layers that have a 3d renderer set
+        bool skip3DLayers = false;
     };
 
     //! constructor
@@ -190,7 +196,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 
   protected:
-
     /**
      * Performs the identification.
      * To avoid being forced to specify IdentifyMode with a list of layers
@@ -203,7 +208,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * \param identifyContext Identify context object.
      * \returns a list of IdentifyResult
      */
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 
     QgsIdentifyMenu *mIdentifyMenu = nullptr;
 
@@ -239,35 +244,58 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsPointXY &point, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 
     //! Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
-    QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
+    QMap<QString, QString> derivedAttributesForPoint( const QgsPoint &point );
 
     /**
      * Overrides some map canvas properties inside the map tool for the upcoming identify requests.
      *
      * This is useful when the identification is triggered by some other piece of GUI like a 3D map view
      * and some properties like search radius need to be adjusted so that identification returns correct
-     * results. Currently only search radius may be overridden.
-     *
+     * results.
      * When the custom identification has finished, restoreCanvasPropertiesOverrides() should
      * be called to erase any overrides.
+     *
+     * \param searchRadiusMapUnits The overridden search radius in map units
      * \see restoreCanvasPropertiesOverrides()
      * \since QGIS 3.4
+     * \deprecated QGIS 3.42. Use setPropertiesOverrides() instead.
      */
-    void setCanvasPropertiesOverrides( double searchRadiusMapUnits );
+    Q_DECL_DEPRECATED void setCanvasPropertiesOverrides( double searchRadiusMapUnits ) SIP_DEPRECATED;
 
     /**
      * Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
      * \see setCanvasPropertiesOverrides()
      * \since QGIS 3.4
+     * \deprecated QGIS 3.42. Use restorePropertiesOverrides() instead.
      */
-    void restoreCanvasPropertiesOverrides();
+    Q_DECL_DEPRECATED void restoreCanvasPropertiesOverrides() SIP_DEPRECATED;
+
+    /**
+     * Overrides some map canvas properties inside the map tool for the upcoming identify requests.
+     *
+     * This is useful when the identification is triggered by some other piece of GUI like a 3D map view
+     * and some properties like search radius need to be adjusted so that identification returns correct
+     * results.
+     * When the custom identification has finished, restorePropertiesOverrides() should
+     * be called to erase any overrides.
+     *
+     * \param overrides The identify tool properties that will be overridden
+     * \since QGIS 3.42
+     */
+    void setPropertiesOverrides( IdentifyProperties overrides );
+
+    /**
+     * Clears canvas properties overrides previously set with setPropertiesOverrides()
+     * \see setPropertiesOverrides()
+     * \since QGIS 3.42
+     */
+    void restorePropertiesOverrides();
 
   private:
-
     bool identifyLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMapLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, QgsMapToolIdentify::LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
     bool identifyRasterLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsRasterLayer *layer, const QgsGeometry &geometry, const QgsRectangle &viewExtent, double mapUnitsPerPixel, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
     bool identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
-    int identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsFeatureList &features, QgsFeatureRenderer *renderer, const QMap< QString, QString >  &commonDerivedAttributes, const std::function< QMap< QString, QString > ( const QgsFeature & ) > &derivedAttributes, QgsRenderContext &context );
+    int identifyVectorLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorLayer *layer, const QgsFeatureList &features, QgsFeatureRenderer *renderer, const QMap<QString, QString> &commonDerivedAttributes, const std::function<QMap<QString, QString>( const QgsFeature & )> &derivedAttributes, QgsRenderContext &context );
     bool identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsMeshLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
     bool identifyVectorTileLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsVectorTileLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
     bool identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
@@ -308,24 +336,17 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      */
     QString formatArea( double area, Qgis::AreaUnit unit ) const;
 
-    QMap< QString, QString > featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
+    QMap<QString, QString> featureDerivedAttributes( const QgsFeature &feature, QgsMapLayer *layer, const QgsPointXY &layerPoint = QgsPointXY() );
 
     /**
      * Adds details of the closest vertex to derived attributes
      */
-    void closestVertexAttributes( const QgsCoordinateTransform layerToMapTransform,
-                                  const QgsCoordinateReferenceSystem &layerVertCrs,
-                                  const QgsCoordinateReferenceSystem &mapVertCrs,
-                                  const QgsAbstractGeometry &geometry, QgsVertexId vId,
-                                  bool showTransformedZ, QMap< QString, QString > &derivedAttributes );
+    void closestVertexAttributes( const QgsCoordinateTransform layerToMapTransform, const QgsCoordinateReferenceSystem &layerVertCrs, const QgsCoordinateReferenceSystem &mapVertCrs, const QgsAbstractGeometry &geometry, QgsVertexId vId, bool showTransformedZ, QMap<QString, QString> &derivedAttributes );
 
     /**
      * Adds details of the closest point to derived attributes
     */
-    void closestPointAttributes( const QgsCoordinateTransform layerToMapTransform,
-                                 const QgsCoordinateReferenceSystem &layerVertCrs,
-                                 const QgsCoordinateReferenceSystem &mapVertCrs,
-                                 const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, bool showTransformedZ, QMap< QString, QString > &derivedAttributes );
+    void closestPointAttributes( const QgsCoordinateTransform layerToMapTransform, const QgsCoordinateReferenceSystem &layerVertCrs, const QgsCoordinateReferenceSystem &mapVertCrs, const QgsAbstractGeometry &geometry, const QgsPointXY &layerPoint, bool showTransformedZ, QMap<QString, QString> &derivedAttributes );
 
     static void formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y, const QgsCoordinateReferenceSystem &mapCrs, int coordinatePrecision );
     void formatCoordinate( const QgsPointXY &canvasPoint, QString &x, QString &y ) const;
@@ -333,13 +354,13 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     // Last geometry (point or polygon) in map CRS
     QgsGeometry mLastGeometry;
 
-    double mLastMapUnitsPerPixel;
+    double mLastMapUnitsPerPixel = -1.0;
 
     QgsRectangle mLastExtent;
 
-    int mCoordinatePrecision;
+    int mCoordinatePrecision = 6;
 
-    double mOverrideCanvasSearchRadius = -1;
+    IdentifyProperties mPropertiesOverrides;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )

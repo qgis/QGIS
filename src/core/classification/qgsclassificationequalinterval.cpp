@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationequalinterval.h"
+
 #include "qgsapplication.h"
 
-const QString QgsClassificationEqualInterval::METHOD_ID = QStringLiteral( "EqualInterval" );
+#include <QObject>
+
+const QString QgsClassificationEqualInterval::METHOD_ID = u"EqualInterval"_s;
 
 QgsClassificationEqualInterval::QgsClassificationEqualInterval()
   : QgsClassificationMethod( SymmetricModeAvailable, 0 /*codeComplexity*/ )
@@ -91,10 +92,10 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, 
 }
 
 
-QgsClassificationMethod *QgsClassificationEqualInterval::clone() const
+std::unique_ptr< QgsClassificationMethod > QgsClassificationEqualInterval::clone() const
 {
-  QgsClassificationEqualInterval *c = new QgsClassificationEqualInterval();
-  copyBase( c );
+  auto c = std::make_unique< QgsClassificationEqualInterval >();
+  copyBase( c.get() );
   return c;
 }
 

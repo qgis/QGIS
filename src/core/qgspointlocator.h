@@ -22,17 +22,18 @@ class QgsRenderContext;
 class QgsRectangle;
 class QgsVectorLayerFeatureSource;
 
+#include <memory>
+
 #include "qgis_core.h"
-#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
-#include "qgsvectorlayer.h"
 #include "qgslinestring.h"
 #include "qgspointlocatorinittask.h"
-#include <memory>
+#include "qgspointxy.h"
+#include "qgsvectorlayer.h"
 
 #include <QPointer>
 
@@ -53,7 +54,7 @@ class QgsPointLocator_VisitorNearestCentroid;
 
 /**
  * \ingroup core
- * \brief Helper class used when traversing the index looking for middle segment - builds a list of matches.
+ * \brief Helper class used when traversing the index looking for the middle segment - builds a list of matches.
  * \note not available in Python bindings
  * \since QGIS 3.12
 */
@@ -88,7 +89,9 @@ namespace SpatialIndex SIP_SKIP
 
 /**
  * \ingroup core
- * \brief The class defines interface for querying point location:
+ * \brief Defines the interface for querying point locations.
+ *
+ * This class offers:
  *
  * - query nearest vertices / edges to a point
  * - query vertices / edges in rectangle
@@ -276,7 +279,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
+                QgsDebugError( u"transformation to layer coordinate failed"_s );
               }
             }
 
@@ -304,7 +307,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugError( QStringLiteral( "transformation to destination coordinate failed" ) );
+                QgsDebugError( u"transformation to destination coordinate failed"_s );
               }
             }
           }

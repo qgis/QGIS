@@ -15,10 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolprofilecurvefromfeature.h"
-#include "qgsmapcanvas.h"
-#include "qgsidentifymenu.h"
-#include "qgsmapmouseevent.h"
+
 #include "qgsapplication.h"
+#include "qgsidentifymenu.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+
+#include "moc_qgsmaptoolprofilecurvefromfeature.cpp"
 
 QgsMapToolProfileCurveFromFeature::QgsMapToolProfileCurveFromFeature( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
@@ -38,7 +41,7 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
     e->ignore();
 
     const QList<QgsMapToolIdentify::IdentifyResult> results = QgsIdentifyMenu::findFeaturesOnCanvas( e, mCanvas, { Qgis::GeometryType::Line } );
-    if ( results.empty( ) )
+    if ( results.empty() )
       return;
 
     QgsIdentifyMenu *menu = new QgsIdentifyMenu( mCanvas );
@@ -60,10 +63,9 @@ void QgsMapToolProfileCurveFromFeature::canvasPressEvent( QgsMapMouseEvent *e )
       }
       catch ( QgsCsException & )
       {
-        QgsDebugError( QStringLiteral( "Could not transform geometry from layer CRS" ) );
+        QgsDebugError( u"Could not transform geometry from layer CRS"_s );
       }
       emit curveCaptured( geom );
     }
   }
 }
-

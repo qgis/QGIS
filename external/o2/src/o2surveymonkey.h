@@ -9,7 +9,7 @@ class O0_EXPORT O2SurveyMonkey: public O2 {
     Q_OBJECT
 
 public:
-    explicit O2SurveyMonkey(QObject *parent = 0);
+    explicit O2SurveyMonkey(QObject *parent = nullptr);
 };
 
 #endif // O2SURVEYMONKEY_H

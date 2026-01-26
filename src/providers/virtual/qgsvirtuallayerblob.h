@@ -33,22 +33,22 @@ email                : hugo dot mercier at oslandia dot com
 // mbr_end   1      7C
 struct SpatialiteBlobHeader
 {
-  unsigned char start = 0x00;
-  unsigned char endianness = 0x01;
-  int32_t srid = -1;
-  double mbrMinX = std::numeric_limits<double>::lowest();
-  double mbrMinY = std::numeric_limits<double>::lowest();
-  double mbrMaxX = std::numeric_limits<double>::max();
-  double mbrMaxY = std::numeric_limits<double>::max();
-  unsigned char end = 0x7C;
+    unsigned char start = 0x00;
+    unsigned char endianness = 0x01;
+    int32_t srid = -1;
+    double mbrMinX = std::numeric_limits<double>::lowest();
+    double mbrMinY = std::numeric_limits<double>::lowest();
+    double mbrMaxX = std::numeric_limits<double>::max();
+    double mbrMaxY = std::numeric_limits<double>::max();
+    unsigned char end = 0x7C;
 
-  SpatialiteBlobHeader() = default;
+    SpatialiteBlobHeader() = default;
 
-  static const size_t LENGTH = 39;
+    static const size_t LENGTH = 39;
 
-  void readFrom( const char *p );
+    void readFrom( const char *p );
 
-  void writeTo( char *p ) const;
+    void writeTo( char *p ) const;
 };
 
 /**

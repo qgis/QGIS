@@ -15,39 +15,39 @@
 
 #include "qgslayerpropertieswidget.h"
 
+#include "qgsapplication.h"
+#include "qgsarrowsymbollayerwidget.h"
+#include "qgsellipsesymbollayerwidget.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgsinterpolatedlinesymbollayerwidget.h"
+#include "qgslinesymbol.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgsmasksymbollayerwidget.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgspanelwidget.h"
+#include "qgsproject.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerregistry.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbollayerwidget.h"
+#include "qgstemporalcontroller.h"
+#include "qgsvectorfieldsymbollayerwidget.h"
+#include "qgsvectorlayer.h"
+
 #include <QFile>
-#include <QStandardItem>
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPicture>
+#include <QStandardItem>
 
-#include "qgssymbollayer.h"
-#include "qgssymbollayerregistry.h"
-#include "qgspainteffectregistry.h"
-
-#include "qgsapplication.h"
-#include "qgslogger.h"
-
-#include "qgssymbollayerwidget.h"
-#include "qgsarrowsymbollayerwidget.h"
-#include "qgsellipsesymbollayerwidget.h"
-#include "qgsinterpolatedlinesymbollayerwidget.h"
-#include "qgsvectorfieldsymbollayerwidget.h"
-#include "qgssymbol.h" //for the unit
-#include "qgspanelwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgspainteffect.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmasksymbollayerwidget.h"
-#include "qgstemporalcontroller.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbollayer.h"
+#include "moc_qgslayerpropertieswidget.cpp"
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {
@@ -75,37 +75,37 @@ static void _initWidgetFunctions()
   if ( sInitialized )
     return;
 
-  _initWidgetFunction( QStringLiteral( "SimpleLine" ), QgsSimpleLineSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "MarkerLine" ), QgsMarkerLineSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "HashLine" ), QgsHashedLineSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "ArrowLine" ), QgsArrowSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "InterpolatedLine" ), QgsInterpolatedLineSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "RasterLine" ), QgsRasterLineSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "Lineburst" ), QgsLineburstSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "FilledLine" ), QgsFilledLineSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "LinearReferencing" ), QgsLinearReferencingSymbolLayerWidget::create );
+  _initWidgetFunction( u"SimpleLine"_s, QgsSimpleLineSymbolLayerWidget::create );
+  _initWidgetFunction( u"MarkerLine"_s, QgsMarkerLineSymbolLayerWidget::create );
+  _initWidgetFunction( u"HashLine"_s, QgsHashedLineSymbolLayerWidget::create );
+  _initWidgetFunction( u"ArrowLine"_s, QgsArrowSymbolLayerWidget::create );
+  _initWidgetFunction( u"InterpolatedLine"_s, QgsInterpolatedLineSymbolLayerWidget::create );
+  _initWidgetFunction( u"RasterLine"_s, QgsRasterLineSymbolLayerWidget::create );
+  _initWidgetFunction( u"Lineburst"_s, QgsLineburstSymbolLayerWidget::create );
+  _initWidgetFunction( u"FilledLine"_s, QgsFilledLineSymbolLayerWidget::create );
+  _initWidgetFunction( u"LinearReferencing"_s, QgsLinearReferencingSymbolLayerWidget::create );
 
-  _initWidgetFunction( QStringLiteral( "SimpleMarker" ), QgsSimpleMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "FilledMarker" ), QgsFilledMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "SvgMarker" ), QgsSvgMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "RasterMarker" ), QgsRasterMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "AnimatedMarker" ), QgsAnimatedMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "FontMarker" ), QgsFontMarkerSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "EllipseMarker" ), QgsEllipseSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "VectorField" ), QgsVectorFieldSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "MaskMarker" ), QgsMaskMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( u"SimpleMarker"_s, QgsSimpleMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( u"FilledMarker"_s, QgsFilledMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( u"SvgMarker"_s, QgsSvgMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( u"RasterMarker"_s, QgsRasterMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( u"AnimatedMarker"_s, QgsAnimatedMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( u"FontMarker"_s, QgsFontMarkerSymbolLayerWidget::create );
+  _initWidgetFunction( u"EllipseMarker"_s, QgsEllipseSymbolLayerWidget::create );
+  _initWidgetFunction( u"VectorField"_s, QgsVectorFieldSymbolLayerWidget::create );
+  _initWidgetFunction( u"MaskMarker"_s, QgsMaskMarkerSymbolLayerWidget::create );
 
-  _initWidgetFunction( QStringLiteral( "SimpleFill" ), QgsSimpleFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "GradientFill" ), QgsGradientFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "ShapeburstFill" ), QgsShapeburstFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "RasterFill" ), QgsRasterFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "SVGFill" ), QgsSVGFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "CentroidFill" ), QgsCentroidFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "LinePatternFill" ), QgsLinePatternFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "PointPatternFill" ), QgsPointPatternFillSymbolLayerWidget::create );
-  _initWidgetFunction( QStringLiteral( "RandomMarkerFill" ), QgsRandomMarkerFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"SimpleFill"_s, QgsSimpleFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"GradientFill"_s, QgsGradientFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"ShapeburstFill"_s, QgsShapeburstFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"RasterFill"_s, QgsRasterFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"SVGFill"_s, QgsSVGFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"CentroidFill"_s, QgsCentroidFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"LinePatternFill"_s, QgsLinePatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"PointPatternFill"_s, QgsPointPatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( u"RandomMarkerFill"_s, QgsRandomMarkerFillSymbolLayerWidget::create );
 
-  _initWidgetFunction( QStringLiteral( "GeometryGenerator" ), QgsGeometryGeneratorSymbolLayerWidget::create );
+  _initWidgetFunction( u"GeometryGenerator"_s, QgsGeometryGeneratorSymbolLayerWidget::create );
 
   sInitialized = true;
 }
@@ -117,7 +117,6 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
   , mSymbol( symbol )
   , mVectorLayer( vl )
 {
-
   setupUi( this );
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayerPropertiesWidget::mEnabledCheckBox_toggled );
   // initialize the sub-widgets
@@ -166,7 +165,7 @@ void QgsLayerPropertiesWidget::setContext( const QgsSymbolWidgetContext &context
   if ( mSymbol )
     mContext.setSymbolType( mSymbol->type() );
 
-  QgsSymbolLayerWidget *w = dynamic_cast< QgsSymbolLayerWidget * >( stackedWidget->currentWidget() );
+  QgsSymbolLayerWidget *w = dynamic_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() );
   if ( w )
     w->setContext( mContext );
 }
@@ -212,7 +211,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsSymbolLayerWidget *w = qobject_cast< QgsSymbolLayerWidget * >( stackedWidget->currentWidget() ) )
+    if ( QgsSymbolLayerWidget *w = qobject_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() ) )
       disconnect( w, &QgsSymbolLayerWidget::changed, this, &QgsLayerPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
@@ -273,11 +272,11 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_RING_NUM, 0, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT, 1, true ) );
   expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM, 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_count" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_layer_index" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_row" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_marker_column" ), 1, true ) );
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_frame" ), 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_layer_count"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_layer_index"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_marker_row"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_marker_column"_s, 1, true ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_frame"_s, 1, true ) );
 
   // additional scopes
   const auto constAdditionalExpressionContextScopes = mContext.additionalExpressionContextScopes();
@@ -289,20 +288,14 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
 
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
-                                      << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
-                                      << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
-                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
-                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
-                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" )
-                                      << QStringLiteral( "symbol_frame" ) );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE << u"symbol_layer_count"_s << u"symbol_layer_index"_s << u"symbol_frame"_s );
 
   return expContext;
 }
 
 void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
 {
-  button->init( static_cast< int >( key ), mLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer );
+  button->init( static_cast<int>( key ), mLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayerPropertiesWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
@@ -310,7 +303,7 @@ void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideBut
 void QgsLayerPropertiesWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<QgsSymbolLayer::Property>( button->propertyKey() );
   mLayer->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -336,7 +329,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // if the old symbol layer was a "geometry generator" layer then
   // we instead get the properties from the generator
-  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast< QgsGeometryGeneratorSymbolLayer * >( layer ) )
+  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( layer ) )
   {
     if ( generator->subSymbol() && generator->subSymbol()->symbolLayerCount() > 0 )
       properties = generator->subSymbol()->symbolLayer( 0 )->properties();
@@ -348,7 +341,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // if a symbol layer is changed to a "geometry generator" layer, then we move the old symbol layer into the
   // geometry generator's subsymbol.
-  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast< QgsGeometryGeneratorSymbolLayer * >( newLayer ) )
+  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( newLayer ) )
   {
     if ( mSymbol )
     {
@@ -356,21 +349,21 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
       {
         case Qgis::SymbolType::Marker:
         {
-          std::unique_ptr< QgsMarkerSymbol > markerSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
+          auto markerSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Marker );
           generator->setSubSymbol( markerSymbol.release() );
           break;
         }
         case Qgis::SymbolType::Line:
         {
-          std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
+          auto lineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Line );
           generator->setSubSymbol( lineSymbol.release() );
           break;
         }
         case Qgis::SymbolType::Fill:
         {
-          std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
+          auto fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Fill );
           generator->setSubSymbol( fillSymbol.release() );
           break;
@@ -391,7 +384,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // special logic for when NEW symbol layers are created from GUI only...
   // TODO: find a nicer generic way to handle this!
-  if ( QgsFontMarkerSymbolLayer *fontMarker = dynamic_cast< QgsFontMarkerSymbolLayer * >( newLayer ) )
+  if ( QgsFontMarkerSymbolLayer *fontMarker = dynamic_cast<QgsFontMarkerSymbolLayer *>( newLayer ) )
   {
     const QString defaultFont = fontMarker->fontFamily();
     const QFontDatabase fontDb;

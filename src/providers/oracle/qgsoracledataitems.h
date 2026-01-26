@@ -15,17 +15,16 @@
 #ifndef QGSORACLEDATAITEMS_H
 #define QGSORACLEDATAITEMS_H
 
-#include <QSqlDatabase>
-#include <QMainWindow>
-
 #include "qgsconnectionsitem.h"
 #include "qgsdatacollectionitem.h"
-
-#include "qgsoracletablemodel.h"
-#include "qgsoraclesourceselect.h"
-#include "qgsmimedatautils.h"
 #include "qgsdataitemprovider.h"
 #include "qgslayeritem.h"
+#include "qgsmimedatautils.h"
+#include "qgsoraclesourceselect.h"
+#include "qgsoracletablemodel.h"
+
+#include <QMainWindow>
+#include <QSqlDatabase>
 
 class QSqlDatabase;
 
@@ -70,6 +69,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
     bool acceptDrop() override { return true; }
     bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
+    using QgsDataCollectionItem::refresh;
     void refresh() override;
 
   signals:
@@ -88,7 +88,7 @@ class QgsOracleConnectionItem : public QgsDataCollectionItem
 
   private:
     void stop();
-    QMap<QString, QgsOracleOwnerItem * > mOwnerMap;
+    QMap<QString, QgsOracleOwnerItem *> mOwnerMap;
     QgsOracleColumnTypeTask *mColumnTypeTask = nullptr;
     void setAllAsPopulated();
 };
@@ -109,7 +109,7 @@ class QgsOracleOwnerItem : public QgsDataCollectionItem
 };
 
 Q_NOWARN_DEPRECATED_PUSH // deleteLayer deprecated
-class QgsOracleLayerItem : public QgsLayerItem
+  class QgsOracleLayerItem : public QgsLayerItem
 {
     Q_OBJECT
 

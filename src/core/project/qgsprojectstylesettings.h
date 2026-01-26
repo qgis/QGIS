@@ -15,16 +15,17 @@
 #ifndef QGSPROJECTSTYLESETTINGS_H
 #define QGSPROJECTSTYLESETTINGS_H
 
+#include <memory.h>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgstextformat.h"
 #include "qgswkbtypes.h"
 
-#include <memory.h>
 #include <QAbstractListModel>
 #include <QColorSpace>
-#include <QSortFilterProxyModel>
 #include <QPointer>
+#include <QSortFilterProxyModel>
 
 class QDomElement;
 class QgsReadWriteContext;
@@ -354,7 +355,7 @@ class CORE_EXPORT QgsProjectStyleSettings : public QObject
     void loadStyleAtPath( const QString &path );
     void clearStyles();
 
-    //! propagate dirtyness to project
+    //! propagate dirtiness to project
     void makeDirty();
 
     friend class TestQgsProjectProperties;

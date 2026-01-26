@@ -16,10 +16,12 @@
 #ifndef QGSLAYOUTVIEWTOOLADDNODEITEM_H
 #define QGSLAYOUTVIEWTOOLADDNODEITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgslayoutviewtool.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgslayoutviewtool.h"
+
 #include <QAbstractGraphicsShapeItem>
 
 /**
@@ -28,11 +30,9 @@
  */
 class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
 {
-
     Q_OBJECT
 
   public:
-
     //! Constructs a QgsLayoutViewToolAddNodeItem for the given layout \a view.
     QgsLayoutViewToolAddNodeItem( QgsLayoutView *view SIP_TRANSFERTHIS );
 
@@ -66,18 +66,16 @@ class GUI_EXPORT QgsLayoutViewToolAddNodeItem : public QgsLayoutViewTool
     void createdItem();
 
   private:
-
     int mItemMetadataId = -1;
 
     //! Rubber band item
-    std::unique_ptr< QAbstractGraphicsShapeItem > mRubberBand;
+    std::unique_ptr<QGraphicsItem> mRubberBand;
 
     QPolygonF mPolygon;
 
     void addNode( QPointF scenePoint );
     void moveTemporaryNode( QPointF scenePoint, Qt::KeyboardModifiers modifiers );
     void setRubberBandNodes();
-
 };
 
 #endif // QGSLAYOUTVIEWTOOLADDNODEITEM_H

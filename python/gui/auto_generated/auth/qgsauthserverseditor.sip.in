@@ -10,17 +10,17 @@
 
 
 
+
 class QgsAuthServersEditor : QWidget
 {
 %Docstring(signature="appended")
-Widget for viewing and editing servers in authentication database
+Widget for viewing and editing servers in authentication database.
 %End
 
 %TypeHeaderCode
 #include "qgsauthserverseditor.h"
 %End
   public:
-
     explicit QgsAuthServersEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Widget for editing authentication configurations directly in database
@@ -29,7 +29,6 @@ Widget for editing authentication configurations directly in database
 %End
 
   protected:
-
     virtual void showEvent( QShowEvent *e );
 
 

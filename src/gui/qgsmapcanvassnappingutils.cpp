@@ -15,12 +15,14 @@
 #include "qgsmapcanvassnappingutils.h"
 
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
 
 #include <QApplication>
 #include <QProgressDialog>
+
+#include "moc_qgsmapcanvassnappingutils.cpp"
 
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent )
   : QgsSnappingUtils( parent, QgsSettingsRegistryCore::settingsDigitizingSnapInvisibleFeature->value() )

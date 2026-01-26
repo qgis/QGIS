@@ -20,22 +20,22 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsvariantutils.h"
 
+#include <QCache>
+#include <QDateTime>
+#include <QFile>
+#include <QFileInfo>
+#include <QList>
+#include <QNetworkReply>
 #include <QObject>
 #include <QRecursiveMutex>
-#include <QCache>
 #include <QSet>
-#include <QDateTime>
-#include <QList>
-#include <QFile>
-#include <QNetworkReply>
-#include <QFileInfo>
 #include <QUrl>
 
 /**
@@ -156,12 +156,41 @@ class CORE_EXPORT QgsAbstractContentCacheBase: public QObject
      */
     static bool parseBase64DataUrl( const QString &path, QString *mimeType SIP_OUT = nullptr, QString *data SIP_OUT = nullptr );
 
+
+    /**
+     * Parses a \a path to determine if it represents a embedded string data, and if so, extracts the components
+     * of the URL.
+     *
+     * Data URLs are of the form ``data:[<mediatype>;]utf8,<data>``.
+     *
+     * \param path path to test
+     * \param mimeType will be set to the extracted mime type if the \a path is a data URL
+     * \param data will be set to the extracted string data if the \a path is a data URL
+     *
+     * \returns TRUE if \a path is an embedded string data URL
+     *
+     * \since QGIS 3.42
+     */
+    static bool parseEmbeddedStringData( const QString &path, QString *mimeType SIP_OUT = nullptr, QString *data SIP_OUT = nullptr );
+
     /**
      * Returns TRUE if \a path represents base64 encoded data.
      *
      * \since QGIS 3.40
      */
     static bool isBase64Data( const QString &path );
+
+    /**
+     * Invalidates a cache entry for the specified \a path.
+     *
+     * If an entry exists for the given \a path, it will be removed from the cache.
+     *
+     * \param path The path of the cache entry to invalidate.
+     * \returns TRUE if an entry was invalidated, FALSE otherwise.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool invalidateCacheEntry( const QString &path );
 
   signals:
 
@@ -241,6 +270,25 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     ~QgsAbstractContentCache() override
     {
       qDeleteAll( mEntryLookup );
+    }
+
+    bool invalidateCacheEntry( const QString &path ) override
+    {
+      const QMutexLocker locker( &mMutex );
+
+      const QList<T *> entries = mEntryLookup.values( path );
+      if ( entries.isEmpty() )
+        return false;
+
+      for ( T *entry : entries )
+      {
+        takeEntryFromList( entry );
+        mEntryLookup.remove( path, entry );
+        mTotalSize -= entry->dataSize();
+        delete entry;
+      }
+
+      return true;
     }
 
   protected:
@@ -418,7 +466,7 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
     {
       entry->mFileModifiedCheckTimeout = mFileModifiedCheckTimeout;
 
-      if ( !entry->path.startsWith( QLatin1String( "base64:" ) ) )
+      if ( !entry->path.startsWith( "base64:"_L1 ) )
       {
         entry->fileModified = QFileInfo( entry->path ).lastModified();
         entry->fileModifiedLastCheckTimer.start();
@@ -480,12 +528,12 @@ class CORE_EXPORT QgsAbstractContentCache : public QgsAbstractContentCacheBase
      */
     void printEntryList()
     {
-      QgsDebugMsgLevel( QStringLiteral( "****************cache entry list*************************" ), 1 );
+      QgsDebugMsgLevel( u"****************cache entry list*************************"_s, 1 );
       QgsDebugMsgLevel( "Cache size: " + QString::number( mTotalSize ), 1 );
       T *entry = mLeastRecentEntry;
       while ( entry )
       {
-        QgsDebugMsgLevel( QStringLiteral( "***Entry:" ), 1 );
+        QgsDebugMsgLevel( u"***Entry:"_s, 1 );
         entry->dump();
         entry = static_cast< T * >( entry->nextEntry );
       }

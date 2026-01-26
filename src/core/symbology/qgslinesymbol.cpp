@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgslinesymbol.h"
-#include "qgslinesymbollayer.h"
-#include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgspainteffect.h"
 
-QgsLineSymbol *QgsLineSymbol::createSimple( const QVariantMap &properties )
+#include "qgsgeometrygeneratorsymbollayer.h"
+#include "qgslinesymbollayer.h"
+#include "qgspainteffect.h"
+#include "qgssymbollayerutils.h"
+
+std::unique_ptr< QgsLineSymbol > QgsLineSymbol::createSimple( const QVariantMap &properties )
 {
   QgsSymbolLayer *sl = QgsSimpleLineSymbolLayer::create( properties );
   if ( !sl )
@@ -27,7 +28,7 @@ QgsLineSymbol *QgsLineSymbol::createSimple( const QVariantMap &properties )
 
   QgsSymbolLayerList layers;
   layers.append( sl );
-  return new QgsLineSymbol( layers );
+  return std::make_unique< QgsLineSymbol >( layers );
 }
 
 QgsLineSymbol::QgsLineSymbol( const QgsSymbolLayerList &layers )

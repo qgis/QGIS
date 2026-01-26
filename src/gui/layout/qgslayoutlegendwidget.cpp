@@ -16,58 +16,77 @@
  ***************************************************************************/
 
 #include "qgslayoutlegendwidget.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutlegendlayersdialog.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemmap.h"
-#include "qgsguiutils.h"
-#include "qgslayoutdesignerinterface.h"
 
 #include "qgsapplication.h"
+#include "qgscolorramplegendnode.h"
+#include "qgscolorramplegendnodewidget.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionfinder.h"
+#include "qgsguiutils.h"
 #include "qgslayertree.h"
-#include "qgslayertreeutils.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgslayertreeutils.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemwidget.h"
+#include "qgslayoutlegendlayersdialog.h"
+#include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutundostack.h"
 #include "qgslegendrenderer.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgslayoutatlas.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutmeasurementconverter.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgscolorramplegendnodewidget.h"
-#include "qgssymbol.h"
-#include "qgslayoutundostack.h"
-#include "qgsexpressionfinder.h"
-#include "qgscolorramplegendnode.h"
 #include "qgspainting.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
+#include <QActionGroup>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QInputDialog>
-#include <QActionGroup>
+
+#include "moc_qgslayoutlegendwidget.cpp"
 
 ///@cond PRIVATE
 
-static int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+namespace
 {
-  return legendNode->model()->layerOriginalLegendNodes( legendNode->layerNode() ).indexOf( legendNode );
-}
+  int _unfilteredLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+  {
+    return legendNode->model()->layerOriginalLegendNodes( legendNode->layerNode() ).indexOf( legendNode );
+  }
 
-static int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
-{
-  // figure out index of the legend node as it comes out of the map layer legend.
-  // first legend nodes may be reordered, output of that is available in layerOriginalLegendNodes().
-  // next the nodes may be further filtered (by scale, map content etc).
-  // so here we go in reverse order: 1. find index before filtering, 2. find index before reorder
-  int unfilteredNodeIndex = _unfilteredLegendNodeIndex( legendNode );
-  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
-  return ( unfilteredNodeIndex >= 0 && unfilteredNodeIndex < order.count() ? order[unfilteredNodeIndex] : -1 );
-}
+  int _originalLegendNodeIndex( QgsLayerTreeModelLegendNode *legendNode )
+  {
+    // figure out index of the legend node as it comes out of the map layer legend.
+    // first legend nodes may be reordered, output of that is available in layerOriginalLegendNodes().
+    // next the nodes may be further filtered (by scale, map content etc).
+    // so here we go in reverse order: 1. find index before filtering, 2. find index before reorder
+    int unfilteredNodeIndex = _unfilteredLegendNodeIndex( legendNode );
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( legendNode->layerNode() );
+    return ( unfilteredNodeIndex >= 0 && unfilteredNodeIndex < order.count() ? order[unfilteredNodeIndex] : -1 );
+  }
 
+  void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int destLegendNodeIndex )
+  {
+    QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
+    const int offset = destLegendNodeIndex - legendNodeIndex;
+
+    if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
+      return;
+    if ( legendNodeIndex + offset < 0 || legendNodeIndex + offset >= order.count() )
+      return;
+
+    int id = order.takeAt( legendNodeIndex );
+    order.insert( legendNodeIndex + offset, id );
+
+    QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+  }
+} //namespace
 
 QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, legend )
@@ -77,39 +96,45 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   Q_ASSERT( mLegend );
 
   setupUi( this );
+
+  mSyncModeCombo->addItem( tr( "Synchronize to All Project Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::AllProjectLayers ) );
+  mSyncModeCombo->addItem( tr( "Synchronize to Visible Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::VisibleLayers ) );
+  mSyncModeCombo->addItem( tr( "Manual" ), QVariant::fromValue( Qgis::LegendSyncMode::Manual ) );
+
   connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mWrapCharLineEdit_textChanged );
   connect( mTitleLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mTitleLineEdit_textChanged );
   connect( mTitleAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::titleAlignmentChanged );
   connect( mGroupAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::groupAlignmentChanged );
   connect( mSubgroupAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::subgroupAlignmentChanged );
   connect( mItemAlignCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::itemAlignmentChanged );
-  connect( mColumnCountSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnCountSpinBox_valueChanged );
+  connect( mColumnCountSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnCountSpinBox_valueChanged );
   connect( mSplitLayerCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mSplitLayerCheckBox_toggled );
   connect( mEqualColumnWidthCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mEqualColumnWidthCheckBox_toggled );
-  connect( mSymbolWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolWidthSpinBox_valueChanged );
-  connect( mSymbolHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolHeightSpinBox_valueChanged );
-  connect( mMaxSymbolSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mMaxSymbolSizeSpinBox_valueChanged );
-  connect( mMinSymbolSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mMinSymbolSizeSpinBox_valueChanged );
-  connect( mWmsLegendWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mWmsLegendWidthSpinBox_valueChanged );
-  connect( mWmsLegendHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mWmsLegendHeightSpinBox_valueChanged );
-  connect( mTitleSpaceBottomSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mTitleSpaceBottomSpinBox_valueChanged );
-  connect( mGroupSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mGroupSpaceSpinBox_valueChanged );
-  connect( mGroupIndentSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mGroupIndentSpinBox_valueChanged );
-  connect( mSubgroupIndentSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSubgroupIndentSpinBox_valueChanged );
-  connect( mSpaceBelowGroupHeadingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceBelowGroupHeadingChanged );
-  connect( mGroupSideSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceGroupSideChanged );
-  connect( mLayerSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mLayerSpaceSpinBox_valueChanged );
-  connect( mSpaceBelowSubgroupHeadingSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceBelowSubGroupHeadingChanged );
-  connect( mSubgroupSideSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceSubGroupSideChanged );
-  connect( mSymbolSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolSpaceSpinBox_valueChanged );
-  connect( mSymbolSideSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceSymbolSideChanged );
-  connect( mIconLabelSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
-  connect( mBoxSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
-  connect( mColumnSpaceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
-  connect( mCheckBoxAutoUpdate, &QCheckBox::stateChanged, this, [ = ]( int state ) { mCheckBoxAutoUpdate_stateChanged( state ); } );
+  connect( mSymbolWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolWidthSpinBox_valueChanged );
+  connect( mSymbolHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolHeightSpinBox_valueChanged );
+  connect( mMaxSymbolSizeSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mMaxSymbolSizeSpinBox_valueChanged );
+  connect( mMinSymbolSizeSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mMinSymbolSizeSpinBox_valueChanged );
+  connect( mWmsLegendWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mWmsLegendWidthSpinBox_valueChanged );
+  connect( mWmsLegendHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mWmsLegendHeightSpinBox_valueChanged );
+  connect( mTitleSpaceBottomSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mTitleSpaceBottomSpinBox_valueChanged );
+  connect( mGroupSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mGroupSpaceSpinBox_valueChanged );
+  connect( mGroupIndentSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mGroupIndentSpinBox_valueChanged );
+  connect( mSubgroupIndentSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSubgroupIndentSpinBox_valueChanged );
+  connect( mSpaceBelowGroupHeadingSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceBelowGroupHeadingChanged );
+  connect( mGroupSideSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceGroupSideChanged );
+  connect( mLayerSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mLayerSpaceSpinBox_valueChanged );
+  connect( mSpaceBelowSubgroupHeadingSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceBelowSubGroupHeadingChanged );
+  connect( mSubgroupSideSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceSubGroupSideChanged );
+  connect( mSymbolSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mSymbolSpaceSpinBox_valueChanged );
+  connect( mSymbolSideSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::spaceSymbolSideChanged );
+  connect( mIconLabelSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged );
+  connect( mBoxSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mBoxSpaceSpinBox_valueChanged );
+  connect( mColumnSpaceSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged );
+  connect( mMaxWidthSpinBox, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::maxWidthChanged );
+  connect( mSyncModeCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] { syncModeChanged( true ); } );
   connect( mCheckboxResizeContents, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mCheckboxResizeContents_toggled );
   connect( mRasterStrokeGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutLegendWidget::mRasterStrokeGroupBox_toggled );
-  connect( mRasterStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
+  connect( mRasterStrokeWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLegendWidget::mRasterStrokeWidthSpinBox_valueChanged );
   connect( mRasterStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutLegendWidget::mRasterStrokeColorButton_colorChanged );
   connect( mExpandAllToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::expandLegendTree );
   connect( mCollapseAllToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::collapseLegendTree );
@@ -122,17 +147,28 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
   connect( mExpressionFilterButton, &QgsLegendFilterButton::toggled, this, &QgsLayoutLegendWidget::mExpressionFilterButton_toggled );
   connect( mLayerExpressionButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mLayerExpressionButton_clicked );
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled );
-  connect( mUpdateAllPushButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mUpdateAllPushButton_clicked );
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
 
+  QMenu *resetMenu = new QMenu( mResetLayersButton );
+  QAction *resetToProjectLayersAction = new QAction( tr( "Reset to All Project Layers" ), resetMenu );
+  resetMenu->addAction( resetToProjectLayersAction );
+  connect( resetToProjectLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::AllProjectLayers ); } );
+  QAction *resetToVisibleLayersAction = new QAction( tr( "Reset to Visible Layers" ), resetMenu );
+  resetMenu->addAction( resetToVisibleLayersAction );
+  connect( resetToVisibleLayersAction, &QAction::triggered, this, [this] { resetLayers( Qgis::LegendSyncMode::VisibleLayers ); } );
+  mResetLayersButton->setMenu( resetMenu );
+  mResetLayersButton->setPopupMode( QToolButton::InstantPopup );
+
   connect( mFilterByMapCheckBox, &QCheckBox::toggled, mButtonLinkedMaps, &QWidget::setEnabled );
   mButtonLinkedMaps->setEnabled( false );
-  connect( mButtonLinkedMaps, &QToolButton::clicked, this, [ = ]
-  {
-    mMapFilteringWidget = new QgsLayoutLegendMapFilteringWidget( mLegend );
-    openPanel( mMapFilteringWidget );
+  connect( mButtonLinkedMaps, &QToolButton::clicked, this, [this] {
+    if ( mLegend )
+    {
+      mMapFilteringWidget = new QgsLayoutLegendMapFilteringWidget( mLegend );
+      openPanel( mMapFilteringWidget );
+    }
   } );
 
   setPanelTitle( tr( "Legend Properties" ) );
@@ -149,14 +185,17 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mArrangementCombo->setAvailableAlignments( Qt::AlignLeft | Qt::AlignRight );
   connect( mArrangementCombo, &QgsAlignmentComboBox::changed, this, &QgsLayoutLegendWidget::arrangementChanged );
-  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsLeft.svg" ) ) );
-  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( QStringLiteral( "/mIconArrangeSymbolsRight.svg" ) ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignLeft, tr( "Symbols on Left" ), QgsApplication::getThemeIcon( u"/mIconArrangeSymbolsLeft.svg"_s ) );
+  mArrangementCombo->customizeAlignmentDisplay( Qt::AlignRight, tr( "Symbols on Right" ), QgsApplication::getThemeIcon( u"/mIconArrangeSymbolsRight.svg"_s ) );
 
   mSpaceBelowGroupHeadingSpinBox->setClearValue( 0 );
   mGroupSideSpinBox->setClearValue( 0 );
   mSpaceBelowSubgroupHeadingSpinBox->setClearValue( 0 );
   mSubgroupSideSpinBox->setClearValue( 0 );
   mSymbolSideSpaceSpinBox->setClearValue( 0 );
+
+  mMaxWidthSpinBox->setShowClearButton( true );
+  mMaxWidthSpinBox->setClearValue( 0, tr( "Disabled" ) );
 
   // setup icons
   mAddToolButton->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
@@ -183,7 +222,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mRasterStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mRasterStrokeColorButton->setAllowOpacity( true );
-  mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
+  mRasterStrokeColorButton->setContext( u"composer "_s );
 
   mMapComboBox->setCurrentLayout( legend->layout() );
   mMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
@@ -195,7 +234,9 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   mItemTreeView->setHeaderHidden( true );
 
-  mItemTreeView->setModel( legend->model() );
+  mLegendProxyModel = new QgsLegendLayerTreeProxyModel( legend, this );
+
+  mItemTreeView->setModel( legend->model(), mLegendProxyModel );
   mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
   setLegendMapViewData();
   connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
@@ -227,11 +268,11 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend, QgsMa
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::DataDefinedProperty::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::DataDefinedProperty::LegendColumnCount );
+  registerDataDefinedButton( mLegendAutoWrapWidthDDBtn, QgsLayoutObject::DataDefinedProperty::LegendAutoWrapWidth );
 
   setGuiElements();
 
-  connect( mItemTreeView->selectionModel(), &QItemSelectionModel::currentChanged,
-           this, &QgsLayoutLegendWidget::selectedChanged );
+  connect( mItemTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayoutLegendWidget::selectedChanged );
   connect( mTitleFontButton, &QgsFontButton::changed, this, &QgsLayoutLegendWidget::titleFontChanged );
   connect( mGroupFontButton, &QgsFontButton::changed, this, &QgsLayoutLegendWidget::groupFontChanged );
   connect( mLayerFontButton, &QgsFontButton::changed, this, &QgsLayoutLegendWidget::layerFontChanged );
@@ -263,9 +304,9 @@ void QgsLayoutLegendWidget::setGuiElements()
   blockAllSignals( true );
   mTitleLineEdit->setText( mLegend->title() );
   whileBlocking( mTitleAlignCombo )->setCurrentAlignment( mLegend->titleAlignment() );
-  whileBlocking( mGroupAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::Group ).alignment() );
-  whileBlocking( mSubgroupAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::Subgroup ).alignment() );
-  whileBlocking( mItemAlignCombo )->setCurrentAlignment( mLegend->style( QgsLegendStyle::SymbolLabel ).alignment() );
+  whileBlocking( mGroupAlignCombo )->setCurrentAlignment( mLegend->style( Qgis::LegendComponent::Group ).alignment() );
+  whileBlocking( mSubgroupAlignCombo )->setCurrentAlignment( mLegend->style( Qgis::LegendComponent::Subgroup ).alignment() );
+  whileBlocking( mItemAlignCombo )->setCurrentAlignment( mLegend->style( Qgis::LegendComponent::SymbolLabel ).alignment() );
   whileBlocking( mArrangementCombo )->setCurrentAlignment( mLegend->symbolAlignment() );
   mFilterByMapCheckBox->setChecked( mLegend->legendFilterByMapEnabled() );
   mButtonLinkedMaps->setEnabled( mLegend->legendFilterByMapEnabled() );
@@ -278,27 +319,29 @@ void QgsLayoutLegendWidget::setGuiElements()
   mMinSymbolSizeSpinBox->setValue( mLegend->minimumSymbolSize() );
   mWmsLegendWidthSpinBox->setValue( mLegend->wmsLegendWidth() );
   mWmsLegendHeightSpinBox->setValue( mLegend->wmsLegendHeight() );
-  mTitleSpaceBottomSpinBox->setValue( mLegend->style( QgsLegendStyle::Title ).margin( QgsLegendStyle::Bottom ) );
-  mGroupSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Top ) );
-  mGroupIndentSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).indent() );
-  mSubgroupIndentSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).indent() );
-  mGroupSideSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Left ) );
-  mSpaceBelowGroupHeadingSpinBox->setValue( mLegend->style( QgsLegendStyle::Group ).margin( QgsLegendStyle::Bottom ) );
-  mLayerSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).margin( QgsLegendStyle::Top ) );
-  mSpaceBelowSubgroupHeadingSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).margin( QgsLegendStyle::Bottom ) );
-  mSubgroupSideSpinBox->setValue( mLegend->style( QgsLegendStyle::Subgroup ).margin( QgsLegendStyle::Left ) );
+  mTitleSpaceBottomSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Title ).margin( QgsLegendStyle::Bottom ) );
+  mGroupSpaceSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Group ).margin( QgsLegendStyle::Top ) );
+  mGroupIndentSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Group ).indent() );
+  mSubgroupIndentSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Subgroup ).indent() );
+  mGroupSideSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Group ).margin( QgsLegendStyle::Left ) );
+  mSpaceBelowGroupHeadingSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Group ).margin( QgsLegendStyle::Bottom ) );
+  mLayerSpaceSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Subgroup ).margin( QgsLegendStyle::Top ) );
+  mSpaceBelowSubgroupHeadingSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Subgroup ).margin( QgsLegendStyle::Bottom ) );
+  mSubgroupSideSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Subgroup ).margin( QgsLegendStyle::Left ) );
   // We keep Symbol and SymbolLabel Top in sync for now
-  mSymbolSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Top ) );
-  mIconLabelSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left ) );
-  mSymbolSideSpaceSpinBox->setValue( mLegend->style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Left ) );
+  mSymbolSpaceSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Top ) );
+  mIconLabelSpaceSpinBox->setValue( mLegend->style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left ) );
+  mSymbolSideSpaceSpinBox->setValue( mLegend->style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Left ) );
   mBoxSpaceSpinBox->setValue( mLegend->boxSpace() );
   mColumnSpaceSpinBox->setValue( mLegend->columnSpace() );
+
+  mMaxWidthSpinBox->setValue( mLegend->autoWrapLinesAfter() );
 
   mRasterStrokeGroupBox->setChecked( mLegend->drawRasterStroke() );
   mRasterStrokeWidthSpinBox->setValue( mLegend->rasterStrokeWidth() );
   mRasterStrokeColorButton->setColor( mLegend->rasterStrokeColor() );
 
-  mCheckBoxAutoUpdate->setChecked( mLegend->autoUpdateModel() );
+  mSyncModeCombo->setCurrentIndex( mSyncModeCombo->findData( QVariant::fromValue( mLegend->syncMode() ) ) );
 
   mCheckboxResizeContents->setChecked( mLegend->resizeToContents() );
   mFilterLegendByAtlasCheckBox->setChecked( mLegend->legendFilterOutAtlas() );
@@ -306,14 +349,14 @@ void QgsLayoutLegendWidget::setGuiElements()
 
   QgsLayoutItemMap *map = mLegend->linkedMap();
   mMapComboBox->setItem( map );
-  mTitleFontButton->setTextFormat( mLegend->style( QgsLegendStyle::Title ).textFormat() );
-  mGroupFontButton->setTextFormat( mLegend->style( QgsLegendStyle::Group ).textFormat() );
-  mLayerFontButton->setTextFormat( mLegend->style( QgsLegendStyle::Subgroup ).textFormat() );
-  mItemFontButton->setTextFormat( mLegend->style( QgsLegendStyle::SymbolLabel ).textFormat() );
+  mTitleFontButton->setTextFormat( mLegend->style( Qgis::LegendComponent::Title ).textFormat() );
+  mGroupFontButton->setTextFormat( mLegend->style( Qgis::LegendComponent::Group ).textFormat() );
+  mLayerFontButton->setTextFormat( mLegend->style( Qgis::LegendComponent::Subgroup ).textFormat() );
+  mItemFontButton->setTextFormat( mLegend->style( Qgis::LegendComponent::SymbolLabel ).textFormat() );
 
   blockAllSignals( false );
 
-  mCheckBoxAutoUpdate_stateChanged( mLegend->autoUpdateModel() ? Qt::Checked : Qt::Unchecked, false );
+  syncModeChanged( false );
   updateDataDefinedButton( mLegendTitleDDBtn );
   updateDataDefinedButton( mColumnsDDBtn );
 }
@@ -346,7 +389,7 @@ void QgsLayoutLegendWidget::titleAlignmentChanged()
 {
   if ( mLegend )
   {
-    Qt::AlignmentFlag alignment = static_cast< Qt::AlignmentFlag >( static_cast< int  >( mTitleAlignCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
+    Qt::AlignmentFlag alignment = static_cast<Qt::AlignmentFlag>( static_cast<int>( mTitleAlignCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
     mLegend->beginCommand( tr( "Change Title Alignment" ) );
     mLegend->setTitleAlignment( alignment );
     mLegend->update();
@@ -359,7 +402,7 @@ void QgsLayoutLegendWidget::groupAlignmentChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Group Alignment" ) );
-    mLegend->rstyle( QgsLegendStyle::Group ).setAlignment( mGroupAlignCombo->currentAlignment() );
+    mLegend->rstyle( Qgis::LegendComponent::Group ).setAlignment( mGroupAlignCombo->currentAlignment() );
     mLegend->update();
     mLegend->endCommand();
   }
@@ -370,7 +413,7 @@ void QgsLayoutLegendWidget::subgroupAlignmentChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Subgroup Alignment" ) );
-    mLegend->rstyle( QgsLegendStyle::Subgroup ).setAlignment( mSubgroupAlignCombo->currentAlignment() );
+    mLegend->rstyle( Qgis::LegendComponent::Subgroup ).setAlignment( mSubgroupAlignCombo->currentAlignment() );
     mLegend->update();
     mLegend->endCommand();
   }
@@ -381,7 +424,7 @@ void QgsLayoutLegendWidget::itemAlignmentChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Item Alignment" ) );
-    mLegend->rstyle( QgsLegendStyle::SymbolLabel ).setAlignment( mItemAlignCombo->currentAlignment() );
+    mLegend->rstyle( Qgis::LegendComponent::SymbolLabel ).setAlignment( mItemAlignCombo->currentAlignment() );
     mLegend->update();
     mLegend->endCommand();
   }
@@ -391,7 +434,7 @@ void QgsLayoutLegendWidget::arrangementChanged()
 {
   if ( mLegend )
   {
-    Qt::AlignmentFlag alignment = static_cast< Qt::AlignmentFlag >( static_cast< int  >( mArrangementCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
+    Qt::AlignmentFlag alignment = static_cast<Qt::AlignmentFlag>( static_cast<int>( mArrangementCombo->currentAlignment() & Qt::AlignHorizontal_Mask ) );
     mLegend->beginCommand( tr( "Change Legend Arrangement" ) );
     mLegend->setSymbolAlignment( alignment );
     mLegend->update();
@@ -514,7 +557,7 @@ void QgsLayoutLegendWidget::mTitleSpaceBottomSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Title Space" ), QgsLayoutItem::UndoLegendTitleSpaceBottom );
-    mLegend->rstyle( QgsLegendStyle::Title ).setMargin( QgsLegendStyle::Bottom, d );
+    mLegend->rstyle( Qgis::LegendComponent::Title ).setMargin( QgsLegendStyle::Bottom, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -526,7 +569,7 @@ void QgsLayoutLegendWidget::mGroupSpaceSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Group Space" ), QgsLayoutItem::UndoLegendGroupSpace );
-    mLegend->rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, d );
+    mLegend->rstyle( Qgis::LegendComponent::Group ).setMargin( QgsLegendStyle::Top, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -538,7 +581,7 @@ void QgsLayoutLegendWidget::mGroupIndentSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Group Indent" ), QgsLayoutItem::UndoLegendGroupIndent );
-    mLegend->rstyle( QgsLegendStyle::Group ).setIndent( d );
+    mLegend->rstyle( Qgis::LegendComponent::Group ).setIndent( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -550,7 +593,7 @@ void QgsLayoutLegendWidget::mSubgroupIndentSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Subgroup Indent" ), QgsLayoutItem::UndoLegendSubgroupIndent );
-    mLegend->rstyle( QgsLegendStyle::Subgroup ).setIndent( d );
+    mLegend->rstyle( Qgis::LegendComponent::Subgroup ).setIndent( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -562,7 +605,7 @@ void QgsLayoutLegendWidget::spaceBelowGroupHeadingChanged( double space )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Group Space" ), QgsLayoutItem::UndoLegendGroupSpace );
-    mLegend->rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Bottom, space );
+    mLegend->rstyle( Qgis::LegendComponent::Group ).setMargin( QgsLegendStyle::Bottom, space );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -574,7 +617,7 @@ void QgsLayoutLegendWidget::spaceGroupSideChanged( double space )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Side of Group Space" ), QgsLayoutItem::UndoLegendGroupSpace );
-    mLegend->rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Left, space );
+    mLegend->rstyle( Qgis::LegendComponent::Group ).setMargin( QgsLegendStyle::Left, space );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -586,7 +629,7 @@ void QgsLayoutLegendWidget::spaceSubGroupSideChanged( double space )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Side of Subgroup Space" ), QgsLayoutItem::UndoLegendLayerSpace );
-    mLegend->rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Left, space );
+    mLegend->rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Left, space );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -598,7 +641,7 @@ void QgsLayoutLegendWidget::spaceSymbolSideChanged( double space )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Side of Symbol Space" ), QgsLayoutItem::UndoLegendSymbolSpace );
-    mLegend->rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Left, space );
+    mLegend->rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Left, space );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -610,7 +653,7 @@ void QgsLayoutLegendWidget::mLayerSpaceSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Subgroup Space" ), QgsLayoutItem::UndoLegendLayerSpace );
-    mLegend->rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, d );
+    mLegend->rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Top, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -623,8 +666,8 @@ void QgsLayoutLegendWidget::mSymbolSpaceSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Change Symbol Space" ), QgsLayoutItem::UndoLegendSymbolSpace );
     // We keep Symbol and SymbolLabel Top in sync for now
-    mLegend->rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, d );
-    mLegend->rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Top, d );
+    mLegend->rstyle( Qgis::LegendComponent::Symbol ).setMargin( QgsLegendStyle::Top, d );
+    mLegend->rstyle( Qgis::LegendComponent::SymbolLabel ).setMargin( QgsLegendStyle::Top, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -636,7 +679,7 @@ void QgsLayoutLegendWidget::mIconLabelSpaceSpinBox_valueChanged( double d )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Label Space" ), QgsLayoutItem::UndoLegendIconSymbolSpace );
-    mLegend->rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Left, d );
+    mLegend->rstyle( Qgis::LegendComponent::SymbolLabel ).setMargin( QgsLegendStyle::Left, d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -648,7 +691,7 @@ void QgsLayoutLegendWidget::titleFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Title Font" ), QgsLayoutItem::UndoLegendTitleFont );
-    mLegend->rstyle( QgsLegendStyle::Title ).setTextFormat( mTitleFontButton->textFormat() );
+    mLegend->rstyle( Qgis::LegendComponent::Title ).setTextFormat( mTitleFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -660,7 +703,7 @@ void QgsLayoutLegendWidget::groupFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Group Font" ), QgsLayoutItem::UndoLegendGroupFont );
-    mLegend->rstyle( QgsLegendStyle::Group ).setTextFormat( mGroupFontButton->textFormat() );
+    mLegend->rstyle( Qgis::LegendComponent::Group ).setTextFormat( mGroupFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -672,7 +715,7 @@ void QgsLayoutLegendWidget::layerFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Layer Font" ), QgsLayoutItem::UndoLegendLayerFont );
-    mLegend->rstyle( QgsLegendStyle::Subgroup ).setTextFormat( mLayerFontButton->textFormat() );
+    mLegend->rstyle( Qgis::LegendComponent::Subgroup ).setTextFormat( mLayerFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -684,7 +727,7 @@ void QgsLayoutLegendWidget::itemFontChanged()
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Item Font" ), QgsLayoutItem::UndoLegendItemFont );
-    mLegend->rstyle( QgsLegendStyle::SymbolLabel ).setTextFormat( mItemFontButton->textFormat() );
+    mLegend->rstyle( Qgis::LegendComponent::SymbolLabel ).setTextFormat( mItemFontButton->textFormat() );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -696,7 +739,7 @@ void QgsLayoutLegendWidget::spaceBelowSubGroupHeadingChanged( double space )
   if ( mLegend )
   {
     mLegend->beginCommand( tr( "Change Subgroup Space" ), QgsLayoutItem::UndoLegendLayerSpace );
-    mLegend->rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Bottom, space );
+    mLegend->rstyle( Qgis::LegendComponent::Subgroup ).setMargin( QgsLegendStyle::Bottom, space );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -727,21 +770,17 @@ void QgsLayoutLegendWidget::mColumnSpaceSpinBox_valueChanged( double d )
   }
 }
 
-static void _moveLegendNode( QgsLayerTreeLayer *nodeLayer, int legendNodeIndex, int offset )
+void QgsLayoutLegendWidget::maxWidthChanged( double width )
 {
-  QList<int> order = QgsMapLayerLegendUtils::legendNodeOrder( nodeLayer );
-
-  if ( legendNodeIndex < 0 || legendNodeIndex >= order.count() )
-    return;
-  if ( legendNodeIndex + offset < 0 || legendNodeIndex + offset >= order.count() )
-    return;
-
-  int id = order.takeAt( legendNodeIndex );
-  order.insert( legendNodeIndex + offset, id );
-
-  QgsMapLayerLegendUtils::setLegendNodeOrder( nodeLayer, order );
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Change Legend Wrapping" ), QgsLayoutItem::UndoLegendAutoWrapAfter );
+    mLegend->setAutoWrapLinesAfter( width );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
 }
-
 
 void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
 {
@@ -771,8 +810,14 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), 1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    // get the next index, the one that will have to be above our index,
+    const QModelIndex nextIndex = index.siblingAtRow( index.row() + 1 );
+    QgsLayerTreeModelLegendNode *nextLegendNode = nextIndex.isValid() ? mItemTreeView->index2legendNode( nextIndex ) : nullptr;
+    if ( nextLegendNode )
+    {
+      _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), _unfilteredLegendNodeIndex( nextLegendNode ) );
+      mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    }
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() + 1, 0, parentIndex ) ) );
@@ -809,8 +854,14 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   }
   else // legend node
   {
-    _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), -1 );
-    mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    // get the previous index, the one that will have to be below our index,
+    const QModelIndex prevIndex = index.siblingAtRow( index.row() - 1 );
+    QgsLayerTreeModelLegendNode *prevLegendNode = prevIndex.isValid() ? mItemTreeView->index2legendNode( prevIndex ) : nullptr;
+    if ( prevLegendNode )
+    {
+      _moveLegendNode( legendNode->layerNode(), _unfilteredLegendNodeIndex( legendNode ), _unfilteredLegendNodeIndex( prevLegendNode ) );
+      mItemTreeView->layerTreeModel()->refreshLayerLegend( legendNode->layerNode() );
+    }
   }
 
   mItemTreeView->setCurrentIndex( mItemTreeView->proxyModel()->mapFromSource( mItemTreeView->layerTreeModel()->index( sourceIndex.row() - 1, 0, parentIndex ) ) );
@@ -821,34 +872,50 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
 
 void QgsLayoutLegendWidget::expandLegendTree()
 {
-  mItemTreeView -> expandAll();
+  mItemTreeView->expandAll();
 }
 
 void QgsLayoutLegendWidget::collapseLegendTree()
 {
-  mItemTreeView -> collapseAll();
+  mItemTreeView->collapseAll();
 }
 
-void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state, bool userTriggered )
+void QgsLayoutLegendWidget::syncModeChanged( bool userTriggered )
 {
+  const Qgis::LegendSyncMode mode = mSyncModeCombo->currentData().value< Qgis::LegendSyncMode >();
   if ( userTriggered )
   {
-    mLegend->beginCommand( tr( "Change Auto Update" ) );
+    mLegend->beginCommand( tr( "Change Sync Mode" ) );
 
-    mLegend->setAutoUpdateModel( state == Qt::Checked );
+    mLegend->setSyncMode( mode );
     mLegend->update();
     mLegend->endCommand();
   }
 
+  mLegendProxyModel->setSyncMode( mode );
+
   // do not allow editing of model if auto update is on - we would modify project's layer tree
+  bool allowEdits = false;
+  switch ( mode )
+  {
+    case Qgis::LegendSyncMode::AllProjectLayers:
+    case Qgis::LegendSyncMode::VisibleLayers:
+      allowEdits = false;
+      break;
+
+    case Qgis::LegendSyncMode::Manual:
+      allowEdits = true;
+      break;
+  }
+
   QList<QWidget *> widgets;
   widgets << mMoveDownToolButton << mMoveUpToolButton << mRemoveToolButton << mAddToolButton
-          << mEditPushButton << mCountToolButton << mUpdateAllPushButton << mAddGroupToolButton
+          << mEditPushButton << mCountToolButton << mResetLayersButton << mAddGroupToolButton
           << mExpressionFilterButton << mCollapseAllToolButton << mExpandAllToolButton;
   for ( QWidget *w : std::as_const( widgets ) )
-    w->setEnabled( state != Qt::Checked );
+    w->setEnabled( allowEdits );
 
-  if ( state == Qt::Unchecked )
+  if ( allowEdits )
   {
     // update widgets state based on current selection
     selectedChanged( QModelIndex(), QModelIndex() );
@@ -873,7 +940,7 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
     return;
   }
 
-  QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item );
+  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
   if ( map )
   {
     mLegend->beginCommand( tr( "Change Legend Map" ) );
@@ -948,7 +1015,7 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
     return;
   }
 
-  QList< QgsMapLayer * > visibleLayers;
+  QList<QgsMapLayer *> visibleLayers;
   if ( mLegend->linkedMap() )
   {
     visibleLayers = mLegend->linkedMap()->layersToRender();
@@ -999,7 +1066,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
     proxyIndexes << index;
 
   // first try to remove legend nodes
-  QHash<QgsLayerTreeLayer *, QList<int> > nodesWithRemoval;
+  QHash<QgsLayerTreeLayer *, QList<int>> nodesWithRemoval;
   for ( const QPersistentModelIndex &proxyIndex : std::as_const( proxyIndexes ) )
   {
     if ( QgsLayerTreeModelLegendNode *legendNode = mItemTreeView->index2legendNode( proxyIndex ) )
@@ -1083,7 +1150,7 @@ void QgsLayoutLegendWidget::resetLayerNodeToDefaults()
   const auto constCustomProperties = nodeLayer->customProperties();
   for ( const QString &key : constCustomProperties )
   {
-    if ( key.startsWith( QLatin1String( "legend/" ) ) )
+    if ( key.startsWith( "legend/"_L1 ) )
       nodeLayer->removeCustomProperty( key );
   }
 
@@ -1104,7 +1171,7 @@ void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
     return;
   }
 
-  const QList< QModelIndex > selectedIndexes = mItemTreeView->selectionModel()->selectedIndexes();
+  const QList<QModelIndex> selectedIndexes = mItemTreeView->selectionModel()->selectedIndexes();
   if ( selectedIndexes.empty() )
     return;
 
@@ -1115,7 +1182,7 @@ void QgsLayoutLegendWidget::mCountToolButton_clicked( bool checked )
     if ( !QgsLayerTree::isLayer( currentNode ) )
       continue;
 
-    currentNode->setCustomProperty( QStringLiteral( "showFeatureCount" ), checked ? 1 : 0 );
+    currentNode->setCustomProperty( u"showFeatureCount"_s, checked ? 1 : 0 );
   }
   mLegend->updateFilterByMap();
   mLegend->adjustBoxSize();
@@ -1127,6 +1194,17 @@ void QgsLayoutLegendWidget::mFilterByMapCheckBox_toggled( bool checked )
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->setLegendFilterByMapEnabled( checked );
   mLegend->adjustBoxSize();
+  mLegend->update();
+  mLegend->endCommand();
+}
+
+void QgsLayoutLegendWidget::resetLayers( Qgis::LegendSyncMode mode )
+{
+  if ( !mLegend )
+    return;
+
+  mLegend->beginCommand( tr( "Update Legend" ) );
+  mLegend->resetManualLayers( mode );
   mLegend->update();
   mLegend->endCommand();
 }
@@ -1149,9 +1227,7 @@ void QgsLayoutLegendWidget::mExpressionFilterButton_toggled( bool checked )
   if ( !QgsLayerTree::isLayer( currentNode ) )
     return;
 
-  QgsLayerTreeUtils::setLegendFilterByExpression( *qobject_cast<QgsLayerTreeLayer *>( currentNode ),
-      mExpressionFilterButton->expressionText(),
-      checked );
+  QgsLayerTreeUtils::setLegendFilterByExpression( *qobject_cast<QgsLayerTreeLayer *>( currentNode ), mExpressionFilterButton->expressionText(), checked );
 
   mLegend->beginCommand( tr( "Update Legend" ) );
   mLegend->updateFilterByMap();
@@ -1182,7 +1258,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
 
   QString currentExpression;
   if ( layerNode->labelExpression().isEmpty() )
-    currentExpression = QStringLiteral( "@symbol_label" );
+    currentExpression = u"@symbol_label"_s;
   else
     currentExpression = layerNode->labelExpression();
   QgsExpressionContext legendContext = mLegend->createExpressionContext();
@@ -1197,7 +1273,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
       if ( QgsSymbolLegendNode *symbolNode = qobject_cast<QgsSymbolLegendNode *>( legendNodes.first() ) )
       {
         legendContext.appendScope( symbolNode->createSymbolScope() );
-        highlighted << QStringLiteral( "symbol_label" ) << QStringLiteral( "symbol_id" ) << QStringLiteral( "symbol_count" );
+        highlighted << u"symbol_label"_s << u"symbol_id"_s << u"symbol_count"_s;
       }
     }
   }
@@ -1210,7 +1286,7 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   limitedLayerScope->setFields( QgsFields() );
   legendContext.appendScope( limitedLayerScope );
 
-  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, QStringLiteral( "generic" ), legendContext );
+  QgsExpressionBuilderDialog expressiondialog( nullptr, currentExpression, nullptr, u"generic"_s, legendContext );
   if ( expressiondialog.exec() )
   {
     layerNode->setLabelExpression( expressiondialog.expressionText() );
@@ -1221,11 +1297,6 @@ void QgsLayoutLegendWidget::mLayerExpressionButton_clicked()
   mLegend->refresh();
   mLegend->adjustBoxSize();
   mLegend->endCommand();
-}
-
-void QgsLayoutLegendWidget::mUpdateAllPushButton_clicked()
-{
-  updateLegend();
 }
 
 void QgsLayoutLegendWidget::mAddGroupToolButton_clicked()
@@ -1251,20 +1322,6 @@ void QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
   }
 }
 
-void QgsLayoutLegendWidget::updateLegend()
-{
-  if ( mLegend )
-  {
-    mLegend->beginCommand( tr( "Update Legend" ) );
-
-    // this will reset the model completely, losing any changes
-    mLegend->setAutoUpdateModel( true );
-    mLegend->setAutoUpdateModel( false );
-    mLegend->update();
-    mLegend->endCommand();
-  }
-}
-
 void QgsLayoutLegendWidget::setReportTypeString( const QString &string )
 {
   mFilterLegendByAtlasCheckBox->setText( tr( "Only show items inside current %1 feature" ).arg( string ) );
@@ -1287,7 +1344,7 @@ bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
     disconnect( mLegend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
   }
 
-  mLegend = qobject_cast< QgsLayoutItemLegend * >( item );
+  mLegend = qobject_cast<QgsLayoutItemLegend *>( item );
   mItemPropertiesWidget->setItem( mLegend );
 
   if ( mMapFilteringWidget )
@@ -1295,7 +1352,10 @@ bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
 
   if ( mLegend )
   {
-    mItemTreeView->setModel( mLegend->model() );
+    mLegendProxyModel = new QgsLegendLayerTreeProxyModel( mLegend, this );
+
+    mItemTreeView->setModel( mLegend->model(), mLegendProxyModel );
+
     connect( mLegend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
   }
 
@@ -1309,7 +1369,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mTitleLineEdit->blockSignals( b );
   mTitleAlignCombo->blockSignals( b );
   mItemTreeView->blockSignals( b );
-  mCheckBoxAutoUpdate->blockSignals( b );
+  mSyncModeCombo->blockSignals( b );
   mMapComboBox->blockSignals( b );
   mFilterByMapCheckBox->blockSignals( b );
   mColumnCountSpinBox->blockSignals( b );
@@ -1345,6 +1405,7 @@ void QgsLayoutLegendWidget::blockAllSignals( bool b )
   mLayerFontButton->blockSignals( b );
   mItemFontButton->blockSignals( b );
   mWrapCharLineEdit->blockSignals( b );
+  mMaxWidthSpinBox->blockSignals( b );
 }
 
 void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const QModelIndex &previous )
@@ -1354,7 +1415,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
 
   mLayerExpressionButton->setEnabled( false );
 
-  if ( mLegend && mLegend->autoUpdateModel() )
+  if ( mLegend && mLegend->syncMode() != Qgis::LegendSyncMode::Manual )
   {
     QgsLayerTreeNode *currentNode = mItemTreeView->currentNode();
     if ( !QgsLayerTree::isLayer( currentNode ) )
@@ -1387,7 +1448,7 @@ void QgsLayoutLegendWidget::selectedChanged( const QModelIndex &current, const Q
   if ( !vl )
     return;
 
-  mCountToolButton->setChecked( currentNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
+  mCountToolButton->setChecked( currentNode->customProperty( u"showFeatureCount"_s, 0 ).toInt() );
   mCountToolButton->setEnabled( true );
   mLayerExpressionButton->setEnabled( true );
 
@@ -1407,7 +1468,7 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
   if ( !a || !mItemTreeView->currentNode() )
     return;
 
-  QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), static_cast< QgsLegendStyle::Style >( a->data().toInt() ) );
+  QgsLegendRenderer::setNodeLegendStyle( mItemTreeView->currentNode(), static_cast<Qgis::LegendComponent>( a->data().toInt() ) );
   mLegend->update();
 }
 
@@ -1441,7 +1502,7 @@ void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx 
     return;
   }
 
-  if ( mLegend->autoUpdateModel() )
+  if ( mLegend->syncMode() != Qgis::LegendSyncMode::Manual )
     return;
 
   QgsLayerTreeNode *currentNode = mItemTreeView->index2node( idx );
@@ -1473,7 +1534,7 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
   if ( !mView->currentNode() )
     return nullptr;
 
-  if ( mWidget->legend()->autoUpdateModel() )
+  if ( mWidget->legend()->syncMode() != Qgis::LegendSyncMode::Manual )
     return nullptr; // no editing allowed
 
   QMenu *menu = new QMenu();
@@ -1484,20 +1545,20 @@ QMenu *QgsLayoutLegendMenuProvider::createContextMenu()
     menu->addSeparator();
   }
 
-  QgsLegendStyle::Style currentStyle = QgsLegendRenderer::nodeLegendStyle( mView->currentNode(), mView->layerTreeModel() );
+  Qgis::LegendComponent currentStyle = QgsLegendRenderer::nodeLegendStyle( mView->currentNode(), mView->layerTreeModel() );
 
-  QActionGroup *styleGroup = new QActionGroup{ mWidget };
+  QActionGroup *styleGroup = new QActionGroup { mWidget };
   styleGroup->setExclusive( true );
 
-  QList<QgsLegendStyle::Style> lst;
-  lst << QgsLegendStyle::Hidden << QgsLegendStyle::Group << QgsLegendStyle::Subgroup;
-  for ( QgsLegendStyle::Style style : std::as_const( lst ) )
+  QList<Qgis::LegendComponent> lst;
+  lst << Qgis::LegendComponent::Hidden << Qgis::LegendComponent::Group << Qgis::LegendComponent::Subgroup;
+  for ( Qgis::LegendComponent style : std::as_const( lst ) )
   {
     QAction *action = menu->addAction( QgsLegendStyle::styleLabel( style ), mWidget, &QgsLayoutLegendWidget::setCurrentNodeStyleFromAction );
     action->setActionGroup( styleGroup );
     action->setCheckable( true );
     action->setChecked( currentStyle == style );
-    action->setData( static_cast< int >( style ) );
+    action->setData( static_cast<int>( style ) );
   }
 
   return menu;
@@ -1510,7 +1571,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   : QgsPanelWidget( parent )
   , mLegend( legend )
   , mNode( node )
-  , mLayer( qobject_cast< QgsLayerTreeLayer* >( node ) )
+  , mLayer( qobject_cast<QgsLayerTreeLayer *>( node ) )
   , mLegendNode( legendNode )
   , mOriginalLegendNodeIndex( originalLegendNodeIndex )
 {
@@ -1533,17 +1594,17 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   else if ( mLayer )
   {
     currentLabel = mLayer->name();
-    QVariant v = mLayer->customProperty( QStringLiteral( "legend/title-label" ) );
+    QVariant v = mLayer->customProperty( u"legend/title-label"_s );
     if ( !QgsVariantUtils::isNull( v ) )
       currentLabel = v.toString();
-    mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
+    mColumnBreakBeforeCheckBox->setChecked( mLayer->customProperty( u"legend/column-break"_s ).toInt() );
 
     mColumnSplitBehaviorComboBox->setCurrentIndex( mColumnSplitBehaviorComboBox->findData( mLayer->legendSplitBehavior() ) );
   }
   else
   {
     currentLabel = QgsLayerTree::toGroup( mNode )->name();
-    mColumnBreakBeforeCheckBox->setChecked( mNode->customProperty( QStringLiteral( "legend/column-break" ) ).toInt() );
+    mColumnBreakBeforeCheckBox->setChecked( mNode->customProperty( u"legend/column-break"_s ).toInt() );
   }
 
   mWidthSpinBox->setClearValue( 0, tr( "Default" ) );
@@ -1570,11 +1631,11 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   mCustomSymbolCheckBox->setChecked( false );
 
   QgsLegendPatchShape patchShape;
-  if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) )
+  if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast<QgsSymbolLegendNode *>( mLegendNode ) )
   {
     patchShape = symbolLegendNode->patchShape();
 
-    std::unique_ptr< QgsSymbol > customSymbol( symbolLegendNode->customSymbol() ? symbolLegendNode->customSymbol()->clone() : nullptr );
+    std::unique_ptr<QgsSymbol> customSymbol( symbolLegendNode->customSymbol() ? symbolLegendNode->customSymbol()->clone() : nullptr );
     mCustomSymbolCheckBox->setChecked( customSymbol.get() );
     if ( customSymbol )
     {
@@ -1592,7 +1653,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
   else if ( !mLegendNode && mLayer )
   {
     patchShape = mLayer->patchShape();
-    if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast< QgsSymbolLegendNode * >( mLegend->model()->legendNodeEmbeddedInParent( mLayer ) ) )
+    if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast<QgsSymbolLegendNode *>( mLegend->model()->legendNodeEmbeddedInParent( mLayer ) ) )
     {
       if ( QgsSymbol *customSymbol = symbolLegendNode->customSymbol() )
       {
@@ -1610,9 +1671,9 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     }
   }
 
-  if ( mLayer && mLayer->layer()  && mLayer->layer()->type() == Qgis::LayerType::Vector )
+  if ( mLayer && mLayer->layer() && mLayer->layer()->type() == Qgis::LayerType::Vector )
   {
-    switch ( qobject_cast< QgsVectorLayer * >( mLayer->layer() )->geometryType() )
+    switch ( qobject_cast<QgsVectorLayer *>( mLayer->layer() )->geometryType() )
     {
       case Qgis::GeometryType::Polygon:
         mPatchShapeButton->setSymbolType( Qgis::SymbolType::Fill );
@@ -1633,9 +1694,8 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     }
     if ( !patchShape.isNull() )
       mPatchShapeButton->setShape( patchShape );
-
   }
-  else if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast< QgsSymbolLegendNode * >( mLegendNode ) )
+  else if ( QgsSymbolLegendNode *symbolLegendNode = dynamic_cast<QgsSymbolLegendNode *>( mLegendNode ) )
   {
     if ( symbolLegendNode->symbol() )
     {
@@ -1653,7 +1713,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
     mPatchShapeButton->hide();
   }
 
-  if ( QgsColorRampLegendNode *colorRampNode = dynamic_cast< QgsColorRampLegendNode * >( mLegendNode ) )
+  if ( QgsColorRampLegendNode *colorRampNode = dynamic_cast<QgsColorRampLegendNode *>( mLegendNode ) )
   {
     mLabelGroup->hide();
     mColorRampLegendWidget->setSettings( colorRampNode->settings() );
@@ -1665,7 +1725,7 @@ QgsLayoutLegendNodeWidget::QgsLayoutLegendNodeWidget( QgsLayoutItemLegend *legen
 
   if ( mLegendNode )
   {
-    switch ( static_cast< QgsLayerTreeModelLegendNode::NodeTypes >( mLegendNode->data( static_cast< int >( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt() ) )
+    switch ( static_cast<QgsLayerTreeModelLegendNode::NodeTypes>( mLegendNode->data( static_cast<int>( QgsLayerTreeModelLegendNode::CustomRole::NodeType ) ).toInt() ) )
     {
       case QgsLayerTreeModelLegendNode::EmbeddedWidget:
       case QgsLayerTreeModelLegendNode::RasterSymbolLegend:
@@ -1724,7 +1784,7 @@ void QgsLayoutLegendNodeWidget::labelChanged()
   }
   else if ( mLayer )
   {
-    mLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), label );
+    mLayer->setCustomProperty( u"legend/title-label"_s, label );
 
     // force update of label of the legend node with embedded icon (a bit clumsy i know)
     if ( QgsLayerTreeModelLegendNode *embeddedNode = mLegend->model()->legendNodeEmbeddedInParent( mLayer ) )
@@ -1780,14 +1840,9 @@ void QgsLayoutLegendNodeWidget::insertExpression()
     context.appendScope( QgsExpressionContextUtils::layerScope( mLayer->layer() ) );
   }
 
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "legend_title" )
-                                   << QStringLiteral( "legend_column_count" )
-                                   << QStringLiteral( "legend_split_layers" )
-                                   << QStringLiteral( "legend_wrap_string" )
-                                   << QStringLiteral( "legend_filter_by_map" )
-                                   << QStringLiteral( "legend_filter_out_atlas" ) );
+  context.setHighlightedVariables( QStringList() << u"legend_title"_s << u"legend_column_count"_s << u"legend_split_layers"_s << u"legend_wrap_string"_s << u"legend_filter_by_map"_s << u"legend_filter_out_atlas"_s );
 
-  QgsExpressionBuilderDialog exprDlg( layer, expression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, expression, this, u"generic"_s, context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -1896,11 +1951,11 @@ void QgsLayoutLegendNodeWidget::columnBreakToggled( bool checked )
   }
   else if ( mLayer )
   {
-    mLayer->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+    mLayer->setCustomProperty( u"legend/column-break"_s, QString( checked ? '1' : '0' ) );
   }
   else if ( mNode )
   {
-    mNode->setCustomProperty( QStringLiteral( "legend/column-break" ), QString( checked ? '1' : '0' ) );
+    mNode->setCustomProperty( u"legend/column-break"_s, QString( checked ? '1' : '0' ) );
   }
 
   mLegend->adjustBoxSize();
@@ -1914,7 +1969,7 @@ void QgsLayoutLegendNodeWidget::columnSplitChanged()
 
   if ( mLayer && !mLegendNode )
   {
-    mLayer->setLegendSplitBehavior( static_cast< QgsLayerTreeLayer::LegendNodesSplitBehavior >( mColumnSplitBehaviorComboBox->currentData().toInt() ) );
+    mLayer->setLegendSplitBehavior( static_cast<QgsLayerTreeLayer::LegendNodesSplitBehavior>( mColumnSplitBehaviorComboBox->currentData().toInt() ) );
   }
 
   mLegend->adjustBoxSize();
@@ -1946,7 +2001,7 @@ bool QgsLayoutLegendMapFilteringWidget::setNewItem( QgsLayoutItem *item )
     disconnect( mLegendItem, &QgsLayoutObject::changed, this, &QgsLayoutLegendMapFilteringWidget::updateGuiElements );
   }
 
-  mLegendItem = qobject_cast< QgsLayoutItemLegend * >( item );
+  mLegendItem = qobject_cast<QgsLayoutItemLegend *>( item );
 
   if ( mLegendItem )
   {
@@ -2005,7 +2060,7 @@ QVariant QgsLayoutLegendMapFilteringModel::data( const QModelIndex &i, int role 
 
   const QModelIndex sourceIndex = mapToSource( index( i.row(), QgsLayoutModel::ItemId, i.parent() ) );
 
-  QgsLayoutItemMap *mapItem = qobject_cast< QgsLayoutItemMap * >( mLayoutModel->itemFromIndex( mapToSource( i ) ) );
+  QgsLayoutItemMap *mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( i ) ) );
   if ( !mapItem )
   {
     return QVariant();
@@ -2040,7 +2095,7 @@ bool QgsLayoutLegendMapFilteringModel::setData( const QModelIndex &index, const 
   if ( !index.isValid() )
     return false;
 
-  QgsLayoutItemMap *mapItem = qobject_cast< QgsLayoutItemMap * >( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
+  QgsLayoutItemMap *mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
   if ( !mapItem || !mLegendItem )
   {
     return false;
@@ -2048,7 +2103,7 @@ bool QgsLayoutLegendMapFilteringModel::setData( const QModelIndex &index, const 
 
   mLegendItem->layout()->undoStack()->beginCommand( mLegendItem, tr( "Change Legend Linked Maps" ) );
 
-  QList< QgsLayoutItemMap * > linkedMaps = mLegendItem->filterByMapItems();
+  QList<QgsLayoutItemMap *> linkedMaps = mLegendItem->filterByMapItems();
   if ( value.toBool() )
   {
     if ( !linkedMaps.contains( mapItem ) )
@@ -2074,12 +2129,12 @@ Qt::ItemFlags QgsLayoutLegendMapFilteringModel::flags( const QModelIndex &index 
 {
   Qt::ItemFlags flags = QSortFilterProxyModel::flags( index );
 
-  if ( ! index.isValid() )
+  if ( !index.isValid() )
   {
-    return flags ;
+    return flags;
   }
 
-  QgsLayoutItemMap *mapItem = qobject_cast< QgsLayoutItemMap * >( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
+  QgsLayoutItemMap *mapItem = qobject_cast<QgsLayoutItemMap *>( mLayoutModel->itemFromIndex( mapToSource( index ) ) );
   const bool isMainLinkedMapItem = mLegendItem ? ( mLegendItem->linkedMap() == mapItem ) : false;
 
   // the main linked map item will always be considered checked in this panel.
@@ -2114,6 +2169,53 @@ bool QgsLayoutLegendMapFilteringModel::filterAcceptsRow( int source_row, const Q
   if ( !item || item->type() != QgsLayoutItemRegistry::ItemType::LayoutMap )
   {
     return false;
+  }
+
+  return true;
+}
+
+//
+// QgsLegendLayerTreeProxyModel
+//
+
+QgsLegendLayerTreeProxyModel::QgsLegendLayerTreeProxyModel( QgsLayoutItemLegend *legend, QObject *parent )
+  : QgsLayerTreeProxyModel( legend->model(), parent )
+{
+  setSyncMode( legend->syncMode() );
+}
+
+void QgsLegendLayerTreeProxyModel::setSyncMode( Qgis::LegendSyncMode mode )
+{
+  mSyncMode = mode;
+
+  // only show private layers when in manual mode
+  setShowPrivateLayers( mSyncMode == Qgis::LegendSyncMode::Manual );
+
+  invalidateFilter();
+}
+
+bool QgsLegendLayerTreeProxyModel::nodeShown( QgsLayerTreeNode *node ) const
+{
+  if ( !QgsLayerTreeProxyModel::nodeShown( node ) )
+    return false;
+
+  if ( node && node->nodeType() == QgsLayerTreeNode::NodeLayer )
+  {
+    if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
+    {
+      if ( QgsMapLayerLegend *layerLegend = layer->legend(); layerLegend && layerLegend->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) )
+      {
+        switch ( mSyncMode )
+        {
+          case Qgis::LegendSyncMode::AllProjectLayers:
+          case Qgis::LegendSyncMode::VisibleLayers:
+            return false;
+
+          case Qgis::LegendSyncMode::Manual:
+            break;
+        }
+      }
+    }
   }
 
   return true;

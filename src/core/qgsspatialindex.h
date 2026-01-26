@@ -146,6 +146,8 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
+    using QgsFeatureSink::addFeatures;
+
     /**
      * Adds a list of \a features to the index.
      *
@@ -254,10 +256,10 @@ class CORE_EXPORT QgsSpatialIndex : public QgsFeatureSink
      */
     SIP_PYOBJECT geometry( QgsFeatureId id ) const SIP_TYPEHINT( QgsGeometry );
     % MethodCode
-    std::unique_ptr< QgsGeometry > g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
+    auto g = std::make_unique< QgsGeometry >( sipCpp->geometry( a0 ) );
     if ( g->isNull() )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No geometry with feature id %1 exists in the index." ).arg( a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No geometry with feature id %1 exists in the index."_s.arg( a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else

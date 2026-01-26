@@ -24,8 +24,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -35,24 +35,22 @@
 class QgsGridAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsGridAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCreateGrid.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCreateGrid.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCreateGrid.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmCreateGrid.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsGridAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context,
-                                  QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 
   private:
@@ -65,11 +63,11 @@ class QgsGridAlgorithm : public QgsProcessingAlgorithm
     double mVOverlay = 0;
 
     //define grid creation methods
-    void createPointGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-    void createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-    void createRectangleGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-    void createDiamondGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
-    void createHexagonGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createPointGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createLineGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createRectangleGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createDiamondGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
 };
 
 

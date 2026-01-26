@@ -12,6 +12,9 @@
 
 class QgsExpressionHighlighter : QSyntaxHighlighter
 {
+%Docstring(signature="appended")
+Syntax highlighter for QGIS expressions.
+%End
 
 %TypeHeaderCode
 #include "qgsexpressionhighlighter.h"

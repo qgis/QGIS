@@ -6,7 +6,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-
 from qgis.gui import QgsRubberBand
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -21,7 +20,7 @@ class TestQgsRubberBand(QgisTestCase):
         self.iface = get_iface()
 
     def testBugfix48471(self):
-        """ Test scenario of https://github.com/qgis/QGIS/issues/48471 """
+        """Test scenario of https://github.com/qgis/QGIS/issues/48471"""
 
         countBefore = 0
         for item in self.iface.mapCanvas().scene().items():
@@ -41,5 +40,5 @@ class TestQgsRubberBand(QgisTestCase):
             self.iface.mapCanvas().scene().removeItem(rubberband)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

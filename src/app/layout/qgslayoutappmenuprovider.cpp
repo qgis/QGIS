@@ -14,21 +14,24 @@
  ***************************************************************************/
 
 #include "qgslayoutappmenuprovider.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutdesignerdialog.h"
+
 #include "qgslayout.h"
-#include "qgslayoutundostack.h"
-#include "qgslayoutpagecollection.h"
+#include "qgslayoutdesignerdialog.h"
 #include "qgslayoutguidewidget.h"
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
+
 #include <QMenu>
 #include <QMessageBox>
+
+#include "moc_qgslayoutappmenuprovider.cpp"
 
 QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer )
   : QObject( nullptr )
   , mDesigner( designer )
 {
-
 }
 
 QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *layout, QPointF layoutPoint ) const
@@ -38,25 +41,24 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   //undo/redo
   menu->addAction( layout->undoStack()->stack()->createUndoAction( menu ) );
   menu->addAction( layout->undoStack()->stack()->createRedoAction( menu ) );
-  menu->addSeparator();
+  menu->addSeparator()->setObjectName( "UndoRedoSeparator"_L1 );
 
 
-  const QList< QgsLayoutItem * > selectedItems = layout->selectedLayoutItems();
+  const QList<QgsLayoutItem *> selectedItems = layout->selectedLayoutItems();
   if ( !selectedItems.empty() )
   {
     bool addedGroupAction = false;
     if ( selectedItems.count() > 1 )
     {
       QAction *groupAction = new QAction( tr( "Group" ), menu );
-      connect( groupAction, &QAction::triggered, this, [this]()
-      {
+      connect( groupAction, &QAction::triggered, this, [this]() {
         mDesigner->view()->groupSelectedItems();
       } );
       menu->addAction( groupAction );
       addedGroupAction = true;
     }
     bool foundSelectedGroup = false;
-    QList< QgsLayoutItemGroup * > groups;
+    QList<QgsLayoutItemGroup *> groups;
     layout->layoutItems( groups );
     for ( QgsLayoutItemGroup *group : std::as_const( groups ) )
     {
@@ -69,8 +71,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     if ( foundSelectedGroup )
     {
       QAction *ungroupAction = new QAction( tr( "Ungroup" ), menu );
-      connect( ungroupAction, &QAction::triggered, this, [this]()
-      {
+      connect( ungroupAction, &QAction::triggered, this, [this]() {
         mDesigner->view()->ungroupSelectedItems();
       } );
       menu->addAction( ungroupAction );
@@ -78,32 +79,29 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     }
 
     if ( addedGroupAction )
-      menu->addSeparator();
+      menu->addSeparator()->setObjectName( "AddedGroupSeparator"_L1 );
 
     QAction *copyAction = new QAction( tr( "Copy" ), menu );
-    connect( copyAction, &QAction::triggered, this, [this]()
-    {
+    connect( copyAction, &QAction::triggered, this, [this]() {
       mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCopy );
     } );
     menu->addAction( copyAction );
     QAction *cutAction = new QAction( tr( "Cut" ), menu );
-    connect( cutAction, &QAction::triggered, this, [this]()
-    {
+    connect( cutAction, &QAction::triggered, this, [this]() {
       mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCut );
     } );
     menu->addAction( cutAction );
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( "CopyCutSeparator"_L1 );
   }
   else if ( mDesigner->view()->hasItemsInClipboard() )
   {
     QAction *pasteAction = new QAction( tr( "Paste" ), menu );
-    connect( pasteAction, &QAction::triggered, this, [this, menu]()
-    {
+    connect( pasteAction, &QAction::triggered, this, [this, menu]() {
       QPointF pt = mDesigner->view()->mapToScene( mDesigner->view()->mapFromGlobal( menu->pos() ) );
       mDesigner->view()->pasteItems( pt );
     } );
     menu->addAction( pasteAction );
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( "PasteSeparator"_L1 );
   }
 
   // is a page under the mouse?
@@ -112,8 +110,7 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   {
     const int pageNumber = layout->pageCollection()->pageNumber( page );
     QAction *pagePropertiesAction = new QAction( tr( "Page Properties…" ), menu );
-    connect( pagePropertiesAction, &QAction::triggered, this, [this, page]()
-    {
+    connect( pagePropertiesAction, &QAction::triggered, this, [this, page]() {
       mDesigner->showItemOptions( page, true );
     } );
     menu->addAction( pagePropertiesAction );
@@ -121,9 +118,8 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
     if ( mDesigner->guideWidget() )
     {
       QAction *manageGuidesAction = new QAction( tr( "Manage Guides for Page…" ), menu );
-      QPointer< QgsLayoutGuideWidget > guideManager( mDesigner->guideWidget() );
-      connect( manageGuidesAction, &QAction::triggered, this, [this, pageNumber, guideManager]()
-      {
+      QPointer<QgsLayoutGuideWidget> guideManager( mDesigner->guideWidget() );
+      connect( manageGuidesAction, &QAction::triggered, this, [this, pageNumber, guideManager = std::move( guideManager )]() {
         if ( guideManager )
         {
           guideManager->setCurrentPage( pageNumber );
@@ -133,11 +129,8 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       menu->addAction( manageGuidesAction );
     }
     QAction *removePageAction = new QAction( tr( "Remove Page" ), menu );
-    connect( removePageAction, &QAction::triggered, this, [layout, page]()
-    {
-      if ( QMessageBox::question( nullptr, tr( "Remove Page" ),
-                                  tr( "Remove page from layout?" ),
-                                  QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+    connect( removePageAction, &QAction::triggered, this, [layout, page]() {
+      if ( QMessageBox::question( nullptr, tr( "Remove Page" ), tr( "Remove page from layout?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
       {
         layout->pageCollection()->deletePage( page );
       }
@@ -146,15 +139,14 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       removePageAction->setEnabled( false );
     menu->addAction( removePageAction );
 
-    menu->addSeparator();
+    menu->addSeparator()->setObjectName( "ManagePageSeparator"_L1 );
   }
 
   if ( !selectedItems.empty() )
   {
     QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
     QgsLayoutItem *item = selectedItems.at( 0 );
-    connect( itemPropertiesAction, &QAction::triggered, this, [this, item]()
-    {
+    connect( itemPropertiesAction, &QAction::triggered, this, [this, item]() {
       mDesigner->showItemOptions( item, true );
     } );
     menu->addAction( itemPropertiesAction );

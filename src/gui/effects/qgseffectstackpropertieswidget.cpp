@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgseffectstackpropertieswidget.h"
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
-#include "qgseffectstack.h"
-#include "qgspainteffectpropertieswidget.h"
-#include "qgspainteffectwidget.h"
-#include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
-#include "qgspanelwidget.h"
-#include "qgshelp.h"
 
-#include <QPicture>
-#include <QPainter>
-#include <QStandardItemModel>
-#include <QStandardItem>
+#include "qgsapplication.h"
+#include "qgseffectstack.h"
+#include "qgshelp.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectpropertieswidget.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffectwidget.h"
+#include "qgspanelwidget.h"
+#include "qgssymbollayerutils.h"
+
 #include <QCheckBox>
+#include <QPainter>
+#include <QPicture>
+#include <QStandardItem>
+#include <QStandardItemModel>
 #include <QToolButton>
+
+#include "moc_qgseffectstackpropertieswidget.cpp"
 
 ///@cond PRIVATE
 
@@ -99,7 +102,6 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   , mStack( stack )
 
 {
-
 // TODO
 #ifdef Q_OS_MAC
   //setWindowModality( Qt::WindowModal );
@@ -110,7 +112,7 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mEffectsList->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
+  mEffectsList->setMaximumHeight( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
   mEffectsList->setMinimumHeight( mEffectsList->maximumHeight() );
   lblPreview->setMaximumWidth( mEffectsList->maximumHeight() );
 
@@ -308,7 +310,7 @@ void QgsEffectStackPropertiesWidget::removeEffect()
 
 void QgsEffectStackPropertiesWidget::moveEffectDown()
 {
-  moveEffectByOffset( + 1 );
+  moveEffectByOffset( +1 );
 }
 
 void QgsEffectStackPropertiesWidget::moveEffectUp()
@@ -334,7 +336,7 @@ void QgsEffectStackPropertiesWidget::moveEffectByOffset( int offset )
   QList<QStandardItem *> toMove = root->takeRow( row );
   root->insertRows( row + offset, toMove );
 
-  const QModelIndex newIdx = toMove[ 0 ]->index();
+  const QModelIndex newIdx = toMove[0]->index();
   mEffectsList->setCurrentIndex( newIdx );
 
   updatePreview();
@@ -385,7 +387,7 @@ void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture 
 
 void QgsEffectStackPropertiesDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#draw-effects" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#draw-effects"_s );
 }
 
 
@@ -407,7 +409,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent, QgsPa
   layout->addWidget( mEnabledCheckBox );
 
   mButton = new QToolButton( this );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPaintEffects.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"mIconPaintEffects.svg"_s ) );
   mButton->setToolTip( tr( "Customize effects" ) );
   layout->addWidget( mButton );
 
@@ -463,7 +465,7 @@ void QgsEffectStackCompactWidget::showDialog()
     return;
 
   QgsEffectStack *clone = mStack->clone();
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast<QWidget *>( parent() ) );
   if ( panel && panel->dockMode() )
   {
     QgsEffectStackPropertiesWidget *widget = new QgsEffectStackPropertiesWidget( clone, nullptr );
@@ -503,7 +505,7 @@ void QgsEffectStackCompactWidget::updateAcceptWidget( QgsPanelWidget *panel )
   QgsEffectStackPropertiesWidget *widget = qobject_cast<QgsEffectStackPropertiesWidget *>( panel );
   *mStack = *widget->stack();
   emit changed();
-//    delete widget->stack();
+  //    delete widget->stack();
 }
 
 void QgsEffectStackCompactWidget::updateEffectLive()

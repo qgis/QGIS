@@ -14,10 +14,11 @@ You can help us **by submitting bug reports or fixing bugs** in the [QGIS bug tr
 
 If you wish to contribute patches you can:
 
-1. [fork the project](https://help.github.com/forking/)
-1. make your changes
-1. commit to your repository
-1. and then [create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/).
+1. [Fork the project](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo)
+2. Install the [pre-commit](https://pre-commit.com/) hook: `pre-commit install --install-hooks` (version 4.1+ required)
+3. Make your changes
+4. Commit to your repository
+5. [Create a pull request](https://help.github.com/articles/creating-a-pull-request-from-a-fork/)
 
  The development team can then review your contribution and commit it upstream as appropriate.
 
@@ -29,8 +30,8 @@ For large-scale changes, you can open a [QEP (QGIS Enhancement Proposal)](https:
 
 Please help translate QGIS to your language. At this moment about forty languages are already available in the Desktop user interface and about eighty languages are available in transifex ready to be translated.
 
-The [translation](https://qgis.org/en/site/getinvolved/translate.html) process is managed by the [Translation Team](https://qgis.org/en/site/getinvolved/governance/governance.html#gui-translation) and all the activities are done under the [Transifex](https://www.transifex.com/qgis/) platform.
+The [translation](https://docs.qgis.org/latest/en/docs/documentation_guidelines/do_translations.html) process is managed by the [Translation Team](https://qgis.org/community/organisation/#translation) and all the activities are done under the [Transifex](https://www.transifex.com/qgis/) platform.
 
 ## Other ways to contribute
 
-If you are not a developer, there are many other possibilities that do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/en/site/getinvolved/index.html).
+If you are not a developer, there are many other possibilities that do not require programming skills to help QGIS to evolve. Check our [project homepage for more information](https://qgis.org/community/involve/).

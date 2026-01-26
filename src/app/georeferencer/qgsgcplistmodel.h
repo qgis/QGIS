@@ -16,11 +16,12 @@
 #ifndef QGSGCP_LIST_TABLE_VIEW_H
 #define QGSGCP_LIST_TABLE_VIEW_H
 
-#include <QAbstractTableModel>
 #include "qgis_app.h"
-#include "qgsunittypes.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsunittypes.h"
+
+#include <QAbstractTableModel>
 
 class QgsGeorefDataPoint;
 class QgsGeorefTransform;
@@ -87,7 +88,7 @@ class APP_EXPORT QgsGCPListModel : public QAbstractTableModel
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
 
-    QgsGCPList         *mGCPList = nullptr;
+    QgsGCPList *mGCPList = nullptr;
     QgsGeorefTransform *mGeorefTransform = nullptr;
 };
 

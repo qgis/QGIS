@@ -13,24 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgsclassificationfixedinterval.h"
+
 #include "qgsapplication.h"
 #include "qgsprocessingcontext.h"
 
+#include <QObject>
 
 QgsClassificationFixedInterval::QgsClassificationFixedInterval()
   : QgsClassificationMethod( IgnoresClassCount, 0 )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > param = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "INTERVAL" ), QObject::tr( "Interval size" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0.000000000001 );
+  auto param = std::make_unique< QgsProcessingParameterNumber >( u"INTERVAL"_s, QObject::tr( "Interval size" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0.000000000001 );
   addParameter( param.release() );
 }
 
-QgsClassificationMethod *QgsClassificationFixedInterval::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationFixedInterval::clone() const
 {
-  QgsClassificationFixedInterval *c = new QgsClassificationFixedInterval();
-  copyBase( c );
+  auto c = std::make_unique< QgsClassificationFixedInterval >();
+  copyBase( c.get() );
   return c;
 }
 
@@ -41,18 +41,18 @@ QString QgsClassificationFixedInterval::name() const
 
 QString QgsClassificationFixedInterval::id() const
 {
-  return QStringLiteral( "Fixed" );
+  return u"Fixed"_s;
 }
 
 QIcon QgsClassificationFixedInterval::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "classification_methods/mClassificationFixedInterval.svg" ) );
+  return QgsApplication::getThemeIcon( u"classification_methods/mClassificationFixedInterval.svg"_s );
 }
 
 QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, double &maximum, const QList<double> &, int, QString &error )
 {
   const QgsProcessingContext context;
-  const QgsProcessingParameterDefinition *def = parameterDefinition( QStringLiteral( "INTERVAL" ) );
+  const QgsProcessingParameterDefinition *def = parameterDefinition( u"INTERVAL"_s );
   const double interval = QgsProcessingParameters::parameterAsDouble( def, parameterValues(), context );
 
   QList<double> breaks;
@@ -62,7 +62,15 @@ QList<double> QgsClassificationFixedInterval::calculateBreaks( double &minimum, 
     return breaks;
   }
 
+  // Single class
+  if ( minimum == maximum )
+  {
+    breaks << maximum + interval;
+    return breaks;
+  }
+
   double value = minimum;
+
   while ( value < maximum )
   {
     value += interval;

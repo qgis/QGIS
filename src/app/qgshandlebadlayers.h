@@ -18,12 +18,13 @@
 #define QGSHANDLEBADLAYERS_H
 
 #include "ui_qgshandlebadlayersbase.h"
-#include "qgsprojectbadlayerhandler.h"
+
 #include "qgis_app.h"
+#include "qgsprojectbadlayerhandler.h"
 
 class APP_EXPORT QgsHandleBadLayersHandler
-  : public QObject
-  , public QgsProjectBadLayerHandler
+  : public QObject,
+    public QgsProjectBadLayerHandler
 {
     Q_OBJECT
 
@@ -40,14 +41,13 @@ class APP_EXPORT QgsHandleBadLayersHandler
      * \since QGIS 3.6
      */
     void layersChanged();
-
 };
 
 class QPushButton;
 
 class APP_EXPORT QgsHandleBadLayers
-  : public QDialog
-  , public Ui::QgsHandleBadLayersBase
+  : public QDialog,
+    public Ui::QgsHandleBadLayersBase
 {
     Q_OBJECT
 
@@ -71,7 +71,6 @@ class APP_EXPORT QgsHandleBadLayers
     void autoFind();
 
   private:
-
     enum class CustomRoles : int
     {
       Index = Qt::UserRole,
@@ -87,9 +86,9 @@ class APP_EXPORT QgsHandleBadLayers
     QPushButton *mAutoFindButton = nullptr;
     const QList<QDomNode> &mLayers;
     // Registry of the original paths associated with a file as a backup
-    QHash <QString, QString > mOriginalFileBase;
+    QHash<QString, QString> mOriginalFileBase;
     // Keeps a registry of valid alternatives for a basepath
-    QHash <QString, QStringList > mAlternativeBasepaths;
+    QHash<QString, QStringList> mAlternativeBasepaths;
 
     QString filename( int row );
     void setFilename( int row, const QString &filename );

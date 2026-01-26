@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsfieldexpressionwidgetplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsfieldexpressionwidget.h"
 
+#include "moc_qgsfieldexpressionwidgetplugin.cpp"
 
 QgsFieldExpressionWidgetPlugin::QgsFieldExpressionWidgetPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsFieldExpressionWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

@@ -16,13 +16,12 @@
 #ifndef QGSLAYERMETADATAPROVIDERREGISTRY_H
 #define QGSLAYERMETADATAPROVIDERREGISTRY_H
 
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
-
-#include "qgslayermetadata.h"
+#include "qgis_core.h"
 #include "qgsabstractlayermetadataprovider.h"
+#include "qgslayermetadata.h"
+
+#include <QObject>
 
 class QgsFeedback;
 

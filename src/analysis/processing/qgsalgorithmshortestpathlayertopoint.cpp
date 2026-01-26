@@ -18,14 +18,13 @@
 #include "qgsalgorithmshortestpathlayertopoint.h"
 
 #include "qgsgraphanalyzer.h"
-
 #include "qgsmessagelog.h"
 
 ///@cond PRIVATE
 
 QString QgsShortestPathLayerToPointAlgorithm::name() const
 {
-  return QStringLiteral( "shortestpathlayertopoint" );
+  return u"shortestpathlayertopoint"_s;
 }
 
 QString QgsShortestPathLayerToPointAlgorithm::displayName() const
@@ -40,7 +39,14 @@ QStringList QgsShortestPathLayerToPointAlgorithm::tags() const
 
 QString QgsShortestPathLayerToPointAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm computes optimal (shortest or fastest) route from multiple start points defined by vector layer and given end point." );
+  return QObject::tr( "This algorithm computes optimal (shortest or fastest) routes "
+                      "from multiple start points defined by a vector layer and a given end point." );
+}
+
+QString QgsShortestPathLayerToPointAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Computes optimal (shortest or fastest) routes "
+                      "from multiple start points defined by a vector layer and a given end point." );
 }
 
 QgsShortestPathLayerToPointAlgorithm *QgsShortestPathLayerToPointAlgorithm::createInstance() const
@@ -51,18 +57,17 @@ QgsShortestPathLayerToPointAlgorithm *QgsShortestPathLayerToPointAlgorithm::crea
 void QgsShortestPathLayerToPointAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addCommonParams();
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "START_POINTS" ), QObject::tr( "Vector layer with start points" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterPoint( QStringLiteral( "END_POINT" ), QObject::tr( "End point" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"START_POINTS"_s, QObject::tr( "Vector layer with start points" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterPoint( u"END_POINT"_s, QObject::tr( "End point" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterNumber > maxEndPointDistanceFromNetwork = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "POINT_TOLERANCE" ), QObject::tr( "Maximum point distance from network" ), QVariant(), QStringLiteral( "INPUT" ), true, 0 );
+  std::unique_ptr<QgsProcessingParameterNumber> maxEndPointDistanceFromNetwork = std::make_unique<QgsProcessingParameterDistance>( u"POINT_TOLERANCE"_s, QObject::tr( "Maximum point distance from network" ), QVariant(), u"INPUT"_s, true, 0 );
   maxEndPointDistanceFromNetwork->setFlags( maxEndPointDistanceFromNetwork->flags() | Qgis::ProcessingParameterFlag::Advanced );
   maxEndPointDistanceFromNetwork->setHelp( QObject::tr( "Specifies an optional limit on the distance from the start and end points to the network layer. If the start feature is further from the network than this distance it will be treated as non-routable. If the end point is further from the network than this distance an error will be raised." ) );
   addParameter( maxEndPointDistanceFromNetwork.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Shortest path" ), Qgis::ProcessingSourceType::VectorLine ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Shortest path" ), Qgis::ProcessingSourceType::VectorLine ) );
 
-  std::unique_ptr< QgsProcessingParameterFeatureSink > outputNonRoutable = std::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT_NON_ROUTABLE" ),  QObject::tr( "Non-routable features" ),
-      Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
+  auto outputNonRoutable = std::make_unique<QgsProcessingParameterFeatureSink>( u"OUTPUT_NON_ROUTABLE"_s, QObject::tr( "Non-routable features" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true );
   outputNonRoutable->setHelp( QObject::tr( "An optional output which will be used to store any input features which could not be routed (e.g. those which are too far from the network layer)." ) );
   outputNonRoutable->setCreateByDefault( false );
   addParameter( outputNonRoutable.release() );
@@ -72,35 +77,35 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
 {
   loadCommonParams( parameters, context, feedback );
 
-  const QgsPointXY endPoint = parameterAsPoint( parameters, QStringLiteral( "END_POINT" ), context, mNetwork->sourceCrs() );
+  const QgsPointXY endPoint = parameterAsPoint( parameters, u"END_POINT"_s, context, mNetwork->sourceCrs() );
 
-  std::unique_ptr< QgsFeatureSource > startPoints( parameterAsSource( parameters, QStringLiteral( "START_POINTS" ), context ) );
+  std::unique_ptr<QgsFeatureSource> startPoints( parameterAsSource( parameters, u"START_POINTS"_s, context ) );
   if ( !startPoints )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "START_POINTS" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"START_POINTS"_s ) );
 
-  QgsFields fields = startPoints->fields();
-  fields.append( QgsField( QStringLiteral( "start" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "end" ), QMetaType::Type::QString ) );
-  fields.append( QgsField( QStringLiteral( "cost" ), QMetaType::Type::Double ) );
+  QgsFields newFields;
+  newFields.append( QgsField( u"start"_s, QMetaType::Type::QString ) );
+  newFields.append( QgsField( u"end"_s, QMetaType::Type::QString ) );
+  newFields.append( QgsField( u"cost"_s, QMetaType::Type::Double ) );
+  QgsFields fields = QgsProcessingUtils::combineFields( startPoints->fields(), newFields );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::LineString, mNetwork->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::LineString, mNetwork->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   QString nonRoutableSinkId;
-  std::unique_ptr< QgsFeatureSink > nonRoutableSink( parameterAsSink( parameters, QStringLiteral( "OUTPUT_NON_ROUTABLE" ), context, nonRoutableSinkId, startPoints->fields(),
-      Qgis::WkbType::Point, mNetwork->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> nonRoutableSink( parameterAsSink( parameters, u"OUTPUT_NON_ROUTABLE"_s, context, nonRoutableSinkId, startPoints->fields(), Qgis::WkbType::Point, mNetwork->sourceCrs() ) );
 
-  const double pointDistanceThreshold = parameters.value( QStringLiteral( "POINT_TOLERANCE" ) ).isValid() ? parameterAsDouble( parameters, QStringLiteral( "POINT_TOLERANCE" ), context ) : -1;
+  const double pointDistanceThreshold = parameters.value( u"POINT_TOLERANCE"_s ).isValid() ? parameterAsDouble( parameters, u"POINT_TOLERANCE"_s, context ) : -1;
 
-  QVector< QgsPointXY > points;
+  QVector<QgsPointXY> points;
   points.push_front( endPoint );
-  QHash< int, QgsAttributes > sourceAttributes;
-  loadPoints( startPoints.get(), points, sourceAttributes, context, feedback );
+  QHash<int, QgsAttributes> sourceAttributes;
+  loadPoints( startPoints.get(), &points, &sourceAttributes, context, feedback, nullptr );
 
   feedback->pushInfo( QObject::tr( "Building graph…" ) );
-  QVector< QgsPointXY > snappedPoints;
+  QVector<QgsPointXY> snappedPoints;
   mDirector->makeGraph( mBuilder.get(), points, snappedPoints, feedback );
 
   const QgsPointXY snappedEndPoint = snappedPoints[0];
@@ -124,13 +129,13 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
   }
 
   feedback->pushInfo( QObject::tr( "Calculating shortest paths…" ) );
-  std::unique_ptr< QgsGraph > graph( mBuilder->takeGraph() );
+  std::unique_ptr<QgsGraph> graph( mBuilder->takeGraph() );
   const int idxEnd = graph->findVertex( snappedEndPoint );
   int idxStart;
   int currentIdx;
 
-  QVector< int > tree;
-  QVector< double > costs;
+  QVector<int> tree;
+  QVector<double> costs;
 
   QVector<QgsPointXY> route;
   double cost;
@@ -171,7 +176,7 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
           attributes = sourceAttributes.value( i );
           feat.setAttributes( attributes );
           if ( !nonRoutableSink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-            throw QgsProcessingException( writeFeatureError( nonRoutableSink.get(), parameters, QStringLiteral( "OUTPUT_NON_ROUTABLE" ) ) );
+            throw QgsProcessingException( writeFeatureError( nonRoutableSink.get(), parameters, u"OUTPUT_NON_ROUTABLE"_s ) );
         }
 
         feedback->setProgress( i * step );
@@ -185,14 +190,13 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
     if ( tree.at( idxEnd ) == -1 )
     {
       feedback->reportError( QObject::tr( "There is no route from start point (%1) to end point (%2)." )
-                             .arg( originalPoint.toString(),
-                                   endPoint.toString() ) );
+                               .arg( originalPoint.toString(), endPoint.toString() ) );
       feat.clearGeometry();
       attributes = sourceAttributes.value( i );
       attributes.append( originalPoint.toString() );
       feat.setAttributes( attributes );
       if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       continue;
     }
 
@@ -216,16 +220,20 @@ QVariantMap QgsShortestPathLayerToPointAlgorithm::processAlgorithm( const QVaria
     feat.setAttributes( attributes );
     feat.setGeometry( geom );
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
     feedback->setProgress( i * step );
   }
 
+  if ( sink )
+    sink->finalize();
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   if ( nonRoutableSink )
   {
-    outputs.insert( QStringLiteral( "OUTPUT_NON_ROUTABLE" ), nonRoutableSinkId );
+    nonRoutableSink->finalize();
+    outputs.insert( u"OUTPUT_NON_ROUTABLE"_s, nonRoutableSinkId );
   }
   return outputs;
 }

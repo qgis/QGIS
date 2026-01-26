@@ -16,12 +16,12 @@
 #ifndef QGSKEYVALUEWIDGET_H
 #define QGSKEYVALUEWIDGET_H
 
-#include "qgstablewidgetbase.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgstablewidgetbase.h"
+
 #include <QAbstractTableModel>
 #include <QMap>
-#include "qgis_gui.h"
-
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -35,7 +35,6 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
-
     explicit QgsKeyValueModel( QObject *parent = nullptr );
     void setMap( const QVariantMap &map );
     QVariantMap map() const;
@@ -60,14 +59,13 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
 
 /**
  * \ingroup gui
- * \brief Widget allowing to edit a QVariantMap, using a table.
+ * \brief Widget allowing editing a QVariantMap, using a table.
  */
-class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
+class GUI_EXPORT QgsKeyValueWidget : public QgsTableWidgetBase
 {
     Q_OBJECT
     Q_PROPERTY( QVariantMap map READ map WRITE setMap )
   public:
-
     /**
      * Constructor.
      */
@@ -87,6 +85,7 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
   public slots:
 
     void setReadOnly( bool readOnly ) override;
+
   private:
     QgsKeyValueModel mModel;
 };

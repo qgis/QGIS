@@ -22,6 +22,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsreadwritecontext.h"
+
 #include <QObject>
 
 /**
@@ -36,9 +37,7 @@
  */
 class CORE_EXPORT QgsMapLayerSelectionProperties : public QObject
 {
-#ifdef SIP_RUN
-#include "qgsvectorlayerselectionproperties.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgsvectorlayerselectionproperties.h" );
 
     Q_OBJECT
 

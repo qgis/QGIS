@@ -16,18 +16,16 @@
 #ifndef QGSQUICKUTILS_H
 #define QGSQUICKUTILS_H
 
+#include "qgis_quick.h"
+#include "qgspoint.h"
+
 #include <QObject>
 #include <qglobal.h>
-
-#include "qgis_quick.h"
-
-#include "qgspoint.h"
 
 /**
  * \ingroup quick
  *
- * \brief The QgsQuickUtils class serves as a utility class for common operations
- * needed either from QML or cpp.
+ * \brief Utility class for common operations needed either from QML or cpp.
  *
  * \note use in qml as a singleton, registered as "Utils", e.g. QgsQuick.Utils.toQgsPoint
  *
@@ -38,10 +36,9 @@ class QUICK_EXPORT QgsQuickUtils : public QObject
     Q_OBJECT
 
   public:
-
     //! Creates new QgsQuickUtils - this class is meant to serve as a QML singleton
     explicit QgsQuickUtils( QObject *parent = nullptr );
-    ~QgsQuickUtils() = default;
+    ~QgsQuickUtils() override = default;
 
     /**
      * Helper function to convert QPointF to QgsPoint without any transformations.

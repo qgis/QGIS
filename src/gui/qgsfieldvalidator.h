@@ -20,15 +20,17 @@
 #ifndef QGSFIELDVALIDATOR_H
 #define QGSFIELDVALIDATOR_H
 
+#include "qgis_gui.h"
+#include "qgsfields.h"
+
+#include <QSettings>
 #include <QValidator>
 #include <QVariant>
-#include <QSettings>
-#include "qgsfields.h"
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui
  * \class QgsFieldValidator
+ * \brief A QValidator for validation against a QgsField's constraints and field type.
  */
 class GUI_EXPORT QgsFieldValidator : public QValidator
 {

@@ -16,16 +16,16 @@
 #ifndef QGSRASTERATTRIBUTETABLEWIDGET_H
 #define QGSRASTERATTRIBUTETABLEWIDGET_H
 
-#include "qgis_gui.h"
 #include "ui_qgsrasterattributetablewidgetbase.h"
-#include "qgsrasterattributetablemodel.h"
+
+#include "qgis_gui.h"
 #include "qgscolorrampimpl.h"
-#include "qgspanelwidget.h"
 #include "qgslocaleawarenumericlineeditdelegate.h"
+#include "qgspanelwidget.h"
+#include "qgsrasterattributetablemodel.h"
 
-#include <QWidget>
 #include <QStyledItemDelegate>
-
+#include <QWidget>
 
 #ifndef SIP_RUN
 class QgsRasterLayer;
@@ -37,14 +37,13 @@ class QSortFilterProxyModel;
 
 ///@cond private
 #ifndef SIP_RUN
-class ColorDelegate: public QStyledItemDelegate
+class ColorDelegate : public QStyledItemDelegate
 {
-
     Q_OBJECT
 
   public:
-
-    ColorDelegate( QObject *parent = nullptr ): QStyledItemDelegate( parent ) {};
+    ColorDelegate( QObject *parent = nullptr )
+      : QStyledItemDelegate( parent ) {};
 
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
@@ -52,27 +51,25 @@ class ColorDelegate: public QStyledItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 
-class ColorAlphaDelegate: public ColorDelegate
+class ColorAlphaDelegate : public ColorDelegate
 {
-
     Q_OBJECT
 
   public:
-
-    ColorAlphaDelegate( QObject *parent = nullptr ): ColorDelegate( parent ) {};
+    ColorAlphaDelegate( QObject *parent = nullptr )
+      : ColorDelegate( parent ) {};
 
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
-class ColorRampDelegate: public QStyledItemDelegate
+class ColorRampDelegate : public QStyledItemDelegate
 {
-
     Q_OBJECT
 
   public:
-
-    ColorRampDelegate( QObject *parent = nullptr ): QStyledItemDelegate( parent ) {};
+    ColorRampDelegate( QObject *parent = nullptr )
+      : QStyledItemDelegate( parent ) {};
 
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
@@ -81,38 +78,33 @@ class ColorRampDelegate: public QStyledItemDelegate
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   protected:
-
     QgsGradientColorRamp mRamp;
-
 };
 
-class ColorRampAlphaDelegate: public ColorRampDelegate
+class ColorRampAlphaDelegate : public ColorRampDelegate
 {
-
     Q_OBJECT
 
   public:
-
-    ColorRampAlphaDelegate( QObject *parent = nullptr ): ColorRampDelegate( parent ) {};
+    ColorRampAlphaDelegate( QObject *parent = nullptr )
+      : ColorRampDelegate( parent ) {};
 
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 
-class LocalizedDoubleDelegate: public QgsLocaleAwareNumericLineEditDelegate
+class LocalizedDoubleDelegate : public QgsLocaleAwareNumericLineEditDelegate
 {
-
     Q_OBJECT
 
   public:
-
-    LocalizedDoubleDelegate( QWidget *parent = nullptr ): QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::Float64, parent ) {};
+    LocalizedDoubleDelegate( QWidget *parent = nullptr )
+      : QgsLocaleAwareNumericLineEditDelegate( Qgis::DataType::Float64, parent ) {};
 
     // QStyledItemDelegate interface
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
 };
-
 
 
 #endif
@@ -128,7 +120,6 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new QgsRasterAttributeTableWidget
      * \param parent parent widget
@@ -147,7 +138,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     /**
      * Returns TRUE if the associated raster attribute table is dirty
      */
-    bool isDirty( ) const;
+    bool isDirty() const;
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
@@ -160,7 +151,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     /**
      * This signal is emitted after a successful classify operation which changed the raster renderer.
      */
-    void rendererChanged( );
+    void rendererChanged();
 
   public slots:
 
@@ -177,7 +168,6 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     bool setEditable( bool editable, bool allowCancel = true );
 
   private:
-
     void classify();
     void addColumn();
     void removeColumn();
@@ -185,7 +175,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     void removeRow();
     void bandChanged( const int index );
     void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
-    void setDelegates( );
+    void setDelegates();
 
     QgsRasterLayer *mRasterLayer = nullptr;
     std::unique_ptr<QgsRasterAttributeTable> mAttributeTableBuffer;

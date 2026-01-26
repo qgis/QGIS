@@ -17,27 +17,26 @@
 #define QGSLAYOUTITEM3DMAP_H
 
 #include "qgis_3d.h"
-
+#include "qgscamerapose.h"
 #include "qgslayoutitem.h"
 #include "qgstemporalrangeobject.h"
-#include "qgscamerapose.h"
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
 % ModuleHeaderCode
 #include "qgslayoutitem3dmap.h"
-% End
+  % End
 #endif
 
 
-class Qgs3DMapScene;
+  class Qgs3DMapScene;
 class Qgs3DMapSettings;
 class QgsOffscreen3DEngine;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  *
- * \brief Implements support of 3D map views in print layouts
+ * \brief Implements support of 3D map views in print layouts.
  *
  * \since QGIS 3.4
  */
@@ -63,7 +62,6 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
 #endif
 
   public:
-
     /**
      * Constructor for QgsLayoutItem3DMap, with the specified parent \a layout.
      *
@@ -71,7 +69,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
      */
     QgsLayoutItem3DMap( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutItem3DMap();
+    ~QgsLayoutItem3DMap() override;
 
     /**
      * Returns a new 3D map item for the specified \a layout.
@@ -80,7 +78,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
      */
     static QgsLayoutItem3DMap *create( QgsLayout *layout ) SIP_FACTORY;
 
-    virtual int type() const override;
+    int type() const override;
     QIcon icon() const override;
 
     //! Configures camera view
@@ -127,7 +125,7 @@ class _3D_EXPORT QgsLayoutItem3DMap : public QgsLayoutItem, public QgsTemporalRa
   private:
     std::unique_ptr<Qgs3DMapSettings> mSettings;
     std::unique_ptr<QgsOffscreen3DEngine> mEngine;
-    Qgs3DMapScene *mScene = nullptr;  //!< 3D scene (owned by the 3D engine)
+    Qgs3DMapScene *mScene = nullptr; //!< 3D scene (owned by the 3D engine)
     QImage mCapturedImage;
     QgsCameraPose mCameraPose;
     bool mDrawing = false;

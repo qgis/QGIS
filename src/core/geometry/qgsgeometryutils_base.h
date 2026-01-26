@@ -15,11 +15,12 @@ email                : loic dot bartoletti at oslandia dot com
 
 #pragma once
 
+#include <iterator>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgsvector.h"
-#include <iterator>
+#include "qgsvector3d.h"
 
 /**
  * \ingroup core
@@ -58,6 +59,16 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance2D( x1, y1, x2, y2 ) ); }
 
     /**
+     * Returns the squared 2D distance between \a point1 and \a point2
+     */
+    static double sqrDistance2D( QPointF point1, QPointF point2 ) SIP_HOLDGIL {return sqrDistance2D( point1.x(), point1.y(), point2.x(), point2.y() ); }
+
+    /**
+     * Returns the 2D distance between \a point1 and \a point2
+     */
+    static double distance2D( QPointF point1, QPointF point2 ) SIP_HOLDGIL {return distance2D( point1.x(), point1.y(), point2.x(), point2.y() );}
+
+    /**
      * Returns the squared distance between a point and a line.
      */
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL;
@@ -83,6 +94,47 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
                                          double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
                                          double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
+
+    /**
+     * Evaluates a point on a cubic Bézier curve defined by four control points.
+     *
+     * This is a high-performance version of the equivalent QgsGeometryUtils method which
+     * avoids creating a temporary QgsPoint object.
+     *
+     * \param p0x start point x
+     * \param p0y start point y
+     * \param p0z start point z
+     * \param p0m start point m
+     * \param p1x first control point x
+     * \param p1y first control point y
+     * \param p1z first control point z
+     * \param p1m first control point m
+     * \param p2x second control point x
+     * \param p2y second control point y
+     * \param p2z second control point z
+     * \param p2m second control point m
+     * \param p3x end point x
+     * \param p3y end point y
+     * \param p3z end point z
+     * \param p3m end point m
+     * \param t parameter value between 0 and 1
+     * \param hasZ whether to calculate a Z value
+     * \param hasM whether to calculate an M value
+     * \param outX calculated x-coordinate
+     * \param outY calculated y-coordinate
+     * \param outZ calculated z-coordinate
+     * \param outM calculated m-coordinate
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static void interpolatePointOnCubicBezier(
+      double p0x, double p0y, double p0z, double p0m,
+      double p1x, double p1y, double p1z, double p1m,
+      double p2x, double p2y, double p2z, double p2m,
+      double p3x, double p3y, double p3z, double p3m,
+      double t, bool hasZ, bool hasM,
+      double &outX, double &outY, double &outZ, double &outM ) SIP_SKIP;
 
     /**
      * Calculates a point a certain \a proportion of the way along the segment from (\a x1, \a y1) to (\a x2, \a y2),
@@ -139,6 +191,31 @@ class CORE_EXPORT QgsGeometryUtilsBase
 
     //! Length of a circular string segment defined by pt1, pt2, pt3
     static double circleLength( double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
+
+    /**
+     * Calculates the precise arc length between two vertices on a circular arc.
+     *
+     * This method calculates the exact distance along the arc between any two vertices
+     * on a circle defined by three points. The arc follows the geometric path of the circle.
+     *
+     * \param centerX X coordinate of the circle center
+     * \param centerY Y coordinate of the circle center
+     * \param radius radius of the circle
+     * \param x1 X coordinate of the first point defining the arc
+     * \param y1 Y coordinate of the first point defining the arc
+     * \param x2 X coordinate of the second point defining the arc
+     * \param y2 Y coordinate of the second point defining the arc
+     * \param x3 X coordinate of the third point defining the arc
+     * \param y3 Y coordinate of the third point defining the arc
+     * \param fromVertex vertex index to start from (0, 1, or 2)
+     * \param toVertex vertex index to end at (0, 1, or 2)
+     * \returns precise arc length between the vertices, or 0 if vertices are the same
+     *
+     * \since QGIS 4.00
+     */
+    static double calculateArcLength( double centerX, double centerY, double radius,
+                                      double x1, double y1, double x2, double y2,
+                                      double x3, double y3, int fromVertex, int toVertex ) SIP_HOLDGIL;
 
     //! Calculates angle of a circular string part defined by pt1, pt2, pt3
     static double sweepAngle( double centerX, double centerY, double x1, double y1, double x2, double y2, double x3, double y3 ) SIP_HOLDGIL;
@@ -372,6 +449,14 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon );
 
     /**
+     * Given the points (\a x1, \a y1, \a z1), (\a x2, \a y2, \a z2) and (\a x3, \a y3, \a z3)
+     * returns TRUE if these points can be considered collinear with a specified tolerance \a epsilon.
+     *
+     * \since QGIS 4.0
+     */
+    static bool points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon );
+
+    /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
      * and segment (\a bX, \a bY) (\a dX, \a dY).
      * The bisector segment of AB-CD is (point, projection of point by \a angle)
@@ -556,6 +641,114 @@ class CORE_EXPORT QgsGeometryUtilsBase
 
       return sum < squaredEpsilon;
     }
-#endif
 
+    /**
+     * Calculates the maximum allowed fillet radius for the given segment configuration.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param epsilon tolerance for intersection and angle calculations
+     * \returns Maximum fillet radius that can be applied, or -1.0 if no fillet is possible
+     *
+     * \since QGIS 4.0
+     */
+    static double maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY, double epsilon = 1e-8 ) SIP_HOLDGIL;
+
+    /**
+     * Creates a chamfer (angled corner) between two line segments.
+     *
+     * This method generates a straight-line chamfer connecting two line segments at their
+     * intersection point. The chamfer distances can be specified independently for each
+     * segment, allowing for both symmetric and asymmetric chamfers.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param distance1 chamfer distance along first segment
+     * \param distance2 chamfer distance along second segment (if < 0, uses distance1)
+     * \param chamferStartX output x-coordinate of chamfer start point
+     * \param chamferStartY output y-coordinate of chamfer start point
+     * \param chamferEndX output x-coordinate of chamfer end point
+     * \param chamferEndY output y-coordinate of chamfer end point
+     * \param trim1StartX optional output x-coordinate of trimmed first segment start
+     * \param trim1StartY optional output y-coordinate of trimmed first segment start
+     * \param trim1EndX optional output x-coordinate of trimmed first segment end
+     * \param trim1EndY optional output y-coordinate of trimmed first segment end
+     * \param trim2StartX optional output x-coordinate of trimmed second segment start
+     * \param trim2StartY optional output y-coordinate of trimmed second segment start
+     * \param trim2EndX optional output x-coordinate of trimmed second segment end
+     * \param trim2EndY optional output y-coordinate of trimmed second segment end
+     * \param epsilon tolerance for numerical comparisons and intersection detection
+     * \returns TRUE if chamfer was successfully created
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static bool createChamfer( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                               const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+                               const double distance1, const double distance2,
+                               double &chamferStartX, double &chamferStartY,
+                               double &chamferEndX, double &chamferEndY,
+                               double *trim1StartX = nullptr, double *trim1StartY = nullptr,
+                               double *trim1EndX = nullptr, double *trim1EndY = nullptr,
+                               double *trim2StartX = nullptr, double *trim2StartY = nullptr,
+                               double *trim2EndX = nullptr, double *trim2EndY = nullptr,
+                               const double epsilon = 1e-8 );
+
+    /**
+     * Creates a fillet (rounded corner) between two line segments.
+     *
+     * This method generates a circular arc connecting two line segments at their
+     * intersection point. The fillet returns exactly 3 points defining a CircularString:
+     * start point, middle point, and end point of the arc.
+     *
+     * \param segment1StartX x-coordinate of first segment start point
+     * \param segment1StartY y-coordinate of first segment start point
+     * \param segment1EndX x-coordinate of first segment end point
+     * \param segment1EndY y-coordinate of first segment end point
+     * \param segment2StartX x-coordinate of second segment start point
+     * \param segment2StartY y-coordinate of second segment start point
+     * \param segment2EndX x-coordinate of second segment end point
+     * \param segment2EndY y-coordinate of second segment end point
+     * \param radius radius of the fillet arc
+     * \param filletPointsX output array of x-coordinates for 3 fillet points (start, middle, end)
+     * \param filletPointsY output array of y-coordinates for 3 fillet points (start, middle, end)
+     * \param trim1StartX optional output x-coordinate of trimmed first segment start
+     * \param trim1StartY optional output y-coordinate of trimmed first segment start
+     * \param trim1EndX optional output x-coordinate of trimmed first segment end
+     * \param trim1EndY optional output y-coordinate of trimmed first segment end
+     * \param trim2StartX optional output x-coordinate of trimmed second segment start
+     * \param trim2StartY optional output y-coordinate of trimmed second segment start
+     * \param trim2EndX optional output x-coordinate of trimmed second segment end
+     * \param trim2EndY optional output y-coordinate of trimmed second segment end
+     * \param epsilon tolerance for numerical comparisons and intersection detection
+     * \returns TRUE if fillet was successfully created
+     *
+     * \note The caller must ensure that filletPointsX and filletPointsY arrays are
+     *       large enough to hold exactly 3 points defining the CircularString arc.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static bool createFillet( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+                              const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
+                              const double radius,
+                              double *filletPointsX, double *filletPointsY,
+                              double *trim1StartX = nullptr, double *trim1StartY = nullptr,
+                              double *trim1EndX = nullptr, double *trim1EndY = nullptr,
+                              double *trim2StartX = nullptr, double *trim2StartY = nullptr,
+                              double *trim2EndX = nullptr, double *trim2EndY = nullptr,
+                              const double epsilon = 1e-8 );
+#endif
 };

@@ -9,11 +9,12 @@
 
 
 
+
 class QgsTransformEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-A paint effect which applies transformations (such as move,
-scale and rotate) to a picture.
+A paint effect which applies transformations (such as move, scale and
+rotate) to a picture.
 %End
 
 %TypeHeaderCode
@@ -34,6 +35,7 @@ Creates a new QgsTransformEffect effect from a properties string map.
 
     virtual QString type() const;
     virtual QVariantMap properties() const;
+
 
     virtual void readProperties( const QVariantMap &props );
 

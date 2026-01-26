@@ -17,12 +17,14 @@
 
 #include "qgsalgorithmpdalcreatecopc.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QProcessEnvironment>
 #include <QThread>
-#include <QFileInfo>
-#include <QDir>
 
+#ifdef HAVE_PDAL_QGIS
 #include "QgisUntwine.hpp"
+#endif
 #include "qgsapplication.h"
 #include "qgspointcloudlayer.h"
 
@@ -30,7 +32,7 @@
 
 QString QgsPdalCreateCopcAlgorithm::name() const
 {
-  return QStringLiteral( "createcopc" );
+  return u"createcopc"_s;
 }
 
 QString QgsPdalCreateCopcAlgorithm::displayName() const
@@ -45,7 +47,7 @@ QString QgsPdalCreateCopcAlgorithm::group() const
 
 QString QgsPdalCreateCopcAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalCreateCopcAlgorithm::tags() const
@@ -58,6 +60,11 @@ QString QgsPdalCreateCopcAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm creates a COPC file for each input point cloud file." );
 }
 
+QString QgsPdalCreateCopcAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a COPC file for each input point cloud." );
+}
+
 QgsPdalCreateCopcAlgorithm *QgsPdalCreateCopcAlgorithm::createInstance() const
 {
   return new QgsPdalCreateCopcAlgorithm();
@@ -65,23 +72,37 @@ QgsPdalCreateCopcAlgorithm *QgsPdalCreateCopcAlgorithm::createInstance() const
 
 void QgsPdalCreateCopcAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud, QVariant(), false, true ) );
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output directory" ), QVariant(), true, false ) );
-  addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Output layers" ) ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud, QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT"_s, QObject::tr( "Output directory" ), QVariant(), true, false ) );
+  addOutput( new QgsProcessingOutputMultipleLayers( u"OUTPUT_LAYERS"_s, QObject::tr( "Output layers" ) ) );
+}
+
+bool QgsPdalCreateCopcAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+
+#ifdef HAVE_PDAL_QGIS
+  return true;
+#else
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
+#endif
 }
 
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QStringList layers = parameterAsFileList( parameters, QStringLiteral( "LAYERS" ), context );
+#ifdef HAVE_PDAL_QGIS
+  const QStringList layers = parameterAsFileList( parameters, u"LAYERS"_s, context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
   }
 
-  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_UNTWINE_EXECUTABLE" ) );
+  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( u"QGIS_UNTWINE_EXECUTABLE"_s );
   if ( untwineExecutable.isEmpty() )
   {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
     untwineExecutable = QgsApplication::libexecPath() + "untwine.exe";
 #else
     untwineExecutable = QgsApplication::libexecPath() + "untwine";
@@ -93,7 +114,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     throw QgsProcessingException( QObject::tr( "Untwine executable not found %1" ).arg( untwineExecutable ) );
   }
 
-  const QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  const QString outputDir = parameterAsString( parameters, u"OUTPUT"_s, context );
   if ( !outputDir.isEmpty() && !QDir().mkpath( outputDir ) )
     throw QgsProcessingException( QObject::tr( "Failed to create output directory." ) );
 
@@ -111,7 +132,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
 
     feedback->pushInfo( QObject::tr( "Processing layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer ) );
 
-    if ( layer.endsWith( QStringLiteral( ".copc.laz" ), Qt::CaseInsensitive ) )
+    if ( layer.endsWith( u".copc.laz"_s, Qt::CaseInsensitive ) )
     {
       feedback->pushInfo( QObject::tr( "File %1 is a COPC file. Skipping…" ).arg( layer ) );
       continue;
@@ -119,7 +140,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
 
     const QFileInfo fi( layer );
     const QDir directory = fi.absoluteDir();
-    const QString outputFile = QStringLiteral( "%1/%2.copc.laz" ).arg( outputDir.isEmpty() ? directory.absolutePath() : outputDir ).arg( fi.completeBaseName() );
+    const QString outputFile = u"%1/%2.copc.laz"_s.arg( outputDir.isEmpty() ? directory.absolutePath() : outputDir ).arg( fi.completeBaseName() );
 
     const QFileInfo outputFileInfo( outputFile );
     if ( outputFileInfo.exists() )
@@ -127,7 +148,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
       feedback->pushInfo( QObject::tr( "File %1 is already indexed. Skipping…" ).arg( layer ) );
       continue;
     }
-    QString tmpDir = outputFile + QStringLiteral( "_tmp" );
+    QString tmpDir = outputFile + u"_tmp"_s;
     if ( QDir( tmpDir ).exists() )
     {
       feedback->pushInfo( QObject::tr( "Another indexing process is running (or finished with crash) in directory %1." ).arg( tmpDir ) );
@@ -141,7 +162,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     // generate COPC files
     options.push_back( { "single_file", std::string() } );
 
-    const std::vector<std::string> files = {layer.toStdString()};
+    const std::vector<std::string> files = { layer.toStdString() };
     untwineProcess.start( files, outputFile.toStdString(), options );
     const int lastPercent = 0;
     while ( true )
@@ -172,8 +193,14 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT_LAYERS" ), outputLayers );
+  outputs.insert( u"OUTPUT_LAYERS"_s, outputLayers );
   return outputs;
+#else
+  Q_UNUSED( parameters )
+  Q_UNUSED( context )
+  Q_UNUSED( feedback )
+  throw QgsProcessingException( QObject::tr( "This algorithm requires a QGIS installation with PDAL support enabled." ) );
+#endif
 }
 
 ///@endcond

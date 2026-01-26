@@ -20,9 +20,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = 'Alessandro Pasotti'
-__date__ = '05/15/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+__author__ = "Alessandro Pasotti"
+__date__ = "05/15/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
 import re
@@ -39,9 +39,9 @@ from offlineditingtestbase import OfflineTestBase
 from utilities import unitTestDataPath, waitServer
 
 try:
-    QGIS_SERVER_OFFLINE_PORT = os.environ['QGIS_SERVER_OFFLINE_PORT']
+    QGIS_SERVER_OFFLINE_PORT = os.environ["QGIS_SERVER_OFFLINE_PORT"]
 except:
-    QGIS_SERVER_OFFLINE_PORT = '0'  # Auto
+    QGIS_SERVER_OFFLINE_PORT = "0"  # Auto
 
 qgis_app = start_app()
 
@@ -53,57 +53,63 @@ class TestWFST(QgisTestCase, OfflineTestBase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
-        super(TestWFST, cls).setUpClass()
+        super().setUpClass()
         cls.port = QGIS_SERVER_OFFLINE_PORT
         # Create tmp folder
         cls.temp_path = tempfile.mkdtemp()
-        cls.testdata_path = cls.temp_path + '/' + 'wfs_transactional' + '/'
-        copytree(unitTestDataPath('wfs_transactional') + '/',
-                 cls.temp_path + '/' + 'wfs_transactional')
-        cls.project_path = cls.temp_path + '/' + 'wfs_transactional' + '/' + \
-            'wfs_transactional.qgs'
-        assert os.path.exists(cls.project_path), "Project not found: %s" % \
-            cls.project_path
+        cls.testdata_path = cls.temp_path + "/" + "wfs_transactional" + "/"
+        copytree(
+            unitTestDataPath("wfs_transactional") + "/",
+            cls.temp_path + "/" + "wfs_transactional",
+        )
+        cls.project_path = (
+            cls.temp_path + "/" + "wfs_transactional" + "/" + "wfs_transactional.qgs"
+        )
+        assert os.path.exists(cls.project_path), (
+            "Project not found: %s" % cls.project_path
+        )
         # Clean env just to be sure
-        env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
+        env_vars = ["QUERY_STRING", "QGIS_PROJECT_FILE"]
         for ev in env_vars:
             try:
                 del os.environ[ev]
             except KeyError:
                 pass
         # Clear all test layers
-        cls._clearLayer(cls._getLayer('test_point'))
-        os.environ['QGIS_SERVER_PORT'] = str(cls.port)
-        cls.server_path = os.path.dirname(os.path.realpath(__file__)) + \
-            '/qgis_wrapped_server.py'
+        cls._clearLayer(cls._getLayer("test_point"))
+        os.environ["QGIS_SERVER_PORT"] = str(cls.port)
+        cls.server_path = (
+            os.path.dirname(os.path.realpath(__file__)) + "/qgis_wrapped_server.py"
+        )
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
         rmtree(cls.temp_path)
-        super(TestWFST, cls).tearDownClass()
+        super().tearDownClass()
 
     def setUp(self):
         """Run before each test."""
-        self.server = subprocess.Popen([sys.executable, self.server_path],
-                                       env=os.environ, stdout=subprocess.PIPE)
+        self.server = subprocess.Popen(
+            [sys.executable, self.server_path], env=os.environ, stdout=subprocess.PIPE
+        )
         line = self.server.stdout.readline()
-        self.port = int(re.findall(br':(\d+)', line)[0])
+        self.port = int(re.findall(rb":(\d+)", line)[0])
         assert self.port != 0
         # Wait for the server process to start
-        assert waitServer(f'http://127.0.0.1:{self.port}'), "Server is not responding!"
+        assert waitServer(f"http://127.0.0.1:{self.port}"), "Server is not responding!"
         self._setUp()
 
     def tearDown(self):
         """Run after each test."""
         # Clear test layer
-        self._clearLayer(self._getOnlineLayer('test_point'))
+        self._clearLayer(self._getOnlineLayer("test_point"))
         # Kill the server
         self.server.terminate()
         self.server.wait()
         del self.server
         # Delete the sqlite db
-        os.unlink(os.path.join(self.temp_path, 'offlineDbFile.sqlite'))
+        os.unlink(os.path.join(self.temp_path, "offlineDbFile.sqlite"))
         self._tearDown()
 
     def _getOnlineLayer(self, type_name, layer_name=None):
@@ -111,20 +117,20 @@ class TestWFST(QgisTestCase, OfflineTestBase):
         Return a new WFS layer, overriding the WFS cache
         """
         if layer_name is None:
-            layer_name = 'wfs_' + type_name
+            layer_name = "wfs_" + type_name
         parms = {
-            'srsname': 'EPSG:4326',
-            'typename': type_name,
-            'url': 'http://127.0.0.1:{}/{}/?map={}'.format(self.port,
-                                                           self.counter,
-                                                           self.project_path),
-            'version': 'auto',
-            'table': '',
+            "srsname": "EPSG:4326",
+            "typename": type_name,
+            "url": "http://127.0.0.1:{}/{}/?map={}".format(
+                self.port, self.counter, self.project_path
+            ),
+            "version": "auto",
+            "table": "",
             # 'sql': '',
         }
         self.counter += 1
-        uri = ' '.join([(f"{k}='{v}'") for k, v in list(parms.items())])
-        wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
+        uri = " ".join([(f"{k}='{v}'") for k, v in list(parms.items())])
+        wfs_layer = QgsVectorLayer(uri, layer_name, "WFS")
         wfs_layer.setParent(QgsApplication.authManager())
         assert wfs_layer.isValid()
         return wfs_layer
@@ -134,12 +140,12 @@ class TestWFST(QgisTestCase, OfflineTestBase):
         """
         Layer factory (return the backend layer), provider specific
         """
-        path = cls.testdata_path + layer_name + '.shp'
+        path = cls.testdata_path + layer_name + ".shp"
         layer = QgsVectorLayer(path, layer_name, "ogr")
         layer.setParent(QgsApplication.authManager())
         assert layer.isValid()
         return layer
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

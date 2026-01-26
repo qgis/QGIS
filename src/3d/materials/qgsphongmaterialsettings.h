@@ -18,13 +18,14 @@
 
 #include "qgis_3d.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsmaterial.h"
 
 #include <QColor>
 
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Basic shading material used for rendering based on the Phong shading model
  * with three color components: ambient, diffuse and specular.
  *
@@ -35,7 +36,6 @@ class QDomElement;
 class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsPhongMaterialSettings() = default;
 
     QString type() const override;
@@ -51,6 +51,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsPhongMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     //! Returns ambient color component
     QColor ambient() const { return mAmbient; }
@@ -154,35 +155,24 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
 
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
+    QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
 
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
     int dataDefinedByteStride() const override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
-#else
     void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
-#endif
 #endif
 
     // TODO c++20 - replace with = default
     bool operator==( const QgsPhongMaterialSettings &other ) const
     {
-      return mAmbient == other.mAmbient &&
-             mDiffuse == other.mDiffuse &&
-             mOpacity == other.mOpacity &&
-             mSpecular == other.mSpecular &&
-             mShininess == other.mShininess &&
-             mAmbientCoefficient == other.mAmbientCoefficient &&
-             mDiffuseCoefficient == other.mDiffuseCoefficient &&
-             mSpecularCoefficient == other.mSpecularCoefficient;
+      return mAmbient == other.mAmbient && mDiffuse == other.mDiffuse && mOpacity == other.mOpacity && mSpecular == other.mSpecular && mShininess == other.mShininess && mAmbientCoefficient == other.mAmbientCoefficient && mDiffuseCoefficient == other.mDiffuseCoefficient && mSpecularCoefficient == other.mSpecularCoefficient && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
-    QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
-    QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
-    QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
+    QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
+    QColor mDiffuse { QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
+    QColor mSpecular { QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     double mShininess = 0.0;
 
     double mAmbientCoefficient = 1.0;
@@ -192,7 +182,7 @@ class _3D_EXPORT QgsPhongMaterialSettings : public QgsAbstractMaterialSettings
     double mOpacity = 1.0;
 
     //! Constructs a material from shader files
-    Qt3DRender::QMaterial *buildMaterial( const QgsMaterialContext &context ) const;
+    QgsMaterial *buildMaterial( const QgsMaterialContext &context ) const;
 };
 
 

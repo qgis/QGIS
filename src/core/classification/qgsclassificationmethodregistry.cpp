@@ -13,9 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QIcon>
-
 #include "qgsclassificationmethodregistry.h"
+
+#include <QIcon>
 
 // classification methods
 #include "qgsclassificationcustom.h"
@@ -52,10 +52,12 @@ bool QgsClassificationMethodRegistry::addMethod( QgsClassificationMethod *method
   return true;
 }
 
-QgsClassificationMethod *QgsClassificationMethodRegistry::method( const QString &id )
+std::unique_ptr< QgsClassificationMethod > QgsClassificationMethodRegistry::method( const QString &id )
 {
-  QgsClassificationMethod *method = mMethods.value( id, new QgsClassificationCustom() );
-  return method->clone();
+  auto it = mMethods.constFind( id );
+  if ( it == mMethods.constEnd() )
+    return std::make_unique< QgsClassificationCustom >();
+  return it.value()->clone();
 }
 
 QMap<QString, QString> QgsClassificationMethodRegistry::methodNames() const

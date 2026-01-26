@@ -20,6 +20,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+
 import glob
 import os
 import stat
@@ -39,9 +40,9 @@ from qgis.testing import start_app, QgisTestCase
 
 from utilities import unitTestDataPath
 
-__author__ = 'Alessandro Pasotti'
-__date__ = '25/10/2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+__author__ = "Alessandro Pasotti"
+__date__ = "25/10/2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 qgis_app = start_app()
 
@@ -52,11 +53,11 @@ class TestAuthManager(QgisTestCase):
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
         authm = QgsApplication.authManager()
-        assert (authm.setMasterPassword('masterpassword', True))
+        assert authm.setMasterPassword("masterpassword", True)
         # Client side
-        cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'qgis_ca.crt')
-        cls.sslcert = os.path.join(cls.certsdata_path, 'docker.crt')
-        cls.sslkey = os.path.join(cls.certsdata_path, 'docker.key')
+        cls.sslrootcert_path = os.path.join(cls.certsdata_path, "qgis_ca.crt")
+        cls.sslcert = os.path.join(cls.certsdata_path, "docker.crt")
+        cls.sslkey = os.path.join(cls.certsdata_path, "docker.key")
         assert os.path.isfile(cls.sslcert)
         assert os.path.isfile(cls.sslkey)
         assert os.path.isfile(cls.sslrootcert_path)
@@ -64,21 +65,21 @@ class TestAuthManager(QgisTestCase):
         os.chmod(cls.sslkey, stat.S_IRUSR)
         os.chmod(cls.sslrootcert_path, stat.S_IRUSR)
         cls.auth_config = QgsAuthMethodConfig("PKI-Paths")
-        cls.auth_config.setConfig('certpath', cls.sslcert)
-        cls.auth_config.setConfig('keypath', cls.sslkey)
-        cls.auth_config.setName('test_pki_auth_config')
-        cls.pg_user = 'docker'
-        cls.pg_pass = 'docker'
-        cls.pg_host = 'postgres'
-        cls.pg_port = '5432'
-        cls.pg_dbname = 'qgis_test'
+        cls.auth_config.setConfig("certpath", cls.sslcert)
+        cls.auth_config.setConfig("keypath", cls.sslkey)
+        cls.auth_config.setName("test_pki_auth_config")
+        cls.pg_user = "docker"
+        cls.pg_pass = "docker"
+        cls.pg_host = "postgres"
+        cls.pg_port = "5432"
+        cls.pg_dbname = "qgis_test"
         cls.sslrootcert = QSslCertificate.fromPath(cls.sslrootcert_path)
         assert cls.sslrootcert is not None
         authm.storeCertAuthorities(cls.sslrootcert)
         authm.rebuildCaCertsCache()
         authm.rebuildTrustedCaCertsCache()
         authm.rebuildCertTrustCache()
-        assert (authm.storeAuthenticationConfig(cls.auth_config)[0])
+        assert authm.storeAuthenticationConfig(cls.auth_config)[0]
         assert cls.auth_config.isValid()
 
     @classmethod
@@ -87,7 +88,9 @@ class TestAuthManager(QgisTestCase):
         Creates an auth configuration"""
         super().setUpClass()
 
-        cls.certsdata_path = os.path.join(unitTestDataPath('auth_system'), 'certs_keys_2048')
+        cls.certsdata_path = os.path.join(
+            unitTestDataPath("auth_system"), "certs_keys_2048"
+        )
         cls.setUpAuth()
 
     def setUp(self):
@@ -104,29 +107,37 @@ class TestAuthManager(QgisTestCase):
         PG layer factory
         """
         if layer_name is None:
-            layer_name = 'pg_' + type_name
+            layer_name = "pg_" + type_name
         uri = QgsDataSourceUri()
         uri.setWkbType(QgsWkbTypes.Type.Point)
-        uri.setConnection(cls.pg_host, cls.pg_port, cls.pg_dbname, cls.pg_user, cls.pg_pass, QgsDataSourceUri.SslMode.SslVerifyFull, authcfg)
-        uri.setKeyColumn('pk')
-        uri.setSrid('EPSG:4326')
-        uri.setDataSource('qgis_test', 'someData', "geom", "", "pk")
+        uri.setConnection(
+            cls.pg_host,
+            cls.pg_port,
+            cls.pg_dbname,
+            cls.pg_user,
+            cls.pg_pass,
+            QgsDataSourceUri.SslMode.SslVerifyFull,
+            authcfg,
+        )
+        uri.setKeyColumn("pk")
+        uri.setSrid("EPSG:4326")
+        uri.setDataSource("qgis_test", "someData", "geom", "", "pk")
         # Note: do not expand here!
-        layer = QgsVectorLayer(uri.uri(False), layer_name, 'postgres')
+        layer = QgsVectorLayer(uri.uri(False), layer_name, "postgres")
         return layer
 
     def testValidAuthAccess(self):
         """
         Access the protected layer with valid credentials
         """
-        pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=self.auth_config.id())
+        pg_layer = self._getPostGISLayer("testlayer_èé", authcfg=self.auth_config.id())
         self.assertTrue(pg_layer.isValid())
 
     def testInvalidAuthAccess(self):
         """
         Access the protected layer with not valid credentials
         """
-        pg_layer = self._getPostGISLayer('testlayer_èé')
+        pg_layer = self._getPostGISLayer("testlayer_èé")
         self.assertFalse(pg_layer.isValid())
 
     def testRemoveTemporaryCerts(self):
@@ -136,7 +147,7 @@ class TestAuthManager(QgisTestCase):
         """
 
         def cleanTempPki():
-            pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
+            pkies = glob.glob(os.path.join(tempfile.gettempdir(), "tmp*_{*}.pem"))
             for fn in pkies:
                 f = QFile(fn)
                 f.setPermissions(QFile.Permission.WriteOwner)
@@ -146,12 +157,12 @@ class TestAuthManager(QgisTestCase):
         # other pki remain after connection
         cleanTempPki()
         # connect using postgres provider
-        pg_layer = self._getPostGISLayer('testlayer_èé', authcfg=self.auth_config.id())
+        pg_layer = self._getPostGISLayer("testlayer_èé", authcfg=self.auth_config.id())
         self.assertTrue(pg_layer.isValid())
         # do test no certs remained
-        pkies = glob.glob(os.path.join(tempfile.gettempdir(), 'tmp*_{*}.pem'))
+        pkies = glob.glob(os.path.join(tempfile.gettempdir(), "tmp*_{*}.pem"))
         self.assertEqual(len(pkies), 0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                         *
  *                                                                               *
  *********************************************************************************/
-#include <QRegularExpression>
-#include <QPlainTextEdit>
-#include <QTextEdit>
-
-#include "qgscodeeditor.h"
 #include "qgsexpressionfinder.h"
 
+#include "qgscodeeditor.h"
 
-static const QString EXPRESSION_PATTERN = QStringLiteral( "\\[%\\s*(.*?)\\s*%\\]" );
+#include <QPlainTextEdit>
+#include <QRegularExpression>
+#include <QTextEdit>
+
+static const QString EXPRESSION_PATTERN = u"\\[%\\s*(.*?)\\s*%\\]"_s;
 
 
 void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSelectionPos, int endSelectionPos, int &start, int &end, QString &expression, const QString &pattern )
@@ -32,7 +32,7 @@ void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSel
 
   // When the expression is selected including the opening and closing brackets,
   // we still want it to be matched
-  if ( startSelectionPos !=  endSelectionPos )
+  if ( startSelectionPos != endSelectionPos )
   {
     startSelectionPos++;
     endSelectionPos--;
@@ -71,7 +71,7 @@ QString QgsExpressionFinder::findAndSelectActiveExpression( QgsCodeEditor *edito
   int newSelectionStart, newSelectionEnd;
   findExpressionAtPos( editor->text(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res, pattern );
 
-  editor->setLinearSelection( newSelectionStart,  newSelectionEnd );
+  editor->setLinearSelection( newSelectionStart, newSelectionEnd );
 
   return res;
 }

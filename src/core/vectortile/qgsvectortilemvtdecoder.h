@@ -20,20 +20,18 @@
 
 class QgsFeature;
 
-#include <QStringList>
-#include <QMap>
-
+#include "qgsvectortilematrixset.h"
+#include "qgsvectortilerenderer.h"
 #include "vector_tile.pb.h"
 
-#include "qgsvectortilerenderer.h"
-#include "qgsvectortilematrixset.h"
-
+#include <QMap>
+#include <QStringList>
 
 class QgsVectorTileRawData;
 
 /**
  * \ingroup core
- * \brief This class is responsible for decoding raw tile data written with Mapbox Vector Tiles encoding.
+ * \brief Responsible for decoding raw tile data written with Mapbox Vector Tiles encoding.
  *
  * \since QGIS 3.14
  */

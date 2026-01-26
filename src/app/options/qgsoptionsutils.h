@@ -29,15 +29,15 @@ class QgsOptionsWidgetFactory;
 class QgsScopedOptionsWidgetFactory
 {
   public:
-    QgsScopedOptionsWidgetFactory( std::unique_ptr< QgsOptionsWidgetFactory > &&factory );
+    QgsScopedOptionsWidgetFactory( std::unique_ptr<QgsOptionsWidgetFactory> &&factory );
     QgsScopedOptionsWidgetFactory( QgsScopedOptionsWidgetFactory &&other );
 
     ~QgsScopedOptionsWidgetFactory();
 
-    void reset( std::unique_ptr< QgsOptionsWidgetFactory > factory = nullptr );
+    void reset( std::unique_ptr<QgsOptionsWidgetFactory> factory = nullptr );
 
   private:
-    std::unique_ptr< QgsOptionsWidgetFactory > mFactory;
+    std::unique_ptr<QgsOptionsWidgetFactory> mFactory;
 };
 
 

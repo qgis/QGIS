@@ -12,7 +12,7 @@
 class QgsClassificationLogarithmic : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-Implementation of a logarithmic scale method
+Implementation of a logarithmic scale method for classification.
 
 .. versionadded:: 3.10
 %End
@@ -30,7 +30,7 @@ Implementation of a logarithmic scale method
     };
 
     QgsClassificationLogarithmic();
-    virtual QgsClassificationMethod *clone() const;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const;
 
     virtual QString name() const;
 

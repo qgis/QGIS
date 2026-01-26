@@ -12,19 +12,21 @@
 class QgsEffectStack : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
-A paint effect which consists of a stack of other chained paint effects
+A paint effect which consists of a stack of other chained paint effects.
 
-Effect stacks can be used to apply multiple paint effects to a QPicture. For
-instance, an effect stack may blur then apply a drop shadow.
+Effect stacks can be used to apply multiple paint effects to a QPicture.
+For instance, an effect stack may blur then apply a drop shadow.
 
-The way in which effects apply to a stack is controlled by the effect's drawMode.
-Effects can either render their results onto the destination paint device,
-or just modify the source picture which is drawn by subsequent effects in the
-stack. For instance, a blur effect with a Modifier drawMode will blur the source
-picture for the following drop shadow effect without actually drawing the blurred
-picture to the paint device. If the blur effect had a Render drawMode then the
-blurred picture will be drawn on the paint device, but the following drop shadow
-effect will be drawn using the original picture, not the blurred version.
+The way in which effects apply to a stack is controlled by the effect's
+drawMode. Effects can either render their results onto the destination
+paint device, or just modify the source picture which is drawn by
+subsequent effects in the stack. For instance, a blur effect with a
+Modifier drawMode will blur the source picture for the following drop
+shadow effect without actually drawing the blurred picture to the paint
+device. If the blur effect had a Render drawMode then the blurred
+picture will be drawn on the paint device, but the following drop shadow
+effect will be drawn using the original picture, not the blurred
+version.
 %End
 
 %TypeHeaderCode
@@ -34,8 +36,8 @@ effect will be drawn using the original picture, not the blurred version.
 
     static QgsPaintEffect *create( const QVariantMap &map ) /Factory/;
 %Docstring
-Creates a new QgsEffectStack effect. This method ignores
-the map parameter, and always returns an empty effect stack.
+Creates a new QgsEffectStack effect. This method ignores the map
+parameter, and always returns an empty effect stack.
 
 :param map: unused encoded properties string map
 
@@ -51,11 +53,13 @@ the map parameter, and always returns an empty effect stack.
 %Docstring
 Creates a new QgsEffectStack effect from a single initial effect.
 
-:param effect: initial effect to add to the stack. The effect will
-               be cloned, so ownership is not transferred to the stack.
+:param effect: initial effect to add to the stack. The effect will be
+               cloned, so ownership is not transferred to the stack.
 %End
 
     ~QgsEffectStack();
+
+    virtual Qgis::PaintEffectFlags flags() const;
 
     virtual QString type() const;
     virtual QgsEffectStack *clone() const /Factory/;
@@ -81,8 +85,8 @@ Unused for QgsEffectStack, props parameter will be ignored
 %Docstring
 Appends an effect to the end of the stack.
 
-:param effect: :py:class:`QgsPaintEffect` to append. Ownership of the effect will be
-               transferred to the stack object.
+:param effect: :py:class:`QgsPaintEffect` to append. Ownership of the
+               effect will be transferred to the stack object.
 
 .. seealso:: :py:func:`insertEffect`
 %End
@@ -92,8 +96,8 @@ Appends an effect to the end of the stack.
 Inserts an effect at a specified index within the stack.
 
 :param index: position to insert the effect
-:param effect: :py:class:`QgsPaintEffect` to insert. Ownership of the effect will be
-               transferred to the stack object.
+:param effect: :py:class:`QgsPaintEffect` to insert. Ownership of the
+               effect will be transferred to the stack object.
 
 .. seealso:: :py:func:`appendEffect`
 %End
@@ -103,8 +107,8 @@ Inserts an effect at a specified index within the stack.
 Replaces the effect at a specified position within the stack.
 
 :param index: position of effect to replace
-:param effect: :py:class:`QgsPaintEffect` to replace with. Ownership of the effect will be
-               transferred to the stack object.
+:param effect: :py:class:`QgsPaintEffect` to replace with. Ownership of
+               the effect will be transferred to the stack object.
 %End
 
     QgsPaintEffect *takeEffect( int index /TransferBack/ );
@@ -116,8 +120,8 @@ Removes an effect from the stack and returns a pointer to it.
 
     QList< QgsPaintEffect * > *effectList();
 %Docstring
-Returns a pointer to the list of effects currently contained by
-the stack
+Returns a pointer to the list of effects currently contained by the
+stack
 
 :return: list of :py:class:`QgsPaintEffects` within the stack
 %End

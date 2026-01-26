@@ -19,11 +19,11 @@
 #ifndef QGSVECTORLAYERTEMPORALPROPERTIES_H
 #define QGSVECTORLAYERTEMPORALPROPERTIES_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrange.h"
 #include "qgsmaplayertemporalproperties.h"
+#include "qgsrange.h"
 
 class QgsVectorLayer;
 class QgsFields;
@@ -32,7 +32,7 @@ class QgsFields;
  * \class QgsVectorLayerTemporalContext
  * \ingroup core
  * \brief Encapsulates the context in which a QgsVectorLayer's temporal capabilities
- * will be applied
+ * will be applied.
  *
  * \since QGIS 3.14
  */

@@ -17,15 +17,15 @@
 #define QGSMAPTOOL_H
 
 #include "qgsconfig.h"
-#include "qgis.h"
 
-#include <QCursor>
-#include <QString>
-#include <QObject>
-#include <QPointer>
-#include <QGestureEvent>
+#include "qgis.h"
 #include "qgis_gui.h"
 
+#include <QCursor>
+#include <QGestureEvent>
+#include <QObject>
+#include <QPointer>
+#include <QString>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -43,7 +43,7 @@ class QgsMapMouseEvent;
 class QMenu;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip 4.7 that for some reason
 // doesn't add these includes to the file where the code from
 // ConvertToSubClassCode goes.
@@ -57,19 +57,19 @@ class QMenu;
 #include <qgsmaptoolcapture.h>
 #include <qgsmaptooladvanceddigitizing.h>
 #include <qgsmaptooledit.h>
-% End
+//%End
 #endif
 
 /**
  * \ingroup gui
  * \brief Abstract base class for all map tools.
+ *
  * Map tools are user interactive tools for manipulating the
  * map canvas. For example map pan and zoom features are
  * implemented as map tools.
  */
 class GUI_EXPORT QgsMapTool : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsMapToolZoom *>( sipCpp ) != NULL )
@@ -102,15 +102,14 @@ class GUI_EXPORT QgsMapTool : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Enumeration of flags that adjust the way the map tool operates
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      Transient = 1 << 1, //!< Deprecated since QGIS 3.36 -- no longer used by QGIS and will be removed in QGIS 4.0
-      EditTool = 1 << 2, //!< Map tool is an edit tool, which can only be used when layer is editable
-      AllowZoomRect = 1 << 3, //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
+      Transient = 1 << 1,       //!< Deprecated since QGIS 3.36 -- no longer used by QGIS and will be removed in QGIS 5.0
+      EditTool = 1 << 2,        //!< Map tool is an edit tool, which can only be used when layer is editable
+      AllowZoomRect = 1 << 3,   //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
       ShowContextMenu = 1 << 4, //!< Show a context menu when right-clicking with the tool (since QGIS 3.14). See populateContextMenu().
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -267,19 +266,40 @@ class GUI_EXPORT QgsMapTool : public QObject
     QgsPointXY toMapCoordinates( QPoint point );
 
   signals:
-    //! emit a message
-    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::MessageLevel::Info );
 
-    //! emit signal to clear previous message
+    /**
+     * Emitted when a \a message should be shown to the user in the application message bar.
+     *
+     * \see messageDiscarded()
+     */
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+
+    /**
+     * Emitted when the previous message from the tool should be cleared from the application message bar.
+     *
+     * \see messageEmitted()
+     */
     void messageDiscarded();
 
-    //! signal emitted once the map tool is activated
+    /**
+     * Emitted when the map tool is activated.
+     *
+     * \see deactivated()
+     */
     void activated();
 
-    //! signal emitted once the map tool is deactivated
+    /**
+     * Emitted when the map tool is deactivated.
+     *
+     * \see activated()
+     */
     void deactivated();
 
-    //! \since QGIS 3.32 signal emitted when the map tool is activated while it is already active
+    /**
+     * Emitted when the map tool is activated, while it is already active.
+     *
+     * \since QGIS 3.32
+     */
     void reactivated();
 
   private slots:
@@ -287,7 +307,6 @@ class GUI_EXPORT QgsMapTool : public QObject
     void actionDestroyed();
 
   protected:
-
     //! Constructor takes a map canvas as a parameter.
     QgsMapTool( QgsMapCanvas *canvas SIP_TRANSFERTHIS );
 
@@ -338,7 +357,7 @@ class GUI_EXPORT QgsMapTool : public QObject
     void setToolName( const QString &name );
 
     //! The pointer to the map canvas
-    QPointer< QgsMapCanvas > mCanvas;
+    QPointer<QgsMapCanvas> mCanvas;
 
     //! The cursor used in the map tool
     QCursor mCursor;
@@ -360,7 +379,6 @@ class GUI_EXPORT QgsMapTool : public QObject
 
     friend class QgsMapCanvas;
     friend class TestQgsMapToolEdit;
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapTool::Flags )

@@ -134,6 +134,7 @@ namespace MDAL
                 const int capabilities );
       virtual ~DriverCF() override;
       bool canReadMesh( const std::string &uri ) override;
+      using Driver::load;
       std::unique_ptr< Mesh > load( const std::string &fileName, const std::string &meshName = "" ) override;
 
     protected:

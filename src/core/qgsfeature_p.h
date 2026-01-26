@@ -34,7 +34,6 @@ email                : nyall dot dawson at gmail dot com
  ****************************************************************************/
 
 #include "qgsfields.h"
-
 #include "qgsgeometry.h"
 #include "qgssymbol.h"
 
@@ -44,7 +43,6 @@ class QgsFeaturePrivate : public QSharedData
 
     explicit QgsFeaturePrivate( QgsFeatureId id )
       : fid( id )
-      , valid( false )
     {
     }
 
@@ -73,7 +71,7 @@ class QgsFeaturePrivate : public QSharedData
     QgsGeometry geometry;
 
     //! Flag to indicate if this feature is valid
-    bool valid;
+    bool valid = false;
 
     //! Optional field map for name-based attribute lookups
     QgsFields fields;

@@ -15,19 +15,21 @@
 
 #include "qgswmsdataitemguiproviders.h"
 
-#include "qgswmsdataitems.h"
-
-#include "qgsnewhttpconnection.h"
-#include "qgswmsconnection.h"
-#include "qgsxyzconnectiondialog.h"
-#include "qgsxyzconnection.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgswmssourceselect.h"
+#include "qgsapplication.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgswmsconnection.h"
+#include "qgswmsdataitems.h"
+#include "qgswmsnewconnection.h"
+#include "qgswmssourceselect.h"
+#include "qgsxyzconnection.h"
+#include "qgsxyzconnectiondialog.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgswmsdataitemguiproviders.cpp"
 
 static QWidget *_paramWidget( QgsDataItem *root )
 {
@@ -43,35 +45,35 @@ static QWidget *_paramWidget( QgsDataItem *root )
 
 void QgsWmsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWMSConnectionItem *connItem = qobject_cast< QgsWMSConnectionItem * >( item ) )
+  if ( QgsWMSConnectionItem *connItem = qobject_cast<QgsWMSConnectionItem *>( item ) )
   {
-    QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
-    connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
-    menu->addAction( actionRefresh );
+    const QList<QgsWMSConnectionItem *> wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
 
-    menu->addSeparator();
-
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
-    menu->addAction( actionDuplicate );
-
-    const QList< QgsWMSConnectionItem * > wmsConnectionItems = QgsDataItem::filteredItems<QgsWMSConnectionItem>( selection );
-    QAction *actionDelete = new QAction( wmsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [wmsConnectionItems, context]
+    if ( wmsConnectionItems.size() == 1 )
     {
-      QgsDataItemGuiProviderUtils::deleteConnections( wmsConnectionItems, []( const QString & connectionName )
-      {
-        QgsWMSConnection::deleteConnection( connectionName );
-      }, context );
+      QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
+      connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
+      menu->addAction( actionRefresh );
+
+      menu->addSeparator();
+
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connItem] { editConnection( connItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
+    QAction *actionDelete = new QAction( wmsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [wmsConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( wmsConnectionItems, []( const QString &connectionName ) { QgsWMSConnection::deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsWMSRootItem *rootItem = qobject_cast< QgsWMSRootItem * >( item ) )
+  if ( QgsWMSRootItem *rootItem = qobject_cast<QgsWMSRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -94,7 +96,7 @@ QWidget *QgsWmsDataItemGuiProvider::createParamWidget( QgsDataItem *root, QgsDat
 
 void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsWmsNewConnection nc( nullptr, item->name() );
 
   if ( nc.exec() )
   {
@@ -106,17 +108,19 @@ void QgsWmsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wms" )} );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { u"wms"_s } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  const QStringList detailsParameters { QStringLiteral( "wms" ), connectionName };
-  const QStringList newDetailsParameters { QStringLiteral( "wms" ), newConnectionName };
+  const QStringList detailsParameters { u"wms"_s, connectionName };
+  const QStringList newDetailsParameters { u"wms"_s, newConnectionName };
 
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( QgsOwsConnection::settingsIgnoreAxisOrientation->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsInvertAxisOrientation->setValue( QgsOwsConnection::settingsInvertAxisOrientation->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsDefaultImageFormat->setValue( QgsOwsConnection::settingsDefaultImageFormat->value( detailsParameters ), newDetailsParameters );
+  QgsOwsConnection::settingsWfsForceInitialGetFeature->setValue( QgsOwsConnection::settingsWfsForceInitialGetFeature->value( detailsParameters ), newDetailsParameters );
 
   QgsOwsConnection::settingsReportedLayerExtents->setValue( QgsOwsConnection::settingsReportedLayerExtents->value( detailsParameters ), newDetailsParameters );
   QgsOwsConnection::settingsIgnoreGetMapURI->setValue( QgsOwsConnection::settingsIgnoreGetMapURI->value( detailsParameters ), newDetailsParameters );
@@ -138,7 +142,7 @@ void QgsWmsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsWmsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsWmsNewConnection nc( QgsApplication::instance()->activeWindow(), QString() );
 
   if ( nc.exec() )
   {
@@ -160,8 +164,7 @@ void QgsWmsDataItemGuiProvider::saveConnections()
 
 void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -177,29 +180,29 @@ void QgsWmsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 
 void QgsXyzDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsXyzLayerItem *layerItem = qobject_cast< QgsXyzLayerItem * >( item ) )
+  if ( QgsXyzLayerItem *layerItem = qobject_cast<QgsXyzLayerItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
-    connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
-    menu->addAction( actionEdit );
+    const QList<QgsXyzLayerItem *> xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
 
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
-    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
-    menu->addAction( actionDuplicate );
-
-    const QList< QgsXyzLayerItem * > xyzConnectionItems = QgsDataItem::filteredItems<QgsXyzLayerItem>( selection );
-    QAction *actionDelete = new QAction( xyzConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [xyzConnectionItems, context]
+    if ( xyzConnectionItems.size() == 1 )
     {
-      QgsDataItemGuiProviderUtils::deleteConnections( xyzConnectionItems, []( const QString & connectionName )
-      {
-        QgsXyzConnectionUtils::deleteConnection( connectionName );
-      }, context );
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), this );
+      connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), this );
+      connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
+    QAction *actionDelete = new QAction( xyzConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [xyzConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( xyzConnectionItems, []( const QString &connectionName ) { QgsXyzConnectionUtils::deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsXyzTileRootItem *rootItem = qobject_cast< QgsXyzTileRootItem * >( item ) )
+  if ( QgsXyzTileRootItem *rootItem = qobject_cast<QgsXyzTileRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), this );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -240,7 +243,7 @@ void QgsXyzDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  QgsXyzConnection connection =  QgsXyzConnectionUtils::connection( connectionName );
+  QgsXyzConnection connection = QgsXyzConnectionUtils::connection( connectionName );
   connection.name = newConnectionName;
   QgsXyzConnectionUtils::addConnection( connection );
 
@@ -249,7 +252,7 @@ void QgsXyzDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsXyzDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsXyzConnectionDialog dlg;
+  QgsXyzConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 
@@ -265,8 +268,7 @@ void QgsXyzDataItemGuiProvider::saveXyzTilesServers()
 
 void QgsXyzDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
 {
-  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

@@ -18,8 +18,8 @@
 #ifndef QGSFEATUREFILTERPROVIDERGROUP_H
 #define QGSFEATUREFILTERPROVIDERGROUP_H
 
-#include "qgsfeaturefilterprovider.h"
 #include "qgis_server.h"
+#include "qgsfeaturefilterprovider.h"
 
 #include <QList>
 
@@ -27,6 +27,7 @@
  * \ingroup server
  * \class QgsFeatureFilterProviderGroup
  * \brief A filter filter provider grouping several filter providers.
+ * \deprecated QGIS 3.4. Use QgsGroupedFeatureFilterProvider.
  */
 class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvider
 {
@@ -34,20 +35,12 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
     //! Constructor
     QgsFeatureFilterProviderGroup() = default;
 
-    /**
-     * Filter the features of the layer.
-     * \param layer the layer to control
-     * \param filterFeatures the request to fill
-     */
+    bool isFilterThreadSafe() const override { return false; }
+
+    using QgsFeatureFilterProvider::filterFeatures;
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
-
     QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const override;
-
-    /**
-     * Returns a clone of the object
-     * \returns A clone
-     */
-    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
+    QgsFeatureFilterProviderGroup *clone() const override SIP_FACTORY;
 
     /**
      * Add another filter provider to the group
@@ -59,8 +52,6 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
 
   private:
     QList<const QgsFeatureFilterProvider *> mProviders;
-
-
 };
 
 #endif

@@ -17,19 +17,18 @@
 #define QGSQUICKMAPSETTINGS_H
 
 #include "qgis_quick.h"
-
-#include <QObject>
-
 #include "qgscoordinatetransformcontext.h"
 #include "qgsmaplayer.h"
 #include "qgsmapsettings.h"
 #include "qgspoint.h"
-#include "qgsrectangle.h"
 #include "qgsproject.h"
+#include "qgsrectangle.h"
+
+#include <QObject>
 
 /**
  * \ingroup quick
- * \brief The QgsQuickMapSettings class encapsulates QgsMapSettings class to offer
+ * \brief Encapsulates QgsMapSettings class to offer
  * settings of configuration of map rendering via QML properties.
  *
  * On top of QgsMapSettings functionality, when QgsProject is attached,
@@ -148,7 +147,7 @@ class QUICK_EXPORT QgsQuickMapSettings : public QObject
   public:
     //! Create new map settings
     explicit QgsQuickMapSettings( QObject *parent = nullptr );
-    ~QgsQuickMapSettings() = default;
+    ~QgsQuickMapSettings() override = default;
 
     //! Clone map settings
     QgsMapSettings mapSettings() const;

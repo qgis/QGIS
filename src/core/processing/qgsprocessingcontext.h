@@ -18,17 +18,17 @@
 #ifndef QGSPROCESSINGCONTEXT_H
 #define QGSPROCESSINGCONTEXT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsproject.h"
+#include "qgis_core.h"
 #include "qgsexpressioncontext.h"
 #include "qgsprocessingfeedback.h"
-#include "qgsprocessingutils.h"
-#include "qgsprocessingmodelresult.h"
 #include "qgsprocessingmodelconfig.h"
+#include "qgsprocessingmodelresult.h"
+#include "qgsprocessingutils.h"
+#include "qgsproject.h"
 
-#include <QThread>
 #include <QPointer>
+#include <QThread>
 
 class QgsProcessingLayerPostProcessorInterface;
 
@@ -483,7 +483,7 @@ class CORE_EXPORT QgsProcessingContext
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const SIP_SKIP { return mTransformErrorCallback; }
 
     /**
      * Returns the default encoding to use for newly created files.
@@ -601,11 +601,11 @@ class CORE_EXPORT QgsProcessingContext
     void setPreferredVectorFormat( const QString &format ) SIP_HOLDGIL { mPreferredVectorFormat = format; }
 
     /**
-     * Returns the preferred raster format to use for vector outputs.
+     * Returns the preferred raster format to use for raster outputs.
      *
-     * This method returns a file extension to use when creating raster outputs (e.g. "tif"). Generally,
-     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * This method returns a file format to use when creating raster outputs (e.g. "GTiff"). Generally,
+     * it is preferable to use the format associated with a particular parameter, which can be retrieved through
+     * QgsProcessingParameterRasterDestination::defaultFileFormat(). However, in some cases, a specific parameter
      * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
      * and which creates multiple output layers in that folder). In this case, the format returned by this
      * function should be used when creating these outputs.
@@ -616,22 +616,26 @@ class CORE_EXPORT QgsProcessingContext
      * \see setPreferredRasterFormat()
      * \see preferredVectorFormat()
      *
+     * \note Since QGIS 4.0, this method returns a GDAL format name. In prior versions, this was a file extension.
+     *
      * \since QGIS 3.10
      */
     QString preferredRasterFormat() const SIP_HOLDGIL { return mPreferredRasterFormat; }
 
     /**
-     * Sets the preferred raster \a format to use for vector outputs.
+     * Sets the preferred raster \a format to use for raster outputs.
      *
-     * This method sets a file extension to use when creating raster outputs (e.g. "tif"). Generally,
-     * it is preferable to use the extension associated with a particular parameter, which can be retrieved through
-     * QgsProcessingDestinationParameter::defaultFileExtension(). However, in some cases, a specific parameter
+     * This method sets a file format to use when creating raster outputs (e.g. "GTiff"). Generally,
+     * it is preferable to use the format associated with a particular parameter, which can be retrieved through
+     * QgsProcessingParameterRasterDestination::defaultFileFormat(). However, in some cases, a specific parameter
      * may not be available to call this method on (e.g. for an algorithm which has only an output folder parameter
      * and which creates multiple output layers in that folder). In this case, the format set by this
      * function will be used when creating these outputs.
      *
      * \see preferredRasterFormat()
      * \see setPreferredVectorFormat()
+     *
+     * \note Since QGIS 4.0, this method expects a GDAL format name. In prior versions, this was a file extension.
      *
      * \since QGIS 3.10
      */
@@ -793,6 +797,13 @@ class CORE_EXPORT QgsProcessingContext
      * \since QGIS 3.38
      */
     QgsProcessingModelResult &modelResult() SIP_SKIP { return mModelResult; }
+
+    /**
+     * Clears model results previously populated when the context was used to run a model algorithm.
+     *
+     * \since QGIS 3.42
+     */
+    void clearModelResult();
 
   private:
 

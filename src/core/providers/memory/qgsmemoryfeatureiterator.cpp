@@ -13,15 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmemoryfeatureiterator.h"
-#include "qgsmemoryprovider.h"
 
+#include "qgsexception.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
 #include "qgslogger.h"
-#include "qgsspatialindex.h"
+#include "qgsmemoryprovider.h"
 #include "qgsproject.h"
-#include "qgsexception.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 
@@ -304,7 +304,7 @@ QgsExpressionContext *QgsMemoryFeatureSource::expressionContext()
     mExpressionContext = std::make_unique< QgsExpressionContext >(
                            QList<QgsExpressionContextScope *>()
                            << QgsExpressionContextUtils::globalScope()
-                           << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+                           << QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
     mExpressionContext->setFields( mFields );
   }
   return mExpressionContext.get();

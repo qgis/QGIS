@@ -8,6 +8,7 @@
 
 
 
+
 // this is needed for the "convert to subclass" code below to compile
 %ModuleHeaderCode
 #include "qgsbrowsertreeview.h"
@@ -17,7 +18,8 @@
 class QgsBrowserTreeView : QTreeView
 {
 %Docstring(signature="appended")
-The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tree state functionality.
+Extends QTreeView with save/restore tree state and other
+browser-specific functionality.
 
 .. seealso:: :py:class:`QgsBrowserModel`
 %End
@@ -32,7 +34,6 @@ The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tre
       sipType = nullptr;
 %End
   public:
-
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserTreeView
@@ -70,15 +71,16 @@ Returns ``True`` if the item was found and could be selected.
 %Docstring
 Expands out a file ``path`` in the view.
 
-The ``path`` must correspond to a valid directory existing on the file system.
+The ``path`` must correspond to a valid directory existing on the file
+system.
 
-Since QGIS 3.38 the ``selectPath`` argument can be used to automatically select the path too.
+Since QGIS 3.38 the ``selectPath`` argument can be used to automatically
+select the path too.
 
 .. versionadded:: 3.28
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *event );
 
 

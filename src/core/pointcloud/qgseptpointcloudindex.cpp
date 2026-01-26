@@ -16,72 +16,123 @@
  ***************************************************************************/
 
 #include "qgseptpointcloudindex.h"
+
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgscachedpointcloudblockrequest.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgseptdecoder.h"
+#include "qgseptpointcloudblockrequest.h"
+#include "qgslazdecoder.h"
+#include "qgslogger.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblockrequest.h"
+#include "qgspointcloudexpression.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudstatistics.h"
+#include "qgssetrequestinitiator_p.h"
+
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
-#include <QDir>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QNetworkRequest>
+#include <QQueue>
 #include <QTime>
 #include <QtDebug>
-#include <QQueue>
-
-#include "qgseptdecoder.h"
-#include "qgslazdecoder.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
-#include "qgslogger.h"
-#include "qgspointcloudexpression.h"
 
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "ept" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "EPT point cloud provider" )
+#define PROVIDER_KEY u"ept"_s
+#define PROVIDER_DESCRIPTION u"EPT point cloud provider"_s
 
-QgsEptPointCloudIndex::QgsEptPointCloudIndex() = default;
+QgsEptPointCloudIndex::QgsEptPointCloudIndex()
+{
+  mHierarchyNodes.insert( QgsPointCloudNodeId( 0, 0, 0, 0 ) );
+}
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-std::unique_ptr<QgsPointCloudIndex> QgsEptPointCloudIndex::clone() const
+void QgsEptPointCloudIndex::load( const QString &urlString, const QString &authcfg )
 {
-  QgsEptPointCloudIndex *clone = new QgsEptPointCloudIndex;
-  QMutexLocker locker( &mHierarchyMutex );
-  copyCommonProperties( clone );
-  return std::unique_ptr<QgsPointCloudIndex>( clone );
-}
+  QUrl url = urlString;
+  // Treat non-URLs as local files
+  if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
+    mAccessType = Qgis::PointCloudAccessType::Remote;
+  else
+    mAccessType = Qgis::PointCloudAccessType::Local;
+  mUri = urlString;
 
-void QgsEptPointCloudIndex::load( const QString &fileName )
-{
-  mUri = fileName;
-  QFile f( fileName );
-  if ( !f.open( QIODevice::ReadOnly ) )
+  QStringList splitUrl = mUri.split( '/' );
+  splitUrl.pop_back();
+  mUrlDirectoryPart = splitUrl.join( '/' );
+
+  QByteArray content;
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
-    mError = tr( "Unable to open %1 for reading" ).arg( fileName );
-    mIsValid = false;
-    return;
+    mAuthCfg = authcfg;
+    QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
+    QgsSetRequestInitiatorClass( nr, u"QgsEptPointCloudIndex"_s );
+
+    QgsBlockingNetworkRequest req;
+    req.setAuthCfg( mAuthCfg );
+    if ( req.get( nr ) != QgsBlockingNetworkRequest::NoError )
+    {
+      QgsDebugError( u"Request failed: "_s + mUri );
+      mIsValid = false;
+      mError = req.errorMessage();
+      return;
+    }
+    content = req.reply().content();
+  }
+  else
+  {
+    QFile f( mUri );
+    if ( !f.open( QIODevice::ReadOnly ) )
+    {
+      mError = QObject::tr( "Unable to open %1 for reading" ).arg( mUri );
+      mIsValid = false;
+      return;
+    }
+    content = f.readAll();
   }
 
-  const QDir directory = QFileInfo( fileName ).absoluteDir();
-  mDirectory = directory.absolutePath();
-
-  const QByteArray dataJson = f.readAll();
-  bool success = loadSchema( dataJson );
-
+  bool success = loadSchema( content );
   if ( success )
   {
     // try to import the metadata too!
-    QFile manifestFile( mDirectory + QStringLiteral( "/ept-sources/manifest.json" ) );
-    if ( manifestFile.open( QIODevice::ReadOnly ) )
+    const QString manifestPath = mUrlDirectoryPart + u"/ept-sources/manifest.json"_s;
+    QByteArray manifestJson;
+    if ( mAccessType == Qgis::PointCloudAccessType::Remote )
     {
-      const QByteArray manifestJson = manifestFile.readAll();
-      loadManifest( manifestJson );
+      QUrl manifestUrl( manifestPath );
+
+      QNetworkRequest nr = QNetworkRequest( QUrl( manifestUrl ) );
+      QgsSetRequestInitiatorClass( nr, u"QgsEptPointCloudIndex"_s );
+      QgsBlockingNetworkRequest req;
+      req.setAuthCfg( mAuthCfg );
+      if ( req.get( nr ) == QgsBlockingNetworkRequest::NoError )
+        manifestJson = req.reply().content();
     }
+    else
+    {
+      QFile manifestFile( manifestPath );
+      if ( manifestFile.open( QIODevice::ReadOnly ) )
+        manifestJson = manifestFile.readAll();
+    }
+
+    if ( !manifestJson.isEmpty() )
+      loadManifest( manifestJson );
   }
 
-  if ( success )
+  if ( !loadNodeHierarchy( QgsPointCloudNodeId( 0, 0, 0, 0 ) ) )
   {
-    success = loadHierarchy();
+    QgsDebugError( u"Failed to load root EPT node"_s );
+    success = false;
   }
 
   mIsValid = success;
@@ -92,31 +143,48 @@ void QgsEptPointCloudIndex::loadManifest( const QByteArray &manifestJson )
   QJsonParseError err;
   // try to import the metadata too!
   const QJsonDocument manifestDoc = QJsonDocument::fromJson( manifestJson, &err );
-  if ( err.error == QJsonParseError::NoError )
+  if ( err.error != QJsonParseError::NoError )
+    return;
+
+  const QJsonArray manifestArray = manifestDoc.array();
+  if ( manifestArray.empty() )
+    return;
+
+  // TODO how to handle multiple?
+  const QJsonObject sourceObject = manifestArray.at( 0 ).toObject();
+  const QString metadataPath = sourceObject.value( u"metadataPath"_s ).toString();
+  const QString fullMetadataPath = mUrlDirectoryPart + u"/ept-sources/"_s + metadataPath;
+
+  QByteArray metadataJson;
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
-    const QJsonArray manifestArray = manifestDoc.array();
-    // TODO how to handle multiple?
-    if ( ! manifestArray.empty() )
-    {
-      const QJsonObject sourceObject = manifestArray.at( 0 ).toObject();
-      const QString metadataPath = sourceObject.value( QStringLiteral( "metadataPath" ) ).toString();
-      QFile metadataFile( mDirectory + QStringLiteral( "/ept-sources/" ) + metadataPath );
-      if ( metadataFile.open( QIODevice::ReadOnly ) )
-      {
-        const QByteArray metadataJson = metadataFile.readAll();
-        const QJsonDocument metadataDoc = QJsonDocument::fromJson( metadataJson, &err );
-        if ( err.error == QJsonParseError::NoError )
-        {
-          const QJsonObject metadataObject = metadataDoc.object().value( QStringLiteral( "metadata" ) ).toObject();
-          if ( !metadataObject.empty() )
-          {
-            const QJsonObject sourceMetadata = metadataObject.constBegin().value().toObject();
-            mOriginalMetadata = sourceMetadata.toVariantMap();
-          }
-        }
-      }
-    }
+    QUrl metadataUrl( fullMetadataPath );
+    QNetworkRequest nr = QNetworkRequest( QUrl( metadataUrl ) );
+    QgsSetRequestInitiatorClass( nr, u"QgsEptPointCloudIndex"_s );
+    QgsBlockingNetworkRequest req;
+    req.setAuthCfg( mAuthCfg );
+    if ( req.get( nr ) != QgsBlockingNetworkRequest::NoError )
+      return;
+    metadataJson = req.reply().content();
   }
+  else
+  {
+    QFile metadataFile( fullMetadataPath );
+    if ( ! metadataFile.open( QIODevice::ReadOnly ) )
+      return;
+    metadataJson = metadataFile.readAll();
+  }
+
+  const QJsonDocument metadataDoc = QJsonDocument::fromJson( metadataJson, &err );
+  if ( err.error != QJsonParseError::NoError )
+    return;
+
+  const QJsonObject metadataObject = metadataDoc.object().value( u"metadata"_s ).toObject();
+  if ( metadataObject.empty() )
+    return;
+
+  const QJsonObject sourceMetadata = metadataObject.constBegin().value().toObject();
+  mOriginalMetadata = sourceMetadata.toVariantMap();
 }
 
 bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
@@ -126,27 +194,27 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   if ( err.error != QJsonParseError::NoError )
     return false;
   const QJsonObject result = doc.object();
-  mDataType = result.value( QLatin1String( "dataType" ) ).toString();  // "binary" or "laszip"
-  if ( mDataType != QLatin1String( "laszip" ) && mDataType != QLatin1String( "binary" ) && mDataType != QLatin1String( "zstandard" ) )
+  mDataType = result.value( "dataType"_L1 ).toString();  // "binary" or "laszip"
+  if ( mDataType != "laszip"_L1 && mDataType != "binary"_L1 && mDataType != "zstandard"_L1 )
     return false;
 
-  const QString hierarchyType = result.value( QLatin1String( "hierarchyType" ) ).toString();  // "json" or "gzip"
-  if ( hierarchyType != QLatin1String( "json" ) )
+  const QString hierarchyType = result.value( "hierarchyType"_L1 ).toString();  // "json" or "gzip"
+  if ( hierarchyType != "json"_L1 )
     return false;
 
-  mSpan = result.value( QLatin1String( "span" ) ).toInt();
-  mPointCount = result.value( QLatin1String( "points" ) ).toDouble();
+  mSpan = result.value( "span"_L1 ).toInt();
+  mPointCount = result.value( "points"_L1 ).toDouble();
 
   // WKT
-  const QJsonObject srs = result.value( QLatin1String( "srs" ) ).toObject();
-  mWkt = srs.value( QLatin1String( "wkt" ) ).toString();
+  const QJsonObject srs = result.value( "srs"_L1 ).toObject();
+  mWkt = srs.value( "wkt"_L1 ).toString();
 
   // rectangular
-  const QJsonArray bounds = result.value( QLatin1String( "bounds" ) ).toArray();
+  const QJsonArray bounds = result.value( "bounds"_L1 ).toArray();
   if ( bounds.size() != 6 )
     return false;
 
-  const QJsonArray boundsConforming = result.value( QLatin1String( "boundsConforming" ) ).toArray();
+  const QJsonArray boundsConforming = result.value( "boundsConforming"_L1 ).toArray();
   if ( boundsConforming.size() != 6 )
     return false;
   mExtent.set( boundsConforming[0].toDouble(), boundsConforming[1].toDouble(),
@@ -154,29 +222,29 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   mZMin = boundsConforming[2].toDouble();
   mZMax = boundsConforming[5].toDouble();
 
-  const QJsonArray schemaArray = result.value( QLatin1String( "schema" ) ).toArray();
+  const QJsonArray schemaArray = result.value( "schema"_L1 ).toArray();
   QgsPointCloudAttributeCollection attributes;
 
   for ( const QJsonValue &schemaItem : schemaArray )
   {
     const QJsonObject schemaObj = schemaItem.toObject();
-    const QString name = schemaObj.value( QLatin1String( "name" ) ).toString();
-    const QString type = schemaObj.value( QLatin1String( "type" ) ).toString();
+    const QString name = schemaObj.value( "name"_L1 ).toString();
+    const QString type = schemaObj.value( "type"_L1 ).toString();
 
-    const int size = schemaObj.value( QLatin1String( "size" ) ).toInt();
+    const int size = schemaObj.value( "size"_L1 ).toInt();
 
-    if ( name == QLatin1String( "ClassFlags" ) && size == 1 )
+    if ( name == "ClassFlags"_L1 && size == 1 )
     {
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Synthetic" ), QgsPointCloudAttribute::UChar ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "KeyPoint" ), QgsPointCloudAttribute::UChar ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Withheld" ), QgsPointCloudAttribute::UChar ) );
-      attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Overlap" ), QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( u"Synthetic"_s, QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( u"KeyPoint"_s, QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( u"Withheld"_s, QgsPointCloudAttribute::UChar ) );
+      attributes.push_back( QgsPointCloudAttribute( u"Overlap"_s, QgsPointCloudAttribute::UChar ) );
     }
-    else if ( type == QLatin1String( "float" ) && ( size == 4 ) )
+    else if ( type == "float"_L1 && ( size == 4 ) )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Float ) );
     }
-    else if ( type == QLatin1String( "float" ) && ( size == 8 ) )
+    else if ( type == "float"_L1 && ( size == 8 ) )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Double ) );
     }
@@ -184,7 +252,7 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::Char ) );
     }
-    else if ( type == QLatin1String( "unsigned" ) && size == 2 )
+    else if ( type == "unsigned"_L1 && size == 2 )
     {
       attributes.push_back( QgsPointCloudAttribute( name, QgsPointCloudAttribute::UShort ) );
     }
@@ -203,24 +271,24 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
     }
 
     double scale = 1.f;
-    if ( schemaObj.contains( QLatin1String( "scale" ) ) )
-      scale = schemaObj.value( QLatin1String( "scale" ) ).toDouble();
+    if ( schemaObj.contains( "scale"_L1 ) )
+      scale = schemaObj.value( "scale"_L1 ).toDouble();
 
     double offset = 0.f;
-    if ( schemaObj.contains( QLatin1String( "offset" ) ) )
-      offset = schemaObj.value( QLatin1String( "offset" ) ).toDouble();
+    if ( schemaObj.contains( "offset"_L1 ) )
+      offset = schemaObj.value( "offset"_L1 ).toDouble();
 
-    if ( name == QLatin1String( "X" ) )
+    if ( name == "X"_L1 )
     {
       mOffset.set( offset, mOffset.y(), mOffset.z() );
       mScale.set( scale, mScale.y(), mScale.z() );
     }
-    else if ( name == QLatin1String( "Y" ) )
+    else if ( name == "Y"_L1 )
     {
       mOffset.set( mOffset.x(), offset, mOffset.z() );
       mScale.set( mScale.x(), scale, mScale.z() );
     }
-    else if ( name == QLatin1String( "Z" ) )
+    else if ( name == "Z"_L1 )
     {
       mOffset.set( mOffset.x(), mOffset.y(), offset );
       mScale.set( mScale.x(), mScale.y(), scale );
@@ -229,47 +297,47 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
     // store any metadata stats which are present for the attribute
     AttributeStatistics stats;
     bool foundStats = false;
-    if ( schemaObj.contains( QLatin1String( "count" ) ) )
+    if ( schemaObj.contains( "count"_L1 ) )
     {
-      stats.count = schemaObj.value( QLatin1String( "count" ) ).toInt();
+      stats.count = schemaObj.value( "count"_L1 ).toInt();
       foundStats = true;
     }
-    if ( schemaObj.contains( QLatin1String( "minimum" ) ) )
+    if ( schemaObj.contains( "minimum"_L1 ) )
     {
-      stats.minimum = schemaObj.value( QLatin1String( "minimum" ) ).toDouble();
+      stats.minimum = schemaObj.value( "minimum"_L1 ).toDouble();
       foundStats = true;
     }
-    if ( schemaObj.contains( QLatin1String( "maximum" ) ) )
+    if ( schemaObj.contains( "maximum"_L1 ) )
     {
-      stats.maximum = schemaObj.value( QLatin1String( "maximum" ) ).toDouble();
+      stats.maximum = schemaObj.value( "maximum"_L1 ).toDouble();
       foundStats = true;
     }
-    if ( schemaObj.contains( QLatin1String( "count" ) ) )
+    if ( schemaObj.contains( "count"_L1 ) )
     {
-      stats.mean = schemaObj.value( QLatin1String( "mean" ) ).toDouble();
+      stats.mean = schemaObj.value( "mean"_L1 ).toDouble();
       foundStats = true;
     }
-    if ( schemaObj.contains( QLatin1String( "stddev" ) ) )
+    if ( schemaObj.contains( "stddev"_L1 ) )
     {
-      stats.stDev = schemaObj.value( QLatin1String( "stddev" ) ).toDouble();
+      stats.stDev = schemaObj.value( "stddev"_L1 ).toDouble();
       foundStats = true;
     }
-    if ( schemaObj.contains( QLatin1String( "variance" ) ) )
+    if ( schemaObj.contains( "variance"_L1 ) )
     {
-      stats.variance = schemaObj.value( QLatin1String( "variance" ) ).toDouble();
+      stats.variance = schemaObj.value( "variance"_L1 ).toDouble();
       foundStats = true;
     }
     if ( foundStats )
       mMetadataStats.insert( name, stats );
 
-    if ( schemaObj.contains( QLatin1String( "counts" ) ) )
+    if ( schemaObj.contains( "counts"_L1 ) )
     {
       QMap< int, int >  classCounts;
-      const QJsonArray counts = schemaObj.value( QLatin1String( "counts" ) ).toArray();
+      const QJsonArray counts = schemaObj.value( "counts"_L1 ).toArray();
       for ( const QJsonValue &count : counts )
       {
         const QJsonObject countObj = count.toObject();
-        classCounts.insert( countObj.value( QLatin1String( "value" ) ).toInt(), countObj.value( QLatin1String( "count" ) ).toInt() );
+        classCounts.insert( countObj.value( "value"_L1 ).toInt(), countObj.value( "count"_L1 ).toInt() );
       }
       mAttributeClasses.insert( name, classCounts );
     }
@@ -286,75 +354,118 @@ bool QgsEptPointCloudIndex::loadSchema( const QByteArray &dataJson )
   const double ymax = bounds[4].toDouble();
   const double zmax = bounds[5].toDouble();
 
-  mRootBounds = QgsPointCloudDataBounds(
-                  ( xmin - mOffset.x() ) / mScale.x(),
-                  ( ymin - mOffset.y() ) / mScale.y(),
-                  ( zmin - mOffset.z() ) / mScale.z(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
-                  ( zmax - mOffset.z() ) / mScale.z()
-                );
+  mRootBounds = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 
-
-#ifdef QGIS_DEBUG
+#ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
+  QgsDebugMsgLevel( u"lvl0 node size in CRS units: %1 %2 %3"_s.arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( u"res at lvl0 %1"_s.arg( dx / mSpan ), 2 );
+  QgsDebugMsgLevel( u"res at lvl1 %1"_s.arg( dx / mSpan / 2 ), 2 );
+  QgsDebugMsgLevel( u"res at lvl2 %1 with node size %2"_s.arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
 #endif
 
   return true;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
     return std::unique_ptr<QgsPointCloudBlock>( cached );
   }
 
-  mHierarchyMutex.lock();
-  const bool found = mHierarchy.contains( n );
-  mHierarchyMutex.unlock();
-  if ( !found )
-    return nullptr;
-
-  // we need to create a copy of the expression to pass to the decoder
-  // as the same QgsPointCloudExpression object mighgt be concurrently
-  // used on another thread, for example in a 3d view
-  QgsPointCloudExpression filterExpression = mFilterExpression;
-  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
-  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
-  QgsRectangle filterRect = request.filterRect();
-
-  std::unique_ptr<QgsPointCloudBlock> decoded;
-  if ( mDataType == QLatin1String( "binary" ) )
+  std::unique_ptr<QgsPointCloudBlock> block;
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
-    const QString filename = QStringLiteral( "%1/ept-data/%2.bin" ).arg( mDirectory, n.toString() );
-    decoded = QgsEptDecoder::decompressBinary( filename, attributes(), requestAttributes, scale(), offset(), filterExpression, filterRect );
+    std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
+    if ( !blockRequest )
+      return nullptr;
+
+    QEventLoop loop;
+    QObject::connect( blockRequest.get(), &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
+    loop.exec();
+
+    block = blockRequest->takeBlock();
+    if ( !block )
+    {
+      QgsDebugError( u"Error downloading node %1 data, error : %2 "_s.arg( n.toString(), blockRequest->errorStr() ) );
+    }
   }
-  else if ( mDataType == QLatin1String( "zstandard" ) )
+  else
   {
-    const QString filename = QStringLiteral( "%1/ept-data/%2.zst" ).arg( mDirectory, n.toString() );
-    decoded = QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), filterExpression, filterRect );
-  }
-  else if ( mDataType == QLatin1String( "laszip" ) )
-  {
-    const QString filename = QStringLiteral( "%1/ept-data/%2.laz" ).arg( mDirectory, n.toString() );
-    decoded = QgsLazDecoder::decompressLaz( filename, requestAttributes, filterExpression, filterRect );
+    // we need to create a copy of the expression to pass to the decoder
+    // as the same QgsPointCloudExpression object mighgt be concurrently
+    // used on another thread, for example in a 3d view
+    QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
+    QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+    requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+    QgsRectangle filterRect = request.filterRect();
+
+    if ( mDataType == "binary"_L1 )
+    {
+      const QString filename = u"%1/ept-data/%2.bin"_s.arg( mUrlDirectoryPart, n.toString() );
+      block = QgsEptDecoder::decompressBinary( filename, attributes(), requestAttributes, scale(), offset(), filterExpression, filterRect );
+    }
+    else if ( mDataType == "zstandard"_L1 )
+    {
+      const QString filename = u"%1/ept-data/%2.zst"_s.arg( mUrlDirectoryPart, n.toString() );
+      block = QgsEptDecoder::decompressZStandard( filename, attributes(), request.attributes(), scale(), offset(), filterExpression, filterRect );
+    }
+    else if ( mDataType == "laszip"_L1 )
+    {
+      const QString filename = u"%1/ept-data/%2.laz"_s.arg( mUrlDirectoryPart, n.toString() );
+      block = QgsLazDecoder::decompressLaz( filename, requestAttributes, filterExpression, filterRect );
+    }
   }
 
-  storeNodeDataToCache( decoded.get(), n, request );
-  return decoded;
+  storeNodeDataToCache( block.get(), n, request );
+  return block;
 }
 
-QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
-  Q_UNUSED( n );
-  Q_UNUSED( request );
-  Q_ASSERT( false );
-  return nullptr; // unsupported
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
+           scale(), offset(), mFilterExpression, request.filterRect() );
+  }
+
+  if ( mAccessType != Qgis::PointCloudAccessType::Remote )
+    return nullptr;
+
+  if ( !loadNodeHierarchy( n ) )
+    return nullptr;
+
+  QString fileUrl;
+  if ( mDataType == "binary"_L1 )
+  {
+    fileUrl = u"%1/ept-data/%2.bin"_s.arg( mUrlDirectoryPart, n.toString() );
+  }
+  else if ( mDataType == "zstandard"_L1 )
+  {
+    fileUrl = u"%1/ept-data/%2.zst"_s.arg( mUrlDirectoryPart, n.toString() );
+  }
+  else if ( mDataType == "laszip"_L1 )
+  {
+    fileUrl = u"%1/ept-data/%2.laz"_s.arg( mUrlDirectoryPart, n.toString() );
+  }
+  else
+  {
+    return nullptr;
+  }
+
+  // we need to create a copy of the expression to pass to the decoder
+  // as the same QgsPointCloudExpression object might be concurrently
+  // used on another thread, for example in a 3d view
+  QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
+  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+  return new QgsEptPointCloudBlockRequest( n, fileUrl, mDataType, attributes(), requestAttributes, scale(), offset(), filterExpression, request.filterRect(), mAuthCfg );
+}
+
+bool QgsEptPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+{
+  return loadNodeHierarchy( n );
 }
 
 QgsCoordinateReferenceSystem QgsEptPointCloudIndex::crs() const
@@ -367,141 +478,184 @@ qint64 QgsEptPointCloudIndex::pointCount() const
   return mPointCount;
 }
 
-bool QgsEptPointCloudIndex::hasStatisticsMetadata() const
+QgsPointCloudNode QgsEptPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
-  return !mMetadataStats.isEmpty();
-}
+  QgsPointCloudNode node = QgsAbstractPointCloudIndex::getNode( id );
 
-QVariant QgsEptPointCloudIndex::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
-{
-  if ( !mMetadataStats.contains( attribute ) )
-    return QVariant();
+  // First try cached value
+  if ( node.pointCount() != -1 )
+    return node;
 
-  const AttributeStatistics &stats = mMetadataStats[ attribute ];
-  switch ( statistic )
+  // Try loading all nodes' hierarchy files on the path from root and stop when
+  // one contains the point count for nodeId
+  QVector<QgsPointCloudNodeId> pathToRoot = nodePathToRoot( id );
+  for ( int i = pathToRoot.size() - 1; i >= 0; --i )
   {
-    case Qgis::Statistic::Count:
-      return stats.count >= 0 ? QVariant( stats.count ) : QVariant();
+    loadSingleNodeHierarchy( pathToRoot[i] );
 
-    case Qgis::Statistic::Mean:
-      return std::isnan( stats.mean ) ? QVariant() : QVariant( stats.mean );
-
-    case Qgis::Statistic::StDev:
-      return std::isnan( stats.stDev ) ? QVariant() : QVariant( stats.stDev );
-
-    case Qgis::Statistic::Min:
-      return stats.minimum;
-
-    case Qgis::Statistic::Max:
-      return stats.maximum;
-
-    case Qgis::Statistic::Range:
-      return stats.minimum.isValid() && stats.maximum.isValid() ? QVariant( stats.maximum.toDouble() - stats.minimum.toDouble() ) : QVariant();
-
-    case Qgis::Statistic::CountMissing:
-    case Qgis::Statistic::Sum:
-    case Qgis::Statistic::Median:
-    case Qgis::Statistic::StDevSample:
-    case Qgis::Statistic::Minority:
-    case Qgis::Statistic::Majority:
-    case Qgis::Statistic::Variety:
-    case Qgis::Statistic::FirstQuartile:
-    case Qgis::Statistic::ThirdQuartile:
-    case Qgis::Statistic::InterQuartileRange:
-    case Qgis::Statistic::First:
-    case Qgis::Statistic::Last:
-    case Qgis::Statistic::All:
-      return QVariant();
+    QMutexLocker locker( &mHierarchyMutex );
+    qint64 pointCount = mHierarchy.value( id, -1 );
+    if ( pointCount != -1 )
+      return QgsPointCloudNode( id, pointCount, node.children(), node.error(), node.bounds() );
   }
-  return QVariant();
+
+  // If we fail, return with pointCount = -1 anyway
+  return node;
 }
 
-QVariantList QgsEptPointCloudIndex::metadataClasses( const QString &attribute ) const
+QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
 {
-  QVariantList classes;
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  for ( auto it = values.constBegin(); it != values.constEnd(); ++it )
+  QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
+  for ( QgsPointCloudAttribute attribute : attributes().attributes() )
   {
-    classes << it.key();
+    QString name = attribute.name();
+    const AttributeStatistics &stats = mMetadataStats[ name ];
+    if ( !stats.minimum.isValid() )
+      continue;
+    QgsPointCloudAttributeStatistics s;
+    s.minimum = stats.minimum.toDouble();
+    s.maximum = stats.maximum.toDouble();
+    s.mean = stats.mean;
+    s.stDev = stats.stDev;
+    s.count = stats.count;
+
+    s.classCount = mAttributeClasses[ name ];
+
+    statsMap[ name ] = std::move( s );
   }
-  return classes;
+  return QgsPointCloudStatistics( pointCount(), statsMap );
 }
 
-QVariant QgsEptPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
+bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const
 {
-  if ( statistic != Qgis::Statistic::Count )
-    return QVariant();
+  mHierarchyMutex.lock();
+  const bool foundInHierarchy = mHierarchy.contains( nodeId );
+  const bool foundInHierarchyNodes = mHierarchyNodes.contains( nodeId );
+  mHierarchyMutex.unlock();
+  // The hierarchy of the node is found => No need to load its file
+  if ( foundInHierarchy )
+    return true;
+  // We don't know that this node has a hierarchy file => We have nothing to load
+  if ( !foundInHierarchyNodes )
+    return true;
 
-  const QMap< int, int > values =  mAttributeClasses.value( attribute );
-  if ( !values.contains( value.toInt() ) )
-    return QVariant();
-  return values.value( value.toInt() );
-}
+  const QString filePath = u"%1/ept-hierarchy/%2.json"_s.arg( mUrlDirectoryPart, nodeId.toString() );
 
-bool QgsEptPointCloudIndex::loadHierarchy()
-{
-  QQueue<QString> queue;
-  queue.enqueue( QStringLiteral( "0-0-0-0" ) );
-  while ( !queue.isEmpty() )
+  QByteArray dataJsonH;
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
-    const QString filename = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mDirectory, queue.dequeue() );
-    QFile fH( filename );
-    if ( !fH.open( QIODevice::ReadOnly ) )
+    QNetworkRequest nr( filePath );
+    QgsSetRequestInitiatorClass( nr, u"QgsEptPointCloudIndex"_s );
+    nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( nr, mAuthCfg ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "unable to read hierarchy from file %1" ).arg( filename ), 2 );
-      mError = QStringLiteral( "unable to read hierarchy from file %1" ).arg( filename );
+      QgsDebugError( u"Network request update failed for authcfg: %1"_s.arg( mAuthCfg ) );
       return false;
     }
 
-    const QByteArray dataJsonH = fH.readAll();
-    QJsonParseError errH;
-    const QJsonDocument docH = QJsonDocument::fromJson( dataJsonH, &errH );
-    if ( errH.error != QJsonParseError::NoError )
+    std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
+
+    QEventLoop loop;
+    QObject::connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+    loop.exec();
+
+    if ( reply->error() != QNetworkReply::NoError )
     {
-      QgsDebugMsgLevel( QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename ), 2 );
-      mError = QStringLiteral( "QJsonParseError when reading hierarchy from file %1" ).arg( filename );
+      QgsDebugError( u"Request failed: "_s + filePath );
       return false;
     }
 
-    const QJsonObject rootHObj = docH.object();
-    for ( auto it = rootHObj.constBegin(); it != rootHObj.constEnd(); ++it )
-    {
-      const QString nodeIdStr = it.key();
-      const int nodePointCount = it.value().toInt();
-      if ( nodePointCount < 0 )
-      {
-        queue.enqueue( nodeIdStr );
-      }
-      else
-      {
-        const IndexedPointCloudNode nodeId = IndexedPointCloudNode::fromString( nodeIdStr );
-        mHierarchyMutex.lock();
-        mHierarchy[nodeId] = nodePointCount;
-        mHierarchyMutex.unlock();
-      }
-    }
+    dataJsonH = reply->data();
   }
+  else
+  {
+    QFile file( filePath );
+    if ( ! file.open( QIODevice::ReadOnly ) )
+    {
+      QgsDebugError( u"Loading file failed: "_s + filePath );
+      return false;
+    }
+    dataJsonH = file.readAll();
+  }
+
+  QJsonParseError errH;
+  const QJsonDocument docH = QJsonDocument::fromJson( dataJsonH, &errH );
+  if ( errH.error != QJsonParseError::NoError )
+  {
+    QgsDebugMsgLevel( u"QJsonParseError when reading hierarchy from file %1"_s.arg( filePath ), 2 );
+    return false;
+  }
+
+  QMutexLocker locker( &mHierarchyMutex );
+  const QJsonObject rootHObj = docH.object();
+  for ( auto it = rootHObj.constBegin(); it != rootHObj.constEnd(); ++it )
+  {
+    const QString nodeIdStr = it.key();
+    const int nodePointCount = it.value().toInt();
+    const QgsPointCloudNodeId nodeId = QgsPointCloudNodeId::fromString( nodeIdStr );
+    if ( nodePointCount >= 0 )
+      mHierarchy[nodeId] = nodePointCount;
+    else if ( nodePointCount == -1 )
+      mHierarchyNodes.insert( nodeId );
+  }
+
   return true;
 }
+
+QVector<QgsPointCloudNodeId> QgsEptPointCloudIndex::nodePathToRoot( const QgsPointCloudNodeId &nodeId ) const
+{
+  QVector<QgsPointCloudNodeId> path;
+  QgsPointCloudNodeId currentNode = nodeId;
+  do
+  {
+    path.push_back( currentNode );
+    currentNode = currentNode.parentNode();
+  }
+  while ( currentNode.d() >= 0 );
+
+  return path;
+}
+
+bool QgsEptPointCloudIndex::loadNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const
+{
+  bool found;
+  {
+    QMutexLocker lock( &mHierarchyMutex );
+    found = mHierarchy.contains( nodeId );
+  }
+  if ( found )
+    return true;
+
+  QVector<QgsPointCloudNodeId> pathToRoot = nodePathToRoot( nodeId );
+  for ( int i = pathToRoot.size() - 1; i >= 0 && !mHierarchy.contains( nodeId ); --i )
+  {
+    const QgsPointCloudNodeId node = pathToRoot[i];
+    if ( !loadSingleNodeHierarchy( node ) )
+      return false;
+  }
+
+  {
+    QMutexLocker lock( &mHierarchyMutex );
+    found = mHierarchy.contains( nodeId );
+  }
+
+  return found;
+}
+
 
 bool QgsEptPointCloudIndex::isValid() const
 {
   return mIsValid;
 }
 
-void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destination ) const
+Qgis::PointCloudAccessType QgsEptPointCloudIndex::accessType() const
 {
-  QgsPointCloudIndex::copyCommonProperties( destination );
-
-  // QgsEptPointCloudIndex specific fields
-  destination->mIsValid = mIsValid;
-  destination->mDataType = mDataType;
-  destination->mDirectory = mDirectory;
-  destination->mWkt = mWkt;
-  destination->mPointCount = mPointCount;
-  destination->mMetadataStats = mMetadataStats;
-  destination->mAttributeClasses = mAttributeClasses;
-  destination->mOriginalMetadata = mOriginalMetadata;
+  return mAccessType;
 }
+
+#undef PROVIDER_KEY
+#undef PROVIDER_DESCRIPTION
 
 ///@endcond

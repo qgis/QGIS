@@ -18,16 +18,17 @@
 #ifndef QGISAPPSTYLESHEET_H
 #define QGISAPPSTYLESHEET_H
 
-#include <QObject>
+#include "qgis_app.h"
+
 #include <QFont>
 #include <QMap>
-#include "qgis_app.h"
+#include <QObject>
 
 /**
  * \class QgisAppStyleSheet
  * \brief Adjustable stylesheet for the QGIS application
  */
-class APP_EXPORT QgisAppStyleSheet: public QObject
+class APP_EXPORT QgisAppStyleSheet : public QObject
 {
     Q_OBJECT
 
@@ -64,7 +65,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     void saveToSettings( const QMap<QString, QVariant> &opts );
 
     //! Gets reference font for initial qApp
-    QFont defaultFont() { return mDefaultFont; }
+    QFont defaultFont() const { return mDefaultFont; }
 
     /**
      * Returns the user set font size override value, or -1 if not set and the Qt default font size should be used.
@@ -101,7 +102,7 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     void setActiveValues();
 
     // qt styles
-    QString mStyle; // active style name (lowercase)
+    QString mStyle;         // active style name (lowercase)
     bool mMacStyle = false; // macintosh (aqua)
     bool mOxyStyle = false; // oxygen
 
@@ -114,8 +115,6 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
     // platforms, specific
     bool mWinOS = false;
     bool mAndroidOS = false;
-
-    static bool sIsFirstRun;
 };
 
 #endif //QGISAPPSTYLESHEET_H

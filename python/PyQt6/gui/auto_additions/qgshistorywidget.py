@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/gui/history/qgshistorywidget.h
 try:
     QgsHistoryWidget.__group__ = ['history']
-except NameError:
+except (NameError, AttributeError):
     pass

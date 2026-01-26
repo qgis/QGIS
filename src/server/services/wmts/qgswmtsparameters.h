@@ -18,12 +18,12 @@
 #ifndef QGSWMTSPARAMETERS_H
 #define QGSWMTSPARAMETERS_H
 
-#include <QMap>
-#include <QObject>
-#include <QMetaEnum>
-
 #include "qgsprojectversion.h"
 #include "qgsserverparameters.h"
+
+#include <QMap>
+#include <QMetaEnum>
+#include <QObject>
 
 namespace QgsWmts
 {
@@ -105,14 +105,12 @@ namespace QgsWmts
       * \param type Type of the parameter
       * \param defaultValue Default value of the parameter
        */
-      QgsWmtsParameter( const QgsWmtsParameter::Name name = QgsWmtsParameter::UNKNOWN,
-                        const QMetaType::Type type = QMetaType::Type::QString,
-                        const QVariant defaultValue = QVariant( "" ) );
+      QgsWmtsParameter( const QgsWmtsParameter::Name name = QgsWmtsParameter::UNKNOWN, const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
 
       /**
        * Default destructor for QgsWmtsParameter.
        */
-      virtual ~QgsWmtsParameter() = default;
+      ~QgsWmtsParameter() override = default;
 
       /**
        * Converts the parameter into an integer.
@@ -153,7 +151,6 @@ namespace QgsWmts
       Q_GADGET
 
     public:
-
       //! Output format for the response
       enum Format
       {
@@ -180,7 +177,7 @@ namespace QgsWmts
       /**
        * Default destructor for QgsWmtsParameters.
        */
-      virtual ~QgsWmtsParameters() = default;
+      ~QgsWmtsParameters() override = default;
 
       /**
        * Dumps parameters.
@@ -317,11 +314,11 @@ namespace QgsWmts
       bool loadParameter( const QString &key, const QString &value ) override;
       void save( const QgsWmtsParameter &parameter );
 
-      void log( const QString &msg ) const;
+      void log( const QString &msg, const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() ) const;
 
       QList<QgsProjectVersion> mVersions;
       QMap<QgsWmtsParameter::Name, QgsWmtsParameter> mWmtsParameters;
   };
-}
+} // namespace QgsWmts
 
 #endif

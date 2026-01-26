@@ -12,18 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptoolzoom.h"
 #include "qgstest.h"
+
+#include <QCoreApplication>
 #include <QObject>
 #include <QString>
-#include <QCoreApplication>
 #include <QWidget>
-
-#include "qgsmaptoolzoom.h"
-#include "qgsapplication.h"
-#include "qgsmapcanvas.h"
-#include "qgslogger.h"
-#include "qgsmapmouseevent.h"
-
 
 class TestQgsMapToolZoom : public QObject
 {
@@ -32,11 +31,12 @@ class TestQgsMapToolZoom : public QObject
     TestQgsMapToolZoom() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void zeroDragArea();
+
   private:
     QgsMapCanvas *canvas = nullptr;
 };
@@ -71,12 +71,9 @@ void TestQgsMapToolZoom::cleanup()
 void TestQgsMapToolZoom::zeroDragArea()
 {
   const QPoint point = QPoint( 15, 15 );
-  QMouseEvent press( QEvent::MouseButtonPress, point,
-                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QMouseEvent move( QEvent::MouseMove, point,
-                    Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QMouseEvent releases( QEvent::MouseButtonRelease, point,
-                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent press( QEvent::MouseButtonPress, point, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent move( QEvent::MouseMove, point, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent releases( QEvent::MouseButtonRelease, point, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
   QgsMapMouseEvent mapPress( nullptr, &press );
   QgsMapMouseEvent mapMove( nullptr, &move );
@@ -99,7 +96,3 @@ void TestQgsMapToolZoom::zeroDragArea()
 
 QGSTEST_MAIN( TestQgsMapToolZoom )
 #include "testqgsmaptoolzoom.moc"
-
-
-
-

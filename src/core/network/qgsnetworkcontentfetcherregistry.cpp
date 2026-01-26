@@ -19,11 +19,14 @@
 #include "qgsnetworkcontentfetcherregistry.h"
 
 #include "qgsapplication.h"
-#include <QUrl>
-#include <QFileInfo>
+
 #include <QDir>
-#include <QMimeType>
+#include <QFileInfo>
 #include <QMimeDatabase>
+#include <QMimeType>
+#include <QUrl>
+
+#include "moc_qgsnetworkcontentfetcherregistry.cpp"
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
@@ -91,9 +94,10 @@ QString QgsNetworkContentFetcherRegistry::localPath( const QString &filePathOrUr
 
   if ( !QUrl::fromUserInput( filePathOrUrl ).isLocalFile() )
   {
-    if ( mFileRegistry.contains( path ) )
+    auto it = mFileRegistry.constFind( path );
+    if ( it != mFileRegistry.constEnd() )
     {
-      const QgsFetchedContent *content = mFileRegistry.value( path );
+      const QgsFetchedContent *content = it.value();
       if ( content->status() == QgsFetchedContent::Finished && !content->filePath().isEmpty() )
       {
         path = content->filePath();
@@ -177,7 +181,7 @@ void QgsFetchedContent::taskCompleted()
       if ( extension.isEmpty() && !contentType.isEmpty() )
       {
         const QList<QMimeType> mimeTypes = QMimeDatabase().allMimeTypes();
-        auto it = std::find_if( mimeTypes.constBegin(), mimeTypes.constEnd(), [ = ]( QMimeType mimeType )
+        auto it = std::find_if( mimeTypes.constBegin(), mimeTypes.constEnd(), [contentType]( QMimeType mimeType )
         {
           return mimeType.name() == contentType;
         } );
@@ -187,14 +191,18 @@ void QgsFetchedContent::taskCompleted()
         }
       }
 
-      QTemporaryFile *tf = new QTemporaryFile( extension.isEmpty() ? QString( "XXXXXX" ) :
-          QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
-      mFile = tf;
-      tf->open();
+      mFile = std::make_unique<QTemporaryFile>( extension.isEmpty() ? QString( "XXXXXX" ) :
+              QString( "%1/XXXXXX.%2" ).arg( QDir::tempPath(), extension ) );
+      if ( !mFile->open() )
+      {
+        QgsDebugError( u"Can't open temporary file %1"_s.arg( mFile->fileName() ) );
+        mStatus = QgsFetchedContent::Failed;
+        return;
+      }
       mFile->write( reply->readAll() );
       // Qt docs notes that on some system if fileName is not called before close, file might get deleted
-      mFilePath = tf->fileName();
-      tf->close();
+      mFilePath = mFile->fileName();
+      mFile->close();
       mStatus = QgsFetchedContent::Finished;
     }
     else

@@ -18,11 +18,11 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-
 #include "qgs3drendererregistry.h"
 #include "qgsabstractpointcloud3drenderer.h"
-#include "qgsmaplayerref.h"
 #include "qgsfeedback.h"
+#include "qgsmaplayerref.h"
+
 #include <QObject>
 
 class QgsPointCloudLayer;
@@ -41,7 +41,6 @@ class QgsPointCloudLayer;
 class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
 {
   public:
-
     /**
      * Constructor for QgsPointCloud3DRenderContext.
      *
@@ -51,8 +50,7 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * The \a zValueFixedOffset argument specifies any constant offset value which must be added to z values
      * taken from the point cloud index.
      */
-    QgsPointCloud3DRenderContext( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr< QgsPointCloud3DSymbol > symbol,
-                                  double zValueScale, double zValueFixedOffset );
+    QgsPointCloud3DRenderContext( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, std::unique_ptr<QgsPointCloud3DSymbol> symbol, double zValueScale, double zValueFixedOffset );
 
     QgsPointCloud3DRenderContext( const QgsPointCloud3DRenderContext &rh ) = delete;
     QgsPointCloud3DRenderContext &operator=( const QgsPointCloud3DRenderContext & ) = delete;
@@ -101,46 +99,46 @@ class _3D_NO_EXPORT QgsPointCloud3DRenderContext : public Qgs3DRenderContext
      * Retrieves the attribute \a value from \a data at the specified \a offset, where
      * \a type indicates the original data type for the attribute.
      */
-    template <typename T>
+    template<typename T>
     void getAttribute( const char *data, std::size_t offset, QgsPointCloudAttribute::DataType type, T &value ) const
     {
       switch ( type )
       {
         case QgsPointCloudAttribute::UChar:
-          value = *reinterpret_cast< const unsigned char * >( data + offset );
+          value = *reinterpret_cast<const unsigned char *>( data + offset );
           return;
         case QgsPointCloudAttribute::Char:
           value = *( data + offset );
           return;
 
         case QgsPointCloudAttribute::Int32:
-          value = *reinterpret_cast< const qint32 * >( data + offset );
+          value = *reinterpret_cast<const qint32 *>( data + offset );
           return;
         case QgsPointCloudAttribute::UInt32:
-          value = *reinterpret_cast< const quint32 * >( data + offset );
+          value = *reinterpret_cast<const quint32 *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Int64:
-          value = *reinterpret_cast< const qint64 * >( data + offset );
+          value = *reinterpret_cast<const qint64 *>( data + offset );
           return;
         case QgsPointCloudAttribute::UInt64:
-          value = *reinterpret_cast< const quint64 * >( data + offset );
+          value = *reinterpret_cast<const quint64 *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Short:
-          value = *reinterpret_cast< const short * >( data + offset );
+          value = *reinterpret_cast<const short *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::UShort:
-          value = *reinterpret_cast< const unsigned short * >( data + offset );
+          value = *reinterpret_cast<const unsigned short *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Float:
-          value = *reinterpret_cast< const float * >( data + offset );
+          value = *reinterpret_cast<const float *>( data + offset );
           return;
 
         case QgsPointCloudAttribute::Double:
-          value = *reinterpret_cast< const double * >( data + offset );
+          value = *reinterpret_cast<const double *>( data + offset );
           return;
       }
     }
@@ -229,7 +227,7 @@ class _3D_EXPORT QgsPointCloudLayer3DRendererMetadata : public Qgs3DRendererAbst
 
 /**
  * \ingroup core
- * \brief 3D renderer that renders all points from a point cloud layer
+ * \brief 3D renderer that renders all points from a point cloud layer.
  *
  * \since QGIS 3.18
  */
@@ -305,12 +303,25 @@ class _3D_EXPORT QgsPointCloudLayer3DRenderer : public QgsAbstractPointCloud3DRe
 
     bool convertFrom2DRenderer( QgsPointCloudRenderer *renderer ) override;
 
+    /**
+      * Sets the renderer behavior when zoomed out
+      * \since QGIS 3.42
+      */
+    void setZoomOutBehavior( const Qgis::PointCloudZoomOutRenderBehavior behavior ) { mZoomOutBehavior = behavior; }
+
+    /**
+      * Returns the renderer behavior when zoomed out
+      * \since QGIS 3.42
+      */
+    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
+
   private:
     QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
-    std::unique_ptr< QgsPointCloud3DSymbol > mSymbol;
+    std::unique_ptr<QgsPointCloud3DSymbol> mSymbol;
     double mMaximumScreenError = 3.0;
     bool mShowBoundingBoxes = false;
     int mPointBudget = 5000000;
+    Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
 
   private:
 #ifdef SIP_RUN

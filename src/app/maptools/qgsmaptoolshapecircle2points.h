@@ -17,10 +17,9 @@
 #ifndef QGSMAPTOOLSHAPECIRCLE2POINTS_H
 #define QGSMAPTOOLSHAPECIRCLE2POINTS_H
 
-#include "qgsmaptoolshapecircleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapecircleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
-
 
 class APP_EXPORT QgsMapToolShapeCircle2PointsMetadata : public QgsMapToolShapeMetadata
 {
@@ -29,7 +28,7 @@ class APP_EXPORT QgsMapToolShapeCircle2PointsMetadata : public QgsMapToolShapeMe
       : QgsMapToolShapeMetadata()
     {}
 
-    static const inline QString TOOL_ID = QStringLiteral( "circle-from-2-points" );
+    static const inline QString TOOL_ID = u"circle-from-2-points"_s;
 
     QString id() const override;
     QString name() const override;

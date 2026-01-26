@@ -15,11 +15,13 @@
 #ifndef QGSTABLEEDITORFORMATTINGWIDGET_H
 #define QGSTABLEEDITORFORMATTINGWIDGET_H
 
-#include "qgis_gui.h"
 #include "ui_qgstableeditorformattingwidgetbase.h"
-#include "qgspanelwidget.h"
-#include "qgsexpressioncontextgenerator.h"
+
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgspanelwidget.h"
 
 #define SIP_NO_FILE
 
@@ -42,7 +44,6 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorFormattingWidget with the specified \a parent widget.
      */
@@ -202,11 +203,9 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
     void cellPropertyChanged( const QgsProperty &property );
 
   private:
-
-    std::unique_ptr< QgsNumericFormat > mNumericFormat;
+    std::unique_ptr<QgsNumericFormat> mNumericFormat;
     int mBlockSignals = 0;
     QgsExpressionContextGenerator *mContextGenerator = nullptr;
-
 };
 
 #endif // QGSTABLEEDITORFORMATTINGWIDGET_H

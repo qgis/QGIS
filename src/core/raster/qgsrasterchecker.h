@@ -16,16 +16,17 @@
 #ifndef QGSRASTERCHECKER_H
 #define QGSRASTERCHECKER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 #include <QDir>
 #include <QString>
+
 class QImage;
 
 /**
  * \ingroup core
- * \brief This is a helper class for unit tests that need to
+ * \brief A helper class for unit tests that need to
  * write an image and compare it to an expected result
  * or render time.
  */

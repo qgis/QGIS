@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerstylewidget.h"
-#include "qgstiledscenerendererpropertieswidget.h"
-#include "qgsstyle.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
+#include "qgsstyle.h"
 #include "qgstiledscenelayer.h"
+#include "qgstiledscenerendererpropertieswidget.h"
+
+#include "moc_qgstiledscenelayerstylewidget.cpp"
 
 QgsTiledSceneRendererWidgetFactory::QgsTiledSceneRendererWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Symbology" ) );
 }
 
 QgsMapLayerConfigWidget *QgsTiledSceneRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *, bool, QWidget *parent ) const
 {
-  return new QgsTiledSceneRendererPropertiesWidget( qobject_cast< QgsTiledSceneLayer * >( layer ), QgsStyle::defaultStyle(), parent );
+  return new QgsTiledSceneRendererPropertiesWidget( qobject_cast<QgsTiledSceneLayer *>( layer ), QgsStyle::defaultStyle(), parent );
 }
 
 bool QgsTiledSceneRendererWidgetFactory::supportLayerPropertiesDialog() const
@@ -49,5 +52,5 @@ bool QgsTiledSceneRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) con
 
 QString QgsTiledSceneRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }

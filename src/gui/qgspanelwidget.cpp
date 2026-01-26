@@ -12,14 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgspanelwidget.h"
+
+#include "qgslogger.h"
+#include "qgssettings.h"
+
+#include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
-#include <QDialog>
 #include <QVBoxLayout>
 
-#include "qgssettings.h"
-#include "qgspanelwidget.h"
-#include "qgslogger.h"
+#include "moc_qgspanelwidget.cpp"
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )
@@ -56,7 +59,7 @@ QgsPanelWidget *QgsPanelWidget::findParentPanel( QWidget *widget )
   QWidget *p = widget;
   while ( p )
   {
-    if ( QgsPanelWidget *panel = qobject_cast< QgsPanelWidget * >( p ) )
+    if ( QgsPanelWidget *panel = qobject_cast<QgsPanelWidget *>( p ) )
       return panel;
 
     if ( p->window() == p )
@@ -94,7 +97,7 @@ void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
   {
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    const QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    const QString key = u"/UI/paneldialog/%1"_s.arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );

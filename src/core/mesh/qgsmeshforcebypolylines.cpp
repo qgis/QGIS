@@ -15,14 +15,14 @@
  ***************************************************************************/
 #include "qgsmeshforcebypolylines.h"
 
-#include "qgsmesheditor.h"
-#include "qgsgeometryutils.h"
 #include "poly2tri.h"
-#include "qgsmultisurface.h"
-#include "qgsmulticurve.h"
-#include "qgscurvepolygon.h"
-#include "qgsmeshlayerutils.h"
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometryutils.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmulticurve.h"
+#include "qgsmultisurface.h"
 
 static int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
 {
@@ -906,7 +906,7 @@ bool QgsMeshEditForceByLine::triangulateHoles(
       mapPoly2TriPointToVertex.insert( holeToFill[i + hole.count()], vertexLocalIndex + mesh->vertexCount() );
     }
 
-    std::unique_ptr<p2t::CDT> cdt( new p2t::CDT( holeToFill ) );
+    auto cdt = std::make_unique<p2t::CDT>( holeToFill );
     cdt->Triangulate();
     std::vector<p2t::Triangle *> triangles = cdt->GetTriangles();
     QVector<QgsMeshFace> newFaces( triangles.size() );

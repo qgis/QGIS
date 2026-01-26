@@ -16,38 +16,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgselevationprofilecanvas.h"
-#include "qgsmaplayerlistutils_p.h"
-#include "qgsplotcanvasitem.h"
-#include "qgsprofilerequest.h"
-#include "qgsabstractprofilesource.h"
-#include "qgscurve.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgsabstractprofilegenerator.h"
-#include "qgsprofilerenderer.h"
-#include "qgspoint.h"
-#include "qgsgeos.h"
-#include "qgsplot.h"
-#include "qgsnumericformat.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsprofilesnapping.h"
-#include "qgsmaplayerelevationproperties.h"
-#include "qgsscreenhelper.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsprofilesourceregistry.h"
 
-#include <QWheelEvent>
-#include <QTimer>
+#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesource.h"
+#include "qgsapplication.h"
+#include "qgscurve.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgsgeos.h"
+#include "qgsmaplayerelevationproperties.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsnumericformat.h"
+#include "qgsplot.h"
+#include "qgsplotcanvasitem.h"
+#include "qgspoint.h"
+#include "qgsprofilerenderer.h"
+#include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
+#include "qgsprofilesourceregistry.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsscreenhelper.h"
+#include "qgsterrainprovider.h"
+
 #include <QPalette>
+#include <QTimer>
+#include <QWheelEvent>
+
+#include "moc_qgselevationprofilecanvas.cpp"
 
 ///@cond PRIVATE
-class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
+class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem
 {
   public:
-
     QgsElevationProfilePlotItem( QgsElevationProfileCanvas *canvas )
       : QgsPlotCanvasItem( canvas )
     {
@@ -152,7 +153,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         case Qgis::DistanceUnit::MilesUSSurvey:
         case Qgis::DistanceUnit::Fathoms:
         case Qgis::DistanceUnit::MetersGermanLegal:
-          return QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
+          return u" %1"_s.arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) );
 
         case Qgis::DistanceUnit::Degrees:
           return QObject::tr( "°" );
@@ -179,8 +180,9 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       if ( !scene()->views().isEmpty() )
         context.setScaleFactor( scene()->views().at( 0 )->logicalDpiX() / 25.4 );
 
-      calculateOptimisedIntervals( context );
-      mPlotArea = interiorPlotArea( context );
+      QgsPlotRenderContext plotContext;
+      calculateOptimisedIntervals( context, plotContext );
+      mPlotArea = interiorPlotArea( context, plotContext );
       return mPlotArea;
     }
 
@@ -197,7 +199,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 
     QgsPointXY plotPointToCanvasPoint( const QgsProfilePoint &point )
     {
-      if ( point.distance() < xMinimum() * mXScaleFactor || point.distance() > xMaximum()* mXScaleFactor || point.elevation() < yMinimum() || point.elevation() > yMaximum() )
+      if ( point.distance() < xMinimum() * mXScaleFactor || point.distance() > xMaximum() * mXScaleFactor || point.elevation() < yMinimum() || point.elevation() > yMaximum() )
         return QgsPointXY();
 
       const QRectF area = plotArea();
@@ -207,7 +209,7 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
       return QgsPointXY( x, y );
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 
@@ -227,16 +229,15 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         }
         else
         {
-          plot = mRenderer->renderToImage( plotArea.width() * pixelRatio,
-                                           plotArea.height() * pixelRatio, xMinimum() * mXScaleFactor, xMaximum() * mXScaleFactor, yMinimum(), yMaximum(), source, pixelRatio );
+          plot = mRenderer->renderToImage( plotArea.width() * pixelRatio, plotArea.height() * pixelRatio, xMinimum() * mXScaleFactor, xMaximum() * mXScaleFactor, yMinimum(), yMaximum(), source, pixelRatio );
           plot.setDevicePixelRatio( pixelRatio );
           mCachedImages.insert( source, plot );
         }
-        rc.painter()->drawImage( QPointF( plotArea.left(),
-                                          plotArea.top() ), plot );
+        rc.painter()->drawImage( QPointF( plotArea.left(), plotArea.top() ), plot );
       }
     }
 
+    using QgsPlotCanvasItem::paint;
     void paint( QPainter *painter ) override
     {
       // cache rendering to an image, so we don't need to redraw the plot
@@ -262,11 +263,21 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
         rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
         rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
 
-        calculateOptimisedIntervals( rc );
-        render( rc );
+        QgsPlotRenderContext plotContext;
+        calculateOptimisedIntervals( rc, plotContext );
+        render( rc, plotContext );
         imagePainter.end();
 
         painter->drawImage( QPointF( 0, 0 ), mImage );
+      }
+    }
+
+    void setSubsectionsSymbol( QgsLineSymbol *symbol )
+    {
+      if ( mRenderer )
+      {
+        mRenderer->setSubsectionsSymbol( symbol );
+        updatePlot();
       }
     }
 
@@ -276,10 +287,9 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
   private:
-
     QImage mImage;
 
-    QMap< QString, QImage > mCachedImages;
+    QMap<QString, QImage> mCachedImages;
 
     QRectF mRect;
     QRectF mPlotArea;
@@ -289,7 +299,6 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot, public QgsPlotCanvasItem
 class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
 {
   public:
-
     QgsElevationProfileCrossHairsItem( QgsElevationProfileCanvas *canvas, QgsElevationProfilePlotItem *plotItem )
       : QgsPlotCanvasItem( canvas )
       , mPlotItem( plotItem )
@@ -316,9 +325,10 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
       return mRect;
     }
 
+    using QgsPlotCanvasItem::paint;
     void paint( QPainter *painter ) override
     {
-      const QgsPointXY crossHairPlotPoint  = mPlotItem->plotPointToCanvasPoint( mPoint );
+      const QgsPointXY crossHairPlotPoint = mPlotItem->plotPointToCanvasPoint( mPoint );
       if ( crossHairPlotPoint.isEmpty() )
         return;
 
@@ -407,7 +417,6 @@ class QgsElevationProfileCrossHairsItem : public QgsPlotCanvasItem
     }
 
   private:
-
     QRectF mRect;
     QgsProfilePoint mPoint;
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
@@ -440,6 +449,10 @@ QgsElevationProfileCanvas::QgsElevationProfileCanvas( QWidget *parent )
   mDeferredRedrawTimer->stop();
   connect( mDeferredRedrawTimer, &QTimer::timeout, this, &QgsElevationProfileCanvas::startDeferredRedraw );
 
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, this, &QgsElevationProfileCanvas::setSourcesPrivate );
+
+  setSourcesPrivate(); // Initialize with registered sources
 }
 
 QgsElevationProfileCanvas::~QgsElevationProfileCanvas()
@@ -470,7 +483,7 @@ void QgsElevationProfileCanvas::panContentsBy( double dx, double dy )
   const double dyPercent = dy / mPlotItem->plotArea().height();
 
   // these look backwards, but we are dragging the paper, not the view!
-  const double dxPlot = - dxPercent * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() );
+  const double dxPlot = -dxPercent * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() );
   const double dyPlot = dyPercent * ( mPlotItem->yMaximum() - mPlotItem->yMinimum() );
 
   // no need to handle axis scale lock here, we aren't changing scales
@@ -526,7 +539,7 @@ QgsProfileSnapContext QgsElevationProfileCanvas::snapContext() const
   context.maximumPointDistanceDelta = 4 * xToleranceInPlotUnits;
   context.maximumPointElevationDelta = 4 * yToleranceInPlotUnits;
   context.displayRatioElevationVsDistance = ( ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) )
-      / ( ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor / ( mPlotItem->plotArea().width() ) );
+                                            / ( ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor / ( mPlotItem->plotArea().width() ) );
 
   return context;
 }
@@ -543,7 +556,7 @@ QgsProfileIdentifyContext QgsElevationProfileCanvas::identifyContext() const
   context.maximumPointDistanceDelta = 4 * xToleranceInPlotUnits;
   context.maximumPointElevationDelta = 4 * yToleranceInPlotUnits;
   context.displayRatioElevationVsDistance = ( ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / ( mPlotItem->plotArea().height() ) )
-      / ( ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor / ( mPlotItem->plotArea().width() ) );
+                                            / ( ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor / ( mPlotItem->plotArea().width() ) );
 
   context.project = mProject;
 
@@ -569,7 +582,7 @@ void QgsElevationProfileCanvas::setupLayerConnections( QgsMapLayer *layer, bool 
   {
     case Qgis::LayerType::Vector:
     {
-      QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+      QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
       if ( isDisconnect )
       {
         disconnect( vl, &QgsVectorLayer::featureAdded, this, &QgsElevationProfileCanvas::regenerateResultsForLayer );
@@ -603,16 +616,19 @@ void QgsElevationProfileCanvas::adjustRangeForAxisScaleLock( double &xMinimum, d
   // ensures that we always "zoom out" to match horizontal/vertical scales
   const double horizontalScale = ( xMaximum - xMinimum ) / mPlotItem->plotArea().width();
   const double verticalScale = ( yMaximum - yMinimum ) / mPlotItem->plotArea().height();
-  if ( horizontalScale > verticalScale )
+
+  const double currentRatio = horizontalScale / verticalScale;
+
+  if ( currentRatio <= mLockedAxisScale )
   {
-    const double height = horizontalScale * mPlotItem->plotArea().height();
+    const double height = horizontalScale * mPlotItem->plotArea().height() / mLockedAxisScale;
     const double deltaHeight = ( yMaximum - yMinimum ) - height;
     yMinimum += deltaHeight / 2;
     yMaximum -= deltaHeight / 2;
   }
   else
   {
-    const double width = verticalScale * mPlotItem->plotArea().width();
+    const double width = verticalScale * mPlotItem->plotArea().width() * mLockedAxisScale;
     const double deltaWidth = ( ( xMaximum - xMinimum ) - width );
     xMinimum += deltaWidth / 2;
     xMaximum -= deltaWidth / 2;
@@ -634,6 +650,7 @@ void QgsElevationProfileCanvas::setDistanceUnit( Qgis::DistanceUnit unit )
   mPlotItem->setXMinimum( oldMin / mPlotItem->mXScaleFactor );
   mPlotItem->setXMaximum( oldMax / mPlotItem->mXScaleFactor );
   mPlotItem->updatePlot();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::setBackgroundColor( const QColor &color )
@@ -695,7 +712,35 @@ void QgsElevationProfileCanvas::setLockAxisScales( bool lock )
     refineResults();
     mPlotItem->updatePlot();
     emit plotAreaChanged();
+    emit scaleChanged();
   }
+}
+
+double QgsElevationProfileCanvas::axisScaleRatio() const
+{
+  const double horizontalScale = ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor / mPlotItem->plotArea().width();
+  const double verticalScale = ( mPlotItem->yMaximum() - mPlotItem->yMinimum() ) / mPlotItem->plotArea().height();
+  return horizontalScale / verticalScale;
+}
+
+void QgsElevationProfileCanvas::setAxisScaleRatio( double scale )
+{
+  mLockedAxisScale = scale;
+
+  double xMinimum = mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
+  double xMaximum = mPlotItem->xMaximum() * mPlotItem->mXScaleFactor;
+  double yMinimum = mPlotItem->yMinimum();
+  double yMaximum = mPlotItem->yMaximum();
+  adjustRangeForAxisScaleLock( xMinimum, xMaximum, yMinimum, yMaximum );
+  mPlotItem->setXMinimum( xMinimum / mPlotItem->mXScaleFactor );
+  mPlotItem->setXMaximum( xMaximum / mPlotItem->mXScaleFactor );
+  mPlotItem->setYMinimum( yMinimum );
+  mPlotItem->setYMaximum( yMaximum );
+
+  refineResults();
+  mPlotItem->updatePlot();
+  emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 QgsPointXY QgsElevationProfileCanvas::snapToPlot( QPoint point )
@@ -743,6 +788,7 @@ void QgsElevationProfileCanvas::scalePlot( double xFactor, double yFactor )
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
@@ -767,14 +813,15 @@ void QgsElevationProfileCanvas::zoomToRect( const QRectF &rect )
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
-  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
@@ -823,6 +870,7 @@ void QgsElevationProfileCanvas::wheelZoom( QWheelEvent *event )
     scalePlot( 1 / zoomFactor );
   }
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::mouseMoveEvent( QMouseEvent *e )
@@ -864,13 +912,7 @@ void QgsElevationProfileCanvas::refresh()
   if ( !mProject || !profileCurve() )
     return;
 
-  if ( mCurrentJob )
-  {
-    mPlotItem->setRenderer( nullptr );
-    disconnect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
-    mCurrentJob->deleteLater();
-    mCurrentJob = nullptr;
-  }
+  cancelJobs();
 
   QgsProfileRequest request( profileCurve()->clone() );
   request.setCrs( mCrs );
@@ -882,19 +924,10 @@ void QgsElevationProfileCanvas::refresh()
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   request.setExpressionContext( context );
 
-  const QList< QgsMapLayer * > layersToGenerate = layers();
-  QList< QgsAbstractProfileSource * > sources;
-  const QList< QgsAbstractProfileSource * > registrySources = QgsApplication::profileSourceRegistry()->profileSources();
-  sources.reserve( layersToGenerate.size() + registrySources.size() );
+  QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+  std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-  sources << registrySources;
-  for ( QgsMapLayer *layer : layersToGenerate )
-  {
-    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
-      sources.append( source );
-  }
-
-  mCurrentJob = new QgsProfilePlotRenderer( sources, request );
+  mCurrentJob = new QgsProfilePlotRenderer( sourcesToRender, request );
   connect( mCurrentJob, &QgsProfilePlotRenderer::generationFinished, this, &QgsElevationProfileCanvas::generationFinished );
 
   QgsProfileGenerationContext generationContext;
@@ -902,6 +935,11 @@ void QgsElevationProfileCanvas::refresh()
   generationContext.setMaximumErrorMapUnits( MAX_ERROR_PIXELS * ( mProfileCurve->length() ) / mPlotItem->plotArea().width() );
   generationContext.setMapUnitsPerDistancePixel( mProfileCurve->length() / mPlotItem->plotArea().width() );
   mCurrentJob->setContext( generationContext );
+
+  if ( mSubsectionsSymbol )
+  {
+    mCurrentJob->setSubsectionsSymbol( mSubsectionsSymbol->clone() );
+  }
 
   mCurrentJob->startGeneration();
   mPlotItem->setRenderer( mCurrentJob );
@@ -950,13 +988,13 @@ void QgsElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
   if ( !mCurrentJob || mCurrentJob->isActive() )
     return;
 
-  QgsMapLayerElevationProperties *properties = qobject_cast< QgsMapLayerElevationProperties * >( sender() );
+  QgsMapLayerElevationProperties *properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
   if ( !properties )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( properties->parent() ) )
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -970,13 +1008,13 @@ void QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
   if ( !mCurrentJob || mCurrentJob->isActive() )
     return;
 
-  QgsMapLayerElevationProperties *properties = qobject_cast< QgsMapLayerElevationProperties * >( sender() );
+  QgsMapLayerElevationProperties *properties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
   if ( !properties )
     return;
 
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( properties->parent() ) )
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       mCurrentJob->replaceSource( source );
     }
@@ -987,9 +1025,12 @@ void QgsElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
 
 void QgsElevationProfileCanvas::regenerateResultsForLayer()
 {
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( sender() ) )
+  if ( !mCurrentJob )
+    return;
+
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -1057,11 +1098,9 @@ void QgsElevationProfileCanvas::refineResults()
 
     // for similar reasons we round the minimum distance off to multiples of the maximum error in map units
     const double distanceMin = std::floor( ( mPlotItem->xMinimum() * mPlotItem->mXScaleFactor - plotDistanceRange * 0.05 ) / context.maximumErrorMapUnits() ) * context.maximumErrorMapUnits();
-    context.setDistanceRange( QgsDoubleRange( std::max( 0.0, distanceMin ),
-                              mPlotItem->xMaximum() * mPlotItem->mXScaleFactor + plotDistanceRange * 0.05 ) );
+    context.setDistanceRange( QgsDoubleRange( std::max( 0.0, distanceMin ), mPlotItem->xMaximum() * mPlotItem->mXScaleFactor + plotDistanceRange * 0.05 ) );
 
-    context.setElevationRange( QgsDoubleRange( mPlotItem->yMinimum() - plotElevationRange * 0.05,
-                               mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
+    context.setElevationRange( QgsDoubleRange( mPlotItem->yMinimum() - plotElevationRange * 0.05, mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
     mCurrentJob->setContext( context );
   }
   scheduleDeferredRegeneration();
@@ -1078,17 +1117,17 @@ void QgsElevationProfileCanvas::updateChartFromPalette()
     mPlotItem->yAxis().setTextFormat( textFormat );
   }
   {
-    std::unique_ptr< QgsFillSymbol > chartFill( mPlotItem->chartBackgroundSymbol()->clone() );
+    std::unique_ptr<QgsFillSymbol> chartFill( mPlotItem->chartBackgroundSymbol()->clone() );
     chartFill->setColor( chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Window ) );
     mPlotItem->setChartBackgroundSymbol( chartFill.release() );
   }
   {
-    std::unique_ptr< QgsFillSymbol > chartBorder( mPlotItem->chartBorderSymbol()->clone() );
+    std::unique_ptr<QgsFillSymbol> chartBorder( mPlotItem->chartBorderSymbol()->clone() );
     chartBorder->setColor( chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Text ) );
     mPlotItem->setChartBorderSymbol( chartBorder.release() );
   }
   {
-    std::unique_ptr< QgsLineSymbol > chartMajorSymbol( mPlotItem->xAxis().gridMajorSymbol()->clone() );
+    std::unique_ptr<QgsLineSymbol> chartMajorSymbol( mPlotItem->xAxis().gridMajorSymbol()->clone() );
     QColor c = chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Text );
     c.setAlpha( 150 );
     chartMajorSymbol->setColor( c );
@@ -1096,7 +1135,7 @@ void QgsElevationProfileCanvas::updateChartFromPalette()
     mPlotItem->yAxis().setGridMajorSymbol( chartMajorSymbol.release() );
   }
   {
-    std::unique_ptr< QgsLineSymbol > chartMinorSymbol( mPlotItem->xAxis().gridMinorSymbol()->clone() );
+    std::unique_ptr<QgsLineSymbol> chartMinorSymbol( mPlotItem->xAxis().gridMinorSymbol()->clone() );
     QColor c = chartPalette.color( QPalette::ColorGroup::Active, QPalette::ColorRole::Text );
     c.setAlpha( 50 );
     chartMinorSymbol->setColor( c );
@@ -1159,11 +1198,10 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 
   // filter list, removing null layers and invalid layers
   auto filteredList = layers;
-  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
-                                      []( QgsMapLayer * layer )
-  {
-    return !layer || !layer->isValid();
-  } ), filteredList.end() );
+  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(), []( QgsMapLayer *layer ) {
+                        return !layer || !layer->isValid();
+                      } ),
+                      filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
@@ -1175,6 +1213,39 @@ void QgsElevationProfileCanvas::setLayers( const QList<QgsMapLayer *> &layers )
 QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 {
   return _qgis_listQPointerToRaw( mLayers );
+}
+
+void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
+{
+  mSources = sources;
+}
+
+QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
+{
+  if ( mSources.isEmpty() && !mLayers.isEmpty() )
+  {
+    // Legacy: If we have layers, extract their sources and return them.
+    // We don't set mSources here, because we want the previous check to
+    // continue failing if only layers are set.
+    // TODO: Remove in QGIS 5.0.
+    QList< QgsAbstractProfileSource * > sources;
+    const QList<QgsMapLayer *> layersToGenerate = layers();
+    sources.reserve( layersToGenerate.size() );
+
+    for ( QgsMapLayer *layer : layersToGenerate )
+    {
+      if ( QgsAbstractProfileSource *source = layer->profileSource() )
+        sources << source;
+    }
+
+    // More legacy: canvas layers are in the same direction as the renderer
+    // expects, but since we reverse sources() (i.e., layers) before passing
+    // them to the renderer, then we need to reverse them here first.
+    std::reverse( sources.begin(), sources.end() );
+    return sources;
+  }
+
+  return mSources;
 }
 
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
@@ -1196,6 +1267,8 @@ void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
 
   mPlotItem->updateRect();
   mCrossHairsItem->updateRect();
+
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::paintEvent( QPaintEvent *event )
@@ -1224,7 +1297,7 @@ QgsPoint QgsElevationProfileCanvas::toMapCoordinates( const QgsPointXY &point ) 
   const double distanceAlongPlotPercent = dx / mPlotItem->plotArea().width();
   double distanceAlongCurveLength = distanceAlongPlotPercent * ( mPlotItem->xMaximum() - mPlotItem->xMinimum() ) * mPlotItem->mXScaleFactor + mPlotItem->xMinimum() * mPlotItem->mXScaleFactor;
 
-  std::unique_ptr< QgsPoint > mapXyPoint( mProfileCurve->interpolatePoint( distanceAlongCurveLength ) );
+  std::unique_ptr<QgsPoint> mapXyPoint( mProfileCurve->interpolatePoint( distanceAlongCurveLength ) );
   if ( !mapXyPoint )
     return QgsPoint();
 
@@ -1314,6 +1387,7 @@ void QgsElevationProfileCanvas::zoomFull()
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, double maximumDistance, double minimumElevation, double maximumElevation )
@@ -1330,6 +1404,7 @@ void QgsElevationProfileCanvas::setVisiblePlotRange( double minimumDistance, dou
   refineResults();
   mPlotItem->updatePlot();
   emit plotAreaChanged();
+  emit scaleChanged();
 }
 
 QgsDoubleRange QgsElevationProfileCanvas::visibleDistanceRange() const
@@ -1342,22 +1417,21 @@ QgsDoubleRange QgsElevationProfileCanvas::visibleElevationRange() const
   return QgsDoubleRange( mPlotItem->yMinimum(), mPlotItem->yMaximum() );
 }
 
-const Qgs2DPlot &QgsElevationProfileCanvas::plot() const
+const Qgs2DXyPlot &QgsElevationProfileCanvas::plot() const
 {
   return *mPlotItem;
 }
 
 ///@cond PRIVATE
-class QgsElevationProfilePlot : public Qgs2DPlot
+class QgsElevationProfilePlot : public Qgs2DXyPlot
 {
   public:
-
     QgsElevationProfilePlot( QgsProfilePlotRenderer *renderer )
       : mRenderer( renderer )
     {
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       if ( !mRenderer )
         return;
@@ -1370,12 +1444,11 @@ class QgsElevationProfilePlot : public Qgs2DPlot
     double mXScale = 1;
 
   private:
-
     QgsProfilePlotRenderer *mRenderer = nullptr;
 };
 ///@endcond PRIVATE
 
-void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings )
+void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width, double height, const Qgs2DXyPlot &plotSettings )
 {
   if ( !mCurrentJob )
     return;
@@ -1387,7 +1460,7 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
 
   // quick and nasty way to transfer settings from another plot class -- in future we probably want to improve this, but let's let the API settle first...
   QDomDocument doc;
-  QDomElement elem = doc.createElement( QStringLiteral( "plot" ) );
+  QDomElement elem = doc.createElement( u"plot"_s );
   QgsReadWriteContext rwContext;
   plotSettings.writeXml( elem, doc, rwContext );
   profilePlot.readXml( elem, rwContext );
@@ -1397,7 +1470,8 @@ void QgsElevationProfileCanvas::render( QgsRenderContext &context, double width,
   profilePlot.xAxis().setLabelSuffixPlacement( mPlotItem->xAxis().labelSuffixPlacement() );
 
   profilePlot.setSize( QSizeF( width, height ) );
-  profilePlot.render( context );
+  QgsPlotRenderContext plotContext;
+  profilePlot.render( context, plotContext );
 }
 
 QVector<QgsProfileIdentifyResults> QgsElevationProfileCanvas::identify( QPointF point )
@@ -1434,11 +1508,23 @@ QVector<QgsProfileIdentifyResults> QgsElevationProfileCanvas::identify( const QR
 void QgsElevationProfileCanvas::clear()
 {
   setProfileCurve( nullptr );
-  mPlotItem->setRenderer( nullptr );
+  cancelJobs();
   mPlotItem->updatePlot();
 }
 
 void QgsElevationProfileCanvas::setSnappingEnabled( bool enabled )
 {
   mSnappingEnabled = enabled;
+}
+
+void QgsElevationProfileCanvas::setSubsectionsSymbol( QgsLineSymbol *symbol )
+{
+  mSubsectionsSymbol.reset( symbol );
+  std::unique_ptr<QgsLineSymbol> plotItemSymbol( mSubsectionsSymbol ? mSubsectionsSymbol->clone() : nullptr );
+  mPlotItem->setSubsectionsSymbol( plotItemSymbol.release() );
+}
+
+void QgsElevationProfileCanvas::setSourcesPrivate()
+{
+  mSources = QgsApplication::profileSourceRegistry()->profileSources();
 }

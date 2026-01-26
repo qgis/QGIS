@@ -17,13 +17,13 @@
 #ifndef QGSATTRIBUTETABLEFILTERMODEL_H
 #define QGSATTRIBUTETABLEFILTERMODEL_H
 
-#include <QSortFilterProxyModel>
-#include <QModelIndex>
-#include <QTimer>
-
+#include "qgis_gui.h"
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
-#include "qgis_gui.h"
+
+#include <QModelIndex>
+#include <QSortFilterProxyModel>
+#include <QTimer>
 
 class QgsVectorLayerCache;
 class QgsMapCanvas;
@@ -32,13 +32,13 @@ class QItemSelectionModel;
 /**
  * \ingroup gui
  * \class QgsAttributeTableFilterModel
+ * \brief A proxy model for filtering an attribute table model.
  */
-class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, public QgsFeatureModel
+class GUI_EXPORT QgsAttributeTableFilterModel : public QSortFilterProxyModel, public QgsFeatureModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * The filter mode defines how the rows should be filtered.
      */
@@ -74,7 +74,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableFilterModel, Role ) : int
     {
-      Type SIP_MONKEYPATCH_COMPAT_NAME(TypeRole) = static_cast< int >( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
+      Type SIP_MONKEYPATCH_COMPAT_NAME( TypeRole ) = static_cast<int>( QgsAttributeTableModel::CustomRole::User ) //!< The type of a given column
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -289,7 +289,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     void filterError( const QString &errorMessage );
 
   protected:
-
     /**
      * Returns TRUE if the source row will be accepted
      *

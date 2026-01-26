@@ -18,15 +18,16 @@
 #ifndef QGSWMSSOURCESELECT_H
 #define QGSWMSSOURCESELECT_H
 #include "ui_qgswmssourceselectbase.h"
+
+#include "qgsabstractdatasourcewidget.h"
 #include "qgsdatasourceuri.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsprovider.h"
-#include "qgsabstractdatasourcewidget.h"
 
-#include <QStringList>
 #include <QPushButton>
+#include <QStringList>
 
 class QButtonGroup;
 class QgsTreeWidgetItem;
@@ -101,11 +102,8 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     void filterTiles( const QString &searchText );
 
   private:
-    //! Populate the connection list combo box
-    void populateConnectionList();
-
     //! Connection name
-    QString connName();
+    QString connName() const;
 
     //! Sets the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
@@ -119,16 +117,6 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     //! Common CRSs for selected layers
     QSet<QString> mCRSs;
 
-    //! Supported formats
-    //QStringList mFormats;
-    QVector<QgsWmsSupportedFormat> mFormats;
-
-    //! Labels for supported formats
-    //QStringList mLabels;
-
-    //! Map mime types to supported formats
-    QMap<QString, int> mMimeMap;
-
     // Clear layers list, crs, encodings ...
     void clear();
 
@@ -141,12 +129,7 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
     bool populateLayerList( const QgsWmsCapabilities &capabilities );
 
     //! create an item including possible parents
-    QgsTreeWidgetItem *createItem( int id,
-                                   const QStringList &names,
-                                   QMap<int, QgsTreeWidgetItem *> &items,
-                                   int &layerAndStyleCount,
-                                   const QMap<int, int> &layerParents,
-                                   const QMap<int, QStringList> &layerParentNames );
+    QgsTreeWidgetItem *createItem( int id, const QStringList &names, QMap<int, QgsTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames );
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString &authId );
@@ -192,7 +175,11 @@ class QgsWMSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWM
 
     QgsWmsInterpretationComboBox *mInterpretationCombo = nullptr;
 
+    void updateFormatButtons( const QStringList &availableFormats = QStringList(), const QString &preferredFormat = QString() );
+
   private slots:
+    //! Populate the connection list combo box
+    void populateConnectionList();
     void lstTilesets_itemClicked( QTableWidgetItem *item );
     void mLayerUpButton_clicked();
     void mLayerDownButton_clicked();

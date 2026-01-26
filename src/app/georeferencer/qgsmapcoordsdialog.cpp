@@ -12,18 +12,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QValidator>
-#include <QPushButton>
-
-#include "qgsmapcanvas.h"
-#include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
-#include "qgssettings.h"
-#include "qgsmapmouseevent.h"
-#include "qgsgui.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
-#include "qgsprojectionselectionwidget.h"
 #include "qgsgeorefdatapoint.h"
+#include "qgsgeorefvalidators.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgsprojectionselectionwidget.h"
+#include "qgssettings.h"
+
+#include <QPushButton>
+#include <QValidator>
+
+#include "moc_qgsmapcoordsdialog.cpp"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataPoint *georefDataPoint, QgsCoordinateReferenceSystem &rasterCrs, QWidget *parent )
   : QDialog( parent, Qt::Dialog )
@@ -52,12 +57,11 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, QgsGeorefDataP
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
   const QgsSettings settings;
-  mMinimizeWindowCheckBox->setChecked( settings.value( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), QStringLiteral( "1" ) ).toBool() );
+  mMinimizeWindowCheckBox->setChecked( settings.value( u"/Plugin-GeoReferencer/Config/Minimize"_s, u"1"_s ).toBool() );
 
   connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
-  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::canvasClicked,
-           this, &QgsMapCoordsDialog::maybeSetXY );
+  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::canvasClicked, this, &QgsMapCoordsDialog::maybeSetXY );
   connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::mouseReleased, this, &QgsMapCoordsDialog::setPrevTool );
 
   connect( leXCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
@@ -73,7 +77,7 @@ QgsMapCoordsDialog::~QgsMapCoordsDialog()
   delete mToolEmitPoint;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/Minimize" ), mMinimizeWindowCheckBox->isChecked() );
+  settings.setValue( u"/Plugin-GeoReferencer/Config/Minimize"_s, mMinimizeWindowCheckBox->isChecked() );
 }
 
 void QgsMapCoordsDialog::updateOK()
@@ -184,7 +188,7 @@ void QgsMapCoordsDialog::updateSourceCoordinates( const QgsPointXY &sourceCoordi
 QgsGeorefMapToolEmitPoint::QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
-  mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
+  mSnapIndicator = std::make_unique<QgsSnapIndicator>( canvas );
 }
 
 void QgsGeorefMapToolEmitPoint::canvasMoveEvent( QgsMapMouseEvent *e )

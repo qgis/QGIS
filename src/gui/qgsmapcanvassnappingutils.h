@@ -15,10 +15,9 @@
 #ifndef QGSMAPCANVASSNAPPINGUTILS_H
 #define QGSMAPCANVASSNAPPINGUTILS_H
 
-#include "qgssnappingutils.h"
 #include "qgis_gui.h"
-
 #include "qgsmaptool.h"
+#include "qgssnappingutils.h"
 
 class QgsMapCanvas;
 
@@ -33,7 +32,6 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
     Q_OBJECT
   public:
-
     /**
      * Construct map canvas snapping utils object
      *

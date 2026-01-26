@@ -16,16 +16,16 @@
 #ifndef QGSATTRIBUTEFORMLEGACYINTERFACE_H
 #define QGSATTRIBUTEFORMLEGACYINTERFACE_H
 
-#include <QString>
-
-#include "qgsattributeforminterface.h"
 #include "qgis_gui.h"
+#include "qgsattributeforminterface.h"
+
+#include <QString>
 
 #define SIP_NO_FILE
 
 /**
  * \ingroup gui
- * \brief This class helps to support legacy open form scripts to be compatible with the new
+ * \brief Helps to support legacy open form scripts to be compatible with the new
  * QgsAttributeForm style interface.
  * \note not available in Python bindings
  */

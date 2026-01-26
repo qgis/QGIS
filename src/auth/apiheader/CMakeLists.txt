@@ -16,11 +16,7 @@ if (WITH_GUI)
     gui/qgsauthapiheaderedit.h
   )
   set(AUTH_APIHEADER_UIS gui/qgsauthapiheaderedit.ui)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(AUTH_APIHEADER_UIS_H ${AUTH_APIHEADER_UIS})
-  else()
-    QT5_WRAP_UI(AUTH_APIHEADER_UIS_H ${AUTH_APIHEADER_UIS})
-  endif()
+  qt_wrap_ui(AUTH_APIHEADER_UIS_H ${AUTH_APIHEADER_UIS})
 endif()
 
 
@@ -28,9 +24,6 @@ endif()
 add_library(authmethod_apiheader_a STATIC ${AUTH_APIHEADER_SRCS} ${AUTH_APIHEADER_HDRS} ${AUTH_APIHEADER_UIS_H})
 
 target_include_directories(authmethod_apiheader_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/apiheader/core)
-
-# require c++17
-target_compile_features(authmethod_apiheader_a PRIVATE cxx_std_17)
 
 target_link_libraries(authmethod_apiheader_a qgis_core)
 
@@ -50,9 +43,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_apiheader MODULE ${AUTH_APIHEADER_SRCS} ${AUTH_APIHEADER_HDRS} ${AUTH_APIHEADER_UIS_H})
-
-  # require c++17
-  target_compile_features(authmethod_apiheader PRIVATE cxx_std_17)
 
   target_link_libraries(authmethod_apiheader qgis_core)
 

@@ -16,14 +16,16 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsavefeatures.h"
+
 #include "qgsvectorfilewriter.h"
+
 #include <QRegularExpression>
 
 ///@cond PRIVATE
 
 QString QgsSaveFeaturesAlgorithm::name() const
 {
-  return QStringLiteral( "savefeatures" );
+  return u"savefeatures"_s;
 }
 
 QString QgsSaveFeaturesAlgorithm::displayName() const
@@ -43,7 +45,7 @@ QString QgsSaveFeaturesAlgorithm::group() const
 
 QString QgsSaveFeaturesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsSaveFeaturesAlgorithm::shortHelpString() const
@@ -54,6 +56,11 @@ QString QgsSaveFeaturesAlgorithm::shortHelpString() const
                       "read the online GDAL documentation." );
 }
 
+QString QgsSaveFeaturesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Saves vector features to a specified file dataset." );
+}
+
 QgsSaveFeaturesAlgorithm *QgsSaveFeaturesAlgorithm::createInstance() const
 {
   return new QgsSaveFeaturesAlgorithm();
@@ -61,52 +68,52 @@ QgsSaveFeaturesAlgorithm *QgsSaveFeaturesAlgorithm::createInstance() const
 
 void QgsSaveFeaturesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Vector features" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Saved features" ), QgsVectorFileWriter::fileFilterString(), QVariant(), false ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Vector features" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Saved features" ), QgsVectorFileWriter::fileFilterString(), QVariant(), false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ), QVariant(), false, true );
+  auto param = std::make_unique<QgsProcessingParameterString>( u"LAYER_NAME"_s, QObject::tr( "Layer name" ), QVariant(), false, true );
   param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( param.release() );
-  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "DATASOURCE_OPTIONS" ), QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique<QgsProcessingParameterString>( u"DATASOURCE_OPTIONS"_s, QObject::tr( "GDAL dataset options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( param.release() );
-  param = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "LAYER_OPTIONS" ), QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
+  param = std::make_unique<QgsProcessingParameterString>( u"LAYER_OPTIONS"_s, QObject::tr( "GDAL layer options (separate individual options with semicolons)" ), QVariant(), false, true );
   param->setFlags( param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( param.release() );
 
-  std::unique_ptr< QgsProcessingParameterEnum > paramEnum = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "ACTION_ON_EXISTING_FILE" ), QObject::tr( "Action to take on pre-existing file" ), QStringList() << QObject::tr( "Create or overwrite file" ) << QObject::tr( "Create or overwrite layer" ) << QObject::tr( "Append features to existing layer, but do not create new fields" ) << QObject::tr( "Append features to existing layer, and create new fields if needed" ), false, 0 );
+  auto paramEnum = std::make_unique<QgsProcessingParameterEnum>( u"ACTION_ON_EXISTING_FILE"_s, QObject::tr( "Action to take on pre-existing file" ), QStringList() << QObject::tr( "Create or overwrite file" ) << QObject::tr( "Create or overwrite layer" ) << QObject::tr( "Append features to existing layer, but do not create new fields" ) << QObject::tr( "Append features to existing layer, and create new fields if needed" ), false, 0 );
   paramEnum->setFlags( paramEnum->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramEnum.release() );
 
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "FILE_PATH" ), QObject::tr( "File name and path" ) ) );
-  addOutput( new QgsProcessingOutputString( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Layer name" ) ) );
+  addOutput( new QgsProcessingOutputString( u"FILE_PATH"_s, QObject::tr( "File name and path" ) ) );
+  addOutput( new QgsProcessingOutputString( u"LAYER_NAME"_s, QObject::tr( "Layer name" ) ) );
 }
 
 QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  QString layerName = parameterAsString( parameters, QStringLiteral( "LAYER_NAME" ), context ).trimmed();
+  QString layerName = parameterAsString( parameters, u"LAYER_NAME"_s, context ).trimmed();
   QVariantMap createOptions;
   if ( !layerName.isEmpty() )
   {
-    createOptions[QStringLiteral( "layerName" )] = layerName;
+    createOptions[u"layerName"_s] = layerName;
   }
 
-  const QStringList datasourceOptions = parameterAsString( parameters, QStringLiteral( "DATASOURCE_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
-  const QStringList layerOptions = parameterAsString( parameters, QStringLiteral( "LAYER_OPTIONS" ), context ).trimmed().split( ';', Qt::SkipEmptyParts );
+  const QStringList datasourceOptions = parameterAsString( parameters, u"DATASOURCE_OPTIONS"_s, context ).trimmed().split( ';', Qt::SkipEmptyParts );
+  const QStringList layerOptions = parameterAsString( parameters, u"LAYER_OPTIONS"_s, context ).trimmed().split( ';', Qt::SkipEmptyParts );
 
-  QString destination = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString destination = parameterAsString( parameters, u"OUTPUT"_s, context );
   const QString format = QgsVectorFileWriter::driverForExtension( QFileInfo( destination ).completeSuffix() );
 
-  const QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile = static_cast< QgsVectorFileWriter::ActionOnExistingFile >( parameterAsInt( parameters, QStringLiteral( "ACTION_ON_EXISTING_FILE" ), context ) );
+  const QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile = static_cast<QgsVectorFileWriter::ActionOnExistingFile>( parameterAsInt( parameters, u"ACTION_ON_EXISTING_FILE"_s, context ) );
 
   QString finalFileName;
   QString finalLayerName;
   QgsVectorFileWriter::SaveVectorOptions saveOptions;
-  saveOptions.fileEncoding = context.defaultEncoding().isEmpty() ? QStringLiteral( "system" ) : context.defaultEncoding();
+  saveOptions.fileEncoding = context.defaultEncoding().isEmpty() ? u"system"_s : context.defaultEncoding();
   saveOptions.layerName = layerName;
   saveOptions.driverName = format;
   saveOptions.datasourceOptions = datasourceOptions;
@@ -114,7 +121,7 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   saveOptions.symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology;
   saveOptions.actionOnExistingFile = actionOnExistingFile;
 
-  std::unique_ptr< QgsVectorFileWriter > writer( QgsVectorFileWriter::create( destination, source->fields(), source->wkbType(), source->sourceCrs(), context.transformContext(), saveOptions, QgsFeatureSink::SinkFlags(), &finalFileName, &finalLayerName ) );
+  std::unique_ptr<QgsVectorFileWriter> writer( QgsVectorFileWriter::create( destination, source->fields(), source->wkbType(), source->sourceCrs(), context.transformContext(), saveOptions, QgsFeatureSink::SinkFlags(), &finalFileName, &finalLayerName ) );
   if ( writer->hasError() )
   {
     throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
@@ -126,18 +133,18 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
     {
       if ( !field.alias().isEmpty() && !( writer->capabilities() & Qgis::VectorFileWriterCapability::FieldAliases ) )
         feedback->pushWarning( QObject::tr( "%1: Aliases are not supported by %2" ).arg( field.name(), writer->driverLongName() ) );
-      if ( !field.alias().isEmpty()  && !( writer->capabilities() & Qgis::VectorFileWriterCapability::FieldComments ) )
+      if ( !field.alias().isEmpty() && !( writer->capabilities() & Qgis::VectorFileWriterCapability::FieldComments ) )
         feedback->pushWarning( QObject::tr( "%1: Comments are not supported by %2" ).arg( field.name(), writer->driverLongName() ) );
     }
   }
 
   destination = finalFileName;
   if ( !saveOptions.layerName.isEmpty() && !finalLayerName.isEmpty() )
-    destination += QStringLiteral( "|layername=%1" ).arg( finalLayerName );
+    destination += u"|layername=%1"_s.arg( finalLayerName );
 
-  std::unique_ptr< QgsFeatureSink > sink( new QgsProcessingFeatureSink( writer.release(), destination, context, true ) );
+  std::unique_ptr<QgsFeatureSink> sink( new QgsProcessingFeatureSink( writer.release(), destination, context, true ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const double step = source->featureCount() > 0 ? 100.0 / source->featureCount() : 1;
   long long i = 0;
@@ -155,7 +162,7 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
     feedback->setProgress( i * step );
 
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   }
 
   finalFileName = destination;
@@ -163,7 +170,7 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   const int separatorIndex = destination.indexOf( '|' );
   if ( separatorIndex > -1 )
   {
-    const thread_local QRegularExpression layerNameRx( QStringLiteral( "\\|layername=([^\\|]*)" ) );
+    const thread_local QRegularExpression layerNameRx( u"\\|layername=([^\\|]*)"_s );
     const QRegularExpressionMatch match = layerNameRx.match( destination );
     if ( match.hasMatch() )
     {
@@ -173,9 +180,9 @@ QVariantMap QgsSaveFeaturesAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), destination );
-  outputs.insert( QStringLiteral( "FILE_PATH" ), finalFileName );
-  outputs.insert( QStringLiteral( "LAYER_NAME" ), finalLayerName );
+  outputs.insert( u"OUTPUT"_s, destination );
+  outputs.insert( u"FILE_PATH"_s, finalFileName );
+  outputs.insert( u"LAYER_NAME"_s, finalLayerName );
   return outputs;
 }
 

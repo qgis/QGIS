@@ -40,13 +40,11 @@ class QgsStringConcatenationAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsStringConcatenationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 };
 
 ///@endcond PRIVATE

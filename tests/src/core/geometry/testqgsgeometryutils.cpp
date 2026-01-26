@@ -15,15 +15,18 @@
 
 #include <math.h>
 
-#include "qgstest.h"
-#include <QObject>
+#include "qgscircularstring.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
-#include "qgspolygon.h"
 #include "qgsmultipolygon.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+#include "qgstest.h"
 
-class TestQgsGeometryUtils: public QObject
+#include <QObject>
+
+class TestQgsGeometryUtils : public QObject
 {
     Q_OBJECT
   public:
@@ -75,8 +78,8 @@ class TestQgsGeometryUtils: public QObject
     void testInterpolatePointOnLineByValue();
     void testPointOnLineWithDistance();
     void testPointFractionAlongLine();
-    void testPointsAreCollinear();
     void interpolatePointOnArc();
+    void testInterpolatePointOnCubicBezier();
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
     void testSegmentizeArcFullCircle();
@@ -93,6 +96,8 @@ class TestQgsGeometryUtils: public QObject
     void transferFirstMValueToPoint();
     void transferFirstZOrMValueToPoint_qgspointsequence();
     void transferFirstZOrMValueToPoint_qgsgeometry();
+    void testPointsAreCollinear();
+    void testCheckWeaklyFor3DPlane();
 };
 
 
@@ -236,8 +241,7 @@ void TestQgsGeometryUtils::testSegmentMidPoint()
   QFETCH( double, expectedY );
 
   QgsPoint midPoint;
-  const bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ),
-                  midPoint, radius, QgsPoint( mouseX, mouseY ) );
+  const bool ok = QgsGeometryUtils::segmentMidPoint( QgsPoint( pt1x, pt1y ), QgsPoint( pt2x, pt2y ), midPoint, radius, QgsPoint( mouseX, mouseY ) );
 
   QVERIFY( ok );
   QGSCOMPARENEAR( midPoint.x(), expectedX, 4 * std::numeric_limits<double>::epsilon() );
@@ -471,7 +475,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *outerRing1, 3.5, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
-  QVERIFY( ! QgsGeometryUtils::verticesAtDistance( *outerRing1, 4.5, previous, next ) );
+  QVERIFY( !QgsGeometryUtils::verticesAtDistance( *outerRing1, 4.5, previous, next ) );
 
   // test exact hits
   QVERIFY( QgsGeometryUtils::verticesAtDistance( *outerRing1, 0, previous, next ) );
@@ -516,7 +520,7 @@ void TestQgsGeometryUtils::testVerticesAtDistance()
   QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 3.5, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 3 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 4 ) );
-  QVERIFY( ! QgsGeometryUtils::verticesAtDistance( polygon1, 4.5, previous, next ) );
+  QVERIFY( !QgsGeometryUtils::verticesAtDistance( polygon1, 4.5, previous, next ) );
   QVERIFY( QgsGeometryUtils::verticesAtDistance( polygon1, 0, previous, next ) );
   QCOMPARE( previous, QgsVertexId( 0, 0, 0 ) );
   QCOMPARE( next, QgsVertexId( 0, 0, 0 ) );
@@ -609,17 +613,13 @@ void TestQgsGeometryUtils::testCircleCenterRadius()
 //QgsGeometryUtils::sqrDistToLine
 void TestQgsGeometryUtils::testSqrDistToLine()
 {
-
   // See https://github.com/qgis/QGIS/issues/21967#issuecomment-495853991
   const QgsPointXY qp( 771938, 6.95593e+06 );
   const QgsPointXY p1( 771946, 6.95593e+06 );
   const QgsPointXY p2( 771904, 6.95595e+06 );
   double rx = 0, ry = 0;
   const double epsilon = 1e-18;
-  const double sqrDist = QgsGeometryUtilsBase::sqrDistToLine( qp.x(), qp.y(),
-                         p1.x(), p1.y(),
-                         p2.x(), p2.y(),
-                         rx, ry, epsilon );
+  const double sqrDist = QgsGeometryUtilsBase::sqrDistToLine( qp.x(), qp.y(), p1.x(), p1.y(), p2.x(), p2.y(), rx, ry, epsilon );
   QGSCOMPARENEAR( sqrDist, 11.83, 0.01 );
 }
 
@@ -637,9 +637,9 @@ void TestQgsGeometryUtils::testAngleThreePoints()
   QGSCOMPARENEAR( QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() ), 0.0, 0.00000001 );
   p3 = QgsPointXY( 1, 0 );
   //undefined, but want no crash
-  ( void )QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() );
+  ( void ) QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() );
   p2 = QgsPointXY( 0, 0 );
-  ( void )QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() );
+  ( void ) QgsGeometryUtilsBase::angleBetweenThreePoints( p1.x(), p1.y(), p2.x(), p2.y(), p3.x(), p3.y() );
 }
 
 void TestQgsGeometryUtils::testMidPoint()
@@ -742,8 +742,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
   QgsPoint segmentPoint1( 2, 1 );
   QgsPoint segmentPoint2( 2, 2 );
 
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
   QCOMPARE( perpendicularSegmentPoint1x, 3.0 );
   QCOMPARE( perpendicularSegmentPoint1y, ( 1.5 ) );
   QCOMPARE( perpendicularSegmentPoint2x, ( 1.0 ) );
@@ -751,8 +750,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
 
   // case 1 with segmentLength
   segmentLength = 3;
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
   QCOMPARE( perpendicularSegmentPoint1x, ( 3.5 ) );
   QCOMPARE( perpendicularSegmentPoint1y, ( 1.5 ) );
   QCOMPARE( perpendicularSegmentPoint2x, ( 0.5 ) );
@@ -760,8 +758,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
 
   // default case 1 with default segmentLength=0 (meaning no effect)
   segmentLength = 0;
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
   QCOMPARE( perpendicularSegmentPoint1x, 3.0 );
   QCOMPARE( perpendicularSegmentPoint1y, ( 1.5 ) );
   QCOMPARE( perpendicularSegmentPoint2x, ( 1.0 ) );
@@ -772,8 +769,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
   centerPoint = QgsPoint( 3, 13 );
   segmentPoint1 = QgsPoint( 2, 3 );
   segmentPoint2 = QgsPoint( 7, 11 );
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
   QCOMPARE( perpendicularSegmentPoint1x, ( 11.0 ) );
   QCOMPARE( perpendicularSegmentPoint1y, ( 8.0 ) );
   QCOMPARE( perpendicularSegmentPoint2x, ( -5.0 ) );
@@ -785,8 +781,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
   segmentPoint2 = QgsPoint( -5, -9 );
 
   segmentLength = 5;
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
 
   QCOMPARE( perpendicularSegmentPoint1x, ( -1.0 ) );
   QCOMPARE( perpendicularSegmentPoint1y, ( 4.5 ) );
@@ -797,8 +792,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
   segmentPoint1 = QgsPoint( -3, 3 );
   segmentPoint2 = QgsPoint( 2, 3 );
   centerPoint = QgsPoint( 3, 13 );
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
   QCOMPARE( perpendicularSegmentPoint1x, ( 3.0 ) );
   QCOMPARE( perpendicularSegmentPoint1y, ( 8.0 ) );
   QCOMPARE( perpendicularSegmentPoint2x, ( 3.0 ) );
@@ -808,8 +802,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
   segmentPoint1 = QgsPoint( 3, 13 );
   segmentPoint2 = QgsPoint( 3, 3 );
   centerPoint = QgsPoint( -7, 8 );
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y );
   QCOMPARE( perpendicularSegmentPoint1x, ( -17.0 ) );
   QCOMPARE( perpendicularSegmentPoint1y, ( 8.0 ) );
   QCOMPARE( perpendicularSegmentPoint2x, ( 3. ) );
@@ -817,8 +810,7 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
 
   // vertical with normalization of segmentLength
   segmentLength = 1;
-  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(),
-      perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
+  QgsGeometryUtilsBase::perpendicularCenterSegment( centerPoint.x(), centerPoint.y(), segmentPoint1.x(), segmentPoint1.y(), segmentPoint2.x(), segmentPoint2.y(), perpendicularSegmentPoint1x, perpendicularSegmentPoint1y, perpendicularSegmentPoint2x, perpendicularSegmentPoint2y, segmentLength );
   QCOMPARE( perpendicularSegmentPoint1x, ( -7.5 ) );
   QCOMPARE( perpendicularSegmentPoint1y, ( 8.0 ) );
   QCOMPARE( perpendicularSegmentPoint2x, ( -6.5 ) );
@@ -827,34 +819,25 @@ void TestQgsGeometryUtils::testPerpendicularCenterSegment()
 
 void TestQgsGeometryUtils::testClosestPoint()
 {
-  const QgsLineString linestringZ( QVector<QgsPoint>()
-                                   << QgsPoint( 1, 1, 1 )
-                                   << QgsPoint( 1, 3, 2 ) );
+  const QgsLineString linestringZ( QVector<QgsPoint>() << QgsPoint( 1, 1, 1 ) << QgsPoint( 1, 3, 2 ) );
 
   const QgsPoint pt1 = QgsGeometryUtils::closestPoint( linestringZ, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt1.z(), 1, 0.0001 );
   QVERIFY( std::isnan( pt1.m() ) );
 
-  const QgsLineString linestringM( QVector<QgsPoint>()
-                                   << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 )
-                                   << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
+  const QgsLineString linestringM( QVector<QgsPoint>() << QgsPoint( 1, 1, std::numeric_limits<double>::quiet_NaN(), 1 ) << QgsPoint( 1, 3, std::numeric_limits<double>::quiet_NaN(), 2 ) );
 
   const QgsPoint pt2 = QgsGeometryUtils::closestPoint( linestringM, QgsPoint( 1, 4 ) );
   QVERIFY( std::isnan( pt2.z() ) );
   QGSCOMPARENEAR( pt2.m(), 2, 0.0001 );
 
-  const QgsLineString linestringZM( QVector<QgsPoint>()
-                                    << QgsPoint( 1, 1, 1, 1 )
-                                    << QgsPoint( 1, 3, 2, 2 ) );
+  const QgsLineString linestringZM( QVector<QgsPoint>() << QgsPoint( 1, 1, 1, 1 ) << QgsPoint( 1, 3, 2, 2 ) );
 
   const QgsPoint pt3 = QgsGeometryUtils::closestPoint( linestringZM, QgsPoint( 2, 2 ) );
   QGSCOMPARENEAR( pt3.z(), 1.5, 0.0001 );
   QGSCOMPARENEAR( pt3.m(), 1.5, 0.0001 );
 
-  const QgsLineString linestringDuplicatedPoint( QVector<QgsPoint>()
-      << QgsPoint( 1, 1, 1, 1 )
-      << QgsPoint( 1, 1, 1, 1 )
-      << QgsPoint( 1, 3, 2, 2 ) );
+  const QgsLineString linestringDuplicatedPoint( QVector<QgsPoint>() << QgsPoint( 1, 1, 1, 1 ) << QgsPoint( 1, 1, 1, 1 ) << QgsPoint( 1, 3, 2, 2 ) );
 
   const QgsPoint pt4 = QgsGeometryUtils::closestPoint( linestringDuplicatedPoint, QgsPoint( 1, 0 ) );
   QGSCOMPARENEAR( pt4.z(), 1, 0.0001 );
@@ -896,7 +879,6 @@ void TestQgsGeometryUtils::testlinesIntersection3D()
 
   QVERIFY( QgsGeometryUtilsBase::linesIntersection3D( QgsVector3D( 2.5, 2.5, 2.5 ), QgsVector3D( 5, 0, 0 ), QgsVector3D( 0, 5, 5 ), QgsVector3D( 5, 5, 5 ), x ) );
   QVERIFY( x == QgsVector3D( 0.0, 5.0, 5.0 ) );
-
 }
 
 void TestQgsGeometryUtils::testSegmentIntersection()
@@ -1192,18 +1174,18 @@ void TestQgsGeometryUtils::testGml()
 {
   const QgsPoint point = QgsPoint( 1, 2 );
   QDomDocument doc;
-  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ) );
-  const QString expectedGML2( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>" ) );
+  QDomElement elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, u"gml"_s );
+  const QString expectedGML2( u"<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,2</coordinates>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2 );
-  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), QgsAbstractGeometry::AxisOrder::YX );
-  const QString expectedGML2_inverted( QStringLiteral( "<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>" ) );
+  elm = QgsGeometryUtils::pointsToGML2( QgsPointSequence() << point, doc, 2, u"gml"_s, QgsAbstractGeometry::AxisOrder::YX );
+  const QString expectedGML2_inverted( u"<coordinates xmlns=\"gml\" cs=\",\" ts=\" \">2,1</coordinates>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML2_inverted );
 
-  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::XY );
-  const QString expectedGML3( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>" ) );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, u"gml"_s, false, QgsAbstractGeometry::AxisOrder::XY );
+  const QString expectedGML3( u"<posList xmlns=\"gml\" srsDimension=\"2\">1 2</posList>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3 );
-  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence( ) << point, doc, 2, QStringLiteral( "gml" ), false, QgsAbstractGeometry::AxisOrder::YX );
-  const QString expectedGML3_inverted( QStringLiteral( "<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>" ) );
+  elm = QgsGeometryUtils::pointsToGML3( QgsPointSequence() << point, doc, 2, u"gml"_s, false, QgsAbstractGeometry::AxisOrder::YX );
+  const QString expectedGML3_inverted( u"<posList xmlns=\"gml\" srsDimension=\"2\">2 1</posList>"_s );
   QGSCOMPAREGML( elemToString( elm ), expectedGML3_inverted );
 }
 
@@ -1328,28 +1310,28 @@ void TestQgsGeometryUtils::testPointOnLineWithDistance()
   QCOMPARE( x, 0.0 );
   QCOMPARE( y, 0.0 );
 
-  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 2, 3 ),  QgsPoint( 12, 3 ), 10 );
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 2, 3 ), QgsPoint( 12, 3 ), 10 );
   QCOMPARE( p.x(), 12.0 );
   QCOMPARE( p.y(), 3.0 );
-  QgsGeometryUtilsBase::pointOnLineWithDistance( 2, 3,  12, 3, 10, x, y );
+  QgsGeometryUtilsBase::pointOnLineWithDistance( 2, 3, 12, 3, 10, x, y );
   QCOMPARE( x, 12.0 );
   QCOMPARE( y, 3.0 );
 
-  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( 0, 10 ), 0 );
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), 0 );
   QCOMPARE( p.x(), 0.0 );
   QCOMPARE( p.y(), 0.0 );
-  QgsGeometryUtilsBase::pointOnLineWithDistance( 0, 0,  0, 10, 0, x, y );
+  QgsGeometryUtilsBase::pointOnLineWithDistance( 0, 0, 0, 10, 0, x, y );
   QCOMPARE( x, 0.0 );
   QCOMPARE( y, 0.0 );
 
-  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( 0, 10 ), 10 );
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ), QgsPoint( 0, 10 ), 10 );
   QCOMPARE( p.x(), 0.0 );
   QCOMPARE( p.y(), 10.0 );
-  QgsGeometryUtilsBase::pointOnLineWithDistance( 0, 0,  0, 10, 10, x, y );
+  QgsGeometryUtilsBase::pointOnLineWithDistance( 0, 0, 0, 10, 10, x, y );
   QCOMPARE( x, 0.0 );
   QCOMPARE( y, 10.0 );
 
-  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 2, 1 ),  QgsPoint( -8, -5 ), 5 );
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 2, 1 ), QgsPoint( -8, -5 ), 5 );
   QGSCOMPARENEAR( p.x(), -2.28746, 0.0001 );
   QGSCOMPARENEAR( p.y(), -1.57248, 0.0001 );
   QgsGeometryUtilsBase::pointOnLineWithDistance( 2, 1, -8, -5, 5, x, y );
@@ -1377,21 +1359,21 @@ void TestQgsGeometryUtils::testPointOnLineWithDistance()
   QGSCOMPARENEAR( z, 7.712535, 0.0001 );
   QGSCOMPARENEAR( m, 12.714986, 0.0001 );
 
-  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( -10, -6 ), 2 );
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ), QgsPoint( -10, -6 ), 2 );
   QGSCOMPARENEAR( p.x(), -1.71499, 0.0001 );
   QGSCOMPARENEAR( p.y(), -1.02899, 0.0001 );
   QgsGeometryUtilsBase::pointOnLineWithDistance( 0, 0, -10, -6, 2, x, y );
   QGSCOMPARENEAR( x, -1.71499, 0.0001 );
   QGSCOMPARENEAR( y, -1.02899, 0.0001 );
 
-  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( -10, -6 ), 20 );
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ), QgsPoint( -10, -6 ), 20 );
   QGSCOMPARENEAR( p.x(), -17.1499, 0.0001 );
   QGSCOMPARENEAR( p.y(), -10.2899, 0.0001 );
   QgsGeometryUtilsBase::pointOnLineWithDistance( 0, 0, -10, -6, 20, x, y );
   QGSCOMPARENEAR( x, -17.1499, 0.0001 );
   QGSCOMPARENEAR( y, -10.2899, 0.0001 );
 
-  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ),  QgsPoint( -10, -6 ), -10 );
+  p = QgsGeometryUtils::pointOnLineWithDistance( QgsPoint( 0, 0 ), QgsPoint( -10, -6 ), -10 );
   QGSCOMPARENEAR( p.x(), 8.57493, 0.0001 );
   QGSCOMPARENEAR( p.y(), 5.14496, 0.0001 );
   QgsGeometryUtilsBase::pointOnLineWithDistance( 0, 0, -10, -6, -10, x, y );
@@ -1407,20 +1389,6 @@ void TestQgsGeometryUtils::testPointFractionAlongLine()
   QGSCOMPARENEAR( QgsGeometryUtilsBase::pointFractionAlongLine( 40000.0, 40000.00001, 40000.00002, 40000.00001, 40000.00001, 40000.00001 ), 0.5, 0.0000002 );
 }
 
-void TestQgsGeometryUtils::testPointsAreCollinear()
-{
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 0, 10, 10, 10, 20, 10, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 10, 0, 10, 20, 10, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 10, 0, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 15, 10, 10, 0, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 15, 0, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 20, 10, 10, 10, 0, 15, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 0, 10, 10, 10, 20, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 0, 10, 20, 10, 10, 0.00001 ) );
-  QVERIFY( QgsGeometryUtilsBase::pointsAreCollinear( 10, 20, 10, 0, 10, 10, 0.00001 ) );
-  QVERIFY( !QgsGeometryUtilsBase::pointsAreCollinear( 15, 20, 10, 10, 10, 20, 0.00001 ) );
-}
-
 void TestQgsGeometryUtils::interpolatePointOnArc()
 {
   QgsPoint p;
@@ -1431,7 +1399,7 @@ void TestQgsGeometryUtils::interpolatePointOnArc()
   QGSCOMPARENEAR( p.m(), 2.0, 0.00001 );
   p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 11, 1, 3, 4 ), QgsPoint( 12, 0, 13, 14 ), 1 );
   QGSCOMPARENEAR( p.x(), 10.459698, 0.00001 );
-  QGSCOMPARENEAR( p.y(),  0.841471, 0.00001 );
+  QGSCOMPARENEAR( p.y(), 0.841471, 0.00001 );
   QGSCOMPARENEAR( p.z(), 2.273240, 0.00001 );
   QGSCOMPARENEAR( p.m(), 3.273240, 0.00001 );
   p = QgsGeometryUtils::interpolatePointOnArc( QgsPoint( 10, 0, 1, 2 ), QgsPoint( 11, 1, 3, 4 ), QgsPoint( 12, 0, 13, 14 ), 2 );
@@ -1475,11 +1443,7 @@ void TestQgsGeometryUtils::testSegmentizeArcHalfCircle()
   QgsPointSequence points;
   const double xoff = 1;
   const double yoff = 100;
-  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
-                                   QgsPoint( xoff + 1, yoff + 1 ),
-                                   QgsPoint( xoff + 2, yoff + 0 ),
-                                   points, 0.1,
-                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ), QgsPoint( xoff + 1, yoff + 1 ), QgsPoint( xoff + 2, yoff + 0 ), points, 0.1, QgsAbstractGeometry::MaximumDifference, false, false );
   QCOMPARE( points.size(), 5 );
   QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
   QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
@@ -1498,11 +1462,7 @@ void TestQgsGeometryUtils::testSegmentizeArcHalfCircleOtherDirection()
   QgsPointSequence points;
   const double xoff = 1;
   const double yoff = 100;
-  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
-                                   QgsPoint( xoff + 1, yoff - 1 ),
-                                   QgsPoint( xoff + 2, yoff + 0 ),
-                                   points, 0.1,
-                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ), QgsPoint( xoff + 1, yoff - 1 ), QgsPoint( xoff + 2, yoff + 0 ), points, 0.1, QgsAbstractGeometry::MaximumDifference, false, false );
   QCOMPARE( points.size(), 5 );
   QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
   QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
@@ -1521,11 +1481,7 @@ void TestQgsGeometryUtils::testSegmentizeArcFullCircle()
   QgsPointSequence points;
   const double xoff = 1;
   const double yoff = 100;
-  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ),
-                                   QgsPoint( xoff + 2, yoff + 0 ),
-                                   QgsPoint( xoff + 0, yoff + 0 ),
-                                   points, 0.4,
-                                   QgsAbstractGeometry::MaximumDifference, false, false );
+  QgsGeometryUtils::segmentizeArc( QgsPoint( xoff + 0, yoff + 0 ), QgsPoint( xoff + 2, yoff + 0 ), QgsPoint( xoff + 0, yoff + 0 ), points, 0.4, QgsAbstractGeometry::MaximumDifference, false, false );
   QCOMPARE( points.size(), 5 );
   QGSCOMPARENEAR( points[0].x(), xoff + 0.0, 0.00001 );
   QGSCOMPARENEAR( points[0].y(), yoff + 0.0, 0.00001 );
@@ -1906,7 +1862,6 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_qgspointsequence()
   QCOMPARE( point.wkbType(), Qgis::WkbType::PointZM );
   QCOMPARE( point.z(), 9.0 );
   QCOMPARE( point.m(), 5.0 );
-
 }
 
 void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_qgsgeometry()
@@ -2013,6 +1968,140 @@ void TestQgsGeometryUtils::transferFirstZOrMValueToPoint_qgsgeometry()
   QCOMPARE( ret, true );
   QCOMPARE( point.z(), 3.0 );
   QCOMPARE( point.m(), 5.0 );
+}
+
+void TestQgsGeometryUtils::testPointsAreCollinear()
+{
+  // 2D version
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10 ), QgsPoint( 10, 10 ), QgsPoint( 20, 10 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3 ), QgsPoint( 2, 7 ), QgsPoint( 2, -5 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3 ), QgsPoint( 4, 3 ), QgsPoint( 7, 2 ), 0.00001 ) );
+
+  // 3D version
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 0 ), QgsPoint( 10, 10, 0 ), QgsPoint( 20, 10, 0 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 2 ), QgsPoint( 10, 10, 2 ), QgsPoint( 20, 10, 2 ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2 ), QgsPoint( 2, 2, 3 ), QgsPoint( 2, 2, 5 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2 ), QgsPoint( 2, 2, 3 ), QgsPoint( 2, 3, 5 ), 0.00001 ) );
+
+  // Measure components are ignored
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 3, 3, Qgis::WkbType::PointM ), QgsPoint( 10, 10, 3, 3, Qgis::WkbType::PointM ), QgsPoint( 20, 10, 3, 3, Qgis::WkbType::PointM ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 4, 3, 2, 2, Qgis::WkbType::PointM ), QgsPoint( 7, 2, 2, 2, Qgis::WkbType::PointM ), 0.00001 ) );
+  QVERIFY( QgsGeometryUtils::pointsAreCollinear( QgsPoint( 0, 10, 0, 2 ), QgsPoint( 10, 10, 0, 17 ), QgsPoint( 20, 10, 0, 43 ), 0.00001 ) );
+  QVERIFY( !QgsGeometryUtils::pointsAreCollinear( QgsPoint( 2, 2, 2, 2 ), QgsPoint( 2, 2, 3, 2 ), QgsPoint( 2, 3, 5, 2 ), 0.00001 ) );
+}
+
+void TestQgsGeometryUtils::testCheckWeaklyFor3DPlane()
+{
+  QgsPoint pt1;
+  QgsPoint pt2;
+  QgsPoint pt3;
+
+  // nullptr: false
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( nullptr, pt1, pt2, pt3 ) );
+
+  // QgsPoint: false
+  const QgsPoint pt( 2, 2 );
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &pt, pt1, pt2, pt3 ) );
+
+  // QgsGeometryCollection: false
+  QgsGeometryCollection collection;
+  QgsPolygon polygon3D;
+  polygon3D.fromWkt( u"POLYGON Z((5 10 0, 5 15 5, 10 15 5, 10 10 5, 5 10 0))"_s );
+  QVERIFY( !polygon3D.isEmpty() );
+  collection.addGeometry( polygon3D.clone() );
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &collection, pt1, pt2, pt3 ) );
+
+  // 2D geometry: false
+  QgsPolygon polygon2D;
+  polygon2D.fromWkt( u"POLYGON ((5 10, 5 15, 10 15, 10 10, 5 10))"_s );
+  QVERIFY( !polygon2D.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &polygon2D, pt1, pt2, pt3 ) );
+
+  // Line with less than 3 points - false
+  QgsLineString line3D;
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &line3D, pt1, pt2, pt3 ) );
+  line3D.addVertex( QgsPoint( 0, 0, 0 ) );
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &line3D, pt1, pt2, pt3 ) );
+  line3D.addVertex( QgsPoint( 2, 0, 1 ) );
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &line3D, pt1, pt2, pt3 ) );
+
+  // line with 3 points - true
+  line3D.addVertex( QgsPoint( 2, 2, 2 ) );
+  QVERIFY( QgsGeometryUtils::checkWeaklyFor3DPlane( &line3D, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 0, 0, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 2, 0, 1 ) );
+  QCOMPARE( pt3, QgsPoint( 2, 2, 2 ) );
+
+  // 3D polygon
+  QVERIFY( QgsGeometryUtils::checkWeaklyFor3DPlane( &polygon3D, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 5, 10, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 5, 15, 5 ) );
+  QCOMPARE( pt3, QgsPoint( 10, 15, 5 ) );
+
+  // 3D Polygon with interior ring
+  QgsPolygon polygon3DInterior;
+  polygon3DInterior.fromWkt( u"POLYGON Z ((0 0 0, 10 0 10, 10 10 20, 0 10 10, 0 0 0),(3 3 6, 3 7 10, 7 7 14, 7 3 10, 3 3 6))"_s );
+  QVERIFY( QgsGeometryUtils::checkWeaklyFor3DPlane( &polygon3DInterior, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 0, 0, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 10, 0, 10 ) );
+  QCOMPARE( pt3, QgsPoint( 10, 10, 20 ) );
+
+  // 3D Polygon - similar points - false
+  QgsPolygon polygon3DRepeat;
+  polygon3DRepeat.fromWkt( u"POLYGON Z ((5 5 5, 5 5 5, 6 6 6, 6 6 6, 5 5 5))"_s );
+  QVERIFY( !polygon3DRepeat.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &polygon3DRepeat, pt1, pt2, pt3 ) );
+
+  // 3D Linestring
+  QgsCircularString circularString3D;
+  circularString3D.fromWkt( u"CIRCULARSTRING Z (0 0 0, 10 10 5, 20 0 0)"_s );
+  QVERIFY( QgsGeometryUtils::checkWeaklyFor3DPlane( &circularString3D, pt1, pt2, pt3 ) );
+  QCOMPARE( pt1, QgsPoint( 0, 0, 0 ) );
+  QCOMPARE( pt2, QgsPoint( 10, 10, 5 ) );
+  QCOMPARE( pt3, QgsPoint( 20, 0, 0 ) );
+
+  // 3D LineString - No Plane
+  QgsLineString Line3DNoPlane;
+  Line3DNoPlane.fromWkt( u"LINESTRING Z (0 0 0, 1 1 1, 2 2 2)"_s );
+  QVERIFY( !Line3DNoPlane.isEmpty() );
+  QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &Line3DNoPlane, pt1, pt2, pt3 ) );
+}
+
+void TestQgsGeometryUtils::testInterpolatePointOnCubicBezier()
+{
+  // 2D
+  QCOMPARE( QgsGeometryUtils::interpolatePointOnCubicBezier( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, -1 ), QgsPoint( 3, 0 ), 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( QgsGeometryUtils::interpolatePointOnCubicBezier( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, -1 ), QgsPoint( 3, 0 ), 1 ), QgsPoint( 3, 0 ) );
+  QgsPoint p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, -1 ), QgsPoint( 3, 0 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+
+  // With Z
+  p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( 0, 0, 10 ), QgsPoint( 1, 1, 12 ), QgsPoint( 2, -1, 14 ), QgsPoint( 3, 0, 16 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( p.z(), 13.0 ) );
+
+  // With M
+  p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 20 ), QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 22 ), QgsPoint( Qgis::WkbType::PointM, 2, -1, 0, 24 ), QgsPoint( Qgis::WkbType::PointM, 3, 0, 0, 26 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( p.m(), 23.0 ) );
+
+  // With Z and M
+  p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 20 ), QgsPoint( Qgis::WkbType::PointZM, 1, 1, 12, 22 ), QgsPoint( Qgis::WkbType::PointZM, 2, -1, 14, 24 ), QgsPoint( Qgis::WkbType::PointZM, 3, 0, 16, 26 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( p.z(), 13.0 ) );
+  QVERIFY( qgsDoubleNear( p.m(), 23.0 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

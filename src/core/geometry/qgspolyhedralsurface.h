@@ -20,10 +20,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssurface.h"
-#include "qgspolygon.h"
 #include "qgsmultipolygon.h"
-
+#include "qgspolygon.h"
+#include "qgssurface.h"
 
 /**
  * \ingroup core
@@ -117,6 +116,8 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
+    bool isValid( QString &error SIP_OUT, Qgis::GeometryValidityFlags flags = Qgis::GeometryValidityFlags() ) const override;
+
     int wkbSize( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const override;
     QString asWkt( int precision = 17 ) const override;
@@ -128,11 +129,14 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
 
     //surface interface
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsPolyhedralSurface *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsPolyhedralSurface *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+
+    using QgsSurface::boundingBoxIntersects;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**
@@ -302,9 +306,11 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
      * Cast the \a geom to a QgsPolyhedralSurface.
      * Should be used by qgsgeometry_cast<QgsPolyhedralSurface *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
-    inline static const QgsPolyhedralSurface *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsPolyhedralSurface *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( !geom )
         return nullptr;
@@ -313,6 +319,27 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
       if ( flatType == Qgis::WkbType::PolyhedralSurface
            || flatType == Qgis::WkbType::TIN )
         return static_cast<const QgsPolyhedralSurface *>( geom );
+
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsPolyhedralSurface.
+     * Should be used by qgsgeometry_cast<QgsPolyhedralSurface *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsPolyhedralSurface *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == Qgis::WkbType::PolyhedralSurface
+           || flatType == Qgis::WkbType::TIN )
+        return static_cast<QgsPolyhedralSurface *>( geom );
 
       return nullptr;
     }
@@ -325,8 +352,8 @@ class CORE_EXPORT QgsPolyhedralSurface: public QgsSurface
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsPolyhedralSurface: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsPolyhedralSurface: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 

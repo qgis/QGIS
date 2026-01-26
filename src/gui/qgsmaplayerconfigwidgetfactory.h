@@ -16,9 +16,10 @@
 #ifndef QGSMAPLAYERCONFIGWIDGETFACTORY_H
 #define QGSMAPLAYERCONFIGWIDGETFACTORY_H
 
-#include <QListWidgetItem>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QListWidgetItem>
 
 class QgsMapLayer;
 class QgsMapLayerConfigWidget;
@@ -28,12 +29,11 @@ class QgsLayerTreeGroup;
 /**
  * \ingroup gui
  * \class QgsMapLayerConfigWidgetFactory
- * \brief Factory class for creating custom map layer property pages
+ * \brief Factory class for creating custom map layer property pages.
  */
 class GUI_EXPORT QgsMapLayerConfigWidgetFactory
 {
   public:
-
     /**
      * Available parent pages, for factories which create a widget which is a sub-component
      * of a standard page.

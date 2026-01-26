@@ -15,19 +15,18 @@
 #ifndef QGSFIELDVALUESLINEEDIT_H
 #define QGSFIELDVALUESLINEEDIT_H
 
-#include "qgsfilterlineedit.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsfeedback.h"
+#include "qgsfilterlineedit.h"
 
-#include <QStringListModel>
-#include <QTreeView>
 #include <QFocusEvent>
 #include <QHeaderView>
-#include <QTimer>
-#include <QThread>
 #include <QMutex>
-
-#include "qgis_gui.h"
+#include <QStringListModel>
+#include <QThread>
+#include <QTimer>
+#include <QTreeView>
 
 class QgsFloatingWidget;
 class QgsVectorLayer;
@@ -42,7 +41,7 @@ class QgsVectorLayer;
  * \class QgsFieldValuesLineEditValuesGatherer
  * Collates unique values containing a matching substring in a thread.
  */
-class QgsFieldValuesLineEditValuesGatherer: public QThread
+class QgsFieldValuesLineEditValuesGatherer : public QThread
 {
     Q_OBJECT
 
@@ -50,7 +49,6 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     QgsFieldValuesLineEditValuesGatherer( QgsVectorLayer *layer, int attributeIndex )
       : mLayer( layer )
       , mAttributeIndex( attributeIndex )
-      , mWasCanceled( false )
     {}
 
     /**
@@ -75,14 +73,13 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
     void collectedValues( const QStringList &values );
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
     int mAttributeIndex;
     QString mSubstring;
     QStringList mValues;
     QgsFeedback *mFeedback = nullptr;
     QMutex mFeedbackMutex;
-    bool mWasCanceled;
+    bool mWasCanceled = false;
 };
 
 ///@endcond
@@ -93,10 +90,11 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
  * \class QgsFieldValuesLineEdit
  * \ingroup gui
  * \brief A line edit with an autocompleter which takes unique values from a vector layer's fields.
+ *
  * The autocompleter is populated from the vector layer in the background to ensure responsive
  * interaction with the widget.
  */
-class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
+class GUI_EXPORT QgsFieldValuesLineEdit : public QgsFilterLineEdit
 {
     Q_OBJECT
 
@@ -104,7 +102,6 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     Q_PROPERTY( int attributeIndex READ attributeIndex WRITE setAttributeIndex NOTIFY attributeIndexChanged )
 
   public:
-
     /**
      * Constructor for QgsFieldValuesLineEdit
      * \param parent parent widget
@@ -185,7 +182,6 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
     void gathererThreadFinished();
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
     int mAttributeIndex = -1;
 
@@ -203,7 +199,6 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
 
     //! Kicks off the gathering of completer text values for a specified substring
     void updateCompletionList( const QString &substring );
-
 };
 
 

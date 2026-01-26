@@ -17,6 +17,8 @@
 
 #include <QUuid>
 
+#include "moc_qgsuuidwidgetwrapper.cpp"
+
 QgsUuidWidgetWrapper::QgsUuidWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 

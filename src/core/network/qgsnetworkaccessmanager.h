@@ -18,22 +18,23 @@
 #ifndef QGSNETWORKACCESSMANAGER_H
 #define QGSNETWORKACCESSMANAGER_H
 
-#include <QList>
-#include "qgsnetworkreply.h"
+#include <memory>
+
+#include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QStringList>
+#include "qgsnetworkreply.h"
+
+#include <QList>
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
-#include <QMutex>
-#include <QWaitCondition>
 #include <QSemaphore>
-#include <memory>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
+#include <QStringList>
+#include <QWaitCondition>
 
 class QgsFeedback;
 class QgsSettingsEntryInteger;
@@ -118,7 +119,7 @@ class CORE_EXPORT QgsNetworkRequestParameters
 
   private:
 
-    QNetworkAccessManager::Operation mOperation;
+    QNetworkAccessManager::Operation mOperation = QNetworkAccessManager::Operation::UnknownOperation;
     QNetworkRequest mRequest;
     QString mOriginatingThreadId;
     int mRequestId = 0;
@@ -240,7 +241,7 @@ class CORE_EXPORT QgsNetworkAuthenticationHandler
 
 /**
  * \class QgsNetworkAccessManager
- * \brief network access manager for QGIS
+ * \brief QNetworkAccessManager with additional QGIS specific logic.
  * \ingroup core
  *
  * \brief This class implements the QGIS network access manager.  It's a singleton
@@ -477,10 +478,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      *
      * The contents of the reply will be returned after the request is completed or an error occurs.
      *
+     * The \a flags argument was added in QGIS 4.0.
+     *
      * \see blockingPost()
      * \since QGIS 3.6
      */
-    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    static QgsNetworkReplyContent blockingGet( QNetworkRequest &request, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr, Qgis::NetworkRequestFlags flags = Qgis::NetworkRequestFlags() );
 
     /**
      * Posts a POST request to obtain the contents of the target \a request, using the given \a data, and returns a new
@@ -499,10 +502,12 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
      *
      * The contents of the reply will be returned after the request is completed or an error occurs.
      *
+     * The \a flags argument was added in QGIS 4.0.
+     *
      * \see blockingGet()
      * \since QGIS 3.6
      */
-    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr );
+    static QgsNetworkReplyContent blockingPost( QNetworkRequest &request, const QByteArray &data, const QString &authCfg = QString(), bool forceRefresh = false, QgsFeedback *feedback = nullptr, Qgis::NetworkRequestFlags flags = Qgis::NetworkRequestFlags() );
 
     /**
      * Sets a request pre-processor function, which allows manipulation of a network request before it is processed.
@@ -564,11 +569,104 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
 #endif
+
+    /**
+     * Sets an advanced request pre-processor function, which allows manipulation of a network request before it is processed.
+     *
+     * The \a processor function takes the QNetworkRequest, network operation (a QNetworkAccessManager::Operation cast to an integer value),
+     * and request data as its arguments, and can mutate the request if necessary.
+     *
+     * It should return the desired operation (as a QNetworkAccessManager::Operation cast to an integer value) and request data as a tuple,
+     * transforming as desired.
+     *
+     * \returns An auto-generated string uniquely identifying the preprocessor, which can later be
+     * used to remove the preprocessor (via a call to removeAdvancedRequestPreprocessor()).
+     *
+     * \see removeAdvancedRequestPreprocessor()
+     * \since QGIS 3.44
+     */
+#ifndef SIP_RUN
+    static QString setAdvancedRequestPreprocessor( const std::function< void( QNetworkRequest *, int &op, QByteArray *data )> &processor );
+#else
+    static QString setAdvancedRequestPreprocessor( SIP_PYCALLABLE / AllowNone / );
+    % MethodCode
+    PyObject *s = 0;
+    QString id;
+    Py_XINCREF( a0 );
+    Py_BEGIN_ALLOW_THREADS
+    id = QgsNetworkAccessManager::setAdvancedRequestPreprocessor( [a0]( QNetworkRequest *reqArg, int &op, QByteArray *data )
+    {
+      SIP_BLOCK_THREADS
+
+      PyObject *requestObj = sipConvertFromType( reqArg, sipType_QNetworkRequest, NULL );
+      PyObject *postDataObj = sipConvertFromType( new QByteArray( *data ), sipType_QByteArray, Py_None );
+
+      PyObject *result = sipCallMethod( NULL, a0, "RiR", requestObj, op, postDataObj );
+
+      Py_XDECREF( requestObj );
+      Py_XDECREF( postDataObj );
+
+      if ( result && PyTuple_Check( result ) && PyTuple_Size( result ) == 2 )
+      {
+        // Extract modified operation
+        PyObject *opObj = PyTuple_GetItem( result, 0 );
+        if ( opObj && PyLong_Check( opObj ) )
+        {
+          op = static_cast<int>( PyLong_AsLong( opObj ) );
+        }
+        PyObject *dataObj = PyTuple_GetItem( result, 1 );
+        if ( dataObj && dataObj != Py_None )
+        {
+          int dataState;
+          int sipIsErr = 0;
+          QByteArray *modifiedData = reinterpret_cast<QByteArray *>( sipConvertToType( dataObj, sipType_QByteArray, 0, SIP_NOT_NONE, &dataState, &sipIsErr ) );
+          if ( sipIsErr == 0 )
+          {
+            data->clear();
+            data->append( *modifiedData );
+            sipReleaseType( modifiedData, sipType_QByteArray, dataState );
+          }
+        }
+      }
+
+      Py_XDECREF( result );
+      SIP_UNBLOCK_THREADS
+    } );
+    Py_END_ALLOW_THREADS
+
+    s = sipConvertFromNewType( new QString( id ), sipType_QString, 0 );
+    return s;
+    % End
+#endif
+
+    /**
+     * Removes an advanced request pre-processor function with matching \a id.
+     *
+     * The \a id must correspond to a pre-processor previously added via a call to setAdvancedRequestPreprocessor().
+     *
+     * Returns TRUE if processor existed and was removed.
+     *
+     * \see setAdvancedRequestPreprocessor()
+     * \since QGIS 3.44
+     */
+#ifndef SIP_RUN
+    static bool removeAdvancedRequestPreprocessor( const QString &id );
+#else
+    static void removeAdvancedRequestPreprocessor( const QString &id );
+    % MethodCode
+    if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
+    {
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    % End
+#endif
+
 
     /**
      * Sets a reply pre-processor function, which allows manipulation of QNetworkReply objects after they are created (but before they are fetched).
@@ -620,7 +718,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End

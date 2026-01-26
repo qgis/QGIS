@@ -10,6 +10,7 @@
 
 
 
+
 class QgsModelGraphicsView : QGraphicsView
 {
 %Docstring(signature="appended")
@@ -26,10 +27,10 @@ QGraphicsView subclass representing the model designer.
 #include "qgsmodelgraphicsview.h"
 %End
   public:
-
     QgsModelGraphicsView( QWidget *parent = 0 );
 %Docstring
-Constructor for QgsModelGraphicsView, with the specified ``parent`` widget.
+Constructor for QgsModelGraphicsView, with the specified ``parent``
+widget.
 %End
     ~QgsModelGraphicsView();
 
@@ -80,6 +81,23 @@ Starts a macro command, containing a group of interactions in the view.
 Ends a macro command, containing a group of interactions in the view.
 %End
 
+    void beginCommand( const QString &text );
+%Docstring
+Starts a single undo command
+%End
+
+    void endCommand();
+%Docstring
+Ends a single undo command
+%End
+
+    void abortCommand();
+%Docstring
+Aborts pending undo command
+
+.. versionadded:: 4.0
+%End
+
 
     enum ClipboardOperation
     {
@@ -89,16 +107,18 @@ Ends a macro command, containing a group of interactions in the view.
 
     void copySelectedItems( ClipboardOperation operation );
 %Docstring
-Cuts or copies the selected items, respecting the specified ``operation``.
+Cuts or copies the selected items, respecting the specified
+``operation``.
 
 .. seealso:: :py:func:`copyItems`
 
 .. seealso:: :py:func:`pasteItems`
 %End
 
-    void copyItems( const QList< QgsModelComponentGraphicItem * > &items, ClipboardOperation operation );
+    void copyItems( const QList<QgsModelComponentGraphicItem *> &items, ClipboardOperation operation );
 %Docstring
-Cuts or copies the a list of ``items``, respecting the specified ``operation``.
+Cuts or copies the a list of ``items``, respecting the specified
+``operation``.
 
 .. seealso:: :py:func:`copySelectedItems`
 
@@ -127,7 +147,6 @@ Pastes items from clipboard, using the specified ``mode``.
 %Docstring
 Snaps the selected items to the grid.
 %End
-
   signals:
 
     void algorithmDropped( const QString &algorithmId, const QPointF &pos );
@@ -143,34 +162,44 @@ Emitted when an input parameter is dropped onto the view.
 
     void itemFocused( QgsModelComponentGraphicItem *item );
 %Docstring
-Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
-item and should have its properties displayed in any designer windows.
+Emitted when an ``item`` is "focused" in the view, i.e. it becomes the
+active item and should have its properties displayed in any designer
+windows.
 %End
 
     void willBeDeleted();
 %Docstring
-Emitted in the destructor when the view is about to be deleted,
-but is still in a perfectly valid state.
+Emitted in the destructor when the view is about to be deleted, but is
+still in a perfectly valid state.
 %End
 
     void macroCommandStarted( const QString &text );
 %Docstring
-Emitted when a macro command containing a group of interactions is started in the view.
+Emitted when a macro command containing a group of interactions is
+started in the view.
 %End
 
     void macroCommandEnded();
 %Docstring
-Emitted when a macro command containing a group of interactions in the view has ended.
+Emitted when a macro command containing a group of interactions in the
+view has ended.
 %End
 
-    void beginCommand( const QString &text );
+    void commandBegun( const QString &text );
 %Docstring
 Emitted when an undo command is started in the view.
 %End
 
-    void endCommand();
+    void commandEnded();
 %Docstring
 Emitted when an undo command in the view has ended.
+%End
+
+    void commandAborted();
+%Docstring
+Emitted when an undo command in the view was aborted.
+
+.. versionadded:: 4.0
 %End
 
     void deleteSelectedItems();
@@ -191,7 +220,6 @@ A simple graphics item rendered as an 'x'.
 #include "qgsmodelgraphicsview.h"
 %End
   public:
-
     QgsModelViewSnapMarker();
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );

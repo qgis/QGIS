@@ -15,14 +15,12 @@
 
 #include "qgsvectorlayerundocommand.h"
 
+#include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgsfeature.h"
+#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
-
-#include "qgslogger.h"
-
 
 QgsVectorLayerUndoCommandAddFeature::QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer, QgsFeature &f )
   : QgsVectorLayerUndoCommand( buffer )
@@ -199,7 +197,6 @@ QgsVectorLayerUndoCommandChangeAttribute::QgsVectorLayerUndoCommandChangeAttribu
   , mFieldIndex( fieldIndex )
   , mOldValue( oldValue )
   , mNewValue( newValue )
-  , mFirstChange( true )
 {
   if ( FID_IS_NEW( mFid ) )
   {
@@ -334,7 +331,7 @@ void QgsVectorLayerUndoCommandAddAttribute::undo()
 void QgsVectorLayerUndoCommandAddAttribute::redo()
 {
   mBuffer->mAddedAttributes.append( mField );
-  mBuffer->handleAttributeAdded( mFieldIndex );
+  mBuffer->handleAttributeAdded( mFieldIndex, mField );
   mBuffer->updateLayerFields();
 
   emit mBuffer->attributeAdded( mFieldIndex );
@@ -391,7 +388,7 @@ void QgsVectorLayerUndoCommandDeleteAttribute::undo()
   }
 
   mBuffer->updateLayerFields();
-  mBuffer->handleAttributeAdded( mFieldIndex ); // update changed attributes + new features
+  mBuffer->handleAttributeAdded( mFieldIndex, mOldField ); // update changed attributes + new features
 
   if ( !mOldName.isEmpty() )
   {

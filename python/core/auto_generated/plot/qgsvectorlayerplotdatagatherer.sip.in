@@ -1,0 +1,130 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsvectorlayerplotdatagatherer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsVectorLayerAbstractPlotDataGatherer : QgsTask
+{
+%Docstring(signature="appended")
+An abstract vector layer plot data gatherer base class.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerplotdatagatherer.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsVectorLayerAbstractPlotDataGatherer *item = dynamic_cast< QgsVectorLayerAbstractPlotDataGatherer * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsVectorLayerXyPlotDataGatherer *>( item ) != NULL )
+      {
+        sipType = sipType_QgsVectorLayerXyPlotDataGatherer;
+      }
+      else
+      {
+        sipType = sipType_QgsVectorLayerAbstractPlotDataGatherer;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+%End
+  public:
+
+    QgsVectorLayerAbstractPlotDataGatherer();
+    ~QgsVectorLayerAbstractPlotDataGatherer();
+
+    virtual QgsPlotData data() const = 0;
+%Docstring
+Returns the plot data.
+%End
+
+    void setFeatureIterator( QgsFeatureIterator &iterator );
+%Docstring
+Sets the feature ``iterator`` used to gather data from.
+%End
+
+    void setExpressionContext( const QgsExpressionContext &context );
+%Docstring
+Sets the expression ``context`` used when evaluating values being
+gathered.
+%End
+
+  protected:
+
+
+};
+
+
+class QgsVectorLayerXyPlotDataGatherer : QgsVectorLayerAbstractPlotDataGatherer
+{
+%Docstring(signature="appended")
+An vector layer plot data gatherer class for XY series.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsvectorlayerplotdatagatherer.h"
+%End
+  public:
+
+    struct XySeriesDetails
+    {
+      explicit XySeriesDetails( const QString &xExpression, const QString &yExpression, const QString &filterExpression = QString() );
+
+      QString xExpression;
+      QString yExpression;
+      QString filterExpression;
+    };
+
+    explicit QgsVectorLayerXyPlotDataGatherer( Qgis::PlotAxisType xAxisType = Qgis::PlotAxisType::Interval );
+%Docstring
+The vector layer XY plot data gatherer constructor.
+
+:param xAxisType: The X-axis type that will define what type of X values
+                  to gather.
+%End
+    ~QgsVectorLayerXyPlotDataGatherer();
+
+    void setSeriesDetails( const QList<QgsVectorLayerXyPlotDataGatherer::XySeriesDetails> &details );
+%Docstring
+Sets the series ``details`` list that will be used to prepare the data
+being gathered.
+%End
+
+    void setPredefinedCategories( const QStringList &categories );
+%Docstring
+Sets the predefined ``categories`` list that will be used to restrict
+the categories used when gathering the data.
+
+.. note::
+
+   This is only used when the gatherer's X-axis type is set to categorical.
+%End
+
+    virtual bool run();
+
+
+    virtual QgsPlotData data() const;
+
+
+  protected:
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/plot/qgsvectorlayerplotdatagatherer.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

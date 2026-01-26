@@ -19,30 +19,28 @@
 #define QGSPOINTCLOUDSTATSCALCULATOR_H
 
 #include "qgis_core.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudstatistics.h"
 
-#include <QVariant>
-#include <QSet>
+#include <QEventLoop>
 #include <QFuture>
 #include <QFutureWatcher>
-#include <QEventLoop>
-
-#include "qgspointcloudrequest.h"
-#include "qgsstatisticalsummary.h"
-#include "qgspointcloudstatistics.h"
+#include <QSet>
+#include <QVariant>
 
 #define SIP_NO_FILE
 
-class QgsPointCloudIndex;
 class QgsPointCloudBlock;
 class QgsPointCloudAttribute;
-class IndexedPointCloudNode;
+class QgsPointCloudNodeId;
 class QgsFeedback;
 
 /**
  * \ingroup core
  * \class QgsPointCloudStatsCalculator
  *
- * \brief Class used to calculate statistics of a point cloud dataset.
+ * \brief Calculates statistics of a point cloud dataset.
  *
  * \since QGIS 3.26
  */
@@ -51,7 +49,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     Q_OBJECT
   public:
     //! Constructor
-    QgsPointCloudStatsCalculator( QgsPointCloudIndex *index );
+    QgsPointCloudStatsCalculator( QgsPointCloudIndex index );
 
     /**
      * Calculates the statistics of given attributes \a attributes up to new \a pointsLimit points
@@ -63,10 +61,10 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     QgsPointCloudStatistics statistics() const { return mStats; }
 
   private:
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
+    QgsPointCloudIndex mIndex;
 
     QgsPointCloudStatistics mStats;
-    QSet<IndexedPointCloudNode> mProcessedNodes;
+    QSet<QgsPointCloudNodeId> mProcessedNodes;
 
     QgsPointCloudRequest mRequest;
 };

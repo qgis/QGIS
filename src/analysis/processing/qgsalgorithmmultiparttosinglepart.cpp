@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmmultiparttosinglepart.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsMultipartToSinglepartAlgorithm::name() const
 {
-  return QStringLiteral( "multiparttosingleparts" );
+  return u"multiparttosingleparts"_s;
 }
 
 QString QgsMultipartToSinglepartAlgorithm::displayName() const
@@ -52,7 +53,7 @@ QString QgsMultipartToSinglepartAlgorithm::group() const
 
 QString QgsMultipartToSinglepartAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
@@ -60,6 +61,11 @@ QString QgsMultipartToSinglepartAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
                       "a single part. Features with multipart geometries are divided in as many different features as parts the geometry "
                       "contain, and the same attributes are used for each of them." );
+}
+QString QgsMultipartToSinglepartAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Takes a vector layer with multipart geometries and generates a new one in which all geometries contain "
+                      "a single part." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMultipartToSinglepartAlgorithm::documentationFlags() const
@@ -111,5 +117,3 @@ QgsFeatureList QgsMultipartToSinglepartAlgorithm::processFeature( const QgsFeatu
 
 
 ///@endcond
-
-

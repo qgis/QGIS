@@ -16,14 +16,13 @@
 #ifndef QGSMSSQLEXPRESSIONCOMPILER_H
 #define QGSMSSQLEXPRESSIONCOMPILER_H
 
-#include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
 #include "qgsmssqlfeatureiterator.h"
+#include "qgssqlexpressioncompiler.h"
 
 class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-
     explicit QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:

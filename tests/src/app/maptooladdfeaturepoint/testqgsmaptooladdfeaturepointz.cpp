@@ -13,23 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
-#include "qgssnappingconfig.h"
-#include "qgssnappingutils.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptooladdfeature.h"
 #include "qgsproject.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgssnappingutils.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
-
 
 /**
  * \ingroup UnitTests
@@ -42,8 +40,8 @@ class TestQgsMapToolAddFeaturePointZ : public QObject
     TestQgsMapToolAddFeaturePointZ();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testPointZ();
     void testTopologicalEditingZ();
@@ -69,15 +67,15 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -86,7 +84,7 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerPointZ = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "layer point Z" ), QStringLiteral( "memory" ) );
+  mLayerPointZ = new QgsVectorLayer( u"PointZ?crs=EPSG:27700"_s, u"layer point Z"_s, u"memory"_s );
   QVERIFY( mLayerPointZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZ );
 
@@ -96,10 +94,10 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   pointFZ.setGeometry( QgsGeometry::fromWkt( pointWktZ ) );
 
   mLayerPointZ->addFeature( pointFZ );
-  QCOMPARE( mLayerPointZ->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long ) 1 );
 
   // make layer for snapping
-  mLayerPointZSnap = new QgsVectorLayer( QStringLiteral( "PointZ?crs=EPSG:27700" ), QStringLiteral( "Snap point" ), QStringLiteral( "memory" ) );
+  mLayerPointZSnap = new QgsVectorLayer( u"PointZ?crs=EPSG:27700"_s, u"Snap point"_s, u"memory"_s );
   QVERIFY( mLayerPointZSnap->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerPointZSnap );
 
@@ -109,10 +107,10 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   pointF.setGeometry( QgsGeometry::fromWkt( pointWktZSnap ) );
 
   mLayerPointZSnap->addFeature( pointF );
-  QCOMPARE( mLayerPointZSnap->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPointZSnap->featureCount(), ( long ) 1 );
 
   // make line layer for snapping
-  mLayerLineZSnap = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "Snap line" ), QStringLiteral( "memory" ) );
+  mLayerLineZSnap = new QgsVectorLayer( u"LineStringZ?crs=EPSG:27700"_s, u"Snap line"_s, u"memory"_s );
   QVERIFY( mLayerLineZSnap->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZSnap );
 
@@ -121,7 +119,7 @@ void TestQgsMapToolAddFeaturePointZ::initTestCase()
   lineF.setGeometry( QgsGeometry::fromWkt( "LineStringZ( 1 1 1, 5 5 5)" ) );
 
   mLayerLineZSnap->addFeature( lineF );
-  QCOMPARE( mLayerLineZSnap->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLineZSnap->featureCount(), ( long ) 1 );
 
   QgsSnappingConfig cfg = mCanvas->snappingUtils()->config();
   cfg.setMode( Qgis::SnappingMode::AllLayers );
@@ -165,7 +163,7 @@ void TestQgsMapToolAddFeaturePointZ::testPointZ()
   utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long ) 2 );
 
   QString wkt = "Point Z (4 0 333)";
   QCOMPARE( mLayerPointZ->getFeature( newFid ).geometry().asWkt(), wkt );
@@ -197,13 +195,13 @@ void TestQgsMapToolAddFeaturePointZ::testTopologicalEditingZ()
   utils.mouseClick( 3, 3, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   const QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long ) 2 );
 
   QString wkt = "Point Z (3 3 3)";
   QCOMPARE( mLayerPointZ->getFeature( newFid ).geometry().asWkt(), wkt );
 
 
-  QCOMPARE( mLayerLineZSnap->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLineZSnap->featureCount(), ( long ) 1 );
 
   wkt = "LineString Z (1 1 1, 3 3 3, 5 5 5)";
   QgsFeature f;
@@ -213,7 +211,6 @@ void TestQgsMapToolAddFeaturePointZ::testTopologicalEditingZ()
   QgsProject::instance()->setTopologicalEditing( topologicalEditing );
   mLayerPointZ->undoStack()->undo();
   mLayerLineZSnap->undoStack()->undo();
-
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeaturePointZ )

@@ -14,30 +14,30 @@
  ***************************************************************************/
 
 
+#include "editorwidgets/qgsdoublespinbox.h"
 #include "qgstest.h"
 
-#include <editorwidgets/qgsdoublespinbox.h>
+#include <QSignalSpy>
 
-class TestQgsDoubleSpinBox: public QObject
+class TestQgsDoubleSpinBox : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void clear();
     void expression();
     void step();
+    void editingTimeout();
 
   private:
-
 };
 
 void TestQgsDoubleSpinBox::initTestCase()
 {
-
 }
 
 void TestQgsDoubleSpinBox::cleanupTestCase()
@@ -59,15 +59,21 @@ void TestQgsDoubleSpinBox::clear()
   spinBox->setMinimum( 1.0 );
   spinBox->setValue( 5.0 );
   spinBox->setClearValueMode( QgsDoubleSpinBox::MinimumValue );
+  QVERIFY( !spinBox->isCleared() );
   spinBox->clear();
+  QVERIFY( spinBox->isCleared() );
   QCOMPARE( spinBox->value(), 1.0 );
   QCOMPARE( spinBox->clearValue(), 1.0 );
   spinBox->setClearValueMode( QgsDoubleSpinBox::MaximumValue );
+  QVERIFY( !spinBox->isCleared() );
   spinBox->clear();
+  QVERIFY( spinBox->isCleared() );
   QCOMPARE( spinBox->value(), 10.0 );
   QCOMPARE( spinBox->clearValue(), 10.0 );
   spinBox->setClearValue( 7.0 );
+  QVERIFY( !spinBox->isCleared() );
   spinBox->clear();
+  QVERIFY( spinBox->isCleared() );
   QCOMPARE( spinBox->value(), 7.0 );
   QCOMPARE( spinBox->clearValue(), 7.0 );
   delete spinBox;
@@ -96,7 +102,7 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "5/" ) ), 4.0 ); //invalid expression should reset to previous value
 
   //suffix tests
-  spinBox->setSuffix( QStringLiteral( "mm" ) );
+  spinBox->setSuffix( u"mm"_s );
   spinBox->setExpressionsEnabled( false );
   QCOMPARE( spinBox->valueFromText( QString( "5mm" ) ), 5.0 );
   QCOMPARE( spinBox->valueFromText( QString( "5+2mm" ) ), -10.0 );
@@ -113,7 +119,7 @@ void TestQgsDoubleSpinBox::expression()
 
   //prefix tests
   spinBox->setSuffix( QString() );
-  spinBox->setPrefix( QStringLiteral( "mm" ) );
+  spinBox->setPrefix( u"mm"_s );
   spinBox->setExpressionsEnabled( false );
   QCOMPARE( spinBox->valueFromText( QString( "mm5" ) ), 5.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm5+2" ) ), -10.0 );
@@ -129,8 +135,8 @@ void TestQgsDoubleSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "mm5/" ) ), 4.0 ); //invalid expression should reset to previous value
 
   //both suffix and prefix
-  spinBox->setSuffix( QStringLiteral( "ll" ) );
-  spinBox->setPrefix( QStringLiteral( "mm" ) );
+  spinBox->setSuffix( u"ll"_s );
+  spinBox->setPrefix( u"mm"_s );
   spinBox->setExpressionsEnabled( true );
   QCOMPARE( spinBox->valueFromText( QString( "mm 5 ll" ) ), 5.0 );
   QCOMPARE( spinBox->valueFromText( QString( "mm 5+2 ll" ) ), 7.0 );
@@ -164,7 +170,7 @@ void TestQgsDoubleSpinBox::step()
   QCOMPARE( spin.value(), -1 );
 
   // with clear value
-  spin.setClearValue( -1000, QStringLiteral( "NULL" ) );
+  spin.setClearValue( -1000, u"NULL"_s );
   spin.setValue( 0 );
   spin.stepBy( 1 );
   QCOMPARE( spin.value(), 1 );
@@ -200,6 +206,45 @@ void TestQgsDoubleSpinBox::step()
   QCOMPARE( spin.value(), -1000 );
   spin.stepBy( -1 );
   QCOMPARE( spin.value(), -1000 );
+}
+
+void TestQgsDoubleSpinBox::editingTimeout()
+{
+  QgsDoubleSpinBox spin;
+  spin.setMinimum( -1000 );
+  spin.setMaximum( 1000 );
+  spin.setSingleStep( 1 );
+  spin.setFocus();
+  QCOMPARE( spin.editingTimeoutInterval(), 1000 );
+  spin.setEditingTimeoutInterval( 300 );
+  QCOMPARE( spin.editingTimeoutInterval(), 300 );
+
+  QSignalSpy spy( &spin, &QgsDoubleSpinBox::editingTimeout );
+  spin.selectAll();
+  QTest::keyClicks( &spin, u"3"_s );
+  QTest::qWait( 100 );
+  // too short, should not be signal
+  QCOMPARE( spy.count(), 0 );
+  QTest::qWait( 400 );
+  // long enough, signal should have been emitted
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), 3 );
+
+  QTest::keyClicks( &spin, u"2"_s );
+  QCOMPARE( spy.count(), 1 );
+  QTest::qWait( 400 );
+  // long enough, signal should have been emitted
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), 32 );
+
+  // no signal if value not changed
+  QTest::keyClicks( &spin, u"4"_s );
+  QTest::qWait( 100 );
+  QCOMPARE( spy.count(), 2 );
+  QTest::keyPress( &spin, Qt::Key_Backspace );
+  QTest::qWait( 400 );
+  // no signal, value did not change
+  QCOMPARE( spy.count(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsDoubleSpinBox )

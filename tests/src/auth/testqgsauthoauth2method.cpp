@@ -14,22 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsauthoauth2config.h"
 #include "qgstest.h"
 
-#include <QtTest/QTest>
 #include <QApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QObject>
+#include <QSignalSpy>
 #include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
-#include <QSignalSpy>
+#include <QtTest/QTest>
 
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
-#include "qgsauthoauth2config.h"
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif
 
@@ -37,7 +37,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsAuthOAuth2Config
  */
-class TestQgsAuthOAuth2Method: public QObject
+class TestQgsAuthOAuth2Method : public QObject
 {
     Q_OBJECT
 
@@ -105,8 +105,8 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
   {
     config->setId( "abc1234" );
     config->setVersion( 1 );
-    config->setConfigType( QgsAuthOAuth2Config::Custom );
-    config->setGrantFlow( QgsAuthOAuth2Config::AuthCode );
+    config->setConfigType( QgsAuthOAuth2Config::ConfigType::Custom );
+    config->setGrantFlow( QgsAuthOAuth2Config::GrantFlow::AuthCode );
     config->setName( "MyConfig" );
     config->setDescription( "A test config" );
     config->setRequestUrl( "https://request.oauth2.test" );
@@ -122,9 +122,12 @@ QgsAuthOAuth2Config *TestQgsAuthOAuth2Method::baseConfig( bool loaded )
     config->setScope( "scope_1 scope_2 scope_3" );
     config->setApiKey( "someapikey" );
     config->setPersistToken( false );
-    config->setAccessMethod( QgsAuthOAuth2Config::Header );
-    config->setCustomHeader( QStringLiteral( "x-auth" ) );
+    config->setAccessMethod( QgsAuthOAuth2Config::AccessMethod::Header );
+    config->setCustomHeader( u"x-auth"_s );
     config->setRequestTimeout( 30 ); // in seconds
+    QVariantMap extraTokens;
+    extraTokens.insert( "id_token", "X-QGS-OPENID" );
+    config->setExtraTokens( extraTokens );
     QVariantMap queryPairs;
     queryPairs.insert( "pf.username", "myusername" );
     queryPairs.insert( "pf.password", "mypassword" );
@@ -147,6 +150,9 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "    \"configType\": 1,\n"
            "    \"customHeader\": \"x-auth\",\n"
            "    \"description\": \"A test config\",\n"
+           "    \"extraTokens\": {\n"
+           "        \"id_token\": \"X-QGS-OPENID\"\n"
+           "    },\n"
            "    \"grantFlow\": 0,\n"
            "    \"id\": \"abc1234\",\n"
            "    \"name\": \"MyConfig\",\n"
@@ -167,7 +173,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "    \"tokenUrl\": \"https://token.oauth2.test\",\n"
            "    \"username\": \"myusername\",\n"
            "    \"version\": 1\n"
-           "}\n";
+           "}";
   }
   else
   {
@@ -178,6 +184,7 @@ QByteArray TestQgsAuthOAuth2Method::baseConfigTxt( bool pretty )
            "\"configType\":1,"
            "\"customHeader\":\"x-auth\","
            "\"description\":\"A test config\","
+           "\"extraTokens\":{\"id_token\":\"X-QGS-OPENID\"},"
            "\"grantFlow\":0,"
            "\"id\":\"abc1234\","
            "\"name\":\"MyConfig\","
@@ -215,6 +222,9 @@ QVariantMap TestQgsAuthOAuth2Method::baseVariantMap()
   vmap.insert( "password", "mypassword" );
   vmap.insert( "persistToken", false );
   vmap.insert( "customHeader", "x-auth" );
+  QVariantMap extraTokens;
+  extraTokens.insert( "id_token", "X-QGS-OPENID" );
+  vmap.insert( "extraTokens", extraTokens );
   QVariantMap qpairs;
   qpairs.insert( "pf.password", "mypassword" );
   qpairs.insert( "pf.username", "myusername" );
@@ -245,17 +255,6 @@ void TestQgsAuthOAuth2Method::testOAuth2Config()
   qDebug() << "Verify base object config";
   QgsAuthOAuth2Config *config1 = new QgsAuthOAuth2Config( qApp );
   QVERIFY( !config1->isValid() );
-
-  qDebug() << "Verify property interface";
-  QObject *configo = config1;
-  QCOMPARE( configo->property( "configType" ).toString(), QString( "1" ) ); // Custom
-  config1->setConfigType( QgsAuthOAuth2Config::Predefined );
-  QCOMPARE( configo->property( "configType" ).toString(), QString( "0" ) );
-  QCOMPARE( QString( "%1" ).arg( config1->configType() ), QString( "0" ) );
-  configo->setProperty( "configType", "Custom" );
-  QCOMPARE( configo->property( "configType" ).toString(), QString( "1" ) );
-
-  config1->deleteLater();
 
   qDebug() << "Verify base object validity";
   QgsAuthOAuth2Config *config2 = baseConfig();
@@ -317,7 +316,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   qDebug() << "Verify saving config to text";
   QgsAuthOAuth2Config *config1 = baseConfig( true );
   bool ok = false;
-  QByteArray cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::JSON, true, &ok );
+  QByteArray cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << "cfgtxt: \n" << cfgtxt;
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( true );
@@ -325,7 +324,7 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   cfgtxt.clear();
 
   ok = false;
-  cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::JSON, false, &ok );
+  cfgtxt = config1->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, false, &ok );
   QVERIFY( ok );
   //qDebug() << "cfgtxt: \n" << cfgtxt;
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( false );
@@ -334,18 +333,18 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   qDebug() << "Verify loading config from text";
   // from base
   QgsAuthOAuth2Config *config2 = new QgsAuthOAuth2Config( qApp );
-  QVERIFY( config2->loadConfigTxt( baseConfigTxt( true ), QgsAuthOAuth2Config::JSON ) );
+  QVERIFY( config2->loadConfigTxt( baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON ) );
   QVERIFY( *config1 == *config2 );
 
   // roundtrip already saved text
   QgsAuthOAuth2Config *config3 = new QgsAuthOAuth2Config( qApp );
-  QVERIFY( config3->loadConfigTxt( cfgtxt, QgsAuthOAuth2Config::JSON ) );
+  QVERIFY( config3->loadConfigTxt( cfgtxt, QgsAuthOAuth2Config::ConfigFormat::JSON ) );
   QVERIFY( *config1 == *config3 );
 
   // roundtrip already loaded obj
   ok = false;
   cfgtxt.clear();
-  cfgtxt = config2->saveConfigTxt( QgsAuthOAuth2Config::JSON, true, &ok );
+  cfgtxt = config2->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok );
   QVERIFY( ok );
   //qDebug() << "cfgtxt: \n" << cfgtxt;
   //qDebug() << "baseConfigTxt: \n" << baseConfigTxt( true );
@@ -367,16 +366,12 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigIO()
   const QString config4path( QDir::tempPath() + "/" + dirname + "/config4.json" );
   const QString config5path( QDir::tempPath() + "/" + dirname + "/config5.json" );
 
-  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config4path, config4,
-           QgsAuthOAuth2Config::JSON, true ) );
-  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config5path, config5,
-           QgsAuthOAuth2Config::JSON, true ) );
+  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config4path, config4, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
+  QVERIFY( QgsAuthOAuth2Config::writeOAuth2Config( config5path, config5, QgsAuthOAuth2Config::ConfigFormat::JSON, true ) );
 
   qDebug() << "Verify reading config files from directory";
   ok = false;
-  QList<QgsAuthOAuth2Config *> configs =
-    QgsAuthOAuth2Config::loadOAuth2Configs( QDir::tempPath() + "/" + dirname,
-        qApp, QgsAuthOAuth2Config::JSON, &ok );
+  QList<QgsAuthOAuth2Config *> configs = QgsAuthOAuth2Config::loadOAuth2Configs( QDir::tempPath() + "/" + dirname, qApp, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
   QVERIFY( ok );
   QCOMPARE( configs.size(), 2 );
   QgsAuthOAuth2Config *config6 = configs.takeFirst();
@@ -404,7 +399,8 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
 
   qDebug() << "Verify serializeFromVariant";
   const QByteArray vtxt = QgsAuthOAuth2Config::serializeFromVariant(
-                            basevmap, QgsAuthOAuth2Config::JSON, true, &ok );
+    basevmap, QgsAuthOAuth2Config::ConfigFormat::JSON, true, &ok
+  );
   QVERIFY( ok );
   //qDebug() << vtxt;
   //qDebug() << baseConfigTxt( true );
@@ -412,110 +408,110 @@ void TestQgsAuthOAuth2Method::testOAuth2ConfigUtils()
 
   qDebug() << "Verify variantFromSerialized";
   const QVariantMap vmap = QgsAuthOAuth2Config::variantFromSerialized(
-                             baseConfigTxt( true ), QgsAuthOAuth2Config::JSON, &ok );
+    baseConfigTxt( true ), QgsAuthOAuth2Config::ConfigFormat::JSON, &ok
+  );
   QVERIFY( ok );
   QCOMPARE( vmap.value( "name" ).toString(), QString( "MyConfig" ) );
   QCOMPARE( vmap, basevmap );
-
 }
 
 void TestQgsAuthOAuth2Method::testDynamicRegistrationNoEndpoint()
 {
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
   QgsAuthOAuth2Config *config = baseConfig();
-  config->setClientId( QString( ) );
-  config->setClientSecret( QString( ) );
+  config->setClientId( QString() );
+  config->setClientSecret( QString() );
   QVariantMap configMap( config->mappedProperties() );
   QCOMPARE( configMap["clientId"].toString(), QString() );
   QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
-  for ( const auto &k : configMap.keys( ) )
+  for ( auto it = configMap.constBegin(); it != configMap.constEnd(); ++it )
   {
-    stringMap[k] = configMap.value( k ).toString();
+    stringMap[it.key()] = it.value().toString();
   }
   dlg.loadConfig( stringMap );
   QCOMPARE( dlg.leClientId->text(), QString() );
   QCOMPARE( dlg.leClientSecret->text(), QString() );
 
   // This JWT does not contain a registration_endpoint
-  dlg.leSoftwareStatementJwtPath->setText( QStringLiteral( "%1/auth_code_grant_display_code.jwt" ).arg( sTestDataDir ) );
-  QVERIFY( ! dlg.btnRegister->isEnabled() );
+  dlg.leSoftwareStatementJwtPath->setText( u"%1/auth_code_grant_display_code.jwt"_s.arg( sTestDataDir ) );
+  QVERIFY( !dlg.btnRegister->isEnabled() );
   QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QString() );
 #endif
 }
 
 void TestQgsAuthOAuth2Method::testDynamicRegistration()
 {
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
   QgsAuthOAuth2Config *config = baseConfig();
-  config->setClientId( QString( ) );
-  config->setClientSecret( QString( ) );
+  config->setClientId( QString() );
+  config->setClientSecret( QString() );
   QVariantMap configMap( config->mappedProperties() );
   QCOMPARE( configMap["clientId"].toString(), QString() );
   QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
-  for ( const auto &k : configMap.keys( ) )
+  for ( auto it = configMap.constBegin(); it != configMap.constEnd(); ++it )
   {
-    stringMap[k] = configMap.value( k ).toString();
+    stringMap[it.key()] = it.value().toString();
   }
   dlg.loadConfig( stringMap );
   QCOMPARE( dlg.leClientId->text(), QString() );
   QCOMPARE( dlg.leClientSecret->text(), QString() );
 
   // This JWT does not contain a registration_endpoint
-  dlg.leSoftwareStatementJwtPath->setText( QStringLiteral( "%1/auth_code_grant_display_code.jwt" ).arg( sTestDataDir ) );
-  QVERIFY( ! dlg.btnRegister->isEnabled() );
+  dlg.leSoftwareStatementJwtPath->setText( u"%1/auth_code_grant_display_code.jwt"_s.arg( sTestDataDir ) );
+  QVERIFY( !dlg.btnRegister->isEnabled() );
   QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QString() );
   // Set the config url to something local
-  dlg.leSoftwareStatementConfigUrl->setText( QUrl::fromLocalFile( QStringLiteral( "%1/auth_code_grant_display_code_get_config.json" ).arg( sTestDataDir ) ).toString( ) );
+  dlg.leSoftwareStatementConfigUrl->setText( QUrl::fromLocalFile( u"%1/auth_code_grant_display_code_get_config.json"_s.arg( sTestDataDir ) ).toString() );
   QVERIFY( dlg.btnRegister->isEnabled() );
   // Change it to something local
-  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString();
+  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( u"%1/client_information_registration_response.json"_s.arg( sTestDataDir ) ).toString();
   QTest::mouseClick( dlg.btnRegister, Qt::MouseButton::LeftButton );
   while ( dlg.mDownloading )
   {
     qApp->processEvents();
   }
-  QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
-  QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+  QCOMPARE( dlg.leClientId->text(), "___QGIS_ROCKS___@www.qgis.org"_L1 );
+  QCOMPARE( dlg.leClientSecret->text(), "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___"_L1 );
 #endif
 }
 
 
 void TestQgsAuthOAuth2Method::testDynamicRegistrationJwt()
 {
-#ifdef WITH_GUI
+#ifdef HAVE_GUI
   QgsAuthOAuth2Config *config = baseConfig();
-  config->setClientId( QString( ) );
-  config->setClientSecret( QString( ) );
+  config->setClientId( QString() );
+  config->setClientSecret( QString() );
   QVariantMap configMap( config->mappedProperties() );
   QCOMPARE( configMap["clientId"].toString(), QString() );
   QCOMPARE( configMap["clientSecret"].toString(), QString() );
   QgsAuthOAuth2Edit dlg;
   QgsStringMap stringMap;
-  for ( const auto &k : configMap.keys( ) )
+  for ( auto it = configMap.constBegin(); it != configMap.constEnd(); ++it )
   {
-    stringMap[k] = configMap.value( k ).toString();
+    stringMap[it.key()] = it.value().toString();
   }
   dlg.loadConfig( stringMap );
   QCOMPARE( dlg.leClientId->text(), QString() );
   QCOMPARE( dlg.leClientSecret->text(), QString() );
 
   // Now set the config URL to the JWT that does contain a registration_endpoint
-  dlg.leSoftwareStatementJwtPath->setText( QStringLiteral( "%1/auth_code_grant_display_code_registration_endpoint.jwt" ).arg( sTestDataDir ) );
-  QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), QStringLiteral( "http://www.qgis.org/oauth2/registration" ) );
+  dlg.leSoftwareStatementJwtPath->setText( u"%1/auth_code_grant_display_code_registration_endpoint.jwt"_s.arg( sTestDataDir ) );
+  QCOMPARE( dlg.leSoftwareStatementConfigUrl->text(), u"http://www.qgis.org/oauth2/registration"_s );
   QVERIFY( dlg.btnRegister->isEnabled() );
   // Change it to something local
-  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( QStringLiteral( "%1/client_information_registration_response.json" ).arg( sTestDataDir ) ).toString();
+  dlg.mRegistrationEndpoint = QUrl::fromLocalFile( u"%1/client_information_registration_response.json"_s.arg( sTestDataDir ) ).toString();
   QTest::mouseClick( dlg.btnRegister, Qt::MouseButton::LeftButton );
   while ( dlg.mDownloading )
   {
     qApp->processEvents();
   }
-  QCOMPARE( dlg.leClientId->text(), QLatin1String( "___QGIS_ROCKS___@www.qgis.org" ) );
-  QCOMPARE( dlg.leClientSecret->text(), QLatin1String( "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___" ) );
+  QCOMPARE( dlg.leClientId->text(), "___QGIS_ROCKS___@www.qgis.org"_L1 );
+  QCOMPARE( dlg.leClientSecret->text(), "___QGIS_ROCKS______QGIS_ROCKS______QGIS_ROCKS___"_L1 );
 #endif
 }
 

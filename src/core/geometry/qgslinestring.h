@@ -19,13 +19,13 @@
 #define QGSLINESTRING_H
 
 
-#include <QPolygonF>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgscurve.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometryutils_base.h"
+
+#include <QPolygonF>
 
 class QgsLineSegment2D;
 class QgsBox3D;
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     % MethodCode
     if ( !PySequence_Check( a0 ) )
     {
-      PyErr_SetString( PyExc_TypeError, QStringLiteral( "A sequence of QgsPoint, QgsPointXY or array of floats is expected" ).toUtf8().constData() );
+      PyErr_SetString( PyExc_TypeError, u"A sequence of QgsPoint, QgsPointXY or array of floats is expected"_s.toUtf8().constData() );
       sipIsErr = 1;
     }
     else
@@ -102,7 +102,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
         PyObject *value = PySequence_GetItem( a0, i );
         if ( !value )
         {
-          PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+          PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
           sipIsErr = 1;
           break;
         }
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
           if ( elementSize < 2 || elementSize > 4 )
           {
             sipIsErr = 1;
-            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid sequence size at index %1. Expected an array of 2-4 float values, got %2." ).arg( i ).arg( elementSize ).toUtf8().constData() );
+            PyErr_SetString( PyExc_TypeError, u"Invalid sequence size at index %1. Expected an array of 2-4 float values, got %2."_s.arg( i ).arg( elementSize ).toUtf8().constData() );
             Py_DECREF( value );
             break;
           }
@@ -125,7 +125,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
               PyObject *element = PySequence_GetItem( value, j );
               if ( !element )
               {
-                PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1." ).arg( i ) .toUtf8().constData() );
+                PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1."_s.arg( i ) .toUtf8().constData() );
                 sipIsErr = 1;
                 break;
               }
@@ -239,7 +239,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
           if ( sipIsErr )
           {
             // couldn't convert the sequence value to a QgsPoint or QgsPointXY
-            PyErr_SetString( PyExc_TypeError, QStringLiteral( "Invalid type at index %1. Expected QgsPoint, QgsPointXY or array of floats." ).arg( i ) .toUtf8().constData() );
+            PyErr_SetString( PyExc_TypeError, u"Invalid type at index %1. Expected QgsPoint, QgsPointXY or array of floats."_s.arg( i ) .toUtf8().constData() );
             break;
           }
         }
@@ -293,14 +293,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
 
     /**
      * Returns a new linestring from a QPolygonF \a polygon input.
      *
      * \since QGIS 3.10
      */
-    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static std::unique_ptr< QgsLineString > fromQPolygonF( const QPolygonF &polygon );
 #ifndef SIP_RUN
   private:
     bool fuzzyHelper( double epsilon,
@@ -992,6 +992,16 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 #endif
 
     /**
+     * Divides the linestring into parts that don't share any points or lines.
+     *
+     * This method throws away Z and M coordinates.
+     *
+     * The ownership of returned pointers is transferred to the caller.
+     * \since QGIS 3.40
+     */
+    QVector<QgsLineString *> splitToDisjointXYParts() const SIP_FACTORY;
+
+    /**
      * Returns the length in 3D world of the line string.
      * If it is not a 3D line string, return its 2D length.
      * \see length()
@@ -1036,6 +1046,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Calculates the shoelace/triangle formula sum for the points in the linestring.
+     * 2D version.
+     *
      * If the linestring is closed (i.e. a polygon) then the polygon area is equal to the absolute value of the sum.
      * Please note that the sum will be negative if the points are defined in clockwise order.
      * Therefore, if you want to use the sum as an area (as the method name indicates) then you probably should use the absolute value,
@@ -1044,8 +1056,21 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void sumUpArea( double &sum SIP_OUT ) const override;
 
+    /**
+     * Calculates the shoelace/triangle formula sum for the points in the linestring.
+     * 3D version.
+     *
+     * If the linestring is closed (i.e. a polygon) then the polygon area is equal to the value of the sum.
+     *
+     * \note If the geometry is 2D, the method falls back to the 2D computation.
+     *
+     * \since QGIS 4.0
+     */
+    void sumUpArea3D( double &sum SIP_OUT ) const override;
+
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
+    double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
 
@@ -1066,12 +1091,29 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * Cast the \a geom to a QgsLineString.
      * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
-    inline static const QgsLineString *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsLineString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString )
         return static_cast<const QgsLineString *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsLineString.
+     * Should be used by qgsgeometry_cast<QgsLineString *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsLineString *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::LineString )
+        return static_cast<QgsLineString *>( geom );
       return nullptr;
     }
 #endif
@@ -1083,8 +1125,8 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsLineString: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsLineString: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 
@@ -1174,10 +1216,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     /**
      * Calculates the minimal 3D bounding box for the geometry.
-     * Deprecated: use calculateBoundingBox3D instead
      * \see calculateBoundingBox()
      * \since QGIS 3.26
-     * \deprecated QGIS 3.34
+     * \deprecated QGIS 3.34. Use calculateBoundingBox3D() instead.
      */
     Q_DECL_DEPRECATED QgsBox3D calculateBoundingBox3d() const SIP_DEPRECATED;
 
@@ -1194,7 +1235,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      *
      * \since QGIS 3.36
      */
-    QgsLineString *measuredLine( double start, double end ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
 
     /**
      * Returns a copy of this line with all missing (NaN) m values interpolated
@@ -1209,7 +1250,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * \see lineLocatePointByM()
      * \since QGIS 3.38
      */
-    QgsLineString *interpolateM( bool use3DDistance = true ) const SIP_FACTORY;
+    std::unique_ptr< QgsLineString > interpolateM( bool use3DDistance = true ) const;
 
     /**
      * Attempts to locate a point on the linestring by m value.

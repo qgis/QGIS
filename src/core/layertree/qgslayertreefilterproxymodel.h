@@ -17,18 +17,18 @@
 #ifndef QGSLAYERTREEFILTERPROXYMODEL_H
 #define QGSLAYERTREEFILTERPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
-
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerproxymodel.h"
+
+#include <QSortFilterProxyModel>
 
 class QgsLayerTreeModel;
 class QgsLayerTreeNode;
 
 /**
  * \ingroup core
- * \brief QgsLayerTreeFilterProxyModel is a sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
+ * \brief A sort filter proxy model to easily reproduce the legend/layer tree in a tree view.
  *
  * Layers are checkable by default.
  * Symbology nodes will not be shown.
@@ -86,13 +86,13 @@ class CORE_EXPORT QgsLayerTreeFilterProxyModel : public QSortFilterProxyModel
      */
     void setFilters( Qgis::LayerFilters filters );
 
-    virtual int columnCount( const QModelIndex &parent ) const override;
-    virtual Qt::ItemFlags flags( const QModelIndex &idx ) const override;
+    int columnCount( const QModelIndex &parent ) const override;
+    Qt::ItemFlags flags( const QModelIndex &idx ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &child ) const override;
     QModelIndex sibling( int row, int column, const QModelIndex &idx ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
     /**
      * Returns TRUE if the specified \a node will be shown in the model.

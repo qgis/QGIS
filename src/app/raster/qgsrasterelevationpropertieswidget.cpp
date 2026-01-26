@@ -14,24 +14,28 @@
  ***************************************************************************/
 
 #include "qgsrasterelevationpropertieswidget.h"
+
 #include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsrasterrendererregistry.h"
 #include "qgsrasterrenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include <QMenu>
+#include "qgsrasterrendererregistry.h"
+
 #include <QAction>
+#include <QMenu>
+
+#include "moc_qgsrasterelevationpropertieswidget.cpp"
 
 QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+  setObjectName( u"mOptsPage_Elevation"_s );
 
   mModeComboBox->addItem( tr( "Disabled" ) );
   mModeComboBox->addItem( tr( "Represents Elevation Surface" ), QVariant::fromValue( Qgis::RasterElevationMode::RepresentsElevationSurface ) );
@@ -59,9 +63,9 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
 
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::Line ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillAbove ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationLine.svg"_s ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillBelow.svg"_s ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillAbove.svg"_s ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
   mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "Not set" ) );
 
   // NOTE -- this doesn't work, there's something broken in QgsStackedWidget which breaks the height calculations
@@ -83,30 +87,27 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
   mCalculateFixedRangePerBandButton->setPopupMode( QToolButton::InstantPopup );
   QAction *calculateLowerAction = new QAction( "Calculate Lower by Expression…", calculateFixedRangePerBandMenu );
   calculateFixedRangePerBandMenu->addAction( calculateLowerAction );
-  connect( calculateLowerAction, &QAction::triggered, this, [this]
-  {
+  connect( calculateLowerAction, &QAction::triggered, this, [this] {
     calculateRangeByExpression( false );
   } );
   QAction *calculateUpperAction = new QAction( "Calculate Upper by Expression…", calculateFixedRangePerBandMenu );
   calculateFixedRangePerBandMenu->addAction( calculateUpperAction );
-  connect( calculateUpperAction, &QAction::triggered, this, [this]
-  {
+  connect( calculateUpperAction, &QAction::triggered, this, [this] {
     calculateRangeByExpression( true );
   } );
 
   syncToLayer( layer );
 
-  connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
-  connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
-  connect( mElevationLimitSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mOffsetZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mScaleZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
+  connect( mElevationLimitSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterElevationPropertiesWidget::modeChanged );
   connect( mLimitsComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsRasterElevationPropertiesWidget::onChanged );
   connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsRasterElevationPropertiesWidget::onChanged );
-  connect( mStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
-  {
-    switch ( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) )
+  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
+    switch ( static_cast<Qgis::ProfileSurfaceSymbology>( mStyleComboBox->currentData().toInt() ) )
     {
       case Qgis::ProfileSurfaceSymbology::Line:
         mSymbologyStackedWidget->setCurrentWidget( mPageLine );
@@ -119,29 +120,27 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
 
     onChanged();
   } );
-  connect( mLowerExpressionWidget, qOverload< const QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString & expression, bool isValid )
-  {
+  connect( mLowerExpressionWidget, qOverload<const QString &, bool>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &expression, bool isValid ) {
     if ( isValid )
       mDynamicRangePerBandModel->setLowerExpression( expression );
   } );
-  connect( mUpperExpressionWidget, qOverload< const QString &, bool >( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString & expression, bool isValid )
-  {
+  connect( mUpperExpressionWidget, qOverload<const QString &, bool>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &expression, bool isValid ) {
     if ( isValid )
       mDynamicRangePerBandModel->setUpperExpression( expression );
   } );
 
-  setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#elevation-properties" ) );
+  setProperty( "helpPage", u"working_with_raster/raster_properties.html#elevation-properties"_s );
 }
 
 void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = qobject_cast< QgsRasterLayer * >( layer );
+  mLayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( !mLayer )
     return;
 
   mBlockUpdates = true;
 
-  const QgsRasterLayerElevationProperties *props = qgis::down_cast< const QgsRasterLayerElevationProperties * >( mLayer->elevationProperties() );
+  const QgsRasterLayerElevationProperties *props = qgis::down_cast<const QgsRasterLayerElevationProperties *>( mLayer->elevationProperties() );
   if ( !props->isEnabled() )
   {
     mModeComboBox->setCurrentIndex( 0 );
@@ -180,11 +179,11 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mBandComboBox->setLayer( mLayer );
   mBandComboBox->setBand( props->bandNumber() );
 
-  if ( props->fixedRange().lower() != std::numeric_limits< double >::lowest() )
+  if ( props->fixedRange().lower() != std::numeric_limits<double>::lowest() )
     mFixedLowerSpinBox->setValue( props->fixedRange().lower() );
   else
     mFixedLowerSpinBox->clear();
-  if ( props->fixedRange().upper() != std::numeric_limits< double >::max() )
+  if ( props->fixedRange().upper() != std::numeric_limits<double>::max() )
     mFixedUpperSpinBox->setValue( props->fixedRange().upper() );
   else
     mFixedUpperSpinBox->clear();
@@ -206,7 +205,7 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mFixedRangePerBandLabel->setText( tr( "This mode cannot be used with a multi-band renderer." ) );
   }
 
-  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast <int >( props->profileSymbology() ) ) );
+  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast<int>( props->profileSymbology() ) ) );
   switch ( props->profileSymbology() )
   {
     case Qgis::ProfileSurfaceSymbology::Line:
@@ -219,24 +218,24 @@ void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   }
 
   mLowerExpressionWidget->setExpression(
-    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ).asExpression() );
+    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandLowerElevation ).asExpression()
+  );
   mUpperExpressionWidget->setExpression(
-    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ).asExpression() );
+    props->dataDefinedProperties().property( QgsMapLayerElevationProperties::Property::RasterPerBandUpperElevation ).asExpression()
+  );
 
   mDynamicRangePerBandModel->setLowerExpression( mLowerExpressionWidget->expression() );
   mDynamicRangePerBandModel->setUpperExpression( mUpperExpressionWidget->expression() );
 
-  QList<QPair<QString, QVariant> > bandChoices;
+  QList<QPair<QString, QVariant>> bandChoices;
   for ( int band = 1; band <= mLayer->bandCount(); ++band )
   {
     bandChoices << qMakePair( mLayer->dataProvider()->displayBandName( band ), band );
   }
-  mLowerExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant & value )-> QgsExpressionContext
-  {
+  mLowerExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
     return createExpressionContextForBand( value.toInt() );
   } );
-  mUpperExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant & value )-> QgsExpressionContext
-  {
+  mUpperExpressionWidget->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
     return createExpressionContextForBand( value.toInt() );
   } );
 
@@ -253,7 +252,7 @@ void QgsRasterElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsRasterLayerElevationProperties *props = qgis::down_cast< QgsRasterLayerElevationProperties * >( mLayer->elevationProperties() );
+  QgsRasterLayerElevationProperties *props = qgis::down_cast<QgsRasterLayerElevationProperties *>( mLayer->elevationProperties() );
 
   if ( !mModeComboBox->currentData().isValid() )
   {
@@ -262,7 +261,7 @@ void QgsRasterElevationPropertiesWidget::apply()
   else
   {
     props->setEnabled( true );
-    props->setMode( mModeComboBox->currentData().value< Qgis::RasterElevationMode >() );
+    props->setMode( mModeComboBox->currentData().value<Qgis::RasterElevationMode>() );
   }
 
   props->setZOffset( mOffsetZSpinBox->value() );
@@ -270,20 +269,20 @@ void QgsRasterElevationPropertiesWidget::apply()
   if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
     props->setElevationLimit( mElevationLimitSpinBox->value() );
   else
-    props->setElevationLimit( std::numeric_limits< double >::quiet_NaN() );
-  props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
-  props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
-  props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
+    props->setElevationLimit( std::numeric_limits<double>::quiet_NaN() );
+  props->setProfileLineSymbol( mLineStyleButton->clonedSymbol<QgsLineSymbol>() );
+  props->setProfileFillSymbol( mFillStyleButton->clonedSymbol<QgsFillSymbol>() );
+  props->setProfileSymbology( static_cast<Qgis::ProfileSurfaceSymbology>( mStyleComboBox->currentData().toInt() ) );
   props->setBandNumber( mBandComboBox->currentBand() );
 
-  double fixedLower = std::numeric_limits< double >::lowest();
-  double fixedUpper = std::numeric_limits< double >::max();
+  double fixedLower = std::numeric_limits<double>::lowest();
+  double fixedUpper = std::numeric_limits<double>::max();
   if ( mFixedLowerSpinBox->value() != mFixedLowerSpinBox->clearValue() )
     fixedLower = mFixedLowerSpinBox->value();
   if ( mFixedUpperSpinBox->value() != mFixedUpperSpinBox->clearValue() )
     fixedUpper = mFixedUpperSpinBox->value();
 
-  props->setFixedRange( QgsDoubleRange( fixedLower, fixedUpper, mLimitsComboBox->currentData().value< Qgis::RangeLimits >() ) );
+  props->setFixedRange( QgsDoubleRange( fixedLower, fixedUpper, mLimitsComboBox->currentData().value<Qgis::RangeLimits>() ) );
 
   props->setFixedRangePerBand( mFixedRangePerBandModel->rangeData() );
 
@@ -299,7 +298,7 @@ void QgsRasterElevationPropertiesWidget::modeChanged()
 {
   if ( mModeComboBox->currentData().isValid() )
   {
-    switch ( mModeComboBox->currentData().value< Qgis::RasterElevationMode >() )
+    switch ( mModeComboBox->currentData().value<Qgis::RasterElevationMode>() )
     {
       case Qgis::RasterElevationMode::FixedElevationRange:
         mStackedWidget->setCurrentWidget( mPageFixedRange );
@@ -335,22 +334,21 @@ void QgsRasterElevationPropertiesWidget::calculateRangeByExpression( bool isUppe
 {
   QgsExpressionContext expressionContext;
   QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), 1, true, false, tr( "Band number" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), mLayer->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), mLayer->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, 1, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, mLayer->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, mLayer->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
 
   expressionContext.appendScope( bandScope );
-  expressionContext.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" )} );
+  expressionContext.setHighlightedVariables( { u"band"_s, u"band_name"_s, u"band_description"_s } );
 
-  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, u"generic"_s, expressionContext );
 
-  QList<QPair<QString, QVariant> > bandChoices;
+  QList<QPair<QString, QVariant>> bandChoices;
   for ( int band = 1; band <= mLayer->bandCount(); ++band )
   {
     bandChoices << qMakePair( mLayer->dataProvider()->displayBandName( band ), band );
   }
-  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant & value )-> QgsExpressionContext
-  {
+  dlg.expressionBuilder()->setCustomPreviewGenerator( tr( "Band" ), bandChoices, [this]( const QVariant &value ) -> QgsExpressionContext {
     return createExpressionContextForBand( value.toInt() );
   } );
 
@@ -365,9 +363,9 @@ void QgsRasterElevationPropertiesWidget::calculateRangeByExpression( bool isUppe
     exp.prepare( &expressionContext );
     for ( int band = 1; band <= mLayer->bandCount(); ++band )
     {
-      bandScope->setVariable( QStringLiteral( "band" ), band );
-      bandScope->setVariable( QStringLiteral( "band_name" ), mLayer->dataProvider()->displayBandName( band ) );
-      bandScope->setVariable( QStringLiteral( "band_description" ), mLayer->dataProvider()->bandDescription( band ) );
+      bandScope->setVariable( u"band"_s, band );
+      bandScope->setVariable( u"band_name"_s, mLayer->dataProvider()->displayBandName( band ) );
+      bandScope->setVariable( u"band_description"_s, mLayer->dataProvider()->bandDescription( band ) );
 
       const QVariant res = exp.evaluate( &expressionContext );
       mFixedRangePerBandModel->setData( mFixedRangePerBandModel->index( band - 1, isUpper ? 2 : 1 ), res, Qt::EditRole );
@@ -380,11 +378,11 @@ QgsExpressionContext QgsRasterElevationPropertiesWidget::createExpressionContext
   QgsExpressionContext context;
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
   context.appendScope( bandScope );
-  context.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" )} );
+  context.setHighlightedVariables( { u"band"_s, u"band_name"_s, u"band_description"_s } );
   return context;
 }
 
@@ -396,13 +394,13 @@ QgsExpressionContext QgsRasterElevationPropertiesWidget::createExpressionContext
 QgsRasterElevationPropertiesWidgetFactory::QgsRasterElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s ) );
   setTitle( tr( "Elevation" ) );
 }
 
 QgsMapLayerConfigWidget *QgsRasterElevationPropertiesWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
 {
-  return new QgsRasterElevationPropertiesWidget( qobject_cast< QgsRasterLayer * >( layer ), canvas, parent );
+  return new QgsRasterElevationPropertiesWidget( qobject_cast<QgsRasterLayer *>( layer ), canvas, parent );
 }
 
 bool QgsRasterElevationPropertiesWidgetFactory::supportLayerPropertiesDialog() const
@@ -422,7 +420,7 @@ bool QgsRasterElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsRasterElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return u"mOptsPage_Metadata"_s;
 }
 
 //
@@ -432,7 +430,6 @@ QString QgsRasterElevationPropertiesWidgetFactory::layerPropertiesPagePositionHi
 QgsRasterBandFixedElevationRangeModel::QgsRasterBandFixedElevationRangeModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
-
 }
 
 int QgsRasterBandFixedElevationRangeModel::columnCount( const QModelIndex & ) const
@@ -508,10 +505,10 @@ QVariant QgsRasterBandFixedElevationRangeModel::data( const QModelIndex &index, 
           return mBandNames.value( band, QString::number( band ) );
 
         case 1:
-          return range.lower() > std::numeric_limits< double >::lowest() ? range.lower() : QVariant();
+          return range.lower() > std::numeric_limits<double>::lowest() ? range.lower() : QVariant();
 
         case 2:
-          return range.upper() < std::numeric_limits< double >::max() ? range.upper() : QVariant();
+          return range.upper() < std::numeric_limits<double>::max() ? range.upper() : QVariant();
 
         default:
           break;
@@ -631,7 +628,6 @@ void QgsRasterBandFixedElevationRangeModel::setLayerData( QgsRasterLayer *layer,
 QgsRasterBandDynamicElevationRangeModel::QgsRasterBandDynamicElevationRangeModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
-
 }
 
 int QgsRasterBandDynamicElevationRangeModel::columnCount( const QModelIndex & ) const
@@ -676,7 +672,8 @@ Qt::ItemFlags QgsRasterBandDynamicElevationRangeModel::flags( const QModelIndex 
     case 1:
     case 2:
 
-      return Qt::ItemFlag::ItemIsEnabled  | Qt::ItemFlag::ItemIsSelectable;;
+      return Qt::ItemFlag::ItemIsEnabled | Qt::ItemFlag::ItemIsSelectable;
+      ;
     default:
       break;
   }
@@ -713,9 +710,9 @@ QVariant QgsRasterBandDynamicElevationRangeModel::data( const QModelIndex &index
           QgsExpressionContext context;
           context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
           QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
           context.appendScope( bandScope );
 
           return expression.evaluate( &context );
@@ -795,7 +792,6 @@ void QgsRasterBandDynamicElevationRangeModel::setUpperExpression( const QString 
 QgsFixedElevationRangeDelegate::QgsFixedElevationRangeDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
-
 }
 
 QWidget *QgsFixedElevationRangeDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
@@ -810,7 +806,7 @@ QWidget *QgsFixedElevationRangeDelegate::createEditor( QWidget *parent, const QS
 
 void QgsFixedElevationRangeDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  if ( QgsDoubleSpinBox *spin = qobject_cast< QgsDoubleSpinBox * >( editor ) )
+  if ( QgsDoubleSpinBox *spin = qobject_cast<QgsDoubleSpinBox *>( editor ) )
   {
     model->setData( index, spin->value() );
   }

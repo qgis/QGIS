@@ -18,10 +18,11 @@
 #ifndef QGSAUTHCONFIGEDIT_H
 #define QGSAUTHCONFIGEDIT_H
 
-#include <QDialog>
-
 #include "ui_qgsauthconfigedit.h"
+
 #include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 
@@ -49,11 +50,10 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
     /**
      * Create a dialog for editing an authentication configuration
      * \param parent Parent widget
-     * \param authcfg Authentication config id for a existing config in auth database
+     * \param authcfg Authentication config id for an existing config in auth database
      * \param dataprovider The provider origin of the edit, to allow for customized code and filtering
      */
-    explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString &authcfg = QString(),
-                                const QString &dataprovider = QString() );
+    explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString &authcfg = QString(), const QString &dataprovider = QString() );
 
     //! Authentication config id, updated with generated id when a new config is saved to auth database
     const QString configId() const { return mAuthCfg; }

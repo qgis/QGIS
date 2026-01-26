@@ -34,7 +34,7 @@ class QgsVtpkVectorTileSourceWidgetProvider : public QgsProviderSourceWidgetProv
     QgsProviderSourceWidget *createWidget( QgsMapLayer *layer, QWidget *parent = nullptr ) override;
 };
 
-class QgsVtpkVectorTileGuiProviderMetadata: public QgsProviderGuiMetadata
+class QgsVtpkVectorTileGuiProviderMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsVtpkVectorTileGuiProviderMetadata();

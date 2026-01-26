@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "qgsbufferserverresponse.h"
+
 #include "qgsmessagelog.h"
 
 //
@@ -37,7 +38,7 @@ void QgsBufferServerResponse::removeHeader( const QString &key )
 
 void QgsBufferServerResponse::setHeader( const QString &key, const QString &value )
 {
-  if ( ! mHeadersSent )
+  if ( !mHeadersSent )
     mHeaders.insert( key, value );
 }
 
@@ -56,7 +57,7 @@ bool QgsBufferServerResponse::headersSent() const
   return mHeadersSent;
 }
 
-void QgsBufferServerResponse::sendError( int code,  const QString &message )
+void QgsBufferServerResponse::sendError( int code, const QString &message )
 {
   if ( mHeadersSent )
   {
@@ -66,7 +67,7 @@ void QgsBufferServerResponse::sendError( int code,  const QString &message )
 
   clear();
   setStatusCode( code );
-  setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/plain; charset=utf-8" ) );
+  setHeader( u"Content-Type"_s, u"text/plain; charset=utf-8"_s );
   write( message );
   finish();
 }
@@ -86,9 +87,9 @@ void QgsBufferServerResponse::finish()
 
   if ( !mHeadersSent )
   {
-    if ( ! mHeaders.contains( "Content-Length" ) )
+    if ( !mHeaders.contains( "Content-Length" ) )
     {
-      mHeaders.insert( QStringLiteral( "Content-Length" ), QString::number( mBuffer.pos() ) );
+      mHeaders.insert( u"Content-Length"_s, QString::number( mBuffer.pos() ) );
     }
   }
   flush();
@@ -97,7 +98,7 @@ void QgsBufferServerResponse::finish()
 
 void QgsBufferServerResponse::flush()
 {
-  if ( ! mHeadersSent )
+  if ( !mHeadersSent )
   {
     mHeadersSent = true;
   }

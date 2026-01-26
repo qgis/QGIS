@@ -9,11 +9,12 @@
 
 
 
+
 class QgsCoordinateOperationWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for selecting the coordinate operation to use when transforming between
-a source and destination coordinate reference system.
+A widget for selecting the coordinate operation to use when transforming
+between a source and destination coordinate reference system.
 
 .. versionadded:: 3.12
 %End
@@ -22,18 +23,17 @@ a source and destination coordinate reference system.
 #include "qgscoordinateoperationwidget.h"
 %End
   public:
-
     struct OperationDetails
     {
-      int sourceTransformId;
+        int sourceTransformId;
 
-      int destinationTransformId;
+        int destinationTransformId;
 
-      QString proj;
+        QString proj;
 
-      bool isAvailable;
+        bool isAvailable;
 
-      bool allowFallback;
+        bool allowFallback;
     };
 
     QgsCoordinateOperationWidget( QWidget *parent = 0 );
@@ -81,8 +81,8 @@ Sets the destination ``crs`` for the operations shown in the widget.
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
-Sets a map ``canvas`` to link to the widget, which allows the widget's choices to reflect
-the current canvas state.
+Sets a map ``canvas`` to link to the widget, which allows the widget's
+choices to reflect the current canvas state.
 %End
 
     void setShowMakeDefault( bool show );
@@ -100,7 +100,7 @@ Returns ``True`` if the "make default" option is selected.
 Returns ``True`` if there is a valid selection in the widget.
 %End
 
-    QList< QgsCoordinateOperationWidget::OperationDetails > availableOperations() const;
+    QList<QgsCoordinateOperationWidget::OperationDetails> availableOperations() const;
 %Docstring
 Returns a list of the available operations shown in the widget.
 %End
@@ -112,23 +112,27 @@ Returns the details of the default operation suggested by the widget.
 
     QgsCoordinateOperationWidget::OperationDetails selectedOperation() const;
 %Docstring
-Returns the details of the operation currently selected within the widget.
+Returns the details of the operation currently selected within the
+widget.
 
 .. seealso:: :py:func:`setSelectedOperation`
 %End
 
     void setSelectedOperation( const QgsCoordinateOperationWidget::OperationDetails &operation );
 %Docstring
-Sets the details of the ``operation`` currently selected within the widget.
+Sets the details of the ``operation`` currently selected within the
+widget.
 
 .. seealso:: :py:func:`selectedOperation`
 %End
 
     void setSelectedOperationUsingContext( const QgsCoordinateTransformContext &context );
 %Docstring
-Automatically sets the selected operation using the settings encapsulated in a transform ``context``.
+Automatically sets the selected operation using the settings
+encapsulated in a transform ``context``.
 
-If no matching operations are found within the context then the :py:func:`~QgsCoordinateOperationWidget.defaultOperation` will be
+If no matching operations are found within the context then the
+:py:func:`~QgsCoordinateOperationWidget.defaultOperation` will be
 selected.
 %End
 

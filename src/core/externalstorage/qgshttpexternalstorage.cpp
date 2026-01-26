@@ -13,19 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshttpexternalstorage_p.h"
-
-#include "qgsnetworkcontentfetcherregistry.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
 #include "qgsapplication.h"
+#include "qgsblockingnetworkrequest.h"
 #include "qgsfeedback.h"
+#include "qgshttpexternalstorage_p.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsnetworkcontentfetcherregistry.h"
+#include "qgssetrequestinitiator_p.h"
 
-#include <QFile>
-#include <QPointer>
-#include <QFileInfo>
 #include <QCryptographicHash>
+#include <QFile>
+#include <QFileInfo>
+#include <QPointer>
 
 ///@cond PRIVATE
 
@@ -34,9 +33,11 @@ QgsHttpExternalStorageStoreTask::QgsHttpExternalStorageStoreTask( const QUrl &ur
   , mUrl( url )
   , mFilePath( filePath )
   , mAuthCfg( authCfg )
-  , mFeedback( new QgsFeedback( this ) )
+  , mFeedback( std::make_unique<QgsFeedback>( this ) )
 {
 }
+
+QgsHttpExternalStorageStoreTask::~QgsHttpExternalStorageStoreTask() = default;
 
 bool QgsHttpExternalStorageStoreTask::run()
 {
@@ -44,13 +45,14 @@ bool QgsHttpExternalStorageStoreTask::run()
   request.setAuthCfg( mAuthCfg );
 
   QNetworkRequest req( mUrl );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsHttpExternalStorageStoreTask" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsHttpExternalStorageStoreTask"_s );
 
-  QFile *f = new QFile( mFilePath );
-  f->open( QIODevice::ReadOnly );
+  QFile f( mFilePath );
+  if ( !f.open( QIODevice::ReadOnly ) )
+    return false;
 
   if ( mPrepareRequestHandler )
-    mPrepareRequestHandler( req, f );
+    mPrepareRequestHandler( req, &f );
 
   connect( &request, &QgsBlockingNetworkRequest::uploadProgress, this, [this]( qint64 bytesReceived, qint64 bytesTotal )
   {
@@ -61,7 +63,7 @@ bool QgsHttpExternalStorageStoreTask::run()
     }
   } );
 
-  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, f, mFeedback.get() );
+  QgsBlockingNetworkRequest::ErrorCode err = request.put( req, &f, mFeedback.get() );
 
   if ( err != QgsBlockingNetworkRequest::NoError )
   {
@@ -84,7 +86,7 @@ QString QgsHttpExternalStorageStoreTask::errorString() const
 
 void QgsHttpExternalStorageStoreTask::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
 {
-  mPrepareRequestHandler = handler;
+  mPrepareRequestHandler = std::move( handler );
 }
 
 QgsHttpExternalStorageStoredContent::QgsHttpExternalStorageStoredContent( const QString &filePath, const QString &url, const QString &authcfg )
@@ -142,7 +144,7 @@ QString QgsHttpExternalStorageStoredContent::url() const
 
 void QgsHttpExternalStorageStoredContent::setPrepareRequestHandler( std::function< void( QNetworkRequest &request, QFile *f ) > handler )
 {
-  mUploadTask->setPrepareRequestHandler( handler );
+  mUploadTask->setPrepareRequestHandler( std::move( handler ) );
 }
 
 
@@ -200,7 +202,7 @@ void QgsHttpExternalStorageFetchedContent::cancel()
 
 QString QgsWebDavExternalStorage::type() const
 {
-  return QStringLiteral( "WebDAV" );
+  return u"WebDAV"_s;
 };
 
 QString QgsWebDavExternalStorage::displayName() const
@@ -225,7 +227,7 @@ QgsExternalStorageFetchedContent *QgsWebDavExternalStorage::doFetch( const QStri
 
 QString QgsAwsS3ExternalStorage::type() const
 {
-  return QStringLiteral( "AWSS3" );
+  return u"AWSS3"_s;
 };
 
 QString QgsAwsS3ExternalStorage::displayName() const
@@ -235,7 +237,7 @@ QString QgsAwsS3ExternalStorage::displayName() const
 
 QgsExternalStorageStoredContent *QgsAwsS3ExternalStorage::doStore( const QString &filePath, const QString &url, const QString &authcfg ) const
 {
-  std::unique_ptr<QgsHttpExternalStorageStoredContent> storedContent = std::make_unique<QgsHttpExternalStorageStoredContent>( filePath, url, authcfg );
+  auto storedContent = std::make_unique<QgsHttpExternalStorageStoredContent>( filePath, url, authcfg );
   storedContent->setPrepareRequestHandler( []( QNetworkRequest & request, QFile * f )
   {
     QCryptographicHash payloadCrypto( QCryptographicHash::Sha256 );

@@ -17,19 +17,21 @@
 #define QGSSMARTGROUPEDITORDIALOG_H
 
 #include "ui_qgssmartgroupconditionwidget.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 /**
  * \ingroup gui
  * \class QgsSmartGroupCondition
+ * \brief A widget for configuring the conditions attached to a style smart group.
  */
 class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGroupConditionWidget
 {
     Q_OBJECT
 
   public:
-    QgsSmartGroupCondition( int id,  QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsSmartGroupCondition( int id, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! returns the constraint key
     QString constraint();
@@ -58,7 +60,6 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 
   protected:
     int mConditionId;
-
 };
 
 
@@ -71,6 +72,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 /**
  * \ingroup gui
  * \class QgsSmartGroupEditorDialog
+ * \brief A dialog for configuring a style smart group.
  */
 class GUI_EXPORT QgsSmartGroupEditorDialog : public QDialog, private Ui::QgsSmartGroupEditorDialogBase
 {

@@ -18,15 +18,17 @@
 #ifndef QGSCOLORRAMPSHADERWIDGET_H
 #define QGSCOLORRAMPSHADERWIDGET_H
 
-#include <QStyledItemDelegate>
-#include <QPointer>
-
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgscolorramplegendnodesettings.h"
-#include "qgsrectangle.h"
-#include "qgscolorrampshader.h"
+#include "qgsconfig.h"
 #include "ui_qgscolorrampshaderwidgetbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscolorramplegendnodesettings.h"
+#include "qgscolorrampshader.h"
+#include "qgsrectangle.h"
+
+#include <QPointer>
+#include <QStyledItemDelegate>
 
 class QgsRasterDataProvider;
 class QgsLocaleAwareNumericLineEditDelegate;
@@ -35,20 +37,20 @@ class QgsLocaleAwareNumericLineEditDelegate;
  * \ingroup gui
  * \class QgsColorRampShaderWidget
  *
- * \brief It has 2 ways how to use it. For raster layers, raster data provider and band is assigned and
+ * \brief A widget for configuring numeric ranges associated with a color ramp.
+ *
+ * It has 2 ways how to use it. For raster layers, raster data provider and band is assigned and
  * the Quantile classification mode can be used and the LoadFromBandButton is visible.
  *
  * The other mode is used to style mesh layer contours (scalar datasets)
  *
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColorRampShaderWidgetBase
+class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, private Ui::QgsColorRampShaderWidgetBase
 {
-
     Q_OBJECT
 
   public:
-
     //! Creates new color ramp shader widget
     QgsColorRampShaderWidget( QWidget *parent = nullptr );
     ~QgsColorRampShaderWidget() override;
@@ -104,12 +106,10 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     void loadMinimumMaximumFromTree();
 
   protected:
-
     //! Populates color ramp tree from ramp items
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 
   private:
-
     enum Column
     {
       ValueColumn = 0,
@@ -166,15 +166,13 @@ class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColo
     double mMax = std::numeric_limits<double>::quiet_NaN();
 
     // For mode with raster layer
-    QPointer< QgsRasterDataProvider > mRasterDataProvider;
+    QPointer<QgsRasterDataProvider> mRasterDataProvider;
     int mBand = -1;
     QgsRectangle mExtent;
     QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
     QgsColorRampLegendNodeSettings mLegendSettings;
 
     int mBlockChanges = 0;
-
-
 };
 
 #endif // QGSCOLORRAMPSHADERWIDGET_H

@@ -15,10 +15,11 @@
 #ifndef QGSCOLORBUTTON_H
 #define QGSCOLORBUTTON_H
 
-#include <QColorDialog>
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QColorDialog>
+#include <QToolButton>
 
 class QMimeData;
 class QgsColorSchemeRegistry;
@@ -27,13 +28,15 @@ class QgsPanelWidget;
 /**
  * \ingroup gui
  * \class QgsColorButton
- * \brief A cross platform button subclass for selecting colors. Will open a color chooser dialog when clicked.
+ * \brief A cross platform button subclass for selecting colors.
+ *
+ * Will open a color chooser dialog when clicked.
+ *
  * Offers live updates to button from color chooser dialog. An attached drop-down menu allows for copying
  * and pasting colors, picking colors from the screen, and selecting colors from color swatch grids.
  */
 class GUI_EXPORT QgsColorButton : public QToolButton
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsColorButton *>( sipCpp ) )
@@ -56,14 +59,13 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
-
     /**
      * Specifies the behavior when the button is clicked
      */
     enum Behavior
     {
       ShowDialog = 0, //!< Show a color picker dialog when clicked
-      SignalOnly //!< Emit colorClicked signal only, no dialog
+      SignalOnly      //!< Emit colorClicked signal only, no dialog
     };
     Q_ENUM( Behavior )
 
@@ -408,7 +410,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void unlinked();
 
   protected:
-
     bool event( QEvent *e ) override;
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
@@ -457,7 +458,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void wheelEvent( QWheelEvent *event ) override;
 
   private:
-
     Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;

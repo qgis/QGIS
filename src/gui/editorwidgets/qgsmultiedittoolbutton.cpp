@@ -14,22 +14,26 @@
  ***************************************************************************/
 
 #include "qgsmultiedittoolbutton.h"
+
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
 #include <QMenu>
+
+#include "moc_qgsmultiedittoolbutton.cpp"
+
 QgsMultiEditToolButton::QgsMultiEditToolButton( QWidget *parent )
   : QToolButton( parent )
 {
   setFocusPolicy( Qt::StrongFocus );
 
   // set default tool button icon properties
-  setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
+  setStyleSheet( u"QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }"_s );
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   setIconSize( QSize( iconSize, iconSize ) );
   // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
-  setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
+  setFixedSize( 2 * static_cast<int>( 1.25 * iconSize / 2.0 ), 2 * static_cast<int>( iconSize * 1.1 / 2.0 ) );
 
   setPopupMode( QToolButton::InstantPopup );
 
@@ -56,7 +60,7 @@ void QgsMultiEditToolButton::aboutToShowMenu()
     case MixedValues:
     {
       const QString title = !mField.name().isEmpty() ? tr( "Set %1 for All Selected Features" ).arg( mField.name() )
-                            : tr( "Set field for all selected features" );
+                                                     : tr( "Set field for all selected features" );
       QAction *setFieldAction = mMenu->addAction( title );
       connect( setFieldAction, &QAction::triggered, this, &QgsMultiEditToolButton::setFieldTriggered );
       break;
@@ -99,15 +103,15 @@ void QgsMultiEditToolButton::updateState()
   switch ( mState )
   {
     case Default:
-      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditSameValues.svg" ) );
+      icon = QgsApplication::getThemeIcon( u"/multieditSameValues.svg"_s );
       tooltip = tr( "All features in selection have equal value for '%1'" ).arg( mField.name() );
       break;
     case MixedValues:
-      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditMixedValues.svg" ) );
+      icon = QgsApplication::getThemeIcon( u"/multieditMixedValues.svg"_s );
       tooltip = tr( "Some features in selection have different values for '%1'" ).arg( mField.name() );
       break;
     case Changed:
-      icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditChangedValues.svg" ) );
+      icon = QgsApplication::getThemeIcon( u"/multieditChangedValues.svg"_s );
       tooltip = tr( "Values for '%1' have unsaved changes" ).arg( mField.name() );
       break;
   }

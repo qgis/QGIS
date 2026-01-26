@@ -16,9 +16,9 @@
 #ifndef QGSNULLMATERIALWIDGET_H
 #define QGSNULLMATERIALWIDGET_H
 
-#include "qgsmaterialsettingswidget.h"
+#include "ui_nullmaterialwidget.h"
 
-#include <ui_nullmaterialwidget.h>
+#include "qgsmaterialsettingswidget.h"
 
 class QgsNullMaterialSettings;
 
@@ -33,7 +33,6 @@ class QgsNullMaterialWidget : public QgsMaterialSettingsWidget, private Ui::Null
     static QgsMaterialSettingsWidget *create();
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     QgsAbstractMaterialSettings *settings() override;
-
 };
 
 #endif // QGSNULLMATERIALWIDGET_H

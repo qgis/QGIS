@@ -22,6 +22,7 @@
 #include "ui_qgsattributesforminitcode.h"
 
 #include "qgis_gui.h"
+
 #include <QWidget>
 
 class QDialog;
@@ -31,7 +32,7 @@ class QDialog;
  * \class QgsAttributesFormInitCode
  * \brief A dialog for configuring the Python init code handling for attribute forms.
  */
-class GUI_EXPORT QgsAttributesFormInitCode: public QDialog, private Ui::QgsAttributesFormInitCode
+class GUI_EXPORT QgsAttributesFormInitCode : public QDialog, private Ui::QgsAttributesFormInitCode
 {
     Q_OBJECT
 

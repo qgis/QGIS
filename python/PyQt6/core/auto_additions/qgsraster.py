@@ -2,5 +2,5 @@
 try:
     QgsRaster.representableValue = staticmethod(QgsRaster.representableValue)
     QgsRaster.__group__ = ['raster']
-except NameError:
+except (NameError, AttributeError):
     pass

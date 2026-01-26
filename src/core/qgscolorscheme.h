@@ -18,13 +18,13 @@
 #ifndef QGSCOLORSCHEME_H
 #define QGSCOLORSCHEME_H
 
-#include <QString>
-#include <QColor>
-#include <QPair>
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QColor>
+#include <QObject>
+#include <QPair>
+#include <QString>
 
 /**
  * \ingroup core
@@ -35,7 +35,7 @@ typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 /**
  * \ingroup core
  * \class QgsColorScheme
- * \brief Abstract base class for color schemes
+ * \brief Abstract base class for color schemes.
  *
  * A color scheme for display in QgsColorButton. Color schemes return lists
  * of colors with an optional associated color name. The colors returned

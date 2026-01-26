@@ -21,6 +21,7 @@
 #define CL_HPP_ENABLE_EXCEPTIONS
 
 #include <QtGlobal>
+
 #ifdef Q_OS_MAC
 #define CL_HPP_MINIMUM_OPENCL_VERSION 120
 #define CL_HPP_TARGET_OPENCL_VERSION 120
@@ -47,7 +48,9 @@
 /**
  * \ingroup core
  * \class QgsOpenClUtils
- * \brief The QgsOpenClUtils class is responsible for common OpenCL operations such as
+ * \brief Utilities responsible for common OpenCL operations.
+ *
+ * These operations include:
  *
  * - enable/disable opencl
  * - store and retrieve preferences for the default device
@@ -67,7 +70,7 @@
  *    cl::Context ctx = QgsOpenClUtils::context();
  *    cl::CommandQueue queue( ctx );
  *    // Load the program from a standard location and build it
- *    cl::Program program = QgsOpenClUtils::buildProgram( ctx, QgsOpenClUtils::sourceFromBaseName( QStringLiteral ( "hillshade" ) ) );
+ *    cl::Program program = QgsOpenClUtils::buildProgram( ctx, QgsOpenClUtils::sourceFromBaseName( u"hillshade"_s ) );
  *    // Continue with the usual OpenCL buffer, kernel and execution
  *    ...
  * }
@@ -311,6 +314,8 @@ class CORE_EXPORT QgsOpenClUtils
      * \see available()
      */
     static bool activate( const QString &preferredDeviceId = QString() );
+
+    static bool activateInternal( const QString &preferredDeviceId );
 
     /**
      * Initialize the OpenCL system by setting and activating the default device.

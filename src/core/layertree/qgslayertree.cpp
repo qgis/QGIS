@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgslayertree.h"
+
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgslayertree.cpp"
 
 QgsLayerTree::QgsLayerTree()
 {
@@ -104,9 +107,14 @@ void QgsLayerTree::setHasCustomLayerOrder( bool hasCustomLayerOrder )
   emit layerOrderChanged();
 }
 
-QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteContext &context )
+QList< QgsLayerTreeNode * > QgsLayerTree::layerAndCustomNodeOrder() const
 {
-  QgsLayerTree *tree = new QgsLayerTree();
+  return layerAndCustomNodeOrderRespectingGroupLayers();
+}
+
+std::unique_ptr< QgsLayerTree > QgsLayerTree::readXml( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+{
+  auto tree = std::make_unique< QgsLayerTree >();
 
   tree->readCommonXml( element );
 
@@ -118,15 +126,15 @@ QgsLayerTree *QgsLayerTree::readXml( QDomElement &element, const QgsReadWriteCon
 void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteContext &context )
 {
   QDomDocument doc = parentElement.ownerDocument();
-  QDomElement elem = doc.createElement( QStringLiteral( "layer-tree-group" ) );
+  QDomElement elem = doc.createElement( u"layer-tree-group"_s );
 
   writeCommonXml( elem );
 
   for ( QgsLayerTreeNode *node : std::as_const( mChildren ) )
     node->writeXml( elem, context );
 
-  QDomElement customOrderElem = doc.createElement( QStringLiteral( "custom-order" ) );
-  customOrderElem.setAttribute( QStringLiteral( "enabled" ), mHasCustomLayerOrder ? 1 : 0 );
+  QDomElement customOrderElem = doc.createElement( u"custom-order"_s );
+  customOrderElem.setAttribute( u"enabled"_s, mHasCustomLayerOrder ? 1 : 0 );
   elem.appendChild( customOrderElem );
 
   for ( QgsMapLayer *layer : std::as_const( mCustomLayerOrder ) )
@@ -135,7 +143,7 @@ void QgsLayerTree::writeXml( QDomElement &parentElement, const QgsReadWriteConte
     // Crash when deleting an item from the layout legend
     if ( ! layer )
       continue;
-    QDomElement layerElem = doc.createElement( QStringLiteral( "item" ) );
+    QDomElement layerElem = doc.createElement( u"item"_s );
     layerElem.appendChild( doc.createTextNode( layer->id() ) );
     customOrderElem.appendChild( layerElem );
   }
@@ -245,16 +253,16 @@ void QgsLayerTree::readLayerOrderFromXml( const QDomElement &elem )
 {
   QStringList order;
 
-  QDomElement customOrderElem = elem.firstChildElement( QStringLiteral( "custom-order" ) );
+  QDomElement customOrderElem = elem.firstChildElement( u"custom-order"_s );
   if ( !customOrderElem.isNull() )
   {
-    setHasCustomLayerOrder( customOrderElem.attribute( QStringLiteral( "enabled" ) ).toInt() );
+    setHasCustomLayerOrder( customOrderElem.attribute( u"enabled"_s ).toInt() );
 
-    QDomElement itemElem = customOrderElem.firstChildElement( QStringLiteral( "item" ) );
+    QDomElement itemElem = customOrderElem.firstChildElement( u"item"_s );
     while ( !itemElem.isNull() )
     {
       order.append( itemElem.text() );
-      itemElem = itemElem.nextSiblingElement( QStringLiteral( "item" ) );
+      itemElem = itemElem.nextSiblingElement( u"item"_s );
     }
   }
 

@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
 
 //qgis includes...
 #include <qgsmaplayer.h>
@@ -45,20 +46,22 @@ class TestQgsFilledMarkerSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsFilledMarkerSymbol() : QgsTest( QStringLiteral( "Filled Marker Tests" ), QStringLiteral( "symbol_filledmarker" ) ) {}
+    TestQgsFilledMarkerSymbol()
+      : QgsTest( u"Filled Marker Tests"_s, u"symbol_filledmarker"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void filledMarkerSymbol();
     void dataDefinedShape();
     void bounds();
     void opacityWithDataDefinedColor();
     void dataDefinedOpacity();
+    void centroidFillSubSymbol();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
 
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPointsLayer = nullptr;
@@ -86,8 +89,7 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   //
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
-  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
 
   //setup symbol
   QgsGradientFillSymbolLayer *gradientFill = new QgsGradientFillSymbolLayer();
@@ -114,7 +116,6 @@ void TestQgsFilledMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
-
 }
 void TestQgsFilledMarkerSymbol::cleanupTestCase()
 {
@@ -136,7 +137,7 @@ void TestQgsFilledMarkerSymbol::dataDefinedShape()
 {
   mFilledMarkerLayer->setShape( Qgis::MarkerShape::Circle );
   mFilledMarkerLayer->setSize( 10 );
-  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( QStringLiteral( "if(\"class\"='Jet','square','star')" ) ) );
+  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Name, QgsProperty::fromExpression( u"if(\"class\"='Jet','square','star')"_s ) );
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   const bool result = QGSRENDERMAPSETTINGSCHECK( "filledmarker_datadefinedshape", "filledmarker_datadefinedshape", mMapSettings );
@@ -149,7 +150,7 @@ void TestQgsFilledMarkerSymbol::bounds()
   mFilledMarkerLayer->setColor( QColor( 200, 200, 200 ) );
   mFilledMarkerLayer->setShape( Qgis::MarkerShape::Circle );
   mFilledMarkerLayer->setSize( 5 );
-  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
+  mFilledMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( u"min(\"importance\" * 2, 6)"_s ) );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
   mMapSettings.setExtent( mpPointsLayer->extent() );
@@ -162,10 +163,10 @@ void TestQgsFilledMarkerSymbol::bounds()
 
 void TestQgsFilledMarkerSymbol::opacityWithDataDefinedColor()
 {
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor( QColor( 200, 200, 200 ) );
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor2( QColor( 0, 0, 0 ) );
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::SecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor( QColor( 200, 200, 200 ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor2( QColor( 0, 0, 0 ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( u"if(importance > 2, 'red', 'green')"_s ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::SecondaryColor, QgsProperty::fromExpression( u"if(importance > 2, 'blue', 'magenta')"_s ) );
   mMarkerSymbol->setOpacity( 0.8 );
   // set opacity on both the symbol AND sub symbol to test that both are applied
   mFilledMarkerLayer->subSymbol()->setOpacity( 0.6 );
@@ -183,19 +184,46 @@ void TestQgsFilledMarkerSymbol::opacityWithDataDefinedColor()
 
 void TestQgsFilledMarkerSymbol::dataDefinedOpacity()
 {
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor( QColor( 200, 200, 200 ) );
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor2( QColor( 0, 0, 0 ) );
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::SecondaryColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
-  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor( QColor( 200, 200, 200 ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setColor2( QColor( 0, 0, 0 ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( u"if(importance > 2, 'red', 'green')"_s ) );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::SecondaryColor, QgsProperty::fromExpression( u"if(importance > 2, 'blue', 'magenta')"_s ) );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( u"if(\"Heading\" > 100, 25, 50)"_s ) );
 
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );
   const bool result = QGSRENDERMAPSETTINGSCHECK( "filledmarker_ddopacity", "filledmarker_ddopacity", mMapSettings );
 
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty() );
-  qgis::down_cast< QgsGradientFillSymbolLayer * >( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty() );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty() );
+  qgis::down_cast<QgsGradientFillSymbolLayer *>( mFilledMarkerLayer->subSymbol()->symbolLayer( 0 ) )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty() );
   mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty() );
+  QVERIFY( result );
+}
+
+void TestQgsFilledMarkerSymbol::centroidFillSubSymbol()
+{
+  std::unique_ptr< QgsSymbol > prevFill( mFilledMarkerLayer->subSymbol()->clone() );
+  auto fillSymbol = std::make_unique< QgsFillSymbol >();
+  auto simpleFill = std::make_unique< QgsSimpleFillSymbolLayer >();
+  simpleFill->setFillColor( QColor( 0, 255, 0, 100 ) );
+  simpleFill->setStrokeStyle( Qt::NoPen );
+  auto centroidFill = std::make_unique< QgsCentroidFillSymbolLayer >();
+  auto simpleMarker = std::make_unique< QgsSimpleMarkerSymbolLayer >();
+  simpleMarker->setFillColor( QColor( 255, 0, 0 ) );
+  simpleMarker->setStrokeStyle( Qt::NoPen );
+  auto centroidFillMarker = std::make_unique< QgsMarkerSymbol >();
+  centroidFillMarker->changeSymbolLayer( 0, simpleMarker.release() );
+  centroidFill->setSubSymbol( centroidFillMarker.release() );
+
+  fillSymbol->changeSymbolLayer( 0, centroidFill.release() );
+  fillSymbol->appendSymbolLayer( simpleFill.release() );
+
+  mFilledMarkerLayer->setSubSymbol( fillSymbol.release() );
+
+  mMapSettings.setExtent( mpPointsLayer->extent() );
+  mMapSettings.setOutputDpi( 96 );
+  const bool result = QGSRENDERMAPSETTINGSCHECK( "filledmarker_centroid", "filledmarker_centroid", mMapSettings );
+  mFilledMarkerLayer->setSubSymbol( prevFill.release() );
   QVERIFY( result );
 }
 

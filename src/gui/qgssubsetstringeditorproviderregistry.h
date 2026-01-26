@@ -17,11 +17,11 @@
 #ifndef QGSSUBSETSTRINGEDITORPROVIDERREGISTRY_H
 #define QGSSUBSETSTRINGEDITORPROVIDERREGISTRY_H
 
-#include <QWidget>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
+
+#include <QWidget>
 
 class QgsSubsetStringEditorInterface;
 class QgsSubsetStringEditorProvider;
@@ -30,7 +30,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief This class keeps a list of subset string editor providers.
+ * \brief A registry for subset string editor providers.
  *
  * QgsSubsetStringEditorProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::subsetStringEditorProvideRegistry().
@@ -40,7 +40,6 @@ class QgsVectorLayer;
 class GUI_EXPORT QgsSubsetStringEditorProviderRegistry
 {
   public:
-
     QgsSubsetStringEditorProviderRegistry();
     ~QgsSubsetStringEditorProviderRegistry();
 
@@ -48,7 +47,7 @@ class GUI_EXPORT QgsSubsetStringEditorProviderRegistry
     QgsSubsetStringEditorProviderRegistry &operator=( const QgsSubsetStringEditorProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers
-    QList< QgsSubsetStringEditorProvider *> providers();
+    QList<QgsSubsetStringEditorProvider *> providers();
 
     //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsSubsetStringEditorProvider *provider SIP_TRANSFER );

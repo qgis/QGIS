@@ -14,13 +14,16 @@
  ***************************************************************************/
 #include "qgslayoutlegendlayersdialog.h"
 
-#include <QStandardItem>
+#include "qgsgui.h"
+#include "qgshelp.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgshelp.h"
+
+#include <QStandardItem>
+
+#include "moc_qgslayoutlegendlayersdialog.cpp"
 
 QgsLayoutLegendLayersDialog::QgsLayoutLegendLayersDialog( QWidget *parent )
   : QDialog( parent )
@@ -50,9 +53,9 @@ void QgsLayoutLegendLayersDialog::setVisibleLayers( const QList<QgsMapLayer *> &
   mVisibleLayers = layers;
 }
 
-QList< QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
+QList<QgsMapLayer *> QgsLayoutLegendLayersDialog::selectedLayers() const
 {
-  QList< QgsMapLayer * > layers;
+  QList<QgsMapLayer *> layers;
 
   const QModelIndexList selection = listMapLayers->selectionModel()->selectedIndexes();
   for ( const QModelIndex &index : selection )
@@ -75,10 +78,10 @@ void QgsLayoutLegendLayersDialog::filterVisible( bool enabled )
   if ( enabled )
     mModel->setLayerAllowlist( mVisibleLayers );
   else
-    mModel->setLayerAllowlist( QList< QgsMapLayer * >() );
+    mModel->setLayerAllowlist( QList<QgsMapLayer *>() );
 }
 
 void QgsLayoutLegendLayersDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_legend.html#legend-items" ) );
+  QgsHelp::openHelp( u"print_composer/composer_items/composer_legend.html#legend-items"_s );
 }

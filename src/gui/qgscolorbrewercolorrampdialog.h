@@ -16,12 +16,14 @@
 #ifndef QGSCOLORBREWERCOLORRAMPDIALOG_H
 #define QGSCOLORBREWERCOLORRAMPDIALOG_H
 
-#include <QDialog>
-#include "qgspanelwidget.h"
-#include "qgscolorrampimpl.h"
 #include "ui_qgscolorbrewercolorrampwidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscolorrampimpl.h"
+#include "qgspanelwidget.h"
+
+#include <QDialog>
 
 class QgsColorBrewerColorRamp;
 class QDialogButtonBox;
@@ -37,7 +39,6 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
     Q_PROPERTY( QgsColorBrewerColorRamp ramp READ ramp WRITE setRamp )
 
   public:
-
     /**
      * Constructor for QgsColorBrewerColorRampWidget.
      * \param ramp initial ramp to show in dialog
@@ -69,7 +70,6 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
     void populateVariants();
 
   private:
-
     void updatePreview();
     void updateUi();
 
@@ -87,7 +87,6 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
     Q_PROPERTY( QgsColorBrewerColorRamp ramp READ ramp WRITE setRamp )
 
   public:
-
     /**
      * Constructor for QgsColorBrewerColorRampDialog.
      * \param ramp initial ramp to show in dialog
@@ -120,14 +119,12 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
     void changed();
 
   private:
-
     QgsColorBrewerColorRampWidget *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
 
     void showHelp();
-
 };
 
 #endif

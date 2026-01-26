@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     qgssettings.py
@@ -22,7 +20,9 @@ from qgis.core import QgsSettings
 import qgis  # required to get base class of enums
 
 
-def _qgssettings_enum_value(self, key, enumDefaultValue, section=QgsSettings.Section.NoSection):
+def _qgssettings_enum_value(
+    self, key, enumDefaultValue, section=QgsSettings.Section.NoSection
+):
     """
     Return the setting value for a setting based on an enum.
     This forces the output to be a valid and existing entry of the enum.
@@ -41,8 +41,11 @@ def _qgssettings_enum_value(self, key, enumDefaultValue, section=QgsSettings.Sec
     meta_enum = metaEnumFromValue(enumDefaultValue)
     if meta_enum is None or not meta_enum.isValid():
         # this should not happen
-        raise ValueError("could not get the meta enum for given enum default value (type: {})"
-                         .format(enumDefaultValue.__class__))
+        raise ValueError(
+            "could not get the meta enum for given enum default value (type: {})".format(
+                enumDefaultValue.__class__
+            )
+        )
 
     str_val = self.value(key, meta_enum.valueToKey(enumDefaultValue), str, section)
     # need a new meta enum as QgsSettings.value is making a copy and leads to seg fault (probably a PyQt issue)
@@ -58,7 +61,9 @@ def _qgssettings_enum_value(self, key, enumDefaultValue, section=QgsSettings.Sec
     return enu_val
 
 
-def _qgssettings_set_enum_value(self, key, enumValue, section=QgsSettings.Section.NoSection):
+def _qgssettings_set_enum_value(
+    self, key, enumValue, section=QgsSettings.Section.NoSection
+):
     """
     Save the setting value for a setting based on an enum.
     This forces the output to be a valid and existing entry of the enum.
@@ -76,12 +81,16 @@ def _qgssettings_set_enum_value(self, key, enumValue, section=QgsSettings.Sectio
     meta_enum = metaEnumFromValue(enumValue)
     if meta_enum is None or not meta_enum.isValid():
         # this should not happen
-        raise ValueError("could not get the meta enum for given enum default value (type: {})".format(type(enumValue)))
+        raise ValueError(
+            f"could not get the meta enum for given enum default value (type: {type(enumValue)})"
+        )
 
     self.setValue(key, meta_enum.valueToKey(enumValue), section)
 
 
-def _qgssettings_flag_value(self, key, flagDefaultValue, section=QgsSettings.Section.NoSection):
+def _qgssettings_flag_value(
+    self, key, flagDefaultValue, section=QgsSettings.Section.NoSection
+):
     """
     Return the setting value for a setting based on a flag.
     This forces the output to be a valid and existing entry of the enum.
@@ -92,32 +101,18 @@ def _qgssettings_flag_value(self, key, flagDefaultValue, section=QgsSettings.Sec
     :param flagDefaultValue: the default value as a flag value
     :param section: optional section
     :return: the setting value
-
-     .. note::  The flag needs to be declared with Q_FLAG (not Q_FLAGS).
-
     """
 
-    # There is an issue in SIP, flags.__class__ does not return the proper class
-    # (e.g. Filters instead of Qgis.LayerFilters)
-    # dirty hack to get the parent class
-    __import__(flagDefaultValue.__module__)
-    baseClass = None
-    exec("baseClass={module}.{flag_class}".format(module=flagDefaultValue.__module__.replace('_', ''),
-                                                  flag_class=flagDefaultValue.__class__.__name__))
+    default_value_str = "|".join(
+        [e.name for e in flagDefaultValue.__class__ if flagDefaultValue & e]
+    )
+    str_val = self.value(key, default_value_str, str, section)
 
-    meta_enum = metaEnumFromValue(flagDefaultValue, baseClass)
-    if meta_enum is None or not meta_enum.isValid():
-        # this should not happen
-        raise ValueError("could not get the meta enum for given enum default value (type: {})".format(type(flagDefaultValue)))
-
-    str_val = self.value(key, meta_enum.valueToKeys(flagDefaultValue), str, section)
-    # need a new meta enum as QgsSettings.value is making a copy and leads to seg fault (probably a PyQt issue)
-    meta_enum_2 = metaEnumFromValue(flagDefaultValue)
-    (flag_val, ok) = meta_enum_2.keysToValue(str_val)
-
-    if not ok:
-        flag_val = flagDefaultValue
-    else:
-        flag_val = flagDefaultValue.__class__(flag_val)
+    flag_val = flagDefaultValue.__class__(0)
+    for part in str_val.split("|"):
+        try:
+            flag_val |= getattr(flagDefaultValue.__class__, part)
+        except AttributeError:
+            return flagDefaultValue
 
     return flag_val

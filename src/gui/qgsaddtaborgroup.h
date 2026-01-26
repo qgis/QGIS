@@ -23,15 +23,15 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsaddtaborgroupbase.h"
-#include "qgsguiutils.h"
-#include "qgis_gui.h"
 
-class QTreeWidgetItem;
+#include "qgis_gui.h"
+#include "qgsguiutils.h"
+
 class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief Dialog to add a tab or group of attributes
+ * \brief Dialog to add a container for attribute widgets
  *
  * \note This class is not a part of public API
  * \since QGIS 3.14
@@ -41,21 +41,22 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
     Q_OBJECT
 
   public:
-    typedef QPair<QString, QTreeWidgetItem *> ContainerPair;
+    typedef QPair<QString, QModelIndex> ContainerPair;
 
   public:
     //! constructor
-    QgsAddAttributeFormContainerDialog( QgsVectorLayer *lyr, const QList<ContainerPair> &existingContainerList, QTreeWidgetItem *currentTab = nullptr, QWidget *parent = nullptr );
+    QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentItemIndex, QWidget *parent = nullptr );
 
-    //! Returns the name of the tab or group
+    //! Returns the name of the container
     QString name();
 
     /**
-     * Returns tree item corresponding to the selected parent container.
+     * Returns tree model index corresponding to the selected parent container.
      *
-     * Will be NULLPTR when a new tab is created.
+     * Will be an invalid index when a new tab is created.
+     * \since QGIS 3.44
      */
-    QTreeWidgetItem *parentContainerItem();
+    QModelIndex parentContainerItem() const;
 
     //! Returns the column count
     int columnCount() const;
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsAddAttributeFormContainerDialog : public QDialog, private Ui
 
   protected:
     QgsVectorLayer *mLayer = nullptr;
-    QList< ContainerPair > mExistingContainers;
+    QList<ContainerPair> mExistingContainers;
 };
 
 #endif

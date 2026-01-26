@@ -14,7 +14,7 @@
 class QgsPluginLayerType
 {
 %Docstring(signature="appended")
-Class for creating plugin specific layers
+Responsible for creating plugin specific map layers.
 %End
 
 %TypeHeaderCode
@@ -34,12 +34,14 @@ Returns new layer of this type. Return ``None`` on error
 
     virtual QgsPluginLayer *createLayer( const QString &uri ) /Factory/;
 %Docstring
-Returns new layer of this type, using layer URI (specific to this plugin layer type). Return ``None`` on error.
+Returns new layer of this type, using layer URI (specific to this plugin
+layer type). Return ``None`` on error.
 %End
 
     virtual bool showLayerProperties( QgsPluginLayer *layer );
 %Docstring
-Show plugin layer properties dialog. Return ``False`` if the dialog cannot be shown.
+Show plugin layer properties dialog. Return ``False`` if the dialog
+cannot be shown.
 %End
 
   protected:
@@ -51,8 +53,8 @@ class QgsPluginLayerRegistry
 %Docstring(signature="appended")
 A registry of plugin layers types.
 
-:py:class:`QgsPluginLayerRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.pluginLayerRegistry()`.
+:py:class:`QgsPluginLayerRegistry` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.pluginLayerRegistry()`.
 %End
 
 %TypeHeaderCode
@@ -86,7 +88,8 @@ Returns plugin layer type metadata or ``None`` if doesn't exist
 
     QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) /Factory/;
 %Docstring
-Returns new layer if corresponding plugin has been found else returns ``None``.
+Returns new layer if corresponding plugin has been found else returns
+``None``.
 
 .. note::
 

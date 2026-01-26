@@ -16,19 +16,23 @@
 #include "qgsdemterraintileloader_p.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
+#include "qgsgeotransform.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsterrainentity.h"
+#include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgsterraingenerator.h"
 
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DCore/QTransform>
 #include <QMutexLocker>
+#include <Qt3DCore/QTransform>
+#include <Qt3DRender/QGeometryRenderer>
+
+#include "moc_qgsdemterraintileloader_p.cpp"
 
 ///@cond PRIVATE
 
@@ -57,19 +61,23 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 
 QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator )
   : QgsTerrainTileLoader( terrain, node )
-  , mResolution( 0 )
+  , mTerrainGenerator( terrainGenerator )
+{}
+
+void QgsDemTerrainTileLoader::start()
 {
+  QgsChunkNode *node = chunk();
 
   QgsDemHeightMapGenerator *heightMapGenerator = nullptr;
-  if ( terrainGenerator->type() == QgsTerrainGenerator::Dem )
+  if ( mTerrainGenerator->type() == QgsTerrainGenerator::Dem )
   {
-    QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( terrainGenerator );
+    QgsDemTerrainGenerator *generator = static_cast<QgsDemTerrainGenerator *>( mTerrainGenerator );
     heightMapGenerator = generator->heightMapGenerator();
     mSkirtHeight = generator->skirtHeight();
   }
-  else if ( terrainGenerator->type() == QgsTerrainGenerator::Online )
+  else if ( mTerrainGenerator->type() == QgsTerrainGenerator::Online )
   {
-    QgsOnlineTerrainGenerator *generator = static_cast<QgsOnlineTerrainGenerator *>( terrainGenerator );
+    QgsOnlineTerrainGenerator *generator = static_cast<QgsOnlineTerrainGenerator *>( mTerrainGenerator );
     heightMapGenerator = generator->heightMapGenerator();
     mSkirtHeight = generator->skirtHeight();
   }
@@ -96,18 +104,14 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   Qgs3DMapSettings *map = terrain()->mapSettings();
   QgsChunkNodeId nodeId = mNode->tileId();
   QgsRectangle extent = map->terrainGenerator()->tilingScheme().tileToExtent( nodeId );
-  double x0 = extent.xMinimum() - map->origin().x();
-  double y0 = extent.yMinimum() - map->origin().y();
   double side = extent.width();
-  double half = side / 2;
-
 
   QgsTerrainTileEntity *entity = new QgsTerrainTileEntity( nodeId );
 
   // create geometry renderer
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
-  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map->terrainVerticalScale(), mSkirtHeight, mHeightMap, mesh ) );
+  mesh->setGeometry( new DemTerrainTileGeometry( mResolution, side, map->terrainSettings()->verticalScale(), mSkirtHeight, mHeightMap, mesh ) );
   entity->addComponent( mesh ); // takes ownership if the component has no parent
 
   // create material
@@ -115,15 +119,11 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 
   // create transform
-
-  Qt3DCore::QTransform *transform = nullptr;
-  transform = new Qt3DCore::QTransform();
+  QgsGeoTransform *transform = new QgsGeoTransform;
+  transform->setGeoTranslation( QgsVector3D( extent.xMinimum(), extent.yMinimum(), 0 ) );
   entity->addComponent( transform );
 
-  transform->setScale( side );
-  transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
-
-  mNode->setExactBbox( QgsAABB( x0, zMin * map->terrainVerticalScale(), -y0, x0 + side, zMax * map->terrainVerticalScale(), -( y0 + side ) ) );
+  mNode->setExactBox3D( QgsBox3D( extent.xMinimum(), extent.yMinimum(), zMin * map->terrainSettings()->verticalScale(), extent.xMinimum() + side, extent.yMinimum() + side, zMax * map->terrainSettings()->verticalScale() ) );
   mNode->updateParentBoundingBoxesRecursively();
 
   entity->setParent( parent );
@@ -145,10 +145,11 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 
 // ---------------------
 
-#include <qgsrasterlayer.h>
-#include <qgsrasterprojector.h>
+#include "qgsrasterlayer.h"
+#include "qgsrasterprojector.h"
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
+#include <memory>
 #include "qgsterraindownloader.h"
 
 QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext )
@@ -156,7 +157,6 @@ QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const Q
   , mClonedProvider( dtm ? qgis::down_cast<QgsRasterDataProvider *>( dtm->dataProvider()->clone() ) : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
-  , mLastJobId( 0 )
   , mDownloader( dtm ? nullptr : new QgsTerrainDownloader( transformContext ) )
   , mTransformContext( transformContext )
 {
@@ -172,19 +172,19 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
 {
   provider->moveToThread( QThread::currentThread() );
 
-  QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "DEM" ) );
+  QgsEventTracing::ScopedEvent e( u"3D"_s, u"DEM"_s );
 
   // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
   QgsRasterInterface *input = provider;
   std::unique_ptr<QgsRasterProjector> projector;
   if ( provider->crs() != destCrs )
   {
-    projector.reset( new QgsRasterProjector );
+    projector = std::make_unique<QgsRasterProjector>();
     projector->setCrs( provider->crs(), destCrs, provider->transformContext() );
     projector->setInput( provider );
     input = projector.get();
   }
-  std::unique_ptr< QgsRasterBlock > block( input->block( 1, extent, res, res ) );
+  std::unique_ptr<QgsRasterBlock> block( input->block( 1, extent, res, res ) );
 
   QByteArray data;
   if ( block )
@@ -202,7 +202,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
     block->setIsNoDataExcept( subRect );
 
     data = block->data();
-    data.detach();  // this should make a deep copy
+    data.detach(); // this should make a deep copy
 
     if ( block->hasNoData() )
     {
@@ -229,7 +229,7 @@ static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRec
 
 int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), nodeId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"DEM"_s, nodeId.text() );
 
   // extend the rect by half-pixel on each side? to get the values in "corners"
   QgsRectangle extent = mTilingScheme.tileToExtent( nodeId );
@@ -250,7 +250,7 @@ int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
   if ( mClonedProvider )
   {
     // make a clone of the data provider so it is safe to use in worker thread
-    std::unique_ptr< QgsRasterDataProvider > clonedProviderClone( mClonedProvider->clone() );
+    std::unique_ptr<QgsRasterDataProvider> clonedProviderClone( mClonedProvider->clone() );
     clonedProviderClone->moveToThread( nullptr );
     jd.future = QtConcurrent::run( _readDtmData, clonedProviderClone.release(), extent, mResolution, mTilingScheme.crs(), mTilingScheme.fullExtent() );
   }
@@ -274,7 +274,7 @@ void QgsDemHeightMapGenerator::waitForFinished()
     disconnect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
     disconnect( fw, &QFutureWatcher<QByteArray>::finished, fw, &QObject::deleteLater );
   }
-  QVector<QFutureWatcher<QByteArray>*> toBeDeleted;
+  QVector<QFutureWatcher<QByteArray> *> toBeDeleted;
   for ( auto it = mJobs.keyBegin(); it != mJobs.keyEnd(); it++ )
   {
     QFutureWatcher<QByteArray> *fw = *it;
@@ -298,24 +298,24 @@ void QgsDemHeightMapGenerator::lazyLoadDtmCoarseData( int res, const QgsRectangl
   QMutexLocker locker( &mLazyLoadDtmCoarseDataMutex );
   if ( mDtmCoarseData.isEmpty() )
   {
-    std::unique_ptr< QgsRasterBlock > block( mClonedProvider->block( 1, rect, res, res ) );
+    std::unique_ptr<QgsRasterBlock> block( mClonedProvider->block( 1, rect, res, res ) );
     block->convert( Qgis::DataType::Float32 );
     mDtmCoarseData = block->data();
-    mDtmCoarseData.detach();  // make a deep copy
+    mDtmCoarseData.detach(); // make a deep copy
   }
 }
 
 float QgsDemHeightMapGenerator::heightAt( double x, double y )
 {
   if ( !mClonedProvider )
-    return 0;  // TODO: calculate heights for online DTM
+    return 0; // TODO: calculate heights for online DTM
 
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
   lazyLoadDtmCoarseData( res, mDtmExtent );
 
-  int cellX = ( int )( ( x - mDtmExtent.xMinimum() ) / mDtmExtent.width() * res + .5f );
-  int cellY = ( int )( ( mDtmExtent.yMaximum() - y ) / mDtmExtent.height() * res + .5f );
+  int cellX = ( int ) ( ( x - mDtmExtent.xMinimum() ) / mDtmExtent.width() * res + .5f );
+  int cellY = ( int ) ( ( mDtmExtent.yMaximum() - y ) / mDtmExtent.height() * res + .5f );
   cellX = std::clamp( cellX, 0, res - 1 );
   cellY = std::clamp( cellY, 0, res - 1 );
 
@@ -325,7 +325,7 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
 
 void QgsDemHeightMapGenerator::onFutureFinished()
 {
-  QFutureWatcher<QByteArray> *fw = static_cast<QFutureWatcher<QByteArray>*>( sender() );
+  QFutureWatcher<QByteArray> *fw = static_cast<QFutureWatcher<QByteArray> *>( sender() );
   Q_ASSERT( fw );
   Q_ASSERT( mJobs.contains( fw ) );
   JobData jobData = mJobs.value( fw );
@@ -333,7 +333,7 @@ void QgsDemHeightMapGenerator::onFutureFinished()
   mJobs.remove( fw );
   fw->deleteLater();
 
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), jobData.tileId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"DEM"_s, jobData.tileId.text() );
 
   QByteArray data = jobData.future.result();
   emit heightMapReady( jobData.jobId, data );

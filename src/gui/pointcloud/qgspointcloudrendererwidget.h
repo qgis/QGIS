@@ -15,12 +15,13 @@
 #ifndef QGSPOINTCLOUDRENDERERWIDGET_H
 #define QGSPOINTCLOUDRENDERERWIDGET_H
 
-#include <QWidget>
-#include <QMenu>
-#include <QStackedWidget>
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
 #include "qgssymbolwidgetcontext.h"
+
+#include <QMenu>
+#include <QStackedWidget>
+#include <QWidget>
 
 class QgsPointCloudLayer;
 class QgsStyle;
@@ -37,7 +38,6 @@ class GUI_EXPORT QgsPointCloudRendererWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsPointCloudRendererWidget, associated with the
      * specified \a layer and \a style database.
@@ -76,7 +76,6 @@ class GUI_EXPORT QgsPointCloudRendererWidget : public QgsPanelWidget
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
-
 };
 
 #endif // QGSPOINTCLOUDRENDERERWIDGET_H

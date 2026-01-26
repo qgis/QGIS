@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
-#include "qgsextentgroupbox.h"
 #include "qgsextentgroupboxplugin.h"
 
+#include "qgiscustomwidgets.h"
+#include "qgsextentgroupbox.h"
+
+#include "moc_qgsextentgroupboxplugin.cpp"
 
 QgsExtentGroupBoxPlugin::QgsExtentGroupBoxPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsExtentGroupBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

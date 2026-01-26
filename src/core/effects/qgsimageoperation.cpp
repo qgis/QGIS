@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsimageoperation.h"
+
 #include "qgis.h"
 #include "qgscolorramp.h"
-#include "qgslogger.h"
 #include "qgsfeedback.h"
-#include <QtConcurrentMap>
+#include "qgslogger.h"
+
 #include <QColor>
 #include <QPainter>
+#include <QtConcurrentMap>
 
 //determined via trial-and-error. Could possibly be optimised, or varied
 //depending on the image size.
@@ -260,7 +262,7 @@ void QgsImageOperation::adjustBrightnessContrast( QImage &image, const int brigh
   runPixelOperation( image, operation, feedback );
 }
 
-void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb, const int x, const int y )
+void QgsImageOperation::BrightnessContrastPixelOperation::operator()( QRgb &rgb, const int x, const int y ) const
 {
   Q_UNUSED( x )
   Q_UNUSED( y )
@@ -285,7 +287,7 @@ void QgsImageOperation::adjustHueSaturation( QImage &image, const double saturat
   runPixelOperation( image, operation, feedback );
 }
 
-void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, const int x, const int y )
+void QgsImageOperation::HueSaturationPixelOperation::operator()( QRgb &rgb, const int x, const int y ) const
 {
   Q_UNUSED( x )
   Q_UNUSED( y )
@@ -363,7 +365,7 @@ void QgsImageOperation::multiplyOpacity( QImage &image, const double factor, Qgs
   }
 }
 
-void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, const int x, const int y )
+void QgsImageOperation::MultiplyOpacityPixelOperation::operator()( QRgb &rgb, const int x, const int y ) const
 {
   Q_UNUSED( x )
   Q_UNUSED( y )
@@ -392,7 +394,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
 {
   if ( ! properties.ramp )
   {
-    QgsDebugError( QStringLiteral( "no color ramp specified for distance transform" ) );
+    QgsDebugError( u"no color ramp specified for distance transform"_s );
     return;
   }
 
@@ -693,7 +695,7 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius, QgsFee
     return new QImage();
 
   //blur along columns
-  std::unique_ptr< QImage > yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
+  auto yBlurImage = std::make_unique< QImage >( width, height, QImage::Format_ARGB32_Premultiplied );
   GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage.get(), kernel.get(), feedback );
   runRectOperation( xBlurImage, colBlur );
 

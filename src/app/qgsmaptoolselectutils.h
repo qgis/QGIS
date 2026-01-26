@@ -16,14 +16,14 @@ email                : jpalmer at linz dot govt dot nz
 #ifndef QGSMAPTOOLSELECTUTILS_H
 #define QGSMAPTOOLSELECTUTILS_H
 
-#include <QRect>
-#include <QPoint>
-#include <QList>
-#include <QFutureWatcher>
-
-#include "qgsvectorlayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
+
+#include <QFutureWatcher>
+#include <QList>
+#include <QPoint>
+#include <QRect>
 
 class QMouseEvent;
 class QgsMapCanvas;
@@ -64,11 +64,7 @@ namespace QgsMapToolSelectUtils
    * the selection rubber band (otherwise intersection is enough).
    * \param singleSelect only selects the closest feature to the selectGeometry.
   */
-  void setSelectedFeatures( QgsMapCanvas *canvas,
-                            const QgsGeometry &selectGeometry,
-                            Qgis::SelectBehavior selectBehavior = Qgis::SelectBehavior::SetSelection,
-                            bool doContains = true,
-                            bool singleSelect = false );
+  void setSelectedFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, Qgis::SelectBehavior selectBehavior = Qgis::SelectBehavior::SetSelection, bool doContains = true, bool singleSelect = false );
 
   /**
    * Selects multiple matching features from within currently selected layer.
@@ -125,7 +121,6 @@ namespace QgsMapToolSelectUtils
   {
       Q_OBJECT
     public:
-
       /**
       * Constructor
       * \param canvas The map canvas where where are the selected features
@@ -134,13 +129,9 @@ namespace QgsMapToolSelectUtils
       * \param selectionGeometry the geometry used to select the feature
       * \param parent a QObject that owns the instance ot this class
       */
-      QgsMapToolSelectMenuActions( QgsMapCanvas *canvas,
-                                   QgsVectorLayer *vectorLayer,
-                                   Qgis::SelectBehavior behavior,
-                                   const QgsGeometry &selectionGeometry,
-                                   QObject *parent = nullptr );
+      QgsMapToolSelectMenuActions( QgsMapCanvas *canvas, QgsVectorLayer *vectorLayer, Qgis::SelectBehavior behavior, const QgsGeometry &selectionGeometry, QObject *parent = nullptr );
 
-      ~QgsMapToolSelectMenuActions();
+      ~QgsMapToolSelectMenuActions() override;
 
       /**
       * Populates the \a menu with "All Feature" action and a empty menu that could contain later the "One Feature" actions
@@ -172,21 +163,19 @@ namespace QgsMapToolSelectUtils
       QString textForChooseOneMenu() const;
       void populateChooseOneMenu( const QgsFeatureIds &ids );
 
-      static QgsFeatureIds filterIds( const QgsFeatureIds &ids,
-                                      const QgsFeatureIds &existingSelection,
-                                      Qgis::SelectBehavior behavior );
+      static QgsFeatureIds filterIds( const QgsFeatureIds &ids, const QgsFeatureIds &existingSelection, Qgis::SelectBehavior behavior );
 
       struct DataForSearchingJob
       {
-        bool isCanceled;
-        std::unique_ptr<QgsVectorLayerFeatureSource> source;
-        QgsGeometry selectGeometry;
-        QgsCoordinateTransform ct;
-        QgsRenderContext context;
-        std::unique_ptr<QgsFeatureRenderer> featureRenderer;
-        QString filterString;
-        Qgis::SelectBehavior selectBehavior;
-        QgsFeatureIds existingSelection;
+          bool isCanceled;
+          std::unique_ptr<QgsVectorLayerFeatureSource> source;
+          QgsGeometry selectGeometry;
+          QgsCoordinateTransform ct;
+          QgsRenderContext context;
+          std::unique_ptr<QgsFeatureRenderer> featureRenderer;
+          QString filterString;
+          Qgis::SelectBehavior selectBehavior;
+          QgsFeatureIds existingSelection;
       };
 
       std::shared_ptr<DataForSearchingJob> mJobData;
@@ -196,6 +185,6 @@ namespace QgsMapToolSelectUtils
       void chooseOneCandidateFeature( QgsFeatureId id );
       void highlightOneFeature( QgsFeatureId id );
   };
-}
+} // namespace QgsMapToolSelectUtils
 
 #endif

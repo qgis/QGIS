@@ -19,8 +19,8 @@
 #include "ui_qgs3dviewsmanagerdialog.h"
 
 #include <QDialog>
-#include <QStringListModel>
 #include <QDomElement>
+#include <QStringListModel>
 
 class Qgs3DMapCanvasDockWidget;
 
@@ -43,6 +43,7 @@ class Qgs3DViewsManagerDialog : public QDialog, private Ui::Qgs3DViewsManagerDia
     void currentChanged( const QModelIndex &current, const QModelIndex &previous );
 
     void on3DViewsListChanged();
+
   private:
     QStringListModel *mListModel = nullptr;
 

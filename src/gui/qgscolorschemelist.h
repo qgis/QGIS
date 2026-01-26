@@ -15,13 +15,14 @@
 #ifndef QGSCOLORSCHEMELIST_H
 #define QGSCOLORSCHEMELIST_H
 
-#include "qgscolorscheme.h"
-#include <QTreeView>
-#include <QAbstractItemModel>
-#include <QItemDelegate>
-#include <QFile>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscolorscheme.h"
+
+#include <QAbstractItemModel>
+#include <QFile>
+#include <QItemDelegate>
+#include <QTreeView>
 
 class QMimeData;
 class QgsPanelWidget;
@@ -29,7 +30,7 @@ class QgsPanelWidget;
 /**
  * \ingroup gui
  * \class QgsColorSwatchDelegate
- * \brief A delegate for showing a color swatch in a list
+ * \brief A delegate for showing a color swatch in a list.
  * \see QgsColorSchemeList
  */
 class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
@@ -60,15 +61,14 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
 /**
  * \ingroup gui
  * \class QgsColorSchemeModel
- * \brief A model for colors in a color scheme
+ * \brief A model for colors in a color scheme.
  * \see QgsColorSchemeList
  */
-class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
+class GUI_EXPORT QgsColorSchemeModel : public QAbstractItemModel
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param scheme color scheme for list
@@ -137,7 +137,6 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     bool isDirty() const { return mIsDirty; }
 
   private:
-
     enum Columns
     {
       ColorSwatch = 0,
@@ -148,7 +147,7 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     QgsColorScheme *mScheme = nullptr;
     QString mContext;
     QColor mBaseColor;
-    bool mIsDirty;
+    bool mIsDirty = false;
 };
 
 /**
@@ -157,12 +156,11 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
  * \brief An editable list of color swatches, taken from an associated QgsColorScheme.
  * \see QgsColorSchemeList
  */
-class GUI_EXPORT QgsColorSchemeList: public QTreeView
+class GUI_EXPORT QgsColorSchemeList : public QTreeView
 {
     Q_OBJECT
 
   public:
-
     /**
      * Construct a new color swatch grid.
      * \param parent parent widget
@@ -262,7 +260,6 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     void colorSelected( const QColor &color );
 
   protected:
-
     void keyPressEvent( QKeyEvent *event ) override;
 
     void mousePressEvent( QMouseEvent *event ) override;
@@ -275,7 +272,6 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
     QgsColorSwatchDelegate *mSwatchDelegate = nullptr;
 
     QPoint mDragStartPosition;
-
 };
 
 #endif

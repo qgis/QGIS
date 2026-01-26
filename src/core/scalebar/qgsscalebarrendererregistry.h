@@ -16,14 +16,14 @@
 #ifndef QGSSCALEBARRENDERERREGISTRY_H
 #define QGSSCALEBARRENDERERREGISTRY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 class QgsScaleBarRenderer;
 
 /**
  * \ingroup core
- * \brief The QgsScaleBarRendererRegistry manages registered scalebar renderers.
+ * \brief A registry which manages registered scalebar renderers.
  *
  * A reference to the QgsScaleBarRendererRegistry can be obtained from
  * QgsApplication::scalebarRendererRegistry().

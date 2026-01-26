@@ -16,13 +16,14 @@
 #ifndef QGSSETTINGSENTRYGROUP_H
 #define QGSSETTINGSENTRYGROUP_H
 
-#include <QString>
-#include <QColor>
 #include <limits>
 
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QColor>
+#include <QString>
 
 class QgsSettingsEntryBase;
 
@@ -30,7 +31,7 @@ class QgsSettingsEntryBase;
 /**
  * \ingroup core
  * \class QgsSettingsEntryGroup
- * \brief Creates a group of setting which have a common definition of base key
+ * \brief Creates a group of settings which have a common definition of base key.
  *
  * \since QGIS 3.26
  * \deprecated QGIS 3.30. Use QgsSettingsTreeNode instead.
@@ -45,7 +46,7 @@ class CORE_DEPRECATED_EXPORT QgsSettingsEntryGroup SIP_DEPRECATED
     sipCpp = new QgsSettingsEntryGroup( *a0, false );
     sipIsErr = sipCpp->isValid() ? 0 : 1;
     if ( sipIsErr )
-      PyErr_SetString( PyExc_ValueError, QStringLiteral( "Settings do not share the same base definition key for this group. This will lead to unpredictable results." ).toUtf8().constData() );
+      PyErr_SetString( PyExc_ValueError, u"Settings do not share the same base definition key for this group. This will lead to unpredictable results."_s.toUtf8().constData() );
     % End
 #endif
 

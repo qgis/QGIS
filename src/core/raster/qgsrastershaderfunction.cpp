@@ -1,4 +1,4 @@
-/* **************************************************************************
+/***************************************************************************
                 qgsrastershaderfunction.cpp -  description
                        -------------------
 begin                : Fri Dec 28 2007
@@ -7,7 +7,7 @@ email                : ersts@amnh.org
 
 ****************************************************************************/
 
-/* **************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -15,16 +15,16 @@ email                : ersts@amnh.org
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgslogger.h"
-
 #include "qgsrastershaderfunction.h"
+
+#include "qgslogger.h"
 
 QgsRasterShaderFunction::QgsRasterShaderFunction( double minimumValue, double maximumValue )
   : mMaximumValue( maximumValue )
   , mMinimumValue( minimumValue )
   , mMinimumMaximumRange( mMaximumValue - mMinimumValue )
 {
-  QgsDebugMsgLevel( QStringLiteral( "entered." ), 4 );
+  QgsDebugMsgLevel( u"entered."_s, 4 );
 }
 
 void QgsRasterShaderFunction::setMaximumValue( double value )

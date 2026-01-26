@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsexternalresourcewidgetplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsexternalresourcewidget.h"
 
+#include "moc_qgsexternalresourcewidgetplugin.cpp"
 
 QgsExternalResourceWidgetPlugin::QgsExternalResourceWidgetPlugin( QObject *parent )
   : QObject( parent )
@@ -92,5 +94,5 @@ QString QgsExternalResourceWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

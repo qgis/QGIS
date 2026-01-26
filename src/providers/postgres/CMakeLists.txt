@@ -2,6 +2,7 @@
 # Files
 
 set(PG_SRCS
+  qgspostgresutils.cpp
   qgspostgresprovider.cpp
   qgspostgresconn.cpp
   qgspostgresconnpool.cpp
@@ -26,6 +27,10 @@ if (WITH_GUI)
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp
     raster/qgspostgresrastertemporalsettingswidget.cpp
+    qgspostgresutils.cpp
+    qgspostgresimportprojectdialog.cpp
+    qgspostgresprojectversionsdialog.cpp
+    qgspostgresprojectversionsmodel.cpp
   )
 
   set(PG_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgspostgresrastertemporalsettingswidgetbase.ui)
@@ -42,48 +47,35 @@ set(PG_HDRS
 # static library
 add_library (provider_postgres_a STATIC ${PG_SRCS} ${PG_HDRS})
 
-target_include_directories(provider_postgres_a SYSTEM PUBLIC
-  ${POSTGRES_INCLUDE_DIR}
-)
+set_target_properties(provider_postgres_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 target_include_directories(provider_postgres_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/postgres
 )
 
-# require c++17
-target_compile_features(provider_postgres_a PRIVATE cxx_std_17)
 target_compile_definitions(provider_postgres_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_link_libraries (provider_postgres_a
   qgis_core
-  ${POSTGRES_LIBRARY}
+  PostgreSQL::PostgreSQL
 )
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(PG_UIS_H ${PG_UIS})
-  else()
-    QT5_WRAP_UI(PG_UIS_H ${PG_UIS})
-  endif()
+  qt_wrap_ui(PG_UIS_H ${PG_UIS})
 
   add_library(provider_postgres_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
 
-  target_include_directories(provider_postgres_gui_a SYSTEM PRIVATE
-    ${POSTGRES_INCLUDE_DIR}
-  )
+  set_target_properties(provider_postgres_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   target_include_directories(provider_postgres_gui_a PUBLIC
     ${CMAKE_BINARY_DIR}/src/providers/postgres
   )
 
-  # require c++17
-  target_compile_features(provider_postgres_gui_a PRIVATE cxx_std_17)
   target_compile_definitions(provider_postgres_gui_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_link_libraries(provider_postgres_gui_a
     qgis_gui
     provider_postgres_a
-    ${POSTGRES_LIBRARY}
   )
   add_dependencies(provider_postgres_gui_a ui)
 endif()
@@ -92,6 +84,7 @@ endif()
 # Postgres Raster
 
 set(PGRASTER_SRCS
+  qgspostgresutils.cpp
   raster/qgspostgresrasterprovider.cpp
   raster/qgspostgresrastershareddata.cpp
   raster/qgspostgresrasterutils.cpp
@@ -103,21 +96,15 @@ set(PGRASTER_SRCS
 # static library
 add_library (provider_postgresraster_a STATIC ${PGRASTER_SRCS} ${PG_HDRS})
 
-target_include_directories(provider_postgresraster_a SYSTEM PRIVATE
-  ${POSTGRES_INCLUDE_DIR}
-)
 target_include_directories(provider_postgresraster_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/postgres/raster
 )
 
-# require c++17
-target_compile_features(provider_postgresraster_a PRIVATE cxx_std_17)
 target_compile_definitions(provider_postgresraster_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
 target_link_libraries (provider_postgresraster_a
     qgis_core
     provider_postgres_a
-    ${POSTGRES_LIBRARY}
 )
 
 if (WITH_GUI)
@@ -141,30 +128,24 @@ else()
   add_library(provider_postgres MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
   add_library(provider_postgresraster MODULE ${PGRASTER_SRCS} ${PG_HDRS})
 
-  target_include_directories(provider_postgres SYSTEM PRIVATE
-    ${POSTGRES_INCLUDE_DIR}
-  )
-  target_include_directories(provider_postgresraster SYSTEM PRIVATE
-    ${POSTGRES_INCLUDE_DIR}
-  )
+  set_target_properties(provider_postgres PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+  set_target_properties(provider_postgresraster PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
   target_include_directories(provider_postgresraster PRIVATE
     ${CMAKE_SOURCE_DIR}/src/providers/postgres
   )
 
-  # require c++17
-  target_compile_features(provider_postgres PRIVATE cxx_std_17)
-  target_compile_features(provider_postgresraster PRIVATE cxx_std_17)
   target_compile_definitions(provider_postgres PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
   target_compile_definitions(provider_postgresraster PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 
   target_link_libraries(provider_postgres
     qgis_core
-    ${POSTGRES_LIBRARY}
+    PostgreSQL::PostgreSQL
   )
 
   target_link_libraries(provider_postgresraster
     qgis_core
-    ${POSTGRES_LIBRARY}
+    PostgreSQL::PostgreSQL
   )
 
   if (WITH_GUI)

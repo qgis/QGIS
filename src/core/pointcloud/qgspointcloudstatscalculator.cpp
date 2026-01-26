@@ -17,58 +17,63 @@
 
 #include "qgspointcloudstatscalculator.h"
 
-#include "qgspointcloudstatistics.h"
-
-#include "qgspointcloudindex.h"
+#include "qgsfeedback.h"
 #include "qgsmessagelog.h"
 #include "qgspointcloudattribute.h"
-#include "qgspointcloudrequest.h"
-
-#include "qgspointcloudrenderer.h"
-
-#include "qgsfeedback.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrequest.h"
+#include "qgspointcloudstatistics.h"
 
 #include <QQueue>
 #include <QtConcurrent/QtConcurrentMap>
+
+#include "moc_qgspointcloudstatscalculator.cpp"
 
 struct StatsProcessor
 {
     typedef QgsPointCloudStatistics result_type;
     static QMutex sStatsProcessorFeedbackMutex;
 
-    StatsProcessor( QgsPointCloudIndex *index, QgsPointCloudRequest request, QgsFeedback *feedback, double progressValue )
-      : mIndex( index->clone().release() ), mRequest( request ), mFeedback( feedback ), mProgressValue( progressValue )
+    StatsProcessor( QgsPointCloudIndex index, QgsPointCloudRequest request, QgsFeedback *feedback, double progressValue )
+      : mIndex( std::move( index ) ), mRequest( request ), mFeedback( feedback ), mProgressValue( progressValue )
     {
     }
 
     StatsProcessor( const StatsProcessor &processor )
-      : mIndex( processor.mIndex->clone().release() ), mRequest( processor.mRequest ), mFeedback( processor.mFeedback ), mProgressValue( processor.mProgressValue )
+      : mIndex( processor.mIndex ), mRequest( processor.mRequest ), mFeedback( processor.mFeedback ), mProgressValue( processor.mProgressValue )
     {
     }
 
     StatsProcessor &operator =( const StatsProcessor &rhs )
     {
-      mIndex.reset( rhs.mIndex->clone().release() );
+      mIndex = rhs.mIndex;
       mRequest = rhs.mRequest;
       mFeedback = rhs.mFeedback;
       mProgressValue = rhs.mProgressValue;
       return *this;
     }
 
-    QgsPointCloudStatistics operator()( IndexedPointCloudNode node )
+    QgsPointCloudStatistics operator()( QgsPointCloudNodeId nodeId )
     {
-      if ( mIndex->nodePointCount( node ) < 1 )
+      QgsPointCloudNode node = mIndex.getNode( nodeId );
+      if ( node.pointCount() < 1 )
         return QgsPointCloudStatistics();
 
       std::unique_ptr<QgsPointCloudBlock> block = nullptr;
-      if ( mIndex->accessType() == QgsPointCloudIndex::Local )
+      if ( mIndex.accessType() == Qgis::PointCloudAccessType::Local )
       {
-        block = mIndex->nodeData( node, mRequest );
+        block = mIndex.nodeData( nodeId, mRequest );
       }
       else
       {
-        QgsPointCloudBlockRequest *request = mIndex->asyncNodeData( node, mRequest );
+        QgsPointCloudBlockRequest *request = mIndex.asyncNodeData( nodeId, mRequest );
+        if ( request == nullptr )
+        {
+          QgsDebugError( u"Unable to calculate statistics for node %1: Got nullptr async request"_s.arg( nodeId.toString() ) );
+          return QgsPointCloudStatistics();
+        }
         QEventLoop loop;
         QObject::connect( request, &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
         QObject::connect( mFeedback, &QgsFeedback::canceled, &loop, &QEventLoop::quit );
@@ -78,12 +83,12 @@ struct StatsProcessor
           block = request->takeBlock();
           if ( !block )
           {
-            QgsMessageLog::logMessage( QObject::tr( "Unable to calculate statistics for node %1, error: \"%2\"" ).arg( node.toString(), request->errorStr() ) );
+            QgsMessageLog::logMessage( QObject::tr( "Unable to calculate statistics for node %1, error: \"%2\"" ).arg( nodeId.toString(), request->errorStr() ) );
           }
         }
       }
 
-      if ( !block.get() )
+      if ( !block )
       {
         updateFeedback();
         return QgsPointCloudStatistics();
@@ -105,7 +110,7 @@ struct StatsProcessor
         summary.mean = 0;
         summary.stDev = std::numeric_limits<double>::quiet_NaN();
         summary.classCount.clear();
-        statsMap[ attribute.name() ] = summary;
+        statsMap[ attribute.name() ] = std::move( summary );
       }
 
       QVector<int> attributeOffsetVector;
@@ -115,22 +120,24 @@ struct StatsProcessor
         int attributeOffset = 0;
         attributesCollection.find( attribute.name(), attributeOffset );
         attributeOffsetVector.push_back( attributeOffset );
-        if ( attribute.name() == QLatin1String( "ScannerChannel" ) ||
-             attribute.name() == QLatin1String( "ReturnNumber" ) ||
-             attribute.name() == QLatin1String( "NumberOfReturns" ) ||
-             attribute.name() == QLatin1String( "ScanDirectionFlag" ) ||
-             attribute.name() == QLatin1String( "Classification" ) ||
-             attribute.name() == QLatin1String( "EdgeOfFlightLine" ) ||
-             attribute.name() == QLatin1String( "PointSourceId" ) ||
-             attribute.name() == QLatin1String( "Synthetic" ) ||
-             attribute.name() == QLatin1String( "KeyPoint" ) ||
-             attribute.name() == QLatin1String( "Withheld" ) ||
-             attribute.name() == QLatin1String( "Overlap" ) )
+        if ( attribute.name() == "ScannerChannel"_L1 ||
+             attribute.name() == "ReturnNumber"_L1 ||
+             attribute.name() == "NumberOfReturns"_L1 ||
+             attribute.name() == "ScanDirectionFlag"_L1 ||
+             attribute.name() == "Classification"_L1 ||
+             attribute.name() == "EdgeOfFlightLine"_L1 ||
+             attribute.name() == "PointSourceId"_L1 ||
+             attribute.name() == "Synthetic"_L1 ||
+             attribute.name() == "KeyPoint"_L1 ||
+             attribute.name() == "Withheld"_L1 ||
+             attribute.name() == "Overlap"_L1 )
         {
           classifiableAttributesOffsetSet.insert( attributeOffset );
         }
       }
 
+      QVector<double> sumOfSquares( attributes.size(), 0 );
+      QVector<double> partialMean( attributes.size(), 0 );
       for ( int i = 0; i < count; ++i )
       {
         for ( int j = 0; j < attributes.size(); ++j )
@@ -150,19 +157,32 @@ struct StatsProcessor
           stats.minimum = std::min( stats.minimum, attributeValue );
           stats.maximum = std::max( stats.maximum, attributeValue );
           stats.mean += attributeValue / count;
-          // TODO: add stDev calculation
           stats.count++;
+
+          // Single pass stdev
+          const double delta = attributeValue - partialMean[j];
+          partialMean[j] += delta / stats.count;
+          sumOfSquares[j] += delta * ( attributeValue - partialMean[j] );
+
           if ( classifiableAttributesOffsetSet.contains( attributeOffset ) )
           {
             stats.classCount[( int )attributeValue ]++;
           }
         }
       }
+
+      for ( int j = 0; j < attributes.size(); ++j )
+      {
+        const QString attributeName = attributes.at( j ).name();
+        QgsPointCloudAttributeStatistics &stats = statsMap[ attributeName ];
+        stats.stDev = std::sqrt( sumOfSquares[j] / ( stats.count - 1.0 ) );
+      }
+
       updateFeedback();
       return QgsPointCloudStatistics( count, statsMap );
     }
   private:
-    std::unique_ptr<QgsPointCloudIndex> mIndex = nullptr;
+    QgsPointCloudIndex mIndex;
     QgsPointCloudRequest mRequest;
     QgsFeedback *mFeedback = nullptr;
     double mProgressValue = 0.0;
@@ -176,15 +196,15 @@ struct StatsProcessor
 
 QMutex StatsProcessor::sStatsProcessorFeedbackMutex;
 
-QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex *index )
-  : mIndex( index->clone() )
+QgsPointCloudStatsCalculator::QgsPointCloudStatsCalculator( QgsPointCloudIndex index )
+  : mIndex( std::move( index ) )
 {
 
 }
 
 bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const QVector<QgsPointCloudAttribute> &attributes, qint64 pointsLimit )
 {
-  if ( !mIndex->isValid() )
+  if ( !mIndex.isValid() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Unable to calculate statistics of an invalid index" ) );
     return false;
@@ -192,23 +212,23 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
   mRequest.setAttributes( attributes );
 
   qint64 pointCount = 0;
-  QVector<IndexedPointCloudNode> nodes;
-  QQueue<IndexedPointCloudNode> queue;
-  queue.push_back( mIndex->root() );
+  QVector<QgsPointCloudNodeId> nodes;
+  QQueue<QgsPointCloudNodeId> queue;
+  queue.push_back( mIndex.root() );
   while ( !queue.empty() )
   {
-    IndexedPointCloudNode node = queue.front();
+    QgsPointCloudNode node = mIndex.getNode( queue.front() );
     queue.pop_front();
-    if ( !mProcessedNodes.contains( node ) )
-      pointCount += mIndex->nodePointCount( node );
+    if ( !mProcessedNodes.contains( node.id() ) )
+      pointCount += node.pointCount();
     if ( pointsLimit != -1 && pointCount > pointsLimit )
       break;
-    if ( !mProcessedNodes.contains( node ) )
+    if ( !mProcessedNodes.contains( node.id() ) )
     {
-      nodes.push_back( node );
-      mProcessedNodes.insert( node );
+      nodes.push_back( node.id() );
+      mProcessedNodes.insert( node.id() );
     }
-    for ( const IndexedPointCloudNode &child : mIndex->nodeChildren( node ) )
+    for ( const QgsPointCloudNodeId &child : node.children() )
     {
       queue.push_back( child );
     }
@@ -216,7 +236,7 @@ bool QgsPointCloudStatsCalculator::calculateStats( QgsFeedback *feedback, const 
 
   feedback->setProgress( 0 );
 
-  QVector<QgsPointCloudStatistics> list = QtConcurrent::blockingMapped( nodes, StatsProcessor( mIndex.get(), mRequest, feedback, 100.0 / ( double )nodes.size() ) );
+  QVector<QgsPointCloudStatistics> list = QtConcurrent::blockingMapped( nodes, StatsProcessor( mIndex, mRequest, feedback, 100.0 / ( double )nodes.size() ) );
 
   for ( QgsPointCloudStatistics &s : list )
   {

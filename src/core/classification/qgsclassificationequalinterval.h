@@ -21,8 +21,7 @@
 
 /**
  * \ingroup core
- * \brief QgsClassificationEqualInterval is an implementation of QgsClassificationMethod
- * for equal intervals
+ * \brief A classification method which uses equal width intervals.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationEqualInterval : public QgsClassificationMethod
@@ -32,7 +31,7 @@ class CORE_EXPORT QgsClassificationEqualInterval : public QgsClassificationMetho
 
     QString name() const override;
     QString id() const override;
-    QgsClassificationMethod *clone() const override;
+    std::unique_ptr< QgsClassificationMethod > clone() const override;
     QIcon icon() const override;
 
     bool valuesRequired() const override { return false; }

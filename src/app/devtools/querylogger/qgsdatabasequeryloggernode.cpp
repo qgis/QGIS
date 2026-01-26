@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsdatabasequeryloggernode.h"
-#include "qgis.h"
-#include "qgsjsonutils.h"
-#include <QUrlQuery>
-#include <QColor>
-#include <QBrush>
-#include <QFont>
-#include <QAction>
-#include <QDesktopServices>
-#include <QApplication>
-#include <QClipboard>
+
 #include <nlohmann/json.hpp>
 
+#include "qgis.h"
+#include "qgsjsonutils.h"
+
+#include <QAction>
+#include <QApplication>
+#include <QBrush>
+#include <QClipboard>
+#include <QColor>
+#include <QDesktopServices>
+#include <QFont>
+#include <QUrlQuery>
 
 //
 // QgsDatabaseQueryLoggerRootNode
@@ -34,7 +36,6 @@
 QgsDatabaseQueryLoggerRootNode::QgsDatabaseQueryLoggerRootNode()
   : QgsDevToolsModelGroup( QString() )
 {
-
 }
 
 QVariant QgsDatabaseQueryLoggerRootNode::data( int ) const
@@ -50,7 +51,7 @@ void QgsDatabaseQueryLoggerRootNode::removeRow( int row )
 QVariant QgsDatabaseQueryLoggerRootNode::toVariant() const
 {
   QVariantList res;
-  for ( const std::unique_ptr< QgsDevToolsModelNode > &child : mChildren )
+  for ( const std::unique_ptr<QgsDevToolsModelNode> &child : mChildren )
     res << child->toVariant();
   return res;
 }
@@ -66,7 +67,7 @@ QgsDatabaseQueryLoggerQueryGroup::QgsDatabaseQueryLoggerQueryGroup( const QgsDat
   , mQueryId( query.queryId )
 {
 #if 0
-  std::unique_ptr< QgsNetworkLoggerRequestDetailsGroup > detailsGroup = std::make_unique< QgsNetworkLoggerRequestDetailsGroup >( request );
+  auto detailsGroup = std::make_unique< QgsNetworkLoggerRequestDetailsGroup >( request );
   mDetailsGroup = detailsGroup.get();
   addChild( std::move( detailsGroup ) );
 #endif
@@ -80,7 +81,6 @@ QgsDatabaseQueryLoggerQueryGroup::QgsDatabaseQueryLoggerQueryGroup( const QgsDat
   addKeyValueNode( QObject::tr( "Initiator" ), query.initiatorClass.isEmpty() ? QObject::tr( "unknown" ) : query.initiatorClass );
   if ( !query.origin.isEmpty() )
     addKeyValueNode( QObject::tr( "Location" ), query.origin );
-
 }
 
 QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
@@ -88,29 +88,28 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
   switch ( role )
   {
     case Qt::DisplayRole:
-      return QStringLiteral( "%1 %2" ).arg( QString::number( mQueryId ),
-                                            mSql );
+      return u"%1 %2"_s.arg( QString::number( mQueryId ), mSql );
 
-    case QgsDevToolsModelNode::RoleSort:
+    case static_cast<int>( Qgis::DevToolsNodeRole::Sort ):
       return mQueryId;
 
     case Qt::ToolTipRole:
     {
       // Show no more than 255 characters
-      return mSql.length() > 255 ? mSql.mid( 0, 255 ).append( QStringLiteral( "…" ) ) : mSql;
+      return mSql.length() > 255 ? mSql.mid( 0, 255 ).append( u"…"_s ) : mSql;
 
 #if 0
       QString bytes = QObject::tr( "unknown" );
       if ( mBytesTotal != 0 )
       {
         if ( mBytesReceived > 0 && mBytesReceived < mBytesTotal )
-          bytes = QStringLiteral( "%1/%2" ).arg( QString::number( mBytesReceived ), QString::number( mBytesTotal ) );
+          bytes = u"%1/%2"_s.arg( QString::number( mBytesReceived ), QString::number( mBytesTotal ) );
         else if ( mBytesReceived > 0 && mBytesReceived == mBytesTotal )
           bytes = QString::number( mBytesTotal );
       }
       // ?? adding <br/> instead of \n after (very long) url seems to break url up
       // COMPLETE, Status: 200 - text/xml; charset=utf-8 - 2334 bytes - 657 milliseconds
-      return QStringLiteral( "%1<br/>%2 - Status: %3 - %4 - %5 bytes - %6 msec - %7 replies" )
+      return u"%1<br/>%2 - Status: %3 - %4 - %5 bytes - %6 msec - %7 replies"_s
              .arg( mUrl.url(),
                    statusToString( mStatus ),
                    QString::number( mHttpStatus ),
@@ -121,13 +120,13 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
 #endif
     }
 
-    case RoleStatus:
-      return static_cast< int >( mStatus );
+    case static_cast<int>( Qgis::DevToolsNodeRole::Status ):
+      return static_cast<int>( mStatus );
 
-    case RoleId:
+    case static_cast<int>( Qgis::DevToolsNodeRole::Id ):
       return mQueryId;
 
-    case RoleElapsedTime:
+    case static_cast<int>( Qgis::DevToolsNodeRole::ElapsedTime ):
       return mElapsed;
 
     case Qt::ForegroundRole:
@@ -161,27 +160,24 @@ QVariant QgsDatabaseQueryLoggerQueryGroup::data( int role ) const
     default:
       break;
   }
-  return QVariant( );
+  return QVariant();
 }
 
 QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
 {
-  QList< QAction * > res;
+  QList<QAction *> res;
 
   QAction *copyUrlAction = new QAction( QObject::tr( "Copy SQL" ), parent );
-  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [ = ]
-  {
+  QObject::connect( copyUrlAction, &QAction::triggered, copyUrlAction, [this] {
     QApplication::clipboard()->setText( mSql );
   } );
   res << copyUrlAction;
 
   QAction *copyJsonAction = new QAction( QObject::tr( "Copy as JSON" ), parent );
-  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [ = ]
-  {
+  QObject::connect( copyJsonAction, &QAction::triggered, copyJsonAction, [this] {
     const QVariant value = toVariant();
     const QString json = QString::fromStdString( QgsJsonUtils::jsonFromVariant( value ).dump( 2 ) );
     QApplication::clipboard()->setText( json );
-
   } );
   res << copyJsonAction;
 
@@ -191,11 +187,11 @@ QList<QAction *> QgsDatabaseQueryLoggerQueryGroup::actions( QObject *parent )
 QVariant QgsDatabaseQueryLoggerQueryGroup::toVariant() const
 {
   QVariantMap res;
-  res.insert( QStringLiteral( "SQL" ), mSql );
+  res.insert( u"SQL"_s, mSql );
 
   for ( const auto &child : std::as_const( mChildren ) )
   {
-    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast< const QgsDevToolsModelValueNode *>( child.get() ) )
+    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast<const QgsDevToolsModelValueNode *>( child.get() ) )
     {
       res.insert( valueNode->key(), valueNode->value() );
     }
@@ -254,5 +250,3 @@ const QString &QgsDatabaseQueryLoggerQueryGroup::sql() const
 {
   return mSql;
 }
-
-

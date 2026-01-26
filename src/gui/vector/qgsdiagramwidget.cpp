@@ -15,20 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsdiagramwidget.h"
+
 #include "diagram/qgshistogramdiagram.h"
 #include "diagram/qgspiediagram.h"
-#include "diagram/qgstextdiagram.h"
 #include "diagram/qgsstackedbardiagram.h"
 #include "diagram/qgsstackeddiagram.h"
-
-#include "qgsdiagramwidget.h"
-#include "qgsvectorlayer.h"
+#include "diagram/qgstextdiagram.h"
 #include "qgsapplication.h"
+#include "qgsdiagramproperties.h"
 #include "qgsguiutils.h"
 #include "qgslabelengineconfigdialog.h"
-#include "qgsdiagramproperties.h"
 #include "qgsstackeddiagramproperties.h"
+#include "qgsvectorlayer.h"
 
+#include "moc_qgsdiagramwidget.cpp"
 
 QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -43,12 +44,12 @@ QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas,
   setupUi( this );
 
   // Initialize stacked diagram controls
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "diagramNone.svg" ) ), tr( "No Diagrams" ), ModeNone );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "pie-chart.svg" ) ), tr( "Pie Chart" ), ModePie );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "text.svg" ) ), tr( "Text Diagram" ), ModeText );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "histogram.svg" ) ), tr( "Histogram" ), ModeHistogram );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-bar.svg" ) ), tr( "Stacked Bars" ), ModeStackedBar );
-  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "stacked-diagram.svg" ) ), tr( "Stacked Diagram" ), ModeStacked );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"diagramNone.svg"_s ), tr( "No Diagrams" ), ModeNone );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"pie-chart.svg"_s ), tr( "Pie Chart" ), ModePie );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"text.svg"_s ), tr( "Text Diagram" ), ModeText );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"histogram.svg"_s ), tr( "Histogram" ), ModeHistogram );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"stacked-bar.svg"_s ), tr( "Stacked Bars" ), ModeStackedBar );
+  mDiagramTypeComboBox->addItem( QgsApplication::getThemeIcon( u"stacked-diagram.svg"_s ), tr( "Stacked Diagram" ), ModeStacked );
 
   connect( mEngineSettingsButton, &QAbstractButton::clicked, this, &QgsDiagramWidget::showEngineConfigDialog );
 
@@ -60,7 +61,7 @@ QgsDiagramWidget::QgsDiagramWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas,
 
 void QgsDiagramWidget::apply()
 {
-  const Mode mode = static_cast< Mode >( mDiagramTypeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mDiagramTypeComboBox->currentData().toInt() );
 
   switch ( mode )
   {
@@ -107,7 +108,7 @@ void QgsDiagramWidget::syncToOwnLayer()
   // pick the right mode from the layer
   if ( dr && dr->diagram() )
   {
-    if ( dr->rendererName() == QgsStackedDiagram::DIAGRAM_NAME_STACKED )
+    if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
       mDiagramTypeComboBox->setCurrentIndex( ModeStacked );
     }
@@ -116,26 +117,21 @@ void QgsDiagramWidget::syncToOwnLayer()
       const QString diagramName = dr->diagram()->diagramName();
       if ( diagramName == QgsPieDiagram::DIAGRAM_NAME_PIE )
       {
-        mDiagramTypeComboBox->setCurrentIndex( ModePie ) ;
+        mDiagramTypeComboBox->setCurrentIndex( ModePie );
       }
       else if ( diagramName == QgsTextDiagram::DIAGRAM_NAME_TEXT )
       {
-        mDiagramTypeComboBox->setCurrentIndex( ModeText ) ;
+        mDiagramTypeComboBox->setCurrentIndex( ModeText );
       }
       else if ( diagramName == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
       {
-        mDiagramTypeComboBox->setCurrentIndex( ModeStackedBar ) ;
+        mDiagramTypeComboBox->setCurrentIndex( ModeStackedBar );
       }
       else // diagramName == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM
       {
         // Play safe and set to histogram by default if the diagram name is unknown
         mDiagramTypeComboBox->setCurrentIndex( ModeHistogram );
       }
-      // TODO: if we get a stacked diagram, take the first subdiagram,
-      // Set its diagram type and sync to its settings
-
-      // Delegate to single diagram's syncToLayer
-      static_cast<QgsDiagramProperties *>( mWidget )->syncToLayer();
     }
   }
   else // No Diagram
@@ -155,7 +151,7 @@ void QgsDiagramWidget::mDiagramTypeComboBox_currentIndexChanged( int index )
   if ( index < 0 )
     return;
 
-  const Mode mode = static_cast< Mode >( mDiagramTypeComboBox->currentData().toInt() );
+  const Mode mode = static_cast<Mode>( mDiagramTypeComboBox->currentData().toInt() );
 
   switch ( mode )
   {

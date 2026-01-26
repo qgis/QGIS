@@ -10,7 +10,7 @@
 
 
 
-class QgsMessageViewer: QDialog, QgsMessageOutput
+class QgsMessageViewer : QDialog, QgsMessageOutput
 {
 %Docstring(signature="appended")
 A generic message view for displaying QGIS messages.

@@ -5,5 +5,5 @@ try:
     QgsCoordinateFormatter.format = staticmethod(QgsCoordinateFormatter.format)
     QgsCoordinateFormatter.asPair = staticmethod(QgsCoordinateFormatter.asPair)
     QgsCoordinateFormatter.separator = staticmethod(QgsCoordinateFormatter.separator)
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -33,12 +33,11 @@ class QAction;
 class QToolButton;
 
 
-class APP_EXPORT QgsStreamDigitizingSettingsAction: public QWidgetAction
+class APP_EXPORT QgsStreamDigitizingSettingsAction : public QWidgetAction
 {
     Q_OBJECT
 
   public:
-
     QgsStreamDigitizingSettingsAction( QWidget *parent = nullptr );
     ~QgsStreamDigitizingSettingsAction() override;
 
@@ -52,13 +51,13 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
   public:
     static const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *settingsDigitizingTechnique;
 
-    static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettingsTree::sTreeDigitizing->createChildNode( QStringLiteral( "shape-map-tools" ) );
+    static inline QgsSettingsTreeNode *sTreeShapeMapTools = QgsSettingsTree::sTreeDigitizing->createChildNode( u"shape-map-tools"_s );
     static const QgsSettingsEntryString *settingMapToolShapeCurrent;
-    static inline QgsSettingsTreeNamedListNode *sTreeShapeMapToolsCategories = sTreeShapeMapTools->createNamedListNode( QStringLiteral( "categories" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeShapeMapToolsCategories = sTreeShapeMapTools->createNamedListNode( u"categories"_s );
     static const QgsSettingsEntryString *settingMapToolShapeDefaultForCategory;
 
     QgsMapToolsDigitizingTechniqueManager( QObject *parent );
-    ~QgsMapToolsDigitizingTechniqueManager();
+    ~QgsMapToolsDigitizingTechniqueManager() override;
     void setupToolBars();
     void setupCanvasTools();
 
@@ -80,12 +79,10 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
     QHash<QString, QAction *> mShapeActions;
     QMap<QgsMapToolShapeAbstract::ShapeCategory, QToolButton *> mShapeCategoryButtons;
 
-    QSet< QgsMapTool * > mInitializedTools;
+    QSet<QgsMapTool *> mInitializedTools;
 
     QToolButton *mDigitizeModeToolButton = nullptr;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
-
-
 };
 
 #endif // QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H

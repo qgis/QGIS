@@ -8,8 +8,12 @@
 
 
 
-class QgsRasterLayerSaveAsDialog: QDialog
+
+class QgsRasterLayerSaveAsDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring raster layer export parameters.
+%End
 
 %TypeHeaderCode
 #include "qgsrasterlayersaveasdialog.h"
@@ -32,13 +36,7 @@ class QgsRasterLayerSaveAsDialog: QDialog
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
-                                QgsRasterDataProvider *sourceProvider,
-                                const QgsRectangle &currentExtent,
-                                const QgsCoordinateReferenceSystem &layerCrs,
-                                const QgsCoordinateReferenceSystem &currentCrs,
-                                QWidget *parent /TransferThis/ = 0,
-                                Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsRasterLayerSaveAsDialog
 %End
@@ -61,7 +59,7 @@ Returns ``True`` if the "add to canvas" checkbox is checked.
 
     void setAddToCanvas( bool checked );
 %Docstring
-Sets whether the  "add to canvas" checkbox should be ``checked``.
+Sets whether the "add to canvas" checkbox should be ``checked``.
 
 .. seealso:: :py:func:`addToCanvas`
 
@@ -78,11 +76,24 @@ Name of the output layer within GeoPackage file
 %End
     QString outputFormat() const;
     QgsCoordinateReferenceSystem outputCrs();
-    QStringList createOptions() const;
+
+ QStringList createOptions() const;
+%Docstring
+.. deprecated:: 3.44
+
+   Use :py:func:`~QgsRasterLayerSaveAsDialog.creationOptions` instead.
+%End
+
+    QStringList creationOptions() const;
+%Docstring
+Raster creation options set for the output layer.
+
+.. versionadded:: 3.44
+%End
     QgsRectangle outputRectangle() const;
     QgsRasterRangeList noData() const;
 
-    QList< int > pyramidsList() const;
+    QList<int> pyramidsList() const;
 
     Qgis::RasterBuildPyramidOption buildPyramidsFlag() const;
 %Docstring
@@ -106,7 +117,6 @@ Returns the selected pyramid format.
 
 
 };
-
 
 
 /************************************************************************

@@ -15,15 +15,15 @@
 
 #include "qgsvaluemapwidgetfactory.h"
 
-#include "qgsvaluemapwidgetwrapper.h"
-#include "qgsvaluemapsearchwidgetwrapper.h"
 #include "qgsdefaultsearchwidgetwrapper.h"
 #include "qgsvaluemapconfigdlg.h"
+#include "qgsvaluemapsearchwidgetwrapper.h"
+#include "qgsvaluemapwidgetwrapper.h"
 
 #include <QSettings>
 
-QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsValueMapWidgetFactory::QgsValueMapWidgetFactory( const QString &name, const QIcon &icon )
+  : QgsEditorWidgetFactory( name, icon )
 {
 }
 

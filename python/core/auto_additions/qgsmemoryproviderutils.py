@@ -2,5 +2,5 @@
 try:
     QgsMemoryProviderUtils.createMemoryLayer = staticmethod(QgsMemoryProviderUtils.createMemoryLayer)
     QgsMemoryProviderUtils.__group__ = ['providers', 'memory']
-except NameError:
+except (NameError, AttributeError):
     pass

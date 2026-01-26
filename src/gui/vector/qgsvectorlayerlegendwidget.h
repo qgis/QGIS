@@ -19,10 +19,10 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QWidget>
-
-#include "qgstextformat.h"
 #include "qgis_gui.h"
+#include "qgstextformat.h"
+
+#include <QWidget>
 
 class QgsImageSourceLineEdit;
 class QLabel;
@@ -30,6 +30,7 @@ class QPushButton;
 class QTreeView;
 class QTreeWidget;
 class QTreeWidgetItem;
+class QCheckBox;
 
 class QgsFontButton;
 class QgsCollapsibleGroupBox;
@@ -40,7 +41,7 @@ class QgsVectorLayer;
  * \ingroup gui
  * \class QgsVectorLayerLegendWidget
  *
- * \brief A widget for configuration of options specific to vector layer's legend.
+ * \brief A widget for configuration of options specific to a vector layer's legend.
  */
 class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
 {
@@ -70,11 +71,11 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     void applyLabelLegend();
 
   private:
+    QCheckBox *mIncludeByDefaultInLayoutLegendsCheck = nullptr;
     QTreeView *mLegendTreeView = nullptr;
     QgsFontButton *mTextOnSymbolFormatButton = nullptr;
     QPushButton *mTextOnSymbolFromExpressionButton = nullptr;
     QgsCollapsibleGroupBox *mTextOnSymbolGroupBox = nullptr;
-    QLabel *mTextOnSymbolLabel = nullptr;
     QgsCollapsibleGroupBox *mLabelLegendGroupBox = nullptr;
     QTreeWidget *mLabelLegendTreeWidget = nullptr;
     QLabel *mPlaceholderImageLabel = nullptr;

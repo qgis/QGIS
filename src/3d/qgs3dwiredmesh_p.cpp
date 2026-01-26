@@ -15,37 +15,27 @@
 
 #include "qgs3dwiredmesh_p.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QGeometry>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QGeometry>
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-#endif
-
 #include "qgsaabb.h"
 
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QGeometry>
+
+#include "moc_qgs3dwiredmesh_p.cpp"
 
 ///@cond PRIVATE
 
 Qgs3DWiredMesh::Qgs3DWiredMesh( Qt3DCore::QNode *parent )
   : Qt3DRender::QGeometryRenderer( parent )
-  , mPositionAttribute( new Qt3DQAttribute( this ) )
-  , mVertexBuffer( new Qt3DQBuffer( this ) )
+  , mPositionAttribute( new Qt3DCore::QAttribute( this ) )
+  , mVertexBuffer( new Qt3DCore::QBuffer( this ) )
 {
-  mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
+  mPositionAttribute->setAttributeType( Qt3DCore::QAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
-  mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
+  mPositionAttribute->setVertexBaseType( Qt3DCore::QAttribute::Float );
   mPositionAttribute->setVertexSize( 3 );
-  mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
+  mPositionAttribute->setName( Qt3DCore::QAttribute::defaultPositionAttributeName() );
 
-  mGeom = new Qt3DQGeometry( this );
+  mGeom = new Qt3DCore::QGeometry( this );
   mGeom->addAttribute( mPositionAttribute );
 
   setInstanceCount( 1 );

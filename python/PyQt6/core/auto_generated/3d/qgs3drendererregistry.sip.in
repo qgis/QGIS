@@ -14,7 +14,9 @@
 class Qgs3DRendererAbstractMetadata
 {
 %Docstring(signature="appended")
-Base metadata class for 3D renderers. Instances of derived classes may be registered in Qgs3DRendererRegistry.
+Base metadata class for 3D renderers.
+
+Instances of derived classes may be registered in Qgs3DRendererRegistry.
 %End
 
 %TypeHeaderCode
@@ -31,8 +33,9 @@ Returns unique identifier of the 3D renderer class
 
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
 %Docstring
-Returns new instance of the renderer given the DOM element. Returns ``None`` on error.
-Pure virtual function: must be implemented in derived classes.
+Returns new instance of the renderer given the DOM element. Returns
+``None`` on error. Pure virtual function: must be implemented in derived
+classes.
 %End
 
   protected:
@@ -49,7 +52,10 @@ Constructor of the base class
 class Qgs3DRendererRegistry
 {
 %Docstring(signature="appended")
-Keeps track of available 3D renderers. Should be accessed through :py:func:`QgsApplication.renderer3DRegistry()` singleton.
+A registry for available 3D renderers.
+
+Should be accessed through
+:py:func:`QgsApplication.renderer3DRegistry()` singleton.
 %End
 
 %TypeHeaderCode
@@ -63,7 +69,8 @@ Keeps track of available 3D renderers. Should be accessed through :py:func:`QgsA
 
     void addRenderer( Qgs3DRendererAbstractMetadata *metadata /Transfer/ );
 %Docstring
-Registers a new 3D renderer type. The call takes ownership of the passed metadata object.
+Registers a new 3D renderer type. The call takes ownership of the passed
+metadata object.
 %End
 
     void removeRenderer( const QString &type );
@@ -73,7 +80,8 @@ Unregisters a 3D renderer type
 
     Qgs3DRendererAbstractMetadata *rendererMetadata( const QString &type ) const;
 %Docstring
-Returns metadata for a 3D renderer type (may be used to create a new instance of the type)
+Returns metadata for a 3D renderer type (may be used to create a new
+instance of the type)
 %End
 
     QStringList renderersList() const;

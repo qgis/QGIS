@@ -18,12 +18,12 @@
 #ifndef QGSPOINTCLOUDRENDERER_H
 #define QGSPOINTCLOUDRENDERER_H
 
-#include "qgsrendercontext.h"
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgsrendercontext.h"
+#include "qgsstyle.h"
+#include "qgsvector3d.h"
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
@@ -70,7 +70,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.
@@ -325,13 +325,13 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "rgb" ) )
+    if ( type == "rgb"_L1 )
       sipType = sipType_QgsPointCloudRgbRenderer;
-    else if ( type == QLatin1String( "ramp" ) )
+    else if ( type == "ramp"_L1 )
       sipType = sipType_QgsPointCloudAttributeByRampRenderer;
-    else if ( type == QLatin1String( "classified" ) )
+    else if ( type == "classified"_L1 )
       sipType = sipType_QgsPointCloudClassifiedRenderer;
-    else if ( type == QLatin1String( "extent" ) )
+    else if ( type == "extent"_L1 )
       sipType = sipType_QgsPointCloudExtentRenderer;
     else
       sipType = 0;
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
   public:
 
-    QgsPointCloudRenderer() = default;
+    QgsPointCloudRenderer();
 
     virtual ~QgsPointCloudRenderer() = default;
 
@@ -675,6 +675,43 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual QStringList legendRuleKeys() const;
 
+    /**
+     * Set whether the renderer should also render file labels inside extent
+     * \since QGIS 3.42
+     */
+    void setShowLabels( const bool show ) { mShowLabels = show; }
+
+    /**
+     * Returns whether the renderer shows file labels inside the extent
+     * rectangle
+     * \since QGIS 3.42
+     */
+    bool showLabels() const { return mShowLabels; }
+
+    /**
+       * Sets the text format renderers should use for rendering labels
+       * \since QGIS 3.42
+       */
+    void setLabelTextFormat( const QgsTextFormat &textFormat ) { mLabelTextFormat = textFormat; }
+
+    /**
+     * Returns the text format renderer is using for rendering labels
+     * \since QGIS 3.42
+     */
+    QgsTextFormat labelTextFormat() const { return mLabelTextFormat; }
+
+    /**
+     * Sets the renderer behavior when zoomed out
+     * \since QGIS 3.42
+     */
+    void setZoomOutBehavior( const Qgis::PointCloudZoomOutRenderBehavior behavior ) { mZoomOutBehavior = behavior; }
+
+    /**
+     * Returns the renderer behavior when zoomed out
+     * \since QGIS 3.42
+     */
+    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
+
   protected:
 
     /**
@@ -813,6 +850,11 @@ class CORE_EXPORT QgsPointCloudRenderer
     bool mHorizontalTriangleFilter = false;
     double mHorizontalTriangleFilterThreshold = 5.0;
     Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
+
+    bool mShowLabels = false;
+    QgsTextFormat mLabelTextFormat;
+
+    Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

@@ -14,24 +14,23 @@
  ***************************************************************************/
 #include "qgsvectorlayereditutils.h"
 
-#include "qgsunsetattributevalue.h"
-#include "qgsvectordataprovider.h"
+#include <limits>
+
+#include "qgis.h"
+#include "qgsabstractgeometry.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectorlayereditbuffer.h"
+#include "qgsgeometryoptions.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
-#include "qgis.h"
-#include "qgswkbtypes.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometryoptions.h"
-#include "qgsabstractgeometry.h"
-#include "qgssettingsregistrycore.h"
 #include "qgssettingsentryimpl.h"
-
-#include <limits>
-
+#include "qgssettingsregistrycore.h"
+#include "qgsunsetattributevalue.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayerutils.h"
+#include "qgswkbtypes.h"
 
 QgsVectorLayerEditUtils::QgsVectorLayerEditUtils( QgsVectorLayer *layer )
   : mLayer( layer )
@@ -174,7 +173,8 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ) );
   }
 
-  //find first valid feature we can add the ring to
+  //find valid features we can add the ring to
+  bool success = false;
   while ( fit.nextFeature( f ) )
   {
     if ( !f.hasGeometry() )
@@ -193,6 +193,7 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     }
     if ( addRingReturnCode == Qgis::GeometryOperationResult::Success )
     {
+      success = true;
       layer->changeGeometry( f.id(), g );
       if ( modifiedFeatureIds )
       {
@@ -206,8 +207,98 @@ Qgis::GeometryOperationResult staticAddRing( QgsVectorLayer *layer, std::unique_
     }
   }
 
-  return addRingReturnCode;
+  return success ? Qgis::GeometryOperationResult::Success : addRingReturnCode;
 }
+
+///@cond PRIVATE
+double QgsVectorLayerEditUtils::getTopologicalSearchRadius( const QgsVectorLayer *layer )
+{
+  double threshold = layer->geometryOptions()->geometryPrecision();
+
+  if ( qgsDoubleNear( threshold, 0.0 ) )
+  {
+    threshold = 1e-8;
+
+    if ( layer->crs().mapUnits() == Qgis::DistanceUnit::Meters )
+    {
+      threshold = 0.001;
+    }
+    else if ( layer->crs().mapUnits() == Qgis::DistanceUnit::Feet )
+    {
+      threshold = 0.0001;
+    }
+  }
+  return threshold;
+}
+
+void QgsVectorLayerEditUtils::addTopologicalPointsToLayers( const QgsGeometry &geom, QgsVectorLayer *vlayer, const QList<QgsMapLayer *> &layers, const QString &toolName )
+{
+  QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setLimit( 1 );
+  QgsFeature f;
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( vectorLayer && vectorLayer->isEditable() && vectorLayer->isSpatial() && ( vectorLayer->geometryType() == Qgis::GeometryType::Line || vectorLayer->geometryType() == Qgis::GeometryType::Polygon ) )
+    {
+      // boundingBox() is cached, it doesn't matter calling it in the loop
+      QgsRectangle bbox = geom.boundingBox();
+      QgsCoordinateTransform ct;
+      if ( vectorLayer->crs() != vlayer->crs() )
+      {
+        ct = QgsCoordinateTransform( vlayer->crs(), vectorLayer->crs(), vectorLayer->transformContext() );
+        try
+        {
+          bbox = ct.transformBoundingBox( bbox );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( u"Bounding box transformation failed, skipping topological points for layer %1"_s.arg( vlayer->id() ) );
+          continue;
+        }
+      }
+      bbox.grow( getTopologicalSearchRadius( vectorLayer ) );
+      request.setFilterRect( bbox );
+
+      // We check that there is actually at least one feature intersecting our geometry in the layer to avoid creating an empty edit command and calling costly addTopologicalPoint
+      if ( !vectorLayer->getFeatures( request ).nextFeature( f ) )
+        continue;
+
+      vectorLayer->beginEditCommand( QObject::tr( "Topological points added by '%1'" ).arg( toolName ) );
+
+      int returnValue = 2;
+      if ( vectorLayer->crs() != vlayer->crs() )
+      {
+        try
+        {
+          // transform digitized geometry from vlayer crs to vectorLayer crs and add topological points
+          QgsGeometry transformedGeom( geom );
+          transformedGeom.transform( ct );
+          returnValue = vectorLayer->addTopologicalPoints( transformedGeom );
+        }
+        catch ( QgsCsException & )
+        {
+          QgsDebugError( u"transformation to vectorLayer coordinate failed"_s );
+        }
+      }
+      else
+      {
+        returnValue = vectorLayer->addTopologicalPoints( geom );
+      }
+
+      if ( returnValue == 0 )
+      {
+        vectorLayer->endEditCommand();
+      }
+      else
+      {
+        // the layer was not modified, leave the undo buffer intact
+        vectorLayer->destroyEditCommand();
+      }
+    }
+  }
+}
+///@endcond
 
 Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds, QgsFeatureId *modifiedFeatureId )
 {
@@ -230,9 +321,10 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, 
   std::unique_ptr<QgsCurve> uniquePtrRing( ring );
   if ( modifiedFeatureId )
   {
-    QgsFeatureIds *modifiedFeatureIds = new QgsFeatureIds;
-    Qgis::GeometryOperationResult result = staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, modifiedFeatureIds, true );
-    *modifiedFeatureId = *modifiedFeatureIds->begin();
+    QgsFeatureIds modifiedFeatureIds;
+    Qgis::GeometryOperationResult result = staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, &modifiedFeatureIds, true );
+    if ( modifiedFeatureId && !modifiedFeatureIds.empty() )
+      *modifiedFeatureId = *modifiedFeatureIds.begin();
     return result;
   }
   return staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, nullptr, true );
@@ -312,7 +404,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   else
   {
     geometry = f.geometry();
-    if ( ring->orientation() != geometry.polygonOrientation() )
+    if ( mLayer->geometryType() == Qgis::GeometryType::Polygon && ring->orientation() != geometry.polygonOrientation() )
     {
       ring = ring->reversed();
     }
@@ -332,7 +424,7 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addPart( QgsCurve *ring, 
   return errorCode;
 }
 
-// TODO QGIS 4.0 -- this should return Qgis::GeometryOperationResult
+// TODO QGIS 5.0 -- this should return Qgis::GeometryOperationResult
 int QgsVectorLayerEditUtils::translateFeature( QgsFeatureId featureId, double dx, double dy )
 {
   if ( !mLayer->isSpatial() )
@@ -444,6 +536,22 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
     topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success )
     {
+      //find largest geometry and give that to the original feature
+      std::function<double( const QgsGeometry & )> size = mLayer->geometryType() == Qgis::GeometryType::Polygon ? &QgsGeometry::area : &QgsGeometry::length;
+      double featureGeomSize = size( featureGeom );
+
+      QVector<QgsGeometry>::iterator largestNewFeature = std::max_element( newGeometries.begin(), newGeometries.end(), [ &size ]( const QgsGeometry & a, const QgsGeometry & b ) -> bool
+      {
+        return size( a ) < size( b );
+      } );
+
+      if ( size( *largestNewFeature ) > featureGeomSize )
+      {
+        QgsGeometry copy = *largestNewFeature;
+        *largestNewFeature = featureGeom;
+        featureGeom = copy;
+      }
+
       //change this geometry
       mLayer->changeGeometry( feat.id(), featureGeom );
 
@@ -782,21 +890,7 @@ int QgsVectorLayerEditUtils::addTopologicalPoints( const QgsPoint &p )
   double segmentSearchEpsilon = mLayer->crs().isGeographic() ? 1e-12 : 1e-8;
 
   //work with a tolerance because coordinate projection may introduce some rounding
-  double threshold = mLayer->geometryOptions()->geometryPrecision();
-
-  if ( qgsDoubleNear( threshold, 0.0 ) )
-  {
-    threshold = 1e-8;
-
-    if ( mLayer->crs().mapUnits() == Qgis::DistanceUnit::Meters )
-    {
-      threshold = 0.001;
-    }
-    else if ( mLayer->crs().mapUnits() == Qgis::DistanceUnit::Feet )
-    {
-      threshold = 0.0001;
-    }
-  }
+  double threshold = getTopologicalSearchRadius( mLayer );
 
   QgsRectangle searchRect( p, p, false );
   searchRect.grow( threshold );

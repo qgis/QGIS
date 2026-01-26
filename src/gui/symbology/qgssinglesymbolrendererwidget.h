@@ -15,9 +15,9 @@
 #ifndef QGSSINGLESYMBOLRENDERERWIDGET_H
 #define QGSSINGLESYMBOLRENDERERWIDGET_H
 
-#include "qgsrendererwidget.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsrendererwidget.h"
 
 class QgsSingleSymbolRenderer;
 class QgsSymbolSelectorWidget;
@@ -27,6 +27,7 @@ class QMenu;
 /**
  * \ingroup gui
  * \class QgsSingleSymbolRendererWidget
+ * \brief A widget for configuring QgsSingleSymbolRenderer.
  */
 class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
 {
@@ -45,7 +46,7 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     void disableSymbolLevels() override SIP_SKIP;
 
   protected:
-    void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled ) override;
+    void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled ) override;
 
   private slots:
     void changeSingleSymbol();
@@ -55,10 +56,9 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     void dataDefinedSizeLegend();
 
   private:
-
-    std::unique_ptr< QgsSingleSymbolRenderer > mRenderer;
+    std::unique_ptr<QgsSingleSymbolRenderer> mRenderer;
     QgsSymbolSelectorWidget *mSelector = nullptr;
-    std::unique_ptr< QgsSymbol > mSingleSymbol;
+    std::unique_ptr<QgsSymbol> mSingleSymbol;
     QAction *mActionLevels = nullptr;
 };
 

@@ -19,8 +19,9 @@
 #define QGSDWGIMPORTDIALOG_H
 
 #include "ui_qgsdwgimportbase.h"
-#include "qgshelp.h"
+
 #include "qgis_app.h"
+#include "qgshelp.h"
 
 class QgsVectorLayer;
 class QgsLayerTreeGroup;
@@ -48,7 +49,6 @@ class APP_EXPORT QgsDwgImportDialog : public QDialog, private Ui::QgsDwgImportBa
     void useCurvesClicked();
 
   private:
-
     enum class ColumnIndex : int
     {
       Name = 0,

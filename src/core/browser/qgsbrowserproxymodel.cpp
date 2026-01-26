@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsbrowserproxymodel.h"
+
 #include "qgsbrowsermodel.h"
-#include "qgslayeritem.h"
 #include "qgsdatacollectionitem.h"
+#include "qgslayeritem.h"
 
 #include <QRegularExpression>
+
+#include "moc_qgsbrowserproxymodel.cpp"
 
 QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -88,7 +91,7 @@ void QgsBrowserProxyModel::updateFilter()
       const QStringList filterParts = mFilter.split( '|' );
       for ( const QString &f : filterParts )
       {
-        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( f.trimmed() ) ),
+        const QRegularExpression rx( QRegularExpression::wildcardToRegularExpression( u"*%1*"_s.arg( f.trimmed() ) ),
                                      mCaseSensitivity == Qt::CaseInsensitive ? QRegularExpression::CaseInsensitiveOption : QRegularExpression::NoPatternOption );
         mREList.append( rx );
       }
@@ -281,9 +284,9 @@ bool QgsBrowserProxyModel::hasChildren( const QModelIndex &parent ) const
   if ( isFertile && parent.isValid() )
   {
     QgsDataItem *item = dataItem( parent );
-    if ( ! mShowLayers )
+    if ( item && !mShowLayers )
     {
-      return ! item->layerCollection();
+      return !item->layerCollection();
     }
     // Hide everything below layers if filter is set
     else if ( mFilterByLayerType && qobject_cast< QgsLayerItem * >( item ) )

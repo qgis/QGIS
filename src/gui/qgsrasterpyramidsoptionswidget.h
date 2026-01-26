@@ -19,21 +19,21 @@
 #define QGSRASTERPYRAMIDSOPTIONSWIDGET_H
 
 #include "ui_qgsrasterpyramidsoptionswidgetbase.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QCheckBox;
 
 /**
  * \ingroup gui
- * \brief A widget to select format-specific raster saving options
+ * \brief A widget to select format-specific raster saving options.
  */
-class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::QgsRasterPyramidsOptionsWidgetBase
+class GUI_EXPORT QgsRasterPyramidsOptionsWidget : public QWidget, private Ui::QgsRasterPyramidsOptionsWidgetBase
 {
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsRasterPyramidsOptionsWidget
     QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &provider = "gdal" );
 
@@ -44,11 +44,18 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     /**
      * Returns the selected pyramid format.
      */
-    Qgis::RasterPyramidFormat pyramidsFormat() const { return cbxPyramidsFormat->currentData().value< Qgis::RasterPyramidFormat >(); }
+    Qgis::RasterPyramidFormat pyramidsFormat() const { return cbxPyramidsFormat->currentData().value<Qgis::RasterPyramidFormat>(); }
 
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer ) { mSaveOptionsWidget->setRasterLayer( rasterLayer ); }
     void setRasterFileName( const QString &file ) { mSaveOptionsWidget->setRasterFileName( file ); }
+
+    /**
+     * Tune settings of the widget for the given format (in particular for COG)
+     *
+     * \since QGIS 4.0
+     */
+    void tuneForFormat( const QString &driverName );
 
   public slots:
 
@@ -75,10 +82,9 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
     void someValueChanged();
 
   private:
-
     QString mProvider;
-    QList< int > mOverviewList;
-    QMap< int, QCheckBox * > mOverviewCheckBoxes;
+    QList<int> mOverviewList;
+    QMap<int, QCheckBox *> mOverviewCheckBoxes;
 };
 
 // clazy:excludeall=qstring-allocations

@@ -21,10 +21,11 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutmarkerwidgetbase.h"
-#include "qgslayoutitemwidget.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemmarker.h"
+#include "qgslayoutitemwidget.h"
 
 /**
  * \ingroup gui
@@ -33,7 +34,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutMarkerWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMarkerWidgetBase
+class GUI_EXPORT QgsLayoutMarkerWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMarkerWidgetBase
 {
     Q_OBJECT
   public:
@@ -42,12 +43,11 @@ class GUI_EXPORT QgsLayoutMarkerWidget: public QgsLayoutItemBaseWidget, private 
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
 
   private:
-    QPointer< QgsLayoutItemMarker > mMarker;
+    QPointer<QgsLayoutItemMarker> mMarker;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Blocks / unblocks the signal of all GUI elements
@@ -63,7 +63,6 @@ class GUI_EXPORT QgsLayoutMarkerWidget: public QgsLayoutItemBaseWidget, private 
 
     //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();
-
 };
 
 #endif // QGSLAYOUTMARKERWIDGET_H

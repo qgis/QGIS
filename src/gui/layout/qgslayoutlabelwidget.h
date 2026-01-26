@@ -21,11 +21,13 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutlabelwidgetbase.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemlabel.h"
+
 #include <functional>
+
+#include "qgis_gui.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemwidget.h"
 
 /**
  * \ingroup gui
@@ -34,7 +36,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutLabelWidgetBase
+class GUI_EXPORT QgsLayoutLabelWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutLabelWidgetBase
 {
     Q_OBJECT
   public:
@@ -57,10 +59,9 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public Qg
      *
      * \since QGIS 3.18
      */
-    static void buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function< void( const QString &expression ) > &callback );
+    static void buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void( const QString &expression )> &callback );
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private slots:
@@ -75,7 +76,7 @@ class GUI_EXPORT QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, public Qg
     void fontChanged();
 
   private:
-    QPointer< QgsLayoutItemLabel > mLabel = nullptr;
+    QPointer<QgsLayoutItemLabel> mLabel = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 

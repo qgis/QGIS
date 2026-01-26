@@ -15,21 +15,25 @@
 
 #include "qgsexternalstoragefilewidget.h"
 
-#include <QLineEdit>
-#include <QToolButton>
-#include <QLabel>
-#include <QGridLayout>
-#include <QUrl>
-#include <QDropEvent>
-#include <QRegularExpression>
-#include <QProgressBar>
+#include <memory>
 
-#include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgsexpression.h"
 #include "qgsexternalstorage.h"
 #include "qgsexternalstorageregistry.h"
+#include "qgslogger.h"
 #include "qgsmessagebar.h"
-#include "qgsexpression.h"
+
+#include <QDropEvent>
+#include <QGridLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QProgressBar>
+#include <QRegularExpression>
+#include <QToolButton>
+#include <QUrl>
+
+#include "moc_qgsexternalstoragefilewidget.cpp"
 
 #define FILEPATH_VARIABLE "selected_file_path"
 
@@ -46,7 +50,7 @@ QgsExternalStorageFileWidget::QgsExternalStorageFileWidget( QWidget *parent )
 
   mCancelButton = new QToolButton( this );
   mLayout->addWidget( mCancelButton );
-  mCancelButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) ) );
+  mCancelButton->setIcon( QgsApplication::getThemeIcon( u"/mTaskCancel.svg"_s ) );
   mCancelButton->hide();
 
   updateAcceptDrops();
@@ -62,7 +66,7 @@ void QgsExternalStorageFileWidget::setStorageType( const QString &storageType )
     mExternalStorage = QgsApplication::externalStorageRegistry()->externalStorageFromType( storageType );
     if ( !mExternalStorage )
     {
-      QgsDebugError( QStringLiteral( "Invalid storage type: %1" ).arg( storageType ) );
+      QgsDebugError( u"Invalid storage type: %1"_s.arg( storageType ) );
     }
     else
     {
@@ -81,7 +85,7 @@ void QgsExternalStorageFileWidget::setReadOnly( bool readOnly )
 
 void QgsExternalStorageFileWidget::updateAcceptDrops()
 {
-  setAcceptDrops( !mReadOnly &&  mExternalStorage );
+  setAcceptDrops( !mReadOnly && mExternalStorage );
 }
 
 QString QgsExternalStorageFileWidget::storageType() const
@@ -106,7 +110,7 @@ const QString &QgsExternalStorageFileWidget::storageAuthConfigId() const
 
 void QgsExternalStorageFileWidget::setStorageUrlExpression( const QString &urlExpression )
 {
-  mStorageUrlExpression.reset( new QgsExpression( urlExpression ) );
+  mStorageUrlExpression = std::make_unique<QgsExpression>( urlExpression );
 }
 
 QgsExpression *QgsExternalStorageFileWidget::storageUrlExpression() const
@@ -140,8 +144,9 @@ QgsExpressionContextScope *QgsExternalStorageFileWidget::createFileWidgetScope()
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "FileWidget" ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable(
-                        QStringLiteral( FILEPATH_VARIABLE ),
-                        QString(), true, false, tr( "User selected absolute filepath" ) ) );
+    QStringLiteral( FILEPATH_VARIABLE ),
+    QString(), true, false, tr( "User selected absolute filepath" )
+  ) );
   return scope;
 }
 
@@ -177,9 +182,7 @@ void QgsExternalStorageFileWidget::updateLayout()
   mFileWidgetButton->setEnabled( !mReadOnly );
   mLineEdit->setEnabled( !mReadOnly );
 
-  mLinkEditButton->setIcon( linkVisible && !mReadOnly ?
-                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) :
-                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+  mLinkEditButton->setIcon( linkVisible && !mReadOnly ? QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ) : QgsApplication::getThemeIcon( u"/mActionSaveEdits.svg"_s ) );
 }
 
 void QgsExternalStorageFileWidget::setSelectedFileNames( QStringList fileNames )
@@ -193,11 +196,10 @@ void QgsExternalStorageFileWidget::setSelectedFileNames( QStringList fileNames )
     {
       if ( messageBar() )
       {
-        messageBar()->pushWarning( tr( "Storing External resource" ),
-                                   tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+        messageBar()->pushWarning( tr( "Storing External resource" ), tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
       }
 
-      QgsDebugError( QStringLiteral( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+      QgsDebugError( u"Storage URL expression is invalid : %1"_s.arg( mStorageUrlExpression->evalErrorString() ) );
       return;
     }
 
@@ -229,8 +231,7 @@ void QgsExternalStorageFileWidget::storeExternalFiles( QStringList fileNames, QS
   {
     if ( messageBar() )
     {
-      messageBar()->pushWarning( tr( "Storing External resource" ),
-                                 tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
+      messageBar()->pushWarning( tr( "Storing External resource" ), tr( "Storage URL expression is invalid : %1" ).arg( mStorageUrlExpression->evalErrorString() ) );
     }
 
     mStoreInProgress = false;
@@ -244,16 +245,14 @@ void QgsExternalStorageFileWidget::storeExternalFiles( QStringList fileNames, QS
   connect( storedContent, &QgsExternalStorageStoredContent::progressChanged, mProgressBar, &QProgressBar::setValue );
   connect( mCancelButton, &QToolButton::clicked, storedContent, &QgsExternalStorageStoredContent::cancel );
 
-  auto onStoreFinished = [ = ]
-  {
+  auto onStoreFinished = [this, storedContent, fileNames, storedUrls, filePath, url] {
     mStoreInProgress = false;
     updateLayout();
     storedContent->deleteLater();
 
     if ( storedContent->status() == Qgis::ContentStatus::Failed && messageBar() )
     {
-      messageBar()->pushWarning( tr( "Storing External resource" ),
-                                 tr( "Storing file '%1' to url '%2' has failed : %3" ).arg( filePath, url.toString(), storedContent->errorString() ) );
+      messageBar()->pushWarning( tr( "Storing External resource" ), tr( "Storing file '%1' to url '%2' has failed : %3" ).arg( filePath, url.toString(), storedContent->errorString() ) );
     }
 
     if ( storedContent->status() != Qgis::ContentStatus::Finished )

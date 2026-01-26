@@ -16,17 +16,19 @@
  ***************************************************************************/
 
 #include "qgslayoututils.h"
+
+#include <cmath>
+
 #include "qgslayout.h"
-#include "qgssettingsregistrycore.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutrendercontext.h"
 #include "qgsprojectviewsettings.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
-#include "qgslayoutrendercontext.h"
+#include "qgssettingsregistrycore.h"
 
-#include <QStyleOptionGraphicsItem>
 #include <QPainter>
-#include <cmath>
+#include <QStyleOptionGraphicsItem>
 
 #ifndef M_DEG2RAD
 #define M_DEG2RAD 0.0174532925
@@ -146,6 +148,7 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout
   QgsRenderContext context = createRenderContextForMap( referenceMap, painter, dpi );
   if ( layout )
   {
+    // TODO -- handle RasterizedRenderingPolicy here!!!!
     context.setFlags( layout->renderContext().renderContextFlags() );
     context.setTextRenderFormat( layout->renderContext().textRenderFormat() );
   }
@@ -156,10 +159,18 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout
 void QgsLayoutUtils::relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter )
 {
   //linearly scale rectToResize relative to the scaling from boundsBefore to boundsAfter
-  double left = relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
-  double right = relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() );
-  double top = relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
-  double bottom = relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() );
+  const double left = !qgsDoubleNear( boundsBefore.left(), boundsBefore.right() )
+                      ? relativePosition( rectToResize.left(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
+                      : boundsAfter.left();
+  const double right = !qgsDoubleNear( boundsBefore.left(), boundsBefore.right() )
+                       ? relativePosition( rectToResize.right(), boundsBefore.left(), boundsBefore.right(), boundsAfter.left(), boundsAfter.right() )
+                       : boundsAfter.right();
+  const double top = !qgsDoubleNear( boundsBefore.top(), boundsBefore.bottom() )
+                     ? relativePosition( rectToResize.top(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
+                     : boundsAfter.top();
+  const double bottom = !qgsDoubleNear( boundsBefore.top(), boundsBefore.bottom() )
+                        ? relativePosition( rectToResize.bottom(), boundsBefore.top(), boundsBefore.bottom(), boundsAfter.top(), boundsAfter.bottom() )
+                        : boundsAfter.bottom();
 
   rectToResize.setRect( left, top, right - left, bottom - top );
 }
@@ -384,12 +395,12 @@ QRectF QgsLayoutUtils::largestRotatedRectWithinBounds( const QRectF &originalRec
 QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QString &string, bool &ok )
 {
   QString s = string.trimmed();
-  if ( s.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
+  if ( s.compare( "Portrait"_L1, Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsLayoutItemPage::Portrait;
   }
-  else if ( s.compare( QLatin1String( "Landscape" ), Qt::CaseInsensitive ) == 0 )
+  else if ( s.compare( "Landscape"_L1, Qt::CaseInsensitive ) == 0 )
   {
     ok = true;
     return QgsLayoutItemPage::Landscape;
@@ -400,20 +411,8 @@ QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QSt
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style )
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  // workaround Qt bug 66185
-
-  // Refs #18027 - if a QGraphicsItem is rotated by 90 or 270 degrees, then the item
-  // style given to QGraphicsItem::paint incorrectly uses the shear parameter of the matrix (m12)
-  // to store the current view scale, instead of the horizontal scale parameter (m11) which
-  // is used in all other cases
-
-  // TODO - ifdef this out if Qt fixes upstream
-  return !qgsDoubleNear( style->matrix.m11(), 0.0 ) ? style->matrix.m11() : style->matrix.m12();
-#else
   Q_UNUSED( style )
   return 1;
-#endif
 }
 
 double QgsLayoutUtils::scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style, QPainter *painter )

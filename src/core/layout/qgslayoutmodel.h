@@ -23,9 +23,9 @@
 #include "qgslayoutitemregistry.h"
 
 #include <QAbstractItemModel>
+#include <QSet>
 #include <QSortFilterProxyModel>
 #include <QStringList>
-#include <QSet>
 
 class QgsLayout;
 class QGraphicsItem;
@@ -35,8 +35,9 @@ class QgsLayoutItem;
  * \class QgsLayoutModel
  * \ingroup core
  *
- * \brief A model for items attached to a layout. The model also maintains the z-order for the
- * layout, and must be notified whenever item stacking changes.
+ * \brief A model for items attached to a layout.
+ *
+ * The model also maintains the z-order for the layout, and must be notified whenever item stacking changes.
  *
  * Internally, QgsLayoutModel maintains two lists. One contains a complete list of all items for
  * the layout, ordered by their position within the z-order stack.
@@ -395,7 +396,7 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
 
   private:
     QgsLayout *mLayout = nullptr;
-    QgsLayoutItemRegistry::ItemType mItemTypeFilter;
+    QgsLayoutItemRegistry::ItemType mItemTypeFilter =  QgsLayoutItemRegistry::LayoutItem ;
     QList< QgsLayoutItem * > mExceptedList;
     bool mAllowEmpty = false;
     QgsLayoutItem::Flags mItemFlags = QgsLayoutItem::Flags();

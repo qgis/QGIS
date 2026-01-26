@@ -11,8 +11,8 @@
 class QgsLineSymbol : QgsSymbol
 {
 %Docstring(signature="appended")
-
-A line symbol type, for rendering LineString and MultiLineString geometries.
+A line symbol type, for rendering LineString and MultiLineString
+geometries.
 %End
 
 %TypeHeaderCode
@@ -20,23 +20,26 @@ A line symbol type, for rendering LineString and MultiLineString geometries.
 %End
   public:
 
-    static QgsLineSymbol *createSimple( const QVariantMap &properties ) /Factory/;
+    static std::unique_ptr< QgsLineSymbol > createSimple( const QVariantMap &properties );
 %Docstring
-Create a line symbol with one symbol layer: SimpleLine with specified properties.
-This is a convenience method for easier creation of line symbols.
+Create a line symbol with one symbol layer: SimpleLine with specified
+properties. This is a convenience method for easier creation of line
+symbols.
 %End
 
     QgsLineSymbol( const QgsSymbolLayerList &layers /Transfer/ = QgsSymbolLayerList() );
 %Docstring
-Constructor for QgsLineSymbol, with the specified list of initial symbol ``layers``.
+Constructor for QgsLineSymbol, with the specified list of initial symbol
+``layers``.
 
 Ownership of the ``layers`` are transferred to the symbol.
 %End
 
     void setWidth( double width ) const;
 %Docstring
-Sets the ``width`` for the whole line symbol. Individual symbol layer sizes
-will be scaled to maintain their current relative size to the whole symbol size.
+Sets the ``width`` for the whole line symbol. Individual symbol layer
+sizes will be scaled to maintain their current relative size to the
+whole symbol size.
 
 .. seealso:: :py:func:`width`
 %End
@@ -52,8 +55,8 @@ Sets the width units for the whole symbol (including all symbol layers).
 
     double width() const;
 %Docstring
-Returns the estimated width for the whole symbol, which is the maximum width of
-all marker symbol layers in the symbol.
+Returns the estimated width for the whole symbol, which is the maximum
+width of all marker symbol layers in the symbol.
 
 .. warning::
 
@@ -86,26 +89,31 @@ Set data defined width for whole symbol (including all symbol layers).
 
     QgsProperty dataDefinedWidth() const;
 %Docstring
-Returns data defined width for whole symbol (including all symbol layers).
+Returns data defined width for whole symbol (including all symbol
+layers).
 
-:return: data defined width, or invalid property if size is not set
-         at the line level. Caller takes responsibility for deleting the returned object.
+:return: data defined width, or invalid property if size is not set at
+         the line level. Caller takes responsibility for deleting the
+         returned object.
 
 .. seealso:: :py:func:`setDataDefinedWidth`
 %End
 
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 %Docstring
-Renders the symbol along the line joining ``points``, using the given render ``context``.
+Renders the symbol along the line joining ``points``, using the given
+render ``context``.
 
-The ``f`` argument is used to pass the feature currently being rendered (when available).
+The ``f`` argument is used to pass the feature currently being rendered
+(when available).
 
-If only a single symbol layer from the symbol should be rendered, it should be specified
-in the ``layer`` argument. A ``layer`` of -1 indicates that all symbol layers should be
-rendered.
+If only a single symbol layer from the symbol should be rendered, it
+should be specified in the ``layer`` argument. A ``layer`` of -1
+indicates that all symbol layers should be rendered.
 
-If ``selected`` is ``True`` then the symbol will be drawn using the "selected feature"
-style and colors instead of the symbol's normal style.
+If ``selected`` is ``True`` then the symbol will be drawn using the
+"selected feature" style and colors instead of the symbol's normal
+style.
 %End
 
     virtual QgsLineSymbol *clone() const /Factory/;

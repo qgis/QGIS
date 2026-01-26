@@ -16,8 +16,9 @@
 #ifndef QGSKDE_H
 #define QGSKDE_H
 
-#include "qgsrectangle.h"
 #include "qgsogrutils.h"
+#include "qgsrectangle.h"
+
 #include <QString>
 
 // GDAL includes
@@ -38,60 +39,59 @@ class QgsFeature;
 class ANALYSIS_EXPORT QgsKernelDensityEstimation
 {
   public:
-
     //! Kernel shape type
-    enum KernelShape
+    enum class KernelShape SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsKernelDensityEstimation, KernelShape ) : int
     {
-      KernelQuartic = 0, //!< Quartic kernel
-      KernelTriangular, //!< Triangular kernel
-      KernelUniform, //!< Uniform (flat) kernel
-      KernelTriweight, //!< Triweight kernel
-      KernelEpanechnikov, //!< Epanechnikov kernel
+      Quartic SIP_MONKEYPATCH_COMPAT_NAME( KernelQuartic ) = 0,       //!< Quartic kernel
+      Triangular SIP_MONKEYPATCH_COMPAT_NAME( KernelTriangular ),     //!< Triangular kernel
+      Uniform SIP_MONKEYPATCH_COMPAT_NAME( KernelUniform ),           //!< Uniform (flat) kernel
+      Triweight SIP_MONKEYPATCH_COMPAT_NAME( KernelTriweight ),       //!< Triweight kernel
+      Epanechnikov SIP_MONKEYPATCH_COMPAT_NAME( KernelEpanechnikov ), //!< Epanechnikov kernel
     };
 
     //! Output values type
-    enum OutputValues
+    enum class OutputValues SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsKernelDensityEstimation, OutputValues ) : int
     {
-      OutputRaw = 0, //!< Output the raw KDE values
-      OutputScaled, //!< Output mathematically correct scaled values
+      Raw SIP_MONKEYPATCH_COMPAT_NAME( OutputRaw ) = 0,   //!< Output the raw KDE values
+      Scaled SIP_MONKEYPATCH_COMPAT_NAME( OutputScaled ), //!< Output mathematically correct scaled values
     };
 
     //! Result of operation
-    enum Result
+    enum class Result SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsKernelDensityEstimation, Result ) : int
     {
-      Success, //!< Operation completed successfully
-      DriverError, //!< Could not open the driver for the specified format
+      Success,           //!< Operation completed successfully
+      DriverError,       //!< Could not open the driver for the specified format
       InvalidParameters, //!< Input parameters were not valid
       FileCreationError, //!< Error creating output file
-      RasterIoError, //!< Error writing to raster
+      RasterIoError,     //!< Error writing to raster
     };
 
     //! KDE parameters
     struct Parameters
     {
-      //! Point feature source
-      QgsFeatureSource *source = nullptr;
+        //! Point feature source
+        QgsFeatureSource *source = nullptr;
 
-      //! Fixed radius, in map units
-      double radius;
+        //! Fixed radius, in map units
+        double radius;
 
-      //! Field for radius, or empty if using a fixed radius
-      QString radiusField;
+        //! Field for radius, or empty if using a fixed radius
+        QString radiusField;
 
-      //! Field name for weighting field, or empty if not using weights
-      QString weightField;
+        //! Field name for weighting field, or empty if not using weights
+        QString weightField;
 
-      //! Size of pixel in output file
-      double pixelSize;
+        //! Size of pixel in output file
+        double pixelSize;
 
-      //! Kernel shape
-      QgsKernelDensityEstimation::KernelShape shape;
+        //! Kernel shape
+        QgsKernelDensityEstimation::KernelShape shape;
 
-      //! Decay ratio (Triangular kernels only)
-      double decayRatio;
+        //! Decay ratio (Triangular kernels only)
+        double decayRatio;
 
-      //! Type of output value
-      QgsKernelDensityEstimation::OutputValues outputValues;
+        //! Type of output value
+        QgsKernelDensityEstimation::OutputValues outputValues;
     };
 
     /**
@@ -132,7 +132,6 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     Result finalise();
 
   private:
-
     //! Calculate the value given to a point width a given distance for a specified kernel shape
     double calculateKernelValue( double distance, double bandwidth, KernelShape shape, OutputValues outputType ) const;
     //! Uniform kernel function
@@ -153,8 +152,8 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     QString mOutputFile;
     QString mOutputFormat;
 
-    int mRadiusField;
-    int mWeightField;
+    int mRadiusField = -1;
+    int mWeightField = -1;
     double mRadius;
     double mPixelSize;
     QgsRectangle mBounds;
@@ -163,10 +162,10 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     double mDecay;
     OutputValues mOutputValues;
 
-    int mBufferSize;
+    int mBufferSize = -1;
 
     gdal::dataset_unique_ptr mDatasetH;
-    GDALRasterBandH mRasterBandH;
+    GDALRasterBandH mRasterBandH = nullptr;
 
     //! Creates a new raster layer and initializes it to the no data value
     bool createEmptyLayer( GDALDriverH driver, const QgsRectangle &bounds, int rows, int columns ) const;
@@ -176,6 +175,5 @@ class ANALYSIS_EXPORT QgsKernelDensityEstimation
     QgsKernelDensityEstimation( const QgsKernelDensityEstimation &other );
 #endif
 };
-
 
 #endif // QGSKDE_H

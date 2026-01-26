@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     fromfunction.py
@@ -23,36 +21,38 @@ from qgis._core import QgsTask
 
 
 @staticmethod
-def _fromFunction(description: str,
-                  function: _typing.Callable,
-                  *args,
-                  on_finished: _typing.Optional[_typing.Callable] = None,
-                  flags=QgsTask.Flag.AllFlags,
-                  **kwargs) -> QgsTask:
+def _fromFunction(
+    description: str,
+    function: _typing.Callable,
+    *args,
+    on_finished: _typing.Optional[_typing.Callable] = None,
+    flags=QgsTask.Flag.AllFlags,
+    **kwargs
+) -> QgsTask:
     """
-Creates a new QgsTask task from a python function.
+    Creates a new QgsTask task from a python function.
 
-Example
--------
+    Example
+    -------
 
-.. code-block:: python
+    .. code-block:: python
 
-    def calculate(task):
-        # pretend this is some complex maths and stuff we want
-        # to run in the background
-        return 5*6
+        def calculate(task):
+            # pretend this is some complex maths and stuff we want
+            # to run in the background
+            return 5*6
 
-    def calculation_finished(exception, value=None):
-        if not exception:
-            iface.messageBar().pushMessage(
-                'the magic number is {}'.format(value))
-        else:
-            iface.messageBar().pushMessage(
-                str(exception))
+        def calculation_finished(exception, value=None):
+            if not exception:
+                iface.messageBar().pushMessage(
+                    'the magic number is {}'.format(value))
+            else:
+                iface.messageBar().pushMessage(
+                    str(exception))
 
-    task = QgsTask.fromFunction('my task', calculate,
-            on_finished=calculation_finished)
-    QgsApplication.taskManager().addTask(task)
+        task = QgsTask.fromFunction('my task', calculate,
+                on_finished=calculation_finished)
+        QgsApplication.taskManager().addTask(task)
 
     """
 

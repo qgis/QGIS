@@ -10,7 +10,7 @@ cd ${SRCDIR}
 git config --global --add safe.directory ${SRCDIR}
 
 usage() {
-  echo "Usage; $(basename $0) [<TEST_BATCHNAME>]"
+  echo "Usage; $(basename $0) [<TEST_BATCHNAME>] [<TEST_BLOCKLIST_FILE>]"
   echo "TEST_BATCHNAME can be any of:"
   echo "  HANA                Test the HANA provider"
   echo "  POSTGRES            Test the PostgreSQL provider"
@@ -20,23 +20,23 @@ usage() {
   echo "  ALL                 (default) Run all tests"
 }
 
-if [ $# -eq 1 ] && [ $1 = "HANA" ]; then
+if [ $# -ge 1 ] && [ $1 = "HANA" ]; then
   LABELS_TO_RUN="HANA"
   RUN_HANA=YES
 
-elif [ $# -eq 1 ] && [ $1 = "POSTGRES" ]; then
+elif [ $# -ge 1 ] && [ $1 = "POSTGRES" ]; then
   LABELS_TO_RUN="POSTGRES"
   RUN_POSTGRES=YES
 
-elif [ $# -eq 1 ] && [ $1 = "ORACLE" ]; then
+elif [ $# -ge 1 ] && [ $1 = "ORACLE" ]; then
   LABELS_TO_RUN="ORACLE"
   RUN_ORACLE=YES
 
-elif [ $# -eq 1 ] && [ $1 = "SQLSERVER" ]; then
+elif [ $# -ge 1 ] && [ $1 = "SQLSERVER" ]; then
   LABELS_TO_RUN="SQLSERVER"
   RUN_SQLSERVER=YES
 
-elif [ $# -eq 1 ] && [ $1 = "ALL_BUT_PROVIDERS" ]; then
+elif [ $# -ge 1 ] && [ $1 = "ALL_BUT_PROVIDERS" ]; then
   LABELS_TO_EXCLUDE="HANA|POSTGRES|ORACLE|SQLSERVER"
 
 elif [ $# -gt 0 ] &&  [ $1 != "ALL" ]; then
@@ -49,6 +49,10 @@ else
   RUN_POSTGRES=YES
   RUN_ORACLE=YES
   RUN_SQLSERVER=YES
+fi
+
+if [ $# -ge 2 ]; then
+  BLOCKLIST=${SRCDIR}/$2
 fi
 
 # Debug env
@@ -178,12 +182,15 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
   # Restore SQL Server test data
   ##############################
 
+  echo "Wait a moment before loading SQL Server database."
+  sleep 15
+
   echo "Importing SQL Server test data..."
 
   export SQLUSER=sa
   export SQLHOST=mssql
   export SQLPORT=1433
-  export SQLPASSWORD='<YourStrong!Passw0rd>'
+  export SQLPASSWORD=QGIStestSQLServer1234
   export SQLDATABASE=qgis_test
 
   export PATH=$PATH:/opt/mssql-tools/bin
@@ -196,12 +203,14 @@ if [ ${RUN_SQLSERVER:-"NO"} == "YES" ]; then
 
   cat <<EOT > /etc/odbc.ini
 [ODBC Data Sources]
-testsqlserver = ODBC Driver 17 for SQL Server
+testsqlserver = ODBC Driver 18 for SQL Server
 
 [testsqlserver]
-Driver       = ODBC Driver 17 for SQL Server
+Driver       = ODBC Driver 18 for SQL Server
 Description  = Test SQL Server
 Server       = mssql
+Encrypt      = no
+AllowSelfSignedServerCert=1
 EOT
 
   echo "::endgroup::"
@@ -265,10 +274,15 @@ fi
 ###########
 # Run tests
 ###########
-EXCLUDE_TESTS=$(cat ${SRCDIR}/.ci/test_blocklist_qt${QT_VERSION}.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+if [[ -n ${BLOCKLIST} ]]; then
+  EXCLUDE_TESTS="^$(cat ${BLOCKLIST} | sed -r '/^(#.*?)?$/d' | paste -sd '~' | sed -r 's/~/\$|^/g' -)\$"
+fi
 if ! [[ ${RUN_FLAKY_TESTS} == true ]]; then
   echo "Flaky tests are skipped!"
-  EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"$(cat ${SRCDIR}/.ci/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '|' -)
+  if [[ -n ${EXCLUDE_TESTS} ]]; then
+    EXCLUDE_TESTS=${EXCLUDE_TESTS}"|"
+  fi
+  EXCLUDE_TESTS=${EXCLUDE_TESTS}"^"$(cat ${SRCDIR}/.ci/test_flaky.txt | sed -r '/^(#.*?)?$/d' | paste -sd '~' | sed -r 's/~/\$|^/g' -)"$"
 else
   echo "Flaky tests are run!"
 fi

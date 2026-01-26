@@ -9,17 +9,17 @@
 
 
 
+
 class QgsEffectDrawModeComboBox : QComboBox
 {
 %Docstring(signature="appended")
-A combo box allowing selection of paint effect draw modes
+A combobox allowing selection of paint effect draw modes.
 %End
 
 %TypeHeaderCode
 #include "qgseffectdrawmodecombobox.h"
 %End
   public:
-
     QgsEffectDrawModeComboBox( QWidget *parent /TransferThis/ = 0 );
 
     QgsPaintEffect::DrawMode drawMode() const;
@@ -35,7 +35,6 @@ Sets the currently selected draw mode for the combo box
 
 :param drawMode: selected draw mode
 %End
-
 };
 
 /************************************************************************

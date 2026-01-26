@@ -19,11 +19,9 @@
 #include "qgis_core.h"
 #include "qgsclassificationmethod.h"
 
-
 /**
  * \ingroup core
- * \brief QgsClassificationQuantile is an implementation of QgsClassificationMethod
- * based on quantiles
+ * \brief A classification method which creates classes based on quantiles.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationQuantile : public QgsClassificationMethod
@@ -33,7 +31,7 @@ class CORE_EXPORT QgsClassificationQuantile : public QgsClassificationMethod
 
     QString name() const override;
     QString id() const override;
-    QgsClassificationMethod *clone() const override;
+    std::unique_ptr< QgsClassificationMethod > clone() const override;
     QIcon icon() const override;
 
   private:

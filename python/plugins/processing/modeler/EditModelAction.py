@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsApplication, QgsProcessingAlgorithm
@@ -31,10 +31,12 @@ class EditModelAction(ContextAction):
 
     def __init__(self):
         super().__init__()
-        self.name = QCoreApplication.translate('EditModelAction', 'Edit Model…')
+        self.name = QCoreApplication.translate("EditModelAction", "Edit Model…")
 
     def isEnabled(self):
-        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() in ("model", "project")
+        return isinstance(
+            self.itemData, QgsProcessingAlgorithm
+        ) and self.itemData.provider().id() in ("model", "project")
 
     def execute(self):
         alg = self.itemData
@@ -44,4 +46,4 @@ class EditModelAction(ContextAction):
         dlg.activate()
 
     def updateModel(self):
-        QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
+        QgsApplication.processingRegistry().providerById("model").refreshAlgorithms()

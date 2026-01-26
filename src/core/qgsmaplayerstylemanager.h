@@ -22,9 +22,8 @@
 
 #include <QByteArray>
 #include <QMap>
-#include <QStringList>
 #include <QObject>
-
+#include <QStringList>
 
 class QDomElement;
 
@@ -32,7 +31,7 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * \brief Management of styles for use with one map layer
+ * \brief Management of styles for use with one map layer.
  *
  * Stored styles are identified by their names. The manager
  * always keep track of which style of the stored ones is currently active. When the current style is changed,

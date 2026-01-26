@@ -15,17 +15,19 @@
 #ifndef QGSVALIDITYCHECKREGISTRY_H
 #define QGSVALIDITYCHECKREGISTRY_H
 
+#include <memory>
+#include <vector>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractvaliditycheck.h"
+
 #include <QList>
-#include <memory>
-#include <vector>
 
 /**
  * \class QgsValidityCheckRegistry
  * \ingroup gui
- * \brief This class keeps a list of QgsAbstractValidityCheck checks which can be used when
+ * \brief A registry that keeps a list of QgsAbstractValidityCheck checks which can be used when
  * performing validity checks.
  *
  * QgsValidityCheckRegistry is not usually directly created, but rather accessed through

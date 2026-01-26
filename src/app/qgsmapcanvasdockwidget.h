@@ -17,11 +17,13 @@
 
 #include "ui_qgsmapcanvasdockwidgetbase.h"
 
-#include "qgspointxy.h"
-#include "qgis_app.h"
-#include <QWidgetAction>
-#include <QTimer>
 #include <memory>
+
+#include "qgis_app.h"
+#include "qgspointxy.h"
+
+#include <QTimer>
+#include <QWidgetAction>
 
 class QgsMapCanvas;
 class QgsScaleComboBox;
@@ -153,7 +155,6 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
     void renameTriggered();
 
   protected:
-
     void resizeEvent( QResizeEvent *e ) override;
 
   private slots:
@@ -207,12 +208,11 @@ class APP_EXPORT QgsMapCanvasDockWidget : public QWidget, private Ui::QgsMapCanv
  * Allows embedding a scale, rotation and other map settings into a menu.
  */
 
-class QgsMapSettingsAction: public QWidgetAction
+class QgsMapSettingsAction : public QWidgetAction
 {
     Q_OBJECT
 
   public:
-
     QgsMapSettingsAction( QWidget *parent = nullptr );
 
     QCheckBox *syncExtentCheck() { return mSyncExtentCheck; }

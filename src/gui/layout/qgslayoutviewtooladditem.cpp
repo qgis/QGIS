@@ -14,19 +14,23 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooladditem.h"
-#include "qgslayoutview.h"
-#include "qgslayout.h"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslayoutviewrubberband.h"
+
 #include "qgsgui.h"
+#include "qgslayout.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutnewitempropertiesdialog.h"
-#include "qgssettings.h"
 #include "qgslayoutundostack.h"
-#include <QGraphicsRectItem>
-#include <QPen>
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgssettings.h"
+
 #include <QBrush>
+#include <QGraphicsRectItem>
 #include <QMouseEvent>
+#include <QPen>
+
+#include "moc_qgslayoutviewtooladditem.cpp"
 
 QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Add item" ) )
@@ -54,8 +58,7 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
   mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemMetadataId, view() ) );
   if ( mRubberBand )
   {
-    connect( mRubberBand.get(), &QgsLayoutViewRubberBand::sizeChanged, this, [ = ]( const QString & size )
-    {
+    connect( mRubberBand.get(), &QgsLayoutViewRubberBand::sizeChanged, this, [this]( const QString &size ) {
       view()->pushStatusMessage( size );
     } );
     mRubberBand->start( event->snappedPoint(), event->modifiers() );
@@ -138,9 +141,9 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   if ( mRubberBand )
   {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "LayoutDesigner/lastItemWidth" ), item->sizeWithUnits().width() );
-    settings.setValue( QStringLiteral( "LayoutDesigner/lastItemHeight" ), item->sizeWithUnits().height() );
-    settings.setEnumValue( QStringLiteral( "LayoutDesigner/lastSizeUnit" ), item->sizeWithUnits().units() );
+    settings.setValue( u"LayoutDesigner/lastItemWidth"_s, item->sizeWithUnits().width() );
+    settings.setValue( u"LayoutDesigner/lastItemHeight"_s, item->sizeWithUnits().height() );
+    settings.setEnumValue( u"LayoutDesigner/lastSizeUnit"_s, item->sizeWithUnits().units() );
   }
 
   QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item, mCustomProperties );

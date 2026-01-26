@@ -18,6 +18,7 @@ set(TESTS
   testqgsmaptooladdfeaturelinez.cpp
   testqgsmaptooladdfeaturelinem.cpp
   testqgsmaptooladdfeaturelinezm.cpp
+  testqgsmaptooladdfeaturelinezm_crs.cpp
   )
 
 foreach(TESTSRC ${TESTS})

@@ -121,12 +121,29 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
      * Cast the \a geom to a QgsMultiLineString.
      * Should be used by qgsgeometry_cast<QgsMultiLineString *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
-    inline static const QgsMultiLineString *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsMultiLineString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiLineString )
         return static_cast<const QgsMultiLineString *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsMultiLineString.
+     * Should be used by qgsgeometry_cast<QgsMultiLineString *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsMultiLineString *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::MultiLineString )
+        return static_cast<QgsMultiLineString *>( geom );
       return nullptr;
     }
 #endif
@@ -138,8 +155,8 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsMultiLineString: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsMultiLineString: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

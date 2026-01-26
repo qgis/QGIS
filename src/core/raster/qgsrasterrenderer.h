@@ -20,10 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QPair>
-
 #include "qgsrasterinterface.h"
 #include "qgsrasterminmaxorigin.h"
+#include "qgsrectangle.h"
+
+#include <QPair>
 
 class QDomElement;
 
@@ -40,7 +41,7 @@ class QgsLayerTreeLayer;
 class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 {
 
-    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer )
+    Q_DECLARE_TR_FUNCTIONS( QgsRasterRenderer ) // cppcheck-suppress duplInheritedMember
 
   public:
 
@@ -159,7 +160,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     void setNodataColor( const QColor &color ) { mNodataColor = color; }
 
     void setRasterTransparency( QgsRasterTransparency *t SIP_TRANSFER );
-    const QgsRasterTransparency *rasterTransparency() const { return mRasterTransparency; }
+    const QgsRasterTransparency *rasterTransparency() const { return mRasterTransparency.get(); }
 
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
@@ -207,9 +208,15 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     /**
      * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
-     * \since QGIS 3.6
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
     */
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+    Q_DECL_DEPRECATED virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const SIP_DEPRECATED;
+
+    /**
+     * Used from subclasses to create SLD Rule elements following SLD v1.0 specs
+     * \since QGIS 3.44
+    */
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     /**
      * Accepts the specified symbology \a visitor, causing it to visit all symbols associated
@@ -222,6 +229,24 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      */
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
+    /**
+     * \brief Checks if the renderer needs to be refreshed according to \a extent.
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    bool needsRefresh( const QgsRectangle &extent ) const SIP_SKIP;
+
+    /**
+     * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
+     * If \a forceRefresh is TRUE, this will force the refresh even if needsRefresh() returns FALSE.
+     * \returns TRUE if the renderer has been refreshed
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    virtual bool refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh = false ) SIP_SKIP;
+
   protected:
 
     //! Write upper class info into rasterrenderer element (called by writeXml method of subclasses)
@@ -232,7 +257,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     //! Global alpha value (0-1)
     double mOpacity = 1.0;
     //! Raster transparency per color or value. Overwrites global alpha value
-    QgsRasterTransparency *mRasterTransparency = nullptr;
+    std::unique_ptr<QgsRasterTransparency> mRasterTransparency;
 
     /**
      * Read alpha value from band. Is combined with value from raster transparency / global alpha value.
@@ -252,6 +277,9 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      * \since QGIS 3.10
      */
     QRgb renderColorForNodataPixel() const;
+
+    //! To save computations and possible infinite cycle of notifications
+    QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 
   private:
 

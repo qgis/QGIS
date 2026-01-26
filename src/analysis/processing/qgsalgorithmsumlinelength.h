@@ -21,8 +21,9 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsdistancearea.h"
+#include "qgsprocessingalgorithm.h"
+
 ///@cond PRIVATE
 
 /**
@@ -30,9 +31,7 @@
  */
 class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsSumLineLengthAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -42,6 +41,8 @@ class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsSumLineLengthAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QList<int> inputLayerTypes() const override;
@@ -67,7 +68,7 @@ class QgsSumLineLengthAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     mutable QgsCoordinateReferenceSystem mCrs;
     mutable QgsDistanceArea mDa;
     QgsCoordinateTransformContext mTransformContext;
-    std::unique_ptr< QgsProcessingFeatureSource > mLinesSource;
+    std::unique_ptr<QgsProcessingFeatureSource> mLinesSource;
 };
 
 ///@endcond PRIVATE

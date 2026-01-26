@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -31,9 +31,7 @@
  */
 class QgsAlignSingleRasterAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsAlignSingleRasterAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
@@ -43,12 +41,11 @@ class QgsAlignSingleRasterAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsAlignSingleRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

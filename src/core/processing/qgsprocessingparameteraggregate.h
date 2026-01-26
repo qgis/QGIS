@@ -22,7 +22,7 @@
 /**
  * \ingroup core
  * \brief A parameter for "aggregate" configurations, which consist of a definition
- * of desired output fields, types, and aggregate used to populate then.
+ * of desired output fields, types, and aggregate used to populate them.
  *
  * Designed for use with the "Aggregate" algorithm.
  *
@@ -44,7 +44,7 @@ class CORE_EXPORT QgsProcessingParameterAggregate : public QgsProcessingParamete
     QStringList dependsOnOtherParameters() const override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "aggregates" ); }
+    static QString typeName() { return u"aggregates"_s; }
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -98,18 +98,30 @@ class CORE_EXPORT QgsProcessingParameterTypeAggregate : public QgsProcessingPara
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterAggregate" );
+      return u"from qgis.core import QgsProcessingParameterAggregate"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterAggregate" );
+      return u"QgsProcessingParameterAggregate"_s;
     }
 
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[dict]: list of aggregate definitions as dictionaries" );
     }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList()
+             << QgsProcessingParameterAggregate::typeName();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
+    }
+
 };
 
 ///@endcond

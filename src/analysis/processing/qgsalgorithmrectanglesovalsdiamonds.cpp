@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrectanglesovalsdiamonds.h"
+
 #include "qgsapplication.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
@@ -24,7 +25,7 @@
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::name() const
 {
-  return QStringLiteral( "rectanglesovalsdiamonds" );
+  return u"rectanglesovalsdiamonds"_s;
 }
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::displayName() const
@@ -44,24 +45,29 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::group() const
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Creates rectangle, oval or diamond-shaped polygons from the input point layer using "
+  return QObject::tr( "This algorithm creates rectangle, oval or diamond-shaped polygons from the input point layer using "
                       "specified width, height and (optional) rotation values. Multipart inputs should be promoted "
                       "to singleparts first." );
 }
 
+QString QgsRectanglesOvalsDiamondsAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates rectangle, oval or diamond-shaped polygons from an input point layer." );
+}
+
 QIcon QgsRectanglesOvalsDiamondsAlgorithm::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg" ) );
+  return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg"_s );
 }
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg" ) );
+  return QgsApplication::iconPath( u"/algorithms/mAlgorithmRectanglesOvalsDiamonds.svg"_s );
 }
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::outputName() const
@@ -71,7 +77,7 @@ QString QgsRectanglesOvalsDiamondsAlgorithm::outputName() const
 
 QList<int> QgsRectanglesOvalsDiamondsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );
 }
 
 Qgis::ProcessingSourceType QgsRectanglesOvalsDiamondsAlgorithm::outputLayerType() const
@@ -101,49 +107,49 @@ QgsRectanglesOvalsDiamondsAlgorithm *QgsRectanglesOvalsDiamondsAlgorithm::create
 
 void QgsRectanglesOvalsDiamondsAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "SHAPE" ), QObject::tr( "Shape" ), QStringList() << QObject::tr( "Rectangle" ) << QObject::tr( "Diamond" ) << QObject::tr( "Oval" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"SHAPE"_s, QObject::tr( "Shape" ), QStringList() << QObject::tr( "Rectangle" ) << QObject::tr( "Diamond" ) << QObject::tr( "Oval" ), false, 0 ) );
 
-  auto widthParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "WIDTH" ), QObject::tr( "Width" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
+  auto widthParam = std::make_unique<QgsProcessingParameterDistance>( u"WIDTH"_s, QObject::tr( "Width" ), 1.0, u"INPUT"_s, false, 0.0 );
   widthParam->setIsDynamic( true );
-  widthParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Width" ), QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) );
-  widthParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  widthParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Width"_s, QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) );
+  widthParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( widthParam.release() );
 
-  auto heightParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "HEIGHT" ), QObject::tr( "Height" ), 1.0, QStringLiteral( "INPUT" ), false, 0.0 );
+  auto heightParam = std::make_unique<QgsProcessingParameterDistance>( u"HEIGHT"_s, QObject::tr( "Height" ), 1.0, u"INPUT"_s, false, 0.0 );
   heightParam->setIsDynamic( true );
-  heightParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Height" ), QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) );
-  heightParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  heightParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Height"_s, QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) );
+  heightParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( heightParam.release() );
 
-  auto rotationParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "ROTATION" ), QObject::tr( "Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0, true, -360.0, 360.0 );
+  auto rotationParam = std::make_unique<QgsProcessingParameterNumber>( u"ROTATION"_s, QObject::tr( "Rotation" ), Qgis::ProcessingNumberParameterType::Double, 0.0, true, -360.0, 360.0 );
   rotationParam->setIsDynamic( true );
-  rotationParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Rotation" ), QObject::tr( "Rotation" ), QgsPropertyDefinition::Double ) );
-  rotationParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  rotationParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Rotation"_s, QObject::tr( "Rotation" ), QgsPropertyDefinition::Double ) );
+  rotationParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( rotationParam.release() );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 36, false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( u"SEGMENTS"_s, QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 36, false, 1 ) );
 }
 
 bool QgsRectanglesOvalsDiamondsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mShape = parameterAsEnum( parameters, QStringLiteral( "SHAPE" ), context );
+  mShape = parameterAsEnum( parameters, u"SHAPE"_s, context );
 
-  mWidth = parameterAsDouble( parameters, QStringLiteral( "WIDTH" ), context );
-  mDynamicWidth = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "WIDTH" ) );
+  mWidth = parameterAsDouble( parameters, u"WIDTH"_s, context );
+  mDynamicWidth = QgsProcessingParameters::isDynamic( parameters, u"WIDTH"_s );
   if ( mDynamicWidth )
-    mWidthProperty = parameters.value( QStringLiteral( "WIDTH" ) ).value< QgsProperty >();
+    mWidthProperty = parameters.value( u"WIDTH"_s ).value<QgsProperty>();
 
-  mHeight = parameterAsDouble( parameters, QStringLiteral( "HEIGHT" ), context );
-  mDynamicHeight = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "HEIGHT" ) );
+  mHeight = parameterAsDouble( parameters, u"HEIGHT"_s, context );
+  mDynamicHeight = QgsProcessingParameters::isDynamic( parameters, u"HEIGHT"_s );
   if ( mDynamicHeight )
-    mHeightProperty = parameters.value( QStringLiteral( "HEIGHT" ) ).value< QgsProperty >();
+    mHeightProperty = parameters.value( u"HEIGHT"_s ).value<QgsProperty>();
 
-  mRotation = parameterAsDouble( parameters, QStringLiteral( "ROTATION" ), context );
-  mDynamicRotation = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ROTATION" ) );
+  mRotation = parameterAsDouble( parameters, u"ROTATION"_s, context );
+  mDynamicRotation = QgsProcessingParameters::isDynamic( parameters, u"ROTATION"_s );
   if ( mDynamicRotation )
-    mRotationProperty = parameters.value( QStringLiteral( "ROTATION" ) ).value< QgsProperty >();
+    mRotationProperty = parameters.value( u"ROTATION"_s ).value<QgsProperty>();
 
-  mSegments = parameterAsDouble( parameters, QStringLiteral( "SEGMENTS" ), context );
+  mSegments = parameterAsDouble( parameters, u"SEGMENTS"_s, context );
 
   return true;
 }
@@ -183,8 +189,8 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
     const double x = point.x();
     const double y = point.y();
 
-    QVector< double > ringX( 5 );
-    QVector< double > ringY( 5 );
+    QVector<double> ringX( 5 );
+    QVector<double> ringY( 5 );
 
     switch ( mShape )
     {
@@ -202,14 +208,14 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
         // oval
         ringX.resize( mSegments + 1 );
         ringY.resize( mSegments + 1 );
-        for ( int i = 0; i < mSegments; i ++ )
+        for ( int i = 0; i < mSegments; i++ )
         {
           const double t = ( 2 * M_PI ) / mSegments * i;
-          ringX[ i ] = xOffset * cos( t ) + x;
-          ringY[ i ] = yOffset * sin( t ) + y;
+          ringX[i] = xOffset * cos( t ) + x;
+          ringY[i] = yOffset * sin( t ) + y;
         }
-        ringX[ mSegments ] = ringX.at( 0 );
-        ringY[ mSegments ] = ringY.at( 0 );
+        ringX[mSegments] = ringX.at( 0 );
+        ringY[mSegments] = ringY.at( 0 );
         break;
     }
 
@@ -219,21 +225,21 @@ QgsFeatureList QgsRectanglesOvalsDiamondsAlgorithm::processFeature( const QgsFea
       {
         const double px = ringX.at( i );
         const double py = ringY.at( i );
-        ringX[ i ] = ( px - x ) * cos( phi ) + ( py - y ) * sin( phi ) + x;
-        ringY[ i ] = -( px - x ) * sin( phi ) + ( py - y ) * cos( phi ) + y;
+        ringX[i] = ( px - x ) * cos( phi ) + ( py - y ) * sin( phi ) + x;
+        ringY[i] = -( px - x ) * sin( phi ) + ( py - y ) * cos( phi ) + y;
       }
     }
 
-    std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
+    auto poly = std::make_unique<QgsPolygon>();
     poly->setExteriorRing( new QgsLineString( ringX, ringY ) );
 
     if ( geometry.constGet()->is3D() )
     {
-      poly->addZValue( static_cast< const QgsPoint * >( geometry.constGet() )->z() );
+      poly->addZValue( static_cast<const QgsPoint *>( geometry.constGet() )->z() );
     }
     if ( geometry.constGet()->isMeasure() )
     {
-      poly->addMValue( static_cast< const QgsPoint * >( geometry.constGet() )->m() );
+      poly->addMValue( static_cast<const QgsPoint *>( geometry.constGet() )->m() );
     }
 
     outFeature.setGeometry( std::move( poly ) );

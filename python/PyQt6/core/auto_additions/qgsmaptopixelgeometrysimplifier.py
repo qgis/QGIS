@@ -5,5 +5,6 @@ QgsMapToPixelSimplifier.SimplifyEnvelope = QgsMapToPixelSimplifier.SimplifyFlag.
 try:
     QgsMapToPixelSimplifier.calculateLengthSquared2D = staticmethod(QgsMapToPixelSimplifier.calculateLengthSquared2D)
     QgsMapToPixelSimplifier.equalSnapToGrid = staticmethod(QgsMapToPixelSimplifier.equalSnapToGrid)
-except NameError:
+    QgsMapToPixelSimplifier.__overridden_methods__ = ['simplify']
+except (NameError, AttributeError):
     pass

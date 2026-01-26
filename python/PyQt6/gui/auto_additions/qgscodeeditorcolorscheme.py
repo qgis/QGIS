@@ -82,5 +82,5 @@ QgsCodeEditorColorScheme.ColorRole.__doc__ = """Color roles.
 # --
 try:
     QgsCodeEditorColorScheme.__group__ = ['codeeditors']
-except NameError:
+except (NameError, AttributeError):
     pass

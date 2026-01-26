@@ -17,11 +17,11 @@
 #ifndef QGSMESSAGEOUTPUT_H
 #define QGSMESSAGEOUTPUT_H
 
-#include <QString>
-#include "qgis_sip.h"
-#include <QObject>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QObject>
+#include <QString>
 
 class QgsMessageOutput;
 typedef QgsMessageOutput *( *MESSAGE_OUTPUT_CREATOR )() SIP_SKIP;
@@ -89,7 +89,7 @@ class CORE_EXPORT QgsMessageOutput
 
 /**
  * \ingroup core
- * \brief Default implementation of message output interface
+ * \brief Default implementation of message output interface.
  *
  * This class outputs messages to the standard output. Therefore it might
  * be the right choice for apps without GUI.

@@ -15,32 +15,36 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmeshlayerproperties.h"
+
 #include <limits>
 #include <typeinfo>
 
 #include "qgsapplication.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaplayerstylemanager.h"
+#include "qgsmaplayerlegend.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmeshlabelingwidget.h"
 #include "qgsmeshlayer.h"
-#include "qgsmeshlayerproperties.h"
+#include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshstaticdatasetwidget.h"
+#include "qgsmetadatawidget.h"
 #include "qgsproject.h"
 #include "qgsrenderermeshpropertieswidget.h"
-#include "qgsmeshlayertemporalproperties.h"
 #include "qgssettings.h"
-#include "qgsdatumtransformdialog.h"
-#include "qgsmetadatawidget.h"
-#include "qgsmeshlabelingwidget.h"
 
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
 
+#include "moc_qgsmeshlayerproperties.cpp"
+
 QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
-  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "MeshLayerProperties" ), parent, fl )
+  : QgsLayerPropertiesDialog( lyr, canvas, u"MeshLayerProperties"_s, parent, fl )
   , mMeshLayer( qobject_cast<QgsMeshLayer *>( lyr ) )
 {
   Q_ASSERT( mMeshLayer );
@@ -56,13 +60,13 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   mStaticDatasetWidget->setLayer( mMeshLayer );
   mIsMapSettingsTemporal = mMeshLayer && canvas && canvas->mapSettings().isTemporal();
 
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Seconds" ), static_cast< int >( Qgis::TemporalUnit::Seconds ) );
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Minutes" ), static_cast< int >( Qgis::TemporalUnit::Minutes ) );
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Hours" ), static_cast< int >( Qgis::TemporalUnit::Hours ) );
-  mTemporalProviderTimeUnitComboBox->addItem( tr( "Days" ), static_cast< int >( Qgis::TemporalUnit::Days ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Seconds" ), static_cast<int>( Qgis::TemporalUnit::Seconds ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Minutes" ), static_cast<int>( Qgis::TemporalUnit::Minutes ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Hours" ), static_cast<int>( Qgis::TemporalUnit::Hours ) );
+  mTemporalProviderTimeUnitComboBox->addItem( tr( "Days" ), static_cast<int>( Qgis::TemporalUnit::Days ) );
 
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMeshLayerProperties::changeCrs );
-  connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupAdded, this, &QgsMeshLayerProperties::syncToLayer );
+  connect( mDatasetGroupTreeWidget, &QgsMeshDatasetGroupTreeWidget::datasetGroupsChanged, this, &QgsMeshLayerProperties::syncToLayer );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -87,17 +91,14 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( lyr->minimumScale(), lyr->maximumScale() );
 
-  connect( mAlwaysTimeFromSourceCheckBox, &QCheckBox::stateChanged, this, [this]
-  {
+  connect( mAlwaysTimeFromSourceCheckBox, &QCheckBox::stateChanged, this, [this] {
     mTemporalDateTimeReference->setEnabled( !mAlwaysTimeFromSourceCheckBox->isChecked() );
     if ( mAlwaysTimeFromSourceCheckBox->isChecked() )
       reloadTemporalProperties();
   } );
 
-  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset Before Requested Time" ),
-      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
-  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset From Requested Time (After or Before)" ),
-      QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset Before Requested Time" ), QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetBeforeStartRangeTime );
+  mComboBoxTemporalDatasetMatchingMethod->addItem( tr( "Find Closest Dataset From Requested Time (After or Before)" ), QgsMeshDataProviderTemporalCapabilities::FindClosestDatasetFromStartRangeTime );
 
   QVBoxLayout *labelingLayout = nullptr;
 
@@ -140,19 +141,18 @@ QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
-  if ( !settings.contains( QStringLiteral( "/Windows/MeshLayerProperties/tab" ) ) )
+  if ( !settings.contains( u"/Windows/MeshLayerProperties/tab"_s ) )
   {
-    settings.setValue( QStringLiteral( "Windows/MeshLayerProperties/tab" ),
-                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+    settings.setValue( u"Windows/MeshLayerProperties/tab"_s, mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
   //Add help page references
-  mOptsPage_Information->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#information-properties" ) );
-  mOptsPage_Source->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#source-properties" ) );
-  mOptsPage_Style->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#symbology-properties" ) );
-  mOptsPage_Rendering->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#rendering-properties" ) );
-  mOptsPage_Temporal->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#temporal-properties" ) );
-  mOptsPage_Metadata->setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#metadata-properties" ) );
+  mOptsPage_Information->setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#information-properties"_s );
+  mOptsPage_Source->setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#source-properties"_s );
+  mOptsPage_Style->setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#symbology-properties"_s );
+  mOptsPage_Rendering->setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#rendering-properties"_s );
+  mOptsPage_Temporal->setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#temporal-properties"_s );
+  mOptsPage_Metadata->setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#metadata-properties"_s );
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
@@ -180,19 +180,19 @@ void QgsMeshLayerProperties::syncToLayer()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsgLevel( QStringLiteral( "populate general information tab" ), 4 );
+  QgsDebugMsgLevel( u"populate general information tab"_s, 4 );
   /*
   * Information Tab
   */
   QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  myStyle.append( u"body { margin: 10px; }\n "_s );
   mInformationTextBrowser->clear();
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
   mInformationTextBrowser->setHtml( mMeshLayer->htmlMetadata() );
   mInformationTextBrowser->setOpenLinks( false );
   connect( mInformationTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMeshLayerProperties::openUrl );
 
-  QgsDebugMsgLevel( QStringLiteral( "populate source tab" ), 4 );
+  QgsDebugMsgLevel( u"populate source tab"_s, 4 );
   /*
    * Source Tab
    */
@@ -201,11 +201,11 @@ void QgsMeshLayerProperties::syncToLayer()
 
   mDatasetGroupTreeWidget->syncToLayer( mMeshLayer );
 
-  QgsDebugMsgLevel( QStringLiteral( "populate config tab" ), 4 );
+  QgsDebugMsgLevel( u"populate config tab"_s, 4 );
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->syncToLayer( mMeshLayer );
 
-  QgsDebugMsgLevel( QStringLiteral( "populate rendering tab" ), 4 );
+  QgsDebugMsgLevel( u"populate rendering tab"_s, 4 );
   if ( mMeshLayer->isEditable() )
     mSimplifyMeshGroupBox->setEnabled( false );
 
@@ -214,8 +214,8 @@ void QgsMeshLayerProperties::syncToLayer()
   mSimplifyReductionFactorSpinBox->setValue( simplifySettings.reductionFactor() );
   mSimplifyMeshResolutionSpinBox->setValue( simplifySettings.meshResolution() );
 
-  QgsDebugMsgLevel( QStringLiteral( "populate temporal tab" ), 4 );
-  const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast< const QgsMeshLayerTemporalProperties * >( mMeshLayer->temporalProperties() );
+  QgsDebugMsgLevel( u"populate temporal tab"_s, 4 );
+  const QgsMeshLayerTemporalProperties *temporalProperties = qobject_cast<const QgsMeshLayerTemporalProperties *>( mMeshLayer->temporalProperties() );
   whileBlocking( mTemporalDateTimeReference )->setDateTime( temporalProperties->referenceTime() );
   const QgsDateTimeRange timeRange = temporalProperties->timeExtent();
   mTemporalDateTimeStart->setDateTime( timeRange.begin() );
@@ -223,14 +223,20 @@ void QgsMeshLayerProperties::syncToLayer()
   if ( mMeshLayer->dataProvider() )
   {
     mTemporalProviderTimeUnitComboBox->setCurrentIndex(
-      mTemporalProviderTimeUnitComboBox->findData( static_cast< int >( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) ) );
+      mTemporalProviderTimeUnitComboBox->findData( static_cast<int>( mMeshLayer->dataProvider()->temporalCapabilities()->temporalUnit() ) )
+    );
   }
   mAlwaysTimeFromSourceCheckBox->setChecked( temporalProperties->alwaysLoadReferenceTimeFromSource() );
   mComboBoxTemporalDatasetMatchingMethod->setCurrentIndex(
-    mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() ) );
+    mComboBoxTemporalDatasetMatchingMethod->findData( temporalProperties->matchingMethod() )
+  );
 
   mStaticDatasetWidget->syncToLayer();
   mStaticDatasetGroupBox->setChecked( !mMeshLayer->temporalProperties()->isActive() );
+
+  // legend
+  mLegendConfigEmbeddedWidget->setLayer( mMeshLayer );
+  mIncludeByDefaultInLayoutLegendsCheck->setChecked( mMeshLayer->legend() && !mMeshLayer->legend()->flags().testFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault ) );
 }
 
 void QgsMeshLayerProperties::saveDefaultStyle()
@@ -252,24 +258,27 @@ void QgsMeshLayerProperties::apply()
 {
   Q_ASSERT( mRendererMeshPropertiesWidget );
 
-  QgsDebugMsgLevel( QStringLiteral( "processing general tab" ), 4 );
+  mLegendConfigEmbeddedWidget->applyToLayer();
+
+  QgsDebugMsgLevel( u"processing general tab"_s, 4 );
   /*
    * General Tab
    */
   mMeshLayer->setName( mLayerOrigNameLineEd->text() );
 
-  QgsDebugMsgLevel( QStringLiteral( "processing source tab" ), 4 );
+  QgsDebugMsgLevel( u"processing source tab"_s, 4 );
   /*
    * Source Tab
    */
   mDatasetGroupTreeWidget->apply();
 
-  QgsDebugMsgLevel( QStringLiteral( "processing config tabs" ), 4 );
+  QgsDebugMsgLevel( u"processing config tabs"_s, 4 );
 
   for ( QgsMapLayerConfigWidget *w : std::as_const( mConfigWidgets ) )
     w->apply();
 
-  QgsDebugMsgLevel( QStringLiteral( "processing rendering tab" ), 4 );
+
+  QgsDebugMsgLevel( u"processing rendering tab"_s, 4 );
   /*
    * Rendering Tab
    */
@@ -277,8 +286,7 @@ void QgsMeshLayerProperties::apply()
   simplifySettings.setEnabled( mSimplifyMeshGroupBox->isChecked() );
   simplifySettings.setReductionFactor( mSimplifyReductionFactorSpinBox->value() );
   simplifySettings.setMeshResolution( mSimplifyMeshResolutionSpinBox->value() );
-  bool needMeshUpdating = ( ( simplifySettings.isEnabled() != mMeshLayer->meshSimplificationSettings().isEnabled() ) ||
-                            ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
+  bool needMeshUpdating = ( ( simplifySettings.isEnabled() != mMeshLayer->meshSimplificationSettings().isEnabled() ) || ( simplifySettings.reductionFactor() != mMeshLayer->meshSimplificationSettings().reductionFactor() ) );
 
   mMeshLayer->setMeshSimplificationSettings( simplifySettings );
 
@@ -286,7 +294,7 @@ void QgsMeshLayerProperties::apply()
   mMeshLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
   mMeshLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
-  QgsDebugMsgLevel( QStringLiteral( "processing labeling tab" ), 4 );
+  QgsDebugMsgLevel( u"processing labeling tab"_s, 4 );
   /*
    * Labeling Tab
    */
@@ -295,7 +303,7 @@ void QgsMeshLayerProperties::apply()
     mLabelingDialog->writeSettingsToLayer();
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "processing temporal tab" ), 4 );
+  QgsDebugMsgLevel( u"processing temporal tab"_s, 4 );
   /*
    * Temporal Tab
    */
@@ -303,15 +311,19 @@ void QgsMeshLayerProperties::apply()
   mMeshLayer->setReferenceTime( mTemporalDateTimeReference->dateTime() );
   if ( mMeshLayer->dataProvider() )
     mMeshLayer->dataProvider()->setTemporalUnit(
-      static_cast<Qgis::TemporalUnit>( mTemporalProviderTimeUnitComboBox->currentData().toInt() ) );
+      static_cast<Qgis::TemporalUnit>( mTemporalProviderTimeUnitComboBox->currentData().toInt() )
+    );
 
   mStaticDatasetWidget->apply();
   bool needEmitRendererChanged = mMeshLayer->temporalProperties()->isActive() == mStaticDatasetGroupBox->isChecked();
   mMeshLayer->temporalProperties()->setIsActive( !mStaticDatasetGroupBox->isChecked() );
   mMeshLayer->setTemporalMatchingMethod( static_cast<QgsMeshDataProviderTemporalCapabilities::MatchingTemporalDatasetMethod>(
-      mComboBoxTemporalDatasetMatchingMethod->currentData().toInt() ) );
+    mComboBoxTemporalDatasetMatchingMethod->currentData().toInt()
+  ) );
   static_cast<QgsMeshLayerTemporalProperties *>(
-    mMeshLayer->temporalProperties() )->setAlwaysLoadReferenceTimeFromSource( mAlwaysTimeFromSourceCheckBox->isChecked() );
+    mMeshLayer->temporalProperties()
+  )
+    ->setAlwaysLoadReferenceTimeFromSource( mAlwaysTimeFromSourceCheckBox->isChecked() );
 
   mMetadataWidget->acceptMetadata();
 
@@ -322,6 +334,12 @@ void QgsMeshLayerProperties::apply()
 
   if ( needEmitRendererChanged )
     emit mMeshLayer->rendererChanged();
+
+  // legend
+  if ( QgsMapLayerLegend *legend = mMeshLayer->legend() )
+  {
+    legend->setFlag( Qgis::MapLayerLegendFlag::ExcludeByDefault, !mIncludeByDefaultInLayoutLegendsCheck->isChecked() );
+  }
 
   //make sure the layer is redrawn
   mMeshLayer->triggerRepaint();
@@ -357,7 +375,7 @@ void QgsMeshLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html" ) );
+    QgsHelp::openHelp( u"working_with_mesh/mesh_properties.html"_s );
   }
 }
 

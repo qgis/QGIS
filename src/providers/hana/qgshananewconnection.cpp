@@ -14,11 +14,12 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshananewconnection.h"
+
 #include "qgsauthmanager.h"
 #include "qgsgui.h"
-#include "qgshanadriver.h"
 #include "qgshanaconnection.h"
-#include "qgshananewconnection.h"
+#include "qgshanadriver.h"
 #include "qgshanasettings.h"
 #include "qgssettings.h"
 
@@ -28,6 +29,8 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 
+#include "moc_qgshananewconnection.cpp"
+
 using namespace std;
 
 namespace
@@ -36,12 +39,13 @@ namespace
   {
     return ( input.isEmpty() || QString( input ).replace( ' ', QString() ).isEmpty() );
   }
-}
+} // namespace
 
 QgsHanaNewConnection::QgsHanaNewConnection(
   QWidget *parent,
   const QString &connName,
-  Qt::WindowFlags fl )
+  Qt::WindowFlags fl
+)
   : QDialog( parent, fl )
   , mOriginalConnName( connName )
 {
@@ -77,14 +81,14 @@ QgsHanaNewConnection::QgsHanaNewConnection(
                              "which can be found at https://tools.hana.ondemand.com/#hanatools." ) );
 #endif
 
-  cbxCryptoProvider->addItem( QStringLiteral( "openssl" ), QStringLiteral( "openssl" ) );
-  cbxCryptoProvider->addItem( QStringLiteral( "commoncrypto" ), QStringLiteral( "commoncrypto" ) );
-  cbxCryptoProvider->addItem( QStringLiteral( "sapcrypto" ), QStringLiteral( "sapcrypto" ) );
-  cbxCryptoProvider->addItem( QStringLiteral( "mscrypto" ), QStringLiteral( "mscrypto" ) );
+  cbxCryptoProvider->addItem( u"openssl"_s, u"openssl"_s );
+  cbxCryptoProvider->addItem( u"commoncrypto"_s, u"commoncrypto"_s );
+  cbxCryptoProvider->addItem( u"sapcrypto"_s, u"sapcrypto"_s );
+  cbxCryptoProvider->addItem( u"mscrypto"_s, u"mscrypto"_s );
 
   cmbDsn->addItems( QgsHanaDriver::instance()->dataSources() );
 
-  mAuthSettings->setDataprovider( QStringLiteral( "hana" ) );
+  mAuthSettings->setDataprovider( u"hana"_s );
   mAuthSettings->showStoreCheckboxes( true );
 
   if ( connName.isEmpty() )
@@ -98,7 +102,7 @@ QgsHanaNewConnection::QgsHanaNewConnection(
     updateControlsFromSettings( settings );
   }
 
-  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( QStringLiteral( "[^\\/]*" ) ), txtName ) );
+  txtName->setValidator( new QRegularExpressionValidator( QRegularExpression( u"[^\\/]*"_s ), txtName ) );
 
   chkEnableSSL_clicked();
   chkEnableProxy_clicked();
@@ -108,8 +112,7 @@ void QgsHanaNewConnection::accept()
 {
   if ( isStringEmpty( txtName->text() ) )
   {
-    QMessageBox::warning( this,
-                          tr( "Save Connection" ), tr( "Connection name cannot be empty." ), QMessageBox::Ok );
+    QMessageBox::warning( this, tr( "Save Connection" ), tr( "Connection name cannot be empty." ), QMessageBox::Ok );
     return;
   }
 
@@ -118,15 +121,13 @@ void QgsHanaNewConnection::accept()
     case QgsHanaConnectionType::HostPort:
       if ( isStringEmpty( txtDriver->text() ) )
       {
-        QMessageBox::warning( this,
-                              tr( "Save Connection" ), tr( "Driver field cannot be empty." ), QMessageBox::Ok );
+        QMessageBox::warning( this, tr( "Save Connection" ), tr( "Driver field cannot be empty." ), QMessageBox::Ok );
         return;
       }
 
       if ( isStringEmpty( txtHost->text() ) )
       {
-        QMessageBox::warning( this,
-                              tr( "Save Connection" ), tr( "Host field cannot be empty." ), QMessageBox::Ok );
+        QMessageBox::warning( this, tr( "Save Connection" ), tr( "Host field cannot be empty." ), QMessageBox::Ok );
         return;
       }
 
@@ -134,8 +135,7 @@ void QgsHanaNewConnection::accept()
       {
         if ( isStringEmpty( txtTenantDatabaseName->text() ) )
         {
-          QMessageBox::warning( this,
-                                tr( "Save Connection" ), tr( "Tenant database name cannot be empty." ), QMessageBox::Ok );
+          QMessageBox::warning( this, tr( "Save Connection" ), tr( "Tenant database name cannot be empty." ), QMessageBox::Ok );
           return;
         }
       }
@@ -143,8 +143,7 @@ void QgsHanaNewConnection::accept()
     case QgsHanaConnectionType::Dsn:
       if ( cmbDsn->count() == 0 )
       {
-        QMessageBox::warning( this,
-                              tr( "Save Connection" ), tr( "DSN field cannot be empty." ), QMessageBox::Ok );
+        QMessageBox::warning( this, tr( "Save Connection" ), tr( "DSN field cannot be empty." ), QMessageBox::Ok );
         return;
       }
 
@@ -155,24 +154,20 @@ void QgsHanaNewConnection::accept()
   QgsHanaSettings::setSelectedConnection( connName );
   const bool hasAuthConfigID = !mAuthSettings->configId().isEmpty();
 
-  if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() &&
-       QMessageBox::question( this,
-                              tr( "Saving Passwords" ),
-                              tr( "WARNING: You have opted to save your password. It will be stored in unsecured "
-                                  "plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). "
-                                  "If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection "
-                                  "settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your "
-                                  "credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
-                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have opted to save your password. It will be stored in unsecured "
+                                                                                                                                 "plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). "
+                                                                                                                                 "If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection "
+                                                                                                                                 "settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your "
+                                                                                                                                 "credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
+                                                                                             QMessageBox::Ok | QMessageBox::Cancel )
+                                                                        == QMessageBox::Cancel )
   {
     return;
   }
 
   QgsHanaSettings settings( connName, true );
   // warn if entry was renamed to an existing connection
-  if ( ( !mOriginalConnName.isNull() && mOriginalConnName.compare( connName, Qt::CaseInsensitive ) != 0 ) &&
-       QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( connName ),
-                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( !mOriginalConnName.isNull() && mOriginalConnName.compare( connName, Qt::CaseInsensitive ) != 0 ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( connName ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -183,9 +178,9 @@ void QgsHanaNewConnection::accept()
 
   readSettingsFromControls( settings );
   if ( !mAuthSettings->storeUsernameIsChecked() )
-    settings.setUserName( QString( ) );
+    settings.setUserName( QString() );
   if ( !( mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID ) )
-    settings.setPassword( QString( ) );
+    settings.setPassword( QString() );
   settings.setSaveUserName( mAuthSettings->storeUsernameIsChecked() );
   settings.setSavePassword( mAuthSettings->storePasswordIsChecked() && !hasAuthConfigID );
 
@@ -211,13 +206,13 @@ void QgsHanaNewConnection::cmbIdentifierType_changed( int index )
   {
     txtIdentifier->setMaxLength( 2 );
     txtIdentifier->setValidator( new QIntValidator( 0, 99, this ) );
-    txtIdentifier->setText( QStringLiteral( "00" ) );
+    txtIdentifier->setText( u"00"_s );
   }
   else
   {
     txtIdentifier->setMaxLength( 5 );
     txtIdentifier->setValidator( new QIntValidator( 1, 65535, this ) );
-    txtIdentifier->setText( QStringLiteral( "00000" ) );
+    txtIdentifier->setText( u"00000"_s );
   }
 }
 
@@ -342,7 +337,7 @@ void QgsHanaNewConnection::updateControlsFromSettings( const QgsHanaSettings &se
       else
       {
         rbtnMultipleContainers->setChecked( true );
-        if ( settings.database() == QLatin1String( "SYSTEMDB" ) )
+        if ( settings.database() == "SYSTEMDB"_L1 )
           rbtnSystemDatabase->setChecked( true );
         else
           txtTenantDatabaseName->setText( settings.database() );
@@ -395,8 +390,7 @@ void QgsHanaNewConnection::resizeEvent( QResizeEvent * )
 
 void QgsHanaNewConnection::resizeWidgets()
 {
-  auto resizeLayout = []( QLayout * layout )
-  {
+  auto resizeLayout = []( QLayout *layout ) {
     QWidget *widget = layout->parentWidget();
     widget->adjustSize();
     widget->resize( widget->parentWidget()->width(), widget->height() );
@@ -425,8 +419,7 @@ void QgsHanaNewConnection::testConnection()
     case QgsHanaConnectionType::HostPort:
       if ( txtHost->text().isEmpty() )
         warningMsg = tr( "Host name has not been specified." );
-      else if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() &&
-                txtTenantDatabaseName->text().isEmpty() )
+      else if ( rbtnMultipleContainers->isChecked() && rbtnTenantDatabase->isChecked() && txtTenantDatabaseName->text().isEmpty() )
         warningMsg = tr( "Database has not been specified." );
       else if ( txtIdentifier->text().isEmpty() )
         warningMsg = tr( "Identifier has not been specified." );
@@ -439,7 +432,7 @@ void QgsHanaNewConnection::testConnection()
         {
           if ( !QgsHanaDriver::isInstalled( driver ) )
           {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
             warningMsg = tr( "Driver with name '%1' is not installed." ).arg( driver );
 #else
             if ( !QgsHanaDriver::isValidPath( driver ) )
@@ -494,13 +487,13 @@ QString QgsHanaNewConnection::getDatabaseName() const
     if ( rbtnTenantDatabase->isChecked() )
       return QString( txtTenantDatabaseName->text() );
     else
-      return QStringLiteral( "SYSTEMDB" );
+      return u"SYSTEMDB"_s;
   }
   else
-    return QString( );
+    return QString();
 }
 
 void QgsHanaNewConnection::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#creating-a-stored-connection" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#creating-a-stored-connection"_s );
 }

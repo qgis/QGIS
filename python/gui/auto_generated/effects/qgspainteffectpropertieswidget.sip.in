@@ -14,14 +14,13 @@
 class QgsPaintEffectPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget which modifies the properties of a :py:class:`QgsPaintEffect`
+A widget which modifies the properties of a :py:class:`QgsPaintEffect`.
 %End
 
 %TypeHeaderCode
 #include "qgspainteffectpropertieswidget.h"
 %End
   public:
-
     QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsPaintEffectPropertiesWidget constructor

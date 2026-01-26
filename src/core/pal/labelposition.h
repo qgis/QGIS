@@ -33,10 +33,11 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
-#include "pointset.h"
-#include "palrtree.h"
 #include <fstream>
+
+#include "palrtree.h"
+#include "pointset.h"
+#include "qgis_core.h"
 
 namespace pal
 {
@@ -60,19 +61,12 @@ namespace pal
     public:
 
       /**
-       * \brief Position of label candidate relative to feature.
+       * \brief Label directions in relation to line or polygon ring directions
        */
-      enum Quadrant
+      enum class LabelDirectionToLine
       {
-        QuadrantAboveLeft,
-        QuadrantAbove,
-        QuadrantAboveRight,
-        QuadrantLeft,
-        QuadrantOver,
-        QuadrantRight,
-        QuadrantBelowLeft,
-        QuadrantBelow,
-        QuadrantBelowRight
+        SameDirection,
+        Reversed
       };
 
       /**
@@ -86,13 +80,15 @@ namespace pal
        * \param alpha rotation in radians
        * \param cost geographic cost
        * \param feature labelpos owners
-       * \param isReversed label is reversed
+       * \param directionToLine whether the label direction is reversed from the line or polygon ring direction
        * \param quadrant relative position of label to feature
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
+                     FeaturePart *feature,
+                     LabelDirectionToLine directionToLine = LabelDirectionToLine::SameDirection,
+                     Qgis::LabelQuadrantPosition quadrant = Qgis::LabelQuadrantPosition::Over );
 
       LabelPosition( const LabelPosition &other );
 
@@ -135,7 +131,7 @@ namespace pal
        *
        * \note This method considers the label's outer bounds (see QgsLabelFeature::outerBounds())
        */
-      QgsRectangle boundingBox() const;
+      QgsRectangle outerBoundingBox() const;
 
       /**
        * Returns the bounding box to use for candidate conflicts.
@@ -288,10 +284,17 @@ namespace pal
        */
       double getAlpha() const;
 
-      bool getReversed() const { return reversed; }
+      /**
+       * Returns TRUE if the label direction is the reversed from the line or polygon ring direction.
+       */
+      bool isReversedFromLineDirection() const { return mDirectionToLine == LabelDirectionToLine::Reversed; }
+
       bool getUpsideDown() const { return upsideDown; }
 
-      Quadrant getQuadrant() const { return quadrant; }
+      /**
+       * Returns the quadrant associated with this label position.
+       */
+      Qgis::LabelQuadrantPosition quadrant() const { return mQuadrant; }
 
       /**
        * Returns the next part of this label position (i.e. the next character for a curved label).
@@ -328,12 +331,12 @@ namespace pal
       /**
        * Removes the label position from the specified \a index.
        */
-      void removeFromIndex( PalRtree<LabelPosition> &index );
+      void removeFromIndex( PalRtree<LabelPosition> &index, Pal *pal );
 
       /**
        * Inserts the label position into the specified \a index.
        */
-      void insertIntoIndex( PalRtree<LabelPosition> &index );
+      void insertIntoIndex( PalRtree<LabelPosition> &index, Pal *pal );
 
       /**
        * Returns a GEOS representation of all label parts as a multipolygon.
@@ -386,9 +389,9 @@ namespace pal
       FeaturePart *feature = nullptr;
 
       // bug # 1 (maxence 10/23/2008)
-      int probFeat;
+      int probFeat = 0;
 
-      int nbOverlap;
+      int nbOverlap = 0;
 
       //! Rotation in radians
       double alpha;
@@ -396,18 +399,16 @@ namespace pal
       double w;
       double h;
 
-      int partId;
+      int partId = -1;
 
-      //True if label direction is the same as line / polygon ring direction.
-      //Could be used by the application to draw a directional arrow ('<' or '>')
-      //if the layer arrangement is P_LINE
-      bool reversed;
 
-      bool upsideDown;
-
-      LabelPosition::Quadrant quadrant;
+      bool upsideDown = false;
 
     private:
+
+      Qgis::LabelQuadrantPosition mQuadrant = Qgis::LabelQuadrantPosition::AboveLeft;
+
+      LabelDirectionToLine mDirectionToLine = LabelDirectionToLine::SameDirection;
 
       unsigned int mGlobalId = 0;
       std::unique_ptr< LabelPosition > mNextPart;
@@ -423,10 +424,12 @@ namespace pal
       geos::unique_ptr mOuterBoundsGeos;
       const GEOSPreparedGeometry *mPreparedOuterBoundsGeos = nullptr;
 
+      mutable QgsRectangle mBoundsForConflictIndex;
+
       double mCost;
-      bool mHasObstacleConflict;
+      bool mHasObstacleConflict = false;
       bool mHasHardConflict = false;
-      int mUpsideDownCharCount;
+      int mUpsideDownCharCount = 0;
 
       /**
        * Calculates the total number of parts for this label position

@@ -15,13 +15,13 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H
 #define QGSCATEGORIZEDSYMBOLRENDERERWIDGET_H
 
-#include "qgscategorizedsymbolrenderer.h"
 #include "qgis_sip.h"
-#include "qgsrendererwidget.h"
+#include "qgscategorizedsymbolrenderer.h"
 #include "qgsproxystyle.h"
+#include "qgsrendererwidget.h"
+
 #include <QStandardItem>
 #include <QStyledItemDelegate>
-
 
 class QgsCategorizedSymbolRenderer;
 class QgsRendererCategory;
@@ -67,14 +67,14 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
   private:
     QgsCategorizedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
-    QPointer< QScreen > mScreen;
+    QPointer<QScreen> mScreen;
 };
 
 /**
  * \ingroup gui
- * \brief View style which shows drop indicator line between items
+ * \brief View style which shows a drop indicator line between items
  */
-class QgsCategorizedSymbolRendererViewStyle: public QgsProxyStyle
+class QgsCategorizedSymbolRendererViewStyle : public QgsProxyStyle
 {
     Q_OBJECT
 
@@ -88,7 +88,7 @@ class QgsCategorizedSymbolRendererViewStyle: public QgsProxyStyle
  * \ingroup gui
  * \brief Custom delegate for localized numeric input.
  */
-class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
+class QgsCategorizedRendererViewItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
@@ -99,7 +99,6 @@ class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:
-
     QgsFieldExpressionWidget *mFieldExpressionWidget = nullptr;
 };
 
@@ -111,12 +110,12 @@ class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
 /**
  * \ingroup gui
  * \class QgsCategorizedSymbolRendererWidget
+ * \brief A widget for configuring a QgsCategorizedSymbolRenderer.
  */
 class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, private Ui::QgsCategorizedSymbolRendererWidget
 {
     Q_OBJECT
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -127,7 +126,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCategorizedSymbolRendererWidget, CustomRoles ) : int
     {
-      Value SIP_MONKEYPATCH_COMPAT_NAME(ValueRole) = Qt::UserRole + 1 //!< Category value
+      Value SIP_MONKEYPATCH_COMPAT_NAME( ValueRole ) = Qt::UserRole + 1 //!< Category value
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -166,6 +165,11 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 
     void deleteCategories();
     void deleteAllCategories();
+
+    /**
+     * Deletes unused categories from the widget which are not used by the layer renderer.
+     */
+    void deleteUnusedCategories();
 
     void showSymbolLevels();
 
@@ -219,7 +223,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   protected:
-
     void updateUiFromRenderer();
 
     // Called by virtual refreshSymbolView()
@@ -238,15 +241,24 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     //! Applies current symbol to selected categories, or to all categories if none is selected
     void applyChangeToSymbol();
 
+    /**
+     * Returns the list of unique values in the current widget's layer for attribute name \a attrName.
+     *
+     * Called by addCategories() and deleteUnusedCategories()
+     *
+     * \deprecated QGIS 4.0. Use QgsVectorLayerUtils::uniqueValues instead.
+     */
+    Q_DECL_DEPRECATED QList<QVariant> layerUniqueValues( const QString &attrName ) SIP_DEPRECATED;
+
     QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();
     void refreshSymbolView() override;
     void keyPressEvent( QKeyEvent *event ) override;
 
   protected:
-    std::unique_ptr< QgsCategorizedSymbolRenderer > mRenderer;
+    std::unique_ptr<QgsCategorizedSymbolRenderer> mRenderer;
 
-    std::unique_ptr< QgsSymbol > mCategorizedSymbol;
+    std::unique_ptr<QgsSymbol> mCategorizedSymbol;
 
     QgsCategorizedSymbolRendererModel *mModel = nullptr;
 

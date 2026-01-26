@@ -20,13 +20,15 @@
 
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
-#include <QVBoxLayout>
-#include <QTextEdit>
+
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
-QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box,
-    QWidget *parent )
+#include "moc_qgsmodelgroupboxdefinitionwidget.cpp"
+
+QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent )
   : QDialog( parent )
   , mBox( box )
 {
@@ -60,7 +62,7 @@ QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsPro
   commentLayout->addWidget( bbox );
   setLayout( commentLayout );
   setWindowTitle( tr( "Group Box Properties" ) );
-  setObjectName( QStringLiteral( "QgsModelGroupBoxDefinitionWidget" ) );
+  setObjectName( u"QgsModelGroupBoxDefinitionWidget"_s );
   QgsGui::enableAutoGeometryRestore( this );
 
   mCommentEdit->setFocus();
@@ -74,4 +76,3 @@ QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionDialog::groupBox() const
   box.setDescription( mCommentEdit->toPlainText() );
   return box;
 }
-

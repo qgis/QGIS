@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewlowaccuracyindicator.h"
+
 #include "qgsdatums.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
 #include "qgsexception.h"
+#include "qgsgui.h"
+#include "qgssettings.h"
+
+#include "moc_qgslayertreeviewlowaccuracyindicator.cpp"
 
 QgsLayerTreeViewLowAccuracyIndicatorProvider::QgsLayerTreeViewLowAccuracyIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -38,12 +41,11 @@ void QgsLayerTreeViewLowAccuracyIndicatorProvider::disconnectSignals( QgsMapLaye
 
 void QgsLayerTreeViewLowAccuracyIndicatorProvider::onIndicatorClicked( const QModelIndex & )
 {
-
 }
 
 QString QgsLayerTreeViewLowAccuracyIndicatorProvider::iconName( QgsMapLayer * )
 {
-  return QStringLiteral( "/mIndicatorLowAccuracy.svg" );
+  return u"/mIndicatorLowAccuracy.svg"_s;
 }
 
 QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *layer )
@@ -55,6 +57,12 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
   if ( !crs.isValid() )
     return QString();
 
+  // dynamic crs with no epoch?
+  if ( crs.isDynamic() && std::isnan( crs.coordinateEpoch() ) )
+  {
+    return tr( "%1 is a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy." ).arg( crs.userFriendlyIdentifier() );
+  }
+
   // based on datum ensemble?
   try
   {
@@ -63,9 +71,9 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
     {
       QString id;
       if ( !ensemble.code().isEmpty() )
-        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+        id = u"<i>%1</i> (%2:%3)"_s.arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+        id = u"<i>%1</i>”"_s.arg( ensemble.name() );
 
       if ( ensemble.accuracy() > 0 )
       {
@@ -79,13 +87,6 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
   }
   catch ( QgsNotSupportedException & )
   {
-
-  }
-
-  // dynamic crs with no epoch?
-  if ( crs.isDynamic() && std::isnan( crs.coordinateEpoch() ) )
-  {
-    return tr( "%1 is a dynamic CRS, but no coordinate epoch is set. Coordinates are ambiguous and of limited accuracy." ).arg( crs.userFriendlyIdentifier() );
   }
 
   return QString();
@@ -94,7 +95,7 @@ QString QgsLayerTreeViewLowAccuracyIndicatorProvider::tooltipText( QgsMapLayer *
 bool QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
   const QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "/projections/crsAccuracyIndicator" ), false, QgsSettings::App ).toBool() )
+  if ( !settings.value( u"/projections/crsAccuracyIndicator"_s, false, QgsSettings::App ).toBool() )
     return false;
 
   if ( !layer->isValid() )
@@ -118,7 +119,7 @@ bool QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer( QgsMapLayer *lay
     {
       if ( ensemble.accuracy() > 0 )
       {
-        if ( ensemble.accuracy() >= settings.value( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), 0.0, QgsSettings::App ).toDouble() )
+        if ( ensemble.accuracy() >= settings.value( u"/projections/crsAccuracyWarningThreshold"_s, 0.0, QgsSettings::App ).toDouble() )
           return true;
       }
       else
@@ -130,7 +131,6 @@ bool QgsLayerTreeViewLowAccuracyIndicatorProvider::acceptLayer( QgsMapLayer *lay
   }
   catch ( QgsNotSupportedException & )
   {
-
   }
 
   return false;

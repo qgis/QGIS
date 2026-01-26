@@ -15,13 +15,14 @@
 #ifndef QGSSYMBOLBUTTON_H
 #define QGSSYMBOLBUTTON_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-#include <QToolButton>
 #include <QPointer>
-#include <memory>
+#include <QToolButton>
 
 class QgsMapCanvas;
 class QgsVectorLayer;
@@ -48,13 +49,12 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     Q_PROPERTY( QString dialogTitle READ dialogTitle WRITE setDialogTitle )
 
   public:
-
     /**
      * Construct a new symbol button.
      * Use \a dialogTitle string to define the title to show in the symbol settings dialog.
      */
     QgsSymbolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
-    ~QgsSymbolButton();
+    ~QgsSymbolButton() override;
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
@@ -98,7 +98,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     * \see changed()
     * \note Not available in Python bindings.
     */
-    template <class SymbolType> SymbolType *clonedSymbol() SIP_SKIP
+    template<class SymbolType> SymbolType *clonedSymbol() SIP_SKIP
     {
       QgsSymbol *tmpSymbol = mSymbol.get();
       SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
@@ -198,6 +198,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     bool isNull() const;
 
+    /**
+     * Returns TRUE if the widget adopts fixed size constraints.
+     *
+     * \since QGIS 4.0
+     */
+    bool fixedSizeConstraints() const;
+
   public slots:
 
     /**
@@ -269,6 +276,13 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
      */
     void setToDefaultSymbol();
 
+    /**
+     * Sets whether the widget adopts fixed size constraints.
+     *
+     * \since QGIS 4.0
+     */
+    void setFixedSizeConstraints( bool fixedSizeConstraints );
+
   signals:
 
     /**
@@ -279,7 +293,6 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void changed();
 
   protected:
-
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
@@ -319,7 +332,6 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void activatePicker();
 
   private:
-
     QSize mSizeHint;
 
     QString mDialogTitle;
@@ -333,11 +345,11 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     QMenu *mMenu = nullptr;
 
-    QPointer< QgsVectorLayer > mLayer;
+    QPointer<QgsVectorLayer> mLayer;
 
     QSize mIconSize;
 
-    std::unique_ptr< QgsSymbol > mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
@@ -345,7 +357,9 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     bool mShowNull = false;
 
-    std::unique_ptr< QgsSymbol > mDefaultSymbol;
+    bool mFixedSizeConstraints = true;
+
+    std::unique_ptr<QgsSymbol> mDefaultSymbol;
 
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview
@@ -380,7 +394,6 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void showColorDialog();
 
     void updateSizeHint();
-
 };
 
 #endif // QGSSYMBOLBUTTON_H

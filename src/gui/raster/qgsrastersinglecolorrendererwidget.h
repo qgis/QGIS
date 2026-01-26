@@ -22,19 +22,23 @@
 
 #include "ui_qgsrastersinglecolorrendererwidgetbase.h"
 
-#include "qgsrasterrendererwidget.h"
 #include "qgis_gui.h"
+#include "qgsrasterrendererwidget.h"
 
 /**
  * \brief Renderer widget for the single color renderer.
  * \ingroup gui
  * \since QGIS 3.38
  */
-class GUI_EXPORT QgsRasterSingleColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsRasterSingleColorRendererWidgetBase
+class GUI_EXPORT QgsRasterSingleColorRendererWidget : public QgsRasterRendererWidget, private Ui::QgsRasterSingleColorRendererWidgetBase
 {
     Q_OBJECT
   public:
-    //! Constructs the widget
+    /**
+     * Constructor for QgsRasterSingleColorRendererWidget.
+     * \param layer associated raster layer
+     * \param extent current canvas extent
+     */
     QgsRasterSingleColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
     //! Widget creation function (use by the renderer registry)
@@ -46,7 +50,6 @@ class GUI_EXPORT QgsRasterSingleColorRendererWidget: public QgsRasterRendererWid
      * Sets the widget state from the specified renderer.
      */
     void setFromRenderer( const QgsRasterRenderer *r );
-
 };
 
 #endif // QGSRASTERSINGLECOLORRENDERERWIDGET_H

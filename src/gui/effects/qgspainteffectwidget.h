@@ -16,9 +16,10 @@
 #ifndef QGSPAINTEFFECTWIDGET_H
 #define QGSPAINTEFFECTWIDGET_H
 
-#include <QWidget>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsPaintEffect;
 class QgsShadowEffect;
@@ -33,15 +34,14 @@ class QgsColorEffect;
  * \ingroup gui
  * \class QgsPaintEffectWidget
  * \brief Base class for effect properties widgets.
- *
  */
-
 class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 {
     Q_OBJECT
 
   public:
-    QgsPaintEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr ) : QWidget( parent ) {}
+    QgsPaintEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr )
+      : QWidget( parent ) {}
 
     /**
      * Sets the paint effect to modify with the widget
@@ -55,7 +55,6 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
      * Emitted when properties of the effect are changed through the widget
      */
     void changed();
-
 };
 
 //individual effect widgets
@@ -65,6 +64,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
 /**
  * \ingroup gui
  * \class QgsDrawSourceWidget
+ * \brief A widget for configuring QgsDrawSourceEffect effects.
  */
 class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::WidgetDrawSource
 {
@@ -88,9 +88,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
     void opacityChanged( double value );
     void mDrawModeComboBox_currentIndexChanged( int index );
     void mBlendCmbBx_currentIndexChanged( int index );
-
 };
-
 
 
 #include "ui_widget_blur.h"
@@ -98,6 +96,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 /**
  * \ingroup gui
  * \class QgsBlurWidget
+ * \brief A widget for configuring QgsBlurEffect effects.
  */
 class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::WidgetBlur
 {
@@ -124,9 +123,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
     void opacityChanged( double value );
     void mDrawModeComboBox_currentIndexChanged( int index );
     void mBlendCmbBx_currentIndexChanged( int index );
-
 };
-
 
 
 #include "ui_widget_shadoweffect.h"
@@ -134,6 +131,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 /**
  * \ingroup gui
  * \class QgsShadowEffectWidget
+ * \brief A widget for configuring QgsShadowEffect effects.
  */
 class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetShadowEffect
 {
@@ -171,6 +169,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
 /**
  * \ingroup gui
  * \class QgsGlowWidget
+ * \brief A widget for configuring QgsGlowEffect effects.
  */
 class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::WidgetGlow
 {
@@ -200,7 +199,6 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     void mBlurRadiusSpnBx_valueChanged( double value );
     void mBlurUnitWidget_changed();
     void applyColorRamp();
-
 };
 
 #include "ui_widget_transform.h"
@@ -208,6 +206,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
 /**
  * \ingroup gui
  * \class QgsTransformWidget
+ * \brief A widget for configuring QgsTransformEffect effects.
  */
 class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::WidgetTransform
 {
@@ -239,7 +238,6 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     void mSpinScaleX_valueChanged( double value );
     void mSpinScaleY_valueChanged( double value );
     void mRotationSpinBox_valueChanged( double value );
-
 };
 
 
@@ -248,6 +246,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
 /**
  * \ingroup gui
  * \class QgsColorEffectWidget
+ * \brief A widget for configuring QgsColorEffect effects.
  */
 class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetColorEffect
 {
@@ -279,9 +278,7 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
     void mColorizeCheck_stateChanged( int state );
     void mColorizeColorButton_colorChanged( const QColor &color );
     void mGrayscaleCombo_currentIndexChanged( int index );
-
 };
-
 
 
 #endif //QGSPAINTEFFECTWIDGET_H

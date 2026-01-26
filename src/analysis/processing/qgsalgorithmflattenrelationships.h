@@ -33,9 +33,7 @@ class QgsVectorLayerFeatureSource;
  */
 class QgsFlattenRelationshipsAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsFlattenRelationshipsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -50,20 +48,15 @@ class QgsFlattenRelationshipsAlgorithm : public QgsProcessingAlgorithm
     QgsFlattenRelationshipsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QgsRelation mRelation;
-    std::unique_ptr< QgsVectorLayerFeatureSource > mReferencingSource;
+    std::unique_ptr<QgsVectorLayerFeatureSource> mReferencingSource;
     QgsFields mReferencingFields;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMFLATTENRELATIONSHIPS_H
-
-

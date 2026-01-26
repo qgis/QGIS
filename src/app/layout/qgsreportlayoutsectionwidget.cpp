@@ -15,10 +15,13 @@
  ***************************************************************************/
 
 #include "qgsreportlayoutsectionwidget.h"
-#include "qgsreportsectionlayout.h"
+
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgsreportorganizerwidget.h"
+#include "qgsreportsectionlayout.h"
+
+#include "moc_qgsreportlayoutsectionwidget.cpp"
 
 QgsReportLayoutSectionWidget::QgsReportLayoutSectionWidget( QgsReportOrganizerWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionLayout *section )
   : QWidget( parent )
@@ -47,7 +50,7 @@ void QgsReportLayoutSectionWidget::editBody()
 {
   if ( !mSection->body() )
   {
-    std::unique_ptr< QgsLayout > body = std::make_unique< QgsLayout >( mSection->project() );
+    auto body = std::make_unique<QgsLayout>( mSection->project() );
     body->initializeDefaults();
     mSection->setBody( body.release() );
   }

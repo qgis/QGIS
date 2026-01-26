@@ -17,20 +17,19 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdiagram.h"
+#include "qgsexpressioncontext.h"
+#include "qgsmapunitscale.h"
+#include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
 #include <QColor>
+#include <QDomDocument>
 #include <QFont>
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
-#include <QDomDocument>
-
-#include "qgsexpressioncontext.h"
-#include "qgscoordinatetransform.h"
-#include "qgspropertycollection.h"
-
-#include "qgsdiagram.h"
-#include "qgsreadwritecontext.h"
-#include "qgsmapunitscale.h"
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -45,7 +44,7 @@ class QgsPaintEffect;
 class QgsDataDefinedSizeLegend;
 class QgsLineSymbol;
 
-namespace pal { class Layer; } SIP_SKIP
+namespace pal SIP_SKIP { class Layer; }
 
 /**
  * \ingroup core
@@ -121,8 +120,10 @@ class CORE_EXPORT QgsDiagramLayerSettings
     QgsDiagramLayerSettings();
 
     QgsDiagramLayerSettings( const QgsDiagramLayerSettings &rh );
+    SIP_SKIP QgsDiagramLayerSettings( QgsDiagramLayerSettings &&rh );
 
     QgsDiagramLayerSettings &operator=( const QgsDiagramLayerSettings &rh );
+    QgsDiagramLayerSettings &operator=( QgsDiagramLayerSettings &&rh );
 
     ~QgsDiagramLayerSettings();
 
@@ -217,14 +218,14 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * Returns the diagram renderer associated with the layer.
      * \see setRenderer()
      */
-    QgsDiagramRenderer *renderer() { return mRenderer; }
+    QgsDiagramRenderer *renderer() { return mRenderer.get(); }
 
     /**
      * Returns the diagram renderer associated with the layer.
      * \see setRenderer()
      * \note not available in Python bindings
      */
-    const QgsDiagramRenderer *renderer() const { return mRenderer; } SIP_SKIP
+    const QgsDiagramRenderer *renderer() const SIP_SKIP { return mRenderer.get(); }
 
     /**
      * Sets the diagram renderer associated with the layer.
@@ -297,7 +298,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \see Property
      * \note not available in Python bindings
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
      * Sets the diagram's property collection, used for data defined overrides.
@@ -335,7 +336,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
     double mDistance = 0.0;
 
     //! Associated diagram renderer. Owned by this object.
-    QgsDiagramRenderer *mRenderer = nullptr;
+    std::unique_ptr<QgsDiagramRenderer> mRenderer;
 
     //! Whether to show all diagrams, including overlapping diagrams
     bool mShowAll = true;
@@ -740,11 +741,11 @@ class CORE_EXPORT QgsDiagramRenderer
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->rendererName() == QLatin1String( "SingleCategory" ) )
+    if ( sipCpp->rendererName() == "SingleCategory"_L1 )
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
-    else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
+    else if ( sipCpp->rendererName() == "LinearlyInterpolated"_L1 )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
-    else if ( sipCpp->rendererName() == QLatin1String( "Stacked" ) )
+    else if ( sipCpp->rendererName() == "Stacked"_L1 )
       sipType = sipType_QgsStackedDiagramRenderer;
     else
       sipType = NULL;
@@ -869,17 +870,18 @@ class CORE_EXPORT QgsDiagramRenderer
 
 /**
  * \ingroup core
- * \brief Renders the diagrams for all features with the same settings
+ * \brief Renders the diagrams for all features with the same settings.
 */
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY SIP_SKIP;
 
     QgsSingleCategoryDiagramRenderer() = default;
 
     QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
 
-    QString rendererName() const override { return QStringLiteral( "SingleCategory" ); }
+    QString rendererName() const override { return QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY; }
 
     QList<QString> diagramAttributes() const override { return mSettings.categoryAttributes; }
 
@@ -904,11 +906,13 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 /**
  * \ingroup core
  * \class QgsLinearlyInterpolatedDiagramRenderer
- * \brief Alters the size of rendered diagrams using a linear scaling.
+ * \brief Alters the size of rendered diagrams using linear scaling.
  */
 class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED SIP_SKIP;
+
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer() override;
     QgsLinearlyInterpolatedDiagramRenderer( const QgsLinearlyInterpolatedDiagramRenderer &other );
@@ -926,7 +930,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
-    QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
+    QString rendererName() const override { return QgsLinearlyInterpolatedDiagramRenderer::DIAGRAM_RENDERER_NAME_LINEARLY_INTERPOLATED; }
 
     void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
     double lowerValue() const { return mInterpolationSettings.lowerValue; }
@@ -983,33 +987,41 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsDiagramInterpolationSettings mInterpolationSettings;
 
     //! Stores more settings about how legend for varying size of symbols should be rendered
-    QgsDataDefinedSizeLegend *mDataDefinedSizeLegend = nullptr;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mDataDefinedSizeLegend;
 };
 
 /**
  * \ingroup core
  * \class QgsStackedDiagramRenderer
- * Renders diagrams using mixed diagram render types. The size of
- * the rendered diagram is given by a combination of subrenderers.
+ * Renders diagrams using mixed diagram render types.
+ *
+ * The size of the rendered diagram is given by a combination of subrenderers.
  *
  * \since QGIS 3.40
  */
 class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 {
   public:
+    static const QString DIAGRAM_RENDERER_NAME_STACKED SIP_SKIP;
+
     QgsStackedDiagramRenderer() = default;
+    ~QgsStackedDiagramRenderer() override;
+
+    QgsStackedDiagramRenderer( const QgsStackedDiagramRenderer &other );
+
+    QgsStackedDiagramRenderer &operator=( const QgsStackedDiagramRenderer &other );
 
     QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
-    virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
+    QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
 
     /**
      * Renders the diagram for a specified feature at a specific position in the
      * passed render context, taking all renderers and their own diagrams into account.
      * Diagram rendering is delegated to renderer's diagram.
      */
-    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
 
     //! Returns list with all diagram settings in the renderer
     QList<QgsDiagramSettings> diagramSettings() const override;
@@ -1018,7 +1030,7 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     QList<QString> diagramAttributes() const override;
 
-    QString rendererName() const override { return QStringLiteral( "Stacked" ); }
+    QString rendererName() const override { return QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
@@ -1039,23 +1051,31 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
 
     /**
      * Returns an ordered list with the renderers of the stacked renderer object.
-     * @param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
+     * Does not transfer ownership.
+     *
+     * \param sortByDiagramMode If true, the list is returned backwards for vertical orientation.
      */
     QList< QgsDiagramRenderer * > renderers( bool sortByDiagramMode = false ) const;
 
     /**
-     * Adds a renderer to the stacked renderer object.
-     * @param renderer diagram renderer to be added to the stacked renderer
+     * Adds a renderer to the stacked renderer object. Takes ownership.
+     *
      * Renderers added first will render their diagrams first, i.e., more to
      * the left (horizontal mode) or more to the top (vertical mode).
+     *
+     * \param renderer diagram renderer to be added to the stacked renderer
      */
-    void addRenderer( QgsDiagramRenderer *renderer );
+    void addRenderer( QgsDiagramRenderer *renderer SIP_TRANSFER );
 
     /**
-     * Returns the renderer at the given \a index.
-     * @param index index of the disired renderer in the stacked renderer
+     * Returns the renderer at the given \a index. Does not transfer ownership.
+     *
+     * \param index index of the desired renderer in the stacked renderer
      */
     const QgsDiagramRenderer *renderer( const int index ) const;
+
+    //! Returns the number of sub renderers in the stacked diagram renderer
+    int rendererCount() const;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext &c, QgsDiagramSettings &s ) const override;

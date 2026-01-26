@@ -21,9 +21,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsspatialindex.h"
 
 ///@cond PRIVATE
@@ -39,27 +39,26 @@
 class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsLineDensityAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineDensity.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmLineDensity.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmLineDensity.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmLineDensity.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsLineDensityAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context,
-                                  QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::unique_ptr< QgsFeatureSource > mSource;
+    std::unique_ptr<QgsFeatureSource> mSource;
     QString mWeightField;
     double mSearchRadius = 0;
     double mPixelSize = 0;
@@ -69,7 +68,6 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
     QgsDistanceArea mDa;
     QgsSpatialIndex mIndex;
     QHash<QgsFeatureId, double> mFeatureWeights;
-
 };
 
 ///@endcond PRIVATE

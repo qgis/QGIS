@@ -145,7 +145,7 @@
       <string notr="true">QLabel {color: rgb(128, 128, 128);}</string>
      </property>
      <property name="text">
-      <string>Note: Editing writes directly to authentication database</string>
+      <string>Note: Editing writes directly to authentication storage</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

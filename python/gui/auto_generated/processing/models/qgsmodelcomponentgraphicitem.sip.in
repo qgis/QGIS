@@ -10,10 +10,12 @@
 
 
 
+
 class QgsModelComponentGraphicItem : QGraphicsObject
 {
 %Docstring(signature="appended")
-Base class for graphic items representing model components in the model designer.
+Base class for graphic items representing model components in the model
+designer.
 
 .. warning::
 
@@ -26,7 +28,6 @@ Base class for graphic items representing model components in the model designer
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
     enum State
     {
       Normal,
@@ -42,14 +43,14 @@ Base class for graphic items representing model components in the model designer
     typedef QFlags<QgsModelComponentGraphicItem::Flag> Flags;
 
 
-    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/,
-                                  QgsProcessingModelAlgorithm *model,
-                                  QGraphicsItem *parent /TransferThis/ );
+    QgsModelComponentGraphicItem( QgsProcessingModelComponent *component /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
-Constructor for QgsModelComponentGraphicItem for the specified ``component``, with the specified ``parent`` item.
+Constructor for QgsModelComponentGraphicItem for the specified
+``component``, with the specified ``parent`` item.
 
-The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
-it must exist for the lifetime of this object.
+The ``model`` argument specifies the associated processing model.
+Ownership of ``model`` is not transferred, and it must exist for the
+lifetime of this object.
 
 Ownership of ``component`` is transferred to the item.
 %End
@@ -71,6 +72,7 @@ Returns the model component associated with this item.
 %Docstring
 Returns the model associated with this item.
 %End
+
 
     QgsModelGraphicsView *view();
 %Docstring
@@ -102,7 +104,8 @@ Moves the component by the specified ``dx`` and ``dy``.
 
     void previewItemMove( qreal dx, qreal dy );
 %Docstring
-Shows a preview of moving the item from its stored position by ``dx``, ``dy``.
+Shows a preview of moving the item from its stored position by ``dx``,
+``dy``.
 %End
 
     void setItemRect( QRectF rect );
@@ -153,22 +156,26 @@ Returns the item's current state.
 
     virtual int linkPointCount( Qt::Edge edge ) const;
 %Docstring
-Returns the number of link points associated with the component on the specified ``edge``.
+Returns the number of link points associated with the component on the
+specified ``edge``.
 %End
 
     virtual QString linkPointText( Qt::Edge edge, int index ) const;
 %Docstring
-Returns the text to use for the link point with the specified ``index`` on the specified ``edge``.
+Returns the text to use for the link point with the specified ``index``
+on the specified ``edge``.
 %End
 
     QPointF linkPoint( Qt::Edge edge, int index, bool incoming ) const;
 %Docstring
-Returns the location of the link point with the specified ``index`` on the specified ``edge``.
+Returns the location of the link point with the specified ``index`` on
+the specified ``edge``.
 %End
 
     QPointF calculateAutomaticLinkPoint( QgsModelComponentGraphicItem *other, Qt::Edge &edge /Out/ ) const;
 %Docstring
-Returns the best link point to use for a link originating at a specified ``other`` item.
+Returns the best link point to use for a link originating at a specified
+``other`` item.
 
 :param other: item at other end of link
 
@@ -178,13 +185,24 @@ Returns the best link point to use for a link originating at a specified ``other
 
     QPointF calculateAutomaticLinkPoint( const QPointF &point, Qt::Edge &edge /Out/ ) const;
 %Docstring
-Returns the best link point to use for a link originating at a specified ``other`` point.
+Returns the best link point to use for a link originating at a specified
+``other`` point.
 
 :param other: point for other end of link (in scene coordinates)
 
 :return: - calculated link point in item coordinates.
          - edge: item edge for calculated best link point
 %End
+
+    QgsModelDesignerSocketGraphicItem *outSocketAt( int index ) const;
+%Docstring
+Returns the output socket graphics items at the specified ``index``.
+
+May return ``None`` if no corresponding output socket exists.
+
+.. versionadded:: 3.44
+%End
+
 
     virtual void editComment();
 %Docstring
@@ -215,17 +233,18 @@ Emitted by the item to request a repaint of the parent model scene.
 
     void aboutToChange( const QString &text, int id = 0 );
 %Docstring
-Emitted when the definition of the associated component is about to be changed
-by the item.
+Emitted when the definition of the associated component is about to be
+changed by the item.
 
-The ``text`` argument gives the translated text describing the change about to occur, and the
-optional ``id`` can be used to group the associated undo commands.
+The ``text`` argument gives the translated text describing the change
+about to occur, and the optional ``id`` can be used to group the
+associated undo commands.
 %End
 
     void changed();
 %Docstring
-Emitted when the definition of the associated component is changed
-by the item.
+Emitted when the definition of the associated component is changed by
+the item.
 %End
 
     void repaintArrows();
@@ -235,7 +254,8 @@ Emitted when item requests that all connected arrows are repainted.
 
     void updateArrowPaths();
 %Docstring
-Emitted when item requires that all connected arrow paths are recalculated.
+Emitted when item requires that all connected arrow paths are
+recalculated.
 %End
 
     void sizePositionChanged();
@@ -253,11 +273,10 @@ The default implementation does nothing.
 %End
 
   protected:
-
     QString truncatedTextForItem( const QString &text ) const;
 %Docstring
-Truncates a ``text`` string so that it fits nicely within the item's width,
-accounting for margins and interactive buttons.
+Truncates a ``text`` string so that it fits nicely within the item's
+width, accounting for margins and interactive buttons.
 %End
 
     virtual QColor fillColor( State state ) const = 0;
@@ -297,13 +316,15 @@ Returns a QPixmap version of the item's icon, if available.
 
     virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) = 0;
 %Docstring
-Updates the position and size stored in the model for the associated comment
+Updates the position and size stored in the model for the associated
+comment
 %End
 
     void updateButtonPositions();
 %Docstring
 Updates the item's button positions, based on the current item rect.
 %End
+
 
 };
 QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicItem::Flag f1, QFlags<QgsModelComponentGraphicItem::Flag> f2);
@@ -312,7 +333,8 @@ QFlags<QgsModelComponentGraphicItem::Flag> operator|(QgsModelComponentGraphicIte
 class QgsModelParameterGraphicItem : QgsModelComponentGraphicItem
 {
 %Docstring(signature="appended")
-A graphic item representing a model parameter (input) in the model designer.
+A graphic item representing a model parameter (input) in the model
+designer.
 
 .. warning::
 
@@ -325,15 +347,14 @@ A graphic item representing a model parameter (input) in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/,
-                                  QgsProcessingModelAlgorithm *model,
-                                  QGraphicsItem *parent /TransferThis/ );
+    QgsModelParameterGraphicItem( QgsProcessingModelParameter *parameter /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
-Constructor for QgsModelParameterGraphicItem for the specified ``parameter``, with the specified ``parent`` item.
+Constructor for QgsModelParameterGraphicItem for the specified
+``parameter``, with the specified ``parent`` item.
 
-The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
-it must exist for the lifetime of this object.
+The ``model`` argument specifies the associated processing model.
+Ownership of ``model`` is not transferred, and it must exist for the
+lifetime of this object.
 
 Ownership of ``parameter`` is transferred to the item.
 %End
@@ -343,8 +364,10 @@ Ownership of ``parameter`` is transferred to the item.
     virtual bool canDeleteComponent();
 
 
-  protected:
+    virtual QColor linkColor( Qt::Edge edge, int index ) const;
 
+
+  protected:
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -352,6 +375,11 @@ Ownership of ``parameter`` is transferred to the item.
     virtual QColor textColor( State state ) const;
 
     virtual QPicture iconPicture() const;
+
+
+    virtual int linkPointCount( Qt::Edge edge ) const;
+
+    virtual QString linkPointText( Qt::Edge edge, int index ) const;
 
     virtual void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size );
 
@@ -379,15 +407,14 @@ A graphic item representing a child algorithm in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/,
-                                       QgsProcessingModelAlgorithm *model,
-                                       QGraphicsItem *parent /TransferThis/ );
+    QgsModelChildAlgorithmGraphicItem( QgsProcessingModelChildAlgorithm *child /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
-Constructor for QgsModelChildAlgorithmGraphicItem for the specified ``child``, with the specified ``parent`` item.
+Constructor for QgsModelChildAlgorithmGraphicItem for the specified
+``child``, with the specified ``parent`` item.
 
-The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
-it must exist for the lifetime of this object.
+The ``model`` argument specifies the associated processing model.
+Ownership of ``model`` is not transferred, and it must exist for the
+lifetime of this object.
 
 Ownership of ``child`` is transferred to the item.
 %End
@@ -398,7 +425,16 @@ Ownership of ``child`` is transferred to the item.
 
     void setResults( const QgsProcessingModelChildAlgorithmResult &results );
 %Docstring
-Sets the ``results`` obtained for this child algorithm for the last model execution through the dialog.
+Sets the ``results`` obtained for this child algorithm for the last
+model execution through the dialog.
+%End
+
+    QgsProcessingModelChildAlgorithmResult results();
+%Docstring
+Returns the ``results`` for this child algorithm for the last model
+execution through the dialog.
+
+.. versionadded:: 4.0
 %End
 
   signals:
@@ -419,20 +455,21 @@ Emitted when the user opts to run selected steps from the model.
 
     void showPreviousResults();
 %Docstring
-Emitted when the user opts to view previous results from this child algorithm.
+Emitted when the user opts to view previous results from this child
+algorithm.
 
 .. versionadded:: 3.38
 %End
 
     void showLog();
 %Docstring
-Emitted when the user opts to view the previous log from this child algorithm.
+Emitted when the user opts to view the previous log from this child
+algorithm.
 
 .. versionadded:: 3.38
 %End
 
   protected:
-
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -475,15 +512,14 @@ A graphic item representing a model output in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/,
-                               QgsProcessingModelAlgorithm *model,
-                               QGraphicsItem *parent /TransferThis/ );
+    QgsModelOutputGraphicItem( QgsProcessingModelOutput *output /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
-Constructor for QgsModelOutputGraphicItem for the specified ``output``, with the specified ``parent`` item.
+Constructor for QgsModelOutputGraphicItem for the specified ``output``,
+with the specified ``parent`` item.
 
-The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
-it must exist for the lifetime of this object.
+The ``model`` argument specifies the associated processing model.
+Ownership of ``model`` is not transferred, and it must exist for the
+lifetime of this object.
 
 Ownership of ``output`` is transferred to the item.
 %End
@@ -492,7 +528,6 @@ Ownership of ``output`` is transferred to the item.
 
 
   protected:
-
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -512,7 +547,6 @@ Ownership of ``output`` is transferred to the item.
 };
 
 
-
 class QgsModelCommentGraphicItem : QgsModelComponentGraphicItem
 {
 %Docstring(signature="appended")
@@ -529,16 +563,14 @@ A graphic item representing a model comment in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/,
-                                QgsModelComponentGraphicItem *parentItem,
-                                QgsProcessingModelAlgorithm *model,
-                                QGraphicsItem *parent /TransferThis/ );
+    QgsModelCommentGraphicItem( QgsProcessingModelComment *comment /Transfer/, QgsModelComponentGraphicItem *parentItem, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
-Constructor for QgsModelCommentGraphicItem for the specified ``comment``, with the specified ``parent`` item.
+Constructor for QgsModelCommentGraphicItem for the specified
+``comment``, with the specified ``parent`` item.
 
-The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
-it must exist for the lifetime of this object.
+The ``model`` argument specifies the associated processing model.
+Ownership of ``model`` is not transferred, and it must exist for the
+lifetime of this object.
 
 Ownership of ``output`` is transferred to the item.
 %End
@@ -554,7 +586,6 @@ Returns the parent model component item.
 %End
 
   protected:
-
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -571,6 +602,7 @@ Returns the parent model component item.
     virtual void deleteComponent();
 
     virtual void editComponent();
+
 
 };
 
@@ -591,15 +623,14 @@ A graphic item representing a group box in the model designer.
 #include "qgsmodelcomponentgraphicitem.h"
 %End
   public:
-
-    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/,
-                                 QgsProcessingModelAlgorithm *model,
-                                 QGraphicsItem *parent /TransferThis/ );
+    QgsModelGroupBoxGraphicItem( QgsProcessingModelGroupBox *box /Transfer/, QgsProcessingModelAlgorithm *model, QGraphicsItem *parent /TransferThis/ );
 %Docstring
-Constructor for QgsModelGroupBoxGraphicItem for the specified group ``box``, with the specified ``parent`` item.
+Constructor for QgsModelGroupBoxGraphicItem for the specified group
+``box``, with the specified ``parent`` item.
 
-The ``model`` argument specifies the associated processing model. Ownership of ``model`` is not transferred, and
-it must exist for the lifetime of this object.
+The ``model`` argument specifies the associated processing model.
+Ownership of ``model`` is not transferred, and it must exist for the
+lifetime of this object.
 
 Ownership of ``output`` is transferred to the item.
 %End
@@ -608,8 +639,8 @@ Ownership of ``output`` is transferred to the item.
 
     virtual bool canDeleteComponent();
 
-  protected:
 
+  protected:
     virtual QColor fillColor( State state ) const;
 
     virtual QColor strokeColor( State state ) const;
@@ -628,6 +659,7 @@ Ownership of ``output`` is transferred to the item.
     virtual void deleteComponent();
 
     virtual void editComponent();
+
 
 };
 

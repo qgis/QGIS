@@ -15,16 +15,17 @@
 
 #include "qgsterraintextureimage_p.h"
 
+#include "qgsterraintexturegenerator_p.h"
+
 #include <Qt3DRender/QTextureImageDataGenerator>
 
-#include "qgsterraintexturegenerator_p.h"
+#include "moc_qgsterraintextureimage_p.cpp"
 
 ///@cond PRIVATE
 
 class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGenerator
 {
   public:
-
     static QImage placeholderImage()
     {
       // simple placeholder image
@@ -46,17 +47,16 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
       return dataPtr;
     }
 
-    bool operator ==( const QTextureImageDataGenerator &other ) const override
+    qintptr id() const override
     {
-      const TerrainTextureImageDataGenerator *otherFunctor = functor_cast<TerrainTextureImageDataGenerator>( &other );
-      return otherFunctor && otherFunctor->mVersion == mVersion &&
-             mExtent == otherFunctor->mExtent;
+      return reinterpret_cast<qintptr>( &Qt3DCore::FunctorType<TerrainTextureImageDataGenerator>::id );
     }
 
-    // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
-    Q_NOWARN_DEPRECATED_PUSH
-    QT3D_FUNCTOR( TerrainTextureImageDataGenerator )
-    Q_NOWARN_DEPRECATED_POP
+    bool operator==( const QTextureImageDataGenerator &other ) const override
+    {
+      const TerrainTextureImageDataGenerator *otherFunctor = dynamic_cast<const TerrainTextureImageDataGenerator *>( &other );
+      return otherFunctor && otherFunctor->mVersion == mVersion && mExtent == otherFunctor->mExtent;
+    }
 
   private:
     QgsRectangle mExtent;
@@ -64,8 +64,6 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
     QImage mImage;
     int mVersion;
 };
-
-
 
 ////////
 

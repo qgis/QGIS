@@ -16,13 +16,16 @@
  ***************************************************************************/
 
 #include "qgsvectorlayercache.h"
-#include "qgscacheindex.h"
+
 #include "qgscachedfeatureiterator.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerjoinbuffer.h"
+#include "qgscacheindex.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerjoininfo.h"
 
 #include <QElapsedTimer>
+
+#include "moc_qgsvectorlayercache.cpp"
 
 QgsVectorLayerCache::QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent )
   : QObject( parent )
@@ -219,6 +222,33 @@ bool QgsVectorLayerCache::featureAtIdWithAllAttributes( QgsFeatureId featureId, 
   return featureFound;
 }
 
+bool QgsVectorLayerCache::completeFeatureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache )
+{
+  bool featureFound = false;
+
+  QgsCachedFeature *cachedFeature = nullptr;
+
+  if ( !skipCache )
+  {
+    cachedFeature = mCache[ featureId ];
+  }
+
+  if ( cachedFeature && cachedFeature->allAttributesFetched() && cachedFeature->geometryFetched() )
+  {
+    feature = QgsFeature( *cachedFeature->feature() );
+    featureFound = true;
+  }
+  else if ( mLayer->getFeatures( QgsFeatureRequest()
+                                 .setFilterFid( featureId ) )
+            .nextFeature( feature ) )
+  {
+    cacheFeature( feature, true, true );
+    featureFound = true;
+  }
+
+  return featureFound;
+}
+
 bool QgsVectorLayerCache::removeCachedFeature( QgsFeatureId fid )
 {
   bool removed = mCache.remove( fid );
@@ -357,11 +387,10 @@ void QgsVectorLayerCache::attributeAdded( int field )
 
 void QgsVectorLayerCache::attributeDeleted( int field )
 {
-  QgsAttributeList attrs = mCachedAttributes;
+  const QgsAttributeList attrs = mCachedAttributes;
   mCachedAttributes.clear();
 
-  const auto constAttrs = attrs;
-  for ( int attr : constAttrs )
+  for ( int attr : attrs )
   {
     if ( attr < field )
       mCachedAttributes << attr;
@@ -561,3 +590,7 @@ bool QgsVectorLayerCache::QgsCachedFeature::allAttributesFetched() const
   return mAllAttributesFetched;
 }
 
+bool QgsVectorLayerCache::QgsCachedFeature::geometryFetched() const
+{
+  return mGeometryFetched;
+}

@@ -15,21 +15,20 @@
 #ifndef QGSUSERPROFILEMANAGER_H
 #define QGSUSERPROFILEMANAGER_H
 
-#include <QSettings>
-#include <QFileSystemWatcher>
-
+#include <memory>
 
 #include "qgis.h"
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgserror.h"
 #include "qgsuserprofile.h"
 
-#include <memory>
+#include <QFileSystemWatcher>
+#include <QSettings>
 
 /**
  * \ingroup core
- * \brief User profile manager is used to manager list, and manage user profiles on the users machine.
+ * \brief A manager for QGIS user profiles.
  *
  * In QGIS 3 all settings, plugins, etc were moved into a %APPDATA%/profiles folder for each platform.
  * This allows for manage different user profiles per machine vs the single default one that was allowed in the
@@ -67,7 +66,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \return The user profile
      * \note Returns a new QgsUserProfile. Ownership transferred to caller.
      */
-    QgsUserProfile *getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true ) SIP_FACTORY;
+    std::unique_ptr< QgsUserProfile > getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true );
 
     /**
      * Set the root profile location for the profile manager. All profiles are loaded from this
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * Returns the path to the root profiles location.
      * \return The root path to the profiles folder.
      */
-    QString rootLocation() { return mRootProfilePath; }
+    QString rootLocation() const { return mRootProfilePath; }
 
     /**
      * Sets whether the manager should watch for the creation of new user profiles and emit
@@ -172,7 +171,7 @@ class CORE_EXPORT QgsUserProfileManager : public QObject
      * \param name The name of the profile to return.
      * \return A QgsUserprofile pointing to the location of the user profile.
      */
-    QgsUserProfile *profileForName( const QString &name ) const SIP_FACTORY;
+    std::unique_ptr< QgsUserProfile > profileForName( const QString &name ) const;
 
     /**
      * Create a user profile given by the name

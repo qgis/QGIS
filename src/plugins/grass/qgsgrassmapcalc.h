@@ -14,9 +14,10 @@
 #ifndef QGSGRASSMAPCALC_H
 #define QGSGRASSMAPCALC_H
 
-#include "qgsgrassmoduleinput.h"
 #include "ui_qgsgrassmapcalcbase.h"
+
 #include "qgsgrassmodule.h"
+#include "qgsgrassmoduleinput.h"
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
@@ -31,8 +32,7 @@ class QgsGrassMapcalcView;
  *  \class QgsGrassMapcalc
  *  \brief Interface for r.mapcalc
  */
-class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
-  public QgsGrassModuleOptions
+class QgsGrassMapcalc : public QMainWindow, private Ui::QgsGrassMapcalcBase, public QgsGrassModuleOptions
 {
     Q_OBJECT
 
@@ -41,7 +41,8 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalc(
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
-      QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+      QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags()
+    );
 
     // Current tool
     enum Tool
@@ -58,14 +59,17 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
 
     // Reimplemented methods
     QStringList checkOutput() override;
-    QStringList ready() override { return QStringList() ; }
+    QStringList ready() override { return QStringList(); }
     bool requestsRegion() override { return false; }
     bool usesRegion() override { return true; }
     QStringList checkRegion() override;
     bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem &crs, bool all ) override;
     QStringList output( int type ) override;
     bool hasOutput( int type ) override
-    { Q_UNUSED( type ) return true; }
+    {
+      Q_UNUSED( type )
+      return true;
+    }
 
     //! \brief receives contentsMousePressEvent from view
     void mousePressEvent( QMouseEvent * ) override;
@@ -152,7 +156,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QGraphicsScene *mCanvasScene = nullptr;
 
     // Tool
-    int mTool;
+    int mTool = -1;
     int mToolStep;
 
     // Pointer to current object
@@ -200,7 +204,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QAction *mActionSaveAs = nullptr;
 
     QgsGrassMapcalc( const QgsGrassMapcalc & ) = delete;
-    QgsGrassMapcalc &operator = ( const QgsGrassMapcalc & ) = delete;
+    QgsGrassMapcalc &operator=( const QgsGrassMapcalc & ) = delete;
 };
 
 /*
@@ -216,14 +220,12 @@ class QgsGrassMapcalcFunction
     };
 
     QgsGrassMapcalcFunction() = default;
-    QgsGrassMapcalcFunction( int type, QString name, int count = 2,
-                             QString description = "", QString label = "",
-                             QString labels = "", bool drawLabel = true );
+    QgsGrassMapcalcFunction( int type, QString name, int count = 2, QString description = "", QString label = "", QString labels = "", bool drawLabel = true );
     ~QgsGrassMapcalcFunction() = default;
 
     QString name() const { return mName; }
-    int     type() const { return mType; }
-    int     inputCount() const { return mInputCount; }
+    int type() const { return mType; }
+    int inputCount() const { return mInputCount; }
     QString label() const { return mLabel; }
     QString description() const { return mDescription; }
     QStringList inputLabels() const { return mInputLabels; }
@@ -267,9 +269,9 @@ class QgsGrassMapcalcItem
 
     virtual void setSelected( bool s ) { mSelected = s; }
     bool selected( void ) const { return mSelected; }
-//    virtual void paint ( QPainter * painter,
-//      const QStyleOptionGraphicsItem * option, QWidget * widget );
-//
+    //    virtual void paint ( QPainter * painter,
+    //      const QStyleOptionGraphicsItem * option, QWidget * widget );
+    //
     int id() const { return mId; }
     void setId( int id ) { mId = id; }
 
@@ -307,12 +309,12 @@ class QgsGrassMapcalcItem
  *  |                   |
  *  mInputHeight        mLabelX
  */
-class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcItem
+class QgsGrassMapcalcObject : public QGraphicsRectItem, public QgsGrassMapcalcItem
 {
   public:
     enum Type
     {
-      Map = 0,      // raster map
+      Map = 0, // raster map
       Constant,
       Function,
       Output
@@ -334,14 +336,13 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     // Set function
     void setFunction( QgsGrassMapcalcFunction f );
 
-    void paint( QPainter *painter,
-                const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
 
     // Set object center
     void setCenter( int, int );
 
     // Get center point
-    QPoint center() { return mCenter; }
+    QPoint center() const { return mCenter; }
 
     // Recalculate size
     void resetSize();
@@ -355,26 +356,25 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     QPoint socketPoint( int direction, int socket );
 
     // Set socket's connector
-    void setConnector( int direction, int socket,
-                       QgsGrassMapcalcConnector *connector = nullptr, int end = 0 );
+    void setConnector( int direction, int socket, QgsGrassMapcalcConnector *connector = nullptr, int end = 0 );
 
     // Object type
     int type() const override;
 
     // Value
-    QString value() { return mValue; }
+    QString value() const { return mValue; }
 
     // label
-    QString label() { return mLabel; }
+    QString label() const { return mLabel; }
 
     //! Function
-    QgsGrassMapcalcFunction function() { return mFunction; }
+    QgsGrassMapcalcFunction function() const { return mFunction; }
 
     // Expression
     QString expression();
 
   private:
-//    bool mSelected;
+    //    bool mSelected;
 
     // Object type: Map,Constant,Function
     int mType;
@@ -401,25 +401,25 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     QRect mRect;
 
     // Rounding of box
-    int mRound;
+    int mRound = 0.;
 
     // Center of object
     QPoint mCenter;
 
     // Half size of socket symbol
-    int mSocketHalf;
+    int mSocketHalf = 0.;
 
     // Margin between mRect and QCanvasRectangle.rect()
-    int mMargin;
+    int mMargin = 0.;
 
     // Space between text boxes
-    int mSpace;
+    int mSpace = 0.;
 
     // Height of text box
-    int mTextHeight;
+    int mTextHeight = 0;
 
     // Maximum width of input labels
-    int mInputTextWidth;
+    int mInputTextWidth = 0;
 
     // Label box
     QRect mLabelRect;
@@ -431,7 +431,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     QPoint mOutputPoint;
 
     // Selection box size
-    int mSelectionBoxSize;
+    int mSelectionBoxSize = 5;
 
     // Input connectors
     std::vector<QgsGrassMapcalcConnector *> mInputConnectors;
@@ -439,27 +439,25 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
 
     // Output connector
     QgsGrassMapcalcConnector *mOutputConnector = nullptr;
-    int mOutputConnectorEnd;
-
+    int mOutputConnectorEnd = 0;
 };
 
 /*
  * Connector.
  * End are stored in vectors with indexes 0,1
  */
-class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalcItem
+class QgsGrassMapcalcConnector : public QGraphicsLineItem, public QgsGrassMapcalcItem
 {
   public:
     explicit QgsGrassMapcalcConnector( QGraphicsScene * );
     ~QgsGrassMapcalcConnector() override;
 
-    void paint( QPainter *painter,
-                const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
 
     // Set connector end point coordinates
     void setPoint( int, QPoint );
 
-    QPoint point( int );
+    QPoint point( int ) const;
 
     // Recalculate size
     //void resetSize();
@@ -470,7 +468,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     void selectEnd( QPoint );
 
     // Which end is selected
-    int selectedEnd();
+    int selectedEnd() const;
 
     // Try to connect specified end to an object
     bool tryConnectEnd( int end );
@@ -479,19 +477,16 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     // If this end of connector was connected to an object
     // the connection is also deleted from object
     // If object is NULL the old connection is deleted.
-    void setSocket( int end, QgsGrassMapcalcObject *object = nullptr,
-                    int direction = QgsGrassMapcalcObject::None,
-                    int socket = 0
-                  );
+    void setSocket( int end, QgsGrassMapcalcObject *object = nullptr, int direction = QgsGrassMapcalcObject::None, int socket = 0 );
 
     // Return pointer to object on end
     QgsGrassMapcalcObject *object( int end );
 
     // End object direction
-    int socketDirection( int end ) { return mSocketDir[end]; }
+    int socketDirection( int end ) const { return mSocketDir[end]; }
 
     // End object socket number
-    int socket( int end ) { return mSocket[end]; }
+    int socket( int end ) const { return mSocket[end]; }
 
     // Refresh/repaint
     void repaint();
@@ -516,7 +511,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
 };
 
 /******************** CANVAS VIEW ******************************/
-class QgsGrassMapcalcView: public QGraphicsView
+class QgsGrassMapcalcView : public QGraphicsView
 {
     Q_OBJECT
 
@@ -531,7 +526,6 @@ class QgsGrassMapcalcView: public QGraphicsView
 
   private:
     QgsGrassMapcalc *mMapcalc = nullptr;
-
 };
 
 #endif // QGSGRASSMAPCALC_H

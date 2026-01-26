@@ -17,14 +17,15 @@
 #ifndef QGSDOCKWIDGET_H
 #define QGSDOCKWIDGET_H
 
-#include <QDockWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDockWidget>
 
 /**
  * \ingroup gui
  * \class QgsDockWidget
- * \brief QgsDockWidget subclass with more fine-grained control over how the widget is closed or opened.
+ * \brief A QDockWidget subclass with more fine-grained control over how the widget is closed or opened.
  */
 
 class GUI_EXPORT QgsDockWidget : public QDockWidget
@@ -32,7 +33,6 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDockWidget.
      * \param parent parent widget
@@ -105,7 +105,6 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     void toggleUserVisible();
 
   protected:
-
     void closeEvent( QCloseEvent * ) override;
     void showEvent( QShowEvent *event ) override;
 
@@ -146,10 +145,8 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     void handleVisibilityChanged( bool visible );
 
   private:
-
     bool mVisibleAndActive = false;
 
     QAction *mAction = nullptr;
-
 };
 #endif //QGSDOCKWIDGET_H

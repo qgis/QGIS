@@ -18,27 +18,25 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
 #include "qgswmsgetfeatureinfo.h"
+
 #include "qgswmsrenderer.h"
+#include "qgswmsutils.h"
 
 namespace QgsWms
 {
-  void writeGetFeatureInfo( QgsServerInterface *serverIface,
-                            const QgsProject *project,
-                            const QgsWmsRequest &request,
-                            QgsServerResponse &response )
+  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
   {
     QgsWmsParameters parameters = request.wmsParameters();
 
     // WIDTH and HEIGHT are not mandatory, but we need to set a default size
     if ( ( parameters.widthAsInt() <= 0
            || parameters.heightAsInt() <= 0 )
-         && ! parameters.infoFormatIsImage() )
+         && !parameters.infoFormatIsImage() )
     {
       QSize size( 10, 10 );
 
-      if ( ! parameters.filterGeom().isEmpty() )
+      if ( !parameters.filterGeom().isEmpty() )
       {
         const QgsRectangle bbox = QgsGeometry::fromWkt( parameters.filterGeom() ).boundingBox();
         const int defaultWidth = 800;
@@ -59,8 +57,8 @@ namespace QgsWms
     context.setParameters( parameters );
     context.setSocketFeedback( response.feedback() );
 
-    const QString infoFormat = request.parameters().value( QStringLiteral( "INFO_FORMAT" ), QStringLiteral( "text/plain" ) );
-    response.setHeader( QStringLiteral( "Content-Type" ), infoFormat + QStringLiteral( "; charset=utf-8" ) );
+    const QString infoFormat = request.parameters().value( u"INFO_FORMAT"_s, u"text/plain"_s );
+    response.setHeader( u"Content-Type"_s, infoFormat + u"; charset=utf-8"_s );
 
     QgsRenderer renderer( context );
     response.write( renderer.getFeatureInfo( parameters.version() ) );

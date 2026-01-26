@@ -18,15 +18,15 @@
 
 #include "ui_qgsjsoneditconfigdlg.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsJsonEditConfigDlg
- * \brief The QgsJsonEditConfigDlg is a configuration widget for JSON edit widget.
+ * \brief A configuration widget for JSON edit widget.
  * \since QGIS 3.20
  */
 class GUI_EXPORT QgsJsonEditConfigDlg : public QgsEditorConfigWidget, private Ui::QgsJsonEditConfigDlg
@@ -34,7 +34,6 @@ class GUI_EXPORT QgsJsonEditConfigDlg : public QgsEditorConfigWidget, private Ui
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsJsonEditWidget.
      *

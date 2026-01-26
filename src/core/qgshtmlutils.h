@@ -20,12 +20,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include <QString>
 
 /**
  * \ingroup core
  * \class QgsHtmlUtils
- * \brief Class for HTML utilities.
+ * \brief Contains utilities for working with HTML.
  */
 class CORE_EXPORT QgsHtmlUtils
 {

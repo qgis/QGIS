@@ -18,11 +18,12 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include <QTreeView>
 #include "qgsfeatureid.h"
 #include "qgsmimedatautils.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessinggui.h"
+
+#include <QTreeView>
 
 class QgsMapLayerComboBox;
 class QToolButton;
@@ -44,11 +45,10 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMapLayerComboBox, with the specified \a parameter definition.
      */
-    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+    QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
     ~QgsProcessingMapLayerComboBox() override;
 
@@ -123,7 +123,6 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     void valueChanged();
 
   protected:
-
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;
@@ -133,11 +132,12 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     void onLayerChanged( QgsMapLayer *layer );
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect );
     void showSourceOptions();
+    void showRasterSourceOptions();
     void selectFromFile();
     void browseForLayer();
 
   private:
-    std::unique_ptr< QgsProcessingParameterDefinition > mParameter;
+    std::unique_ptr<QgsProcessingParameterDefinition> mParameter;
     QgsMapLayerComboBox *mCombo = nullptr;
     QToolButton *mSelectButton = nullptr;
     QToolButton *mIterateButton = nullptr;
@@ -148,7 +148,9 @@ class GUI_EXPORT QgsProcessingMapLayerComboBox : public QWidget
     QString mFilterExpression;
     bool mIsOverridingDefaultGeometryCheck = false;
     Qgis::InvalidGeometryCheck mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
-    QPointer< QgsMapLayer> mPrevLayer;
+    double mRasterReferenceScale = 0;
+    int mRasterDpi = 0;
+    QPointer<QgsMapLayer> mPrevLayer;
     int mBlockChangedSignal = 0;
 
     QgsBrowserGuiModel *mBrowserModel = nullptr;

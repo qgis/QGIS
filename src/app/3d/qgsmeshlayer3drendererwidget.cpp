@@ -15,20 +15,24 @@
 
 #include "qgsmeshlayer3drendererwidget.h"
 
+#include <memory>
+
 #include "qgsmesh3dsymbol.h"
 #include "qgsmesh3dsymbolwidget.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayer3drenderer.h"
 #include "qgsvscrollarea.h"
-#include "qgsmeshlayer.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
+
+#include "moc_qgsmeshlayer3drendererwidget.cpp"
 
 QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
-  setObjectName( QStringLiteral( "mOptsPage_3DView" ) );
+  setObjectName( u"mOptsPage_3DView"_s );
 
   QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
   scrollArea->setFrameShape( QFrame::NoFrame );
@@ -54,7 +58,7 @@ QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer,
   connect( mChkEnabled, &QCheckBox::clicked, this, &QgsMeshLayer3DRendererWidget::onEnabledClicked );
   connect( mWidgetMesh, &QgsMesh3DSymbolWidget::changed, this, &QgsMeshLayer3DRendererWidget::widgetChanged );
 
-  setProperty( "helpPage", QStringLiteral( "working_with_mesh/mesh_properties.html#d-view-properties" ) );
+  setProperty( "helpPage", u"working_with_mesh/mesh_properties.html#d-view-properties"_s );
 }
 
 void QgsMeshLayer3DRendererWidget::setRenderer( const QgsMeshLayer3DRenderer *renderer )
@@ -65,9 +69,9 @@ void QgsMeshLayer3DRendererWidget::setRenderer( const QgsMeshLayer3DRenderer *re
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRendererWidget::renderer()
 {
-  std::unique_ptr< QgsMesh3DSymbol > sym = mWidgetMesh->symbol();
+  std::unique_ptr<QgsMesh3DSymbol> sym = mWidgetMesh->symbol();
   sym->setEnabled( mChkEnabled->isChecked() );
-  mRenderer.reset( new QgsMeshLayer3DRenderer( sym.release() ) );
+  mRenderer = std::make_unique<QgsMeshLayer3DRenderer>( sym.release() );
   mRenderer->setLayer( qobject_cast<QgsMeshLayer *>( mLayer ) );
   return mRenderer.get();
 }
@@ -86,11 +90,11 @@ void QgsMeshLayer3DRendererWidget::onEnabledClicked()
 
 void QgsMeshLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = layer ;
+  mLayer = layer;
   QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
   mWidgetMesh->setLayer( meshLayer );
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == QLatin1String( "mesh" ) )
+  if ( r && r->type() == "mesh"_L1 )
   {
     QgsMeshLayer3DRenderer *meshRenderer = static_cast<QgsMeshLayer3DRenderer *>( r );
     setRenderer( meshRenderer );
@@ -103,8 +107,8 @@ void QgsMeshLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   }
 }
 
-QgsMeshLayer3DRendererWidgetFactory::QgsMeshLayer3DRendererWidgetFactory( QObject *parent ):
-  QObject( parent )
+QgsMeshLayer3DRendererWidgetFactory::QgsMeshLayer3DRendererWidgetFactory( QObject *parent )
+  : QObject( parent )
 {
   setIcon( QIcon( ":/images/themes/default/3d.svg" ) );
   setTitle( tr( "3D View" ) );
@@ -131,5 +135,5 @@ bool QgsMeshLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) co
 
 QString QgsMeshLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }

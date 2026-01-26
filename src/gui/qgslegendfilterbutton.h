@@ -15,9 +15,10 @@
 #ifndef QGS_LEGEND_FILTER_BUTTON_H
 #define QGS_LEGEND_FILTER_BUTTON_H
 
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgsexpressioncontext.h"
+
+#include <QToolButton>
 
 class QgsVectorLayer;
 class QgsExpressionContextGenerator;
@@ -26,15 +27,15 @@ class QgsExpressionContextGenerator;
  * \ingroup gui
  * \class QgsLegendFilterButton
  * \brief A tool button that allows enabling or disabling legend filter by contents of the map.
+ *
  * An additional pop down menu allows defining a boolean expression to refine the filtering.
  */
 
-class GUI_EXPORT QgsLegendFilterButton: public QToolButton
+class GUI_EXPORT QgsLegendFilterButton : public QToolButton
 {
     Q_OBJECT
 
   public:
-
     /**
      * Construct a new filter legend button
      *

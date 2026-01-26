@@ -17,18 +17,20 @@
 #define QGSEXPRESSIONSELECTIONDIALOG_H
 
 #include "ui_qgsexpressionselectiondialogbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgshelp.h"
 
 #include <QDialog>
-#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief This class offers a dialog to change feature selections.
+ * \brief A dialog for selecting features by expression.
+ *
  * To do so, a QgsExpressionBuilderWidget is shown in a dialog.
  * It offers the possibilities to create a new selection, add to the current selection
  * remove from the current selection or select within the current selection.
@@ -38,7 +40,6 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new selection dialog.
      * \param layer     The layer on which the selection is to be performed.
@@ -92,7 +93,6 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     void showHelp();
 
   protected:
-
     /**
      * Implementation for closeEvent
      * Saves the window geometry
@@ -113,7 +113,6 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
     QgsVectorLayer *mLayer = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-
 };
 
 #endif

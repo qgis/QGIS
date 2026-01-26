@@ -18,9 +18,9 @@
 #ifndef QGSPLOTTOOLXAXISZOOM_H
 #define QGSPLOTTOOLXAXISZOOM_H
 
-#include "qgsplottoolzoom.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsplottoolzoom.h"
 
 // we probably want to generalize this in future to allow for y/other axis constrained
 // zooms, so let's not get locked to stable api...
@@ -37,11 +37,9 @@ class QgsElevationProfileCanvas;
  */
 class GUI_EXPORT QgsPlotToolXAxisZoom : public QgsPlotToolZoom
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlotToolXAxisZoom, with the associated \a canvas.
      */
@@ -54,6 +52,7 @@ class GUI_EXPORT QgsPlotToolXAxisZoom : public QgsPlotToolZoom
     QRectF constrainBounds( const QRectF &sceneBounds ) const override;
     void zoomOutClickOn( QPointF scenePoint ) override;
     void zoomInClickOn( QPointF scenePoint ) override;
+
   private:
     QgsElevationProfileCanvas *mElevationCanvas = nullptr;
 };

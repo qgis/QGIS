@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgserrordialog.h"
+
 #include "qgssettings.h"
 
 #include <QMessageBox>
+
+#include "moc_qgserrordialog.cpp"
 
 QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -51,7 +54,7 @@ QgsErrorDialog::QgsErrorDialog( const QgsError &error, const QString &title, QWi
   resize( width(), 150 );
 
   const QgsSettings settings;
-  const Qt::CheckState state = ( Qt::CheckState ) settings.value( QStringLiteral( "Error/dialog/detail" ), 0 ).toInt();
+  const Qt::CheckState state = ( Qt::CheckState ) settings.value( u"Error/dialog/detail"_s, 0 ).toInt();
   mDetailCheckBox->setCheckState( state );
   if ( state == Qt::Checked )
     mDetailPushButton_clicked();
@@ -75,6 +78,5 @@ void QgsErrorDialog::mDetailPushButton_clicked()
 void QgsErrorDialog::mDetailCheckBox_stateChanged( int state )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Error/dialog/detail" ), state );
+  settings.setValue( u"Error/dialog/detail"_s, state );
 }
-

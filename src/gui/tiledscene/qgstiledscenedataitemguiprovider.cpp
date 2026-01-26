@@ -14,43 +14,46 @@
  ***************************************************************************/
 
 #include "qgstiledscenedataitemguiprovider.h"
+
+#include "qgsapplication.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsquantizedmeshdataprovider.h"
-#include "qgstiledscenedataitems.h"
 #include "qgstiledsceneconnection.h"
 #include "qgstiledsceneconnectiondialog.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsdataitemguiproviderutils.h"
+#include "qgstiledscenedataitems.h"
 
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
+
+#include "moc_qgstiledscenedataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 
 void QgsTiledSceneDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsTiledSceneLayerItem *layerItem = qobject_cast< QgsTiledSceneLayerItem * >( item ) )
+  if ( QgsTiledSceneLayerItem *layerItem = qobject_cast<QgsTiledSceneLayerItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
-    menu->addAction( actionEdit );
-
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
-    menu->addAction( actionDuplicate );
-
-    const QList< QgsTiledSceneLayerItem * > sceneConnectionItems = QgsDataItem::filteredItems<QgsTiledSceneLayerItem>( selection );
-    QAction *actionDelete = new QAction( sceneConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [sceneConnectionItems, context]
+    const QList<QgsTiledSceneLayerItem *> sceneConnectionItems = QgsDataItem::filteredItems<QgsTiledSceneLayerItem>( selection );
+    if ( sceneConnectionItems.size() == 1 )
     {
-      QgsDataItemGuiProviderUtils::deleteConnections( sceneConnectionItems, []( const QString & connectionName )
-      {
-        QgsTiledSceneProviderConnection( QString() ).remove( connectionName );
-      }, context );
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
+    QAction *actionDelete = new QAction( sceneConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [sceneConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( sceneConnectionItems, []( const QString &connectionName ) { QgsTiledSceneProviderConnection( QString() ).remove( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsTiledSceneRootItem *rootItem = qobject_cast< QgsTiledSceneRootItem * >( item ) )
+  if ( QgsTiledSceneRootItem *rootItem = qobject_cast<QgsTiledSceneRootItem *>( item ) )
   {
     QAction *actionNewCesium = new QAction( tr( "New Cesium 3D Tiles Connection…" ), menu );
     connect( actionNewCesium, &QAction::triggered, this, [rootItem] { newConnection( rootItem, "cesiumtiles" ); } );
@@ -107,7 +110,7 @@ void QgsTiledSceneDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsTiledSceneDataItemGuiProvider::newConnection( QgsDataItem *item, QString provider )
 {
-  QgsTiledSceneConnectionDialog dlg;
+  QgsTiledSceneConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 
@@ -127,8 +130,7 @@ void QgsTiledSceneDataItemGuiProvider::saveConnections()
 
 void QgsTiledSceneDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

@@ -9,8 +9,12 @@
 
 
 
-class QgsLUDialog: QDialog
+
+class QgsLUDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for setting a lower and upper range value.
+%End
 
 %TypeHeaderCode
 #include "qgsludialog.h"

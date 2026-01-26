@@ -7,6 +7,7 @@
  ************************************************************************/
 
 
+
 class QgsFeatureStore : QgsFeatureSink
 {
 %Docstring(signature="appended")
@@ -33,7 +34,8 @@ Returns the store's field list.
 
     void setFields( const QgsFields &fields );
 %Docstring
-Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
+Sets the store's ``fields``. Every contained feature's fields will be
+reset to match ``fields``.
 
 .. seealso:: :py:func:`fields`
 %End
@@ -53,6 +55,7 @@ Sets the store's ``crs``.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
+
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 

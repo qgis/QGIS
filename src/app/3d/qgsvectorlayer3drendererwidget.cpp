@@ -15,14 +15,14 @@
 
 #include "qgsvectorlayer3drendererwidget.h"
 
+#include "qgs3dsymbolregistry.h"
+#include "qgsapplication.h"
 #include "qgsrulebased3drenderer.h"
 #include "qgsrulebased3drendererwidget.h"
 #include "qgssymbol3dwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3dpropertieswidget.h"
 #include "qgsvectorlayer3drenderer.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
 #include "qgsvscrollarea.h"
 
 #include <QBoxLayout>
@@ -31,7 +31,7 @@
 #include <QLabel>
 #include <QStackedWidget>
 
-
+#include "moc_qgsvectorlayer3drendererwidget.cpp"
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -58,7 +58,7 @@ QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer
 void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
   QgsAbstract3DRenderer *r = layer->renderer3D();
-  if ( r && r->type() == QLatin1String( "vector" ) )
+  if ( r && r->type() == "vector"_L1 )
   {
     QgsVectorLayer3DRenderer *vectorRenderer = static_cast<QgsVectorLayer3DRenderer *>( r );
     widgetSymbol->setSymbol( vectorRenderer->symbol(), layer );
@@ -73,7 +73,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
 {
-  return widgetSymbol->symbol();  // cloned or null
+  return widgetSymbol->symbol(); // cloned or null
 }
 
 // -------
@@ -82,15 +82,15 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setPanelTitle( tr( "3D View" ) );
-  setObjectName( QStringLiteral( "mOptsPage_3DView" ) );
+  setObjectName( u"mOptsPage_3DView"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
 
   cboRendererType = new QComboBox( this );
-  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererNullSymbol.svg" ) ), tr( "No Symbols" ) );
-  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererSingleSymbol.svg" ) ), tr( "Single Symbol" ) );
-  cboRendererType->addItem( QgsApplication::getThemeIcon( QStringLiteral( "rendererRuleBasedSymbol.svg" ) ), tr( "Rule-based" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( u"mIconRenderOnTerrain.svg"_s ), tr( "Render on Terrain Surface" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( u"rendererSingleSymbol.svg"_s ), tr( "Single Symbol" ) );
+  cboRendererType->addItem( QgsApplication::getThemeIcon( u"rendererRuleBasedSymbol.svg"_s ), tr( "Rule-based" ) );
 
   widgetBaseProperties = new QgsVectorLayer3DPropertiesWidget( this );
 
@@ -100,20 +100,20 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   layout->addWidget( widgetBaseProperties );
 
   widgetNoRenderer = new QLabel;
-  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( qobject_cast< QgsVectorLayer *>( layer ), this );
+  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( qobject_cast<QgsVectorLayer *>( layer ), this );
   widgetRuleBasedRenderer = new QgsRuleBased3DRendererWidget( this );
 
   widgetRendererStack->addWidget( widgetNoRenderer );
   widgetRendererStack->addWidget( widgetSingleSymbolRenderer );
   widgetRendererStack->addWidget( widgetRuleBasedRenderer );
 
-  connect( cboRendererType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
+  connect( cboRendererType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
   connect( widgetBaseProperties, &QgsVectorLayer3DPropertiesWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
 
-  setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#d-view-properties" ) );
+  setProperty( "helpPage", u"working_with_vector/vector_properties.html#d-view-properties"_s );
 
   syncToLayer( layer );
 }
@@ -122,20 +122,21 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
 void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( !vlayer )
+  if ( !vlayer || vlayer->geometryType() == Qgis::GeometryType::Null )
   {
+    setEnabled( false ); // hide 3d symbology
     return;
   }
   mLayer = layer;
 
   int pageIndex;
   QgsAbstract3DRenderer *r = vlayer->renderer3D();
-  if ( r && r->type() == QLatin1String( "vector" ) )
+  if ( r && r->type() == "vector"_L1 )
   {
     pageIndex = 1;
     widgetSingleSymbolRenderer->setLayer( vlayer );
   }
-  else if ( r && r->type() == QLatin1String( "rulebased" ) )
+  else if ( r && r->type() == "rulebased"_L1 )
   {
     pageIndex = 2;
     widgetRuleBasedRenderer->setLayer( vlayer );
@@ -147,9 +148,13 @@ void QgsVectorLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   widgetRendererStack->setCurrentIndex( pageIndex );
   whileBlocking( cboRendererType )->setCurrentIndex( pageIndex );
 
-  if ( r && ( r->type() == QLatin1String( "vector" ) || r->type() == QLatin1String( "rulebased" ) ) )
+  if ( r && ( r->type() == "vector"_L1 || r->type() == "rulebased"_L1 ) )
   {
     widgetBaseProperties->load( static_cast<QgsAbstractVectorLayer3DRenderer *>( r ) );
+  }
+  else
+  {
+    widgetBaseProperties->reset();
   }
 }
 
@@ -170,7 +175,7 @@ void QgsVectorLayer3DRendererWidget::apply()
       break;
     case 1:
     {
-      std::unique_ptr< QgsAbstract3DSymbol > symbol = widgetSingleSymbolRenderer->symbol();
+      std::unique_ptr<QgsAbstract3DSymbol> symbol = widgetSingleSymbolRenderer->symbol();
       QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( symbol ? symbol.release() : nullptr );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       widgetBaseProperties->apply( r );
@@ -235,5 +240,5 @@ bool QgsVectorLayer3DRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) 
 
 QString QgsVectorLayer3DRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Diagrams" );
+  return u"mOptsPage_Diagrams"_s;
 }

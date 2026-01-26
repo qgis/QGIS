@@ -18,17 +18,17 @@
 #ifndef QGSMESHDATAPROVIDERTEMPORALCAPABILITIES_H
 #define QGSMESHDATAPROVIDERTEMPORALCAPABILITIES_H
 
-#include "qgsdataprovidertemporalcapabilities.h"
-#include "qgsrange.h"
-#include "qgsmeshdataset.h"
 #include "qgis.h"
+#include "qgsdataprovidertemporalcapabilities.h"
+#include "qgsmeshdataset.h"
+#include "qgsrange.h"
 
 #define  INVALID_MESHLAYER_TIME -99999
 
 /**
  * \class QgsMeshDataProviderTemporalCapabilities
  * \ingroup core
- * \brief Class for handling properties relating to a mesh data provider's temporal capabilities.
+ * \brief Handles properties relating to a mesh data provider's temporal capabilities.
  *
  * \since QGIS 3.14
  */

@@ -27,9 +27,10 @@ back to QgsVectorLayer.
 #define SIP_NO_FILE
 
 #include "ui_qgsattributeactiondialogbase.h"
-#include "qgsattributetableconfig.h"
-#include "qgis_gui.h"
+
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgsattributetableconfig.h"
 
 #include <QMap>
 
@@ -40,8 +41,9 @@ class QgsAction;
 /**
  * \ingroup gui
  * \class QgsAttributeActionDialog
+ * \brief A dialog for configuring vector layer actions.
  */
-class GUI_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDialogBase
+class GUI_EXPORT QgsAttributeActionDialog : public QWidget, private Ui::QgsAttributeActionDialogBase
 {
     Q_OBJECT
   private:
@@ -61,12 +63,11 @@ class GUI_EXPORT QgsAttributeActionDialog: public QWidget, private Ui::QgsAttrib
     enum Role
     {
       ActionType = Qt::UserRole,
-      ActionId  = Qt::UserRole + 1
+      ActionId = Qt::UserRole + 1
     };
 
   public:
-    QgsAttributeActionDialog( const QgsActionManager &actions,
-                              QWidget *parent = nullptr );
+    QgsAttributeActionDialog( const QgsActionManager &actions, QWidget *parent = nullptr );
 
     void init( const QgsActionManager &action, const QgsAttributeTableConfig &attributeTableConfig );
 

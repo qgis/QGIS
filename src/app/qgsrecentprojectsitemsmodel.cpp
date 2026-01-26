@@ -17,25 +17,26 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
-#include "qgsprojectstorageregistry.h"
 #include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
-#include "qgsdatasourceuri.h"
+#include "qgsprojectstorageregistry.h"
 
-#include <QApplication>
 #include <QAbstractTextDocumentLayout>
-#include <QPixmap>
+#include <QApplication>
+#include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QPainter>
+#include <QPixmap>
 #include <QTextDocument>
-#include <QDir>
+
+#include "moc_qgsrecentprojectsitemsmodel.cpp"
 
 QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )
 {
-
 }
 
 void QgsRecentProjectItemsModel::setRecentProjects( const QList<RecentProjectData> &recentProjects )
@@ -62,12 +63,21 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     case QgsProjectListItemDelegate::PathRole:
       return mRecentProjects.at( index.row() ).path;
     case QgsProjectListItemDelegate::NativePathRole:
-      return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
+    {
+      const QString path = mRecentProjects.at( index.row() ).path;
+      QString filePath;
+      QgsProjectStorage *projectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( mRecentProjects.at( index.row() ).path );
+      if ( projectStorage )
+      {
+        filePath = projectStorage->filePath( path );
+      }
+      return QDir::toNativeSeparators( !filePath.isEmpty() ? filePath : path );
+    }
     case QgsProjectListItemDelegate::CrsRole:
       if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
         const QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
-        return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
+        return u"%1 (%2)"_s.arg( mRecentProjects.at( index.row() ).crs, crs.userFriendlyIdentifier() );
       }
       else
       {
@@ -91,13 +101,15 @@ QVariant QgsRecentProjectItemsModel::data( const QModelIndex &index, int role ) 
     case Qt::ToolTipRole:
     case QgsProjectListItemDelegate::AnonymisedNativePathRole:
     {
-      QString name = mRecentProjects.at( index.row() ).path;
-      QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( name );
-      if ( storage )
+      QString path = mRecentProjects.at( index.row() ).path;
+      QString filePath;
+      QgsProjectStorage *projectStorage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
+      if ( projectStorage )
       {
-        name = QgsDataSourceUri::removePassword( name, true );
+        path = QgsDataSourceUri::removePassword( path, true );
+        filePath = projectStorage->filePath( path );
       }
-      return name;
+      return !filePath.isEmpty() ? filePath : path;
     }
 
     default:
@@ -121,7 +133,7 @@ Qt::ItemFlags QgsRecentProjectItemsModel::flags( const QModelIndex &index ) cons
     if ( storage )
     {
       QString path = storage->filePath( projectData.path );
-      if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
+      if ( storage->type() == "geopackage"_L1 && path.isEmpty() )
         projectData.exists = false;
       else
         projectData.exists = true;
@@ -167,9 +179,9 @@ void QgsRecentProjectItemsModel::clear( bool clearPinned )
       std::remove_if(
         mRecentProjects.begin(),
         mRecentProjects.end(),
-    []( const QgsRecentProjectItemsModel::RecentProjectData & recentProject ) { return !recentProject.pin; }
+        []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pin; }
       ),
-    mRecentProjects.end()
+      mRecentProjects.end()
     );
   }
   endResetModel();
@@ -184,7 +196,7 @@ void QgsRecentProjectItemsModel::recheckProject( const QModelIndex &index )
   if ( storage )
   {
     path = storage->filePath( projectData.path );
-    if ( storage->type() == QLatin1String( "geopackage" ) && path.isEmpty() )
+    if ( storage->type() == "geopackage"_L1 && path.isEmpty() )
       projectData.exists = false;
     else
       projectData.exists = true;

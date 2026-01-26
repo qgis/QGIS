@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
 
 //qgis includes...
 #include <qgsmaplayer.h>
@@ -42,13 +43,14 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsEllipseMarkerSymbol() : QgsTest( QStringLiteral( "Ellipse Marker Tests" ), QStringLiteral( "symbol_ellipsemarker" ) ) {}
+    TestQgsEllipseMarkerSymbol()
+      : QgsTest( u"Ellipse Marker Tests"_s, u"symbol_ellipsemarker"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void ellipseMarkerSymbol();
 
@@ -72,7 +74,7 @@ class TestQgsEllipseMarkerSymbol : public QgsTest
     void dataDefinedOpacity();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
 
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPointsLayer = nullptr;
@@ -100,8 +102,7 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   //
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
-  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
-                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), u"ogr"_s );
 
   //setup symbol
   mEllipseMarkerLayer = new QgsEllipseSymbolLayer();
@@ -115,7 +116,6 @@ void TestQgsEllipseMarkerSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPointsLayer );
-
 }
 void TestQgsEllipseMarkerSymbol::cleanupTestCase()
 {
@@ -320,7 +320,7 @@ void TestQgsEllipseMarkerSymbol::bounds()
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Circle );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( QStringLiteral( "min(\"importance\" * 2, 6)" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::Size, QgsProperty::fromExpression( u"min(\"importance\" * 2, 6)"_s ) );
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
 
   mMapSettings.setFlag( Qgis::MapSettingsFlag::DrawSymbolBounds, true );
@@ -338,8 +338,8 @@ void TestQgsEllipseMarkerSymbol::opacityWithDataDefinedColor()
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Circle );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( u"if(importance > 2, 'red', 'green')"_s ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( u"if(importance > 2, 'blue', 'magenta')"_s ) );
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
   mMarkerSymbol->setOpacity( 0.5 );
 
@@ -359,10 +359,10 @@ void TestQgsEllipseMarkerSymbol::dataDefinedOpacity()
   mEllipseMarkerLayer->setShape( QgsEllipseSymbolLayer::Circle );
   mEllipseMarkerLayer->setSymbolHeight( 3 );
   mEllipseMarkerLayer->setSymbolWidth( 6 );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'red', 'green')" ) ) );
-  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(importance > 2, 'blue', 'magenta')" ) ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( u"if(importance > 2, 'red', 'green')"_s ) );
+  mEllipseMarkerLayer->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( u"if(importance > 2, 'blue', 'magenta')"_s ) );
   mEllipseMarkerLayer->setStrokeWidth( 0.5 );
-  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Heading\" > 100, 25, 50)" ) ) );
+  mMarkerSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( u"if(\"Heading\" > 100, 25, 50)"_s ) );
 
   mMapSettings.setExtent( mpPointsLayer->extent() );
   mMapSettings.setOutputDpi( 96 );

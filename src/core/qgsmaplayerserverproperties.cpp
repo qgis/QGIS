@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgsmaplayerserverproperties.h"
+
 #include "qgsmaplayer.h"
 #include "vector/qgsvectorlayer.h"
 
 #include <QDomNode>
+
+#include "moc_qgsmaplayerserverproperties.cpp"
 
 // QgsServerMetadataUrlProperties
 
@@ -28,6 +31,32 @@ bool QgsServerMetadataUrlProperties::MetadataUrl::operator==( const QgsServerMet
   return url == other.url &&
          type == other.type &&
          format == other.format;
+}
+
+bool QgsServerMetadataUrlProperties::operator==( const QgsServerMetadataUrlProperties &other ) const
+{
+  return mMetadataUrls == other.mMetadataUrls;
+}
+
+bool QgsServerMetadataUrlProperties::operator!=( const QgsServerMetadataUrlProperties &other ) const
+{
+  return !( *this == other );
+}
+
+bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator==( const WmsDimensionInfo &other ) const
+{
+  return name == other.name
+         && fieldName == other.fieldName
+         && endFieldName == other.endFieldName
+         && units == other.units
+         && unitSymbol == other.unitSymbol
+         && defaultDisplayType == other.defaultDisplayType
+         && referenceValue == other.referenceValue;
+}
+
+bool QgsServerWmsDimensionProperties::WmsDimensionInfo::operator!=( const WmsDimensionInfo &other ) const
+{
+  return !( *this == other );
 }
 
 void QgsServerMetadataUrlProperties::copyTo( QgsServerMetadataUrlProperties *properties ) const
@@ -42,15 +71,15 @@ void QgsServerMetadataUrlProperties::reset()
 
 void QgsServerMetadataUrlProperties::readXml( const QDomNode &layer_node )
 {
-  QDomElement element = layer_node.namedItem( QStringLiteral( "metadataUrls" ) ).toElement();
+  QDomElement element = layer_node.namedItem( u"metadataUrls"_s ).toElement();
   mMetadataUrls.clear();
-  const QDomNodeList el = element.elementsByTagName( QStringLiteral( "metadataUrl" ) );
+  const QDomNodeList el = element.elementsByTagName( u"metadataUrl"_s );
   for ( int i = 0; i < el.size(); i++ )
   {
     element = el.at( i ).toElement();
     QgsMapLayerServerProperties::MetadataUrl oneUrl;
-    oneUrl.type = element.attribute( QStringLiteral( "type" ) );
-    oneUrl.format = element.attribute( QStringLiteral( "format" ) );
+    oneUrl.type = element.attribute( u"type"_s );
+    oneUrl.format = element.attribute( u"format"_s );
     oneUrl.url = element.text();
     addMetadataUrl( oneUrl );
   }
@@ -58,19 +87,32 @@ void QgsServerMetadataUrlProperties::readXml( const QDomNode &layer_node )
 
 void QgsServerMetadataUrlProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
 {
-  QDomElement urls = document.createElement( QStringLiteral( "metadataUrls" ) );
-  for ( const QgsMapLayerServerProperties::MetadataUrl &url : mMetadataUrls )
+  if ( !mMetadataUrls.empty() )
   {
-    QDomElement urlElement = document.createElement( QStringLiteral( "metadataUrl" ) );
-    urlElement.setAttribute( QStringLiteral( "type" ), url.type );
-    urlElement.setAttribute( QStringLiteral( "format" ), url.format );
-    urlElement.appendChild( document.createTextNode( url.url ) );
-    urls.appendChild( urlElement );
+    QDomElement urls = document.createElement( u"metadataUrls"_s );
+    for ( const QgsMapLayerServerProperties::MetadataUrl &url : mMetadataUrls )
+    {
+      QDomElement urlElement = document.createElement( u"metadataUrl"_s );
+      urlElement.setAttribute( u"type"_s, url.type );
+      urlElement.setAttribute( u"format"_s, url.format );
+      urlElement.appendChild( document.createTextNode( url.url ) );
+      urls.appendChild( urlElement );
+    }
+    layer_node.appendChild( urls );
   }
-  layer_node.appendChild( urls );
 }
 
 // QgsServerWmsDimensionProperties
+
+bool QgsServerWmsDimensionProperties::operator==( const QgsServerWmsDimensionProperties &other ) const
+{
+  return mWmsDimensions == other.mWmsDimensions;
+}
+
+bool QgsServerWmsDimensionProperties::operator!=( const QgsServerWmsDimensionProperties &other ) const
+{
+  return !( *this == other );
+}
 
 void QgsServerWmsDimensionProperties::copyTo( QgsServerWmsDimensionProperties *properties ) const
 {
@@ -133,23 +175,23 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
   reset();
 
   // Apply only for vector layers
-  if ( layer()->type() != Qgis::LayerType::Vector )
+  if ( !layer() || layer()->type() != Qgis::LayerType::Vector )
     return;
 
   const QgsFields fields = static_cast<const QgsVectorLayer *>( layer() )->fields();
   // QGIS Server WMS Dimensions
-  const QDomNode wmsDimsNode = layer_node.namedItem( QStringLiteral( "wmsDimensions" ) );
+  const QDomNode wmsDimsNode = layer_node.namedItem( u"wmsDimensions"_s );
   if ( wmsDimsNode.isNull() )
   {
     return;
   }
   const QDomElement wmsDimsElem = wmsDimsNode.toElement();
-  const QDomNodeList wmsDimsList = wmsDimsElem.elementsByTagName( QStringLiteral( "dimension" ) );
+  const QDomNodeList wmsDimsList = wmsDimsElem.elementsByTagName( u"dimension"_s );
   for ( int i = 0; i < wmsDimsList.size(); ++i )
   {
     const QDomElement dimElem = wmsDimsList.at( i ).toElement();
-    const QString dimName = dimElem.attribute( QStringLiteral( "name" ) );
-    const QString dimFieldName = dimElem.attribute( QStringLiteral( "fieldName" ) );
+    const QString dimName = dimElem.attribute( u"name"_s );
+    const QString dimFieldName = dimElem.attribute( u"fieldName"_s );
     // check field name
     const int dimFieldNameIndex = fields.indexOf( dimFieldName );
     if ( dimFieldNameIndex == -1 )
@@ -157,10 +199,10 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
       continue;
     }
     QVariant dimRefValue;
-    const int dimDefaultDisplayType = dimElem.attribute( QStringLiteral( "defaultDisplayType" ) ).toInt();
+    const int dimDefaultDisplayType = dimElem.attribute( u"defaultDisplayType"_s ).toInt();
     if ( dimDefaultDisplayType == QgsServerWmsDimensionProperties::WmsDimensionInfo::AllValues )
     {
-      const QString dimRefValueStr = dimElem.attribute( QStringLiteral( "referenceValue" ) );
+      const QString dimRefValueStr = dimElem.attribute( u"referenceValue"_s );
       if ( !dimRefValueStr.isEmpty() )
       {
         const QgsField dimField = fields.at( dimFieldNameIndex );
@@ -172,9 +214,9 @@ void QgsServerWmsDimensionProperties::readXml( const QDomNode &layer_node )
       }
     }
     QgsServerWmsDimensionProperties::WmsDimensionInfo dim( dimName, dimFieldName,
-        dimElem.attribute( QStringLiteral( "endFieldName" ) ),
-        dimElem.attribute( QStringLiteral( "units" ) ),
-        dimElem.attribute( QStringLiteral( "unitSymbol" ) ),
+        dimElem.attribute( u"endFieldName"_s ),
+        dimElem.attribute( u"units"_s ),
+        dimElem.attribute( u"unitSymbol"_s ),
         dimDefaultDisplayType, dimRefValue );
     //XXX This add O(n^2) complexity !!!!
     // addWmsDimension( dim );
@@ -188,17 +230,17 @@ void QgsServerWmsDimensionProperties::writeXml( QDomNode &layer_node, QDomDocume
   // save QGIS Server WMS Dimension definitions
   if ( ! mWmsDimensions.isEmpty() )
   {
-    QDomElement wmsDimsElem = document.createElement( QStringLiteral( "wmsDimensions" ) );
+    QDomElement wmsDimsElem = document.createElement( u"wmsDimensions"_s );
     for ( const QgsServerWmsDimensionProperties::WmsDimensionInfo &dim : mWmsDimensions )
     {
-      QDomElement dimElem = document.createElement( QStringLiteral( "dimension" ) );
-      dimElem.setAttribute( QStringLiteral( "name" ), dim.name );
-      dimElem.setAttribute( QStringLiteral( "fieldName" ), dim.fieldName );
-      dimElem.setAttribute( QStringLiteral( "endFieldName" ), dim.endFieldName );
-      dimElem.setAttribute( QStringLiteral( "units" ), dim.units );
-      dimElem.setAttribute( QStringLiteral( "unitSymbol" ), dim.unitSymbol );
-      dimElem.setAttribute( QStringLiteral( "defaultDisplayType" ), dim.defaultDisplayType );
-      dimElem.setAttribute( QStringLiteral( "referenceValue" ), dim.referenceValue.toString() );
+      QDomElement dimElem = document.createElement( u"dimension"_s );
+      dimElem.setAttribute( u"name"_s, dim.name );
+      dimElem.setAttribute( u"fieldName"_s, dim.fieldName );
+      dimElem.setAttribute( u"endFieldName"_s, dim.endFieldName );
+      dimElem.setAttribute( u"units"_s, dim.units );
+      dimElem.setAttribute( u"unitSymbol"_s, dim.unitSymbol );
+      dimElem.setAttribute( u"defaultDisplayType"_s, dim.defaultDisplayType );
+      dimElem.setAttribute( u"referenceValue"_s, dim.referenceValue.toString() );
       wmsDimsElem.appendChild( dimElem );
     }
     layer_node.appendChild( wmsDimsElem );
@@ -226,77 +268,209 @@ void QgsMapLayerServerProperties::copyTo( QgsMapLayerServerProperties *propertie
   properties->setDataUrlFormat( mDataUrlFormat );
   properties->setAttribution( mAttribution );
   properties->setAttributionUrl( mAttributionUrl );
+  properties->setLegendUrl( mLegendUrl );
+  properties->setLegendUrlFormat( mLegendUrlFormat );
 }
 
-void QgsMapLayerServerProperties::reset()
+bool QgsMapLayerServerProperties::operator==( const QgsMapLayerServerProperties &other ) const
+{
+  return QgsServerMetadataUrlProperties::operator==( other )
+         && QgsServerWmsDimensionProperties::operator==( other )
+         && mShortName == other.mShortName
+         && mTitle == other.mTitle
+         && mAbstract == other.mAbstract
+         && mKeywordList == other.mKeywordList
+         && mDataUrl == other.mDataUrl
+         && mDataUrlFormat == other.mDataUrlFormat
+         && mAttribution == other.mAttribution
+         && mAttributionUrl == other.mAttributionUrl
+         && mLegendUrl == other.mLegendUrl
+         && mLegendUrlFormat == other.mLegendUrlFormat;
+}
+
+bool QgsMapLayerServerProperties::operator!=( const QgsMapLayerServerProperties &other ) const
+{
+  return !( *this == other );
+}
+
+void QgsMapLayerServerProperties::reset() // cppcheck-suppress duplInheritedMember
 {
   QgsServerMetadataUrlProperties::reset();
   QgsServerWmsDimensionProperties::reset();
 }
 
-void QgsMapLayerServerProperties::readXml( const QDomNode &layer_node )
+QString QgsMapLayerServerProperties::wfsTypeName() const
 {
-  QgsServerMetadataUrlProperties::readXml( layer_node );
-  QgsServerWmsDimensionProperties::readXml( layer_node );
+  QString name = mLayer ? mLayer->name() : QString();
+  if ( !mShortName.isEmpty() )
+    name = mShortName;
+
+  name.replace( ' ', '_' ).replace( ':', '-' ).replace( QChar( 0x2014 ) /* em-dash */, '-' );
+
+  return name.toLocal8Bit();
+}
+
+void QgsMapLayerServerProperties::readXml( const QDomNode &layerNode ) // cppcheck-suppress duplInheritedMember
+{
+  QgsServerMetadataUrlProperties::readXml( layerNode );
+  if ( metadataUrls().isEmpty() )
+  {
+    // metadataUrl is still empty, maybe it's a QGIS Project < 3.22
+    // keep for legacy
+    const QDomElement metaUrlElem = layerNode.firstChildElement( u"metadataUrl"_s );
+    if ( !metaUrlElem.isNull() )
+    {
+      const QString url = metaUrlElem.text();
+      const QString type = metaUrlElem.attribute( u"type"_s, QString() );
+      const QString format = metaUrlElem.attribute( u"format"_s, QString() );
+      const QgsMapLayerServerProperties::MetadataUrl newItem( url, type, format );
+      setMetadataUrls( QList<QgsMapLayerServerProperties::MetadataUrl>() << newItem );
+    }
+  }
+
+  QgsServerWmsDimensionProperties::readXml( layerNode );
 
   //short name
-  const QDomElement shortNameElem = layer_node.firstChildElement( QStringLiteral( "shortname" ) );
+  const QDomElement shortNameElem = layerNode.firstChildElement( u"shortname"_s );
   if ( !shortNameElem.isNull() )
   {
     mShortName = shortNameElem.text();
   }
 
   //title
-  const QDomElement titleElem = layer_node.firstChildElement( QStringLiteral( "title" ) );
+  const QDomElement titleElem = layerNode.firstChildElement( u"title"_s );
   if ( !titleElem.isNull() )
   {
     mTitle = titleElem.text();
-    mWfsTitle = titleElem.attribute( QStringLiteral( "wfs" ) );
+    mWfsTitle = titleElem.attribute( u"wfs"_s );
   }
 
   //abstract
-  const QDomElement abstractElem = layer_node.firstChildElement( QStringLiteral( "abstract" ) );
+  const QDomElement abstractElem = layerNode.firstChildElement( u"abstract"_s );
   if ( !abstractElem.isNull() )
   {
     mAbstract = abstractElem.text();
   }
 
   //keywordList
-  const QDomElement keywordListElem = layer_node.firstChildElement( QStringLiteral( "keywordList" ) );
+  const QDomElement keywordListElem = layerNode.firstChildElement( u"keywordList"_s );
   if ( !keywordListElem.isNull() )
   {
     QStringList kwdList;
     for ( QDomNode n = keywordListElem.firstChild(); !n.isNull(); n = n.nextSibling() )
     {
-      kwdList << n.toElement().text();
+      const QString keyword = n.toElement().text();
+      if ( !keyword.isEmpty() )
+        kwdList << keyword;
     }
-    mKeywordList = kwdList.join( QLatin1String( ", " ) );
+    mKeywordList = kwdList.join( ", "_L1 );
   }
 
   //dataUrl
-  const QDomElement dataUrlElem = layer_node.firstChildElement( QStringLiteral( "dataUrl" ) );
+  const QDomElement dataUrlElem = layerNode.firstChildElement( u"dataUrl"_s );
   if ( !dataUrlElem.isNull() )
   {
     mDataUrl = dataUrlElem.text();
-    mDataUrlFormat = dataUrlElem.attribute( QStringLiteral( "format" ), QString() );
+    mDataUrlFormat = dataUrlElem.attribute( u"format"_s, QString() );
   }
 
   //attribution
-  const QDomElement attribElem = layer_node.firstChildElement( QStringLiteral( "attribution" ) );
+  const QDomElement attribElem = layerNode.firstChildElement( u"attribution"_s );
   if ( !attribElem.isNull() )
   {
     mAttribution = attribElem.text();
-    mAttributionUrl = attribElem.attribute( QStringLiteral( "href" ), QString() );
+    mAttributionUrl = attribElem.attribute( u"href"_s, QString() );
+  }
+
+  //legendUrl
+  const QDomElement legendUrlElem = layerNode.firstChildElement( u"legendUrl"_s );
+  if ( !legendUrlElem.isNull() )
+  {
+    mLegendUrl = legendUrlElem.text();
+    mLegendUrlFormat = legendUrlElem.attribute( u"format"_s, QString() );
   }
 }
 
-void QgsMapLayerServerProperties::writeXml( QDomNode &layer_node, QDomDocument &document ) const
+void QgsMapLayerServerProperties::writeXml( QDomNode &layerNode, QDomDocument &document ) const // cppcheck-suppress duplInheritedMember
 {
-  QgsServerMetadataUrlProperties::writeXml( layer_node, document );
-  QgsServerWmsDimensionProperties::writeXml( layer_node, document );
+  QgsServerMetadataUrlProperties::writeXml( layerNode, document );
+  QgsServerWmsDimensionProperties::writeXml( layerNode, document );
 
-  // TODO -- ideally we should also be writing mTitle, mAbstract etc, but this method is currently
-  // only called for SOME map layer subclasses!
-  // Accordingly that logic is currently left in QgsMapLayer::writeLayerXml
+  // layer short name
+  if ( !mShortName.isEmpty() )
+  {
+    QDomElement layerShortName = document.createElement( u"shortname"_s );
+    const QDomText layerShortNameText = document.createTextNode( mShortName );
+    layerShortName.appendChild( layerShortNameText );
+    layerNode.appendChild( layerShortName );
+  }
+
+  // layer title
+  if ( !mTitle.isEmpty() )
+  {
+    QDomElement layerTitle = document.createElement( u"title"_s );
+    const QDomText layerTitleText = document.createTextNode( mTitle );
+    layerTitle.appendChild( layerTitleText );
+
+    if ( mTitle != mWfsTitle )
+    {
+      layerTitle.setAttribute( "wfs",  mWfsTitle );
+    }
+
+    layerNode.appendChild( layerTitle );
+  }
+
+  // layer abstract
+  if ( !mAbstract.isEmpty() )
+  {
+    QDomElement layerAbstract = document.createElement( u"abstract"_s );
+    const QDomText layerAbstractText = document.createTextNode( mAbstract );
+    layerAbstract.appendChild( layerAbstractText );
+    layerNode.appendChild( layerAbstract );
+  }
+
+  // layer keyword list
+  const QStringList keywordStringList = mKeywordList.split( ',', Qt::SkipEmptyParts );
+  if ( !keywordStringList.isEmpty() )
+  {
+    QDomElement layerKeywordList = document.createElement( u"keywordList"_s );
+    for ( int i = 0; i < keywordStringList.size(); ++i )
+    {
+      QDomElement layerKeywordValue = document.createElement( u"value"_s );
+      const QDomText layerKeywordText = document.createTextNode( keywordStringList.at( i ).trimmed() );
+      layerKeywordValue.appendChild( layerKeywordText );
+      layerKeywordList.appendChild( layerKeywordValue );
+    }
+    layerNode.appendChild( layerKeywordList );
+  }
+
+  // layer dataUrl
+  if ( !mDataUrl.isEmpty() )
+  {
+    QDomElement layerDataUrl = document.createElement( u"dataUrl"_s );
+    const QDomText layerDataUrlText = document.createTextNode( mDataUrl );
+    layerDataUrl.appendChild( layerDataUrlText );
+    layerDataUrl.setAttribute( u"format"_s, mDataUrlFormat );
+    layerNode.appendChild( layerDataUrl );
+  }
+
+  // layer legendUrl
+  if ( !mLegendUrl.isEmpty() )
+  {
+    QDomElement layerLegendUrl = document.createElement( u"legendUrl"_s );
+    const QDomText layerLegendUrlText = document.createTextNode( mLegendUrl );
+    layerLegendUrl.appendChild( layerLegendUrlText );
+    layerLegendUrl.setAttribute( u"format"_s, mLegendUrlFormat );
+    layerNode.appendChild( layerLegendUrl );
+  }
+
+  // layer attribution
+  if ( !mAttribution.isEmpty() )
+  {
+    QDomElement layerAttribution = document.createElement( u"attribution"_s );
+    const QDomText layerAttributionText = document.createTextNode( mAttribution );
+    layerAttribution.appendChild( layerAttributionText );
+    layerAttribution.setAttribute( u"href"_s, mAttributionUrl );
+    layerNode.appendChild( layerAttribution );
+  }
 }
-

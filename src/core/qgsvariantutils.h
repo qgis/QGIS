@@ -16,9 +16,9 @@
 #ifndef QGSVARIANTUTILS_H
 #define QGSVARIANTUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 /**
  * \ingroup core
@@ -58,6 +58,12 @@ class CORE_EXPORT QgsVariantUtils
     static bool isNull( const QVariant &variant, bool silenceNullWarnings SIP_PYARGREMOVE = false );
 
     /**
+     * Returns TRUE if the specified \a metaType is a numeric type.
+     * \since QGIS 3.40
+     */
+    static bool isNumericType( QMetaType::Type metaType );
+
+    /**
      * Converts a QVariant::Type to a QMetaType::Type.
      * \see metaTypeToVariantType()
      * \since QGIS 3.36
@@ -78,8 +84,14 @@ class CORE_EXPORT QgsVariantUtils
      */
     static QVariant::Type metaTypeToVariantType( QMetaType::Type metaType ) SIP_SKIP;
 
+    /**
+     *  Check if the \a variant is a QgsUnsetAttributeValue
+     *  \note Not available in Python bindings
+     *  \since QGIS 3.44
+     */
+    static bool isUnsetAttributeValue( const QVariant &variant ) SIP_SKIP;
 
-    // TODO QGIS 4 remove this method
+    // TODO QGIS 5 remove this method
 
     /**
      * Helper method to properly create a null QVariant from a \a metaType
@@ -87,6 +99,21 @@ class CORE_EXPORT QgsVariantUtils
      */
     static QVariant createNullVariant( QMetaType::Type metaType ) SIP_SKIP;
 
+    /**
+     * Returns a localized representation of \a value with the given \a precision,
+     * if precision is -1 then precision is guessed from the default QVariant::toString
+     * output.
+     *
+     * The current localization settings are applied.
+     *
+     * For strings, the input text is returned unchanged.
+     * For lists, a single string is generated with elements separated by ‘;’.
+     *
+     * \note Precision is ignored for integers.
+     *
+     * \since QGIS 4.0
+     */
+    static QString displayString( const QVariant &variant, int precision = -1 );
 };
 
 #endif // QGSVARIANTUTILS_H

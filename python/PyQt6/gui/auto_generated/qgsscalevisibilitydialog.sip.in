@@ -9,6 +9,7 @@
 
 
 
+
 class QgsScaleVisibilityDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -19,12 +20,12 @@ A dialog allowing users to enter a scale visibility range.
 #include "qgsscalevisibilitydialog.h"
 %End
   public:
-
     explicit QgsScaleVisibilityDialog( QWidget *parent /TransferThis/ = 0, const QString &title = QString(), QgsMapCanvas *mapCanvas = 0 );
 %Docstring
-Constructor for QgsScaleVisibilityDialog, with specified dialog ``title``. The ``mapCanvas`` argument
-can be used to associate the dialog with a map canvas, allowing use of the current map scale
-within the dialog.
+Constructor for QgsScaleVisibilityDialog, with specified dialog
+``title``. The ``mapCanvas`` argument can be used to associate the
+dialog with a map canvas, allowing use of the current map scale within
+the dialog.
 %End
 
     bool hasScaleVisibility() const;
@@ -35,7 +36,8 @@ Returns ``True`` if scale based visibility is enabled.
     double minimumScale() const;
 %Docstring
 Returns the selected minimum scale, or 0 if minimum scale is not set.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map.
 
 .. seealso:: :py:func:`maximumScale`
 
@@ -45,7 +47,8 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
     double maximumScale() const;
 %Docstring
 Returns the selected maximum scale, or 0 if maximum scale is not set.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+The scale value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -54,7 +57,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
   public slots:
 
- void setScaleVisiblity( bool hasScaleVisibility ) /Deprecated/;
+ void setScaleVisiblity( bool hasScaleVisibility ) /Deprecated="Since 3.40. Use setScaleVisibility()."/;
 %Docstring
 Set whether scale based visibility is enabled.
 
@@ -76,8 +79,9 @@ Set whether scale based visibility is enabled.
 
     void setMinimumScale( double scale );
 %Docstring
-Set the minimum ``scale``, or 0 to indicate the minimum is not set.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Set the minimum ``scale``, or 0 to indicate the minimum is not set. The
+scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000
+map.
 
 .. seealso:: :py:func:`minimumScale`
 
@@ -86,8 +90,9 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
     void setMaximumScale( double scale );
 %Docstring
-Set the maximum ``scale``, or 0 to indicate the minimum is not set.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Set the maximum ``scale``, or 0 to indicate the minimum is not set. The
+scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000
+map.
 
 .. seealso:: :py:func:`maximumScale`
 

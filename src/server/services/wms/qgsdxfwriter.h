@@ -17,14 +17,16 @@ email                : david dot marteau at 3liz dot com
 
 #include "qgswmsrequest.h"
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerResponse;
+
 namespace QgsWms
 {
 
   /**
    * Output GetMap response in DXF format
    */
-  void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project,
-                   const QgsWmsRequest &request,
-                   QgsServerResponse &response );
+  void writeAsDxf( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
 
 } // namespace QgsWms

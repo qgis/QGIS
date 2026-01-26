@@ -16,12 +16,14 @@
 #include "qgs3dviewsmanagerdialog.h"
 
 #include "qgisapp.h"
-#include "qgsnewnamedialog.h"
-#include "qgsmapviewsmanager.h"
 #include "qgs3dmapcanvaswidget.h"
 #include "qgsdockablewidgethelper.h"
+#include "qgsmapviewsmanager.h"
+#include "qgsnewnamedialog.h"
 
 #include <QMessageBox>
+
+#include "moc_qgs3dviewsmanagerdialog.cpp"
 
 Qgs3DViewsManagerDialog::Qgs3DViewsManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

@@ -16,8 +16,8 @@
 #ifndef QGSWIDGETWRAPPER_H
 #define QGSWIDGETWRAPPER_H
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 #include <QVariant>
 
 class QgsVectorLayer;
@@ -30,17 +30,18 @@ class QgsVectorLayer;
 #ifdef SIP_RUN
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
-% ModuleCode
+//%ModuleCode
 #include "qgsrelationwidgetwrapper.h"
 #include "qgsqmlwidgetwrapper.h"
 #include "qgshtmlwidgetwrapper.h"
-% End
+//%End
 #endif
 
 /**
  * \ingroup gui
- * \brief Manages an editor widget
- * Widget and wrapper share the same parent
+ * \brief Manages an editor widget.
+ *
+ * Widget and wrapper share the same parent.
  *
  * A wrapper controls one attribute editor widget and is able to create a default
  * widget or use a pre-existent widget. It is able to set the widget to the value implied
@@ -51,7 +52,6 @@ class QgsVectorLayer;
  */
 class GUI_EXPORT QgsWidgetWrapper : public QObject
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsEditorWidgetWrapper *>( sipCpp ) )
@@ -69,7 +69,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
 
     Q_OBJECT
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -77,9 +76,9 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      */
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsWidgetWrapper, Property ) : int
     {
-      RootPath = 0, //!< Root path for external resource
+      RootPath = 0,          //!< Root path for external resource
       DocumentViewerContent, //!< Document type for external resource
-      StorageUrl //!< Storage URL for external resource
+      StorageUrl             //!< Storage URL for external resource
     };
     // *INDENT-ON*
 
@@ -115,8 +114,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \note not available in Python bindings
      */
-    template <class T> SIP_SKIP
-    T *widget() { return dynamic_cast<T>( mWidget ); }
+    template<class T> SIP_SKIP T *widget() { return dynamic_cast<T>( mWidget ); }
 
     /**
      * Will set the config of this wrapper to the specified config.
@@ -183,7 +181,10 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * \note not available in Python bindings
      */
-    QgsPropertyCollection &dataDefinedProperties() { return mPropertyCollection; } SIP_SKIP
+    QgsPropertyCollection &dataDefinedProperties() SIP_SKIP
+    {
+      return mPropertyCollection;
+    }
 
     /**
      * Returns a reference to the editor widget's property collection, used for data defined overrides.
@@ -219,7 +220,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     void contextChanged();
 
   protected:
-
     /**
      * This method should create a new widget with the provided parent. This will only be called
      * if the form did not already provide a widget, so it is not guaranteed to be called!
@@ -262,7 +262,6 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     virtual void setEnabled( bool enabled );
 
   private:
-
     /**
      * Called when the containing attribute form is about to save.
      * Use this to push any widget states to the edit buffer.
@@ -276,7 +275,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
     QWidget *mWidget = nullptr;
     QWidget *mParent = nullptr;
     QgsVectorLayer *mLayer = nullptr;
-    bool mInitialized;
+    bool mInitialized = false;
 };
 
 // We'll use this class inside a QVariant in the widgets properties

@@ -15,88 +15,139 @@
 ***************************************************************************
 """
 
-__author__ = 'Michael Minn'
-__date__ = 'May 2010'
-__copyright__ = '(C) 2010, Michael Minn'
+__author__ = "Michael Minn"
+__date__ = "May 2010"
+__copyright__ = "(C) 2010, Michael Minn"
 
 from qgis.PyQt.QtCore import QMetaType
-from qgis.core import (QgsField,
-                       QgsGeometry,
-                       QgsDistanceArea,
-                       QgsFeature,
-                       QgsFeatureSink,
-                       QgsFeatureRequest,
-                       QgsWkbTypes,
-                       QgsUnitTypes,
-                       QgsProcessing,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterField,
-                       QgsProcessingParameterEnum,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingException,
-                       QgsSpatialIndex)
+from qgis.core import (
+    Qgis,
+    QgsField,
+    QgsFields,
+    QgsProcessingUtils,
+    QgsGeometry,
+    QgsDistanceArea,
+    QgsFeature,
+    QgsFeatureSink,
+    QgsFeatureRequest,
+    QgsWkbTypes,
+    QgsUnitTypes,
+    QgsProcessing,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterField,
+    QgsProcessingParameterEnum,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingException,
+    QgsSpatialIndex,
+    QgsProcessingAlgorithm,
+)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from math import sqrt
 
 
 class HubDistanceLines(QgisAlgorithm):
-    INPUT = 'INPUT'
-    HUBS = 'HUBS'
-    FIELD = 'FIELD'
-    UNIT = 'UNIT'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    HUBS = "HUBS"
+    FIELD = "FIELD"
+    UNIT = "UNIT"
+    OUTPUT = "OUTPUT"
 
-    LAYER_UNITS = 'LAYER_UNITS'
+    LAYER_UNITS = "LAYER_UNITS"
 
-    UNITS = [QgsUnitTypes.DistanceUnit.DistanceMeters,
-             QgsUnitTypes.DistanceUnit.DistanceFeet,
-             QgsUnitTypes.DistanceUnit.DistanceMiles,
-             QgsUnitTypes.DistanceUnit.DistanceKilometers,
-             LAYER_UNITS
-             ]
+    UNITS = [
+        QgsUnitTypes.DistanceUnit.DistanceMeters,
+        QgsUnitTypes.DistanceUnit.DistanceFeet,
+        QgsUnitTypes.DistanceUnit.DistanceMiles,
+        QgsUnitTypes.DistanceUnit.DistanceKilometers,
+        LAYER_UNITS,
+    ]
 
     def group(self):
-        return self.tr('Vector analysis')
+        return self.tr("Vector analysis")
 
     def groupId(self):
-        return 'vectoranalysis'
+        return "vectoranalysis"
+
+    def documentationFlags(self):
+        return Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid
 
     def __init__(self):
         super().__init__()
 
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated
+
     def initAlgorithm(self, config=None):
-        self.units = [self.tr('Meters'),
-                      self.tr('Feet'),
-                      self.tr('Miles'),
-                      self.tr('Kilometers'),
-                      self.tr('Layer units')]
+        self.units = [
+            self.tr("Meters"),
+            self.tr("Feet"),
+            self.tr("Miles"),
+            self.tr("Kilometers"),
+            self.tr("Layer units"),
+        ]
 
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Source points layer')))
-        self.addParameter(QgsProcessingParameterFeatureSource(self.HUBS,
-                                                              self.tr('Destination hubs layer')))
-        self.addParameter(QgsProcessingParameterField(self.FIELD,
-                                                      self.tr('Hub layer name attribute'), parentLayerParameterName=self.HUBS))
-        self.addParameter(QgsProcessingParameterEnum(self.UNIT,
-                                                     self.tr('Measurement unit'), self.units))
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                self.INPUT, self.tr("Source points layer")
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                self.HUBS, self.tr("Destination hubs layer")
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterField(
+                self.FIELD,
+                self.tr("Hub layer name attribute"),
+                parentLayerParameterName=self.HUBS,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterEnum(
+                self.UNIT, self.tr("Measurement unit"), self.units
+            )
+        )
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Hub distance'), QgsProcessing.SourceType.TypeVectorLine))
+        self.addParameter(
+            QgsProcessingParameterFeatureSink(
+                self.OUTPUT,
+                self.tr("Hub distance"),
+                QgsProcessing.SourceType.TypeVectorLine,
+            )
+        )
 
     def name(self):
-        return 'distancetonearesthublinetohub'
+        return "distancetonearesthublinetohub"
 
     def displayName(self):
-        return self.tr('Distance to nearest hub (line to hub)')
+        return self.tr("Distance to nearest hub (line to hub)")
+
+    def shortDescription(self):
+        return self.tr(
+            "Creates lines that join each feature from an input vector to the nearest feature in a destination layer."
+        )
+
+    def shortHelpString(self):
+        return self.tr(
+            "Given an origin and a destination layers, this algorithm computes "
+            "the distance between origin features and their closest destination one. "
+            "Distance calculations are based on the feature's center.\n"
+            "The resulting layer contains lines linking each origin point with its nearest destination feature."
+        )
 
     def processAlgorithm(self, parameters, context, feedback):
         if parameters[self.INPUT] == parameters[self.HUBS]:
             raise QgsProcessingException(
-                self.tr('Same layer given for both hubs and spokes'))
+                self.tr("Same layer given for both hubs and spokes")
+            )
 
         point_source = self.parameterAsSource(parameters, self.INPUT, context)
         if point_source is None:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         hub_source = self.parameterAsSource(parameters, self.HUBS, context)
         if hub_source is None:
@@ -106,16 +157,29 @@ class HubDistanceLines(QgisAlgorithm):
 
         units = self.UNITS[self.parameterAsEnum(parameters, self.UNIT, context)]
 
-        fields = point_source.fields()
-        fields.append(QgsField('HubName', QMetaType.Type.QString))
-        fields.append(QgsField('HubDist', QMetaType.Type.Double))
+        newFields = QgsFields()
+        newFields.append(QgsField("HubName", QMetaType.Type.QString))
+        newFields.append(QgsField("HubDist", QMetaType.Type.Double))
+        fields = QgsProcessingUtils.combineFields(point_source.fields(), newFields)
 
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Type.LineString, point_source.sourceCrs())
+        (sink, dest_id) = self.parameterAsSink(
+            parameters,
+            self.OUTPUT,
+            context,
+            fields,
+            QgsWkbTypes.Type.LineString,
+            point_source.sourceCrs(),
+        )
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
-        index = QgsSpatialIndex(hub_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
+        index = QgsSpatialIndex(
+            hub_source.getFeatures(
+                QgsFeatureRequest()
+                .setSubsetOfAttributes([])
+                .setDestinationCrs(point_source.sourceCrs(), context.transformContext())
+            )
+        )
 
         distance = QgsDistanceArea()
         distance.setSourceCrs(point_source.sourceCrs(), context.transformContext())
@@ -123,7 +187,9 @@ class HubDistanceLines(QgisAlgorithm):
 
         # Scan source points, find nearest hub, and write to output file
         features = point_source.getFeatures()
-        total = 100.0 / point_source.featureCount() if point_source.featureCount() else 0
+        total = (
+            100.0 / point_source.featureCount() if point_source.featureCount() else 0
+        )
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
@@ -137,12 +203,23 @@ class HubDistanceLines(QgisAlgorithm):
             if len(neighbors) == 0:
                 continue
 
-            ft = next(hub_source.getFeatures(QgsFeatureRequest().setFilterFid(neighbors[0]).setSubsetOfAttributes([fieldName], hub_source.fields()).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
+            ft = next(
+                hub_source.getFeatures(
+                    QgsFeatureRequest()
+                    .setFilterFid(neighbors[0])
+                    .setSubsetOfAttributes([fieldName], hub_source.fields())
+                    .setDestinationCrs(
+                        point_source.sourceCrs(), context.transformContext()
+                    )
+                )
+            )
             closest = ft.geometry().boundingBox().center()
             hubDist = distance.measureLine(src, closest)
 
             if units != self.LAYER_UNITS:
-                hub_dist_in_desired_units = distance.convertLengthMeasurement(hubDist, units)
+                hub_dist_in_desired_units = distance.convertLengthMeasurement(
+                    hubDist, units
+                )
             else:
                 hub_dist_in_desired_units = hubDist
 
@@ -158,4 +235,5 @@ class HubDistanceLines(QgisAlgorithm):
             sink.addFeature(feat, QgsFeatureSink.Flag.FastInsert)
             feedback.setProgress(int(current * total))
 
+        sink.finalize()
         return {self.OUTPUT: dest_id}

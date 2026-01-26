@@ -15,8 +15,8 @@
 #ifndef QGSMAPCANVASTRACER_H
 #define QGSMAPCANVASTRACER_H
 
-#include "qgstracer.h"
 #include "qgis_gui.h"
+#include "qgstracer.h"
 
 class QAction;
 class QgsMapCanvas;
@@ -25,7 +25,9 @@ class QgsMessageBarItem;
 
 /**
  * \ingroup gui
- * \brief Extension of QgsTracer that provides extra functionality:
+ * \brief Extension of QgsTracer that provides extra functionality.
+ *
+ * This tracer subclass adds:
  *
  * - automatic updates of own configuration based on canvas settings
  * - reporting of issues to the user via message bar

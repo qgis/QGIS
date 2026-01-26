@@ -17,8 +17,9 @@
 #ifndef QGSCOLUMNTYPETHREAD_H
 #define QGSCOLUMNTYPETHREAD_H
 
-#include <QThread>
 #include "qgspostgresconn.h"
+
+#include <QThread>
 
 // A class that determines the geometry type of a given database
 // schema.table.column, with the option of doing so in a separate
@@ -47,9 +48,9 @@ class QgsGeomColumnTypeThread : public QThread
 
     QgsPostgresConn *mConn = nullptr;
     QString mName;
-    bool mUseEstimatedMetadata;
-    bool mAllowGeometrylessTables;
-    bool mStopped;
+    bool mUseEstimatedMetadata = false;
+    bool mAllowGeometrylessTables = false;
+    bool mStopped = false;
     QList<QgsPostgresLayerProperty> layerProperties;
 };
 

@@ -18,11 +18,9 @@
 
 #include "qgsclassificationmethod.h"
 
-
 /**
  * \ingroup core
- * \brief QgsClassificationCustom is a dummy implementation of QgsClassification
- * which does not compute any break.
+ * \brief A dummy implementation class method which does not compute any breaks.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationCustom : public QgsClassificationMethod
@@ -30,7 +28,7 @@ class CORE_EXPORT QgsClassificationCustom : public QgsClassificationMethod
   public:
     QgsClassificationCustom();
 
-    QgsClassificationMethod *clone() const override;
+    std::unique_ptr< QgsClassificationMethod > clone() const override;
     QString name() const override;
     QString id() const override;
 

@@ -12,28 +12,26 @@ Email                : wonder dot sk at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgselevationmap.h"
 #include "qgselevationshadingrenderer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
-
+#include "qgstest.h"
 
 class TestQgsElevationMap : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsElevationMap() : QgsTest( QStringLiteral( "Elevation Map Tests" ), QStringLiteral( "elevation_map" ) ) {}
+    TestQgsElevationMap()
+      : QgsTest( u"Elevation Map Tests"_s, u"elevation_map"_s ) {}
 
   private slots:
     void initTestCase();
     void cleanupTestCase();
     void testRasterDemEdl();
     void testRasterDemReprojected();
-
 };
 
 
@@ -45,7 +43,6 @@ void TestQgsElevationMap::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QgsApplication::init();
   QgsApplication::initQgis();
-
 }
 
 void TestQgsElevationMap::cleanupTestCase()
@@ -56,7 +53,6 @@ void TestQgsElevationMap::cleanupTestCase()
 
 void TestQgsElevationMap::testRasterDemEdl()
 {
-
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QgsRasterLayer r( testDataDir + "/analysis/dem.tif" );
   QVERIFY( r.isValid() );
@@ -98,7 +94,7 @@ void TestQgsElevationMap::testRasterDemReprojected()
   mapSettings.setExtent( QgsRectangle( 770583, 5609270, 781928, 5619219 ) );
   mapSettings.setElevationShadingRenderer( elevationShadingRenderer );
 
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "reprojected_raster" ), QStringLiteral( "reprojected_raster" ), mapSettings );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"reprojected_raster"_s, u"reprojected_raster"_s, mapSettings );
 }
 
 

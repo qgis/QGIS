@@ -14,19 +14,21 @@
  ***************************************************************************/
 
 #include "qgslayoutimagedrophandler.h"
-#include "qgslayoutdesignerinterface.h"
-#include "qgslayout.h"
-#include "qgslayoutview.h"
-#include "qgslayoutitempicture.h"
 
-#include <QImageReader>
+#include "qgslayout.h"
+#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutview.h"
+
 #include <QFileInfo>
+#include <QImageReader>
 #include <QMimeData>
+
+#include "moc_qgslayoutimagedrophandler.cpp"
 
 QgsLayoutImageDropHandler::QgsLayoutImageDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )
 {
-
 }
 
 bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *iface, QPointF point, const QString &file )
@@ -58,7 +60,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
   if ( !iface->layout() )
     return false;
 
-  std::unique_ptr< QgsLayoutItemPicture > item = std::make_unique< QgsLayoutItemPicture >( iface->layout() );
+  auto item = std::make_unique<QgsLayoutItemPicture>( iface->layout() );
 
   const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( point, iface->layout()->units() );
 
@@ -77,7 +79,7 @@ bool QgsLayoutImageDropHandler::handleFileDrop( QgsLayoutDesignerInterface *ifac
   item->setReferencePoint( QgsLayoutItem::UpperLeft );
 
   // and auto select new item for convenience
-  QList< QgsLayoutItem * > newSelection;
+  QList<QgsLayoutItem *> newSelection;
   newSelection << item.get();
   iface->layout()->addLayoutItem( item.release() );
   iface->layout()->deselectAll();
@@ -92,16 +94,16 @@ bool QgsLayoutImageDropHandler::handlePaste( QgsLayoutDesignerInterface *iface, 
     return false;
 
   const QgsLayoutPoint layoutPoint = iface->layout()->convertFromLayoutUnits( pastePoint, iface->layout()->units() );
-  std::unique_ptr< QgsLayoutItemPicture > item = std::make_unique< QgsLayoutItemPicture >( iface->layout() );
+  auto item = std::make_unique<QgsLayoutItemPicture>( iface->layout() );
 
-  const QByteArray imageData = data->data( QStringLiteral( "application/x-qt-image" ) );
+  const QByteArray imageData = data->data( u"application/x-qt-image"_s );
   if ( imageData.isEmpty() )
     return false;
 
   const QByteArray encoded = imageData.toBase64();
 
   QString path( encoded );
-  path.prepend( QLatin1String( "base64:" ) );
+  path.prepend( "base64:"_L1 );
 
   item->setPicturePath( path, Qgis::PictureFormat::Raster );
 

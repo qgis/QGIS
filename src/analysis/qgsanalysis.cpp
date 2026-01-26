@@ -16,15 +16,15 @@
  ***************************************************************************/
 
 #include "qgsanalysis.h"
-#include "qgsgeometrycheckregistry.h"
-#include "qgsgeometrycheckfactory.h"
-#include "qgis.h"
 
-#include "qgsgeometryselfintersectioncheck.h"
+#include "qgis.h"
+#include "qgsgeometrycheckfactory.h"
+#include "qgsgeometrycheckregistry.h"
 #include "qgsgeometrygapcheck.h"
+#include "qgsgeometryisvalidcheck.h"
 #include "qgsgeometrymissingvertexcheck.h"
 #include "qgsgeometryoverlapcheck.h"
-#include "qgsgeometryisvalidcheck.h"
+#include "qgsgeometryselfintersectioncheck.h"
 
 QgsAnalysis *QgsAnalysis::instance()
 {
@@ -40,7 +40,7 @@ QgsGeometryCheckRegistry *QgsAnalysis::geometryCheckRegistry()
 QgsAnalysis::QgsAnalysis()
   : mGeometryCheckRegistry( std::make_unique<QgsGeometryCheckRegistry>() )
 {
-  qRegisterMetaType< QList<std::shared_ptr<QgsGeometryCheckError> > >( "QList<std::shared_ptr<QgsGeometryCheckError>>" );
+  qRegisterMetaType<QList<std::shared_ptr<QgsGeometryCheckError>>>( "QList<std::shared_ptr<QgsGeometryCheckError>>" );
 
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>() );
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryIsValidCheck>() );

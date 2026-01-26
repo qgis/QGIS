@@ -14,43 +14,42 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
-#include "qgsprojectstorageregistry.h"
-#include "qgsprojectstorage.h"
-#include "qgsprojectviewsettings.h"
-#include "qgsreferencedgeometry.h"
 #include "qgslandingpageutils.h"
-#include "qgsserverprojectutils.h"
-#include "qgsconfigcache.h"
-#include "qgsmessagelog.h"
-#include "qgslayertree.h"
-#include "qgsvectorlayer.h"
-#include "nlohmann/json.hpp"
-#include "qgscoordinatetransform.h"
 
 #include <mutex>
-#include <QCryptographicHash>
-#include <QFileSystemWatcher>
-#include <QDomDocument>
+#include <nlohmann/json.hpp>
 
-const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { QStringLiteral( "/(?<projectHash>[a-f0-9]{32})" ) };
+#include "qgsapplication.h"
+#include "qgsconfigcache.h"
+#include "qgscoordinatetransform.h"
+#include "qgslayertree.h"
+#include "qgsmessagelog.h"
+#include "qgsprojectstorage.h"
+#include "qgsprojectstorageregistry.h"
+#include "qgsprojectviewsettings.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QCryptographicHash>
+#include <QDomDocument>
+#include <QFileSystemWatcher>
+
+const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { u"/(?<projectHash>[a-f0-9]{32})"_s };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;
 
 std::once_flag initDirWatcher;
 
 QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &settings )
 {
-
   static QString QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES;
   static QString QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS;
 
   // Init directory watcher
   static QFileSystemWatcher dirWatcher;
-  std::call_once( initDirWatcher, [ = ]
-  {
-    QObject::connect( &dirWatcher, &QFileSystemWatcher::directoryChanged, qApp, [ = ]( const QString & path )
-    {
-      QgsMessageLog::logMessage( QStringLiteral( "Directory '%1' has changed: project information cache cleared." ).arg( path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
+  std::call_once( initDirWatcher, [] {
+    QObject::connect( &dirWatcher, &QFileSystemWatcher::directoryChanged, qApp, []( const QString &path ) {
+      QgsMessageLog::logMessage( u"Directory '%1' has changed: project information cache cleared."_s.arg( path ), u"Landing Page"_s, Qgis::MessageLevel::Info );
       AVAILABLE_PROJECTS.clear();
     } );
   } );
@@ -80,68 +79,67 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
   const QString envDirName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_DIRECTORIES );
   if ( AVAILABLE_PROJECTS.isEmpty() )
   {
-    const auto cProjectDirs { projectDir.split( QStringLiteral( "||" ) ) };
+    const auto cProjectDirs { projectDir.split( u"||"_s ) };
     for ( const auto &path : cProjectDirs )
     {
-      if ( ! path.isEmpty() )
+      if ( !path.isEmpty() )
       {
         const QDir dir { path };
         if ( dir.exists() )
         {
           dirWatcher.addPath( dir.path() );
-          const auto constFiles { dir.entryList( ) };
+          const auto constFiles { dir.entryList() };
           for ( const auto &f : constFiles )
           {
-            if ( f.endsWith( QStringLiteral( ".qgs" ), Qt::CaseSensitivity::CaseInsensitive ) ||
-                 f.endsWith( QStringLiteral( ".qgz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+            if ( f.endsWith( u".qgs"_s, Qt::CaseSensitivity::CaseInsensitive ) || f.endsWith( u".qgz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
             {
               const QString fullPath { path + '/' + f };
               const auto projectHash { QCryptographicHash::hash( fullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
-              AVAILABLE_PROJECTS[ projectHash ] = fullPath;
-              QgsMessageLog::logMessage( QStringLiteral( "Adding filesystem project '%1' with id '%2'" ).arg( QFileInfo( f ).fileName(), QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Info );
+              AVAILABLE_PROJECTS[projectHash] = fullPath;
+              QgsMessageLog::logMessage( u"Adding filesystem project '%1' with id '%2'"_s.arg( QFileInfo( f ).fileName(), QString::fromUtf8( projectHash ) ), u"Landing Page"_s, Qgis::MessageLevel::Info );
             }
           }
         }
         else
         {
-          QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found: skipping." ).arg( envDirName, path ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( u"%1 entry '%2' was not found: skipping."_s.arg( envDirName, path ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "%1 empty path: skipping." ).arg( envDirName ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( u"%1 empty path: skipping."_s.arg( envDirName ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
       }
     }
   }
 
   // PG projects (there is no watcher for PG: scan every time)
   const QString envPgName = QgsServerSettings::name( QgsServerSettingsEnv::QGIS_SERVER_LANDING_PAGE_PROJECTS_PG_CONNECTIONS );
-  const auto storage { QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "postgresql" ) ) };
+  const auto storage { QgsApplication::projectStorageRegistry()->projectStorageFromType( u"postgresql"_s ) };
   Q_ASSERT( storage );
-  const auto cPgConnections { pgConnections.split( QStringLiteral( "||" ) ) };
+  const auto cPgConnections { pgConnections.split( u"||"_s ) };
   for ( const auto &connectionString : cPgConnections )
   {
-    if ( ! connectionString.isEmpty() )
+    if ( !connectionString.isEmpty() )
     {
       const auto constProjects { storage->listProjects( connectionString ) };
-      if ( ! constProjects.isEmpty() )
+      if ( !constProjects.isEmpty() )
       {
         for ( const auto &projectName : constProjects )
         {
-          const QString projectFullPath { connectionString + QStringLiteral( "&project=%1" ).arg( projectName ) };
+          const QString projectFullPath { connectionString + u"&project=%1"_s.arg( projectName ) };
           const auto projectHash { QCryptographicHash::hash( projectFullPath.toUtf8(), QCryptographicHash::Md5 ).toHex() };
-          AVAILABLE_PROJECTS[ projectHash ] = projectFullPath;
-          QgsMessageLog::logMessage( QStringLiteral( "Adding postgres project '%1' with id '%2'" ).arg( projectName, QString::fromUtf8( projectHash ) ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+          AVAILABLE_PROJECTS[projectHash] = projectFullPath;
+          QgsMessageLog::logMessage( u"Adding postgres project '%1' with id '%2'"_s.arg( projectName, QString::fromUtf8( projectHash ) ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "%1 entry '%2' was not found or has not projects: skipping." ).arg( envPgName, connectionString ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+        QgsMessageLog::logMessage( u"%1 entry '%2' was not found or has not projects: skipping."_s.arg( envPgName, connectionString ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
       }
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "%1 empty connection: skipping." ).arg( envPgName ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"%1 empty connection: skipping."_s.arg( envPgName ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
     }
   }
 
@@ -151,9 +149,8 @@ QMap<QString, QString> QgsLandingPageUtils::projects( const QgsServerSettings &s
 json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServerSettings *serverSettings, const QgsServerRequest &request )
 {
   // Helper for QStringList
-  auto jList = [ ]( const QStringList & l ) -> json
-  {
-    json a = json::array( );
+  auto jList = []( const QStringList &l ) -> json {
+    json a = json::array();
     for ( const auto &e : std::as_const( l ) )
     {
       a.push_back( e.toStdString() );
@@ -161,24 +158,21 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     return a;
   };
 
-  auto jHash = [ ]( const QHash<QString, QString> &l ) -> json
-  {
+  auto jHash = []( const QHash<QString, QString> &l ) -> json {
     json a = json::object();
     const auto &constKeys { l.keys() };
     for ( const auto &k : constKeys )
     {
-      a[ k.toStdString() ] = l[ k ].toStdString();
+      a[k.toStdString()] = l[k].toStdString();
     }
     return a;
   };
 
-  auto jContactList = [ ]( const QgsAbstractMetadataBase::ContactList & contacts ) -> json
-  {
+  auto jContactList = []( const QgsAbstractMetadataBase::ContactList &contacts ) -> json {
     json jContacts = json::array();
     for ( const auto &c : contacts )
     {
-      json jContact
-      {
+      json jContact {
         { "name", c.name.toStdString() },
         { "role", c.role.toStdString() },
         { "voice", c.voice.toStdString() },
@@ -192,101 +186,93 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
       const auto &cAddresses { c.addresses };
       for ( const auto &a : cAddresses )
       {
-        jContact[ "addresses" ].push_back(
-        {
-          { "address", a.address.toStdString()},
-          { "type", a.type.toStdString() },
-          { "city", a.city.toStdString() },
-          { "country", a.country.toStdString() },
-          { "postalCode", a.postalCode.toStdString() },
-          { "administrativeArea", a.administrativeArea.toStdString() }
-        } );
+        jContact["addresses"].push_back(
+          { { "address", a.address.toStdString() },
+            { "type", a.type.toStdString() },
+            { "city", a.city.toStdString() },
+            { "country", a.country.toStdString() },
+            { "postalCode", a.postalCode.toStdString() },
+            { "administrativeArea", a.administrativeArea.toStdString() }
+          }
+        );
       }
       jContacts.push_back( jContact );
     }
     return jContacts;
   };
 
-  auto jLinksList = [ ]( const QgsAbstractMetadataBase::LinkList & links ) -> json
-  {
+  auto jLinksList = []( const QgsAbstractMetadataBase::LinkList &links ) -> json {
     json jLinks = json::array();
     for ( const auto &l : links )
     {
       jLinks.push_back(
-      {
-        { "name", l.name.toStdString() },
-        { "url", l.url.toStdString()},
-        { "description", l.description.toStdString()},
-        { "type", l.type.toStdString()},
-        { "mimeType", l.mimeType.toStdString()},
-        { "format", l.format.toStdString()},
-        { "size", l.size.toStdString()}
-      } );
+        { { "name", l.name.toStdString() },
+          { "url", l.url.toStdString() },
+          { "description", l.description.toStdString() },
+          { "type", l.type.toStdString() },
+          { "mimeType", l.mimeType.toStdString() },
+          { "format", l.format.toStdString() },
+          { "size", l.size.toStdString() }
+        }
+      );
     }
     return jLinks;
   };
 
   json info = json::object();
-  info[ "id" ] = QCryptographicHash::hash( projectUri.toUtf8(), QCryptographicHash::Md5 ).toHex();
+  info["id"] = QCryptographicHash::hash( projectUri.toUtf8(), QCryptographicHash::Md5 ).toHex();
 
   const QgsProject *p { QgsConfigCache::instance()->project( projectUri, serverSettings ) };
 
   if ( p )
   {
-
     // Initial extent for map display, in 4326 CRS.
     // Check view settings first, read map canvas extent from XML if it's not set
     const QgsProjectViewSettings *viewSettings { p->viewSettings() };
-    if ( viewSettings && ! viewSettings->defaultViewExtent().isEmpty() )
+    if ( viewSettings && !viewSettings->defaultViewExtent().isEmpty() )
     {
       QgsRectangle extent { viewSettings->defaultViewExtent() };
       // Need conversion?
-      if ( viewSettings->defaultViewExtent().crs().authid() != QLatin1String( "EPSG:4326" ) )
+      if ( viewSettings->defaultViewExtent().crs().authid() != "EPSG:4326"_L1 )
       {
         QgsCoordinateTransform ct { p->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
         extent = ct.transform( extent );
       }
-      info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
+      info["initial_extent"] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
     }
     else
-      // Old projects do not have view extent information, we have no choice than
-      // re-read the project and extract the information from there
+    // Old projects do not have view extent information, we have no choice than
+    // re-read the project and extract the information from there
     {
       QgsProject temporaryProject( nullptr, Qgis::ProjectCapabilities() );
-      QObject::connect( &temporaryProject, &QgsProject::readProject, qApp, [ & ]( const QDomDocument & projectDoc )
-      {
-        const QDomNodeList canvasElements { projectDoc.elementsByTagName( QStringLiteral( "mapcanvas" ) ) };
-        if ( ! canvasElements.isEmpty() )
+      QObject::connect( &temporaryProject, &QgsProject::readProject, qApp, [&]( const QDomDocument &projectDoc ) {
+        const QDomNodeList canvasElements { projectDoc.elementsByTagName( u"mapcanvas"_s ) };
+        if ( !canvasElements.isEmpty() )
         {
-          const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( QStringLiteral( "extent" ) ) };
-          if ( !canvasElement.isNull() &&
-               !canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).isNull() &&
-               !canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).isNull() &&
-               !canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).isNull() &&
-               !canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).isNull()
-             )
+          const QDomNode canvasElement { canvasElements.item( 0 ).firstChildElement( u"extent"_s ) };
+          if ( !canvasElement.isNull() && !canvasElement.firstChildElement( u"xmin"_s ).isNull() && !canvasElement.firstChildElement( u"ymin"_s ).isNull() && !canvasElement.firstChildElement( u"xmax"_s ).isNull() && !canvasElement.firstChildElement( u"ymax"_s ).isNull() )
           {
-            QgsRectangle extent
-            {
-              canvasElement.firstChildElement( QStringLiteral( "xmin" ) ).text().toDouble(),
-              canvasElement.firstChildElement( QStringLiteral( "ymin" ) ).text().toDouble(),
-              canvasElement.firstChildElement( QStringLiteral( "xmax" ) ).text().toDouble(),
-              canvasElement.firstChildElement( QStringLiteral( "ymax" ) ).text().toDouble(),
+            QgsRectangle extent {
+              canvasElement.firstChildElement( u"xmin"_s ).text().toDouble(),
+              canvasElement.firstChildElement( u"ymin"_s ).text().toDouble(),
+              canvasElement.firstChildElement( u"xmax"_s ).text().toDouble(),
+              canvasElement.firstChildElement( u"ymax"_s ).text().toDouble(),
             };
             // Need conversion?
-            if ( temporaryProject.crs().authid() != QLatin1String( "EPSG:4326" ) )
+            if ( temporaryProject.crs().authid() != "EPSG:4326"_L1 )
             {
               QgsCoordinateTransform ct { temporaryProject.crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), temporaryProject.transformContext() };
               extent = ct.transform( extent );
             }
-            info[ "initial_extent" ] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
+            info["initial_extent"] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
           }
         }
       } );
 
       QgsMessageLog::logMessage( QStringLiteral( "The project '%1' was saved with a version of QGIS which does not contain initial extent information. "
-                                 "For better performances consider re-saving the project with the latest version of QGIS." )
-                                 .arg( projectUri ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+                                                 "For better performances consider re-saving the project with the latest version of QGIS." )
+                                   .arg( projectUri ),
+                                 u"Landing Page"_s, Qgis::MessageLevel::Warning );
       temporaryProject.read( projectUri );
     }
 
@@ -302,17 +288,16 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     info["description"] = description.toStdString();
     // CRS
     const QStringList wmsOutputCrsList { QgsServerProjectUtils::wmsOutputCrsList( *p ) };
-    const QString crs = wmsOutputCrsList.contains( QStringLiteral( "EPSG:4326" ) ) || wmsOutputCrsList.isEmpty() ?
-                        QStringLiteral( "EPSG:4326" ) : wmsOutputCrsList.first();
+    const QString crs = wmsOutputCrsList.contains( u"EPSG:4326"_s ) || wmsOutputCrsList.isEmpty() ? u"EPSG:4326"_s : wmsOutputCrsList.first();
     info["crs"] = crs.toStdString();
     // Typenames for WMS
     const bool useIds { QgsServerProjectUtils::wmsUseLayerIds( *p ) };
     QStringList typenames;
     const QStringList wmsRestrictedLayers { QgsServerProjectUtils::wmsRestrictedLayers( *p ) };
-    const auto constLayers { p->mapLayers().values( ) };
+    const auto constLayers { p->mapLayers().values() };
     for ( const auto &l : constLayers )
     {
-      if ( ! wmsRestrictedLayers.contains( l->name() ) )
+      if ( !wmsRestrictedLayers.contains( l->name() ) )
       {
         typenames.push_back( useIds ? l->id() : l->name() );
       }
@@ -326,7 +311,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     {
       for ( const auto &l : constLayers )
       {
-        if ( ! wmsRestrictedLayers.contains( l->name() ) )
+        if ( !wmsRestrictedLayers.contains( l->name() ) )
         {
           QgsRectangle layerExtent { l->extent() };
           if ( l->crs() != targetCrs && targetCrs.isValid() )
@@ -345,7 +330,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         }
       }
     }
-    else if ( ! extent.isNull() )
+    else if ( !extent.isNull() )
     {
       if ( targetCrs.isValid() && targetCrs != p->crs() )
       {
@@ -355,9 +340,9 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     }
     info["extent"] = json::array( { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() } );
     QgsRectangle geographicExtent { extent };
-    if ( targetCrs.authid() != QLatin1String( "EPSG:4326" ) )
+    if ( targetCrs.authid() != "EPSG:4326"_L1 )
     {
-      QgsCoordinateTransform ct { targetCrs,  QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
+      QgsCoordinateTransform ct { targetCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), p->transformContext() };
       geographicExtent = ct.transform( geographicExtent );
     }
     info["geographic_extent"] = json::array( { geographicExtent.xMinimum(), geographicExtent.yMinimum(), geographicExtent.xMaximum(), geographicExtent.yMaximum() } );
@@ -379,7 +364,7 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     metadata["links"] = jLinksList( md.links() );
     // Contacts
     metadata["contacts"] = jContactList( md.contacts() );
-    info[ "metadata" ] = metadata;
+    info["metadata"] = metadata;
     // Capabilities
     json capabilities = json::object();
     capabilities["owsServiceCapabilities"] = QgsServerProjectUtils::owsServiceCapabilities( *p );
@@ -428,13 +413,13 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     capabilities["wmsServiceUrl"] = QgsServerProjectUtils::wmsServiceUrl( *p, request, *serverSettings ).toStdString();
     capabilities["wmsTileBuffer"] = QgsServerProjectUtils::wmsTileBuffer( *p );
     capabilities["wmsUseLayerIds"] = QgsServerProjectUtils::wmsUseLayerIds( *p );
-    capabilities["wmtsServiceUrl" ] = QgsServerProjectUtils::wmtsServiceUrl( *p, request, *serverSettings ).toStdString();
+    capabilities["wmtsServiceUrl"] = QgsServerProjectUtils::wmtsServiceUrl( *p, request, *serverSettings ).toStdString();
     info["capabilities"] = capabilities;
     // WMS layers
-    info[ "wms_root_name" ] = QgsServerProjectUtils::wmsRootName( *p ).toStdString();
+    info["wms_root_name"] = QgsServerProjectUtils::wmsRootName( *p ).toStdString();
     if ( QgsServerProjectUtils::wmsRootName( *p ).isEmpty() )
     {
-      info[ "wms_root_name" ] = p->title().toStdString();
+      info["wms_root_name"] = p->title().toStdString();
     }
     json wmsLayers;
     // For convenience:
@@ -446,19 +431,18 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
     QStringList wmsLayersQueryable;
     for ( const auto &l : constLayers )
     {
-      if ( ! wmsRestrictedLayers.contains( l->name() ) )
+      if ( !wmsRestrictedLayers.contains( l->name() ) )
       {
-        json wmsLayer
-        {
+        json wmsLayer {
           { "name", l->name().toStdString() },
           { "id", l->id().toStdString() },
           { "crs", l->crs().authid().toStdString() },
-          { "type", l->type() ==  Qgis::LayerType::Vector ? "vector" : "raster" },
+          { "type", l->type() == Qgis::LayerType::Vector ? "vector" : "raster" },
         };
         if ( l->type() == Qgis::LayerType::Vector )
         {
           const QgsVectorLayer *vl = static_cast<const QgsVectorLayer *>( l );
-          wmsLayer[ "pk" ] = vl->primaryKeyAttributes();
+          wmsLayer["pk"] = vl->primaryKeyAttributes();
           int fieldIdx { 0 };
           json fieldsData;
           const QgsFields &cFields { vl->fields() };
@@ -470,16 +454,12 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
               continue;
             }
             const QgsFieldConstraints::Constraints constraints { field.constraints().constraints() };
-            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull &&
-                                 field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique &&
-                                field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
-            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression &&
-                                       field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool notNull = constraints & QgsFieldConstraints::Constraint::ConstraintNotNull && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintNotNull ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool unique = constraints & QgsFieldConstraints::Constraint::ConstraintUnique && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintUnique ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
+            const bool hasExpression = constraints & QgsFieldConstraints::Constraint::ConstraintExpression && field.constraints().constraintStrength( QgsFieldConstraints::Constraint::ConstraintExpression ) == QgsFieldConstraints::ConstraintStrength::ConstraintStrengthHard;
             const QString defaultValue = vl->dataProvider()->defaultValueClause( fieldIdx );
-            const bool isReadOnly = notNull && unique && ! defaultValue.isEmpty();
-            fieldsData[ field.name().toStdString() ] =
-            {
+            const bool isReadOnly = notNull && unique && !defaultValue.isEmpty();
+            fieldsData[field.name().toStdString()] = {
               { "type", field.typeName().toStdString() },
               { "label", field.alias().isEmpty() ? field.name().toStdString() : field.alias().toStdString() },
               { "precision", field.precision() },
@@ -494,16 +474,16 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
 
             ++fieldIdx;
           }
-          wmsLayer[ "fields" ] = fieldsData;
+          wmsLayer["fields"] = fieldsData;
         }
-        wmsLayer[ "extent" ] = { l->extent().xMinimum(), l->extent().yMinimum(), l->extent().xMaximum(), l->extent().yMaximum() };
+        wmsLayer["extent"] = { l->extent().xMinimum(), l->extent().yMinimum(), l->extent().xMaximum(), l->extent().yMaximum() };
 
         // Fill maps
         const QString layerTitle { l->serverProperties()->title().isEmpty() ? l->name() : l->serverProperties()->title() };
-        const QString shortName { ! l->serverProperties()->shortName().isEmpty() ? l->serverProperties()->shortName() : l->name() };
+        const QString shortName { !l->serverProperties()->shortName().isEmpty() ? l->serverProperties()->shortName() : l->name() };
         const std::string layerIdentifier { useIds ? l->id().toStdString() : shortName.toStdString() };
-        wmsLayersTypenameIdMap[ layerIdentifier ] = l->id().toStdString();
-        wmsLayersTitleIdMap[ layerTitle.toStdString() ] = layerIdentifier;
+        wmsLayersTypenameIdMap[layerIdentifier] = l->id().toStdString();
+        wmsLayersTitleIdMap[layerTitle.toStdString()] = layerIdentifier;
 
         if ( l->flags() & QgsMapLayer::Searchable )
         {
@@ -517,58 +497,58 @@ json QgsLandingPageUtils::projectInfo( const QString &projectUri, const QgsServe
         // Layer metadata
         json layerMetadata;
         const auto &md { l->metadata() };
-        layerMetadata[ "abstract" ] = md.abstract( ).toStdString();
-        layerMetadata[ "categories" ] = jList( md.categories( ) );
-        layerMetadata[ "contacts" ] = jContactList( md.contacts() );
-        layerMetadata[ "encoding" ] = md.encoding( ).toStdString();
-        layerMetadata[ "fees" ] = md.fees( ).toStdString();
-        layerMetadata[ "history" ] = jList( md.history( ) );
-        layerMetadata[ "identifier" ] = md.identifier( ).toStdString();
-        layerMetadata[ "keywordVocabularies" ] = jList( md.keywordVocabularies( ) );
+        layerMetadata["abstract"] = md.abstract().toStdString();
+        layerMetadata["categories"] = jList( md.categories() );
+        layerMetadata["contacts"] = jContactList( md.contacts() );
+        layerMetadata["encoding"] = md.encoding().toStdString();
+        layerMetadata["fees"] = md.fees().toStdString();
+        layerMetadata["history"] = jList( md.history() );
+        layerMetadata["identifier"] = md.identifier().toStdString();
+        layerMetadata["keywordVocabularies"] = jList( md.keywordVocabularies() );
         // Keywords
         json jKeywords = json::object();
         const auto &cKw { md.keywords().keys() };
         const auto &cVals { md.keywords() };
         for ( const auto &k : cKw )
         {
-          jKeywords[ k.toStdString() ] = jList( cVals[ k ] );
+          jKeywords[k.toStdString()] = jList( cVals[k] );
         }
-        layerMetadata[ "keywords" ] = jKeywords;
-        layerMetadata[ "language" ] = md.language( ).toStdString();
-        layerMetadata[ "licenses" ] = jList( md.licenses( ) );
-        layerMetadata[ "links" ] = jLinksList( md.links( ) );
-        layerMetadata[ "parentIdentifier" ] = md.parentIdentifier( ).toStdString();
-        layerMetadata[ "rights" ] = jList( md.rights( ) );
-        layerMetadata[ "title" ] = md.title( ).toStdString();
-        layerMetadata[ "type" ] = md.type( ).toStdString();
-        layerMetadata[ "crs" ] = md.crs().authid().toStdString();
-        const auto cConstraints {  md.constraints() };
+        layerMetadata["keywords"] = jKeywords;
+        layerMetadata["language"] = md.language().toStdString();
+        layerMetadata["licenses"] = jList( md.licenses() );
+        layerMetadata["links"] = jLinksList( md.links() );
+        layerMetadata["parentIdentifier"] = md.parentIdentifier().toStdString();
+        layerMetadata["rights"] = jList( md.rights() );
+        layerMetadata["title"] = md.title().toStdString();
+        layerMetadata["type"] = md.type().toStdString();
+        layerMetadata["crs"] = md.crs().authid().toStdString();
+        const auto cConstraints { md.constraints() };
         json constraints = json::array();
         for ( const auto &c : cConstraints )
         {
           constraints.push_back(
-          {
-            { "type", c.type.toStdString() },
-            { "constraint", c.constraint.toStdString() },
-          } );
+            {
+              { "type", c.type.toStdString() },
+              { "constraint", c.constraint.toStdString() },
+            }
+          );
         }
-        layerMetadata[ "constraints" ] = constraints;
-        wmsLayer[ "metadata" ] = layerMetadata;
-        wmsLayers[ l->id().toStdString() ] = wmsLayer;
+        layerMetadata["constraints"] = constraints;
+        wmsLayer["metadata"] = layerMetadata;
+        wmsLayers[l->id().toStdString()] = wmsLayer;
       }
     }
 
-    info[ "wms_layers" ] = wmsLayers;
-    info[ "wms_layers_map" ] = wmsLayersTitleIdMap;
-    info[ "wms_layers_queryable" ] = jList( wmsLayersQueryable );
-    info[ "wms_layers_searchable" ] = jList( wmsLayersSearchable );
-    info[ "wms_layers_typename_id_map" ] = wmsLayersTypenameIdMap;
-    info[ "toc" ] = layerTree( *p, wmsLayersQueryable, wmsLayersSearchable, wmsRestrictedLayers );
-
+    info["wms_layers"] = wmsLayers;
+    info["wms_layers_map"] = wmsLayersTitleIdMap;
+    info["wms_layers_queryable"] = jList( wmsLayersQueryable );
+    info["wms_layers_searchable"] = jList( wmsLayersSearchable );
+    info["wms_layers_typename_id_map"] = wmsLayersTypenameIdMap;
+    info["toc"] = layerTree( *p, wmsLayersQueryable, wmsLayersSearchable, wmsRestrictedLayers );
   }
   else
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Could not read project '%1': skipping." ).arg( projectUri ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( u"Could not read project '%1': skipping."_s.arg( projectUri ), u"Landing Page"_s, Qgis::MessageLevel::Warning );
   }
   return info;
 }
@@ -579,8 +559,7 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
   const QStringList wfsLayerIds { QgsServerProjectUtils::wfsLayerIds( project ) };
 
 
-  std::function<json( const QgsLayerTreeNode *, const QString & )> harvest = [ & ]( const QgsLayerTreeNode * node, const QString & parentId ) -> json
-  {
+  std::function<json( const QgsLayerTreeNode *, const QString & )> harvest = [&]( const QgsLayerTreeNode *node, const QString &parentId ) -> json {
     const std::string nodeName { parentId.isEmpty() ? "root" : node->name().toStdString() };
     QString title { QString::fromStdString( nodeName ) };
     QString nodeIdentifier = title;
@@ -594,17 +573,17 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     {
       const QgsLayerTreeLayer *l { static_cast<const QgsLayerTreeLayer *>( node ) };
       if ( l->layer() && ( l->layer()->type() == Qgis::LayerType::Vector || l->layer()->type() == Qgis::LayerType::Raster )
-           && ! wmsRestrictedLayers.contains( l->name() ) )
+           && !wmsRestrictedLayers.contains( l->name() ) )
       {
-        rec[ "id" ] = l->layerId().toStdString();
+        rec["id"] = l->layerId().toStdString();
         nodeIdentifier = l->layerId();
-        rec[ "queryable" ] = wmsLayersQueryable.contains( l->layerId() );
-        rec[ "searchable" ] = wmsLayersSearchable.contains( l->layerId() );
-        rec[ "wfs_enabled" ] = wfsLayerIds.contains( l->layerId() );
-        const QString layerName { l->layer()->serverProperties()->shortName().isEmpty() ? l->layer()->name() : l->layer()->serverProperties()->shortName()};
-        rec[ "typename" ] = useIds ? l->layer()->id().toStdString() : layerName.toStdString();
+        rec["queryable"] = wmsLayersQueryable.contains( l->layerId() );
+        rec["searchable"] = wmsLayersSearchable.contains( l->layerId() );
+        rec["wfs_enabled"] = wfsLayerIds.contains( l->layerId() );
+        const QString layerName { l->layer()->serverProperties()->shortName().isEmpty() ? l->layer()->name() : l->layer()->serverProperties()->shortName() };
+        rec["typename"] = useIds ? l->layer()->id().toStdString() : layerName.toStdString();
         // Override title
-        if ( ! l->layer()->serverProperties()->title().isEmpty() )
+        if ( !l->layer()->serverProperties()->title().isEmpty() )
         {
           title = l->layer()->serverProperties()->title();
         }
@@ -620,17 +599,17 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
         rec["min_scale"] = l->layer()->minimumScale();
         rec["max_scale"] = l->layer()->maximumScale();
       }
-      rec[ "is_layer" ] = true;
-      rec[ "layer_type" ] = l->layer()->type() == Qgis::LayerType::Vector ? "vector" : "raster";
+      rec["is_layer"] = true;
+      rec["layer_type"] = l->layer()->type() == Qgis::LayerType::Vector ? "vector" : "raster";
     }
     else
     {
-      rec[ "is_layer" ] = false;
+      rec["is_layer"] = false;
     }
-    rec[ "title"] = title.toStdString();
-    const QString treeId = parentId.isEmpty() ? QStringLiteral( "root" ) : parentId + "." + nodeIdentifier;
-    rec[ "tree_id" ] = treeId.toStdString();
-    rec[ "tree_id_hash" ] = QCryptographicHash::hash( treeId.toUtf8(), QCryptographicHash::Md5 ).toHex().toStdString();
+    rec["title"] = title.toStdString();
+    const QString treeId = parentId.isEmpty() ? u"root"_s : parentId + "." + nodeIdentifier;
+    rec["tree_id"] = treeId.toStdString();
+    rec["tree_id_hash"] = QCryptographicHash::hash( treeId.toUtf8(), QCryptographicHash::Md5 ).toHex().toStdString();
 
     // Collect children
     json children = json::array();
@@ -638,12 +617,12 @@ json QgsLandingPageUtils::layerTree( const QgsProject &project, const QStringLis
     for ( const auto &c : cChildren )
     {
       const json harvested = harvest( c, treeId );
-      if ( ! harvested.is_null() )
+      if ( !harvested.is_null() )
       {
         children.push_back( harvested );
       }
     }
-    rec [ "children" ] = children;
+    rec["children"] = children;
 
     return rec;
   };
@@ -657,9 +636,7 @@ QString QgsLandingPageUtils::projectUriFromUrl( const QString &url, const QgsSer
   if ( match.hasMatch() )
   {
     const auto availableProjects { QgsLandingPageUtils::projects( settings ) };
-    return availableProjects.value( match.captured( QStringLiteral( "projectHash" ) ), QString() );
+    return availableProjects.value( match.captured( u"projectHash"_s ), QString() );
   }
   return QString();
 };
-
-

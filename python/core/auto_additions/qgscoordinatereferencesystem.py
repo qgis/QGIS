@@ -8,6 +8,7 @@ try:
     QgsCoordinateReferenceSystem.fromWkt = staticmethod(QgsCoordinateReferenceSystem.fromWkt)
     QgsCoordinateReferenceSystem.fromSrsId = staticmethod(QgsCoordinateReferenceSystem.fromSrsId)
     QgsCoordinateReferenceSystem.createCompoundCrs = staticmethod(QgsCoordinateReferenceSystem.createCompoundCrs)
+    QgsCoordinateReferenceSystem.createGeocentricCrs = staticmethod(QgsCoordinateReferenceSystem.createGeocentricCrs)
     QgsCoordinateReferenceSystem.setupESRIWktFix = staticmethod(QgsCoordinateReferenceSystem.setupESRIWktFix)
     QgsCoordinateReferenceSystem.syncDatabase = staticmethod(QgsCoordinateReferenceSystem.syncDatabase)
     QgsCoordinateReferenceSystem.recentProjections = staticmethod(QgsCoordinateReferenceSystem.recentProjections)
@@ -17,5 +18,5 @@ try:
     QgsCoordinateReferenceSystem.clearRecentCoordinateReferenceSystems = staticmethod(QgsCoordinateReferenceSystem.clearRecentCoordinateReferenceSystems)
     QgsCoordinateReferenceSystem.invalidateCache = staticmethod(QgsCoordinateReferenceSystem.invalidateCache)
     QgsCoordinateReferenceSystem.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass

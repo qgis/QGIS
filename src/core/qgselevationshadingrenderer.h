@@ -16,9 +16,9 @@
 #ifndef QGSELEVATIONSHADINGRENDERER_H
 #define QGSELEVATIONSHADINGRENDERER_H
 
+#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgselevationmap.h"
-#include "qgis.h"
 
 class QImage;
 class QgsElevationMap;
@@ -30,7 +30,7 @@ class QDomElement;
 
 /**
  * \ingroup core
- * \brief This class can render elevation shading on an image with different methods (eye dome lighting, hillshading, ...).
+ * \brief Renders elevation shading on an image with different methods (eye dome lighting, hillshading, ...).
  *
  * An instance of this class supports the following settings:
  *

@@ -14,7 +14,8 @@
 class QgsRasterLayerElevationProperties : QgsMapLayerElevationProperties
 {
 %Docstring(signature="appended")
-Raster layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
+Raster layer specific subclass of
+:py:class:`QgsMapLayerElevationProperties`.
 
 .. versionadded:: 3.26
 %End
@@ -26,7 +27,8 @@ Raster layer specific subclass of :py:class:`QgsMapLayerElevationProperties`.
 
     QgsRasterLayerElevationProperties( QObject *parent /TransferThis/ );
 %Docstring
-Constructor for QgsRasterLayerElevationProperties, with the specified ``parent`` object.
+Constructor for QgsRasterLayerElevationProperties, with the specified
+``parent`` object.
 %End
     ~QgsRasterLayerElevationProperties();
 
@@ -53,14 +55,16 @@ Constructor for QgsRasterLayerElevationProperties, with the specified ``parent``
 
     bool isEnabled() const;
 %Docstring
-Returns ``True`` if the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.
+Returns ``True`` if the elevation properties are enabled, i.e. the
+raster layer values represent an elevation surface.
 
 .. seealso:: :py:func:`setEnabled`
 %End
 
     void setEnabled( bool enabled );
 %Docstring
-Sets whether the elevation properties are enabled, i.e. the raster layer values represent an elevation surface.
+Sets whether the elevation properties are enabled, i.e. the raster layer
+values represent an elevation surface.
 
 .. seealso:: :py:func:`isEnabled`
 %End
@@ -175,9 +179,11 @@ Sets the fixed elevation range for each band.
 
     QgsDoubleRange elevationRangeForPixelValue( QgsRasterLayer *layer, int band, double pixelValue ) const;
 %Docstring
-Returns the elevation range corresponding to a raw pixel value from the specified ``band``.
+Returns the elevation range corresponding to a raw pixel value from the
+specified ``band``.
 
-Returns an infinite range if the pixel value does not correspond to an elevation value.
+Returns an infinite range if the pixel value does not correspond to an
+elevation value.
 
 .. versionadded:: 3.38
 %End
@@ -196,14 +202,16 @@ Returns the band corresponding to the specified ``range``.
 
     QgsLineSymbol *profileLineSymbol() const;
 %Docstring
-Returns the line symbol used to render the raster profile in elevation profile plots.
+Returns the line symbol used to render the raster profile in elevation
+profile plots.
 
 .. seealso:: :py:func:`setProfileLineSymbol`
 %End
 
     void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
-Sets the line ``symbol`` used to render the raster profile in elevation profile plots.
+Sets the line ``symbol`` used to render the raster profile in elevation
+profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
 
@@ -212,14 +220,16 @@ Ownership of ``symbol`` is transferred to the plot.
 
     QgsFillSymbol *profileFillSymbol() const;
 %Docstring
-Returns the fill symbol used to render the raster profile in elevation profile plots.
+Returns the fill symbol used to render the raster profile in elevation
+profile plots.
 
 .. seealso:: :py:func:`setProfileFillSymbol`
 %End
 
     void setProfileFillSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
-Sets the fill ``symbol`` used to render the raster profile in elevation profile plots.
+Sets the fill ``symbol`` used to render the raster profile in elevation
+profile plots.
 
 Ownership of ``symbol`` is transferred to the plot.
 
@@ -228,25 +238,30 @@ Ownership of ``symbol`` is transferred to the plot.
 
     Qgis::ProfileSurfaceSymbology profileSymbology() const;
 %Docstring
-Returns the symbology option used to render the raster profile in elevation profile plots.
+Returns the symbology option used to render the raster profile in
+elevation profile plots.
 
 .. seealso:: :py:func:`setProfileSymbology`
 %End
 
     void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
 %Docstring
-Sets the ``symbology`` option used to render the raster profile in elevation profile plots.
+Sets the ``symbology`` option used to render the raster profile in
+elevation profile plots.
 
 .. seealso:: :py:func:`setProfileSymbology`
 %End
 
     double elevationLimit() const;
 %Docstring
-Returns the elevation limit, which is used when :py:func:`~QgsRasterLayerElevationProperties.profileSymbology` is
-:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or :py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove
-to limit the fill to a specific elevation range.
+Returns the elevation limit, which is used when
+:py:func:`~QgsRasterLayerElevationProperties.profileSymbology` is
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove to limit the fill to
+a specific elevation range.
 
-By default this is NaN, which indicates that there is no elevation limit.
+By default this is NaN, which indicates that there is no elevation
+limit.
 
 .. seealso:: :py:func:`setElevationLimit`
 
@@ -255,9 +270,11 @@ By default this is NaN, which indicates that there is no elevation limit.
 
     void setElevationLimit( double limit );
 %Docstring
-Sets the elevation ``limit``, which is used when :py:func:`~QgsRasterLayerElevationProperties.profileSymbology` is
-:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or :py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove
-to limit the fill to a specific elevation range.
+Sets the elevation ``limit``, which is used when
+:py:func:`~QgsRasterLayerElevationProperties.profileSymbology` is
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove to limit the fill to
+a specific elevation range.
 
 Set to NaN to indicate that there is no elevation limit.
 
@@ -270,14 +287,15 @@ Set to NaN to indicate that there is no elevation limit.
 %Docstring
 Returns ``True`` if a raster ``layer`` looks like a DEM.
 
-This method applies some heuristics to ``layer`` to determine whether it looks like a candidate
-for a DEM layer.
+This method applies some heuristics to ``layer`` to determine whether it
+looks like a candidate for a DEM layer.
 
 Specifically, it checks:
 
 - the layer's name for DEM-like wording hints
 - whether the layer contains a single band
-- whether the layer contains an attribute table (if so, it's unlikely to be a DEM)
+- whether the layer contains an attribute table (if so, it's unlikely to
+  be a DEM)
 - the layer's data type
 
 .. versionadded:: 3.32

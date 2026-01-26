@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgsencodingfiledialog.h"
-#include "qgsproject.h"
+
 #include "qgslogger.h"
-#include "qgsvectordataprovider.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsvectordataprovider.h"
 
 #include <QComboBox>
-#include <QPushButton>
+#include <QDialogButtonBox>
 #include <QLabel>
 #include <QLayout>
+#include <QPushButton>
 #include <QTextCodec>
-#include <QDialogButtonBox>
 
-QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
-    const QString &caption, const QString &directory,
-    const QString &filter, const QString &encoding )
+#include "moc_qgsencodingfiledialog.cpp"
+
+QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent, const QString &caption, const QString &directory, const QString &filter, const QString &encoding )
   : QFileDialog( parent, caption, directory, filter )
 {
-  mCancelAll       = false;
+  mCancelAll = false;
   mCancelAllButton = nullptr;
   mEncodingComboBox = new QComboBox( this );
   QLabel *l = new QLabel( tr( "Encoding:" ), this );
@@ -47,7 +48,7 @@ QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent,
   if ( encoding.isEmpty() )
   {
     const QgsSettings settings;
-    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
+    enc = settings.value( u"UI/encoding"_s, "System" ).toString();
   }
 
   // The specified decoding is added if not existing already, and then set current.
@@ -78,13 +79,13 @@ QString QgsEncodingFileDialog::encoding() const
 void QgsEncodingFileDialog::saveUsedEncoding()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/encoding" ), encoding() );
-  QgsDebugMsgLevel( QStringLiteral( "Set encoding %1 as default." ).arg( encoding() ), 2 );
+  settings.setValue( u"UI/encoding"_s, encoding() );
+  QgsDebugMsgLevel( u"Set encoding %1 as default."_s.arg( encoding() ), 2 );
 }
 
 void QgsEncodingFileDialog::addCancelAll()
 {
-  if ( ! mCancelAllButton )
+  if ( !mCancelAllButton )
   {
     mCancelAllButton = new QPushButton( tr( "Cancel &All" ), nullptr );
     layout()->addWidget( mCancelAllButton ); // Ownership transferred, no need to delete later on
@@ -92,7 +93,7 @@ void QgsEncodingFileDialog::addCancelAll()
   }
 }
 
-bool QgsEncodingFileDialog::cancelAll()
+bool QgsEncodingFileDialog::cancelAll() const
 {
   return mCancelAll;
 }
@@ -124,8 +125,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   hLayout->addWidget( mEncodingComboBox, 1 );
   layout->addLayout( hLayout );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-      Qt::Horizontal, this );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Ok )->setDefault( true );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
@@ -140,7 +140,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   if ( encoding.isEmpty() )
   {
     const QgsSettings settings;
-    enc = settings.value( QStringLiteral( "UI/encoding" ), "System" ).toString();
+    enc = settings.value( u"UI/encoding"_s, "System" ).toString();
   }
 
   setEncoding( enc );

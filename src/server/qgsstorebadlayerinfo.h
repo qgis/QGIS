@@ -18,20 +18,20 @@
 #ifndef QGSSTOREBADLAYERINFO_H
 #define QGSSTOREBADLAYERINFO_H
 
-#include "qgsprojectbadlayerhandler.h"
 #include "qgis_server.h"
-#include <QStringList>
+#include "qgsprojectbadlayerhandler.h"
+
 #include <QMap>
+#include <QStringList>
 
 /**
  * \ingroup server
- * \brief Stores layer ids of bad layers
+ * \brief Stores layer IDs for bad (broken) layers.
  * \since QGIS 3.6
  */
-class SERVER_EXPORT QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
+class SERVER_EXPORT QgsStoreBadLayerInfo : public QgsProjectBadLayerHandler
 {
   public:
-
     /**
      * Default constructor
      */
@@ -41,7 +41,7 @@ class SERVER_EXPORT QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
      * \brief handleBadLayers
      * \param layers layer nodes
      */
-    void handleBadLayers( const QList<QDomNode> &layers );
+    void handleBadLayers( const QList<QDomNode> &layers ) override;
 
     /**
      * \brief badLayers

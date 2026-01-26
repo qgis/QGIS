@@ -18,77 +18,82 @@
 #include "qgscopcpointcloudindex.h"
 
 #include <fstream>
-#include <QFile>
-#include <QtDebug>
-#include <QQueue>
-#include <QMutexLocker>
-#include <QJsonDocument>
-#include <QJsonObject>
+#include <memory>
 
+#include "lazperf/vlr.hpp"
+#include "qgsapplication.h"
+#include "qgsauthmanager.h"
+#include "qgsbox3d.h"
+#include "qgscachedpointcloudblockrequest.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscopcpointcloudblockrequest.h"
 #include "qgseptdecoder.h"
 #include "qgslazdecoder.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
 #include "qgslogger.h"
-#include "qgsfeedback.h"
 #include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudblockrequest.h"
 #include "qgspointcloudexpression.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrequest.h"
+#include "qgssetrequestinitiator_p.h"
 
-#include "lazperf/lazperf.hpp"
-#include "lazperf/readers.hpp"
-#include "lazperf/vlr.hpp"
+#include <QFile>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMutexLocker>
+#include <QQueue>
+#include <QtDebug>
+#include <qnamespace.h>
 
 ///@cond PRIVATE
 
-#define PROVIDER_KEY QStringLiteral( "copc" )
-#define PROVIDER_DESCRIPTION QStringLiteral( "COPC point cloud provider" )
+#define PROVIDER_KEY u"copc"_s
+#define PROVIDER_DESCRIPTION u"COPC point cloud provider"_s
 
 QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
-std::unique_ptr<QgsPointCloudIndex> QgsCopcPointCloudIndex::clone() const
+void QgsCopcPointCloudIndex::load( const QString &urlString, const QString &authcfg )
 {
-  QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
-  QMutexLocker locker( &mHierarchyMutex );
-  copyCommonProperties( clone );
-  return std::unique_ptr<QgsPointCloudIndex>( clone );
-}
-
-void QgsCopcPointCloudIndex::load( const QString &fileName )
-{
-  mUri = fileName;
-  mCopcFile.open( QgsLazDecoder::toNativePath( fileName ), std::ios::binary );
-
-  if ( !mCopcFile.is_open() || !mCopcFile.good() )
+  QUrl url = urlString;
+  // Treat non-URLs as local files
+  if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
   {
-    mError = tr( "Unable to open %1 for reading" ).arg( fileName );
-    mIsValid = false;
-    return;
+    mAuthCfg = authcfg;
+    mAccessType = Qgis::PointCloudAccessType::Remote;
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromUrl( url, authcfg ) );
+    // now store the uri as it might have been updated due to redirects
+    mUri = url.toString();
+  }
+  else
+  {
+    mAccessType = Qgis::PointCloudAccessType::Local;
+    mUri = urlString;
+    mCopcFile.open( QgsLazDecoder::toNativePath( urlString ), std::ios::binary );
+    if ( mCopcFile.fail() )
+    {
+      mError = QObject::tr( "Unable to open %1 for reading" ).arg( urlString );
+      mIsValid = false;
+      return;
+    }
+    mLazInfo = std::make_unique<QgsLazInfo>( QgsLazInfo::fromFile( mCopcFile ) );
   }
 
-  mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
-  mIsValid = mLazInfo->isValid();
-  if ( mIsValid )
-  {
-    mIsValid = loadSchema( *mLazInfo.get() );
-  }
+  mIsValid = mLazInfo->isValid() && loadSchema( *mLazInfo.get() ) && loadHierarchy();
   if ( !mIsValid )
   {
-    mError = tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( fileName, mLazInfo->error() );
-    return;
+    mError = QObject::tr( "Unable to recognize %1 as a LAZ file: \"%2\"" ).arg( urlString, mLazInfo->error() );
   }
-
-  loadHierarchy();
 }
 
 bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
 {
-  QByteArray copcInfoVlrData = lazInfo.vlrData( QStringLiteral( "copc" ), 1 );
+  QByteArray copcInfoVlrData = lazInfo.vlrData( u"copc"_s, 1 );
   if ( copcInfoVlrData.isEmpty() )
   {
-    mError = tr( "Invalid COPC file" );
+    mError = QObject::tr( "Invalid COPC file" );
     return false;
   }
   mCopcInfoVlr.fill( copcInfoVlrData.data(), copcInfoVlrData.size() );
@@ -113,73 +118,126 @@ bool QgsCopcPointCloudIndex::loadSchema( QgsLazInfo &lazInfo )
   const double ymax = mCopcInfoVlr.center_y + mCopcInfoVlr.halfsize;
   const double zmax = mCopcInfoVlr.center_z + mCopcInfoVlr.halfsize;
 
-  mRootBounds = QgsPointCloudDataBounds(
-                  ( xmin - mOffset.x() ) / mScale.x(),
-                  ( ymin - mOffset.y() ) / mScale.y(),
-                  ( zmin - mOffset.z() ) / mScale.z(),
-                  ( xmax - mOffset.x() ) / mScale.x(),
-                  ( ymax - mOffset.y() ) / mScale.y(),
-                  ( zmax - mOffset.z() ) / mScale.z()
-                );
+  mRootBounds = QgsBox3D( xmin, ymin, zmin, xmax, ymax, zmax );
 
-  double calculatedSpan = nodeMapExtent( root() ).width() / mCopcInfoVlr.spacing;
-  mSpan = calculatedSpan;
+  // TODO: Rounding?
+  mSpan = mRootBounds.width() / mCopcInfoVlr.spacing;
 
-#ifdef QGIS_DEBUG
+#ifdef QGISDEBUG
   double dx = xmax - xmin, dy = ymax - ymin, dz = zmax - zmin;
-  QgsDebugMsgLevel( QStringLiteral( "lvl0 node size in CRS units: %1 %2 %3" ).arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl0 %1" ).arg( dx / mSpan ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl1 %1" ).arg( dx / mSpan / 2 ), 2 );
-  QgsDebugMsgLevel( QStringLiteral( "res at lvl2 %1 with node size %2" ).arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
+  QgsDebugMsgLevel( u"lvl0 node size in CRS units: %1 %2 %3"_s.arg( dx ).arg( dy ).arg( dz ), 2 );    // all dims should be the same
+  QgsDebugMsgLevel( u"res at lvl0 %1"_s.arg( dx / mSpan ), 2 );
+  QgsDebugMsgLevel( u"res at lvl1 %1"_s.arg( dx / mSpan / 2 ), 2 );
+  QgsDebugMsgLevel( u"res at lvl2 %1 with node size %2"_s.arg( dx / mSpan / 4 ).arg( dx / 4 ), 2 );
 #endif
 
   return true;
 }
 
-std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
+std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
     return std::unique_ptr<QgsPointCloudBlock>( cached );
   }
 
+  std::unique_ptr<QgsPointCloudBlock> block;
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
+  {
+    QByteArray rawBlockData = rawNodeData( n );
+    if ( rawBlockData.isEmpty() )
+      return nullptr; // Error fetching block
+
+    mHierarchyMutex.lock();
+    auto pointCount = mHierarchy.value( n );
+    mHierarchyMutex.unlock();
+
+    // we need to create a copy of the expression to pass to the decoder
+    // as the same QgsPointCloudExpression object mighgt be concurrently
+    // used on another thread, for example in a 3d view
+    QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
+    QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+    requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+
+    QgsRectangle filterRect = request.filterRect();
+
+    block = QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
+  }
+  else
+  {
+
+    std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
+    if ( !blockRequest )
+      return nullptr;
+
+    QEventLoop loop;
+    QObject::connect( blockRequest.get(), &QgsPointCloudBlockRequest::finished, &loop, &QEventLoop::quit );
+    loop.exec();
+
+    block = blockRequest->takeBlock();
+
+    if ( !block )
+      QgsDebugError( u"Error downloading node %1 data, error : %2 "_s.arg( n.toString(), blockRequest->errorStr() ) );
+  }
+
+  storeNodeDataToCache( block.get(), n, request );
+  return block;
+}
+
+QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+{
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
+    return nullptr; // TODO
+  if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
+  {
+    return new QgsCachedPointCloudBlockRequest( cached,  n, mUri, attributes(), request.attributes(),
+           scale(), offset(), mFilterExpression, request.filterRect() );
+  }
+
+  if ( !fetchNodeHierarchy( n ) )
+    return nullptr;
+  QMutexLocker locker( &mHierarchyMutex );
+
+  // we need to create a copy of the expression to pass to the decoder
+  // as the same QgsPointCloudExpression object might be concurrently
+  // used on another thread, for example in a 3d view
+  QgsPointCloudExpression filterExpression = request.ignoreIndexFilterEnabled() ? QgsPointCloudExpression() : mFilterExpression;
+  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
+  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
+  auto [ blockOffset, blockSize ] = mHierarchyNodePos.value( n );
+  int pointCount = mHierarchy.value( n );
+
+  return new QgsCopcPointCloudBlockRequest( n, mUri, attributes(), requestAttributes,
+         scale(), offset(), filterExpression, request.filterRect(),
+         blockOffset, blockSize, pointCount, *mLazInfo.get(), mAuthCfg );
+}
+
+
+const QByteArray QgsCopcPointCloudIndex::rawNodeData( QgsPointCloudNodeId n ) const
+{
   const bool found = fetchNodeHierarchy( n );
   if ( !found )
-    return nullptr;
+    return {};
   mHierarchyMutex.lock();
-  int pointCount = mHierarchy.value( n );
   auto [blockOffset, blockSize] = mHierarchyNodePos.value( n );
   mHierarchyMutex.unlock();
 
-  // we need to create a copy of the expression to pass to the decoder
-  // as the same QgsPointCloudExpression object mighgt be concurrently
-  // used on another thread, for example in a 3d view
-  QgsPointCloudExpression filterExpression = mFilterExpression;
-  QgsPointCloudAttributeCollection requestAttributes = request.attributes();
-  requestAttributes.extend( attributes(), filterExpression.referencedAttributes() );
-
-  QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
-  std::ifstream file( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
-  file.seekg( blockOffset );
-  file.read( rawBlockData.data(), blockSize );
-  if ( !file )
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
   {
-    QgsDebugError( QStringLiteral( "Could not read file %1" ).arg( mUri ) );
-    return nullptr;
+    // Open a new file descriptor so we can read multiple blocks concurrently
+    QByteArray rawBlockData( blockSize, Qt::Initialization::Uninitialized );
+    std::ifstream file( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
+    file.seekg( blockOffset );
+    file.read( rawBlockData.data(), blockSize );
+    if ( !file )
+    {
+      QgsDebugError( u"Could not read file %1"_s.arg( mUri ) );
+      return {};
+    }
+    return rawBlockData;
   }
-  QgsRectangle filterRect = request.filterRect();
-
-  std::unique_ptr<QgsPointCloudBlock> decoded = QgsLazDecoder::decompressCopc( rawBlockData, *mLazInfo.get(), pointCount, requestAttributes, filterExpression, filterRect );
-  storeNodeDataToCache( decoded.get(), n, request );
-  return decoded;
-}
-
-QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request )
-{
-  Q_UNUSED( n )
-  Q_UNUSED( request )
-  Q_ASSERT( false );
-  return nullptr; // unsupported
+  else
+    return readRange( blockOffset, blockSize );
 }
 
 QgsCoordinateReferenceSystem QgsCopcPointCloudIndex::crs() const
@@ -192,7 +250,7 @@ qint64 QgsCopcPointCloudIndex::pointCount() const
   return mLazInfo->pointCount();
 }
 
-bool QgsCopcPointCloudIndex::loadHierarchy()
+bool QgsCopcPointCloudIndex::loadHierarchy() const
 {
   fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
   return true;
@@ -200,28 +258,36 @@ bool QgsCopcPointCloudIndex::loadHierarchy()
 
 bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
 {
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Can't write statistics to remote file \"%1\"" ).arg( mUri ) );
+    return false;
+  }
+
   if ( mLazInfo->version() != qMakePair<uint8_t, uint8_t>( 1, 4 ) )
   {
     // EVLR isn't supported in the first place
-    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": laz version != 1.4" ).arg( mUri ) );
+    QgsMessageLog::logMessage( QObject::tr( "Can't write statistics to \"%1\": laz version != 1.4" ).arg( mUri ) );
     return false;
   }
 
   QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
   if ( !statisticsEvlrData.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "Can't write statistics to \"%1\": file already contains COPC statistics!" ).arg( mUri ) );
+    QgsMessageLog::logMessage( QObject::tr( "Can't write statistics to \"%1\": file already contains COPC statistics!" ).arg( mUri ) );
     return false;
   }
 
   lazperf::evlr_header statsEvlrHeader;
   statsEvlrHeader.user_id = "qgis";
+  statsEvlrHeader.reserved = 0;
   statsEvlrHeader.record_id = 0;
   statsEvlrHeader.description = "Contains calculated statistics";
   QByteArray statsJson = stats.toStatisticsJson();
   statsEvlrHeader.data_length = statsJson.size();
 
   // Save the EVLRs to the end of the original file (while erasing the existing EVLRs in the file)
+  QMutexLocker locker( &mFileMutex );
   mCopcFile.close();
   std::fstream copcFile;
   copcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios_base::binary | std::iostream::in | std::iostream::out );
@@ -241,7 +307,7 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Couldn't open COPC file \"%1\" to write statistics" ).arg( mUri ) );
+    QgsMessageLog::logMessage( QObject::tr( "Couldn't open COPC file \"%1\" to write statistics" ).arg( mUri ) );
     return false;
   }
   copcFile.close();
@@ -249,16 +315,18 @@ bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
   return true;
 }
 
-QgsPointCloudStatistics QgsCopcPointCloudIndex::readStatistics()
+QgsPointCloudStatistics QgsCopcPointCloudIndex::metadataStatistics() const
 {
-  QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
-
-  if ( statisticsEvlrData.isEmpty() )
+  if ( ! mStatistics )
   {
-    return QgsPointCloudStatistics();
+    const QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
+    if ( statisticsEvlrData.isEmpty() )
+      mStatistics = QgsAbstractPointCloudIndex::metadataStatistics();
+    else
+      mStatistics = QgsPointCloudStatistics::fromStatisticsJson( statisticsEvlrData );
   }
 
-  return QgsPointCloudStatistics::fromStatisticsJson( statisticsEvlrData );
+  return *mStatistics;
 }
 
 bool QgsCopcPointCloudIndex::isValid() const
@@ -266,19 +334,19 @@ bool QgsCopcPointCloudIndex::isValid() const
   return mIsValid;
 }
 
-bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n ) const
+bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const QgsPointCloudNodeId &n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );
 
-  QVector<IndexedPointCloudNode> ancestors;
-  IndexedPointCloudNode foundRoot = n;
+  QVector<QgsPointCloudNodeId> ancestors;
+  QgsPointCloudNodeId foundRoot = n;
   while ( !mHierarchy.contains( foundRoot ) )
   {
     ancestors.push_front( foundRoot );
     foundRoot = foundRoot.parentNode();
   }
   ancestors.push_front( foundRoot );
-  for ( IndexedPointCloudNode n : ancestors )
+  for ( QgsPointCloudNodeId n : ancestors )
   {
     auto hierarchyIt = mHierarchy.constFind( n );
     if ( hierarchyIt == mHierarchy.constEnd() )
@@ -297,11 +365,13 @@ bool QgsCopcPointCloudIndex::fetchNodeHierarchy( const IndexedPointCloudNode &n 
 
 void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteSize ) const
 {
-  mCopcFile.seekg( offset );
-  std::unique_ptr<char []> data( new char[ byteSize ] );
-  mCopcFile.read( data.get(), byteSize );
+  Q_ASSERT( byteSize > 0 );
 
-  populateHierarchy( data.get(), byteSize );
+  QByteArray data = readRange( offset, byteSize );
+  if ( data.isEmpty() )
+    return;
+
+  populateHierarchy( data.constData(), byteSize );
 }
 
 void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, uint64_t byteSize ) const
@@ -327,58 +397,98 @@ void QgsCopcPointCloudIndex::populateHierarchy( const char *hierarchyPageData, u
   for ( uint64_t i = 0; i < byteSize; i += sizeof( CopcEntry ) )
   {
     const CopcEntry *entry = reinterpret_cast<const CopcEntry *>( hierarchyPageData + i );
-    const IndexedPointCloudNode nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
+    const QgsPointCloudNodeId nodeId( entry->key.level, entry->key.x, entry->key.y, entry->key.z );
     mHierarchy[nodeId] = entry->pointCount;
     mHierarchyNodePos.insert( nodeId, QPair<uint64_t, int32_t>( entry->offset, entry->byteSize ) );
   }
 }
 
-bool QgsCopcPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
+bool QgsCopcPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
 {
   return fetchNodeHierarchy( n );
 }
 
-QList<IndexedPointCloudNode> QgsCopcPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
+QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
-  fetchNodeHierarchy( n );
+  bool nodeFound = fetchNodeHierarchy( id );
+  Q_ASSERT( nodeFound );
 
-  mHierarchyMutex.lock();
+  qint64 pointCount;
+  {
+    QMutexLocker locker( &mHierarchyMutex );
+    pointCount = mHierarchy.value( id, -1 );
+  }
 
-  auto hierarchyIt = mHierarchy.constFind( n );
-  Q_ASSERT( hierarchyIt != mHierarchy.constEnd() );
-  QList<IndexedPointCloudNode> lst;
-  lst.reserve( 8 );
-  const int d = n.d() + 1;
-  const int x = n.x() * 2;
-  const int y = n.y() * 2;
-  const int z = n.z() * 2;
-  mHierarchyMutex.unlock();
+  QList<QgsPointCloudNodeId> children;
+  children.reserve( 8 );
+  const int d = id.d() + 1;
+  const int x = id.x() * 2;
+  const int y = id.y() * 2;
+  const int z = id.z() * 2;
 
   for ( int i = 0; i < 8; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-    const IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
-    if ( fetchNodeHierarchy( n2 ) && mHierarchy[n] >= 0 )
-      lst.append( n2 );
+    const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
+    bool found = fetchNodeHierarchy( n2 );
+    {
+      QMutexLocker locker( &mHierarchyMutex );
+      if ( found && mHierarchy[id] >= 0 )
+        children.append( n2 );
+    }
   }
-  return lst;
+
+  QgsBox3D bounds = QgsPointCloudNode::bounds( mRootBounds, id );
+  return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
 }
 
-void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *destination ) const
+QByteArray QgsCopcPointCloudIndex::readRange( uint64_t offset, uint64_t length ) const
 {
-  QgsPointCloudIndex::copyCommonProperties( destination );
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
+  {
+    QMutexLocker locker( &mFileMutex );
 
-  // QgsCopcPointCloudIndex specific fields
-  destination->mIsValid = mIsValid;
-  destination->mUri = mUri;
-  destination->mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
-  destination->mCopcInfoVlr = mCopcInfoVlr;
-  destination->mHierarchyNodePos = mHierarchyNodePos;
-  destination->mOriginalMetadata = mOriginalMetadata;
-  destination->mLazInfo.reset( new QgsLazInfo( *mLazInfo ) );
+    QByteArray buffer( length, Qt::Initialization::Uninitialized );
+    mCopcFile.seekg( offset );
+    mCopcFile.read( buffer.data(), length );
+    if ( mCopcFile.eof() )
+      QgsDebugError( u"Read past end of file (path %1 offset %2 length %3)"_s.arg( mUri ).arg( offset ).arg( length ) );
+    if ( !mCopcFile )
+      QgsDebugError( u"Error reading %1"_s.arg( mUri ) );
+    return buffer;
+  }
+  else
+  {
+    QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
+    QgsSetRequestInitiatorClass( nr, u"QgsCopcPointCloudIndex"_s );
+    nr.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
+    nr.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+    QByteArray queryRange = u"bytes=%1-%2"_s.arg( offset ).arg( offset + length - 1 ).toLocal8Bit();
+    nr.setRawHeader( "Range", queryRange );
+
+    if ( !mAuthCfg.isEmpty() && !QgsApplication::authManager()->updateNetworkRequest( nr, mAuthCfg ) )
+    {
+      QgsDebugError( u"Network request update failed for authcfg: %1"_s.arg( mAuthCfg ) );
+      return {};
+    }
+
+    std::unique_ptr<QgsTileDownloadManagerReply> reply( QgsApplication::tileDownloadManager()->get( nr ) );
+
+    QEventLoop loop;
+    QObject::connect( reply.get(), &QgsTileDownloadManagerReply::finished, &loop, &QEventLoop::quit );
+    loop.exec();
+
+    if ( reply->error() != QNetworkReply::NoError )
+    {
+      QgsDebugError( u"Request failed: %1 (offset %1 length %2)"_s.arg( mUri ).arg( offset ).arg( length ) );
+      return {};
+    }
+
+    return reply->data();
+  }
 }
 
-QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
+QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData() const
 {
   uint64_t offset = mLazInfo->firstEvlrOffset();
   uint32_t evlrCount = mLazInfo->evlrCount();
@@ -388,16 +498,13 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
   for ( uint32_t i = 0; i < evlrCount; ++i )
   {
     lazperf::evlr_header header;
-    mCopcFile.seekg( offset );
-    char buffer[60];
-    mCopcFile.read( buffer, 60 );
-    header.fill( buffer, 60 );
 
-    // UserID: "qgis", record id: 0
+    QByteArray buffer = readRange( offset, 60 );
+    header.fill( buffer.data(), buffer.size() );
+
     if ( header.user_id == "qgis" && header.record_id == 0 )
     {
-      statisticsEvlrData = QByteArray( header.data_length, Qt::Initialization::Uninitialized );
-      mCopcFile.read( statisticsEvlrData.data(), header.data_length );
+      statisticsEvlrData = readRange( offset + 60, header.data_length );
       break;
     }
 
@@ -405,6 +512,38 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData()
   }
 
   return statisticsEvlrData;
+}
+
+void QgsCopcPointCloudIndex::reset()
+{
+  // QgsAbstractPointCloudIndex
+  mExtent = QgsRectangle();
+  mZMin = 0;
+  mZMax = 0;
+  mHierarchy.clear();
+  mScale = QgsVector3D();
+  mOffset = QgsVector3D();
+  mRootBounds = QgsBox3D();
+  mAttributes = QgsPointCloudAttributeCollection();
+  mSpan = 0;
+  mError.clear();
+
+  // QgsCopcPointCloudIndex
+  mIsValid = false;
+  mAccessType = Qgis::PointCloudAccessType::Local;
+  mCopcFile.close();
+  mOriginalMetadata.clear();
+  mStatistics.reset();
+  mLazInfo.reset();
+  mHierarchyNodePos.clear();
+}
+
+QVariantMap QgsCopcPointCloudIndex::extraMetadata() const
+{
+  return
+  {
+    { u"CopcGpsTimeFlag"_s, mLazInfo.get()->header().global_encoding & 1 },
+  };
 }
 
 ///@endcond

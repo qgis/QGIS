@@ -17,9 +17,6 @@ endif()
 
 # a simple app for testing GUI of renderers
 # These tests are old and are never run so removed for now.
-#set(rendererv2gui_SRCS testrenderergui.cpp)
-#set(rendererv2gui_HDRS testrenderergui.h)
-#add_executable(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
 
 #ADD_QGIS_TEST(histogramtest testqgsrasterhistogram.cpp)
 
@@ -31,9 +28,12 @@ set(TESTS
   testqgsmaptooledit.cpp
   testqgscategorizedrendererwidget.cpp
   testqgsdatumtransformdialog.cpp
+  testqgsdiagramproperties.cpp
   testqgsdoublespinbox.cpp
   testqgsdualview.cpp
   testqgsattributeform.cpp
+  testqgsattributesformmodel.cpp
+  testqgsattributesformproperties.cpp
   testqgsdatetimeedit.cpp
   testqgsdockwidget.cpp
   testqgsfieldexpressionwidget.cpp
@@ -46,6 +46,7 @@ set(TESTS
   testqgsmessagebar.cpp
   testprojectionissues.cpp
   testqgsgui.cpp
+  testqgsgdalguiutils.cpp
   testprocessinggui.cpp
   testqgsprocessingmodel.cpp
   testqgsrubberband.cpp
@@ -59,6 +60,7 @@ set(TESTS
   testqgsfiledownloader.cpp
   testqgslayoutgui.cpp
   testqgslayoutview.cpp
+  testqgsmaptooleditblanksegments.cpp
   testqgsvaluemapwidgetwrapper.cpp
   testqgsvaluemapconfigdlg.cpp
   testqgsvaluerelationwidgetwrapper.cpp
@@ -78,6 +80,8 @@ set(TESTS
   testqgscompoundcolorwidget.cpp
   testqgsmaskingwidget.cpp
   testqgssvgselectorwidget.cpp
+  testqgslabelingwidget.cpp
+  testqgsmeshrendererscalarsettingswidget.cpp
 )
 
 foreach(TESTSRC ${TESTS})

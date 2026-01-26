@@ -8,6 +8,7 @@
 
 
 
+
 class QgsFieldConditionalFormatWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -18,19 +19,18 @@ A widget for customizing conditional formatting options.
 #include "qgsfieldconditionalformatwidget.h"
 %End
   public:
-
     explicit QgsFieldConditionalFormatWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldConditionalFormatWidget.
 %End
 
- void viewRules() /Deprecated/;
+ void viewRules() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 5.0."/;
 %Docstring
 Switches the widget to the rules page.
 
 .. deprecated:: 3.40
 
-   No longer used, will be removed in QGIS 4.0.
+   No longer used, will be removed in QGIS 5.0.
 %End
 
     void setLayer( QgsVectorLayer *layer );
@@ -42,25 +42,24 @@ Sets the vector ``layer`` associated with the widget.
     void editStyle( int index, const QgsConditionalStyle &style );
 %Docstring
 Switches the widget to the edit style mode for the specified style,
-where ``index`` is the index of the conditional style to edit
-and ``style`` is the initial definition of the style.
+where ``index`` is the index of the conditional style to edit and
+``style`` is the initial definition of the style.
 %End
 
- void loadStyle( const QgsConditionalStyle &style ) /Deprecated/;
+ void loadStyle( const QgsConditionalStyle &style ) /Deprecated="Since 3.40. No longer used, use QgsEditConditionalFormatRuleWidget.loadStyle instead."/;
 %Docstring
-
 .. deprecated:: 3.40
 
    No longer used, use :py:class:`QgsEditConditionalFormatRuleWidget`.loadStyle instead.
 %End
 
- void reset() /Deprecated/;
+ void reset() /Deprecated="Since 3.40. No longer used, will be removed in QGIS 5.0."/;
 %Docstring
 Resets the formatting options to their default state.
 
 .. deprecated:: 3.40
 
-   No longer used, will be removed in QGIS 4.0.
+   No longer used, will be removed in QGIS 5.0.
 %End
 
     void setPresets( const QList<QgsConditionalStyle> &styles );
@@ -71,7 +70,9 @@ Sets the preset ``styles`` that can be used for quick pick.
     static QList<QgsConditionalStyle> defaultPresets();
 %Docstring
 Returns a list of the default presets. Normally used when the widget is
-created, however calling :py:func:`~QgsFieldConditionalFormatWidget.setPresets` will override the default styles.
+created, however calling
+:py:func:`~QgsFieldConditionalFormatWidget.setPresets` will override the
+default styles.
 %End
 
   signals:
@@ -99,10 +100,10 @@ A widget for customizing an individual conditional formatting rule.
 #include "qgsfieldconditionalformatwidget.h"
 %End
   public:
-
     explicit QgsEditConditionalFormatRuleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for :py:class:`QgsFieldConditionalFormatWidget`, with the specified ``parent`` widget.
+Constructor for :py:class:`QgsFieldConditionalFormatWidget`, with the
+specified ``parent`` widget.
 %End
 
     void setLayer( QgsVectorLayer *layer );

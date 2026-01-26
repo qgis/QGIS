@@ -22,13 +22,14 @@
 
 ///@cond PRIVATE
 
-#include <QString>
 #include <memory>
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
+
+#include <QString>
 
 /**
  * \ingroup core
@@ -127,6 +128,9 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      * \endcode
      */
     bool addDataset( const QString &uri ) override;
+
+    bool removeDatasetGroup( int index ) override;
+
     QStringList extraDatasets() const override;
     int datasetGroupCount() const override;
     int datasetCount( int groupIndex ) const override;
@@ -139,6 +143,8 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
 
     bool isFaceActive( QgsMeshDatasetIndex index, int faceIndex ) const override;
     QgsMeshDataBlock areFacesActive( QgsMeshDatasetIndex index, int faceIndex, int count ) const override;
+
+    using QgsMeshDataProvider::persistDatasetGroup;
     bool persistDatasetGroup( const QString &outputFilePath,
                               const QString &outputDriver,
                               const QgsMeshDatasetGroupMetadata &meta,
@@ -147,11 +153,11 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
                               const QVector<double> &times
                             ) override;
 
-    virtual bool persistDatasetGroup( const QString &outputFilePath,
-                                      const QString &outputDriver,
-                                      QgsMeshDatasetSourceInterface *source,
-                                      int datasetGroupIndex
-                                    ) override;
+    bool persistDatasetGroup( const QString &outputFilePath,
+                              const QString &outputDriver,
+                              QgsMeshDatasetSourceInterface *source,
+                              int datasetGroupIndex
+                            ) override;
 
     bool saveMeshFrame( const QgsMesh & ) override {return false;}
 

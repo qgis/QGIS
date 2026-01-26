@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgsattributeformrelationeditorwidget.h"
-#include "qgsrelationaggregatesearchwidgetwrapper.h"
-#include "qgsattributeform.h"
 
+#include "qgsattributeform.h"
+#include "qgsrelationaggregatesearchwidgetwrapper.h"
 #include "qgsrelationwidgetwrapper.h"
+
+#include "moc_qgsattributeformrelationeditorwidget.cpp"
 
 QgsAttributeFormRelationEditorWidget::QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form )
   : QgsAttributeFormWidget( wrapper, form )

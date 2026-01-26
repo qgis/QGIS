@@ -10,7 +10,8 @@
 class QgsExpressionBasedNumericFormat : QgsNumericFormat
 {
 %Docstring(signature="appended")
-A numeric formatter which uses a :py:class:`QgsExpression` to calculate the text representation of a value.
+A numeric formatter which uses a :py:class:`QgsExpression` to calculate
+the text representation of a value.
 
 .. versionadded:: 3.40
 %End
@@ -39,16 +40,19 @@ A numeric formatter which uses a :py:class:`QgsExpression` to calculate the text
 
     void setExpression( const QString &expression );
 %Docstring
-Sets the ``expression`` used to calculate the text representation of a value.
+Sets the ``expression`` used to calculate the text representation of a
+value.
 
-The expression can utilize `@value` to retrieve the numeric value to represent.
+The expression can utilize `@value` to retrieve the numeric value to
+represent.
 
 .. seealso:: :py:func:`expression`
 %End
 
     QString expression() const;
 %Docstring
-Returns the expression used to calculate the text representation of a value.
+Returns the expression used to calculate the text representation of a
+value.
 
 .. seealso:: :py:func:`setExpression`
 %End

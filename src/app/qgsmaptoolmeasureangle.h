@@ -16,17 +16,17 @@
 #ifndef QGSMAPTOOLMEASUREANGLE_H
 #define QGSMAPTOOLMEASUREANGLE_H
 
+#include "qgis_app.h"
+#include "qgsdistancearea.h"
 #include "qgsmaptool.h"
 #include "qgspointxy.h"
-#include "qgsdistancearea.h"
-#include "qgis_app.h"
 
 class QgsDisplayAngle;
 class QgsRubberBand;
 class QgsSnapIndicator;
 
 //! Map tool to measure angle between two segments
-class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
+class APP_EXPORT QgsMapToolMeasureAngle : public QgsMapTool
 {
     Q_OBJECT
   public:
@@ -64,7 +64,6 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 
     //! Configures distance area objects with ellipsoid / output crs
     void configureDistanceArea();
-
 };
 
 #endif // QGSMAPTOOLMEASUREANGLE_H

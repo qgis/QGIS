@@ -24,8 +24,9 @@
 #include "ui_qgsdiagrampropertiesbase.h"
 
 #include "qgis_gui.h"
-#include "qgsdiagramrenderer.h"
 #include "qgscolorschemelist.h"
+#include "qgsdiagramrenderer.h"
+#include "qgswidgetwrapper.h"
 
 #include <QDialog>
 #include <QStyledItemDelegate>
@@ -36,6 +37,7 @@ class QgsMapCanvas;
 /**
  * \ingroup gui
  * \class QgsDiagramProperties
+ * \brief A widget which configures diagrams for a vector layer.
  *
  * \note This class is not a part of public API
  */
@@ -55,7 +57,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void syncToLayer();
 
     /**
-     * Updates the widget to reflect the diagram renderer.
+     * Updates the widget to reflect the diagram renderer. Does not take ownership.
      * \param dr Diagram renderer where settings are taken from.
      *
      * \since QGIS 3.40
@@ -63,7 +65,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void syncToRenderer( const QgsDiagramRenderer *dr );
 
     /**
-     * Updates the widget to reflect the diagram layer settings.
+     * Updates the widget to reflect the diagram layer settings. Does not take ownership.
      * \param dls Diagram Layer Settings to update the widget.
      *
      * \since QGIS 3.40
@@ -81,15 +83,18 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     /**
      * Defines the widget's diagram type and lets it know it should hide the type comboBox.
-     * @param diagramType Type of diagram to be set
+     *
+     * \param diagramType Type of diagram to be set
      */
     void setDiagramType( const QString diagramType );
 
     /**
      * Sets whether the widget should show diagram layer settings.
+     *
      * Used by stacked diagrams, which disable editing of DLS for sub diagrams
      * other than the first one.
-     * @param allowed Whether this widget should be allowed to edit diagram layer settings.
+     *
+     * \param allowed Whether this widget should be allowed to edit diagram layer settings.
     */
     void setAllowedToEditDiagramLayerSettings( bool allowed );
 
@@ -124,7 +129,6 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     void createAuxiliaryField();
 
   private:
-
     QgsVectorLayer *mLayer = nullptr;
     //! Point placement button group
     QButtonGroup *mPlacePointBtnGrp = nullptr;
@@ -133,7 +137,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
     //! Polygon placement button group
     QButtonGroup *mPlacePolygonBtnGrp = nullptr;
 
-    std::unique_ptr< QgsPaintEffect> mPaintEffect;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 
     enum Columns
     {
@@ -153,7 +157,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
     QString mDiagramType;
-    std::unique_ptr< QgsDataDefinedSizeLegend > mSizeLegend;
+    std::unique_ptr<QgsDataDefinedSizeLegend> mSizeLegend;
 
     QString guessLegendText( const QString &expression );
     QgsMapCanvas *mMapCanvas = nullptr;
@@ -166,7 +170,8 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
 
     /**
      * Convenience function to chain widgets' change value signal to another signal.
-     * @param widgets List of widgets.
+     *
+     * \param widgets List of widgets.
      */
     void connectValueChanged( const QList<QWidget *> &widgets );
 
@@ -175,7 +180,7 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
      *
      * \since QGIS 3.40
      */
-    std::unique_ptr< QgsDiagram > createDiagramObject();
+    std::unique_ptr<QgsDiagram> createDiagramObject();
 
     /**
      * Creates a QgsDiagramSettings object from the GUI settings.
@@ -203,16 +208,48 @@ class GUI_EXPORT QgsDiagramProperties : public QgsPanelWidget, private Ui::QgsDi
      */
     void insertDefaults();
 
+    /**
+     * Updates all property override buttons to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButtons();
+
+    /**
+     * Updates a specific property override \a button to reflect the widgets's current properties.
+     */
+    void updateDataDefinedButton( QgsPropertyOverrideButton *button );
+
+    /**
+     * Sets widgets to reflect the \a enabled status of the diagram.
+     * \param enabled Whether the diagram is enabled or not.
+     *
+     * \see isDiagramEnabled()
+     *
+     * \since QGIS 3.40
+     */
+    void setDiagramEnabled( const bool enabled );
+
+    /**
+     * Returns whether the current diagram should be enabled or not,
+     * according to changes in the corresponding widgets.
+     *
+     * \see setDiagramEnabled()
+     *
+     * \since QGIS 3.40
+     */
+    bool isDiagramEnabled() const;
+
     friend class QgsStackedDiagramProperties;
     friend class QgsStackedDiagramPropertiesDialog;
+    friend class TestQgsDiagramProperties;
 };
 
 
 /**
  * \ingroup gui
  * \class EditBlockerDelegate
+ * \brief Custom item delegate which prevents editing.
  */
-class EditBlockerDelegate: public QStyledItemDelegate
+class EditBlockerDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:

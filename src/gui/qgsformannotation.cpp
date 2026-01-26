@@ -16,21 +16,22 @@
  ***************************************************************************/
 
 #include "qgsformannotation.h"
+
 #include "qgsattributeeditorcontext.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
+#include "qgsfillsymbol.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsmaptool.h"
+#include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsgui.h"
-#include "qgsfillsymbol.h"
 
-#include <QDomElement>
 #include <QDir>
+#include <QDomElement>
 #include <QFile>
 #include <QFileInfo>
 #include <QGraphicsProxyWidget>
@@ -39,13 +40,15 @@
 #include <QUiLoader>
 #include <QWidget>
 
+#include "moc_qgsformannotation.cpp"
+
 QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
   : QgsAnnotation( parent )
 {}
 
 QgsFormAnnotation *QgsFormAnnotation::clone() const
 {
-  std::unique_ptr< QgsFormAnnotation > c( new QgsFormAnnotation() );
+  auto c = std::make_unique<QgsFormAnnotation>();
   copyCommonProperties( c.get() );
   c->setDesignerForm( mDesignerForm );
   return c.release();
@@ -86,7 +89,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
 
   //get feature and set attribute information
   const QgsAttributeEditorContext context;
-  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mapLayer() );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer() );
   if ( vectorLayer && associatedFeature().isValid() )
   {
     const QgsFields fields = vectorLayer->fields();
@@ -139,8 +142,7 @@ QSizeF QgsFormAnnotation::minimumFrameSize() const
   if ( mDesignerWidget )
   {
     const QSizeF widgetMinSize = mMinimumSize;
-    return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(),
-                   contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
+    return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(), contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
   }
   else
   {
@@ -162,24 +164,24 @@ QSizeF QgsFormAnnotation::preferredFrameSize() const
 
 void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "FormAnnotationItem" ) );
-  formAnnotationElem.setAttribute( QStringLiteral( "designerForm" ), mDesignerForm );
+  QDomElement formAnnotationElem = doc.createElement( u"FormAnnotationItem"_s );
+  formAnnotationElem.setAttribute( u"designerForm"_s, mDesignerForm );
   _writeXml( formAnnotationElem, doc, context );
   elem.appendChild( formAnnotationElem );
 }
 
 void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
-  mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QString() );
-  const QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
+  mDesignerForm = itemElem.attribute( u"designerForm"_s, QString() );
+  const QDomElement annotationElem = itemElem.firstChildElement( u"AnnotationItem"_s );
   if ( !annotationElem.isNull() )
   {
     _readXml( annotationElem, context );
   }
   // upgrade old layer
-  if ( !mapLayer() && itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )
+  if ( !mapLayer() && itemElem.hasAttribute( u"vectorLayer"_s ) )
   {
-    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( QStringLiteral( "vectorLayer" ) ) ) );
+    setMapLayer( QgsProject::instance()->mapLayer( itemElem.attribute( u"vectorLayer"_s ) ) );
   }
 
   mDesignerWidget.reset( createDesignerWidget( mDesignerForm ) );
@@ -205,6 +207,3 @@ void QgsFormAnnotation::setAssociatedFeature( const QgsFeature &feature )
   }
   emit appearanceChanged();
 }
-
-
-

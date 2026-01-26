@@ -14,10 +14,14 @@
  ***************************************************************************/
 
 #include "qgsopacitywidget.h"
-#include "qgsdoublespinbox.h"
+
 #include "qgis.h"
+#include "qgsdoublespinbox.h"
+
 #include <QHBoxLayout>
 #include <QSlider>
+
+#include "moc_qgsopacitywidget.cpp"
 
 QgsOpacityWidget::QgsOpacityWidget( QWidget *parent )
   : QWidget( parent )
@@ -48,9 +52,9 @@ QgsOpacityWidget::QgsOpacityWidget( QWidget *parent )
 
   setFocusProxy( mSpinBox );
 
-  connect( mSlider, &QSlider::valueChanged, this, [ = ]( int value ) { mSpinBox->setValue( value / 10.0 ); } );
-  connect( mSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { whileBlocking( mSlider )->setValue( value * 10 ); } );
-  connect( mSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this,  &QgsOpacityWidget::spinChanged );
+  connect( mSlider, &QSlider::valueChanged, this, [this]( int value ) { mSpinBox->setValue( value / 10.0 ); } );
+  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) { whileBlocking( mSlider )->setValue( value * 10 ); } );
+  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsOpacityWidget::spinChanged );
 }
 
 double QgsOpacityWidget::opacity() const
@@ -67,4 +71,3 @@ void QgsOpacityWidget::spinChanged( double value )
 {
   emit opacityChanged( value / 100.0 );
 }
-

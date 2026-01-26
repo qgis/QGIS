@@ -18,8 +18,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -27,20 +27,20 @@ class QgsIntersectionAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsIntersectionAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmIntersect.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmIntersect.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmIntersect.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmIntersect.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
 
   protected:
     QgsProcessingAlgorithm *createInstance() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
 };
 
 ///@endcond PRIVATE

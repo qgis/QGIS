@@ -13,15 +13,16 @@
 class QgsFileDownloader : QObject
 {
 %Docstring(signature="appended")
-:py:class:`QgsFileDownloader` is a utility class for downloading files.
+A utility class for downloading files.
 
-To use this class, it is necessary to pass the URL and an output file name as
-arguments to the constructor, the download will start immediately.
+To use this class, it is necessary to pass the URL and an output file
+name as arguments to the constructor, the download will start
+immediately.
 
 The download is asynchronous.
 
-The object will destroy itself when the request completes, errors or is canceled.
-An optional authentication configuration can be specified.
+The object will destroy itself when the request completes, errors or is
+canceled. An optional authentication configuration can be specified.
 
 .. note::
 
@@ -38,14 +39,19 @@ An optional authentication configuration can be specified.
 QgsFileDownloader
 
 :param url: the download URL
-:param outputFileName: file name where the downloaded content will be stored
+:param outputFileName: file name where the downloaded content will be
+                       stored
 :param authcfg: optionally apply this authentication configuration
-:param delayStart: if ``True``, the download will not be commenced immediately and must
-                   be triggered by a later call to :py:func:`~QgsFileDownloader.startDownload`. This can be useful if connections need
-                   to be made to the downloader and there's a chance the download will emit
-                   signals before these connections have been made.
-:param httpMethod: Method for the HTTP request : GET or POST, since QGIS 3.22
-:param data: If the request is POST, some data can be added, since QGIS 3.22
+:param delayStart: if ``True``, the download will not be commenced
+                   immediately and must be triggered by a later call to
+                   :py:func:`~QgsFileDownloader.startDownload`. This can
+                   be useful if connections need to be made to the
+                   downloader and there's a chance the download will
+                   emit signals before these connections have been made.
+:param httpMethod: Method for the HTTP request : GET or POST, since QGIS
+                   3.22
+:param data: If the request is POST, some data can be added, since QGIS
+             3.22
 %End
 
   signals:

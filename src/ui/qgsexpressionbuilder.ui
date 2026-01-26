@@ -202,6 +202,28 @@
                     </widget>
                    </item>
                    <item>
+                    <widget class="QPushButton" name="btnCommentLinePushButton">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>0</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>24</width>
+                       <height>16777215</height>
+                      </size>
+                     </property>
+                     <property name="toolTip">
+                      <string>Toggle Comment on Selected Lines</string>
+                     </property>
+                     <property name="text">
+                      <string>--</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
                     <spacer name="horizontalSpacer_3">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>

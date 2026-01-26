@@ -6,5 +6,5 @@ QgsAuthImportCertDialog.FileInput = QgsAuthImportCertDialog.CertInput.FileInput
 QgsAuthImportCertDialog.TextInput = QgsAuthImportCertDialog.CertInput.TextInput
 try:
     QgsAuthImportCertDialog.__group__ = ['auth']
-except NameError:
+except (NameError, AttributeError):
     pass

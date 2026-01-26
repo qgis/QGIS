@@ -11,11 +11,11 @@
 
 
 
-
 class QgsAccessControl : QgsFeatureFilterProvider
 {
 %Docstring(signature="appended")
-A helper class that centralizes restrictions given by all the access control filter plugins.
+A helper class that centralizes restrictions given by all the access
+control filter plugins.
 %End
 
 %TypeHeaderCode
@@ -34,13 +34,22 @@ Constructor
     ~QgsAccessControl();
 
 
+    virtual bool isFilterThreadSafe() const;
+
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
+    virtual QgsAccessControl *clone() const /Factory/;
+
+
     void resolveFilterFeatures( const QList<QgsMapLayer *> &layers );
 %Docstring
-Resolve features' filter of layers
-The method fetch filter's expressions returned from access control plugins and
-and combine them to a unique expression for each layer.
-The resulted expressions are stored in cache for efficiency; between each requests, the cache
-must be cleared using ':py:func:`~QgsAccessControl.unresolveFilterFeatures`'.
+Resolve features' filter of layers The method fetch filter's expressions
+returned from access control plugins and and combine them to a unique
+expression for each layer. The resulted expressions are stored in cache
+for efficiency; between each requests, the cache must be cleared using
+':py:func:`~QgsAccessControl.unresolveFilterFeatures`'.
 
 :param layers: to filter
 %End
@@ -48,23 +57,6 @@ must be cleared using ':py:func:`~QgsAccessControl.unresolveFilterFeatures`'.
     void unresolveFilterFeatures();
 %Docstring
 Clear expression's cache computed from `resolveFilterFeatures`
-%End
-
-    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
-
-%Docstring
-Filter the features of the layer
-
-:param layer: the layer to control
-:param filterFeatures: the request to fill
-%End
-
-    virtual QgsFeatureFilterProvider *clone() const /Factory/;
-
-%Docstring
-Returns a clone of the object
-
-:return: A clone
 %End
 
     QString extraSubsetString( const QgsVectorLayer *layer ) const;
@@ -110,17 +102,6 @@ Returns the layer delete right
 :param layer: the layer to control
 
 :return: ``True`` if we can do a delete
-%End
-
-    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
-
-%Docstring
-Returns the authorized layer attributes
-
-:param layer: the layer to control
-:param attributes: the list of attribute
-
-:return: the list of visible attributes
 %End
 
     bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;

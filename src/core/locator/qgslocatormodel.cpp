@@ -15,13 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFont>
-
 #include "qgslocatormodel.h"
-#include "qgslocator.h"
+
 #include "qgsapplication.h"
+#include "qgslocator.h"
 #include "qgslogger.h"
 
+#include <QFont>
+#include <QPalette>
+
+#include "moc_qgslocatormodel.cpp"
 
 //
 // QgsLocatorModel
@@ -90,7 +93,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
 
             case EntryType::Group:
             {
-              v = QStringLiteral( "  " ).append( entry.groupTitle );
+              v = u"  "_s.append( entry.groupTitle );
               break;
             }
 
@@ -114,10 +117,12 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
     }
 
     case Qt::FontRole:
-      if ( index.column() == Name && !entry.groupTitle.isEmpty() )
+    {
+      if ( index.column() == Name )
       {
         QFont font;
-        font.setItalic( true );
+        font.setBold( entry.type == EntryType::Filter );
+        font.setItalic( entry.type == EntryType::Group );
         return font;
       }
       else
@@ -125,17 +130,29 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return QVariant();
       }
       break;
+    }
+
+    case Qt::BackgroundRole:
+    {
+      return entry.type == EntryType::Result ? QPalette().base() : QPalette().alternateBase();
+    }
+
+    case Qt::ForegroundRole:
+    {
+      return QPalette().text();
+    }
+
 
     case Qt::DecorationRole:
       switch ( static_cast<Column>( index.column() ) )
       {
         case Name:
-          if ( !entry.filter )
+          if ( entry.type == EntryType::Result )
           {
             const QIcon &icon = entry.result.icon;
             if ( !icon.isNull() )
               return icon;
-            return QgsApplication::getThemeIcon( QStringLiteral( "/search.svg" ) );
+            return QgsApplication::getThemeIcon( u"/search.svg"_s );
           }
           else
             return QVariant();
@@ -154,22 +171,16 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       return static_cast<int>( entry.type );
 
     case static_cast< int >( CustomRole::ResultScore ):
-      if ( entry.filter )
+      if ( !entry.filter )
         return 0;
       else
         return ( entry.result.score );
 
     case static_cast< int >( CustomRole::ResultFilterPriority ):
-      if ( !entry.filter )
-        return entry.result.filter->priority();
-      else
-        return entry.filter->priority();
+      return entry.filter->priority();
 
     case static_cast< int >( CustomRole::ResultFilterName ):
-      if ( !entry.filter )
-        return entry.result.filter->displayName();
-      else
-        return entry.filterTitle;
+      return entry.filterTitle;
 
     case static_cast< int >( CustomRole::ResultFilterGroupTitle ):
       return entry.groupTitle;

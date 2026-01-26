@@ -16,15 +16,15 @@
 #define QGSCRSDEFINITIONWIDGET_H
 
 #include "ui_qgscrsdefinitionwidgetbase.h"
-#include "qgscoordinatereferencesystem.h"
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
 
 class QgsCoordinateReferenceSystem;
 
 /**
- * \brief A widget for definition a custom coordinate reference system.
+ * \brief A widget for defining a custom coordinate reference system.
  * \ingroup gui
  * \since QGIS 3.24
 */
@@ -32,7 +32,6 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsCrsDefinitionWidget, with the specified \a parent widget.
      */
@@ -112,9 +111,7 @@ class GUI_EXPORT QgsCrsDefinitionWidget : public QWidget, private Ui::QgsCrsDefi
     void formatChanged();
 
   private:
-
     QString multiLineWktToSingleLine( const QString &wkt );
-
 };
 
 #endif // QGSCRSDEFINITIONWIDGET_H

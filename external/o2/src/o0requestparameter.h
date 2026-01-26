@@ -3,6 +3,8 @@
 
 #include "o0export.h"
 
+#include <QByteArray>
+
 /// Request parameter (name-value pair) participating in authentication.
 struct O0_EXPORT O0RequestParameter {
     O0RequestParameter(const QByteArray &n, const QByteArray &v): name(n), value(v) {}

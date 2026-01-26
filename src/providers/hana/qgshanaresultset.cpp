@@ -14,19 +14,20 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
-#include "qgshanadatatypes.h"
-#include "qgshanaexception.h"
 #include "qgshanaresultset.h"
-#include "qgshanautils.h"
-#include "qgsvariantutils.h"
-#include "qgslogger.h"
-#include <QString>
-
-#include "odbc/Exception.h"
-#include "odbc/PreparedStatement.h"
-#include "odbc/Statement.h"
 
 #include <cstring>
+#include <odbc/Exception.h>
+#include <odbc/PreparedStatement.h>
+#include <odbc/Statement.h>
+
+#include "qgshanadatatypes.h"
+#include "qgshanaexception.h"
+#include "qgshanautils.h"
+#include "qgslogger.h"
+#include "qgsvariantutils.h"
+
+#include <QString>
 
 using namespace NS_ODBC;
 
@@ -41,14 +42,14 @@ namespace
     const float *elements = reinterpret_cast<const float *>( ptr );
 
     QString res;
-    res += QStringLiteral( "[" ) + QString::number( elements[0], 'g', 7 );
+    res += u"["_s + QString::number( elements[0], 'g', 7 );
     for ( uint32_t i = 1; i < numElements; ++i )
-      res += QStringLiteral( "," ) + QString::number( elements[i], 'g', 7 );
-    res += QLatin1Char( ']' );
+      res += u","_s + QString::number( elements[i], 'g', 7 );
+    res += ']'_L1;
 
     return res;
   }
-}
+} // namespace
 
 QgsHanaResultSet::QgsHanaResultSet( ResultSetRef &&resultSet )
   : mResultSet( std::move( resultSet ) )
@@ -129,7 +130,7 @@ QString QgsHanaResultSet::getString( unsigned short columnIndex )
 QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
 {
   QgsHanaDataType type = QgsHanaDataTypeUtils::fromInt( mMetadata->getColumnType( columnIndex ) );
-  if ( type == QgsHanaDataType::VarBinary && mMetadata->getColumnTypeName( columnIndex ) == QLatin1String( "REAL_VECTOR" ) )
+  if ( type == QgsHanaDataType::VarBinary && mMetadata->getColumnTypeName( columnIndex ) == "REAL_VECTOR"_L1 )
     type = QgsHanaDataType::RealVector;
 
   switch ( type )
@@ -164,22 +165,22 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
         return QgsHanaUtils::toVariant( str );
     }
     case QgsHanaDataType::TinyInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getByte( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUByte( columnIndex ) );
     case QgsHanaDataType::SmallInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getShort( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUShort( columnIndex ) );
     case QgsHanaDataType::Integer:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getInt( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getUInt( columnIndex ) );
     case QgsHanaDataType::BigInt:
-      if ( mMetadata ->isSigned( columnIndex ) )
+      if ( mMetadata->isSigned( columnIndex ) )
         return QgsHanaUtils::toVariant( mResultSet->getLong( columnIndex ) );
       else
         return QgsHanaUtils::toVariant( mResultSet->getULong( columnIndex ) );
@@ -232,18 +233,17 @@ QVariant QgsHanaResultSet::getValue( unsigned short columnIndex )
       return QVariant();
     }
     default:
-      QgsDebugError( QStringLiteral( "Unhandled HANA data type %1" ).arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
+      QgsDebugError( u"Unhandled HANA data type %1"_s.arg( QString::fromStdU16String( mMetadata->getColumnTypeName( columnIndex ) ) ) );
       return QVariant();
   }
 }
 
 QgsGeometry QgsHanaResultSet::getGeometry( unsigned short columnIndex )
 {
-  auto toWkbSize = []( size_t size )
-  {
+  auto toWkbSize = []( size_t size ) {
     if ( size > static_cast<size_t>( std::numeric_limits<int>::max() ) )
       throw QgsHanaException( "Geometry size is larger than maximum integer value" );
-    return  static_cast<int>( size );
+    return static_cast<int>( size );
   };
 
   const size_t bufLength = mResultSet->getBinaryLength( columnIndex );

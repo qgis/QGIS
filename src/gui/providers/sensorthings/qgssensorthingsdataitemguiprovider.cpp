@@ -14,42 +14,46 @@
  ***************************************************************************/
 
 #include "qgssensorthingsdataitemguiprovider.h"
-#include "qgssensorthingsdataitems.h"
+
+#include "qgsapplication.h"
+#include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectiondialog.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsdataitemguiproviderutils.h"
+#include "qgssensorthingsdataitems.h"
 
-#include <QMessageBox>
 #include <QFileDialog>
+#include <QMessageBox>
+
+#include "moc_qgssensorthingsdataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 
 void QgsSensorThingsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsSensorThingsConnectionItem *connectionItem = qobject_cast< QgsSensorThingsConnectionItem * >( item ) )
+  if ( QgsSensorThingsConnectionItem *connectionItem = qobject_cast<QgsSensorThingsConnectionItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
-    menu->addAction( actionEdit );
+    const QList<QgsSensorThingsConnectionItem *> stConnectionItems = QgsDataItem::filteredItems<QgsSensorThingsConnectionItem>( selection );
 
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
-    menu->addAction( actionDuplicate );
-
-    const QList< QgsSensorThingsConnectionItem * > stConnectionItems = QgsDataItem::filteredItems<QgsSensorThingsConnectionItem>( selection );
-    QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [stConnectionItems, context]
+    if ( stConnectionItems.size() == 1 )
     {
-      QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString & connectionName )
-      {
-        QgsSensorThingsProviderConnection( QString() ).remove( connectionName );
-      }, context );
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [connectionItem] { editConnection( connectionItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [connectionItem] { duplicateConnection( connectionItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
+    QAction *actionDelete = new QAction( stConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [stConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( stConnectionItems, []( const QString &connectionName ) { QgsSensorThingsProviderConnection( QString() ).remove( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsSensorThingsRootItem *rootItem = qobject_cast< QgsSensorThingsRootItem * >( item ) )
+  if ( QgsSensorThingsRootItem *rootItem = qobject_cast<QgsSensorThingsRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New SensorThings Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -102,7 +106,7 @@ void QgsSensorThingsDataItemGuiProvider::duplicateConnection( QgsDataItem *item 
 
 void QgsSensorThingsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsSensorThingsConnectionDialog dlg;
+  QgsSensorThingsConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 
@@ -120,8 +124,7 @@ void QgsSensorThingsDataItemGuiProvider::saveConnections()
 
 void QgsSensorThingsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

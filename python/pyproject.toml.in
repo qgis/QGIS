@@ -1,0 +1,12 @@
+[project]
+name = "qgis"
+version = "@COMPLETE_VERSION@"
+description = "QGIS Python bindings (PyQGIS)"
+authors = [{ name = "QGIS Development Team" }]
+license = "GPL-2.0-or-later"
+requires-python = ">=@MIN_PYTHON_VERSION@"
+dependencies = []
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

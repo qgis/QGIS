@@ -18,20 +18,20 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include <limits>
 
-#include <QCoreApplication> // for tr()
-#include <QImage>
-
-#include "qgsfeedback.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsfeedback.h"
+#include "qgsrasterbandstats.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgsrasterbandstats.h"
+
+#include <QCoreApplication>
+#include <QImage>
 
 /**
  * \ingroup core
@@ -134,26 +134,23 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
  */
 class CORE_EXPORT QgsRasterInterface
 {
-#ifdef SIP_RUN
 // QgsRasterInterface subclasses
-#include <qgsbrightnesscontrastfilter.h>
-#include <qgshuesaturationfilter.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasternuller.h>
-#include <qgsrasterprojector.h>
-#include <qgsrasterrenderer.h>
-#include <qgsrasterresamplefilter.h>
-
+    //SIP_TYPEHEADER_INCLUDE( "qgsbrightnesscontrastfilter.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgshuesaturationfilter.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterdataprovider.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasternuller.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterprojector.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterresamplefilter.h" );
 // QgsRasterRenderer subclasses
-#include <qgshillshaderenderer.h>
-#include <qgsmultibandcolorrenderer.h>
-#include <qgspalettedrasterrenderer.h>
-#include <qgssinglebandcolordatarenderer.h>
-#include <qgssinglebandgrayrenderer.h>
-#include <qgssinglebandpseudocolorrenderer.h>
-#include <qgsrastersinglecolorrenderer.h>
-#include <qgsrastercontourrenderer.h>
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgshillshaderenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsmultibandcolorrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgspalettedrasterrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandcolordatarenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandgrayrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandpseudocolorrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrastersinglecolorrenderer.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrastercontourrenderer.h" );
 
 
 #ifdef SIP_RUN
@@ -212,7 +209,7 @@ class CORE_EXPORT QgsRasterInterface
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
-    // TODO QGIS 4.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
+    // TODO QGIS 5.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
     // (which inherits this class)
 
     /**
@@ -223,7 +220,7 @@ class CORE_EXPORT QgsRasterInterface
     /**
      * Returns the raster interface capabilities in friendly format.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 
@@ -311,7 +308,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
     {
-      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+      QgsDebugMsgLevel( u"Entered"_s, 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 
@@ -322,7 +319,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterInterface *sourceInput()
     {
-      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+      QgsDebugMsgLevel( u"Entered"_s, 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 

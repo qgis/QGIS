@@ -10,10 +10,11 @@
 
 
 
-class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsDbSourceSelectBase
+
+class QgsAbstractDbSourceSelect : QgsAbstractDataSourceWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAbstractDbSourceSelect` class is a base class for database source widget selector
+Base class for database source widget selectors.
 
 .. versionadded:: 3.24
 %End
@@ -22,9 +23,23 @@ The :py:class:`QgsAbstractDbSourceSelect` class is a base class for database sou
 #include "qgsabstractdbsourceselect.h"
 %End
   public:
+
     QgsAbstractDbSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 %Docstring
 Constructor
+%End
+
+    virtual QString settingPath() const;
+%Docstring
+Returns the setting path of the derived source select
+
+:return: setting path
+
+.. note::
+
+   Might be pure virtual in QGIS 5.x
+
+.. versionadded:: 3.44
 %End
 
   protected:
@@ -39,12 +54,19 @@ Returns the proxy model used to filter the results
 %End
 
 
+    void storeSettings();
+%Docstring
+Stores the settings made in the gui
+
+.. versionadded:: 3.44
+%End
+
   protected slots:
 
     virtual void setSql( const QModelIndex &index ) = 0;
 %Docstring
-This is called to define the SQL query and must be re-implemented.
-The implementation should call :py:class:`QgsAbstractDbTableModel`.setSql
+This is called to define the SQL query and must be re-implemented. The
+implementation should call :py:class:`QgsAbstractDbTableModel`.setSql
 The index is in the source model.
 %End
 

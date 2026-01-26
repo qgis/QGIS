@@ -17,14 +17,14 @@
 #ifndef QGSCREDENTIALS_H
 #define QGSCREDENTIALS_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QMap>
 #include <QMutex>
 #include <QObject>
 #include <QPair>
 #include <QString>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
 
 /**
  * \ingroup core
@@ -134,7 +134,7 @@ class CORE_EXPORT QgsCredentials
 
 /**
  * \ingroup core
- * \brief Default implementation of credentials interface
+ * \brief Default implementation of credentials interface.
  *
  * This class doesn't prompt or return credentials
 */
@@ -157,7 +157,7 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
 
 /**
  * \ingroup core
- * \brief Implementation of credentials interface for the console
+ * \brief Implementation of credentials interface for the console.
  *
  * This class outputs message to the standard output and retrieves input from
  * standard input. Therefore it won't be the right choice for apps without

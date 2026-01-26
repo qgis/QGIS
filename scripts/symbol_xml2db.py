@@ -28,34 +28,31 @@ from xml.dom.minidom import parse, parseString
 xmlfile = "../resources/symbology-style.xml"
 dbfile = "../resources/symbology-style.db"
 
-_symbol = "CREATE TABLE symbol("\
-          "id INTEGER PRIMARY KEY,"\
-          "name TEXT UNIQUE,"\
-          "xml TEXT,"\
-          "favorite INTEGER)"
+_symbol = (
+    "CREATE TABLE symbol("
+    "id INTEGER PRIMARY KEY,"
+    "name TEXT UNIQUE,"
+    "xml TEXT,"
+    "favorite INTEGER)"
+)
 
-_colorramp = "CREATE TABLE colorramp("\
-             "id INTEGER PRIMARY KEY,"\
-             "name TEXT UNIQUE,"\
-             "xml TEXT,"\
-             "favorite INTEGER)"
+_colorramp = (
+    "CREATE TABLE colorramp("
+    "id INTEGER PRIMARY KEY,"
+    "name TEXT UNIQUE,"
+    "xml TEXT,"
+    "favorite INTEGER)"
+)
 
-_tag = "CREATE TABLE tag("\
-       "id INTEGER PRIMARY KEY,"\
-       "name TEXT)"
+_tag = "CREATE TABLE tag(" "id INTEGER PRIMARY KEY," "name TEXT)"
 
-_tagmap = "CREATE TABLE tagmap("\
-          "tag_id INTEGER NOT NULL,"\
-          "symbol_id INTEGER)"
+_tagmap = "CREATE TABLE tagmap(" "tag_id INTEGER NOT NULL," "symbol_id INTEGER)"
 
-_ctagmap = "CREATE TABLE ctagmap("\
-           "tag_id INTEGER NOT NULL,"\
-           "colorramp_id INTEGER)"
+_ctagmap = "CREATE TABLE ctagmap(" "tag_id INTEGER NOT NULL," "colorramp_id INTEGER)"
 
-_smartgroup = "CREATE TABLE smartgroup("\
-              "id INTEGER PRIMARY KEY,"\
-              "name TEXT,"\
-              "xml TEXT)"
+_smartgroup = (
+    "CREATE TABLE smartgroup(" "id INTEGER PRIMARY KEY," "name TEXT," "xml TEXT)"
+)
 
 create_tables = [_symbol, _colorramp, _tag, _tagmap, _ctagmap, _smartgroup]
 
@@ -80,16 +77,19 @@ for symbol in symbols:
     if not symbol_favorite:
         symbol_favorite = 0
 
-    if '@' in symbol_name:
-        parts = symbol_name.split('@')
+    if "@" in symbol_name:
+        parts = symbol_name.split("@")
         parent_name = parts[1]
         layerno = int(parts[2])
         c.execute("SELECT xml FROM symbol WHERE name=(?)", (parent_name,))
-        symdom = parseString(c.fetchone()[0]).getElementsByTagName('symbol')[0]
+        symdom = parseString(c.fetchone()[0]).getElementsByTagName("symbol")[0]
         symdom.getElementsByTagName("layer")[layerno].appendChild(symbol)
         c.execute("UPDATE symbol SET xml=? WHERE name=?", (symdom.toxml(), parent_name))
     else:
-        c.execute("INSERT INTO symbol VALUES (?,?,?,?)", (None, symbol_name, symbol.toxml(), symbol_favorite))
+        c.execute(
+            "INSERT INTO symbol VALUES (?,?,?,?)",
+            (None, symbol_name, symbol.toxml(), symbol_favorite),
+        )
 conn.commit()
 
 
@@ -101,7 +101,10 @@ for ramp in colorramps:
     if not symbol_favorite:
         symbol_favorite = 0
 
-    c.execute("INSERT INTO colorramp VALUES (?,?,?,?)", (None, ramp_name, ramp.toxml(), symbol_favorite))
+    c.execute(
+        "INSERT INTO colorramp VALUES (?,?,?,?)",
+        (None, ramp_name, ramp.toxml(), symbol_favorite),
+    )
 conn.commit()
 
 # Finally close the sqlite cursor

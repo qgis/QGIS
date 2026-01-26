@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -31,9 +31,7 @@
  */
 class QgsRectanglesOvalsDiamondsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsRectanglesOvalsDiamondsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -41,6 +39,7 @@ class QgsRectanglesOvalsDiamondsAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QIcon icon() const override;
     QString svgIconPath() const override;
     QList<int> inputLayerTypes() const override;
@@ -48,13 +47,12 @@ class QgsRectanglesOvalsDiamondsAlgorithm : public QgsProcessingFeatureBasedAlgo
     QgsRectanglesOvalsDiamondsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QString outputName() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     int mShape = 0;
@@ -76,5 +74,3 @@ class QgsRectanglesOvalsDiamondsAlgorithm : public QgsProcessingFeatureBasedAlgo
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRECTANGLESOVALSDIAMONDS_H
-
-

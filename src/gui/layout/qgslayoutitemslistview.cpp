@@ -14,15 +14,18 @@
  ***************************************************************************/
 
 #include "qgslayoutitemslistview.h"
+
 #include "qgslayout.h"
-#include "qgslayoutmodel.h"
 #include "qgslayoutdesignerinterface.h"
-#include "qgslayoutview.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutmodel.h"
+#include "qgslayoutview.h"
+
 #include <QHeaderView>
 #include <QMenu>
 #include <QMouseEvent>
 
+#include "moc_qgslayoutitemslistview.cpp"
 
 QgsLayoutItemsListViewModel::QgsLayoutItemsListViewModel( QgsLayoutModel *model, QObject *parent )
   : QSortFilterProxyModel( parent )
@@ -201,7 +204,6 @@ void QgsLayoutItemsListView::updateSelection()
     }
     if ( group && group != item )
       group->setSelected( true );
-
   }
   // Reset the updating flag
   mUpdatingSelection = false;
@@ -227,7 +229,7 @@ void QgsLayoutItemsListView::onItemFocused( QgsLayoutItem *focusedItem )
   }
 
   // Select rows in the item list for every selected items in the graphics view
-  const QList< QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems();
+  const QList<QgsLayoutItem *> selectedItems = mLayout->selectedLayoutItems();
   for ( QgsLayoutItem *item : selectedItems )
   {
     const QModelIndex firstCol = mModel->indexForItem( item );
@@ -255,22 +257,19 @@ void QgsLayoutItemsListView::showContextMenu( QPoint point )
   QMenu *menu = new QMenu( this );
 
   QAction *copyAction = new QAction( tr( "Copy Item" ), menu );
-  connect( copyAction, &QAction::triggered, this, [this, item]()
-  {
-    mDesigner->view()->copyItems( QList< QgsLayoutItem * >() << item, QgsLayoutView::ClipboardCopy );
+  connect( copyAction, &QAction::triggered, this, [this, item]() {
+    mDesigner->view()->copyItems( QList<QgsLayoutItem *>() << item, QgsLayoutView::ClipboardCopy );
   } );
   menu->addAction( copyAction );
   QAction *deleteAction = new QAction( tr( "Delete Item" ), menu );
-  connect( deleteAction, &QAction::triggered, this, [this, item]()
-  {
-    mDesigner->view()->deleteItems( QList< QgsLayoutItem * >() << item );
+  connect( deleteAction, &QAction::triggered, this, [this, item]() {
+    mDesigner->view()->deleteItems( QList<QgsLayoutItem *>() << item );
   } );
   menu->addAction( deleteAction );
   menu->addSeparator();
 
   QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
-  connect( itemPropertiesAction, &QAction::triggered, this, [this, item]()
-  {
+  connect( itemPropertiesAction, &QAction::triggered, this, [this, item]() {
     mDesigner->showItemOptions( item, true );
   } );
   menu->addAction( itemPropertiesAction );

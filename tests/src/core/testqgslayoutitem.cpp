@@ -15,29 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutitem.h"
-#include "qgslayoutitemregistry.h"
-#include "qgslayout.h"
-#include "qgstest.h"
-#include "qgsproject.h"
-#include "qgsreadwritecontext.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayouteffect.h"
-#include "qgsfillsymbollayer.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
-#include "qgsvectorlayer.h"
+#include <memory>
+
 #include "qgsexpressioncontextutils.h"
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslayout.h"
+#include "qgslayouteffect.h"
+#include "qgslayoutitem.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoutundostack.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
+#include <QImage>
 #include <QObject>
 #include <QPainter>
-#include <QImage>
 #include <QtTest/QSignalSpy>
-
 
 //simple item for testing, since some methods in QgsLayoutItem are pure virtual
 class TestItem : public QgsLayoutItem
@@ -45,8 +46,8 @@ class TestItem : public QgsLayoutItem
     Q_OBJECT
 
   public:
-
-    TestItem( QgsLayout *layout ) : QgsLayoutItem( layout )
+    TestItem( QgsLayout *layout )
+      : QgsLayoutItem( layout )
     {
       setFrameEnabled( false );
       setBackgroundEnabled( false );
@@ -84,7 +85,8 @@ class MinSizedItem : public TestItem
     Q_OBJECT
 
   public:
-    MinSizedItem( QgsLayout *layout ) : TestItem( layout )
+    MinSizedItem( QgsLayout *layout )
+      : TestItem( layout )
     {
       setMinimumSize( QgsLayoutSize( 5.0, 10.0, Qgis::LayoutUnit::Centimeters ) );
     }
@@ -93,7 +95,6 @@ class MinSizedItem : public TestItem
     {
       setMinimumSize( size );
     }
-
 };
 
 //item with fixed size
@@ -102,8 +103,8 @@ class FixedSizedItem : public TestItem
     Q_OBJECT
 
   public:
-
-    FixedSizedItem( QgsLayout *layout ) : TestItem( layout )
+    FixedSizedItem( QgsLayout *layout )
+      : TestItem( layout )
     {
       setFixedSize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Inches ) );
     }
@@ -120,8 +121,8 @@ class FixedMinSizedItem : public TestItem
     Q_OBJECT
 
   public:
-
-    FixedMinSizedItem( QgsLayout *layout ) : TestItem( layout )
+    FixedMinSizedItem( QgsLayout *layout )
+      : TestItem( layout )
     {
       setFixedSize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
       setMinimumSize( QgsLayoutSize( 5.0, 9.0, Qgis::LayoutUnit::Centimeters ) );
@@ -129,12 +130,13 @@ class FixedMinSizedItem : public TestItem
 };
 
 
-class TestQgsLayoutItem: public QgsTest
+class TestQgsLayoutItem : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutItem() : QgsTest( QStringLiteral( "Layout Item Tests" ) ) {}
+    TestQgsLayoutItem()
+      : QgsTest( u"Layout Item Tests"_s ) {}
 
   private slots:
     void cleanupTestCase();
@@ -177,9 +179,7 @@ class TestQgsLayoutItem: public QgsTest
     void mapCreditsFunction();
 
   private:
-
-    std::unique_ptr< QgsLayoutItem > createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
-
+    std::unique_ptr<QgsLayoutItem> createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
 };
 
 void TestQgsLayoutItem::cleanupTestCase()
@@ -213,8 +213,8 @@ void TestQgsLayoutItem::id()
   QgsProject p;
   QgsLayout l( &p );
   TestItem item( &l );
-  item.setId( QStringLiteral( "test" ) );
-  QCOMPARE( item.id(), QStringLiteral( "test" ) );
+  item.setId( u"test"_s );
+  QCOMPARE( item.id(), u"test"_s );
 }
 
 void TestQgsLayoutItem::registry()
@@ -227,44 +227,59 @@ void TestQgsLayoutItem::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createItem( 1, nullptr ) );
 
-  auto create = []( QgsLayout * layout )->QgsLayoutItem *
-  {
+  auto create = []( QgsLayout *layout ) -> QgsLayoutItem * {
     return new TestItem( layout );
   };
-  auto resolve = []( QVariantMap & props, const QgsPathResolver &, bool )
-  {
+  auto resolve = []( QVariantMap &props, const QgsPathResolver &, bool ) {
     props.clear();
   };
 
   const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::typeAdded );
 
-  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, QStringLiteral( "my type" ), QStringLiteral( "my types" ), create, resolve );
+  QgsLayoutItemMetadata *metadata = new QgsLayoutItemMetadata( 2, u"my type"_s, u"my types"_s, create, resolve );
   QVERIFY( registry.addLayoutItemType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), 2 );
-  QCOMPARE( spyTypeAdded.value( 0 ).at( 1 ).toString(), QStringLiteral( "my type" ) );
+  QCOMPARE( spyTypeAdded.value( 0 ).at( 1 ).toString(), u"my type"_s );
   // duplicate type id
   QVERIFY( !registry.addLayoutItemType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
 
-  //retrieve metadata
+  // retrieve metadata
   QVERIFY( !registry.itemMetadata( -1 ) );
-  QCOMPARE( registry.itemMetadata( 2 )->visibleName(), QStringLiteral( "my type" ) );
-  QCOMPARE( registry.itemMetadata( 2 )->visiblePluralName(), QStringLiteral( "my types" ) );
+  QCOMPARE( registry.itemMetadata( 2 )->visibleName(), u"my type"_s );
+  QCOMPARE( registry.itemMetadata( 2 )->visiblePluralName(), u"my types"_s );
   QCOMPARE( registry.itemTypes().count(), 1 );
-  QCOMPARE( registry.itemTypes().value( 2 ), QStringLiteral( "my type" ) );
+  QCOMPARE( registry.itemTypes().value( 2 ), u"my type"_s );
   QgsLayoutItem *item = registry.createItem( 2, nullptr );
   QVERIFY( item );
-  QVERIFY( dynamic_cast< TestItem *>( item ) );
+  QVERIFY( dynamic_cast<TestItem *>( item ) );
   delete item;
   QVariantMap props;
-  props.insert( QStringLiteral( "a" ), 5 );
+  props.insert( u"a"_s, 5 );
   registry.resolvePaths( 1, props, QgsPathResolver(), true );
   QCOMPARE( props.size(), 1 );
   registry.resolvePaths( 2, props, QgsPathResolver(), true );
   QVERIFY( props.isEmpty() );
 
-  //test populate
+  // Test remove item type
+  QgsLayoutItemMetadata *metadata_42 = new QgsLayoutItemMetadata( 42, u"my other type"_s, u"my other types"_s, create, resolve );
+  QVERIFY( registry.addLayoutItemType( metadata_42 ) );
+  QCOMPARE( registry.itemTypes().count(), 2 );
+  QCOMPARE( spyTypeAdded.value( 1 ).at( 0 ).toInt(), 42 );
+
+  const QSignalSpy spyTypeRemoved( &registry, &QgsLayoutItemRegistry::typeRemoved );
+  QVERIFY( registry.removeLayoutItemType( 2 ) ); // Remove by id
+  QCOMPARE( spyTypeRemoved.count(), 1 );
+  QCOMPARE( spyTypeRemoved.value( 0 ).at( 0 ).toInt(), 2 );
+  QCOMPARE( registry.itemTypes().count(), 1 );
+
+  QVERIFY( registry.removeLayoutItemType( metadata_42 ) ); // Remove by metadata
+  QCOMPARE( spyTypeRemoved.count(), 2 );
+  QCOMPARE( spyTypeRemoved.value( 1 ).at( 0 ).toInt(), 42 );
+  QCOMPARE( registry.itemTypes().count(), 0 );
+
+  // test populate
   QgsLayoutItemRegistry reg2;
   QVERIFY( reg2.itemTypes().isEmpty() );
   QVERIFY( reg2.populate() );
@@ -277,9 +292,9 @@ void TestQgsLayoutItem::shouldDrawDebug()
   QgsProject p;
   QgsLayout l( &p );
   TestItem *item = new TestItem( &l );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, true );
   QVERIFY( item->shouldDrawDebugRect() );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, false );
   QVERIFY( !item->shouldDrawDebugRect() );
   delete item;
 }
@@ -289,9 +304,9 @@ void TestQgsLayoutItem::shouldDrawAntialiased()
   QgsProject p;
   QgsLayout l( &p );
   TestItem *item = new TestItem( &l );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, false );
   QVERIFY( !item->shouldDrawAntialiased() );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, true );
   QVERIFY( item->shouldDrawAntialiased() );
   delete item;
 }
@@ -308,10 +323,10 @@ void TestQgsLayoutItem::preparePainter()
   QImage image( QSize( 100, 100 ), QImage::Format_ARGB32 );
   QPainter painter;
   painter.begin( &image );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, false );
   item->preparePainter( &painter );
   QVERIFY( !( painter.renderHints() & QPainter::Antialiasing ) );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, true );
   item->preparePainter( &painter );
   QVERIFY( painter.renderHints() & QPainter::Antialiasing );
   delete item;
@@ -326,15 +341,15 @@ void TestQgsLayoutItem::debugRect()
   item->setPos( 100, 100 );
   item->setRect( 0, 0, 200, 200 );
   l.setSceneRect( 0, 0, 400, 400 );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, true );
   QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
   image.fill( 0 );
   QPainter painter( &image );
   l.render( &painter );
   painter.end();
 
-  mControlPathPrefix = QStringLiteral( "layouts" );
-  QGSVERIFYIMAGECHECK( QStringLiteral( "layoutitem_debugrect" ), QStringLiteral( "layoutitem_debugrect" ), image, QString(), 0 );
+  mControlPathPrefix = u"layouts"_s;
+  QGSVERIFYIMAGECHECK( u"layoutitem_debugrect"_s, u"layoutitem_debugrect"_s, image, QString(), 0 );
 }
 
 void TestQgsLayoutItem::draw()
@@ -346,14 +361,14 @@ void TestQgsLayoutItem::draw()
   item->setPos( 100, 100 );
   item->setRect( 0, 0, 200, 200 );
   l.setSceneRect( 0, 0, 400, 400 );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing, false ); //disable antialiasing to limit cross platform differences
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Antialiasing, false ); //disable antialiasing to limit cross platform differences
   QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
   image.fill( 0 );
   QPainter painter( &image );
   l.render( &painter );
   painter.end();
-  mControlPathPrefix = QStringLiteral( "layouts" );
-  QGSVERIFYIMAGECHECK( QStringLiteral( "layoutitem_draw" ), QStringLiteral( "layoutitem_draw" ), image, QString(), 0 );
+  mControlPathPrefix = u"layouts"_s;
+  QGSVERIFYIMAGECHECK( u"layoutitem_draw"_s, u"layoutitem_draw"_s, image, QString(), 0 );
 }
 
 void TestQgsLayoutItem::positionWithUnits()
@@ -361,7 +376,7 @@ void TestQgsLayoutItem::positionWithUnits()
   QgsProject p;
   QgsLayout l( &p );
 
-  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   item->attemptMove( QgsLayoutPoint( 60.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 60.0 );
   QCOMPARE( item->positionWithUnits().y(), 15.0 );
@@ -402,14 +417,14 @@ void TestQgsLayoutItem::dataDefinedPosition()
   item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   // position x
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( u"4+7"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::PositionX );
   QCOMPARE( item->positionWithUnits().x(), 11.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 110.0 ); //mm
 
   //position y
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( u"2+3"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::PositionY );
   QCOMPARE( item->positionWithUnits().y(), 5.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
@@ -417,14 +432,14 @@ void TestQgsLayoutItem::dataDefinedPosition()
 
   //refreshPosition should also respect data defined positioning
   item->setPos( 0, 0 );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( u"4+8"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( u"2+4"_s ) );
   item->refreshItemPosition();
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 60.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 60.0 );  //mm
 
   //also check that data defined position overrides when attempting to move
   item->attemptMove( QgsLayoutPoint( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
@@ -432,19 +447,19 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 60.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 60.0 );  //mm
   //restriction only for x position
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( u"4+8"_s ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty() );
   item->attemptMove( QgsLayoutPoint( 6.0, 1.5, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 1.5 );
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 120.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 15.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 15.0 );  //mm
   //restriction only for y position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( u"2+4"_s ) );
   item->attemptMove( QgsLayoutPoint( 7.0, 1.5, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->positionWithUnits().x(), 7.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
@@ -453,36 +468,36 @@ void TestQgsLayoutItem::dataDefinedPosition()
   QCOMPARE( item->scenePos().y(), 60.0 ); //mm
 
   //check change of units should apply to data defined position
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( u"4+8"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( u"2+4"_s ) );
   //first set to same as existing position, but with different units
   item->attemptMove( QgsLayoutPoint( 120.0, 60.0, Qgis::LayoutUnit::Millimeters ) );
   //data defined position should utilize new units
   QCOMPARE( item->positionWithUnits().x(), 12.0 ); //mm
-  QCOMPARE( item->positionWithUnits().y(), 6.0 ); //mm
+  QCOMPARE( item->positionWithUnits().y(), 6.0 );  //mm
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Millimeters );
   QCOMPARE( item->scenePos().x(), 12.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 6.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 6.0 );  //mm
 
   //test that data defined position applies to item's reference point
   item->attemptMove( QgsLayoutPoint( 12.0, 6.0, Qgis::LayoutUnit::Centimeters ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   QCOMPARE( item->positionWithUnits().x(), 12.0 ); //cm
-  QCOMPARE( item->positionWithUnits().y(), 6.0 ); //cm
+  QCOMPARE( item->positionWithUnits().y(), 6.0 );  //cm
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 100.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 20.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 20.0 );  //mm
 
   //also check setting data defined position AFTER setting reference point
   item->setPos( 0, 0 );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "6+10" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+6" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( u"6+10"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( u"2+6"_s ) );
   item->refreshItemPosition();
   QCOMPARE( item->positionWithUnits().x(), 16.0 ); //cm
-  QCOMPARE( item->positionWithUnits().y(), 8.0 ); //cm
+  QCOMPARE( item->positionWithUnits().y(), 8.0 );  //cm
   QCOMPARE( item->positionWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 140.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 40.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 40.0 );  //mm
 
   delete item;
 }
@@ -499,14 +514,14 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   //width
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"4+7"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth );
   QCOMPARE( item->sizeWithUnits().width(), 11.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->rect().width(), 110.0 ); //mm
 
   //height
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"2+3"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight );
   QCOMPARE( item->sizeWithUnits().height(), 5.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
@@ -514,8 +529,8 @@ void TestQgsLayoutItem::dataDefinedSize()
 
   //refreshSize should also respect data defined size
   item->setRect( 0.0, 0.0, 9.0, 8.0 );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"4+8"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"2+4"_s ) );
   item->refreshItemSize();
   QCOMPARE( item->sizeWithUnits().width(), 12.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
@@ -531,7 +546,7 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().width(), 120.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
   //restriction only for width
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"4+8"_s ) );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
   item->attemptResize( QgsLayoutSize( 6.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 12.0 );
@@ -541,23 +556,23 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->rect().height(), 15.0 ); //mm
   //restriction only for y position
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"2+4"_s ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 7.0 );
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
-  QCOMPARE( item->rect().width(), 70.0 ); //mm
+  QCOMPARE( item->rect().width(), 70.0 );  //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
 
   // data defined page size
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PresetPaperSize, QgsProperty::fromValue( QStringLiteral( "A5" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PresetPaperSize, QgsProperty::fromValue( u"A5"_s ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
   QCOMPARE( item->sizeWithUnits().width(), 14.8 );
   QCOMPARE( item->sizeWithUnits().height(), 21.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
-  QCOMPARE( item->rect().width(), 148.0 ); //mm
+  QCOMPARE( item->rect().width(), 148.0 );  //mm
   QCOMPARE( item->rect().height(), 210.0 ); //mm
   // data defined height/width should override page size
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromValue( "13.0" ) );
@@ -565,7 +580,7 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->sizeWithUnits().width(), 13.0 );
   QCOMPARE( item->sizeWithUnits().height(), 21.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
-  QCOMPARE( item->rect().width(), 130.0 ); //mm
+  QCOMPARE( item->rect().width(), 130.0 );  //mm
   QCOMPARE( item->rect().height(), 210.0 ); //mm
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromValue( "3.0" ) );
   item->attemptResize( QgsLayoutSize( 7.0, 1.50, Qgis::LayoutUnit::Centimeters ) );
@@ -580,7 +595,7 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->sizeWithUnits().width(), 3.0 );
   QCOMPARE( item->sizeWithUnits().height(), 13.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
-  QCOMPARE( item->rect().width(), 30.0 ); //mm
+  QCOMPARE( item->rect().width(), 30.0 );   //mm
   QCOMPARE( item->rect().height(), 130.0 ); //mm
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
@@ -591,13 +606,13 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->sizeWithUnits().width(), 1.5 );
   QCOMPARE( item->sizeWithUnits().height(), 1.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
-  QCOMPARE( item->rect().width(), 15.0 ); //mm
+  QCOMPARE( item->rect().width(), 15.0 );  //mm
   QCOMPARE( item->rect().height(), 10.0 ); //mm
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PaperOrientation, QgsProperty() );
 
   //check change of units should apply to data defined size
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"4+8"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"2+4"_s ) );
   //first set to same as existing size, but with different units
   item->attemptResize( QgsLayoutSize( 120.0, 60.0, Qgis::LayoutUnit::Millimeters ) );
   //data defined size should utilize new units
@@ -612,12 +627,12 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty() );
   item->attemptResize( QgsLayoutSize( 10.0, 5.0, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 20.0, 10.0, Qgis::LayoutUnit::Millimeters ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "5" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "6" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"5"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"6"_s ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
   item->refreshItemSize();
   QCOMPARE( item->scenePos().x(), 25.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 9.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 9.0 );  //mm
 
   //test that data defined size applied after setting item's reference point respects reference
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty() );
@@ -626,11 +641,11 @@ void TestQgsLayoutItem::dataDefinedSize()
   item->attemptResize( QgsLayoutSize( 10.0, 5.0, Qgis::LayoutUnit::Millimeters ) );
   item->attemptMove( QgsLayoutPoint( 20.0, 10.0, Qgis::LayoutUnit::Millimeters ) );
   item->setReferencePoint( QgsLayoutItem::LowerRight );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "7" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "9" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"7"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"9"_s ) );
   item->refreshItemSize();
   QCOMPARE( item->scenePos().x(), 23.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 6.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 6.0 );  //mm
 
   delete item;
 }
@@ -647,10 +662,10 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   item->attemptResize( QgsLayoutSize( 2.0, 4.0, Qgis::LayoutUnit::Centimeters ) );
 
   //test item with all of data defined x, y, width, height set
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+7" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+3" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+9" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( u"4+7"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( u"2+3"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"4+9"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"2+4"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::AllProperties );
   QCOMPARE( item->positionWithUnits().x(), 11.0 );
   QCOMPARE( item->positionWithUnits().y(), 5.0 );
@@ -659,16 +674,16 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   QCOMPARE( item->sizeWithUnits().height(), 6.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
   QCOMPARE( item->scenePos().x(), 110.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 50.0 ); //mm
+  QCOMPARE( item->scenePos().y(), 50.0 );  //mm
   QCOMPARE( item->rect().width(), 130.0 ); //mm
   QCOMPARE( item->rect().height(), 60.0 ); //mm
 
   //also try with reference point set
   item->setReferencePoint( QgsLayoutItem::Middle );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( QStringLiteral( "2+4" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "3+7" ) ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( QStringLiteral( "1+3" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionX, QgsProperty::fromExpression( u"4+8"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::PositionY, QgsProperty::fromExpression( u"2+4"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemWidth, QgsProperty::fromExpression( u"3+7"_s ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemHeight, QgsProperty::fromExpression( u"1+3"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::AllProperties );
   QCOMPARE( item->positionWithUnits().x(), 12.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
@@ -676,8 +691,8 @@ void TestQgsLayoutItem::combinedDataDefinedPositionAndSize()
   QCOMPARE( item->sizeWithUnits().width(), 10.0 );
   QCOMPARE( item->sizeWithUnits().height(), 4.0 );
   QCOMPARE( item->sizeWithUnits().units(), Qgis::LayoutUnit::Centimeters );
-  QCOMPARE( item->scenePos().x(), 70.0 ); //mm
-  QCOMPARE( item->scenePos().y(), 40.0 ); //mm
+  QCOMPARE( item->scenePos().x(), 70.0 );  //mm
+  QCOMPARE( item->scenePos().y(), 40.0 );  //mm
   QCOMPARE( item->rect().width(), 100.0 ); //mm
   QCOMPARE( item->rect().height(), 40.0 ); //mm
 
@@ -693,7 +708,7 @@ void TestQgsLayoutItem::resize()
 
   //resize test item (no restrictions), same units as layout
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->setRect( 0, 0, 55, 45 );
@@ -763,7 +778,7 @@ void TestQgsLayoutItem::referencePoint()
   QgsLayout l( &p );
 
   //test setting/getting reference point
-  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   item->setReferencePoint( QgsLayoutItem::LowerMiddle );
   QCOMPARE( item->referencePoint(), QgsLayoutItem::LowerMiddle );
 
@@ -802,7 +817,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->positionWithUnits().x(), 3.0 );
   QCOMPARE( item->positionWithUnits().y(), 6.0 );
 
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
 
   //test that setting item position is done relative to reference point
   l.setUnits( Qgis::LayoutUnit::Millimeters );
@@ -844,7 +859,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->scenePos().x(), -1.0 );
   QCOMPARE( item->scenePos().y(), -2.0 );
 
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
 
   //test that resizing is done relative to reference point
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
@@ -886,7 +901,7 @@ void TestQgsLayoutItem::referencePoint()
   QCOMPARE( item->scenePos().x(), 2.0 );
   QCOMPARE( item->scenePos().y(), 1.0 );
 
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
 
   //item with frame
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
@@ -943,7 +958,7 @@ void TestQgsLayoutItem::adjustPointForReference()
   QgsProject p;
   QgsLayout l( &p );
 
-  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   QPointF result = item->adjustPointForReferencePosition( QPointF( 5, 7 ), QSizeF( 2, 4 ), QgsLayoutItem::UpperLeft );
   QCOMPARE( result.x(), 5.0 );
   QCOMPARE( result.y(), 7.0 );
@@ -1048,7 +1063,7 @@ void TestQgsLayoutItem::fixedSize()
   QgsLayout l( &p );
 
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr< FixedSizedItem > item( new FixedSizedItem( &l ) );
+  auto item = std::make_unique<FixedSizedItem>( &l );
   QCOMPARE( item->fixedSize().width(), 2.0 );
   QCOMPARE( item->fixedSize().height(), 4.0 );
   QCOMPARE( item->fixedSize().units(), Qgis::LayoutUnit::Inches );
@@ -1076,7 +1091,7 @@ void TestQgsLayoutItem::minSize()
   QgsLayout l( &p );
 
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr< MinSizedItem > item( new MinSizedItem( &l ) );
+  auto item = std::make_unique<MinSizedItem>( &l );
   QCOMPARE( item->minimumSize().width(), 5.0 );
   QCOMPARE( item->minimumSize().height(), 10.0 );
   QCOMPARE( item->minimumSize().units(), Qgis::LayoutUnit::Centimeters );
@@ -1099,7 +1114,7 @@ void TestQgsLayoutItem::minSize()
   QGSCOMPARENEAR( item->rect().height(), 250.0, 4 * std::numeric_limits<double>::epsilon() );
 
   //also need check that fixed size trumps min size
-  std::unique_ptr< FixedMinSizedItem > fixedMinItem( new FixedMinSizedItem( &l ) );
+  auto fixedMinItem = std::make_unique<FixedMinSizedItem>( &l );
   QCOMPARE( fixedMinItem->minimumSize().width(), 5.0 );
   QCOMPARE( fixedMinItem->minimumSize().height(), 9.0 );
   QCOMPARE( fixedMinItem->minimumSize().units(), Qgis::LayoutUnit::Centimeters );
@@ -1120,7 +1135,7 @@ void TestQgsLayoutItem::move()
 
   //move test item, same units as layout
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   item->setRect( 0, 0, 55, 45 );
   item->setPos( 27, 29 );
   item->attemptMove( QgsLayoutPoint( 60.0, 15.0, Qgis::LayoutUnit::Millimeters ) );
@@ -1186,7 +1201,7 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().y(), 12.0 );
 
   //moveBy
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
   item->attemptMove( QgsLayoutPoint( 5, 9, Qgis::LayoutUnit::Centimeters ) );
   item->attemptResize( QgsLayoutSize( 4, 6 ) );
   QCOMPARE( item->positionWithUnits().x(), 5.0 );
@@ -1201,7 +1216,7 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().y(), 84.0 );
 
   //item with frame
-  item.reset( new TestItem( &l ) );
+  item = std::make_unique<TestItem>( &l );
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
   item->attemptMove( QgsLayoutPoint( 1, 2 ) );
   item->setFrameEnabled( true );
@@ -1221,7 +1236,7 @@ void TestQgsLayoutItem::setSceneRect()
 
   //resize test item (no restrictions), same units as layout
   l.setUnits( Qgis::LayoutUnit::Millimeters );
-  std::unique_ptr< TestItem > item( new TestItem( &l ) );
+  auto item = std::make_unique<TestItem>( &l );
   const QSignalSpy spySizeChanged( item.get(), &QgsLayoutItem::sizePositionChanged );
 
   item->attemptSetSceneRect( QRectF( 27.0, 29.0, 100, 200 ) );
@@ -1277,7 +1292,7 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 5 ) );
 
   // add pages
-  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 500, 100, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 0 );
@@ -1293,7 +1308,7 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 120 ) );
 
   // second page
-  page.reset( new QgsLayoutItemPage( &l ) );
+  page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 500, 200, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 1 );
@@ -1306,7 +1321,7 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->pagePos(), QPointF( 5, 240 ) );
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 240 ) );
 
-  page.reset( new QgsLayoutItemPage( &l ) );
+  page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 500, 200, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
   QCOMPARE( item->page(), 2 );
@@ -1368,67 +1383,67 @@ void TestQgsLayoutItem::itemVariablesFunction()
   const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
-  QgsExpression e( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_scale' )" ) );
+  QgsExpression e( u"map_get( item_variables( 'Map_id' ), 'map_scale' )"_s );
   // no map
   QgsExpressionContext c = l.createExpressionContext();
   QVariant r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  map->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setExtent( extent );
   l.addLayoutItem( map );
-  map->setId( QStringLiteral( "Map_id" ) );
+  map->setId( u"Map_id"_s );
 
   c = l.createExpressionContext();
   e.prepare( &c );
   r = e.evaluate( &c );
   QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
 
-  QgsExpression e2( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_crs' )" ) );
+  QgsExpression e2( u"map_get( item_variables( 'Map_id' ), 'map_crs' )"_s );
   r = e2.evaluate( &c );
   QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
 
-  QgsExpression e3( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_crs_definition' )" ) );
+  QgsExpression e3( u"map_get( item_variables( 'Map_id' ), 'map_crs_definition' )"_s );
   r = e3.evaluate( &c );
   QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
 
-  QgsExpression e4( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_units' )" ) );
+  QgsExpression e4( u"map_get( item_variables( 'Map_id' ), 'map_units' )"_s );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
 
-  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
-  std::unique_ptr< QgsVectorLayer > layer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?field=id_a:integer"_s, u"A"_s, u"memory"_s );
+  auto layer2 = std::make_unique<QgsVectorLayer>( u"Point?field=id_a:integer"_s, u"B"_s, u"memory"_s );
   map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() );
-  QgsExpression e5( QStringLiteral( "map_get( item_variables( 'Map_id' ), 'map_layer_ids' )" ) );
+  QgsExpression e5( u"map_get( item_variables( 'Map_id' ), 'map_layer_ids' )"_s );
   r = e5.evaluate( &c );
-  QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "%1,%2" ).arg( layer->id(), layer2->id() ) );
-  e5 = QgsExpression( QStringLiteral( "array_foreach(map_get( item_variables( 'Map_id' ), 'map_layers' ), layer_property(@element, 'name'))" ) );
+  QCOMPARE( r.toStringList().join( ',' ), u"%1,%2"_s.arg( layer->id(), layer2->id() ) );
+  e5 = QgsExpression( u"array_foreach(map_get( item_variables( 'Map_id' ), 'map_layers' ), layer_property(@element, 'name'))"_s ); // skip-keyword-check
   r = e5.evaluate( &c );
-  QCOMPARE( r.toStringList().join( ',' ), QStringLiteral( "A,B" ) );
+  QCOMPARE( r.toStringList().join( ',' ), u"A,B"_s );
 }
 
 void TestQgsLayoutItem::variables()
 {
   QgsLayout l( QgsProject::instance() );
 
-  std::unique_ptr< QgsLayoutItemMap > map = std::make_unique< QgsLayoutItemMap >( &l );
-  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
+  auto map = std::make_unique<QgsLayoutItemMap>( &l );
+  std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   const int before = scope->variableCount();
 
-  QgsExpressionContextUtils::setLayoutItemVariable( map.get(), QStringLiteral( "var" ), 5 );
+  QgsExpressionContextUtils::setLayoutItemVariable( map.get(), u"var"_s, 5 );
   scope.reset( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   QCOMPARE( scope->variableCount(), before + 1 );
-  QCOMPARE( scope->variable( QStringLiteral( "var" ) ).toInt(), 5 );
+  QCOMPARE( scope->variable( u"var"_s ).toInt(), 5 );
 
   QVariantMap vars;
-  vars.insert( QStringLiteral( "var2" ), 7 );
+  vars.insert( u"var2"_s, 7 );
   QgsExpressionContextUtils::setLayoutItemVariables( map.get(), vars );
   scope.reset( QgsExpressionContextUtils::layoutItemScope( map.get() ) );
   QCOMPARE( scope->variableCount(), before + 1 );
-  QVERIFY( !scope->hasVariable( QStringLiteral( "var" ) ) );
-  QCOMPARE( scope->variable( QStringLiteral( "var2" ) ).toInt(), 7 );
+  QVERIFY( !scope->hasVariable( u"var"_s ) );
+  QCOMPARE( scope->variable( u"var2"_s ).toInt(), 7 );
 }
 
 void TestQgsLayoutItem::mapCreditsFunction()
@@ -1436,24 +1451,24 @@ void TestQgsLayoutItem::mapCreditsFunction()
   const QgsRectangle extent( 2000, 2800, 2500, 2900 );
   QgsLayout l( QgsProject::instance() );
 
-  QgsExpression e( QStringLiteral( "array_to_string( map_credits( 'Map_id' ) )" ) );
+  QgsExpression e( u"array_to_string( map_credits( 'Map_id' ) )"_s );
   // no map
   QgsExpressionContext c = l.createExpressionContext();
   QVariant r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
 
-  e = QgsExpression( QStringLiteral( "array_to_string( map_credits() )" ) );
+  e = QgsExpression( u"array_to_string( map_credits() )"_s );
   r = e.evaluate( &c );
   QVERIFY( !r.isValid() );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  map->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setExtent( extent );
   l.addLayoutItem( map );
-  map->setId( QStringLiteral( "Map_id" ) );
+  map->setId( u"Map_id"_s );
 
-  e = QgsExpression( QStringLiteral( "array_to_string( map_credits( 'Map_id' ) )" ) );
+  e = QgsExpression( u"array_to_string( map_credits( 'Map_id' ) )"_s );
 
   c = l.createExpressionContext();
   e.prepare( &c );
@@ -1462,49 +1477,49 @@ void TestQgsLayoutItem::mapCreditsFunction()
   QCOMPARE( r.toString(), QString() );
 
   // with layers
-  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  auto layer = std::make_unique<QgsVectorLayer>( u"Point?field=id_a:integer"_s, u"A"_s, u"memory"_s );
   QgsLayerMetadata metadata;
-  metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
+  metadata.setRights( QStringList() << u"CC BY SA"_s );
   layer->setMetadata( metadata );
-  std::unique_ptr< QgsVectorLayer > layer2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "B" ), QStringLiteral( "memory" ) );
-  metadata.setRights( QStringList() << QStringLiteral( "CC NC" ) );
+  auto layer2 = std::make_unique<QgsVectorLayer>( u"Point?field=id_a:integer"_s, u"B"_s, u"memory"_s );
+  metadata.setRights( QStringList() << u"CC NC"_s );
   layer2->setMetadata( metadata );
-  std::unique_ptr< QgsVectorLayer > layer3 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
-  metadata.setRights( QStringList() << QStringLiteral( "CC BY SA" ) );
+  auto layer3 = std::make_unique<QgsVectorLayer>( u"Point?field=id_a:integer"_s, u"C"_s, u"memory"_s );
+  metadata.setRights( QStringList() << u"CC BY SA"_s );
   layer3->setMetadata( metadata );
-  const std::unique_ptr< QgsVectorLayer > layer4 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=id_a:integer" ), QStringLiteral( "C" ), QStringLiteral( "memory" ) );
+  const std::unique_ptr<QgsVectorLayer> layer4 = std::make_unique<QgsVectorLayer>( u"Point?field=id_a:integer"_s, u"C"_s, u"memory"_s );
 
-  map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() << layer3.get()  << layer4.get() );
+  map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() << layer3.get() << layer4.get() );
   e.prepare( &c );
-  QCOMPARE( e.evaluate( &c ).toString(), QStringLiteral( "CC BY SA,CC NC" ) );
-  map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer3.get()  << layer4.get() );
+  QCOMPARE( e.evaluate( &c ).toString(), u"CC BY SA,CC NC"_s );
+  map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer3.get() << layer4.get() );
   e.prepare( &c );
-  QCOMPARE( e.evaluate( &c ).toString(), QStringLiteral( "CC BY SA" ) );
+  QCOMPARE( e.evaluate( &c ).toString(), u"CC BY SA"_s );
 
-  QgsExpression e2( QStringLiteral( "array_to_string( map_credits( 'Map_id', include_layer_names:=true ) )" ) );
+  QgsExpression e2( u"array_to_string( map_credits( 'Map_id', include_layer_names:=true ) )"_s );
   e2.prepare( &c );
-  QCOMPARE( e2.evaluate( &c ).toString(), QStringLiteral( "A: CC BY SA,C: CC BY SA" ) );
-  map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() << layer3.get()  << layer4.get() );
-  QgsExpression e3( QStringLiteral( "array_to_string( map_credits( 'Map_id', include_layer_names:=true, layer_name_separator:='|' ) )" ) );
+  QCOMPARE( e2.evaluate( &c ).toString(), u"A: CC BY SA,C: CC BY SA"_s );
+  map->setLayers( QList<QgsMapLayer *>() << layer.get() << layer2.get() << layer3.get() << layer4.get() );
+  QgsExpression e3( u"array_to_string( map_credits( 'Map_id', include_layer_names:=true, layer_name_separator:='|' ) )"_s );
   e3.prepare( &c );
-  QCOMPARE( e3.evaluate( &c ).toString(), QStringLiteral( "A|CC BY SA,B|CC NC,C|CC BY SA" ) );
+  QCOMPARE( e3.evaluate( &c ).toString(), u"A|CC BY SA,B|CC NC,C|CC BY SA"_s );
 
   // second map
   QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
-  map2->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  map2->setCrs( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ) );
   map2->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
   map2->setExtent( extent );
   l.addLayoutItem( map2 );
-  map2->setId( QStringLiteral( "Map_2" ) );
-  map2->setLayers( QList<QgsMapLayer *>() << layer.get()  << layer4.get() );
-  QgsExpression e4( QStringLiteral( "array_to_string( map_credits( 'Map_2', include_layer_names:=true ) )" ) );
+  map2->setId( u"Map_2"_s );
+  map2->setLayers( QList<QgsMapLayer *>() << layer.get() << layer4.get() );
+  QgsExpression e4( u"array_to_string( map_credits( 'Map_2', include_layer_names:=true ) )"_s );
   e4.prepare( &c );
-  QCOMPARE( e4.evaluate( &c ).toString(), QStringLiteral( "A: CC BY SA" ) );
+  QCOMPARE( e4.evaluate( &c ).toString(), u"A: CC BY SA"_s );
 
   // credits from all maps
-  QgsExpression e5( QStringLiteral( "array_to_string( map_credits(include_layer_names:=true ) )" ) );
+  QgsExpression e5( u"array_to_string( map_credits(include_layer_names:=true ) )"_s );
   e5.prepare( &c );
-  QCOMPARE( e5.evaluate( &c ).toString(), QStringLiteral( "A: CC BY SA,B: CC NC,C: CC BY SA" ) );
+  QCOMPARE( e5.evaluate( &c ).toString(), u"A: CC BY SA,B: CC NC,C: CC BY SA"_s );
 }
 
 void TestQgsLayoutItem::rotation()
@@ -1573,7 +1588,7 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item->sceneBoundingRect().bottom(), 18.0 );
 
   // set rotation, using top left
-  std::unique_ptr< TestItem > item2( new TestItem( &l ) );
+  auto item2 = std::make_unique<TestItem>( &l );
   item2->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item2->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
   item2->setItemRotation( 90, false );
@@ -1588,7 +1603,7 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item2->pos().y(), 16.0 );
 
   // test that refresh rotation doesn't move item (#18037)
-  item2 = std::make_unique< TestItem >( &l );
+  item2 = std::make_unique<TestItem>( &l );
   item2->setReferencePoint( QgsLayoutItem::Middle );
   item2->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item2->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
@@ -1616,7 +1631,7 @@ void TestQgsLayoutItem::rotation()
 
   item->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
   item->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "90" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation, QgsProperty::fromExpression( u"90"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation );
   QCOMPARE( item->itemRotation(), 0.0 ); // should be unchanged
   QCOMPARE( item->rotation(), 90.0 );
@@ -1630,7 +1645,7 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item->pos().y(), 6.0 );
 
   //also check when refreshing all properties
-  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation, QgsProperty::fromExpression( QStringLiteral( "180" ) ) );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::ItemRotation, QgsProperty::fromExpression( u"180"_s ) );
   item->refreshDataDefinedProperty( QgsLayoutObject::DataDefinedProperty::AllProperties );
   QCOMPARE( item->itemRotation(), 0.0 ); // should be unchanged
   QCOMPARE( item->rotation(), 180.0 );
@@ -1651,14 +1666,14 @@ void TestQgsLayoutItem::rotation()
   l.addItem( item );
   item->setItemRotation( 45 );
   l.setSceneRect( 0, 0, 400, 400 );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagDebug, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::Debug, true );
   QImage image( l.sceneRect().size().toSize(), QImage::Format_ARGB32 );
   image.fill( 0 );
   QPainter painter( &image );
   l.render( &painter );
   painter.end();
 
-  QGSVERIFYIMAGECHECK( QStringLiteral( "layoutitem_rotation" ), QStringLiteral( "layoutitem_rotation" ), image, QString(), 0 );
+  QGSVERIFYIMAGECHECK( u"layoutitem_rotation"_s, u"layoutitem_rotation"_s, image, QString(), 0 );
   delete item;
 }
 
@@ -1669,11 +1684,11 @@ void TestQgsLayoutItem::rotation()
 void TestQgsLayoutItem::writeXml()
 {
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
+  );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement rootNode = doc.createElement( u"qgis"_s );
 
   QgsProject proj;
   QgsLayout l( &proj );
@@ -1687,7 +1702,7 @@ void TestQgsLayoutItem::writeXml()
   QCOMPARE( element.attribute( "type", "" ).toInt(), item->type() );
 
   //check that element has an object node
-  const QDomNodeList objectNodeList = element.elementsByTagName( QStringLiteral( "LayoutObject" ) );
+  const QDomNodeList objectNodeList = element.elementsByTagName( u"LayoutObject"_s );
   QCOMPARE( objectNodeList.count(), 1 );
 
   delete item;
@@ -1696,9 +1711,9 @@ void TestQgsLayoutItem::writeXml()
 void TestQgsLayoutItem::readXml()
 {
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
+  );
   QDomDocument doc( documentType );
 
   QgsProject proj;
@@ -1706,14 +1721,14 @@ void TestQgsLayoutItem::readXml()
   TestItem *item = new TestItem( &l );
 
   //try reading bad elements
-  const QDomElement badElement = doc.createElement( QStringLiteral( "bad" ) );
+  const QDomElement badElement = doc.createElement( u"bad"_s );
   const QDomElement noNode;
   QVERIFY( !item->readXml( badElement, doc, QgsReadWriteContext() ) );
   QVERIFY( !item->readXml( noNode, doc, QgsReadWriteContext() ) );
 
   //try good element
-  QDomElement goodElement = doc.createElement( QStringLiteral( "LayoutItem" ) );
-  goodElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "TestItemType" ) );
+  QDomElement goodElement = doc.createElement( u"LayoutItem"_s );
+  goodElement.setAttribute( u"type"_s, u"TestItemType"_s );
   QVERIFY( item->readXml( goodElement, doc, QgsReadWriteContext() ) );
   delete item;
 }
@@ -1724,13 +1739,13 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QgsLayout l( &proj );
   TestItem *original = new TestItem( &l );
 
-  original->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
+  original->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::TestProperty, QgsProperty::fromExpression( u"10 + 40"_s ) );
 
   original->setReferencePoint( QgsLayoutItem::MiddleRight );
   original->attemptResize( QgsLayoutSize( 6, 8, Qgis::LayoutUnit::Centimeters ) );
   original->attemptMove( QgsLayoutPoint( 0.05, 0.09, Qgis::LayoutUnit::Meters ) );
   original->setItemRotation( 45.0 );
-  original->setId( QStringLiteral( "test" ) );
+  original->setId( u"test"_s );
   original->setLocked( true );
   original->setZValue( 55 );
   original->setVisible( false );
@@ -1743,9 +1758,9 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setBlendMode( QPainter::CompositionMode_Darken );
   original->setExcludeFromExports( true );
   original->setItemOpacity( 0.75 );
-  original->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "_export_layer_" ) );
+  original->setCustomProperty( u"pdfExportGroup"_s, u"_export_layer_"_s );
 
-  std::unique_ptr< QgsLayoutItem > copy = createCopyViaXml( &l, original );
+  std::unique_ptr<QgsLayoutItem> copy = createCopyViaXml( &l, original );
 
   QCOMPARE( copy->uuid(), original->uuid() );
   QCOMPARE( copy->id(), original->id() );
@@ -1771,9 +1786,9 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QVERIFY( !copy->hasBackground() );
   QCOMPARE( copy->backgroundColor(), QColor( 200, 150, 100 ) );
   QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
-  QVERIFY( copy->excludeFromExports( ) );
+  QVERIFY( copy->excludeFromExports() );
   QCOMPARE( copy->itemOpacity(), 0.75 );
-  QCOMPARE( copy->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString(), QStringLiteral( "_export_layer_" ) );
+  QCOMPARE( copy->customProperty( u"pdfExportGroup"_s ).toString(), u"_export_layer_"_s );
   delete original;
 }
 
@@ -1784,7 +1799,7 @@ void TestQgsLayoutItem::undoRedo()
 
   QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
   const QString uuid = item->uuid();
-  QPointer< QgsLayoutItemShape > pItem( item ); // for testing deletion
+  QPointer<QgsLayoutItemShape> pItem( item ); // for testing deletion
   item->setFrameStrokeColor( QColor( 255, 100, 200 ) );
   l.addLayoutItem( item );
 
@@ -1802,7 +1817,7 @@ void TestQgsLayoutItem::undoRedo()
   // redo should restore
   l.undoStack()->stack()->redo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast<QgsLayoutItemShape *>( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1820,7 +1835,7 @@ void TestQgsLayoutItem::undoRedo()
   // redo should restore
   l.undoStack()->stack()->redo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast<QgsLayoutItemShape *>( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1837,7 +1852,7 @@ void TestQgsLayoutItem::undoRedo()
   // undo should restore
   l.undoStack()->stack()->undo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast<QgsLayoutItemShape *>( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1853,7 +1868,7 @@ void TestQgsLayoutItem::undoRedo()
   // redo should restore
   l.undoStack()->stack()->redo();
   QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
-  item = dynamic_cast< QgsLayoutItemShape * >( l.itemByUuid( uuid ) );
+  item = dynamic_cast<QgsLayoutItemShape *>( l.itemByUuid( uuid ) );
   QVERIFY( item );
   QVERIFY( l.items().contains( item ) );
   pItem = item;
@@ -1865,7 +1880,6 @@ void TestQgsLayoutItem::undoRedo()
   QVERIFY( !pItem );
   QVERIFY( !l.items().contains( item ) );
   QVERIFY( !l.itemByUuid( uuid ) );
-
 }
 
 void TestQgsLayoutItem::multiItemUndo()
@@ -1924,7 +1938,6 @@ void TestQgsLayoutItem::overlappingUndo()
   l.undoStack()->stack()->undo();
   QCOMPARE( item2->positionWithUnits(), QgsLayoutPoint( 20, 20 ) );
   QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 10, 10 ) );
-
 }
 
 void TestQgsLayoutItem::blendMode()
@@ -1943,9 +1956,14 @@ void TestQgsLayoutItem::blendMode()
   // can't use caching when blend modes are active
   QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, false );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, false );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
-  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, true );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
+  l.renderContext().setFlag( Qgis::LayoutRenderFlag::UseAdvancedEffects, true );
+  l.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::ForceVector );
+  QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_SourceOver );
+  l.renderContext().setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QCOMPARE( item->blendModeForRender(), QPainter::CompositionMode_Darken );
   QCOMPARE( item->cacheMode(), QGraphicsItem::NoCache );
 
@@ -1983,8 +2001,8 @@ void TestQgsLayoutItem::blendMode()
 
   mComposerRect2->setBlendMode( QPainter::CompositionMode_Multiply );
 
-  mControlPathPrefix = QStringLiteral( "composer_effects" );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composereffects_blend" ), &l2 );
+  mControlPathPrefix = u"composer_effects"_s;
+  QGSVERIFYLAYOUTCHECK( u"composereffects_blend"_s, &l2 );
 }
 
 void TestQgsLayoutItem::opacity()
@@ -2012,15 +2030,15 @@ void TestQgsLayoutItem::opacity()
   // we handle opacity ourselves, so QGraphicsItem opacity should never be set
   QCOMPARE( item->opacity(), 1.0 );
 
-  mControlPathPrefix = QStringLiteral( "composer_effects" );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composereffects_transparency75" ), &l );
+  mControlPathPrefix = u"composer_effects"_s;
+  QGSVERIFYLAYOUTCHECK( u"composereffects_transparency75"_s, &l );
 
   item->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::Opacity, QgsProperty::fromExpression( "35" ) );
   item->refreshDataDefinedProperty();
   QCOMPARE( item->itemOpacity(), 0.75 ); // should not change
   QCOMPARE( item->opacity(), 1.0 );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composereffects_transparency35" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composereffects_transparency35"_s, &l );
 
   // with background and frame
   l.removeLayoutItem( item );
@@ -2033,7 +2051,7 @@ void TestQgsLayoutItem::opacity()
   labelItem->setFrameEnabled( true );
   labelItem->setFrameStrokeColor( QColor( 40, 30, 20 ) );
   labelItem->setItemOpacity( 0.5 );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composereffects_transparency_bgframe" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composereffects_transparency_bgframe"_s, &l );
 
   QgsLayout l2( QgsProject::instance() );
   l2.initializeDefaults();
@@ -2058,7 +2076,7 @@ void TestQgsLayoutItem::opacity()
 
   mComposerRect2->setItemOpacity( 0.5 );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composereffects_transparency" ), &l2 );
+  QGSVERIFYLAYOUTCHECK( u"composereffects_transparency"_s, &l2 );
 }
 
 void TestQgsLayoutItem::excludeFromExports()
@@ -2066,12 +2084,12 @@ void TestQgsLayoutItem::excludeFromExports()
   QgsProject proj;
   QgsLayout l( &proj );
 
-  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  auto page = std::make_unique<QgsLayoutItemPage>( &l );
   page->setPageSize( QgsLayoutSize( 297, 210, Qgis::LayoutUnit::Millimeters ) );
   l.pageCollection()->addPage( page.release() );
 
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
-  std::unique_ptr< QgsFillSymbol > fillSymbol( new QgsFillSymbol() );
+  auto fillSymbol = std::make_unique<QgsFillSymbol>();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( Qt::transparent );
   simpleFill->setStrokeColor( Qt::transparent );
@@ -2094,24 +2112,24 @@ void TestQgsLayoutItem::excludeFromExports()
   item->attemptResize( QgsLayoutSize( 200, 200 ) );
   l.updateBounds();
 
-  mControlPathPrefix = QStringLiteral( "layouts" );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "layoutitem_excluded" ), &l, 0, 0, QSize( 400, 400 ) );
+  mControlPathPrefix = u"layouts"_s;
+  QGSVERIFYLAYOUTCHECK( u"layoutitem_excluded"_s, &l, 0, 0, QSize( 400, 400 ) );
 }
 
 std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )
 {
   //save original item to xml
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
+  );
   QDomDocument doc( documentType );
-  QDomElement rootNode = doc.createElement( QStringLiteral( "qgis" ) );
+  QDomElement rootNode = doc.createElement( u"qgis"_s );
 
   original->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  std::unique_ptr< TestItem > copy = std::make_unique< TestItem >( layout );
+  auto copy = std::make_unique<TestItem>( layout );
   copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() );
 
   return std::move( copy );

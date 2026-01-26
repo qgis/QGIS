@@ -21,9 +21,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
-#include "qgsapplication.h"
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerexporter.h"
 
 ///@cond PRIVATE
@@ -33,7 +33,6 @@
  */
 class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
     QgsExportToPostgresqlAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -48,23 +47,20 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context,
-                                  QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     std::unique_ptr<QgsProcessingFeatureSource> mSource;
     std::unique_ptr<QgsAbstractDatabaseProviderConnection> mConn;
-    const QString mProviderName = QStringLiteral( "postgres" );
+    const QString mProviderName = u"postgres"_s;
     QString mSchema;
     QString mTable = QString();
-    QString mPrimaryKeyField = QStringLiteral( "id" );
+    QString mPrimaryKeyField = u"id"_s;
     QString mGeomColumn;
-    QString mEncoding = QStringLiteral( "UTF-8" );
+    QString mEncoding = u"UTF-8"_s;
     bool mCreateIndex = true;
     bool mOverwrite = true;
-    QMap< QString, QVariant > mOptions;
-
+    QMap<QString, QVariant> mOptions;
 };
 
 ///@endcond PRIVATE

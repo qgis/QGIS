@@ -14,17 +14,24 @@
  ***************************************************************************/
 
 #include "qgstableeditordialog.h"
-#include "qgstableeditorwidget.h"
-#include "qgsmessagebar.h"
-#include "qgsgui.h"
+
 #include "qgsdockwidget.h"
+#include "qgsgui.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmanualtable.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayouttablecolumn.h"
+#include "qgsmessagebar.h"
 #include "qgspanelwidgetstack.h"
-#include "qgstableeditorformattingwidget.h"
 #include "qgssettings.h"
-#include "qgsmaplayer.h"
+#include "qgstableeditorformattingwidget.h"
+#include "qgstableeditorwidget.h"
+#include "qgsvectorlayer.h"
 
 #include <QClipboard>
 #include <QMessageBox>
+
+#include "moc_qgstableeditordialog.cpp"
 
 QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   : QMainWindow( parent )
@@ -45,7 +52,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
 
   mMessageBar = new QgsMessageBar( centralWidget() );
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-  static_cast< QGridLayout * >( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
+  static_cast<QGridLayout *>( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
 
   mTableWidget = new QgsTableEditorWidget();
   mTableWidget->setContentsMargins( 0, 0, 0, 0 );
@@ -56,16 +63,15 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   mTableWidget->setFocus();
   mTableWidget->setTableContents( QgsTableContents() << ( QgsTableRow() << QgsTableCell() ) );
 
-  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [ = ]
-  {
+  connect( mTableWidget, &QgsTableEditorWidget::tableChanged, this, [this] {
     if ( !mBlockSignals )
       emit tableChanged();
   } );
 
-  const int minDockWidth( fontMetrics().boundingRect( QStringLiteral( "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" ) ).width() );
+  const int minDockWidth( fontMetrics().boundingRect( u"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"_s ).width() );
 
   mPropertiesDock = new QgsDockWidget( tr( "Cell Contents" ), this );
-  mPropertiesDock->setObjectName( QStringLiteral( "FormattingDock" ) );
+  mPropertiesDock->setObjectName( u"FormattingDock"_s );
   mPropertiesStack = new QgsPanelWidgetStack();
   mPropertiesDock->setWidget( mPropertiesStack );
   mPropertiesDock->setMinimumWidth( minDockWidth );
@@ -82,20 +88,17 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::verticalAlignmentChanged, mTableWidget, &QgsTableEditorWidget::setSelectionVerticalAlignment );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::cellPropertyChanged, mTableWidget, &QgsTableEditorWidget::setSelectionCellProperty );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [ = ]
-  {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::textFormatChanged, this, [this] {
     mTableWidget->setSelectionTextFormat( mFormattingWidget->textFormat() );
   } );
 
-  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [ = ]
-  {
+  connect( mFormattingWidget, &QgsTableEditorFormattingWidget::numberFormatChanged, this, [this] {
     mTableWidget->setSelectionNumericFormat( mFormattingWidget->numericFormat() );
   } );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::rowHeightChanged, mTableWidget, &QgsTableEditorWidget::setSelectionRowHeight );
   connect( mFormattingWidget, &QgsTableEditorFormattingWidget::columnWidthChanged, mTableWidget, &QgsTableEditorWidget::setSelectionColumnWidth );
 
-  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [ = ]
-  {
+  connect( mTableWidget, &QgsTableEditorWidget::activeCellChanged, this, [this] {
     mFormattingWidget->setBackgroundColor( mTableWidget->selectionBackgroundColor() );
     mFormattingWidget->setNumericFormat( mTableWidget->selectionNumericFormat(), mTableWidget->hasMixedSelectionNumericFormat() );
     mFormattingWidget->setRowHeight( mTableWidget->selectionRowHeight() );
@@ -114,7 +117,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   addDockWidget( Qt::RightDockWidgetArea, mPropertiesDock );
 
   mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() );
-  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [ = ]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
+  connect( QApplication::clipboard(), &QClipboard::dataChanged, this, [this]() { mActionImportFromClipboard->setEnabled( !QApplication::clipboard()->text().isEmpty() ); } );
 
   connect( mActionImportFromClipboard, &QAction::triggered, this, &QgsTableEditorDialog::setTableContentsFromClipboard );
   connect( mActionClose, &QAction::triggered, this, &QMainWindow::close );
@@ -130,8 +133,7 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   connect( mActionSelectColumn, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::expandColumnSelection );
   connect( mActionSelectAll, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::selectAll );
   connect( mActionClear, &QAction::triggered, mTableWidget, &QgsTableEditorWidget::clearSelectedCells );
-  connect( mActionIncludeHeader, &QAction::toggled, this, [ = ]( bool checked )
-  {
+  connect( mActionIncludeHeader, &QAction::toggled, this, [this]( bool checked ) {
     mTableWidget->setIncludeTableHeader( checked );
     emit includeHeaderChanged( checked );
   } );
@@ -139,10 +141,10 @@ QgsTableEditorDialog::QgsTableEditorDialog( QWidget *parent )
   // restore the toolbar and dock widgets positions using Qt settings API
   const QgsSettings settings;
 
-  const QByteArray state = settings.value( QStringLiteral( "LayoutDesigner/tableEditorState" ), QByteArray(), QgsSettings::App ).toByteArray();
+  const QByteArray state = settings.value( u"LayoutDesigner/tableEditorState"_s, QByteArray(), QgsSettings::App ).toByteArray();
   if ( !state.isEmpty() && !restoreState( state ) )
   {
-    QgsDebugError( QStringLiteral( "restore of table editor dialog UI state failed" ) );
+    QgsDebugError( u"restore of table editor dialog UI state failed"_s );
   }
 }
 
@@ -150,7 +152,7 @@ void QgsTableEditorDialog::closeEvent( QCloseEvent * )
 {
   QgsSettings settings;
   // store the toolbar/dock widget settings using Qt settings API
-  settings.setValue( QStringLiteral( "LayoutDesigner/tableEditorState" ), saveState(), QgsSettings::App );
+  settings.setValue( u"LayoutDesigner/tableEditorState"_s, saveState(), QgsSettings::App );
 }
 
 QgsMapLayer *QgsTableEditorDialog::layer() const
@@ -167,14 +169,54 @@ void QgsTableEditorDialog::setLayer( QgsMapLayer *layer )
   }
 }
 
+QgsLayoutItemManualTable *QgsTableEditorDialog::table() const
+{
+  return mTable;
+}
+
+void QgsTableEditorDialog::setTable( QgsLayoutItemManualTable *table )
+{
+  if ( mTable == table )
+    return;
+
+  mTable = table;
+
+  if ( QgsLayout *layout = table->layout() )
+  {
+    setLayer( layout->reportContext().layer() );
+  }
+  registerExpressionContextGenerator( table );
+
+  setIncludeTableHeader( table->includeTableHeader() );
+  setTableContents( table->tableContents() );
+
+  int row = 0;
+  const QList<double> rowHeights = table->rowHeights();
+  for ( const double height : rowHeights )
+  {
+    setTableRowHeight( row, height );
+    row++;
+  }
+  int col = 0;
+  const QList<double> columnWidths = table->columnWidths();
+  QVariantList headers;
+  headers.reserve( columnWidths.size() );
+  for ( const double width : columnWidths )
+  {
+    setTableColumnWidth( col, width );
+    headers << ( col < table->headers().count() ? table->headers().value( col ).heading() : QVariant() );
+    col++;
+  }
+  setTableHeaders( headers );
+}
+
 
 bool QgsTableEditorDialog::setTableContentsFromClipboard()
 {
   if ( QApplication::clipboard()->text().isEmpty() )
     return false;
 
-  if ( QMessageBox::question( this, tr( "Import Content From Clipboard" ),
-                              tr( "Importing content from clipboard will overwrite current table content. Are you sure?" ) ) != QMessageBox::Yes )
+  if ( QMessageBox::question( this, tr( "Import Content From Clipboard" ), tr( "Importing content from clipboard will overwrite current table content. Are you sure?" ) ) != QMessageBox::Yes )
     return false;
 
   QgsTableContents contents;

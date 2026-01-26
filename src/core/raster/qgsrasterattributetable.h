@@ -16,16 +16,16 @@
 #ifndef QGSRASTERATTRIBUTETABLE_H
 #define QGSRASTERATTRIBUTETABLE_H
 
-#include "qgsfields.h"
-#include "qgsfeature.h"
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscolorrampimpl.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
 
-#include <QObject>
-#include <QLinearGradient>
 #include <QCoreApplication>
+#include <QLinearGradient>
+#include <QObject>
 
 class QgsRasterLayer;
 class QgsRasterRenderer;
@@ -33,7 +33,7 @@ class QgsRasterDataProvider;
 
 /**
  * \ingroup core
- * \brief The QgsRasterAttributeTable class represents a Raster Attribute Table (RAT).
+ * \brief Represents a Raster Attribute Table (RAT).
  *
  * This class is modeled after the GDAL Raster Attribute Table implementation, it adds some convenience
  * methods to handle data from QGIS and to import/export a Raster Attribute Table from/to a DBF VAT file.
@@ -463,7 +463,7 @@ class CORE_EXPORT QgsRasterAttributeTable
     Qgis::RasterAttributeTableType mType = Qgis::RasterAttributeTableType::Thematic;
     QList<Field> mFields;
     QList<QVariantList> mData;
-    bool mIsDirty;
+    bool mIsDirty = false;
     QString mFilePath;
 
     // Set type from fields.

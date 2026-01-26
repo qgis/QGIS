@@ -28,7 +28,7 @@ MDAL::Mesh2dm::Mesh2dm( size_t faceVerticesMaximumCount,
   : MemoryMesh( DRIVER_NAME,
                 faceVerticesMaximumCount,
                 uri )
-  , mVertexIDtoIndex( vertexIDtoIndex )
+  , mVertexIDtoIndex( std::move( vertexIDtoIndex ) )
 {
 }
 
@@ -335,7 +335,7 @@ std::unique_ptr<MDAL::Mesh> MDAL::Driver2dm::load( const std::string &meshFile, 
     new Mesh2dm(
       maxVerticesPerFace,
       mMeshFile,
-      vertexIDtoIndex
+      std::move( vertexIDtoIndex )
     )
   );
   mesh->setFaces( std::move( faces ) );
@@ -402,7 +402,7 @@ void MDAL::Driver2dm::save( const std::string &fileName, const std::string &, MD
     for ( size_t j = 0; j < 2; ++j )
     {
       line.append( " " );
-      line.append( MDAL::coordinateToString( vertex[j] ) );
+      line.append( MDAL::doubleToString( vertex[j], 16 ) );
     }
     line.append( " " );
     line.append( MDAL::doubleToString( vertex[2] ) );

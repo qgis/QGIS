@@ -18,14 +18,14 @@
 #ifndef QGSLAYOUTMEASUREMENT_H
 #define QGSLAYOUTMEASUREMENT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsunittypes.h"
 
 /**
  * \ingroup core
  * \class QgsLayoutMeasurement
- * \brief This class provides a method of storing measurements for use in QGIS layouts
+ * \brief Provides a method of storing measurements for use in QGIS layouts
  * using a variety of different measurement units.
  * \see QgsLayoutMeasurementConverter
  */
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsLayoutMeasurement
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayoutMeasurement: %1 %2 >" ).arg( sipCpp->length() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    QString str = u"<QgsLayoutMeasurement: %1 %2 >"_s.arg( sipCpp->length() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

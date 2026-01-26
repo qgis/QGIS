@@ -16,16 +16,17 @@
 #ifndef QGSLAYERTREEMODEL_H
 #define QGSLAYERTREEMODEL_H
 
+#include <memory>
+
 #include "qgis_core.h"
+#include "qgsgeometry.h"
+#include "qgslayertreemodellegendnode.h"
+
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
 #include <QTimer>
 #include <QUuid>
-#include <memory>
-
-#include "qgsgeometry.h"
-#include "qgslayertreemodellegendnode.h"
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
@@ -40,7 +41,7 @@ class QgsLayerTreeFilterSettings;
 
 /**
  * \ingroup core
- * \brief The QgsLayerTreeModel class is model implementation for Qt item views framework.
+ * \brief A model representing the layer tree, including layers and groups of layers.
  *
  * The model can be used in any QTreeView, it is however recommended to use it
  * with QgsLayerTreeView which brings additional functionality specific to layer tree handling.
@@ -383,7 +384,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void layerLegendChanged();
 
     /**
-     * Emitted when layer flags have changed.
+     * Triggered when layer flags have changed.
      * \since QGIS 3.18
      */
     void layerFlagsChanged();
@@ -393,6 +394,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     void legendNodeDataChanged();
 
     void invalidateLegendMapBasedData();
+
+  private slots:
+
+    /**
+     * Triggered when layer elevation properties have changed.
+     * \since QGIS 3.42
+     */
+    void layerProfileGenerationPropertyChanged();
 
   protected:
     void removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer );
@@ -532,6 +541,8 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     QMap<QString, QSet<QString>> mHitTestResults;
 
+    QMap<QString, QPair<double, double>> mHitTestResultsRendererUpdatedCanvas;
+
     std::unique_ptr< QgsLayerTreeFilterSettings > mFilterSettings;
 
     double mLegendMapViewMupp = 0;
@@ -571,7 +582,7 @@ class EmbeddedWidgetLegendNode : public QgsLayerTreeModelLegendNode
     {
       // we need a valid rule key to allow the model to build a tree out of legend nodes
       // if that's possible (if there is a node without a rule key, building of tree is canceled)
-      mRuleKey = QStringLiteral( "embedded-widget-" ) + QUuid::createUuid().toString();
+      mRuleKey = u"embedded-widget-"_s + QUuid::createUuid().toString();
     }
 
     QVariant data( int role ) const override

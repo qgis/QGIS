@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 
@@ -34,7 +35,8 @@ class TestQgsRasterContourRenderer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsRasterContourRenderer() : QgsTest( QStringLiteral( "Raster Contour Renderer Tests" ) ) {}
+    TestQgsRasterContourRenderer()
+      : QgsTest( u"Raster Contour Renderer Tests"_s ) {}
 
   private:
     QString mDataDir;
@@ -42,10 +44,10 @@ class TestQgsRasterContourRenderer : public QgsTest
     QgsMapSettings *mMapSettings = nullptr;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void test_render();
     void testRenderOpacity();
@@ -93,7 +95,7 @@ void TestQgsRasterContourRenderer::test_render()
 
   mLayer->setRenderer( renderer );
 
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "raster_contours" ), QStringLiteral( "raster_contours" ), *mMapSettings );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"raster_contours"_s, u"raster_contours"_s, *mMapSettings );
 }
 
 void TestQgsRasterContourRenderer::testRenderOpacity()
@@ -114,7 +116,7 @@ void TestQgsRasterContourRenderer::testRenderOpacity()
   mLayer->setRenderer( renderer );
   mLayer->setOpacity( 0.5 );
 
-  QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "raster_contours_opacity" ), QStringLiteral( "raster_contours_opacity" ), *mMapSettings );
+  QGSVERIFYRENDERMAPSETTINGSCHECK( u"raster_contours_opacity"_s, u"raster_contours_opacity"_s, *mMapSettings );
 }
 
 

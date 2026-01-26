@@ -17,41 +17,41 @@
 
 #include "qgsalgorithmxyztiles.h"
 
-#include <QBuffer>
-
+#include "qgsexpressioncontextutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
-#include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerutils.h"
 #include "qgsprovidermetadata.h"
+
+#include <QBuffer>
 
 ///@cond PRIVATE
 
 int tile2tms( const int y, const int zoom )
 {
   double n = std::pow( 2, zoom );
-  return ( int )std::floor( n - y - 1 );
+  return ( int ) std::floor( n - y - 1 );
 }
 
 int lon2tileX( const double lon, const int z )
 {
-  return ( int )( std::floor( ( lon + 180.0 ) / 360.0 * ( 1 << z ) ) );
+  return ( int ) ( std::floor( ( lon + 180.0 ) / 360.0 * ( 1 << z ) ) );
 }
 
 int lat2tileY( const double lat, const int z )
 {
   double latRad = lat * M_PI / 180.0;
-  return ( int )( std::floor( ( 1.0 - std::asinh( std::tan( latRad ) ) / M_PI ) / 2.0 * ( 1 << z ) ) );
+  return ( int ) ( std::floor( ( 1.0 - std::asinh( std::tan( latRad ) ) / M_PI ) / 2.0 * ( 1 << z ) ) );
 }
 
 double tileX2lon( const int x, const int z )
 {
-  return x / ( double )( 1 << z ) * 360.0 - 180 ;
+  return x / ( double ) ( 1 << z ) * 360.0 - 180;
 }
 
 double tileY2lat( const int y, const int z )
 {
-  double n = M_PI - 2.0 * M_PI * y / ( double )( 1 << z );
+  double n = M_PI - 2.0 * M_PI * y / ( double ) ( 1 << z );
   return 180.0 / M_PI * std::atan( 0.5 * ( std::exp( n ) - std::exp( -n ) ) );
 }
 
@@ -63,21 +63,22 @@ void extent2TileXY( QgsRectangle extent, const int zoom, int &xMin, int &yMin, i
   yMax = lat2tileY( extent.xMaximum(), zoom );
 }
 
-QList< MetaTile > getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize )
+QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize )
 {
   int minX = lon2tileX( extent.xMinimum(), zoom );
   int minY = lat2tileY( extent.yMaximum(), zoom );
   int maxX = lon2tileX( extent.xMaximum(), zoom );
-  int maxY = lat2tileY( extent.yMinimum(), zoom );;
+  int maxY = lat2tileY( extent.yMinimum(), zoom );
+  ;
 
   int i = 0;
-  QMap< QString, MetaTile > tiles;
+  QMap<QString, MetaTile> tiles;
   for ( int x = minX; x <= maxX; x++ )
   {
     int j = 0;
     for ( int y = minY; y <= maxY; y++ )
     {
-      QString key = QStringLiteral( "%1:%2" ).arg( ( int )( i / tileSize ) ).arg( ( int )( j / tileSize ) );
+      QString key = u"%1:%2"_s.arg( ( int ) ( i / tileSize ) ).arg( ( int ) ( j / tileSize ) );
       MetaTile tile = tiles.value( key, MetaTile() );
       tile.addTile( i % tileSize, j % tileSize, Tile( x, y, zoom ) );
       tiles.insert( key, tile );
@@ -97,7 +98,7 @@ QString QgsXyzTilesBaseAlgorithm::group() const
 
 QString QgsXyzTilesBaseAlgorithm::groupId() const
 {
-  return QStringLiteral( "rastertools" );
+  return u"rastertools"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsXyzTilesBaseAlgorithm::flags() const
@@ -107,15 +108,15 @@ Qgis::ProcessingAlgorithmFlags QgsXyzTilesBaseAlgorithm::flags() const
 
 void QgsXyzTilesBaseAlgorithm::createCommonParameters()
 {
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ZOOM_MIN" ), QObject::tr( "Minimum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "ZOOM_MAX" ), QObject::tr( "Maximum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DPI" ), QObject::tr( "DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 48, 600 ) );
-  addParameter( new QgsProcessingParameterColor( QStringLiteral( "BACKGROUND_COLOR" ), QObject::tr( "Background color" ), QColor( Qt::transparent ), true, true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "ANTIALIAS" ), QObject::tr( "Enable antialiasing" ), true ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "TILE_FORMAT" ), QObject::tr( "Tile format" ), QStringList() << QStringLiteral( "PNG" ) << QStringLiteral( "JPG" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "QUALITY" ), QObject::tr( "Quality (JPG only)" ), Qgis::ProcessingNumberParameterType::Integer, 75, false, 1, 100 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "METATILESIZE" ), QObject::tr( "Metatile size" ), Qgis::ProcessingNumberParameterType::Integer, 4, false, 1, 20 ) );
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Extent" ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"ZOOM_MIN"_s, QObject::tr( "Minimum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
+  addParameter( new QgsProcessingParameterNumber( u"ZOOM_MAX"_s, QObject::tr( "Maximum zoom" ), Qgis::ProcessingNumberParameterType::Integer, 12, false, 0, 25 ) );
+  addParameter( new QgsProcessingParameterNumber( u"DPI"_s, QObject::tr( "DPI" ), Qgis::ProcessingNumberParameterType::Integer, 96, false, 48, 600 ) );
+  addParameter( new QgsProcessingParameterColor( u"BACKGROUND_COLOR"_s, QObject::tr( "Background color" ), QColor( Qt::transparent ), true, true ) );
+  addParameter( new QgsProcessingParameterBoolean( u"ANTIALIAS"_s, QObject::tr( "Enable antialiasing" ), true ) );
+  addParameter( new QgsProcessingParameterEnum( u"TILE_FORMAT"_s, QObject::tr( "Tile format" ), QStringList() << u"PNG"_s << u"JPG"_s, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"QUALITY"_s, QObject::tr( "Quality (JPG only)" ), Qgis::ProcessingNumberParameterType::Integer, 75, false, 1, 100 ) );
+  addParameter( new QgsProcessingParameterNumber( u"METATILESIZE"_s, QObject::tr( "Metatile size" ), Qgis::ProcessingNumberParameterType::Integer, 4, false, 1, 20 ) );
 }
 
 bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -124,8 +125,8 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   QgsProject *project = context.project();
 
-  const QList< QgsLayerTreeLayer * > projectLayers = project->layerTreeRoot()->findLayers();
-  QSet< QString > visibleLayers;
+  const QList<QgsLayerTreeLayer *> projectLayers = project->layerTreeRoot()->findLayers();
+  QSet<QString> visibleLayers;
   for ( const QgsLayerTreeLayer *layer : projectLayers )
   {
     if ( layer->isVisible() )
@@ -134,7 +135,7 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     }
   }
 
-  QList< QgsMapLayer * > renderLayers = project->layerTreeRoot()->layerOrder();
+  QList<QgsMapLayer *> renderLayers = project->layerTreeRoot()->layerOrder();
   for ( QgsMapLayer *layer : renderLayers )
   {
     if ( visibleLayers.contains( layer->id() ) )
@@ -145,19 +146,27 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
     }
   }
 
-  QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context );
-  QgsCoordinateReferenceSystem extentCrs = parameterAsExtentCrs( parameters, QStringLiteral( "EXTENT" ), context );
+  QgsRectangle extent = parameterAsExtent( parameters, u"EXTENT"_s, context );
+  QgsCoordinateReferenceSystem extentCrs = parameterAsExtentCrs( parameters, u"EXTENT"_s, context );
   QgsCoordinateTransform ct( extentCrs, project->crs(), context.transformContext() );
-  mExtent = ct.transformBoundingBox( extent );
+  try
+  {
+    mExtent = ct.transformBoundingBox( extent );
+  }
+  catch ( QgsCsException & )
+  {
+    feedback->reportError( QObject::tr( "Could not transform the extent into the project CRS" ), true );
+    return false;
+  }
 
-  mMinZoom = parameterAsInt( parameters, QStringLiteral( "ZOOM_MIN" ), context );
-  mMaxZoom = parameterAsInt( parameters, QStringLiteral( "ZOOM_MAX" ), context );
-  mDpi = parameterAsInt( parameters, QStringLiteral( "DPI" ), context );
-  mBackgroundColor = parameterAsColor( parameters, QStringLiteral( "BACKGROUND_COLOR" ), context );
-  mAntialias = parameterAsBool( parameters, QStringLiteral( "ANTIALIAS" ), context );
-  mTileFormat = parameterAsEnum( parameters, QStringLiteral( "TILE_FORMAT" ), context ) ? QStringLiteral( "JPG" ) : QStringLiteral( "PNG" );
-  mJpgQuality = mTileFormat == QLatin1String( "JPG" ) ? parameterAsInt( parameters, QStringLiteral( "QUALITY" ), context ) : -1;
-  mMetaTileSize = parameterAsInt( parameters, QStringLiteral( "METATILESIZE" ), context );
+  mMinZoom = parameterAsInt( parameters, u"ZOOM_MIN"_s, context );
+  mMaxZoom = parameterAsInt( parameters, u"ZOOM_MAX"_s, context );
+  mDpi = parameterAsInt( parameters, u"DPI"_s, context );
+  mBackgroundColor = parameterAsColor( parameters, u"BACKGROUND_COLOR"_s, context );
+  mAntialias = parameterAsBool( parameters, u"ANTIALIAS"_s, context );
+  mTileFormat = parameterAsEnum( parameters, u"TILE_FORMAT"_s, context ) ? u"JPG"_s : u"PNG"_s;
+  mJpgQuality = mTileFormat == "JPG"_L1 ? parameterAsInt( parameters, u"QUALITY"_s, context ) : -1;
+  mMetaTileSize = parameterAsInt( parameters, u"METATILESIZE"_s, context );
   mThreadsNumber = context.maximumThreads();
   mTransformContext = context.transformContext();
   mFeedback = feedback;
@@ -166,23 +175,32 @@ bool QgsXyzTilesBaseAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   mMercatorCrs = QgsCoordinateReferenceSystem( "EPSG:3857" );
   mSrc2Wgs = QgsCoordinateTransform( project->crs(), mWgs84Crs, context.transformContext() );
   mWgs2Mercator = QgsCoordinateTransform( mWgs84Crs, mMercatorCrs, context.transformContext() );
-
-  mWgs84Extent = mSrc2Wgs.transformBoundingBox( mExtent );
-
-  if ( parameters.contains( QStringLiteral( "TILE_WIDTH" ) ) )
+  try
   {
-    mTileWidth = parameterAsInt( parameters, QStringLiteral( "TILE_WIDTH" ), context );
+    mWgs84Extent = mSrc2Wgs.transformBoundingBox( mExtent );
+  }
+  catch ( QgsCsException & )
+  {
+    feedback->reportError( QObject::tr( "Could not transform the extent into WGS84" ), true );
+    return false;
   }
 
-  if ( parameters.contains( QStringLiteral( "TILE_HEIGHT" ) ) )
+  if ( parameters.contains( u"TILE_WIDTH"_s ) )
   {
-    mTileHeight = parameterAsInt( parameters, QStringLiteral( "TILE_HEIGHT" ), context );
+    mTileWidth = parameterAsInt( parameters, u"TILE_WIDTH"_s, context );
   }
 
-  if ( mTileFormat != QLatin1String( "PNG" ) && mBackgroundColor.alpha() != 255 )
+  if ( parameters.contains( u"TILE_HEIGHT"_s ) )
+  {
+    mTileHeight = parameterAsInt( parameters, u"TILE_HEIGHT"_s, context );
+  }
+
+  if ( mTileFormat != "PNG"_L1 && mBackgroundColor.alpha() != 255 )
   {
     feedback->pushWarning( QObject::tr( "Background color setting ignored, the JPG format only supports fully opaque colors" ) );
   }
+
+  mScaleMethod = project->scaleMethod();
 
   return true;
 }
@@ -196,8 +214,7 @@ void QgsXyzTilesBaseAlgorithm::checkLayersUsagePolicy( QgsProcessingFeedback *fe
       if ( QgsMapLayerUtils::isOpenStreetMapLayer( layer ) )
       {
         // Prevent bulk downloading of tiles from openstreetmap.org as per OSMF tile usage policy
-        feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QStringLiteral( "<a href=\"https://operations.osmfoundation.org/policies/tiles/\">" ), QStringLiteral( "</a>" ) ),
-                                        QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QString(), QString() ) );
+        feedback->pushFormattedMessage( QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), u"<a href=\"https://operations.osmfoundation.org/policies/tiles/\">"_s, u"</a>"_s ), QObject::tr( "Layer %1 will be skipped as the algorithm leads to bulk downloading behavior which is prohibited by the %2OpenStreetMap Foundation tile usage policy%3" ).arg( layer->name(), QString(), QString() ) );
         mLayers.removeAll( layer );
         delete layer;
       }
@@ -212,14 +229,22 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
     MetaTile metaTile = mMetaTiles.takeFirst();
 
     QgsMapSettings settings;
-    settings.setExtent( mWgs2Mercator.transformBoundingBox( metaTile.extent() ) );
+    try
+    {
+      settings.setExtent( mWgs2Mercator.transformBoundingBox( metaTile.extent() ) );
+    }
+    catch ( QgsCsException & )
+    {
+      continue;
+    }
     settings.setOutputImageFormat( QImage::Format_ARGB32_Premultiplied );
     settings.setTransformContext( mTransformContext );
     settings.setDestinationCrs( mMercatorCrs );
     settings.setLayers( mLayers );
     settings.setOutputDpi( mDpi );
     settings.setFlag( Qgis::MapSettingsFlag::Antialiasing, mAntialias );
-    if ( mTileFormat == QLatin1String( "PNG" ) || mBackgroundColor.alpha() == 255 )
+    settings.setScaleMethod( mScaleMethod );
+    if ( mTileFormat == "PNG"_L1 || mBackgroundColor.alpha() == 255 )
     {
       settings.setBackgroundColor( mBackgroundColor );
     }
@@ -236,7 +261,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
 
     QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( settings );
     mRendererJobs.insert( job, metaTile );
-    QObject::connect( job, &QgsMapRendererJob::finished, mFeedback, [ this, job ]() { processMetaTile( job ); } );
+    QObject::connect( job, &QgsMapRendererJob::finished, mFeedback, [this, job]() { processMetaTile( job ); } );
     job->start();
   }
 }
@@ -245,7 +270,7 @@ void QgsXyzTilesBaseAlgorithm::startJobs()
 
 QString QgsXyzTilesDirectoryAlgorithm::name() const
 {
-  return QStringLiteral( "tilesxyzdirectory" );
+  return u"tilesxyzdirectory"_s;
 }
 
 QString QgsXyzTilesDirectoryAlgorithm::displayName() const
@@ -271,32 +296,32 @@ QgsXyzTilesDirectoryAlgorithm *QgsXyzTilesDirectoryAlgorithm::createInstance() c
 void QgsXyzTilesDirectoryAlgorithm::initAlgorithm( const QVariantMap & )
 {
   createCommonParameters();
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_WIDTH" ), QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TILE_HEIGHT" ), QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "TMS_CONVENTION" ), QObject::tr( "Use inverted tile Y axis (TMS convention)" ), false, true ) );
+  addParameter( new QgsProcessingParameterNumber( u"TILE_WIDTH"_s, QObject::tr( "Tile width" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
+  addParameter( new QgsProcessingParameterNumber( u"TILE_HEIGHT"_s, QObject::tr( "Tile height" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 1, 4096 ) );
+  addParameter( new QgsProcessingParameterBoolean( u"TMS_CONVENTION"_s, QObject::tr( "Use inverted tile Y axis (TMS convention)" ), false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > titleParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "HTML_TITLE" ), QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
+  auto titleParam = std::make_unique<QgsProcessingParameterString>( u"HTML_TITLE"_s, QObject::tr( "Leaflet HTML output title" ), QVariant(), false, true );
   titleParam->setFlags( titleParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( titleParam.release() );
-  std::unique_ptr< QgsProcessingParameterString > attributionParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "HTML_ATTRIBUTION" ), QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
+  auto attributionParam = std::make_unique<QgsProcessingParameterString>( u"HTML_ATTRIBUTION"_s, QObject::tr( "Leaflet HTML output attribution" ), QVariant(), false, true );
   attributionParam->setFlags( attributionParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( attributionParam.release() );
-  std::unique_ptr< QgsProcessingParameterBoolean > osmParam = std::make_unique< QgsProcessingParameterBoolean >( QStringLiteral( "HTML_OSM" ), QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false, true );
+  auto osmParam = std::make_unique<QgsProcessingParameterBoolean>( u"HTML_OSM"_s, QObject::tr( "Include OpenStreetMap basemap in Leaflet HTML output" ), false );
   osmParam->setFlags( osmParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( osmParam.release() );
 
-  addParameter( new QgsProcessingParameterFolderDestination( QStringLiteral( "OUTPUT_DIRECTORY" ), QObject::tr( "Output directory" ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_HTML" ), QObject::tr( "Output html (Leaflet)" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFolderDestination( u"OUTPUT_DIRECTORY"_s, QObject::tr( "Output directory" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_HTML"_s, QObject::tr( "Output html (Leaflet)" ), QObject::tr( "HTML files (*.html)" ), QVariant(), true ) );
 }
 
 QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const bool tms = parameterAsBoolean( parameters, QStringLiteral( "TMS_CONVENTION" ), context );
-  const QString title = parameterAsString( parameters, QStringLiteral( "HTML_TITLE" ), context );
-  const QString attribution = parameterAsString( parameters, QStringLiteral( "HTML_ATTRIBUTION" ), context );
-  const bool useOsm = parameterAsBoolean( parameters, QStringLiteral( "HTML_OSM" ), context );
-  QString outputDir = parameterAsString( parameters, QStringLiteral( "OUTPUT_DIRECTORY" ), context );
-  const QString outputHtml = parameterAsString( parameters, QStringLiteral( "OUTPUT_HTML" ), context );
+  const bool tms = parameterAsBoolean( parameters, u"TMS_CONVENTION"_s, context );
+  const QString title = parameterAsString( parameters, u"HTML_TITLE"_s, context );
+  const QString attribution = parameterAsString( parameters, u"HTML_ATTRIBUTION"_s, context );
+  const bool useOsm = parameterAsBoolean( parameters, u"HTML_OSM"_s, context );
+  QString outputDir = parameterAsString( parameters, u"OUTPUT_DIRECTORY"_s, context );
+  const QString outputHtml = parameterAsString( parameters, u"OUTPUT_HTML"_s, context );
 
   mOutputDir = outputDir;
   mTms = tms;
@@ -330,20 +355,23 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
   mLayers.clear();
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT_DIRECTORY" ), outputDir );
+  results.insert( u"OUTPUT_DIRECTORY"_s, outputDir );
 
   if ( !outputHtml.isEmpty() )
   {
     QString osm = QStringLiteral(
                     "var osm_layer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',"
-                    "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);" )
-                  .arg( mMinZoom ).arg( mMaxZoom );
+                    "{minZoom: %1, maxZoom: %2, attribution: '&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors'}).addTo(map);"
+    )
+                    .arg( mMinZoom )
+                    .arg( mMaxZoom );
 
     QString addOsm = useOsm ? osm : QString();
-    QString tmsConvention = tms ? QStringLiteral( "true" ) : QStringLiteral( "false" );
-    QString attr = attribution.isEmpty() ? QStringLiteral( "Created by QGIS" ) : attribution;
-    QString tileSource = QStringLiteral( "'file:///%1/{z}/{x}/{y}.%2'" )
-                         .arg( outputDir.replace( "\\", "/" ).toHtmlEscaped() ).arg( mTileFormat.toLower() );
+    QString tmsConvention = tms ? u"true"_s : u"false"_s;
+    QString attr = attribution.isEmpty() ? u"Created by QGIS"_s : attribution;
+    QString tileSource = u"'file:///%1/{z}/{x}/{y}.%2'"_s
+                           .arg( outputDir.replace( "\\", "/" ).toHtmlEscaped() )
+                           .arg( mTileFormat.toLower() );
 
     QString html = QStringLiteral(
                      "<!DOCTYPE html><html><head><title>%1</title><meta charset=\"utf-8\"/>"
@@ -361,17 +389,17 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
                      "%5"
                      "var tilesource_layer = L.tileLayer(%6, {minZoom: %7, maxZoom: %8, tms: %9, attribution: '%10'}).addTo(map);"
                      "</script></body></html>"
-                   )
-                   .arg( title.isEmpty() ? QStringLiteral( "Leaflet preview" ) : title )
-                   .arg( mWgs84Extent.center().y() )
-                   .arg( mWgs84Extent.center().x() )
-                   .arg( ( mMaxZoom + mMinZoom ) / 2 )
-                   .arg( addOsm )
-                   .arg( tileSource )
-                   .arg( mMinZoom )
-                   .arg( mMaxZoom )
-                   .arg( tmsConvention )
-                   .arg( attr );
+    )
+                     .arg( title.isEmpty() ? u"Leaflet preview"_s : title )
+                     .arg( mWgs84Extent.center().y() )
+                     .arg( mWgs84Extent.center().x() )
+                     .arg( ( mMaxZoom + mMinZoom ) / 2 )
+                     .arg( addOsm )
+                     .arg( tileSource )
+                     .arg( mMinZoom )
+                     .arg( mMaxZoom )
+                     .arg( tmsConvention )
+                     .arg( attr );
 
     QFile htmlFile( outputHtml );
     if ( !htmlFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -379,12 +407,9 @@ QVariantMap QgsXyzTilesDirectoryAlgorithm::processAlgorithm( const QVariantMap &
       throw QgsProcessingException( QObject::tr( "Could not open html file %1" ).arg( outputHtml ) );
     }
     QTextStream fout( &htmlFile );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    fout.setCodec( "UTF-8" );
-#endif
     fout << html;
 
-    results.insert( QStringLiteral( "OUTPUT_HTML" ), outputHtml );
+    results.insert( u"OUTPUT_HTML"_s, outputHtml );
   }
 
   return results;
@@ -401,14 +426,14 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
     QPair<int, int> tm = it.key();
     Tile tile = it.value();
     QImage tileImage = img.copy( mTileWidth * tm.first, mTileHeight * tm.second, mTileWidth, mTileHeight );
-    QDir tileDir( QStringLiteral( "%1/%2/%3" ).arg( mOutputDir ).arg( tile.z ).arg( tile.x ) );
+    QDir tileDir( u"%1/%2/%3"_s.arg( mOutputDir ).arg( tile.z ).arg( tile.x ) );
     tileDir.mkpath( tileDir.absolutePath() );
     int y = tile.y;
     if ( mTms )
     {
       y = tile2tms( y, tile.z );
     }
-    tileImage.save( QStringLiteral( "%1/%2.%3" ).arg( tileDir.absolutePath() ).arg( y ).arg( mTileFormat.toLower() ), mTileFormat.toStdString().c_str(), mJpgQuality );
+    tileImage.save( u"%1/%2.%3"_s.arg( tileDir.absolutePath() ).arg( y ).arg( mTileFormat.toLower() ), mTileFormat.toStdString().c_str(), mJpgQuality );
     ++it;
   }
 
@@ -451,7 +476,7 @@ void QgsXyzTilesDirectoryAlgorithm::processMetaTile( QgsMapRendererSequentialJob
 
 QString QgsXyzTilesMbtilesAlgorithm::name() const
 {
-  return QStringLiteral( "tilesxyzmbtiles" );
+  return u"tilesxyzmbtiles"_s;
 }
 
 QString QgsXyzTilesMbtilesAlgorithm::displayName() const
@@ -477,12 +502,12 @@ QgsXyzTilesMbtilesAlgorithm *QgsXyzTilesMbtilesAlgorithm::createInstance() const
 void QgsXyzTilesMbtilesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   createCommonParameters();
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT_FILE" ), QObject::tr( "Output" ), QObject::tr( "MBTiles files (*.mbtiles *.MBTILES)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT_FILE"_s, QObject::tr( "Output" ), QObject::tr( "MBTiles files (*.mbtiles *.MBTILES)" ) ) );
 }
 
 QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString outputFile = parameterAsString( parameters, QStringLiteral( "OUTPUT_FILE" ), context );
+  const QString outputFile = parameterAsString( parameters, u"OUTPUT_FILE"_s, context );
 
   mMbtilesWriter = std::make_unique<QgsMbTiles>( outputFile );
   if ( !mMbtilesWriter->create() )
@@ -490,15 +515,18 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Failed to create MBTiles file %1" ).arg( outputFile ) );
   }
   mMbtilesWriter->setMetadataValue( "format", mTileFormat.toLower() );
-  mMbtilesWriter->setMetadataValue( "name",  QFileInfo( outputFile ).baseName() );
-  mMbtilesWriter->setMetadataValue( "version",  QStringLiteral( "1.1" ) );
-  mMbtilesWriter->setMetadataValue( "type", QStringLiteral( "overlay" ) );
+  mMbtilesWriter->setMetadataValue( "name", QFileInfo( outputFile ).baseName() );
+  mMbtilesWriter->setMetadataValue( "description", QFileInfo( outputFile ).baseName() );
+  mMbtilesWriter->setMetadataValue( "version", u"1.1"_s );
+  mMbtilesWriter->setMetadataValue( "type", u"overlay"_s );
   mMbtilesWriter->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
   mMbtilesWriter->setMetadataValue( "maxzoom", QString::number( mMaxZoom ) );
   QString boundsStr = QString( "%1,%2,%3,%4" )
-                      .arg( mWgs84Extent.xMinimum() ).arg( mWgs84Extent.yMinimum() )
-                      .arg( mWgs84Extent.xMaximum() ).arg( mWgs84Extent.yMaximum() );
-  mMbtilesWriter->setMetadataValue( "bounds",  boundsStr );
+                        .arg( mWgs84Extent.xMinimum() )
+                        .arg( mWgs84Extent.yMinimum() )
+                        .arg( mWgs84Extent.xMaximum() )
+                        .arg( mWgs84Extent.yMaximum() );
+  mMbtilesWriter->setMetadataValue( "bounds", boundsStr );
 
   mTotalTiles = 0;
   for ( int z = mMinZoom; z <= mMaxZoom; z++ )
@@ -529,7 +557,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   mLayers.clear();
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT_FILE" ), outputFile );
+  results.insert( u"OUTPUT_FILE"_s, outputFile );
   return results;
 }
 

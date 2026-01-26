@@ -19,11 +19,12 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayoutitem.h"
-#include "qgsscalebarsettings.h"
 #include "qgsscalebarrenderer.h"
+#include "qgsscalebarsettings.h"
+
+#include <QColor>
 #include <QFont>
 #include <QPen>
-#include <QColor>
 
 class QgsLayoutItemMap;
 
@@ -649,6 +650,22 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void setNumericFormat( QgsNumericFormat *format SIP_TRANSFER );
 
     /**
+     * Returns the scale calculation method, which determines how the bar's scale will be calculated.
+     *
+     * \see setMethod()
+     * \since QGIS 3.40
+     */
+    Qgis::ScaleCalculationMethod method() const;
+
+    /**
+     * Sets the scale calculation \a method, which determines how the bar's scale will be calculated.
+     *
+     * \see method()
+     * \since QGIS 3.40
+     */
+    void setMethod( Qgis::ScaleCalculationMethod method );
+
+    /**
      * Adjusts the scale bar box size and updates the item.
      */
     void update();
@@ -675,6 +692,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QString mMapUuid;
 
     QgsScaleBarSettings mSettings;
+    Qgis::ScaleCalculationMethod mMethod = Qgis::ScaleCalculationMethod::HorizontalAverage;
 
     //! Scalebar style
     std::unique_ptr< QgsScaleBarRenderer > mStyle;
@@ -685,7 +703,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     //! Calculates width of a segment in mm and stores it in mSegmentMillimeters
     void refreshSegmentMillimeters();
 
-    //! Returns diagonal of layout map in selected units (map units / meters / feet / nautical miles)
+    //! Returns diagonal of layout map in selected units (map units / meters / feet / nautical miles), or NaN if width cannot be calculated.
     double mapWidth() const;
 
     QgsScaleBarRenderer::ScaleBarContext createScaleContext() const;

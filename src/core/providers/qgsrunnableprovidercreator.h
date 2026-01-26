@@ -16,17 +16,16 @@
 #ifndef QGSRUNNABLEPROVIDERCREATOR_H
 #define QGSRUNNABLEPROVIDERCREATOR_H
 
-#include <QRunnable>
-#include <QObject>
-
 #include "qgsdataprovider.h"
+
+#include <QObject>
+#include <QRunnable>
 
 #define SIP_NO_FILE
 
 /**
  * \ingroup core
- * \brief The QgsRunnableProviderCreator class is used when reading a project
- * to create asynchronously provider that support asynchronous creation
+ * \brief Used when reading a project to asynchronously create data providers that support asynchronous creation.
  *
  * \since QGIS 3.32
  */

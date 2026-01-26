@@ -23,18 +23,17 @@
 #define SIP_NO_FILE
 
 
-struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsSpatialiteProviderResultIterator : public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
     QgsSpatialiteProviderResultIterator( gdal::dataset_unique_ptr hDS, OGRLayerH ogrLayer );
 
-    ~QgsSpatialiteProviderResultIterator();
+    ~QgsSpatialiteProviderResultIterator() override;
 
     void setFields( const QgsFields &fields );
 
     void setGeometryColumnName( const QString &geometryColumnName );
 
   private:
-
     gdal::dataset_unique_ptr mHDS;
     OGRLayerH mOgrLayer;
     QgsFields mFields;
@@ -55,7 +54,6 @@ struct QgsSpatialiteProviderResultIterator: public QgsAbstractDatabaseProviderCo
 class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
   public:
-
     QgsSpatiaLiteProviderConnection( const QString &name );
     // Note: URI must be in PG QgsDataSourceUri format ( "dbname='path_to_sqlite.db'" )
     QgsSpatiaLiteProviderConnection( const QString &uri, const QVariantMap &configuration );
@@ -68,22 +66,23 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
     QString tableUri( const QString &schema, const QString &name ) const override;
     void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
     QgsAbstractDatabaseProviderConnection::QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     void vacuum( const QString &schema, const QString &name ) const override;
     void createSpatialIndex( const QString &schema, const QString &name, const QgsAbstractDatabaseProviderConnection::SpatialIndexOptions &options = QgsAbstractDatabaseProviderConnection::SpatialIndexOptions() ) const override;
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
-    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(),
-        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema = QString(), const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QIcon icon() const override;
     void deleteField( const QString &fieldName, const QString &schema, const QString &tableName, bool force ) const override;
     QList<QgsVectorDataProvider::NativeType> nativeTypes() const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
 
   private:
-
     void setDefaultCapabilities();
     //! Use GDAL to execute SQL
     QgsAbstractDatabaseProviderConnection::QueryResult executeSqlPrivate( const QString &sql, QgsFeedback *feedback = nullptr ) const;
@@ -93,7 +92,6 @@ class QgsSpatiaLiteProviderConnection : public QgsAbstractDatabaseProviderConnec
 
     //! extract the path from the DS URI (which is in "PG" form: 'dbname=\'/path_to.sqlite\' table="table_name" (geom_col_name)')
     QString pathFromUri() const;
-
 };
 
 

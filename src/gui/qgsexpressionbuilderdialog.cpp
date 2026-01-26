@@ -14,10 +14,14 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilderdialog.h"
-#include "qgssettings.h"
-#include "qgsguiutils.h"
+
 #include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgssettings.h"
+
 #include <QMessageBox>
+
+#include "moc_qgsexpressionbuilderdialog.cpp"
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )
@@ -34,7 +38,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->expressionTree()->loadRecent( mRecentKey );
-  builder->expressionTree()->loadUserExpressions( );
+  builder->expressionTree()->loadUserExpressions();
 
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
@@ -88,20 +92,14 @@ void QgsExpressionBuilderDialog::accept()
 
 void QgsExpressionBuilderDialog::reject()
 {
-
   if ( builder->expressionText() != mInitialText )
   {
-
     QgsSettings settings;
-    const bool askToDiscardEditedExpression = settings.value( QStringLiteral( "askToDiscardEditedExpression" ), true, QgsSettings::Gui ).toBool();
+    const bool askToDiscardEditedExpression = settings.value( u"askToDiscardEditedExpression"_s, true, QgsSettings::Gui ).toBool();
 
     if ( askToDiscardEditedExpression )
     {
-      QMessageBox confirmMessage( QMessageBox::Question,
-                                  tr( "Expression was Edited" ),
-                                  tr( "The changes to the expression will be discarded. Would you like to continue?" ),
-                                  QMessageBox::Yes | QMessageBox::No,
-                                  this );
+      QMessageBox confirmMessage( QMessageBox::Question, tr( "Expression was Edited" ), tr( "The changes to the expression will be discarded. Would you like to continue?" ), QMessageBox::Yes | QMessageBox::No, this );
       confirmMessage.setCheckBox( new QCheckBox( tr( "Don't show this message again" ) ) );
       confirmMessage.checkBox()->setChecked( false );
       confirmMessage.button( QMessageBox::Yes )->setText( tr( "Discard changes" ) );
@@ -110,7 +108,7 @@ void QgsExpressionBuilderDialog::reject()
 
       if ( confirmMessage.checkBox()->isChecked() )
       {
-        settings.setValue( QStringLiteral( "askToDiscardEditedExpression" ), false, QgsSettings::Gui );
+        settings.setValue( u"askToDiscardEditedExpression"_s, false, QgsSettings::Gui );
       }
 
       if ( res != QMessageBox::Yes )
@@ -144,7 +142,7 @@ void QgsExpressionBuilderDialog::setAllowEvalErrors( bool allowEvalErrors )
 
 void QgsExpressionBuilderDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/expression.html" ) );
+  QgsHelp::openHelp( u"working_with_vector/expression.html"_s );
 }
 
 void QgsExpressionBuilderDialog::syncOkButtonEnabledState()

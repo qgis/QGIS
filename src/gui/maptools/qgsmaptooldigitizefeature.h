@@ -16,14 +16,15 @@
 #ifndef QGSMAPTOOLDIGITIZEFEATURE_H
 #define QGSMAPTOOLDIGITIZEFEATURE_H
 
-#include "qgsmaptoolcapturelayergeometry.h"
 #include "qgis_gui.h"
+#include "qgsmaptoolcapturelayergeometry.h"
 
 class QgsFeature;
 
 /**
  * \ingroup gui
- * \brief This tool digitizes geometry of new point/line/polygon features on already existing vector layers
+ * \brief This tool digitizes geometry of new point/line/polygon features on already existing vector layers.
+ *
  * Once the map tool is enabled, user can digitize the feature geometry.
  * A signal will then be emitted.
  * \since QGIS 3.10
@@ -33,7 +34,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     Q_OBJECT
 
   public:
-
     /**
      * \brief QgsMapToolDigitizeFeature is a map tool to digitize a feature geometry
      * \param canvas the map canvas
@@ -81,7 +81,6 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     void digitizingCanceled();
 
   protected:
-
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
      */
@@ -91,26 +90,26 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
      * Check if CaptureMode matches layer type. Default is TRUE.
      */
     void setCheckGeometryType( bool checkGeometryType );
-    // TODO QGIS 4: remove if GRASS plugin is dropped
-
-  private:
+    // TODO QGIS 5: remove if GRASS plugin is dropped
 
     /**
      * Called when the feature has been digitized.
      * \param geometry the digitized geometry
      */
-    void layerGeometryCaptured( const QgsGeometry &geometry ) FINAL;
+    void layerGeometryCaptured( const QgsGeometry &geometry ) final;
 
     /**
      * Called when the feature has been digitized
      * \since QGIS 3.26
      */
-    virtual void featureDigitized( const QgsFeature &feature )  {Q_UNUSED( feature )} SIP_FORCE
+    virtual void featureDigitized( const QgsFeature &feature ) { Q_UNUSED( feature ) }
 
+  private:
     /**
      * individual layer per digitizing session
     */
-    QgsMapLayer *mLayer = nullptr;
+    QgsMapLayer *mLayer
+      = nullptr;
 
     /**
      * layer used before digitizing session
@@ -120,10 +119,9 @@ class GUI_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCaptureLayerGeomet
     /**
      * Check if CaptureMode matches layer type. Default is TRUE.
     */
-    bool mCheckGeometryType;
+    bool mCheckGeometryType = true;
 
     friend class TestQgsRelationReferenceWidget;
-
 };
 
 #endif // QGSMAPTOOLDIGITIZEFEATURE_H

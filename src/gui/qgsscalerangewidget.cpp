@@ -14,11 +14,14 @@
 ***************************************************************************/
 
 #include "qgsscalerangewidget.h"
+
 #include "qgsapplication.h"
-#include "qgsproject.h"
-#include "qgsscalewidget.h"
 #include "qgsguiutils.h"
+#include "qgsproject.h"
 #include "qgsprojectviewsettings.h"
+#include "qgsscalewidget.h"
+
+#include "moc_qgsscalerangewidget.cpp"
 
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   : QWidget( parent )
@@ -40,9 +43,9 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 24 );
   mMinimumScaleIconLabel = new QLabel( this );
-  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomOut.svg" ) ).pixmap( QSize( iconSize, iconSize ) ) );
+  mMinimumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( u"/mActionZoomOut.svg"_s ).pixmap( QSize( iconSize, iconSize ) ) );
   mMaximumScaleIconLabel = new QLabel( this );
-  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ).pixmap( QSize( iconSize, iconSize ) ) );
+  mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemeIcon( u"/mActionZoomIn.svg"_s ).pixmap( QSize( iconSize, iconSize ) ) );
 
   mMinimumScaleWidget = new QgsScaleWidget( this );
   mMaximumScaleWidget = new QgsScaleWidget( this );
@@ -74,7 +77,7 @@ void QgsScaleRangeWidget::reloadProjectScales()
 {
   if ( QgsProject::instance()->viewSettings()->useProjectScales() )
   {
-    const QVector< double > projectScales = QgsProject::instance()->viewSettings()->mapScales();
+    const QVector<double> projectScales = QgsProject::instance()->viewSettings()->mapScales();
     mMinimumScaleWidget->setPredefinedScales( projectScales );
     mMaximumScaleWidget->setPredefinedScales( projectScales );
   }
@@ -116,4 +119,3 @@ void QgsScaleRangeWidget::emitRangeChanged()
 {
   emit rangeChanged( minimumScale(), maximumScale() );
 }
-

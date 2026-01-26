@@ -21,9 +21,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgstemporalproperty.h"
-#include "qgsreadwritecontext.h"
 #include "qgsrange.h"
+#include "qgsreadwritecontext.h"
+#include "qgstemporalproperty.h"
 
 #include <QDomElement>
 
@@ -42,11 +42,9 @@ class QgsDataProviderTemporalCapabilities;
  */
 class CORE_EXPORT QgsMapLayerTemporalProperties : public QgsTemporalProperty
 {
-#ifdef SIP_RUN
-#include "qgsrasterlayertemporalproperties.h"
-#include "qgsmeshlayertemporalproperties.h"
-#include "qgsvectorlayertemporalproperties.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterlayertemporalproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsmeshlayertemporalproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsvectorlayertemporalproperties.h" );
 
     Q_OBJECT
 

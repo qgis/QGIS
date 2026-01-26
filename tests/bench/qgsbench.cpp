@@ -14,12 +14,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtGlobal>
-
 #include <cmath>
+#include <cstdio>
 #include <ctime>
 #include <iostream>
-#include <cstdio>
+
+#include <QtGlobal>
+
 #ifndef Q_OS_WIN
 #include <sys/resource.h>
 #endif
@@ -51,12 +52,12 @@ const char *pre[] = { "user", "sys", "total", "wall" };
 #include <winsock2.h>
 #include <errno.h>
 
-#define RUSAGE_SELF     0
+#define RUSAGE_SELF 0
 
 struct rusage
 {
-  struct timeval ru_utime;    /* user time used */
-  struct timeval ru_stime;    /* system time used */
+    struct timeval ru_utime; /* user time used */
+    struct timeval ru_stime; /* system time used */
 };
 
 /*-------------------------------------------------------------------------
@@ -96,8 +97,7 @@ int getrusage( int who, struct rusage *rusage )
     return -1;
   }
   memset( rusage, 0, sizeof( struct rusage ) );
-  if ( GetProcessTimes( GetCurrentProcess(),
-                        &starttime, &exittime, &kerneltime, &usertime ) == 0 )
+  if ( GetProcessTimes( GetCurrentProcess(), &starttime, &exittime, &kerneltime, &usertime ) == 0 )
   {
     // _dosmaperr(GetLastError());
     return -1;
@@ -105,12 +105,12 @@ int getrusage( int who, struct rusage *rusage )
 
   /* Convert FILETIMEs (0.1 us) to struct timeval */
   memcpy( &li, &kerneltime, sizeof( FILETIME ) );
-  li.QuadPart /= 10L;   /* Convert to microseconds */
+  li.QuadPart /= 10L; /* Convert to microseconds */
   rusage->ru_stime.tv_sec = li.QuadPart / 1000000L;
   rusage->ru_stime.tv_usec = li.QuadPart % 1000000L;
 
   memcpy( &li, &usertime, sizeof( FILETIME ) );
-  li.QuadPart /= 10L;   /* Convert to microseconds */
+  li.QuadPart /= 10L; /* Convert to microseconds */
   rusage->ru_utime.tv_sec = li.QuadPart / 1000000L;
   rusage->ru_utime.tv_usec = li.QuadPart % 1000000L;
 
@@ -122,31 +122,26 @@ QgsBench::QgsBench( int width, int height, int iterations )
   : mWidth( width )
   , mHeight( height )
   , mIterations( iterations )
-  , mSetExtent( false )
-  , mUserStart( 0.0 )
-  , mSysStart( 0.0 )
-  , mParallel( false )
+
 {
+  QgsDebugMsgLevel( u"mIterations = %1"_s.arg( mIterations ), 1 );
 
-  QgsDebugMsgLevel( QStringLiteral( "mIterations = %1" ).arg( mIterations ), 1 );
-
-  connect( QgsProject::instance(), &QgsProject::readProject,
-           this, &QgsBench::readProject );
+  connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBench::readProject );
 }
 
 bool QgsBench::openProject( const QString &fileName )
 {
-  if ( ! QgsProject::instance()->read( fileName ) )
+  if ( !QgsProject::instance()->read( fileName ) )
   {
     return false;
   }
-  mLogMap.insert( QStringLiteral( "project" ), fileName );
+  mLogMap.insert( u"project"_s, fileName );
   return true;
 }
 
 void QgsBench::readProject( const QDomDocument &doc )
 {
-  const QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
+  const QDomNodeList nodes = doc.elementsByTagName( u"mapcanvas"_s );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
@@ -166,8 +161,7 @@ void QgsBench::setExtent( const QgsRectangle &extent )
 
 void QgsBench::render()
 {
-
-  QgsDebugMsgLevel( "extent: " +  mMapSettings.extent().toString(), 1 );
+  QgsDebugMsgLevel( "extent: " + mMapSettings.extent().toString(), 1 );
 
   const QMap<QString, QgsMapLayer *> layersMap = QgsProject::instance()->mapLayers();
 
@@ -209,15 +203,15 @@ void QgsBench::render()
   }
 
 
-  mLogMap.insert( QStringLiteral( "iterations" ), mTimes.size() );
-  mLogMap.insert( QStringLiteral( "revision" ), QGSVERSION );
+  mLogMap.insert( u"iterations"_s, mTimes.size() );
+  mLogMap.insert( u"revision"_s, QGSVERSION );
 
   // Calc stats: user, sys, total
-  double min[4] = {std::numeric_limits<double>::max()};
-  double max[4] = { std::numeric_limits<double>::lowest()};
-  double stdev[4] = {0.};
-  double maxdev[4] = {0.};
-  double avg[4] = {0.};
+  double min[4] = { std::numeric_limits<double>::max() };
+  double max[4] = { std::numeric_limits<double>::lowest() };
+  double stdev[4] = { 0. };
+  double maxdev[4] = { 0. };
+  double avg[4] = { 0. };
 
   for ( int t = 0; t < 4; t++ )
   {
@@ -225,8 +219,10 @@ void QgsBench::render()
     {
       avg[t] += mTimes.at( i )[t];
 
-      if ( i == 0 || mTimes.at( i )[t] < min[t] ) min[t] = mTimes.at( i )[t];
-      if ( i == 0 || mTimes.at( i )[t] > max[t] ) max[t] = mTimes.at( i )[t];
+      if ( i == 0 || mTimes.at( i )[t] < min[t] )
+        min[t] = mTimes.at( i )[t];
+      if ( i == 0 || mTimes.at( i )[t] > max[t] )
+        max[t] = mTimes.at( i )[t];
     }
     avg[t] /= mTimes.size();
   }
@@ -240,7 +236,8 @@ void QgsBench::render()
       {
         const double d = std::fabs( avg[t] - mTimes.at( i )[t] );
         stdev[t] += std::pow( d, 2 );
-        if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
+        if ( i == 0 || d > maxdev[t] )
+          maxdev[t] = d;
       }
 
       stdev[t] = std::sqrt( stdev[t] / mTimes.size() );
@@ -248,15 +245,15 @@ void QgsBench::render()
 
     QMap<QString, QVariant> map;
 
-    map.insert( QStringLiteral( "min" ), min[t] );
-    map.insert( QStringLiteral( "max" ), max[t] );
-    map.insert( QStringLiteral( "avg" ), avg[t] );
-    map.insert( QStringLiteral( "stdev" ), stdev[t] );
-    map.insert( QStringLiteral( "maxdev" ), maxdev[t] );
+    map.insert( u"min"_s, min[t] );
+    map.insert( u"max"_s, max[t] );
+    map.insert( u"avg"_s, avg[t] );
+    map.insert( u"stdev"_s, stdev[t] );
+    map.insert( u"maxdev"_s, maxdev[t] );
 
     timesMap.insert( pre[t], map );
   }
-  mLogMap.insert( QStringLiteral( "times" ), timesMap );
+  mLogMap.insert( u"times"_s, timesMap );
 }
 
 void QgsBench::saveSnapsot( const QString &fileName )
@@ -267,7 +264,7 @@ void QgsBench::saveSnapsot( const QString &fileName )
 
 void QgsBench::printLog( const QString &printTime )
 {
-  std::cout << "iterations: " << mLogMap[QStringLiteral( "iterations" )].toString().toLatin1().constData() << std::endl;
+  std::cout << "iterations: " << mLogMap[u"iterations"_s].toString().toLatin1().constData() << std::endl;
 
   bool validPrintTime = false;
   for ( int x = 0; x < 4; ++x )
@@ -280,7 +277,7 @@ void QgsBench::printLog( const QString &printTime )
     return;
   }
 
-  QMap<QString, QVariant> timesMap = mLogMap[QStringLiteral( "times" )].toMap();
+  QMap<QString, QVariant> timesMap = mLogMap[u"times"_s].toMap();
   QMap<QString, QVariant> totalMap = timesMap[printTime].toMap();
   QMap<QString, QVariant>::iterator i = totalMap.begin();
   while ( i != totalMap.end() )
@@ -294,21 +291,21 @@ void QgsBench::printLog( const QString &printTime )
 QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
 {
   QStringList list;
-  const QString space = QStringLiteral( " " ).repeated( level * 2 );
-  const QString space2 = QStringLiteral( " " ).repeated( level * 2 + 2 );
+  const QString space = u" "_s.repeated( level * 2 );
+  const QString space2 = u" "_s.repeated( level * 2 + 2 );
   QMap<QString, QVariant>::const_iterator i = map.constBegin();
   while ( i != map.constEnd() )
   {
-    switch ( static_cast< QMetaType::Type >( i.value().userType() ) )
+    switch ( static_cast<QMetaType::Type>( i.value().userType() ) )
     {
       case QMetaType::Int:
         list.append( space2 + '\"' + i.key() + "\": " + QString::number( i.value().toInt() ) );
         break;
       case QMetaType::Double:
-        list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + u"%1"_s.arg( i.value().toDouble(), 0, 'f', 3 ) );
         break;
       case QMetaType::QString:
-        list.append( space2 + '\"' + i.key() + "\": \"" + i.value().toString().replace( '\\', QLatin1String( "\\\\" ) ).replace( '\"', QLatin1String( "\\\"" ) ) + '\"' );
+        list.append( space2 + '\"' + i.key() + "\": \"" + i.value().toString().replace( '\\', "\\\\"_L1 ).replace( '\"', "\\\""_L1 ) + '\"' );
         break;
       //case QMetaType::QMap: QMap is not in QMetaType
       default:
@@ -317,7 +314,7 @@ QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
     }
     ++i;
   }
-  return space + "{\n" +  list.join( QLatin1String( ",\n" ) ) + '\n' + space + '}';
+  return space + "{\n" + list.join( ",\n"_L1 ) + '\n' + space + '}';
 }
 
 void QgsBench::saveLog( const QString &fileName )

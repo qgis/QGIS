@@ -22,8 +22,9 @@
 #define SIP_NO_FILE
 
 #include "ui_qgswmsdimensiondialogbase.h"
-#include "qgsmaplayerserverproperties.h"
+
 #include "qgis_gui.h"
+#include "qgsmaplayerserverproperties.h"
 
 class QgsVectorLayer;
 
@@ -31,7 +32,8 @@ class QgsVectorLayer;
  * \ingroup gui
  * \class QgsWmsDimensionDialog
  *
- * \brief The QgsWmsDimensionDialog class provides an interface for WMS/OAPIF (WFS3) dimensions configuration
+ * \brief A dialog that provides an interface for WMS/OAPIF (WFS3) dimensions configuration.
+ *
  * Available pre-defined dimensions are
  *
  * - DATE (supported by OAPIF only)
@@ -41,7 +43,7 @@ class QgsVectorLayer;
  * Dimensions can also be configured as ranges by defining an "end" field that contains the
  * upper value of the range.
  */
-class GUI_EXPORT QgsWmsDimensionDialog: public QDialog, private Ui::QgsWmsDimensionDialogBase
+class GUI_EXPORT QgsWmsDimensionDialog : public QDialog, private Ui::QgsWmsDimensionDialogBase
 {
     Q_OBJECT
   public:

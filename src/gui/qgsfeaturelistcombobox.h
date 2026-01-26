@@ -15,10 +15,10 @@
 #ifndef QGSFIELDLISTCOMBOBOX_H
 #define QGSFIELDLISTCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeature.h"
+
+#include <QComboBox>
 
 class QgsVectorLayer;
 class QgsFeatureFilterModel;
@@ -47,7 +47,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
 
   public:
-
     /**
      * Create a new QgsFeatureListComboBox, optionally specifying a \a parent.
      */
@@ -82,12 +81,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     void setDisplayExpression( const QString &displayExpression );
 
     /**
-     * An additional expression to further restrict the available features.
-     * This can be used to integrate additional spatial or other constraints.
-     */
-    QString filterExpression() const;
-
-    /**
      * Returns the current index of the NULL value, or -1 if NULL values are
      * not allowed.
      *
@@ -99,7 +92,37 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * An additional expression to further restrict the available features.
      * This can be used to integrate additional spatial or other constraints.
      */
+    QString filterExpression() const;
+
+    /**
+     * An additional expression to further restrict the available features.
+     * This can be used to integrate additional spatial or other constraints.
+     */
     void setFilterExpression( const QString &filterExpression );
+
+    /**
+     * Returns an attribute form feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    QgsFeature formFeature() const;
+
+    /**
+     * Sets an attribute form \a feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void setFormFeature( const QgsFeature &feature );
+
+    /**
+     * Returns a parent attribute form feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    QgsFeature parentFormFeature() const;
+
+    /**
+     * Sets a parent attribute form \a feature to be used with the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void setParentFormFeature( const QgsFeature &feature );
 
     /**
      * The identifier value of the currently selected feature. A value from the
@@ -202,6 +225,30 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     void keyPressEvent( QKeyEvent *event ) override;
 
+    /**
+     * The order expression of the model. It is used to evaluate sort values of the combobox.
+     * \since QGIS 4.0
+     */
+    QString orderExpression() const;
+
+    /**
+     * The order expression of the model. It is used to evaluate sort values of the combobox.
+     * \since QGIS 4.0
+     */
+    void setOrderExpression( const QString &orderExpression );
+
+    /**
+     * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.
+     * \since QGIS 4.0
+     */
+    Qt::SortOrder sortOrder() const;
+
+    /**
+     * The order direction of the model. It defines the direction on sorting the combobox as ascending or descending.
+     * \since QGIS 4.0
+     */
+    void setSortOrder( const Qt::SortOrder sortOrder );
+
   signals:
 
     /**
@@ -227,6 +274,18 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      * This can be used to integrate additional spatial or other constraints.
      */
     void filterExpressionChanged();
+
+    /**
+     * An attribute form feature to be used alongside the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void formFeatureChanged();
+
+    /**
+     * A parent attribute form feature to be used alongside the filter expression.
+     * \since QGIS 3.42.2
+     */
+    void parentFormFeatureChanged();
 
     /**
      * The identifier value of the currently selected feature. A value from the
@@ -278,7 +337,6 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     friend class TestQgsFeatureListComboBox;
 };
-
 
 
 #endif // QGSFIELDLISTCOMBOBOX_H

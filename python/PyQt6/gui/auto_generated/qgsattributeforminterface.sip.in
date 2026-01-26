@@ -11,6 +11,9 @@
 
 class QgsAttributeFormInterface
 {
+%Docstring(signature="appended")
+Interface class for custom attribute forms.
+%End
 
 %TypeHeaderCode
 #include "qgsattributeforminterface.h"
@@ -26,9 +29,15 @@ class QgsAttributeFormInterface
 
     virtual void featureChanged();
 
-    QgsAttributeForm *form();
+    QgsAttributeForm *form() const;
+%Docstring
+Returns the attribute form.
+%End
 
-    const QgsFeature &feature();
+    const QgsFeature &feature() const;
+%Docstring
+Returns the current feature for the attribute form.
+%End
 
 };
 

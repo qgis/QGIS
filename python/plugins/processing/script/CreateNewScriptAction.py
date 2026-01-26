@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 
@@ -33,7 +33,9 @@ from processing.script.ScriptEditorDialog import ScriptEditorDialog
 class CreateNewScriptAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate("CreateNewScriptAction", "Create New Script…")
+        self.name = QCoreApplication.translate(
+            "CreateNewScriptAction", "Create New Script…"
+        )
         self.group = self.tr("Tools")
 
     def execute(self):

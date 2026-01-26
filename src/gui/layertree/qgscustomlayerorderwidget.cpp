@@ -15,19 +15,17 @@
 
 #include "qgscustomlayerorderwidget.h"
 
+#include "qgslayertree.h"
+#include "qgslayertreemapcanvasbridge.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+
 #include <QCheckBox>
 #include <QListView>
 #include <QMimeData>
 #include <QVBoxLayout>
 
-#include "qgslayertree.h"
-#include "qgslayertreemapcanvasbridge.h"
-
-#include "qgsmaplayer.h"
-#include "qgsproject.h"
-
-
-
+#include "moc_qgscustomlayerorderwidget.cpp"
 
 QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent )
   : QWidget( parent )
@@ -88,7 +86,6 @@ void QgsCustomLayerOrderWidget::modelUpdated()
 }
 
 
-
 ///@cond PRIVATE
 
 CustomLayerOrderModel::CustomLayerOrderModel( QgsLayerTreeMapCanvasBridge *bridge, QObject *parent )
@@ -139,7 +136,7 @@ bool CustomLayerOrderModel::setData( const QModelIndex &index, const QVariant &v
     QgsLayerTreeLayer *nodeLayer = mBridge->rootGroup()->findLayer( id );
     if ( nodeLayer )
     {
-      nodeLayer->setItemVisibilityChecked( ! nodeLayer->itemVisibilityChecked() );
+      nodeLayer->setItemVisibilityChecked( !nodeLayer->itemVisibilityChecked() );
       return true;
     }
   }
@@ -161,7 +158,7 @@ Qt::DropActions CustomLayerOrderModel::supportedDropActions() const
 QStringList CustomLayerOrderModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/qgis.layerorderdata" );
+  types << u"application/qgis.layerorderdata"_s;
   return types;
 }
 
@@ -173,7 +170,7 @@ QMimeData *CustomLayerOrderModel::mimeData( const QModelIndexList &indexes ) con
     lst << data( index, Qt::UserRole + 1 ).toString();
 
   QMimeData *mimeData = new QMimeData();
-  mimeData->setData( QStringLiteral( "application/qgis.layerorderdata" ), lst.join( QLatin1Char( '\n' ) ).toUtf8() );
+  mimeData->setData( u"application/qgis.layerorderdata"_s, lst.join( QLatin1Char( '\n' ) ).toUtf8() );
   return mimeData;
 }
 
@@ -185,10 +182,10 @@ bool CustomLayerOrderModel::dropMimeData( const QMimeData *data, Qt::DropAction 
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/qgis.layerorderdata" ) ) )
+  if ( !data->hasFormat( u"application/qgis.layerorderdata"_s ) )
     return false;
 
-  const QByteArray encodedData = data->data( QStringLiteral( "application/qgis.layerorderdata" ) );
+  const QByteArray encodedData = data->data( u"application/qgis.layerorderdata"_s );
   QStringList lst = QString::fromUtf8( encodedData ).split( '\n' );
 
   if ( row < 0 )
@@ -239,7 +236,6 @@ void CustomLayerOrderModel::updateLayerVisibility( const QString &layerId )
   if ( row != -1 )
     emit dataChanged( index( row ), index( row ) );
 }
-
 
 
 ///@endcond

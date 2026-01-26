@@ -13,17 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgstest.h>
+#include <memory>
 
-#include <editorwidgets/core/qgseditorwidgetregistry.h>
-#include <qgsapplication.h>
-#include <qgsattributeform.h>
-#include <qgsgui.h>
-#include <qgsproject.h>
-#include <qgsrelationeditorwidget.h>
-#include <qgsrelationmanager.h>
-#include <qgsrelationreferencewidget.h>
-#include <qgstrackedvectorlayertools.h>
+#include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "qgsapplication.h"
+#include "qgsattributeform.h"
+#include "qgsgui.h"
+#include "qgsproject.h"
+#include "qgsrelationeditorwidget.h"
+#include "qgsrelationmanager.h"
+#include "qgsrelationreferencewidget.h"
+#include "qgstest.h"
+#include "qgstrackedvectorlayertools.h"
 
 #include <QTreeWidgetItem>
 
@@ -34,13 +35,14 @@ class TestQgsRelationEditorWidget : public QObject
     TestQgsRelationEditorWidget() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void testMultiEdit1N();
     void testMultiEditNM();
+    void testFeatureRequest();
     void testUpdateUi();
 
   private:
@@ -67,101 +69,101 @@ void TestQgsRelationEditorWidget::cleanupTestCase()
 void TestQgsRelationEditorWidget::init()
 {
   // create layer
-  mLayer1.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) ) );
-  mLayer1->setDisplayExpression( QStringLiteral( "'Layer1-' || pk" ) );
+  mLayer1 = std::make_unique<QgsVectorLayer>( u"LineString?field=pk:int&field=fk:int"_s, u"vl1"_s, u"memory"_s );
+  mLayer1->setDisplayExpression( u"'Layer1-' || pk"_s );
   QgsProject::instance()->addMapLayer( mLayer1.get(), false, false );
 
-  mLayer2.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) ) );
-  mLayer2->setDisplayExpression( QStringLiteral( "'Layer2-' || pk" ) );
+  mLayer2 = std::make_unique<QgsVectorLayer>( u"LineString?field=pk:int"_s, u"vl2"_s, u"memory"_s );
+  mLayer2->setDisplayExpression( u"'Layer2-' || pk"_s );
   QgsProject::instance()->addMapLayer( mLayer2.get(), false, false );
 
-  mLayerJoin.reset( new QgsVectorLayer( QStringLiteral( "LineString?field=pk:int&field=fk_layer1:int&field=fk_layer2:int" ), QStringLiteral( "join_layer" ), QStringLiteral( "memory" ) ) );
-  mLayerJoin->setDisplayExpression( QStringLiteral( "'LayerJoin-' || pk" ) );
+  mLayerJoin = std::make_unique<QgsVectorLayer>( u"LineString?field=pk:int&field=fk_layer1:int&field=fk_layer2:int"_s, u"join_layer"_s, u"memory"_s );
+  mLayerJoin->setDisplayExpression( u"'LayerJoin-' || pk"_s );
   QgsProject::instance()->addMapLayer( mLayerJoin.get(), false, false );
 
   // create relation
-  mRelation.reset( new QgsRelation() );
-  mRelation->setId( QStringLiteral( "vl1.vl2" ) );
-  mRelation->setName( QStringLiteral( "vl1.vl2" ) );
+  mRelation = std::make_unique<QgsRelation>();
+  mRelation->setId( u"vl1.vl2"_s );
+  mRelation->setName( u"vl1.vl2"_s );
   mRelation->setReferencingLayer( mLayer1->id() );
   mRelation->setReferencedLayer( mLayer2->id() );
-  mRelation->addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
+  mRelation->addFieldPair( u"fk"_s, u"pk"_s );
   QVERIFY( mRelation->isValid() );
   QgsProject::instance()->relationManager()->addRelation( *mRelation );
 
   // create nm relations
-  mRelation1N.reset( new QgsRelation() );
-  mRelation1N->setId( QStringLiteral( "join_layer.vl1" ) );
-  mRelation1N->setName( QStringLiteral( "join_layer.vl1" ) );
+  mRelation1N = std::make_unique<QgsRelation>();
+  mRelation1N->setId( u"join_layer.vl1"_s );
+  mRelation1N->setName( u"join_layer.vl1"_s );
   mRelation1N->setReferencingLayer( mLayerJoin->id() );
   mRelation1N->setReferencedLayer( mLayer1->id() );
-  mRelation1N->addFieldPair( QStringLiteral( "fk_layer1" ), QStringLiteral( "pk" ) );
+  mRelation1N->addFieldPair( u"fk_layer1"_s, u"pk"_s );
   QVERIFY( mRelation1N->isValid() );
   QgsProject::instance()->relationManager()->addRelation( *mRelation1N );
 
-  mRelationNM.reset( new QgsRelation() );
-  mRelationNM->setId( QStringLiteral( "join_layer.vl2" ) );
-  mRelationNM->setName( QStringLiteral( "join_layer.vl2" ) );
+  mRelationNM = std::make_unique<QgsRelation>();
+  mRelationNM->setId( u"join_layer.vl2"_s );
+  mRelationNM->setName( u"join_layer.vl2"_s );
   mRelationNM->setReferencingLayer( mLayerJoin->id() );
   mRelationNM->setReferencedLayer( mLayer2->id() );
-  mRelationNM->addFieldPair( QStringLiteral( "fk_layer2" ), QStringLiteral( "pk" ) );
+  mRelationNM->addFieldPair( u"fk_layer2"_s, u"pk"_s );
   QVERIFY( mRelationNM->isValid() );
   QgsProject::instance()->relationManager()->addRelation( *mRelationNM );
 
   // add features
   QgsFeature ft0( mLayer1->fields() );
-  ft0.setAttribute( QStringLiteral( "pk" ), 0 );
-  ft0.setAttribute( QStringLiteral( "fk" ), 10 );
+  ft0.setAttribute( u"pk"_s, 0 );
+  ft0.setAttribute( u"fk"_s, 10 );
   mLayer1->startEditing();
   mLayer1->addFeature( ft0 );
   mLayer1->commitChanges();
 
   QgsFeature ft1( mLayer1->fields() );
-  ft1.setAttribute( QStringLiteral( "pk" ), 1 );
-  ft1.setAttribute( QStringLiteral( "fk" ), 11 );
+  ft1.setAttribute( u"pk"_s, 1 );
+  ft1.setAttribute( u"fk"_s, 11 );
   mLayer1->startEditing();
   mLayer1->addFeature( ft1 );
   mLayer1->commitChanges();
 
   QgsFeature ft2( mLayer2->fields() );
-  ft2.setAttribute( QStringLiteral( "pk" ), 10 );
+  ft2.setAttribute( u"pk"_s, 10 );
   mLayer2->startEditing();
   mLayer2->addFeature( ft2 );
   mLayer2->commitChanges();
 
   QgsFeature ft3( mLayer2->fields() );
-  ft3.setAttribute( QStringLiteral( "pk" ), 11 );
+  ft3.setAttribute( u"pk"_s, 11 );
   mLayer2->startEditing();
   mLayer2->addFeature( ft3 );
   mLayer2->commitChanges();
 
   QgsFeature ft4( mLayer2->fields() );
-  ft4.setAttribute( QStringLiteral( "pk" ), 12 );
+  ft4.setAttribute( u"pk"_s, 12 );
   mLayer2->startEditing();
   mLayer2->addFeature( ft4 );
   mLayer2->commitChanges();
 
   // Add join features
   QgsFeature jft1( mLayerJoin->fields() );
-  jft1.setAttribute( QStringLiteral( "pk" ), 101 );
-  jft1.setAttribute( QStringLiteral( "fk_layer1" ), 0 );
-  jft1.setAttribute( QStringLiteral( "fk_layer2" ), 10 );
+  jft1.setAttribute( u"pk"_s, 101 );
+  jft1.setAttribute( u"fk_layer1"_s, 0 );
+  jft1.setAttribute( u"fk_layer2"_s, 10 );
   mLayerJoin->startEditing();
   mLayerJoin->addFeature( jft1 );
   mLayerJoin->commitChanges();
 
   QgsFeature jft2( mLayerJoin->fields() );
-  jft2.setAttribute( QStringLiteral( "pk" ), 102 );
-  jft2.setAttribute( QStringLiteral( "fk_layer1" ), 1 );
-  jft2.setAttribute( QStringLiteral( "fk_layer2" ), 11 );
+  jft2.setAttribute( u"pk"_s, 102 );
+  jft2.setAttribute( u"fk_layer1"_s, 1 );
+  jft2.setAttribute( u"fk_layer2"_s, 11 );
   mLayerJoin->startEditing();
   mLayerJoin->addFeature( jft2 );
   mLayerJoin->commitChanges();
 
   QgsFeature jft3( mLayerJoin->fields() );
-  jft3.setAttribute( QStringLiteral( "pk" ), 102 );
-  jft3.setAttribute( QStringLiteral( "fk_layer1" ), 0 );
-  jft3.setAttribute( QStringLiteral( "fk_layer2" ), 11 );
+  jft3.setAttribute( u"pk"_s, 103 );
+  jft3.setAttribute( u"fk_layer1"_s, 0 );
+  jft3.setAttribute( u"fk_layer2"_s, 11 );
   mLayerJoin->startEditing();
   mLayerJoin->addFeature( jft3 );
   mLayerJoin->commitChanges();
@@ -177,8 +179,7 @@ void TestQgsRelationEditorWidget::cleanup()
 void TestQgsRelationEditorWidget::testMultiEdit1N()
 {
   // Init a relation editor widget
-  QgsRelationEditorWidget relationEditorWidget( QVariantMap(),
-      new QWidget() );
+  QgsRelationEditorWidget relationEditorWidget( QVariantMap(), new QWidget() );
   relationEditorWidget.setRelations( *mRelation, QgsRelation() );
 
   QVERIFY( !relationEditorWidget.multiEditModeActive() );
@@ -201,36 +202,30 @@ void TestQgsRelationEditorWidget::testMultiEdit1N()
   {
     QTreeWidgetItem *parentItem = relationEditorWidget.mMultiEditTreeWidget->topLevelItem( parentIndex );
     setParentItemsText.insert( parentItem->text( 0 ) );
-    QCOMPARE( parentItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(),
-              static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Parent ) );
+    QCOMPARE( parentItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(), static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Parent ) );
     for ( int childIndex = 0; childIndex < parentItem->childCount(); ++childIndex )
     {
       QTreeWidgetItem *childItem = parentItem->child( childIndex );
       setChildrenItemsText.insert( childItem->text( 0 ) );
-      QCOMPARE( childItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(),
-                static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Child ) );
+      QCOMPARE( childItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(), static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Child ) );
 
-      if ( childItem->text( 0 ) == QLatin1String( "Layer1-0" ) )
-        QCOMPARE( parentItem->text( 0 ), QStringLiteral( "Layer2-10" ) );
+      if ( childItem->text( 0 ) == "Layer1-0"_L1 )
+        QCOMPARE( parentItem->text( 0 ), u"Layer2-10"_s );
 
-      if ( childItem->text( 0 ) == QLatin1String( "Layer1-1" ) )
-        QCOMPARE( parentItem->text( 0 ), QStringLiteral( "Layer2-11" ) );
+      if ( childItem->text( 0 ) == "Layer1-1"_L1 )
+        QCOMPARE( parentItem->text( 0 ), u"Layer2-11"_s );
     }
   }
 
-  QCOMPARE( setParentItemsText, QSet<QString>() << QStringLiteral( "Layer2-10" )
-            << QStringLiteral( "Layer2-11" )
-            << QStringLiteral( "Layer2-12" ) );
+  QCOMPARE( setParentItemsText, QSet<QString>() << u"Layer2-10"_s << u"Layer2-11"_s << u"Layer2-12"_s );
 
-  QCOMPARE( setChildrenItemsText, QSet<QString>() << QStringLiteral( "Layer1-0" )
-            << QStringLiteral( "Layer1-1" ) );
+  QCOMPARE( setChildrenItemsText, QSet<QString>() << u"Layer1-0"_s << u"Layer1-1"_s );
 }
 
 void TestQgsRelationEditorWidget::testMultiEditNM()
 {
   // Init a relation editor widget
-  QgsRelationEditorWidget relationEditorWidget( QVariantMap(),
-      new QWidget() );
+  QgsRelationEditorWidget relationEditorWidget( QVariantMap(), new QWidget() );
   relationEditorWidget.setRelations( *mRelation1N, *mRelationNM );
 
   QVERIFY( !relationEditorWidget.multiEditModeActive() );
@@ -253,36 +248,52 @@ void TestQgsRelationEditorWidget::testMultiEditNM()
   {
     QTreeWidgetItem *parentItem = relationEditorWidget.mMultiEditTreeWidget->topLevelItem( parentIndex );
     setParentItemsText.insert( parentItem->text( 0 ) );
-    QCOMPARE( parentItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(),
-              static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Parent ) );
+    QCOMPARE( parentItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(), static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Parent ) );
     for ( int childIndex = 0; childIndex < parentItem->childCount(); ++childIndex )
     {
       QTreeWidgetItem *childItem = parentItem->child( childIndex );
       listChildrenItemsText.append( childItem->text( 0 ) );
-      QCOMPARE( childItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(),
-                static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Child ) );
+      QCOMPARE( childItem->data( 0, static_cast<int>( QgsRelationEditorWidget::MultiEditTreeWidgetRole::FeatureType ) ).toInt(), static_cast<int>( QgsRelationEditorWidget::MultiEditFeatureType::Child ) );
 
-      if ( childItem->text( 0 ) == QLatin1String( "Layer2-10" ) )
-        QCOMPARE( parentItem->text( 0 ), QStringLiteral( "Layer1-0" ) );
+      if ( childItem->text( 0 ) == "Layer2-10"_L1 )
+        QCOMPARE( parentItem->text( 0 ), u"Layer1-0"_s );
 
-      if ( childItem->text( 0 ) == QLatin1String( "Layer2-11" ) )
+      if ( childItem->text( 0 ) == "Layer2-11"_L1 )
       {
         QStringList possibleParents;
-        possibleParents << QStringLiteral( "Layer1-0" )
-                        << QStringLiteral( "Layer1-1" );
+        possibleParents << u"Layer1-0"_s
+                        << u"Layer1-1"_s;
         QVERIFY( possibleParents.contains( parentItem->text( 0 ) ) );
       }
     }
   }
 
-  QCOMPARE( setParentItemsText, QSet<QString>() << QStringLiteral( "Layer1-0" )
-            << QStringLiteral( "Layer1-1" ) );
+  QCOMPARE( setParentItemsText, QSet<QString>() << u"Layer1-0"_s << u"Layer1-1"_s );
 
   listChildrenItemsText.sort();
-  QCOMPARE( listChildrenItemsText, QStringList() << QStringLiteral( "Layer2-10" )
-            << QStringLiteral( "Layer2-11" )
-            << QStringLiteral( "Layer2-11" ) );
+  QCOMPARE( listChildrenItemsText, QStringList() << u"Layer2-10"_s << u"Layer2-11"_s << u"Layer2-11"_s );
+}
 
+void TestQgsRelationEditorWidget::testFeatureRequest()
+{
+  // Init a relation editor widget
+  QgsRelationEditorWidget relationEditorWidget( QVariantMap(), new QWidget() );
+  relationEditorWidget.setRelations( *mRelation1N, *mRelationNM );
+
+  QVERIFY( !relationEditorWidget.multiEditModeActive() );
+
+  QgsFeatureIterator featureIterator = mLayer1->getFeatures();
+  QgsFeature feature;
+  featureIterator.nextFeature( feature );
+  relationEditorWidget.setFeature( feature );
+
+  QgsAttributeEditorContext context;
+  QgsTrackedVectorLayerTools tools;
+  context.setVectorLayerTools( &tools );
+  relationEditorWidget.setEditorContext( context );
+
+  relationEditorWidget.updateUiSingleEdit();
+  QCOMPARE( relationEditorWidget.mDualView->masterModel()->request().filterExpression()->expression(), u"\"pk\" IN (10,11)"_s );
 }
 
 void TestQgsRelationEditorWidget::testUpdateUi()
@@ -372,7 +383,6 @@ void TestQgsRelationEditorWidget::testUpdateUi()
   relationEditorWidget.nmRelation().referencedLayer()->selectAll();
   QVERIFY( relationEditorWidget.selectedChildFeatureIds().contains( 1 ) );
   QVERIFY( relationEditorWidget.selectedChildFeatureIds().contains( 2 ) );
-
 }
 
 QGSTEST_MAIN( TestQgsRelationEditorWidget )

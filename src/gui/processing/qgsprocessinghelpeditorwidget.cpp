@@ -14,27 +14,30 @@
  ***************************************************************************/
 
 #include "qgsprocessinghelpeditorwidget.h"
-#include "qgsprocessingmodelalgorithm.h"
+
 #include "qgsgui.h"
-#include <QTreeWidgetItem>
+#include "qgsprocessingmodelalgorithm.h"
+
 #include <QDialogButtonBox>
+#include <QTreeWidgetItem>
 #include <QVBoxLayout>
+
+#include "moc_qgsprocessinghelpeditorwidget.cpp"
 
 ///@cond NOT_STABLE
 
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_DESCRIPTION = QStringLiteral( "ALG_DESC" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_CREATOR = QStringLiteral( "ALG_CREATOR" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_CREATOR = QStringLiteral( "ALG_HELP_CREATOR" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_VERSION = QStringLiteral( "ALG_VERSION" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_SHORT_DESCRIPTION = QStringLiteral( "SHORT_DESCRIPTION" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_URL = QStringLiteral( "HELP_URL" );
-const QString QgsProcessingHelpEditorWidget::ALGORITHM_EXAMPLES = QStringLiteral( "EXAMPLES" );
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_DESCRIPTION = u"ALG_DESC"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_CREATOR = u"ALG_CREATOR"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_CREATOR = u"ALG_HELP_CREATOR"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_VERSION = u"ALG_VERSION"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_SHORT_DESCRIPTION = u"SHORT_DESCRIPTION"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_HELP_URL = u"HELP_URL"_s;
+const QString QgsProcessingHelpEditorWidget::ALGORITHM_EXAMPLES = u"EXAMPLES"_s;
 
 
 class QgsProcessingHelpEditorTreeItem : public QTreeWidgetItem
 {
   public:
-
     QgsProcessingHelpEditorTreeItem( const QString &name, const QString &description )
       : QTreeWidgetItem()
       , name( name )
@@ -45,7 +48,6 @@ class QgsProcessingHelpEditorTreeItem : public QTreeWidgetItem
 
     QString name;
     QString description;
-
 };
 
 
@@ -56,25 +58,23 @@ QgsProcessingHelpEditorWidget::QgsProcessingHelpEditorWidget( QWidget *parent )
   setupUi( this );
 
   connect( mElementTree, &QTreeWidget::currentItemChanged, this, &QgsProcessingHelpEditorWidget::changeItem );
-  connect( mTextEdit, &QTextEdit::textChanged, this, [ = ]
-  {
+  connect( mTextEdit, &QTextEdit::textChanged, this, [this] {
     if ( !mCurrentName.isEmpty() )
     {
       if ( mEditStackedWidget->currentWidget() == mPagePlainText )
       {
-        mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
+        mHelpContent[mCurrentName] = mTextEdit->toPlainText();
         updateHtmlView();
       }
     }
   } );
 
-  connect( mRichTextEdit, &QgsRichTextEditor::textChanged, this, [ = ]
-  {
+  connect( mRichTextEdit, &QgsRichTextEditor::textChanged, this, [this] {
     if ( !mCurrentName.isEmpty() )
     {
       if ( mEditStackedWidget->currentWidget() == mPageRichEdit )
       {
-        mHelpContent[ mCurrentName] = mRichTextEdit->toHtml();
+        mHelpContent[mCurrentName] = mRichTextEdit->toHtml();
         updateHtmlView();
       }
     }
@@ -90,7 +90,7 @@ void QgsProcessingHelpEditorWidget::setAlgorithm( const QgsProcessingAlgorithm *
 
   mAlgorithm.reset( algorithm->create() );
 
-  if ( const QgsProcessingModelAlgorithm *model = dynamic_cast< const QgsProcessingModelAlgorithm *>( mAlgorithm.get() ) )
+  if ( const QgsProcessingModelAlgorithm *model = dynamic_cast<const QgsProcessingModelAlgorithm *>( mAlgorithm.get() ) )
   {
     mHelpContent = model->helpContent();
   }
@@ -107,7 +107,7 @@ void QgsProcessingHelpEditorWidget::setAlgorithm( const QgsProcessingAlgorithm *
   QgsProcessingHelpEditorTreeItem *parametersItem = new QgsProcessingHelpEditorTreeItem( QString(), tr( "Input parameters" ) );
   mElementTree->addTopLevelItem( parametersItem );
 
-  const QList< const QgsProcessingParameterDefinition * > definitions = mAlgorithm->parameterDefinitions();
+  const QList<const QgsProcessingParameterDefinition *> definitions = mAlgorithm->parameterDefinitions();
   for ( const QgsProcessingParameterDefinition *definition : definitions )
   {
     if ( definition->flags() & Qgis::ProcessingParameterFlag::Hidden || definition->isDestination() )
@@ -118,7 +118,7 @@ void QgsProcessingHelpEditorWidget::setAlgorithm( const QgsProcessingAlgorithm *
 
   QgsProcessingHelpEditorTreeItem *outputsItem = new QgsProcessingHelpEditorTreeItem( QString(), tr( "Outputs" ) );
   mElementTree->addTopLevelItem( outputsItem );
-  const QList< const QgsProcessingOutputDefinition * > outputs = mAlgorithm->outputDefinitions();
+  const QList<const QgsProcessingOutputDefinition *> outputs = mAlgorithm->outputDefinitions();
   for ( const QgsProcessingOutputDefinition *output : outputs )
   {
     outputsItem->addChild( new QgsProcessingHelpEditorTreeItem( output->name(), output->description() ) );
@@ -147,7 +147,7 @@ void QgsProcessingHelpEditorWidget::updateHtmlView()
 
 void QgsProcessingHelpEditorWidget::changeItem( QTreeWidgetItem *, QTreeWidgetItem * )
 {
-  if ( QgsProcessingHelpEditorTreeItem *item = dynamic_cast< QgsProcessingHelpEditorTreeItem *>( mElementTree->currentItem() ) )
+  if ( QgsProcessingHelpEditorTreeItem *item = dynamic_cast<QgsProcessingHelpEditorTreeItem *>( mElementTree->currentItem() ) )
   {
     storeCurrentValue();
 
@@ -204,16 +204,16 @@ void QgsProcessingHelpEditorWidget::storeCurrentValue()
   if ( !mCurrentName.isEmpty() )
   {
     if ( mEditStackedWidget->currentWidget() == mPagePlainText )
-      mHelpContent[ mCurrentName] = mTextEdit->toPlainText();
+      mHelpContent[mCurrentName] = mTextEdit->toPlainText();
     else
-      mHelpContent[ mCurrentName] = mRichTextEdit->toHtml();
+      mHelpContent[mCurrentName] = mRichTextEdit->toHtml();
   }
 }
 
 QgsProcessingHelpEditorDialog::QgsProcessingHelpEditorDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsProcessingHelpEditorDialog" ) );
+  setObjectName( u"QgsProcessingHelpEditorDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsProcessingHelpEditorWidget();
@@ -240,4 +240,3 @@ QVariantMap QgsProcessingHelpEditorDialog::helpContent()
 
 
 ///@endcond
-

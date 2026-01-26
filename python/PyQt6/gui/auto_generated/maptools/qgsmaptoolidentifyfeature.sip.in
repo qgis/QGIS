@@ -11,22 +11,24 @@
 class QgsMapToolIdentifyFeature : QgsMapToolIdentify
 {
 %Docstring(signature="appended")
-The :py:class:`QgsMapToolIdentifyFeature` class is a map tool to identify a feature on a chosen layer.
-Once the map tool is enable, user can click on the map canvas to identify a feature.
-A signal will then be emitted.
+A map tool to identify a feature on a chosen layer.
+
+Once the map tool is enable, user can click on the map canvas to
+identify a feature. A signal will then be emitted.
 %End
 
 %TypeHeaderCode
 #include "qgsmaptoolidentifyfeature.h"
 %End
   public:
-
     QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl = 0 );
 %Docstring
-QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
+QgsMapToolIdentifyFeature is a map tool to identify a feature on a
+chosen layer
 
 :param canvas: the map canvas
-:param vl: the vector layer. The map tool can be initialized without any layer and can be set afterward.
+:param vl: the vector layer. The map tool can be initialized without any
+           layer and can be set afterward.
 %End
 
     void setLayer( QgsVectorLayer *vl );
@@ -44,7 +46,7 @@ change the layer used by the map tool to identify
 Emitted when a ``feature`` has been identified
 %End
 
- void featureIdentified( QgsFeatureId id ) /Deprecated/;
+ void featureIdentified( QgsFeatureId id ) /Deprecated="Since 3.40. Use the signal with a QgsFeature argument instead."/;
 %Docstring
 Emitted when a feature has been identified by its ``id``.
 

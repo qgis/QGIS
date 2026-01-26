@@ -17,25 +17,24 @@
 #ifndef QGSAUTHCONFIGSELECT_H
 #define QGSAUTHCONFIGSELECT_H
 
-#include <QWidget>
-#include <QLabel>
-#include "qgis_sip.h"
-
 #include "ui_qgsauthconfigselect.h"
-#include "qgsauthconfig.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthconfig.h"
+
+#include <QLabel>
+#include <QWidget>
 
 /**
  * \ingroup gui
- * \brief Selector widget for authentication configs
+ * \brief Selector widget for authentication configs.
  */
 class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfigSelect
 {
     Q_OBJECT
 
   public:
-
     /**
      * Create a dialog for setting an associated authentication config, either
      * from existing configs, or creating/removing them from auth database
@@ -105,23 +104,20 @@ class QPushButton;
 
 /**
  * \ingroup gui
- * \brief Dialog wrapper of select widget to edit an authcfg in a data source URI
+ * \brief Dialog wrapper of select widget to edit an authcfg in a data source URI.
  */
 class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfigUriEdit
 {
     Q_OBJECT
 
   public:
-
     /**
      * Construct wrapper dialog for select widget to edit an authcfg in a data source URI
      * \param parent Parent widget
-     * \param datauri URI QString with of without an authcfg=ID string
+     * \param datauri URI QString optionally containing a ``authcfg=ID`` substring
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthConfigUriEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                   const QString &datauri = QString(),
-                                   const QString &dataprovider = QString() );
+    explicit QgsAuthConfigUriEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &datauri = QString(), const QString &dataprovider = QString() );
 
     //! Sets the data source URI to parse
     void setDataSourceUri( const QString &datauri );

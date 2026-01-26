@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmswapxy.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsSwapXYAlgorithm::name() const
 {
-  return QStringLiteral( "swapxy" );
+  return u"swapxy"_s;
 }
 
 QString QgsSwapXYAlgorithm::displayName() const
@@ -42,7 +43,7 @@ QString QgsSwapXYAlgorithm::group() const
 
 QString QgsSwapXYAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSwapXYAlgorithm::outputName() const
@@ -56,6 +57,11 @@ QString QgsSwapXYAlgorithm::shortHelpString() const
                       "which have accidentally had their latitude and longitude values reversed." );
 }
 
+QString QgsSwapXYAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Swaps the X and Y coordinate values in input geometries." );
+}
+
 QgsSwapXYAlgorithm *QgsSwapXYAlgorithm::createInstance() const
 {
   return new QgsSwapXYAlgorithm();
@@ -63,11 +69,11 @@ QgsSwapXYAlgorithm *QgsSwapXYAlgorithm::createInstance() const
 
 bool QgsSwapXYAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
-  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+  if ( !QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
 
   return layer->isSpatial();
@@ -86,7 +92,7 @@ QgsFeatureList QgsSwapXYAlgorithm::processFeature( const QgsFeature &f, QgsProce
   if ( feature.hasGeometry() )
   {
     const QgsGeometry geom = feature.geometry();
-    std::unique_ptr< QgsAbstractGeometry > swappedGeom( geom.constGet()->clone() );
+    std::unique_ptr<QgsAbstractGeometry> swappedGeom( geom.constGet()->clone() );
     swappedGeom->swapXy();
     feature.setGeometry( QgsGeometry( std::move( swappedGeom ) ) );
     list << feature;

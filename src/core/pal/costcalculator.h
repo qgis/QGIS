@@ -17,8 +17,9 @@
 
 #define SIP_NO_FILE
 
-#include <QList>
 #include "palrtree.h"
+
+#include <QList>
 
 /**
  * \class pal::CostCalculator
@@ -30,6 +31,8 @@ namespace pal
   class Feats;
   class LabelPosition;
   class Pal;
+  class FeaturePart;
+  class PointSet;
 
   /**
    * \ingroup core
@@ -68,7 +71,7 @@ namespace pal
 
   /**
    * \ingroup core
-   * \brief Calculates distance from a label candidate to nearest polygon ring.
+   * \brief Calculates distance from a label candidate to the nearest polygon ring.
    * \note not available in Python bindings
    * \since QGIS 3.12
    */

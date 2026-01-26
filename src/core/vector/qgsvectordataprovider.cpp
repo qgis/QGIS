@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTextCodec>
+#include "qgsvectordataprovider.h"
 
 #include <limits>
+#include <mutex>
 
-#include "qgsvectordataprovider.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgsdataproviderelevationproperties.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturerequest.h"
@@ -32,8 +33,10 @@
 #include "qgsmessagelog.h"
 #include "qgsogrproxytextcodec.h"
 #include "qgsthreadingutils.h"
-#include <mutex>
-#include "qgsdataproviderelevationproperties.h"
+
+#include <QTextCodec>
+
+#include "moc_qgsvectordataprovider.cpp"
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
     Qgis::DataProviderReadFlags flags )
@@ -47,7 +50,7 @@ QString QgsVectorDataProvider::storageType() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return QStringLiteral( "Generic vector file" );
+  return u"Generic vector file"_s;
 }
 
 bool QgsVectorDataProvider::empty() const
@@ -280,7 +283,7 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
   {
     mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
   }
-  if ( !mEncoding && e != QLatin1String( "System" ) )
+  if ( !mEncoding && e != "System"_L1 )
   {
     if ( !e.isEmpty() )
     {
@@ -407,7 +410,7 @@ QString QgsVectorDataProvider::capabilitiesString() const
     abilitiesList += tr( "Feature Symbology" );
   }
 
-  return abilitiesList.join( QLatin1String( ", " ) );
+  return abilitiesList.join( ", "_L1 );
 }
 
 Qgis::VectorDataProviderAttributeEditCapabilities QgsVectorDataProvider::attributeEditCapabilities() const
@@ -451,6 +454,13 @@ QgsAttributeList QgsVectorDataProvider::pkAttributeIndexes() const
   return QgsAttributeList();
 }
 
+QString QgsVectorDataProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}
+
 QList<QgsVectorDataProvider::NativeType> QgsVectorDataProvider::nativeTypes() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -469,7 +479,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsDebugMsgLevel( QStringLiteral( "field name = %1 type = %2 length = %3 precision = %4" )
+  QgsDebugMsgLevel( u"field name = %1 type = %2 length = %3 precision = %4"_s
                     .arg( field.name(),
                           QVariant::typeToName( field.type() ) )
                     .arg( field.length() )
@@ -477,7 +487,7 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
 
   for ( const NativeType &nativeType : mNativeTypes )
   {
-    QgsDebugMsgLevel( QStringLiteral( "native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5" )
+    QgsDebugMsgLevel( u"native field type = %1 min length = %2 max length = %3 min precision = %4 max precision = %5"_s
                       .arg( QVariant::typeToName( nativeType.mType ) )
                       .arg( nativeType.mMinLen )
                       .arg( nativeType.mMaxLen )
@@ -509,11 +519,11 @@ bool QgsVectorDataProvider::supportedType( const QgsField &field ) const
       }
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "native type matches" ), 3 );
+    QgsDebugMsgLevel( u"native type matches"_s, 3 );
     return true;
   }
 
-  QgsDebugError( QStringLiteral( "no sufficient native type found" ) );
+  QgsDebugError( u"no sufficient native type found"_s );
   return false;
 }
 
@@ -571,7 +581,7 @@ QStringList QgsVectorDataProvider::uniqueStringsMatching( int index, const QStri
   request.setSubsetOfAttributes( keys );
   request.setFlags( Qgis::FeatureRequestFlag::NoGeometry );
   const QString fieldName = fields().at( index ).name();
-  request.setFilterExpression( QStringLiteral( "\"%1\" ILIKE '%%2%'" ).arg( fieldName, substring ) );
+  request.setFilterExpression( u"\"%1\" ILIKE '%%2%'"_s.arg( fieldName, substring ) );
   QgsFeatureIterator fi = getFeatures( request );
 
   QSet<QString> set;
@@ -776,7 +786,7 @@ static bool _removeDuplicateEncodings( const QString &s1, const QString &s2 )
 QStringList QgsVectorDataProvider::availableEncodings()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]
+  std::call_once( initialized, []
   {
     const auto codecs { QTextCodec::availableCodecs() };
     for ( const QByteArray &codec : codecs )
@@ -941,7 +951,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   //convert compoundcurve to circularstring (possible if compoundcurve consists of one circular string)
   if ( QgsWkbTypes::flatType( providerGeometryType ) == Qgis::WkbType::CircularString )
   {
-    QgsCompoundCurve *compoundCurve = qgsgeometry_cast<QgsCompoundCurve *>( convertedGeometry );
+    const QgsCompoundCurve *compoundCurve = qgsgeometry_cast<const QgsCompoundCurve *>( convertedGeometry );
     if ( compoundCurve )
     {
       if ( compoundCurve->nCurves() == 1 )
@@ -984,7 +994,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     {
       if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : convertedGeometry->clone() ) )
       {
-        outputGeom.reset( collGeom.release() );
+        outputGeom = std::move( collGeom );
       }
     }
   }

@@ -19,11 +19,11 @@
 #ifndef QGSABSTRACTDATASOURCEWIDGET_H
 #define QGSABSTRACTDATASOURCEWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-
-#include "qgsproviderregistry.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
 
@@ -33,7 +33,8 @@ class QgsBrowserModel;
 
 /**
  * \ingroup gui
- * \brief  Abstract base Data Source Widget to create connections and add layers
+ * \brief Abstract base class for Data Source widgets to create connections and add layers.
+ *
  * This class provides common functionality and the interface for all
  * source select dialogs used by data providers to configure data sources
  * and add layers.
@@ -47,7 +48,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Sets a browser \a model to use with the widget.
      *
@@ -61,7 +61,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * \see setMapCanvas()
      *
      */
-    virtual QgsMapCanvas *mapCanvas() {return mMapCanvas; }
+    virtual QgsMapCanvas *mapCanvas() { return mMapCanvas; }
 
     /**
      * Sets the dialog map canvas
@@ -210,7 +210,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
   protected:
-
     //! Constructor
     QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
@@ -228,14 +227,13 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void setupButtons( QDialogButtonBox *buttonBox );
 
     //! Returns the add Button
-    QPushButton *addButton( ) const { return mAddButton; }
+    QPushButton *addButton() const { return mAddButton; }
 
   private:
-    QPushButton *mAddButton  = nullptr;
+    QPushButton *mAddButton = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsBrowserModel *mBrowserModel = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-
 };
 
 #endif // QGSABSTRACTDATASOURCEWIDGET_H

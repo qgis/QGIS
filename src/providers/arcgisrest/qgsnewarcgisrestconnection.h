@@ -18,8 +18,9 @@
 #ifndef QGSNEWARCGISRESTCONNECTION_H
 #define QGSNEWARCGISRESTCONNECTION_H
 
-#include "qgis_sip.h"
 #include "ui_qgsnewarcgisrestconnectionbase.h"
+
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 
 class QgsAuthSettingsWidget;
@@ -34,13 +35,10 @@ class QgsNewArcGisRestConnectionDialog : public QDialog, private Ui::QgsNewArcGi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsNewArcGisRestConnectionDialog.
      */
-    QgsNewArcGisRestConnectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                      const QString &connectionName = QString(),
-                                      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsNewArcGisRestConnectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &connectionName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /**
      * Returns the current connection name.
@@ -63,7 +61,6 @@ class QgsNewArcGisRestConnectionDialog : public QDialog, private Ui::QgsNewArcGi
     void updateOkButtonState();
 
   protected:
-
     /**
      * Returns TRUE if dialog settings are valid, or FALSE if current
      * settings are not valid and the dialog should not be acceptable.
@@ -78,7 +75,6 @@ class QgsNewArcGisRestConnectionDialog : public QDialog, private Ui::QgsNewArcGi
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
-
 };
 
 #endif //  QGSNEWARCGISRESTCONNECTION_H

@@ -30,16 +30,9 @@ set (geometrychecker_RCCS
 ########################################################
 # Build
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
-else()
-  QT5_WRAP_UI (geometrychecker_UIS_H  ${geometrychecker_UIS})
-endif()
+qt_wrap_ui(geometrychecker_UIS_H  ${geometrychecker_UIS})
 
 add_library (plugin_geometrychecker   MODULE ${geometrychecker_SRCS}  ${geometrychecker_RCCS} ${geometrychecker_UIS_H})
-
-# require c++17
-target_compile_features(plugin_geometrychecker PRIVATE cxx_std_17)
 
 include_directories(
   ${CMAKE_SOURCE_DIR}/src/plugins

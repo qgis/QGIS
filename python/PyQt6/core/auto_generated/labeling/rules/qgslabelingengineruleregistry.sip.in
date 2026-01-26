@@ -13,12 +13,15 @@ class QgsLabelingEngineRuleRegistry
 %Docstring(signature="appended")
 A registry for labeling engine rules.
 
-Labeling engine rules implement custom logic to modify the labeling solution for a map render,
-e.g. by preventing labels being placed which violate custom constraints.
+Labeling engine rules implement custom logic to modify the labeling
+solution for a map render, e.g. by preventing labels being placed which
+violate custom constraints.
 
-This registry stores available rules and is responsible for creating rules.
+This registry stores available rules and is responsible for creating
+rules.
 
-:py:class:`QgsLabelingEngineRuleRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsLabelingEngineRuleRegistry` is not usually directly
+created, but rather accessed through
 :py:func:`QgsApplication.labelEngineRuleRegistry()`.
 
 .. versionadded:: 3.40
@@ -44,15 +47,17 @@ Returns a list of the rule IDs for rules present in the registry.
 
     QString displayType( const QString &id ) const;
 %Docstring
-Returns a user-friendly, translated string representing the rule type with matching ``id``.
+Returns a user-friendly, translated string representing the rule type
+with matching ``id``.
 %End
 
     bool isAvailable( const QString &id ) const;
 %Docstring
-Returns ``True`` if the rule is with matching ``id`` is available for use within the current QGIS environment.
+Returns ``True`` if the rule is with matching ``id`` is available for
+use within the current QGIS environment.
 
-Rules can return ``False`` if required dependencies are not available, e.g. if a library version
-is too old for the rule.
+Rules can return ``False`` if required dependencies are not available,
+e.g. if a library version is too old for the rule.
 %End
 
     QgsAbstractLabelingEngineRule *create( const QString &id ) const /TransferBack/;

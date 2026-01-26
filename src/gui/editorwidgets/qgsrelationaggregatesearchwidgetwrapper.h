@@ -18,8 +18,8 @@
 #define QGSRELATIONAGGREGATESEARCHWIDGETWRAPPER_H
 
 #include "qgis_gui.h"
-#include "qgssearchwidgetwrapper.h"
 #include "qgsattributeform.h"
+#include "qgssearchwidgetwrapper.h"
 
 class QgsRelationWidgetWrapper;
 
@@ -27,6 +27,7 @@ class QgsRelationWidgetWrapper;
  * \ingroup gui
  *
  * \brief Search widget for the children of a relation.
+ *
  * For each attribute of the child, an additional QgsAggregateToolButton will be shown
  * to determine how the values should be aggregated for searching.
  *
@@ -36,7 +37,6 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */

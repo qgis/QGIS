@@ -16,15 +16,15 @@
 #ifndef QGSMAPLAYERACTION_H
 #define QGSMAPLAYERACTION_H
 
-#include <QObject>
-#include "qgis_sip.h"
-#include <QList>
-#include <QMap>
-#include <QAction>
-#include <QPointer>
-
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QAction>
+#include <QList>
+#include <QMap>
+#include <QObject>
+#include <QPointer>
 
 class QgsFeature;
 class QgsMapLayer;
@@ -33,17 +33,18 @@ class QgsMapLayerActionContext;
 
 /**
  * \ingroup gui
-* \brief An action which can run on map layers
+* \brief An action which can run on map layers.
+*
 * The class can be used in two manners:
-* * by instantiating it and connecting to its signals to perform an action
-* * by subclassing and reimplementing its method (only since QGIS 3.18.2)
+*
+* - by instantiating it and connecting to its signals to perform an action
+* - by subclassing and reimplementing its method (only since QGIS 3.18.2)
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
 {
     Q_OBJECT
 
   public:
-
     /**
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
@@ -122,9 +123,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     virtual void triggerForLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
 
     //! Define the targets of the action
-    void setTargets( Qgis::MapLayerActionTargets targets ) {mTargets = targets;}
+    void setTargets( Qgis::MapLayerActionTargets targets ) { mTargets = targets; }
     //! Returns availibity of action
-    Qgis::MapLayerActionTargets targets() const {return mTargets;}
+    Qgis::MapLayerActionTargets targets() const { return mTargets; }
 
     /**
      * Returns TRUE if the action is only enabled for layers in editable mode.
@@ -175,7 +176,6 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     void triggeredForLayerV2( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
 
   private:
-
     // true if action is only valid for a single layer
     bool mSingleLayer = false;
     // layer if action is only valid for a single layer

@@ -9,6 +9,7 @@
 
 
 
+
 class QgsPercentageWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -21,7 +22,6 @@ A widget for setting a percentage value.
 #include "qgspercentagewidget.h"
 %End
   public:
-
     explicit QgsPercentageWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPercentageWidget.
@@ -29,7 +29,8 @@ Constructor for QgsPercentageWidget.
 
     double value() const;
 %Docstring
-Returns the current percentage selected in the widget, as a factor from 0.0 to 1.0.
+Returns the current percentage selected in the widget, as a factor from
+0.0 to 1.0.
 
 .. seealso:: :py:func:`setValue`
 
@@ -40,7 +41,8 @@ Returns the current percentage selected in the widget, as a factor from 0.0 to 1
 
     void setValue( double value );
 %Docstring
-Sets the current ``value`` to show in the widget, where ``value`` is a factor which ranges from 0.0 to 1.0.
+Sets the current ``value`` to show in the widget, where ``value`` is a
+factor which ranges from 0.0 to 1.0.
 
 .. seealso:: :py:func:`value`
 
@@ -51,7 +53,8 @@ Sets the current ``value`` to show in the widget, where ``value`` is a factor wh
 
     void valueChanged( double value );
 %Docstring
-Emitted when the ``value`` is changed in the widget, where ``value`` is a factor which ranges from 0.0 to 1.0.
+Emitted when the ``value`` is changed in the widget, where ``value`` is
+a factor which ranges from 0.0 to 1.0.
 
 .. seealso:: :py:func:`setValue`
 

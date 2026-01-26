@@ -14,9 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataresultsproxymodel.h"
+
 #include "qgsabstractlayermetadataprovider.h"
 
-QgsLayerMetadataResultsProxyModel::QgsLayerMetadataResultsProxyModel( QObject *parent ) : QSortFilterProxyModel( parent )
+#include "moc_qgslayermetadataresultsproxymodel.cpp"
+
+QgsLayerMetadataResultsProxyModel::QgsLayerMetadataResultsProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
 {
 }
 
@@ -51,14 +55,14 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
 
   if ( result )
   {
-    const QgsLayerMetadataProviderResult &metadataResult { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>( ) };
+    const QgsLayerMetadataProviderResult &metadataResult { sourceModel()->data( index0, Qt::ItemDataRole::UserRole ).value<QgsLayerMetadataProviderResult>() };
 
-    if ( ! mFilterString.isEmpty() )
+    if ( !mFilterString.isEmpty() )
     {
       result = result && metadataResult.contains( mFilterString );
     }
 
-    if ( result && ! mFilterExtent.isEmpty() )
+    if ( result && !mFilterExtent.isEmpty() )
     {
       // Exclude aspatial from extent filter
       result = result && ( metadataResult.geometryType() != Qgis::GeometryType::Unknown && metadataResult.geometryType() != Qgis::GeometryType::Null ) && mFilterExtent.intersects( metadataResult.geographicExtent().boundingBox() );
@@ -77,7 +81,7 @@ bool QgsLayerMetadataResultsProxyModel::filterAcceptsRow( int sourceRow, const Q
       }
       else
       {
-        result = result &&  metadataResult.geometryType() == mFilterGeometryType;
+        result = result && metadataResult.geometryType() == mFilterGeometryType;
       }
     }
   }
@@ -101,4 +105,3 @@ const QString QgsLayerMetadataResultsProxyModel::filterString() const
 {
   return mFilterString;
 }
-

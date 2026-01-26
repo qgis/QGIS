@@ -18,18 +18,21 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
+#include "qgsmaterial.h"
 #include "qgsphongtexturedmaterial.h"
 #include "qgsterrainentity.h"
 #include "qgsterraingenerator.h"
-#include "qgsterraintextureimage_p.h"
 #include "qgsterraintexturegenerator_p.h"
+#include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgscoordinatetransform.h"
 #include "qgstexturematerial.h"
 
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTexture>
+
+#include "moc_qgsterraintileloader.cpp"
 
 /// @cond PRIVATE
 
@@ -54,7 +57,7 @@ void QgsTerrainTileLoader::createTextureComponent( QgsTerrainTileEntity *entity,
 {
   Qt3DRender::QTexture2D *texture = useTexture || !isShadingEnabled ? createTexture( entity ) : nullptr;
 
-  Qt3DRender::QMaterial *material = nullptr;
+  QgsMaterial *material = nullptr;
   if ( texture )
   {
     if ( isShadingEnabled )
@@ -101,7 +104,7 @@ Qt3DRender::QTexture2D *QgsTerrainTileLoader::createTexture( QgsTerrainTileEntit
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
-  texture->addTextureImage( textureImage );//texture take the ownership of textureImage if has no parant
+  texture->addTextureImage( textureImage ); //texture take the ownership of textureImage if has no parant
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
 

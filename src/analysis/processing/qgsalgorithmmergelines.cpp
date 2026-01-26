@@ -21,7 +21,7 @@
 
 QString QgsMergeLinesAlgorithm::name() const
 {
-  return QStringLiteral( "mergelines" );
+  return u"mergelines"_s;
 }
 
 QString QgsMergeLinesAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsMergeLinesAlgorithm::group() const
 
 QString QgsMergeLinesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsMergeLinesAlgorithm::outputName() const
@@ -66,9 +66,14 @@ QString QgsMergeLinesAlgorithm::shortHelpString() const
                       "geometry will be a MultiLineString containing any lines which could be merged and any non-connected line parts." );
 }
 
+QString QgsMergeLinesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Joins all connected parts of MultiLineString geometries into single LineString geometries." );
+}
+
 QList<int> QgsMergeLinesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
 }
 
 QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
@@ -91,5 +96,3 @@ QgsFeatureList QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature
 }
 
 ///@endcond
-
-

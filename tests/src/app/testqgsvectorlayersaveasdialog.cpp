@@ -12,18 +12,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
+#include "ogr/qgsvectorlayersaveasdialog.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
+#include "qgseditorwidgetregistry.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsvectordataprovider.h"
-#include "ogr/qgsvectorlayersaveasdialog.h"
-#include "qgseditorwidgetregistry.h"
-#include "qgsproject.h"
-#include "qgsmapcanvas.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 /**
  * \ingroup UnitTests
@@ -36,10 +36,10 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     TestQgsVectorLayerSaveAsDialog();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void testAttributesAsDisplayedValues();
 
@@ -69,7 +69,7 @@ void TestQgsVectorLayerSaveAsDialog::cleanupTestCase()
 void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "none?field=code:int&field=regular:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  auto tempLayer = std::make_unique<QgsVectorLayer>( u"none?field=code:int&field=regular:string"_s, u"vl"_s, u"memory"_s );
   QVERIFY( tempLayer->isValid() );
 
   // Assign a custom CRS to the layer
@@ -78,15 +78,15 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   tempLayer->setCrs( crs );
 
   // Set a widget
-  tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( QStringLiteral( "ValueRelation" ), QVariantMap() ) );
+  tempLayer->setEditorWidgetSetup( 0, QgsEditorWidgetSetup( u"ValueRelation"_s, QVariantMap() ) );
 
   const QgsVectorLayerSaveAsDialog d( tempLayer.get() );
 
-  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( QStringLiteral( "mDeselectAllAttributes" ) );
+  QPushButton *mDeselectAllAttributes = d.findChild<QPushButton *>( u"mDeselectAllAttributes"_s );
   QTest::mouseClick( mDeselectAllAttributes, Qt::LeftButton );
 
-  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( QStringLiteral( "mAttributeTable" ) );
-  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( QStringLiteral( "mReplaceRawFieldValues" ) );
+  QTableWidget *mAttributeTable = d.findChild<QTableWidget *>( u"mAttributeTable"_s );
+  QCheckBox *mReplaceRawFieldValues = d.findChild<QCheckBox *>( u"mReplaceRawFieldValues"_s );
 
   QCOMPARE( mAttributeTable->rowCount(), 2 );
   QCOMPARE( mAttributeTable->isColumnHidden( 3 ), false );
@@ -134,7 +134,7 @@ void TestQgsVectorLayerSaveAsDialog::testAttributesAsDisplayedValues()
   QCOMPARE( mAttributeTable->item( 0, 3 )->flags(), Qt::ItemIsUserCheckable );
 
   // Check that we can get a custom CRS with crsObject()
-  QCOMPARE( d.crs(), crs ) ;
+  QCOMPARE( d.crs(), crs );
 
   //d.exec();
 }

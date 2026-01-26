@@ -21,18 +21,18 @@
 #include "qgsimagetexture.h"
 #include "qgsphongmaterialsettings.h"
 #include "qgsphongtexturedmaterial.h"
-#include <Qt3DRender/QPaintedTextureImage>
-#include <Qt3DRender/QTexture>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <QMap>
 
+#include <QMap>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QPaintedTextureImage>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QTexture>
 
 QString QgsPhongTexturedMaterialSettings::type() const
 {
-  return QStringLiteral( "phongtextured" );
+  return u"phongtextured"_s;
 }
 
 bool QgsPhongTexturedMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTechnique technique )
@@ -63,38 +63,47 @@ QgsPhongTexturedMaterialSettings *QgsPhongTexturedMaterialSettings::clone() cons
   return new QgsPhongTexturedMaterialSettings( *this );
 }
 
-float QgsPhongTexturedMaterialSettings::textureRotation() const
+bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsPhongTexturedMaterialSettings *otherPhong = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( other );
+  if ( !otherPhong )
+    return false;
+
+  return *this == *otherPhong;
+}
+
+double QgsPhongTexturedMaterialSettings::textureRotation() const
 {
   return mTextureRotation;
 }
 
 void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mAmbient = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "ambient" ), QStringLiteral( "25,25,25" ) ) );
-  mSpecular = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "specular" ), QStringLiteral( "255,255,255" ) ) );
-  mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toDouble();
-  mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
-  mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
-  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
-  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toFloat();
+  mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );
+  mSpecular = QgsColorUtils::colorFromString( elem.attribute( u"specular"_s, u"255,255,255"_s ) );
+  mShininess = elem.attribute( u"shininess"_s ).toDouble();
+  mOpacity = elem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
+  mDiffuseTexturePath = elem.attribute( u"diffuse_texture_path"_s, QString() );
+  mTextureScale = elem.attribute( u"texture_scale"_s, QString( "1.0" ) ).toDouble();
+  mTextureRotation = elem.attribute( u"texture-rotation"_s, QString( "0.0" ) ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
 void QgsPhongTexturedMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "ambient" ), QgsColorUtils::colorToString( mAmbient ) );
-  elem.setAttribute( QStringLiteral( "specular" ), QgsColorUtils::colorToString( mSpecular ) );
-  elem.setAttribute( QStringLiteral( "shininess" ), mShininess );
-  elem.setAttribute( QStringLiteral( "opacity" ), mOpacity );
-  elem.setAttribute( QStringLiteral( "diffuse_texture_path" ), mDiffuseTexturePath );
-  elem.setAttribute( QStringLiteral( "texture_scale" ), mTextureScale );
-  elem.setAttribute( QStringLiteral( "texture-rotation" ), mTextureRotation );
+  elem.setAttribute( u"ambient"_s, QgsColorUtils::colorToString( mAmbient ) );
+  elem.setAttribute( u"specular"_s, QgsColorUtils::colorToString( mSpecular ) );
+  elem.setAttribute( u"shininess"_s, mShininess );
+  elem.setAttribute( u"opacity"_s, mOpacity );
+  elem.setAttribute( u"diffuse_texture_path"_s, mDiffuseTexturePath );
+  elem.setAttribute( u"texture_scale"_s, mTextureScale );
+  elem.setAttribute( u"texture-rotation"_s, mTextureRotation );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -107,7 +116,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
     {
       bool fitsInCache = false;
       const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
-      ( void )fitsInCache;
+      ( void ) fitsInCache;
 
       // No texture image was provided.
       // Fallback to QgsPhongMaterialSettings.
@@ -119,7 +128,7 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
         phongSettings.setOpacity( mOpacity );
         phongSettings.setShininess( mShininess );
         phongSettings.setSpecular( mSpecular );
-        Qt3DRender::QMaterial *material = phongSettings.toMaterial( technique, context );
+        QgsMaterial *material = phongSettings.toMaterial( technique, context );
         return material;
       }
 
@@ -149,14 +158,13 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
       texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
 
       material->setDiffuseTexture( texture );
-      material->setDiffuseTextureScale( mTextureScale );
+      material->setDiffuseTextureScale( static_cast<float>( mTextureScale ) );
 
       return material;
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
       return nullptr;
-
   }
   return nullptr;
 }
@@ -164,9 +172,9 @@ Qt3DRender::QMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterial
 QMap<QString, QString> QgsPhongTexturedMaterialSettings::toExportParameters() const
 {
   QMap<QString, QString> parameters;
-  parameters[ QStringLiteral( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
-  parameters[ QStringLiteral( "Ks" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
-  parameters[ QStringLiteral( "Ns" ) ] = QString::number( mShininess );
+  parameters[u"Ka"_s] = u"%1 %2 %3"_s.arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[u"Ks"_s] = u"%1 %2 %3"_s.arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
+  parameters[u"Ns"_s] = QString::number( mShininess );
   return parameters;
 }
 
@@ -174,9 +182,9 @@ void QgsPhongTexturedMaterialSettings::addParametersToEffect( Qt3DRender::QEffec
 {
   const QColor ambientColor = materialContext.isSelected() ? materialContext.selectionColor().darker() : mAmbient;
 
-  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( QStringLiteral( "ambientColor" ), ambientColor );
-  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( QStringLiteral( "specularColor" ), mSpecular );
-  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( QStringLiteral( "shininess" ), static_cast<float>( mShininess ) );
+  Qt3DRender::QParameter *ambientParameter = new Qt3DRender::QParameter( u"ambientColor"_s, ambientColor );
+  Qt3DRender::QParameter *specularParameter = new Qt3DRender::QParameter( u"specularColor"_s, mSpecular );
+  Qt3DRender::QParameter *shininessParameter = new Qt3DRender::QParameter( u"shininess"_s, static_cast<float>( mShininess ) );
 
   effect->addParameter( ambientParameter );
   effect->addParameter( specularParameter );

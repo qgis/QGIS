@@ -18,8 +18,8 @@
 #ifndef QGSTEMPORALCONTROLLERDOCKWIDGET_H
 #define QGSTEMPORALCONTROLLERDOCKWIDGET_H
 
-#include "qgsdockwidget.h"
 #include "qgis_app.h"
+#include "qgsdockwidget.h"
 
 class QgsTemporalControllerWidget;
 class QgsTemporalController;
@@ -35,7 +35,6 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-
     /**
       * Constructor for QgsTemporalControllerDockWidget, with the specified \a parent widget.
       */
@@ -51,7 +50,6 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
     void setMapCanvas( QgsMapCanvas *canvas );
 
   protected:
-
     bool eventFilter( QObject *object, QEvent *event ) override;
 
   private slots:
@@ -59,10 +57,7 @@ class APP_EXPORT QgsTemporalControllerDockWidget : public QgsDockWidget
     void exportAnimation();
 
   private:
-
     QgsTemporalControllerWidget *mControllerWidget = nullptr;
-
-
 };
 
 #endif // QGSTEMPORALCONTROLLERDOCKWIDGET_H

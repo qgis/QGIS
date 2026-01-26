@@ -15,21 +15,23 @@
  ***************************************************************************/
 
 #include "qgslayoutmanagerdialog.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbusyindicatordialog.h"
-#include "qgslayoutdesignerdialog.h"
-#include "qgslayout.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgslayoutview.h"
-#include "qgslayoutmanager.h"
-#include "qgsproject.h"
 #include "qgsgui.h"
-#include "qgsprintlayout.h"
-#include "qgsreport.h"
-#include "qgsreadwritecontext.h"
 #include "qgshelp.h"
+#include "qgslayout.h"
+#include "qgslayoutdesignerdialog.h"
+#include "qgslayoutmanager.h"
+#include "qgslayoutmanagermodel.h"
+#include "qgslayoutview.h"
+#include "qgslogger.h"
+#include "qgsprintlayout.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+#include "qgsreport.h"
+#include "qgssettings.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -40,7 +42,10 @@
 #include <QMessageBox>
 #include <QUrl>
 
-QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
+#include "moc_qgslayoutmanagerdialog.cpp"
+
+QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
 {
   setupUi( this );
   connect( mAddButton, &QPushButton::clicked, this, &QgsLayoutManagerDialog::mAddButton_clicked );
@@ -50,23 +55,21 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 
   QgsGui::enableAutoGeometryRestore( this );
   mTemplateFileWidget->setStorageMode( QgsFileWidget::GetFile );
-  mTemplateFileWidget->setFilter( tr( "Layout templates" ) + QStringLiteral( " (*.qpt *.QPT)" ) );
+  mTemplateFileWidget->setFilter( tr( "Layout templates" ) + u" (*.qpt *.QPT)"_s );
   mTemplateFileWidget->setDialogTitle( tr( "Select a Template" ) );
   mTemplateFileWidget->lineEdit()->setShowClearButton( false );
   QgsSettings settings;
-  mTemplateFileWidget->setDefaultRoot( settings.value( QStringLiteral( "lastComposerTemplateDir" ), QString(), QgsSettings::App ).toString() );
-  mTemplateFileWidget->setFilePath( settings.value( QStringLiteral( "ComposerManager/templatePath" ), QString(), QgsSettings::App ).toString() );
+  mTemplateFileWidget->setDefaultRoot( settings.value( u"lastComposerTemplateDir"_s, QString(), QgsSettings::App ).toString() );
+  mTemplateFileWidget->setFilePath( settings.value( u"ComposerManager/templatePath"_s, QString(), QgsSettings::App ).toString() );
 
-  connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [ = ]
-  {
+  connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "ComposerManager/templatePath" ), mTemplateFileWidget->filePath(), QgsSettings::App );
+    settings.setValue( u"ComposerManager/templatePath"_s, mTemplateFileWidget->filePath(), QgsSettings::App );
     QFileInfo tmplFileInfo( mTemplateFileWidget->filePath() );
-    settings.setValue( QStringLiteral( "lastComposerTemplateDir" ), tmplFileInfo.absolutePath(), QgsSettings::App );
+    settings.setValue( u"lastComposerTemplateDir"_s, tmplFileInfo.absolutePath(), QgsSettings::App );
   } );
 
-  mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(),
-                                      this );
+  mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(), this );
   mProxyModel = new QgsLayoutManagerProxyModel( mLayoutListView );
   mProxyModel->setSourceModel( mModel );
   mLayoutListView->setModel( mProxyModel );
@@ -78,8 +81,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutManagerDialog::showHelp );
-  connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
-           this, &QgsLayoutManagerDialog::toggleButtons );
+  connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsLayoutManagerDialog::toggleButtons );
   connect( mLayoutListView, &QListView::doubleClicked, this, &QgsLayoutManagerDialog::itemDoubleClicked );
 
   connect( mShowButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::showClicked );
@@ -101,7 +103,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   QMap<QString, QString> userTemplateMap = defaultTemplates( true );
   addTemplates( userTemplateMap );
 
-  // TODO QGIS 4: Remove this, default templates should not be shipped in the application folder
+  // TODO QGIS 5: Remove this, default templates should not be shipped in the application folder
   mDefaultTemplatesDir = QgsApplication::pkgDataPath() + "/composer_templates";
   QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
   addTemplates( defaultTemplateMap );
@@ -151,7 +153,6 @@ void QgsLayoutManagerDialog::addTemplates( const QMap<QString, QString> &templat
       mTemplate->addItem( templateIt.key(), templateIt.value() );
     }
   }
-
 }
 
 void QgsLayoutManagerDialog::activate()
@@ -198,7 +199,7 @@ QMap<QString, QString> QgsLayoutManagerDialog::templatesFromPath( const QString 
   const QFileInfoList fileInfoList = templateDir.entryInfoList( QDir::Files );
   for ( const QFileInfo &info : fileInfoList )
   {
-    if ( info.suffix().compare( QLatin1String( "qpt" ), Qt::CaseInsensitive ) == 0 )
+    if ( info.suffix().compare( "qpt"_L1, Qt::CaseInsensitive ) == 0 )
     {
       templateMap.insert( info.completeBaseName(), info.absoluteFilePath() );
     }
@@ -239,7 +240,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     {
       QDomElement layoutElem = templateDoc.documentElement();
       if ( !layoutElem.isNull() )
-        storedTitle = layoutElem.attribute( QStringLiteral( "name" ) );
+        storedTitle = layoutElem.attribute( u"name"_s );
     }
   }
 
@@ -260,11 +261,11 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
       title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
     }
 
-    std::unique_ptr< QgsPrintLayout > layout = std::make_unique< QgsPrintLayout >( QgsProject::instance() );
+    auto layout = std::make_unique<QgsPrintLayout>( QgsProject::instance() );
     if ( loadingTemplate )
     {
       bool loadedOK = false;
-      ( void )layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
+      ( void ) layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
       if ( !loadedOK )
       {
         QMessageBox::warning( this, tr( "Create Layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
@@ -321,10 +322,10 @@ void QgsLayoutManagerDialog::createReport()
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
 
-  std::unique_ptr< QgsReport > report = std::make_unique< QgsReport >( QgsProject::instance() );
+  auto report = std::make_unique<QgsReport>( QgsProject::instance() );
   report->setName( title );
 
-  std::unique_ptr< QgsLayout > header = std::make_unique< QgsLayout >( QgsProject::instance() );
+  auto header = std::make_unique<QgsLayout>( QgsProject::instance() );
   header->initializeDefaults();
   report->setHeader( header.release() );
   report->setHeaderEnabled( true );
@@ -391,8 +392,7 @@ void QgsLayoutManagerDialog::removeClicked()
   if ( layoutItems.count() == 1 )
   {
     title = tr( "Remove Layout" );
-    message = tr( "Do you really want to remove the print layout “%1”?" ).arg(
-                mLayoutListView->model()->data( layoutItems.at( 0 ), Qt::DisplayRole ).toString() );
+    message = tr( "Do you really want to remove the print layout “%1”?" ).arg( mLayoutListView->model()->data( layoutItems.at( 0 ), Qt::DisplayRole ).toString() );
   }
   else
   {
@@ -466,8 +466,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
 
   if ( !newDialog )
   {
-    QMessageBox::warning( this, tr( "Duplicate Layout" ),
-                          tr( "Layout duplication failed." ) );
+    QMessageBox::warning( this, tr( "Duplicate Layout" ), tr( "Layout duplication failed." ) );
   }
   else
   {
@@ -505,7 +504,5 @@ void QgsLayoutManagerDialog::itemDoubleClicked( const QModelIndex &index )
 
 void QgsLayoutManagerDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/overview_composer.html#the-layout-manager" ) );
+  QgsHelp::openHelp( u"print_composer/overview_composer.html#the-layout-manager"_s );
 }
-
-

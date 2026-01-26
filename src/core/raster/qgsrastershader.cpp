@@ -1,4 +1,4 @@
-/* **************************************************************************
+/***************************************************************************
                 qgsrastershader.cpp -  description
                        -------------------
 begin                : Fri Dec 28 2007
@@ -7,7 +7,7 @@ email                : ersts@amnh.org
 
 ****************************************************************************/
 
-/* **************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -16,9 +16,10 @@ email                : ersts@amnh.org
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
-#include "qgscolorrampshader.h"
 #include "qgsrastershader.h"
+
+#include "qgscolorrampshader.h"
+#include "qgslogger.h"
 #include "qgsrasterblock.h"
 #include "qgssymbollayerutils.h"
 
@@ -30,10 +31,10 @@ QgsRasterShader::QgsRasterShader( double minimumValue, double maximumValue )
   , mMaximumValue( maximumValue )
   , mRasterShaderFunction( new QgsRasterShaderFunction( mMinimumValue, mMaximumValue ) )
 {
-  QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
+  QgsDebugMsgLevel( u"called."_s, 4 );
 }
 
-bool QgsRasterShader::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlpha )
+bool QgsRasterShader::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlpha ) const
 {
   if ( mRasterShaderFunction )
   {
@@ -43,7 +44,7 @@ bool QgsRasterShader::shade( double value, int *returnRedValue, int *returnGreen
   return false;
 }
 
-bool QgsRasterShader::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue )
+bool QgsRasterShader::shade( double redValue, double greenValue, double blueValue, double alphaValue, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
   if ( mRasterShaderFunction )
   {
@@ -55,7 +56,7 @@ bool QgsRasterShader::shade( double redValue, double greenValue, double blueValu
 
 void QgsRasterShader::setRasterShaderFunction( QgsRasterShaderFunction *function )
 {
-  QgsDebugMsgLevel( QStringLiteral( "called." ), 4 );
+  QgsDebugMsgLevel( u"called."_s, 4 );
 
   if ( mRasterShaderFunction.get() == function )
     return;
@@ -95,7 +96,7 @@ void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent, const Qg
     return;
   }
 
-  QDomElement rasterShaderElem = doc.createElement( QStringLiteral( "rastershader" ) );
+  QDomElement rasterShaderElem = doc.createElement( u"rastershader"_s );
   QgsColorRampShader *colorRampShader = dynamic_cast<QgsColorRampShader *>( mRasterShaderFunction.get() );
   if ( colorRampShader )
   {
@@ -107,7 +108,7 @@ void QgsRasterShader::writeXml( QDomDocument &doc, QDomElement &parent, const Qg
 void QgsRasterShader::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   //only colorrampshader
-  const QDomElement colorRampShaderElem = elem.firstChildElement( QStringLiteral( "colorrampshader" ) );
+  const QDomElement colorRampShaderElem = elem.firstChildElement( u"colorrampshader"_s );
   if ( !colorRampShaderElem.isNull() )
   {
     QgsColorRampShader *colorRampShader = new QgsColorRampShader();

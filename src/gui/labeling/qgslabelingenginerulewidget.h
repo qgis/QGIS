@@ -15,13 +15,14 @@
 #ifndef QGSLABELINGENGINERULEWIDGET_H
 #define QGSLABELINGENGINERULEWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgspanelwidget.h"
-#include "qgsguiutils.h"
 #include "ui_qgslabelingruleavoidoverlapwidgetbase.h"
-#include "ui_qgslabelingrulemindistancelabeltofeaturewidgetbase.h"
 #include "ui_qgslabelingrulemaxdistancelabeltofeaturewidgetbase.h"
+#include "ui_qgslabelingrulemindistancelabeltofeaturewidgetbase.h"
 #include "ui_qgslabelingrulemindistancelabeltolabelwidgetbase.h"
+
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
+#include "qgspanelwidget.h"
 
 #include <QDialog>
 
@@ -31,7 +32,7 @@ class QDialogButtonBox;
 /**
  * \ingroup gui
  * \class QgsLabelingEngineRuleWidget
- * \brief Base class for widgets which allow control over the properties of QgsAbstractLabelingEngineRule subclasses
+ * \brief Base class for widgets which allow control over the properties of QgsAbstractLabelingEngineRule subclasses.
  *
  * \see QgsLabelingEngineRulesWidget for a widget for configuring multiple rules
  * \see QgsLabelingEngineRuleDialog
@@ -43,7 +44,6 @@ class GUI_EXPORT QgsLabelingEngineRuleWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingEngineRuleWidget.
      */
@@ -72,7 +72,6 @@ class GUI_EXPORT QgsLabelingEngineRuleWidget : public QgsPanelWidget
      * Emitted whenever the configuration of the rule is changed.
      */
     void changed();
-
 };
 
 #ifndef SIP_RUN
@@ -92,15 +91,13 @@ class GUI_EXPORT QgsLabelingEngineRuleDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelingEngineRuleDialog.
      * \param widget rule widget to show in dialog
      * \param parent parent widget
      * \param flags window flags for dialog
      */
-    QgsLabelingEngineRuleDialog( QgsLabelingEngineRuleWidget *widget,
-                                 QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+    QgsLabelingEngineRuleDialog( QgsLabelingEngineRuleWidget *widget, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 
     /**
      * Sets the \a rule to show in the dialog. Ownership is not transferred.
@@ -118,10 +115,8 @@ class GUI_EXPORT QgsLabelingEngineRuleDialog : public QDialog
     QgsAbstractLabelingEngineRule *rule() SIP_TRANSFERBACK;
 
   private:
-
     QgsLabelingEngineRuleWidget *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
-
 };
 
 
@@ -141,7 +136,6 @@ class GUI_EXPORT QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget : publi
     void onChanged();
 
   private:
-
     bool mBlockSignals = false;
 };
 
@@ -160,7 +154,6 @@ class GUI_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget : publ
     void onChanged();
 
   private:
-
     bool mBlockSignals = false;
 };
 
@@ -179,7 +172,6 @@ class GUI_EXPORT QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget : publ
     void onChanged();
 
   private:
-
     bool mBlockSignals = false;
 };
 
@@ -198,7 +190,6 @@ class GUI_EXPORT QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget : public
     void onChanged();
 
   private:
-
     bool mBlockSignals = false;
 };
 

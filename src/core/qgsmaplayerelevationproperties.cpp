@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsmaplayerelevationproperties.h"
+
 #include <mutex>
 
+#include "moc_qgsmaplayerelevationproperties.cpp"
 
 QgsPropertiesDefinition QgsMapLayerElevationProperties::sPropertyDefinitions;
 
@@ -43,22 +45,22 @@ QString QgsMapLayerElevationProperties::htmlSummary() const
 
 void QgsMapLayerElevationProperties::writeCommonProperties( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext & )
 {
-  QDomElement elemDataDefinedProperties = doc.createElement( QStringLiteral( "data-defined-properties" ) );
+  QDomElement elemDataDefinedProperties = doc.createElement( u"data-defined-properties"_s );
   mDataDefinedProperties.writeXml( elemDataDefinedProperties, propertyDefinitions() );
   element.appendChild( elemDataDefinedProperties );
 
-  element.setAttribute( QStringLiteral( "zoffset" ), qgsDoubleToString( mZOffset ) );
-  element.setAttribute( QStringLiteral( "zscale" ), qgsDoubleToString( mZScale ) );
+  element.setAttribute( u"zoffset"_s, qgsDoubleToString( mZOffset ) );
+  element.setAttribute( u"zscale"_s, qgsDoubleToString( mZScale ) );
 }
 
 void QgsMapLayerElevationProperties::readCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
 {
-  const QDomElement elemDataDefinedProperties = element.firstChildElement( QStringLiteral( "data-defined-properties" ) );
+  const QDomElement elemDataDefinedProperties = element.firstChildElement( u"data-defined-properties"_s );
   if ( !elemDataDefinedProperties.isNull() )
     mDataDefinedProperties.readXml( elemDataDefinedProperties, propertyDefinitions() );
 
-  mZOffset = element.attribute( QStringLiteral( "zoffset" ), QStringLiteral( "0" ) ).toDouble();
-  mZScale = element.attribute( QStringLiteral( "zscale" ), QStringLiteral( "1" ) ).toDouble();
+  mZOffset = element.attribute( u"zoffset"_s, u"0"_s ).toDouble();
+  mZScale = element.attribute( u"zscale"_s, u"1"_s ).toDouble();
 }
 
 void QgsMapLayerElevationProperties::copyCommonProperties( const QgsMapLayerElevationProperties *other )
@@ -123,16 +125,13 @@ void QgsMapLayerElevationProperties::setDataDefinedProperties( const QgsProperty
 QgsPropertiesDefinition QgsMapLayerElevationProperties::propertyDefinitions()
 {
   static std::once_flag initialized;
-  std::call_once( initialized, [ = ]( )
-  {
-    initPropertyDefinitions();
-  } );
+  std::call_once( initialized, initPropertyDefinitions );
   return sPropertyDefinitions;
 }
 
 void QgsMapLayerElevationProperties::initPropertyDefinitions()
 {
-  const QString origin = QStringLiteral( "elevation" );
+  const QString origin = u"elevation"_s;
 
   sPropertyDefinitions = QgsPropertiesDefinition
   {

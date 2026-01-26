@@ -20,7 +20,6 @@
 #include "qgsabstractreportsection.h"
 #include "qgsfeatureiterator.h"
 
-
 ///@cond NOT_STABLE
 
 // This is not considered stable API - it is exposed to python bindings only for unit testing!
@@ -28,7 +27,7 @@
 /**
  * \ingroup core
  * \class QgsReportSectionFieldGroup
- * \brief A report section consisting of a features
+ * \brief A report section consisting of a features.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings for unit testing purposes only.
@@ -53,7 +52,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      */
     QgsReportSectionFieldGroup( QgsAbstractReportSection *parentSection = nullptr );
 
-    QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
+    QString type() const override { return u"SectionFieldGroup"_s; }
     QString description() const override;
     QIcon icon() const override;
 

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsProjectStorage
 
     /**
      * \ingroup core
-     * \brief Metadata associated with a project
+     * \brief Metadata associated with a project.
      * \since QGIS 3.2
      */
     class Metadata

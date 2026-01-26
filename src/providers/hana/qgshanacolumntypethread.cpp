@@ -15,11 +15,14 @@
  *
  ***************************************************************************/
 #include "qgshanacolumntypethread.h"
+
 #include "qgshanaconnection.h"
 #include "qgshanaconnectionpool.h"
 #include "qgshanaexception.h"
 #include "qgshanautils.h"
 #include "qgslogger.h"
+
+#include "moc_qgshanacolumntypethread.cpp"
 
 QgsHanaColumnTypeThread::QgsHanaColumnTypeThread( const QString &connName, const QgsDataSourceUri &uri, bool allowGeometrylessTables, bool userTablesOnly )
   : mConnectionName( connName )
@@ -46,9 +49,10 @@ void QgsHanaColumnTypeThread::run()
   try
   {
     QVector<QgsHanaLayerProperty> layerProperties = conn->getLayers(
-          mUri.schema(),
-          mAllowGeometrylessTables,
-          mUserTablesOnly );
+      mUri.schema(),
+      mAllowGeometrylessTables,
+      mUserTablesOnly
+    );
 
     if ( layerProperties.isEmpty() )
       return;
@@ -65,7 +69,7 @@ void QgsHanaColumnTypeThread::run()
       QgsHanaLayerProperty &layerProperty = layerProperties[i];
       emit progress( i, totalLayers );
       emit progressMessage( tr( "Scanning column %1.%2.%3…" )
-                            .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ) );
+                              .arg( layerProperty.schemaName, layerProperty.tableName, layerProperty.geometryColName ) );
       conn->readLayerInfo( layerProperty );
 
       if ( layerProperty.isValid )

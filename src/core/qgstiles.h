@@ -16,13 +16,12 @@
 #ifndef QGSTILES_H
 #define QGSTILES_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-
-#include "qgis.h"
-#include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
 
 class QgsRenderContext;
 
@@ -53,7 +52,7 @@ class CORE_EXPORT QgsTileXYZ
     int zoomLevel() const { return mZoomLevel; }
 
     //! Returns tile coordinates in a formatted string
-    QString toString() const { return QStringLiteral( "X=%1 Y=%2 Z=%3" ).arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
+    QString toString() const { return u"X=%1 Y=%2 Z=%3"_s.arg( mColumn ).arg( mRow ).arg( mZoomLevel ); }
 
     bool operator==( const QgsTileXYZ &other ) const { return mColumn == other.mColumn && mRow == other.mRow && mZoomLevel == other.mZoomLevel; }
     bool operator!=( const QgsTileXYZ &other ) const { return !( *this == other ); }
@@ -61,7 +60,7 @@ class CORE_EXPORT QgsTileXYZ
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    const QString str = QStringLiteral( "<QgsTileXYZ: %1, %2, %3>" ).arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
+    const QString str = u"<QgsTileXYZ: %1, %2, %3>"_s.arg( sipCpp->column() ).arg( sipCpp->row() ).arg( sipCpp->zoomLevel() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -72,6 +71,16 @@ class CORE_EXPORT QgsTileXYZ
     int mZoomLevel = -1;
 };
 
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wattributes"
+#elif defined(_MSC_VER)
+__pragma( warning( push ) )
+__pragma( warning( disable: 4273 ) )
+#endif
+#endif
+
 /**
  * Returns a hash for a tile \a id.
  *
@@ -79,19 +88,25 @@ class CORE_EXPORT QgsTileXYZ
  */
 CORE_EXPORT inline uint qHash( QgsTileXYZ id ) SIP_SKIP
 {
-  return id.column() + id.row() + id.zoomLevel();
-
   const uint h1 = qHash( static_cast< quint64 >( id.column( ) ) );
   const uint h2 = qHash( static_cast< quint64 >( id.row() ) );
   const uint h3 = qHash( static_cast< quint64 >( id.zoomLevel() ) );
-  return h1 ^ ( h2 << 1 ) ^ ( h3 );
+  return h1 ^ ( h2 << 1 ) ^ ( h3 << 2 );
 }
 
+#ifndef SIP_RUN
+#if (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) || defined(__clang__)
+#pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+__pragma( warning( pop ) )
+#endif
+#endif
 
 /**
  * \ingroup core
- * \brief Range of tiles in a tile matrix to be rendered. The selection is rectangular,
- * given by start/end row and column numbers.
+ * \brief A range of tiles in a tile matrix.
+ *
+ * The selection is rectangular, given by start/end row and column numbers.
  *
  * \since QGIS 3.14
  */
@@ -113,6 +128,13 @@ class CORE_EXPORT QgsTileRange
     int startRow() const { return mStartRow; }
     //! Returns index of the last row in the range
     int endRow() const { return mEndRow; }
+
+    /**
+     * Returns the total number of tiles in the range.
+     *
+     * \since QGIS 3.44
+     */
+    int count() const { return isValid() ? ( mEndRow - mStartRow + 1 ) * ( mEndColumn - mStartColumn + 1 ) : 0; }
 
   private:
     int mStartColumn = -1;

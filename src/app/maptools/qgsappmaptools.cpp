@@ -14,45 +14,49 @@
  ***************************************************************************/
 
 #include "qgsappmaptools.h"
+
 #include "qgisapp.h"
 #include "qgsmaptool.h"
-#include "qgsmaptoolselect.h"
-#include "qgsmaptoolidentifyaction.h"
 #include "qgsmaptooladdfeature.h"
-#include "qgsmaptoolzoom.h"
-#include "qgsmaptoolpan.h"
-#include "qgsmaptoolfeatureaction.h"
-#include "qgsmeasuretool.h"
-#include "qgsmaptoolhtmlannotation.h"
-#include "qgsmaptoolmeasureangle.h"
-#include "qgsmaptoolmeasurebearing.h"
-#include "qgsmaptoolformannotation.h"
-#include "qgsmaptoolrotatefeature.h"
-#include "qgsmaptoolscalefeature.h"
-#include "qgsmaptoolmovefeature.h"
-#include "qgsmaptooloffsetcurve.h"
-#include "qgsmaptoolreshape.h"
-#include "qgsmaptoolsplitfeatures.h"
-#include "qgsmaptoolsplitparts.h"
-#include "qgsmaptoolreverseline.h"
+#include "qgsmaptooladdpart.h"
 #include "qgsmaptooladdring.h"
-#include "qgsmaptoolfillring.h"
-#include "qgsmaptoolsimplify.h"
+#include "qgsmaptoolchamferfillet.h"
+#include "qgsmaptoolchangelabelproperties.h"
 #include "qgsmaptooldeletepart.h"
 #include "qgsmaptooldeletering.h"
-#include "qgsmaptooladdpart.h"
-#include "vertextool/qgsvertextool.h"
-#include "qgsmaptoolrotatepointsymbols.h"
-#include "qgsmaptoolrotatelabel.h"
-#include "qgsmaptooltrimextendfeature.h"
-#include "qgsmaptoolshowhidelabels.h"
-#include "qgsmaptoolmovelabel.h"
-#include "qgsmaptoolchangelabelproperties.h"
-#include "qgsmaptoolpinlabels.h"
-#include "qgsmaptooloffsetpointsymbol.h"
 #include "qgsmaptooleditmeshframe.h"
-#include "qgssettingsregistrycore.h"
+#include "qgsmaptoolfeatureaction.h"
+#include "qgsmaptoolfeaturearray.h"
+#include "qgsmaptoolfillring.h"
+#include "qgsmaptoolformannotation.h"
+#include "qgsmaptoolhtmlannotation.h"
+#include "qgsmaptoolidentifyaction.h"
+#include "qgsmaptoolmeasureangle.h"
+#include "qgsmaptoolmeasurebearing.h"
 #include "qgsmaptoolmodifyannotation.h"
+#include "qgsmaptoolmovefeature.h"
+#include "qgsmaptoolmovelabel.h"
+#include "qgsmaptooloffsetcurve.h"
+#include "qgsmaptooloffsetpointsymbol.h"
+#include "qgsmaptoolpan.h"
+#include "qgsmaptoolpinlabels.h"
+#include "qgsmaptoolreshape.h"
+#include "qgsmaptoolreverseline.h"
+#include "qgsmaptoolrotatefeature.h"
+#include "qgsmaptoolrotatelabel.h"
+#include "qgsmaptoolrotatepointsymbols.h"
+#include "qgsmaptoolscalefeature.h"
+#include "qgsmaptoolselect.h"
+#include "qgsmaptoolselectannotation.h"
+#include "qgsmaptoolshowhidelabels.h"
+#include "qgsmaptoolsimplify.h"
+#include "qgsmaptoolsplitfeatures.h"
+#include "qgsmaptoolsplitparts.h"
+#include "qgsmaptooltrimextendfeature.h"
+#include "qgsmaptoolzoom.h"
+#include "qgsmeasuretool.h"
+#include "qgssettingsregistrycore.h"
+#include "vertextool/qgsvertextool.h"
 
 //
 // QgsAppMapTools
@@ -74,9 +78,11 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::AddFeature, new QgsMapToolAddFeature( canvas, cadDock, QgsMapToolCapture::CaptureNone ) );
   mTools.insert( Tool::MoveFeature, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::Move ) );
   mTools.insert( Tool::MoveFeatureCopy, new QgsMapToolMoveFeature( canvas, QgsMapToolMoveFeature::CopyMove ) );
+  mTools.insert( Tool::FeatureArrayCopy, new QgsMapToolFeatureArray( canvas ) );
   mTools.insert( Tool::RotateFeature, new QgsMapToolRotateFeature( canvas ) );
   mTools.insert( Tool::ScaleFeature, new QgsMapToolScaleFeature( canvas ) );
   mTools.insert( Tool::OffsetCurve, new QgsMapToolOffsetCurve( canvas ) );
+  mTools.insert( Tool::ChamferFillet, new QgsMapToolChamferFillet( canvas ) );
   mTools.insert( Tool::ReshapeFeatures, new QgsMapToolReshape( canvas ) );
   mTools.insert( Tool::ReverseLine, new QgsMapToolReverseLine( canvas ) );
   mTools.insert( Tool::SplitFeatures, new QgsMapToolSplitFeatures( canvas ) );
@@ -103,6 +109,7 @@ QgsAppMapTools::QgsAppMapTools( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockW
   mTools.insert( Tool::ChangeLabelProperties, new QgsMapToolChangeLabelProperties( canvas, cadDock ) );
   mTools.insert( Tool::EditMeshFrame, new QgsMapToolEditMeshFrame( canvas ) );
   mTools.insert( Tool::AnnotationEdit, new QgsMapToolModifyAnnotation( canvas, cadDock ) );
+  mTools.insert( Tool::AnnotationSelect, new QgsMapToolSelectAnnotation( canvas, cadDock ) );
 }
 
 QgsAppMapTools::~QgsAppMapTools()
@@ -121,13 +128,11 @@ QgsMapTool *QgsAppMapTools::mapTool( QgsAppMapTools::Tool tool )
 
 QList<QgsMapToolCapture *> QgsAppMapTools::captureTools() const
 {
-  QList< QgsMapToolCapture * > res;
+  QList<QgsMapToolCapture *> res;
   for ( auto it = mTools.constBegin(); it != mTools.constEnd(); ++it )
   {
-    if ( QgsMapToolCapture *captureTool = qobject_cast< QgsMapToolCapture * >( it.value() ) )
+    if ( QgsMapToolCapture *captureTool = qobject_cast<QgsMapToolCapture *>( it.value() ) )
       res << captureTool;
   }
   return res;
 }
-
-

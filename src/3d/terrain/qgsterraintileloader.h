@@ -30,9 +30,9 @@
 #define SIP_NO_FILE
 
 #include "qgschunkloader.h"
+#include "qgsrectangle.h"
 
 #include <QImage>
-#include "qgsrectangle.h"
 
 class QgsPhongMaterialSettings;
 class QgsTerrainEntity;
@@ -44,9 +44,8 @@ namespace Qt3DRender
 }
 
 
-
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for chunk loaders for terrain tiles.
  *
  * Adds functionality for asynchronous rendering of terrain tile map texture and access to the terrain entity.
@@ -82,7 +81,6 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     QString mTileDebugText;
     int mTextureJobId = -1;
     QImage mTextureImage;
-
 };
 
 /// @endcond

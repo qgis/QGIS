@@ -17,9 +17,9 @@
 #ifndef QGSCPTCITYARCHIVE_H
 #define QGSCPTCITYARCHIVE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscolorrampimpl.h"
 
 #include <QAbstractItemModel>
@@ -63,7 +63,8 @@ class CORE_EXPORT QgsCptCityArchive
     static QMap< double, QPair<QColor, QColor> > gradientColorMap( const QString &fileName ) SIP_SKIP;
 
     // archive management
-    bool isEmpty();
+    //! Returns TRUE if archive is empty
+    bool isEmpty() const;
     QString archiveName() const { return mArchiveName; }
     static void initArchives( bool loadAll = false );
     static void initArchive( const QString &archiveName, const QString &archiveBaseDir );
@@ -92,7 +93,7 @@ class CORE_EXPORT QgsCptCityArchive
 };
 
 /**
- * Base class for all items in the model
+ * Base class for all items in a QgsCptCityBrowserModel model.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityDataItem : public QObject
@@ -164,21 +165,21 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     virtual bool equal( const QgsCptCityDataItem *other );
 
     /**
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual QWidget *paramWidget() SIP_DEPRECATED { return nullptr; }
 
     /**
      * Returns TRUE if the item accepts drag & dropped layers - e.g. for import.
      *
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool acceptDrop() SIP_DEPRECATED { return false; }
 
     /**
      * Tries to process the \a data dropped on this item.
      *
-     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Is unused and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) SIP_DEPRECATED { Q_UNUSED( data ); Q_UNUSED( action ); return false; }
 
@@ -214,14 +215,14 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
     Type mType;
     QgsCptCityDataItem *mParent = nullptr;
     QVector<QgsCptCityDataItem *> mChildren; // easier to have it always
-    bool mPopulated;
+    bool mPopulated = false;
     QString mName;
     QString mPath; // it is also used to identify item in tree
     QString mInfo;
     QString mShortInfo;
     QString mToolTip;
     QIcon mIcon;
-    bool mValid;
+    bool mValid = true;
 
   signals:
 
@@ -271,7 +272,7 @@ class CORE_EXPORT QgsCptCityDataItem : public QObject
 };
 
 /**
- * Item that represents a layer that can be opened with one of the providers
+ * An item that represents a layer that can be opened with one of the providers for a QgsCptCityBrowserModel.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
@@ -307,7 +308,7 @@ class CORE_EXPORT QgsCptCityColorRampItem : public QgsCptCityDataItem
 
 
 /**
- * A Collection: logical collection of subcollections and color ramps
+ * A logical collection of subcollections and color ramps for use in QgsCptCityBrowserModel.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
@@ -323,11 +324,11 @@ class CORE_EXPORT QgsCptCityCollectionItem : public QgsCptCityDataItem
     QVector<QgsCptCityDataItem *> childrenRamps( bool recursive );
 
   protected:
-    bool mPopulatedRamps;
+    bool mPopulatedRamps = false;
 };
 
 /**
- * A directory: contains subdirectories and color ramps
+ * A directory which contains subdirectories and color ramps for use in QgsCptCityBrowserModel.
  * \ingroup core
 */
 class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
@@ -353,7 +354,7 @@ class CORE_EXPORT QgsCptCityDirectoryItem : public QgsCptCityCollectionItem
 /**
  * \ingroup core
  * \class QgsCptCitySelectionItem
- * \brief A selection: contains subdirectories and color ramps
+ * \brief A selection which contains subdirectories and color ramps for use in QgsCptCityBrowserModel.
 */
 class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 {
@@ -374,7 +375,7 @@ class CORE_EXPORT QgsCptCitySelectionItem : public QgsCptCityCollectionItem
 
 /**
  * \ingroup core
- * \brief An "All ramps item", which contains all items in a flat hierarchy
+ * \brief An "All ramps item", which contains all items in a flat hierarchy.
 */
 class CORE_EXPORT QgsCptCityAllRampsItem : public QgsCptCityCollectionItem
 {

@@ -19,11 +19,12 @@
 
 #define SIP_NO_FILE
 
-#include "qgsgraphicsviewmousehandles.h"
-#include <QPointer>
 #include <memory>
 
 #include "qgis_gui.h"
+#include "qgsgraphicsviewmousehandles.h"
+
+#include <QPointer>
 
 class QgsModelGraphicsView;
 class QgsModelGraphicsScene;
@@ -43,17 +44,15 @@ class QgsLayoutItem;
  *
  * \since QGIS 3.14
 */
-class GUI_EXPORT QgsModelViewMouseHandles: public QgsGraphicsViewMouseHandles
+class GUI_EXPORT QgsModelViewMouseHandles : public QgsGraphicsViewMouseHandles
 {
     Q_OBJECT
   public:
-
     QgsModelViewMouseHandles( QgsModelGraphicsView *view );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
   protected:
-
     void setViewportCursor( Qt::CursorShape cursor ) override;
     QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) override;
     QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
@@ -75,7 +74,7 @@ class GUI_EXPORT QgsModelViewMouseHandles: public QgsGraphicsViewMouseHandles
   private:
     QgsModelGraphicsScene *modelScene() const;
 
-    QPointer< QgsModelGraphicsView > mView;
+    QPointer<QgsModelGraphicsView> mView;
 };
 
 ///@endcond PRIVATE

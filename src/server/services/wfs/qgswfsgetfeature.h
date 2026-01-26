@@ -22,34 +22,41 @@
 #ifndef QGSWFSGETFEATURE_H
 #define QGSWFSGETFEATURE_H
 
+#include "qgsfeaturerequest.h"
 #include "qgswfsparameters.h"
+
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
 
 namespace QgsWfs
 {
   struct getFeatureQuery
   {
-    QString typeName;
+      QString typeName;
 
-    QString srsName;
+      QString srsName;
 
-    QgsFeatureRequest featureRequest;
+      QgsFeatureRequest featureRequest;
 
-    QStringList serverFids;
+      QStringList serverFids;
 
-    QStringList propertyList;
+      QStringList propertyList;
   };
 
   struct getFeatureRequest
   {
-    long maxFeatures;
+      long maxFeatures;
 
-    long startIndex;
+      long startIndex;
 
-    QgsWfsParameters::Format outputFormat;
+      QgsWfsParameters::Format outputFormat;
 
-    QList< getFeatureQuery > queries;
+      QList<getFeatureQuery> queries;
 
-    QString geometryName;
+      QString geometryName;
   };
 
   /**
@@ -75,11 +82,10 @@ namespace QgsWfs
   /**
    * Output WFS  GetFeature response
    */
-  void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project,
-                        const QString &version, const QgsServerRequest &request,
-                        QgsServerResponse &response );
+  void writeGetFeature( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
+
+  QString getSrsNameFromVersion( const QgsCoordinateReferenceSystem &crs );
 
 } // namespace QgsWfs
 
 #endif
-

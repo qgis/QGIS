@@ -20,9 +20,10 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsvectorlayerloadstyledialog.h"
+
 #include "qgis_gui.h"
-#include "qgsvectorlayerproperties.h"
 #include "qgsmaplayer.h"
+#include "qgsvectorlayerproperties.h"
 
 class QgsMapLayerStyleCategoriesModel;
 
@@ -42,7 +43,6 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsMapLayerLoadStyleDialog, associated with the specified map \a layer.
      */

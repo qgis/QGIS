@@ -18,16 +18,18 @@
 #ifndef QGSRASTERHISTOGRAM
 #define QGSRASTERHISTOGRAM
 
+#include <limits>
+
 #include "qgis_core.h"
 #include "qgsrectangle.h"
+
 #include <QString>
 #include <QVector>
 
-#include <limits>
-
 /**
  * \ingroup core
- * \brief The QgsRasterHistogram is a container for histogram of a single raster band.
+ * \brief A container for a histogram of a single raster band.
+ *
  * It is used to cache computed histograms in raster providers.
  */
 class CORE_EXPORT QgsRasterHistogram

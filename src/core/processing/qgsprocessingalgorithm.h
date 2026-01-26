@@ -18,15 +18,16 @@
 #ifndef QGSPROCESSINGALGORITHM_H
 #define QGSPROCESSINGALGORITHM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
+#include "qgis_core.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingutils.h"
+
+#include <QIcon>
 #include <QString>
 #include <QVariant>
-#include <QIcon>
 
 class QgsProcessingProvider;
 class QgsProcessingFeedback;
@@ -170,7 +171,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
-     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual QString helpString() const SIP_HOLDGIL SIP_DEPRECATED;
 
@@ -251,6 +252,26 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * dialog. This method should NOT be called manually by algorithms.
      */
     virtual QVariantMap preprocessParameters( const QVariantMap &parameters );
+
+    /**
+     * Returns a map of default auto-generated parameters to fill in, based on existing parameters.
+     *
+     * This method is used to automatically fill parameter values when a row is added or modified
+     * in the batch processing interface, or automatically update other parameter values when
+     * parameters are modified in the toolbox mode.
+     *
+     * \param existingParameters map of current parameter values
+     * \param changedParameter name of parameter which has just been changed, triggering the update of default parameter values
+     * \param mode current Processing mode. Allows different autogenerate behavior for batch mode, modeler or toolbox.
+     *
+     * \returns map of default parameter values to use for the algorithm. Any matching parameters included in the map will be automatically
+     * overridden with the value from the returned map. Parameter names not included in the returned map will remain unchanged.
+     *
+     * The default behavior is to return an empty map, indicating that no parameters should be automatically generated.
+     *
+     * \since QGIS 3.44
+     */
+    virtual QVariantMap autogenerateParameterValues( const QVariantMap &existingParameters, const QString &changedParameter, Qgis::ProcessingMode mode ) const;
 
     /**
      * Returns the provider to which this algorithm belongs.
@@ -528,6 +549,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER, bool createOutput = true ) SIP_HOLDGIL;
 
     /**
+     * Same as above addParameter(QgsProcessingParameterDefinition*, bool), but using
+     * a smart pointer for safer use.
+     */
+    bool addParameter( std::unique_ptr<QgsProcessingParameterDefinition> parameterDefinition, bool createOutput = true ) SIP_SKIP;
+
+    /**
      * Removes the parameter with matching \a name from the algorithm, and deletes any existing
      * definition.
      */
@@ -547,6 +574,12 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see initAlgorithm()
      */
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER ) SIP_HOLDGIL;
+
+    /**
+     * Same as above addOutput(QgsProcessingOutputDefinition*), but using
+     * a smart pointer for safer use.
+     */
+    bool addOutput( std::unique_ptr<QgsProcessingOutputDefinition> outputDefinition ) SIP_SKIP;
 
     /**
      * Prepares the algorithm to run using the specified \a parameters. Algorithms should implement
@@ -815,6 +848,25 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Evaluates the parameter with matching \a name to a output layer destination.
      */
     QString parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a output format
+     *
+     * Output format may be empty.
+     *
+     * \since QGIS 4.0
+     */
+    QString parameterAsOutputFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a output format
+     *
+     * If no explicit output format is attached to the parameter, one will be
+     * attempted to be guessed from the file name extension.
+     *
+     * \since QGIS 4.0
+     */
+    QString parameterAsOutputRasterFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a file based output destination.
@@ -1110,7 +1162,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool mHasPostProcessed = false;
     std::unique_ptr< QgsProcessingContext > mLocalContext;
 
-    bool createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter );
+    bool createAutoOutputForParameter( const QgsProcessingParameterDefinition *parameter );
 
 
     friend class QgsProcessingProvider;

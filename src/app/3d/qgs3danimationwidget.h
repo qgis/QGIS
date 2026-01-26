@@ -16,11 +16,11 @@
 #ifndef QGS3DANIMATIONWIDGET_H
 #define QGS3DANIMATIONWIDGET_H
 
-#include <QWidget>
-#include <memory>
-
 #include "ui_animation3dwidget.h"
 
+#include <memory>
+
+#include <QWidget>
 
 class Qgs3DAnimationSettings;
 class QgsCameraController;
@@ -64,8 +64,8 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
 
   private:
     std::unique_ptr<Qgs3DAnimationSettings> mAnimationSettings;
-    QgsCameraController *mCameraController;
-    Qgs3DMapSettings *mMap;
+    QgsCameraController *mCameraController = nullptr;
+    Qgs3DMapSettings *mMap = nullptr;
     QTimer *mAnimationTimer = nullptr;
 };
 

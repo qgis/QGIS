@@ -19,8 +19,8 @@
 #include "qgslogger.h"
 #include "qgssettingseditorwidgetwrapper.h"
 #include "qgssettingseditorwidgetwrapperimpl.h"
-#include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgssettingsentry.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
 
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
@@ -60,7 +60,6 @@ QgsSettingsEditorWidgetRegistry::QgsSettingsEditorWidgetRegistry()
 
   // flags
   addWrapper( new QgsSettingsFlagsEditorWidgetWrapper<Qgis::GpsInformationComponent, Qgis::GpsInformationComponents>() );
-
 }
 
 QgsSettingsEditorWidgetRegistry::~QgsSettingsEditorWidgetRegistry()
@@ -81,6 +80,11 @@ bool QgsSettingsEditorWidgetRegistry::addWrapper( QgsSettingsEditorWidgetWrapper
   return true;
 }
 
+void QgsSettingsEditorWidgetRegistry::addWrapperForSetting( QgsSettingsEditorWidgetWrapper *wrapper, const QgsSettingsEntryBase *setting )
+{
+  mSpecificWrappers.insert( setting, wrapper );
+}
+
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( const QString &id, QObject *parent ) const
 {
   QgsSettingsEditorWidgetWrapper *wrapper = mWrappers.value( id );
@@ -90,13 +94,18 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Setting factory was not found for '%1', returning the default string factory" ).arg( id ) );
+    QgsDebugError( u"Setting factory was not found for '%1', returning the default string factory"_s.arg( id ) );
     return nullptr;
   }
 }
 
 QWidget *QgsSettingsEditorWidgetRegistry::createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList, QWidget *parent ) const
 {
+  auto it = mSpecificWrappers.constFind( setting );
+  if ( it != mSpecificWrappers.constEnd() )
+  {
+    return it.value()->createEditor( setting, dynamicKeyPartList, parent );
+  }
   QgsSettingsEditorWidgetWrapper *eww = createWrapper( setting->typeId(), parent );
   if ( eww )
     return eww->createEditor( setting, dynamicKeyPartList, parent );

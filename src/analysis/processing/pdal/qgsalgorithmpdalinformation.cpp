@@ -17,19 +17,19 @@
 
 #include "qgsalgorithmpdalinformation.h"
 
-#include "qgsrunprocess.h"
 #include "qgspointcloudlayer.h"
+#include "qgsrunprocess.h"
 
 ///@cond PRIVATE
 
 QString QgsPdalInformationAlgorithm::name() const
 {
-  return QStringLiteral( "info" );
+  return u"info"_s;
 }
 
 QString QgsPdalInformationAlgorithm::displayName() const
 {
-  return QObject::tr( "Information" );
+  return QObject::tr( "Point cloud information" );
 }
 
 QString QgsPdalInformationAlgorithm::group() const
@@ -39,7 +39,7 @@ QString QgsPdalInformationAlgorithm::group() const
 
 QString QgsPdalInformationAlgorithm::groupId() const
 {
-  return QStringLiteral( "pointclouddatamanagement" );
+  return u"pointclouddatamanagement"_s;
 }
 
 QStringList QgsPdalInformationAlgorithm::tags() const
@@ -52,6 +52,11 @@ QString QgsPdalInformationAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm outputs basic metadata from the point cloud file." );
 }
 
+QString QgsPdalInformationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Outputs basic metadata from a point cloud." );
+}
+
 QgsPdalInformationAlgorithm *QgsPdalInformationAlgorithm::createInstance() const
 {
   return new QgsPdalInformationAlgorithm();
@@ -59,8 +64,8 @@ QgsPdalInformationAlgorithm *QgsPdalInformationAlgorithm::createInstance() const
 
 void QgsPdalInformationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer information" ), QObject::tr( "HTML files (*.html)" ) ) );
+  addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, QObject::tr( "Layer information" ), QObject::tr( "HTML files (*.html)" ) ) );
 }
 
 QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -73,12 +78,10 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   QStringList commandOutput;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [ = ]( const QByteArray & ba )
-  {
+  wrenchProcess.setStdErrHandler( [feedback]( const QByteArray &ba ) {
     feedback->reportError( ba.trimmed() );
   } );
-  wrenchProcess.setStdOutHandler( [ =, &commandOutput ]( const QByteArray & ba )
-  {
+  wrenchProcess.setStdOutHandler( [feedback, &commandOutput]( const QByteArray &ba ) {
     feedback->pushConsoleInfo( ba.trimmed() );
     commandOutput << ba;
   } );
@@ -86,7 +89,7 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
   const int res = wrenchProcess.run( feedback );
   if ( feedback->isCanceled() && res != 0 )
   {
-    feedback->pushInfo( QObject::tr( "Process was canceled and did not complete" ) )  ;
+    feedback->pushInfo( QObject::tr( "Process was canceled and did not complete" ) );
   }
   else if ( !feedback->isCanceled() && wrenchProcess.exitStatus() == QProcess::CrashExit )
   {
@@ -105,24 +108,21 @@ QVariantMap QgsPdalInformationAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Process returned error code %1" ).arg( res ) );
   }
 
-  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT"_s, context );
   if ( !outputFile.isEmpty() )
   {
     QFile file( outputFile );
     if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
       QTextStream out( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-      out.setCodec( "UTF-8" );
-#endif
-      out << QStringLiteral( "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n" );
-      out << QStringLiteral( "<pre>%1</pre>" ).arg( commandOutput.join( "" ) );
-      out << QStringLiteral( "\n</body></html>" );
+      out << u"<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/></head><body>\n"_s;
+      out << u"<pre>%1</pre>"_s.arg( commandOutput.join( "" ) );
+      out << u"\n</body></html>"_s;
     }
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
 
   return outputs;
 }
@@ -131,13 +131,11 @@ QStringList QgsPdalInformationAlgorithm::createArgumentLists( const QVariantMap 
 {
   Q_UNUSED( feedback );
 
-  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, QStringLiteral( "INPUT" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  QgsPointCloudLayer *layer = parameterAsPointCloudLayer( parameters, u"INPUT"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( !layer )
-    throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidPointCloudError( parameters, u"INPUT"_s ) );
 
-  return { QStringLiteral( "info" ),
-           QStringLiteral( "--input=%1" ).arg( layer->source() )
-         };
+  return { u"info"_s, u"--input=%1"_s.arg( layer->source() ) };
 }
 
 ///@endcond

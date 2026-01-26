@@ -62,7 +62,7 @@
         <x>0</x>
         <y>0</y>
         <width>566</width>
-        <height>1018</height>
+        <height>1023</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -134,10 +134,54 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0">
-          <item row="2" column="0">
-           <widget class="QLabel" name="mUnitLabelLabel">
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="mUnitLabelLineEdit">
+            <property name="toolTip">
+             <string>Text used for labeling the scalebar units, e.g., &quot;m&quot; or &quot;km&quot;. This should be matched to reflect the multiplier above.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="mNumberFormatPushButton">
             <property name="text">
-             <string>&amp;Label for units</string>
+             <string>Customize</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="mUnitsComboBox">
+            <property name="toolTip">
+             <string>Specifies the underlying units used for scalebar calculations, e.g., &quot;meters&quot; or &quot;feet&quot;</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
+            <property name="toolTip">
+             <string>Specifies how many scalebar units per labeled unit. For example, if your scalebar units are set to &quot;meters&quot;, a multiplier of 1000 will result in the scalebar labels in kilometers.</string>
+            </property>
+            <property name="decimals">
+             <number>6</number>
+            </property>
+            <property name="maximum">
+             <double>9999999999999.000000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mUnitsLabel">
+            <property name="text">
+             <string>Scalebar units</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mUnitLabelLabel_2">
+            <property name="text">
+             <string>Number format</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -160,47 +204,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
-            <property name="toolTip">
-             <string>Specifies how many scalebar units per labeled unit. For example, if your scalebar units are set to &quot;meters&quot;, a multiplier of 1000 will result in the scalebar labels in kilometers.</string>
-            </property>
-            <property name="decimals">
-             <number>6</number>
-            </property>
-            <property name="maximum">
-             <double>9999999999999.000000000000000</double>
-            </property>
-            <property name="showClearButton">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="mUnitsComboBox">
-            <property name="toolTip">
-             <string>Specifies the underlying units used for scalebar calculations, e.g., &quot;meters&quot; or &quot;feet&quot;</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="mUnitsLabel">
+          <item row="2" column="0">
+           <widget class="QLabel" name="mUnitLabelLabel">
             <property name="text">
-             <string>Scalebar units</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QLineEdit" name="mUnitLabelLineEdit">
-            <property name="toolTip">
-             <string>Text used for labeling the scalebar units, e.g., &quot;m&quot; or &quot;km&quot;. This should be matched to reflect the multiplier above.</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mUnitLabelLabel_2">
-            <property name="text">
-             <string>Number format</string>
+             <string>&amp;Label for units</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -210,10 +217,17 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1">
-           <widget class="QPushButton" name="mNumberFormatPushButton">
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Customize</string>
+             <string>Method</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QgsScaleMethodWidget" name="mScaleMethodWidget" native="true">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
             </property>
            </widget>
           </item>
@@ -505,7 +519,7 @@
                <property name="maximum">
                 <double>9999999999999.000000000000000</double>
                </property>
-               <property name="showClearButton">
+               <property name="showClearButton" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
@@ -724,9 +738,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFontButton</class>
@@ -739,20 +759,20 @@
    <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsSpinBox</class>
-   <extends>QSpinBox</extends>
-   <header>qgsspinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsSymbolButton</class>
    <extends>QToolButton</extends>
    <header>qgssymbolbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
+   <class>QgsScaleMethodWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalemethodwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
@@ -782,6 +802,7 @@
   <tabstop>mMapUnitsPerBarUnitSpinBox</tabstop>
   <tabstop>mUnitLabelLineEdit</tabstop>
   <tabstop>mNumberFormatPushButton</tabstop>
+  <tabstop>mScaleMethodWidget</tabstop>
   <tabstop>mGroupBoxSegments</tabstop>
   <tabstop>mSegmentsLeftSpinBox</tabstop>
   <tabstop>mSegmentsLeftDDBtn</tabstop>

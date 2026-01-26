@@ -18,8 +18,9 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayouthtmlwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
 
 class QgsLayoutItemHtml;
@@ -34,18 +35,16 @@ class QgsCodeEditorCSS;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutHtmlWidgetBase
+class GUI_EXPORT QgsLayoutHtmlWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutHtmlWidgetBase
 {
     Q_OBJECT
   public:
-
     QgsLayoutHtmlWidget() = delete;
     //! constructor
     QgsLayoutHtmlWidget( QgsLayoutFrame *frame );
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private slots:
@@ -75,11 +74,10 @@ class GUI_EXPORT QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui
     void populateDataDefinedButtons();
 
   private:
-
     void blockSignals( bool block );
 
-    QPointer< QgsLayoutItemHtml > mHtml;
-    QPointer< QgsLayoutFrame > mFrame;
+    QPointer<QgsLayoutItemHtml> mHtml;
+    QPointer<QgsLayoutFrame> mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     QgsCodeEditorHTML *mHtmlEditor = nullptr;

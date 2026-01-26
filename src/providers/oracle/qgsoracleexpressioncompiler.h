@@ -16,14 +16,13 @@
 #ifndef QGSORACLEEXPRESSIONCOMPILER_H
 #define QGSORACLEEXPRESSIONCOMPILER_H
 
-#include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
 #include "qgsoraclefeatureiterator.h"
+#include "qgssqlexpressioncompiler.h"
 
 class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-
     explicit QgsOracleExpressionCompiler( QgsOracleFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:

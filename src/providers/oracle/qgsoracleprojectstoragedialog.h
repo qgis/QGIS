@@ -15,10 +15,9 @@
 #ifndef QGSORACLEPROJECTSTORAGEDIALOG_H
 #define QGSORACLEPROJECTSTORAGEDIALOG_H
 
-#include <QDialog>
-
 #include "ui_qgsoracleprojectstoragedialog.h"
 
+#include <QDialog>
 
 class QgsOracleProjectStorageDialog : public QDialog, private Ui::QgsOracleProjectStorageDialog
 {
@@ -42,8 +41,7 @@ class QgsOracleProjectStorageDialog : public QDialog, private Ui::QgsOracleProje
     void removeProject();
 
   private:
-
-    bool mSaving = false;  //!< Whether using this dialog for loading or saving a project
+    bool mSaving = false; //!< Whether using this dialog for loading or saving a project
     QAction *mActionRemoveProject = nullptr;
     QStringList mExistingProjects;
 };

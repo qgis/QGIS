@@ -17,23 +17,24 @@
 #define QGSTABLEWIDGETBASE_H
 
 #include "ui_qgstablewidgetuibase.h"
+
+#include "qgis_gui.h"
+
 #include <QAbstractTableModel>
 #include <QVariant>
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui
- * \brief Base widget allowing to edit a collection, using a table.
+ * \brief Base widget allowing editing a collection, using a table.
  *
  * This widget includes buttons to add and remove rows.
  * Child classes must call init(QAbstractTableModel*) from their constructor.
  *
  */
-class GUI_EXPORT QgsTableWidgetBase: public QWidget, protected Ui::QgsTableWidgetUiBase
+class GUI_EXPORT QgsTableWidgetBase : public QWidget, public Ui::QgsTableWidgetUiBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor.
      */
@@ -58,7 +59,6 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, protected Ui::QgsTableWidge
     virtual void setReadOnly( bool readOnly );
 
   protected:
-
     /**
      * Initialize the table with the given model.
      * Must be called once in the child class' constructor.
@@ -90,12 +90,10 @@ class GUI_EXPORT QgsTableWidgetBase: public QWidget, protected Ui::QgsTableWidge
     void onSelectionChanged();
 
   private:
-
     bool mReadOnly = false;
 
     friend class TestQgsKeyValueWidget;
     friend class TestQgsListWidget;
-
 };
 
 

@@ -16,6 +16,8 @@
 
 #include "qgsauthmethod.h"
 
+#include "moc_qgsauthmethod.cpp"
+
 #ifdef HAVE_GUI
 QWidget *QgsAuthMethod::editWidget( QWidget *parent ) const
 {

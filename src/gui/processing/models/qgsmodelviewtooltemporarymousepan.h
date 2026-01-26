@@ -16,8 +16,8 @@
 #ifndef QgsModelViewToolTemporaryMousePan_H
 #define QgsModelViewToolTemporaryMousePan_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsmodelviewtool.h"
 
 #define SIP_NO_FILE
@@ -29,11 +29,9 @@
  */
 class GUI_EXPORT QgsModelViewToolTemporaryMousePan : public QgsModelViewTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelViewToolTemporaryMousePan.
      */
@@ -44,10 +42,8 @@ class GUI_EXPORT QgsModelViewToolTemporaryMousePan : public QgsModelViewTool
     void activate() override;
 
   private:
-
     QPoint mLastMousePos;
-    QPointer< QgsModelViewTool > mPreviousViewTool;
-
+    QPointer<QgsModelViewTool> mPreviousViewTool;
 };
 
 #endif // QgsModelViewToolTemporaryMousePan_H

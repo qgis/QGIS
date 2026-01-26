@@ -21,19 +21,17 @@
 
 #include "qgis_server.h"
 #include "qgis_sip.h"
-#include "qgsserverexception.h"
 #include "qgsfeedback.h"
+#include "qgsserverexception.h"
 
-#include <QString>
 #include <QIODevice>
+#include <QString>
 
 class QgsServerException;
 
 /**
  * \ingroup server
- * \brief QgsServerResponse
- * Class defining response interface passed to services QgsService::executeRequest() method
- *
+ * \brief Defines the response interface passed to QgsService.
  */
 
 // Note:
@@ -43,7 +41,6 @@ class QgsServerException;
 class SERVER_EXPORT QgsServerResponse
 {
   public:
-
     QgsServerResponse() = default;
     virtual ~QgsServerResponse() = default;
 
@@ -96,7 +93,7 @@ class SERVER_EXPORT QgsServerResponse
      * \param code HHTP return code value
      * \param message An informative error message
      */
-    virtual void sendError( int code,  const QString &message ) = 0;
+    virtual void sendError( int code, const QString &message ) = 0;
 
     /**
      * Write string

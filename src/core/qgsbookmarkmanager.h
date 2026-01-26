@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsreferencedgeometry.h"
+
 #include <QObject>
 
 class QgsProject;
@@ -128,12 +129,12 @@ class CORE_EXPORT QgsBookmark
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsBookmark: '%1' (%2)>" )
+    QString str = u"<QgsBookmark: '%1' (%2)>"_s
                   .arg( sipCpp->name() )
                   .arg(
                     sipCpp->extent().isNull() ?
-                    QStringLiteral( "EMPTY" ) :
-                    QStringLiteral( "%1 - %2" )
+                    u"EMPTY"_s :
+                    u"%1 - %2"_s
                     .arg( sipCpp->extent().asWktCoordinates(), sipCpp->extent().crs().authid() )
                   );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );

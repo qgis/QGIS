@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -31,9 +31,7 @@
  */
 class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsConvertToCurvesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -41,6 +39,7 @@ class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsConvertToCurvesAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
@@ -48,11 +47,10 @@ class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
-
     double mTolerance = 0.000001;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
@@ -60,11 +58,8 @@ class QgsConvertToCurvesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     double mAngleTolerance = 0.000001;
     bool mDynamicAngleTolerance = false;
     QgsProperty mAngleToleranceProperty;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCONVERTTOCURVES_H
-
-

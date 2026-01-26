@@ -9,17 +9,19 @@
 
 
 
+
+
 class QgsColorBrewerColorRampWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget which allows users to modify the properties of a :py:class:`QgsColorBrewerColorRamp`.
+A widget which allows users to modify the properties of a
+:py:class:`QgsColorBrewerColorRamp`.
 %End
 
 %TypeHeaderCode
 #include "qgscolorbrewercolorrampdialog.h"
 %End
   public:
-
     QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsColorBrewerColorRampWidget.
@@ -56,14 +58,14 @@ Emitted when the dialog settings change
 class QgsColorBrewerColorRampDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows users to modify the properties of a :py:class:`QgsColorBrewerColorRamp`.
+A dialog which allows users to modify the properties of a
+:py:class:`QgsColorBrewerColorRamp`.
 %End
 
 %TypeHeaderCode
 #include "qgscolorbrewercolorrampdialog.h"
 %End
   public:
-
     QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsColorBrewerColorRampDialog.

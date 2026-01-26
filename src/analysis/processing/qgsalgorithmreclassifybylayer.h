@@ -32,13 +32,11 @@
 class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-
     QString group() const final;
     QString groupId() const final;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
-
     /**
      * Adds specific subclass algorithm parameters. The common parameters, such as raster destination, are automatically
      * added by the base class.
@@ -55,14 +53,14 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
     /**
      * Returns a list of classes to use during the reclassification.
      */
-    virtual QVector< QgsReclassifyUtils::RasterClass > createClasses(
+    virtual QVector<QgsReclassifyUtils::RasterClass> createClasses(
       QgsReclassifyUtils::RasterClass::BoundsType boundsType,
-      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
+      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+    ) = 0;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
-    std::unique_ptr< QgsRasterInterface > mInterface;
+    std::unique_ptr<QgsRasterInterface> mInterface;
 
     Qgis::DataType mDataType = Qgis::DataType::Float32;
     double mNoDataValue = -9999;
@@ -82,29 +80,28 @@ class QgsReclassifyAlgorithmBase : public QgsProcessingAlgorithm
  */
 class QgsReclassifyByLayerAlgorithm : public QgsReclassifyAlgorithmBase
 {
-
   public:
-
     QgsReclassifyByLayerAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsReclassifyByLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     void addAlgorithmParams() override;
     bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVector< QgsReclassifyUtils::RasterClass > createClasses(
+    QVector<QgsReclassifyUtils::RasterClass> createClasses(
       QgsReclassifyUtils::RasterClass::BoundsType boundsType,
-      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+      const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback
+    ) override;
 
   private:
     int mMinFieldIdx = -1;
     int mMaxFieldIdx = -1;
     int mValueFieldIdx = -1;
     QgsFeatureIterator mTableIterator;
-
 };
 
 /**
@@ -112,27 +109,21 @@ class QgsReclassifyByLayerAlgorithm : public QgsReclassifyAlgorithmBase
  */
 class QgsReclassifyByTableAlgorithm : public QgsReclassifyAlgorithmBase
 {
-
   public:
-
     QgsReclassifyByTableAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsReclassifyByTableAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     void addAlgorithmParams() override;
     bool _prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVector< QgsReclassifyUtils::RasterClass > createClasses( QgsReclassifyUtils::RasterClass::BoundsType boundsType,
-        const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVector<QgsReclassifyUtils::RasterClass> createClasses( QgsReclassifyUtils::RasterClass::BoundsType boundsType, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRECLASSIFYBYLAYER_H
-
-

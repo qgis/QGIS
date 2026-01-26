@@ -8,17 +8,18 @@
 
 
 
+
+
 class QgsAuthMethodPlugins : QDialog
 {
 %Docstring(signature="appended")
-Dialog for viewing available authentication method plugins
+Dialog for viewing available authentication method plugins.
 %End
 
 %TypeHeaderCode
 #include "qgsautheditorwidgets.h"
 %End
   public:
-
     explicit QgsAuthMethodPlugins( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog for viewing available authentication method plugins
@@ -32,14 +33,13 @@ Construct a dialog for viewing available authentication method plugins
 class QgsAuthEditorWidgets : QWidget
 {
 %Docstring(signature="appended")
-Wrapper widget for available authentication editors
+Wrapper widget for available authentication editors.
 %End
 
 %TypeHeaderCode
 #include "qgsautheditorwidgets.h"
 %End
   public:
-
     explicit QgsAuthEditorWidgets( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a widget to contain various authentication editors

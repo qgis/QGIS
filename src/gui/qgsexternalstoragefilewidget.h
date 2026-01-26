@@ -24,22 +24,20 @@ class QProgressBar;
 class QgsExternalStorage;
 class QgsMessageBar;
 
-#include <QWidget>
-#include <QFileDialog>
-
-#include "qgsfilewidget.h"
-#include "qgsexpressioncontext.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfilewidget.h"
+
+#include <QFileDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui
- * \brief The QgsExternalStorageFileWidget class creates a widget for selecting a file or a folder
- * and stores it to a given external storage backend if defined
+ * \brief A widget for selecting a file or a folder and optionally storing it to an external storage backend.
  * \since QGIS 3.22
  */
 class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsExternalStorageFileWidget *>( sipCpp ) )
@@ -55,7 +53,6 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     Q_PROPERTY( QString storageUrlExpression READ storageUrlExpressionString WRITE setStorageUrlExpression )
 
   public:
-
     /**
      * \brief QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
      */
@@ -63,7 +60,7 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 
     /**
      * Set \a storageType storage type unique identifier as defined in QgsExternalStorageRegistry or
-     * null QString if there is no storage defined.
+     * an empty QString if there is no storage defined.
      * If no external storage has been defined, QgsExternalStorageFileWidget will only update file path according to
      * selected files.
      * \see storageType
@@ -73,7 +70,7 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 
     /**
      * Returns storage type unique identifier as defined in QgsExternalStorageRegistry.
-     * Returns null QString if there is no storage defined, only file selection.
+     * Returns an empty QString if there is no storage defined, only file selection.
      * \see setStorageType
      * \since QGIS 3.22
      */
@@ -164,7 +161,6 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     void setReadOnly( bool readOnly ) override;
 
   protected:
-
     void updateLayout() override;
 
     void setSelectedFileNames( QStringList fileNames ) override;
@@ -179,7 +175,6 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
     void dropEvent( QDropEvent *event ) override;
 
   private:
-
     // stores \a fileNames files using current external storage.
     // This is a recursive method, \a storedUrls contains urls for previously stored
     // fileNames. When all files have been successfully stored, current mFilePath
@@ -193,7 +188,7 @@ class GUI_EXPORT QgsExternalStorageFileWidget : public QgsFileWidget
 
     QgsExternalStorage *mExternalStorage = nullptr;
     QString mAuthCfg;
-    std::unique_ptr< QgsExpression > mStorageUrlExpression;
+    std::unique_ptr<QgsExpression> mStorageUrlExpression;
     QgsExpressionContext mExpressionContext;
     QgsExpressionContextScope *mScope = nullptr;
 

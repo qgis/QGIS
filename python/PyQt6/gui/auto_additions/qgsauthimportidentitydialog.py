@@ -7,5 +7,5 @@ QgsAuthImportIdentityDialog.Invalid = QgsAuthImportIdentityDialog.Validity.Inval
 QgsAuthImportIdentityDialog.Unknown = QgsAuthImportIdentityDialog.Validity.Unknown
 try:
     QgsAuthImportIdentityDialog.__group__ = ['auth']
-except NameError:
+except (NameError, AttributeError):
     pass

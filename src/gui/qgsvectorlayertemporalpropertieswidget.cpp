@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgsvectorlayertemporalpropertieswidget.h"
+
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgsstringutils.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
-#include "qgsstringutils.h"
-#include "qgsexpressioncontextutils.h"
+
+#include "moc_qgsvectorlayertemporalpropertieswidget.cpp"
 
 QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )
@@ -30,17 +33,16 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
   Q_ASSERT( mLayer );
   setupUi( this );
 
-  mModeComboBox->addItem( tr( "Fixed Time Range" ), static_cast< int >( Qgis::VectorTemporalMode::FixedTemporalRange ) );
-  mModeComboBox->addItem( tr( "Single Field with Date/Time" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField ) );
-  mModeComboBox->addItem( tr( "Separate Fields for Start and End Date/Time" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields ) );
-  mModeComboBox->addItem( tr( "Separate Fields for Start and Event Duration" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeStartAndDurationFromFields ) );
-  mModeComboBox->addItem( tr( "Start and End Date/Time from Expressions" ), static_cast< int >( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromExpressions ) );
-  mModeComboBox->addItem( tr( "Redraw Layer Only" ), static_cast< int >( Qgis::VectorTemporalMode::RedrawLayerOnly ) );
+  mModeComboBox->addItem( tr( "Fixed Time Range" ), static_cast<int>( Qgis::VectorTemporalMode::FixedTemporalRange ) );
+  mModeComboBox->addItem( tr( "Single Field with Date/Time" ), static_cast<int>( Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField ) );
+  mModeComboBox->addItem( tr( "Separate Fields for Start and End Date/Time" ), static_cast<int>( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields ) );
+  mModeComboBox->addItem( tr( "Separate Fields for Start and Event Duration" ), static_cast<int>( Qgis::VectorTemporalMode::FeatureDateTimeStartAndDurationFromFields ) );
+  mModeComboBox->addItem( tr( "Start and End Date/Time from Expressions" ), static_cast<int>( Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromExpressions ) );
+  mModeComboBox->addItem( tr( "Redraw Layer Only" ), static_cast<int>( Qgis::VectorTemporalMode::RedrawLayerOnly ) );
 
   connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), mStackedWidget, &QStackedWidget::setCurrentIndex );
-  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
-  {
-    switch ( static_cast< Qgis::VectorTemporalMode>( mModeComboBox->currentData().toInt() ) )
+  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
+    switch ( static_cast<Qgis::VectorTemporalMode>( mModeComboBox->currentData().toInt() ) )
     {
       case Qgis::VectorTemporalMode::FixedTemporalRange:
       case Qgis::VectorTemporalMode::FeatureDateTimeInstantFromField:
@@ -57,8 +59,8 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
     }
   } );
 
-  mLimitsComboBox->addItem( tr( "Include Start, Exclude End (default)" ), static_cast< int >( Qgis::VectorTemporalLimitMode::IncludeBeginExcludeEnd ) );
-  mLimitsComboBox->addItem( tr( "Include Start, Include End" ), static_cast< int >( Qgis::VectorTemporalLimitMode::IncludeBeginIncludeEnd ) );
+  mLimitsComboBox->addItem( tr( "Include Start, Exclude End (default)" ), static_cast<int>( Qgis::VectorTemporalLimitMode::IncludeBeginExcludeEnd ) );
+  mLimitsComboBox->addItem( tr( "Include Start, Include End" ), static_cast<int>( Qgis::VectorTemporalLimitMode::IncludeBeginIncludeEnd ) );
 
   mStartTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
   mEndTemporalDateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
@@ -94,15 +96,14 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
         } )
   {
     const QString title = ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) ? QgsStringUtils::capitalize( QgsUnitTypes::toString( u ), Qgis::Capitalization::TitleCase )
-                          : QgsUnitTypes::toString( u );
-    mDurationUnitsComboBox->addItem( title, static_cast< int >( u ) );
-    mFixedDurationUnitsComboBox->addItem( title, static_cast< int >( u ) );
+                                                                                     : QgsUnitTypes::toString( u );
+    mDurationUnitsComboBox->addItem( title, static_cast<int>( u ) );
+    mFixedDurationUnitsComboBox->addItem( title, static_cast<int>( u ) );
   }
 
   mFixedDurationUnitsComboBox->setEnabled( !mAccumulateCheckBox->isChecked() );
   mFixedDurationSpinBox->setEnabled( !mAccumulateCheckBox->isChecked() );
-  connect( mAccumulateCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
-  {
+  connect( mAccumulateCheckBox, &QCheckBox::toggled, this, [this]( bool checked ) {
     mFixedDurationUnitsComboBox->setEnabled( !checked );
     mFixedDurationSpinBox->setEnabled( !checked );
   } );
@@ -119,14 +120,17 @@ QgsVectorLayerTemporalPropertiesWidget::QgsVectorLayerTemporalPropertiesWidget( 
 
 void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
 {
-  QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( mLayer->temporalProperties() );
+  QgsVectorLayerTemporalProperties *properties = qobject_cast<QgsVectorLayerTemporalProperties *>( mLayer->temporalProperties() );
 
   properties->setIsActive( mTemporalGroupBox->isChecked() );
-  properties->setMode( static_cast< Qgis::VectorTemporalMode >( mModeComboBox->currentData().toInt() ) );
-  properties->setLimitMode( static_cast< Qgis::VectorTemporalLimitMode >( mLimitsComboBox->currentData().toInt() ) );
+  properties->setMode( static_cast<Qgis::VectorTemporalMode>( mModeComboBox->currentData().toInt() ) );
+  Qgis::VectorTemporalLimitMode limitMode = static_cast<Qgis::VectorTemporalLimitMode>( mLimitsComboBox->currentData().toInt() );
+  properties->setLimitMode( limitMode );
 
-  const QgsDateTimeRange normalRange = QgsDateTimeRange( mStartTemporalDateTimeEdit->dateTime(),
-                                       mEndTemporalDateTimeEdit->dateTime() );
+  const QgsDateTimeRange normalRange = QgsDateTimeRange(
+    mStartTemporalDateTimeEdit->dateTime(), mEndTemporalDateTimeEdit->dateTime(),
+    true, limitMode == Qgis::VectorTemporalLimitMode::IncludeBeginIncludeEnd
+  );
 
   properties->setFixedTemporalRange( normalRange );
 
@@ -137,17 +141,17 @@ void QgsVectorLayerTemporalPropertiesWidget::saveTemporalProperties()
     case Qgis::VectorTemporalMode::RedrawLayerOnly:
     case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromExpressions:
       properties->setStartField( mSingleFieldComboBox->currentField() );
-      properties->setDurationUnits( static_cast< Qgis::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
+      properties->setDurationUnits( static_cast<Qgis::TemporalUnit>( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
     case Qgis::VectorTemporalMode::FeatureDateTimeStartAndEndFromFields:
       properties->setStartField( mStartFieldComboBox->currentField() );
-      properties->setDurationUnits( static_cast< Qgis::TemporalUnit >( mFixedDurationUnitsComboBox->currentData().toInt() ) );
+      properties->setDurationUnits( static_cast<Qgis::TemporalUnit>( mFixedDurationUnitsComboBox->currentData().toInt() ) );
       break;
 
     case Qgis::VectorTemporalMode::FeatureDateTimeStartAndDurationFromFields:
       properties->setStartField( mDurationStartFieldComboBox->currentField() );
-      properties->setDurationUnits( static_cast< Qgis::TemporalUnit >( mDurationUnitsComboBox->currentData().toInt() ) );
+      properties->setDurationUnits( static_cast<Qgis::TemporalUnit>( mDurationUnitsComboBox->currentData().toInt() ) );
       break;
   }
 
@@ -168,13 +172,13 @@ QgsExpressionContext QgsVectorLayerTemporalPropertiesWidget::createExpressionCon
 
 void QgsVectorLayerTemporalPropertiesWidget::syncToLayer()
 {
-  const QgsVectorLayerTemporalProperties *properties = qobject_cast< QgsVectorLayerTemporalProperties * >( mLayer->temporalProperties() );
+  const QgsVectorLayerTemporalProperties *properties = qobject_cast<QgsVectorLayerTemporalProperties *>( mLayer->temporalProperties() );
   mTemporalGroupBox->setChecked( properties->isActive() );
 
-  mModeComboBox->setCurrentIndex( mModeComboBox->findData( static_cast< int >( properties->mode() ) ) );
-  mStackedWidget->setCurrentIndex( static_cast< int >( properties->mode() ) );
+  mModeComboBox->setCurrentIndex( mModeComboBox->findData( static_cast<int>( properties->mode() ) ) );
+  mStackedWidget->setCurrentIndex( static_cast<int>( properties->mode() ) );
 
-  mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( static_cast< int >( properties->limitMode() ) ) );
+  mLimitsComboBox->setCurrentIndex( mLimitsComboBox->findData( static_cast<int>( properties->limitMode() ) ) );
 
   mStartTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().begin() );
   mEndTemporalDateTimeEdit->setDateTime( properties->fixedTemporalRange().end() );
@@ -186,8 +190,8 @@ void QgsVectorLayerTemporalPropertiesWidget::syncToLayer()
   mDurationStartFieldComboBox->setField( properties->startField() );
   mEndFieldComboBox->setField( properties->endField() );
   mDurationFieldComboBox->setField( properties->durationField() );
-  mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( static_cast< int >( properties->durationUnits() ) ) );
-  mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( static_cast< int >( properties->durationUnits() ) ) );
+  mDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( static_cast<int>( properties->durationUnits() ) ) );
+  mFixedDurationUnitsComboBox->setCurrentIndex( mDurationUnitsComboBox->findData( static_cast<int>( properties->durationUnits() ) ) );
 
   mAccumulateCheckBox->setChecked( properties->accumulateFeatures() );
 

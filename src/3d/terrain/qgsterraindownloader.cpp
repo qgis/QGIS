@@ -15,12 +15,13 @@
 
 #include "qgsterraindownloader.h"
 
+#include <memory>
+
 #include "qgs3dutils.h"
-#include "qgslogger.h"
-#include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsgdalutils.h"
-
+#include "qgslogger.h"
+#include "qgsrasterlayer.h"
 
 QgsTerrainDownloader::QgsTerrainDownloader( const QgsCoordinateTransformContext &transformContext )
 {
@@ -29,7 +30,7 @@ QgsTerrainDownloader::QgsTerrainDownloader( const QgsCoordinateTransformContext 
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3857" ) ), transformContext );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( u"EPSG:4326"_s ), QgsCoordinateReferenceSystem( u"EPSG:3857"_s ), transformContext );
   ct.setBallparkTransformsAreAppropriate( true );
   const QgsPointXY topLeftLonLat( -180, 180.0 / M_PI * std::atan( std::sinh( M_PI ) ) );
   const QgsPointXY bottomRightLonLat( 180, 180.0 / M_PI * std::atan( std::sinh( -M_PI ) ) );
@@ -59,7 +60,7 @@ void QgsTerrainDownloader::setDataSource( const QgsTerrainDownloader::DataSource
 {
   mDataSource = ds;
   const QString uri = QString( "type=xyz&url=%1&zmin=%2&zmax=%3" ).arg( mDataSource.uri ).arg( mDataSource.zMin ).arg( mDataSource.zMax );
-  mOnlineDtm.reset( new QgsRasterLayer( uri, "terrarium", "wms" ) );
+  mOnlineDtm = std::make_unique<QgsRasterLayer>( uri, "terrarium", "wms" );
 }
 
 
@@ -86,7 +87,8 @@ double QgsTerrainDownloader::findBestTileResolution( double requestedMupp ) cons
       break;
   }
 
-  if ( zoom > 15 ) zoom = 15;
+  if ( zoom > 15 )
+    zoom = 15;
   const double finalMupp = mXSpan / ( 256 * ( 1 << zoom ) );
   return finalMupp;
 }
@@ -172,8 +174,7 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
   }
 
   // resample to the desired extent + resolution
-  QgsGdalUtils::resampleSingleBandRaster( hSrcDS.get(), hDstDS.get(), GRA_Bilinear,
-                                          context.calculateCoordinateOperation( mOnlineDtm->crs(), destCrs ).toUtf8().constData() );
+  QgsGdalUtils::resampleSingleBandRaster( hSrcDS.get(), hDstDS.get(), GRA_Bilinear, context.calculateCoordinateOperation( mOnlineDtm->crs(), destCrs ).toUtf8().constData() );
 
   QByteArray heightMapOut;
   heightMapOut.resize( resOrig * resOrig * sizeof( float ) );

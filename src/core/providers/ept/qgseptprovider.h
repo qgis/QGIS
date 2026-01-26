@@ -18,16 +18,15 @@
 #ifndef QGSEPTPROVIDER_H
 #define QGSEPTPROVIDER_H
 
+#include <memory>
+
 #include "qgspointclouddataprovider.h"
 #include "qgsprovidermetadata.h"
-
-#include <memory>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
 class QgsEptPointCloudIndex;
-class QgsRemoteEptPointCloudIndex;
 
 class QgsEptProvider: public QgsPointCloudDataProvider
 {
@@ -37,7 +36,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
                     const QgsDataProvider::ProviderOptions &providerOptions,
                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~QgsEptProvider();
+    ~QgsEptProvider() override;
 
     Qgis::DataProviderFlags flags() const override;
     QgsCoordinateReferenceSystem crs() const override;
@@ -46,7 +45,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
-    QgsPointCloudIndex *index() const override;
+    QgsPointCloudIndex index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
     void loadIndex( ) override;
@@ -54,7 +53,7 @@ class QgsEptProvider: public QgsPointCloudDataProvider
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
+    QgsPointCloudIndex mIndex;
 };
 
 class QgsEptProviderMetadata : public QgsProviderMetadata

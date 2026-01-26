@@ -18,10 +18,10 @@
 #ifndef QGSMAPTOOLHTMLANNOTATION_H
 #define QGSMAPTOOLHTMLANNOTATION_H
 
-#include "qgsmaptoolannotation.h"
 #include "qgis_app.h"
+#include "qgsmaptoolannotation.h"
 
-class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
+class APP_EXPORT QgsMapToolHtmlAnnotation : public QgsMapToolAnnotation
 {
     Q_OBJECT
 

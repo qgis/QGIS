@@ -30,9 +30,7 @@
  */
 class QgsWedgeBuffersAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsWedgeBuffersAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -40,21 +38,20 @@ class QgsWedgeBuffersAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     QgsWedgeBuffersAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     double mAzimuth = 0.0;
     bool mDynamicAzimuth = false;
     QgsProperty mAzimuthProperty;
@@ -67,11 +64,8 @@ class QgsWedgeBuffersAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     double mInnerRadius = 1.0;
     bool mDynamicInnerRadius = false;
     QgsProperty mInnerRadiusProperty;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMWEDGEBUFFERS_H
-
-

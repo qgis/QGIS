@@ -14,29 +14,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthimportidentitydialog.h"
 #include "ui_qgsauthimportidentitydialog.h"
+#include "qgsauthimportidentitydialog.h"
+
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthconfig.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgshelp.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
 #include <QFile>
 #include <QFileDialog>
 #include <QPushButton>
 
-#include "qgssettings.h"
-#include "qgsauthcertutils.h"
-#include "qgsauthconfig.h"
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
+#include "moc_qgsauthimportidentitydialog.cpp"
 
-
-QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-    QWidget *parent )
+QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent )
   : QDialog( parent )
-  , mIdentityType( CertIdentity )
   , mPkiBundle( QgsPkiBundle() )
-  , mDisabled( false )
-
 {
   if ( QgsApplication::authManager()->isDisabled() )
   {
@@ -58,14 +56,16 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
     connect( btnPkiPkcs12Bundle, &QToolButton::clicked, this, &QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked );
     connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
     connect( buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
-
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+      QgsHelp::openHelp( u"auth_system/auth_workflows.html#authentication-identities"_s );
+    } );
     mIdentityType = identitytype;
 
     populateIdentityType();
   }
 }
 
-QgsAuthImportIdentityDialog::IdentityType QgsAuthImportIdentityDialog::identityType()
+QgsAuthImportIdentityDialog::IdentityType QgsAuthImportIdentityDialog::identityType() const
 {
   if ( mDisabled )
   {
@@ -89,23 +89,18 @@ void QgsAuthImportIdentityDialog::populateIdentityType()
   {
     stkwBundleType->setVisible( true );
 
-    cmbIdentityTypes->addItem( tr( "PKI PEM/DER Certificate Paths" ),
-                               QVariant( QgsAuthImportIdentityDialog::PkiPaths ) );
-    cmbIdentityTypes->addItem( tr( "PKI PKCS#12 Certificate Bundle" ),
-                               QVariant( QgsAuthImportIdentityDialog::PkiPkcs12 ) );
+    cmbIdentityTypes->addItem( tr( "PKI PEM/DER Certificate Paths" ), QVariant( QgsAuthImportIdentityDialog::PkiPaths ) );
+    cmbIdentityTypes->addItem( tr( "PKI PKCS#12 Certificate Bundle" ), QVariant( QgsAuthImportIdentityDialog::PkiPkcs12 ) );
 
-    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             stkwBundleType, &QStackedWidget::setCurrentIndex );
-    connect( stkwBundleType, &QStackedWidget::currentChanged,
-             cmbIdentityTypes, &QComboBox::setCurrentIndex );
+    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stkwBundleType, &QStackedWidget::setCurrentIndex );
+    connect( stkwBundleType, &QStackedWidget::currentChanged, cmbIdentityTypes, &QComboBox::setCurrentIndex );
 
-    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, [ = ] { validateIdentity(); } );
-    connect( stkwBundleType, &QStackedWidget::currentChanged,
-             this, &QgsAuthImportIdentityDialog::validateIdentity );
+    connect( cmbIdentityTypes, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this] { validateIdentity(); } );
+    connect( stkwBundleType, &QStackedWidget::currentChanged, this, &QgsAuthImportIdentityDialog::validateIdentity );
 
     cmbIdentityTypes->setCurrentIndex( 0 );
     stkwBundleType->setCurrentIndex( 0 );
+    stkwBundleType->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
   }
   // else switch stacked widget, and populate/connect according to that type and widget
 }
@@ -122,7 +117,6 @@ void QgsAuthImportIdentityDialog::validateIdentity()
 
 bool QgsAuthImportIdentityDialog::validateBundle()
 {
-
   // clear out any previously set bundle
   const QSslCertificate emptycert;
   const QSslKey emptykey;
@@ -148,20 +142,18 @@ void QgsAuthImportIdentityDialog::clearValidation()
   teValidation->setStyleSheet( QString() );
 }
 
-void QgsAuthImportIdentityDialog::writeValidation( const QString &msg,
-    QgsAuthImportIdentityDialog::Validity valid,
-    bool append )
+void QgsAuthImportIdentityDialog::writeValidation( const QString &msg, QgsAuthImportIdentityDialog::Validity valid, bool append )
 {
   QString ss;
   QString txt( msg );
   switch ( valid )
   {
     case Valid:
-      ss = QgsAuthGuiUtils::greenTextStyleSheet( QStringLiteral( "QTextEdit" ) );
+      ss = QgsAuthGuiUtils::greenTextStyleSheet( u"QTextEdit"_s );
       txt = tr( "Valid: %1" ).arg( msg );
       break;
     case Invalid:
-      ss = QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QTextEdit" ) );
+      ss = QgsAuthGuiUtils::redTextStyleSheet( u"QTextEdit"_s );
       txt = tr( "Invalid: %1" ).arg( msg );
       break;
     case Unknown:
@@ -192,7 +184,7 @@ void QgsAuthImportIdentityDialog::chkPkiPathsPassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ), tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsCert->setText( fn );
@@ -202,7 +194,7 @@ void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 
 void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Private Key File" ), tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsKey->setText( fn );
@@ -223,7 +215,7 @@ void QgsAuthImportIdentityDialog::chkPkiPkcs12PassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPkcs12Bundle_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ),  tr( "PKCS#12 (*.p12 *.pfx)" ) );
+  const QString &fn = getOpenFileName( tr( "Open PKCS#12 Certificate Bundle" ), tr( "PKCS#12 (*.p12 *.pfx)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPkcs12Bundle->setText( fn );
@@ -282,8 +274,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
   const QDateTime startdate( clientcert.effectiveDate() );
   const QDateTime enddate( clientcert.expiryDate() );
 
-  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( QgsAuthCertUtils::certIsCurrent( clientcert ) ? Valid : Invalid ) );
+  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ), ( QgsAuthCertUtils::certIsCurrent( clientcert ) ? Valid : Invalid ) );
   //TODO: set enabled on cert info button, relative to cert validity
 
   // check for valid private key and that any supplied password works
@@ -302,9 +293,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
   if ( isvalid )
   {
     mCertBundle = qMakePair( clientcert, clientkey );
-    mPkiBundle = QgsPkiBundle( clientcert,
-                               clientkey,
-                               ca_certs );
+    mPkiBundle = QgsPkiBundle( clientcert, clientkey, ca_certs );
   }
 
   return isvalid;
@@ -339,7 +328,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   }
 
   QCA::ConvertResult res;
-  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, QStringLiteral( "qca-ossl" ) ) );
+  const QCA::KeyBundle bundle( QCA::KeyBundle::fromFile( bundlepath, passarray, &res, u"qca-ossl"_s ) );
 
   if ( res == QCA::ErrorFile )
   {
@@ -349,7 +338,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   else if ( res == QCA::ErrorPassphrase )
   {
     writeValidation( tr( "Incorrect bundle password" ), Invalid );
-    lePkiPkcs12KeyPass->setPlaceholderText( QStringLiteral( "Required passphrase" ) );
+    lePkiPkcs12KeyPass->setPlaceholderText( u"Required passphrase"_s );
     return false;
   }
   else if ( res == QCA::ErrorDecode )
@@ -378,8 +367,7 @@ bool QgsAuthImportIdentityDialog::validatePkiPkcs12()
   const QDateTime now( QDateTime::currentDateTime() );
   const bool bundlevalid = ( now >= startdate && now <= enddate );
 
-  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( bundlevalid ? Valid : Invalid ) );
+  writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ), ( bundlevalid ? Valid : Invalid ) );
 
   if ( bundlevalid )
   {
@@ -427,7 +415,7 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
 {
   if ( !found )
   {
-    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( QStringLiteral( "QLineEdit" ) ) );
+    widget->setStyleSheet( QgsAuthGuiUtils::redTextStyleSheet( u"QLineEdit"_s ) );
     widget->setToolTip( tr( "File not found" ) );
   }
   else
@@ -440,7 +428,7 @@ void QgsAuthImportIdentityDialog::fileFound( bool found, QWidget *widget )
 QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, const QString &extfilter )
 {
   QgsSettings settings;
-  const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthImportBundleOpenFileDir" ), QDir::homePath() ).toString();
+  const QString recentdir = settings.value( u"UI/lastAuthImportBundleOpenFileDir"_s, QDir::homePath() ).toString();
   QString f = QFileDialog::getOpenFileName( this, title, recentdir, extfilter );
 
   // return dialog focus on Mac
@@ -449,7 +437,7 @@ QString QgsAuthImportIdentityDialog::getOpenFileName( const QString &title, cons
 
   if ( !f.isEmpty() )
   {
-    settings.setValue( QStringLiteral( "UI/lastAuthImportBundleOpenFileDir" ), QFileInfo( f ).absoluteDir().path() );
+    settings.setValue( u"UI/lastAuthImportBundleOpenFileDir"_s, QFileInfo( f ).absoluteDir().path() );
   }
   return f;
 }

@@ -20,10 +20,11 @@
 #ifndef QGSNETWORKCONTENTFETCHERTASK_H
 #define QGSNETWORKCONTENTFETCHERTASK_H
 
-#include "qgstaskmanager.h"
 #include "qgis_core.h"
-#include <QNetworkRequest>
+#include "qgstaskmanager.h"
+
 #include <QNetworkReply>
+#include <QNetworkRequest>
 
 class QgsNetworkContentFetcher;
 
@@ -129,7 +130,6 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     QString mAuthcfg;
     QgsNetworkContentFetcher *mFetcher = nullptr;
     QString mMode;
-    QIODevice *mContent = nullptr;
 };
 
 #endif //QGSNETWORKCONTENTFETCHERTASK_H

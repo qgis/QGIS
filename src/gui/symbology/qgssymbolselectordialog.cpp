@@ -15,12 +15,14 @@
 
 #include "qgssymbolselectordialog.h"
 
+#include "qgsexpressioncontextutils.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
-#include "qgssymbollayerutils.h"
 #include "qgssymbollayerregistry.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgssymbolselectordialog.cpp"
 
 // the widgets
 #include "qgssymbolslistwidget.h"
@@ -47,6 +49,7 @@
 #include <QWidget>
 #include <QFile>
 #include <QStandardItem>
+#include <memory>
 
 /// @cond PRIVATE
 
@@ -97,17 +100,14 @@ void DataDefinedRestorer::restore()
 {
   if ( mMarker )
   {
-    if ( mDDSize &&
-         ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
+    if ( mDDSize && ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
       mMarker->setDataDefinedSize( mDDSize );
-    if ( mDDAngle &&
-         mAngle != mMarkerSymbolLayer->angle() )
+    if ( mDDAngle && mAngle != mMarkerSymbolLayer->angle() )
       mMarker->setDataDefinedAngle( mDDAngle );
   }
   else if ( mLine )
   {
-    if ( mDDWidth &&
-         ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
+    if ( mDDWidth && ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
       mLine->setDataDefinedWidth( mDDWidth );
   }
   save();
@@ -172,7 +172,7 @@ class SymbolLayerItem : public QStandardItem
     }
 
     int type() const override { return SYMBOL_LAYER_ITEM_TYPE; }
-    bool isLayer() { return mIsLayer; }
+    bool isLayer() const { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
     QgsSymbol *symbol()
@@ -201,11 +201,11 @@ class SymbolLayerItem : public QStandardItem
         {
           switch ( mSymbol->type() )
           {
-            case Qgis::SymbolType::Marker :
+            case Qgis::SymbolType::Marker:
               return QCoreApplication::translate( "SymbolLayerItem", "Marker" );
-            case Qgis::SymbolType::Fill   :
+            case Qgis::SymbolType::Fill:
               return QCoreApplication::translate( "SymbolLayerItem", "Fill" );
-            case Qgis::SymbolType::Line   :
+            case Qgis::SymbolType::Line:
               return QCoreApplication::translate( "SymbolLayerItem", "Line" );
             default:
               return "Symbol";
@@ -217,7 +217,7 @@ class SymbolLayerItem : public QStandardItem
         if ( !mLayer->enabled() )
         {
           QPalette pal = qApp->palette();
-          QBrush brush = QStandardItem::data( role ).value< QBrush >();
+          QBrush brush = QStandardItem::data( role ).value<QBrush>();
           brush.setColor( pal.color( QPalette::Disabled, QPalette::WindowText ) );
           return brush;
         }
@@ -227,8 +227,8 @@ class SymbolLayerItem : public QStandardItem
         }
       }
 
-//      if ( role == Qt::SizeHintRole )
-//        return QVariant( QSize( 32, 32 ) );
+      //      if ( role == Qt::SizeHintRole )
+      //        return QVariant( QSize( 32, 32 ) );
       if ( role == Qt::CheckStateRole )
         return QVariant(); // could be true/false
       return QStandardItem::data( role );
@@ -237,11 +237,11 @@ class SymbolLayerItem : public QStandardItem
   protected:
     QgsSymbolLayer *mLayer = nullptr;
     QgsSymbol *mSymbol = nullptr;
-    QPointer< QgsVectorLayer > mVectorLayer;
+    QPointer<QgsVectorLayer> mVectorLayer;
     bool mIsLayer = false;
     QSize mSize;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
-    QPointer< QScreen > mScreen;
+    QPointer<QScreen> mScreen;
 };
 
 ///@endcond
@@ -261,7 +261,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  layersTree->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
+  layersTree->setMaximumHeight( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
   layersTree->setMinimumHeight( layersTree->maximumHeight() );
   lblPreview->setMaximumWidth( layersTree->maximumHeight() );
 
@@ -269,16 +269,16 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
   QIcon iconLock;
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "locked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
-  iconLock.addFile( QgsApplication::iconPath( QStringLiteral( "unlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+  iconLock.addFile( QgsApplication::iconPath( u"locked.svg"_s ), QSize(), QIcon::Normal, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( u"locked.svg"_s ), QSize(), QIcon::Active, QIcon::On );
+  iconLock.addFile( QgsApplication::iconPath( u"unlocked.svg"_s ), QSize(), QIcon::Normal, QIcon::Off );
+  iconLock.addFile( QgsApplication::iconPath( u"unlocked.svg"_s ), QSize(), QIcon::Active, QIcon::Off );
 
   QIcon iconColorLock;
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
-  iconColorLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconColorUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorLocked.svg"_s ), QSize(), QIcon::Normal, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorLocked.svg"_s ), QSize(), QIcon::Active, QIcon::On );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorUnlocked.svg"_s ), QSize(), QIcon::Normal, QIcon::Off );
+  iconColorLock.addFile( QgsApplication::iconPath( u"mIconColorUnlocked.svg"_s ), QSize(), QIcon::Active, QIcon::Off );
 
   mLockColorAction = new QAction( tr( "Lock Color" ), this );
   mLockColorAction->setToolTip( tr( "Avoid changing the color of the layer when the symbol color is changed" ) );
@@ -286,10 +286,10 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   mLockColorAction->setIcon( iconColorLock );
 
   QIcon iconSelectLock;
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Normal, QIcon::On );
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectLocked.svg" ) ), QSize(), QIcon::Active, QIcon::On );
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Normal, QIcon::Off );
-  iconSelectLock.addFile( QgsApplication::iconPath( QStringLiteral( "mIconSelectUnlocked.svg" ) ), QSize(), QIcon::Active, QIcon::Off );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectLocked.svg"_s ), QSize(), QIcon::Normal, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectLocked.svg"_s ), QSize(), QIcon::Active, QIcon::On );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectUnlocked.svg"_s ), QSize(), QIcon::Normal, QIcon::Off );
+  iconSelectLock.addFile( QgsApplication::iconPath( u"mIconSelectUnlocked.svg"_s ), QSize(), QIcon::Active, QIcon::Off );
 
   mLockSelectionColorAction = new QAction( tr( "Lock Color When Selected" ), this );
   mLockSelectionColorAction->setToolTip( tr( "Avoid changing the color of the layer when a feature is selected" ) );
@@ -340,8 +340,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( btnAddLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::addLayer );
   connect( btnRemoveLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::removeLayer );
   connect( mLockColorAction, &QAction::toggled, this, &QgsSymbolSelectorWidget::lockLayer );
-  connect( mLockSelectionColorAction, &QAction::toggled, this, [ = ]( bool checked )
-  {
+  connect( mLockSelectionColorAction, &QAction::toggled, this, [this]( bool checked ) {
     QgsSymbolLayer *layer = currentLayer();
     if ( !layer )
       return;
@@ -383,7 +382,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   // need updating to reflect the new colors
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
 
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
+  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QList<QgsMapLayer *> &layers )>( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
 }
 
 QgsSymbolSelectorWidget *QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::unique_ptr<QgsSymbol> symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
@@ -419,10 +418,14 @@ void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext &context 
   }
 
   QWidget *widget = stackedWidget->currentWidget();
-  if ( QgsLayerPropertiesWidget *layerProp = qobject_cast< QgsLayerPropertiesWidget * >( widget ) )
+  if ( QgsLayerPropertiesWidget *layerProp = qobject_cast<QgsLayerPropertiesWidget *>( widget ) )
+  {
     layerProp->setContext( context );
-  else if ( QgsSymbolsListWidget *listWidget = qobject_cast< QgsSymbolsListWidget * >( widget ) )
+  }
+  else if ( QgsSymbolsListWidget *listWidget = qobject_cast<QgsSymbolsListWidget *>( widget ) )
+  {
     listWidget->setContext( context );
+  }
 
   layerChanged();
   updatePreview();
@@ -510,7 +513,7 @@ void QgsSymbolSelectorWidget::updatePreview()
   if ( !mSymbol )
     return;
 
-  std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
+  std::unique_ptr<QgsSymbol> symbolClone( mSymbol->clone() );
   const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, QgsScreenProperties( screen() ) );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
@@ -565,7 +568,7 @@ void QgsSymbolSelectorWidget::layerChanged()
   if ( currentItem->isLayer() )
   {
     SymbolLayerItem *parent = static_cast<SymbolLayerItem *>( currentItem->parent() );
-    mDataDefineRestorer.reset( new DataDefinedRestorer( parent->symbol(), currentItem->layer() ) );
+    mDataDefineRestorer = std::make_unique<DataDefinedRestorer>( parent->symbol(), currentItem->layer() );
     QgsLayerPropertiesWidget *layerProp = new QgsLayerPropertiesWidget( currentItem->layer(), parent->symbol(), mVectorLayer );
     layerProp->setDockMode( this->dockMode() );
     layerProp->setContext( mContext );
@@ -646,13 +649,13 @@ void QgsSymbolSelectorWidget::updateLockButton()
 void QgsSymbolSelectorWidget::updateLockButtonIcon()
 {
   if ( mLockColorAction->isChecked() && mLockSelectionColorAction->isChecked() )
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "locked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"locked.svg"_s ) );
   else if ( mLockColorAction->isChecked() )
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconColorLocked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"mIconColorLocked.svg"_s ) );
   else if ( mLockSelectionColorAction->isChecked() )
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconSelectLocked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"mIconSelectLocked.svg"_s ) );
   else
-    btnLock->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "unlocked.svg" ) ) );
+    btnLock->setIcon( QgsApplication::getThemeIcon( u"unlocked.svg"_s ) );
 }
 
 void QgsSymbolSelectorWidget::addLayer()
@@ -672,21 +675,19 @@ void QgsSymbolSelectorWidget::addLayer()
   QgsSymbol *parentSymbol = item->symbol();
 
   // save data-defined values at marker level
-  const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker
-                            ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize()
-                            : QgsProperty() );
-  const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker
-                             ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle()
-                             : QgsProperty() );
-  const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line
-                             ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
-                             : QgsProperty() );
+  const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize() : QgsProperty() );
+  const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
+  const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
 
-  QgsSymbolLayer *newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
-  if ( insertIdx == -1 )
-    parentSymbol->appendSymbolLayer( newLayer );
-  else
-    parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer );
+  QgsSymbolLayer *newLayerPtr = nullptr;
+  {
+    std::unique_ptr< QgsSymbolLayer > newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
+    newLayerPtr = newLayer.get();
+    if ( insertIdx == -1 )
+      parentSymbol->appendSymbolLayer( newLayer.release() );
+    else
+      parentSymbol->insertSymbolLayer( item->rowCount() - insertIdx, newLayer.release() );
+  }
 
   // restore data-defined values at marker level
   if ( ddSize )
@@ -696,7 +697,9 @@ void QgsSymbolSelectorWidget::addLayer()
   if ( ddWidth )
     static_cast<QgsLineSymbol *>( parentSymbol )->setDataDefinedWidth( ddWidth );
 
-  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayer, parentSymbol->type(), mVectorLayer, screen() );
+  // TODO -- using newLayerPtr is not safe in some circumstances here. This needs reworking so that SymbolLayerItem does has
+  // its own owned QgsSymbolLayer clone, and isn't reliant on a pointer to the object owned by parentSymbol.
+  SymbolLayerItem *newLayerItem = new SymbolLayerItem( newLayerPtr, parentSymbol->type(), mVectorLayer, screen() ); // cppcheck-suppress invalidLifetime
   item->insertRow( insertIdx == -1 ? 0 : insertIdx, newLayerItem );
   item->updatePreview();
 
@@ -729,7 +732,7 @@ void QgsSymbolSelectorWidget::removeLayer()
 
 void QgsSymbolSelectorWidget::moveLayerDown()
 {
-  moveLayerByOffset( + 1 );
+  moveLayerByOffset( +1 );
 }
 
 void QgsSymbolSelectorWidget::moveLayerUp()
@@ -756,7 +759,7 @@ void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
   parent->insertRows( row + offset, rowItems );
   parent->updatePreview();
 
-  const QModelIndex newIdx = rowItems[ 0 ]->index();
+  const QModelIndex newIdx = rowItems[0]->index();
   layersTree->setCurrentIndex( newIdx );
 
   updatePreview();
@@ -858,7 +861,7 @@ QgsSymbolSelectorDialog::QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *s
   connect( mSelectorWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );
 
   mSelectorWidget->setMinimumSize( 460, 560 );
-  setObjectName( QStringLiteral( "SymbolSelectorDialog" ) );
+  setObjectName( u"SymbolSelectorDialog"_s );
   QgsGui::enableAutoGeometryRestore( this );
 
   // Can be embedded in renderer properties dialog
@@ -881,12 +884,12 @@ QMenu *QgsSymbolSelectorDialog::advancedMenu()
 
 void QgsSymbolSelectorDialog::setContext( const QgsSymbolWidgetContext &context )
 {
-  mContext = context;
+  mSelectorWidget->setContext( context );
 }
 
 QgsSymbolWidgetContext QgsSymbolSelectorDialog::context() const
 {
-  return mContext;
+  return mSelectorWidget->context();
 }
 
 QgsSymbol *QgsSymbolSelectorDialog::symbol()
@@ -1009,7 +1012,7 @@ QDialogButtonBox *QgsSymbolSelectorDialog::buttonBox() const
 
 void QgsSymbolSelectorDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "style_library/symbol_selector.html" ) );
+  QgsHelp::openHelp( u"style_library/symbol_selector.html"_s );
 }
 
 void QgsSymbolSelectorWidget::projectDataChanged()

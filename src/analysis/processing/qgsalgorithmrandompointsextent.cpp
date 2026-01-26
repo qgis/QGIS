@@ -18,15 +18,16 @@
 //Disclaimer: The algorithm optimizes the original Random points in extent algorithm, (C) Alexander Bruy, 2014
 
 #include "qgsalgorithmrandompointsextent.h"
-#include "qgsspatialindex.h"
 
 #include <random>
+
+#include "qgsspatialindex.h"
 
 ///@cond PRIVATE
 
 QString QgsRandomPointsExtentAlgorithm::name() const
 {
-  return QStringLiteral( "randompointsinextent" );
+  return u"randompointsinextent"_s;
 }
 
 QString QgsRandomPointsExtentAlgorithm::displayName() const
@@ -46,22 +47,21 @@ QString QgsRandomPointsExtentAlgorithm::group() const
 
 QString QgsRandomPointsExtentAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcreation" );
+  return u"vectorcreation"_s;
 }
 
 void QgsRandomPointsExtentAlgorithm::initAlgorithm( const QVariantMap & )
 {
+  addParameter( new QgsProcessingParameterExtent( u"EXTENT"_s, QObject::tr( "Input extent" ) ) );
+  addParameter( new QgsProcessingParameterNumber( u"POINTS_NUMBER"_s, QObject::tr( "Number of points" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
+  addParameter( new QgsProcessingParameterDistance( u"MIN_DISTANCE"_s, QObject::tr( "Minimum distance between points" ), 0, u"TARGET_CRS"_s, true, 0 ) );
+  addParameter( new QgsProcessingParameterCrs( u"TARGET_CRS"_s, QObject::tr( "Target CRS" ), u"ProjectCrs"_s, false ) );
 
-  addParameter( new QgsProcessingParameterExtent( QStringLiteral( "EXTENT" ), QObject::tr( "Input extent" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "POINTS_NUMBER" ), QObject::tr( "Number of points" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1 ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "MIN_DISTANCE" ), QObject::tr( "Minimum distance between points" ), 0, QStringLiteral( "TARGET_CRS" ), true, 0 ) );
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "ProjectCrs" ), false ) );
-
-  std::unique_ptr< QgsProcessingParameterNumber > maxAttempts_param = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_ATTEMPTS" ), QObject::tr( "Maximum number of search attempts given the minimum distance" ), Qgis::ProcessingNumberParameterType::Integer, 200, true, 1 );
+  auto maxAttempts_param = std::make_unique<QgsProcessingParameterNumber>( u"MAX_ATTEMPTS"_s, QObject::tr( "Maximum number of search attempts given the minimum distance" ), Qgis::ProcessingNumberParameterType::Integer, 200, true, 1 );
   maxAttempts_param->setFlags( maxAttempts_param->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( maxAttempts_param.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Random points" ), Qgis::ProcessingSourceType::VectorPoint ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Random points" ), Qgis::ProcessingSourceType::VectorPoint ) );
 }
 
 QString QgsRandomPointsExtentAlgorithm::shortHelpString() const
@@ -73,7 +73,12 @@ QString QgsRandomPointsExtentAlgorithm::shortHelpString() const
                       "makes it impossible to create new points, either "
                       "distance can be decreased or the maximum number of attempts may be "
                       "increased."
-                    );
+  );
+}
+
+QString QgsRandomPointsExtentAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a point layer with a given number of random points, all of them within a given extent." );
 }
 
 QgsRandomPointsExtentAlgorithm *QgsRandomPointsExtentAlgorithm::createInstance() const
@@ -83,25 +88,24 @@ QgsRandomPointsExtentAlgorithm *QgsRandomPointsExtentAlgorithm::createInstance()
 
 bool QgsRandomPointsExtentAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
-  mExtent = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, mCrs );
-  mNumPoints = parameterAsInt( parameters, QStringLiteral( "POINTS_NUMBER" ), context );
-  mDistance = parameterAsDouble( parameters, QStringLiteral( "MIN_DISTANCE" ), context );
-  mMaxAttempts = parameterAsInt( parameters, QStringLiteral( "MAX_ATTEMPTS" ), context );
+  mCrs = parameterAsCrs( parameters, u"TARGET_CRS"_s, context );
+  mExtent = parameterAsExtent( parameters, u"EXTENT"_s, context, mCrs );
+  mNumPoints = parameterAsInt( parameters, u"POINTS_NUMBER"_s, context );
+  mDistance = parameterAsDouble( parameters, u"MIN_DISTANCE"_s, context );
+  mMaxAttempts = parameterAsInt( parameters, u"MAX_ATTEMPTS"_s, context );
 
   return true;
 }
 
 QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-
   QgsFields fields = QgsFields();
-  fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
+  fields.append( QgsField( u"id"_s, QMetaType::Type::LongLong ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Point, mCrs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, Qgis::WkbType::Point, mCrs ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   //initialize random engine
   std::random_device random_device;
@@ -126,7 +130,7 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
       f.setGeometry( QgsGeometry( new QgsPoint( rx, ry ) ) );
       f.setAttributes( QgsAttributes() << i );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
       i++;
       feedback->setProgress( static_cast<int>( static_cast<double>( i ) / static_cast<double>( mNumPoints ) * 100 ) );
     }
@@ -153,9 +157,8 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
         f.setAttributes( QgsAttributes() << i );
         const QgsGeometry randomPointGeom = QgsGeometry( new QgsPoint( rx, ry ) );
         f.setGeometry( randomPointGeom );
-        if ( !index.addFeature( f ) ||
-             !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+        if ( !index.addFeature( f ) || !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
+          throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
         i++;
         distCheckIterations = 0; //reset distCheckIterations if a point is added
         feedback->setProgress( static_cast<int>( static_cast<double>( i ) / static_cast<double>( mNumPoints ) * 100 ) );
@@ -165,22 +168,25 @@ QVariantMap QgsRandomPointsExtentAlgorithm::processAlgorithm( const QVariantMap 
         if ( distCheckIterations == mMaxAttempts )
         {
           throw QgsProcessingException( QObject::tr( "%1 of %2 points have been successfully created, but no more random points could be found "
-                                        "due to the given minimum distance between points. Either choose a larger extent, "
-                                        "lower the minimum distance between points or try increasing the number "
-                                        "of attempts for searching new points." ).arg( i ).arg( mNumPoints ) );
+                                                     "due to the given minimum distance between points. Either choose a larger extent, "
+                                                     "lower the minimum distance between points or try increasing the number "
+                                                     "of attempts for searching new points." )
+                                          .arg( i )
+                                          .arg( mNumPoints ) );
         }
         else
         {
           distCheckIterations++;
           continue; //retry with new point
         }
-
       }
     }
   }
 
+  sink->finalize();
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
 
   return outputs;
 }

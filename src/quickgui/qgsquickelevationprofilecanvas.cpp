@@ -16,17 +16,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsquickelevationprofilecanvas.h"
+
 #include "qgsabstractprofilegenerator.h"
 #include "qgsabstractprofilesource.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsmaplayerutils.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerutils.h"
 #include "qgsplot.h"
 #include "qgsprofilerenderer.h"
 #include "qgsprofilerequest.h"
 #include "qgsprojectelevationproperties.h"
-#include "qgsquickelevationprofilecanvas.h"
 #include "qgsterrainprovider.h"
 
 #include <QQuickWindow>
@@ -35,9 +36,10 @@
 #include <QScreen>
 #include <QTimer>
 
+#include "moc_qgsquickelevationprofilecanvas.cpp"
 
 ///@cond PRIVATE
-class QgsElevationProfilePlotItem : public Qgs2DPlot
+class QgsElevationProfilePlotItem : public Qgs2DXyPlot
 {
   public:
     explicit QgsElevationProfilePlotItem( QgsQuickElevationProfileCanvas *canvas )
@@ -85,12 +87,13 @@ class QgsElevationProfilePlotItem : public Qgs2DPlot
       QgsRenderContext context;
       context.setScaleFactor( ( mCanvas->window()->screen()->physicalDotsPerInch() * mCanvas->window()->screen()->devicePixelRatio() ) / 25.4 );
 
-      calculateOptimisedIntervals( context );
-      mPlotArea = interiorPlotArea( context );
+      QgsPlotRenderContext plotContext;
+      calculateOptimisedIntervals( context, plotContext );
+      mPlotArea = interiorPlotArea( context, plotContext );
       return mPlotArea;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       mPlotArea = plotArea;
 
@@ -267,7 +270,7 @@ void QgsQuickElevationProfileCanvas::refresh()
   sources.reserve( layersToGenerate.size() );
   for ( QgsMapLayer *layer : layersToGenerate )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
       sources.append( source );
   }
 
@@ -315,8 +318,9 @@ void QgsQuickElevationProfileCanvas::generationFinished()
   rc.expressionContext().appendScope( QgsExpressionContextUtils::globalScope() );
   rc.expressionContext().appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
 
-  mPlotItem->calculateOptimisedIntervals( rc );
-  mPlotItem->render( rc );
+  QgsPlotRenderContext plotContext;
+  mPlotItem->calculateOptimisedIntervals( rc, plotContext );
+  mPlotItem->render( rc, plotContext );
   imagePainter.end();
 
   mDirty = true;
@@ -346,7 +350,7 @@ void QgsQuickElevationProfileCanvas::onLayerProfileGenerationPropertyChanged()
 
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -366,7 +370,7 @@ void QgsQuickElevationProfileCanvas::onLayerProfileRendererPropertyChanged()
 
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( properties->parent() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       mCurrentJob->replaceSource( source );
     }
@@ -382,7 +386,7 @@ void QgsQuickElevationProfileCanvas::regenerateResultsForLayer()
 
   if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
   {
-    if ( QgsAbstractProfileSource *source = dynamic_cast<QgsAbstractProfileSource *>( layer ) )
+    if ( QgsAbstractProfileSource *source = layer->profileSource() )
     {
       if ( mCurrentJob->invalidateResults( source ) )
         scheduleDeferredRegeneration();
@@ -450,11 +454,9 @@ void QgsQuickElevationProfileCanvas::refineResults()
 
     // for similar reasons we round the minimum distance off to multiples of the maximum error in map units
     const double distanceMin = std::floor( ( mPlotItem->xMinimum() - plotDistanceRange * 0.05 ) / context.maximumErrorMapUnits() ) * context.maximumErrorMapUnits();
-    context.setDistanceRange( QgsDoubleRange( std::max( 0.0, distanceMin ),
-                              mPlotItem->xMaximum() + plotDistanceRange * 0.05 ) );
+    context.setDistanceRange( QgsDoubleRange( std::max( 0.0, distanceMin ), mPlotItem->xMaximum() + plotDistanceRange * 0.05 ) );
 
-    context.setElevationRange( QgsDoubleRange( mPlotItem->yMinimum() - plotElevationRange * 0.05,
-                               mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
+    context.setElevationRange( QgsDoubleRange( mPlotItem->yMinimum() - plotElevationRange * 0.05, mPlotItem->yMaximum() + plotElevationRange * 0.05 ) );
     mCurrentJob->setContext( context );
   }
   scheduleDeferredRegeneration();
@@ -517,22 +519,14 @@ void QgsQuickElevationProfileCanvas::populateLayersFromProject()
   // sort layers so that types which are more likely to obscure others are rendered below
   // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
   // the vector feature
-  QList<QgsMapLayer *> sortedLayers = QgsMapLayerUtils::sortLayersByType( projectLayers,
-  {
-    Qgis::LayerType::Raster,
-    Qgis::LayerType::Mesh,
-    Qgis::LayerType::Vector,
-    Qgis::LayerType::PointCloud
-  } );
+  QList<QgsMapLayer *> sortedLayers = QgsMapLayerUtils::sortLayersByType( projectLayers, { Qgis::LayerType::Raster, Qgis::LayerType::Mesh, Qgis::LayerType::Vector, Qgis::LayerType::PointCloud } );
 
   // filter list, removing null layers and invalid layers
   auto filteredList = sortedLayers;
-  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(),
-                                      []( QgsMapLayer * layer )
-  {
-    return !layer || !layer->isValid() || !layer->elevationProperties() || !layer->elevationProperties()->showByDefaultInElevationProfilePlots();
-  } ),
-  filteredList.end() );
+  filteredList.erase( std::remove_if( filteredList.begin(), filteredList.end(), []( QgsMapLayer *layer ) {
+                        return !layer || !layer->isValid() || !layer->elevationProperties() || !layer->elevationProperties()->showByDefaultInElevationProfilePlots();
+                      } ),
+                      filteredList.end() );
 
   mLayers = _qgis_listRawToQPointer( filteredList );
   for ( QgsMapLayer *layer : std::as_const( mLayers ) )
@@ -546,15 +540,9 @@ QList<QgsMapLayer *> QgsQuickElevationProfileCanvas::layers() const
   return _qgis_listQPointerToRaw( mLayers );
 }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-void QgsQuickElevationProfileCanvas::geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry )
-{
-  QQuickItem::geometryChanged( newGeometry, oldGeometry );
-#else
 void QgsQuickElevationProfileCanvas::geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry )
 {
   QQuickItem::geometryChange( newGeometry, oldGeometry );
-#endif
   mPlotItem->updateRect();
   mDirty = true;
   refresh();

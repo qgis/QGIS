@@ -19,31 +19,33 @@
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapoverview.h"
-#include "qgsproject.h"
 #include "qgsmultibandcolorrenderer.h"
-#include "qgsrasterlayer.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
-#include <QObject>
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
+
+#include <QObject>
 
 class TestQgsLayoutMapOverview : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsLayoutMapOverview() : QgsTest( QStringLiteral( "Layout Map Overview Tests" ), QStringLiteral( "composer_mapoverview" ) ) {}
+    TestQgsLayoutMapOverview()
+      : QgsTest( u"Layout Map Overview Tests"_s, u"composer_mapoverview"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
-    void overviewMap(); //test if overview map frame works
-    void overviewMapRotated(); //test if overview map frame works with rotated overview
+    void initTestCase();        // will be called before the first testfunction is executed.
+    void cleanupTestCase();     // will be called after the last testfunction was executed.
+    void init();                // will be called before each testfunction is executed.
+    void cleanup();             // will be called after every testfunction.
+    void overviewMap();         //test if overview map frame works
+    void overviewMapRotated();  //test if overview map frame works with rotated overview
     void overviewMapRotated2(); //test if overview map frame works with rotated map
     void overviewMapBlending(); //test if blend modes with overview map frame works
-    void overviewMapInvert(); //test if invert of overview map frame works
-    void overviewMapCenter(); //test if centering of overview map frame works
+    void overviewMapInvert();   //test if invert of overview map frame works
+    void overviewMapCenter();   //test if centering of overview map frame works
     void overviewReprojected(); //test that overview frame is reprojected
 
   private:
@@ -57,8 +59,7 @@ void TestQgsLayoutMapOverview::initTestCase()
 
   //create maplayers from testdata and add to layer registry
   const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
-  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
-                                     rasterFileInfo.completeBaseName() );
+  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 }
@@ -76,7 +77,6 @@ void TestQgsLayoutMapOverview::init()
 
 void TestQgsLayoutMapOverview::cleanup()
 {
-
 }
 
 void TestQgsLayoutMapOverview::overviewMap()
@@ -89,7 +89,7 @@ void TestQgsLayoutMapOverview::overviewMap()
   map->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
   l.addLayoutItem( map );
 
-  QgsLayoutItemMap *overviewMap =  new QgsLayoutItemMap( &l );
+  QgsLayoutItemMap *overviewMap = new QgsLayoutItemMap( &l );
   overviewMap->attemptSetSceneRect( QRectF( 20, 130, 70, 70 ) );
   overviewMap->setFrameEnabled( true );
   overviewMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
@@ -108,7 +108,7 @@ void TestQgsLayoutMapOverview::overviewMap()
 
   //render
   overviewMap->overview()->setLinkedMap( map );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewMapRotated()
@@ -130,7 +130,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated()
   map->setMapRotation( 30 );
   overviewMap->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setLinkedMap( map );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_rotated" ), &l, 0, 600 );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_rotated"_s, &l, 0, 600 );
 }
 
 void TestQgsLayoutMapOverview::overviewMapRotated2()
@@ -152,7 +152,7 @@ void TestQgsLayoutMapOverview::overviewMapRotated2()
   overviewMap->setMapRotation( 30 );
   overviewMap->setExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setLinkedMap( map );
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_rotated2" ), &l, 0, 600 );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_rotated2"_s, &l, 0, 600 );
 }
 
 void TestQgsLayoutMapOverview::overviewMapBlending()
@@ -175,7 +175,7 @@ void TestQgsLayoutMapOverview::overviewMapBlending()
   overviewMapBlend->overview()->setLinkedMap( map );
   overviewMapBlend->overview()->setBlendMode( QPainter::CompositionMode_Multiply );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_blending" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_blending"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewMapInvert()
@@ -198,7 +198,7 @@ void TestQgsLayoutMapOverview::overviewMapInvert()
   overviewMapInvert->overview()->setLinkedMap( map );
   overviewMapInvert->overview()->setInverted( true );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_invert" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_invert"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewMapCenter()
@@ -221,7 +221,7 @@ void TestQgsLayoutMapOverview::overviewMapCenter()
   overviewMapCenter->overview()->setLinkedMap( map );
   overviewMapCenter->overview()->setCentered( true );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_center" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_center"_s, &l );
 }
 
 void TestQgsLayoutMapOverview::overviewReprojected()
@@ -247,7 +247,7 @@ void TestQgsLayoutMapOverview::overviewReprojected()
   overviewMap->setExtent( QgsRectangle( 4712502, -7620278, 10872777, -2531356 ) );
   overviewMap->overview()->setLinkedMap( map );
 
-  QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_overview_reprojected" ), &l );
+  QGSVERIFYLAYOUTCHECK( u"composermap_overview_reprojected"_s, &l );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMapOverview )

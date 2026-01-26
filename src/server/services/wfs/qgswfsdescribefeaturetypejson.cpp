@@ -14,19 +14,20 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswfsutils.h"
-#include "qgsserverprojectutils.h"
 #include "qgswfsdescribefeaturetypejson.h"
-#include "qgswfsdescribefeaturetype.h"
-#include "qgswfsparameters.h"
+
+#include "qgsdatetimefieldformatter.h"
 #include "qgsjsonutils.h"
 #include "qgsproject.h"
+#include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsdatetimefieldformatter.h"
+#include "qgswfsdescribefeaturetype.h"
+#include "qgswfsparameters.h"
+#include "qgswfsutils.h"
 
-#include <QJsonObject>
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 using namespace QgsWfs;
 
@@ -34,8 +35,7 @@ QgsWfsDescribeFeatureTypeJson::QgsWfsDescribeFeatureTypeJson( const QgsWfsParame
   : wfsParameters( wfsParams )
 {}
 
-void QgsWfsDescribeFeatureTypeJson::writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-    const QgsServerRequest &request, QgsServerResponse &response ) const
+void QgsWfsDescribeFeatureTypeJson::writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response ) const
 {
   const QJsonDocument doc( createDescribeFeatureTypeDocument( serverIface, project, version, request ) );
 
@@ -44,8 +44,7 @@ void QgsWfsDescribeFeatureTypeJson::writeDescribeFeatureType( QgsServerInterface
 }
 
 
-QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-    const QgsServerRequest &request ) const
+QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request ) const
 {
   Q_UNUSED( version )
 
@@ -53,13 +52,13 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-  ( void )serverIface;
+  ( void ) serverIface;
 #endif
 
   QJsonObject json;
-  json[QStringLiteral( "elementFormDefault" )] = QStringLiteral( "qualified" );
-  json[QStringLiteral( "targetNamespace" )] = QGS_NAMESPACE;
-  json[QStringLiteral( "targetPrefix" )] = QStringLiteral( "qgs" );
+  json[u"elementFormDefault"_s] = u"qualified"_s;
+  json[u"targetNamespace"_s] = QGS_NAMESPACE;
+  json[u"targetPrefix"_s] = u"qgs"_s;
 
   QJsonArray featureTypes;
 
@@ -74,7 +73,7 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
       continue;
     }
 
-    const QString name = layerTypeName( layer );
+    const QString name = layer->serverProperties()->wfsTypeName();
 
     if ( !typeNameList.isEmpty() && !typeNameList.contains( name ) )
     {
@@ -85,7 +84,7 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
     {
       if ( !typeNameList.isEmpty() )
       {
-        throw QgsSecurityAccessException( QStringLiteral( "Feature access permission denied" ) );
+        throw QgsSecurityAccessException( u"Feature access permission denied"_s );
       }
       else
       {
@@ -103,18 +102,18 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::createDescribeFeatureTypeDocument( Qg
     featureTypes.append( schemaLayerToJson( const_cast<QgsVectorLayer *>( vLayer ) ) );
   }
 
-  json[QStringLiteral( "featureTypes" )] = featureTypes;
+  json[u"featureTypes"_s] = featureTypes;
   return json;
 }
 
 QJsonObject QgsWfsDescribeFeatureTypeJson::schemaLayerToJson( const QgsVectorLayer *layer ) const
 {
-  const QString typeName = layerTypeName( layer );
+  const QString typeName = layer->serverProperties()->wfsTypeName();
 
   QJsonObject json;
   QJsonArray properties;
 
-  json[QStringLiteral( "typeName" )] = typeName;
+  json[u"typeName"_s] = typeName;
 
   if ( layer->isSpatial() )
   {
@@ -122,15 +121,15 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::schemaLayerToJson( const QgsVectorLay
     getGeometryType( layer, geomType, geomLocalType );
 
     QJsonObject property;
-    property[QStringLiteral( "name" )] = QStringLiteral( "geometry" );
-    property[QStringLiteral( "minOccurs" )] = QStringLiteral( "0" );
-    property[QStringLiteral( "maxOccurs" )] = QStringLiteral( "1" );
-    property[QStringLiteral( "type" )] = geomType;
+    property[u"name"_s] = u"geometry"_s;
+    property[u"minOccurs"_s] = u"0"_s;
+    property[u"maxOccurs"_s] = u"1"_s;
+    property[u"type"_s] = geomType;
 
 
     if ( !geomLocalType.isEmpty() )
     {
-      property[QStringLiteral( "localType" )] = geomLocalType;
+      property[u"localType"_s] = geomLocalType;
     }
     properties.append( property );
   }
@@ -153,25 +152,25 @@ QJsonObject QgsWfsDescribeFeatureTypeJson::schemaLayerToJson( const QgsVectorLay
     getFieldAttributes( field, attributeName, attributeType );
 
     QJsonObject property;
-    property[QStringLiteral( "name" )] = attributeName;
-    property[QStringLiteral( "type" )] = attributeType;
-    property[QStringLiteral( "localType" )] = attributeType;
+    property[u"name"_s] = attributeName;
+    property[u"type"_s] = attributeType;
+    property[u"localType"_s] = attributeType;
 
     if ( !( field.constraints().constraints() & QgsFieldConstraints::Constraint::ConstraintNotNull ) )
     {
-      property[QStringLiteral( "nillable" )] = "true";
+      property[u"nillable"_s] = "true";
     }
 
     const QString alias = field.alias();
     if ( !alias.isEmpty() )
     {
-      property[QStringLiteral( "alias" )] = alias;
+      property[u"alias"_s] = alias;
     }
 
     properties.append( property );
   }
 
-  json[QStringLiteral( "properties" )] = properties;
+  json[u"properties"_s] = properties;
   return json;
 }
 
@@ -182,44 +181,43 @@ void QgsWfsDescribeFeatureTypeJson::getGeometryType( const QgsVectorLayer *layer
   {
     case Qgis::WkbType::Point25D:
     case Qgis::WkbType::Point:
-      geomType = QStringLiteral( "gml:PointPropertyType" );
-      geomLocalType = QStringLiteral( "Point" );
+      geomType = u"gml:PointPropertyType"_s;
+      geomLocalType = u"Point"_s;
       break;
 
     case Qgis::WkbType::LineString25D:
     case Qgis::WkbType::LineString:
-      geomType = QStringLiteral( "gml:LineStringPropertyType" );
-      geomLocalType = QStringLiteral( "LineString" );
+      geomType = u"gml:LineStringPropertyType"_s;
+      geomLocalType = u"LineString"_s;
       break;
 
     case Qgis::WkbType::Polygon25D:
     case Qgis::WkbType::Polygon:
-      geomType = QStringLiteral( "gml:PolygonPropertyType" );
-      geomLocalType = QStringLiteral( "Polygon" );
+      geomType = u"gml:PolygonPropertyType"_s;
+      geomLocalType = u"Polygon"_s;
       break;
 
     case Qgis::WkbType::MultiPoint25D:
     case Qgis::WkbType::MultiPoint:
-      geomType = QStringLiteral( "gml:MultiPointPropertyType" );
-      geomLocalType = QStringLiteral( "MultiPoint" );
+      geomType = u"gml:MultiPointPropertyType"_s;
+      geomLocalType = u"MultiPoint"_s;
       break;
 
     case Qgis::WkbType::MultiCurve:
     case Qgis::WkbType::MultiLineString25D:
     case Qgis::WkbType::MultiLineString:
-      geomType = QStringLiteral( "gml:MultiCurvePropertyType" );
-      geomLocalType = QStringLiteral( "MultiCurve" );
+      geomType = u"gml:MultiCurvePropertyType"_s;
+      geomLocalType = u"MultiCurve"_s;
       break;
 
     case Qgis::WkbType::MultiSurface:
     case Qgis::WkbType::MultiPolygon25D:
     case Qgis::WkbType::MultiPolygon:
-      geomType = QStringLiteral( "gml:MultiSurfacePropertyType" );
-      geomLocalType = QStringLiteral( "MultiSurface" );
+      geomType = u"gml:MultiSurfacePropertyType"_s;
+      geomLocalType = u"MultiSurface"_s;
       break;
 
     default:
-      geomType = QStringLiteral( "gml:GeometryPropertyType" );
+      geomType = u"gml:GeometryPropertyType"_s;
   }
 }
-

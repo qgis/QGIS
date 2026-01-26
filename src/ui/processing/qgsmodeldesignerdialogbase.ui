@@ -86,6 +86,7 @@
     <addaction name="mActionZoomToItems"/>
     <addaction name="separator"/>
     <addaction name="mActionShowComments"/>
+    <addaction name="mActionShowFeatureCount"/>
     <addaction name="separator"/>
     <addaction name="mActionSnappingEnabled"/>
     <addaction name="separator"/>
@@ -162,10 +163,10 @@
      <item>
       <widget class="QgsScrollArea" name="scrollArea">
        <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
+        <enum>QFrame::Shape::NoFrame</enum>
        </property>
        <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
+        <enum>QFrame::Shadow::Plain</enum>
        </property>
        <property name="widgetResizable">
         <bool>true</bool>
@@ -176,7 +177,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>90</height>
+          <height>91</height>
          </rect>
         </property>
         <layout class="QGridLayout" name="gridLayout">
@@ -211,7 +212,7 @@
          <item row="2" column="1">
           <spacer name="verticalSpacer">
            <property name="orientation">
-            <enum>Qt::Vertical</enum>
+            <enum>Qt::Orientation::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -252,10 +253,10 @@
      <item>
       <widget class="QgsScrollArea" name="mInputsScrollArea">
        <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
+        <enum>QFrame::Shape::NoFrame</enum>
        </property>
        <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
+        <enum>QFrame::Shadow::Plain</enum>
        </property>
        <property name="widgetResizable">
         <bool>true</bool>
@@ -266,7 +267,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>173</height>
+          <height>175</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -312,7 +313,7 @@
            <item>
             <spacer name="horizontalSpacer">
              <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+              <enum>Qt::Orientation::Horizontal</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -333,7 +334,7 @@
   </widget>
   <widget class="QgsDockWidget" name="mAlgorithmsDock">
    <property name="windowTitle">
-    <string>Algorithms</string>
+    <string>Toolbox</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -355,10 +356,10 @@
      <item>
       <widget class="QgsScrollArea" name="scrollArea_2">
        <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
+        <enum>QFrame::Shape::NoFrame</enum>
        </property>
        <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
+        <enum>QFrame::Shadow::Plain</enum>
        </property>
        <property name="widgetResizable">
         <bool>true</bool>
@@ -369,7 +370,7 @@
           <x>0</x>
           <y>0</y>
           <width>256</width>
-          <height>167</height>
+          <height>169</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -386,14 +387,14 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QgsFilterLineEdit" name="mAlgorithmSearchEdit">
+          <widget class="QgsFilterLineEdit" name="mToolboxSearchEdit">
            <property name="toolTip">
             <string>Enter algorithm name to filter list</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QgsProcessingToolboxTreeView" name="mAlgorithmsTree">
+          <widget class="QgsProcessingToolboxTreeView" name="mToolboxTree">
            <property name="alternatingRowColors">
             <bool>true</bool>
            </property>
@@ -741,10 +742,10 @@
      <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
    </property>
    <property name="text">
-    <string>Select/Move Item</string>
+    <string>Select/Move/Link Item</string>
    </property>
    <property name="toolTip">
-    <string>Select/Move item</string>
+    <string>Select/Move/link item</string>
    </property>
    <property name="shortcut">
     <string>V</string>
@@ -780,6 +781,17 @@
    </property>
    <property name="shortcut">
     <string>Shift+F5</string>
+   </property>
+  </action>
+  <action name="mActionShowFeatureCount">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Feature Count</string>
    </property>
   </action>
  </widget>

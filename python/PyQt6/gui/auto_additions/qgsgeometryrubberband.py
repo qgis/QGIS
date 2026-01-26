@@ -5,3 +5,8 @@ QgsGeometryRubberBand.ICON_X = QgsGeometryRubberBand.IconType.ICON_X
 QgsGeometryRubberBand.ICON_BOX = QgsGeometryRubberBand.IconType.ICON_BOX
 QgsGeometryRubberBand.ICON_CIRCLE = QgsGeometryRubberBand.IconType.ICON_CIRCLE
 QgsGeometryRubberBand.ICON_FULL_BOX = QgsGeometryRubberBand.IconType.ICON_FULL_BOX
+try:
+    QgsGeometryRubberBand.__virtual_methods__ = ['setGeometry']
+    QgsGeometryRubberBand.__overridden_methods__ = ['updatePosition', 'paint']
+except (NameError, AttributeError):
+    pass

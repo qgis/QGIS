@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "March 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 
 def processCommand(alg, parameters, context, feedback):
@@ -27,7 +27,7 @@ def processCommand(alg, parameters, context, feedback):
 
 def processOutputs(alg, parameters, context, feedback):
     # We need to add the initial vector layer to outputs:
-    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
-    grassName = alg.exportedLayers['areas']
-    dataType = 'auto'
+    fileName = alg.parameterAsOutputLayer(parameters, "output", context)
+    grassName = alg.exportedLayers["areas"]
+    dataType = "auto"
     alg.exportVectorLayer(grassName, fileName, dataType=dataType)

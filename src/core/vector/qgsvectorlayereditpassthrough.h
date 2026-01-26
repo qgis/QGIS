@@ -31,6 +31,7 @@ class QgsTransaction;
 /**
  * \ingroup core
  * \class QgsVectorLayerEditPassthrough
+ * \brief An edit buffer which directly passes commands through, used when a layer is within a transaction.
  */
 class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffer
 {
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     bool update( QgsTransaction *transaction, const QString &sql, const QString &name );
 
   private:
-    bool mModified;
+    bool mModified = false;
 
     // utility function to avoid cpy/paste
     bool modify( QgsVectorLayerUndoPassthroughCommand *cmd );

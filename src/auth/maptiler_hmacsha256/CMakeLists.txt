@@ -16,11 +16,7 @@ if (WITH_GUI)
     gui/qgsauthmaptilerhmacsha256edit.h
   )
   set(AUTH_MAPTILER_HMACSHA256_UIS gui/qgsauthmaptilerhmacsha256edit.ui)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(AUTH_MAPTILER_HMACSHA256_UIS_H ${AUTH_MAPTILER_HMACSHA256_UIS})
-  else()
-    QT5_WRAP_UI(AUTH_MAPTILER_HMACSHA256_UIS_H ${AUTH_MAPTILER_HMACSHA256_UIS})
-  endif()
+  qt_wrap_ui(AUTH_MAPTILER_HMACSHA256_UIS_H ${AUTH_MAPTILER_HMACSHA256_UIS})
 endif()
 
 
@@ -28,9 +24,6 @@ endif()
 add_library(authmethod_maptilerhmacsha256_a STATIC ${AUTH_MAPTILER_HMACSHA256_SRCS} ${AUTH_MAPTILER_HMACSHA256_HDRS} ${AUTH_MAPTILER_HMACSHA256_UIS_H})
 
 target_include_directories(authmethod_maptilerhmacsha256_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/hmacsha256/core)
-
-# require c++17
-target_compile_features(authmethod_maptilerhmacsha256_a PRIVATE cxx_std_17)
 
 target_link_libraries(authmethod_maptilerhmacsha256_a qgis_core)
 
@@ -50,9 +43,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_maptilerhmacsha256 MODULE ${AUTH_MAPTILER_HMACSHA256_SRCS} ${AUTH_MAPTILER_HMACSHA256_HDRS} ${AUTH_MAPTILER_HMACSHA256_UIS_H})
-
-  # require c++17
-  target_compile_features(authmethod_maptilerhmacsha256 PRIVATE cxx_std_17)
 
   target_link_libraries(authmethod_maptilerhmacsha256 qgis_core)
 

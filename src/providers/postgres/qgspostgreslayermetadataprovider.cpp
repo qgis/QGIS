@@ -14,34 +14,33 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspostgreslayermetadataprovider.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsfeedback.h"
-
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
 
 QString QgsPostgresLayerMetadataProvider::id() const
 {
-  return QStringLiteral( "postgres" );
+  return u"postgres"_s;
 }
 
 QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const
 {
   QgsLayerMetadataSearchResults results;
-  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "postgres" ) ) };
+  QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( u"postgres"_s ) };
 
-  if ( md && ( ! feedback || ! feedback->isCanceled() ) )
+  if ( md && ( !feedback || !feedback->isCanceled() ) )
   {
-    const QMap<QString, QgsAbstractProviderConnection *> constConnections { md->connections( ) };
+    const QMap<QString, QgsAbstractProviderConnection *> constConnections { md->connections() };
     for ( const QgsAbstractProviderConnection *conn : std::as_const( constConnections ) )
     {
-
       if ( feedback && feedback->isCanceled() )
       {
         break;
       }
 
-      if ( conn->configuration().value( QStringLiteral( "metadataInDatabase" ), false ).toBool() )
+      if ( conn->configuration().value( u"metadataInDatabase"_s, false ).toBool() )
       {
         if ( const QgsAbstractDatabaseProviderConnection *dbConn = static_cast<const QgsAbstractDatabaseProviderConnection *>( conn ) )
         {
@@ -64,5 +63,3 @@ QgsLayerMetadataSearchResults QgsPostgresLayerMetadataProvider::search( const Qg
 
   return results;
 }
-
-

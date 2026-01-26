@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPERECTANGLE3POINTS_H
 #define QGSMAPTOOLSHAPERECTANGLE3POINTS_H
 
-#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeRectangle3PointsMetadata : public QgsMapToolShapeMetadata
@@ -48,15 +48,13 @@ class APP_EXPORT QgsMapToolShapeRectangle3PointsMetadata : public QgsMapToolShap
 
   private:
     CreateMode mCreateMode;
-
 };
 
-class APP_EXPORT QgsMapToolShapeRectangle3Points: public QgsMapToolShapeRectangleAbstract
+class APP_EXPORT QgsMapToolShapeRectangle3Points : public QgsMapToolShapeRectangleAbstract
 {
     Q_OBJECT
 
   public:
-
     QgsMapToolShapeRectangle3Points( const QString &id, QgsMapToolShapeRectangle3PointsMetadata::CreateMode createMode, QgsMapToolCapture *parentTool );
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;

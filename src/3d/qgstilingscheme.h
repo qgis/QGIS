@@ -17,9 +17,8 @@
 #define QGSTILINGSCHEME_H
 
 #include "qgis_3d.h"
-
-#include <qgscoordinatereferencesystem.h>
-#include <qgspointxy.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgspointxy.h"
 
 class QgsRectangle;
 struct QgsChunkNodeId;
@@ -27,8 +26,8 @@ struct QgsChunkNodeId;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
- * \brief The class encapsulates tiling scheme (just like with WMTS / TMS / XYZ layers).
+ * \ingroup qgis_3d
+ * \brief Encapsulates tiling schemes (just like with WMTS / TMS / XYZ layers).
  *
  * The origin (tile [0,0]) is in bottom-left corner.
  * \note Not available in Python bindings
@@ -67,12 +66,10 @@ class _3D_EXPORT QgsTilingScheme
     QgsRectangle fullExtent() const { return mFullExtent; }
 
   private:
-    QgsPointXY mMapOrigin; //!< Origin point in map coordinates: (0,0) in the tiling scheme
-    double mBaseTileSide = 0;  //!< Length of tile side at zoom level 0 in map coordinates
-    QgsCoordinateReferenceSystem mCrs;  //!< CRS of the coordinates
-    QgsRectangle mFullExtent; //!< The fullExtent used in constructor
-
-
+    QgsPointXY mMapOrigin;             //!< Origin point in map coordinates: (0,0) in the tiling scheme
+    double mBaseTileSide = 0;          //!< Length of tile side at zoom level 0 in map coordinates
+    QgsCoordinateReferenceSystem mCrs; //!< CRS of the coordinates
+    QgsRectangle mFullExtent;          //!< The fullExtent used in constructor
 };
 
 #endif // QGSTILINGSCHEME_H

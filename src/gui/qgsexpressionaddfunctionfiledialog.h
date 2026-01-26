@@ -17,9 +17,11 @@
 #define QGSEXPRESSIONADDFUNCTIONFILEDIALOG_H
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include <QDialog>
 #include "ui_qgsexpressionaddfunctionfiledialogbase.h"
+
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 /**
  * \ingroup gui
@@ -30,7 +32,6 @@ class GUI_EXPORT QgsExpressionAddFunctionFileDialog : public QDialog, private Ui
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a QgsExpressionAddFunctionFileDialog to create function files or to set the current
      * project as a function container.

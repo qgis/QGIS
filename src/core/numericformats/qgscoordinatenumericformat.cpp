@@ -14,30 +14,36 @@
  ***************************************************************************/
 
 #include "qgscoordinatenumericformat.h"
+
+#include <iomanip>
+#include <iostream>
+#include <locale>
+#include <memory>
+
 #include "qgis.h"
 #include "qgscoordinateformatter.h"
 
-#include <memory>
-#include <iostream>
-#include <locale>
-#include <iomanip>
+#include "moc_qgscoordinatenumericformat.cpp"
 
 ///@cond PRIVATE
-struct formatter : std::numpunct<wchar_t>
+namespace QgsGeographicCoordinateNumericFormat_ns
 {
-  formatter( QChar thousands, bool showThousands, QChar decimal )
-    : mThousands( thousands.unicode() )
-    , mDecimal( decimal.unicode() )
-    , mShowThousands( showThousands )
-  {}
-  wchar_t do_decimal_point() const override { return mDecimal; }
-  wchar_t do_thousands_sep() const override { return mThousands; }
-  std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
+  struct formatter : std::numpunct<wchar_t>
+  {
+    formatter( QChar thousands, bool showThousands, QChar decimal )
+      : mThousands( thousands.unicode() )
+      , mDecimal( decimal.unicode() )
+      , mShowThousands( showThousands )
+    {}
+    wchar_t do_decimal_point() const override { return mDecimal; }
+    wchar_t do_thousands_sep() const override { return mThousands; }
+    std::string do_grouping() const override { return mShowThousands ? "\3" : "\0"; }
 
-  wchar_t mThousands;
-  wchar_t mDecimal;
-  bool mShowThousands = true;
-};
+    wchar_t mThousands;
+    wchar_t mDecimal;
+    bool mShowThousands = true;
+  };
+}
 ///@endcond
 
 QgsGeographicCoordinateNumericFormat::QgsGeographicCoordinateNumericFormat()
@@ -46,7 +52,7 @@ QgsGeographicCoordinateNumericFormat::QgsGeographicCoordinateNumericFormat()
 
 QString QgsGeographicCoordinateNumericFormat::id() const
 {
-  return QStringLiteral( "geographiccoordinate" );
+  return u"geographiccoordinate"_s;
 }
 
 QString QgsGeographicCoordinateNumericFormat::visibleName() const
@@ -68,7 +74,7 @@ QString QgsGeographicCoordinateNumericFormat::formatDouble( double value, const 
 {
   const QChar decimal = decimalSeparator().isNull() ? context.decimalSeparator() : decimalSeparator();
   std::basic_stringstream<wchar_t> os;
-  os.imbue( std::locale( os.getloc(), new formatter( thousandsSeparator().isNull() ? context.thousandsSeparator() : thousandsSeparator(),
+  os.imbue( std::locale( os.getloc(), new QgsGeographicCoordinateNumericFormat_ns::formatter( thousandsSeparator().isNull() ? context.thousandsSeparator() : thousandsSeparator(),
                          false,
                          decimal ) ) );
 
@@ -91,22 +97,22 @@ QgsGeographicCoordinateNumericFormat *QgsGeographicCoordinateNumericFormat::clon
 
 QgsNumericFormat *QgsGeographicCoordinateNumericFormat::create( const QVariantMap &configuration, const QgsReadWriteContext &context ) const
 {
-  std::unique_ptr< QgsGeographicCoordinateNumericFormat > res = std::make_unique< QgsGeographicCoordinateNumericFormat >();
+  auto res = std::make_unique< QgsGeographicCoordinateNumericFormat >();
   res->setConfiguration( configuration, context );
-  res->mAngleFormat = qgsEnumKeyToValue( configuration.value( QStringLiteral( "angle_format" ) ).toString(), AngleFormat::DecimalDegrees );
-  res->mShowLeadingZeros = configuration.value( QStringLiteral( "show_leading_zeros" ), false ).toBool();
-  res->mShowLeadingDegreeZeros = configuration.value( QStringLiteral( "show_leading_degree_zeros" ), false ).toBool();
-  res->mUseSuffix = configuration.value( QStringLiteral( "show_suffix" ), false ).toBool();
+  res->mAngleFormat = qgsEnumKeyToValue( configuration.value( u"angle_format"_s ).toString(), AngleFormat::DecimalDegrees );
+  res->mShowLeadingZeros = configuration.value( u"show_leading_zeros"_s, false ).toBool();
+  res->mShowLeadingDegreeZeros = configuration.value( u"show_leading_degree_zeros"_s, false ).toBool();
+  res->mUseSuffix = configuration.value( u"show_suffix"_s, false ).toBool();
   return res.release();
 }
 
 QVariantMap QgsGeographicCoordinateNumericFormat::configuration( const QgsReadWriteContext &context ) const
 {
   QVariantMap res = QgsBasicNumericFormat::configuration( context );
-  res.insert( QStringLiteral( "angle_format" ), qgsEnumValueToKey( mAngleFormat ) );
-  res.insert( QStringLiteral( "show_leading_zeros" ), mShowLeadingZeros );
-  res.insert( QStringLiteral( "show_leading_degree_zeros" ), mShowLeadingDegreeZeros );
-  res.insert( QStringLiteral( "show_suffix" ), mUseSuffix );
+  res.insert( u"angle_format"_s, qgsEnumValueToKey( mAngleFormat ) );
+  res.insert( u"show_leading_zeros"_s, mShowLeadingZeros );
+  res.insert( u"show_leading_degree_zeros"_s, mShowLeadingDegreeZeros );
+  res.insert( u"show_suffix"_s, mUseSuffix );
   return res;
 }
 
@@ -123,10 +129,10 @@ void QgsGeographicCoordinateNumericFormat::setAngleFormat( QgsGeographicCoordina
 void QgsGeographicCoordinateNumericFormat::setConfiguration( const QVariantMap &configuration, const QgsReadWriteContext &context )
 {
   QgsBasicNumericFormat::setConfiguration( configuration, context );
-  mAngleFormat = qgsEnumKeyToValue( configuration.value( QStringLiteral( "angle_format" ) ).toString(), AngleFormat::DecimalDegrees );
-  mShowLeadingZeros = configuration.value( QStringLiteral( "show_leading_zeros" ), false ).toBool();
-  mShowLeadingDegreeZeros = configuration.value( QStringLiteral( "show_leading_degree_zeros" ), false ).toBool();
-  mUseSuffix = configuration.value( QStringLiteral( "show_suffix" ), false ).toBool();
+  mAngleFormat = qgsEnumKeyToValue( configuration.value( u"angle_format"_s ).toString(), AngleFormat::DecimalDegrees );
+  mShowLeadingZeros = configuration.value( u"show_leading_zeros"_s, false ).toBool();
+  mShowLeadingDegreeZeros = configuration.value( u"show_leading_degree_zeros"_s, false ).toBool();
+  mUseSuffix = configuration.value( u"show_suffix"_s, false ).toBool();
 }
 
 bool QgsGeographicCoordinateNumericFormat::showLeadingZeros() const
@@ -270,7 +276,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLatitudeAsDegreesMinutesSeco
   ss.str( std::wstring() );
 
   if ( mShowLeadingDegreeZeros )
-    degreesYStr = QString( QStringLiteral( "00" ) + degreesYStr ).right( 2 );
+    degreesYStr = QString( u"00"_s + degreesYStr ).right( 2 );
 
   return sign + degreesYStr + QChar( 176 ) +
          strMinutesY + QChar( 0x2032 ) +
@@ -367,7 +373,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLongitudeAsDegreesMinutesSec
   ss.str( std::wstring() );
 
   if ( mShowLeadingDegreeZeros )
-    degreesXStr = QString( QStringLiteral( "000" ) + degreesXStr ).right( 3 );
+    degreesXStr = QString( u"000"_s + degreesXStr ).right( 3 );
 
   return sign + degreesXStr + QChar( 176 ) +
          minutesX + QChar( 0x2032 ) +
@@ -439,7 +445,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLatitudeAsDegreesMinutes( do
   ss.str( std::wstring() );
 
   if ( mShowLeadingDegreeZeros )
-    degreesYStr = QString( QStringLiteral( "00" ) + degreesYStr ).right( 2 );
+    degreesYStr = QString( u"00"_s + degreesYStr ).right( 2 );
 
   return sign + degreesYStr + QChar( 176 ) +
          strMinutesY + QChar( 0x2032 ) +
@@ -516,7 +522,7 @@ QString QgsGeographicCoordinateNumericFormat::formatLongitudeAsDegreesMinutes( d
   ss.str( std::wstring() );
 
   if ( mShowLeadingDegreeZeros )
-    degreesXStr = QString( QStringLiteral( "000" ) + degreesXStr ).right( 3 );
+    degreesXStr = QString( u"000"_s + degreesXStr ).right( 3 );
 
   return sign + degreesXStr + QChar( 176 ) +
          strMinutesX + QChar( 0x2032 ) +

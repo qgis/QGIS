@@ -16,10 +16,9 @@
 #ifndef QGSJSONEDITWRAPPER_H
 #define QGSJSONEDITWRAPPER_H
 
-#include "qgseditorwidgetwrapper.h"
-
-#include "qgsattributeform.h"
 #include "qgis_gui.h"
+#include "qgsattributeform.h"
+#include "qgseditorwidgetwrapper.h"
 
 class QgsJsonEditWidget;
 
@@ -41,7 +40,6 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsJsonEditWrapper.
      *
@@ -68,7 +66,6 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
     void setFeature( const QgsFeature &feature ) override;
 
   private:
-
     inline static const QString RAW_VALUE_PROPERTY = "RawValue";
 
     void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;

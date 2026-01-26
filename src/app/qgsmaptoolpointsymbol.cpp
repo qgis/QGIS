@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolpointsymbol.h"
-#include "qgsfeatureiterator.h"
-#include "qgsrenderer.h"
-#include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
-#include "qgssnappingutils.h"
-#include "qgsmapmouseevent.h"
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmarkersymbol.h"
+#include "qgsrenderer.h"
+#include "qgssnappingutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsmaptoolpointsymbol.cpp"
 
 QgsMapToolPointSymbol::QgsMapToolPointSymbol( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mFeatureNumber( -1 )
 {
   mToolName = tr( "Map tool point symbol" );
 }
@@ -76,7 +78,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   if ( !mActiveLayer->renderer() )
     return;
 
-  std::unique_ptr< QgsFeatureRenderer > renderer( mActiveLayer->renderer()->clone() );
+  std::unique_ptr<QgsFeatureRenderer> renderer( mActiveLayer->renderer()->clone() );
   QgsRenderContext context = QgsRenderContext::fromMapSettings( mCanvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( mActiveLayer );
   context.expressionContext().setFeature( feature );
@@ -92,7 +94,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
     {
       if ( s && s->type() == Qgis::SymbolType::Marker )
       {
-        hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol * >( s ), context );
+        hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast<QgsMarkerSymbol *>( s ), context );
       }
     }
   }
@@ -101,7 +103,7 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
     QgsSymbol *s = renderer->originalSymbolForFeature( feature, context );
     if ( s && s->type() == Qgis::SymbolType::Marker )
     {
-      hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast< QgsMarkerSymbol * >( s ), context );
+      hasCompatibleSymbol = hasCompatibleSymbol || checkSymbolCompatibility( static_cast<QgsMarkerSymbol *>( s ), context );
     }
   }
 
@@ -111,4 +113,3 @@ void QgsMapToolPointSymbol::canvasPressEvent( QgsMapMouseEvent *e )
   else
     noCompatibleSymbols();
 }
-

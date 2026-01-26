@@ -10,14 +10,15 @@
 class QgsMergedFeatureRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-:py:class:`QgsMergedFeatureRenderer` is a polygon or line-only feature renderer used to
-renderer a set of features merged (or dissolved) into a single geometry.
+A polygon or line-only feature renderer used to render a set of features
+merged (or dissolved) into a single geometry.
 
-It is designed on top of another feature renderer, which is called "embedded"
-Most of the methods are then only proxies to the embedded renderer. E.g. if
-the embedded renderer is a categorized renderer, then all the matching features
-for each categorized class will be dissolved together. Features from different
-classes will NOT be dissolved together.
+It is designed on top of another feature renderer, which is called
+"embedded" Most of the methods are then only proxies to the embedded
+renderer. E.g. if the embedded renderer is a categorized renderer, then
+all the matching features for each categorized class will be dissolved
+together. Features from different classes will NOT be dissolved
+together.
 
 .. versionadded:: 3.18
 %End
@@ -31,7 +32,8 @@ classes will NOT be dissolved together.
 %Docstring
 Constructor for QgsMergedFeatureRenderer.
 
-:param embeddedRenderer: optional embeddedRenderer. Ownership will be transferred.
+:param embeddedRenderer: optional embeddedRenderer. Ownership will be
+                         transferred.
 %End
 
 
@@ -50,14 +52,17 @@ Creates a renderer out of an XML, for loading
     virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 
 %Docstring
-Renders a given feature.
-This will here collect features. The actual rendering will be postponed to :py:func:`~QgsMergedFeatureRenderer.stopRender`
+Renders a given feature. This will here collect features. The actual
+rendering will be postponed to
+:py:func:`~QgsMergedFeatureRenderer.stopRender`
 
 :param feature: the feature to render
 :param context: the rendering context
 :param layer: the symbol layer to render, if that makes sense
-:param selected: whether this feature has been selected (this will add decorations)
-:param drawVertexMarker: whether this feature has vertex markers (in edit mode usually)
+:param selected: whether this feature has been selected (this will add
+                 decorations)
+:param drawVertexMarker: whether this feature has vertex markers (in
+                         edit mode usually)
 
 :return: ``True`` if the rendering was OK
 %End
@@ -65,8 +70,9 @@ This will here collect features. The actual rendering will be postponed to :py:f
     virtual void stopRender( QgsRenderContext &context );
 
 %Docstring
-The actual rendering will take place here.
-Features collected during :py:func:`~QgsMergedFeatureRenderer.renderFeature` are rendered using the embedded feature renderer
+The actual rendering will take place here. Features collected during
+:py:func:`~QgsMergedFeatureRenderer.renderFeature` are rendered using
+the embedded feature renderer
 %End
 
     virtual QString dump() const;
@@ -114,9 +120,11 @@ Features collected during :py:func:`~QgsMergedFeatureRenderer.renderFeature` are
 
     static QgsMergedFeatureRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
-Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
+Creates a QgsMergedFeatureRenderer by a conversion from an existing
+renderer.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
   protected:
@@ -126,7 +134,8 @@ Creates a QgsMergedFeatureRenderer by a conversion from an existing renderer.
 Constructor for QgsMergedFeatureRenderer.
 
 :param type: renderer ID string
-:param embeddedRenderer: optional embeddedRenderer. Ownership will be transferred.
+:param embeddedRenderer: optional embeddedRenderer. Ownership will be
+                         transferred.
 %End
 
     enum GeometryOperation

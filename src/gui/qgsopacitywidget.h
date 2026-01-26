@@ -16,9 +16,10 @@
 #ifndef QGSOPACITYWIDGET_H
 #define QGSOPACITYWIDGET_H
 
-#include <QWidget>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsDoubleSpinBox;
 class QSlider;
@@ -34,7 +35,6 @@ class GUI_EXPORT QgsOpacityWidget : public QWidget
     Q_PROPERTY( double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
-
     /**
      * Constructor for QgsOpacityWidget.
      */
@@ -73,10 +73,8 @@ class GUI_EXPORT QgsOpacityWidget : public QWidget
     void spinChanged( double value );
 
   private:
-
     QgsDoubleSpinBox *mSpinBox = nullptr;
     QSlider *mSlider = nullptr;
-
 };
 
 #endif // QGSOPACITYWIDGET_H

@@ -21,7 +21,6 @@ Wraps a date/time edit widget for searching.
 #include "qgsdatetimesearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDateTimeSearchWidgetWrapper.
@@ -33,8 +32,9 @@ Constructor for QgsDateTimeSearchWidgetWrapper.
 
     QVariant value() const;
 %Docstring
-Returns a variant representing the current state of the widget, respecting
-the editor widget's configured field format for date/time values.
+Returns a variant representing the current state of the widget,
+respecting the editor widget's configured field format for date/time
+values.
 %End
 
     virtual bool applyDirectly();

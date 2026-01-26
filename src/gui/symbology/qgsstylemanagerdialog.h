@@ -16,16 +16,17 @@
 #ifndef QGSSTYLEV2MANAGERDIALOG_H
 #define QGSSTYLEV2MANAGERDIALOG_H
 
-#include <QDialog>
-#include <QStandardItem>
-#include <QAction>
-#include <QMenu>
-
 #include "ui_qgsstylemanagerdialogbase.h"
-#include "qgsstylemodel.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssettingstree.h"
+#include "qgsstylemodel.h"
+
+#include <QAction>
+#include <QDialog>
+#include <QMenu>
+#include <QStandardItem>
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
@@ -35,11 +36,10 @@ class QgsSettingsEntryString;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
-class QgsCheckableStyleModel: public QgsStyleProxyModel
+class QgsCheckableStyleModel : public QgsStyleProxyModel
 {
     Q_OBJECT
   public:
-
     explicit QgsCheckableStyleModel( QgsStyleModel *sourceModel, QObject *parent = nullptr, bool readOnly = false );
     explicit QgsCheckableStyleModel( QgsStyle *style, QObject *parent = nullptr, bool readOnly = false );
 
@@ -51,12 +51,10 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
   private:
-
     QgsStyle *mStyle = nullptr;
     bool mCheckable = false;
     QString mCheckTag;
     bool mReadOnly = false;
-
 };
 #endif
 ///@endcond
@@ -74,7 +72,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
   public:
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "style-manager" ) );
+    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettingsTree::sTreeApp->createChildNode( u"style-manager"_s );
 
     /**
      * Last used folder for generic style database actions.
@@ -90,8 +88,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      * this style will be shown in the dialog, and changes made within the dialog will be applied to \a style.
      * The \a style object must last for the lifetime of the dialog.
      */
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(),
-                           bool readOnly = false );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(), bool readOnly = false );
 
     /**
      * Constructor for QgsStyleManagerDialog, with the specified \a parent widget and window \a flags.
@@ -102,15 +99,14 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      */
     QgsStyleManagerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
 
-    // TODO QGIS 4.0 -- rename "RampType" to "rampType".
+    // TODO QGIS 5.0 -- rename "RampType" to "rampType".
 
     /**
      * Opens the add color ramp dialog, returning the new color ramp's name if the ramp has been added.
      *
      * The \a RampType argument should be set to a string representing a valid QgsColorRamp::type() value.
      */
-    static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
-                                       const QString &RampType = QString() );
+    static QString addColorRampStatic( QWidget *parent, QgsStyle *style, const QString &RampType = QString() );
 
     /**
      * Sets whether the favorites group should be shown. The default is to show the group.
@@ -139,7 +135,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
   public slots:
 
-    // TODO QGIS 4.0 -- most of this should be private
+    // TODO QGIS 5.0 -- most of this should be private
 
     /**
      * Raises, unminimizes and activates this window
@@ -218,7 +214,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void showHelp();
 
     /**
-     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void itemChanged( QStandardItem *item ) SIP_DEPRECATED;
 
@@ -258,7 +254,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void editSmartgroupAction();
 
     /**
-     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void regrouped( QStandardItem * ) SIP_DEPRECATED;
 
@@ -300,11 +296,10 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void detagSelectedSymbols();
 
   protected:
-
     /**
      * Populate combo box with known style items (symbols, color ramps).
      *
-     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void populateTypes() SIP_DEPRECATED;
 
@@ -312,21 +307,21 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void populateGroups();
 
     /**
-     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void setSymbolsChecked( const QStringList & ) SIP_DEPRECATED;
 
     /**
      * Populates the list view with symbols of the current type with the given names.
      *
-     * \deprecated QGIS 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void populateSymbols( const QStringList &symbolNames, bool checkable = false ) SIP_DEPRECATED;
 
     /**
      * Populates the list view with color ramps of the current type with the given names.
      *
-     * \deprecated QGIS 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. No longer required in QGIS 3.6, as the model is updated live. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void populateColorRamps( const QStringList &colorRamps, bool checkable = false ) SIP_DEPRECATED;
 
@@ -340,12 +335,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     bool editColorRamp();
 
     /**
-     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED bool removeSymbol() SIP_DEPRECATED;
 
     /**
-     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. Has no effect and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED bool removeColorRamp() SIP_DEPRECATED;
 
@@ -374,7 +369,6 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void currentStyleAboutToBeDestroyed();
 
   private:
-
     void init();
 
     void setCurrentStyle( QgsStyle *style );
@@ -389,9 +383,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     struct ItemDetails
     {
-      QgsStyle::StyleEntity entityType;
-      Qgis::SymbolType symbolType;
-      QString name;
+        QgsStyle::StyleEntity entityType;
+        Qgis::SymbolType symbolType = Qgis::SymbolType::Hybrid;
+        QString name;
     };
 
     enum GroupModelRoles
@@ -400,14 +394,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
       TagName
     };
 
-    QList< ItemDetails > selectedItems();
+    QList<ItemDetails> selectedItems();
 
     /**
      * Returns count of items copied, excluding skipped items.
      */
-    static int copyItems( const QList< ItemDetails > &items, QgsStyle *src, QgsStyle *dst,
-                          QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
-                          bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
+    static int copyItems( const QList<ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
 
     QgsMessageBar *mMessageBar = nullptr;
 

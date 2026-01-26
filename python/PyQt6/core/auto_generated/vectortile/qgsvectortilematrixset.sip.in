@@ -12,7 +12,8 @@
 class QgsVectorTileMatrixSet : QgsTileMatrixSet
 {
 %Docstring(signature="appended")
-Encapsulates properties of a vector tile matrix set, including tile origins and scaling information.
+Encapsulates properties of a vector tile matrix set, including tile
+origins and scaling information.
 
 .. versionadded:: 3.22.6
 %End
@@ -24,18 +25,21 @@ Encapsulates properties of a vector tile matrix set, including tile origins and 
 
     static QgsVectorTileMatrixSet fromWebMercator( int minimumZoom = 0, int maximumZoom = 14 );
 %Docstring
-Returns a vector tile structure corresponding to the standard web mercator/GoogleCRS84Quad setup.
+Returns a vector tile structure corresponding to the standard web
+mercator/GoogleCRS84Quad setup.
 %End
 
     bool fromEsriJson( const QVariantMap &json, const QVariantMap &rootTileMap = QVariantMap() );
 %Docstring
-Initializes the tile structure settings from an ESRI REST VectorTileService ``json`` map.
+Initializes the tile structure settings from an ESRI REST
+VectorTileService ``json`` map.
 
 .. note::
 
    This same structure is utilized in ESRI vtpk archives in the root.json file.
 
-Optionally, a ``rootTileMap`` can be specified for indexed vector tile datasets (since QGIS 3.32)
+Optionally, a ``rootTileMap`` can be specified for indexed vector tile
+datasets (since QGIS 3.32)
 %End
 
 };

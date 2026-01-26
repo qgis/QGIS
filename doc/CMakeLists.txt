@@ -9,7 +9,6 @@ set(QGIS_DOC_FILES
   ../NEWS.md
   NEWS.html
   index.html
-  developersmap.html
   nohelp.html
   favicon.ico
   style.css
@@ -76,6 +75,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/maprenderer
       ${CMAKE_SOURCE_DIR}/src/core/mesh
       ${CMAKE_SOURCE_DIR}/src/core/metadata
+      ${CMAKE_SOURCE_DIR}/src/core/multimedia
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/painting
@@ -148,6 +148,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/analysis/vector/geometry_checker
       ${CMAKE_SOURCE_DIR}/src/3d
       ${CMAKE_SOURCE_DIR}/src/3d/chunks
+      ${CMAKE_SOURCE_DIR}/src/3d/framegraph
       ${CMAKE_SOURCE_DIR}/src/3d/lights
       ${CMAKE_SOURCE_DIR}/src/3d/materials
       ${CMAKE_SOURCE_DIR}/src/3d/processing

@@ -23,9 +23,10 @@
 /// @cond private
 
 #include "ui_qgsformlabelformatwidget.h"
-#include "qgsconditionalstyle.h"
-#include "qgsattributeeditorelement.h"
+
 #include "qgis_gui.h"
+#include "qgsattributeeditorelement.h"
+#include "qgsconditionalstyle.h"
 
 #include <QColor>
 #include <QFont>
@@ -41,7 +42,6 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a QgsFormLabelFormatWidget with given \a parent.
      */
@@ -55,8 +55,7 @@ class GUI_EXPORT QgsFormLabelFormatWidget : public QWidget, private Ui::QgsFormL
     /**
      * Returns the current label style from the wiget.
      */
-    QgsAttributeEditorElement::LabelStyle labelStyle( ) const;
-
+    QgsAttributeEditorElement::LabelStyle labelStyle() const;
 };
 
 /// @endcond private

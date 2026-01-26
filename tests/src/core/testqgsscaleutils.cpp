@@ -12,19 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsscaleutils.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 
-#include "qgsscaleutils.h"
-
-class TestQgsScaleUtils: public QObject
+class TestQgsScaleUtils : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testMaximumScaleComparisons_data();
     void testMaximumScaleComparisons();
     void testMinimumScaleComparisons_data();
@@ -34,9 +34,9 @@ class TestQgsScaleUtils: public QObject
 void TestQgsScaleUtils::initTestCase()
 {
   // Runs once before any tests are run
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -94,7 +94,3 @@ void TestQgsScaleUtils::testMinimumScaleComparisons()
 
 QGSTEST_MAIN( TestQgsScaleUtils )
 #include "testqgsscaleutils.moc"
-
-
-
-

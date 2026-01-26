@@ -11,7 +11,7 @@
 class QgsCopyFileTask : QgsTask
 {
 %Docstring(signature="appended")
-Task to copy a file on disk
+Task to copy a file on disk.
 
 .. versionadded:: 3.22
 %End
@@ -31,13 +31,14 @@ Creates a task that copy ``source`` file to ``destination``
 
     const QString &errorString() const;
 %Docstring
-Returns errorString if an error occurred, else returns null QString
+Returns errorString if an error occurred, else returns an empty string
 %End
 
     const QString &destination() const;
 %Docstring
-It could be different from the original one. If original destination was a directory
-the returned destination is now the absolute file path of the copied file
+It could be different from the original one. If original destination was
+a directory the returned destination is now the absolute file path of
+the copied file
 %End
 
 };

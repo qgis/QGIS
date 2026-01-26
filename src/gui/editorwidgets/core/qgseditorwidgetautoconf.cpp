@@ -13,9 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgseditorwidgetautoconf.h"
+
 #include "qgseditorwidgetregistry.h"
-#include "qgsvectordataprovider.h"
 #include "qgsgui.h"
+#include "qgsvectordataprovider.h"
 
 /**
  * \ingroup gui
@@ -24,7 +25,7 @@
  * \note not available in Python bindings
  * \since QGIS 3.0
  */
-class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
+class FromFactoriesPlugin : public QgsEditorWidgetAutoConfPlugin
 {
   public:
     QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
@@ -62,7 +63,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
  * \note not available in Python bindings
  * \since QGIS 3.0
  */
-class FromDbTablePlugin: public QgsEditorWidgetAutoConfPlugin
+class FromDbTablePlugin : public QgsEditorWidgetAutoConfPlugin
 {
   public:
     QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
@@ -89,12 +90,11 @@ QgsEditorWidgetAutoConf::QgsEditorWidgetAutoConf()
 
 QgsEditorWidgetSetup QgsEditorWidgetAutoConf::editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName ) const
 {
-  QgsEditorWidgetSetup result( QStringLiteral( "TextEdit" ), QVariantMap() );
+  QgsEditorWidgetSetup result( u"TextEdit"_s, QVariantMap() );
 
   const int fieldIndex = vl->fields().indexFromName( fieldName );
   if ( fieldIndex >= 0 )
   {
-
     if ( vl->fields().fieldOrigin( fieldIndex ) == Qgis::FieldOrigin::Provider )
     {
       // important check - for provider fields, we CANNOT use auto configured widgets if the field

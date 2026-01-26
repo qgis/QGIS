@@ -29,7 +29,8 @@ Layout item for basic filled shapes (e.g. rectangles, ellipses).
 
     explicit QgsLayoutItemShape( QgsLayout *layout );
 %Docstring
-Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
+Constructor for QgsLayoutItemShape, with the specified parent
+``layout``.
 %End
 
     ~QgsLayoutItemShape();
@@ -68,8 +69,8 @@ Sets the ``type`` of shape (e.g. rectangle, ellipse, etc).
 
     void setSymbol( QgsFillSymbol *symbol );
 %Docstring
-Sets the fill ``symbol`` used to draw the shape. Ownership is not transferred
-and a clone of the symbol is made.
+Sets the fill ``symbol`` used to draw the shape. Ownership is not
+transferred and a clone of the symbol is made.
 
 .. seealso:: :py:func:`symbol`
 %End

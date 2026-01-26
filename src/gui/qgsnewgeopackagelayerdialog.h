@@ -18,26 +18,25 @@
 #define QGSNEWGEOPACKAGELAYERDIALOG_H
 
 #include "ui_qgsnewgeopackagelayerdialogbase.h"
-#include "qgsguiutils.h"
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsguiutils.h"
 
 /**
  * \ingroup gui
- * \brief Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers
+ * \brief Dialog to set up parameters to create a new GeoPackage layer, and on accept() to create it and add it to the layers.
 */
-class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
+class GUI_EXPORT QgsNewGeoPackageLayerDialog : public QDialog, private Ui::QgsNewGeoPackageLayerDialogBase
 {
     Q_OBJECT
 
   public:
-
     //! Behavior to use when an existing geopackage already exists
     enum OverwriteBehavior
     {
-      Prompt, //!< Prompt user for action
-      Overwrite, //!< Overwrite whole geopackage
+      Prompt,      //!< Prompt user for action
+      Overwrite,   //!< Overwrite whole geopackage
       AddNewLayer, //!< Keep existing contents and add new layer
     };
 
@@ -52,12 +51,12 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     /**
      * Returns the database path
      */
-    QString databasePath() const { return mDatabase->filePath(); }
+    QString databasePath() const { return mFileName->filePath(); }
 
     /**
      * Sets the initial database \a path
      */
-    void setDatabasePath( const QString &path ) { mDatabase->setFilePath( path ); }
+    void setDatabasePath( const QString &path ) { mFileName->setFilePath( path ); }
 
     /**
      * Sets the database path widgets to a locked and read-only mode.

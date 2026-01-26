@@ -9,26 +9,25 @@
 
 
 
-
 class QgsMapCanvasSnappingUtils : QgsSnappingUtils
 {
 %Docstring(signature="appended")
-Snapping utils instance that is connected to a canvas and updates the configuration
-(map settings + current layer) whenever that is changed in the canvas.
+Snapping utils instance that is connected to a canvas and updates the
+configuration (map settings + current layer) whenever that is changed in
+the canvas.
 %End
 
 %TypeHeaderCode
 #include "qgsmapcanvassnappingutils.h"
 %End
   public:
-
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
 %Docstring
 Construct map canvas snapping utils object
 
 :param canvas: map canvas
-:param parent: parent object
-               if ``False`` it will block until indexing is done
+:param parent: parent object if ``False`` it will block until indexing
+               is done
 %End
 
   protected:

@@ -29,7 +29,7 @@ class QgsServerInterface;
 /**
  * \ingroup server
  * \class QgsServiceModule
- * \brief Class defining the service module interface for QGIS server services
+ * \brief Defines the service module interface for QGIS server services.
  *
  * This class acts as a service registrar for services.
  *
@@ -39,9 +39,7 @@ class QgsServerInterface;
  */
 class SERVER_EXPORT QgsServiceModule
 {
-
   public:
-
     QgsServiceModule() = default;
     virtual ~QgsServiceModule() = default;
 
@@ -50,8 +48,7 @@ class SERVER_EXPORT QgsServiceModule
      * \param registry Service registry
      * \param serverIface Interface for plugins
      */
-    virtual void registerSelf( QgsServiceRegistry &registry,
-                               QgsServerInterface *serverIface = nullptr ) = 0;
+    virtual void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface = nullptr ) = 0;
 };
 
 #endif

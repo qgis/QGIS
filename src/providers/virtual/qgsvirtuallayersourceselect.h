@@ -20,12 +20,13 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUAL_LAYER_SOURCE_SELECT_H
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
+
 #include "qgis.h"
-#include "qgshelp.h"
-#include "qgsguiutils.h"
-#include "qgsvirtuallayerdefinition.h"
-#include "qgsproviderregistry.h"
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsproviderregistry.h"
+#include "qgsvirtuallayerdefinition.h"
 
 class QgsVectorLayer;
 class QMainWindow;
@@ -37,7 +38,6 @@ class QgsVirtualLayerSourceWidget : public QWidget
     Q_OBJECT
 
   public:
-
     QgsVirtualLayerSourceWidget( QWidget *parent = nullptr );
     void setBrowserModel( QgsBrowserModel *model );
 
@@ -52,8 +52,8 @@ class QgsVirtualLayerSourceWidget : public QWidget
   public slots:
 
     void browseForLayer();
-  private:
 
+  private:
     QLineEdit *mLineEdit = nullptr;
     QString mProvider;
     QgsBrowserModel *mBrowserModel = nullptr;
@@ -89,7 +89,6 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void rowSourceChanged();
 
   private:
-
     enum LayerColumn
     {
       Name = 0,

@@ -16,14 +16,15 @@
 #ifndef QGSMARGINS_H
 #define QGSMARGINS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QString>
 
 /**
  * \ingroup core
  * \class QgsMargins
- * \brief The QgsMargins class defines the four margins of a rectangle.
+ * \brief Defines the four margins of a rectangle.
  *
  * QgsMargins defines a set of four margins; left, top, right and bottom, that describe the size of the borders surrounding a rectangle.
  *
@@ -159,6 +160,14 @@ class CORE_EXPORT QgsMargins
      * \see toString()
      */
     static QgsMargins fromString( const QString &string );
+
+#ifdef SIP_RUN
+    SIP_PYOBJECT __repr__();
+    % MethodCode
+    const QString str = u"<QgsMargins: %1 %2 %3 %4>"_s.arg( sipCpp->left() ).arg( sipCpp->top() ).arg( sipCpp->right() ).arg( sipCpp->bottom() );
+    sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+    % End
+#endif
 
   private:
     double mLeft = 0.0;

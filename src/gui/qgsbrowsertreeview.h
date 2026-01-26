@@ -16,15 +16,16 @@
 #ifndef QGSBROWSERTREEVIEW_H
 #define QGSBROWSERTREEVIEW_H
 
-#include <QTreeView>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QTreeView>
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsbrowsertreeview.h"
-% End
+//%End
 #endif
 
 class QgsBrowserGuiModel;
@@ -32,13 +33,12 @@ class QgsDataItem;
 
 /**
  * \ingroup gui
- * \brief The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
+ * \brief Extends QTreeView with save/restore tree state and other browser-specific functionality.
  *
  * \see QgsBrowserModel
  */
 class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsBrowserTreeView *>( sipCpp ) != nullptr )
@@ -50,7 +50,6 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 
     Q_OBJECT
   public:
-
     //! Constructor for QgsBrowserTreeView
     QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -89,7 +88,6 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     void expandPath( const QString &path, bool selectPath = false );
 
   protected:
-
     void keyPressEvent( QKeyEvent *event ) override;
 
   protected slots:

@@ -18,23 +18,22 @@
 #define QGSAUTHCERTIFICATEMANAGER_H
 
 #include "ui_qgsauthcertificatemanager.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 
-#include <QWidget>
 #include <QDialog>
-#include "qgis_gui.h"
-
+#include <QWidget>
 
 /**
  * \ingroup gui
- * \brief Wrapper widget to manage available certificate editors
+ * \brief Wrapper widget to manage available certificate editors.
  */
 class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertManager
 {
     Q_OBJECT
 
   public:
-
     /**
      * Construct a widget to contain various certificate editors
      * \param parent Parent widget
@@ -44,8 +43,7 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
     /**
      * Destructor: store last selected tab
      */
-    ~QgsAuthCertEditors( ) override;
-
+    ~QgsAuthCertEditors() override;
 };
 
 
@@ -53,14 +51,13 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
 
 /**
  * \ingroup gui
- * \brief Dialog wrapper for widget to manage available certificate editors
+ * \brief Dialog wrapper for widget to manage available certificate editors.
  */
 class GUI_EXPORT QgsAuthCertManager : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Construct a dialog wrapper for widget to manage available certificate editors
      * \param parent Parent widget

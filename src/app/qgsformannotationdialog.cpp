@@ -13,20 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsformannotationdialog.h"
+
+#include "qgsannotationmanager.h"
 #include "qgsannotationwidget.h"
 #include "qgsformannotation.h"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsannotationmanager.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+
+#include "moc_qgsformannotationdialog.cpp"
 
 QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -49,7 +52,7 @@ QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
   if ( item && item->annotation() )
   {
-    QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( item->annotation() );
+    QgsFormAnnotation *annotation = static_cast<QgsFormAnnotation *>( item->annotation() );
     mFileLineEdit->setText( annotation->designerForm() );
   }
 
@@ -80,7 +83,7 @@ void QgsFormAnnotationDialog::applySettingsToItem()
   {
     if ( !mFileLineEdit->text().isEmpty() )
     {
-      QgsFormAnnotation *annotation = static_cast< QgsFormAnnotation * >( mItem->annotation() );
+      QgsFormAnnotation *annotation = static_cast<QgsFormAnnotation *>( mItem->annotation() );
       annotation->setDesignerForm( mFileLineEdit->text() );
       mItem->update();
     }
@@ -95,7 +98,7 @@ void QgsFormAnnotationDialog::mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, QStringLiteral( "*.ui" ) );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "Qt designer file" ), directory, u"*.ui"_s );
   if ( filename.isEmpty() )
   {
     return;
@@ -120,7 +123,7 @@ void QgsFormAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsFormAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-annotations"_s );
 }
 
 void QgsFormAnnotationDialog::onSettingsChanged()

@@ -13,23 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <gdal.h>
 
+#include "qgis.h"
 #include "qgsalignraster.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgis.h"
+#include "qgstest.h"
 
 #include <QDir>
 
-#include <gdal.h>
-
-
-
 static QString _tempFile( const QString &name )
 {
-  return QStringLiteral( "%1/aligntest-%2.tif" ).arg( QDir::tempPath(), name );
+  return u"%1/aligntest-%2.tif"_s.arg( QDir::tempPath(), name );
 }
 
 
@@ -39,7 +36,7 @@ class TestAlignRaster : public QgsTest
 
   public:
     TestAlignRaster()
-      : QgsTest( QStringLiteral( "Align Raster Tests" ) )
+      : QgsTest( u"Align Raster Tests"_s )
     {}
 
     QString SRC_FILE;
@@ -70,7 +67,7 @@ class TestAlignRaster : public QgsTest
 
     void testClip()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "clip" ) ) );
+      const QString tmpFile( _tempFile( u"clip"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -91,7 +88,7 @@ class TestAlignRaster : public QgsTest
 
     void testClipOutside()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "clip-outside" ) ) );
+      const QString tmpFile( _tempFile( u"clip-outside"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -105,7 +102,7 @@ class TestAlignRaster : public QgsTest
 
     void testChangeGridOffsetNN()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "change-grid-offset-nn" ) ) );
+      const QString tmpFile( _tempFile( u"change-grid-offset-nn"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -129,7 +126,7 @@ class TestAlignRaster : public QgsTest
 
     void testChangeGridOffsetBilinear()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "change-grid-offset-bilinear" ) ) );
+      const QString tmpFile( _tempFile( u"change-grid-offset-bilinear"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -152,7 +149,7 @@ class TestAlignRaster : public QgsTest
 
     void testSmallerCellSize()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "smaller-cell-size" ) ) );
+      const QString tmpFile( _tempFile( u"smaller-cell-size"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -169,13 +166,12 @@ class TestAlignRaster : public QgsTest
       QCOMPARE( out.rasterSize(), QSize( 8, 8 ) );
       QCOMPARE( out.cellSize(), QSizeF( 0.1, 0.1 ) );
       QCOMPARE( out.identify( 106.15, -6.35 ), 2.25 );
-
     }
 
 
     void testBiggerCellSize()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "bigger-cell-size" ) ) );
+      const QString tmpFile( _tempFile( u"bigger-cell-size"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -196,7 +192,7 @@ class TestAlignRaster : public QgsTest
 
     void testRescaleBiggerCellSize()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "rescale-bigger-cell-size" ) ) );
+      const QString tmpFile( _tempFile( u"rescale-bigger-cell-size"_s ) );
 
       QgsAlignRaster align;
       QgsAlignRaster::List rasters;
@@ -217,12 +213,12 @@ class TestAlignRaster : public QgsTest
 
     void testReprojectToOtherCRS()
     {
-      const QString tmpFile( _tempFile( QStringLiteral( "reproject-utm-47n" ) ) );
+      const QString tmpFile( _tempFile( u"reproject-utm-47n"_s ) );
 
       // reproject from WGS84 to UTM zone 47N
       // (the true UTM zone for this raster is 48N, but here it is
       // more obvious the different shape of the resulting raster)
-      const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:32647" ) );
+      const QgsCoordinateReferenceSystem destCRS( u"EPSG:32647"_s );
       QVERIFY( destCRS.isValid() );
 
       QgsAlignRaster align;
@@ -239,10 +235,10 @@ class TestAlignRaster : public QgsTest
       QCOMPARE( outCRS, destCRS );
       QCOMPARE( out.rasterSize(), QSize( 4, 4 ) );
       // tolerance of 1 to keep the test more robust
-      QGSCOMPARENEAR( out.cellSize().width(), 22293, 1 ); // ~ 22293.256065
+      QGSCOMPARENEAR( out.cellSize().width(), 22293, 1 );  // ~ 22293.256065
       QGSCOMPARENEAR( out.cellSize().height(), 22293, 1 ); // ~ 22293.256065
-      QGSCOMPARENEAR( out.gridOffset().x(), 4327, 1 ); // ~ 4327.168434
-      QGSCOMPARENEAR( out.gridOffset().y(), 637, 1 ); // ~ 637.007990
+      QGSCOMPARENEAR( out.gridOffset().x(), 4327, 1 );     // ~ 4327.168434
+      QGSCOMPARENEAR( out.gridOffset().y(), 637, 1 );      // ~ 637.007990
       QCOMPARE( out.identify( 1308405, -746611 ), 10. );
     }
 
@@ -257,9 +253,7 @@ class TestAlignRaster : public QgsTest
       align.setRasters( rasters );
 
       QCOMPARE( align.suggestedReferenceLayer(), 0 );
-
     }
-
 };
 
 QGSTEST_MAIN( TestAlignRaster )

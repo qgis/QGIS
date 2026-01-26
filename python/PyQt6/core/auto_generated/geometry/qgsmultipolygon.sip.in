@@ -88,7 +88,8 @@ Returns the polygon with the specified ``index``.
     virtual QgsMultiSurface *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type :py:class:`QgsMultiSurface`
+Returns the geometry converted to the more generic curve type
+:py:class:`QgsMultiSurface`
 
 :return: the converted geometry. Caller takes ownership
 %End

@@ -19,24 +19,41 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QWidget>
-
 #include "ui_qgsattributeformcontaineredit.h"
 
 #include "qgis_gui.h"
+#include "qgsattributesformmodel.h"
 
-class QTreeWidgetItem;
+#include <QWidget>
 
 /**
- * Widget to edit a container (tab or group box) of a form configuration
+ * Widget to edit a container (tab, group box, or row) of a form configuration.
+ *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsAttributeFormContainerEdit: public QWidget, private Ui_QgsAttributeFormContainerEdit
+class GUI_EXPORT QgsAttributeFormContainerEdit : public QWidget, private Ui_QgsAttributeFormContainerEdit
 {
     Q_OBJECT
 
   public:
-    explicit QgsAttributeFormContainerEdit( QTreeWidgetItem *item, QgsVectorLayer *layer, QWidget *parent = nullptr );
+    explicit QgsAttributeFormContainerEdit( const QgsAttributesFormData::AttributeFormItemData &itemData, QgsVectorLayer *layer, QWidget *parent = nullptr );
+
+    /**
+     * Sets the container \a title.
+     *
+     * \since QGIS 3.44
+     */
+    void setTitle( const QString &title );
+
+    /**
+     * Sets up the container type combo box based on its type and whether it is located at the top level.
+     *
+     * \param isTopLevelContainer container sitting at the top level
+     * \param containerType container type
+     *
+     * \since QGIS 3.44
+     */
+    void setUpContainerTypeComboBox( bool isTopLevelContainer, const Qgis::AttributeEditorContainerType containerType );
 
     /**
      * Register an expression context generator class that will be used to retrieve
@@ -45,14 +62,15 @@ class GUI_EXPORT QgsAttributeFormContainerEdit: public QWidget, private Ui_QgsAt
      */
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
-    void updateItemData();
+    /**
+     * Updates the contents of the \a itemData object, as well as the container \a title based on the widget status.
+     *
+     * \since QGIS 3.44
+     */
+    void updateItemData( QgsAttributesFormData::AttributeFormItemData &itemData, QString &title );
 
   private slots:
-
     void containerTypeChanged();
-
-  private:
-    QTreeWidgetItem *mTreeItem = nullptr;
 };
 
 #endif // QGSATTRIBUTEFORMCONTAINEREDIT_H

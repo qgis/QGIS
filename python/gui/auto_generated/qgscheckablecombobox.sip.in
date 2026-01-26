@@ -22,7 +22,6 @@ QComboBox subclass which allows selecting multiple items.
 #include "qgscheckablecombobox.h"
 %End
   public:
-
     QgsCheckableComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCheckableComboBox.
@@ -46,16 +45,16 @@ Set separator used to separate items in the display text.
 
     QString defaultText() const;
 %Docstring
-Returns default text which will be displayed in the widget
-when no items selected.
+Returns default text which will be displayed in the widget when no items
+selected.
 
 .. seealso:: :py:func:`setDefaultText`
 %End
 
     void setDefaultText( const QString &text );
 %Docstring
-Set default text which will be displayed in the widget when
-no items selected.
+Set default text which will be displayed in the widget when no items
+selected.
 
 :param text: default text
 
@@ -64,9 +63,10 @@ no items selected.
 
     void addItemWithCheckState( const QString &text, Qt::CheckState state, const QVariant &userData = QVariant() );
 %Docstring
-Adds an item to the combobox with the given ``text``, check ``state`` (stored in the Qt.CheckStateRole)
-and containing the specified ``userData`` (stored in the Qt.UserRole).
-The item is appended to the list of existing items.
+Adds an item to the combobox with the given ``text``, check ``state``
+(stored in the Qt.CheckStateRole) and containing the specified
+``userData`` (stored in the Qt.UserRole). The item is appended to the
+list of existing items.
 
 .. versionadded:: 3.16
 %End
@@ -80,8 +80,8 @@ Returns currently checked items.
 
     QVariantList checkedItemsData() const;
 %Docstring
-Returns userData (stored in the Qt.UserRole) associated with
-currently checked items.
+Returns userData (stored in the Qt.UserRole) associated with currently
+checked items.
 
 .. seealso:: :py:func:`checkedItems`
 %End
@@ -124,8 +124,8 @@ Toggles the item check state
     virtual void hidePopup();
 
 %Docstring
-Hides the list of items in the combobox if it is currently
-visible and resets the internal state.
+Hides the list of items in the combobox if it is currently visible and
+resets the internal state.
 %End
 
     virtual bool eventFilter( QObject *object, QEvent *event );
@@ -153,7 +153,6 @@ Set items which should be checked/selected.
 %End
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
 %Docstring
@@ -164,8 +163,8 @@ Handler for widget resizing
 
     void showContextMenu( QPoint pos );
 %Docstring
-Display context menu which allows selecting/deselecting
-all items at once.
+Display context menu which allows selecting/deselecting all items at
+once.
 %End
 
     void selectAllOptions();

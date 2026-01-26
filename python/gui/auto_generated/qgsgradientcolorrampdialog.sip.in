@@ -10,17 +10,18 @@
 
 
 
+
 class QgsGradientColorRampDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows users to modify the properties of a :py:class:`QgsGradientColorRamp`.
+A dialog which allows users to modify the properties of a
+:py:class:`QgsGradientColorRamp`.
 %End
 
 %TypeHeaderCode
 #include "qgsgradientcolorrampdialog.h"
 %End
   public:
-
     QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGradientColorRampDialog.

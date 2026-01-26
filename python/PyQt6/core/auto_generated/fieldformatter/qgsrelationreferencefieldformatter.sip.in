@@ -12,8 +12,8 @@ class QgsRelationReferenceFieldFormatter : QgsFieldFormatter
 %Docstring(signature="appended")
 Field formatter for a relation reference field.
 
-A value relation field formatter looks up the values from
-features on another layer.
+A value relation field formatter looks up the values from features on
+another layer.
 %End
 
 %TypeHeaderCode

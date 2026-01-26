@@ -16,14 +16,16 @@
 #ifndef QGSANNOTATIONITEMGUIREGISTRY_H
 #define QGSANNOTATIONITEMGUIREGISTRY_H
 
+#include <functional>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsannotationitemregistry.h"
 #include "qgsapplication.h"
 #include "qgspathresolver.h"
-#include "qgsannotationitemregistry.h"
-#include "qgis.h"
+
 #include <QIcon>
-#include <functional>
 
 class QgsAnnotationLayer;
 class QgsAnnotationItem;
@@ -45,7 +47,6 @@ class QgsAdvancedDigitizingDockWidget;
 class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemAbstractGuiMetadata with the specified class \a type.
      *
@@ -128,12 +129,10 @@ class GUI_EXPORT QgsAnnotationItemAbstractGuiMetadata
     virtual void newItemAddedToLayer( QgsAnnotationItem *item, QgsAnnotationLayer *layer );
 
   private:
-
     QString mType;
     QString mGroupId;
     QString mName;
     Qgis::AnnotationItemGuiFlags mFlags;
-
 };
 
 //! Annotation item configuration widget creation function
@@ -143,7 +142,7 @@ typedef std::function<QgsAnnotationItemBaseWidget *( QgsAnnotationItem * )> QgsA
 typedef std::function<QgsCreateAnnotationItemMapToolInterface *( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )> QgsCreateAnnotationItemMapToolFunc SIP_SKIP;
 
 //! Annotation item added to layer callback
-typedef std::function<void ( QgsAnnotationItem *, QgsAnnotationLayer *layer )> QgsAnnotationItemAddedToLayerFunc SIP_SKIP;
+typedef std::function<void( QgsAnnotationItem *, QgsAnnotationLayer *layer )> QgsAnnotationItemAddedToLayerFunc SIP_SKIP;
 
 #ifndef SIP_RUN
 
@@ -156,7 +155,6 @@ typedef std::function<void ( QgsAnnotationItem *, QgsAnnotationLayer *layer )> Q
 class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstractGuiMetadata
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemGuiMetadata with the specified class \a type
      * and \a creationIcon, and function pointers for the various
@@ -166,12 +164,7 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
      *
      * An optional \a groupId can be set, which allows grouping of related annotation item classes. See QgsAnnotationItemGuiMetadata for details.
      */
-    QgsAnnotationItemGuiMetadata( const QString &type, const QString &visibleName, const QIcon &creationIcon,
-                                  const QgsAnnotationItemWidgetFunc &pfWidget = nullptr,
-                                  const QString &groupId = QString(),
-                                  Qgis::AnnotationItemGuiFlags flags = Qgis::AnnotationItemGuiFlags(),
-                                  const QgsAnnotationItemCreateFunc &pfCreateFunc = nullptr,
-                                  const QgsCreateAnnotationItemMapToolFunc &pfCreateMapToolFunc = nullptr )
+    QgsAnnotationItemGuiMetadata( const QString &type, const QString &visibleName, const QIcon &creationIcon, const QgsAnnotationItemWidgetFunc &pfWidget = nullptr, const QString &groupId = QString(), Qgis::AnnotationItemGuiFlags flags = Qgis::AnnotationItemGuiFlags(), const QgsAnnotationItemCreateFunc &pfCreateFunc = nullptr, const QgsCreateAnnotationItemMapToolFunc &pfCreateMapToolFunc = nullptr )
       : QgsAnnotationItemAbstractGuiMetadata( type, visibleName, groupId, flags )
       , mIcon( creationIcon )
       , mWidgetFunc( pfWidget )
@@ -240,7 +233,6 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
     QgsAnnotationItemCreateFunc mCreateFunc = nullptr;
     QgsCreateAnnotationItemMapToolFunc mCreateMapToolFunc = nullptr;
     QgsAnnotationItemAddedToLayerFunc mAddedToLayerFunc = nullptr;
-
 };
 
 #endif
@@ -260,7 +252,6 @@ class GUI_EXPORT QgsAnnotationItemGuiMetadata : public QgsAnnotationItemAbstract
 class GUI_EXPORT QgsAnnotationItemGuiGroup
 {
   public:
-
     /**
      * Constructor for QgsAnnotationItemGuiGroup.
      */
@@ -284,7 +275,6 @@ class GUI_EXPORT QgsAnnotationItemGuiGroup
      * Icon for group.
      */
     QIcon icon;
-
 };
 
 
@@ -306,7 +296,6 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty item GUI registry.
      *
@@ -356,7 +345,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
      * Returns a reference to the item group with matching \a id.
      * \see addItemGroup()
      */
-    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id );
+    const QgsAnnotationItemGuiGroup &itemGroup( const QString &id ) const;
 
     /*
      * IMPORTANT: While it seems like /Factory/ would be the correct annotations here, that's not
@@ -409,7 +398,7 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
     /**
      * Returns a list of available item metadata ids handled by the registry.
      */
-    QList< int > itemMetadataIds() const;
+    QList<int> itemMetadataIds() const;
 
     /**
      * Populates the registry with default items.
@@ -429,13 +418,9 @@ class GUI_EXPORT QgsAnnotationItemGuiRegistry : public QObject
     QgsAnnotationItemGuiRegistry( const QgsAnnotationItemGuiRegistry &rh );
 #endif
 
-    QMap< int, QgsAnnotationItemAbstractGuiMetadata *> mMetadata;
+    QMap<int, QgsAnnotationItemAbstractGuiMetadata *> mMetadata;
 
-    QMap< QString, QgsAnnotationItemGuiGroup > mItemGroups;
-
+    QMap<QString, QgsAnnotationItemGuiGroup> mItemGroups;
 };
 
 #endif //QGSANNOTATIONITEMGUIREGISTRY_H
-
-
-

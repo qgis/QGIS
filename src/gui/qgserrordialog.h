@@ -17,23 +17,24 @@
 #ifndef QGSERRORDIALOG_H
 #define QGSERRORDIALOG_H
 
-#include <QDialog>
-
 #include "ui_qgserrordialogbase.h"
-#include "qgsguiutils.h"
-#include "qgserror.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgserror.h"
+#include "qgsguiutils.h"
+
+#include <QDialog>
 
 /**
  * \ingroup gui
  * \class QgsErrorDialog
+ * \brief A dialog which shows error details.
  */
-class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
+class GUI_EXPORT QgsErrorDialog : public QDialog, private Ui::QgsErrorDialogBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsErrorDialog
      */

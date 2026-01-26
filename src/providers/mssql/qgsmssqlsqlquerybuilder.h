@@ -16,13 +16,12 @@ email                : nyall dot dawson at gmail dot com
 #ifndef QGSMSSQLSQLQUERYBUILDER_H
 #define QGSMSSQLSQLQUERYBUILDER_H
 
-#include <QString>
-
 #include "qgsprovidersqlquerybuilder.h"
 
-class  QgsMsSqlSqlQueryBuilder : public QgsProviderSqlQueryBuilder
-{
+#include <QString>
 
+class QgsMsSqlSqlQueryBuilder : public QgsProviderSqlQueryBuilder
+{
   public:
     QString createLimitQueryForTable( const QString &schema, const QString &name, int limit = 10 ) const override;
     QString quoteIdentifier( const QString &identifier ) const override;

@@ -16,9 +16,10 @@
 #ifndef QGSCODEEDITORCSS_H
 #define QGSCODEEDITORCSS_H
 
-#include "qgscodeeditor.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscodeeditor.h"
+
 #include <Qsci/qscilexercss.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
@@ -30,11 +31,9 @@ class QgsQsciLexerCSS : public QsciLexerCSS
 {
     Q_OBJECT
   public:
-
     QgsQsciLexerCSS( QObject *parent = nullptr );
 
     QString description( int style ) const override;
-
 };
 ///@endcond
 #endif
@@ -42,15 +41,15 @@ class QgsQsciLexerCSS : public QsciLexerCSS
 
 /**
  * \ingroup gui
- * \brief A CSS editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A CSS editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  */
 class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
 {
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsCodeEditorCSS
     QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     Qgis::ScriptLanguage language() const override;

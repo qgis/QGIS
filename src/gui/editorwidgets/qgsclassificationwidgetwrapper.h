@@ -16,24 +16,23 @@
 #ifndef QGSCLASSIFICATIONWIDGETWRAPPER_H
 #define QGSCLASSIFICATIONWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsClassificationWidgetWrapper
+ * \brief A widget wrapper for classification widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsClassificationWidgetWrapper.
      *

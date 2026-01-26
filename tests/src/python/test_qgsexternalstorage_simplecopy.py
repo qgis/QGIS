@@ -6,9 +6,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = 'Julien Cabieces'
-__date__ = '31/03/2021'
-__copyright__ = 'Copyright 2021, The QGIS Project'
+__author__ = "Julien Cabieces"
+__date__ = "31/03/2021"
+__copyright__ = "Copyright 2021, The QGIS Project"
 
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.testing import unittest
@@ -16,7 +16,9 @@ from qgis.testing import unittest
 from test_qgsexternalstorage_base import TestPyQgsExternalStorageBase
 
 
-class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.TestCase):
+class TestPyQgsExternalStorageSimpleCopy(
+    TestPyQgsExternalStorageBase, unittest.TestCase
+):
 
     storageType = "SimpleCopy"
     badUrl = "/nothing/here/"
@@ -24,7 +26,7 @@ class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.
     @classmethod
     def setUpClass(cls):
         """Run before all tests:"""
-        super(TestPyQgsExternalStorageSimpleCopy, cls).setUpClass()
+        super().setUpClass()
         unittest.TestCase.setUpClass()
 
         cls.temp_dir = QTemporaryDir()
@@ -34,7 +36,7 @@ class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.
     def tearDownClass(cls):
         """Run after all tests"""
         cls.temp_dir = None
-        super(TestPyQgsExternalStorageSimpleCopy, cls).tearDownClass()
+        super().tearDownClass()
         unittest.TestCase.tearDownClass()
 
     def testStoreMissingAuth(self):
@@ -42,5 +44,5 @@ class TestPyQgsExternalStorageSimpleCopy(TestPyQgsExternalStorageBase, unittest.
         pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

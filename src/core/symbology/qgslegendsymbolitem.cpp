@@ -18,6 +18,8 @@
 #include "qgsdatadefinedsizelegend.h"
 #include "qgssymbol.h"
 
+QgsLegendSymbolItem::QgsLegendSymbolItem() = default;
+
 QgsLegendSymbolItem::QgsLegendSymbolItem( QgsSymbol *symbol, const QString &label, const QString &ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString &parentRuleKey )
   : mSymbol( symbol ? symbol->clone() : nullptr )
   , mLabel( label )
@@ -38,8 +40,6 @@ QgsLegendSymbolItem::QgsLegendSymbolItem( const QgsLegendSymbolItem &other )
 
 QgsLegendSymbolItem::~QgsLegendSymbolItem()
 {
-  delete mSymbol;
-  delete mDataDefinedSizeLegendSettings;
 }
 
 QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &other )
@@ -47,13 +47,11 @@ QgsLegendSymbolItem &QgsLegendSymbolItem::operator=( const QgsLegendSymbolItem &
   if ( this == &other )
     return *this;
 
-  delete mSymbol;
-  mSymbol = other.mSymbol ? other.mSymbol->clone() : nullptr;
+  mSymbol.reset( other.mSymbol ? other.mSymbol->clone() : nullptr );
   mLabel = other.mLabel;
   mKey = other.mKey;
   mCheckable = other.mCheckable;
-  delete mDataDefinedSizeLegendSettings;
-  mDataDefinedSizeLegendSettings = other.mDataDefinedSizeLegendSettings ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegendSettings ) : nullptr;
+  mDataDefinedSizeLegendSettings.reset( other.mDataDefinedSizeLegendSettings ? new QgsDataDefinedSizeLegend( *other.mDataDefinedSizeLegendSettings ) : nullptr );
   mOriginalSymbolPointer = other.mOriginalSymbolPointer;
   mScaleMinDenom = other.mScaleMinDenom;
   mScaleMaxDenom = other.mScaleMaxDenom;
@@ -79,20 +77,18 @@ bool QgsLegendSymbolItem::isScaleOK( double scale ) const
 
 void QgsLegendSymbolItem::setSymbol( QgsSymbol *s )
 {
-  delete mSymbol;
-  mSymbol = s ? s->clone() : nullptr;
+  mSymbol.reset( s ? s->clone() : nullptr );
   mOriginalSymbolPointer = s;
 }
 
 void QgsLegendSymbolItem::setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings )
 {
-  delete mDataDefinedSizeLegendSettings;
-  mDataDefinedSizeLegendSettings = settings;
+  mDataDefinedSizeLegendSettings.reset( settings );
 }
 
 QgsDataDefinedSizeLegend *QgsLegendSymbolItem::dataDefinedSizeLegendSettings() const
 {
-  return mDataDefinedSizeLegendSettings;
+  return mDataDefinedSizeLegendSettings.get();
 }
 
 void QgsLegendSymbolItem::setUserData( int key, QVariant &value )

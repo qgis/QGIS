@@ -14,30 +14,46 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include "qgisapp.h"
-#include "testqgsmaptoolutils.h"
-#include "qgsmaptooleditmeshframe.h"
-#include "qgsmeshlayer.h"
-#include "qgsmesheditor.h"
+#include <memory>
 
-class TestQgsMapToolEditMesh : public QObject
+#include "qgisapp.h"
+#include "qgsmaptooleditmeshframe.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshtransformcoordinatesdockwidget.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgsrasterlayer.h"
+#include "qgsterrainprovider.h"
+#include "qgstest.h"
+#include "testqgsmaptoolutils.h"
+
+#include <QDir>
+
+class TestQgsMapToolEditMesh : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsMapToolEditMesh() = default;
+    TestQgsMapToolEditMesh()
+      : QgsTest( u"Map Tool Edit Mesh Tests"_s, u"app"_s )
+    {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase() {};// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();       // will be called before the first testfunction is executed.
+    void cleanupTestCase() {}; // will be called after the last testfunction was executed.
+    void init();               // will be called before each testfunction is executed.
+    void cleanup() {}          // will be called after every testfunction.
 
     void hoverElements();
 
     void editMesh();
 
+    void selectElements();
+    void testAssignVertexZValueFromTerrainOnCreation();
+    void testDelaunayRefinement();
+
   private:
+    static QString read2DMFileContent( const QString &filePath );
+
     QgisApp *mQgisApp = nullptr;
     std::unique_ptr<QgsMeshLayer> meshLayerQuadFlower;
     QString mDataDir;
@@ -60,14 +76,14 @@ void TestQgsMapToolEditMesh::initTestCase()
 
 void TestQgsMapToolEditMesh::init()
 {
-  mCanvas.reset( new QgsMapCanvas() );
+  mCanvas = std::make_unique<QgsMapCanvas>();
   mEditMeshMapTool = new QgsMapToolEditMeshFrame( mCanvas.get() );
 }
 
 void TestQgsMapToolEditMesh::hoverElements()
 {
   QString uri = QString( mDataDir + "/simplebox_clm.nc" );
-  meshLayerSimpleBox.reset( new QgsMeshLayer( uri, "Simple box", "mdal" ) );
+  meshLayerSimpleBox = std::make_unique<QgsMeshLayer>( uri, "Simple box", "mdal" );
   QVERIFY( meshLayerSimpleBox->isValid() );
 
   mCanvas->setLayers( QList<QgsMapLayer *>() << meshLayerSimpleBox.get() );
@@ -90,24 +106,24 @@ void TestQgsMapToolEditMesh::hoverElements()
   mEditMeshMapTool->mActionDigitizing->trigger();
   tool.mouseMove( 3.31376427, 47.97500487 );
   QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
-  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {-1, -1} ) );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( { -1, -1 } ) );
   QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
 
   tool.mouseMove( 3.31368247, 47.97500500 );
   QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
-  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( { 8, 5 } ) );
   QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, -1 );
 
   tool.mouseMove( 3.31368064, 47.97503705 );
   QCOMPARE( mEditMeshMapTool->mCurrentFaceIndex, 8 );
-  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( {8, 5} ) );
+  QVERIFY( mEditMeshMapTool->mCurrentEdge == QgsMapToolEditMeshFrame::Edge( { 8, 5 } ) );
   QCOMPARE( mEditMeshMapTool->mCurrentVertexIndex, 10 );
 }
 
 void TestQgsMapToolEditMesh::editMesh()
 {
   QString uri = QString( mDataDir + "/quad_flower.2dm" );
-  meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
+  meshLayerQuadFlower = std::make_unique<QgsMeshLayer>( uri, "Quad Flower", "mdal" );
   QVERIFY( meshLayerQuadFlower->isValid() );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 
@@ -160,20 +176,20 @@ void TestQgsMapToolEditMesh::editMesh()
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 0 );
 
   // add a free vertex
-  tool.mouseDoubleClick( 2500, 3500, Qt::LeftButton );  // 9
+  tool.mouseDoubleClick( 2500, 3500, Qt::LeftButton ); // 9
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 8 );
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 );
   QCOMPARE( meshLayerQuadFlower->meshEditor()->freeVerticesIndexes().count(), 1 );
 
   // add a face
-  tool.mouseMove( 1999, 2999 ); //move near a vertex
+  tool.mouseMove( 1999, 2999 );                                                               //move near a vertex
   tool.mouseMove( 2000 + offsetInMapUnits / sqrt( 2 ), 3000 + offsetInMapUnits / sqrt( 2 ) ); //move on the new face marker
   tool.mouseClick( 2000 + offsetInMapUnits / sqrt( 4 ), 3000 + offsetInMapUnits / sqrt( 2 ), Qt::LeftButton );
-  tool.mouseMove( 2499, 3501 ); //move near the new free vertex
-  tool.mouseClick( 2501, 3499, Qt::LeftButton ); // click near the vertex
-  tool.mouseMove( 2490, 2600 ); //move elsewhere
-  tool.mouseMove( 2495, 2500 ); //move near another vertex
-  tool.mouseClick( 2495, 2500, Qt::LeftButton ); // click near the vertex
+  tool.mouseMove( 2499, 3501 );                   //move near the new free vertex
+  tool.mouseClick( 2501, 3499, Qt::LeftButton );  // click near the vertex
+  tool.mouseMove( 2490, 2600 );                   //move elsewhere
+  tool.mouseMove( 2495, 2500 );                   //move near another vertex
+  tool.mouseClick( 2495, 2500, Qt::LeftButton );  // click near the vertex
   tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the face
 
   QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );
@@ -188,9 +204,9 @@ void TestQgsMapToolEditMesh::editMesh()
   tool.mouseMove( 3000, 3500 ); //move to a new place outsite the mesh (cross edge of new face: invalid)
   tool.mouseClick( 3000, 3500, Qt::LeftButton );
   tool.mouseMove( 2500, 2500 );
-  tool.mouseClick( 2500, 2500, Qt::LeftButton );// close the face
-  tool.mouseClick( 5000, 5000, Qt::RightButton ); // valid the fac
-  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 ); //-> face not added
+  tool.mouseClick( 2500, 2500, Qt::LeftButton );          // close the face
+  tool.mouseClick( 5000, 5000, Qt::RightButton );         // valid the fac
+  QCOMPARE( meshLayerQuadFlower->meshFaceCount(), 9 );    //-> face not added
   QCOMPARE( meshLayerQuadFlower->meshVertexCount(), 10 ); //-> vertices not added
   tool.keyClick( Qt::Key_Backspace );
   tool.keyClick( Qt::Key_Backspace );
@@ -322,9 +338,9 @@ void TestQgsMapToolEditMesh::editMesh()
 
   // select only one vertex
   tool.mouseMove( 1520, 1516.66 );
-  tool.mouseClick( 1520,  1516.66, Qt::LeftButton ); //select vertex
+  tool.mouseClick( 1520, 1516.66, Qt::LeftButton ); //select vertex
   tool.mouseMove( 1521, 1516.66 );
-  tool.mouseClick( 1520, 1516.66, Qt::LeftButton );  //start move
+  tool.mouseClick( 1520, 1516.66, Qt::LeftButton ); //start move
   tool.mouseMove( 1500, 1500 );
   tool.mouseClick( 1500, 1500, Qt::LeftButton ); //end move
   QgsPointXY vertexPosition = meshLayerQuadFlower->snapOnElement( QgsMesh::Vertex, QgsPointXY( 1520, 1480 ), 30 );
@@ -332,7 +348,7 @@ void TestQgsMapToolEditMesh::editMesh()
 
   // select an edge and move it
   tool.mouseMove( 1760, 1758 );
-  tool.mouseClick( 1760,  1758, Qt::LeftButton );
+  tool.mouseClick( 1760, 1758, Qt::LeftButton );
   tool.mouseMove( 1760, 1758 );
   tool.mouseClick( 1760, 1760, Qt::LeftButton );
   tool.mouseMove( 1800, 1760 );
@@ -386,6 +402,382 @@ void TestQgsMapToolEditMesh::editMesh()
 
   QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 1 );
   QCOMPARE( mEditMeshMapTool->mSelectedFaces.count(), 0 );
+}
+
+void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
+{
+  QgsCoordinateReferenceSystem crs3857;
+  crs3857.createFromString( "EPSG:3857" );
+
+  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+
+  QString rasterUri = QString( mDataDir + "/terrain_under_mesh.tif" );
+  auto terrainLayer = std::make_unique<QgsRasterLayer>( rasterUri, "terrain", "gdal" );
+  terrainLayer->setCrs( crs3857 );
+  QVERIFY( terrainLayer->isValid() );
+
+  auto terrain = std::make_unique<QgsRasterDemTerrainProvider>();
+  terrain->setLayer( terrainLayer.get() );
+
+  QgsProject::instance()->elevationProperties()->setTerrainProvider( terrain.release() );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() << terrainLayer.get() );
+  mCanvas->setDestinationCrs( layer->crs() );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  // setup Z value widget
+  double defaultZ = -10.0;
+  mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
+
+  QgsPointXY point;
+  QgsMeshVertex vertex;
+
+  // default settings in mesh interpolate mesh otherwise default value of z widget
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenZWidget );
+
+  // test points outside of faces, should get defaultZ Z value
+  point = QgsPointXY( 1100, 3100 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 5 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QCOMPARE( vertex.z(), defaultZ );
+
+  point = QgsPointXY( 2500, 2700 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 7 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QCOMPARE( vertex.z(), defaultZ );
+
+  // points inside faces are not affected - still interpolated from the mesh values
+  point = QgsPointXY( 1700, 2200 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 2 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 5 );
+
+  tool.mouseMove( point.x() - 1, point.y() - 1 );
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 31, 0.000001 );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
+
+  // start editing again
+  layer->startFrameEditing( transform, error, false );
+  mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
+
+  // set get Z from project elevation to true - Z values will always be obtained from elevation provider
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::Terrain );
+
+  // test points outside of faces
+  point = QgsPointXY( 1100, 3100 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 5 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 66.00578, 0.00001 );
+
+  // points inside faces
+  point = QgsPointXY( 1700, 2200 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 2 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 5 );
+
+  tool.mouseMove( point.x() - 1, point.y() - 1 );
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 66.091468, 0.000001 );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
+
+  // start editing again
+  layer->startFrameEditing( transform, error, false );
+  mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
+
+  // set get Z from project elevation to true - Z values will be obtained from elevation provider outside of mesh
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenTerrain );
+
+  // test points outside of faces
+  point = QgsPointXY( 1100, 3100 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 5 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 66.00578, 0.00001 );
+
+  point = QgsPointXY( 2500, 2700 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 7 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 4.100819, 0.000001 );
+
+  // points inside faces are not affected - still interpolated from the mesh values
+  point = QgsPointXY( 1700, 2200 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 2 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 5 );
+
+  tool.mouseMove( point.x() - 1, point.y() - 1 );
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 31, 0.000001 );
+
+  // test points outside of terrain provider - should get default Z value from the widget
+  point = QgsPointXY( 3000, 4000 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 7 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 8 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), defaultZ, 0.0000001 );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
+
+  // start editing again
+  layer->startFrameEditing( transform, error, false );
+  mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
+
+  // set get Z from project elevation to false - Z values will be obtained Z widget outside of mesh
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenZWidget );
+
+  // test points outside of faces
+  point = QgsPointXY( 2700, 1800 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 5 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), defaultZ, 0.0000001 );
+
+  // points inside faces are not affected - still interpolated from the mesh values
+  point = QgsPointXY( 1700, 2200 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 2 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 5 );
+
+  tool.mouseMove( point.x() - 1, point.y() - 1 );
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), 31, 0.000001 );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
+
+  // start editing again
+  layer->startFrameEditing( transform, error, false );
+  mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
+
+  // set get Z from project elevation to false - Z values will be obtained Z widget
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::ZWidget );
+
+  // point inside faces
+  point = QgsPointXY( 1700, 2200 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 2 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 5 );
+
+  tool.mouseMove( point.x() - 1, point.y() - 1 );
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), defaultZ, 0.000001 );
+
+  // test points outside of faces
+  point = QgsPointXY( 2700, 1800 );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 5 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->freeVerticesIndexes().count(), 6 );
+
+  vertex = mEditMeshMapTool->mapVertex( mEditMeshMapTool->closeVertex( point ) );
+  QGSCOMPARENEAR( vertex.z(), defaultZ, 0.0000001 );
+
+  // remove edits
+  layer->rollBackFrameEditing( transform, false );
+}
+
+void TestQgsMapToolEditMesh::selectElements()
+{
+  QString uri = QString( mDataDir + "/quad_and_triangle_with_free_vertices.2dm" );
+  auto layer = std::make_unique<QgsMeshLayer>( uri, "quad and triangle", "mdal" );
+  QVERIFY( layer->isValid() );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
+
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  // select all vertices
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectAllVertices->trigger();
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 10 );
+
+  // reset selection
+  tool.mouseClick( 0, 0, Qt::LeftButton );
+
+  // select isolated vertices
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectIsolatedVertices->trigger();
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 5 );
+
+  // reset selection
+  tool.mouseClick( 0, 0, Qt::LeftButton );
+
+  // select by polygon
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 0 );
+  mEditMeshMapTool->mActionSelectByPolygon->trigger();
+
+  // polygon definition
+  tool.mouseClick( 2100, 3000, Qt::LeftButton );
+  tool.mouseClick( 2900, 2300, Qt::LeftButton );
+  tool.mouseClick( 3100, 3000, Qt::LeftButton );
+  tool.mouseClick( 2500, 3000, Qt::RightButton );
+
+  QCOMPARE( mEditMeshMapTool->mSelectedVertices.count(), 3 );
+}
+
+void TestQgsMapToolEditMesh::testDelaunayRefinement()
+{
+  QgsCoordinateReferenceSystem crs3857;
+  crs3857.createFromString( "EPSG:3857" );
+
+  const QgsCoordinateTransform transform;
+  QgsMeshEditingError error;
+  QgsPointXY point;
+
+  QString originalDataPath = QString( "/mesh/not_delaunay.2dm" );
+
+  // editing with normal setting - without delaunay refinement
+  mEditMeshMapTool->mWidgetActionDigitizing->mCheckBoxRefineNeighboringFaces->setChecked( false );
+
+  const QString copyDataPath1 = copyTestData( originalDataPath ); // copy of data to be edited
+
+  auto layer = std::make_unique<QgsMeshLayer>( copyDataPath1, "not delaunay", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
+  mCanvas->setDestinationCrs( crs3857 );
+  mCanvas->setExtent( layer->extent() );
+
+  QVERIFY( layer->meshEditor() );
+
+  TestQgsMapToolAdvancedDigitizingUtils tool( mEditMeshMapTool );
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  point = QgsPointXY( 4.5, 3.5 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 8 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 10 );
+  QCOMPARE( layer->undoStack()->command( 0 )->text(), "Add 1 vertices" );
+
+  QVERIFY( layer->commitFrameEditing( transform, false ) );
+
+  QCOMPARE( layer->nativeMesh()->face( 0 ), QVector<int>() << 1 << 4 << 0 );
+  QCOMPARE( layer->nativeMesh()->face( 1 ), QVector<int>() << 1 << 3 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 2 ), QVector<int>() << 5 << 2 << 0 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 3 ), QVector<int>() << 2 << 6 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 4 ), QVector<int>() << 5 << 7 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 5 ), QVector<int>() << 6 << 2 << 7 );
+  QCOMPARE( layer->nativeMesh()->face( 6 ), QVector<int>() << 7 << 8 << 6 );
+  QCOMPARE( layer->nativeMesh()->face( 7 ), QVector<int>() << 9 << 0 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 8 ), QVector<int>() << 9 << 2 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 9 ), QVector<int>() << 9 << 1 << 0 );
+
+  // editing with delaunay refinement
+  mEditMeshMapTool->mWidgetActionDigitizing->mCheckBoxRefineNeighboringFaces->setChecked( true );
+
+  const QString copyDataPath2 = copyTestData( originalDataPath ); // copy of data to be edited
+
+  layer = std::make_unique<QgsMeshLayer>( copyDataPath2, "not delaunay", "mdal" );
+  layer->setCrs( crs3857 );
+  QVERIFY( layer->isValid() );
+  layer->startFrameEditing( transform, error, false );
+  QVERIFY( error == QgsMeshEditingError() );
+
+  mCanvas->setLayers( QList<QgsMapLayer *>() << layer.get() );
+  mCanvas->setDestinationCrs( crs3857 );
+  mCanvas->setExtent( layer->extent() );
+
+  QVERIFY( layer->meshEditor() );
+
+  mCanvas->setCurrentLayer( layer.get() );
+  mEditMeshMapTool->mActionDigitizing->trigger();
+
+  point = QgsPointXY( 4.5, 3.5 );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 8 );
+  tool.mouseMove( point.x(), point.y() );
+  tool.mouseDoubleClick( point.x(), point.y(), Qt::LeftButton );
+  QCOMPARE( layer->meshEditor()->validFacesCount(), 10 );
+  QCOMPARE( layer->undoStack()->command( 0 )->text(), "Add vertex inside face with Delaunay refinement" );
+
+  QVERIFY( layer->commitFrameEditing( transform, false ) );
+
+  QCOMPARE( layer->nativeMesh()->face( 0 ), QVector<int>() << 5 << 2 << 0 << 4 );
+  QCOMPARE( layer->nativeMesh()->face( 1 ), QVector<int>() << 5 << 7 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 2 ), QVector<int>() << 6 << 2 << 7 );
+  QCOMPARE( layer->nativeMesh()->face( 3 ), QVector<int>() << 7 << 8 << 6 );
+  QCOMPARE( layer->nativeMesh()->face( 4 ), QVector<int>() << 9 << 0 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 5 ), QVector<int>() << 9 << 1 << 0 );
+  QCOMPARE( layer->nativeMesh()->face( 6 ), QVector<int>() << 9 << 6 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 7 ), QVector<int>() << 6 << 9 << 2 );
+  QCOMPARE( layer->nativeMesh()->face( 8 ), QVector<int>() << 3 << 0 << 1 );
+  QCOMPARE( layer->nativeMesh()->face( 9 ), QVector<int>() << 0 << 3 << 4 );
+}
+
+QString TestQgsMapToolEditMesh::read2DMFileContent( const QString &filePath )
+{
+  QFile file( filePath );
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    return QString(); // Return empty string if file can't be opened
+  }
+
+  QTextStream in( &file );
+
+  QString content = in.readAll();
+  file.close();
+  return content;
 }
 
 QGSTEST_MAIN( TestQgsMapToolEditMesh )

@@ -4,5 +4,5 @@ try:
     QgsTolerance.defaultTolerance = staticmethod(QgsTolerance.defaultTolerance)
     QgsTolerance.toleranceInProjectUnits = staticmethod(QgsTolerance.toleranceInProjectUnits)
     QgsTolerance.toleranceInMapUnits = staticmethod(QgsTolerance.toleranceInMapUnits)
-except NameError:
+except (NameError, AttributeError):
     pass

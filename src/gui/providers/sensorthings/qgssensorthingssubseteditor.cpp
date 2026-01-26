@@ -16,15 +16,18 @@
  ***************************************************************************/
 
 #include "qgssensorthingssubseteditor.h"
-#include "qgsvectorlayer.h"
+
 #include "qgscodeeditor.h"
-#include "qgsfieldproxymodel.h"
 #include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsvectorlayer.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QStandardItemModel>
 #include <QPushButton>
+#include <QStandardItemModel>
+
+#include "moc_qgssensorthingssubseteditor.cpp"
 
 ///@cond PRIVATE
 
@@ -119,12 +122,10 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
           mButtonNow
         } )
   {
-    connect( button, &QPushButton::clicked, this, [this, button]
-    {
+    connect( button, &QPushButton::clicked, this, [this, button] {
       mSubsetEditor->insertText( button->property( "expression" ).toString() );
       mSubsetEditor->setFocus();
     } );
-
   }
 }
 
@@ -154,7 +155,7 @@ void QgsSensorThingsSubsetEditor::reset()
 
 void QgsSensorThingsSubsetEditor::lstFieldsDoubleClicked( const QModelIndex &index )
 {
-  mSubsetEditor->insertText( mModelFields->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString() );
+  mSubsetEditor->insertText( mModelFields->data( index, static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString() );
   mSubsetEditor->setFocus();
 }
 

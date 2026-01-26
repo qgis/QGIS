@@ -14,33 +14,34 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QString>
-#include <QIcon>
-
+#include "qgsapplication.h"
 #include "qgsgrassrasterprovider.h"
 #include "qgsprovidermetadata.h"
-#include "qgsapplication.h"
 
-static const QString PROVIDER_KEY = QStringLiteral( "grassraster" );
-static const QString PROVIDER_DESCRIPTION = QStringLiteral( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
+#include <QIcon>
+#include <QString>
 
-class QgsGrassRasterProviderMetadata: public QgsProviderMetadata
+static const QString PROVIDER_KEY = u"grassraster"_s;
+static const QString PROVIDER_DESCRIPTION = u"GRASS %1 raster provider"_s.arg( GRASS_VERSION_MAJOR );
+
+class QgsGrassRasterProviderMetadata : public QgsProviderMetadata
 {
   public:
-    QgsGrassRasterProviderMetadata(): QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
+    QgsGrassRasterProviderMetadata()
+      : QgsProviderMetadata( PROVIDER_KEY, PROVIDER_DESCRIPTION ) {}
     QgsGrassRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override
     {
       Q_UNUSED( options );
       Q_UNUSED( flags );
       return new QgsGrassRasterProvider( uri );
     }
-    QList< Qgis::LayerType > supportedLayerTypes() const override
+    QList<Qgis::LayerType> supportedLayerTypes() const override
     {
       return { Qgis::LayerType::Raster };
     }
     QIcon icon() const override
     {
-      return QgsApplication::getThemeIcon( QStringLiteral( "providerGrass.svg" ) );
+      return QgsApplication::getThemeIcon( u"providerGrass.svg"_s );
     }
 };
 
@@ -49,4 +50,3 @@ QGISEXTERN QgsProviderMetadata *providerMetadataFactory()
 {
   return new QgsGrassRasterProviderMetadata();
 }
-

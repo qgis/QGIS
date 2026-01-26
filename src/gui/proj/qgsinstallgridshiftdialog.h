@@ -19,13 +19,15 @@
 #define QGSINSTALLGRIDSHIFTDIALOG_H
 
 #include "ui_qgsinstallgridshiftdialog.h"
-#include <QDialog>
+
 #include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
-class GUI_EXPORT QgsInstallGridShiftFileDialog: public QDialog, private Ui::QgsInstallGridShiftFileDialogBase
+class GUI_EXPORT QgsInstallGridShiftFileDialog : public QDialog, private Ui::QgsInstallGridShiftFileDialogBase
 {
     Q_OBJECT
   public:
@@ -40,7 +42,6 @@ class GUI_EXPORT QgsInstallGridShiftFileDialog: public QDialog, private Ui::QgsI
 
   private:
     QString mGridName;
-
 };
 ///@endcond
 

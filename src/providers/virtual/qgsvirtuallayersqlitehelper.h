@@ -17,14 +17,16 @@ email                : hugo dot mercier at oslandia dot com
 #ifndef QGSVIRTUALLAYER_SQLITE_UTILS_H
 #define QGSVIRTUALLAYER_SQLITE_UTILS_H
 
+class QString;
+class QVariant;
+class QByteArray;
+struct sqlite3;
+
 extern "C"
 {
 #include <sqlite3.h>
 
-  int qgsvlayerModuleInit( sqlite3 *db,
-                           char **pzErrMsg,
-                           void *unused /*const sqlite3_api_routines *pApi*/ );
-
+  int qgsvlayerModuleInit( sqlite3 *db, char **pzErrMsg, void *unused /*const sqlite3_api_routines *pApi*/ );
 }
 
 // RAII class for sqlite3*
@@ -75,7 +77,7 @@ namespace Sqlite
 
       int columnInt( int i ) const;
 
-      qint64 columnInt64( int i ) const;
+      long long columnInt64( int i ) const;
 
       double columnDouble( int i ) const;
 
@@ -88,8 +90,8 @@ namespace Sqlite
     private:
       sqlite3 *db_ = nullptr;
       sqlite3_stmt *stmt_ = nullptr;
-      int nBind_;
+      int nBind_ = 1;
   };
-}
+} // namespace Sqlite
 
 #endif

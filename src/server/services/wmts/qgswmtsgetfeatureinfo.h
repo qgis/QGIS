@@ -15,14 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
+class QString;
+
 namespace QgsWmts
 {
 
   /**
    * Output GetFeatureInfo response
    */
-  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
-                            const QString &version,  const QgsServerRequest &request,
-                            QgsServerResponse &response );
+  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
 
 } // namespace QgsWmts

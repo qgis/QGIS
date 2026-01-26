@@ -15,13 +15,15 @@
 
 
 #include "qgssettingseditorwidgetwrapperimpl.h"
+
+#include "qgscolorbutton.h"
 #include "qgslogger.h"
 #include "qgssettingsentryimpl.h"
-#include "qgscolorbutton.h"
 
-#include <QLineEdit>
 #include <QCheckBox>
+#include <QLineEdit>
 
+#include "moc_qgssettingseditorwidgetwrapperimpl.cpp"
 
 // *******
 // String with line edit (= default)
@@ -41,15 +43,14 @@ bool QgsSettingsStringLineEditWrapper::setWidgetValue( const QString &value ) co
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
 
 void QgsSettingsStringLineEditWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QLineEdit::textChanged, this, [ = ]( const QString & text )
-  {
+  QObject::connect( this->mEditor, &QLineEdit::textChanged, this, [this]( const QString &text ) {
     this->mSetting->setValue( text, this->mDynamicKeyPartList );
   } );
 }
@@ -63,7 +64,7 @@ bool QgsSettingsStringLineEditWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -94,7 +95,7 @@ bool QgsSettingsStringComboBoxWrapper::setWidgetValue( const QString &value ) co
 {
   if ( mEditor )
   {
-    int idx = mMode == Mode::Data ? mEditor->findData( value ) : mEditor->findText( value );
+    int idx = mMode == Mode::Data ? mEditor->findData( value, mDataRole ) : mEditor->findText( value );
     if ( idx >= 0 )
     {
       mEditor->setCurrentIndex( idx );
@@ -107,15 +108,14 @@ bool QgsSettingsStringComboBoxWrapper::setWidgetValue( const QString &value ) co
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
 
 void QgsSettingsStringComboBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( mEditor, &QComboBox::currentTextChanged, this, [ = ]( const QString & currentText )
-  {
+  QObject::connect( mEditor, &QComboBox::currentTextChanged, this, [this]( const QString &currentText ) {
     QString textValue = currentText;
     if ( mMode == Mode::Data )
       textValue = mEditor->currentData().toString();
@@ -132,7 +132,7 @@ bool QgsSettingsStringComboBoxWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -141,7 +141,7 @@ QString QgsSettingsStringComboBoxWrapper::valueFromWidget() const
 {
   if ( mEditor )
   {
-    return mMode == Mode::Data ? mEditor->currentData().toString() : mEditor->currentText();
+    return mMode == Mode::Data ? mEditor->currentData( mDataRole ).toString() : mEditor->currentText();
   }
   else
   {
@@ -168,15 +168,14 @@ bool QgsSettingsBoolCheckBoxWrapper::setWidgetValue( const bool &value ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
 
 void QgsSettingsBoolCheckBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QCheckBox::clicked, this, [ = ]( bool checked )
-  {
+  QObject::connect( this->mEditor, &QCheckBox::clicked, this, [this]( bool checked ) {
     this->mSetting->setValue( checked, this->mDynamicKeyPartList );
   } );
 }
@@ -190,14 +189,13 @@ bool QgsSettingsBoolCheckBoxWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
 
 bool QgsSettingsBoolCheckBoxWrapper::valueFromWidget() const
 {
-
   if ( mEditor )
   {
     return mEditor->isChecked();
@@ -228,15 +226,14 @@ bool QgsSettingsIntegerSpinBoxWrapper::setWidgetValue( const int &value ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
 
 void QgsSettingsIntegerSpinBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, qOverload<int>( &QSpinBox::valueChanged ), this, [ = ]( int value )
-  {
+  QObject::connect( this->mEditor, qOverload<int>( &QSpinBox::valueChanged ), this, [this]( int value ) {
     this->mSetting->setValue( value, this->mDynamicKeyPartList );
   } );
 }
@@ -250,7 +247,7 @@ bool QgsSettingsIntegerSpinBoxWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -267,7 +264,6 @@ int QgsSettingsIntegerSpinBoxWrapper::valueFromWidget() const
   }
   return std::numeric_limits<int>::quiet_NaN();
 }
-
 
 
 // *******
@@ -288,15 +284,14 @@ bool QgsSettingsDoubleSpinBoxWrapper::setWidgetValue( const double &value ) cons
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
 
 void QgsSettingsDoubleSpinBoxWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double value )
-  {
+  QObject::connect( this->mEditor, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     this->mSetting->setValue( value, this->mDynamicKeyPartList );
   } );
 }
@@ -310,7 +305,7 @@ bool QgsSettingsDoubleSpinBoxWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -346,7 +341,7 @@ bool QgsSettingsColorButtonWrapper::setWidgetValue( const QColor &value ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -359,14 +354,13 @@ void QgsSettingsColorButtonWrapper::configureEditorPrivateImplementation()
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
 }
 
 void QgsSettingsColorButtonWrapper::enableAutomaticUpdatePrivate()
 {
-  QObject::connect( this->mEditor, &QgsColorButton::colorChanged, this, [ = ]( const QColor & color )
-  {
+  QObject::connect( this->mEditor, &QgsColorButton::colorChanged, this, [this]( const QColor &color ) {
     this->mSetting->setValue( color, this->mDynamicKeyPartList );
   } );
 }
@@ -380,7 +374,7 @@ bool QgsSettingsColorButtonWrapper::setSettingFromWidget() const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
   }
   return false;
 }
@@ -416,7 +410,7 @@ QColor QgsSettingsColorButtonWrapper::valueFromWidget() const
 //  }
 //  else
 //  {
-//    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+//    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
 //  }
 //  return false;
 //}
@@ -430,7 +424,7 @@ QColor QgsSettingsColorButtonWrapper::valueFromWidget() const
 //  }
 //  else
 //  {
-//    QgsDebugError( QStringLiteral( "Settings editor not set for %1" ).arg( mSetting->definitionKey() ) );
+//    QgsDebugError( u"Settings editor not set for %1"_s.arg( mSetting->definitionKey() ) );
 //  }
 //  return false;
 //}

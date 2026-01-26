@@ -1,0 +1,60 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgroupedfeaturefilterprovider.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGroupedFeatureFilterProvider : QgsFeatureFilterProvider
+{
+%Docstring(signature="appended")
+A filter filter provider grouping several filter providers.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsgroupedfeaturefilterprovider.h"
+%End
+  public:
+    QgsGroupedFeatureFilterProvider();
+%Docstring
+Constructor
+%End
+
+ virtual bool isFilterThreadSafe() const /Deprecated/;
+
+
+ virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const /Deprecated/;
+
+    virtual void filterFeatures( const QString &layerId, QgsFeatureRequest &filterFeatures ) const;
+
+    virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
+
+    virtual QgsGroupedFeatureFilterProvider *clone() const /Factory/;
+
+
+    QgsGroupedFeatureFilterProvider &addProvider( const QgsFeatureFilterProvider *provider );
+%Docstring
+Add another filter provider to the group
+
+:param provider: The provider to add
+
+:return: itself
+%End
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsgroupedfeaturefilterprovider.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

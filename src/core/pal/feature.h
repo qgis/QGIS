@@ -33,22 +33,17 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
+#include <cmath>
+#include <fstream>
+#include <iostream>
+
+#include "labelposition.h"
 #include "pointset.h"
-#include "labelposition.h" // for LabelPosition enum
+#include "qgis_core.h"
 #include "qgslabelfeature.h"
 #include "qgstextrendererutils.h"
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <QString>
 
-/**
- * \ingroup core
- * \brief pal labeling engine
- * \class pal::LabelInfo
- * \note not available in Python bindings
- */
+#include <QString>
 
 namespace pal
 {
@@ -57,7 +52,7 @@ namespace pal
 
   /**
    * \ingroup core
-   * \brief Main class to handle feature
+   * \brief Represents a part of a label feature.
    * \class pal::FeaturePart
    * \note not available in Python bindings
    */
@@ -102,6 +97,12 @@ namespace pal
        * Returns the unique ID of the feature.
        */
       QgsFeatureId featureId() const;
+
+      /**
+       * Returns the unique sub part ID for the feature, for features which register
+       * multiple labels.
+       */
+      int subPartId() const;
 
       /**
        * Returns the maximum number of point candidates to generate for this feature.
@@ -220,12 +221,14 @@ namespace pal
        * \param distance distance to offset label along curve by
        * \param labeledLineSegmentIsRightToLeft if TRUE label is reversed from lefttoright to righttoleft
        * \param applyAngleConstraints TRUE if label feature character angle constraints should be applied
+       * \param additionalCharacterSpacing additional spacing to apply between every character (grapheme). Can be negative to constrict text placement.
+       * \param additionalWordSpacing additional spacing to apply after every word (space character). Can be negative to constrict text placement.
        * \param flags curved text behavior flags
        * \returns calculated label position
        */
       std::unique_ptr< LabelPosition > curvedPlacementAtOffset( PointSet *mapShape, const std::vector<double> &pathDistances,
           QgsTextRendererUtils::LabelLineDirection direction, double distance, bool &labeledLineSegmentIsRightToLeft, bool applyAngleConstraints,
-          QgsTextRendererUtils::CurvedTextFlags flags );
+          Qgis::CurvedTextFlags flags, double additionalCharacterSpacing, double additionalWordSpacing );
 
       /**
        * Generate curved candidates for line features.
@@ -236,6 +239,25 @@ namespace pal
        * \returns the number of generated candidates
        */
       std::size_t createCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
+
+      /**
+       * Generate curved candidates for line features, using default placement.
+       * \param lPos pointer to an array of candidates, will be filled by generated candidates
+       * \param mapShape a pointer to the line
+       * \param allowOverrun set to TRUE to allow labels to overrun features
+       * \param pal point to pal settings object, for cancellation support
+       * \returns the number of generated candidates
+       */
+      std::size_t createDefaultCurvedCandidatesAlongLine( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, bool allowOverrun, Pal *pal );
+
+      /**
+       * Generates a curved candidates for line features, placing individual characters on the line vertices.
+       * \param lPos pointer to an array of candidates, will be filled by generated candidate
+       * \param mapShape a pointer to the line
+       * \param pal point to pal settings object, for cancellation support
+       * \returns the number of generated candidates
+       */
+      std::size_t createCurvedCandidateWithCharactersAtVertices( std::vector<std::unique_ptr<LabelPosition> > &lPos, PointSet *mapShape, Pal *pal );
 
       /**
        * Generate candidates for polygon features.
@@ -353,7 +375,7 @@ namespace pal
 
     private:
 
-      LabelPosition::Quadrant quadrantFromOffset() const;
+      Qgis::LabelQuadrantPosition quadrantFromOffset() const;
 
       int mTotalRepeats = 0;
 

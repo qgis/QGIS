@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgslabelpointsettings.h"
-#include "qgspropertycollection.h"
+
 #include "qgsexpressioncontext.h"
 #include "qgspallabeling.h"
+#include "qgspropertycollection.h"
 
+#include "moc_qgslabelpointsettings.cpp"
 
 void QgsLabelPointSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {

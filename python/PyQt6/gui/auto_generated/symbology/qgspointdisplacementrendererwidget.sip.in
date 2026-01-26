@@ -10,8 +10,12 @@
 
 
 
-class QgsPointDisplacementRendererWidget: QgsRendererWidget
+
+class QgsPointDisplacementRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring :py:class:`QgsPointDisplacementRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgspointdisplacementrendererwidget.h"

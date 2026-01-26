@@ -16,13 +16,13 @@
 #ifndef QGSOAPIFQUERYABLESREQUEST_H
 #define QGSOAPIFQUERYABLESREQUEST_H
 
-#include <QObject>
-#include <QMap>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
 
-//! Manages the conformance request
+#include <QMap>
+#include <QObject>
+
+//! Manages the queryable request
 class QgsOapifQueryablesRequest : public QgsBaseNetworkRequest
 {
     Q_OBJECT
@@ -32,14 +32,14 @@ class QgsOapifQueryablesRequest : public QgsBaseNetworkRequest
     //! Describes a queryable parameter.
     struct Queryable
     {
-      //! whether the parameter is a geometry
-      bool mIsGeometry = false;
+        //! whether the parameter is a geometry
+        bool mIsGeometry = false;
 
-      //! type as in a JSON schema: "string", "integer", "number", etc.
-      QString mType;
+        //! type as in a JSON schema: "string", "integer", "number", etc.
+        QString mType;
 
-      //! format as in JSON schema. e.g "date-time" if mType="string"
-      QString mFormat;
+        //! format as in JSON schema. e.g "date-time" if mType="string"
+        QString mFormat;
     };
 
     //! Issue the request synchronously and return queryables

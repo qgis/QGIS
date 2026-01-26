@@ -12,29 +12,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-
-
-#include "qgsproject.h"
-#include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorcontainer.h"
+#include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorrelation.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsproject.h"
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QObject>
 
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsRelation changing style
  */
-class TestQgsRelation: public QObject
+class TestQgsRelation : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testValidRelationAfterChangingStyle();
 };
 
@@ -43,9 +41,9 @@ void TestQgsRelation::initTestCase()
   // Runs once before any tests are run
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -67,7 +65,7 @@ void TestQgsRelation::testValidRelationAfterChangingStyle()
 
   QVERIFY( p->read( projectPath ) );
 
-  const auto layers { p->mapLayers().values( ) };
+  const auto layers { p->mapLayers().values() };
   for ( const auto &l : std::as_const( layers ) )
   {
     QVERIFY( l->isValid() );
@@ -105,7 +103,6 @@ void TestQgsRelation::testValidRelationAfterChangingStyle()
   }
 
   QVERIFY( valid );
-
 }
 
 QGSTEST_MAIN( TestQgsRelation )

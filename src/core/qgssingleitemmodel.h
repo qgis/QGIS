@@ -18,13 +18,14 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include <QAbstractItemModel>
 
 /**
  * \ingroup core
  * \class QgsSingleItemModel
  *
- * \brief A QgsSingleItemModel subclass which contains a single read-only item.
+ * \brief A QAbstractItemModel subclass which contains a single read-only item.
  *
  * \since QGIS 3.26
  */

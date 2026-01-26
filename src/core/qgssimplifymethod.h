@@ -22,7 +22,7 @@ class QgsAbstractGeometrySimplifier;
 
 /**
  * \ingroup core
- * \brief This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
+ * \brief Contains information about how to simplify geometries fetched from a QgsFeatureIterator.
  */
 class CORE_EXPORT QgsSimplifyMethod
 {

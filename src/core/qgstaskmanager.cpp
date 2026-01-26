@@ -16,12 +16,16 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
-#include "qgsproject.h"
-#include "qgsmaplayerlistutils_p.h"
+
 #include <mutex>
+
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsproject.h"
+
 #include <QStack>
 #include <QtConcurrentRun>
 
+#include "moc_qgstaskmanager.cpp"
 
 //
 // QgsTask
@@ -37,7 +41,7 @@ QgsTask::QgsTask( const QString &name, Flags flags )
 
 QgsTask::~QgsTask()
 {
-  Q_ASSERT_X( mStatus != Running, "delete", QStringLiteral( "status was %1" ).arg( mStatus ).toLatin1() );
+  Q_ASSERT_X( mStatus != Running, "delete", u"status was %1"_s.arg( mStatus ).toLatin1() );
   // even here we are not sure that task start method has ended
   mNotFinishedMutex.lock();
   const auto constMSubTasks = mSubTasks;
@@ -446,7 +450,7 @@ long QgsTaskManager::addTaskPrivate( QgsTask *task, QgsTaskList dependencies, bo
     mInitialized = true;
     // defer connection to project until we actually need it -- we don't want to connect to the project instance in the constructor,
     // cos that forces early creation of QgsProject
-    connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ),
+    connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList< QgsMapLayer * >& ) > ( &QgsProject::layersWillBeRemoved ), // skip-keyword-check
              this, &QgsTaskManager::layersWillBeRemoved );
   }
 

@@ -12,15 +12,14 @@
 class QgsVScrollArea : QgsScrollArea
 {
 %Docstring(signature="appended")
-:py:class:`QgsVScrollArea` is a QScrollArea subclass which only displays a vertical
-scrollbar and fits the width to the contents.
+A QScrollArea subclass which only displays a vertical scrollbar and fits
+the width to the contents.
 %End
 
 %TypeHeaderCode
 #include "qgsvscrollarea.h"
 %End
   public:
-
     QgsVScrollArea( QWidget *parent = 0 );
 %Docstring
 QgsVScrollArea

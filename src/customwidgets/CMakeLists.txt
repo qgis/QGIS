@@ -98,19 +98,19 @@ include_directories(SYSTEM
   ${${QT_VERSION_BASE}Designer_INCLUDE_DIRS}
 )
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
-else()
-  QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
-endif()
-
 #############################################################
 # qgis_customwidgets library
 
 add_library(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 
-# require c++17
-target_compile_features(qgis_customwidgets PRIVATE cxx_std_17)
+if(QGISPOSTFIX)
+  set_target_properties(qgis_customwidgets PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_customwidgets${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_customwidgets${QGISPOSTFIX}
+  )
+endif()
+
+set_target_properties(qgis_customwidgets PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 set_target_properties(qgis_customwidgets PROPERTIES
   VERSION ${COMPLETE_VERSION}
@@ -128,13 +128,12 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_customwidgets.h
 )
 
-set(QGIS_CUSTOMWIDGETS_INSTALL_HDRS ${QGIS_CUSTOMWIDGETS_MOC_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_customwidgets.h)
+set(QGIS_CUSTOMWIDGETS_HDRS ${QGIS_CUSTOMWIDGETS_MOC_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_customwidgets.h)
 
 # install
 install(TARGETS qgis_customwidgets
   RUNTIME DESTINATION ${QT_PLUGINS_DIR}/designer
   LIBRARY DESTINATION ${QT_PLUGINS_DIR}/designer
 )
-
 # TODO: apple
-install(FILES ${QGIS_CUSTOMWIDGETS_INSTALL_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+install(FILES ${QGIS_CUSTOMWIDGETS_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})

@@ -15,17 +15,17 @@
 #ifndef QGSSYMBOLLEVELSDIALOG_H
 #define QGSSYMBOLLEVELSDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-#include <QList>
-#include <QItemDelegate>
+#include "ui_qgssymbollevelsdialogbase.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgshelp.h"
 #include "qgspanelwidget.h"
 #include "qgsrenderer.h"
 
-#include "ui_qgssymbollevelsdialogbase.h"
-#include "qgis_gui.h"
+#include <QDialog>
+#include <QItemDelegate>
+#include <QList>
 
 /**
  * \class QgsSymbolLevelsWidget
@@ -37,7 +37,6 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsSymbolLevelsWidget
      */
@@ -105,7 +104,6 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsSymbolLevelsDialog.
     QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -127,7 +125,6 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog
     QgsLegendSymbolList symbolLevels() const;
 
   private:
-
     QgsSymbolLevelsWidget *mWidget = nullptr;
 
   private slots:
@@ -144,16 +141,16 @@ class SpinBoxDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit SpinBoxDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) {}
+    explicit SpinBoxDelegate( QObject *parent = nullptr )
+      : QItemDelegate( parent ) {}
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const override;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/ ) const override;
 
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
 
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
     void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const override;
-
 };
 
 ///@endcond

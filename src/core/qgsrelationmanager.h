@@ -17,20 +17,20 @@
 #define QGSRELATIONMANAGER_H
 
 #include "qgis_core.h"
+#include "qgspolymorphicrelation.h"
+#include "qgsrelation.h"
+
+#include <QDomDocument>
+#include <QDomNode>
 #include <QObject>
 #include <QPair>
-#include <QDomNode>
-#include <QDomDocument>
-
-#include "qgsrelation.h"
-#include "qgspolymorphicrelation.h"
 
 class QgsProject;
 class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief This class manages a set of relations between layers.
+ * \brief Manages a set of relations between layers.
  */
 class CORE_EXPORT QgsRelationManager : public QObject
 {
@@ -70,14 +70,14 @@ class CORE_EXPORT QgsRelationManager : public QObject
      *
      * \param relation The relation to add.
      */
-    void addRelation( const QgsRelation &relation );
+    Q_INVOKABLE void addRelation( const QgsRelation &relation );
 
     /**
      * Remove a relation.
      *
      * \param id The id of the relation to remove.
      */
-    void removeRelation( const QString &id );
+    Q_INVOKABLE void removeRelation( const QString &id );
 
     /**
      * Remove a relation.

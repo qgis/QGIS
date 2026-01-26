@@ -16,8 +16,8 @@
 #ifndef QGSGEOMETRYWIDGETFACTORY_H
 #define QGSGEOMETRYWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 class QgsMessageBar;
 
@@ -34,15 +34,14 @@ SIP_NO_FILE
 class GUI_EXPORT QgsGeometryWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-
     /**
      * Constructor for QgsGeometryWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      *
      * The \a messageBar argument can be used to link the widget to a QgsMessageBar
      * for providing user feedback.
      */
-    explicit QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar );
+    explicit QgsGeometryWidgetFactory( const QString &name, QgsMessageBar *messageBar, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:
@@ -52,7 +51,6 @@ class GUI_EXPORT QgsGeometryWidgetFactory : public QgsEditorWidgetFactory
     unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 
   private:
-
     QgsMessageBar *mMessageBar = nullptr;
 };
 

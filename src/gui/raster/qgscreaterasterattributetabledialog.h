@@ -16,9 +16,11 @@
 #ifndef QGSCREATERASTERATTRIBUTETABLEDIALOG_H
 #define QGSCREATERASTERATTRIBUTETABLEDIALOG_H
 
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgscreaterasterattributetabledialogbase.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
 #include <QDialog>
 
 #define SIP_NO_FILE
@@ -29,7 +31,9 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief The QgsCreateRasterAttributeTableDialog dialog collects the information required to create a new raster attribute table and performs the creation when the dialog is accepted.
+ * \brief A dialog which collects the information required to create a new raster attribute table.
+ *
+ * This dialog also performs the creation when the dialog is accepted.
  * \warning Client code must check if the creation of attribute tables is supported by the raster layer by calling QgsRasterLayer::canCreateAttributeTable() before using this dialog.
  * \note Not available in Python bindings
  * \since QGIS 3.30
@@ -38,7 +42,6 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsCreateRasterAttributeTableDialog.
      * \param rasterLayer the raster layer, must be suitable for creating a new raster attribute table
@@ -49,17 +52,17 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
     /**
      * Returns the file path in case of VAT.DBF save option.
      */
-    QString filePath( ) const;
+    QString filePath() const;
 
     /**
      * Returns TRUE if the option to save to a file is selected.
      */
-    bool saveToFile( ) const;
+    bool saveToFile() const;
 
     /**
      * Returns TRUE if the option to open the newly created attribute table is checked.
      */
-    bool openWhenDone( ) const;
+    bool openWhenDone() const;
 
     /**
      * Sets the message \a bar associated with the widget. This allows the widget to push feedback messages
@@ -84,10 +87,8 @@ class GUI_EXPORT QgsCreateRasterAttributeTableDialog : public QDialog, private U
     void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
   private:
-
     QgsRasterLayer *mRasterLayer = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-
 };
 
 #endif // QGSCREATERASTERATTRIBUTETABLEDIALOG_H

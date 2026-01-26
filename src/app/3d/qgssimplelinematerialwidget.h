@@ -16,8 +16,9 @@
 #ifndef QGSSIMPLELINEMATERIALWIDGET_H
 #define QGSSIMPLELINEMATERIALWIDGET_H
 
+#include "ui_simplelinematerialwidgetbase.h"
+
 #include "qgsmaterialsettingswidget.h"
-#include <ui_simplelinematerialwidgetbase.h>
 
 //! Widget for configuration of simple line material settings
 class QgsSimpleLineMaterialWidget : public QgsMaterialSettingsWidget, private Ui::SimpleLineMaterialWidgetBase
@@ -30,7 +31,6 @@ class QgsSimpleLineMaterialWidget : public QgsMaterialSettingsWidget, private Ui
 
     void setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer ) override;
     QgsAbstractMaterialSettings *settings() override;
-
 };
 
 #endif // QGSSIMPLELINEMATERIALWIDGET_H

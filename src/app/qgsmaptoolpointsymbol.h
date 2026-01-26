@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLPOINTSYMBOL_H
 #define QGSMAPTOOLPOINTSYMBOL_H
 
-#include "qgsmaptooledit.h"
-#include "qgsfeature.h"
 #include "qgis_app.h"
+#include "qgsfeature.h"
+#include "qgsmaptooledit.h"
 
 class QgsMarkerSymbol;
 
@@ -29,7 +29,7 @@ class QgsMarkerSymbol;
  * snapping the mouse press to a feature, and detecting whether the clicked feature has symbology which is
  * compatible with the map tool.
  */
-class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
+class APP_EXPORT QgsMapToolPointSymbol : public QgsMapToolEdit
 {
     Q_OBJECT
 
@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
 
   protected:
     QgsVectorLayer *mActiveLayer = nullptr;
-    QgsFeatureId mFeatureNumber;
+    QgsFeatureId mFeatureNumber = -1;
 
     //! Screen coordinate of the snapped feature
     QPoint mSnappedPoint;
@@ -52,7 +52,6 @@ class APP_EXPORT QgsMapToolPointSymbol: public QgsMapToolEdit
     virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) = 0;
 
     virtual void noCompatibleSymbols() {}
-
 };
 
 #endif // QGSMAPTOOLPOINTSYMBOL_H

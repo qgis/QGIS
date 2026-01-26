@@ -30,9 +30,7 @@
  */
 class QgsExtractByExtentAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsExtractByExtentAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,18 +39,14 @@ class QgsExtractByExtentAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExtractByExtentAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXTRACTBYEXTENT_H
-
-

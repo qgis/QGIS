@@ -14,8 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetabledialog.h"
+
 #include "qgsrasterlayer.h"
 
+#include "moc_qgsrasterattributetabledialog.cpp"
 
 QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, int bandNumber, QWidget *parent )
   : QDialog( parent )
@@ -27,7 +29,6 @@ QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *ra
 
   connect( rasterLayer, &QgsRasterLayer::dataSourceChanged, this, &QgsRasterAttributeTableDialog::reject );
   connect( rasterLayer, &QgsRasterLayer::willBeDeleted, this, &QgsRasterAttributeTableDialog::reject );
-
 }
 
 void QgsRasterAttributeTableDialog::reject()

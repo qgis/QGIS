@@ -17,16 +17,16 @@
 #ifndef QGSATTRIBUTEDIALOG_H
 #define QGSATTRIBUTEDIALOG_H
 
-#include "qgsattributeeditorcontext.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsattributeform.h"
-#include "qgstrackedvectorlayertools.h"
 #include "qgsmaplayeractioncontextgenerator.h"
+#include "qgstrackedvectorlayertools.h"
 
 #include <QDialog>
-#include <QMenuBar>
 #include <QGridLayout>
-#include "qgis_gui.h"
+#include <QMenuBar>
 
 class QgsHighlight;
 class QgsActionMenu;
@@ -34,13 +34,13 @@ class QgsActionMenu;
 /**
  * \ingroup gui
  * \class QgsAttributeDialog
+ * \brief An attribute table dialog for a vector layer.
  */
 class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionContextGenerator
 {
     Q_OBJECT
 
   public:
-
     /**
      * Create an attribute dialog for a given layer and feature
      *
@@ -62,16 +62,22 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
      */
     void setHighlight( QgsHighlight *h );
 
-    QgsAttributeForm *attributeForm() { return mAttributeForm; }
+    /**
+     * Returns the attribute form.
+     */
+    QgsAttributeForm *attributeForm() const { return mAttributeForm; }
 
-    const QgsFeature *feature() { return &mAttributeForm->feature(); }
+    /**
+     * Returns the current feature of the attribute form.
+     */
+    const QgsFeature *feature() const { return &mAttributeForm->feature(); }
 
     /**
      * Is this dialog editable?
      *
      * \returns returns TRUE, if this dialog was created in an editable manner.
      */
-    bool editable() { return mAttributeForm->editable(); }
+    bool editable() const { return mAttributeForm->editable(); }
 
     /**
      * Toggles the form mode.
@@ -121,17 +127,12 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog, public QgsMapLayerActionCo
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field
     QgsHighlight *mHighlight = nullptr;
-    int mFormNr;
-    bool mShowDialogButtons;
     QString mReturnvarname;
     QgsAttributeForm *mAttributeForm = nullptr;
     QgsFeature *mOwnedFeature = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsTrackedVectorLayerTools mTrackedVectorLayerTools;
-
-    // true if this dialog is editable
-    bool mEditable;
 
     QgsActionMenu *mMenu;
     QMenuBar *mMenuBar = nullptr;

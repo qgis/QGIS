@@ -18,19 +18,21 @@
 
 #include "offline_editing_plugin_gui.h"
 
+#include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_offline_editing_plugin_gui.cpp"
 
 QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
@@ -73,7 +75,7 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) con
     if ( QgsLayerTree::isLayer( node ) && index.column() > 0 )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->layer()->providerType() == QLatin1String( "WFS" ) )
+      if ( nodeLayer->layer()->providerType() == "WFS"_L1 )
       {
         switch ( role )
         {
@@ -86,7 +88,7 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) con
                        "editing." );
 
           case Qt::DecorationRole:
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s );
         }
       }
     }
@@ -109,7 +111,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 
   restoreState();
 
-  mOfflineDbFile = QStringLiteral( "offline.gpkg" );
+  mOfflineDbFile = u"offline.gpkg"_s;
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
   QgsLayerTree *rootNode = QgsProject::instance()->layerTreeRoot()->clone();
@@ -125,20 +127,20 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "OfflineEditing/offline_data_path" ), mOfflineDataPath, QgsSettings::Section::Plugins );
+  settings.setValue( u"OfflineEditing/offline_data_path"_s, mOfflineDataPath, QgsSettings::Section::Plugins );
 }
 
-QString QgsOfflineEditingPluginGui::offlineDataPath()
+QString QgsOfflineEditingPluginGui::offlineDataPath() const
 {
   return mOfflineDataPath;
 }
 
-QString QgsOfflineEditingPluginGui::offlineDbFile()
+QString QgsOfflineEditingPluginGui::offlineDbFile() const
 {
   return mOfflineDbFile;
 }
 
-QStringList QgsOfflineEditingPluginGui::selectedLayerIds()
+QStringList QgsOfflineEditingPluginGui::selectedLayerIds() const
 {
   return mSelectedLayerIds;
 }
@@ -163,17 +165,13 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
     case QgsOfflineEditing::GPKG:
     {
       //GeoPackage
-      QString fileName = QFileDialog::getSaveFileName( this,
-                         tr( "Select target database for offline data" ),
-                         QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
-                         tr( "GeoPackage" ) + " (*.gpkg);;"
-                         + tr( "All files" ) + " (*.*)" );
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "GeoPackage" ) + " (*.gpkg);;" + tr( "All files" ) + " (*.*)" );
 
       if ( !fileName.isEmpty() )
       {
-        if ( !fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
+        if ( !fileName.endsWith( ".gpkg"_L1, Qt::CaseInsensitive ) )
         {
-          fileName += QLatin1String( ".gpkg" );
+          fileName += ".gpkg"_L1;
         }
         mOfflineDbFile = QFileInfo( fileName ).fileName();
         mOfflineDataPath = QFileInfo( fileName ).absolutePath();
@@ -185,17 +183,13 @@ void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
     case QgsOfflineEditing::SpatiaLite:
     {
       //SpaciaLite
-      QString fileName = QFileDialog::getSaveFileName( this,
-                         tr( "Select target database for offline data" ),
-                         QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
-                         tr( "SpatiaLite DB" ) + " (*.sqlite);;"
-                         + tr( "All files" ) + " (*.*)" );
+      QString fileName = QFileDialog::getSaveFileName( this, tr( "Select target database for offline data" ), QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ), tr( "SpatiaLite DB" ) + " (*.sqlite);;" + tr( "All files" ) + " (*.*)" );
 
       if ( !fileName.isEmpty() )
       {
-        if ( !fileName.endsWith( QLatin1String( ".sqlite" ), Qt::CaseInsensitive ) )
+        if ( !fileName.endsWith( ".sqlite"_L1, Qt::CaseInsensitive ) )
         {
-          fileName += QLatin1String( ".sqlite" );
+          fileName += ".sqlite"_L1;
         }
         mOfflineDbFile = QFileInfo( fileName ).fileName();
         mOfflineDataPath = QFileInfo( fileName ).absolutePath();
@@ -243,13 +237,13 @@ void QgsOfflineEditingPluginGui::buttonBox_rejected()
 
 void QgsOfflineEditingPluginGui::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "plugins/core_plugins/plugins_offline_editing.html" ) );
+  QgsHelp::openHelp( u"plugins/core_plugins/plugins_offline_editing.html"_s );
 }
 
 void QgsOfflineEditingPluginGui::restoreState()
 {
   const QgsSettings settings;
-  mOfflineDataPath = settings.value( QStringLiteral( "OfflineEditing/offline_data_path" ), QDir::homePath(), QgsSettings::Section::Plugins ).toString();
+  mOfflineDataPath = settings.value( u"OfflineEditing/offline_data_path"_s, QDir::homePath(), QgsSettings::Section::Plugins ).toString();
 }
 
 void QgsOfflineEditingPluginGui::selectAll()
@@ -271,13 +265,12 @@ void QgsOfflineEditingPluginGui::datatypeChanged( int index )
   if ( index == 0 )
   {
     //GeoPackage
-    mOfflineDbFile = QStringLiteral( "offline.gpkg" );
+    mOfflineDbFile = u"offline.gpkg"_s;
   }
   else
   {
     //SpatiaLite
-    mOfflineDbFile = QStringLiteral( "offline.sqlite" );
+    mOfflineDbFile = u"offline.sqlite"_s;
   }
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 }
-

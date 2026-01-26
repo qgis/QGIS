@@ -16,14 +16,15 @@
 #ifndef QGS3DANIMATIONEXPORTDIALOG_H
 #define QGS3DANIMATIONEXPORTDIALOG_H
 
-#include <QWidget>
-#include <memory>
-#include <QSize>
-
-#include "qgs3dmapsettings.h"
-#include "qgs3danimationsettings.h"
-
 #include "ui_animationexport3ddialog.h"
+
+#include <memory>
+
+#include "qgs3danimationsettings.h"
+#include "qgs3dmapsettings.h"
+
+#include <QSize>
+#include <QWidget>
 
 /**
  * Dialog for settings for 3D animation export
@@ -36,10 +37,10 @@ class Qgs3DAnimationExportDialog : public QDialog, private Ui::AnimationExport3D
     ~Qgs3DAnimationExportDialog() override;
 
     //! Returns output directory for frames
-    QString outputDirectory( ) const;
+    QString outputDirectory() const;
 
     //! Returns filename template for frames
-    QString fileNameExpression( ) const;
+    QString fileNameExpression() const;
 
     //! Returns frames per second
     int fps() const;

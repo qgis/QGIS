@@ -17,9 +17,11 @@
 #define QGSPLAYBACKCONTROLLERWIDGET_H
 
 #include "ui_qgsplaybackcontrollerwidgetbase.h"
-#include "qgis_sip.h"
-#include "qgis_gui.h"
+
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
 #include <QWidget>
 
 /**
@@ -32,7 +34,6 @@ class GUI_EXPORT QgsPlaybackControllerWidget : public QWidget, private Ui::QgsPl
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsPlaybackControllerWidget, with the specified \a parent widget.
      */
@@ -73,7 +74,6 @@ class GUI_EXPORT QgsPlaybackControllerWidget : public QWidget, private Ui::QgsPl
     void rewindToStart();
 
   private:
-
     Qgis::AnimationState mAnimationState = Qgis::AnimationState::Idle;
     bool mPlayingForward = true;
 };

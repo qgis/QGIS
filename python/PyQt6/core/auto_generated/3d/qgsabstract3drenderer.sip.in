@@ -14,13 +14,15 @@
 class QgsAbstract3DRenderer /Abstract/
 {
 %Docstring(signature="appended")
-Base class for all renderers that may to participate in 3D view.
+Base class for all renderers that participate in 3D views.
 
-3D renderers implement the method :py:func:`~createEntity` that returns a new 3D entity - that entity
-will be added to the 3D scene to represent data in renderer's display style.
+3D renderers implement the method :py:func:`~createEntity` that returns
+a new 3D entity - that entity will be added to the 3D scene to represent
+data in renderer's display style.
 
-Renderers may store some custom properties (e.g. materials, sizes) that are written to and read from
-XML. It is therefore not recommended to store large amount of data within a renderer (e.g. arrays of vertices).
+Renderers may store some custom properties (e.g. materials, sizes) that
+are written to and read from XML. It is therefore not recommended to
+store large amount of data within a renderer (e.g. arrays of vertices).
 %End
 
 %TypeHeaderCode
@@ -31,7 +33,8 @@ XML. It is therefore not recommended to store large amount of data within a rend
 
     virtual QString type() const = 0;
 %Docstring
-Returns unique identifier of the renderer class (used to identify subclass)
+Returns unique identifier of the renderer class (used to identify
+subclass)
 %End
     virtual QgsAbstract3DRenderer *clone() const = 0 /Factory/;
 %Docstring
@@ -48,7 +51,8 @@ Reads renderer's properties from given XML element
 %End
     virtual void resolveReferences( const QgsProject &project );
 %Docstring
-Resolves references to other objects - second phase of loading - after :py:func:`~QgsAbstract3DRenderer.readXml`
+Resolves references to other objects - second phase of loading - after
+:py:func:`~QgsAbstract3DRenderer.readXml`
 %End
 
   protected:

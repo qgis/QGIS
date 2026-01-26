@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmextractbylocation.h"
+
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
@@ -24,15 +25,13 @@
 
 void QgsLocationBasedAlgorithm::addPredicateParameter()
 {
-  std::unique_ptr< QgsProcessingParameterEnum > predicateParam( new QgsProcessingParameterEnum( QStringLiteral( "PREDICATE" ),
-      QObject::tr( "Where the features (geometric predicate)" ),
-      predicateOptionsList(), true, QVariant::fromValue( QList< int >() << 0 ) ) );
+  auto predicateParam = std::make_unique<QgsProcessingParameterEnum>( u"PREDICATE"_s, QObject::tr( "Where the features (geometric predicate)" ), predicateOptionsList(), true, QVariant::fromValue( QList<int>() << 0 ) );
 
   QVariantMap predicateMetadata;
   QVariantMap widgetMetadata;
-  widgetMetadata.insert( QStringLiteral( "useCheckBoxes" ), true );
-  widgetMetadata.insert( QStringLiteral( "columns" ), 2 );
-  predicateMetadata.insert( QStringLiteral( "widget_wrapper" ), widgetMetadata );
+  widgetMetadata.insert( u"useCheckBoxes"_s, true );
+  widgetMetadata.insert( u"columns"_s, 2 );
+  predicateMetadata.insert( u"widget_wrapper"_s, widgetMetadata );
   predicateParam->setMetadata( predicateMetadata );
 
   addParameter( predicateParam.release() );
@@ -66,39 +65,29 @@ QgsLocationBasedAlgorithm::Predicate QgsLocationBasedAlgorithm::reversePredicate
 QStringList QgsLocationBasedAlgorithm::predicateOptionsList() const
 {
   return QStringList() << QObject::tr( "intersect" )
-         << QObject::tr( "contain" )
-         << QObject::tr( "disjoint" )
-         << QObject::tr( "equal" )
-         << QObject::tr( "touch" )
-         << QObject::tr( "overlap" )
-         << QObject::tr( "are within" )
-         << QObject::tr( "cross" );
+                       << QObject::tr( "contain" )
+                       << QObject::tr( "disjoint" )
+                       << QObject::tr( "equal" )
+                       << QObject::tr( "touch" )
+                       << QObject::tr( "overlap" )
+                       << QObject::tr( "are within" )
+                       << QObject::tr( "cross" );
 }
 
-void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, QgsFeatureSource *targetSource,
-    QgsFeatureSource *intersectSource,
-    const QList< int > &selectedPredicates,
-    const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
-    bool onlyRequireTargetIds,
-    QgsProcessingFeedback *feedback,
-    const QgsFeatureIds &skipTargetFeatureIds )
+void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds )
 {
   // skip if there are no features to select from!
   if ( mTargetFeatureCount == 0 )
     return;
 
   // skip if intersect layer is empty, unless we are looking for disjoints
-  if ( mIntersectFeatureCount == 0 &&
-       !selectedPredicates.contains( Disjoint ) )
+  if ( mIntersectFeatureCount == 0 && !selectedPredicates.contains( Disjoint ) )
     return;
 
-  if ( mTargetFeatureCount > 0 && mIntersectFeatureCount > 0 &&
-       mTargetFeatureCount < mIntersectFeatureCount )
+  if ( mTargetFeatureCount > 0 && mIntersectFeatureCount > 0 && mTargetFeatureCount < mIntersectFeatureCount )
   {
     // joining FEWER features to a layer with MORE features. So we iterate over the FEW features and find matches from the MANY
-    processByIteratingOverTargetSource( context, targetSource, intersectSource,
-                                        selectedPredicates, handleFeatureFunction,
-                                        onlyRequireTargetIds, feedback, skipTargetFeatureIds );
+    processByIteratingOverTargetSource( context, targetSource, intersectSource, selectedPredicates, handleFeatureFunction, onlyRequireTargetIds, feedback, skipTargetFeatureIds );
   }
   else
   {
@@ -108,19 +97,11 @@ void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, Qg
 
     // TODO - consider using more heuristics to determine whether it's always best to iterate over the intersect
     // source.
-    processByIteratingOverIntersectSource( context, targetSource, intersectSource,
-                                           selectedPredicates, handleFeatureFunction,
-                                           onlyRequireTargetIds, feedback, skipTargetFeatureIds );
+    processByIteratingOverIntersectSource( context, targetSource, intersectSource, selectedPredicates, handleFeatureFunction, onlyRequireTargetIds, feedback, skipTargetFeatureIds );
   }
 }
 
-void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource,
-    QgsFeatureSource *intersectSource,
-    const QList< int > &selectedPredicates,
-    const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
-    bool onlyRequireTargetIds,
-    QgsProcessingFeedback *feedback,
-    const QgsFeatureIds &skipTargetFeatureIds )
+void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds )
 {
   if ( intersectSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for intersect layer, performance will be severely degraded" ) );
@@ -131,10 +112,10 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
     request.setNoAttributes();
 
   QgsFeatureIterator fIt = targetSource->getFeatures( request );
-  double step = mTargetFeatureCount > 0 ? 100.0 / static_cast< double >( mTargetFeatureCount ) : 1;
+  double step = mTargetFeatureCount > 0 ? 100.0 / static_cast<double>( mTargetFeatureCount ) : 1;
   int current = 0;
   QgsFeature f;
-  std::unique_ptr< QgsGeometryEngine > engine;
+  std::unique_ptr<QgsGeometryEngine> engine;
   while ( fIt.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
@@ -168,7 +149,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
 
       for ( int predicate : selectedPredicates )
       {
-        switch ( static_cast< Predicate>( predicate ) )
+        switch ( static_cast<Predicate>( predicate ) )
         {
           case Intersects:
             isMatch = engine->intersects( testFeature.geometry().constGet() );
@@ -221,13 +202,7 @@ void QgsLocationBasedAlgorithm::processByIteratingOverTargetSource( const QgsPro
   }
 }
 
-void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource,
-    QgsFeatureSource *intersectSource,
-    const QList< int > &selectedPredicates,
-    const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
-    bool onlyRequireTargetIds,
-    QgsProcessingFeedback *feedback,
-    const QgsFeatureIds &skipTargetFeatureIds )
+void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds )
 {
   if ( targetSource->hasSpatialIndex() == Qgis::SpatialIndexPresence::NotPresent )
     feedback->pushWarning( QObject::tr( "No spatial index exists for input layer, performance will be severely degraded" ) );
@@ -235,11 +210,11 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
   // build a list of 'reversed' predicates, because in this function
   // we actually test the reverse of what the user wants (allowing us
   // to prepare geometries and optimise the algorithm)
-  QList< Predicate > predicates;
+  QList<Predicate> predicates;
   predicates.reserve( selectedPredicates.count() );
   for ( int i : selectedPredicates )
   {
-    predicates << reversePredicate( static_cast< Predicate >( i ) );
+    predicates << reversePredicate( static_cast<Predicate>( i ) );
   }
 
   QgsFeatureIds disjointSet;
@@ -249,10 +224,10 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
   QgsFeatureIds foundSet;
   QgsFeatureRequest request = QgsFeatureRequest().setNoAttributes().setDestinationCrs( mTargetCrs, context.transformContext() );
   QgsFeatureIterator fIt = intersectSource->getFeatures( request );
-  double step = mIntersectFeatureCount > 0 ? 100.0 / static_cast< double >( mIntersectFeatureCount ) : 1;
+  double step = mIntersectFeatureCount > 0 ? 100.0 / static_cast<double>( mIntersectFeatureCount ) : 1;
   int current = 0;
   QgsFeature f;
-  std::unique_ptr< QgsGeometryEngine > engine;
+  std::unique_ptr<QgsGeometryEngine> engine;
   while ( fIt.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
@@ -340,7 +315,6 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
         foundSet.insert( testFeature.id() );
         handleFeatureFunction( testFeature );
       }
-
     }
 
     current += 1;
@@ -370,25 +344,20 @@ void QgsLocationBasedAlgorithm::processByIteratingOverIntersectSource( const Qgs
 void QgsSelectByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   QStringList methods = QStringList() << QObject::tr( "creating new selection" )
-                        << QObject::tr( "adding to current selection" )
-                        << QObject::tr( "selecting within current selection" )
-                        << QObject::tr( "removing from current selection" );
+                                      << QObject::tr( "adding to current selection" )
+                                      << QObject::tr( "selecting within current selection" )
+                                      << QObject::tr( "removing from current selection" );
 
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Select features from" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Select features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addPredicateParameter();
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
-                QObject::tr( "By comparing to the features from" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INTERSECT"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ),
-                QObject::tr( "Modify current selection by" ),
-                methods, false, 0 ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Modify current selection by" ), methods, false, 0 ) );
 }
 
 QString QgsSelectByLocationAlgorithm::name() const
 {
-  return QStringLiteral( "selectbylocation" );
+  return u"selectbylocation"_s;
 }
 
 Qgis::ProcessingAlgorithmFlags QgsSelectByLocationAlgorithm::flags() const
@@ -413,13 +382,18 @@ QString QgsSelectByLocationAlgorithm::group() const
 
 QString QgsSelectByLocationAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorselection" );
+  return u"vectorselection"_s;
 }
 
 QString QgsSelectByLocationAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a selection in a vector layer. The criteria for selecting "
                       "features is based on the spatial relationship between each feature and the features in an additional layer." );
+}
+
+QString QgsSelectByLocationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a selection in a vector layer based on the spatial relationship with features in an additional layer." );
 }
 
 QgsSelectByLocationAlgorithm *QgsSelectByLocationAlgorithm::createInstance() const
@@ -429,20 +403,19 @@ QgsSelectByLocationAlgorithm *QgsSelectByLocationAlgorithm::createInstance() con
 
 QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !selectLayer )
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT" ) );
 
-  Qgis::SelectBehavior method = static_cast< Qgis::SelectBehavior >( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
-  std::unique_ptr< QgsFeatureSource > intersectSource( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
+  Qgis::SelectBehavior method = static_cast<Qgis::SelectBehavior>( parameterAsEnum( parameters, u"METHOD"_s, context ) );
+  std::unique_ptr<QgsFeatureSource> intersectSource( parameterAsSource( parameters, u"INTERSECT"_s, context ) );
   if ( !intersectSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INTERSECT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INTERSECT"_s ) );
 
-  const QList< int > selectedPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
+  const QList<int> selectedPredicates = parameterAsEnums( parameters, u"PREDICATE"_s, context );
 
   QgsFeatureIds selectedIds;
-  auto addToSelection = [&]( const QgsFeature & feature )
-  {
+  auto addToSelection = [&]( const QgsFeature &feature ) {
     selectedIds.insert( feature.id() );
   };
 
@@ -456,7 +429,7 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
     case Qgis::SelectBehavior::RemoveFromSelection:
     {
       // When subsetting or removing we only need to check already selected features
-      std::unique_ptr< QgsVectorLayerSelectedFeatureSource > selectLayerSelected( new QgsVectorLayerSelectedFeatureSource( selectLayer ) );
+      auto selectLayerSelected = std::make_unique<QgsVectorLayerSelectedFeatureSource>( selectLayer );
       mTargetCrs = selectLayerSelected->sourceCrs();
       mTargetFeatureCount = selectLayerSelected->featureCount();
       process( context, selectLayerSelected.get(), intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
@@ -473,7 +446,7 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
 
   selectLayer->selectByIds( selectedIds, method );
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), parameters.value( QStringLiteral( "INPUT" ) ) );
+  results.insert( u"OUTPUT"_s, parameters.value( u"INPUT"_s ) );
   return results;
 }
 
@@ -484,20 +457,16 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
 
 void QgsExtractByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Extract features from" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Extract features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
   addPredicateParameter();
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INTERSECT" ),
-                QObject::tr( "By comparing to the features from" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INTERSECT"_s, QObject::tr( "By comparing to the features from" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (location)" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted (location)" ) ) );
 }
 
 QString QgsExtractByLocationAlgorithm::name() const
 {
-  return QStringLiteral( "extractbylocation" );
+  return u"extractbylocation"_s;
 }
 
 QString QgsExtractByLocationAlgorithm::displayName() const
@@ -517,7 +486,7 @@ QString QgsExtractByLocationAlgorithm::group() const
 
 QString QgsExtractByLocationAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorselection" );
+  return u"vectorselection"_s;
 }
 
 QString QgsExtractByLocationAlgorithm::shortHelpString() const
@@ -527,6 +496,11 @@ QString QgsExtractByLocationAlgorithm::shortHelpString() const
                       "based on the spatial relationship between each feature and the features in an additional layer." );
 }
 
+QString QgsExtractByLocationAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer that only contains features matching a spatial relationship with the features in an additional layer." );
+}
+
 QgsExtractByLocationAlgorithm *QgsExtractByLocationAlgorithm::createInstance() const
 {
   return new QgsExtractByLocationAlgorithm();
@@ -534,13 +508,12 @@ QgsExtractByLocationAlgorithm *QgsExtractByLocationAlgorithm::createInstance() c
 
 bool QgsExtractByLocationAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-
-  std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-  std::unique_ptr< QgsFeatureSource > intersectSource( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
+  std::unique_ptr<QgsFeatureSource> intersectSource( parameterAsSource( parameters, u"INTERSECT"_s, context ) );
   if ( !intersectSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INTERSECT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INTERSECT"_s ) );
 
   mTargetCrs = input->sourceCrs();
   mTargetFeatureCount = input->featureCount();
@@ -551,33 +524,32 @@ bool QgsExtractByLocationAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
 QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsFeatureSource> input( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !input )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
-  std::unique_ptr< QgsFeatureSource > intersectSource( parameterAsSource( parameters, QStringLiteral( "INTERSECT" ), context ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
+  std::unique_ptr<QgsFeatureSource> intersectSource( parameterAsSource( parameters, u"INTERSECT"_s, context ) );
   if ( !intersectSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INTERSECT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INTERSECT"_s ) );
 
-  const QList< int > selectedPredicates = parameterAsEnums( parameters, QStringLiteral( "PREDICATE" ), context );
+  const QList<int> selectedPredicates = parameterAsEnums( parameters, u"PREDICATE"_s, context );
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, input->fields(), input->wkbType(), mTargetCrs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, input->fields(), input->wkbType(), mTargetCrs ) );
 
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-  auto addToSink = [&]( const QgsFeature & feature )
-  {
+  auto addToSink = [&]( const QgsFeature &feature ) {
     QgsFeature f = feature;
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   };
   process( context, input.get(), intersectSource.get(), selectedPredicates, addToSink, false, feedback );
 
+  sink->finalize();
+
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), dest );
+  results.insert( u"OUTPUT"_s, dest );
   return results;
 }
 
 ///@endcond
-
-

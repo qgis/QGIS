@@ -16,6 +16,7 @@
 #include "qgs2dgamepadcontroller.h"
 
 #ifdef HAVE_QTGAMEPAD
+#include "moc_qgs2dgamepadcontroller.cpp"
 
 #include <QtGamepad/QGamepad>
 
@@ -53,13 +54,12 @@ QgsGamepad2DMapController::QgsGamepad2DMapController( int gamepadDeviceId, QObje
   // also here we would make connections to the 2D map controller signals like zoomMap, depending on some
   // reasonable defaults and user defined QSettings
 #if 0
-  connect( mGamepad, &QGamepad::axisRightYChanged, this, [ = ]( double value )
+  connect( mGamepad, &QGamepad::axisRightYChanged, this, []( double value )
   {
     // actually should be on a timer ;)
     emit zoomMap( value + 1 );
   } );
 #endif
-
 }
 
 QgsGamepad2DMapController *QgsGamepad2DMapController::clone() const
@@ -69,7 +69,7 @@ QgsGamepad2DMapController *QgsGamepad2DMapController::clone() const
 
 QString QgsGamepad2DMapController::deviceId() const
 {
-  return QStringLiteral( "gamepad2d:%1" ).arg( mGamepadDeviceId );
+  return u"gamepad2d:%1"_s.arg( mGamepadDeviceId );
 }
 
 bool QgsGamepad2DMapController::isConnected() const

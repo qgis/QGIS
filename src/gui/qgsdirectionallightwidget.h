@@ -16,15 +16,17 @@
 #ifndef QGSDIRECTIONALLIGHTWIDGET_H
 #define QGSDIRECTIONALLIGHTWIDGET_H
 
-#include <QWidget>
 #include "ui_qgsdirectionallightwidget.h"
+
 #include "qgis_gui.h"
+
+#include <QWidget>
 
 /**
  * \ingroup gui
  * \class QgsDirectionalLightWidget
  *
- * \brief Widget for direction light settings
+ * \brief Widget for direction light settings.
  *
  * The user can choose azimuth and altitude values.
  *
@@ -37,7 +39,7 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
   public:
     //! Constructor
     explicit QgsDirectionalLightWidget( QWidget *parent = nullptr );
-    ~QgsDirectionalLightWidget();
+    ~QgsDirectionalLightWidget() override;
 
     //! Sets the \a azimuth value (degree)
     void setAzimuth( double azimuth );
@@ -57,8 +59,8 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
   signals:
     //! Emitted when the direction is changed
     void directionChanged();
-  private:
 
+  private:
 };
 
 #endif // QGSDIRECTIONALLIGHTWIDGET_H

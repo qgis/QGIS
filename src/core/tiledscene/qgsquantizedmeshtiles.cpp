@@ -16,9 +16,11 @@
 
 #include "qgsquantizedmeshtiles.h"
 
-#include "qgsexception.h"
 #include <algorithm>
 #include <cstddef>
+
+#include "qgsexception.h"
+
 #include <qdebug.h>
 #include <qglobal.h>
 #include <qstringliteral.h>
@@ -184,7 +186,7 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
     std::vector<char> data( length );
     const char *dataPtr = reinterpret_cast<const char *>( stream.read( length ) );
     std::copy( dataPtr, dataPtr + length, data.begin() );
-    mExtensions[extensionId] = data;
+    mExtensions[extensionId] = std::move( data );
   }
 }
 
@@ -201,7 +203,7 @@ void QgsQuantizedMeshTile::removeDegenerateTriangles()
       newTriangleIndices.insert( newTriangleIndices.end(), {a, b, c} );
     }
   }
-  mTriangleIndices = newTriangleIndices;
+  mTriangleIndices = std::move( newTriangleIndices );
 }
 
 void QgsQuantizedMeshTile::generateNormals()
@@ -392,29 +394,30 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
   vertexBufferView.buffer = 0;
   vertexBufferView.byteLength = vertexBuffer.data.size();
   vertexBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-  model.bufferViews.push_back( vertexBufferView );
+  model.bufferViews.emplace_back( std::move( vertexBufferView ) );
 
   tinygltf::BufferView triangleBufferView;
   triangleBufferView.buffer = 1;
   triangleBufferView.byteLength = triangleBuffer.data.size();
   triangleBufferView.target = TINYGLTF_TARGET_ELEMENT_ARRAY_BUFFER;
-  model.bufferViews.push_back( triangleBufferView );
+  model.bufferViews.emplace_back( std::move( triangleBufferView ) );
 
   tinygltf::Accessor vertexAccessor;
   vertexAccessor.bufferView = 0;
   vertexAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
   vertexAccessor.count = vertexBuffer.data.size() / sizeof( float ) / 3;
+  const std::size_t vertexAccessorCount = vertexAccessor.count;
   vertexAccessor.type = TINYGLTF_TYPE_VEC3;
-  vertexAccessor.minValues = coordMinimums;
-  vertexAccessor.maxValues = coordMaximums;
-  model.accessors.push_back( vertexAccessor );
+  vertexAccessor.minValues = std::move( coordMinimums );
+  vertexAccessor.maxValues = std::move( coordMaximums );
+  model.accessors.emplace_back( std::move( vertexAccessor ) );
 
   tinygltf::Accessor triangleAccessor;
   triangleAccessor.bufferView = 1;
   triangleAccessor.componentType = TINYGLTF_COMPONENT_TYPE_UNSIGNED_INT;
   triangleAccessor.count = triangleBuffer.data.size() / sizeof( uint32_t );
   triangleAccessor.type = TINYGLTF_TYPE_SCALAR;
-  model.accessors.push_back( triangleAccessor );
+  model.accessors.emplace_back( std::move( triangleAccessor ) );
 
   tinygltf::Mesh mesh;
   tinygltf::Primitive primitive;
@@ -438,7 +441,7 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     normalBufferView.buffer = model.buffers.size() - 1;
     normalBufferView.byteLength = normalBuffer.data.size();
     normalBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.push_back( normalBufferView );
+    model.bufferViews.emplace_back( std::move( normalBufferView ) );
 
     std::vector<double> normalMinimums = {1, 1, 1};
     std::vector<double> normalMaximums = {-1, -1, -1};
@@ -457,9 +460,9 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     normalAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
     normalAccessor.count = normalBuffer.data.size() / sizeof( float ) / 3;
     normalAccessor.type = TINYGLTF_TYPE_VEC3;
-    normalAccessor.minValues = normalMinimums;
-    normalAccessor.maxValues = normalMaximums;
-    model.accessors.push_back( normalAccessor );
+    normalAccessor.minValues = std::move( normalMinimums );
+    normalAccessor.maxValues = std::move( normalMaximums );
+    model.accessors.emplace_back( std::move( normalAccessor ) );
 
     primitive.attributes["NORMAL"] = model.accessors.size() - 1;
   }
@@ -526,30 +529,30 @@ tinygltf::Model QgsQuantizedMeshTile::toGltf( bool addSkirt, double skirtDepth, 
     //textureCoordBufferView.byteLength = vertexBuffer.data.size();
     //textureCoordBufferView.byteStride = sizeof(float) * 3;
     textureCoordBufferView.target = TINYGLTF_TARGET_ARRAY_BUFFER;
-    model.bufferViews.push_back( textureCoordBufferView );
+    model.bufferViews.emplace_back( std::move( textureCoordBufferView ) );
 
     tinygltf::Accessor textureCoordAccessor;
     textureCoordAccessor.bufferView = model.bufferViews.size() - 1;
     textureCoordAccessor.componentType = TINYGLTF_COMPONENT_TYPE_FLOAT;
-    textureCoordAccessor.count = vertexAccessor.count;
+    textureCoordAccessor.count = vertexAccessorCount;
     textureCoordAccessor.type = TINYGLTF_TYPE_VEC2;
     textureCoordAccessor.minValues = { texCoordMinimums[0], texCoordMinimums[1] };
     textureCoordAccessor.maxValues = { texCoordMaximums[0], texCoordMaximums[1] };
-    model.accessors.push_back( textureCoordAccessor );
+    model.accessors.emplace_back( std::move( textureCoordAccessor ) );
 
     primitive.attributes["TEXCOORD_0"] = model.accessors.size() - 1;
   }
 
-  mesh.primitives.push_back( primitive );
-  model.meshes.push_back( mesh );
+  mesh.primitives.emplace_back( std::move( primitive ) );
+  model.meshes.emplace_back( std::move( mesh ) );
 
   tinygltf::Node node;
   node.mesh = 0;
-  model.nodes.push_back( node );
+  model.nodes.emplace_back( std::move( node ) );
 
   tinygltf::Scene scene;
   scene.nodes.push_back( 0 );
-  model.scenes.push_back( scene );
+  model.scenes.emplace_back( std::move( scene ) );
   model.defaultScene = 0;
 
   return model;

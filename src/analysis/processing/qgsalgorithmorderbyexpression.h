@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 
-
 #ifndef QGSALGORITHMORDERBYEXPRESSION_H
 #define QGSALGORITHMORDERBYEXPRESSION_H
 
@@ -41,12 +40,12 @@ class QgsOrderByExpressionAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsOrderByExpressionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

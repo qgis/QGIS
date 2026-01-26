@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsalgorithminterpolatepoint.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurve.h"
+#include "qgsgeometrycollection.h"
 
 ///@cond PRIVATE
 
 QString QgsInterpolatePointAlgorithm::name() const
 {
-  return QStringLiteral( "interpolatepoint" );
+  return u"interpolatepoint"_s;
 }
 
 QString QgsInterpolatePointAlgorithm::displayName() const
@@ -43,7 +44,7 @@ QString QgsInterpolatePointAlgorithm::group() const
 
 QString QgsInterpolatePointAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsInterpolatePointAlgorithm::outputName() const
@@ -67,7 +68,7 @@ QString QgsInterpolatePointAlgorithm::shortDescription() const
 
 QList<int> QgsInterpolatePointAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 Qgis::ProcessingSourceType QgsInterpolatePointAlgorithm::outputLayerType() const
@@ -92,11 +93,10 @@ QgsInterpolatePointAlgorithm *QgsInterpolatePointAlgorithm::createInstance() con
 
 void QgsInterpolatePointAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterDistance> distance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ),
-      QObject::tr( "Distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  auto distance = std::make_unique<QgsProcessingParameterDistance>( u"DISTANCE"_s, QObject::tr( "Distance" ), 0.0, u"INPUT"_s, false, 0 );
   distance->setIsDynamic( true );
-  distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
-  distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  distance->setDynamicPropertyDefinition( QgsPropertyDefinition( u"DISTANCE"_s, QObject::tr( "Distance" ), QgsPropertyDefinition::DoublePositive ) );
+  distance->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( distance.release() );
 }
 
@@ -108,10 +108,10 @@ Qgis::ProcessingFeatureSourceFlags QgsInterpolatePointAlgorithm::sourceFlags() c
 
 bool QgsInterpolatePointAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
-  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
+  mDistance = parameterAsDouble( parameters, u"DISTANCE"_s, context );
+  mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, u"DISTANCE"_s );
   if ( mDynamicDistance )
-    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
+    mDistanceProperty = parameters.value( u"DISTANCE"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -132,5 +132,3 @@ QgsFeatureList QgsInterpolatePointAlgorithm::processFeature( const QgsFeature &f
 }
 
 ///@endcond
-
-

@@ -14,19 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerfixsummarydialog.h"
-#include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeaturepool.h"
+
 #include "qgisinterface.h"
+#include "qgsfeaturepool.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheckerror.h"
 
-QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats,
-    QgsGeometryChecker *checker,
-    QWidget *parent )
+#include "moc_qgsgeometrycheckerfixsummarydialog.cpp"
+
+QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent )
   : QDialog( parent )
   , mChecker( checker )
 {
@@ -75,7 +76,7 @@ void QgsGeometryCheckerFixSummaryDialog::addError( QTableWidget *table, QgsGeome
     table->setSortingEnabled( false );
 
   const int prec = 7 - std::floor( std::max( 0., std::log10( std::max( error->location().x(), error->location().y() ) ) ) );
-  const QString posStr = QStringLiteral( "%1, %2" ).arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
+  const QString posStr = u"%1, %2"_s.arg( error->location().x(), 0, 'f', prec ).arg( error->location().y(), 0, 'f', prec );
 
   const int row = table->rowCount();
   table->insertRow( row );
@@ -116,7 +117,7 @@ void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSel
   QItemSelectionModel *selModel = qobject_cast<QItemSelectionModel *>( QObject::sender() );
   const QAbstractItemModel *model = selModel->model();
 
-  for ( QTableWidget *table : {ui.tableWidgetFixedErrors, ui.tableWidgetNewErrors, ui.tableWidgetNotFixed, ui.tableWidgetObsoleteErrors} )
+  for ( QTableWidget *table : { ui.tableWidgetFixedErrors, ui.tableWidgetNewErrors, ui.tableWidgetNotFixed, ui.tableWidgetObsoleteErrors } )
   {
     if ( table->selectionModel() != selModel )
     {

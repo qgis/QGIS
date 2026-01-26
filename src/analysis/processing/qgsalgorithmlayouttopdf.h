@@ -30,9 +30,7 @@
  */
 class QgsLayoutToPdfAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsLayoutToPdfAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
@@ -46,15 +44,9 @@ class QgsLayoutToPdfAlgorithm : public QgsProcessingAlgorithm
     QgsLayoutToPdfAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMLAYOUTTOPDF_H
-
-

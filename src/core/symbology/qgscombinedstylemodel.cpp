@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgscombinedstylemodel.h"
+
+#include "qgsapplication.h"
+#include "qgssingleitemmodel.h"
 #include "qgsstyle.h"
 #include "qgsstylemodel.h"
-#include "qgssingleitemmodel.h"
-#include "qgsapplication.h"
+
+#include "moc_qgscombinedstylemodel.cpp"
 
 QgsCombinedStyleModel::QgsCombinedStyleModel( QObject *parent )
   : QConcatenateTablesProxyModel( parent )

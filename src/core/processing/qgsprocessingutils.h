@@ -19,12 +19,11 @@
 #define QGSPROCESSINGUTILS_H
 
 #include "qgis_core.h"
-
-#include "qgsrasterlayer.h"
 #include "qgsfeaturesink.h"
 #include "qgsfeaturesource.h"
 #include "qgsprocessing.h"
 #include "qgsproxyfeaturesink.h"
+#include "qgsrasterlayer.h"
 #include "qgsremappingproxyfeaturesink.h"
 
 class QgsMeshLayer;
@@ -315,7 +314,7 @@ class CORE_EXPORT QgsProcessingUtils
      *
      * \since QGIS 3.34
      */
-    static QString layerToStringIdentifier( const QgsMapLayer *layer ) SIP_HOLDGIL;
+    static QString layerToStringIdentifier( const QgsMapLayer *layer, const QString &layerName = QString() ) SIP_HOLDGIL;
 
     /**
      * Converts a variant to a Python literal.
@@ -426,6 +425,13 @@ class CORE_EXPORT QgsProcessingUtils
      * a specified \a algorithm.
      */
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );
+
+    /**
+     * Returns the index of the output matching \a name for a specified \a algorithm.
+     * Matching is done in a case-insensitive manner.
+     * \since QGIS 3.44
+     */
+    static int outputDefinitionIndex( const QgsProcessingAlgorithm *algorithm, const QString &name ) SIP_HOLDGIL;
 
     /**
      * Converts a source vector \a layer to a file path of a vector layer of compatible format.
@@ -542,6 +548,18 @@ class CORE_EXPORT QgsProcessingUtils
      * \since QGIS 3.10
      */
     static QString defaultVectorExtension();
+
+    /**
+     * Returns the default raster format to use, in the absence of all other constraints (e.g.
+     * provider based support for extensions).
+     *
+     * This method returns the user-set default format from the processing settings, or
+     * a fallback value of "GTiff".
+     *
+     * \see defaultRasterExtension()
+     * \since QGIS 4.0
+     */
+    static QString defaultRasterFormat();
 
     /**
      * Returns the default raster extension to use, in the absence of all other constraints (e.g.
@@ -797,6 +815,18 @@ class CORE_EXPORT QgsProcessingFeatureSink : public QgsProxyFeatureSink
      */
     QgsProcessingFeatureSink( QgsFeatureSink *originalSink, const QString &sinkName, QgsProcessingContext &context, bool ownsOriginalSink = false );
     ~QgsProcessingFeatureSink() override;
+
+    /**
+     * Finalizes the sink, flushing any buffered features to the destination.
+     *
+     * \warning All algorithms which use feature sinks should explicitly call finalize() prior to destroying the sink!
+     *
+     * \throws QgsProcessingException if an error occurs while finalizing the sink
+     *
+     * \since QGIS 3.42
+     */
+    void finalize() override SIP_THROW( QgsProcessingException );
+
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;

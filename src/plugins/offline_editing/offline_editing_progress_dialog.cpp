@@ -18,6 +18,8 @@
 
 #include "offline_editing_progress_dialog.h"
 
+#include "moc_offline_editing_progress_dialog.cpp"
+
 QgsOfflineEditingProgressDialog::QgsOfflineEditingProgressDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {

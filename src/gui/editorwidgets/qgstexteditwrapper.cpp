@@ -15,16 +15,19 @@
 
 #include "qgstexteditwrapper.h"
 
+#include <nlohmann/json.hpp>
+
+#include "qgsapplication.h"
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
 #include "qgsfilterlineedit.h"
-#include "qgsapplication.h"
 #include "qgsjsonutils.h"
-#include "qgsmessagebar.h"
 #include "qgslogger.h"
+#include "qgsmessagebar.h"
 
 #include <QSettings>
-#include <nlohmann/json.hpp>
+
+#include "moc_qgstexteditwrapper.cpp"
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -38,7 +41,7 @@ QVariant QgsTextEditWrapper::value() const
 
   if ( mTextEdit )
   {
-    if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
+    if ( config( u"UseHtml"_s ).toBool() )
     {
       if ( mTextEdit->toPlainText().isEmpty() )
       {
@@ -65,10 +68,7 @@ QVariant QgsTextEditWrapper::value() const
     v = mLineEdit->text();
   }
 
-  if ( ( v.isEmpty() && ( field().type() == QMetaType::Type::Int
-                          || field().type() == QMetaType::Type::Double
-                          || field().type() == QMetaType::Type::LongLong
-                          || field().type() == QMetaType::Type::QDate ) )
+  if ( ( v.isEmpty() && ( field().type() == QMetaType::Type::Int || field().type() == QMetaType::Type::Double || field().type() == QMetaType::Type::LongLong || field().type() == QMetaType::Type::QDate ) )
        || v == QgsApplication::nullRepresentation() )
   {
     return QgsVariantUtils::createNullVariant( field().type() );
@@ -76,7 +76,7 @@ QVariant QgsTextEditWrapper::value() const
 
   if ( !QgsVariantUtils::isNull( defaultValue() ) && v == defaultValue().toString() )
   {
-    return defaultValue();
+    return QVariant::fromValue( QgsUnsetAttributeValue( defaultValue().toString() ) );
   }
 
   QVariant res( v );
@@ -107,7 +107,7 @@ QVariant QgsTextEditWrapper::value() const
       return qjson;
     }
     else
-      // return null value if json is invalid
+    // return null value if json is invalid
     {
       if ( v.length() > 0 )
       {
@@ -129,9 +129,9 @@ QVariant QgsTextEditWrapper::value() const
 QWidget *QgsTextEditWrapper::createWidget( QWidget *parent )
 {
   mForm = qobject_cast<QgsAttributeForm *>( parent );
-  if ( config( QStringLiteral( "IsMultiline" ) ).toBool() )
+  if ( config( u"IsMultiline"_s ).toBool() )
   {
-    if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
+    if ( config( u"UseHtml"_s ).toBool() )
     {
       return new QTextBrowser( parent );
     }
@@ -181,8 +181,7 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
-    {
+    connect( mLineEdit, &QLineEdit::textChanged, this, [this]( const QString &value ) {
       Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( value );
       Q_NOWARN_DEPRECATED_POP
@@ -212,7 +211,7 @@ void QgsTextEditWrapper::showIndeterminateState()
   }
 
   //note - this is deliberately a zero length string, not a null string!
-  setWidgetValue( QLatin1String( "" ) );  // skip-keyword-check
+  setWidgetValue( QLatin1String( "" ) ); // skip-keyword-check
 
   if ( mTextEdit )
     mTextEdit->blockSignals( false );
@@ -259,7 +258,7 @@ void QgsTextEditWrapper::setEnabled( bool enabled )
   }
 }
 
-bool QgsTextEditWrapper::isInvalidJSON()
+bool QgsTextEditWrapper::isInvalidJSON() const
 {
   return mInvalidJSON;
 }
@@ -287,7 +286,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
     // uses QJsonDocument which doesn't recognise this as valid JSON although it technically is
     if ( field().displayString( val ).isEmpty() )
     {
-      if ( val.userType() == QMetaType::Type::QString && val.toString() != QLatin1String( "\"\"" ) )
+      if ( val.userType() == QMetaType::Type::QString && val.toString() != "\"\""_L1 )
       {
         v = val.toString().append( "\"" ).insert( 0, "\"" );
       }
@@ -305,6 +304,10 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   {
     v = QgsApplication::nullRepresentation();
   }
+  else if ( val.userType() == qMetaTypeId<QgsUnsetAttributeValue>() )
+  {
+    v = defaultValue().toString();
+  }
   else
   {
     v = field().displayString( val );
@@ -318,12 +321,12 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   // "Wrong sequence detection with Postgres"
   bool canConvertToDouble;
   QLocale().toDouble( v, &canConvertToDouble );
-  if ( canConvertToDouble && layer() && layer()->isEditable() && ! QLocale().groupSeparator().isNull() && field().isNumeric() )
+  if ( canConvertToDouble && layer() && layer()->isEditable() && !QLocale().groupSeparator().isNull() && field().isNumeric() )
   {
     v = v.remove( QLocale().groupSeparator() );
   }
 
-  const QVariant currentValue = value( );
+  const QVariant currentValue = value();
   // Note: comparing QVariants leads to funny (and wrong) results:
   // QVariant(0.0) == QVariant(QVariant.Double) -> True
   const bool changed { val != currentValue || QgsVariantUtils::isNull( val ) != QgsVariantUtils::isNull( currentValue ) };
@@ -332,7 +335,7 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
   {
     if ( mTextEdit )
     {
-      if ( config( QStringLiteral( "UseHtml" ) ).toBool() )
+      if ( config( u"UseHtml"_s ).toBool() )
       {
         mTextEdit->setHtml( v );
         if ( mTextBrowser )

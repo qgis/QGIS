@@ -17,6 +17,7 @@
 #define QGSSPATIALITEDATAITEMGUIPROVIDER_H
 
 #include "qgsdataitemguiprovider.h"
+#include "qgsmimedatautils.h"
 
 class QgsSLConnectionItem;
 
@@ -25,11 +26,9 @@ class QgsSpatiaLiteDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 {
     Q_OBJECT
   public:
+    QString name() override { return u"spatialite"_s; }
 
-    QString name() override { return QStringLiteral( "spatialite" ); }
-
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
     bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context ) override;
 
@@ -39,7 +38,9 @@ class QgsSpatiaLiteDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
   private:
     static void newConnection( QgsDataItem *item );
     static void createDatabase( QgsDataItem *item );
-    static bool handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction );
+    bool handleDropConnectionItem( QgsSLConnectionItem *connItem, const QMimeData *data, Qt::DropAction, QgsDataItemGuiContext context );
+    bool handleDropUri( QgsSLConnectionItem *connectionItem, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context );
+    void handleImportVector( QgsSLConnectionItem *connectionItem, QgsDataItemGuiContext context );
 };
 
 #endif // QGSSPATIALITEDATAITEMGUIPROVIDER_H

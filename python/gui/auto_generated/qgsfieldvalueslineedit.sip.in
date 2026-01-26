@@ -11,20 +11,20 @@
 
 
 
-
-class QgsFieldValuesLineEdit: QgsFilterLineEdit
+class QgsFieldValuesLineEdit : QgsFilterLineEdit
 {
 %Docstring(signature="appended")
-A line edit with an autocompleter which takes unique values from a vector layer's fields.
-The autocompleter is populated from the vector layer in the background to ensure responsive
-interaction with the widget.
+A line edit with an autocompleter which takes unique values from a
+vector layer's fields.
+
+The autocompleter is populated from the vector layer in the background
+to ensure responsive interaction with the widget.
 %End
 
 %TypeHeaderCode
 #include "qgsfieldvalueslineedit.h"
 %End
   public:
-
     QgsFieldValuesLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldValuesLineEdit
@@ -56,7 +56,8 @@ Returns the layer containing the field that values will be shown from.
 
     void setAttributeIndex( int index );
 %Docstring
-Sets the attribute index for the field containing values to show in the widget.
+Sets the attribute index for the field containing values to show in the
+widget.
 
 :param index: index of attribute
 
@@ -67,7 +68,8 @@ Sets the attribute index for the field containing values to show in the widget.
 
     int attributeIndex() const;
 %Docstring
-Returns the attribute index for the field containing values shown in the widget.
+Returns the attribute index for the field containing values shown in the
+widget.
 
 .. seealso:: :py:func:`setAttributeIndex`
 

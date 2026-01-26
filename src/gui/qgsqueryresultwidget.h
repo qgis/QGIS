@@ -16,19 +16,27 @@
 #ifndef QGSQUERYRESULTWIDGET_H
 #define QGSQUERYRESULTWIDGET_H
 
+#include "ui_qgsqueryresultpanelwidgetbase.h"
+#include "ui_qgsqueryresultwidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgsqueryresultwidgetbase.h"
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsqueryresultmodel.h"
 #include "qgsfeedback.h"
+#include "qgsqueryresultmodel.h"
+#include "qgssettingstree.h"
 
-#include <QWidget>
-#include <QThread>
-#include <QtConcurrent>
+#include <QDialog>
+#include <QMainWindow>
 #include <QStyledItemDelegate>
+#include <QThread>
+#include <QWidget>
+#include <QtConcurrent>
 
 class QgsCodeEditorWidget;
+class QgsCodeEditorSQL;
+class QgsQueryResultPanelWidget;
+class QgsDatabaseQueryHistoryWidget;
 
 ///@cond private
 
@@ -37,13 +45,12 @@ class QgsCodeEditorWidget;
 /**
  * The QgsQueryResultItemDelegate class shows results truncated to 255 characters and using current locale
  */
-class GUI_EXPORT QgsQueryResultItemDelegate: public QStyledItemDelegate
+class GUI_EXPORT QgsQueryResultItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
     // QStyledItemDelegate interface
   public:
-
     explicit QgsQueryResultItemDelegate( QObject *parent = nullptr );
 
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
@@ -53,12 +60,11 @@ class GUI_EXPORT QgsQueryResultItemDelegate: public QStyledItemDelegate
  * The QgsConnectionsApiFetcher class fetches tokens (schema, table and field names) of a connection from a separate thread.
  * WARNING: this class is an implementation detail and it is not part of public API!
  */
-class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
+class GUI_EXPORT QgsConnectionsApiFetcher : public QObject
 {
     Q_OBJECT
 
   public:
-
     //! Constructs a result fetcher from connection with the specified \a uri and \a providerKey.
     QgsConnectionsApiFetcher( const QString &uri, const QString &providerKey )
       : mUri( uri )
@@ -80,12 +86,10 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
     void fetchingFinished();
 
   private:
-
     QString mUri;
     QString mProviderKey;
     QAtomicInt mStopFetching = 0;
-    std::unique_ptr< QgsFeedback > mFeedback;
-
+    std::unique_ptr<QgsFeedback> mFeedback;
 };
 
 #endif
@@ -94,7 +98,7 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 
 /**
  * \ingroup gui
- * \brief The QgsQueryResultWidget class allows users to enter and run an SQL query on a
+ * \brief A widget which allows users to enter and run an SQL query on a
  * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
  *
  * Query results are displayed in a table view.
@@ -107,19 +111,24 @@ class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
  *
  * \since QGIS 3.22
  */
-class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResultWidgetBase
+class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResultWidgetBase
 {
     Q_OBJECT
 
   public:
-
+#ifndef SIP_RUN
+    ///@cond PRIVATE
+    static inline QgsSettingsTreeNode *sTreeSqlQueries = QgsSettingsTree::sTreeGui->createChildNode( u"sql-queries"_s );
+    static const QgsSettingsEntryString *settingLastSourceFolder;
+///@endcond PRIVATE
+#endif
 
     /**
      * \brief The QueryWidgetMode enum represents various modes for the widget appearance.
      */
     enum class QueryWidgetMode : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      SqlQueryMode = 1 << 0, //!< Defaults widget mode for SQL execution and SQL query layer creation.
+      SqlQueryMode = 1 << 0,         //!< Defaults widget mode for SQL execution and SQL query layer creation.
       QueryLayerUpdateMode = 1 << 1, //!< SQL query layer update mode: the create SQL layer button is renamed to 'Update' and the SQL layer creation group box is expanded.
     };
     Q_ENUM( QueryWidgetMode )
@@ -129,7 +138,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     QgsQueryResultWidget( QWidget *parent = nullptr, QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER = nullptr );
 
-    virtual ~QgsQueryResultWidget();
+    ~QgsQueryResultWidget() override;
 
     /**
      * Initializes the widget from \a options.
@@ -151,6 +160,146 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     void setQuery( const QString &sql );
 
+    SIP_SKIP bool promptUnsavedChanges();
+
+  public slots:
+
+    /**
+     * Displays a message with \a text \a title and \a level in the widget's message bar.
+     */
+    void notify( const QString &title, const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+
+    /**
+     * Starts executing the query.
+     */
+    void executeQuery();
+
+    /**
+      * Hides the result table and shows the error \a title and \a message in the message bar or
+      * in the SQL error panel is \a isSqlError is set.
+      */
+    void showError( const QString &title, const QString &message, bool isSqlError = false );
+
+    /**
+     * Triggered when the threaded API fetcher has new \a tokens to add.
+     *
+     * \deprecated QGIS 3.44. Has no effect.
+     */
+    Q_DECL_DEPRECATED void tokensReady( const QStringList &tokens ) SIP_DEPRECATED;
+
+    /**
+     * Copies the query results to the clipboard, as a formatted table.
+     *
+     * \since QGIS 3.32
+     */
+    void copyResults();
+
+    /**
+     * Copies a range of the query results to the clipboard, as a formatted table.
+     *
+     * \since QGIS 3.32
+     */
+    void copyResults( int fromRow, int toRow, int fromColumn, int toColumn );
+
+  signals:
+
+    /**
+     * Emitted when a new vector SQL (query) layer must be created.
+     * \param providerKey name of the data provider
+     * \param connectionUri the connection URI as returned by QgsAbstractProviderConnection::uri()
+     * \param options
+     */
+    void createSqlVectorLayer( const QString &providerKey, const QString &connectionUri, const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
+
+    /**
+     * Emitted when the first batch of results has been fetched.
+     * \note If the query returns no results this signal is not emitted.
+     */
+    void firstResultBatchFetched();
+
+    SIP_SKIP void requestDialogTitleUpdate( const QString &filename );
+
+  private slots:
+
+    /**
+     * Updates buttons status.
+     */
+    void updateButtons();
+
+    void openQuery();
+    void saveQuery( bool saveAs );
+    void setHasChanged( bool hasChanged );
+    void populatePresetQueryMenu();
+    void showHistoryPanel( bool show );
+
+  private:
+    QgsQueryResultPanelWidget *mQueryWidget = nullptr;
+    QPointer< QgsDatabaseQueryHistoryWidget > mHistoryWidget;
+
+    QMenu *mPresetQueryMenu = nullptr;
+
+    bool mHasChangedFileContents = false;
+
+    void updateDialogTitle();
+    void storeCurrentQuery( Qgis::QueryStorageBackend backend );
+
+    friend class TestQgsQueryResultWidget;
+};
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup gui
+ * \brief A panel widget which allows users to enter and run an SQL query on a
+ * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
+ *
+ * \note the ownership of the connection is transferred to the widget.
+ *
+ * \see QgsQueryResultWidget
+ *
+ * \since QGIS 3.22
+ */
+class GUI_EXPORT QgsQueryResultPanelWidget : public QgsPanelWidget, private Ui::QgsQueryResultPanelWidgetBase
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Creates a QgsQueryResultPanelWidget with the given \a connection, ownership is transferred to the widget.
+     */
+    QgsQueryResultPanelWidget( QWidget *parent = nullptr, QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER = nullptr );
+
+    ~QgsQueryResultPanelWidget() override;
+
+    /**
+     * Returns the widget's SQL editor.
+     */
+    QgsCodeEditorSQL *sqlEditor();
+
+    /**
+     * Returns the widget's code editor widget.
+     */
+    QgsCodeEditorWidget *codeEditorWidget();
+
+    /**
+     * Initializes the widget from \a options.
+     */
+    void setSqlVectorLayerOptions( const QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions &options );
+
+    /**
+     * Sets the widget mode to \a widgetMode, default is SqlQueryMode.
+     */
+    void setWidgetMode( QgsQueryResultWidget::QueryWidgetMode widgetMode );
+
+    /**
+     * Sets the connection to \a connection, ownership is transferred to the widget.
+     */
+    void setConnection( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER );
+
+    /**
+     * Convenience method to set the SQL editor text to \a sql.
+     */
+    void setQuery( const QString &sql );
 
   public slots:
 
@@ -213,11 +362,9 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     void updateButtons();
 
     void showCellContextMenu( QPoint point );
-
     void copySelection();
 
   private:
-
     QgsCodeEditorWidget *mCodeEditorWidget = nullptr;
     QgsCodeEditorSQL *mSqlEditor = nullptr;
 
@@ -225,7 +372,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     std::unique_ptr<QgsQueryResultModel> mModel;
     std::unique_ptr<QgsFeedback> mFeedback;
 
-    QPointer< QgsConnectionsApiFetcher > mApiFetcher;
+    QPointer<QgsConnectionsApiFetcher> mApiFetcher;
 
     bool mWasCanceled = false;
     mutable QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
@@ -234,7 +381,7 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
     QString mSqlErrorMessage;
     long long mActualRowCount = -1;
     long long mFetchedRowsBatchCount = 0;
-    QueryWidgetMode mQueryWidgetMode = QueryWidgetMode::SqlQueryMode;
+    QgsQueryResultWidget::QueryWidgetMode mQueryWidgetMode = QgsQueryResultWidget::QueryWidgetMode::SqlQueryMode;
     long long mCurrentHistoryEntryId = -1;
 
     /**
@@ -262,9 +409,82 @@ class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResul
      */
     QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions sqlVectorLayerOptions() const;
 
+    void storeCurrentQuery( Qgis::QueryStorageBackend backend );
 
     friend class TestQgsQueryResultWidget;
+    friend class QgsQueryResultWidget;
+};
+#endif
 
+/**
+ * \ingroup gui
+ * \brief A dialog which allows users to enter and run an SQL query on a
+ * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
+ *
+ * \note the ownership of the connection is transferred to the dialog.
+ *
+ * \see QgsQueryResultWidget
+ *
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsQueryResultDialog : public QDialog
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsQueryResultDialog.
+     *
+     * Ownership of the \a connection is transferred to the dialog.
+     */
+    QgsQueryResultDialog( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER = nullptr, QWidget *parent = nullptr );
+
+    /**
+     * Returns the QgsQueryResultWidget shown in the dialog.
+     */
+    QgsQueryResultWidget *resultWidget() { return mWidget; }
+
+    void closeEvent( QCloseEvent *event ) override;
+
+  private:
+    QgsQueryResultWidget *mWidget = nullptr;
+};
+
+/**
+ * \ingroup gui
+ * \brief A main window which allows users to enter and run an SQL query on a
+ * DB connection (an instance of QgsAbstractDatabaseProviderConnection).
+ *
+ * \note the ownership of the connection is transferred to the window.
+ *
+ * \see QgsQueryResultWidget
+ *
+ * \since QGIS 3.44
+ */
+class GUI_EXPORT QgsQueryResultMainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+  public:
+    /**
+     * Constructor for QgsQueryResultMainWindow.
+     *
+     * Ownership of the \a connection is transferred to the window.
+     */
+    QgsQueryResultMainWindow( QgsAbstractDatabaseProviderConnection *connection SIP_TRANSFER = nullptr, const QString &identifierName = QString() );
+
+    /**
+     * Returns the QgsQueryResultWidget shown in the window.
+     */
+    QgsQueryResultWidget *resultWidget() { return mWidget; }
+
+    void closeEvent( QCloseEvent *event ) override;
+
+  private:
+    QgsQueryResultWidget *mWidget = nullptr;
+    QString mIdentifierName;
+
+    void updateWindowTitle( const QString &fileName );
 };
 
 #endif // QGSQUERYRESULTWIDGET_H

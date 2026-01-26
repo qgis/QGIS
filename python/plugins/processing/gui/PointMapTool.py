@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "February 2016"
+__copyright__ = "(C) 2016, Alexander Bruy"
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 

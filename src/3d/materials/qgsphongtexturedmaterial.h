@@ -17,10 +17,10 @@
 #define QGSPHONGTEXTUREDMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgsmaterial.h"
 
 #include <QColor>
 #include <QObject>
-#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QTexture>
 
 #define SIP_NO_FILE
@@ -34,11 +34,11 @@ namespace Qt3DRender
 ///@cond PRIVATE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief A diffuseSpecular material adapted from Qt's qdiffusespecularmaterial.h
  * \since QGIS 3.40
  */
-class _3D_EXPORT QgsPhongTexturedMaterial : public Qt3DRender::QMaterial
+class _3D_EXPORT QgsPhongTexturedMaterial : public QgsMaterial
 {
     Q_OBJECT
     Q_PROPERTY( QColor ambient READ ambient WRITE setAmbient NOTIFY ambientChanged )
@@ -49,7 +49,6 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public Qt3DRender::QMaterial
     Q_PROPERTY( float opacity READ opacity WRITE setOpacity NOTIFY opacityChanged )
 
   public:
-
     /**
      * Constructor for QgsPhongTexturedMaterial, with the specified \a parent node.
      */
@@ -63,7 +62,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public Qt3DRender::QMaterial
     float shininess() const;
     float opacity() const;
 
-  public Q_SLOTS:
+  public slots:
     void setAmbient( const QColor &ambient );
 
     /**
@@ -77,7 +76,7 @@ class _3D_EXPORT QgsPhongTexturedMaterial : public Qt3DRender::QMaterial
     void setShininess( float shininess );
     void setOpacity( float opacity );
 
-  Q_SIGNALS:
+  signals:
     void ambientChanged( const QColor &ambient );
     void diffuseTextureChanged( Qt3DRender::QAbstractTexture *diffuseTexture );
     void diffuseTextureScaleChanged( float diffuseTextureScale );

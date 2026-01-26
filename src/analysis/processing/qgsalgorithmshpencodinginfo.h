@@ -30,9 +30,7 @@
  */
 class QgsShapefileEncodingInfoAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsShapefileEncodingInfoAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -45,14 +43,11 @@ class QgsShapefileEncodingInfoAlgorithm : public QgsProcessingAlgorithm
     QgsShapefileEncodingInfoAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QString mCpgEncoding;
     QString mLdidEncoding;
 };

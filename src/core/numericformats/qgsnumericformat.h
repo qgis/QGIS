@@ -19,16 +19,15 @@
 #include "qgis_sip.h"
 #include "qgsexpressioncontext.h"
 
+#include <QDomDocument>
 #include <QString>
 #include <QVariantMap>
-#include <QDomDocument>
-
 
 class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * \brief A context for numeric formats
+ * \brief A context for numeric formats.
  *
  * \since QGIS 3.12
  */
@@ -267,9 +266,10 @@ class CORE_EXPORT QgsNumericFormatContext
 
 /**
  * \ingroup core
- * \brief A numeric formatter allows for formatting a numeric value for display, using
- * a variety of different formatting techniques (e.g. as scientific notation, currency values,
- * percentage values, etc)
+ * \brief Abstract base class for numeric formatters, which allow for formatting a numeric value for display.
+ *
+ * Numeric formatters use a variety of different formatting techniques
+ * (e.g. as scientific notation, currency values, percentage values, etc).
  *
  * This is an abstract base class and will always need to be subclassed.
  *

@@ -15,10 +15,12 @@
 
 #include "qgsdatumtransformtablewidget.h"
 
+#include "qgisapp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformdialog.h"
-#include "qgisapp.h"
 #include "qgssettings.h"
+
+#include "moc_qgsdatumtransformtablewidget.cpp"
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -73,7 +75,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
 {
   QString sourceCrs;
   QString destinationCrs;
-  const QPair< QString, QString> crses = mTransformContext.coordinateOperations().keys().at( index.row() );
+  const QPair<QString, QString> crses = mTransformContext.coordinateOperations().keys().at( index.row() );
   sourceCrs = crses.first;
   destinationCrs = crses.second;
   const QString proj = mTransformContext.coordinateOperations().value( crses );
@@ -134,7 +136,7 @@ QVariant QgsDatumTransformTableModel::headerData( int section, Qt::Orientation o
     case Qt::ToolTipRole:
       switch ( section )
       {
-        case SourceCrsColumn :
+        case SourceCrsColumn:
           return tr( "Source CRS" );
         case DestinationCrsColumn:
           return tr( "Destination CRS" );
@@ -170,12 +172,11 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   mTableView->setAlternatingRowColors( true );
 
   const QgsSettings settings;
-  mTableView->horizontalHeader()->restoreState( settings.value( QStringLiteral( "Windows/DatumTransformTable/headerState" ) ).toByteArray() );
+  mTableView->horizontalHeader()->restoreState( settings.value( u"Windows/DatumTransformTable/headerState"_s ).toByteArray() );
 
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
-  connect( mEditButton, &QToolButton::clicked, this, [ = ]
-  {
+  connect( mEditButton, &QToolButton::clicked, this, [this] {
     const QModelIndexList selectedIndexes = mTableView->selectionModel()->selectedIndexes();
     if ( selectedIndexes.count() > 0 )
     {
@@ -185,8 +186,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 
   connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsDatumTransformTableWidget::selectionChanged );
 
-  connect( mTableView, &QTableView::doubleClicked, this, [ = ]( const QModelIndex & index )
-  {
+  connect( mTableView, &QTableView::doubleClicked, this, [this]( const QModelIndex &index ) {
     editDatumTransform( index );
   } );
   mEditButton->setEnabled( false );
@@ -195,12 +195,12 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DatumTransformTable/headerState" ), mTableView->horizontalHeader()->saveState() );
+  settings.setValue( u"Windows/DatumTransformTable/headerState"_s, mTableView->horizontalHeader()->saveState() );
 }
 
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
-  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair< int, int >(), nullptr, Qt::WindowFlags(), QString(), QgisApp::instance()->mapCanvas() );
+  QgsDatumTransformDialog dlg( QgsCoordinateReferenceSystem(), QgsCoordinateReferenceSystem(), true, false, false, QPair<int, int>(), nullptr, Qt::WindowFlags(), QString(), QgisApp::instance()->mapCanvas() );
   if ( dlg.exec() )
   {
     const QgsDatumTransformDialog::TransformInfo dt = dlg.selectedDatumTransform();

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmeasurement.h"
+
 #include "qgis.h"
 #include "qgsunittypes.h"
 
@@ -29,7 +30,7 @@ QgsLayoutMeasurement::QgsLayoutMeasurement( const double length, const Qgis::Lay
 
 QString QgsLayoutMeasurement::encodeMeasurement() const
 {
-  return QStringLiteral( "%1,%2" ).arg( mLength ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
+  return u"%1,%2"_s.arg( mLength ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
 }
 
 QgsLayoutMeasurement QgsLayoutMeasurement::decodeMeasurement( const QString &string )

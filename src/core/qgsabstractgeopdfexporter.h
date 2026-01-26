@@ -17,16 +17,16 @@
 #define QGSABSTRACTGEOPDFEXPORTER_H
 
 #include "qgis_core.h"
-#include <QList>
-#include <QTemporaryDir>
-#include <QMutex>
-#include <QDateTime>
-#include <QPainter>
-
-#include "qgsfeature.h"
 #include "qgsabstractmetadatabase.h"
-#include "qgspolygon.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgspolygon.h"
+
+#include <QDateTime>
+#include <QList>
+#include <QMutex>
+#include <QPainter>
+#include <QTemporaryDir>
 
 #define SIP_NO_FILE
 
@@ -236,6 +236,8 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        * \warning This results in Geospatial PDF files compatible with a unnamed suite of tools starting with Terra and ending with Go, but
        * can break compatibility with the built-in Acrobat geospatial tools (yes, Geospatial PDF
        * format is a mess!).
+       *
+       * \deprecated QGIS 3.42. This parameter has no longer any effect. Only ISO 32000 georeferencing is handled.
       */
       bool useOgcBestPracticeFormatGeoreferencing = false;
 

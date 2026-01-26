@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -31,9 +31,7 @@
  */
 class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsExtractSpecificVerticesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -41,12 +39,12 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QgsExtractSpecificVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
@@ -55,11 +53,11 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QgsFeatureSink::SinkFlags sinkFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    Qgis::GeometryType mGeometryType;
-    QList< int > mIndices;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
+    QList<int> mIndices;
 };
 
 ///@endcond PRIVATE

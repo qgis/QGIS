@@ -21,10 +21,11 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutmapgridwidgetbase.h"
-#include "qgslayoutitemwidget.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemmapgrid.h"
+#include "qgslayoutitemwidget.h"
 
 /**
  * \ingroup gui
@@ -33,7 +34,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapGridWidgetBase
+class GUI_EXPORT QgsLayoutMapGridWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapGridWidgetBase
 {
     Q_OBJECT
 
@@ -104,8 +105,6 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void mDistanceToMapFrameSpinBox_valueChanged( double d );
 
   protected:
-
-
     //! Sets the current composer map values to the GUI elements
     virtual void updateGuiElements();
 
@@ -127,33 +126,32 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void onCrsChanged();
 
   private:
-    QPointer< QgsLayoutItemMap > mMap;
-    QPointer< QgsLayoutItemMapGrid > mMapGrid;
+    QPointer<QgsLayoutItemMap> mMap;
+    QPointer<QgsLayoutItemMapGrid> mMapGrid;
     int mBlockAnnotationFormatUpdates = 0;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
 
-    void handleChangedFrameDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
-    void handleChangedAnnotationDisplay( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::DisplayMode mode );
-    void handleChangedAnnotationPosition( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationPosition position );
-    void handleChangedAnnotationDirection( QgsLayoutItemMapGrid::BorderSide border, QgsLayoutItemMapGrid::AnnotationDirection direction );
+    void handleChangedFrameDisplay( Qgis::MapGridBorderSide border, Qgis::MapGridComponentVisibility mode );
+    void handleChangedAnnotationDisplay( Qgis::MapGridBorderSide border, Qgis::MapGridComponentVisibility mode );
+    void handleChangedAnnotationPosition( Qgis::MapGridBorderSide border, Qgis::MapGridAnnotationPosition position );
+    void handleChangedAnnotationDirection( Qgis::MapGridBorderSide border, Qgis::MapGridAnnotationDirection direction );
 
     void insertFrameDisplayEntries( QComboBox *c );
     void insertAnnotationDisplayEntries( QComboBox *c );
     void insertAnnotationPositionEntries( QComboBox *c );
     void insertAnnotationDirectionEntries( QComboBox *c );
 
-    void initFrameDisplayBox( QComboBox *c, QgsLayoutItemMapGrid::DisplayMode display );
-    void initAnnotationPositionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationPosition pos );
-    void initAnnotationDirectionBox( QComboBox *c, QgsLayoutItemMapGrid::AnnotationDirection dir );
+    void initFrameDisplayBox( QComboBox *c, Qgis::MapGridComponentVisibility display );
+    void initAnnotationPositionBox( QComboBox *c, Qgis::MapGridAnnotationPosition pos );
+    void initAnnotationDirectionBox( QComboBox *c, Qgis::MapGridAnnotationDirection dir );
 
     //! Enables/disables grid frame related controls
     void toggleFrameControls( bool frameEnabled, bool frameFillEnabled, bool frameSizeEnabled, bool ticksRotationEnabled );
 
     //! Is there some predefined scales, globally or as project's options ?
     bool hasPredefinedScales() const;
-
 };
 
 #endif //QGSLAYOUTMAPGRIDWIDGET_H

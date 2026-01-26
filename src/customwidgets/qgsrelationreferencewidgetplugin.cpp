@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsrelationreferencewidgetplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsrelationreferencewidget.h"
 
+#include "moc_qgsrelationreferencewidgetplugin.cpp"
 
 QgsRelationReferenceWidgetPlugin::QgsRelationReferenceWidgetPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsRelationReferenceWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

@@ -14,26 +14,27 @@
  ***************************************************************************/
 
 #include "qgsdecorationimage.h"
-#include "qgsdecorationimagedialog.h"
+
+#include <cassert>
+#include <cmath>
 
 #include "qgisapp.h"
+#include "qgscolorutils.h"
+#include "qgsdecorationimagedialog.h"
 #include "qgsimagecache.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgscolorutils.h"
-#include "qgssymbollayerutils.h"
-#include "qgssvgcache.h"
 #include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
 
-#include <QPainter>
-#include <QMenu>
 #include <QDir>
 #include <QFile>
+#include <QMenu>
+#include <QPainter>
 #include <QSvgRenderer>
 
-#include <cmath>
-#include <cassert>
-
+#include "moc_qgsdecorationimage.cpp"
 
 QgsDecorationImage::QgsDecorationImage( QObject *parent )
   : QgsDecorationItem( parent )
@@ -42,7 +43,7 @@ QgsDecorationImage::QgsDecorationImage( QObject *parent )
   mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Image" ) );
-  mConfigurationName = QStringLiteral( "Image" );
+  mConfigurationName = u"Image"_s;
 
   projectRead();
 }
@@ -50,23 +51,23 @@ QgsDecorationImage::QgsDecorationImage( QObject *parent )
 void QgsDecorationImage::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
-  mOutlineColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
-  mSize = QgsProject::instance()->readDoubleEntry( mConfigurationName, QStringLiteral( "/Size" ), 16.0 );
-  setImagePath( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/ImagePath" ), QString() ) );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
+  mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/Color"_s, u"#000000"_s ) );
+  mOutlineColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/OutlineColor"_s, u"#FFFFFF"_s ) );
+  mSize = QgsProject::instance()->readDoubleEntry( mConfigurationName, u"/Size"_s, 16.0 );
+  setImagePath( QgsProject::instance()->readEntry( mConfigurationName, u"/ImagePath"_s, QString() ) );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginH"_s, 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginV"_s, 0 );
 }
 
 void QgsDecorationImage::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsColorUtils::colorToString( mColor ) );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QgsColorUtils::colorToString( mOutlineColor ) );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Size" ), mSize );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/ImagePath" ), QgsProject::instance()->pathResolver().writePath( mImagePath ) );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Color"_s, QgsColorUtils::colorToString( mColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/OutlineColor"_s, QgsColorUtils::colorToString( mOutlineColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Size"_s, mSize );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/ImagePath"_s, QgsProject::instance()->pathResolver().writePath( mImagePath ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginH"_s, mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginV"_s, mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
@@ -86,7 +87,7 @@ void QgsDecorationImage::setImagePath( const QString &imagePath )
   if ( fileInfo.exists() )
   {
     const QString suffix = fileInfo.suffix();
-    if ( suffix.compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    if ( suffix.compare( "svg"_L1, Qt::CaseInsensitive ) == 0 )
     {
       mImageFormat = FormatSVG;
     }
@@ -127,7 +128,7 @@ QString QgsDecorationImage::imagePath()
     }
   }
 
-  return QStringLiteral( ":/images/icons/qgis-icon-minimal-black.svg" );
+  return u":/images/icons/qgis-icon-minimal-black.svg"_s;
 }
 
 void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
@@ -249,18 +250,16 @@ void QgsDecorationImage::render( const QgsMapSettings &mapSettings, QgsRenderCon
       context.painter()->translate( deviceWidth - xOffset - size.width(), yOffset );
       break;
     case BottomRight:
-      context.painter()->translate( deviceWidth - xOffset - size.width(),
-                                    deviceHeight - yOffset - size.height() );
+      context.painter()->translate( deviceWidth - xOffset - size.width(), deviceHeight - yOffset - size.height() );
       break;
     case TopCenter:
       context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset, yOffset );
       break;
     case BottomCenter:
-      context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset,
-                                    deviceHeight - yOffset - size.height() );
+      context.painter()->translate( deviceWidth / 2 - size.width() / 2 + xOffset, deviceHeight - yOffset - size.height() );
       break;
     default:
-      QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugError( u"Unsupported placement index of %1"_s.arg( static_cast<int>( mPlacement ) ) );
   }
 
   switch ( mImageFormat )

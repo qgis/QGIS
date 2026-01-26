@@ -7,9 +7,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Denis Rouzaud'
-__date__ = '15.5.2018'
-__copyright__ = 'Copyright 2015, The QGIS Project'
+
+__author__ = "Denis Rouzaud"
+__date__ = "15.5.2018"
+__copyright__ = "Copyright 2015, The QGIS Project"
 
 
 from qgis.core import (
@@ -29,12 +30,12 @@ class TestCoreAdditions(QgisTestCase):
     def testMetaEnum(self):
         me = metaEnumFromValue(Qgis.MapToolUnit.Pixels)
         self.assertIsNotNone(me)
-        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), 'Pixels')
+        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), "Pixels")
 
         # check that using same variable twice doesn't segfault
         me = metaEnumFromValue(Qgis.MapToolUnit.Pixels, QgsTolerance)
         self.assertIsNotNone(me)
-        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), 'Pixels')
+        self.assertEqual(me.valueToKey(Qgis.MapToolUnit.Pixels), "Pixels")
 
         # do not raise error
         self.assertIsNone(metaEnumFromValue(1, QgsTolerance, False))

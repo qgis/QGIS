@@ -16,10 +16,10 @@
 #ifndef QGSTOLERANCE_H
 #define QGSTOLERANCE_H
 
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
+#include <QObject>
 
 class QgsMapSettings;
 class QgsMapLayer;
@@ -27,7 +27,7 @@ class QgsPointXY;
 
 /**
  * \ingroup core
- * \brief This is the class is providing tolerance value in map unit values.
+ * \brief Provides calculations for tolerance values in map units.
  */
 class CORE_EXPORT QgsTolerance
 {

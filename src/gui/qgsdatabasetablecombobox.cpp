@@ -14,11 +14,15 @@
 ***************************************************************************/
 
 #include "qgsdatabasetablecombobox.h"
-#include "qgsdatabasetablemodel.h"
-#include "qgsapplication.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsdatabasetablemodel.h"
+
 #include <QHBoxLayout>
 #include <QToolButton>
+
+#include "moc_qgsdatabasetablecombobox.cpp"
 
 QgsDatabaseTableComboBox::QgsDatabaseTableComboBox( const QString &provider, const QString &connection, const QString &schema, QWidget *parent )
   : QWidget( parent )
@@ -73,13 +77,13 @@ void QgsDatabaseTableComboBox::init()
   QToolButton *refreshButton = new QToolButton();
   refreshButton->setAutoRaise( true );
   refreshButton->setToolTip( tr( "Refresh tables" ) );
-  refreshButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRefresh.svg" ) ) );
+  refreshButton->setIcon( QgsApplication::getThemeIcon( u"mActionRefresh.svg"_s ) );
   l->addWidget( refreshButton );
   setLayout( l );
 
   connect( refreshButton, &QToolButton::clicked, this, &QgsDatabaseTableComboBox::refreshTables );
 
-  connect( mComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsDatabaseTableComboBox::indexChanged );
+  connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsDatabaseTableComboBox::indexChanged );
   connect( mSortModel, &QAbstractItemModel::rowsInserted, this, &QgsDatabaseTableComboBox::rowsChanged );
   connect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsDatabaseTableComboBox::rowsChanged );
 }
@@ -100,11 +104,11 @@ void QgsDatabaseTableComboBox::setTable( const QString &table, const QString &sc
     return;
   }
 
-  const QModelIndexList idxs = mSortModel->match( mSortModel->index( 0, 0 ), static_cast< int >( QgsDatabaseTableModel::CustomRole::TableName ), table, -1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
+  const QModelIndexList idxs = mSortModel->match( mSortModel->index( 0, 0 ), static_cast<int>( QgsDatabaseTableModel::CustomRole::TableName ), table, -1, Qt::MatchFixedString | Qt::MatchCaseSensitive );
   for ( const QModelIndex &proxyIdx : idxs )
   {
-    if ( proxyIdx.isValid()  && proxyIdx.data( static_cast< int >( QgsDatabaseTableModel::CustomRole::TableName ) ).toString() == table
-         && ( schema.isEmpty() || proxyIdx.data( static_cast< int >( QgsDatabaseTableModel::CustomRole::Schema ) ).toString() == schema ) )
+    if ( proxyIdx.isValid() && proxyIdx.data( static_cast<int>( QgsDatabaseTableModel::CustomRole::TableName ) ).toString() == table
+         && ( schema.isEmpty() || proxyIdx.data( static_cast<int>( QgsDatabaseTableModel::CustomRole::Schema ) ).toString() == schema ) )
     {
       mComboBox->setCurrentIndex( proxyIdx.row() );
       emit tableChanged( currentTable(), currentSchema() );
@@ -178,7 +182,7 @@ QString QgsDatabaseTableComboBox::currentSchema() const
     return QString();
   }
 
-  return mSortModel->data( proxyIndex, static_cast< int >( QgsDatabaseTableModel::CustomRole::Schema ) ).toString();
+  return mSortModel->data( proxyIndex, static_cast<int>( QgsDatabaseTableModel::CustomRole::Schema ) ).toString();
 }
 
 QString QgsDatabaseTableComboBox::currentTable() const
@@ -189,7 +193,7 @@ QString QgsDatabaseTableComboBox::currentTable() const
     return QString();
   }
 
-  return mSortModel->data( proxyIndex, static_cast< int >( QgsDatabaseTableModel::CustomRole::TableName ) ).toString();
+  return mSortModel->data( proxyIndex, static_cast<int>( QgsDatabaseTableModel::CustomRole::TableName ) ).toString();
 }
 
 void QgsDatabaseTableComboBox::indexChanged( int i )
@@ -215,15 +219,14 @@ void QgsDatabaseTableComboBox::rowsChanged()
 QgsDatabaseTableComboBoxSortModel::QgsDatabaseTableComboBoxSortModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-
 }
 
 bool QgsDatabaseTableComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // empty row is always first
-  if ( sourceModel()->data( left, static_cast< int >( QgsDatabaseTableModel::CustomRole::Empty ) ).toBool() )
+  if ( sourceModel()->data( left, static_cast<int>( QgsDatabaseTableModel::CustomRole::Empty ) ).toBool() )
     return true;
-  else if ( sourceModel()->data( right, static_cast< int >( QgsDatabaseTableModel::CustomRole::Empty ) ).toBool() )
+  else if ( sourceModel()->data( right, static_cast<int>( QgsDatabaseTableModel::CustomRole::Empty ) ).toBool() )
     return false;
 
   // default mode is alphabetical order

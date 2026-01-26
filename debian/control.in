@@ -20,20 +20,9 @@ Build-Depends:
  libgsl-dev,
  libpq-dev,
  libproj-dev,
- libqca-qt5-2-dev,
- libqca-qt5-2-plugins,
- libqscintilla2-qt5-dev,
- libqt5opengl5-dev,
- libqt5serialport5-dev,
- libqt5sql5-sqlite,
- libqt5svg5-dev,
- libqt5webkit5-dev,
- libqt5xmlpatterns5-dev,
  libdraco-dev,
- qtmultimedia5-dev,
- libqwt-qt5-dev,
- libspatialindex-dev,
  libspatialite-dev,
+ libmeshoptimizer-dev,
  libsqlite3-dev,
  libsqlite3-mod-spatialite,
  libzip-dev,
@@ -41,46 +30,23 @@ Build-Depends:
  ninja-build,
  ocl-icd-opencl-dev,
  opencl-headers,
-#oracle# oracle-instantclient-basiclite,
-#oracle# oracle-instantclient-devel,
- pkg-config,
- pyqt5-dev-tools,
- pyqt5-dev,
- pyqt5.qsci-dev,
+ pkgconf,
  python3-all-dev,
  python3-dev,
  python3-gdal,
  python3-mock,
  python3-nose2,
  python3-owslib,
+ python3-packaging,
  python3-psycopg2,
- python3-pyqt5,
- python3-pyqt5.qsci,
- python3-pyqt5.qtmultimedia,
- python3-pyqt5.qtpositioning,
- python3-pyqt5.qtserialport,
- python3-pyqt5.qtsql,
- python3-pyqt5.qtsvg,
- python3-pyqtbuild, sip-tools,
+ python3-pyqtbuild,
+ sip-tools,
  python3-termcolor,
  python3-yaml,
- qt3d5-dev,
- qt3d-assimpsceneimport-plugin,
- qt3d-defaultgeometryloader-plugin,
- qt3d-gltfsceneio-plugin,
- qt3d-scene2d-plugin,
- qtkeychain-qt5-dev,
- qtbase5-dev,
- qtbase5-private-dev,
- qtpositioning5-dev,
- qttools5-dev-tools,
- qttools5-dev,
-#pdal# libpdal-dev, pdal,
  libprotobuf-dev,
  protobuf-compiler,
  libzstd-dev,
  git,
-#apidoc# doxygen,
  graphviz,
  xvfb,
  xauth,
@@ -91,35 +57,29 @@ Build-Depends:
  spawn-fcgi,
  poppler-utils,
  lighttpd,
+ qt6-base-dev, qt6-base-private-dev, qt6-multimedia-dev, qt6-positioning-dev, qtkeychain-qt6-dev, qt6-tools-dev-tools, qt6-tools-dev, libqca-qt6-dev, libqca-qt6-plugins,
+ libqscintilla2-qt6-dev, qt6-serialport-dev, qt6-svg-dev, qt6-5compat-dev, qt6-webengine-dev, qt6-3d-dev, qt6-3d-assimpsceneimport-plugin, qt6-3d-defaultgeometryloader-plugin,
+ qt6-3d-gltfsceneio-plugin, qt6-3d-scene2d-plugin,
+ python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtserialport, python3-pyqt6.qtsvg, pyqt6-dev-tools, pyqt6-dev,
+ pyqt6.qsci-dev, python3-pyqt6.sip,
+ libsfcgal-dev (>= 2.0.0),
+ libgeographiclib-dev,
+ libcups2-dev,
+#oracle# oracle-instantclient-basiclite, oracle-instantclient-devel,
+#pdal# libpdal-dev, pdal,
  locales
+#apidoc#Build-Depends-indep:
+#apidoc# doxygen
 Build-Conflicts:
+ libspatialindex-dev (>= 2.1.0),
  libqgis-dev,
+ libqgis-qt6-dev,
  qgis-dev
 Standards-Version: 3.9.7
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: https://qgis.org/
-
-Package: qgis
-Architecture: any
-Depends:
- ${shlibs:Depends},
- ${misc:Depends},
- python3-qgis (= ${binary:Version}),
- qgis-providers (= ${binary:Version}),
- qgis-common (= ${source:Version})
-Recommends:
- qgis-plugin-grass
-Suggests: gpsbabel
-Conflicts: uim-qt3
-Description: Geographic Information System (GIS)
- A Geographic Information System (GIS) manages, analyzes, and displays
- databases of geographic information. QGIS supports shape file viewing and
- editing, spatial data storage with PostgreSQL/PostGIS, projection on-the-fly,
- map composition, and a number of other features via a plugin interface. QGIS
- also supports display of various georeferenced raster and Digital Elevation
- Model (DEM) formats including GeoTIFF, Arc/Info ASCII Grid, and USGS ASCII
- DEM.
+Rules-Requires-Root: no
 
 Package: qgis-common
 Architecture: all
@@ -135,16 +95,115 @@ Description: QGIS - architecture-independent data
  This package contains architecture-independent supporting data files for use
  with QGIS.
 
+Package: qgis-plugin-grass-common
+Architecture: all
+Depends:
+ ${python3:Depends},
+ ${misc:Depends}
+Breaks: qgis-common (<< 1.5)
+Replaces: qgis-common (<< 1.5)
+Description: GRASS plugin for QGIS - architecture-independent data
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains architecture-independent supporting data files for use
+ with the QGIS GRASS plugin.
+
+Package: python3-qgis-common
+Architecture: all
+Section: python
+Depends:
+ gdal-bin,
+ python3-gdal,
+ python3-matplotlib,
+ ${python3:Depends},
+ ${misc:Depends}
+Breaks: python-qgis-common (<< ${source:Version})
+Replaces: python-qgis-common (<< ${source:Version})
+Suggests:
+ saga
+Description: Python bindings to QGIS - architecture-independent files
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains architecture-independent files for the QGIS Python
+ bindings.
+
+Package: qgis-providers-common
+Architecture: all
+Depends: ${misc:Depends}
+Breaks: qgis-common (<= 1.6)
+Replaces: qgis-common (<= 1.6)
+Description: collection of data providers to QGIS - architecture-independent files
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains architecture-independent files for the QGIS providers.
+
+Package: python-qgis
+Depends: python3-qgis, ${misc:Depends}
+Architecture: all
+Priority: optional
+Section: oldlibs
+Description: transitional package
+ This is a transitional package. It can safely be removed.
+
+Package: python-qgis-common
+Depends: python3-qgis-common, ${misc:Depends}
+Architecture: all
+Priority: optional
+Section: oldlibs
+Description: transitional package
+ This is a transitional package. It can safely be removed.
+
+Package: qgis-server-common
+Architecture: all
+Description: QGIS - common server files
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the common files of QGIS server.
+
+Package: qgis-quick-common
+Architecture: all
+Description: QGIS - common Qt Quick files
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the common files for Qt Quick.
+
+Package: qgis
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends},
+ python3-qgis (= ${binary:Version}),
+ qgis-providers (= ${binary:Version}),
+ qgis-common (= ${source:Version})
+Recommends:
+ qgis-plugin-grass
+Suggests: gpsbabel
+Replaces: qgis-qt6
+Description: Geographic Information System (GIS)
+ A Geographic Information System (GIS) manages, analyzes, and displays
+ databases of geographic information. QGIS supports shape file viewing and
+ editing, spatial data storage with PostgreSQL/PostGIS, projection on-the-fly,
+ map composition, and a number of other features via a plugin interface. QGIS
+ also supports display of various georeferenced raster and Digital Elevation
+ Model (DEM) formats including GeoTIFF, Arc/Info ASCII Grid, and USGS ASCII
+ DEM.
+
 Package: libqgis-3d{QGIS_ABI}
 Architecture: any
 Section: libs
 Depends:
- qt3d-assimpsceneimport-plugin,
- qt3d-defaultgeometryloader-plugin,
- qt3d-gltfsceneio-plugin,
- qt3d-scene2d-plugin,
+ qt6-3d-assimpsceneimport-plugin,
+ qt6-3d-defaultgeometryloader-plugin,
+ qt6-3d-gltfsceneio-plugin,
+ qt6-3d-scene2d-plugin,
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-3d{QGIS_ABI}-qt6
 Description: QGIS - shared 3d library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -157,6 +216,7 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-analysis{QGIS_ABI}-qt6
 Description: QGIS - shared analysis library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -169,7 +229,9 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
+Replaces:
+ libqgis{QGIS_ABI},
+ libqgis-app{QGIS_ABI}-qt6
 Description: QGIS - shared app library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -182,6 +244,7 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-core{QGIS_ABI}-qt6
 Description: QGIS - shared core library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -194,11 +257,12 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-gui{QGIS_ABI}-qt6
 Description: QGIS - shared gui library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the shared gui library.
+ This package contains the shared gui library with Qt6.
 
 Package: libqgis-native{QGIS_ABI}
 Architecture: any
@@ -206,6 +270,7 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-native{QGIS_ABI}-qt6
 Description: QGIS - shared native gui library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -218,11 +283,12 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-server{QGIS_ABI}-qt6
 Description: QGIS - shared server library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the shared server library.
+ This package contains the shared server library with Qt6.
 
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
@@ -230,11 +296,12 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgisgrass{GRASSVER}-{QGIS_ABI}-qt6
 Description: QGIS - shared grass library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the shared grass library.
+ This package contains the shared grass library with Qt6.
 
 Package: libqgispython{QGIS_ABI}
 Architecture: any
@@ -242,7 +309,7 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis{QGIS_ABI}
+Replaces: libqgispython{QGIS_ABI}-qt6
 Description: QGIS - shared Python library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -252,9 +319,10 @@ Description: QGIS - shared Python library
 Package: libqgis-customwidgets
 Architecture: any
 Depends:
- qttools5-dev-tools,
+ qt6-tools-dev-tools,
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-customwidgets-qt6
 Description: QGIS custom widgets for Qt Designer
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -273,7 +341,7 @@ Depends:
  libgsl-dev,
  libpq-dev,
  libproj-dev,
- libqca-qt5-2-dev,
+ qt6-base-dev, qt6-multimedia-dev, qt6-positioning-dev, qt6-tools-dev-tools, qt6-tools-dev, libqca-qt6-dev, libqscintilla2-qt6-dev, libqca-qt6-plugins,
  libqgis-3d{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
@@ -283,30 +351,18 @@ Depends:
  libqgis-server{QGIS_ABI} (= ${binary:Version}),
  libqgisgrass{GRASSVER}-{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
- libqscintilla2-qt5-dev,
- libqt5svg5-dev,
- libqt5webkit5-dev,
- libqwt-qt5-dev,
  libsqlite3-dev,
  nlohmann-json3-dev,
- pyqt5-dev-tools,
- pyqt5.qsci-dev,
  python3-dev,
- python3-pyqt5,
- python3-pyqt5.qsci,
- python3-pyqt5.qtsql,
- qtbase5-dev,
- qtpositioning5-dev,
- qttools5-dev,
  ${misc:Depends}
+Replaces: libqgis-qt6-dev
 Recommends: libqgis-customwidgets
 Provides: qgis-dev
 Description: QGIS - development files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the headers and libraries needed to develop plugins for
- QGIS.
+ This package contains the libraries needed to develop plugins for QGIS.
 
 Package: qgis-dbg
 Architecture: any
@@ -324,6 +380,7 @@ Depends:
  libqgispython{QGIS_ABI} (= ${binary:Version}),
  ${misc:Depends}
 Suggests: gdb
+Replaces: qgis-dbg-qt6
 Description: QGIS - debugging symbols
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -335,6 +392,7 @@ Architecture: any
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-provider-grass-qt6
 Description: GRASS provider for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -351,25 +409,12 @@ Depends:
  ${grass:Depends},
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-plugin-grass-qt6
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This plugin enables GRASS data access in QGIS.
-
-Package: qgis-plugin-grass-common
-Architecture: all
-Depends:
- ${python3:Depends},
- ${misc:Depends}
-Breaks: qgis-common (<< 1.5)
-Replaces: qgis-common (<< 1.5)
-Description: GRASS plugin for QGIS - architecture-independent data
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains architecture-independent supporting data files for use
- with the QGIS GRASS plugin.
 
 Package: python3-qgis
 Architecture: any
@@ -385,15 +430,7 @@ Depends:
  python3-psycopg2,
  python3-pygments,
  python3-pyproj,
- python3-pyqt5,
- python3-pyqt5.qsci,
- python3-pyqt5.qtsql,
- python3-pyqt5.qtmultimedia,
- python3-pyqt5.qtpositioning,
- python3-pyqt5.qtsvg,
- python3-pyqt5.qtwebkit,
- python3-pyqt5.qtserialport,
- python3-sip,
+ python3-pyqt6, python3-pyqt6.qsci, python3-pyqt6.qtmultimedia, python3-pyqt6.qtpositioning, python3-pyqt6.qtsvg, python3-pyqt6.qtserialport, python3-pyqt6.sip, pyqt6-dev-tools,
  python3-yaml,
  python3-lxml,
  ${python3:Depends},
@@ -401,33 +438,12 @@ Depends:
  ${sip3:Depends},
  ${misc:Depends}
 Breaks: python-qgis (<< ${binary:Version})
-Replaces: python-qgis (<< ${binary:Version})
+Replaces: python-qgis (<< ${binary:Version}), python3-qgis-qt6
 Description: Python bindings to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains the files for the Python support.
-
-Package: python3-qgis-common
-Architecture: all
-Section: python
-Depends:
- gdal-bin,
- python3-gdal,
- python3-matplotlib,
- libqgis-customwidgets (>= ${source:Version}),
- ${python3:Depends},
- ${misc:Depends}
-Breaks: python-qgis-common (<< ${source:Version})
-Replaces: python-qgis-common (<< ${source:Version})
-Suggests:
- saga
-Description: Python bindings to QGIS - architecture-independent files
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains architecture-independent files for the QGIS Python
- bindings.
 
 Package: qgis-providers
 Architecture: any
@@ -436,30 +452,15 @@ Pre-Depends:
  ${misc:Pre-Depends}
 Depends:
  qgis-providers-common (= ${source:Version}),
- libqca-qt5-2-plugins,
- libqt5sql5-sqlite,
- qt5-image-formats-plugins,
-#jammy kinetic lunar mantic noble bookworm sid# qt5-image-formats-plugin-pdf,
+ libqca-qt6-plugins, libqt6sql6-sqlite, qt6-image-formats-plugin-pdf,
  ${shlibs:Depends},
  ${misc:Depends}
-Breaks: qgis (<= 1.6)
-Replaces: qgis (<= 1.6)
+Replaces: qgis-providers-qt6
 Description: collection of data providers to QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains the provider plugins for QGIS.
-
-Package: qgis-providers-common
-Architecture: all
-Depends: ${misc:Depends}
-Breaks: qgis-common (<= 1.6)
-Replaces: qgis-common (<= 1.6)
-Description: collection of data providers to QGIS - architecture-independent files
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains architecture-independent files for the QGIS providers.
 
 Package: qgis-server
 Architecture: any
@@ -469,137 +470,142 @@ Depends:
  qgis-server-wcs (= ${binary:Version}),
  qgis-server-wfs (= ${binary:Version}),
  qgis-server-wfs3 (= ${binary:Version}),
- qgis-server-landingpage (= ${binary:Version}),
- qgis-server-common (= ${binary:Version}),
+ qgis-server-bin (= ${binary:Version}),
+ qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-server-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package is a meta-package depending on all QGIS Server components.
 
-Package: qgis-server-common
-Architecture: any
+Package: qgis-server-bin
+Architecture: all
 Depends:
  qgis-providers (= ${binary:Version}),
  python3-qgis (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-server-bin-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the common QGIS server parts.
+ This package contains the binaries for QGIS server.
 
 Package: qgis-server-wms
 Architecture: any
 Depends:
- qgis-server-common (= ${binary:Version}),
+ qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-server-wms-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wms service.
+ This package contains the WMS service.
 
 Package: qgis-server-wmts
 Architecture: any
 Depends:
- qgis-server-common (= ${binary:Version}),
+ qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-server-wmts-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wmts service.
+ This package contains the WMTS service.
 
 Package: qgis-server-wfs
 Architecture: any
 Depends:
- qgis-server-common (= ${binary:Version}),
+ qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-server-wfs-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wfs service.
+ This package contains the WFS service.
 
 Package: qgis-server-wfs3
 Architecture: any
 Depends:
- qgis-server-common (= ${binary:Version}),
+ qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-server-wfs3-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wfs 3 service.
+ This package contains the WFS 3 service.
 
 Package: qgis-server-wcs
 Architecture: any
 Depends:
- qgis-server-common (= ${binary:Version}),
+ qgis-server-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: qgis-server-wcs-qt6
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
- This package contains the wcs service.
+ This package contains the WCS service.
 
-Package: qgis-server-landingpage
-Architecture: any
-Depends:
- qgis-server-common (= ${binary:Version}),
- ${shlibs:Depends},
- ${misc:Depends}
-Description: QGIS server providing various OGC services
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains the landing page service.
-#apidoc#
 #apidoc#Package: qgis-api-doc
 #apidoc#Architecture: all
 #apidoc#Section: doc
 #apidoc#Depends:
 #apidoc# ${misc:Depends}
 #apidoc#Recommends:
-#apidoc# qt5-doc-html
+#apidoc# qt6-doc-html
 #apidoc#Description: QGIS API documentation
 #apidoc# QGIS is a Geographic Information System (GIS) which manages, analyzes and
 #apidoc# display databases of geographic information.
 #apidoc# .
 #apidoc# This package contains the QGIS API documentation.
+#apidoc#
+Package: qgis-quick
+Architecture: any
+Depends:
+ qgis-quick-common (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: qgis-quick-qt6
+Description: QGIS - quick executable for Qt6
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the quick executable.
+
+Package: libqgis-quick
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Replaces: libqgis-quick-qt6
+Description: QGIS - shared quick library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared quick library.
 #oracle#
 #oracle#Package: qgis-oracle-provider
 #oracle#Architecture: any
 #oracle#Depends: libaio1, ${shlibs:Depends}, ${misc:Depends}
 #oracle#Section: contrib/database
+#oracle#Replaces: qgis-oracle-provider-qt6
 #oracle#Description: QGIS oracle provider
 #oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and
 #oracle# display databases of geographic information.
 #oracle# .
 #oracle# This package contains the QGIS oracle provider.
-
-Package: python-qgis
-Depends: python3-qgis, ${misc:Depends}
-Architecture: all
-Priority: optional
-Section: oldlibs
-Description: transitional package
- This is a transitional package. It can safely be removed.
-
-Package: python-qgis-common
-Depends: python3-qgis-common, ${misc:Depends}
-Architecture: all
-Priority: optional
-Section: oldlibs
-Description: transitional package
- This is a transitional package. It can safely be removed.
-

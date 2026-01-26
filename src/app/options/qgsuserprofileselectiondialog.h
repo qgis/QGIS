@@ -16,11 +16,11 @@
 #ifndef QGSUSERPROFILESELECTIONDIALOG_H
 #define QGSUSERPROFILESELECTIONDIALOG_H
 
-#include <QDialog>
-#include <qgis_app.h>
-
 #include "ui_qgsuserprofileselectiondialog.h"
 
+#include "qgis_app.h"
+
+#include <QDialog>
 
 // Forward declarations
 class QgsUserProfileManager;
@@ -36,14 +36,13 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsUserProfileSelectionDialog.
      * \param manager QgsUserProfileManager manager that will be used to fill the list of profiles
      * \param parent parent widget
      */
     explicit QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent = nullptr );
-    virtual ~QgsUserProfileSelectionDialog();
+    ~QgsUserProfileSelectionDialog() override;
 
 
     /* Return the selected profile name */
@@ -57,8 +56,6 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
 
   private:
     QgsUserProfileManager *mManager = nullptr;
-
-
 };
 
 #endif // QGSUSERPROFILESELECTIONDIALOG_H

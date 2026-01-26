@@ -18,11 +18,11 @@
 #ifndef QGSTOOLTIPCOMBOBOX_H
 #define QGSTOOLTIPCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgis_sip.h"
-#include "qgis_gui.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QComboBox>
 
 class QEvent;
 
@@ -30,6 +30,7 @@ class QEvent;
  * \class QgsToolTipComboBox
  * \ingroup gui
  * \brief QComboBox subclass which features a tooltip when mouse hovering the combobox.
+ *
  * The tooltip string is taken from the current item's Qt.ToolTipRole data.
  * \since QGIS 3.32
  */
@@ -38,12 +39,10 @@ class GUI_EXPORT QgsToolTipComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsToolTipComboBox.
     QgsToolTipComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     bool event( QEvent *event ) override;
-
 };
 
 #endif // QGSTOOLTIPCOMBOBOX_H

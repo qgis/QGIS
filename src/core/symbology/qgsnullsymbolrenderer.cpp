@@ -14,14 +14,15 @@
  ***************************************************************************/
 
 #include "qgsnullsymbolrenderer.h"
-#include "qgssymbol.h"
+
 #include "qgsgeometry.h"
+#include "qgssymbol.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 
 QgsNullSymbolRenderer::QgsNullSymbolRenderer()
-  : QgsFeatureRenderer( QStringLiteral( "nullSymbol" ) )
+  : QgsFeatureRenderer( u"nullSymbol"_s )
 {
 }
 
@@ -85,7 +86,7 @@ QSet<QString> QgsNullSymbolRenderer::usedAttributes( const QgsRenderContext & ) 
 
 QString QgsNullSymbolRenderer::dump() const
 {
-  return QStringLiteral( "NULL" );
+  return u"NULL"_s;
 }
 
 QgsFeatureRenderer *QgsNullSymbolRenderer::clone() const
@@ -112,7 +113,7 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteCo
 {
   Q_UNUSED( context )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
-  rendererElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "nullSymbol" ) );
+  rendererElem.setAttribute( u"type"_s, u"nullSymbol"_s );
 
   saveRendererData( doc, rendererElem, context );
 
@@ -121,7 +122,7 @@ QDomElement QgsNullSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteCo
 
 QgsNullSymbolRenderer *QgsNullSymbolRenderer::convertFromRenderer( const QgsFeatureRenderer *renderer )
 {
-  std::unique_ptr< QgsNullSymbolRenderer > res = std::make_unique< QgsNullSymbolRenderer >();
+  auto res = std::make_unique< QgsNullSymbolRenderer >();
   renderer->copyRendererData( res.get() );
   return res.release();
 }

@@ -19,7 +19,6 @@
 
 #include "qgsgeometryrubberband.h"
 
-
 class QgsMapToolCaptureRubberBand;
 
 
@@ -32,7 +31,7 @@ class QgsMapToolCaptureRubberBand;
  *
  * \since QGIS 3.16
  */
-class GUI_EXPORT QgsMapToolCaptureRubberBand: public QgsGeometryRubberBand
+class GUI_EXPORT QgsMapToolCaptureRubberBand : public QgsGeometryRubberBand
 {
   public:
     //! Constructor

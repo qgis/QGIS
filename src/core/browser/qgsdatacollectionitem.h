@@ -17,13 +17,15 @@
 #ifndef QGSDATACOLLECTIONITEM_H
 #define QGSDATACOLLECTIONITEM_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdataitem.h"
 
 /**
  * \ingroup core
- * \brief A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
+ * \brief A browser item for collections of data.
+ *
+ * These represent logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source?
 */
 class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
@@ -48,7 +50,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataCollectionItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsDataCollectionItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

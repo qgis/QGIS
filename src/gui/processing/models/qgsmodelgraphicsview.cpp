@@ -14,25 +14,29 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicsview.h"
-#include "qgssettings.h"
-#include "qgsmodelviewtool.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelviewtooltemporarykeypan.h"
-#include "qgsmodelviewtooltemporarymousepan.h"
-#include "qgsmodelviewtooltemporarykeyzoom.h"
+
 #include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewtool.h"
+#include "qgsmodelviewtooltemporarykeypan.h"
+#include "qgsmodelviewtooltemporarykeyzoom.h"
+#include "qgsmodelviewtooltemporarymousepan.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelcomponent.h"
 #include "qgsprocessingmodelparameter.h"
-#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgssettings.h"
 #include "qgsxmlutils.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include <QDragEnterEvent>
-#include <QScrollBar>
+
 #include <QApplication>
 #include <QClipboard>
+#include <QDragEnterEvent>
 #include <QMimeData>
+#include <QScrollBar>
 #include <QTimer>
+
+#include "moc_qgsmodelgraphicsview.cpp"
 
 ///@cond NOT_STABLE
 
@@ -51,6 +55,9 @@ QgsModelGraphicsView::QgsModelGraphicsView( QWidget *parent )
   mMidMouseButtonPanTool = new QgsModelViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsModelViewToolTemporaryKeyZoom( this );
 
+  connect( horizontalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
+  connect( verticalScrollBar(), &QScrollBar::valueChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
+
   mSnapper.setSnapToGrid( true );
 }
 
@@ -61,7 +68,9 @@ QgsModelGraphicsView::~QgsModelGraphicsView()
 
 void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasText() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
+       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
+       || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -70,24 +79,34 @@ void QgsModelGraphicsView::dragEnterEvent( QDragEnterEvent *event )
 void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 {
   const QPointF dropPoint = mapToScene( event->pos() );
-  if ( event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s ) )
   {
-    QByteArray data = event->mimeData()->data( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) );
+    QByteArray data = event->mimeData()->data( u"application/x-vnd.qgis.qgis.algorithmid"_s );
     QDataStream stream( &data, QIODevice::ReadOnly );
     QString algorithmId;
     stream >> algorithmId;
 
-    QTimer::singleShot( 0, this, [this, dropPoint, algorithmId ]
-    {
+    QTimer::singleShot( 0, this, [this, dropPoint, algorithmId] {
       emit algorithmDropped( algorithmId, dropPoint );
+    } );
+    event->accept();
+  }
+  else if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s ) )
+  {
+    QByteArray data = event->mimeData()->data( u"application/x-vnd.qgis.qgis.parametertypeid"_s );
+    QDataStream stream( &data, QIODevice::ReadOnly );
+    QString paramTypeId;
+    stream >> paramTypeId;
+
+    QTimer::singleShot( 0, this, [this, dropPoint, paramTypeId] {
+      emit inputDropped( paramTypeId, dropPoint );
     } );
     event->accept();
   }
   else if ( event->mimeData()->hasText() )
   {
     const QString itemId = event->mimeData()->text();
-    QTimer::singleShot( 0, this, [this, dropPoint, itemId ]
-    {
+    QTimer::singleShot( 0, this, [this, dropPoint, itemId] {
       emit inputDropped( itemId, dropPoint );
     } );
     event->accept();
@@ -100,7 +119,9 @@ void QgsModelGraphicsView::dropEvent( QDropEvent *event )
 
 void QgsModelGraphicsView::dragMoveEvent( QDragMoveEvent *event )
 {
-  if ( event->mimeData()->hasText() || event->mimeData()->hasFormat( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ) ) )
+  if ( event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.algorithmid"_s )
+       || event->mimeData()->hasFormat( u"application/x-vnd.qgis.qgis.parametertypeid"_s )
+       || event->mimeData()->hasText() )
     event->acceptProposedAction();
   else
     event->ignore();
@@ -127,8 +148,8 @@ void QgsModelGraphicsView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings settings;
-  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2 ).toDouble();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
@@ -152,8 +173,7 @@ void QgsModelGraphicsView::wheelZoom( QWheelEvent *event )
 
   //adjust view center
   QgsPointXY oldCenter( visibleRect.center() );
-  QgsPointXY newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
-                        scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+  QgsPointXY newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ), scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
   centerOn( newCenter.x(), newCenter.y() );
 
   //zoom layout
@@ -224,14 +244,14 @@ void QgsModelGraphicsView::mousePressEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps );
     mTool->modelPressEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
 
   if ( !mTool || !event->isAccepted() )
   {
-    if ( event->button() == Qt::MiddleButton )
+    if ( event->button() == Qt::MiddleButton && mTool != mSpacePanTool && mTool != mSpaceZoomTool )
     {
       // Pan layout with middle mouse button
       setTool( mMidMouseButtonPanTool );
@@ -251,7 +271,7 @@ void QgsModelGraphicsView::mouseReleaseEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps );
     mTool->modelReleaseEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -270,7 +290,7 @@ void QgsModelGraphicsView::mouseMoveEvent( QMouseEvent *event )
   QPointF cursorPos = mapToScene( mMouseCurrentXY );
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, false ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, false );
     if ( mTool->flags() & QgsModelViewTool::FlagSnaps )
     {
       me->snapPoint();
@@ -307,7 +327,7 @@ void QgsModelGraphicsView::mouseDoubleClickEvent( QMouseEvent *event )
 
   if ( mTool )
   {
-    std::unique_ptr<QgsModelViewMouseEvent> me( new QgsModelViewMouseEvent( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps ) );
+    auto me = std::make_unique<QgsModelViewMouseEvent>( this, event, mTool->flags() & QgsModelViewTool::FlagSnaps );
     mTool->modelDoubleClickEvent( me.get() );
     event->setAccepted( me->isAccepted() );
   }
@@ -329,7 +349,7 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
   if ( mTool && event->isAccepted() )
     return;
 
-  if ( event->key() == Qt::Key_Space && ! event->isAutoRepeat() )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() && mTool != mMidMouseButtonPanTool )
   {
     if ( !( event->modifiers() & Qt::ControlModifier ) )
     {
@@ -383,6 +403,8 @@ void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 {
   setScene( scene );
 
+  connect( scene, &QgsModelGraphicsScene::sceneRectChanged, this, &QgsModelGraphicsView::friendlySetSceneRect );
+
   // IMPORTANT!
   // previous snap markers, snap lines are owned by previous layout - so don't delete them here!
   mSnapMarker = new QgsModelViewSnapMarker();
@@ -392,7 +414,7 @@ void QgsModelGraphicsView::setModelScene( QgsModelGraphicsScene *scene )
 
 QgsModelGraphicsScene *QgsModelGraphicsView::modelScene() const
 {
-  return qobject_cast< QgsModelGraphicsScene * >( QgsModelGraphicsView::scene() );
+  return qobject_cast<QgsModelGraphicsScene *>( QgsModelGraphicsView::scene() );
 }
 
 QgsModelViewTool *QgsModelGraphicsView::tool()
@@ -444,6 +466,21 @@ void QgsModelGraphicsView::endMacroCommand()
   emit macroCommandEnded();
 }
 
+void QgsModelGraphicsView::beginCommand( const QString &text )
+{
+  emit commandBegun( text );
+}
+
+void QgsModelGraphicsView::endCommand()
+{
+  emit commandEnded();
+}
+
+void QgsModelGraphicsView::abortCommand()
+{
+  emit commandAborted();
+}
+
 void QgsModelGraphicsView::snapSelected()
 {
   QgsModelGraphicsScene *s = modelScene();
@@ -456,7 +493,7 @@ void QgsModelGraphicsView::snapSelected()
     for ( QgsModelComponentGraphicItem *item : itemList )
     {
       bool wasSnapped = false;
-      QRectF snapped = mSnapper.snapRectWithResize( item->mapRectToScene( item->itemRect( ) ), transform().m11(), wasSnapped );
+      QRectF snapped = mSnapper.snapRectWithResize( item->mapRectToScene( item->itemRect() ), transform().m11(), wasSnapped );
       if ( wasSnapped )
       {
         item->setItemRect( snapped );
@@ -465,6 +502,26 @@ void QgsModelGraphicsView::snapSelected()
     mSnapper.setSnapToGrid( prevSetting );
   }
   endMacroCommand();
+}
+
+void QgsModelGraphicsView::friendlySetSceneRect()
+{
+  if ( mBlockScrollbarSignals )
+    return;
+
+  QRectF modelSceneRect = modelScene()->sceneRect();
+  QRectF viewSceneRect = sceneRect();
+
+  QRectF visibleRect = mapToScene( viewport()->rect() ).boundingRect();
+
+  viewSceneRect.setLeft( std::min( modelSceneRect.left(), visibleRect.left() ) );
+  viewSceneRect.setRight( std::max( modelSceneRect.right(), visibleRect.right() ) );
+  viewSceneRect.setTop( std::min( modelSceneRect.top(), visibleRect.top() ) );
+  viewSceneRect.setBottom( std::max( modelSceneRect.bottom(), visibleRect.bottom() ) );
+
+  mBlockScrollbarSignals++;
+  setSceneRect( viewSceneRect );
+  mBlockScrollbarSignals--;
 }
 
 void QgsModelGraphicsView::copySelectedItems( QgsModelGraphicsView::ClipboardOperation operation )
@@ -479,39 +536,39 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
 
   QgsReadWriteContext context;
   QDomDocument doc;
-  QDomElement documentElement = doc.createElement( QStringLiteral( "ModelComponentClipboard" ) );
+  QDomElement documentElement = doc.createElement( u"ModelComponentClipboard"_s );
   if ( operation == ClipboardCut )
   {
     emit macroCommandStarted( tr( "Cut Items" ) );
-    emit beginCommand( QString() );
+    emit commandBegun( QString() );
   }
 
-  QList< QVariant > paramComponents;
-  QList< QVariant > groupBoxComponents;
-  QList< QVariant > algComponents;
+  QList<QVariant> paramComponents;
+  QList<QVariant> groupBoxComponents;
+  QList<QVariant> algComponents;
 
-  QList< QgsModelComponentGraphicItem * > selectedCommentParents;
-  QList< QgsProcessingModelOutput > selectedOutputs;
-  QList< QgsProcessingModelOutput > selectedOutputsComments;
+  QList<QgsModelComponentGraphicItem *> selectedCommentParents;
+  QList<QgsProcessingModelOutput> selectedOutputs;
+  QList<QgsProcessingModelOutput> selectedOutputsComments;
   for ( QgsModelComponentGraphicItem *item : items )
   {
-    if ( const QgsModelCommentGraphicItem *commentItem = dynamic_cast< QgsModelCommentGraphicItem * >( item ) )
+    if ( const QgsModelCommentGraphicItem *commentItem = dynamic_cast<QgsModelCommentGraphicItem *>( item ) )
     {
       selectedCommentParents << commentItem->parentComponentItem();
-      if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast< QgsModelOutputGraphicItem * >( commentItem->parentComponentItem() ) )
+      if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast<QgsModelOutputGraphicItem *>( commentItem->parentComponentItem() ) )
       {
-        selectedOutputsComments << *( static_cast< const QgsProcessingModelOutput *>( outputItem->component() ) );
+        selectedOutputsComments << *( static_cast<const QgsProcessingModelOutput *>( outputItem->component() ) );
       }
     }
-    else if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast< QgsModelOutputGraphicItem * >( item ) )
+    else if ( const QgsModelOutputGraphicItem *outputItem = dynamic_cast<QgsModelOutputGraphicItem *>( item ) )
     {
-      selectedOutputs << *( static_cast< const QgsProcessingModelOutput *>( outputItem->component() ) );
+      selectedOutputs << *( static_cast<const QgsProcessingModelOutput *>( outputItem->component() ) );
     }
   }
 
   for ( QgsModelComponentGraphicItem *item : items )
   {
-    if ( const QgsProcessingModelParameter *param = dynamic_cast< QgsProcessingModelParameter * >( item->component() ) )
+    if ( const QgsProcessingModelParameter *param = dynamic_cast<QgsProcessingModelParameter *>( item->component() ) )
     {
       QgsProcessingModelParameter component = *param;
 
@@ -523,17 +580,17 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
       }
 
       QVariantMap paramDef;
-      paramDef.insert( QStringLiteral( "component" ), component.toVariant() );
+      paramDef.insert( u"component"_s, component.toVariant() );
       const QgsProcessingParameterDefinition *def = modelScene()->model()->parameterDefinition( component.parameterName() );
-      paramDef.insert( QStringLiteral( "definition" ), def->toVariantMap() );
+      paramDef.insert( u"definition"_s, def->toVariantMap() );
 
       paramComponents << paramDef;
     }
-    else if ( QgsProcessingModelGroupBox *groupBox = dynamic_cast< QgsProcessingModelGroupBox * >( item->component() ) )
+    else if ( QgsProcessingModelGroupBox *groupBox = dynamic_cast<QgsProcessingModelGroupBox *>( item->component() ) )
     {
       groupBoxComponents << groupBox->toVariant();
     }
-    else if ( const QgsProcessingModelChildAlgorithm *alg = dynamic_cast< QgsProcessingModelChildAlgorithm * >( item->component() ) )
+    else if ( const QgsProcessingModelChildAlgorithm *alg = dynamic_cast<QgsProcessingModelChildAlgorithm *>( item->component() ) )
     {
       QgsProcessingModelChildAlgorithm childAlg = *alg;
 
@@ -547,7 +604,7 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
       // don't copy outputs which weren't selected either
       QMap<QString, QgsProcessingModelOutput> clipboardOutputs;
       const QMap<QString, QgsProcessingModelOutput> existingOutputs = childAlg.modelOutputs();
-      for ( auto it = existingOutputs.constBegin(); it != existingOutputs.constEnd(); ++ it )
+      for ( auto it = existingOutputs.constBegin(); it != existingOutputs.constEnd(); ++it )
       {
         bool found = false;
         for ( const QgsProcessingModelOutput &candidate : selectedOutputs )
@@ -584,19 +641,19 @@ void QgsModelGraphicsView::copyItems( const QList<QgsModelComponentGraphicItem *
     }
   }
   QVariantMap components;
-  components.insert( QStringLiteral( "parameters" ), paramComponents );
-  components.insert( QStringLiteral( "groupboxes" ), groupBoxComponents );
-  components.insert( QStringLiteral( "algs" ), algComponents );
+  components.insert( u"parameters"_s, paramComponents );
+  components.insert( u"groupboxes"_s, groupBoxComponents );
+  components.insert( u"algs"_s, algComponents );
   doc.appendChild( QgsXmlUtils::writeVariant( components, doc ) );
   if ( operation == ClipboardCut )
   {
     emit deleteSelectedItems();
-    emit endCommand();
+    emit commandEnded();
     emit macroCommandEnded();
   }
 
   QMimeData *mimeData = new QMimeData;
-  mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
+  mimeData->setData( u"text/xml"_s, doc.toByteArray() );
   mimeData->setText( doc.toByteArray() );
   QClipboard *clipboard = QApplication::clipboard();
   clipboard->setMimeData( mimeData );
@@ -609,12 +666,15 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
 
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
-  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  const QMimeData *mimeData = clipboard->mimeData();
+  if ( !mimeData )
+    return;
+  if ( doc.setContent( mimeData->data( u"text/xml"_s ) ) )
   {
     QDomElement docElem = doc.documentElement();
     QVariantMap res = QgsXmlUtils::readVariant( docElem ).toMap();
 
-    if ( res.contains( QStringLiteral( "parameters" ) ) && res.contains( QStringLiteral( "algs" ) ) )
+    if ( res.contains( u"parameters"_s ) && res.contains( u"algs"_s ) )
     {
       QPointF pt;
       switch ( mode )
@@ -634,12 +694,12 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         }
       }
 
-      emit beginCommand( tr( "Paste Items" ) );
+      beginCommand( tr( "Paste Items" ) );
 
       QRectF pastedBounds;
 
-      QList< QgsProcessingModelGroupBox > pastedGroups;
-      for ( const QVariant &v : res.value( QStringLiteral( "groupboxes" ) ).toList() )
+      QList<QgsProcessingModelGroupBox> pastedGroups;
+      for ( const QVariant &v : res.value( u"groupboxes"_s ).toList() )
       {
         QgsProcessingModelGroupBox box;
         // don't restore the uuid -- we need them to be unique in the model
@@ -649,20 +709,20 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
 
         modelScene()->model()->addGroupBox( box );
 
-        if ( !pastedBounds.isValid( ) )
+        if ( !pastedBounds.isValid() )
           pastedBounds = QRectF( box.position() - QPointF( box.size().width() / 2.0, box.size().height() / 2.0 ), box.size() );
         else
           pastedBounds = pastedBounds.united( QRectF( box.position() - QPointF( box.size().width() / 2.0, box.size().height() / 2.0 ), box.size() ) );
       }
 
       QStringList pastedParameters;
-      for ( const QVariant &v : res.value( QStringLiteral( "parameters" ) ).toList() )
+      for ( const QVariant &v : res.value( u"parameters"_s ).toList() )
       {
         QVariantMap param = v.toMap();
-        QVariantMap componentDef = param.value( QStringLiteral( "component" ) ).toMap();
-        QVariantMap paramDef = param.value( QStringLiteral( "definition" ) ).toMap();
+        QVariantMap componentDef = param.value( u"component"_s ).toMap();
+        QVariantMap paramDef = param.value( u"definition"_s ).toMap();
 
-        std::unique_ptr< QgsProcessingParameterDefinition > paramDefinition( QgsProcessingParameters::parameterFromVariantMap( paramDef ) );
+        std::unique_ptr<QgsProcessingParameterDefinition> paramDefinition( QgsProcessingParameters::parameterFromVariantMap( paramDef ) );
 
         QgsProcessingModelParameter p;
         p.loadVariant( componentDef );
@@ -674,8 +734,8 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         while ( modelScene()->model()->parameterDefinition( name ) )
         {
           next++;
-          name = QStringLiteral( "%1 (%2)" ).arg( p.parameterName() ).arg( next );
-          description = QStringLiteral( "%1 (%2)" ).arg( paramDefinition->description() ).arg( next );
+          name = u"%1 (%2)"_s.arg( p.parameterName() ).arg( next );
+          description = u"%1 (%2)"_s.arg( paramDefinition->description() ).arg( next );
         }
         paramDefinition->setName( name );
         paramDefinition->setDescription( description );
@@ -684,7 +744,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         modelScene()->model()->addModelParameter( paramDefinition.release(), p );
         pastedParameters << p.parameterName();
 
-        if ( !pastedBounds.isValid( ) )
+        if ( !pastedBounds.isValid() )
           pastedBounds = QRectF( p.position() - QPointF( p.size().width() / 2.0, p.size().height() / 2.0 ), p.size() );
         else
           pastedBounds = pastedBounds.united( QRectF( p.position() - QPointF( p.size().width() / 2.0, p.size().height() / 2.0 ), p.size() ) );
@@ -694,7 +754,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
       }
 
       QStringList pastedAlgorithms;
-      for ( const QVariant &v : res.value( QStringLiteral( "algs" ) ).toList() )
+      for ( const QVariant &v : res.value( u"algs"_s ).toList() )
       {
         QgsProcessingModelChildAlgorithm alg;
         alg.loadVariant( v.toMap() );
@@ -708,7 +768,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
 
         pastedAlgorithms << alg.childId();
 
-        if ( !pastedBounds.isValid( ) )
+        if ( !pastedBounds.isValid() )
           pastedBounds = QRectF( alg.position() - QPointF( alg.size().width() / 2.0, alg.size().height() / 2.0 ), alg.size() );
         else
           pastedBounds = pastedBounds.united( QRectF( alg.position() - QPointF( alg.size().width() / 2.0, alg.size().height() / 2.0 ), alg.size() ) );
@@ -745,7 +805,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
             if ( unique )
               break;
             next++;
-            name = QStringLiteral( "%1 (%2)" ).arg( it.value().name() ).arg( next );
+            name = u"%1 (%2)"_s.arg( it.value().name() ).arg( next );
           }
 
           QgsProcessingModelOutput newOutput = it.value();
@@ -803,7 +863,7 @@ void QgsModelGraphicsView::pasteItems( QgsModelGraphicsView::PasteMode mode )
         }
       }
 
-      emit endCommand();
+      emit commandEnded();
     }
   }
 
@@ -836,5 +896,3 @@ void QgsModelViewSnapMarker::paint( QPainter *p, const QStyleOptionGraphicsItem 
 
 
 ///@endcond
-
-

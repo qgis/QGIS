@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsreportsectionlayout.h"
+
 #include "qgslayout.h"
 
 ///@cond NOT_STABLE
@@ -25,12 +26,12 @@ QgsReportSectionLayout::QgsReportSectionLayout( QgsAbstractReportSection *parent
 
 QIcon QgsReportSectionLayout::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayout.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconLayout.svg"_s );
 }
 
 QgsReportSectionLayout *QgsReportSectionLayout::clone() const
 {
-  std::unique_ptr< QgsReportSectionLayout > copy = std::make_unique< QgsReportSectionLayout >( nullptr );
+  auto copy = std::make_unique< QgsReportSectionLayout >( nullptr );
   copyCommonProperties( copy.get() );
 
   if ( mBody )
@@ -77,25 +78,25 @@ bool QgsReportSectionLayout::writePropertiesToElement( QDomElement &element, QDo
 {
   if ( mBody )
   {
-    QDomElement bodyElement = doc.createElement( QStringLiteral( "body" ) );
+    QDomElement bodyElement = doc.createElement( u"body"_s );
     bodyElement.appendChild( mBody->writeXml( doc, context ) );
     element.appendChild( bodyElement );
   }
-  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  element.setAttribute( u"bodyEnabled"_s, mBodyEnabled ? u"1"_s : u"0"_s );
   return true;
 }
 
 bool QgsReportSectionLayout::readPropertiesFromElement( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  const QDomElement bodyElement = element.firstChildElement( QStringLiteral( "body" ) );
+  const QDomElement bodyElement = element.firstChildElement( u"body"_s );
   if ( !bodyElement.isNull() )
   {
     const QDomElement bodyLayoutElem = bodyElement.firstChild().toElement();
-    std::unique_ptr< QgsLayout > body = std::make_unique< QgsLayout >( project() );
+    auto body = std::make_unique< QgsLayout >( project() );
     body->readXml( bodyLayoutElem, doc, context );
     mBody = std::move( body );
   }
-  mBodyEnabled = element.attribute( QStringLiteral( "bodyEnabled" ) ).toInt();
+  mBodyEnabled = element.attribute( u"bodyEnabled"_s ).toInt();
   return true;
 }
 

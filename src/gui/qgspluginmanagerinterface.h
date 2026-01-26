@@ -17,23 +17,23 @@
 #ifndef QGSPLUGINMANAGERINTERFACE_H
 #define QGSPLUGINMANAGERINTERFACE_H
 
+#include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QMap>
 #include <QObject>
 #include <QString>
-#include <QMap>
-#include "qgis_gui.h"
-#include "qgis.h"
-
 
 /**
  * \ingroup gui
  * \class QgsPluginManagerInterface
+ * \brief Abstract interface class for the QGIS plugin manager.
  */
 class GUI_EXPORT QgsPluginManagerInterface : public QObject
 {
     Q_OBJECT
 
   public:
-
     QgsPluginManagerInterface() = default;
 
     //! remove Python plugins from the metadata registry (c++ plugins stay)

@@ -14,26 +14,30 @@
  ***************************************************************************/
 
 #include "qgsfontbutton.h"
-#include "qgstextformatwidget.h"
-#include "qgssymbollayerutils.h"
+
+#include "qgsapplication.h"
 #include "qgscolorscheme.h"
-#include "qgsmapcanvas.h"
-#include "qgscolorwidgets.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorswatchgrid.h"
+#include "qgscolorwidgets.h"
 #include "qgsdoublespinbox.h"
-#include "qgsunittypes.h"
-#include "qgsmenuheader.h"
-#include "qgsfontutils.h"
-#include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayer.h"
-#include "qgstextrenderer.h"
+#include "qgsfontutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmenuheader.h"
 #include "qgsscreenhelper.h"
-#include <QMenu>
+#include "qgssymbollayerutils.h"
+#include "qgstextformatwidget.h"
+#include "qgstextrenderer.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
 #include <QClipboard>
 #include <QDrag>
+#include <QMenu>
 #include <QToolTip>
+
+#include "moc_qgsfontbutton.cpp"
 
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -58,7 +62,7 @@ QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   mSizeHint = QSize( std::max( minWidth, size.width() ), std::max( size.height(), fontHeight ) );
 
   mScreenHelper = new QgsScreenHelper( this );
-  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [ = ] { updatePreview(); } );
+  connect( mScreenHelper, &QgsScreenHelper::screenDpiChanged, this, [this] { updatePreview(); } );
 }
 
 QSize QgsFontButton::minimumSizeHint() const
@@ -79,7 +83,7 @@ void QgsFontButton::showSettingsDialog()
     {
       QgsExpressionContext context;
       if ( mExpressionContextGenerator )
-        context  = mExpressionContextGenerator->createExpressionContext();
+        context = mExpressionContextGenerator->createExpressionContext();
       else
       {
         context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer.data() ) );
@@ -97,7 +101,10 @@ void QgsFontButton::showSettingsDialog()
         mActivePanel->setPanelTitle( mDialogTitle );
         mActivePanel->setContext( symbolContext );
 
-        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [ this ] { setTextFormat( mActivePanel->format() ); } );
+        connect( mActivePanel, &QgsTextFormatPanelWidget::widgetChanged, this, [this] {
+          setTextFormat( mActivePanel->format() );
+          QgsFontUtils::addRecentFontFamily( mActivePanel->format().font().family() );
+        } );
         panel->openPanel( mActivePanel );
         return;
       }
@@ -221,7 +228,7 @@ bool QgsFontButton::event( QEvent *e )
 {
   if ( e->type() == QEvent::ToolTip )
   {
-    QHelpEvent *helpEvent = static_cast< QHelpEvent *>( e );
+    QHelpEvent *helpEvent = static_cast<QHelpEvent *>( e );
     QString toolTip;
     double fontSize = 0.0;
     switch ( mMode )
@@ -234,7 +241,7 @@ bool QgsFontButton::event( QEvent *e )
         fontSize = mFont.pointSizeF();
         break;
     }
-    toolTip = QStringLiteral( "<b>%1</b><br>%2<br>Size: %3" ).arg( text(), mMode == ModeTextRenderer ? mFormat.font().family() : mFont.family() ).arg( fontSize );
+    toolTip = u"<b>%1</b><br>%2<br>Size: %3"_s.arg( text(), mMode == ModeTextRenderer ? mFormat.font().family() : mFont.family() ).arg( fontSize );
     QToolTip::showText( helpEvent->globalPos(), toolTip );
   }
   return QToolButton::event( e );
@@ -483,7 +490,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       context.setMapToPixel( newCoordXForm );
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
-      context.setUseAdvancedEffects( true );
+      context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       context.setPainter( &p );
 
       // slightly inset text to account for buffer/background
@@ -491,16 +498,14 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       double xtrans = 0;
       if ( tempFormat->buffer().enabled() )
         xtrans = tempFormat->buffer().sizeUnit() == Qgis::RenderUnit::Percentage
-                 ? fontSize * tempFormat->buffer().size() / 100
-                 : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() );
+                   ? fontSize * tempFormat->buffer().size() / 100
+                   : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() );
       if ( tempFormat->background().enabled() && tempFormat->background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
         xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat->background().size().width(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
       double ytrans = 0.0;
       if ( tempFormat->buffer().enabled() )
-        ytrans = std::max( ytrans, tempFormat->buffer().sizeUnit() == Qgis::RenderUnit::Percentage
-                           ? fontSize * tempFormat->buffer().size() / 100
-                           : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, tempFormat->buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat->buffer().size() / 100 : context.convertToPainterUnits( tempFormat->buffer().size(), tempFormat->buffer().sizeUnit(), tempFormat->buffer().sizeMapUnitScale() ) );
       if ( tempFormat->background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat->background().size().height(), tempFormat->background().sizeUnit(), tempFormat->background().sizeMapUnitScale() ) );
 
@@ -513,8 +518,7 @@ QPixmap QgsFontButton::createDragIcon( QSize size, const QgsTextFormat *tempForm
       if ( textRect.width() > 2000 )
         textRect.setWidth( 2000 );
 
-      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << tr( "Aa" ),
-                                 context, *tempFormat );
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Center, QStringList() << tr( "Aa" ), context, *tempFormat );
       break;
     }
     case ModeQFont:
@@ -579,9 +583,7 @@ void QgsFontButton::prepareMenu()
   sizeSpin->setMaximum( 1e+9 );
   sizeSpin->setShowClearButton( false );
   sizeSpin->setValue( mMode == ModeTextRenderer ? mFormat.size() : mFont.pointSizeF() );
-  connect( sizeSpin, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ),
-           this, [ = ]( double value )
-  {
+  connect( sizeSpin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) {
     switch ( mMode )
     {
       case ModeTextRenderer:
@@ -622,8 +624,7 @@ void QgsFontButton::prepareMenu()
       fontAction->setCheckable( true );
       fontAction->setChecked( true );
     }
-    auto setFont = [this, family]
-    {
+    auto setFont = [this, family] {
       switch ( mMode )
       {
         case ModeTextRenderer:
@@ -698,8 +699,7 @@ void QgsFontButton::prepareMenu()
     alphaRamp->setColor( alphaColor );
     QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
     alphaAction->setDismissOnColorSelection( false );
-    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [ = ]( const QColor & color )
-    {
+    connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, [this]( const QColor &color ) {
       const double opacity = color.alphaF();
       mFormat.setOpacity( opacity );
       updatePreview();
@@ -707,16 +707,15 @@ void QgsFontButton::prepareMenu()
         mNullFormatAction->setChecked( false );
       emit changed();
     } );
-    connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor & color ) { alphaRamp->setColor( color, false ); }
-           );
+    connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor &color ) { alphaRamp->setColor( color, false ); } );
     mMenu->addAction( alphaAction );
 
     //get schemes with ShowInColorButtonMenu flag set
-    QList< QgsColorScheme * > schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorButtonMenu );
-    QList< QgsColorScheme * >::iterator it = schemeList.begin();
+    QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes( QgsColorScheme::ShowInColorButtonMenu );
+    QList<QgsColorScheme *>::iterator it = schemeList.begin();
     for ( ; it != schemeList.end(); ++it )
     {
-      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, QStringLiteral( "labeling" ), this );
+      QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, u"labeling"_s, this );
       colorAction->setBaseColor( mFormat.color() );
       mMenu->addAction( colorAction );
       connect( colorAction, &QgsColorSwatchGridAction::colorChanged, this, &QgsFontButton::setColor );
@@ -792,6 +791,9 @@ void QgsFontButton::setMode( Mode mode )
 
 bool QgsFontButton::formatFromMimeData( const QMimeData *mimeData, QgsTextFormat &resultFormat ) const
 {
+  if ( !mimeData )
+    return false;
+
   bool ok = false;
   resultFormat = QgsTextFormat::fromMimeData( mimeData, &ok );
   return ok;
@@ -799,6 +801,9 @@ bool QgsFontButton::formatFromMimeData( const QMimeData *mimeData, QgsTextFormat
 
 bool QgsFontButton::fontFromMimeData( const QMimeData *mimeData, QFont &resultFont ) const
 {
+  if ( !mimeData )
+    return false;
+
   bool ok = false;
   resultFont = QgsFontUtils::fromMimeData( mimeData, &ok );
   return ok;
@@ -866,12 +871,11 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       //calculate size of push button part of widget (ie, without the menu dropdown button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                               this );
+      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton, this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
-#elif defined(Q_OS_MAC)
+#elif defined( Q_OS_MAC )
       mIconSize = QSize( buttonSize.width() - 10, height() - 2 );
 #else
       mIconSize = QSize( buttonSize.width() - 10, height() - 12 );
@@ -914,7 +918,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
 
       context.setScaleFactor( mScreenHelper->screenDpi() / 25.4 );
       context.setDevicePixelRatio( devicePixelRatioF() );
-      context.setUseAdvancedEffects( true );
+      context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
       context.setFlag( Qgis::RenderContextFlag::Antialiasing, true );
       context.setPainter( &p );
 
@@ -923,16 +927,14 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       double xtrans = 0;
       if ( tempFormat.buffer().enabled() )
         xtrans = tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
-                 ? fontSize * tempFormat.buffer().size() / 100
-                 : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
+                   ? fontSize * tempFormat.buffer().size() / 100
+                   : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() );
       if ( tempFormat.background().enabled() && tempFormat.background().sizeType() != QgsTextBackgroundSettings::SizeFixed )
         xtrans = std::max( xtrans, context.convertToPainterUnits( tempFormat.background().size().width(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
       double ytrans = 0.0;
       if ( tempFormat.buffer().enabled() )
-        ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage
-                           ? fontSize * tempFormat.buffer().size() / 100
-                           : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
+        ytrans = std::max( ytrans, tempFormat.buffer().sizeUnit() == Qgis::RenderUnit::Percentage ? fontSize * tempFormat.buffer().size() / 100 : context.convertToPainterUnits( tempFormat.buffer().size(), tempFormat.buffer().sizeUnit(), tempFormat.buffer().sizeMapUnitScale() ) );
       if ( tempFormat.background().enabled() )
         ytrans = std::max( ytrans, context.convertToPainterUnits( tempFormat.background().size().height(), tempFormat.background().sizeUnit(), tempFormat.background().sizeMapUnitScale() ) );
 
@@ -945,8 +947,7 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       if ( textRect.width() > 2000 )
         textRect.setWidth( 2000 );
 
-      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << text(),
-                                 context, tempFormat );
+      QgsTextRenderer::drawText( textRect, 0, Qgis::TextHorizontalAlignment::Left, QStringList() << text(), context, tempFormat );
       break;
     }
     case ModeQFont:
@@ -959,7 +960,6 @@ void QgsFontButton::updatePreview( const QColor &color, QgsTextFormat *format, Q
       p.drawText( textRect, Qt::AlignVCenter, text() );
       break;
     }
-
   }
   p.end();
   setIconSize( currentIconSize );

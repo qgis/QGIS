@@ -20,6 +20,7 @@
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 
+#include "moc_qgslayertreeviewnonremovableindicator.cpp"
 
 QgsLayerTreeViewNonRemovableIndicatorProvider::QgsLayerTreeViewNonRemovableIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -29,7 +30,7 @@ QgsLayerTreeViewNonRemovableIndicatorProvider::QgsLayerTreeViewNonRemovableIndic
 QString QgsLayerTreeViewNonRemovableIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   Q_UNUSED( layer )
-  return QStringLiteral( "/mIndicatorNonRemovable.svg" );
+  return u"/mIndicatorNonRemovable.svg"_s;
 }
 
 QString QgsLayerTreeViewNonRemovableIndicatorProvider::tooltipText( QgsMapLayer *layer )
@@ -40,7 +41,7 @@ QString QgsLayerTreeViewNonRemovableIndicatorProvider::tooltipText( QgsMapLayer 
 
 bool QgsLayerTreeViewNonRemovableIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  return ! layer->flags().testFlag( QgsMapLayer::LayerFlag::Removable );
+  return !layer->flags().testFlag( QgsMapLayer::LayerFlag::Removable );
 }
 
 void QgsLayerTreeViewNonRemovableIndicatorProvider::connectSignals( QgsMapLayer *layer )
@@ -54,4 +55,3 @@ void QgsLayerTreeViewNonRemovableIndicatorProvider::disconnectSignals( QgsMapLay
   QgsLayerTreeViewIndicatorProvider::disconnectSignals( layer );
   disconnect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeViewNonRemovableIndicatorProvider::onLayerChanged );
 }
-

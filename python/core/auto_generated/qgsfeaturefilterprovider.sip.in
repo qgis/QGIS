@@ -15,10 +15,13 @@
 class QgsFeatureFilterProvider
 {
 %Docstring(signature="appended")
-Abstract interface for use by classes that filter the features or attributes of a layer.
+Abstract interface for use by classes that filter the features or
+attributes of a layer.
 
-A :py:class:`QgsFeatureFilterProvider` provides a method for modifying a :py:class:`QgsFeatureRequest` in place to apply
-additional filters to the request, since QGIS 3.18 a method to filter allowed attributes is also available.
+A :py:class:`QgsFeatureFilterProvider` provides a method for modifying a
+:py:class:`QgsFeatureRequest` in place to apply additional filters to
+the request, since QGIS 3.18 a method to filter allowed attributes is
+also available.
 %End
 
 %TypeHeaderCode
@@ -27,18 +30,46 @@ additional filters to the request, since QGIS 3.18 a method to filter allowed at
   public:
 
 
-    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const = 0;
+ virtual bool isFilterThreadSafe() const /Deprecated="Since 4.0. "/;
 %Docstring
-Add additional filters to the feature request to further restrict the features returned by the request.
-Derived classes must implement this method.
+Returns ``True`` if the filterFeature function is thread safe, which
+will lead to reliance on layer ID instead of the raw layer pointer.
+
+.. versionadded:: 4.0
+
+.. deprecated:: 4.0
+%End
+
+ virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &featureRequest ) const /Deprecated="Since 4.0. Use the layer ID variant."/;
+%Docstring
+Add additional filters to the feature request to further restrict the
+features returned by the request. Derived classes must implement this
+method.
 
 :param layer: the layer to filter
 :param featureRequest: the feature request to update
+
+.. deprecated:: 4.0
+
+   Use the layer ID variant.
+%End
+
+    virtual void filterFeatures( const QString &layerId, QgsFeatureRequest &featureRequest ) const;
+%Docstring
+Add additional filters to the feature request to further restrict the
+features returned by the request. Derived classes must implement this
+method.
+
+:param layerId: the layer ID to filter
+:param featureRequest: the feature request to update
+
+.. versionadded:: 4.0
 %End
 
     virtual QStringList layerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const = 0;
 %Docstring
-Returns the list of visible attribute names from a list of ``attributes`` names for the given ``layer``
+Returns the list of visible attribute names from a list of
+``attributes`` names for the given ``layer``
 
 .. versionadded:: 3.18
 %End

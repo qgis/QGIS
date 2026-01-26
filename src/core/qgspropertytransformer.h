@@ -15,19 +15,21 @@
 #ifndef QGSPROPERTYTRANSFORMER_H
 #define QGSPROPERTYTRANSFORMER_H
 
+#include <algorithm>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgspointxy.h"
-#include <QVariant>
+
+#include <QColor>
+#include <QDomDocument>
+#include <QDomElement>
 #include <QHash>
 #include <QString>
 #include <QStringList>
-#include <QDomElement>
-#include <QDomDocument>
-#include <QColor>
-#include <memory>
-#include <algorithm>
+#include <QVariant>
 
 class QgsColorRamp;
 
@@ -160,6 +162,7 @@ class CORE_EXPORT QgsCurveTransform
  * \ingroup core
  * \class QgsPropertyTransformer
  * \brief Abstract base class for objects which transform the calculated value of a property.
+ *
  * Possible uses include transformers which map a value into a scaled size or color from a gradient.
  */
 class CORE_EXPORT QgsPropertyTransformer
@@ -365,7 +368,7 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
      * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not
      * be parsed to a size scale transformer.
      */
-    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
+    static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Calculates the size corresponding to a specific \a input value.
@@ -488,7 +491,7 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
      * \param fieldName will be set to a field name which is used to calculate the input to the property transformer. This will be set to an empty string if an expression is the transformer input.
      * \returns corresponding QgsSizeScaleTransformer, or NULLPTR if expression could not be parsed to a size scale transformer.
      */
-    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY;
+    static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression SIP_OUT, QString &fieldName SIP_OUT ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Calculates the size corresponding to a specific value.

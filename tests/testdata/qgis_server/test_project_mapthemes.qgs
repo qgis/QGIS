@@ -4813,7 +4813,7 @@ def my_form_open(dialog, layer, feature):
           <Option name="singleFile" type="bool" value="true"/>
         </Option>
       </customproperties>
-      <Atlas enabled="1" coverageLayer="points_6e958a3a_6884_4fa9_9374_16352136a3bc" pageNameExpression="&quot;fid&quot;" coverageLayerProvider="ogr" sortFeatures="0" filterFeatures="0" coverageLayerName="test_project_mapthemes — points" filenamePattern="'output_'||@atlas_featurenumber" coverageLayerSource="/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_mapthemes.gpkg|layername=points" hideCoverage="0"/>
+      <Atlas enabled="1" coverageLayer="points_6e958a3a_6884_4fa9_9374_16352136a3bc" pageNameExpression="&quot;fid&quot;" coverageLayerProvider="ogr" sortFeatures="0" filterFeatures="0" coverageLayerName="test_project_mapthemes — points" filenamePattern="'output_'||@atlas_featurenumber" coverageLayerSource="./test_project_mapthemes.gpkg|layername=points" hideCoverage="0"/>
     </Layout>
   </Layouts>
   <mapViewDocks3D/>
@@ -4886,7 +4886,7 @@ def my_form_open(dialog, layer, feature):
       </spatialrefsys>
     </CoordinateCustomCrs>
   </ProjectDisplaySettings>
-  <ProjectGpsSettings destinationLayerProvider="ogr" autoCommitFeatures="0" destinationLayer="points_6e958a3a_6884_4fa9_9374_16352136a3bc" destinationLayerName="points" autoAddTrackVertices="0" destinationFollowsActiveLayer="1" destinationLayerSource="/home/ale/dev/QGIS/tests/testdata/qgis_server/test_project_mapthemes.gpkg|layername=points">
+  <ProjectGpsSettings destinationLayerProvider="ogr" autoCommitFeatures="0" destinationLayer="points_6e958a3a_6884_4fa9_9374_16352136a3bc" destinationLayerName="points" autoAddTrackVertices="0" destinationFollowsActiveLayer="1" destinationLayerSource="./test_project_mapthemes.gpkg|layername=points">
     <timeStampFields/>
   </ProjectGpsSettings>
 </qgis>

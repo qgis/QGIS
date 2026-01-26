@@ -26,18 +26,19 @@ Utility functions for raster renderers.
                                    Qgis::ShaderInterpolationMethod &type /Out/,
                                    QStringList &errors /Out/ );
 %Docstring
-Parses an exported color map file at the specified ``path`` and extracts the stored color ramp ``items``
-and ramp shader ``type``.
+Parses an exported color map file at the specified ``path`` and extracts
+the stored color ramp ``items`` and ramp shader ``type``.
 
-Returns ``True`` if the parsing was successful. If not, a list of ``errors`` will be generated.
+Returns ``True`` if the parsing was successful. If not, a list of
+``errors`` will be generated.
 
 .. seealso:: :py:func:`saveColorMapFile`
 %End
 
     static bool saveColorMapFile( const QString &path, const QList<QgsColorRampShader::ColorRampItem> &items, Qgis::ShaderInterpolationMethod type );
 %Docstring
-Exports a list of color ramp ``items`` and ramp shader ``type`` to a color map file at the specified
-``path``.
+Exports a list of color ramp ``items`` and ramp shader ``type`` to a
+color map file at the specified ``path``.
 
 Returns ``True`` if the save was successful.
 

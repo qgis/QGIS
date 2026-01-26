@@ -20,10 +20,11 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_sip.h"
-#include "qgis_analysis.h"
-#include "qgsprocessingalgorithm.h"
 #include <unordered_map>
+
+#include "qgis_analysis.h"
+#include "qgis_sip.h"
+#include "qgsprocessingalgorithm.h"
 
 class QgsSpatialIndexKDBush;
 
@@ -35,9 +36,7 @@ class QgsSpatialIndexKDBush;
  */
 class ANALYSIS_EXPORT QgsDbscanClusteringAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsDbscanClusteringAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -50,26 +49,12 @@ class ANALYSIS_EXPORT QgsDbscanClusteringAlgorithm : public QgsProcessingAlgorit
     QgsDbscanClusteringAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
   private:
-
-    static void stdbscan( std::size_t minSize,
-                          const double eps1,
-                          const double eps2,
-                          bool borderPointsAreNoise,
-                          long featureCount,
-                          QgsFeatureIterator features,
-                          QgsSpatialIndexKDBush &index,
-                          std::unordered_map< QgsFeatureId, int> &idToCluster,
-                          std::unordered_map< QgsFeatureId, QDateTime> &idToDateTime,
-                          QgsProcessingFeedback *feedback );
-
+    static void stdbscan( std::size_t minSize, const double eps1, const double eps2, bool borderPointsAreNoise, long featureCount, QgsFeatureIterator features, QgsSpatialIndexKDBush &index, std::unordered_map<QgsFeatureId, int> &idToCluster, std::unordered_map<QgsFeatureId, QDateTime> &idToDateTime, QgsProcessingFeedback *feedback );
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMDBSCANCLUSTERING_H
-
-

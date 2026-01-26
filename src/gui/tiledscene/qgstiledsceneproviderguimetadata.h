@@ -19,12 +19,12 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+#include "qgsproviderguimetadata.h"
+
 #include <QList>
 #include <QMainWindow>
 
-#include "qgsproviderguimetadata.h"
-
-class QgsTiledSceneProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsTiledSceneProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsTiledSceneProviderGuiMetadata();

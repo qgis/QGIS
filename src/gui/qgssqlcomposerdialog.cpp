@@ -19,14 +19,16 @@ email                : even.rouault at spatialys.com
  ***************************************************************************/
 
 #include "qgssqlcomposerdialog.h"
-#include "qgssqlstatement.h"
+
 #include "qgshelp.h"
+#include "qgssqlstatement.h"
 #include "qgsvectorlayer.h"
 
-#include <QMessageBox>
 #include <QKeyEvent>
-
+#include <QMessageBox>
 #include <Qsci/qscilexer.h>
+
+#include "moc_qgssqlcomposerdialog.cpp"
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QgsSQLComposerDialog( nullptr, parent, fl )
@@ -56,57 +58,49 @@ QgsSQLComposerDialog::QgsSQLComposerDialog( QgsVectorLayer *layer, QWidget *pare
   mTablesCombo->view()->installEventFilter( this );
 
 
-  connect( mButtonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked,
-           this, &QgsSQLComposerDialog::reset );
+  connect( mButtonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsSQLComposerDialog::reset );
 
-  connect( mQueryEdit, &QsciScintilla::textChanged,
-           this, &QgsSQLComposerDialog::splitSQLIntoFields );
-  connect( mColumnsEditor, &QTextEdit::textChanged,
-           this, &QgsSQLComposerDialog::buildSQLFromFields );
-  connect( mTablesEditor, &QLineEdit::textChanged,
-           this, &QgsSQLComposerDialog::buildSQLFromFields );
-  connect( mWhereEditor, &QTextEdit::textChanged,
-           this, &QgsSQLComposerDialog::buildSQLFromFields );
-  connect( mOrderEditor, &QTextEdit::textChanged,
-           this, &QgsSQLComposerDialog::buildSQLFromFields );
-  connect( mTableJoins, &QTableWidget::cellChanged,
-           this, &QgsSQLComposerDialog::buildSQLFromFields );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested,
-           this, &QgsSQLComposerDialog::showHelp );
+  connect( mQueryEdit, &QsciScintilla::textChanged, this, &QgsSQLComposerDialog::splitSQLIntoFields );
+  connect( mColumnsEditor, &QTextEdit::textChanged, this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mTablesEditor, &QLineEdit::textChanged, this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mWhereEditor, &QTextEdit::textChanged, this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mOrderEditor, &QTextEdit::textChanged, this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mTableJoins, &QTableWidget::cellChanged, this, &QgsSQLComposerDialog::buildSQLFromFields );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsSQLComposerDialog::showHelp );
 
   QStringList baseList;
-  baseList << QStringLiteral( "SELECT" );
-  baseList << QStringLiteral( "FROM" );
-  baseList << QStringLiteral( "JOIN" );
-  baseList << QStringLiteral( "ON" );
-  baseList << QStringLiteral( "USING" );
-  baseList << QStringLiteral( "WHERE" );
-  baseList << QStringLiteral( "AND" );
-  baseList << QStringLiteral( "OR" );
-  baseList << QStringLiteral( "NOT" );
-  baseList << QStringLiteral( "IS" );
-  baseList << QStringLiteral( "NULL" );
-  baseList << QStringLiteral( "LIKE" );
-  baseList << QStringLiteral( "ORDER" );
-  baseList << QStringLiteral( "BY" );
+  baseList << u"SELECT"_s;
+  baseList << u"FROM"_s;
+  baseList << u"JOIN"_s;
+  baseList << u"ON"_s;
+  baseList << u"USING"_s;
+  baseList << u"WHERE"_s;
+  baseList << u"AND"_s;
+  baseList << u"OR"_s;
+  baseList << u"NOT"_s;
+  baseList << u"IS"_s;
+  baseList << u"NULL"_s;
+  baseList << u"LIKE"_s;
+  baseList << u"ORDER"_s;
+  baseList << u"BY"_s;
   addApis( baseList );
 
   QStringList operatorsList;
-  operatorsList << QStringLiteral( "AND" );
-  operatorsList << QStringLiteral( "OR" );
-  operatorsList << QStringLiteral( "NOT" );
-  operatorsList << QStringLiteral( "=" );
-  operatorsList << QStringLiteral( "<" );
-  operatorsList << QStringLiteral( "<=" );
-  operatorsList << QStringLiteral( ">" );
-  operatorsList << QStringLiteral( ">=" );
-  operatorsList << QStringLiteral( "<>" );
-  operatorsList << QStringLiteral( "BETWEEN" );
-  operatorsList << QStringLiteral( "NOT BETWEEN" );
-  operatorsList << QStringLiteral( "IS" );
-  operatorsList << QStringLiteral( "IS NOT" );
-  operatorsList << QStringLiteral( "IN" );
-  operatorsList << QStringLiteral( "LIKE" );
+  operatorsList << u"AND"_s;
+  operatorsList << u"OR"_s;
+  operatorsList << u"NOT"_s;
+  operatorsList << u"="_s;
+  operatorsList << u"<"_s;
+  operatorsList << u"<="_s;
+  operatorsList << u">"_s;
+  operatorsList << u">="_s;
+  operatorsList << u"<>"_s;
+  operatorsList << u"BETWEEN"_s;
+  operatorsList << u"NOT BETWEEN"_s;
+  operatorsList << u"IS"_s;
+  operatorsList << u"IS NOT"_s;
+  operatorsList << u"IN"_s;
+  operatorsList << u"LIKE"_s;
   addOperators( operatorsList );
 
   mAggregatesCombo->hide();
@@ -146,17 +140,13 @@ bool QgsSQLComposerDialog::eventFilter( QObject *obj, QEvent *event )
   // Custom search in table combobox
   if ( event->type() == QEvent::KeyPress && obj == mTablesCombo->view() )
   {
-    QString currentString = ( ( QKeyEvent * )event )->text();
-    if ( !currentString.isEmpty() && ( ( currentString[0] >= 'a' && currentString[0] <= 'z' ) ||
-                                       ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) ||
-                                       ( currentString[0] >= '0' && currentString[0] <= '9' ) ||
-                                       currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' ||
-                                       currentString[0] == '(' || currentString[0] == ')' ) )
+    QString currentString = ( ( QKeyEvent * ) event )->text();
+    if ( !currentString.isEmpty() && ( ( currentString[0] >= 'a' && currentString[0] <= 'z' ) || ( currentString[0] >= 'A' && currentString[0] <= 'Z' ) || ( currentString[0] >= '0' && currentString[0] <= '9' ) || currentString[0] == ':' || currentString[0] == '_' || currentString[0] == ' ' || currentString[0] == '(' || currentString[0] == ')' ) )
     {
       // First attempt is concatenation of existing search text
       // Second attempt is just the new character
       const int attemptCount = ( lastSearchedText.isEmpty() ) ? 1 : 2;
-      for ( int attempt = 0; attempt < attemptCount; attempt ++ )
+      for ( int attempt = 0; attempt < attemptCount; attempt++ )
       {
         if ( attempt == 0 )
           lastSearchedText += currentString;
@@ -240,11 +230,11 @@ void QgsSQLComposerDialog::buildSQLFromFields()
   if ( mAlreadyModifyingFields )
     return;
   mAlreadyModifyingFields = true;
-  QString sql( QStringLiteral( "SELECT " ) );
+  QString sql( u"SELECT "_s );
   if ( mDistinct )
-    sql += QLatin1String( "DISTINCT " );
+    sql += "DISTINCT "_L1;
   sql += mColumnsEditor->toPlainText();
-  sql += QLatin1String( " FROM " );
+  sql += " FROM "_L1;
   sql += mTablesEditor->text();
 
   const int rows = mTableJoins->rowCount();
@@ -252,24 +242,23 @@ void QgsSQLComposerDialog::buildSQLFromFields()
   {
     QTableWidgetItem *itemTable = mTableJoins->item( i, 0 );
     QTableWidgetItem *itemOn = mTableJoins->item( i, 1 );
-    if ( itemTable && !itemTable->text().isEmpty() &&
-         itemOn && !itemOn->text().isEmpty() )
+    if ( itemTable && !itemTable->text().isEmpty() && itemOn && !itemOn->text().isEmpty() )
     {
-      sql += QLatin1String( " JOIN " );
+      sql += " JOIN "_L1;
       sql += itemTable->text();
-      sql += QLatin1String( " ON " );
+      sql += " ON "_L1;
       sql += itemOn->text();
     }
   }
 
   if ( !mWhereEditor->toPlainText().isEmpty() )
   {
-    sql += QLatin1String( " WHERE " );
+    sql += " WHERE "_L1;
     sql += mWhereEditor->toPlainText();
   }
   if ( !mOrderEditor->toPlainText().isEmpty() )
   {
-    sql += QLatin1String( " ORDER BY " );
+    sql += " ORDER BY "_L1;
     sql += mOrderEditor->toPlainText();
   }
   mQueryEdit->setText( sql );
@@ -294,7 +283,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   for ( QgsSQLStatement::NodeSelectedColumn *column : constColumns )
   {
     if ( !columnText.isEmpty() )
-      columnText += QLatin1String( ", " );
+      columnText += ", "_L1;
     columnText += column->dump();
   }
 
@@ -304,7 +293,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   for ( QgsSQLStatement::NodeTableDef *table : constTables )
   {
     if ( !tablesText.isEmpty() )
-      tablesText += QLatin1String( ", " );
+      tablesText += ", "_L1;
     loadTableColumns( QgsSQLStatement::quotedIdentifierIfNeeded( table->name() ) );
     tablesText += table->dump();
   }
@@ -320,7 +309,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
   for ( QgsSQLStatement::NodeColumnSorted *column : constOrderColumns )
   {
     if ( !orderText.isEmpty() )
-      orderText += QLatin1String( ", " );
+      orderText += ", "_L1;
     orderText += column->dump();
   }
 
@@ -343,7 +332,7 @@ void QgsSQLComposerDialog::splitSQLIntoFields()
       mTableJoins->setItem( iRow, 1, new QTableWidgetItem( join->onExpr()->dump() ) );
     else
       mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QString() ) );
-    iRow ++;
+    iRow++;
   }
   mTableJoins->setItem( iRow, 0, new QTableWidgetItem( QString() ) );
   mTableJoins->setItem( iRow, 1, new QTableWidgetItem( QString() ) );
@@ -394,12 +383,12 @@ void QgsSQLComposerDialog::addColumnNames( const QStringList &list, const QStrin
 
 static QString sanitizeType( QString type )
 {
-  if ( type.startsWith( QLatin1String( "xs:" ) ) )
+  if ( type.startsWith( "xs:"_L1 ) )
     return type.mid( 3 );
-  if ( type.startsWith( QLatin1String( "xsd:" ) ) )
+  if ( type.startsWith( "xsd:"_L1 ) )
     return type.mid( 4 );
-  if ( type == QLatin1String( "gml:AbstractGeometryType" ) )
-    return QStringLiteral( "geometry" );
+  if ( type == "gml:AbstractGeometryType"_L1 )
+    return u"geometry"_s;
   return type;
 }
 
@@ -455,24 +444,23 @@ static QString getFunctionAbbridgedParameters( const QgsSQLComposerDialog::Funct
 }
 
 
-void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
-    QStringList &listApi,
-    QStringList &listCombo,
-    QMap<QString, QString> &mapEntryTextToName )
+void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list, QStringList &listApi, QStringList &listCombo, QMap<QString, QString> &mapEntryTextToName )
 {
   const auto constList = list;
   for ( const Function &f : constList )
   {
     listApi << f.name;
     QString entryText( f.name );
-    entryText += QLatin1Char( '(' );
+    entryText += '('_L1;
     if ( !f.argumentList.isEmpty() )
     {
       for ( int i = 0; i < f.argumentList.size(); i++ )
       {
-        if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += QLatin1Char( '[' );
-        if ( i > 0 ) entryText += QLatin1String( ", " );
-        if ( f.argumentList[i].name == QLatin1String( "number" ) && !f.argumentList[i].type.isEmpty() )
+        if ( f.minArgs >= 0 && i >= f.minArgs )
+          entryText += '['_L1;
+        if ( i > 0 )
+          entryText += ", "_L1;
+        if ( f.argumentList[i].name == "number"_L1 && !f.argumentList[i].type.isEmpty() )
         {
           entryText += sanitizeType( f.argumentList[i].type );
         }
@@ -480,19 +468,19 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
         {
           entryText += f.argumentList[i].name;
           const QString sanitizedType( sanitizeType( f.argumentList[i].type ) );
-          if ( !f.argumentList[i].type.isEmpty() &&
-               f.argumentList[i].name != sanitizedType )
+          if ( !f.argumentList[i].type.isEmpty() && f.argumentList[i].name != sanitizedType )
           {
-            entryText += QLatin1String( ": " );
+            entryText += ": "_L1;
             entryText += sanitizedType;
           }
         }
-        if ( f.minArgs >= 0 && i >= f.minArgs ) entryText += QLatin1Char( ']' );
+        if ( f.minArgs >= 0 && i >= f.minArgs )
+          entryText += ']'_L1;
       }
       if ( entryText.size() > 60 )
       {
         entryText = f.name;
-        entryText += QLatin1Char( '(' );
+        entryText += '('_L1;
         entryText += getFunctionAbbridgedParameters( f );
       }
     }
@@ -500,7 +488,7 @@ void QgsSQLComposerDialog::getFunctionList( const QList<Function> &list,
     {
       entryText += getFunctionAbbridgedParameters( f );
     }
-    entryText += QLatin1Char( ')' );
+    entryText += ')'_L1;
     if ( !f.returnType.isEmpty() )
       entryText += ": " + sanitizeType( f.returnType );
     listCombo << entryText;
@@ -631,11 +619,10 @@ void QgsSQLComposerDialog::mColumnsCombo_currentIndexChanged( int )
   }
   else if ( obj == mTableJoins )
   {
-    if ( mTableJoins->selectedItems().size() == 1 &&
-         mTableJoins->selectedItems().at( 0 )->column() == 1 )
+    if ( mTableJoins->selectedItems().size() == 1 && mTableJoins->selectedItems().at( 0 )->column() == 1 )
     {
       const QString currentText( mTableJoins->selectedItems().at( 0 )->text() );
-      if ( !currentText.isEmpty() && !currentText.contains( QLatin1String( "=" ) ) )
+      if ( !currentText.isEmpty() && !currentText.contains( "="_L1 ) )
         mTableJoins->selectedItems().at( 0 )->setText( currentText + " = " + newText );
       else
         mTableJoins->selectedItems().at( 0 )->setText( currentText + newText );
@@ -666,8 +653,7 @@ void QgsSQLComposerDialog::mSpatialPredicatesCombo_currentIndexChanged( int )
   functionCurrentIndexChanged( mSpatialPredicatesCombo, mapSpatialPredicateEntryTextToName );
 }
 
-void QgsSQLComposerDialog::functionCurrentIndexChanged( QComboBox *combo,
-    const QMap<QString, QString> &mapEntryTextToName )
+void QgsSQLComposerDialog::functionCurrentIndexChanged( QComboBox *combo, const QMap<QString, QString> &mapEntryTextToName )
 {
   const int index = combo->currentIndex();
   if ( index <= 0 )
@@ -706,8 +692,7 @@ void QgsSQLComposerDialog::mOperatorsCombo_currentIndexChanged( int )
   }
   else if ( obj == mTableJoins )
   {
-    if ( mTableJoins->selectedItems().size() == 1 &&
-         mTableJoins->selectedItems().at( 0 )->column() == 1 )
+    if ( mTableJoins->selectedItems().size() == 1 && mTableJoins->selectedItems().at( 0 )->column() == 1 )
     {
       const QString currentText( mTableJoins->selectedItems().at( 0 )->text() );
       mTableJoins->selectedItems().at( 0 )->setText( currentText + newText );
@@ -727,7 +712,7 @@ void QgsSQLComposerDialog::mAddJoinButton_clicked()
   if ( insertRow < 0 )
     insertRow = rowCount;
   mTableJoins->setRowCount( rowCount + 1 );
-  for ( int row = rowCount ; row > insertRow + 1; row -- )
+  for ( int row = rowCount; row > insertRow + 1; row-- )
   {
     mTableJoins->setItem( row, 0, mTableJoins->takeItem( row - 1, 0 ) );
     mTableJoins->setItem( row, 1, mTableJoins->takeItem( row - 1, 1 ) );
@@ -742,7 +727,7 @@ void QgsSQLComposerDialog::mRemoveJoinButton_clicked()
   if ( row < 0 )
     return;
   const int rowCount = mTableJoins->rowCount();
-  for ( ; row < rowCount - 1; row ++ )
+  for ( ; row < rowCount - 1; row++ )
   {
     mTableJoins->setItem( row, 0, mTableJoins->takeItem( row + 1, 0 ) );
     mTableJoins->setItem( row, 1, mTableJoins->takeItem( row + 1, 1 ) );
@@ -792,10 +777,11 @@ void QgsSQLComposerDialog::setSupportMultipleTables( bool on, const QString &mai
     mainTypenameFormatted = "(" + mainTypename + ")";
   mQueryEdit->setToolTip( tr( "This is the SQL query editor. The SQL statement can select data from several tables, \n"
                               "but it must compulsory include the main typename %1 in the selected tables, \n"
-                              "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." ).arg( mainTypenameFormatted ) );
+                              "and only the geometry column of the main typename can be used as the geometry column of the resulting layer." )
+                            .arg( mainTypenameFormatted ) );
 }
 
 void QgsSQLComposerDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html#ogc-wfs" ) );
+  QgsHelp::openHelp( u"working_with_ogc/ogc_client_support.html#ogc-wfs"_s );
 }

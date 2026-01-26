@@ -12,29 +12,35 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
 #include "qgstest.h"
+#include "qgsziputils.h"
+
+#include <QDirIterator>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QDirIterator>
 
-#include "qgsziputils.h"
-#include "qgsapplication.h"
-
-class TestQgsZipUtils: public QObject
+class TestQgsZipUtils : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void unzipWithSubdirs();
     void unzipWithSubdirs2();
     void specialChars();
     void testZip();
+
+    void extractFileFromZip_nonExistentZip();
+    void extractFileFromZip_emptyZipPath();
+    void extractFileFromZip_emptyFilePathInZip();
+    void extractFileFromZip_fileNotInZip();
+    void extractFileFromZip_rootSuccess();
 
   private:
     void genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames );
@@ -53,19 +59,17 @@ void TestQgsZipUtils::cleanupTestCase()
 
 void TestQgsZipUtils::init()
 {
-
 }
 
 void TestQgsZipUtils::cleanup()
 {
-
 }
 
 void TestQgsZipUtils::unzipWithSubdirs()
 {
   QStringList testFileNames;
   testFileNames << "/folder/folder2/landsat_b2.tif" << "/folder/points.geojson" << "/points.qml";
-  genericTest( QString( "testzip" ), 11, true, testFileNames );
+  genericTest( QString( "testzip" ), 9, true, testFileNames );
 }
 
 /**
@@ -126,7 +130,7 @@ void TestQgsZipUtils::testZip()
  */
 void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool includeFolders, const QStringList &testFileNames )
 {
-  const QFile zipFile( QString( TEST_DATA_DIR ) + QStringLiteral( "/zip/%1.zip" ).arg( zipName ) );
+  const QFile zipFile( QString( TEST_DATA_DIR ) + u"/zip/%1.zip"_s.arg( zipName ) );
   QVERIFY( zipFile.exists() );
 
   const QFileInfo fileInfo( zipFile );
@@ -146,17 +150,23 @@ void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool in
 
   if ( includeFolders )
   {
-    dir.setFilter( QDir::Files |  QDir::NoDotAndDotDot | QDir::Dirs );
+    dir.setFilter( QDir::Files | QDir::NoDotAndDotDot | QDir::Dirs );
   }
   else
   {
-    dir.setFilter( QDir::Files |  QDir::NoDotAndDotDot );
+    dir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
   }
   // Get list of entries from the root folder
   QDirIterator it( dir, QDirIterator::Subdirectories );
   QStringList filesFromResultDir;
   while ( it.hasNext() )
-    filesFromResultDir << it.next();
+  {
+    it.next();
+    if ( !it.fileInfo().isDir() )
+    {
+      filesFromResultDir << it.filePath();
+    }
+  }
 
   // Test if ziplib matches number of files in the root folder
   QCOMPARE( files.count(), filesFromResultDir.count() );
@@ -170,6 +180,50 @@ void TestQgsZipUtils::genericTest( QString zipName, int expectedEntries, bool in
   // Delete unzipped data
   const bool testDataRemoved = dir.removeRecursively();
   QVERIFY( testDataRemoved );
+}
+
+void TestQgsZipUtils::extractFileFromZip_nonExistentZip()
+{
+  QByteArray data;
+  QVERIFY( !QgsZipUtils::extractFileFromZip( "/path/to/nothing", "none.txt", data ) );
+  QVERIFY( data.isEmpty() );
+}
+
+void TestQgsZipUtils::extractFileFromZip_emptyZipPath()
+{
+  QByteArray content;
+  QVERIFY( !QgsZipUtils::extractFileFromZip( QString(), "none.txt", content ) );
+  QVERIFY( content.isEmpty() );
+}
+
+void TestQgsZipUtils::extractFileFromZip_emptyFilePathInZip()
+{
+  const QString zipPath = QString( TEST_DATA_DIR ) + "/zip/testzip.zip";
+  QVERIFY( QFile::exists( zipPath ) );
+  QByteArray content;
+  QVERIFY( !QgsZipUtils::extractFileFromZip( zipPath, QString(), content ) );
+  QVERIFY( content.isEmpty() );
+}
+
+void TestQgsZipUtils::extractFileFromZip_fileNotInZip()
+{
+  const QString zipPath = QString( TEST_DATA_DIR ) + "/zip/testzip.zip";
+  QVERIFY( QFile::exists( zipPath ) );
+  QByteArray content;
+  QVERIFY( !QgsZipUtils::extractFileFromZip( zipPath, "move_along.txt", content ) );
+  QVERIFY( content.isEmpty() );
+}
+
+void TestQgsZipUtils::extractFileFromZip_rootSuccess()
+{
+  const QString zipPath = QString( TEST_DATA_DIR ) + "/zip/testzip.zip";
+  QVERIFY( QFile::exists( zipPath ) );
+
+  const QByteArray expectedContent = R"(GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]])";
+
+  QByteArray extractedContent;
+  QVERIFY( QgsZipUtils::extractFileFromZip( zipPath, "points.prj", extractedContent ) );
+  QCOMPARE( extractedContent, expectedContent );
 }
 
 QGSTEST_MAIN( TestQgsZipUtils )

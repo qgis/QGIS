@@ -30,7 +30,7 @@ class QgsFeedback;
 
 /**
  * \ingroup core
- * \brief This class offers geometry processing methods.
+ * \brief Offers geometry processing methods.
  *
  * The methods are available via QgsGeometry::[geometryfunction]
  * and therefore this does not need to be accessed directly.

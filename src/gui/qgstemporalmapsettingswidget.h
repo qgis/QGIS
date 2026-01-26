@@ -29,13 +29,12 @@ class GUI_EXPORT QgsTemporalMapSettingsWidget : public QgsPanelWidget, private U
 {
     Q_OBJECT
   public:
-
     /**
       * Constructor for QgsTemporalMapSettingsWidget, with the specified \a parent widget.
       */
     QgsTemporalMapSettingsWidget( QWidget *parent = nullptr );
 
-    ~QgsTemporalMapSettingsWidget() = default;
+    ~QgsTemporalMapSettingsWidget() override = default;
 
     /**
      * Returns the value of frame rate from widget input
@@ -69,8 +68,6 @@ class GUI_EXPORT QgsTemporalMapSettingsWidget : public QgsPanelWidget, private U
     void frameRateChanged( double rate );
 
     void temporalRangeCumulativeChanged( bool state );
-
-
 };
 ///@endcond
 

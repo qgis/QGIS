@@ -1,4 +1,4 @@
-/* **************************************************************************
+/***************************************************************************
                 qgscolorrampshader.h -  description
                        -------------------
 begin                : Fri Dec 28 2007
@@ -9,7 +9,7 @@ This class is based off of code that was originally written by Marco Hugentobler
 originally part of the larger QgsRasterLayer class
 ****************************************************************************/
 
-/* **************************************************************************
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,17 +21,18 @@ originally part of the larger QgsRasterLayer class
 #ifndef QGSCOLORRAMPSHADER_H
 #define QGSCOLORRAMPSHADER_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QColor>
-#include <QVector>
 #include <memory>
 
 #include "qgis.h"
-#include "qgsrastershaderfunction.h"
-#include "qgsrectangle.h"
-#include "qgsreadwritecontext.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscolorramplegendnodesettings.h"
+#include "qgsrastershaderfunction.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrectangle.h"
+
+#include <QColor>
+#include <QVector>
 
 class QgsColorRamp;
 class QgsRasterInterface;
@@ -73,6 +74,11 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
         if ( mColorRampItemList.at( i ) != other.mColorRampItemList.at( i ) ) return false;
       }
       return true;
+    }
+
+    bool operator!=( const QgsColorRampShader &other ) const
+    {
+      return !( *this == other );
     }
 
     //An entry for classification based upon value.

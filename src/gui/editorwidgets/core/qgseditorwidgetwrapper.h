@@ -16,9 +16,10 @@
 #ifndef QGSEDITORWIDGETWRAPPER_H
 #define QGSEDITORWIDGETWRAPPER_H
 
-#include <QObject>
 #include "qgis_sip.h"
+
 #include <QMap>
+#include <QObject>
 #include <QVariant>
 
 class QgsVectorLayer;
@@ -31,7 +32,8 @@ class QgsField;
 
 /**
  * \ingroup gui
- * \brief Manages an editor widget
+ * \brief Manages an editor widget.
+ *
  * Widget and wrapper share the same parent
  *
  * A wrapper controls one attribute editor widget and is able to create a default
@@ -52,7 +54,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     Q_PROPERTY( ConstraintResult constraintResult READ constraintResult NOTIFY constraintStatusChanged )
 
   public:
-
     /**
      * Result of constraint checks.
      */
@@ -88,7 +89,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns the list of additional fields which the editor handles
      * \since QGIS 3.10
      */
-    virtual QStringList additionalFields() const {return QStringList();}
+    virtual QStringList additionalFields() const { return QStringList(); }
 
     /**
      * Will be used to access the widget's values for potential additional fields handled by the widget
@@ -96,7 +97,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \see additionalFields
      * \since QGIS 3.10
      */
-    virtual QVariantList additionalFieldValues() const {return QVariantList();}
+    virtual QVariantList additionalFieldValues() const { return QVariantList(); }
 
     /**
      * Access the field index.
@@ -130,7 +131,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param widget The widget which was created by a wrapper
      * \returns The wrapper for the widget or NULLPTR
      */
-    static QgsEditorWidgetWrapper *fromWidget( QWidget *widget );
+    static QgsEditorWidgetWrapper *fromWidget( QWidget *widget ); // cppcheck-suppress duplInheritedMember
 
     /**
      * Check if the given widget or one of its parent is a QTableView.
@@ -318,7 +319,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
 
   protected:
-
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.
@@ -358,19 +358,18 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
 
   private:
-
     /**
     * Is called when the value of the widget needs to be changed. Updates the widget representation
     * to reflect the new value.
     *
     * \param value The new value of the attribute
     * \param additionalValues The values of potential additional fields
-    * \note Will be pure virtual in QGIS 4.x
+    * \note Will be pure virtual in QGIS 5.x
     * \since QGIS 3.10
     */
-    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 4: make it pure virtual
+    virtual void updateValues( const QVariant &value, const QVariantList &additionalValues = QVariantList() ); //TODO QGIS 5: make it pure virtual
 
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
     bool isRunningDeprecatedSetValue = false;
 
     /**
@@ -388,10 +387,10 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     /**
      * Boolean storing the current validity of the constraint for this widget.
      */
-    bool mValidConstraint;
+    bool mValidConstraint = true;
 
     //! True if widget is blocking feature commits
-    bool mIsBlockingCommit;
+    bool mIsBlockingCommit = false;
 
     //! Contains the string explanation of why a constraint check failed
     QString mConstraintFailureReason;
@@ -403,7 +402,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool mConstraintResultVisible = false;
 
     mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
-
 };
 
 // We'll use this class inside a QVariant in the widgets properties

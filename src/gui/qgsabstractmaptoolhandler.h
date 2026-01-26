@@ -24,7 +24,9 @@ class QAction;
 
 /**
  * \ingroup gui
- * \brief An abstract base class for map tool handlers which automatically handle all the necessary
+ * \brief An abstract base class for map tool handlers, implementing application level UI logic.
+ *
+ * QgsAbstractMapToolHandler subclasses automatically handle all the necessary
  * logic for toggling the map tool and enabling/disabling the associated action
  * when the QGIS application is in a state permissible for the tool.
  *
@@ -60,9 +62,7 @@ class QAction;
  */
 class GUI_EXPORT QgsAbstractMapToolHandler
 {
-
   public:
-
     /**
      * Context of a QgsAbstractMapToolHandler call.
      *
@@ -70,8 +70,8 @@ class GUI_EXPORT QgsAbstractMapToolHandler
      */
     struct Context
     {
-      //! Placeholder only
-      bool dummy = false;
+        //! Placeholder only
+        bool dummy = false;
     };
 
     /**
@@ -120,7 +120,6 @@ class GUI_EXPORT QgsAbstractMapToolHandler
     virtual void setLayerForTool( QgsMapLayer *layer );
 
   private:
-
     QgsMapTool *mMapTool = nullptr;
     QAction *mAction = nullptr;
 };

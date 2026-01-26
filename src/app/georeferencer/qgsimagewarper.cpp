@@ -13,30 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cmath>
-#include <cstdio>
+#include "qgsimagewarper.h"
 
+#include <cmath>
 #include <cpl_conv.h>
 #include <cpl_string.h>
+#include <cstdio>
 #include <gdal.h>
 #include <gdalwarper.h>
 #include <ogr_spatialref.h>
 
-#include <QFile>
-
-#include "qgsimagewarper.h"
+#include "qgsfeedback.h"
 #include "qgsgeoreftransform.h"
 #include "qgslogger.h"
 #include "qgsogrutils.h"
-#include "qgsfeedback.h"
+
+#include <QFile>
+
+#include "moc_qgsimagewarper.cpp"
 
 QgsImageWarper::QgsImageWarper()
 {
 }
 
-bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling,
-    const GDALTransformerFunc &pfnTransform,
-    gdal::dataset_unique_ptr &hSrcDS, gdal::warp_options_unique_ptr &psWarpOptions ) const
+bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMethod resampling, const GDALTransformerFunc &pfnTransform, gdal::dataset_unique_ptr &hSrcDS, gdal::warp_options_unique_ptr &psWarpOptions ) const
 {
   // Open input file
   GDALAllRegister();
@@ -48,10 +48,8 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMet
   psWarpOptions.reset( GDALCreateWarpOptions() );
   psWarpOptions->hSrcDS = hSrcDS.get();
   psWarpOptions->nBandCount = GDALGetRasterCount( hSrcDS.get() );
-  psWarpOptions->panSrcBands =
-    ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
-  psWarpOptions->panDstBands =
-    ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
+  psWarpOptions->panSrcBands = ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
+  psWarpOptions->panDstBands = ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
   for ( int i = 0; i < psWarpOptions->nBandCount; ++i )
   {
     psWarpOptions->panSrcBands[i] = i + 1;
@@ -64,9 +62,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, ResamplingMet
   return true;
 }
 
-bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS,
-    uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans,
-    const QString &compression, const QgsCoordinateReferenceSystem &crs )
+bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDatasetH hSrcDS, gdal::dataset_unique_ptr &hDstDS, uint resX, uint resY, double *adfGeoTransform, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs )
 {
   // create the output file
   GDALDriverH driver = GDALGetDriverByName( "GTiff" );
@@ -75,12 +71,12 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
     return false;
   }
   char **papszOptions = nullptr;
-  papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", compression.toLatin1() );
-  hDstDS.reset( GDALCreate( driver,
-                            outputName.toUtf8().constData(), resX, resY,
-                            GDALGetRasterCount( hSrcDS ),
-                            GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) ),
-                            papszOptions ) );
+  for ( const QString &option : options )
+  {
+    QStringList tokens = option.split( '=', Qt::SkipEmptyParts );
+    papszOptions = CSLSetNameValue( papszOptions, tokens.at( 0 ).toUtf8().constData(), tokens.at( 1 ).toUtf8().constData() );
+  }
+  hDstDS.reset( GDALCreate( driver, outputName.toUtf8().constData(), resX, resY, GDALGetRasterCount( hSrcDS ), GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) ), papszOptions ) );
   if ( !hDstDS )
   {
     return false;
@@ -132,15 +128,7 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
   return true;
 }
 
-QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input,
-    const QString &output,
-    const QgsGeorefTransform &georefTransform,
-    ResamplingMethod resampling,
-    bool useZeroAsTrans,
-    const QString &compression,
-    const QgsCoordinateReferenceSystem &crs,
-    QgsFeedback *feedback,
-    double destResX, double destResY )
+QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, QgsFeedback *feedback, double destResX, double destResY )
 {
   if ( !georefTransform.parametersInitialized() )
     return QgsImageWarper::Result::InvalidParameters;
@@ -155,9 +143,7 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input,
 
   double adfGeoTransform[6];
   int destPixels, destLines;
-  CPLErr eErr = GDALSuggestedWarpOutput( hSrcDS.get(), georefTransform.GDALTransformer(),
-                                         georefTransform.GDALTransformerArgs(),
-                                         adfGeoTransform, &destPixels, &destLines );
+  CPLErr eErr = GDALSuggestedWarpOutput( hSrcDS.get(), georefTransform.GDALTransformer(), georefTransform.GDALTransformerArgs(), adfGeoTransform, &destPixels, &destLines );
   if ( eErr != CE_None )
   {
     return QgsImageWarper::Result::TransformError;
@@ -180,9 +166,9 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input,
 
     // Assert that the north-up convention is fulfilled by GDALSuggestedWarpOutput (should always be the case)
     // Asserts are bad as they just crash out, changed to just return false. TS
-    if ( adfGeoTransform[0] <= 0.0  || adfGeoTransform[5] >= 0.0 )
+    if ( adfGeoTransform[0] <= 0.0 || adfGeoTransform[5] >= 0.0 )
     {
-      QgsDebugError( QStringLiteral( "Image is not north up after GDALSuggestedWarpOutput, bailing out." ) );
+      QgsDebugError( u"Image is not north up after GDALSuggestedWarpOutput, bailing out."_s );
       return QgsImageWarper::Result::InvalidParameters;
     }
     // Find suggested output image extent (in georeferenced units)
@@ -192,33 +178,29 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input,
     const double minY = adfGeoTransform[3] + adfGeoTransform[5] * destLines;
 
     // Update line and pixel count to match extent at user-specified resolution
-    destPixels = ( int )( ( ( maxX - minX ) / destResX ) + 0.5 );
-    destLines  = ( int )( ( ( minY - maxY ) / destResY ) + 0.5 );
+    destPixels = ( int ) ( ( ( maxX - minX ) / destResX ) + 0.5 );
+    destLines = ( int ) ( ( ( minY - maxY ) / destResY ) + 0.5 );
     adfGeoTransform[0] = minX;
     adfGeoTransform[3] = maxY;
     adfGeoTransform[1] = destResX;
     adfGeoTransform[5] = destResY;
   }
 
-  if ( !createDestinationDataset( output, hSrcDS.get(), hDstDS, destPixels, destLines,
-                                  adfGeoTransform, useZeroAsTrans, compression,
-                                  crs ) )
+  if ( !createDestinationDataset( output, hSrcDS.get(), hDstDS, destPixels, destLines, adfGeoTransform, useZeroAsTrans, options, crs ) )
   {
     return QgsImageWarper::Result::DestinationCreationError;
   }
 
   // Set GDAL callbacks for the progress dialog
-  psWarpOptions->pProgressArg = reinterpret_cast< void * >( feedback );
+  psWarpOptions->pProgressArg = reinterpret_cast<void *>( feedback );
   psWarpOptions->pfnProgress = updateWarpProgress;
 
   psWarpOptions->hSrcDS = hSrcDS.get();
   psWarpOptions->hDstDS = hDstDS.get();
 
   // Create a transformer which transforms from source to destination pixels (and vice versa)
-  psWarpOptions->pfnTransformer  = GeoToPixelTransform;
-  psWarpOptions->pTransformerArg = addGeoToPixelTransform( georefTransform.GDALTransformer(),
-                                   georefTransform.GDALTransformerArgs(),
-                                   adfGeoTransform );
+  psWarpOptions->pfnTransformer = GeoToPixelTransform;
+  psWarpOptions->pTransformerArg = addGeoToPixelTransform( georefTransform.GDALTransformer(), georefTransform.GDALTransformerArgs(), adfGeoTransform );
 
   // Initialize and execute the warp operation.
   GDALWarpOperation oOperation;
@@ -227,7 +209,10 @@ QgsImageWarper::Result QgsImageWarper::warpFile( const QString &input,
   eErr = oOperation.ChunkAndWarpImage( 0, 0, destPixels, destLines );
 
   destroyGeoToPixelTransform( psWarpOptions->pTransformerArg );
-  return feedback->isCanceled() ? QgsImageWarper::Result::Canceled : eErr == CE_None ? QgsImageWarper::Result::Success : QgsImageWarper::Result::WarpFailure;
+  psWarpOptions.reset();
+
+  return feedback->isCanceled() ? QgsImageWarper::Result::Canceled : eErr == CE_None ? QgsImageWarper::Result::Success
+                                                                                     : QgsImageWarper::Result::WarpFailure;
 }
 
 void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransformer, void *GDALTransformerArg, double *padfGeotransform ) const
@@ -244,7 +229,7 @@ void *QgsImageWarper::addGeoToPixelTransform( GDALTransformerFunc GDALTransforme
     delete chain;
     return nullptr;
   }
-  return ( void * )chain;
+  return ( void * ) chain;
 }
 
 void QgsImageWarper::destroyGeoToPixelTransform( void *GeoToPixelTransformArg ) const
@@ -252,8 +237,7 @@ void QgsImageWarper::destroyGeoToPixelTransform( void *GeoToPixelTransformArg ) 
   delete static_cast<TransformChain *>( GeoToPixelTransformArg );
 }
 
-int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-    double *x, double *y, double *z, int *panSuccess )
+int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
   TransformChain *chain = static_cast<TransformChain *>( pTransformerArg );
   if ( !chain )
@@ -318,7 +302,7 @@ GDALResampleAlg QgsImageWarper::toGDALResampleAlg( const QgsImageWarper::Resampl
     case ResamplingMethod::NearestNeighbour:
       return GRA_NearestNeighbour;
     case ResamplingMethod::Bilinear:
-      return  GRA_Bilinear;
+      return GRA_Bilinear;
     case ResamplingMethod::Cubic:
       return GRA_Cubic;
     case ResamplingMethod::CubicSpline:
@@ -334,19 +318,14 @@ GDALResampleAlg QgsImageWarper::toGDALResampleAlg( const QgsImageWarper::Resampl
 // QgsImageWarperTask
 //
 
-QgsImageWarperTask::QgsImageWarperTask( const QString &input, const QString &output,
-                                        const QgsGeorefTransform &georefTransform,
-                                        QgsImageWarper::ResamplingMethod resampling,
-                                        bool useZeroAsTrans, const QString &compression,
-                                        const QgsCoordinateReferenceSystem &crs,
-                                        double destResX, double destResY )
+QgsImageWarperTask::QgsImageWarperTask( const QString &input, const QString &output, const QgsGeorefTransform &georefTransform, QgsImageWarper::ResamplingMethod resampling, bool useZeroAsTrans, const QStringList &options, const QgsCoordinateReferenceSystem &crs, double destResX, double destResY )
   : QgsTask( tr( "Warping %1" ).arg( input ), QgsTask::CanCancel )
   , mInput( input )
   , mOutput( output )
-  , mTransform( qgis::down_cast< QgsGeorefTransform * >( georefTransform.clone() ) )
+  , mTransform( qgis::down_cast<QgsGeorefTransform *>( georefTransform.clone() ) )
   , mResamplingMethod( resampling )
   , mUseZeroAsTrans( useZeroAsTrans )
-  , mCompression( compression )
+  , mCreationOptions( options )
   , mDestinationCrs( crs )
   , mDestinationResX( destResX )
   , mDestinationResY( destResY )
@@ -363,21 +342,22 @@ void QgsImageWarperTask::cancel()
 
 bool QgsImageWarperTask::run()
 {
-  mFeedback = std::make_unique< QgsFeedback >();
+  mFeedback = std::make_unique<QgsFeedback>();
   connect( mFeedback.get(), &QgsFeedback::progressChanged, this, &QgsTask::progressChanged );
 
   QgsImageWarper warper;
   mResult = warper.warpFile(
-              mInput,
-              mOutput,
-              *mTransform.get(),
-              mResamplingMethod,
-              mUseZeroAsTrans,
-              mCompression,
-              mDestinationCrs,
-              mFeedback.get(),
-              mDestinationResX,
-              mDestinationResY );
+    mInput,
+    mOutput,
+    *mTransform.get(),
+    mResamplingMethod,
+    mUseZeroAsTrans,
+    mCreationOptions,
+    mDestinationCrs,
+    mFeedback.get(),
+    mDestinationResX,
+    mDestinationResY
+  );
 
   mFeedback.reset();
   return mResult == QgsImageWarper::Result::Success;

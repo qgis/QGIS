@@ -21,12 +21,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsreadwritecontext.h"
-#include "qgsrange.h"
 #include "qgspropertycollection.h"
+#include "qgsrange.h"
+#include "qgsreadwritecontext.h"
 
-#include <QObject>
 #include <QDomElement>
+#include <QObject>
 
 class QgsMapLayer;
 
@@ -43,14 +43,11 @@ class QgsMapLayer;
  */
 class CORE_EXPORT QgsMapLayerElevationProperties : public QObject
 {
-#ifdef SIP_RUN
-#include "qgspointcloudlayerelevationproperties.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsvectorlayerelevationproperties.h"
-#include "qgsmeshlayerelevationproperties.h"
-#include "qgstiledscenelayerelevationproperties.h"
-#endif
-
+    //SIP_TYPEHEADER_INCLUDE( "qgspointcloudlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsrasterlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsvectorlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsmeshlayerelevationproperties.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgstiledscenelayerelevationproperties.h" );
     Q_OBJECT
 
 #ifdef SIP_RUN

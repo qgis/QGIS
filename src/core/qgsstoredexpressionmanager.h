@@ -20,10 +20,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QString>
-#include <QObject>
-#include <QUuid>
 
+#include <QObject>
+#include <QString>
+#include <QUuid>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -66,11 +66,11 @@ class CORE_EXPORT QgsStoredExpression
      *  \param expression     expression text
      *  \param tag            category of the expression use case - default FilterExpression
      */
-    QgsStoredExpression( QString name, QString expression, Category tag = Category::FilterExpression )
-      : id( QUuid::createUuid().toString() ),
-        name( name ),
-        expression( expression ),
-        tag( tag )
+    QgsStoredExpression( const QString &name, const QString &expression, Category tag = Category::FilterExpression )
+      : id( QUuid::createUuid().toString() )
+      , name( name )
+      , expression( expression )
+      , tag( tag )
     {}
 #endif
 
@@ -81,12 +81,12 @@ class CORE_EXPORT QgsStoredExpression
     //! expression text
     QString expression;
     //! category of the expression use case
-    Category tag = Category::FilterExpression;
+    QgsStoredExpression::Category tag = QgsStoredExpression::Category::FilterExpression;
 };
 
 /**
  * \ingroup core
- * \brief Manages stored expressions regarding creation, modification and storing in the project
+ * \brief Manages stored expressions regarding creation, modification and storing in the project.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsStoredExpressionManager : public QObject

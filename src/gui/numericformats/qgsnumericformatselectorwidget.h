@@ -16,11 +16,14 @@
 #ifndef QGSNUMERICFORMATSELECTORWIDGET_H
 #define QGSNUMERICFORMATSELECTORWIDGET_H
 
+#include "ui_qgsnumericformatselectorbase.h"
+
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
-#include "ui_qgsnumericformatselectorbase.h"
-#include <memory>
+
 #include <QDialog>
 
 class QgsNumericFormat;
@@ -39,7 +42,6 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsNumericFormatSelectorWidget with the specified \a parent widget.
      */
@@ -81,13 +83,12 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
     void formatChanged();
 
   private:
-
     void populateTypes();
     void updateFormatWidget();
     void updateSampleText();
 
-    std::unique_ptr< QgsNumericFormat > mCurrentFormat;
-    std::unique_ptr< QgsBasicNumericFormat > mPreviewFormat;
+    std::unique_ptr<QgsNumericFormat> mCurrentFormat;
+    std::unique_ptr<QgsBasicNumericFormat> mPreviewFormat;
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
@@ -106,7 +107,6 @@ class GUI_EXPORT QgsNumericFormatSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsNumericFormatSelectorDialog.
      * \param parent parent widget
@@ -135,10 +135,8 @@ class GUI_EXPORT QgsNumericFormatSelectorDialog : public QDialog
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
   private:
-
     QgsNumericFormatSelectorWidget *mFormatWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
-
 };
 
 #endif //QGSNUMERICFORMATSELECTORWIDGET_H

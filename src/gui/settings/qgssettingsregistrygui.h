@@ -20,14 +20,12 @@
 #include "qgis_gui.h"
 #include "qgssettingsregistry.h"
 
-
 class QgsSettingsEntryBool;
 
 /**
  * \ingroup gui
  * \class QgsSettingsRegistryGui
- * \brief QgsSettingsRegistryGui is used for settings introspection and collects all
- * QgsSettingsEntry instances of gui.
+ * \brief Used for settings introspection and collects all QgsSettingsEntry instances of GUI.
  *
  * \since QGIS 3.22
  */
@@ -35,18 +33,16 @@ Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 {
     Q_NOWARN_UNREACHABLE_POP
-    // TODO QGIS 4 do not inherit QgsSettingsRegistry
+    // TODO QGIS 5 do not inherit QgsSettingsRegistry
   public:
-
     QgsSettingsRegistryGui();
-    virtual ~QgsSettingsRegistryGui();
+    ~QgsSettingsRegistryGui() override;
 
 #ifndef SIP_RUN
     //! Settings entry respect screen dpi
     static const QgsSettingsEntryBool *settingsRespectScreenDPI;
 
 #endif
-
 };
 
 #endif // QGSSETTINGSREGISTRYGUI_H

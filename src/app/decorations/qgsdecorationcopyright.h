@@ -19,13 +19,14 @@
 #ifndef QGSCOPYRIGHTLABELPLUGIN
 #define QGSCOPYRIGHTLABELPLUGIN
 
+#include "qgis_app.h"
 #include "qgsdecorationitem.h"
 #include "qgstextformat.h"
 
 #include <QColor>
 #include <QFont>
 #include <QObject>
-#include "qgis_app.h"
+
 class QAction;
 class QPainter;
 
@@ -35,7 +36,6 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsDecorationCopyright( QObject *parent = nullptr );
 

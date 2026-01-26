@@ -18,27 +18,29 @@ email                : jef at norbit dot de
 
 #include "qgsoraclesourceselect.h"
 
-#include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgsoraclenewconnection.h"
-#include "qgsoracletablecache.h"
-#include "qgsmanageconnectionsdialog.h"
-#include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
-#include "qgsvectorlayer.h"
-#include "qgsoraclecolumntypetask.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsiconutils.h"
+#include "qgslogger.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsoraclecolumntypetask.h"
+#include "qgsoraclenewconnection.h"
+#include "qgsoracletablecache.h"
 #include "qgsoracletablemodel.h"
 #include "qgsprovidermetadata.h"
+#include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QTextStream>
-#include <QHeaderView>
 #include <QStringList>
+#include <QTextStream>
+
+#include "moc_qgsoraclesourceselect.cpp"
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
@@ -68,7 +70,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
             Qgis::WkbType::NoGeometry
           } )
     {
-      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast< quint32>( type ) );
+      cb->addItem( QgsIconUtils::iconForWkbType( type ), QgsWkbTypes::translatedDisplayString( type ), static_cast<quint32>( type ) );
     }
     return cb;
   }
@@ -112,7 +114,7 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
 {
   QString value( index.data( Qt::DisplayRole ).toString() );
 
-  QComboBox *cb = qobject_cast<QComboBox * >( editor );
+  QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
   {
     if ( index.column() == QgsOracleTableModel::DbtmType )
@@ -126,7 +128,7 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
   if ( le )
   {
     bool ok;
-    ( void )value.toInt( &ok );
+    ( void ) value.toInt( &ok );
     if ( index.column() == QgsOracleTableModel::DbtmSrid && !ok )
       value.clear();
 
@@ -141,11 +143,11 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   {
     if ( index.column() == QgsOracleTableModel::DbtmType )
     {
-      Qgis::WkbType type = static_cast< Qgis::WkbType >( cb->currentData().toInt() );
+      Qgis::WkbType type = static_cast<Qgis::WkbType>( cb->currentData().toInt() );
 
       model->setData( index, QgsIconUtils::iconForWkbType( type ), Qt::DecorationRole );
       model->setData( index, type != Qgis::WkbType::Unknown ? QgsWkbTypes::translatedDisplayString( type ) : tr( "Select…" ) );
-      model->setData( index, static_cast< quint32>( type ), Qt::UserRole + 2 );
+      model->setData( index, static_cast<quint32>( type ), Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsOracleTableModel::DbtmPkCol )
     {
@@ -206,16 +208,16 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   QgsSettings settings;
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( u"/Windows/OracleSourceSelect/HoldDialogOpen"_s, false ).toBool() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "/Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( u"/Windows/OracleSourceSelect/columnWidths/%1"_s.arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   populateConnectionList();
 }
-//! Autoconnected SLOTS
+//! Autoconnected slots
 // Slot for adding a new connection
 void QgsOracleSourceSelect::btnNew_clicked()
 {
@@ -231,11 +233,11 @@ void QgsOracleSourceSelect::btnNew_clicked()
 void QgsOracleSourceSelect::btnDelete_clicked()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+                  .arg( cmbConnections->currentText() );
   if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
-  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "oracle" ) );
+  QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"oracle"_s );
   providerMetadata->deleteConnection( cmbConnections->currentText() );
 
   QgsOracleTableCache::removeFromCache( cmbConnections->currentText() );
@@ -252,8 +254,7 @@ void QgsOracleSourceSelect::btnSave_clicked()
 
 void QgsOracleSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QStringLiteral( "." ),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), u"."_s, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -279,7 +280,7 @@ void QgsOracleSourceSelect::btnEdit_clicked()
   delete nc;
 }
 
-//! End Autoconnected SLOTS
+//! End Autoconnected slots
 
 // Remember which database is selected
 void QgsOracleSourceSelect::cmbConnections_currentIndexChanged( const QString &text )
@@ -319,11 +320,11 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( u"/Windows/OracleSourceSelect/HoldDialogOpen"_s, mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( u"Windows/OracleSourceSelect/columnWidths/%1"_s.arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -368,7 +369,7 @@ void QgsOracleSourceSelect::addButtonClicked()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "oracle" ) );
+    emit addDatabaseLayers( mSelectedTables, u"oracle"_s );
     if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
     {
       accept();
@@ -396,19 +397,12 @@ void QgsOracleSourceSelect::btnConnect_clicked()
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
 
-  mColumnTypeTask = new QgsOracleColumnTypeTask( cmbConnections->currentText(),
-      QgsOracleConn::restrictToSchema( cmbConnections->currentText() ),
-      uri.useEstimatedMetadata(),
-      cbxAllowGeometrylessTables->isChecked() );
+  mColumnTypeTask = new QgsOracleColumnTypeTask( cmbConnections->currentText(), QgsOracleConn::schemaToRestrict( cmbConnections->currentText() ), uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() );
 
-  connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType,
-           this, &QgsOracleSourceSelect::setLayerType );
-  connect( mColumnTypeTask, &QgsTask::taskCompleted,
-           this, &QgsOracleSourceSelect::columnTaskFinished );
-  connect( mColumnTypeTask, &QgsTask::taskTerminated,
-           this, &QgsOracleSourceSelect::columnTaskFinished );
-  connect( mColumnTypeTask, &QgsOracleColumnTypeTask::progressMessage,
-           this, &QgsAbstractDataSourceWidget::progressMessage );
+  connect( mColumnTypeTask, &QgsOracleColumnTypeTask::setLayerType, this, &QgsOracleSourceSelect::setLayerType );
+  connect( mColumnTypeTask, &QgsTask::taskCompleted, this, &QgsOracleSourceSelect::columnTaskFinished );
+  connect( mColumnTypeTask, &QgsTask::taskTerminated, this, &QgsOracleSourceSelect::columnTaskFinished );
+  connect( mColumnTypeTask, &QgsOracleColumnTypeTask::progressMessage, this, &QgsAbstractDataSourceWidget::progressMessage );
 
   btnConnect->setText( tr( "Stop" ) );
 
@@ -465,7 +459,7 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
 {
   if ( !index.parent().isValid() )
   {
-    QgsDebugError( QStringLiteral( "no owner item found" ) );
+    QgsDebugError( u"no owner item found"_s );
     return;
   }
 
@@ -474,11 +468,11 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
   QString uri = mTableModel->layerURI( index, mConnInfo );
   if ( uri.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no uri" ), 2 );
+    QgsDebugMsgLevel( u"no uri"_s, 2 );
     return;
   }
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, QStringLiteral( "oracle" ) );
+  QgsVectorLayer *vlayer = new QgsVectorLayer( uri, tableName, u"oracle"_s );
   if ( !vlayer->isValid() )
   {
     delete vlayer;
@@ -501,7 +495,7 @@ QString QgsOracleSourceSelect::fullDescription( const QString &owner, const QStr
   QString fullDesc;
   if ( !owner.isEmpty() )
     fullDesc = QgsOracleConn::quotedIdentifier( owner ) + '.';
-  fullDesc += QgsOracleConn::quotedIdentifier( table ) + QStringLiteral( " (" ) + column + QStringLiteral( ") " ) + type;
+  fullDesc += QgsOracleConn::quotedIdentifier( table ) + u" ("_s + column + u") "_s + type;
   return fullDesc;
 }
 
@@ -557,5 +551,5 @@ void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &, 
 
 void QgsOracleSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-database-layer"_s );
 }

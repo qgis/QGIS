@@ -23,16 +23,16 @@ class QgsPointXY;
 class QgsVectorLayer;
 class QgsWebView;
 
-#include <QWidget>
-#include <QUrl>
-#include <QTimer>
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeature.h"
+
+#include <QTimer>
+#include <QUrl>
+#include <QWidget>
 
 /**
  * \ingroup gui
- * \brief A maptip is a class to display a tip on a map canvas
- * when a mouse is hovered over a feature.
+ * \brief Displays a tool tip on a map canvas when the mouse is hovered over a feature.
  *
  * Since QGIS 2.16 a maptip can show full html.
  * QgsMapTip is a QgsWebView, so you can load full HTML/JS/CSS in it.
@@ -53,7 +53,6 @@ class GUI_EXPORT QgsMapTip : public QWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Default constructor
      */
@@ -69,10 +68,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
      *        in pixel coordinates.
      * \param mpMapCanvas a map canvas on which the tip is drawn
      */
-    void showMapTip( QgsMapLayer *thepLayer,
-                     QgsPointXY &mapPosition,
-                     const QPoint &pixelPosition,
-                     QgsMapCanvas *mpMapCanvas );
+    void showMapTip( QgsMapLayer *thepLayer, QgsPointXY &mapPosition, const QPoint &pixelPosition, QgsMapCanvas *mpMapCanvas );
 
     /**
      * Clear the current maptip if it exists
@@ -102,14 +98,10 @@ class GUI_EXPORT QgsMapTip : public QWidget
   private:
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
-    QString fetchFeature( QgsMapLayer *thepLayer,
-                          QgsPointXY &mapPosition,
-                          QgsMapCanvas *mapCanvas );
+    QString fetchFeature( QgsMapLayer *thepLayer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas );
 
     // Sample the raster and get the maptip text
-    QString fetchRaster( QgsMapLayer *layer,
-                         QgsPointXY &mapPosition,
-                         QgsMapCanvas *mapCanvas );
+    QString fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas );
 
     // Insert the raw map tip text into an HTML template and return the result
     static QString htmlText( const QString &text, int maxWidth = -1 );

@@ -16,14 +16,14 @@
 #ifndef QGSSETTINGSENTRY_H
 #define QGSSETTINGSENTRY_H
 
-#include <QString>
-#include <QColor>
 #include <limits>
 
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QColor>
+#include <QString>
 
 class QgsSettingsTreeNode;
 
@@ -35,8 +35,9 @@ static const inline QMetaEnum sSettingsTypeMetaEnum = QMetaEnum::fromType<Qgis::
  * \ingroup core
  * \class QgsSettingsEntryBase
  *
- * \brief Represent settings entry and provides methods for reading and writing settings values.
- * Different subclasses are provided for different settings types with metainformations
+ * \brief Represents a settings entry and provides methods for reading and writing settings values.
+ *
+ * Different subclasses are provided for different settings types with metainformation
  * to validate set values and provide more accurate settings description for the gui.
  *
  * \since QGIS 3.20
@@ -92,7 +93,7 @@ class CORE_EXPORT QgsSettingsEntryBase
                           const QString &description = QString(),
                           Qgis::SettingsOptions options = Qgis::SettingsOptions() )
       : mName( key )
-      , mKey( QStringLiteral( "%1/%2" ).arg( section, key ) )
+      , mKey( u"%1/%2"_s.arg( section, key ) )
       , mDefaultValue( defaultValue )
       , mDescription( description )
       , mOptions( options )
@@ -254,13 +255,13 @@ class CORE_EXPORT QgsSettingsEntryBase
 
     /**
      * Returns settings value with an optional default value override
-     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride instead.
+     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride() instead.
      */
     Q_DECL_DEPRECATED QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const SIP_DEPRECATED;
 
     /**
      * Returns settings value with an optional default value override
-     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride instead.
+     * \deprecated QGIS 3.26. Use valueAsVariantWithDefaultOverride() instead.
      */
     Q_DECL_DEPRECATED QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const SIP_DEPRECATED;
 
@@ -370,7 +371,7 @@ class CORE_EXPORT QgsSettingsEntryBase
  * \ingroup core
  * \class QgsSettingsEntryBaseTemplate
  *
- * \brief Base abstract class for settings entries with typed get and set methods
+ * \brief Base abstract class for settings entries with typed get and set methods.
  * \see QgsSettingsEntryBase
  *
  * \since QGIS 3.32
@@ -418,7 +419,7 @@ class QgsSettingsEntryBaseTemplate : public QgsSettingsEntryBase
     {}
 
 
-    virtual Qgis::SettingsType settingsType() const override = 0;
+    Qgis::SettingsType settingsType() const override = 0;
 
     /**
      * Returns settings value.

@@ -19,19 +19,19 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgshelp.h"
-#include "qgswfscapabilities.h"
-#include "qgsoapiflandingpagerequest.h"
-#include "qgsoapifcollection.h"
-#include "qgsproviderregistry.h"
+
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsoapifcollection.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsproviderregistry.h"
+#include "qgswfscapabilities.h"
 
 #include <QItemDelegate>
-#include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QStandardItemModel>
 
 class QgsProjectionSelectionDialog;
-class QgsWfsCapabilities;
+class QgsWfsGetCapabilitiesRequest;
 class QgsSubsetStringEditorInterface;
 
 class QgsWFSItemDelegate : public QItemDelegate
@@ -39,18 +39,17 @@ class QgsWFSItemDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    explicit QgsWFSItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
+    explicit QgsWFSItemDelegate( QObject *parent = nullptr )
+      : QItemDelegate( parent ) {}
 
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
-
 };
 
-class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
+class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWFSSourceSelectBase
 {
     Q_OBJECT
 
   public:
-
     QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
     ~QgsWFSSourceSelect() override;
 
@@ -65,16 +64,16 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
      * The first string is the typename, the corresponding list
      * stores the CRS for the typename in the form 'EPSG:XXXX'
     */
-    QMap<QString, QStringList > mAvailableCRS;
-    std::unique_ptr<QgsWfsCapabilities> mCapabilities;
+    QMap<QString, QStringList> mAvailableCRS;
+    std::unique_ptr<QgsWfsGetCapabilitiesRequest> mCapabilities;
     std::unique_ptr<QgsOapifLandingPageRequest> mOAPIFLandingPage;
     std::unique_ptr<QgsOapifCollectionsRequest> mOAPIFCollections;
-    QString mUri;            // data source URI
+    QString mUri; // data source URI
     QgsWFSItemDelegate *mItemDelegate = nullptr;
     QStandardItemModel *mModel = nullptr;
     QSortFilterProxyModel *mModelProxy = nullptr;
     QPushButton *mBuildQueryButton = nullptr;
-    QgsWfsCapabilities::Capabilities mCaps;
+    QgsWfsCapabilities mCaps;
     QModelIndex mSQLIndex;
     QgsSubsetStringEditorInterface *mSQLComposerDialog = nullptr;
     QString mVersion;
@@ -122,7 +121,7 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
     void startOapifLandingPageRequest();
     void startOapifCollectionsRequest( const QString &url );
     void resizeTreeViewAfterModelFill();
-    bool isOapif() const { return mVersion == QLatin1String( "OGC_API_FEATURES" ); }
+    bool isOapif() const { return mVersion == "OGC_API_FEATURES"_L1; }
 };
 
 #endif

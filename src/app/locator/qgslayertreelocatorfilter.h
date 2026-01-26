@@ -21,27 +21,21 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
-
-
-
-
 class APP_EXPORT QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
   public:
-
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
     QgsLayerTreeLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "layertree" ); }
+    QString name() const override { return u"layertree"_s; }
     QString displayName() const override { return tr( "Project Layers" ); }
     Priority priority() const override { return Highest; }
-    QString prefix() const override { return QStringLiteral( "l" ); }
+    QString prefix() const override { return u"l"_s; }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
-
 };
 
 #endif // QGSLAYERTREELOCATORFILTERS_H

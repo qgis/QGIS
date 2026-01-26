@@ -18,9 +18,8 @@
 #define TINTERPOLATOR_H
 
 #include "Vector3D.h"
-
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 
 class QgsPoint;
 
@@ -28,7 +27,7 @@ class QgsPoint;
 
 /**
  * \ingroup analysis
- * \brief This is an interface for interpolator classes for triangulations.
+ * \brief An interface for interpolator classes for triangulations.
  * \note Not available in Python bindings.
 */
 class ANALYSIS_EXPORT TriangleInterpolator
@@ -42,11 +41,3 @@ class ANALYSIS_EXPORT TriangleInterpolator
 };
 
 #endif
-
-
-
-
-
-
-
-

@@ -32,9 +32,7 @@ class QgsVectorLayer;
  */
 class QgsPackageAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsPackageAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -43,27 +41,21 @@ class QgsPackageAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsPackageAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+    bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly, const QgsRectangle &extent );
 
-    bool packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
-                             bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly );
-
-    std::vector< std::unique_ptr< QgsMapLayer> > mLayers;
+    std::vector<std::unique_ptr<QgsMapLayer>> mLayers;
     QMap<QString, QString> mClonedLayerIds;
-
+    QgsCoordinateReferenceSystem mDestinationCrs;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMPACKAGE_H
-
-

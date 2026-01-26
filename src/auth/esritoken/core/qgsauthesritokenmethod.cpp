@@ -16,9 +16,11 @@
 
 #include "qgsauthesritokenmethod.h"
 
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include "moc_qgsauthesritokenmethod.cpp"
 
 #ifdef HAVE_GUI
 #include "qgsauthesritokenedit.h"
@@ -28,8 +30,8 @@
 #include <QMutexLocker>
 #include <QUuid>
 
-const QString QgsAuthEsriTokenMethod::AUTH_METHOD_KEY = QStringLiteral( "EsriToken" );
-const QString QgsAuthEsriTokenMethod::AUTH_METHOD_DESCRIPTION = QStringLiteral( "ESRI token" );
+const QString QgsAuthEsriTokenMethod::AUTH_METHOD_KEY = u"EsriToken"_s;
+const QString QgsAuthEsriTokenMethod::AUTH_METHOD_DESCRIPTION = u"ESRI token"_s;
 const QString QgsAuthEsriTokenMethod::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "ESRI token" );
 
 QMap<QString, QgsAuthMethodConfig> QgsAuthEsriTokenMethod::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
@@ -39,10 +41,7 @@ QgsAuthEsriTokenMethod::QgsAuthEsriTokenMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList()
-                    << QStringLiteral( "arcgismapserver" )
-                    << QStringLiteral( "arcgisfeatureserver" ) );
-
+  setDataProviders( QStringList() << u"arcgismapserver"_s << u"arcgisfeatureserver"_s );
 }
 
 QString QgsAuthEsriTokenMethod::key() const
@@ -60,22 +59,21 @@ QString QgsAuthEsriTokenMethod::displayDescription() const
   return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
-bool QgsAuthEsriTokenMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthEsriTokenMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
     return false;
   }
 
-  const QString token = config.config( QStringLiteral( "token" ) );
+  const QString token = config.config( u"token"_s );
 
   if ( !token.isEmpty() )
   {
-    request.setRawHeader( "X-Esri-Authorization",  QStringLiteral( "Bearer %1 " ).arg( token ).toLocal8Bit() );
+    request.setRawHeader( "X-Esri-Authorization", u"Bearer %1 "_s.arg( token ).toLocal8Bit() );
   }
   return true;
 }
@@ -87,9 +85,9 @@ void QgsAuthEsriTokenMethod::clearCachedConfig( const QString &authcfg )
 
 void QgsAuthEsriTokenMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
-  if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
+  if ( mconfig.hasConfig( u"oldconfigstyle"_s ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Updating old style auth method config" ), 2 );
+    QgsDebugMsgLevel( u"Updating old style auth method config"_s, 2 );
   }
 
   // NOTE: add updates as method version() increases due to config storage changes
@@ -104,14 +102,14 @@ QgsAuthMethodConfig QgsAuthEsriTokenMethod::getMethodConfig( const QString &auth
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     mconfig = sAuthConfigCache.value( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Retrieved config for authcfg: %1"_s.arg( authcfg ), 2 );
     return mconfig;
   }
 
   // else build basic bundle
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, fullconfig ) )
   {
-    QgsDebugError( QStringLiteral( "Retrieve config FAILED for authcfg: %1" ).arg( authcfg ) );
+    QgsDebugError( u"Retrieve config FAILED for authcfg: %1"_s.arg( authcfg ) );
     return QgsAuthMethodConfig();
   }
 
@@ -124,7 +122,7 @@ QgsAuthMethodConfig QgsAuthEsriTokenMethod::getMethodConfig( const QString &auth
 void QgsAuthEsriTokenMethod::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig )
 {
   const QMutexLocker locker( &mMutex );
-  QgsDebugMsgLevel( QStringLiteral( "Putting token config for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Putting token config for authcfg: %1"_s.arg( authcfg ), 2 );
   sAuthConfigCache.insert( authcfg, mconfig );
 }
 
@@ -134,7 +132,7 @@ void QgsAuthEsriTokenMethod::removeMethodConfig( const QString &authcfg )
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     sAuthConfigCache.remove( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Removed token config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Removed token config for authcfg: %1"_s.arg( authcfg ), 2 );
   }
 }
 

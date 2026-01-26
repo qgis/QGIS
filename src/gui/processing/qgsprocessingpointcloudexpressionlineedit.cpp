@@ -16,17 +16,20 @@
  ***************************************************************************/
 
 #include "qgsprocessingpointcloudexpressionlineedit.h"
-#include "qgsgui.h"
+
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"
-#include "qgspointcloudlayer.h"
+#include "qgsgui.h"
 #include "qgspointcloudexpression.h"
+#include "qgspointcloudlayer.h"
 
 #include <QHBoxLayout>
-#include <QToolButton>
 #include <QListView>
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QToolButton>
+
+#include "moc_qgsprocessingpointcloudexpressionlineedit.cpp"
 
 /// @cond PRIVATE
 
@@ -38,7 +41,7 @@ QgsProcessingPointCloudExpressionLineEdit::QgsProcessingPointCloudExpressionLine
 
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
   connect( mButton, &QAbstractButton::clicked, this, &QgsProcessingPointCloudExpressionLineEdit::editExpression );
 
   QHBoxLayout *layout = new QHBoxLayout();
@@ -49,7 +52,7 @@ QgsProcessingPointCloudExpressionLineEdit::QgsProcessingPointCloudExpressionLine
 
   setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
   setFocusProxy( mLineEdit );
-  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast < void ( QgsProcessingPointCloudExpressionLineEdit::* )( const QString & ) > ( &QgsProcessingPointCloudExpressionLineEdit::expressionEdited ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsProcessingPointCloudExpressionLineEdit::* )( const QString & )>( &QgsProcessingPointCloudExpressionLineEdit::expressionEdited ) );
 
   setExpression( expression() );
 }
@@ -176,7 +179,7 @@ void QgsProcessingPointCloudExpressionDialog::lstAttributes_currentChanged( cons
 
   mModelValues->clear();
   const QString attribute = current.data().toString();
-  if ( attribute.compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+  if ( attribute.compare( "Classification"_L1, Qt::CaseInsensitive ) == 0 )
   {
     const QMap<int, QString> codes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
     for ( int i = 0; i <= 18; ++i )
@@ -217,37 +220,37 @@ void QgsProcessingPointCloudExpressionDialog::lstAttributes_currentChanged( cons
 
 void QgsProcessingPointCloudExpressionDialog::lstAttributes_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( QStringLiteral( "%1 " ).arg( mModelAttributes->data( index ).toString() ) );
+  mTxtSql->insertText( u"%1 "_s.arg( mModelAttributes->data( index ).toString() ) );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::lstValues_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( QStringLiteral( "%1 " ).arg( mModelValues->data( index, Qt::UserRole ).toString() ) );
+  mTxtSql->insertText( u"%1 "_s.arg( mModelValues->data( index, Qt::UserRole ).toString() ) );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "= " ) );
+  mTxtSql->insertText( u"= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnLessThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "< " ) );
+  mTxtSql->insertText( u"< "_s );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnGreaterThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "> " ) );
+  mTxtSql->insertText( u"> "_s );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "IN () " ) );
+  mTxtSql->insertText( u"IN () "_s );
   int i, j;
   mTxtSql->getCursorPosition( &i, &j );
   mTxtSql->setCursorPosition( i, j - 2 );
@@ -256,7 +259,7 @@ void QgsProcessingPointCloudExpressionDialog::btnIn_clicked()
 
 void QgsProcessingPointCloudExpressionDialog::btnNotIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "NOT IN () " ) );
+  mTxtSql->insertText( u"NOT IN () "_s );
   int i, j;
   mTxtSql->getCursorPosition( &i, &j );
   mTxtSql->setCursorPosition( i, j - 2 );
@@ -265,31 +268,31 @@ void QgsProcessingPointCloudExpressionDialog::btnNotIn_clicked()
 
 void QgsProcessingPointCloudExpressionDialog::btnLessEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "<= " ) );
+  mTxtSql->insertText( u"<= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnGreaterEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( ">= " ) );
+  mTxtSql->insertText( u">= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnNotEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "!= " ) );
+  mTxtSql->insertText( u"!= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnAnd_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "AND " ) );
+  mTxtSql->insertText( u"AND "_s );
   mTxtSql->setFocus();
 }
 
 void QgsProcessingPointCloudExpressionDialog::btnOr_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "OR " ) );
+  mTxtSql->insertText( u"OR "_s );
   mTxtSql->setFocus();
 }
 
@@ -299,9 +302,7 @@ void QgsProcessingPointCloudExpressionDialog::test()
 
   if ( !expression.isValid() && !mTxtSql->text().isEmpty() )
   {
-    QMessageBox::warning( this,
-                          tr( "Query Result" ),
-                          tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
+    QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
   }
   else
   {
@@ -309,18 +310,13 @@ void QgsProcessingPointCloudExpressionDialog::test()
     int offset;
     for ( const auto &attribute : attributes )
     {
-      if ( mLayer && mLayer->dataProvider() &&
-           !mLayer->dataProvider()->attributes().find( attribute, offset ) )
+      if ( mLayer && mLayer->dataProvider() && !mLayer->dataProvider()->attributes().find( attribute, offset ) )
       {
-        QMessageBox::warning( this,
-                              tr( "Query Result" ),
-                              tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
+        QMessageBox::warning( this, tr( "Query Result" ), tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
         return;
       }
     }
-    QMessageBox::information( this,
-                              tr( "Query Result" ),
-                              tr( "The expression was successfully parsed." ) );
+    QMessageBox::information( this, tr( "Query Result" ), tr( "The expression was successfully parsed." ) );
   }
 }
 

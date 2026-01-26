@@ -19,14 +19,15 @@
 #ifndef QGSVECTORLAYERPROPERTIES
 #define QGSVECTORLAYERPROPERTIES
 
-#include <QStandardItemModel>
-
 #include "ui_qgsvectorlayerpropertiesbase.h"
+
 #include "qgsguiutils.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgslayertreefilterproxymodel.h"
 #include "qgsmaplayerserverproperties.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgslayertreefilterproxymodel.h"
-#include "qgslayerpropertiesdialog.h"
+
+#include <QStandardItemModel>
 
 class QgsMapLayer;
 
@@ -53,22 +54,22 @@ class QgsWebView;
 /**
  * \ingroup gui
  * \class QgsVectorLayerProperties
+ * \brief Layer properties dialog for vector layers.
  */
 class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     bool eventFilter( QObject *obj, QEvent *ev ) override;
 
   protected slots:
     void optionsStackedWidget_CurrentChanged( int index ) final;
-    void syncToLayer() FINAL;
-    void apply() FINAL;
-    void rollback() FINAL;
+    void syncToLayer() final;
+    void apply() final;
+    void rollback() final;
 
   private slots:
 
@@ -93,8 +94,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     void mButtonRemoveJoin_clicked();
 
     // Server properties
-    void addMetadataUrl();
-    void removeSelectedMetadataUrl();
     void mButtonAddWmsDimension_clicked();
     void mButtonEditWmsDimension_clicked();
     void mWmsDimensionsTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
@@ -138,7 +137,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     void resizeMapTip();
 
   private:
-
     enum PropertyType
     {
       Style = 0,
@@ -179,14 +177,13 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     QgsAttributesFormProperties *mAttributesFormPropertiesDialog = nullptr;
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
-    QList< QgsVectorLayerJoinInfo > mOldJoins;
+    QList<QgsVectorLayerJoinInfo> mOldJoins;
 
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );
 
     //! Adds a QGIS Server WMS dimension to mWmsDimensionTreeWidget
     void addWmsDimensionInfoToTreeWidget( const QgsMapLayerServerProperties::WmsDimensionInfo &wmsDim, int insertIndex = -1 );
-    QStandardItemModel *mMetadataUrlModel = nullptr;
 
     void updateAuxiliaryStoragePage();
     void deleteAuxiliaryField( int index );

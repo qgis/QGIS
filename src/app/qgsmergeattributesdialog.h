@@ -20,9 +20,10 @@
 #define QGSMERGEATTRIBUTESDIALOG_H
 
 #include "ui_qgsmergeattributesdialogbase.h"
+
+#include "qgis_app.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
-#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -32,18 +33,17 @@ class QgsAttributeTableConfig;
 
 
 //! A dialog to insert the merge behavior for attributes (e.g. for the union features editing tool)
-class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDialogBase
+class APP_EXPORT QgsMergeAttributesDialog : public QDialog, private Ui::QgsMergeAttributesDialogBase
 {
     Q_OBJECT
   public:
-
     enum ItemDataRole
     {
       FieldIndex = Qt::UserRole //!< Index of corresponding field in source table for table header
     };
 
 
-    QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, bool skipAll = false, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
     ~QgsMergeAttributesDialog() override;
 
     QgsAttributes mergedAttributes() const;
@@ -83,7 +83,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
   private:
     QgsMergeAttributesDialog(); //default constructor forbidden
-    void createTableWidgetContents();
+    void createTableWidgetContents( bool skipAll );
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
 
     //! Create new combo box with the options for featureXX / mean / min / max
@@ -121,11 +121,10 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
     QgsFields mFields;
     QSet<int> mHiddenAttributes;
-    QMap< QString, int > mFieldToColumnMap;
+    QMap<QString, int> mFieldToColumnMap;
     bool mUpdating = false;
 
-    static const QList< Qgis::Statistic > DISPLAY_STATS;
-
+    static const QList<Qgis::Statistic> DISPLAY_STATS;
 };
 
 #endif // QGSMERGEATTRIBUTESDIALOG_H

@@ -20,23 +20,17 @@
 
 #include "qgis_core.h"
 #include "qgsmessagelog.h"
-#include <QObject>
-
-#ifdef WITH_QTWEBKIT
-#include <QWebPage>
-#else
-
 #include "qgswebframe.h"
 
 #include <QMenu>
 #include <QNetworkAccessManager>
+#include <QObject>
 #include <QPalette>
 #include <QTextBrowser>
 
-
 /**
  * \ingroup core
- * \brief The QWebSettings class is a collection of stubs to mimic the API of a QWebSettings on systems
+ * \brief A collection of stubs to mimic the API of a QWebSettings on systems
  * where QtWebkit is not available.
  */
 class CORE_EXPORT QWebSettings : public QObject
@@ -97,7 +91,7 @@ class CORE_EXPORT QWebSettings : public QObject
 
 /**
  * \ingroup core
- * \brief The QWebPage class is a collection of stubs to mimic the API of a QWebPage on systems
+ * \brief A collection of stubs to mimic the API of a QWebPage on systems
  * where QtWebkit is not available.
  */
 class CORE_EXPORT QWebPage : public QObject
@@ -128,7 +122,7 @@ class CORE_EXPORT QWebPage : public QObject
       connect( mFrame, &QWebFrame::loadFinished, this, &QWebPage::loadFinished );
     }
 
-    ~QWebPage()
+    ~QWebPage() override
     {
       delete mFrame;
       delete mSettings;
@@ -205,7 +199,6 @@ class CORE_EXPORT QWebPage : public QObject
     QWebFrame *mFrame = nullptr;
 /// @endcond
 };
-#endif
 
 /**
  * \ingroup core
@@ -260,4 +253,3 @@ class CORE_EXPORT QgsWebPage : public QWebPage
 };
 
 #endif // QGSWEBPAGE_H
-

@@ -19,14 +19,15 @@
 #define QGSAUXILIARYSTORAGE_H
 
 #include "qgis_core.h"
+#include "qgscallout.h"
 #include "qgsdatasourceuri.h"
-#include "qgspallabeling.h"
 #include "qgsdiagramrenderer.h"
-#include "qgsvectorlayerjoininfo.h"
+#include "qgspallabeling.h"
 #include "qgsproperty.h"
 #include "qgssqliteutils.h"
 #include "qgsvectorlayer.h"
-#include "qgscallout.h"
+#include "qgsvectorlayerjoininfo.h"
+
 #include <QString>
 
 class QgsProject;
@@ -36,7 +37,7 @@ class QgsProject;
  *
  * \ingroup core
  *
- * \brief Class allowing to manage the auxiliary storage for a vector layer.
+ * \brief Allows managing the auxiliary storage for a vector layer.
  *
  * Such auxiliary data are data used mostly for the needs of QGIS (symbology)
  * and have no real interest in being stored with the native raw geospatial
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsAuxiliaryLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsAuxiliaryLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -276,7 +277,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
  *
  * \ingroup core
  *
- * \brief Class providing some utility methods to manage auxiliary storage.
+ * \brief Providing some utility methods to manage auxiliary storage.
  *
  */
 class CORE_EXPORT QgsAuxiliaryStorage

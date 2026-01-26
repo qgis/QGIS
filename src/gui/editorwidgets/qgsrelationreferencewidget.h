@@ -16,17 +16,17 @@
 #ifndef QGSRELATIONREFERENCEWIDGET_H
 #define QGSRELATIONREFERENCEWIDGET_H
 
-#include "qgsattributeeditorcontext.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
 #include "qgsfeature.h"
 #include "qobjectuniqueptr.h"
 
 #include <QComboBox>
-#include <QToolButton>
-#include <QLineEdit>
 #include <QHBoxLayout>
+#include <QLineEdit>
 #include <QStandardItemModel>
-#include "qgis_gui.h"
+#include <QToolButton>
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;
@@ -42,21 +42,21 @@ class QgsCollapsibleGroupBox;
 class QLabel;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsrelationreferencewidget.h>
-% End
+//%End
 #endif
 
 /**
  * \ingroup gui
  * \class QgsRelationReferenceWidget
+ * \brief A widget which shows related features.
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsRelationReferenceWidget *>( sipCpp ) )
@@ -70,7 +70,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     Q_PROPERTY( bool openFormButtonVisible READ openFormButtonVisible WRITE setOpenFormButtonVisible )
 
   public:
-
     enum CanvasExtent
     {
       Fixed,
@@ -120,22 +119,22 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
 
     //! determines if the form of the related feature will be shown
-    bool embedForm() { return mEmbedForm; }
+    bool embedForm() const { return mEmbedForm; }
     void setEmbedForm( bool display );
 
     //! determines if the drop-down is enabled
-    bool readOnlySelector() { return mReadOnlySelector; }
+    bool readOnlySelector() const { return mReadOnlySelector; }
     void setReadOnlySelector( bool readOnly );
 
     //! determines if the widget offers the possibility to select the related feature on the map (using a dedicated map tool)
-    bool allowMapIdentification() { return mAllowMapIdentification; }
+    bool allowMapIdentification() const { return mAllowMapIdentification; }
     void setAllowMapIdentification( bool allowMapIdentification );
 
     //! Sets the fields for which filter comboboxes will be created
     void setFilterFields( const QStringList &filterFields );
 
     //! determines the open form button is visible in the widget
-    bool openFormButtonVisible() { return mOpenFormButtonVisible; }
+    bool openFormButtonVisible() const { return mOpenFormButtonVisible; }
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
     /**
@@ -201,6 +200,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void setFormFeature( const QgsFeature &formFeature );
 
     /**
+     * Set the current parent form feature
+     *
+     * \since QGIS 3.42.2
+     */
+    void setParentFormFeature( const QgsFeature &parentFormFeature );
+
+    /**
      * Returns the public data source of the referenced layer
      * \since QGIS 3.12
      */
@@ -252,14 +258,41 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      * Returns the limit of fetched features (0 means all features)
      * \since QGIS 3.32
      */
-    int fetchLimit() const {return mFetchLimit; }
+    int fetchLimit() const { return mFetchLimit; }
 
     /**
      * Set the limit of fetched features (0 means all features)
      * \since QGIS 3.32
      */
-    void setFetchLimit( int fetchLimit ) {mFetchLimit = fetchLimit; }
+    void setFetchLimit( int fetchLimit ) { mFetchLimit = fetchLimit; }
 
+    /**
+     * Returns the string of the order expression
+     * The order expression will be used for sort values in the combobox.
+     * \since QGIS 4.0
+     */
+    QString orderExpression() const { return mOrderExpression; }
+
+    /**
+     * Set the string of the order expression
+     * The order expression will be used for sort values in the combobox.
+     * \since QGIS 4.0
+     */
+    void setOrderExpression( const QString &orderExpression ) { mOrderExpression = orderExpression; }
+
+    /**
+     * Returns the order direction
+     * The order direction will be used for sort values in the combobox. Ascending or descending
+     * \since QGIS 4.0
+     */
+    Qt::SortOrder sortOrder() const { return mSortOrder; }
+
+    /**
+     * Set the order direction
+     * The order direction will be used for sort values in the combobox. Ascending or descending
+     * \since QGIS 4.0
+     */
+    void setSortOrder( const Qt::SortOrder sortOrder ) { mSortOrder = sortOrder; }
 
   public slots:
     //! open the form of the related feature in a new dialog
@@ -270,6 +303,14 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     //! unset the currently related feature
     void deleteForeignKeys();
+
+    /**
+      * Trigger save of the embedded referenced attribute form.
+      * Returns TRUE on success or if no embedded form is present.
+      *
+      * \since QGIS 3.42
+      */
+    bool saveReferencedAttributeForm();
 
   protected:
     void showEvent( QShowEvent *e ) override;
@@ -317,7 +358,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMessageBar *mMessageBar = nullptr;
     QVariantList mForeignKeys;
     QgsFeature mFeature;
-    QgsFeature mFormFeature;
     // Index of the referenced layer key
     QStringList mReferencedFields;
     bool mAllowNull = true;
@@ -337,7 +377,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsRelation mRelation;
     bool mIsEditable = true;
     QStringList mFilterFields;
-    QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
+    QMap<QString, QMap<QString, QSet<QString>>> mFilterCache;
     bool mInitialized = false;
     int mFetchLimit = 0;
 
@@ -352,6 +392,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QString mReferencedLayerName;
     QString mReferencedLayerDataSource;
     QString mReferencedLayerProviderKey;
+    QString mOrderExpression;
+    Qt::SortOrder mSortOrder = Qt::AscendingOrder;
 
     // UI
     QVBoxLayout *mTopLayout = nullptr;

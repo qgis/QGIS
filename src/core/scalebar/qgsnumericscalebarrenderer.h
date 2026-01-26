@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgsscalebarrenderer.h"
+
 #include <QString>
 
 /**
@@ -46,6 +47,9 @@ class CORE_EXPORT QgsNumericScaleBarRenderer: public QgsScaleBarRenderer
                              const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
+    /**
+     * \deprecated QGIS 3.14. Use the one with render context instead.
+     */
     Q_DECL_DEPRECATED QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override SIP_DEPRECATED ;
 
   private:

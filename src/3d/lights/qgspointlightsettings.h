@@ -17,17 +17,17 @@
 #define QGSPOINTLIGHTSETTINGS_H
 
 #include "qgis_3d.h"
-
-#include "qgsvector3d.h"
 #include "qgslightsource.h"
+#include "qgsvector3d.h"
+
 #include <QColor>
 
 class QDomDocument;
 class QDomElement;
 
 /**
- * \ingroup 3d
- * \brief Definition of a point light in a 3D map scene
+ * \ingroup qgis_3d
+ * \brief Definition of a point light in a 3D map scene.
  *
  * Total light at the distance D from a point light with intensity I
  * is (I / TA) where TA is total attenuation which is calculated as
@@ -48,9 +48,9 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() ) override;
 
-    //! Returns position of the light (in 3D world coordinates)
+    //! Returns position of the light (in 3D map coordinates)
     QgsVector3D position() const { return mPosition; }
-    //! Sets position of the light (in 3D world coordinates)
+    //! Sets position of the light (in 3D map coordinates)
     void setPosition( const QgsVector3D &pos ) { mPosition = pos; }
 
     //! Returns color of the light
@@ -79,10 +79,10 @@ class _3D_EXPORT QgsPointLightSettings : public QgsLightSource
     void setQuadraticAttenuation( float value ) { mQuadraticAttenuation = value; }
 
     // TODO c++20 - replace with = default
-    bool operator==( const QgsPointLightSettings &other );
+    bool operator==( const QgsPointLightSettings &other ) const;
 
   private:
-    QgsVector3D mPosition { 0, 1000, 0 };
+    QgsVector3D mPosition { 0, 0, 0 };
     QColor mColor = Qt::white;
     float mIntensity = 1.0;
     float mConstantAttenuation = 1.0f;

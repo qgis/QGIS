@@ -15,10 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrecentcoordinatereferencesystemsmodel.h"
-#include "qgscoordinatereferencesystemregistry.h"
+
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystemregistry.h"
 
 #include <QFont>
+
+#include "moc_qgsrecentcoordinatereferencesystemsmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -62,10 +65,10 @@ QVariant QgsRecentCoordinateReferenceSystemsModel::data( const QModelIndex &inde
       case Qt::ToolTipRole:
         return crs.userFriendlyIdentifier();
 
-      case static_cast< int >( CustomRole::Crs ):
+      case static_cast<int>( CustomRole::Crs ):
         return crs;
 
-      case static_cast< int >( CustomRole::AuthId ):
+      case static_cast<int>( CustomRole::AuthId ):
         return crs.authid();
 
       default:
@@ -147,7 +150,6 @@ void QgsRecentCoordinateReferenceSystemsModel::recentCrsCleared()
   mCrs.clear();
   endResetModel();
 }
-
 
 
 //

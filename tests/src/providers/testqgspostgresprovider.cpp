@@ -12,32 +12,33 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
+
+#include "qgsfields.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresprovider.h"
 #include "qgstest.h"
-#include "qgsconfig.h" // for ENABLE_PGTEST
+
 #include <QObject>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
-#include <qgspostgresprovider.h>
-#include <qgspostgresconn.h>
-#include <qgsfields.h>
-
-class TestQgsPostgresProvider: public QObject
+class TestQgsPostgresProvider : public QObject
 {
     Q_OBJECT
 
   private:
-
 #ifdef ENABLE_PGTEST
     QgsPostgresConn *_connection;
 
 
     QgsPostgresConn *getConnection()
     {
-      if ( ! _connection )
+      if ( !_connection )
       {
         const char *connstring = getenv( "QGIS_PGTEST_DB" );
-        if ( !connstring ) connstring = "service=qgis_test";
+        if ( !connstring )
+          connstring = "service=qgis_test";
         _connection = QgsPostgresConn::connectDb( connstring, true );
       }
       return _connection;
@@ -49,13 +50,14 @@ class TestQgsPostgresProvider: public QObject
     void initTestCase() // will be called before the first testfunction is executed.
     {
 #ifdef ENABLE_PGTEST
-      this->_connection = 0;
+      this->_connection = nullptr;
 #endif
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
     {
 #ifdef ENABLE_PGTEST
-      if ( this->_connection ) this->_connection->unref();
+      if ( this->_connection )
+        this->_connection->unref();
 #endif
     }
 
@@ -79,57 +81,56 @@ class TestQgsPostgresProvider: public QObject
 };
 
 
-
 void TestQgsPostgresProvider::decodeHstore()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\"" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"\"1\"=>\"2\", \"a\"=>\"b, \\\"c'\", \"backslash\"=>\"\\\\\""_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "1" )] = "2";
-  expected[QStringLiteral( "a" )] = "b, \"c'";
-  expected[QStringLiteral( "backslash" )] = "\\";
+  expected[u"1"_s] = "2";
+  expected[u"a"_s] = "b, \"c'";
+  expected[u"backslash"_s] = "\\";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
 
 void TestQgsPostgresProvider::decodeHstoreNoQuote()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "1=>2, a=>b c" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"1=>2, a=>b c"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "1" )] = "2";
-  expected[QStringLiteral( "a" )] = "b c";
+  expected[u"1"_s] = "2";
+  expected[u"a"_s] = "b c";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
 
 void TestQgsPostgresProvider::decodeArray2StringList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{\"1\",\"2\", \"a\\\\1\" , \"\\\\\",\"b, \\\"c'\"}"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QStringList expected;
-  expected << QStringLiteral( "1" ) << QStringLiteral( "2" ) << QStringLiteral( "a\\1" ) << QStringLiteral( "\\" ) << QStringLiteral( "b, \"c'" );
+  expected << u"1"_s << u"2"_s << u"a\\1"_s << u"\\"_s << u"b, \"c'"_s;
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toStringList(), expected );
 }
 
 void TestQgsPostgresProvider::decodeArray2StringListNoQuote()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{1,2, a ,b, c}" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{1,2, a ,b, c}"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QStringList expected;
-  expected << QStringLiteral( "1" ) << QStringLiteral( "2" ) << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" );
+  expected << u"1"_s << u"2"_s << u"a"_s << u"b"_s << u"c"_s;
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toStringList(), expected );
 }
 
 void TestQgsPostgresProvider::decodeArray2IntList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{1, 2, 3,-5,10}" ), QStringLiteral( "hstore" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{1, 2, 3,-5,10}"_s, u"hstore"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QVariantList expected;
@@ -140,7 +141,7 @@ void TestQgsPostgresProvider::decodeArray2IntList()
 
 void TestQgsPostgresProvider::decode2DimensionArray()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}" ), QStringLiteral( "_text" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{{foo,\"escape bracket \\}\"},{\"escape bracket and backslash \\\\\\}\",\"hello bar\"}}"_s, u"_text"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QVariantList expected;
@@ -151,7 +152,7 @@ void TestQgsPostgresProvider::decode2DimensionArray()
 
 void TestQgsPostgresProvider::decode3DimensionArray()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, QStringLiteral( "{{{0,1},{1,2}},{{3,4},{5,6}}}" ), QStringLiteral( "_integer" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QStringList, QMetaType::Type::QString, u"{{{0,1},{1,2}},{{3,4},{5,6}}}"_s, u"_integer"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QStringList );
 
   QVariantList expected;
@@ -162,7 +163,7 @@ void TestQgsPostgresProvider::decode3DimensionArray()
 
 void TestQgsPostgresProvider::decodeJsonList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "[1,2,3]" ), QStringLiteral( "json" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"[1,2,3]"_s, u"json"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantList );
 
   QVariantList expected;
@@ -175,7 +176,7 @@ void TestQgsPostgresProvider::decodeJsonList()
 
 void TestQgsPostgresProvider::decodeJsonbList()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "[1,2,3]" ), QStringLiteral( "jsonb" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"[1,2,3]"_s, u"jsonb"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantList );
 
   QVariantList expected;
@@ -188,48 +189,46 @@ void TestQgsPostgresProvider::decodeJsonbList()
 
 void TestQgsPostgresProvider::decodeJsonMap()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "json" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"{\"a\":1,\"b\":2}"_s, u"json"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "a" )] = "1";
-  expected[QStringLiteral( "b" )] = "2";
+  expected[u"a"_s] = "1";
+  expected[u"b"_s] = "2";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
 
 void TestQgsPostgresProvider::decodeJsonbMap()
 {
-  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, QStringLiteral( "{\"a\":1,\"b\":2}" ), QStringLiteral( "jsonb" ), nullptr );
+  const QVariant decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QVariantMap, QMetaType::Type::QString, u"{\"a\":1,\"b\":2}"_s, u"jsonb"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QVariantMap );
 
   QVariantMap expected;
-  expected[QStringLiteral( "a" )] = "1";
-  expected[QStringLiteral( "b" )] = "2";
+  expected[u"a"_s] = "1";
+  expected[u"b"_s] = "2";
   qDebug() << "actual: " << decoded;
   QCOMPARE( decoded.toMap(), expected );
 }
 
 void TestQgsPostgresProvider::testDecodeDateTimes()
 {
-
   QVariant decoded;
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, QStringLiteral( "2020-06-08 18:30:35.496438+02" ), QStringLiteral( "timestamptz" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, u"2020-06-08 18:30:35.496438+02"_s, u"timestamptz"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QDateTime );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, QStringLiteral( "18:29:27.569401+02" ), QStringLiteral( "timetz" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, u"18:29:27.569401+02"_s, u"timetz"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QTime );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDate, QMetaType::Type::UnknownType, QStringLiteral( "2020-06-08" ), QStringLiteral( "date" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDate, QMetaType::Type::UnknownType, u"2020-06-08"_s, u"date"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QDate );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, QStringLiteral( "2020-06-08 18:30:35.496438" ), QStringLiteral( "timestamp" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QDateTime, QMetaType::Type::UnknownType, u"2020-06-08 18:30:35.496438"_s, u"timestamp"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QDateTime );
 
-  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, QStringLiteral( "18:29:27.569401" ), QStringLiteral( "time" ), nullptr );
+  decoded = QgsPostgresProvider::convertValue( QMetaType::Type::QTime, QMetaType::Type::UnknownType, u"18:29:27.569401"_s, u"time"_s, nullptr );
   QCOMPARE( static_cast<QMetaType::Type>( decoded.userType() ), QMetaType::Type::QTime );
-
 }
 
 void TestQgsPostgresProvider::testQuotedValueBigInt()
@@ -238,7 +237,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   QList<int> pkAttrs;
   QVariantList vlst;
 
-  const std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
+  const std::shared_ptr<QgsPostgresSharedData> sdata( new QgsPostgresSharedData() );
 
   QgsField f0, f1, f2, f3;
 
@@ -254,7 +253,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   // for positive integers, fid  == the value, there is no map.
   sdata->insertFid( 42, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 42, fields, NULL, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_integer\"=42" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 42, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_integer\"=42" ) );
 
   // 8 byte integer
   f1.setName( "fld_bigint" );
@@ -272,7 +271,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800" ) );
 
   // double
   f2.setName( "fld_double" );
@@ -290,7 +289,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"='3.141592741'" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_double\"='3.141592741'" ) );
 
   // text
   f3.setName( "fld_text" );
@@ -308,7 +307,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_text\"::text='QGIS ''Rocks''!'" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_text\"::text='QGIS ''Rocks''!'" ) );
 
   // Composite bigint + text + int
   pkAttrs.clear();
@@ -330,7 +329,7 @@ void TestQgsPostgresProvider::testQuotedValueBigInt()
   sdata->clear();
   sdata->insertFid( 1LL, vlst );
 
-  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800 AND \"fld_text\"::text='QGIS ''Rocks''!' AND \"fld_integer\"=42" ) );
+  QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QString( "\"fld_bigint\"=-9223372036854775800 AND \"fld_text\"::text='QGIS ''Rocks''!' AND \"fld_integer\"=42" ) );
 }
 
 void TestQgsPostgresProvider::testWhereClauseFids()
@@ -340,39 +339,39 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   QgsFields fields;
   QList<int> pkAttrs;
 
-  const std::shared_ptr< QgsPostgresSharedData > sdata( new QgsPostgresSharedData() );
+  const std::shared_ptr<QgsPostgresSharedData> sdata( new QgsPostgresSharedData() );
 
   QgsField f0, f1, f2, f3;
 
   // need regular expression to check IN/OR because QgsFeatureIds is a set and ids could come
   // in various order
 
-#define CHECK_IN_CLAUSE(whereClause,expectedValues)                     \
-  {                                                                     \
-    QRegularExpression inRe("\\\"fld\\\" IN \\(([^,]*),([^,]*)\\)");    \
-    QVERIFY(inRe.isValid());                                            \
-    QRegularExpressionMatch match = inRe.match( whereClause );          \
-    QVERIFY( match.hasMatch() );                                        \
-    QStringList values;                                                 \
-    values << match.captured(1);                                        \
-    values << match.captured(2);                                        \
-    std::sort( values.begin(), values.end() );                          \
-    QCOMPARE( values, expectedValues );                                 \
+#define CHECK_IN_CLAUSE( whereClause, expectedValues )                 \
+  {                                                                    \
+    QRegularExpression inRe( "\\\"fld\\\" IN \\(([^,]*),([^,]*)\\)" ); \
+    QVERIFY( inRe.isValid() );                                         \
+    QRegularExpressionMatch match = inRe.match( whereClause );         \
+    QVERIFY( match.hasMatch() );                                       \
+    QStringList values;                                                \
+    values << match.captured( 1 );                                     \
+    values << match.captured( 2 );                                     \
+    std::sort( values.begin(), values.end() );                         \
+    QCOMPARE( values, expectedValues );                                \
   }
 
   // QRegularExpression inOr("\\(\\\"fld\\\"=([^,]*) OR \\\"fld\\\"=([^,]*)\\)");
 
-#define CHECK_OR_CLAUSE(whereClause,expectedValues)                     \
-  {                                                                     \
-    QRegularExpression inOr("\\((.*) OR (.*)\\)");                      \
-    QVERIFY(inOr.isValid());                                            \
-    QRegularExpressionMatch match = inOr.match( whereClause );          \
-    QVERIFY( match.hasMatch() );                                        \
-    QStringList values;                                                 \
-    values << match.captured(1);                                        \
-    values << match.captured(2);                                        \
-    std::sort( values.begin(), values.end() );                          \
-    QCOMPARE( values, expectedValues );                                 \
+#define CHECK_OR_CLAUSE( whereClause, expectedValues )         \
+  {                                                            \
+    QRegularExpression inOr( "\\((.*) OR (.*)\\)" );           \
+    QVERIFY( inOr.isValid() );                                 \
+    QRegularExpressionMatch match = inOr.match( whereClause ); \
+    QVERIFY( match.hasMatch() );                               \
+    QStringList values;                                        \
+    values << match.captured( 1 );                             \
+    values << match.captured( 2 );                             \
+    std::sort( values.begin(), values.end() );                 \
+    QCOMPARE( values, expectedValues );                        \
   }
 
   // 4 byte integer -> IN clause
@@ -387,8 +386,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 42, QVariantList() << 42 );
   sdata->insertFid( 43, QVariantList() << 43 );
 
-  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 42 << 43, fields, NULL, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
-                   QStringList() << "42" << "43" );
+  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 42 << 43, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "42" << "43" );
 
   // 8 byte integer -> IN clause
   f1.setName( "fld" );
@@ -405,8 +403,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << -9223372036854775800LL ); // way outside int4 range
   sdata->insertFid( 2LL, QVariantList() << -9223372036854775801LL );
 
-  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
-                   QStringList() << "-9223372036854775800" << "-9223372036854775801" );
+  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktInt64, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "-9223372036854775800" << "-9223372036854775801" );
 
   // double -> OR clause
   f2.setName( "fld" );
@@ -423,8 +420,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << 3.141592741 );
   sdata->insertFid( 2LL, QVariantList() << 6.141592741 );
 
-  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
-                   QStringList() << "\"fld\"='3.141592741'" << "\"fld\"='6.141592741'" );
+  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "\"fld\"='3.141592741'" << "\"fld\"='6.141592741'" );
 
   // text -> IN clause
   f3.setName( "fld" );
@@ -441,8 +437,7 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << QString( "QGIS 'Rocks'!" ) );
   sdata->insertFid( 2LL, QVariantList() << QString( "PostGIS too!" ) );
 
-  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
-                   QStringList() << "'PostGIS too!'" << "'QGIS ''Rocks''!'" );
+  CHECK_IN_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "'PostGIS too!'" << "'QGIS ''Rocks''!'" );
 
   // Composite text + int -> OR clause
   f0.setName( "fld_int" );
@@ -458,9 +453,8 @@ void TestQgsPostgresProvider::testWhereClauseFids()
   sdata->insertFid( 1LL, QVariantList() << 42 << QString( "QGIS 'Rocks'!" ) );
   sdata->insertFid( 2LL, QVariantList() << 43 << QString( "PostGIS too!" ) );
 
-  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ),
-                   QStringList() << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
-                   << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'" );
+  CHECK_OR_CLAUSE( QgsPostgresUtils::whereClause( QgsFeatureIds() << 1LL << 2LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( sdata ) ), QStringList() << "\"fld_int\"=42 AND \"fld\"::text='QGIS ''Rocks''!'"
+                                                                                                                                                                                                                  << "\"fld_int\"=43 AND \"fld\"::text='PostGIS too!'" );
 }
 
 #ifdef ENABLE_PGTEST
@@ -474,7 +468,7 @@ void TestQgsPostgresProvider::testEwktInOut()
   QString ewkt_obtained;
 
   g = QgsPostgresProvider::fromEwkt( "SRID=4326;LINESTRING(0 0,-5 2)", conn );
-  QVERIFY( ! g.isNull() );
+  QVERIFY( !g.isNull() );
   QCOMPARE( g.crs().authid(), "EPSG:4326" );
   ewkt_obtained = QgsPostgresProvider::toEwkt( g, conn );
   QCOMPARE( ewkt_obtained, "SRID=4326;LineString (0 0, -5 2)" );
@@ -482,11 +476,10 @@ void TestQgsPostgresProvider::testEwktInOut()
   // Test for srid-less geometry
   // See https://github.com/qgis/QGIS/issues/49380#issuecomment-1282913470
   g = QgsPostgresProvider::fromEwkt( "POINT(0 0)", conn );
-  QVERIFY( ! g.isNull() );
+  QVERIFY( !g.isNull() );
   ewkt_obtained = QgsPostgresProvider::toEwkt( g, conn );
-  QVERIFY( ! g.crs().isValid() ); // is unknown
+  QVERIFY( !g.crs().isValid() ); // is unknown
   QCOMPARE( ewkt_obtained, QString( "SRID=0;Point (0 0)" ) );
-
 }
 #endif // ENABLE_PGTEST
 

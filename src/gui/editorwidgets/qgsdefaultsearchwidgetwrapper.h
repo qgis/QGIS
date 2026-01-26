@@ -16,23 +16,24 @@
 #ifndef QGSDEFAULTSEARCHWIDGETWRAPPER_H
 #define QGSDEFAULTSEARCHWIDGETWRAPPER_H
 
-#include "qgssearchwidgetwrapper.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsfilterlineedit.h"
+#include "qgssearchwidgetwrapper.h"
 
 #include <QCheckBox>
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui
- * \brief Wraps a search widget. Default form is just a QgsLineFilterEdit
+ * \brief Wraps a search widget.
+ *
+ * Default form is just a QgsLineFilterEdit
  */
 
 class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsDefaultSearchWidgetWrapper
     explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

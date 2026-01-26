@@ -14,7 +14,8 @@
 class QgsPointCloudAttributeByRampRenderer : QgsPointCloudRenderer
 {
 %Docstring(signature="appended")
-An RGB renderer for 2d visualisation of point clouds using embedded red, green and blue attributes.
+An RGB renderer for 2d visualisation of point clouds using embedded red,
+green and blue attributes.
 
 .. versionadded:: 3.18
 %End
@@ -77,7 +78,8 @@ Sets the color ramp ``shader`` function used to visualize the attribute.
 
     double minimum() const;
 %Docstring
-Returns the minimum value for attributes which will be used by the color ramp shader.
+Returns the minimum value for attributes which will be used by the color
+ramp shader.
 
 .. seealso:: :py:func:`setMinimum`
 
@@ -86,7 +88,8 @@ Returns the minimum value for attributes which will be used by the color ramp sh
 
     void setMinimum( double minimum );
 %Docstring
-Sets the ``minimum`` value for attributes which will be used by the color ramp shader.
+Sets the ``minimum`` value for attributes which will be used by the
+color ramp shader.
 
 .. seealso:: :py:func:`minimum`
 
@@ -95,7 +98,8 @@ Sets the ``minimum`` value for attributes which will be used by the color ramp s
 
     double maximum() const;
 %Docstring
-Returns the maximum value for attributes which will be used by the color ramp shader.
+Returns the maximum value for attributes which will be used by the color
+ramp shader.
 
 .. seealso:: :py:func:`setMaximum`
 
@@ -104,7 +108,8 @@ Returns the maximum value for attributes which will be used by the color ramp sh
 
     void setMaximum( double maximum );
 %Docstring
-Sets the ``maximum`` value for attributes which will be used by the color ramp shader.
+Sets the ``maximum`` value for attributes which will be used by the
+color ramp shader.
 
 .. seealso:: :py:func:`maximum`
 

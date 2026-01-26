@@ -19,11 +19,10 @@
 #define QGSALLLAYERSFEATURESLOCATORFILTERS_H
 
 #include "qgis_app.h"
-#include "qgslocatorfilter.h"
 #include "qgsexpression.h"
 #include "qgsfeaturerequest.h"
+#include "qgslocatorfilter.h"
 #include "qgsvectorlayerfeatureiterator.h"
-
 
 class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
 {
@@ -32,16 +31,16 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
   public:
     QgsAllLayersFeaturesLocatorFilter( QObject *parent = nullptr );
     QgsAllLayersFeaturesLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "allfeatures" ); }
+    QString name() const override { return u"allfeatures"_s; }
     QString displayName() const override { return tr( "Features in All Layers" ); }
     Priority priority() const override { return Medium; }
-    QString prefix() const override { return QStringLiteral( "af" ); }
+    QString prefix() const override { return u"af"_s; }
 
     QStringList prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
     void triggerResultFromAction( const QgsLocatorResult &result, const int actionId ) override;
-    bool hasConfigWidget() const override {return true;}
+    bool hasConfigWidget() const override { return true; }
     void openConfigWidget( QWidget *parent ) override;
 
   private:
@@ -72,12 +71,16 @@ class APP_EXPORT QgsAllLayersFeaturesLocatorFilter : public QgsLocatorFilter
         ResultData( QgsFeatureId id, const QString &layerId, bool layerIsSpatial )
           : mId( id ), mLayerId( layerId ), mLayerIsSpatial( layerIsSpatial ) {}
 
-        QgsFeatureId id() const {return mId;}
-        QString layerId() const {return mLayerId;}
-        bool layerIsSpatial() const {return mLayerIsSpatial;}
+        QgsFeatureId id() const { return mId; }
+        QString layerId() const { return mLayerId; }
+        bool layerIsSpatial() const { return mLayerIsSpatial; }
 
-        QVariant toVariant() const {return QVariantList() << mId << mLayerId << mLayerIsSpatial;}
-        static ResultData fromVariant( QVariant const &value ) {QList dataList = value.toList(); return ResultData( dataList.at( 0 ).toLongLong(), dataList.at( 1 ).toString(), dataList.at( 2 ).toBool() );}
+        QVariant toVariant() const { return QVariantList() << mId << mLayerId << mLayerIsSpatial; }
+        static ResultData fromVariant( QVariant const &value )
+        {
+          QList dataList = value.toList();
+          return ResultData( dataList.at( 0 ).toLongLong(), dataList.at( 1 ).toString(), dataList.at( 2 ).toBool() );
+        }
 
       private:
         QgsFeatureId mId;

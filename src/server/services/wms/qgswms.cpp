@@ -19,25 +19,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmodule.h"
 #include "qgsdxfwriter.h"
+#include "qgsmodule.h"
 #include "qgspdfwriter.h"
-#include "qgswmsserviceexception.h"
-#include "qgswmsgetcapabilities.h"
-#include "qgswmsgetmap.h"
-#include "qgswmsgetstyles.h"
-#include "qgswmsgetcontext.h"
-#include "qgswmsgetschemaextension.h"
-#include "qgswmsgetprint.h"
-#include "qgswmsgetfeatureinfo.h"
 #include "qgswmsdescribelayer.h"
+#include "qgswmsgetcapabilities.h"
+#include "qgswmsgetcontext.h"
+#include "qgswmsgetfeatureinfo.h"
 #include "qgswmsgetlegendgraphics.h"
+#include "qgswmsgetmap.h"
+#include "qgswmsgetprint.h"
+#include "qgswmsgetschemaextension.h"
+#include "qgswmsgetstyles.h"
 #include "qgswmsparameters.h"
 #include "qgswmsrequest.h"
+#include "qgswmsserviceexception.h"
 #include "qgswmsutils.h"
 
-#define QSTR_COMPARE( str, lit )\
-  (str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0)
+#define QSTR_COMPARE( str, lit ) \
+  ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
 
 namespace QgsWms
 {
@@ -48,10 +48,9 @@ namespace QgsWms
    * \brief OGC web service specialized for WMS
    * \since QGIS 3.0
    */
-  class Service: public QgsService
+  class Service : public QgsService
   {
     public:
-
       /**
        * Constructor for WMS service.
        * \param version Version of the WMS service.
@@ -62,11 +61,10 @@ namespace QgsWms
         , mServerIface( serverIface )
       {}
 
-      QString name()    const override { return QStringLiteral( "WMS" ); }
+      QString name() const override { return u"WMS"_s; }
       QString version() const override { return mVersion; }
 
-      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
-                           const QgsProject *project ) override
+      void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) override
       {
         // Get the request
         const QgsWmsRequest wmsRequest( request );
@@ -74,8 +72,7 @@ namespace QgsWms
 
         if ( req.isEmpty() )
         {
-          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
-                                     QStringLiteral( "Please add or check the value of the REQUEST parameter" ), 501 );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, u"Please add or check the value of the REQUEST parameter"_s, 501 );
         }
 
         if ( QSTR_COMPARE( req, "GetCapabilities" ) )
@@ -88,11 +85,11 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetMap" ) )
         {
-          if QSTR_COMPARE( wmsRequest.wmsParameters().formatAsString(), "application/dxf" )
+          if QSTR_COMPARE ( wmsRequest.wmsParameters().formatAsString(), "application/dxf" )
           {
             writeAsDxf( mServerIface, project, request, response );
           }
-          else if QSTR_COMPARE( wmsRequest.wmsParameters().formatAsString(), "application/pdf" )
+          else if QSTR_COMPARE ( wmsRequest.wmsParameters().formatAsString(), "application/pdf" )
           {
             writeAsPdf( mServerIface, project, request, response );
           }
@@ -130,17 +127,15 @@ namespace QgsWms
           if ( mServerIface->serverSettings() && mServerIface->serverSettings()->getPrintDisabled() )
           {
             // GetPrint has been disabled
-            QgsDebugError( QStringLiteral( "WMS GetPrint request called, but it has been disabled." ) );
-            throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
-                                       QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+            QgsDebugError( u"WMS GetPrint request called, but it has been disabled."_s );
+            throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, u"Request %1 is not supported"_s.arg( req ), 501 );
           }
           writeGetPrint( mServerIface, project, request, response );
         }
         else
         {
           // Operation not supported
-          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported,
-                                     QStringLiteral( "Request %1 is not supported" ).arg( req ), 501 );
+          throw QgsServiceException( QgsServiceException::OGC_OperationNotSupported, u"Request %1 is not supported"_s.arg( req ), 501 );
         }
       }
 
@@ -156,14 +151,14 @@ namespace QgsWms
  * \brief Module specialized for WMS service
  * \since QGIS 3.0
  */
-class QgsWmsModule: public QgsServiceModule
+class QgsWmsModule : public QgsServiceModule
 {
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsDebugMsgLevel( QStringLiteral( "WMSModule::registerSelf called" ), 2 );
-      registry.registerService( new  QgsWms::Service( QgsWms::implementationVersion(), serverIface ) ); // 1.3.0 default version
-      registry.registerService( new  QgsWms::Service( QStringLiteral( "1.1.1" ), serverIface ) ); // second supported version
+      QgsDebugMsgLevel( u"WMSModule::registerSelf called"_s, 2 );
+      registry.registerService( new QgsWms::Service( QgsWms::implementationVersion(), serverIface ) ); // 1.3.0 default version
+      registry.registerService( new QgsWms::Service( u"1.1.1"_s, serverIface ) );                      // second supported version
     }
 };
 

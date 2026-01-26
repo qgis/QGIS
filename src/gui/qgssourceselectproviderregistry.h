@@ -16,12 +16,12 @@
 #ifndef QGSSOURCESELECTPROVIDERREGISTRY_H
 #define QGSSOURCESELECTPROVIDERREGISTRY_H
 
-#include <QList>
-#include <QObject>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
 #include "qgsproviderregistry.h"
+
+#include <QList>
+#include <QObject>
 
 class QgsSourceSelectProvider;
 class QgsProviderGuiRegistry;
@@ -29,7 +29,9 @@ class QgsAbstractDataSourceWidget;
 
 /**
  * \ingroup gui
- * \brief This class keeps a list of source select providers that may add items to the QgsDataSourceManagerDialog
+ * \brief A registry for QgsSourceSelectProvider source select providers.
+ *
+ * This class keeps a list of source select providers that may add items to the QgsDataSourceManagerDialog
  * When created, it automatically adds providers from data provider plugins (e.g. PostGIS, WMS, ...)
  *
  * QgsSourceSelectProviderRegistry is not usually directly created, but rather accessed through
@@ -41,15 +43,14 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
     Q_OBJECT
 
   public:
-
     QgsSourceSelectProviderRegistry();
-    ~QgsSourceSelectProviderRegistry();
+    ~QgsSourceSelectProviderRegistry() override;
 
     QgsSourceSelectProviderRegistry( const QgsSourceSelectProviderRegistry &rh ) = delete;
     QgsSourceSelectProviderRegistry &operator=( const QgsSourceSelectProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers
-    QList< QgsSourceSelectProvider *> providers();
+    QList<QgsSourceSelectProvider *> providers();
 
     //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsSourceSelectProvider *provider SIP_TRANSFER );
@@ -110,7 +111,6 @@ class GUI_EXPORT QgsSourceSelectProviderRegistry : public QObject
 
     //! available providers. this class owns the pointers
     QList<QgsSourceSelectProvider *> mProviders;
-
 };
 
 #endif // QGSSOURCESELECTPROVIDERREGISTRY_H

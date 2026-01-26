@@ -19,18 +19,19 @@
  *                                                                         *
  ***************************************************************************/
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerRequest;
+class QgsServerSettings;
+class QgsServerResponse;
+
 namespace QgsWms
 {
+  class QgsWmsRequest;
 
   /**
    * Output GetPrint response
    */
-  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
-                      const QgsWmsRequest &request,
-                      QgsServerResponse &response );
+  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
 
 } // namespace QgsWms
-
-
-
-

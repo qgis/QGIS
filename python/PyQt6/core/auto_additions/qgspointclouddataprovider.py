@@ -4,6 +4,7 @@ QgsPointCloudDataProvider.ReadLayerMetadata = QgsPointCloudDataProvider.Capabili
 QgsPointCloudDataProvider.WriteLayerMetadata = QgsPointCloudDataProvider.Capability.WriteLayerMetadata
 QgsPointCloudDataProvider.CreateRenderer = QgsPointCloudDataProvider.Capability.CreateRenderer
 QgsPointCloudDataProvider.ContainSubIndexes = QgsPointCloudDataProvider.Capability.ContainSubIndexes
+QgsPointCloudDataProvider.ChangeAttributeValues = QgsPointCloudDataProvider.Capability.ChangeAttributeValues
 QgsPointCloudDataProvider.Capabilities = lambda flags=0: QgsPointCloudDataProvider.Capability(flags)
 QgsPointCloudDataProvider.NotIndexed = QgsPointCloudDataProvider.PointCloudIndexGenerationState.NotIndexed
 QgsPointCloudDataProvider.Indexing = QgsPointCloudDataProvider.PointCloudIndexGenerationState.Indexing
@@ -14,7 +15,10 @@ try:
     QgsPointCloudDataProvider.translatedLasClassificationCodes = staticmethod(QgsPointCloudDataProvider.translatedLasClassificationCodes)
     QgsPointCloudDataProvider.dataFormatIds = staticmethod(QgsPointCloudDataProvider.dataFormatIds)
     QgsPointCloudDataProvider.translatedDataFormatIds = staticmethod(QgsPointCloudDataProvider.translatedDataFormatIds)
+    QgsPointCloudDataProvider.__virtual_methods__ = ['capabilities', 'index', 'polygonBounds', 'originalMetadata', 'createRenderer']
+    QgsPointCloudDataProvider.__abstract_methods__ = ['attributes', 'loadIndex', 'generateIndex', 'indexingState', 'pointCount']
+    QgsPointCloudDataProvider.__overridden_methods__ = ['supportsSubsetString', 'subsetStringDialect', 'subsetStringHelpUrl', 'subsetString', 'setSubsetString']
     QgsPointCloudDataProvider.__signal_arguments__ = {'indexGenerationStateChanged': ['state: QgsPointCloudDataProvider.PointCloudIndexGenerationState']}
     QgsPointCloudDataProvider.__group__ = ['pointcloud']
-except NameError:
+except (NameError, AttributeError):
     pass

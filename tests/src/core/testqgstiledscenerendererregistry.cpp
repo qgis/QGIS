@@ -15,25 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstiledscenerendererregistry.h"
-#include "qgstiledscenerenderer.h"
 #include "qgsreadwritecontext.h"
+#include "qgstest.h"
+#include "qgstiledscenerenderer.h"
+#include "qgstiledscenerendererregistry.h"
 
 #include <QObject>
-#include "qgstest.h"
 
 //dummy renderer for testing
 class DummyRenderer : public QgsTiledSceneRenderer
 {
   public:
     DummyRenderer() = default;
-    QString type() const override { return QStringLiteral( "dummy" ); }
+    QString type() const override { return u"dummy"_s; }
     QgsTiledSceneRenderer *clone() const override { return new DummyRenderer(); }
     static QgsTiledSceneRenderer *create( QDomElement &, const QgsReadWriteContext & ) { return new DummyRenderer(); }
-    QDomElement save( QDomDocument &doc, const QgsReadWriteContext & ) const override { return doc.createElement( QStringLiteral( "test" ) ); }
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext & ) const override { return doc.createElement( u"test"_s ); }
     void renderTriangle( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};
     void renderLine( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};
-
 };
 
 class TestQgsTiledSceneRendererRegistry : public QObject
@@ -52,7 +51,6 @@ class TestQgsTiledSceneRendererRegistry : public QObject
     void fetchTypes();
 
   private:
-
 };
 
 void TestQgsTiledSceneRendererRegistry::initTestCase()
@@ -68,23 +66,21 @@ void TestQgsTiledSceneRendererRegistry::cleanupTestCase()
 
 void TestQgsTiledSceneRendererRegistry::init()
 {
-
 }
 
 void TestQgsTiledSceneRendererRegistry::cleanup()
 {
-
 }
 
 void TestQgsTiledSceneRendererRegistry::metadata()
 {
-  QgsTiledSceneRendererMetadata metadata = QgsTiledSceneRendererMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ), DummyRenderer::create, QIcon() );
+  QgsTiledSceneRendererMetadata metadata = QgsTiledSceneRendererMetadata( u"name"_s, u"display name"_s, DummyRenderer::create, QIcon() );
   QCOMPARE( metadata.name(), QString( "name" ) );
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating renderer from metadata
   QDomElement elem;
-  const std::unique_ptr< QgsTiledSceneRenderer > renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
+  const std::unique_ptr<QgsTiledSceneRenderer> renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
   QVERIFY( renderer );
   DummyRenderer *dummyRenderer = dynamic_cast<DummyRenderer *>( renderer.get() );
   QVERIFY( dummyRenderer );
@@ -109,11 +105,11 @@ void TestQgsTiledSceneRendererRegistry::addRenderer()
   QgsTiledSceneRendererRegistry *registry = QgsApplication::tiledSceneRendererRegistry();
   const int previousCount = registry->renderersList().length();
 
-  registry->addRenderer( new QgsTiledSceneRendererMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy renderer" ), DummyRenderer::create, QIcon() ) );
+  registry->addRenderer( new QgsTiledSceneRendererMetadata( u"Dummy"_s, u"Dummy renderer"_s, DummyRenderer::create, QIcon() ) );
   QCOMPARE( registry->renderersList().length(), previousCount + 1 );
   //try adding again, should have no effect
-  QgsTiledSceneRendererMetadata *dupe = new QgsTiledSceneRendererMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), DummyRenderer::create, QIcon() );
-  QVERIFY( ! registry->addRenderer( dupe ) );
+  QgsTiledSceneRendererMetadata *dupe = new QgsTiledSceneRendererMetadata( u"Dummy"_s, u"Dummy callout"_s, DummyRenderer::create, QIcon() );
+  QVERIFY( !registry->addRenderer( dupe ) );
   QCOMPARE( registry->renderersList().length(), previousCount + 1 );
   delete dupe;
 
@@ -129,11 +125,11 @@ void TestQgsTiledSceneRendererRegistry::fetchTypes()
 
   QVERIFY( types.contains( "Dummy" ) );
 
-  QgsTiledSceneRendererAbstractMetadata *metadata = registry->rendererMetadata( QStringLiteral( "Dummy" ) );
+  QgsTiledSceneRendererAbstractMetadata *metadata = registry->rendererMetadata( u"Dummy"_s );
   QCOMPARE( metadata->name(), QString( "Dummy" ) );
 
   //metadata for bad renderer
-  metadata = registry->rendererMetadata( QStringLiteral( "bad renderer" ) );
+  metadata = registry->rendererMetadata( u"bad renderer"_s );
   QVERIFY( !metadata );
 }
 

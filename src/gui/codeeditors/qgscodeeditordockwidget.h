@@ -36,13 +36,12 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsCodeEditorDockWidget, with the specified window geometry settings key.
      *
      * If \a usePersistentWidget is TRUE then the widget (either as a dock or window) cannot be destroyed and must be hidden instead.
      */
-    QgsCodeEditorDockWidget( const QString &windowGeometrySettingsKey = QString(), bool usePersistentWidget = false );
+    QgsCodeEditorDockWidget( const QString &dockId = QString(), bool usePersistentWidget = false );
     ~QgsCodeEditorDockWidget() override;
 
     /**
@@ -78,11 +77,8 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
     void visibilityChanged( bool isVisible );
 
   private:
-
-    QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
+    std::unique_ptr<QgsDockableWidgetHelper> mDockableWidgetHelper;
     QToolButton *mDockToggleButton = nullptr;
-
-
 };
 
 #endif // QGSCODEEDITORDOCKWIDGET_H

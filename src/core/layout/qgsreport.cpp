@@ -15,7 +15,10 @@
  ***************************************************************************/
 
 #include "qgsreport.h"
+
 #include "qgslayout.h"
+
+#include "moc_qgsreport.cpp"
 
 ///@cond NOT_STABLE
 
@@ -26,12 +29,12 @@ QgsReport::QgsReport( QgsProject *project )
 
 QIcon QgsReport::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconReport.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconReport.svg"_s );
 }
 
 QgsReport *QgsReport::clone() const
 {
-  std::unique_ptr< QgsReport > copy = std::make_unique< QgsReport >( mProject );
+  auto copy = std::make_unique< QgsReport >( mProject );
   copyCommonProperties( copy.get() );
   return copy.release();
 }
@@ -44,20 +47,20 @@ void QgsReport::setName( const QString &name )
 
 QDomElement QgsReport::writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  QDomElement element = document.createElement( QStringLiteral( "Report" ) );
+  QDomElement element = document.createElement( u"Report"_s );
   writeXml( element, document, context );
-  element.setAttribute( QStringLiteral( "name" ), mName );
+  element.setAttribute( u"name"_s, mName );
   return element;
 }
 
 bool QgsReport::readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
 {
-  const QDomNodeList sectionList = layoutElement.elementsByTagName( QStringLiteral( "Section" ) );
+  const QDomNodeList sectionList = layoutElement.elementsByTagName( u"Section"_s );
   if ( sectionList.count() > 0 )
   {
     readXml( sectionList.at( 0 ).toElement(), document, context );
   }
-  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
+  setName( layoutElement.attribute( u"name"_s ) );
   return true;
 }
 

@@ -14,22 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsnewnamedialog.h"
+
+#include "qgslogger.h"
+
+#include <QCompleter>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRegularExpressionValidator>
 #include <QSizePolicy>
 
-#include "qgslogger.h"
-#include "qgsnewnamedialog.h"
+#include "moc_qgsnewnamedialog.cpp"
 
-QgsNewNameDialog::QgsNewNameDialog( const QString &source,
-                                    const QString &initial,
-                                    const QStringList &extensions,
-                                    const QStringList &existing,
-                                    Qt::CaseSensitivity cs,
-                                    QWidget *parent,
-                                    Qt::WindowFlags flags )
+QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initial, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs, QWidget *parent, Qt::WindowFlags flags )
   : QgsDialog( parent, flags, QDialogButtonBox::Ok | QDialogButtonBox::Cancel )
   , mExiting( existing )
   , mExtensions( extensions )
@@ -60,7 +58,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source,
   connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::newNameChanged );
   layout()->addWidget( mLineEdit );
 
-  mNamesLabel = new QLabel( QStringLiteral( " " ), this );
+  mNamesLabel = new QLabel( u" "_s, this );
   mNamesLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   if ( !mExtensions.isEmpty() )
   {
@@ -68,7 +66,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source,
     layout()->addWidget( mNamesLabel );
   }
 
-  mErrorLabel = new QLabel( QStringLiteral( " " ), this );
+  mErrorLabel = new QLabel( u" "_s, this );
   mErrorLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mErrorLabel->setWordWrap( true );
   layout()->addWidget( mErrorLabel );
@@ -123,6 +121,20 @@ void QgsNewNameDialog::setRegularExpression( const QString &expression )
   nameChanged();
 }
 
+void QgsNewNameDialog::setShowExistingNamesCompleter( bool show )
+{
+  if ( !show )
+  {
+    mLineEdit->setCompleter( nullptr );
+    return;
+  }
+
+  QCompleter *completer = new QCompleter( mExiting, this );
+  completer->setCaseSensitivity( Qt::CaseInsensitive );
+  completer->setCompletionMode( QCompleter::UnfilteredPopupCompletion );
+  mLineEdit->setCompleter( completer );
+}
+
 QString QgsNewNameDialog::highlightText( const QString &text )
 {
   return "<b>" + text + "</b>";
@@ -135,7 +147,7 @@ void QgsNewNameDialog::nameChanged()
   {
     mNamesLabel->setText( namesString );
   }
-  mErrorLabel->setText( QStringLiteral( " " ) ); // space to keep vertical space
+  mErrorLabel->setText( u" "_s ); // space to keep vertical space
   QPushButton *okButton = buttonBox()->button( QDialogButtonBox::Ok );
   okButton->setText( mOkString );
   okButton->setEnabled( true );
@@ -152,7 +164,7 @@ void QgsNewNameDialog::nameChanged()
   const QStringList newNames = fullNames( newName, mExtensions );
   if ( !mExtensions.isEmpty() )
   {
-    namesString += ' ' + newNames.join( QLatin1String( ", " ) );
+    namesString += ' ' + newNames.join( ", "_L1 );
     mNamesLabel->setText( namesString );
   }
 
@@ -161,7 +173,7 @@ void QgsNewNameDialog::nameChanged()
   if ( !conflicts.isEmpty() )
   {
     const QString warning = !mConflictingNameWarning.isEmpty() ? mConflictingNameWarning
-                            : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( QLatin1String( ", " ) ) );
+                                                               : tr( "%n Name(s) %1 exists", nullptr, conflicts.size() ).arg( conflicts.join( ", "_L1 ) );
     mErrorLabel->setText( highlightText( warning ) );
     if ( mOverwriteEnabled )
     {
@@ -187,7 +199,6 @@ QStringList QgsNewNameDialog::fullNames( const QString &name, const QStringList 
   for ( const QString &ext : constExtensions )
   {
     list << name + ext;
-
   }
   if ( list.isEmpty() )
   {
@@ -196,8 +207,7 @@ QStringList QgsNewNameDialog::fullNames( const QString &name, const QStringList 
   return list;
 }
 
-QStringList QgsNewNameDialog::matching( const QStringList &newNames, const QStringList &existingNames,
-                                        Qt::CaseSensitivity cs )
+QStringList QgsNewNameDialog::matching( const QStringList &newNames, const QStringList &existingNames, Qt::CaseSensitivity cs )
 {
   QStringList list;
 
@@ -216,8 +226,7 @@ QStringList QgsNewNameDialog::matching( const QStringList &newNames, const QStri
   return list;
 }
 
-bool QgsNewNameDialog::exists( const QString &name, const QStringList &extensions,
-                               const QStringList &existing, Qt::CaseSensitivity cs )
+bool QgsNewNameDialog::exists( const QString &name, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs )
 {
   const QStringList newNames = fullNames( name, extensions );
   const QStringList conflicts = matching( newNames, existing, cs );

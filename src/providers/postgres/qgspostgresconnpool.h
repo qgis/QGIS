@@ -19,7 +19,6 @@
 #include "qgsconnectionpool.h"
 #include "qgspostgresconn.h"
 
-
 inline QString qgsConnectionPool_ConnectionToName( QgsPostgresConn *c )
 {
   return c->connInfo();
@@ -52,16 +51,19 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
     Q_OBJECT
 
   public:
-    explicit QgsPostgresConnPoolGroup( const QString &name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name ) { initTimer( this ); }
+    explicit QgsPostgresConnPoolGroup( const QString &name )
+      : QgsConnectionPoolGroup<QgsPostgresConn *>( name )
+    {
+      initTimer<QgsPostgresConnPoolGroup >( this );
+    }
 
-  protected slots:
+  public slots:
     void handleConnectionExpired() { onConnectionExpired(); }
     void startExpirationTimer() { expirationTimer->start(); }
     void stopExpirationTimer() { expirationTimer->stop(); }
 
   protected:
     Q_DISABLE_COPY( QgsPostgresConnPoolGroup )
-
 };
 
 //! PostgreSQL connection pool - singleton

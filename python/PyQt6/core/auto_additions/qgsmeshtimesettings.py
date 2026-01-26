@@ -5,5 +5,5 @@ QgsMeshTimeSettings.hours = QgsMeshTimeSettings.TimeUnit.hours
 QgsMeshTimeSettings.days = QgsMeshTimeSettings.TimeUnit.days
 try:
     QgsMeshTimeSettings.__group__ = ['mesh']
-except NameError:
+except (NameError, AttributeError):
     pass

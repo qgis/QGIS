@@ -18,8 +18,8 @@
 #define QGSPLUGINSORTFILTERPROXYMODEL_H
 
 #include <QSortFilterProxyModel>
-#include <QStringList>
 #include <QString>
+#include <QStringList>
 
 const int PLUGIN_BASE_NAME_ROLE = Qt::UserRole + 1;
 const int PLUGIN_DESCRIPTION_ROLE = Qt::UserRole + 2;  // for filtering
@@ -34,7 +34,6 @@ const int PLUGIN_STATUSEXP_ROLE = Qt::UserRole + 10;   // for filtering and sort
 const int PLUGIN_CREATE_DATE = Qt::UserRole + 11;      // for sorting
 const int PLUGIN_UPDATE_DATE = Qt::UserRole + 12;      // for sorting
 const int SPACER_ROLE = Qt::UserRole + 20;             // for sorting
-
 
 
 /**

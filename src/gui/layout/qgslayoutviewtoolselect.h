@@ -16,11 +16,12 @@
 #ifndef QGSLAYOUTVIEWTOOLSELECT_H
 #define QGSLAYOUTVIEWTOOLSELECT_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgslayoutviewtool.h"
-#include "qgslayoutviewrubberband.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgslayoutviewrubberband.h"
+#include "qgslayoutviewtool.h"
 
 class QgsLayoutMouseHandles;
 
@@ -30,11 +31,9 @@ class QgsLayoutMouseHandles;
  */
 class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewToolSelect.
      */
@@ -67,11 +66,10 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     double searchToleranceInLayoutUnits();
 
   private:
-
     bool mIsSelecting = false;
 
     //! Rubber band item
-    std::unique_ptr< QgsLayoutViewRubberBand > mRubberBand;
+    std::unique_ptr<QgsLayoutViewRubberBand> mRubberBand;
 
     //! Start position for mouse press
     QPoint mMousePressStartPos;
@@ -79,7 +77,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 
-    QPointer< QgsLayoutMouseHandles > mMouseHandles; //owned by scene
+    QPointer<QgsLayoutMouseHandles> mMouseHandles; //owned by scene
 
     //! Search tolerance in millimeters for selecting items
     static const double sSearchToleranceInMillimeters;

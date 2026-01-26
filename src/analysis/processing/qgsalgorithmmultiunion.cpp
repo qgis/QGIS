@@ -25,7 +25,7 @@
 
 QString QgsMultiUnionAlgorithm::name() const
 {
-  return QStringLiteral( "multiunion" );
+  return u"multiunion"_s;
 }
 
 QString QgsMultiUnionAlgorithm::displayName() const
@@ -45,7 +45,7 @@ QString QgsMultiUnionAlgorithm::group() const
 
 QString QgsMultiUnionAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectoroverlay" );
+  return u"vectoroverlay"_s;
 }
 
 QString QgsMultiUnionAlgorithm::shortHelpString() const
@@ -53,11 +53,17 @@ QString QgsMultiUnionAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm checks overlaps between features within the Input layer and creates separate features for overlapping "
                       "and non-overlapping parts. The area of overlap will create as many identical overlapping features as there are "
                       "features that participate in that overlap." )
-         + QStringLiteral( "\n\n" )
+         + u"\n\n"_s
          + QObject::tr( "Multiple Overlay layers can also be used, in which case features from each layer are split at their overlap with features from "
                         "all other layers, creating a layer containing all the portions from both Input and Overlay layers. "
                         "The attribute table of the Union layer is filled with attribute values from the respective original layer "
                         "for non-overlapping features, and attribute values from both layers for overlapping features." );
+}
+
+QString QgsMultiUnionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Checks overlaps between features on the same layer or on more layers "
+                      "and creates separate features for overlapping and non-overlapping parts." );
 }
 
 Qgis::ProcessingAlgorithmDocumentationFlags QgsMultiUnionAlgorithm::documentationFlags() const
@@ -72,23 +78,23 @@ QgsProcessingAlgorithm *QgsMultiUnionAlgorithm::createInstance() const
 
 void QgsMultiUnionAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "OVERLAYS" ), QObject::tr( "Overlay layers" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"OVERLAYS"_s, QObject::tr( "Overlay layers" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true ) );
 
-  std::unique_ptr< QgsProcessingParameterString > prefix = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), QObject::tr( "Overlay fields prefix" ), QString(), false, true );
+  auto prefix = std::make_unique<QgsProcessingParameterString>( u"OVERLAY_FIELDS_PREFIX"_s, QObject::tr( "Overlay fields prefix" ), QString(), false, true );
   prefix->setFlags( prefix->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( prefix.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Union" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Union" ) ) );
 }
 
 QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsFeatureSource > sourceA( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsFeatureSource> sourceA( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !sourceA )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "OVERLAYS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"OVERLAYS"_s, context );
 
   // loop through overlay layers and check whether they are vectors
   long totalLayerCount = 0;
@@ -108,8 +114,8 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   const Qgis::WkbType geometryType = QgsWkbTypes::multiType( sourceA->wkbType() );
   const QgsCoordinateReferenceSystem crs = sourceA->sourceCrs();
-  const QString overlayFieldsPrefix = parameterAsString( parameters, QStringLiteral( "OVERLAY_FIELDS_PREFIX" ), context );
-  std::unique_ptr< QgsFeatureSink > sink;
+  const QString overlayFieldsPrefix = parameterAsString( parameters, u"OVERLAY_FIELDS_PREFIX"_s, context );
+  std::unique_ptr<QgsFeatureSink> sink;
   QVariantMap outputs;
   bool ok;
 
@@ -117,13 +123,14 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
   {
     // we are doing single layer union
     QString dest;
-    std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, sourceA->fields(), geometryType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+    std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, sourceA->fields(), geometryType, sourceA->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
     if ( !sink )
-      throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-    outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+    outputs.insert( u"OUTPUT"_s, dest );
 
     QgsOverlayUtils::resolveOverlaps( *sourceA, *sink, feedback );
+    sink->finalize();
     return outputs;
   }
   else
@@ -143,13 +150,13 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
       if ( !layer )
         continue;
 
-      QgsVectorLayer *overlayLayer = qobject_cast< QgsVectorLayer * >( layer );
+      QgsVectorLayer *overlayLayer = qobject_cast<QgsVectorLayer *>( layer );
       if ( !overlayLayer )
         continue;
 
       if ( i == 0 )
       {
-        QString id = QStringLiteral( "memory:" );
+        QString id = u"memory:"_s;
         fields = QgsProcessingUtils::combineFields( sourceA->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
         ok = makeUnion( *sourceA, *overlayLayer, *sink, context, &multiStepFeedback );
@@ -157,7 +164,7 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
 
-        unionLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( id, context ) );
+        unionLayer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( id, context ) );
       }
       else if ( i == totalLayerCount - 1 )
       {
@@ -165,25 +172,25 @@ QVariantMap QgsMultiUnionAlgorithm::processAlgorithm( const QVariantMap &paramet
 
 
         QString dest;
-        std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, geometryType, crs, QgsFeatureSink::RegeneratePrimaryKey ) );
+        std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, fields, geometryType, crs, QgsFeatureSink::RegeneratePrimaryKey ) );
         if ( !sink )
-          throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+          throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-        outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+        outputs.insert( u"OUTPUT"_s, dest );
         ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
       }
       else
       {
-        QString id = QStringLiteral( "memory:" );
+        QString id = u"memory:"_s;
         fields = QgsProcessingUtils::combineFields( unionLayer->fields(), overlayLayer->fields(), overlayFieldsPrefix );
         sink.reset( QgsProcessingUtils::createFeatureSink( id, context, fields, geometryType, crs, QVariantMap(), QStringList(), QStringList(), QgsFeatureSink::RegeneratePrimaryKey ) );
         ok = makeUnion( *unionLayer, *overlayLayer, *sink, context, &multiStepFeedback );
         if ( !ok )
           throw QgsProcessingException( QObject::tr( "Interrupted by user." ) );
 
-        unionLayer = qobject_cast< QgsVectorLayer * >( QgsProcessingUtils::mapLayerFromString( id, context ) );
+        unionLayer = qobject_cast<QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( id, context ) );
       }
 
       i++;

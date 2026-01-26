@@ -30,10 +30,12 @@
 #ifndef QGSIMAGEDROPTEXTEDIT_H
 #define QGSIMAGEDROPTEXTEDIT_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QTextEdit>
-#include <memory>
 
 #define SIP_NO_FILE
 
@@ -64,8 +66,7 @@ class GUI_EXPORT QgsImageDropTextEdit : public QTextEdit
 
   private:
     QString mActiveAnchor;
-    std::unique_ptr< QgsTemporaryCursorOverride > mCursorOverride;
-
+    std::unique_ptr<QgsTemporaryCursorOverride> mCursorOverride;
 };
 ///@endcond
 

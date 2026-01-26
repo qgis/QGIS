@@ -15,7 +15,6 @@
 
 #include "qgsstacitem.h"
 
-
 QgsStacItem::QgsStacItem( const QString &id,
                           const QString &version,
                           const QgsGeometry &geometry,
@@ -31,82 +30,71 @@ QgsStacItem::QgsStacItem( const QString &id,
 {
 }
 
-QgsStacObject::Type QgsStacItem::type() const
+Qgis::StacObjectType QgsStacItem::type() const
 {
-  return QgsStacObject::Type::Item;
+  return Qgis::StacObjectType::Item;
 }
 
 QString QgsStacItem::toHtml() const
 {
-  QString html = QStringLiteral( "<html><head></head>\n<body>\n" );
-
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Item" ) );
-  html += QStringLiteral( "<table class=\"list-view\">\n" );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), id() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "stac_version" ), stacVersion() );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "collection" ), collection() );
-  html += QStringLiteral( "</table>\n" );
+  QString html = u"<h1>%1</h1>\n<hr>\n"_s.arg( "Item"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"id"_s, id() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"stac_version"_s, stacVersion() );
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"collection"_s, collection() );
+  html += "</table>\n"_L1;
 
   if ( !mStacExtensions.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Extensions" ) );
-    html += QStringLiteral( "<ul>\n" );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Extensions"_L1 );
+    html += "<ul>\n"_L1;
     for ( const QString &extension : mStacExtensions )
     {
-      html += QStringLiteral( "<li>%1</li>\n" ).arg( extension );
+      html += u"<li>%1</li>\n"_s.arg( extension );
     }
-    html += QStringLiteral( "</ul>\n" );
+    html += "</ul>\n"_L1;
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Geometry" ) );
-  html += QStringLiteral( "<table class=\"list-view\">\n" );
-  html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "WKT" ), mGeometry.asWkt() );
-  html += QStringLiteral( "</table>\n" );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Geometry"_L1 );
+  html += "<table class=\"list-view\">\n"_L1;
+  html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"WKT"_s, mGeometry.asWkt() );
+  html += "</table>\n"_L1;
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Bounding Box" ) );
-  html += QStringLiteral( "<ul>\n" );
-  html += QStringLiteral( "<li>%1</li>\n" ).arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
-  html += QStringLiteral( "</ul>\n" );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Bounding Box"_L1 );
+  html += "<ul>\n"_L1;
+  html += u"<li>%1</li>\n"_s.arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
+  html += "</ul>\n"_L1;
 
   if ( ! mProperties.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Properties" ) );
-    html += QStringLiteral( "<table class=\"list-view\">\n" );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Properties"_L1 );
+    html += "<table class=\"list-view\">\n"_L1;
     for ( auto it = mProperties.constBegin(); it != mProperties.constEnd(); ++it )
     {
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( it.key(), it.value().toString() );
+      html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( it.key(), it.value().toString() );
     }
-    html += QStringLiteral( "</table><br/>\n" );
+    html += "</table><br/>\n"_L1;
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Links" ) );
+  html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Links"_L1 );
   for ( const QgsStacLink &link : mLinks )
   {
-    html += QStringLiteral( "<table class=\"list-view\">\n" );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "relation" ), link.relation() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), link.title() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), link.href() );
-    html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), link.mediaType() );
-    html += QStringLiteral( "</table><br/>\n" );
+    html += "<table class=\"list-view\">\n"_L1;
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"relation"_s, link.relation() );
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"title"_s, link.title() );
+    html += u"<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n"_s.arg( u"url"_s, link.href() );
+    html += u"<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n"_s.arg( u"type"_s, link.mediaType() );
+    html += "</table><br/>\n"_L1;
   }
 
   if ( ! mAssets.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QStringLiteral( "Assets" ) );
+    html += u"<h1>%1</h1>\n<hr>\n"_s.arg( "Assets"_L1 );
     for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
     {
-      html += QStringLiteral( "<table class=\"list-view\">\n" );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), it.key() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "title" ), it->title() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "description" ), it->description() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td><a href=\"%2\">%2</a></td></tr>\n" ).arg( QStringLiteral( "url" ), it->href() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "type" ), it->mediaType() );
-      html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "roles" ), it->roles().join( ',' ) );
-      html += QStringLiteral( "</table><br/>\n" );
+      html += it->toHtml( it.key() );
     }
   }
-
-  html += QStringLiteral( "\n</body>\n</html>\n" );
   return html;
 }
 
@@ -162,18 +150,44 @@ void QgsStacItem::setCollection( const QString &collection )
 
 QDateTime QgsStacItem::dateTime() const
 {
-  return QDateTime::fromString( mProperties.value( QStringLiteral( "datetime" ), QStringLiteral( "null" ) ).toString() );
+  return QDateTime::fromString( mProperties.value( u"datetime"_s, u"null"_s ).toString() );
 }
 
 bool QgsStacItem::hasDateTimeRange() const
 {
-  return mProperties.contains( QStringLiteral( "start_datetime" ) ) &&
-         mProperties.contains( QStringLiteral( "end_datetime" ) );
+  return mProperties.contains( u"start_datetime"_s ) &&
+         mProperties.contains( u"end_datetime"_s );
 }
 
 QgsDateTimeRange QgsStacItem::dateTimeRange() const
 {
-  const QDateTime start = QDateTime::fromString( mProperties.value( QStringLiteral( "start_datetime" ), QStringLiteral( "null" ) ).toString() );
-  const QDateTime end = QDateTime::fromString( mProperties.value( QStringLiteral( "end_datetime" ), QStringLiteral( "null" ) ).toString() );
+  const QDateTime start = QDateTime::fromString( mProperties.value( u"start_datetime"_s, u"null"_s ).toString() );
+  const QDateTime end = QDateTime::fromString( mProperties.value( u"end_datetime"_s, u"null"_s ).toString() );
   return QgsDateTimeRange( start, end );
+}
+
+QString QgsStacItem::title() const
+{
+  return mProperties.value( u"title"_s ).toString();
+}
+
+QString QgsStacItem::description() const
+{
+  return mProperties.value( u"description"_s ).toString();
+}
+
+QgsMimeDataUtils::UriList QgsStacItem::uris() const
+{
+  QgsMimeDataUtils::UriList uris;
+  for ( const QgsStacAsset &asset : std::as_const( mAssets ) )
+  {
+    QgsMimeDataUtils::Uri uri = asset.uri();
+
+    // skip assets with incompatible formats
+    if ( uri.uri.isEmpty() )
+      continue;
+
+    uris.append( uri );
+  }
+  return uris;
 }

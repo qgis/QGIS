@@ -15,20 +15,20 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "February 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 from grassprovider.grass_utils import GrassUtils
 
 
 def processInputs(alg, parameters, context, feedback):
     # We need to import all the bands and to preserve color table
-    if 'map' in alg.exportedLayers:
+    if "map" in alg.exportedLayers:
         return
 
     # We need to import all the bands and color tables of the input raster
-    alg.loadRasterLayerFromParameter('map', parameters, context, False, None)
+    alg.loadRasterLayerFromParameter("map", parameters, context, False, None)
     alg.postInputs(context)
 
 
@@ -42,8 +42,7 @@ def processOutputs(alg, parameters, context, feedback):
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
 
     # We need to export the raster with all its bands and its color table
-    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    fileName = alg.parameterAsOutputLayer(parameters, "output", context)
     outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
-    grassName = alg.exportedLayers['map']
-    alg.exportRasterLayer(grassName, fileName, True,
-                          outFormat, createOpt, metaOpt)
+    grassName = alg.exportedLayers["map"]
+    alg.exportRasterLayer(grassName, fileName, True, outFormat, createOpt, metaOpt)

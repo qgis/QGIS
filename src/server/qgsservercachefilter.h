@@ -20,11 +20,12 @@
 #ifndef QGSSERVERCACHEFILTER_H
 #define QGSSERVERCACHEFILTER_H
 
-#include <QMultiMap>
-#include <QDomDocument>
-#include "qgsserverrequest.h"
 #include "qgis_server.h"
 #include "qgis_sip.h"
+#include "qgsserverrequest.h"
+
+#include <QDomDocument>
+#include <QMultiMap>
 
 class QgsProject;
 
@@ -36,14 +37,12 @@ class QgsServerInterface;
 /**
  * \ingroup server
  * \class QgsServerCacheFilter
- * \brief Class defining cache interface for QGIS Server plugins.
+ * \brief Defines cache interface for QGIS Server plugins.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerCacheFilter
 {
-
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors
@@ -122,7 +121,6 @@ class SERVER_EXPORT QgsServerCacheFilter
      * \returns TRUE if the images have been deleted
      */
     virtual bool deleteCachedImages( const QgsProject *project ) const;
-
 };
 
 //! The registry definition

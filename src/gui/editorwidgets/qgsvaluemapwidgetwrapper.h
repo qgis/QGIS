@@ -16,10 +16,10 @@
 #ifndef QGSVALUEMAPWIDGETWRAPPER_H
 #define QGSVALUEMAPWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -40,7 +40,6 @@ class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsValueMapWidgetWrapper.
      *
@@ -67,9 +66,7 @@ class GUI_EXPORT QgsValueMapWidgetWrapper : public QgsEditorWidgetWrapper
     void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
     QComboBox *mComboBox = nullptr;
-
 };
-
 
 
 #endif // QGSVALUEMAPWIDGETWRAPPER_H

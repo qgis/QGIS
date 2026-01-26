@@ -15,11 +15,13 @@
 #ifndef QGSAPPQUERYLOGGER_H
 #define QGSAPPQUERYLOGGER_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QElapsedTimer>
-#include "qgsdbquerylog.h"
 #include <memory>
+
+#include "qgsdbquerylog.h"
+
+#include <QAbstractItemModel>
+#include <QElapsedTimer>
+#include <QSortFilterProxyModel>
 #include <QStyledItemDelegate>
 
 class QgsDevToolsModelNode;
@@ -39,7 +41,6 @@ class QgsAppQueryLogger : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAppQueryLogger, logging requests from the specified \a manager.
      *
@@ -68,12 +69,12 @@ class QgsAppQueryLogger : public QAbstractItemModel
      *
      * The actions should be parented to \a parent.
      */
-    QList< QAction * > actions( const QModelIndex &index, QObject *parent );
+    QList<QAction *> actions( const QModelIndex &index, QObject *parent );
 
     /**
      * Removes a list of request \a rows from the log.
     */
-    void removeRequestRows( const QList< int > &rows );
+    void removeRequestRows( const QList<int> &rows );
 
     /**
      * Returns the root node of the log.
@@ -94,16 +95,14 @@ class QgsAppQueryLogger : public QAbstractItemModel
     void queryFinished( const QgsDatabaseQueryLogEntry &query );
 
   private:
-
     //! Returns index for a given node
     QModelIndex node2index( QgsDevToolsModelNode *node ) const;
     QModelIndex indexOfParentLayerTreeNode( QgsDevToolsModelNode *parentNode ) const;
 
-    std::unique_ptr< QgsDatabaseQueryLoggerRootNode > mRootNode;
+    std::unique_ptr<QgsDatabaseQueryLoggerRootNode> mRootNode;
     long long mMaxCost = 0;
 
-    QHash< int, QgsDatabaseQueryLoggerQueryGroup * > mQueryGroups;
-
+    QHash<int, QgsDatabaseQueryLoggerQueryGroup *> mQueryGroups;
 };
 
 /**
@@ -116,7 +115,6 @@ class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDatabaseQueryLoggerProxyModel, filtering the specified network \a logger.
      */
@@ -131,7 +129,6 @@ class QgsDatabaseQueryLoggerProxyModel : public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
-
     QgsAppQueryLogger *mLogger = nullptr;
 
     QString mFilterString;
@@ -142,7 +139,7 @@ class QueryCostDelegate : public QStyledItemDelegate
     Q_OBJECT
   public:
     explicit QueryCostDelegate( int sortRole, int totalCostRole, QObject *parent = nullptr );
-    ~QueryCostDelegate();
+    ~QueryCostDelegate() override;
 
     void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 

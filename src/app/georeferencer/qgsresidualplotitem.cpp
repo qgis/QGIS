@@ -14,15 +14,19 @@
  ***************************************************************************/
 
 #include "qgsresidualplotitem.h"
-#include "qgsgeorefdatapoint.h"
-#include "qgslayoututils.h"
-#include <QPainter>
+
 #include <cfloat>
 #include <cmath>
 
+#include "qgsgeorefdatapoint.h"
+#include "qgslayoututils.h"
+
+#include <QPainter>
+
+#include "moc_qgsresidualplotitem.cpp"
+
 QgsResidualPlotItem::QgsResidualPlotItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
-  , mConvertScaleToMapUnits( false )
 {
   setBackgroundEnabled( false );
 }
@@ -125,7 +129,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     nDecPlaces = -std::floor( std::log10( scaleBarWidthUnits ) );
     scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
-    scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
+    scaleBarWidthUnits = ( int ) ( scaleBarWidthUnits + 0.5 );
     scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
     initialScaleBarWidth = scaleBarWidthUnits * minMMPixelRatio;
   }
@@ -133,7 +137,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     nDecPlaces = static_cast<int>( std::log10( scaleBarWidthUnits ) );
     scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
-    scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
+    scaleBarWidthUnits = ( int ) ( scaleBarWidthUnits + 0.5 );
     scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
     initialScaleBarWidth = scaleBarWidthUnits * minMMPixelRatio;
   }
@@ -146,11 +150,11 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
-    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), u"%1 map units"_s.arg( scaleBarWidthUnits ), QFont() );
   }
   else
   {
-    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsLayoutUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsLayoutUtils::fontAscentMM( scaleBarFont ) ), u"%1 pixels"_s.arg( scaleBarWidthUnits ), QFont() );
   }
 
   if ( frameEnabled() )
@@ -176,7 +180,6 @@ void QgsResidualPlotItem::setGCPList( const QgsGCPList &list )
 
 void QgsResidualPlotItem::draw( QgsLayoutItemRenderContext & )
 {
-
 }
 
 double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM )
@@ -187,7 +190,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   }
 
   //calculate intersections with upper / lower frame edge depending on the residual y sign
-  double upDownDist = std::numeric_limits<double>::max(); //distance to frame intersection with lower or upper frame
+  double upDownDist = std::numeric_limits<double>::max();    //distance to frame intersection with lower or upper frame
   double leftRightDist = std::numeric_limits<double>::max(); //distance to frame intersection with left or right frame
 
   const QPointF residual = p->residual();

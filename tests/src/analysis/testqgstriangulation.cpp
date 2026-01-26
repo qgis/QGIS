@@ -12,32 +12,29 @@ Email                : vcloarec at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-
 #include "qgsapplication.h"
 #include "qgsdualedgetriangulation.h"
 #include "qgsmeshtriangulation.h"
-#include "qgsvectorlayer.h"
-
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
 class TestQgsTriangulation : public QgsTest
 {
     Q_OBJECT
 
   public:
-
     TestQgsTriangulation()
-      : QgsTest( QStringLiteral( "Triangulation Test" ) )
+      : QgsTest( u"Triangulation Test"_s )
     {}
 
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() ;// will be called before each testfunction is executed.
-    void cleanup() ;// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void dualEdge();
 
     void meshTriangulation();
@@ -47,7 +44,7 @@ class TestQgsTriangulation : public QgsTest
   private:
 };
 
-void  TestQgsTriangulation::initTestCase()
+void TestQgsTriangulation::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -79,7 +76,7 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 3 );
     QCOMPARE( mesh.faceCount(), 1 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 2, 1 } ) ) );
   }
 
   {
@@ -96,7 +93,7 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 4 );
     QCOMPARE( mesh.faceCount(), 2 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 2, 1 } ) ) );
   }
 
   {
@@ -112,8 +109,8 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 4 );
     QCOMPARE( mesh.faceCount(), 2 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {3, 2, 1} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 1 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 3, 2, 1 } ) ) );
     triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 5 );
@@ -133,15 +130,15 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 4 );
     QCOMPARE( mesh.faceCount(), 2 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 2, 3} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 2 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 1, 2, 3 } ) ) );
     triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 5 );
     QCOMPARE( mesh.faceCount(), 3 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 4} ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 2, 3} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 2 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 1, 3, 4 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( { 1, 2, 3 } ) ) );
   }
 
   {
@@ -189,9 +186,7 @@ void TestQgsTriangulation::meshTriangulation()
 
   meshTri.setCrs( QgsCoordinateReferenceSystem( "EPSG:32620" ) );
 
-  std::unique_ptr< QgsVectorLayer > mLayerPointZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "PointZ?crs=EPSG:32620" ),
-      QStringLiteral( "point Z" ),
-      QStringLiteral( "memory" ) );
+  auto mLayerPointZ = std::make_unique<QgsVectorLayer>( u"PointZ?crs=EPSG:32620"_s, u"point Z"_s, u"memory"_s );
 
   const QString wkt1 = "PointZ (684486.0 1761297.0 1)";
   const QString wkt2 = "PointZ (684276.0 1761309.0 2)";
@@ -212,9 +207,7 @@ void TestQgsTriangulation::meshTriangulation()
   mLayerPointZ->dataProvider()->addFeatures( flist );
 
   const QgsCoordinateTransformContext transformContext;
-  QgsCoordinateTransform transform( mLayerPointZ->crs(),
-                                    QgsCoordinateReferenceSystem( "EPSG:32620" ),
-                                    transformContext );
+  QgsCoordinateTransform transform( mLayerPointZ->crs(), QgsCoordinateReferenceSystem( "EPSG:32620" ), transformContext );
 
   QgsFeatureIterator fIt = mLayerPointZ->getFeatures();
   meshTri.addVertices( fIt, -1, transform );
@@ -228,22 +221,18 @@ void TestQgsTriangulation::meshTriangulation()
   QCOMPARE( mesh.vertex( 1 ), QgsMeshVertex( 684276.0, 1761309.0, 2 ) );
   QCOMPARE( mesh.vertex( 2 ), QgsMeshVertex( 684098.0, 1761401.0, 3 ) );
   QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 684292.0, 1761406.0, 4 ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 2} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 1 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 1, 3, 2 } ) ) );
 
   const QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
 
-  std::unique_ptr< QgsVectorLayer > mLayerBreakLine = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ?crs=EPSG:32620" ),
-      QStringLiteral( "line" ),
-      QStringLiteral( "memory" ) );
+  auto mLayerBreakLine = std::make_unique<QgsVectorLayer>( u"LineStringZ?crs=EPSG:32620"_s, u"line"_s, u"memory"_s );
 
   QgsFeature f5;
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
   mLayerBreakLine->dataProvider()->addFeature( f5 );
 
-  transform = QgsCoordinateTransform( mLayerBreakLine->crs(),
-                                      QgsCoordinateReferenceSystem( "EPSG:32620" ),
-                                      transformContext );
+  transform = QgsCoordinateTransform( mLayerBreakLine->crs(), QgsCoordinateReferenceSystem( "EPSG:32620" ), transformContext );
   fIt = mLayerBreakLine->getFeatures();
   meshTri.addBreakLines( fIt, -1, transform );
 
@@ -252,34 +241,32 @@ void TestQgsTriangulation::meshTriangulation()
   QCOMPARE( mesh.vertexCount(), 6 );
   QCOMPARE( mesh.faceCount(), 6 );
 
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 5} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {0, 5, 1} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 4, 2} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {3, 4, 5} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( {1, 5, 4} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( {2, 4, 3} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 5 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 0, 5, 1 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( { 1, 4, 2 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( { 3, 4, 5 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( { 1, 5, 4 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( { 2, 4, 3 } ) ) );
 }
 
 void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  std::unique_ptr< QgsVectorLayer > mLayerLineZ = std::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ" ),
-      QStringLiteral( "break line Z" ),
-      QStringLiteral( "memory" ) );
+  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( u"LineStringZ"_s, u"break line Z"_s, u"memory"_s );
 
   QStringList wktLines;
 
-  wktLines << QStringLiteral( "LineStringZ (315377.05605000001378357 5839566.94189499784260988 24.94718200000000152, 315374.77223399997455999 5839565.11973000038415194 24.04360499999999945)" )
-           << QStringLiteral( "LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315369.31927300000097603 5839570.36336500104516745 25.47851700000000008)" )
-           << QStringLiteral( "LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)" )
-           << QStringLiteral( "LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)" )
-           << QStringLiteral( "LineStringZ (315374.77223399997455999 5839565.11973000038415194 24.04360499999999945, 315370.67597402411047369 5839565.22503056097775698 24.04360499999999945)" )
-           << QStringLiteral( "LineStringZ (315370.67597402411047369 5839565.22503056097775698 24.04360499999999945, 315369.53268400009255856 5839567.42751600034534931 25.41215299999999999)" )
-           << QStringLiteral( "LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315371.93385799997486174 5839571.38528699986636639 24.06699300000000008)" )
-           << QStringLiteral( "LineStringZ (315371.93385799997486174 5839571.38528699986636639 24.06699300000000008, 315376.77400700020371005 5839570.69979299977421761 24.0794150000000009)" )
-           << QStringLiteral( "LineStringZ (315376.77400700020371005 5839570.69979299977421761 24.0794150000000009, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)" )
-           << QStringLiteral( "LineStringZ (315377.62744900002144277 5839568.60983499884605408 24.98952099999999987, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)" );
+  wktLines << u"LineStringZ (315377.05605000001378357 5839566.94189499784260988 24.94718200000000152, 315374.77223399997455999 5839565.11973000038415194 24.04360499999999945)"_s
+           << u"LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315369.31927300000097603 5839570.36336500104516745 25.47851700000000008)"_s
+           << u"LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)"_s
+           << u"LineStringZ (315369.53268400009255856 5839567.42751600034534931 25.41215299999999999, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)"_s
+           << u"LineStringZ (315374.77223399997455999 5839565.11973000038415194 24.04360499999999945, 315370.67597402411047369 5839565.22503056097775698 24.04360499999999945)"_s
+           << u"LineStringZ (315370.67597402411047369 5839565.22503056097775698 24.04360499999999945, 315369.53268400009255856 5839567.42751600034534931 25.41215299999999999)"_s
+           << u"LineStringZ (315369.31927300000097603 5839570.36336500104516745 25.47851700000000008, 315371.93385799997486174 5839571.38528699986636639 24.06699300000000008)"_s
+           << u"LineStringZ (315371.93385799997486174 5839571.38528699986636639 24.06699300000000008, 315376.77400700020371005 5839570.69979299977421761 24.0794150000000009)"_s
+           << u"LineStringZ (315376.77400700020371005 5839570.69979299977421761 24.0794150000000009, 315377.62744900002144277 5839568.60983499884605408 24.98952099999999987)"_s
+           << u"LineStringZ (315377.62744900002144277 5839568.60983499884605408 24.98952099999999987, 315377.05605000001378357 5839566.94189499784260988 24.94718200000000152)"_s;
 
   QgsFeatureList flist;
   for ( const QString &wkt : wktLines )
@@ -292,9 +279,7 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
   mLayerLineZ->dataProvider()->addFeatures( flist );
 
   const QgsCoordinateTransformContext transformContext;
-  const QgsCoordinateTransform transform( mLayerLineZ->crs(),
-                                          QgsCoordinateReferenceSystem(),
-                                          transformContext );
+  const QgsCoordinateTransform transform( mLayerLineZ->crs(), QgsCoordinateReferenceSystem(), transformContext );
 
   QgsFeatureIterator fIt = mLayerLineZ->getFeatures();
   meshTri.addBreakLines( fIt, -1, transform );
@@ -304,25 +289,23 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
   QCOMPARE( mesh.vertexCount(), 8 );
   QCOMPARE( mesh.faceCount(), 6 );
 
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {2, 0, 4} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {0, 2, 1} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 2, 5} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {2, 4, 3} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( {4, 6, 3} ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( {4, 7, 6} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 2, 0, 4 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 0, 2, 1 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( { 1, 2, 5 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( { 2, 4, 3 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( { 4, 6, 3 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( { 4, 7, 6 } ) ) );
 }
 
 void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  std::unique_ptr< QgsVectorLayer > mLayerPointsZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "PointZ" ),
-      QStringLiteral( "points Z" ),
-      QStringLiteral( "memory" ) );
+  auto mLayerPointsZ = std::make_unique<QgsVectorLayer>( u"PointZ"_s, u"points Z"_s, u"memory"_s );
 
   for ( int i = 0; i < 4; ++i )
   {
-    for ( int j = 0 ; j < 10; ++j )
+    for ( int j = 0; j < 10; ++j )
     {
       QgsFeature feat;
       feat.setGeometry( QgsGeometry( new QgsPoint( i * 10.0, j * 10.0 ) ) );
@@ -331,9 +314,7 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
   }
 
   const QgsCoordinateTransformContext transformContext;
-  const QgsCoordinateTransform transform( mLayerPointsZ->crs(),
-                                          QgsCoordinateReferenceSystem(),
-                                          transformContext );
+  const QgsCoordinateTransform transform( mLayerPointsZ->crs(), QgsCoordinateReferenceSystem(), transformContext );
 
   QgsFeatureIterator fIt = mLayerPointsZ->getFeatures();
   meshTri.addVertices( fIt, -1, transform );
@@ -343,13 +324,11 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
   QCOMPARE( mesh.vertexCount(), 40 );
   QCOMPARE( mesh.faceCount(), 54 );
 
-  std::unique_ptr< QgsVectorLayer > mLayerLineZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ" ),
-      QStringLiteral( "break line Z" ),
-      QStringLiteral( "memory" ) );
+  auto mLayerLineZ = std::make_unique<QgsVectorLayer>( u"LineStringZ"_s, u"break line Z"_s, u"memory"_s );
 
 
   QgsFeature feat;
-  feat.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineStringZ (5 25 1, 95 25 2, 95 15 3, 5 15 4)" ) ) );
+  feat.setGeometry( QgsGeometry::fromWkt( u"LineStringZ (5 25 1, 95 25 2, 95 15 3, 5 15 4)"_s ) );
   mLayerLineZ->dataProvider()->addFeature( feat );
   fIt = mLayerLineZ->getFeatures();
   meshTri.addBreakLines( fIt, -1, transform );

@@ -12,15 +12,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsrasterlayer.h"
+#include "qgsrastershader.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
-
-#include <qgsapplication.h>
-#include <qgsrasterlayer.h>
-#include "qgssinglebandpseudocolorrendererwidget.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastershader.h"
 
 /**
  * \ingroup UnitTests
@@ -31,18 +31,16 @@ class TestQgsSingleBandPseudoColorRendererWidget : public QObject
     Q_OBJECT
 
   public:
-
     TestQgsSingleBandPseudoColorRendererWidget() {}
 
   private:
-
     QgsRasterLayer *mRasterLayer = nullptr;
 
   private slots:
 
     // init / cleanup
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     // tests
     void testEditLabel();
@@ -111,7 +109,7 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
   QVERIFY( newColorRampShader );
 
   const QList<QgsColorRampShader::ColorRampItem> newColorRampItems = newColorRampShader->colorRampItemList();
-  QCOMPARE( newColorRampItems.at( 0 ).label, QStringLiteral( "zero" ) );
+  QCOMPARE( newColorRampItems.at( 0 ).label, u"zero"_s );
 
   QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->minimum() ) );
   QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->maximum() ) );
@@ -128,7 +126,6 @@ void TestQgsSingleBandPseudoColorRendererWidget::testEditLabel()
   QCOMPARE( widget.mMinLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().minimumValue() ) );
   QCOMPARE( widget.mMaxLineEdit->text(), widget.displayValueWithMaxPrecision( widget.mColorRampShaderWidget->shader().maximumValue() ) );
 }
-
 
 
 QGSTEST_MAIN( TestQgsSingleBandPseudoColorRendererWidget )

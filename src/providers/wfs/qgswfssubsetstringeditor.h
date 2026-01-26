@@ -17,12 +17,13 @@
 #ifndef QGSWFSSUBSETSTRINGEDITOR_H
 #define QGSWFSSUBSETSTRINGEDITOR_H
 
-#include "qgssubsetstringeditorinterface.h"
-#include "qgsvectorlayer.h"
 #include "qgsguiutils.h"
 #include "qgssqlcomposerdialog.h"
-#include "qgswfsprovider.h"
+#include "qgssubsetstringeditorinterface.h"
+#include "qgsvectorlayer.h"
 #include "qgswfscapabilities.h"
+#include "qgswfsdatasourceuri.h"
+#include "qgswfsprovider.h"
 
 #include <QWidget>
 
@@ -33,35 +34,32 @@ class QgsWfsSubsetStringEditor
     static QgsSubsetStringEditorInterface *create( QgsVectorLayer *layer, QgsWFSProvider *provider, QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 };
 
-class QgsWFSValidatorCallback: public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
+class QgsWFSValidatorCallback : public QObject, public QgsSQLComposerDialog::SQLValidatorCallback
 {
     Q_OBJECT
 
   public:
-    QgsWFSValidatorCallback( QObject *parent,
-                             const QgsWFSDataSourceURI &uri, const QString &allSql,
-                             const QgsWfsCapabilities::Capabilities &caps );
+    QgsWFSValidatorCallback( QObject *parent, const QgsWFSDataSourceURI &uri, const QString &allSql, const QgsWfsCapabilities &caps );
     bool isValid( const QString &sql, QString &errorReason, QString &warningMsg ) override;
+
   private:
     QgsWFSDataSourceURI mURI;
     QString mAllSql;
-    const QgsWfsCapabilities::Capabilities mCaps;
+    const QgsWfsCapabilities mCaps;
 };
 
-class QgsWFSTableSelectedCallback: public QObject, public QgsSQLComposerDialog::TableSelectedCallback
+class QgsWFSTableSelectedCallback : public QObject, public QgsSQLComposerDialog::TableSelectedCallback
 {
     Q_OBJECT
 
   public:
-    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog,
-                                 const QgsWFSDataSourceURI &uri,
-                                 const QgsWfsCapabilities::Capabilities &caps );
+    QgsWFSTableSelectedCallback( QgsSQLComposerDialog *dialog, const QgsWFSDataSourceURI &uri, const QgsWfsCapabilities &caps );
     void tableSelected( const QString &name ) override;
 
   private:
     QgsSQLComposerDialog *mDialog = nullptr;
     QgsWFSDataSourceURI mURI;
-    const QgsWfsCapabilities::Capabilities mCaps;
+    const QgsWfsCapabilities mCaps;
 };
 
 #endif

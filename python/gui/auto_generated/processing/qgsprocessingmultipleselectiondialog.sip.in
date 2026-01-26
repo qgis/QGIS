@@ -10,10 +10,13 @@
 
 
 
+
+
 class QgsProcessingMultipleSelectionPanelWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A panel widget for selection of multiple options from a fixed list of options.
+A panel widget for selection of multiple options from a fixed list of
+options.
 
 .. note::
 
@@ -26,44 +29,43 @@ A panel widget for selection of multiple options from a fixed list of options.
 #include "qgsprocessingmultipleselectiondialog.h"
 %End
   public:
-
-    QgsProcessingMultipleSelectionPanelWidget( const QVariantList &availableOptions = QVariantList(),
-        const QVariantList &selectedOptions = QVariantList(),
-        QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingMultipleSelectionPanelWidget( const QVariantList &availableOptions = QVariantList(), const QVariantList &selectedOptions = QVariantList(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingMultipleSelectionPanelWidget.
 
-The ``availableOptions`` list specifies the list of standard known options for the parameter,
-whilst the ``selectedOptions`` list specifies which options should be initially selected.
+The ``availableOptions`` list specifies the list of standard known
+options for the parameter, whilst the ``selectedOptions`` list specifies
+which options should be initially selected.
 
-The ``selectedOptions`` list may contain extra options which are not present in ``availableOptions``,
-in which case they will be also added as existing options within the dialog.
+The ``selectedOptions`` list may contain extra options which are not
+present in ``availableOptions``, in which case they will be also added
+as existing options within the dialog.
 %End
 
     void setValueFormatter( SIP_PYCALLABLE );
 %Docstring
-Sets a callback function to use when encountering an invalid geometry and
+Sets a callback function to use when encountering an invalid geometry
+and
 %End
 %MethodCode
 
     Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setValueFormatter( [a0]( const QVariant &v )->QString
-    {
-      QString res;
-      SIP_BLOCK_THREADS
-      PyObject *s = sipCallMethod( NULL, a0, "D", &v, sipType_QVariant, NULL );
-      int state;
-      int sipIsError = 0;
-      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-      if ( sipIsError == 0 )
-      {
-        res = QString( *t1 );
-      }
-      sipReleaseType( t1, sipType_QString, state );
-      SIP_UNBLOCK_THREADS
-      return res;
-    } );
+      sipCpp->setValueFormatter( [a0]( const QVariant &v ) -> QString {
+        QString res;
+        SIP_BLOCK_THREADS
+        PyObject *s = sipCallMethod( NULL, a0, "D", &v, sipType_QVariant, NULL );
+        int state;
+        int sipIsError = 0;
+        QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+        if ( sipIsError == 0 )
+        {
+          res = QString( *t1 );
+        }
+        sipReleaseType( t1, sipType_QString, state );
+        SIP_UNBLOCK_THREADS
+        return res;
+      } );
 
     Py_END_ALLOW_THREADS
 %End
@@ -92,12 +94,12 @@ Emitted when the selection changes in the widget.
 %End
 
   protected:
-
-    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
 %Docstring
 Adds a new option to the widget.
-%End
 
+``icon`` added in QGIS 4.0
+%End
     QListView *listView() const;
 %Docstring
 Returns pointer to the list view
@@ -131,45 +133,44 @@ A dialog for selection of multiple options from a fixed list of options.
 #include "qgsprocessingmultipleselectiondialog.h"
 %End
   public:
-
-    QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions = QVariantList(),
-                                          const QVariantList &selectedOptions = QVariantList(),
-                                          QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingMultipleSelectionDialog( const QVariantList &availableOptions = QVariantList(), const QVariantList &selectedOptions = QVariantList(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for :py:class:`QgsProcessingMultipleSelectionPanelWidget`.
 
-The ``availableOptions`` list specifies the list of standard known options for the parameter,
-whilst the ``selectedOptions`` list specifies which options should be initially selected.
+The ``availableOptions`` list specifies the list of standard known
+options for the parameter, whilst the ``selectedOptions`` list specifies
+which options should be initially selected.
 
-The ``selectedOptions`` list may contain extra options which are not present in ``availableOptions``,
-in which case they will be also added as existing options within the dialog.
+The ``selectedOptions`` list may contain extra options which are not
+present in ``availableOptions``, in which case they will be also added
+as existing options within the dialog.
 %End
 
 
     void setValueFormatter( SIP_PYCALLABLE );
 %Docstring
-Sets a callback function to use when encountering an invalid geometry and
+Sets a callback function to use when encountering an invalid geometry
+and
 %End
 %MethodCode
 
     Py_BEGIN_ALLOW_THREADS
 
-    sipCpp->setValueFormatter( [a0]( const QVariant &v )->QString
-    {
-      QString res;
-      SIP_BLOCK_THREADS
-      PyObject *s = sipCallMethod( NULL, a0, "D", &v, sipType_QVariant, NULL );
-      int state;
-      int sipIsError = 0;
-      QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-      if ( sipIsError == 0 )
-      {
-        res = QString( *t1 );
-      }
-      sipReleaseType( t1, sipType_QString, state );
-      SIP_UNBLOCK_THREADS
-      return res;
-    } );
+      sipCpp->setValueFormatter( [a0]( const QVariant &v ) -> QString {
+        QString res;
+        SIP_BLOCK_THREADS
+        PyObject *s = sipCallMethod( NULL, a0, "D", &v, sipType_QVariant, NULL );
+        int state;
+        int sipIsError = 0;
+        QString *t1 = reinterpret_cast<QString *>( sipConvertToType( s, sipType_QString, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+        if ( sipIsError == 0 )
+        {
+          res = QString( *t1 );
+        }
+        sipReleaseType( t1, sipType_QString, state );
+        SIP_UNBLOCK_THREADS
+        return res;
+      } );
 
     Py_END_ALLOW_THREADS
 %End
@@ -186,7 +187,8 @@ Returns the ordered list of selected options.
 class QgsProcessingMultipleInputPanelWidget : QgsProcessingMultipleSelectionPanelWidget
 {
 %Docstring(signature="appended")
-A panel widget for selection of multiple inputs from a fixed list of options.
+A panel widget for selection of multiple inputs from a fixed list of
+options.
 
 .. note::
 
@@ -199,12 +201,7 @@ A panel widget for selection of multiple inputs from a fixed list of options.
 #include "qgsprocessingmultipleselectiondialog.h"
 %End
   public:
-
-    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter,
-                                           const QVariantList &selectedOptions,
-                                           const QList< QgsProcessingModelChildParameterSource > &modelSources,
-                                           QgsProcessingModelAlgorithm *model = 0,
-                                           QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingMultipleInputPanelWidget( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingMultipleInputPanelWidget.
 %End
@@ -240,17 +237,13 @@ A dialog for selection of multiple layer inputs.
 #include "qgsprocessingmultipleselectiondialog.h"
 %End
   public:
-
-    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter,
-                                      const QVariantList &selectedOptions,
-                                      const QList< QgsProcessingModelChildParameterSource > &modelSources,
-                                      QgsProcessingModelAlgorithm *model = 0,
-                                      QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsProcessingMultipleInputDialog( const QgsProcessingParameterMultipleLayers *parameter, const QVariantList &selectedOptions, const QList<QgsProcessingModelChildParameterSource> &modelSources, QgsProcessingModelAlgorithm *model = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsProcessingMultipleInputDialog.
 
-The ``selectedOptions`` list may contain extra options which are not present in ``availableOptions``,
-in which case they will be also added as existing options within the dialog.
+The ``selectedOptions`` list may contain extra options which are not
+present in ``availableOptions``, in which case they will be also added
+as existing options within the dialog.
 %End
 
     QVariantList selectedOptions() const;

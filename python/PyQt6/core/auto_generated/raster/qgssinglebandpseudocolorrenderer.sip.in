@@ -29,9 +29,6 @@ Note: takes ownership of :py:class:`QgsRasterShader`
 
     virtual QgsSingleBandPseudoColorRenderer *clone() const /Factory/;
 
-%Docstring
-QgsSingleBandPseudoColorRenderer cannot be copied. Use :py:func:`~QgsSingleBandPseudoColorRenderer.clone` instead.
-%End
     virtual Qgis::RasterRendererFlags flags() const;
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
@@ -51,10 +48,7 @@ Returns the raster shader
 
     const QgsRasterShader *shader() const /PyName=constShader/;
 %Docstring
-
-.. note::
-
-   available in Python as constShader
+Returns the raster shader
 %End
 
     virtual bool canCreateRasterAttributeTable( ) const;
@@ -69,12 +63,14 @@ Returns the raster shader
 %Docstring
 Creates a color ramp shader
 
-:param colorRamp: vector color ramp. Ownership is transferred to the shader.
+:param colorRamp: vector color ramp. Ownership is transferred to the
+                  shader.
 :param colorRampType: type of color ramp shader
 :param classificationMode: classification mode
 :param classes: number of classes
 :param clip: clip out of range values
-:param extent: extent used in classification (only used in quantile mode)
+:param extent: extent used in classification (only used in quantile
+               mode)
 %End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
@@ -85,12 +81,14 @@ Creates a color ramp shader
 
     virtual QList<int> usesBands() const;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
+
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
- int band() const /Deprecated/;
+ int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
 Returns the band used by the renderer
 
@@ -99,7 +97,7 @@ Returns the band used by the renderer
    Use :py:func:`~QgsSingleBandPseudoColorRenderer.inputBand` instead.
 %End
 
- void setBand( int bandNo ) /Deprecated/;
+ void setBand( int bandNo ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
 %Docstring
 Sets the band used by the renderer.
 
@@ -119,6 +117,7 @@ Sets the band used by the renderer.
     double classificationMax() const;
     void setClassificationMin( double min );
     void setClassificationMax( double max );
+
 
   private:
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );

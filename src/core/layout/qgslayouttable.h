@@ -20,11 +20,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslayoutmultiframe.h"
 #include "qgsconditionalstyle.h"
+#include "qgslayoutmultiframe.h"
 #include "qgstextformat.h"
-#include <QFont>
+
 #include <QColor>
+#include <QFont>
 #include <QPair>
 
 class QgsLayoutTableColumn;
@@ -66,9 +67,8 @@ typedef QVector<QgsLayoutTableColumn> QgsLayoutTableSortColumns;
 /**
  * \ingroup core
  *  \class QgsLayoutTableStyle
- *  \brief Styling option for a layout table cell
+ *  \brief Styling option for a layout table cell.
  */
-
 class CORE_EXPORT QgsLayoutTableStyle
 {
   public:
@@ -99,8 +99,8 @@ class CORE_EXPORT QgsLayoutTableStyle
 };
 
 /**
- * \brief A class to display a table in the print layout, and allow
- * the table to span over multiple frames
+ * \brief Displays a table in the print layout, and allows
+ * the table to span over multiple frames.
  * \ingroup core
  */
 class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame

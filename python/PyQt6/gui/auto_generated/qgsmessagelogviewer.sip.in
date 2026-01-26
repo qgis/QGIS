@@ -10,7 +10,8 @@
 
 
 
-class QgsMessageLogViewer: QDialog
+
+class QgsMessageLogViewer : QDialog
 {
 %Docstring(signature="appended")
 A generic dialog widget for displaying QGIS log messages.
@@ -20,11 +21,10 @@ A generic dialog widget for displaying QGIS log messages.
 #include "qgsmessagelogviewer.h"
 %End
   public:
-
     QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
-Create a new message log viewer. The viewer will automatically connect to the system's
-:py:func:`QgsApplication.messageLog()` instance.
+Create a new message log viewer. The viewer will automatically connect
+to the system's :py:func:`QgsApplication.messageLog()` instance.
 %End
 
   public slots:
@@ -32,6 +32,13 @@ Create a new message log viewer. The viewer will automatically connect to the sy
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 %Docstring
 Logs a ``message`` to the viewer.
+%End
+
+    void showTab( const QString &tag );
+%Docstring
+Activates the tab whose title matches the given ``tag``, if any.
+
+.. versionadded:: 3.44
 %End
 
   protected:

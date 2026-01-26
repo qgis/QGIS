@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QList>
 
 class QgsDataItemGuiProvider;
@@ -26,7 +27,7 @@ class QgsProviderGuiRegistry;
 /**
  * \class QgsDataItemGuiProviderRegistry
  * \ingroup gui
- * \brief This class keeps a list of data item GUI providers that may affect how QgsDataItems
+ * \brief A registry for data item GUI providers that may affect how QgsDataItems
  * behave within the application GUI.
  *
  * QgsDataItemGuiProviderRegistry is not usually directly created, but rather accessed through
@@ -74,7 +75,6 @@ class GUI_EXPORT QgsDataItemGuiProviderRegistry
 
     //! Available providers, owned by this class
     QList<QgsDataItemGuiProvider *> mProviders;
-
 };
 
 #endif // QGSDATAITEMGUIPROVIDERREGISTRY_H

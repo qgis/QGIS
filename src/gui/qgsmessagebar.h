@@ -17,15 +17,15 @@
 #ifndef QGSMESSAGEBAR_H
 #define QGSMESSAGEBAR_H
 
-#include "qgsguiutils.h"
 #include "qgis.h"
+#include "qgis_gui.h"
+#include "qgsguiutils.h"
 
-#include <QString>
+#include <QColor>
 #include <QFrame>
 #include <QIcon>
-#include <QColor>
 #include <QList>
-#include "qgis_gui.h"
+#include <QString>
 
 class QWidget;
 class QGridLayout;
@@ -57,12 +57,11 @@ class QgsMessageBarItem;
  * The class also supports pushing custom widgets to the notification stack via
  * the pushWidget() method.
  */
-class GUI_EXPORT QgsMessageBar: public QFrame
+class GUI_EXPORT QgsMessageBar : public QFrame
 {
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsMessageBar
     QgsMessageBar( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

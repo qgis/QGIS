@@ -11,11 +11,12 @@
 
 
 
+
 class QgsLayerTreeViewDefaultActions : QObject
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayerTreeViewDefaultActions` class serves as a factory of actions
-that can be used together with a layer tree view.
+Serves as a factory of actions that can be used together with a layer
+tree view.
 
 .. seealso:: :py:class:`QgsLayerTreeView`
 %End
@@ -24,13 +25,58 @@ that can be used together with a layer tree view.
 #include "qgslayertreeviewdefaultactions.h"
 %End
   public:
-    QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view );
+    QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view );
+%Docstring
+Constructor for QgsLayerTreeViewDefaultActions, creating actions for a
+``view``.
+
+The object will be parented to the specified ``view``.
+%End
 
     QAction *actionAddGroup( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action which adds a group.
+%End
+
     QAction *actionRemoveGroupOrLayer( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action which removes either a group or layer, depending on
+the selected node.
+
+If a group is removed, all children for that group will also be removed.
+
+.. seealso:: :py:func:`actionRemoveGroupPromoteLayers`
+%End
+
+    QAction *actionRemoveGroupPromoteLayers( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action which removes a group.
+
+Any existing children in the group will be moved up to the parent of the
+removed group.
+
+.. seealso:: :py:func:`actionRemoveGroupOrLayer`
+
+.. versionadded:: 4.0
+%End
+
     QAction *actionShowInOverview( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action for toggling whether a layer is shown in the map
+overview.
+%End
+
     QAction *actionRenameGroupOrLayer( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action for renaming a group or layer, depending on the
+selected node.
+%End
+
     QAction *actionShowFeatureCount( QObject *parent = 0 ) /Factory/;
+%Docstring
+Returns a new action for toggling whether the feature count is shown for
+a layer.
+%End
 
     QAction *actionCheckAndAllChildren( QObject *parent = 0 );
 %Docstring
@@ -47,7 +93,7 @@ Action to uncheck a group and all its children
 Action to check a group and all its parents
 %End
 
- QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory,Deprecated/;
+ QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory,Deprecated="Since 3.18. Use actionZoomToLayers()."/;
 %Docstring
 Action to zoom to the active layer from the layer tree.
 
@@ -73,7 +119,6 @@ Action to zoom to selected features of a vector layer
 
  QAction *actionMakeTopLevel( QObject *parent = 0 ) /Factory/;
 %Docstring
-
 .. deprecated:: 3.2
 
    Use :py:func:`~QgsLayerTreeViewDefaultActions.actionMoveOutOfGroup`.
@@ -81,7 +126,6 @@ Action to zoom to selected features of a vector layer
 
     QAction *actionMoveOutOfGroup( QObject *parent = 0 ) /Factory/;
 %Docstring
-
 .. seealso:: :py:func:`moveOutOfGroup`
 
 .. versionadded:: 3.2
@@ -89,7 +133,6 @@ Action to zoom to selected features of a vector layer
 
     QAction *actionMoveToTop( QObject *parent = 0 ) /Factory/;
 %Docstring
-
 .. seealso:: :py:func:`moveToTop`
 
 .. versionadded:: 3.2
@@ -97,7 +140,6 @@ Action to zoom to selected features of a vector layer
 
     QAction *actionMoveToBottom( QObject *parent = 0 ) /Factory/;
 %Docstring
-
 .. seealso:: :py:func:`moveToBottom`
 
 .. versionadded:: 3.14
@@ -106,12 +148,14 @@ Action to zoom to selected features of a vector layer
 
     QAction *actionMutuallyExclusiveGroup( QObject *parent = 0 ) /Factory/;
 %Docstring
-Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
+Action to enable/disable mutually exclusive flag of a group (only one
+child node may be checked)
 %End
 
- void zoomToLayer( QgsMapCanvas *canvas ) /Deprecated/;
+ void zoomToLayer( QgsMapCanvas *canvas ) /Deprecated="Since 3.18. Use zoomToLayers()."/;
 %Docstring
-Zooms a map ``canvas`` to the extent of the active layer in the layer tree.
+Zooms a map ``canvas`` to the extent of the active layer in the layer
+tree.
 
 .. deprecated:: 3.18
 
@@ -129,7 +173,6 @@ Zooms a map ``canvas`` to all the selected layer(s) in the layer tree
 
     void zoomToSelection( QgsMapCanvas *canvas );
 %Docstring
-
 .. seealso:: :py:func:`zoomToSelection`
 
 .. versionadded:: 3.2
@@ -142,10 +185,19 @@ Zooms a map ``canvas`` to all the selected layer(s) in the layer tree
 
   protected slots:
     void removeGroupOrLayer();
+
+    void removeGroupPromoteLayers();
+%Docstring
+Removes the selected group node, promoting all child nodes up into the
+removed group's parent node.
+
+.. versionadded:: 4.0
+%End
+
     void renameGroupOrLayer();
     void showFeatureCount();
 
- void zoomToLayer() /Deprecated/;
+ void zoomToLayer() /Deprecated="Since 3.18. Use zoomToLayers()."/;
 %Docstring
 Zooms to the extent of the active layer in the layer tree.
 
@@ -156,7 +208,8 @@ Zooms to the extent of the active layer in the layer tree.
 
     void zoomToLayers();
 %Docstring
-Zooms to the combined extent of all the selected layer(s) in the layer tree.
+Zooms to the combined extent of all the selected layer(s) in the layer
+tree.
 
 .. versionadded:: 3.18
 %End
@@ -169,9 +222,8 @@ Zooms to the bounding box of all selected features of a vector layer.
 %End
     void zoomToGroup();
 
- void makeTopLevel() /Deprecated/;
+ void makeTopLevel() /Deprecated="Since 3.2. Use moveOutOfGroup()."/;
 %Docstring
-
 .. deprecated:: 3.2
 
    Use :py:func:`~QgsLayerTreeViewDefaultActions.moveOutOfGroup`.
@@ -179,15 +231,16 @@ Zooms to the bounding box of all selected features of a vector layer.
 
     void moveOutOfGroup();
 %Docstring
-Moves selected layer(s) out of the group(s) and places this/these above the group(s)
+Moves selected layer(s) out of the group(s) and places this/these above
+the group(s)
 
 .. versionadded:: 3.2
 %End
 
     void moveToTop();
 %Docstring
-Moves selected layer(s) and/or group(s) to the top of the layer panel
-or the top of the group if the layer/group is placed within a group.
+Moves selected layer(s) and/or group(s) to the top of the layer panel or
+the top of the group if the layer/group is placed within a group.
 
 .. versionadded:: 3.2
 %End

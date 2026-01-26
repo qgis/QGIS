@@ -16,37 +16,40 @@
  ***************************************************************************/
 
 #include "qgspointdistancerenderer.h"
-#include "qgsgeometry.h"
-#include "qgssymbollayerutils.h"
-#include "qgsspatialindex.h"
-#include "qgsmultipoint.h"
-#include "qgslogger.h"
-#include "qgsstyleentityvisitor.h"
+
+#include <cmath>
+
 #include "qgsexpressioncontextutils.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmultipoint.h"
+#include "qgssldexportcontext.h"
+#include "qgsspatialindex.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 
 #include <QDomElement>
 #include <QPainter>
 
-#include <cmath>
-
 QgsPointDistanceRenderer::QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName )
   : QgsFeatureRenderer( rendererName )
   , mLabelAttributeName( labelAttributeName )
-  , mLabelIndex( -1 )
-  , mTolerance( 3 )
-  , mToleranceUnit( Qgis::RenderUnit::Millimeters )
-  , mDrawLabels( true )
-
 {
   mRenderer.reset( QgsFeatureRenderer::defaultRenderer( Qgis::GeometryType::Point ) );
 }
 
 void QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  mRenderer->toSld( doc, element, props );
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
 }
 
+bool QgsPointDistanceRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const
+{
+  return mRenderer->toSld( doc, element, context );
+}
 
 bool QgsPointDistanceRenderer::renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {

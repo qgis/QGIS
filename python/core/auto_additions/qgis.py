@@ -69,6 +69,19 @@ Qgis.AuthConfigurationStorageCapability.baseClass = Qgis
 Qgis.AuthConfigurationStorageCapabilities.baseClass = Qgis
 AuthConfigurationStorageCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 Qgis.MessageLevel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.NetworkRequestFlag.DisableMessageLogging.__doc__ = "If present, indicates that no message logging should be performed when network errors are encountered"
+Qgis.NetworkRequestFlag.__doc__ = """Flags controlling behavior of network requests.
+
+.. versionadded:: 4.0
+
+* ``DisableMessageLogging``: If present, indicates that no message logging should be performed when network errors are encountered
+
+"""
+# --
+Qgis.NetworkRequestFlag.baseClass = Qgis
+Qgis.NetworkRequestFlags.baseClass = Qgis
+NetworkRequestFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsMapLayer.LayerType = Qgis.LayerType
 # monkey patching scoped based enum
 QgsMapLayer.VectorLayer = Qgis.LayerType.Vector
@@ -303,6 +316,9 @@ QgsWkbTypes.PolyhedralSurface.__doc__ = "PolyhedralSurface \n.. versionadded:: 3
 QgsWkbTypes.TIN = Qgis.WkbType.TIN
 QgsWkbTypes.TIN.is_monkey_patched = True
 QgsWkbTypes.TIN.__doc__ = "TIN \n.. versionadded:: 3.40"
+QgsWkbTypes.NurbsCurve = Qgis.WkbType.NurbsCurve
+QgsWkbTypes.NurbsCurve.is_monkey_patched = True
+QgsWkbTypes.NurbsCurve.__doc__ = "NurbsCurve \n.. versionadded:: 4.0"
 QgsWkbTypes.NoGeometry = Qgis.WkbType.NoGeometry
 QgsWkbTypes.NoGeometry.is_monkey_patched = True
 QgsWkbTypes.NoGeometry.__doc__ = "No geometry"
@@ -351,6 +367,9 @@ QgsWkbTypes.PolyhedralSurfaceZ.__doc__ = "PolyhedralSurfaceZ"
 QgsWkbTypes.TINZ = Qgis.WkbType.TINZ
 QgsWkbTypes.TINZ.is_monkey_patched = True
 QgsWkbTypes.TINZ.__doc__ = "TINZ"
+QgsWkbTypes.NurbsCurveZ = Qgis.WkbType.NurbsCurveZ
+QgsWkbTypes.NurbsCurveZ.is_monkey_patched = True
+QgsWkbTypes.NurbsCurveZ.__doc__ = "NurbsCurveZ \n.. versionadded:: 4.0"
 QgsWkbTypes.PointM = Qgis.WkbType.PointM
 QgsWkbTypes.PointM.is_monkey_patched = True
 QgsWkbTypes.PointM.__doc__ = "PointM"
@@ -396,6 +415,9 @@ QgsWkbTypes.PolyhedralSurfaceM.__doc__ = "PolyhedralSurfaceM"
 QgsWkbTypes.TINM = Qgis.WkbType.TINM
 QgsWkbTypes.TINM.is_monkey_patched = True
 QgsWkbTypes.TINM.__doc__ = "TINM"
+QgsWkbTypes.NurbsCurveM = Qgis.WkbType.NurbsCurveM
+QgsWkbTypes.NurbsCurveM.is_monkey_patched = True
+QgsWkbTypes.NurbsCurveM.__doc__ = "NurbsCurveM \n.. versionadded:: 4.0"
 QgsWkbTypes.PointZM = Qgis.WkbType.PointZM
 QgsWkbTypes.PointZM.is_monkey_patched = True
 QgsWkbTypes.PointZM.__doc__ = "PointZM"
@@ -441,6 +463,9 @@ QgsWkbTypes.TINZM.__doc__ = "TINZM"
 QgsWkbTypes.TriangleZM = Qgis.WkbType.TriangleZM
 QgsWkbTypes.TriangleZM.is_monkey_patched = True
 QgsWkbTypes.TriangleZM.__doc__ = "TriangleZM"
+QgsWkbTypes.NurbsCurveZM = Qgis.WkbType.NurbsCurveZM
+QgsWkbTypes.NurbsCurveZM.is_monkey_patched = True
+QgsWkbTypes.NurbsCurveZM.__doc__ = "NurbsCurveZM \n.. versionadded:: 4.0"
 QgsWkbTypes.Point25D = Qgis.WkbType.Point25D
 QgsWkbTypes.Point25D.is_monkey_patched = True
 QgsWkbTypes.Point25D.__doc__ = "Point25D"
@@ -509,6 +534,10 @@ a different mode.
 
   .. versionadded:: 3.40
 
+* ``NurbsCurve``: NurbsCurve
+
+  .. versionadded:: 4.0
+
 * ``NoGeometry``: No geometry
 * ``PointZ``: PointZ
 * ``LineStringZ``: LineStringZ
@@ -525,6 +554,10 @@ a different mode.
 * ``MultiSurfaceZ``: MultiSurfaceZ
 * ``PolyhedralSurfaceZ``: PolyhedralSurfaceZ
 * ``TINZ``: TINZ
+* ``NurbsCurveZ``: NurbsCurveZ
+
+  .. versionadded:: 4.0
+
 * ``PointM``: PointM
 * ``LineStringM``: LineStringM
 * ``PolygonM``: PolygonM
@@ -540,6 +573,10 @@ a different mode.
 * ``MultiSurfaceM``: MultiSurfaceM
 * ``PolyhedralSurfaceM``: PolyhedralSurfaceM
 * ``TINM``: TINM
+* ``NurbsCurveM``: NurbsCurveM
+
+  .. versionadded:: 4.0
+
 * ``PointZM``: PointZM
 * ``LineStringZM``: LineStringZM
 * ``PolygonZM``: PolygonZM
@@ -555,6 +592,10 @@ a different mode.
 * ``PolyhedralSurfaceZM``: PolyhedralSurfaceM
 * ``TINZM``: TINZM
 * ``TriangleZM``: TriangleZM
+* ``NurbsCurveZM``: NurbsCurveZM
+
+  .. versionadded:: 4.0
+
 * ``Point25D``: Point25D
 * ``LineString25D``: LineString25D
 * ``Polygon25D``: Polygon25D
@@ -718,49 +759,75 @@ Qgis.VectorLayerTypeFlag.__doc__ = """Vector layer type flags.
 Qgis.VectorLayerTypeFlag.baseClass = Qgis
 Qgis.VectorLayerTypeFlags.baseClass = Qgis
 VectorLayerTypeFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
-Qgis.PythonMacroMode = Qgis.PythonEmbeddedMode
+Qgis.PythonMacroMode = Qgis.EmbeddedScriptMode
 # monkey patching scoped based enum
-Qgis.Never = Qgis.PythonEmbeddedMode.Never
+Qgis.Never = Qgis.EmbeddedScriptMode.Never
 Qgis.Never.is_monkey_patched = True
-Qgis.Never.__doc__ = "Python embedded never run"
-Qgis.Ask = Qgis.PythonEmbeddedMode.Ask
+Qgis.Never.__doc__ = "Embedded scripts never run"
+Qgis.Ask = Qgis.EmbeddedScriptMode.Ask
 Qgis.Ask.is_monkey_patched = True
-Qgis.Ask.__doc__ = "User is prompt before running"
-Qgis.SessionOnly = Qgis.PythonEmbeddedMode.SessionOnly
+Qgis.Ask.__doc__ = "User is prompted before running scripts"
+Qgis.SessionOnly = Qgis.EmbeddedScriptMode.SessionOnly
 Qgis.SessionOnly.is_monkey_patched = True
-Qgis.SessionOnly.__doc__ = "Only during this session"
-Qgis.Always = Qgis.PythonEmbeddedMode.Always
+Qgis.SessionOnly.__doc__ = "Only during this session (only used prior to QGIS 4.0)"
+Qgis.Always = Qgis.EmbeddedScriptMode.Always
 Qgis.Always.is_monkey_patched = True
-Qgis.Always.__doc__ = "Python embedded is always run"
-Qgis.NotForThisSession = Qgis.PythonEmbeddedMode.NotForThisSession
+Qgis.Always.__doc__ = "Embedded scripts are always run"
+Qgis.NotForThisSession = Qgis.EmbeddedScriptMode.NotForThisSession
 Qgis.NotForThisSession.is_monkey_patched = True
-Qgis.NotForThisSession.__doc__ = "Python embedded will not be run for this session"
-Qgis.PythonEmbeddedMode.__doc__ = """Authorisation to run Python Embedded in projects
+Qgis.NotForThisSession.__doc__ = "Embedded scripts will not be run for this session (only used prior to QGIS 4.0)"
+Qgis.NeverAsk = Qgis.EmbeddedScriptMode.NeverAsk
+Qgis.NeverAsk.is_monkey_patched = True
+Qgis.NeverAsk.__doc__ = "The user is never prompted, embedded scripts are only run on trusted projects and folders \n.. versionadded:: 4.0"
+Qgis.EmbeddedScriptMode.__doc__ = """Authorisation to run script embedded in projects
 
 .. versionadded:: 3.40
 
-* ``Never``: Python embedded never run
-* ``Ask``: User is prompt before running
-* ``SessionOnly``: Only during this session
-* ``Always``: Python embedded is always run
-* ``NotForThisSession``: Python embedded will not be run for this session
+* ``Never``: Embedded scripts never run
+* ``Ask``: User is prompted before running scripts
+* ``SessionOnly``: Only during this session (only used prior to QGIS 4.0)
+* ``Always``: Embedded scripts are always run
+* ``NotForThisSession``: Embedded scripts will not be run for this session (only used prior to QGIS 4.0)
+* ``NeverAsk``: The user is never prompted, embedded scripts are only run on trusted projects and folders
+
+  .. versionadded:: 4.0
+
 
 """
 # --
-Qgis.PythonEmbeddedMode.baseClass = Qgis
+Qgis.EmbeddedScriptMode.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.PythonEmbeddedType.Macro.__doc__ = ""
-Qgis.PythonEmbeddedType.ExpressionFunction.__doc__ = ""
-Qgis.PythonEmbeddedType.__doc__ = """Type of Python Embedded in projects
+Qgis.EmbeddedScriptType.Macro.__doc__ = ""
+Qgis.EmbeddedScriptType.ExpressionFunction.__doc__ = ""
+Qgis.EmbeddedScriptType.Action.__doc__ = ""
+Qgis.EmbeddedScriptType.FormInitCode.__doc__ = ""
+Qgis.EmbeddedScriptType.__doc__ = """Type of Python Embedded in projects
 
 .. versionadded:: 3.40
 
 * ``Macro``: 
 * ``ExpressionFunction``: 
+* ``Action``: 
+* ``FormInitCode``: 
 
 """
 # --
-Qgis.PythonEmbeddedType.baseClass = Qgis
+Qgis.EmbeddedScriptType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProjectTrustStatus.Undetermined.__doc__ = ""
+Qgis.ProjectTrustStatus.Trusted.__doc__ = ""
+Qgis.ProjectTrustStatus.Untrusted.__doc__ = ""
+Qgis.ProjectTrustStatus.__doc__ = """Project trust status
+
+.. versionadded:: 4.0
+
+* ``Undetermined``: 
+* ``Trusted``: 
+* ``Untrusted``: 
+
+"""
+# --
+Qgis.ProjectTrustStatus.baseClass = Qgis
 QgsDataProvider.ReadFlag = Qgis.DataProviderReadFlag
 # monkey patching scoped based enum
 QgsDataProvider.FlagTrustDataSource = Qgis.DataProviderReadFlag.TrustDataSource
@@ -1428,6 +1495,73 @@ Qgis.SymbolRotationMode.__doc__ = """Modes for handling how symbol and text enti
 """
 # --
 Qgis.SymbolRotationMode.baseClass = Qgis
+QgsMarkerSymbolLayer.HorizontalAnchorPoint = Qgis.HorizontalAnchorPoint
+# monkey patching scoped based enum
+QgsMarkerSymbolLayer.Left = Qgis.HorizontalAnchorPoint.Left
+QgsMarkerSymbolLayer.Left.is_monkey_patched = True
+QgsMarkerSymbolLayer.Left.__doc__ = "Align to left side of symbol"
+QgsMarkerSymbolLayer.HCenter = Qgis.HorizontalAnchorPoint.Center
+QgsMarkerSymbolLayer.HorizontalAnchorPoint.HCenter = Qgis.HorizontalAnchorPoint.Center
+QgsMarkerSymbolLayer.HCenter.is_monkey_patched = True
+QgsMarkerSymbolLayer.HCenter.__doc__ = "Align to horizontal center of symbol"
+QgsMarkerSymbolLayer.Right = Qgis.HorizontalAnchorPoint.Right
+QgsMarkerSymbolLayer.Right.is_monkey_patched = True
+QgsMarkerSymbolLayer.Right.__doc__ = "Align to right side of symbol"
+Qgis.HorizontalAnchorPoint.__doc__ = """Marker symbol horizontal anchor points.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsMarkerSymbolLayer`.HorizontalAnchorPoint
+
+.. versionadded:: 3.44
+
+* ``Left``: Align to left side of symbol
+* ``Center``: Align to horizontal center of symbol
+
+  Available as ``QgsMarkerSymbolLayer.HCenter`` in older QGIS releases.
+
+* ``Right``: Align to right side of symbol
+
+"""
+# --
+Qgis.HorizontalAnchorPoint.baseClass = Qgis
+QgsMarkerSymbolLayer.VerticalAnchorPoint = Qgis.VerticalAnchorPoint
+# monkey patching scoped based enum
+QgsMarkerSymbolLayer.Top = Qgis.VerticalAnchorPoint.Top
+QgsMarkerSymbolLayer.Top.is_monkey_patched = True
+QgsMarkerSymbolLayer.Top.__doc__ = "Align to top of symbol"
+QgsMarkerSymbolLayer.VCenter = Qgis.VerticalAnchorPoint.Center
+QgsMarkerSymbolLayer.VerticalAnchorPoint.VCenter = Qgis.VerticalAnchorPoint.Center
+QgsMarkerSymbolLayer.VCenter.is_monkey_patched = True
+QgsMarkerSymbolLayer.VCenter.__doc__ = "Align to vertical center of symbol"
+QgsMarkerSymbolLayer.Bottom = Qgis.VerticalAnchorPoint.Bottom
+QgsMarkerSymbolLayer.Bottom.is_monkey_patched = True
+QgsMarkerSymbolLayer.Bottom.__doc__ = "Align to bottom of symbol"
+QgsMarkerSymbolLayer.Baseline = Qgis.VerticalAnchorPoint.Baseline
+QgsMarkerSymbolLayer.Baseline.is_monkey_patched = True
+QgsMarkerSymbolLayer.Baseline.__doc__ = "Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type. \n.. versionadded:: 3.44"
+Qgis.VerticalAnchorPoint.__doc__ = """Marker symbol vertical anchor points.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsMarkerSymbolLayer`.VerticalAnchorPoint
+
+.. versionadded:: 3.44
+
+* ``Top``: Align to top of symbol
+* ``Center``: Align to vertical center of symbol
+
+  Available as ``QgsMarkerSymbolLayer.VCenter`` in older QGIS releases.
+
+* ``Bottom``: Align to bottom of symbol
+* ``Baseline``: Align to baseline of symbol, e.g. font baseline for font marker symbol layers. Treated as Bottom if no baseline is available for the symbol layer type.
+
+  .. versionadded:: 3.44
+
+
+"""
+# --
+Qgis.VerticalAnchorPoint.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.FeatureRendererFlag.AffectsLabeling.__doc__ = "If present, indicates that the renderer will participate in the map labeling problem"
 Qgis.FeatureRendererFlag.__doc__ = """Flags controlling behavior of vector feature renderers.
@@ -1599,7 +1733,7 @@ QgsDataItem.NoCapabilities.is_monkey_patched = True
 QgsDataItem.NoCapabilities.__doc__ = "Item has no capabilities"
 QgsDataItem.SetCrs = Qgis.BrowserItemCapability.SetCrs
 QgsDataItem.SetCrs.is_monkey_patched = True
-QgsDataItem.SetCrs.__doc__ = "Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0"
+QgsDataItem.SetCrs.__doc__ = "Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0"
 QgsDataItem.Fertile = Qgis.BrowserItemCapability.Fertile
 QgsDataItem.Fertile.is_monkey_patched = True
 QgsDataItem.Fertile.__doc__ = "Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors."
@@ -1629,7 +1763,7 @@ Qgis.BrowserItemCapability.__doc__ = """Browser item capabilities.
 .. versionadded:: 3.20
 
 * ``NoCapabilities``: Item has no capabilities
-* ``SetCrs``: Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 4.0
+* ``SetCrs``: Can set CRS on layer or group of layers. deprecated since QGIS 3.6 -- no longer used by QGIS and will be removed in QGIS 5.0
 * ``Fertile``: Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
 * ``Fast``: CreateChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QgsSettings
 * ``Collapse``: The collapse/expand status for this items children should be ignored in order to avoid undesired network connections (wms etc.)
@@ -1798,12 +1932,27 @@ Qgis.BrowserDirectoryMonitoring.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.HttpMethod.Get.__doc__ = "GET method"
 Qgis.HttpMethod.Post.__doc__ = "POST method"
+Qgis.HttpMethod.Head.__doc__ = "HEAD method. \n.. versionadded:: 3.44"
+Qgis.HttpMethod.Put.__doc__ = "PUT method. \n.. versionadded:: 3.44"
+Qgis.HttpMethod.Delete.__doc__ = "DELETE method. \n.. versionadded:: 3.44"
 Qgis.HttpMethod.__doc__ = """Different methods of HTTP requests
 
 .. versionadded:: 3.22
 
 * ``Get``: GET method
 * ``Post``: POST method
+* ``Head``: HEAD method.
+
+  .. versionadded:: 3.44
+
+* ``Put``: PUT method.
+
+  .. versionadded:: 3.44
+
+* ``Delete``: DELETE method.
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -2059,6 +2208,19 @@ Qgis.LabelOverlapHandling.__doc__ = """Label overlap handling.
 # --
 Qgis.LabelOverlapHandling.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.LabelWhitespaceCollisionHandling.TreatWhitespaceAsCollision.__doc__ = "Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions"
+Qgis.LabelWhitespaceCollisionHandling.IgnoreWhitespaceCollisions.__doc__ = "Ignore overlapping whitespace text in labels and whitespace overlapping obstacles"
+Qgis.LabelWhitespaceCollisionHandling.__doc__ = """Label whitespace collision handling.
+
+.. versionadded:: 4.0
+
+* ``TreatWhitespaceAsCollision``: Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions
+* ``IgnoreWhitespaceCollisions``: Ignore overlapping whitespace text in labels and whitespace overlapping obstacles
+
+"""
+# --
+Qgis.LabelWhitespaceCollisionHandling.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LabelPrioritization.PreferCloser.__doc__ = "Prefer closer labels, falling back to alternate positions before larger distances"
 Qgis.LabelPrioritization.PreferPositionOrdering.__doc__ = "Prefer labels follow position ordering, falling back to more distance labels before alternate positions"
 Qgis.LabelPrioritization.__doc__ = """Label prioritization.
@@ -2124,6 +2286,23 @@ Qgis.LabelPlacement.__doc__ = """Placement modes which determine how label candi
 """
 # --
 Qgis.LabelPlacement.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.CurvedLabelMode.Default.__doc__ = "Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing."
+Qgis.CurvedLabelMode.PlaceCharactersAtVertices.__doc__ = "Each individual character from the label text is placed such that their left-baseline position is located at a corresponding vertex from the line geometry. If the line geometry does not contain sufficient vertices for the characters present in the label text then the excess characters will be ignored."
+Qgis.CurvedLabelMode.StretchCharacterSpacingToFitLine.__doc__ = "Increases (or decreases) the character spacing used for each label in order to fit the entire text over the actual length of the line geometry."
+Qgis.CurvedLabelMode.StretchWordSpacingToFitLine.__doc__ = "Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry."
+Qgis.CurvedLabelMode.__doc__ = """Modes which determine how curved labels are generated and placed.
+
+.. versionadded:: 4.0
+
+* ``Default``: Default curved placement, characters are placed in an optimal position along the line. Glyphs are placed at regular character and word spacing.
+* ``PlaceCharactersAtVertices``: Each individual character from the label text is placed such that their left-baseline position is located at a corresponding vertex from the line geometry. If the line geometry does not contain sufficient vertices for the characters present in the label text then the excess characters will be ignored.
+* ``StretchCharacterSpacingToFitLine``: Increases (or decreases) the character spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+* ``StretchWordSpacingToFitLine``: Increases (or decreases) the word spacing used for each label in order to fit the entire text over the actual length of the line geometry.
+
+"""
+# --
+Qgis.CurvedLabelMode.baseClass = Qgis
 QgsPalLayerSettings.PredefinedPointPosition = Qgis.LabelPredefinedPointPosition
 # monkey patching scoped based enum
 QgsPalLayerSettings.TopLeft = Qgis.LabelPredefinedPointPosition.TopLeft
@@ -2193,6 +2372,21 @@ Qgis.LabelPredefinedPointPosition.__doc__ = """Positions for labels when using t
 """
 # --
 Qgis.LabelPredefinedPointPosition.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MultiPartLabelingBehavior.LabelLargestPartOnly.__doc__ = "Place a label only on the largest part from the geometry"
+Qgis.MultiPartLabelingBehavior.LabelEveryPartWithEntireLabel.__doc__ = "Place the (same) entire label over every part from the geometry"
+Qgis.MultiPartLabelingBehavior.SplitLabelTextLinesOverParts.__doc__ = "Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text"
+Qgis.MultiPartLabelingBehavior.__doc__ = """Behavior modifier for labeling features with multi-part geometries.
+
+.. versionadded:: 4.0
+
+* ``LabelLargestPartOnly``: Place a label only on the largest part from the geometry
+* ``LabelEveryPartWithEntireLabel``: Place the (same) entire label over every part from the geometry
+* ``SplitLabelTextLinesOverParts``: Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
+
+"""
+# --
+Qgis.MultiPartLabelingBehavior.baseClass = Qgis
 QgsPalLayerSettings.OffsetType = Qgis.LabelOffsetType
 # monkey patching scoped based enum
 QgsPalLayerSettings.FromPoint = Qgis.LabelOffsetType.FromPoint
@@ -2253,7 +2447,7 @@ QgsPalLayerSettings.QuadrantBelow.__doc__ = "Below center"
 QgsPalLayerSettings.QuadrantBelowRight = Qgis.LabelQuadrantPosition.BelowRight
 QgsPalLayerSettings.QuadrantPosition.QuadrantBelowRight = Qgis.LabelQuadrantPosition.BelowRight
 QgsPalLayerSettings.QuadrantBelowRight.is_monkey_patched = True
-QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "BelowRight"
+QgsPalLayerSettings.QuadrantBelowRight.__doc__ = "Below right"
 Qgis.LabelQuadrantPosition.__doc__ = """Label quadrant positions
 
 .. note::
@@ -2294,7 +2488,7 @@ Qgis.LabelQuadrantPosition.__doc__ = """Label quadrant positions
 
   Available as ``QgsPalLayerSettings.QuadrantBelow`` in older QGIS releases.
 
-* ``BelowRight``: BelowRight
+* ``BelowRight``: Below right
 
   Available as ``QgsPalLayerSettings.QuadrantBelowRight`` in older QGIS releases.
 
@@ -2521,10 +2715,26 @@ Prior to QGIS 3.32 this was available as :py:class:`QgsProviderMetadata`.FilterT
 # --
 Qgis.FileFilterType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.UriCleaningFlag.RemoveCredentials.__doc__ = "Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag."
+Qgis.UriCleaningFlag.RedactCredentials.__doc__ = "Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag."
+Qgis.UriCleaningFlag.__doc__ = """Flags for cleaning layer URIs.
+
+.. versionadded:: 3.42
+
+* ``RemoveCredentials``: Completely remove credentials (eg passwords) from the URI. This flag is not compatible with the RedactCredentials flag.
+* ``RedactCredentials``: Replace the value of credentials (eg passwords) with 'xxxxxxxx'. This flag is not compatible with the RemoveCredentials flag.
+
+"""
+# --
+Qgis.UriCleaningFlag.baseClass = Qgis
+Qgis.UriCleaningFlags.baseClass = Qgis
+UriCleaningFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.SublayerQueryFlag.FastScan.__doc__ = "Indicates that the provider must scan for sublayers using the fastest possible approach -- e.g. by first checking that a uri has an extension which is known to be readable by the provider"
 Qgis.SublayerQueryFlag.ResolveGeometryType.__doc__ = "Attempt to resolve the geometry type for vector sublayers"
 Qgis.SublayerQueryFlag.CountFeatures.__doc__ = "Count features in vector sublayers"
 Qgis.SublayerQueryFlag.IncludeSystemTables.__doc__ = "Include system or internal tables (these are not included by default)"
+Qgis.SublayerQueryFlag.OpenLayersToResolveDescriptions.__doc__ = "Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call. \n.. versionadded:: 4.0"
 Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will scan for sublayers in a dataset.
 
 .. versionadded:: 3.22
@@ -2533,6 +2743,10 @@ Qgis.SublayerQueryFlag.__doc__ = """Flags which control how data providers will 
 * ``ResolveGeometryType``: Attempt to resolve the geometry type for vector sublayers
 * ``CountFeatures``: Count features in vector sublayers
 * ``IncludeSystemTables``: Include system or internal tables (these are not included by default)
+* ``OpenLayersToResolveDescriptions``: Attempt to open layers in order to resolve layer descriptions. May be slow and should never be done in a UI blocking call.
+
+  .. versionadded:: 4.0
+
 
 """
 # --
@@ -2686,20 +2900,66 @@ QgsRasterPipe.ResamplingStage = Qgis.RasterResamplingStage
 # monkey patching scoped based enum
 QgsRasterPipe.ResampleFilter = Qgis.RasterResamplingStage.ResampleFilter
 QgsRasterPipe.ResampleFilter.is_monkey_patched = True
-QgsRasterPipe.ResampleFilter.__doc__ = ""
+QgsRasterPipe.ResampleFilter.__doc__ = "Resampling occurs in ResamplingFilter"
 QgsRasterPipe.Provider = Qgis.RasterResamplingStage.Provider
 QgsRasterPipe.Provider.is_monkey_patched = True
-QgsRasterPipe.Provider.__doc__ = ""
+QgsRasterPipe.Provider.__doc__ = "Resampling occurs in Provider"
 Qgis.RasterResamplingStage.__doc__ = """Stage at which raster resampling occurs.
 
 .. versionadded:: 3.22
 
-* ``ResampleFilter``: 
-* ``Provider``: 
+* ``ResampleFilter``: Resampling occurs in ResamplingFilter
+* ``Provider``: Resampling occurs in Provider
 
 """
 # --
 Qgis.RasterResamplingStage.baseClass = Qgis
+QgsRasterDataProvider.ResamplingMethod = Qgis.RasterResamplingMethod
+# monkey patching scoped based enum
+QgsRasterDataProvider.Nearest = Qgis.RasterResamplingMethod.Nearest
+QgsRasterDataProvider.Nearest.is_monkey_patched = True
+QgsRasterDataProvider.Nearest.__doc__ = "Nearest-neighbour resampling"
+QgsRasterDataProvider.Bilinear = Qgis.RasterResamplingMethod.Bilinear
+QgsRasterDataProvider.Bilinear.is_monkey_patched = True
+QgsRasterDataProvider.Bilinear.__doc__ = "Bilinear (2x2 kernel) resampling"
+QgsRasterDataProvider.Cubic = Qgis.RasterResamplingMethod.Cubic
+QgsRasterDataProvider.Cubic.is_monkey_patched = True
+QgsRasterDataProvider.Cubic.__doc__ = "Cubic Convolution Approximation (4x4 kernel) resampling"
+QgsRasterDataProvider.CubicSpline = Qgis.RasterResamplingMethod.CubicSpline
+QgsRasterDataProvider.CubicSpline.is_monkey_patched = True
+QgsRasterDataProvider.CubicSpline.__doc__ = "Cubic B-Spline Approximation (4x4 kernel)"
+QgsRasterDataProvider.Lanczos = Qgis.RasterResamplingMethod.Lanczos
+QgsRasterDataProvider.Lanczos.is_monkey_patched = True
+QgsRasterDataProvider.Lanczos.__doc__ = "Lanczos windowed sinc interpolation (6x6 kernel)"
+QgsRasterDataProvider.Average = Qgis.RasterResamplingMethod.Average
+QgsRasterDataProvider.Average.is_monkey_patched = True
+QgsRasterDataProvider.Average.__doc__ = "Average resampling"
+QgsRasterDataProvider.Mode = Qgis.RasterResamplingMethod.Mode
+QgsRasterDataProvider.Mode.is_monkey_patched = True
+QgsRasterDataProvider.Mode.__doc__ = "Mode (selects the value which appears most often of all the sampled points)"
+QgsRasterDataProvider.Gauss = Qgis.RasterResamplingMethod.Gauss
+QgsRasterDataProvider.Gauss.is_monkey_patched = True
+QgsRasterDataProvider.Gauss.__doc__ = "Gauss blurring"
+Qgis.RasterResamplingMethod.__doc__ = """Resampling method for raster provider-level resampling.
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterDataProvider`.ResamplingMethod
+
+.. versionadded:: 3.42
+
+* ``Nearest``: Nearest-neighbour resampling
+* ``Bilinear``: Bilinear (2x2 kernel) resampling
+* ``Cubic``: Cubic Convolution Approximation (4x4 kernel) resampling
+* ``CubicSpline``: Cubic B-Spline Approximation (4x4 kernel)
+* ``Lanczos``: Lanczos windowed sinc interpolation (6x6 kernel)
+* ``Average``: Average resampling
+* ``Mode``: Mode (selects the value which appears most often of all the sampled points)
+* ``Gauss``: Gauss blurring
+
+"""
+# --
+Qgis.RasterResamplingMethod.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterRendererFlag.InternalLayerOpacityHandling.__doc__ = "The renderer internally handles the raster layer's opacity, so the default layer level opacity handling should not be applied."
 Qgis.RasterRendererFlag.UseNoDataForOutOfRangePixels.__doc__ = "Out of range pixels (eg those values outside of the rendered map's z range filter) should be set using additional nodata values instead of additional transparency values \n.. versionadded:: 3.38"
@@ -2731,6 +2991,100 @@ Qgis.RasterRendererCapability.__doc__ = """Raster renderer capabilities.
 Qgis.RasterRendererCapability.baseClass = Qgis
 Qgis.RasterRendererCapabilities.baseClass = Qgis
 RasterRendererCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsRasterMinMaxOrigin.Limits = Qgis.RasterRangeLimit
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.None_ = Qgis.RasterRangeLimit.NotSet
+QgsRasterMinMaxOrigin.Limits.None_ = Qgis.RasterRangeLimit.NotSet
+QgsRasterMinMaxOrigin.None_.is_monkey_patched = True
+QgsRasterMinMaxOrigin.None_.__doc__ = "User defined"
+QgsRasterMinMaxOrigin.MinMax = Qgis.RasterRangeLimit.MinimumMaximum
+QgsRasterMinMaxOrigin.Limits.MinMax = Qgis.RasterRangeLimit.MinimumMaximum
+QgsRasterMinMaxOrigin.MinMax.is_monkey_patched = True
+QgsRasterMinMaxOrigin.MinMax.__doc__ = "Real min-max values"
+QgsRasterMinMaxOrigin.StdDev = Qgis.RasterRangeLimit.StdDev
+QgsRasterMinMaxOrigin.StdDev.is_monkey_patched = True
+QgsRasterMinMaxOrigin.StdDev.__doc__ = "Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]"
+QgsRasterMinMaxOrigin.CumulativeCut = Qgis.RasterRangeLimit.CumulativeCut
+QgsRasterMinMaxOrigin.CumulativeCut.is_monkey_patched = True
+QgsRasterMinMaxOrigin.CumulativeCut.__doc__ = "Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]"
+Qgis.RasterRangeLimit.__doc__ = """Describes the limits used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.Limits
+
+.. versionadded:: 3.42
+
+* ``NotSet``: User defined
+
+  Available as ``QgsRasterMinMaxOrigin.None_`` in older QGIS releases.
+
+* ``MinimumMaximum``: Real min-max values
+
+  Available as ``QgsRasterMinMaxOrigin.MinMax`` in older QGIS releases.
+
+* ``StdDev``: Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+* ``CumulativeCut``: Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+
+"""
+# --
+Qgis.RasterRangeLimit.baseClass = Qgis
+QgsRasterMinMaxOrigin.Extent = Qgis.RasterRangeExtent
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.None_ = Qgis.RasterRangeExtent.WholeRaster
+QgsRasterMinMaxOrigin.Extent.None_ = Qgis.RasterRangeExtent.WholeRaster
+QgsRasterMinMaxOrigin.None_.is_monkey_patched = True
+QgsRasterMinMaxOrigin.None_.__doc__ = "Whole raster is used to compute statistics"
+QgsRasterMinMaxOrigin.CurrentCanvas = Qgis.RasterRangeExtent.FixedCanvas
+QgsRasterMinMaxOrigin.Extent.CurrentCanvas = Qgis.RasterRangeExtent.FixedCanvas
+QgsRasterMinMaxOrigin.CurrentCanvas.is_monkey_patched = True
+QgsRasterMinMaxOrigin.CurrentCanvas.__doc__ = "Current extent of the canvas (at the time of computation) is used to compute statistics"
+QgsRasterMinMaxOrigin.UpdatedCanvas = Qgis.RasterRangeExtent.UpdatedCanvas
+QgsRasterMinMaxOrigin.UpdatedCanvas.is_monkey_patched = True
+QgsRasterMinMaxOrigin.UpdatedCanvas.__doc__ = "Constantly updated extent of the canvas is used to compute statistics"
+Qgis.RasterRangeExtent.__doc__ = """Describes the extent used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.Extent
+
+.. versionadded:: 3.42
+
+* ``WholeRaster``: Whole raster is used to compute statistics
+
+  Available as ``QgsRasterMinMaxOrigin.None_`` in older QGIS releases.
+
+* ``FixedCanvas``: Current extent of the canvas (at the time of computation) is used to compute statistics
+
+  Available as ``QgsRasterMinMaxOrigin.CurrentCanvas`` in older QGIS releases.
+
+* ``UpdatedCanvas``: Constantly updated extent of the canvas is used to compute statistics
+
+"""
+# --
+Qgis.RasterRangeExtent.baseClass = Qgis
+QgsRasterMinMaxOrigin.StatAccuracy = Qgis.RasterRangeAccuracy
+# monkey patching scoped based enum
+QgsRasterMinMaxOrigin.Exact = Qgis.RasterRangeAccuracy.Exact
+QgsRasterMinMaxOrigin.Exact.is_monkey_patched = True
+QgsRasterMinMaxOrigin.Exact.__doc__ = "Exact statistics"
+QgsRasterMinMaxOrigin.Estimated = Qgis.RasterRangeAccuracy.Estimated
+QgsRasterMinMaxOrigin.Estimated.is_monkey_patched = True
+QgsRasterMinMaxOrigin.Estimated.__doc__ = "Approximated statistics"
+Qgis.RasterRangeAccuracy.__doc__ = """Describes the accuracy used to compute raster ranges (min/max values).
+
+.. note::
+
+   Prior to QGIS 3.42 this was available as :py:class:`QgsRasterMinMaxOrigin`.StatAccuracy
+
+.. versionadded:: 3.42
+
+* ``Exact``: Exact statistics
+* ``Estimated``: Approximated statistics
+
+"""
+# --
+Qgis.RasterRangeAccuracy.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.RasterAttributeTableFieldUsage.Generic.__doc__ = "Field usage Generic"
 Qgis.RasterAttributeTableFieldUsage.PixelCount.__doc__ = "Field usage PixelCount"
@@ -3618,6 +3972,21 @@ Qgis.JoinStyle.__doc__ = """Join styles for buffers.
 # --
 Qgis.JoinStyle.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.JoinStyle3D.Round.__doc__ = "Smooth, rounded buffer around the input geometry"
+Qgis.JoinStyle3D.Flat.__doc__ = "Flat ends and constant width along the linestring"
+Qgis.JoinStyle3D.CylindersAndSpheres.__doc__ = "Cylinders along the linestring segments with spheres at the vertices"
+Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
+
+.. versionadded:: 4.0
+
+* ``Round``: Smooth, rounded buffer around the input geometry
+* ``Flat``: Flat ends and constant width along the linestring
+* ``CylindersAndSpheres``: Cylinders along the linestring segments with spheres at the vertices
+
+"""
+# --
+Qgis.JoinStyle3D.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
 Qgis.GeosCreationFlag.__doc__ = """Flags which control geos geometry creation behavior.
@@ -3824,6 +4193,7 @@ FileOperationFlags = Qgis  # dirty hack since SIP seems to introduce the flags i
 # monkey patching scoped based enum
 Qgis.MapLayerProperty.UsersCannotToggleEditing.__doc__ = "Indicates that users are not allowed to toggle editing for this layer. Note that this does not imply that the layer is non-editable (see isEditable(), supportsEditing() ), rather that the editable status of the layer cannot be changed by users manually \n.. versionadded:: 3.22"
 Qgis.MapLayerProperty.IsBasemapLayer.__doc__ = "Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest \n.. versionadded:: 3.26"
+Qgis.MapLayerProperty.Is3DBasemapLayer.__doc__ = "Layer is considered a '3D basemap' layer. This flag is similar to IsBasemapLayer, but reserved for layers which contain 3D data \n.. versionadded:: 3.44"
 Qgis.MapLayerProperty.__doc__ = """Generic map layer properties.
 
 .. versionadded:: 3.22
@@ -3835,6 +4205,10 @@ Qgis.MapLayerProperty.__doc__ = """Generic map layer properties.
 * ``IsBasemapLayer``: Layer is considered a 'basemap' layer, and certain properties of the layer should be ignored when calculating project-level properties. For instance, the extent of basemap layers is ignored when calculating the extent of a project, as these layers are typically global and extend outside of a project's area of interest
 
   .. versionadded:: 3.26
+
+* ``Is3DBasemapLayer``: Layer is considered a '3D basemap' layer. This flag is similar to IsBasemapLayer, but reserved for layers which contain 3D data
+
+  .. versionadded:: 3.44
 
 
 """
@@ -3861,6 +4235,7 @@ Qgis.AutoRefreshMode.baseClass = Qgis
 Qgis.DataProviderFlag.IsBasemapSource.__doc__ = "Associated source should be considered a 'basemap' layer. See Qgis.MapLayerProperty.IsBasemapLayer."
 Qgis.DataProviderFlag.FastExtent2D.__doc__ = "Provider's 2D extent retrieval via QgsDataProvider.extent() is always guaranteed to be trivial/fast to calculate \n.. versionadded:: 3.38"
 Qgis.DataProviderFlag.FastExtent3D.__doc__ = "Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate \n.. versionadded:: 3.38"
+Qgis.DataProviderFlag.Is3DBasemapSource.__doc__ = "Associated source should be considered a '3D basemap' layer. See Qgis.MapLayerProperty.Is3DBasemapLayer. \n.. versionadded:: 3.44"
 Qgis.DataProviderFlag.__doc__ = """Generic data provider flags.
 
 .. versionadded:: 3.26
@@ -3873,6 +4248,10 @@ Qgis.DataProviderFlag.__doc__ = """Generic data provider flags.
 * ``FastExtent3D``: Provider's 3D extent retrieval via QgsDataProvider.extent3D() is always guaranteed to be trivial/fast to calculate
 
   .. versionadded:: 3.38
+
+* ``Is3DBasemapSource``: Associated source should be considered a '3D basemap' layer. See Qgis.MapLayerProperty.Is3DBasemapLayer.
+
+  .. versionadded:: 3.44
 
 
 """
@@ -4443,6 +4822,9 @@ QgsRasterLayerTemporalProperties.FixedRangePerBand.__doc__ = "Layer has a fixed 
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues = Qgis.RasterTemporalMode.RepresentsTemporalValues
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.is_monkey_patched = True
 QgsRasterLayerTemporalProperties.RepresentsTemporalValues.__doc__ = "Pixel values represent an datetime"
+QgsRasterLayerTemporalProperties.FixedDateTime = Qgis.RasterTemporalMode.FixedDateTime
+QgsRasterLayerTemporalProperties.FixedDateTime.is_monkey_patched = True
+QgsRasterLayerTemporalProperties.FixedDateTime.__doc__ = "Layer has a fixed date time instant. \n.. versionadded:: 3.44"
 Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
 
 .. versionadded:: 3.22
@@ -4467,6 +4849,10 @@ Qgis.RasterTemporalMode.__doc__ = """Raster layer temporal modes
   .. versionadded:: 3.38
 
 * ``RepresentsTemporalValues``: Pixel values represent an datetime
+* ``FixedDateTime``: Layer has a fixed date time instant.
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -4555,6 +4941,21 @@ Qgis.CoordinateTransformationFlag.__doc__ = """Flags which adjust the coordinate
 Qgis.CoordinateTransformationFlag.baseClass = Qgis
 Qgis.CoordinateTransformationFlags.baseClass = Qgis
 CoordinateTransformationFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.RasterizedRenderingPolicy.Default.__doc__ = "Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering."
+Qgis.RasterizedRenderingPolicy.PreferVector.__doc__ = "Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes."
+Qgis.RasterizedRenderingPolicy.ForceVector.__doc__ = "Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes."
+Qgis.RasterizedRenderingPolicy.__doc__ = """Policies controlling when rasterisation of content during renders is permitted.
+
+.. versionadded:: 3.44
+
+* ``Default``: Allow raster-based rendering in situations where it is required for correct rendering or where it will be faster than vector based rendering.
+* ``PreferVector``: Prefer vector-based rendering, when the result will still be visually near-identical to a raster-based render. The render may be slower or result in larger output file sizes.
+* ``ForceVector``: Always force vector-based rendering, even when the result will be visually different to a raster-based render. For example, this policy will ignore effects which require flattened rasters during renders such as layer-wide opacity or blend modes.
+
+"""
+# --
+Qgis.RasterizedRenderingPolicy.baseClass = Qgis
 QgsMapSettings.Flag = Qgis.MapSettingsFlag
 # monkey patching scoped based enum
 QgsMapSettings.Antialiasing = Qgis.MapSettingsFlag.Antialiasing
@@ -4565,10 +4966,10 @@ QgsMapSettings.DrawEditingInfo.is_monkey_patched = True
 QgsMapSettings.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
 QgsMapSettings.ForceVectorOutput = Qgis.MapSettingsFlag.ForceVectorOutput
 QgsMapSettings.ForceVectorOutput.is_monkey_patched = True
-QgsMapSettings.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsMapSettings.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images. \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsMapSettings.UseAdvancedEffects = Qgis.MapSettingsFlag.UseAdvancedEffects
 QgsMapSettings.UseAdvancedEffects.is_monkey_patched = True
-QgsMapSettings.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
+QgsMapSettings.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsMapSettings.DrawLabeling = Qgis.MapSettingsFlag.DrawLabeling
 QgsMapSettings.DrawLabeling.is_monkey_patched = True
 QgsMapSettings.DrawLabeling.__doc__ = "Enable drawing of labels on top of the map"
@@ -4620,8 +5021,14 @@ Qgis.MapSettingsFlag.__doc__ = """Flags which adjust the way maps are rendered.
 
 * ``Antialiasing``: Enable anti-aliasing for map rendering
 * ``DrawEditingInfo``: Enable drawing of vertex markers for layers in editing mode
-* ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images
+* ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images.
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``UseAdvancedEffects``: Enable layer opacity and blending effects
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``DrawLabeling``: Enable drawing of labels on top of the map
 * ``UseRenderingOptimization``: Enable vector simplification and other rendering optimizations
 * ``DrawSelection``: Whether vector selections should be shown in the rendered map
@@ -4666,10 +5073,10 @@ QgsRenderContext.DrawEditingInfo.is_monkey_patched = True
 QgsRenderContext.DrawEditingInfo.__doc__ = "Enable drawing of vertex markers for layers in editing mode"
 QgsRenderContext.ForceVectorOutput = Qgis.RenderContextFlag.ForceVectorOutput
 QgsRenderContext.ForceVectorOutput.is_monkey_patched = True
-QgsRenderContext.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images"
+QgsRenderContext.ForceVectorOutput.__doc__ = "Vector graphics should not be cached and drawn as raster images \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsRenderContext.UseAdvancedEffects = Qgis.RenderContextFlag.UseAdvancedEffects
 QgsRenderContext.UseAdvancedEffects.is_monkey_patched = True
-QgsRenderContext.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects"
+QgsRenderContext.UseAdvancedEffects.__doc__ = "Enable layer opacity and blending effects \n.. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead."
 QgsRenderContext.UseRenderingOptimization = Qgis.RenderContextFlag.UseRenderingOptimization
 QgsRenderContext.UseRenderingOptimization.is_monkey_patched = True
 QgsRenderContext.UseRenderingOptimization.__doc__ = "Enable vector simplification and other rendering optimizations"
@@ -4727,13 +5134,22 @@ QgsRenderContext.AlwaysUseGlobalMasks.__doc__ = "When applying clipping paths fo
 QgsRenderContext.DisableSymbolClippingToExtent = Qgis.RenderContextFlag.DisableSymbolClippingToExtent
 QgsRenderContext.DisableSymbolClippingToExtent.is_monkey_patched = True
 QgsRenderContext.DisableSymbolClippingToExtent.__doc__ = "Force symbol clipping to map extent to be disabled in all situations. This will result in slower rendering, and should only be used in situations where the feature clipping is always undesirable. \n.. versionadded:: 3.40"
+QgsRenderContext.RenderLayerTree = Qgis.RenderContextFlag.RenderLayerTree
+QgsRenderContext.RenderLayerTree.is_monkey_patched = True
+QgsRenderContext.RenderLayerTree.__doc__ = "The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial \n.. versionadded:: 3.44"
 Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 
 .. versionadded:: 3.22
 
 * ``DrawEditingInfo``: Enable drawing of vertex markers for layers in editing mode
 * ``ForceVectorOutput``: Vector graphics should not be cached and drawn as raster images
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``UseAdvancedEffects``: Enable layer opacity and blending effects
+
+  .. deprecated:: 3.44. Use Qgis.RasterizedRenderingPolicy instead.
+
 * ``UseRenderingOptimization``: Enable vector simplification and other rendering optimizations
 * ``DrawSelection``: Whether vector selections should be shown in the rendered map
 * ``DrawSymbolBounds``: Draw bounds of symbols (for debugging/testing)
@@ -4771,6 +5187,10 @@ Qgis.RenderContextFlag.__doc__ = """Flags which affect rendering operations.
 
   .. versionadded:: 3.40
 
+* ``RenderLayerTree``: The render is for a layer tree display where map based properties are not available and where avoidance of long rendering freeze is crucial
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -4798,6 +5218,19 @@ Qgis.MapLayerRendererFlag.__doc__ = """Flags which control how map layer rendere
 Qgis.MapLayerRendererFlag.baseClass = Qgis
 Qgis.MapLayerRendererFlags.baseClass = Qgis
 MapLayerRendererFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.PaintEffectFlag.RequiresRasterization.__doc__ = "The effect requires raster-based rendering."
+Qgis.PaintEffectFlag.__doc__ = """Flags which control how paint effects behave.
+
+.. versionadded:: 3.44
+
+* ``RequiresRasterization``: The effect requires raster-based rendering.
+
+"""
+# --
+Qgis.PaintEffectFlag.baseClass = Qgis
+Qgis.PaintEffectFlags.baseClass = Qgis
+PaintEffectFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsRenderContext.TextRenderFormat = Qgis.TextRenderFormat
 # monkey patching scoped based enum
 QgsRenderContext.TextFormatAlwaysOutlines = Qgis.TextRenderFormat.AlwaysOutlines
@@ -4808,6 +5241,9 @@ QgsRenderContext.TextFormatAlwaysText = Qgis.TextRenderFormat.AlwaysText
 QgsRenderContext.TextRenderFormat.TextFormatAlwaysText = Qgis.TextRenderFormat.AlwaysText
 QgsRenderContext.TextFormatAlwaysText.is_monkey_patched = True
 QgsRenderContext.TextFormatAlwaysText.__doc__ = "Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform)."
+QgsRenderContext.PreferText = Qgis.TextRenderFormat.PreferText
+QgsRenderContext.PreferText.is_monkey_patched = True
+QgsRenderContext.PreferText.__doc__ = "Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform). \n.. versionadded:: 3.40"
 Qgis.TextRenderFormat.__doc__ = """Options for rendering text.
 
 .. versionadded:: 3.22
@@ -4819,6 +5255,10 @@ Qgis.TextRenderFormat.__doc__ = """Options for rendering text.
 * ``AlwaysText``: Always render text as text objects. While this mode preserves text objects as text for post-processing in external vector editing applications, it can result in rendering artifacts or poor quality rendering, depending on the text format settings. Even with raster based paint devices, TextFormatAlwaysText can result in inferior rendering quality to TextFormatAlwaysOutlines. When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
 
   Available as ``QgsRenderContext.TextFormatAlwaysText`` in older QGIS releases.
+
+* ``PreferText``: Render text as text objects, unless doing so results in rendering artifacts or poor quality rendering (depending on text format settings). When rendering using TextFormatAlwaysText to a vector based device (e.g. PDF or SVG), care must be taken to ensure that the required fonts are available to users when opening the created files, or default fallback fonts will be used to display the output instead. (Although PDF exports MAY automatically embed some fonts when possible, depending on the user's platform).
+
+  .. versionadded:: 3.40
 
 
 """
@@ -5021,6 +5461,8 @@ Qgis.TextComponent.__doc__ = """Text components.
 """
 # --
 Qgis.TextComponent.baseClass = Qgis
+Qgis.TextComponents.baseClass = Qgis
+TextComponents = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsTextRenderer.HAlignment = Qgis.TextHorizontalAlignment
 # monkey patching scoped based enum
 QgsTextRenderer.AlignLeft = Qgis.TextHorizontalAlignment.Left
@@ -5126,6 +5568,36 @@ of text.
 """
 # --
 Qgis.TextCharacterVerticalAlignment.baseClass = Qgis
+QgsTextRendererUtils.CurvedTextFlag = Qgis.CurvedTextFlag
+# monkey patching scoped based enum
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort = Qgis.CurvedTextFlag.TruncateStringWhenLineIsTooShort
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort.is_monkey_patched = True
+QgsTextRendererUtils.TruncateStringWhenLineIsTooShort.__doc__ = "When a string is too long for the line, truncate characters instead of aborting the placement"
+QgsTextRendererUtils.UseBaselinePlacement = Qgis.CurvedTextFlag.UseBaselinePlacement
+QgsTextRendererUtils.UseBaselinePlacement.is_monkey_patched = True
+QgsTextRendererUtils.UseBaselinePlacement.__doc__ = "Generate placement based on the character baselines instead of centers"
+QgsTextRendererUtils.UprightCharactersOnly = Qgis.CurvedTextFlag.UprightCharactersOnly
+QgsTextRendererUtils.UprightCharactersOnly.is_monkey_patched = True
+QgsTextRendererUtils.UprightCharactersOnly.__doc__ = "Permit upright characters only. If not present then upside down text placement is permitted."
+QgsTextRendererUtils.ExtendLineToFitText = Qgis.CurvedTextFlag.ExtendLineToFitText
+QgsTextRendererUtils.ExtendLineToFitText.is_monkey_patched = True
+QgsTextRendererUtils.ExtendLineToFitText.__doc__ = "When a string is too long for the line, extend the line's final segment to fit the entire string. \n.. versionadded:: 4.0"
+Qgis.CurvedTextFlag.__doc__ = """Flags controlling behavior of curved text generation.
+
+.. versionadded:: 4.0.
+
+* ``TruncateStringWhenLineIsTooShort``: When a string is too long for the line, truncate characters instead of aborting the placement
+* ``UseBaselinePlacement``: Generate placement based on the character baselines instead of centers
+* ``UprightCharactersOnly``: Permit upright characters only. If not present then upside down text placement is permitted.
+* ``ExtendLineToFitText``: When a string is too long for the line, extend the line's final segment to fit the entire string.
+
+  .. versionadded:: 4.0
+
+
+"""
+# --
+Qgis.CurvedTextFlag.baseClass = Qgis
+QgsTextRendererUtils.CurvedTextFlags = Qgis.CurvedTextFlags
 QgsVectorSimplifyMethod.SimplifyAlgorithm = Qgis.VectorSimplificationAlgorithm
 # monkey patching scoped based enum
 QgsVectorSimplifyMethod.Distance = Qgis.VectorSimplificationAlgorithm.Distance
@@ -5216,6 +5688,10 @@ QgsVertexId.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.VertexType.CurveVertex = Qgis.VertexType.Curve
 QgsVertexId.CurveVertex.is_monkey_patched = True
 QgsVertexId.CurveVertex.__doc__ = "An intermediate point on a segment defining the curvature of the segment"
+QgsVertexId.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.VertexType.ControlPointVertex = Qgis.VertexType.ControlPoint
+QgsVertexId.ControlPointVertex.is_monkey_patched = True
+QgsVertexId.ControlPointVertex.__doc__ = "A NURBS control point (does not lie on the curve) \n.. versionadded:: 4.0"
 Qgis.VertexType.__doc__ = """Types of vertex.
 
 .. versionadded:: 3.22
@@ -5227,6 +5703,13 @@ Qgis.VertexType.__doc__ = """Types of vertex.
 * ``Curve``: An intermediate point on a segment defining the curvature of the segment
 
   Available as ``QgsVertexId.CurveVertex`` in older QGIS releases.
+
+* ``ControlPoint``: A NURBS control point (does not lie on the curve)
+
+  .. versionadded:: 4.0
+
+
+  Available as ``QgsVertexId.ControlPointVertex`` in older QGIS releases.
 
 
 """
@@ -5762,6 +6245,34 @@ Qgis.PlotAxisSuffixPlacement.__doc__ = """Placement options for suffixes in the 
 # --
 Qgis.PlotAxisSuffixPlacement.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PlotAxisType.Interval.__doc__ = "The axis represents a range of values"
+Qgis.PlotAxisType.Categorical.__doc__ = "The axis represents categories"
+Qgis.PlotAxisType.__doc__ = """Plots axis types.
+
+.. versionadded:: 4.0
+
+* ``Interval``: The axis represents a range of values
+* ``Categorical``: The axis represents categories
+
+"""
+# --
+Qgis.PlotAxisType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PieChartLabelType.NoLabels.__doc__ = "Labels are not drawn"
+Qgis.PieChartLabelType.Categories.__doc__ = "Category labels are drawn"
+Qgis.PieChartLabelType.Values.__doc__ = "Value labels are drawn"
+Qgis.PieChartLabelType.__doc__ = """Pie chart label types.
+
+.. versionadded:: 4.0
+
+* ``NoLabels``: Labels are not drawn
+* ``Categories``: Category labels are drawn
+* ``Values``: Value labels are drawn
+
+"""
+# --
+Qgis.PieChartLabelType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.DpiMode.All.__doc__ = "All"
 Qgis.DpiMode.Off.__doc__ = "Off"
 Qgis.DpiMode.QGIS.__doc__ = "QGIS"
@@ -5911,6 +6422,19 @@ Qgis.RendererUsage.__doc__ = """Usage of the renderer.
 # --
 Qgis.RendererUsage.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.MapCanvasFlag.ShowMainAnnotationLayer.__doc__ = "The project's main annotation layer should be rendered in the canvas"
+Qgis.MapCanvasFlag.__doc__ = """Flags controlling behavior of map canvases.
+
+.. versionadded:: 3.40
+
+* ``ShowMainAnnotationLayer``: The project's main annotation layer should be rendered in the canvas
+
+"""
+# --
+Qgis.MapCanvasFlag.baseClass = Qgis
+Qgis.MapCanvasFlags.baseClass = Qgis
+MapCanvasFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
 Qgis.ViewSyncModeFlag.Sync3DTo2D.__doc__ = "Synchronize 3D view camera to the main map canvas extent"
 Qgis.ViewSyncModeFlag.Sync2DTo3D.__doc__ = "Update the 2D main canvas extent to include the viewed area from the 3D view"
 Qgis.ViewSyncModeFlag.__doc__ = """Synchronization of 2D map canvas and 3D view
@@ -5951,6 +6475,19 @@ Qgis.HistoryProviderBackend.__doc__ = """History provider backends.
 Qgis.HistoryProviderBackend.baseClass = Qgis
 Qgis.HistoryProviderBackends.baseClass = Qgis
 HistoryProviderBackends = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.QueryStorageBackend.LocalProfile.__doc__ = "Local user profile"
+Qgis.QueryStorageBackend.CurrentProject.__doc__ = "Current QGIS project"
+Qgis.QueryStorageBackend.__doc__ = """Stored query storage backends.
+
+.. versionadded:: 3.44
+
+* ``LocalProfile``: Local user profile
+* ``CurrentProject``: Current QGIS project
+
+"""
+# --
+Qgis.QueryStorageBackend.baseClass = Qgis
 QgsProcessing.SourceType = Qgis.ProcessingSourceType
 # monkey patching scoped based enum
 QgsProcessing.TypeMapLayer = Qgis.ProcessingSourceType.MapLayer
@@ -6005,6 +6542,9 @@ QgsProcessing.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
 QgsProcessing.SourceType.TypeVectorTile = Qgis.ProcessingSourceType.VectorTile
 QgsProcessing.TypeVectorTile.is_monkey_patched = True
 QgsProcessing.TypeVectorTile.__doc__ = "Vector tile layers \n.. versionadded:: 3.32"
+QgsProcessing.TiledScene = Qgis.ProcessingSourceType.TiledScene
+QgsProcessing.TiledScene.is_monkey_patched = True
+QgsProcessing.TiledScene.__doc__ = "Tiled scene layers \n.. versionadded:: 4.0"
 Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 .. note::
@@ -6079,6 +6619,10 @@ Qgis.ProcessingSourceType.__doc__ = """Processing data source types.
 
 
   Available as ``QgsProcessing.TypeVectorTile`` in older QGIS releases.
+
+* ``TiledScene``: Tiled scene layers
+
+  .. versionadded:: 4.0
 
 
 """
@@ -6267,12 +6811,17 @@ ProcessingAlgorithmFlags = Qgis  # dirty hack since SIP seems to introduce the f
 # monkey patching scoped based enum
 Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKey.__doc__ = "Algorithm always drops any existing primary keys or FID values and regenerates them in outputs"
 Qgis.ProcessingAlgorithmDocumentationFlag.RegeneratesPrimaryKeyInSomeScenarios.__doc__ = "Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters"
+Qgis.ProcessingAlgorithmDocumentationFlag.RespectsEllipsoid.__doc__ = "Algorithm respects the context's ellipsoid settings, and uses ellipsoidal based measurements. \n.. versionadded:: 4.0"
 Qgis.ProcessingAlgorithmDocumentationFlag.__doc__ = """Flags describing algorithm behavior for documentation purposes.
 
 .. versionadded:: 3.40
 
 * ``RegeneratesPrimaryKey``: Algorithm always drops any existing primary keys or FID values and regenerates them in outputs
 * ``RegeneratesPrimaryKeyInSomeScenarios``: Algorithm may drop the existing primary keys or FID values in some scenarios, depending on algorithm inputs and parameters
+* ``RespectsEllipsoid``: Algorithm respects the context's ellipsoid settings, and uses ellipsoidal based measurements.
+
+  .. versionadded:: 4.0
+
 
 """
 # --
@@ -6331,6 +6880,25 @@ Qgis.ProcessingLogLevel.__doc__ = """Logging level for algorithms to use when pu
 """
 # --
 Qgis.ProcessingLogLevel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ProcessingMode.Standard.__doc__ = "Standard (single-run) algorithm mode"
+Qgis.ProcessingMode.Batch.__doc__ = "Batch processing mode"
+Qgis.ProcessingMode.Modeler.__doc__ = "Modeler mode"
+Qgis.ProcessingMode.__doc__ = """Types of modes which Processing widgets can be created for.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsProcessingGui`.WidgetType
+
+.. versionadded:: 3.44
+
+* ``Standard``: Standard (single-run) algorithm mode
+* ``Batch``: Batch processing mode
+* ``Modeler``: Modeler mode
+
+"""
+# --
+Qgis.ProcessingMode.baseClass = Qgis
 QgsProcessingFeatureSourceDefinition.Flag = Qgis.ProcessingFeatureSourceDefinitionFlag
 # monkey patching scoped based enum
 QgsProcessingFeatureSourceDefinition.FlagOverrideDefaultGeometryCheck = Qgis.ProcessingFeatureSourceDefinitionFlag.OverrideDefaultGeometryCheck
@@ -6685,6 +7253,11 @@ Qgis.FieldDomainSplitPolicy.baseClass = Qgis
 Qgis.FieldDomainMergePolicy.DefaultValue.__doc__ = "Use default field value"
 Qgis.FieldDomainMergePolicy.Sum.__doc__ = "Sum of values"
 Qgis.FieldDomainMergePolicy.GeometryWeighted.__doc__ = "New values are computed as the weighted average of the source values"
+Qgis.FieldDomainMergePolicy.UnsetField.__doc__ = "Clears the field value so that the data provider backend will populate using any backend triggers or similar logic \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.LargestGeometry.__doc__ = "Use value from the feature with the largest geometry \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.MinimumValue.__doc__ = "Use the minimum value from the features-to-be-merged \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.MaximumValue.__doc__ = "Use the maximum value from the features-to-be-merged \n.. versionadded:: 3.44"
+Qgis.FieldDomainMergePolicy.SetToNull.__doc__ = "Use a null value \n.. versionadded:: 3.44"
 Qgis.FieldDomainMergePolicy.__doc__ = """Merge policy for field domains.
 
 When a feature is built by merging multiple features, defines how the value of
@@ -6695,6 +7268,26 @@ attributes following the domain are computed.
 * ``DefaultValue``: Use default field value
 * ``Sum``: Sum of values
 * ``GeometryWeighted``: New values are computed as the weighted average of the source values
+* ``UnsetField``: Clears the field value so that the data provider backend will populate using any backend triggers or similar logic
+
+  .. versionadded:: 3.44
+
+* ``LargestGeometry``: Use value from the feature with the largest geometry
+
+  .. versionadded:: 3.44
+
+* ``MinimumValue``: Use the minimum value from the features-to-be-merged
+
+  .. versionadded:: 3.44
+
+* ``MaximumValue``: Use the maximum value from the features-to-be-merged
+
+  .. versionadded:: 3.44
+
+* ``SetToNull``: Use a null value
+
+  .. versionadded:: 3.44
+
 
 """
 # --
@@ -6965,16 +7558,34 @@ Qgis.LightSourceType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.NavigationMode.TerrainBased.__doc__ = "The default navigation based on the terrain"
 Qgis.NavigationMode.Walk.__doc__ = "Uses WASD keys or arrows to navigate in walking (first person) manner"
+Qgis.NavigationMode.GlobeTerrainBased.__doc__ = "Navigation similar to TerrainBased, but for use with globe  \n.. versionadded:: 3.44"
 Qgis.NavigationMode.__doc__ = """The navigation mode used by 3D cameras.
 
 .. versionadded:: 3.30
 
 * ``TerrainBased``: The default navigation based on the terrain
 * ``Walk``: Uses WASD keys or arrows to navigate in walking (first person) manner
+* ``GlobeTerrainBased``: Navigation similar to TerrainBased, but for use with globe
+
+  .. versionadded:: 3.44
+
 
 """
 # --
 Qgis.NavigationMode.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SceneMode.Local.__doc__ = "Local scene based on a projected CRS"
+Qgis.SceneMode.Globe.__doc__ = "Scene is represented as a globe using a geocentric CRS"
+Qgis.SceneMode.__doc__ = """The 3D scene mode used in 3D map views.
+
+.. versionadded:: 3.44
+
+* ``Local``: Local scene based on a projected CRS
+* ``Globe``: Scene is represented as a globe using a geocentric CRS
+
+"""
+# --
+Qgis.SceneMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VerticalAxisInversion.Never.__doc__ = "Never invert vertical axis movements"
 Qgis.VerticalAxisInversion.WhenDragging.__doc__ = "Invert vertical axis movements when dragging in first person modes"
@@ -7284,6 +7895,9 @@ QgsArcGisPortalUtils.GeocodeServer.__doc__ = "GeocodeServer"
 QgsArcGisPortalUtils.Unknown = Qgis.ArcGisRestServiceType.Unknown
 QgsArcGisPortalUtils.Unknown.is_monkey_patched = True
 QgsArcGisPortalUtils.Unknown.__doc__ = "Other unknown/unsupported type"
+QgsArcGisPortalUtils.SceneServer = Qgis.ArcGisRestServiceType.SceneServer
+QgsArcGisPortalUtils.SceneServer.is_monkey_patched = True
+QgsArcGisPortalUtils.SceneServer.__doc__ = "SceneServer"
 Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 
 .. note::
@@ -7308,6 +7922,7 @@ Qgis.ArcGisRestServiceType.__doc__ = """Available ArcGIS REST service types.
 * ``GPServer``: GPServer
 * ``GeocodeServer``: GeocodeServer
 * ``Unknown``: Other unknown/unsupported type
+* ``SceneServer``: SceneServer
 
 """
 # --
@@ -7499,6 +8114,74 @@ Qgis.LayerTreeFilterFlag.baseClass = Qgis
 Qgis.LayerTreeFilterFlags.baseClass = Qgis
 LayerTreeFilterFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
+Qgis.MapLayerLegendFlag.ExcludeByDefault.__doc__ = "If set, the layer should not be included in legends by default, and must be manually added by a user"
+Qgis.MapLayerLegendFlag.__doc__ = """Map layer legend flags.
+
+.. versionadded:: 4.0
+
+* ``ExcludeByDefault``: If set, the layer should not be included in legends by default, and must be manually added by a user
+
+"""
+# --
+Qgis.MapLayerLegendFlag.baseClass = Qgis
+Qgis.MapLayerLegendFlags.baseClass = Qgis
+MapLayerLegendFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLegendStyle.Style = Qgis.LegendComponent
+# monkey patching scoped based enum
+QgsLegendStyle.Undefined = Qgis.LegendComponent.Undefined
+QgsLegendStyle.Undefined.is_monkey_patched = True
+QgsLegendStyle.Undefined.__doc__ = "Should not happen, only if corrupted project file"
+QgsLegendStyle.Hidden = Qgis.LegendComponent.Hidden
+QgsLegendStyle.Hidden.is_monkey_patched = True
+QgsLegendStyle.Hidden.__doc__ = "Special style, item is hidden including margins around"
+QgsLegendStyle.Title = Qgis.LegendComponent.Title
+QgsLegendStyle.Title.is_monkey_patched = True
+QgsLegendStyle.Title.__doc__ = "Legend title"
+QgsLegendStyle.Group = Qgis.LegendComponent.Group
+QgsLegendStyle.Group.is_monkey_patched = True
+QgsLegendStyle.Group.__doc__ = "Legend group title"
+QgsLegendStyle.Subgroup = Qgis.LegendComponent.Subgroup
+QgsLegendStyle.Subgroup.is_monkey_patched = True
+QgsLegendStyle.Subgroup.__doc__ = "Legend subgroup title"
+QgsLegendStyle.Symbol = Qgis.LegendComponent.Symbol
+QgsLegendStyle.Symbol.is_monkey_patched = True
+QgsLegendStyle.Symbol.__doc__ = "Symbol icon (excluding label)"
+QgsLegendStyle.SymbolLabel = Qgis.LegendComponent.SymbolLabel
+QgsLegendStyle.SymbolLabel.is_monkey_patched = True
+QgsLegendStyle.SymbolLabel.__doc__ = "Symbol label (excluding icon)"
+Qgis.LegendComponent.__doc__ = """Component of legends which can be styled.
+
+Prior to QGIS 3.42 this was available as :py:class:`QgsLegendStyle`.Style
+
+.. versionadded:: 3.42
+
+* ``Undefined``: Should not happen, only if corrupted project file
+* ``Hidden``: Special style, item is hidden including margins around
+* ``Title``: Legend title
+* ``Group``: Legend group title
+* ``Subgroup``: Legend subgroup title
+* ``Symbol``: Symbol icon (excluding label)
+* ``SymbolLabel``: Symbol label (excluding icon)
+
+"""
+# --
+Qgis.LegendComponent.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.LegendSyncMode.AllProjectLayers.__doc__ = "Synchronize to all project layers."
+Qgis.LegendSyncMode.VisibleLayers.__doc__ = "Synchronize to map layers. The legend will include layers which are included in the linked map only."
+Qgis.LegendSyncMode.Manual.__doc__ = "No automatic synchronization of legend layers. The legend will be manually populated."
+Qgis.LegendSyncMode.__doc__ = """Legend synchronization mode.
+
+.. versionadded:: 4.0
+
+* ``AllProjectLayers``: Synchronize to all project layers.
+* ``VisibleLayers``: Synchronize to map layers. The legend will include layers which are included in the linked map only.
+* ``Manual``: No automatic synchronization of legend layers. The legend will be manually populated.
+
+"""
+# --
+Qgis.LegendSyncMode.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.LegendJsonRenderFlag.ShowRuleDetails.__doc__ = "If set, the rule expression of a rule based renderer legend item will be added to the JSON"
 Qgis.LegendJsonRenderFlag.__doc__ = """Legend JSON export flags.
 
@@ -7553,6 +8236,7 @@ Qgis.MapLayerActionTargets.baseClass = Qgis
 MapLayerActionTargets = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.MapLayerActionFlag.EnabledOnlyWhenEditable.__doc__ = "Action should be shown only for editable layers"
+Qgis.MapLayerActionFlag.EnableOnlyWhenHasGeometry.__doc__ = "Action should be shown only for layers with geometry, \n.. versionadded:: 3.42"
 Qgis.MapLayerActionFlag.__doc__ = """Map layer action flags.
 
 Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
@@ -7560,6 +8244,10 @@ Prior to QGIS 3.30 this was available as :py:class:`QgsMapLayerAction`.Flag
 .. versionadded:: 3.30
 
 * ``EnabledOnlyWhenEditable``: Action should be shown only for editable layers
+* ``EnableOnlyWhenHasGeometry``: Action should be shown only for layers with geometry,
+
+  .. versionadded:: 3.42
+
 
 """
 # --
@@ -8088,10 +8776,10 @@ QgsRasterInterface.Size.is_monkey_patched = True
 QgsRasterInterface.Size.__doc__ = "Original data source size (and thus resolution) is known, it is not always available, for example for WMS"
 QgsRasterInterface.Create = Qgis.RasterInterfaceCapability.Create
 QgsRasterInterface.Create.is_monkey_patched = True
-QgsRasterInterface.Create.__doc__ = "Create new datasets (Unused and deprecated -- will be removed in QGIS 4)"
+QgsRasterInterface.Create.__doc__ = "Create new datasets (Unused and deprecated -- will be removed in QGIS 5)"
 QgsRasterInterface.Remove = Qgis.RasterInterfaceCapability.Remove
 QgsRasterInterface.Remove.is_monkey_patched = True
-QgsRasterInterface.Remove.__doc__ = "Delete datasets (Unused and deprecated -- will be removed in QGIS 4)"
+QgsRasterInterface.Remove.__doc__ = "Delete datasets (Unused and deprecated -- will be removed in QGIS 5)"
 QgsRasterInterface.BuildPyramids = Qgis.RasterInterfaceCapability.BuildPyramids
 QgsRasterInterface.BuildPyramids.is_monkey_patched = True
 QgsRasterInterface.BuildPyramids.__doc__ = "Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability.BuildPyramids instead)"
@@ -8123,8 +8811,8 @@ Qgis.RasterInterfaceCapability.__doc__ = """Raster interface capabilities.
 
 * ``NoCapabilities``: No capabilities
 * ``Size``: Original data source size (and thus resolution) is known, it is not always available, for example for WMS
-* ``Create``: Create new datasets (Unused and deprecated -- will be removed in QGIS 4)
-* ``Remove``: Delete datasets (Unused and deprecated -- will be removed in QGIS 4)
+* ``Create``: Create new datasets (Unused and deprecated -- will be removed in QGIS 5)
+* ``Remove``: Delete datasets (Unused and deprecated -- will be removed in QGIS 5)
 * ``BuildPyramids``: Supports building of pyramids (overviews) (Deprecated since QGIS 3.38 -- use RasterProviderCapability.BuildPyramids instead)
 * ``Identify``: At least one identify format supported
 * ``IdentifyValue``: Numerical values
@@ -9562,6 +10250,135 @@ Qgis.LayoutUnitType.__doc__ = """Types of layout units
 """
 # --
 Qgis.LayoutUnitType.baseClass = Qgis
+QgsLayoutRenderContext.Flag = Qgis.LayoutRenderFlag
+# monkey patching scoped based enum
+QgsLayoutRenderContext.FlagDebug = Qgis.LayoutRenderFlag.Debug
+QgsLayoutRenderContext.Flag.FlagDebug = Qgis.LayoutRenderFlag.Debug
+QgsLayoutRenderContext.FlagDebug.is_monkey_patched = True
+QgsLayoutRenderContext.FlagDebug.__doc__ = "Debug/testing mode, items are drawn as solid rectangles."
+QgsLayoutRenderContext.FlagOutlineOnly = Qgis.LayoutRenderFlag.OutlineOnly
+QgsLayoutRenderContext.Flag.FlagOutlineOnly = Qgis.LayoutRenderFlag.OutlineOnly
+QgsLayoutRenderContext.FlagOutlineOnly.is_monkey_patched = True
+QgsLayoutRenderContext.FlagOutlineOnly.__doc__ = "Render items as outlines only."
+QgsLayoutRenderContext.FlagAntialiasing = Qgis.LayoutRenderFlag.Antialiasing
+QgsLayoutRenderContext.Flag.FlagAntialiasing = Qgis.LayoutRenderFlag.Antialiasing
+QgsLayoutRenderContext.FlagAntialiasing.is_monkey_patched = True
+QgsLayoutRenderContext.FlagAntialiasing.__doc__ = "Use antialiasing when drawing items."
+QgsLayoutRenderContext.FlagUseAdvancedEffects = Qgis.LayoutRenderFlag.UseAdvancedEffects
+QgsLayoutRenderContext.Flag.FlagUseAdvancedEffects = Qgis.LayoutRenderFlag.UseAdvancedEffects
+QgsLayoutRenderContext.FlagUseAdvancedEffects.is_monkey_patched = True
+QgsLayoutRenderContext.FlagUseAdvancedEffects.__doc__ = "Enable advanced effects such as blend modes. \n.. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead."
+QgsLayoutRenderContext.FlagForceVectorOutput = Qgis.LayoutRenderFlag.ForceVectorOutput
+QgsLayoutRenderContext.Flag.FlagForceVectorOutput = Qgis.LayoutRenderFlag.ForceVectorOutput
+QgsLayoutRenderContext.FlagForceVectorOutput.is_monkey_patched = True
+QgsLayoutRenderContext.FlagForceVectorOutput.__doc__ = "Force output in vector format where possible, even if items require rasterization to keep their correct appearance. \n.. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead."
+QgsLayoutRenderContext.FlagHideCoverageLayer = Qgis.LayoutRenderFlag.HideCoverageLayer
+QgsLayoutRenderContext.Flag.FlagHideCoverageLayer = Qgis.LayoutRenderFlag.HideCoverageLayer
+QgsLayoutRenderContext.FlagHideCoverageLayer.is_monkey_patched = True
+QgsLayoutRenderContext.FlagHideCoverageLayer.__doc__ = "Hide coverage layer in outputs"
+QgsLayoutRenderContext.FlagDrawSelection = Qgis.LayoutRenderFlag.DrawSelection
+QgsLayoutRenderContext.Flag.FlagDrawSelection = Qgis.LayoutRenderFlag.DrawSelection
+QgsLayoutRenderContext.FlagDrawSelection.is_monkey_patched = True
+QgsLayoutRenderContext.FlagDrawSelection.__doc__ = "Draw selection"
+QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders = Qgis.LayoutRenderFlag.DisableTiledRasterLayerRenders
+QgsLayoutRenderContext.Flag.FlagDisableTiledRasterLayerRenders = Qgis.LayoutRenderFlag.DisableTiledRasterLayerRenders
+QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders.is_monkey_patched = True
+QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders.__doc__ = "If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports."
+QgsLayoutRenderContext.FlagRenderLabelsByMapLayer = Qgis.LayoutRenderFlag.RenderLabelsByMapLayer
+QgsLayoutRenderContext.Flag.FlagRenderLabelsByMapLayer = Qgis.LayoutRenderFlag.RenderLabelsByMapLayer
+QgsLayoutRenderContext.FlagRenderLabelsByMapLayer.is_monkey_patched = True
+QgsLayoutRenderContext.FlagRenderLabelsByMapLayer.__doc__ = "When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers"
+QgsLayoutRenderContext.FlagLosslessImageRendering = Qgis.LayoutRenderFlag.LosslessImageRendering
+QgsLayoutRenderContext.Flag.FlagLosslessImageRendering = Qgis.LayoutRenderFlag.LosslessImageRendering
+QgsLayoutRenderContext.FlagLosslessImageRendering.is_monkey_patched = True
+QgsLayoutRenderContext.FlagLosslessImageRendering.__doc__ = "Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF)."
+QgsLayoutRenderContext.FlagSynchronousLegendGraphics = Qgis.LayoutRenderFlag.SynchronousLegendGraphics
+QgsLayoutRenderContext.Flag.FlagSynchronousLegendGraphics = Qgis.LayoutRenderFlag.SynchronousLegendGraphics
+QgsLayoutRenderContext.FlagSynchronousLegendGraphics.is_monkey_patched = True
+QgsLayoutRenderContext.FlagSynchronousLegendGraphics.__doc__ = "Query legend graphics synchronously."
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
+QgsLayoutRenderContext.Flag.FlagAlwaysUseGlobalMasks = Qgis.LayoutRenderFlag.AlwaysUseGlobalMasks
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.is_monkey_patched = True
+QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks.__doc__ = "When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports. \n.. versionadded:: 3.38"
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature = Qgis.LayoutRenderFlag.LimitCoverageLayerRenderToCurrentFeature
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.is_monkey_patched = True
+QgsLayoutRenderContext.LimitCoverageLayerRenderToCurrentFeature.__doc__ = "Limit coverage layer rendering to the current atlas feature. \n.. versionadded:: 4.0"
+Qgis.LayoutRenderFlag.__doc__ = """Flags for controlling how a layout is rendered.
+
+.. note::
+
+   Prior to QGIS 3.44 this was available as :py:class:`QgsLayoutRenderContext`.Flag
+
+.. versionadded:: 3.44
+
+* ``Debug``: Debug/testing mode, items are drawn as solid rectangles.
+
+  Available as ``QgsLayoutRenderContext.FlagDebug`` in older QGIS releases.
+
+* ``OutlineOnly``: Render items as outlines only.
+
+  Available as ``QgsLayoutRenderContext.FlagOutlineOnly`` in older QGIS releases.
+
+* ``Antialiasing``: Use antialiasing when drawing items.
+
+  Available as ``QgsLayoutRenderContext.FlagAntialiasing`` in older QGIS releases.
+
+* ``UseAdvancedEffects``: Enable advanced effects such as blend modes.
+
+  .. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead.
+
+
+  Available as ``QgsLayoutRenderContext.FlagUseAdvancedEffects`` in older QGIS releases.
+
+* ``ForceVectorOutput``: Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
+
+  .. deprecated:: 3.44. Use rasterizedRenderingPolicy() instead.
+
+
+  Available as ``QgsLayoutRenderContext.FlagForceVectorOutput`` in older QGIS releases.
+
+* ``HideCoverageLayer``: Hide coverage layer in outputs
+
+  Available as ``QgsLayoutRenderContext.FlagHideCoverageLayer`` in older QGIS releases.
+
+* ``DrawSelection``: Draw selection
+
+  Available as ``QgsLayoutRenderContext.FlagDrawSelection`` in older QGIS releases.
+
+* ``DisableTiledRasterLayerRenders``: If set, then raster layers will not be drawn as separate tiles. This may improve the appearance in exported files, at the cost of much higher memory usage during exports.
+
+  Available as ``QgsLayoutRenderContext.FlagDisableTiledRasterLayerRenders`` in older QGIS releases.
+
+* ``RenderLabelsByMapLayer``: When rendering map items to multi-layered exports, render labels belonging to different layers into separate export layers
+
+  Available as ``QgsLayoutRenderContext.FlagRenderLabelsByMapLayer`` in older QGIS releases.
+
+* ``LosslessImageRendering``: Render images losslessly whenever possible, instead of the default lossy jpeg rendering used for some destination devices (e.g. PDF).
+
+  Available as ``QgsLayoutRenderContext.FlagLosslessImageRendering`` in older QGIS releases.
+
+* ``SynchronousLegendGraphics``: Query legend graphics synchronously.
+
+  Available as ``QgsLayoutRenderContext.FlagSynchronousLegendGraphics`` in older QGIS releases.
+
+* ``AlwaysUseGlobalMasks``: When applying clipping paths for selective masking, always use global (\"entire map\") paths, instead of calculating local clipping paths per rendered feature. This results in considerably more complex layout exports in all current Qt versions. This flag only applies to vector layout exports.
+
+  .. versionadded:: 3.38
+
+
+  Available as ``QgsLayoutRenderContext.FlagAlwaysUseGlobalMasks`` in older QGIS releases.
+
+* ``LimitCoverageLayerRenderToCurrentFeature``: Limit coverage layer rendering to the current atlas feature.
+
+  .. versionadded:: 4.0
+
+
+"""
+# --
+Qgis.LayoutRenderFlag.baseClass = Qgis
+QgsLayoutRenderContext.Flags = Qgis.LayoutRenderFlags
+Qgis.LayoutRenderFlags.baseClass = Qgis
+LayoutRenderFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
 QgsLayoutItemPicture.Format = Qgis.PictureFormat
 # monkey patching scoped based enum
 QgsLayoutItemPicture.FormatSVG = Qgis.PictureFormat.SVG
@@ -9600,6 +10417,28 @@ Qgis.PictureFormat.__doc__ = """Picture formats.
 """
 # --
 Qgis.PictureFormat.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ScaleCalculationMethod.HorizontalTop.__doc__ = "Calculate horizontally, across top of map"
+Qgis.ScaleCalculationMethod.HorizontalMiddle.__doc__ = "Calculate horizontally, across midle of map"
+Qgis.ScaleCalculationMethod.HorizontalBottom.__doc__ = "Calculate horizontally, across bottom of map"
+Qgis.ScaleCalculationMethod.HorizontalAverage.__doc__ = "Calculate horizontally, using the average of the top, middle and bottom scales"
+Qgis.ScaleCalculationMethod.AtEquator.__doc__ = "Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system. \n.. versionadded:: 3.44"
+Qgis.ScaleCalculationMethod.__doc__ = """Scale calculation logic.
+
+.. versionadded:: 3.40
+
+* ``HorizontalTop``: Calculate horizontally, across top of map
+* ``HorizontalMiddle``: Calculate horizontally, across midle of map
+* ``HorizontalBottom``: Calculate horizontally, across bottom of map
+* ``HorizontalAverage``: Calculate horizontally, using the average of the top, middle and bottom scales
+* ``AtEquator``: Always calculate the scale at the equator, regardless of the actual visible map extent. This method can be used to provide a consistent, static scale for maps in geographic reference systems, regardless of the latitudes actually visible in the map (permitting consistent appearance of these maps when rendering relies on scale based visibility or calculations). This method is only applicable when calculating scales with a degree based reference system.
+
+  .. versionadded:: 3.44
+
+
+"""
+# --
+Qgis.ScaleCalculationMethod.baseClass = Qgis
 QgsScaleBarSettings.Alignment = Qgis.ScaleBarAlignment
 # monkey patching scoped based enum
 QgsScaleBarSettings.AlignLeft = Qgis.ScaleBarAlignment.Left
@@ -9728,6 +10567,403 @@ Qgis.ScaleBarDistanceLabelHorizontalPlacement.__doc__ = """Scale bar distance la
 """
 # --
 Qgis.ScaleBarDistanceLabelHorizontalPlacement.baseClass = Qgis
+QgsLayoutItemMapGrid.GridUnit = Qgis.MapGridUnit
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.MapUnit = Qgis.MapGridUnit.MapUnits
+QgsLayoutItemMapGrid.GridUnit.MapUnit = Qgis.MapGridUnit.MapUnits
+QgsLayoutItemMapGrid.MapUnit.is_monkey_patched = True
+QgsLayoutItemMapGrid.MapUnit.__doc__ = "Grid units follow map units"
+QgsLayoutItemMapGrid.MM = Qgis.MapGridUnit.Millimeters
+QgsLayoutItemMapGrid.GridUnit.MM = Qgis.MapGridUnit.Millimeters
+QgsLayoutItemMapGrid.MM.is_monkey_patched = True
+QgsLayoutItemMapGrid.MM.__doc__ = "Grid units in millimeters"
+QgsLayoutItemMapGrid.CM = Qgis.MapGridUnit.Centimeters
+QgsLayoutItemMapGrid.GridUnit.CM = Qgis.MapGridUnit.Centimeters
+QgsLayoutItemMapGrid.CM.is_monkey_patched = True
+QgsLayoutItemMapGrid.CM.__doc__ = "Grid units in centimeters"
+QgsLayoutItemMapGrid.DynamicPageSizeBased = Qgis.MapGridUnit.DynamicPageSizeBased
+QgsLayoutItemMapGrid.DynamicPageSizeBased.is_monkey_patched = True
+QgsLayoutItemMapGrid.DynamicPageSizeBased.__doc__ = "Dynamically sized, based on a on-page size range"
+Qgis.MapGridUnit.__doc__ = """Units for map grid values.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.GridUnit.
+
+.. versionadded:: 4.0
+
+* ``MapUnits``: Grid units follow map units
+
+  Available as ``QgsLayoutItemMapGrid.MapUnit`` in older QGIS releases.
+
+* ``Millimeters``: Grid units in millimeters
+
+  Available as ``QgsLayoutItemMapGrid.MM`` in older QGIS releases.
+
+* ``Centimeters``: Grid units in centimeters
+
+  Available as ``QgsLayoutItemMapGrid.CM`` in older QGIS releases.
+
+* ``DynamicPageSizeBased``: Dynamically sized, based on a on-page size range
+
+"""
+# --
+Qgis.MapGridUnit.baseClass = Qgis
+QgsLayoutItemMapGrid.GridStyle = Qgis.MapGridStyle
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.Solid = Qgis.MapGridStyle.Lines
+QgsLayoutItemMapGrid.GridStyle.Solid = Qgis.MapGridStyle.Lines
+QgsLayoutItemMapGrid.Solid.is_monkey_patched = True
+QgsLayoutItemMapGrid.Solid.__doc__ = "Draw lines for grid"
+QgsLayoutItemMapGrid.Cross = Qgis.MapGridStyle.LineCrosses
+QgsLayoutItemMapGrid.GridStyle.Cross = Qgis.MapGridStyle.LineCrosses
+QgsLayoutItemMapGrid.Cross.is_monkey_patched = True
+QgsLayoutItemMapGrid.Cross.__doc__ = "Draw line crosses at intersections of grid lines"
+QgsLayoutItemMapGrid.Markers = Qgis.MapGridStyle.Markers
+QgsLayoutItemMapGrid.Markers.is_monkey_patched = True
+QgsLayoutItemMapGrid.Markers.__doc__ = "Draw markers at intersections of grid lines"
+QgsLayoutItemMapGrid.FrameAnnotationsOnly = Qgis.MapGridStyle.FrameAndAnnotationsOnly
+QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly = Qgis.MapGridStyle.FrameAndAnnotationsOnly
+QgsLayoutItemMapGrid.FrameAnnotationsOnly.is_monkey_patched = True
+QgsLayoutItemMapGrid.FrameAnnotationsOnly.__doc__ = "No grid lines over the map, only draw frame and annotations"
+Qgis.MapGridStyle.__doc__ = """Map grid drawing styles.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.GridStyle.
+
+.. versionadded:: 4.0
+
+* ``Lines``: Draw lines for grid
+
+  Available as ``QgsLayoutItemMapGrid.Solid`` in older QGIS releases.
+
+* ``LineCrosses``: Draw line crosses at intersections of grid lines
+
+  Available as ``QgsLayoutItemMapGrid.Cross`` in older QGIS releases.
+
+* ``Markers``: Draw markers at intersections of grid lines
+* ``FrameAndAnnotationsOnly``: No grid lines over the map, only draw frame and annotations
+
+  Available as ``QgsLayoutItemMapGrid.FrameAnnotationsOnly`` in older QGIS releases.
+
+
+"""
+# --
+Qgis.MapGridStyle.baseClass = Qgis
+QgsLayoutItemMapGrid.DisplayMode = Qgis.MapGridComponentVisibility
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.ShowAll = Qgis.MapGridComponentVisibility.ShowAll
+QgsLayoutItemMapGrid.ShowAll.is_monkey_patched = True
+QgsLayoutItemMapGrid.ShowAll.__doc__ = "Show both latitude and longitude annotations/divisions"
+QgsLayoutItemMapGrid.LatitudeOnly = Qgis.MapGridComponentVisibility.LatitudeOnly
+QgsLayoutItemMapGrid.LatitudeOnly.is_monkey_patched = True
+QgsLayoutItemMapGrid.LatitudeOnly.__doc__ = "Show latitude/y annotations/divisions only"
+QgsLayoutItemMapGrid.LongitudeOnly = Qgis.MapGridComponentVisibility.LongitudeOnly
+QgsLayoutItemMapGrid.LongitudeOnly.is_monkey_patched = True
+QgsLayoutItemMapGrid.LongitudeOnly.__doc__ = "Show longitude/x annotations/divisions only"
+QgsLayoutItemMapGrid.HideAll = Qgis.MapGridComponentVisibility.HideAll
+QgsLayoutItemMapGrid.HideAll.is_monkey_patched = True
+QgsLayoutItemMapGrid.HideAll.__doc__ = "No annotations"
+Qgis.MapGridComponentVisibility.__doc__ = """Visibility display settings for map grid annotations and frames.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.DisplayMode.
+
+.. versionadded:: 4.0
+
+* ``ShowAll``: Show both latitude and longitude annotations/divisions
+* ``LatitudeOnly``: Show latitude/y annotations/divisions only
+* ``LongitudeOnly``: Show longitude/x annotations/divisions only
+* ``HideAll``: No annotations
+
+"""
+# --
+Qgis.MapGridComponentVisibility.baseClass = Qgis
+QgsLayoutItemMapGrid.AnnotationPosition = Qgis.MapGridAnnotationPosition
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.InsideMapFrame = Qgis.MapGridAnnotationPosition.InsideMapFrame
+QgsLayoutItemMapGrid.InsideMapFrame.is_monkey_patched = True
+QgsLayoutItemMapGrid.InsideMapFrame.__doc__ = "Draw annotations inside the map frame"
+QgsLayoutItemMapGrid.OutsideMapFrame = Qgis.MapGridAnnotationPosition.OutsideMapFrame
+QgsLayoutItemMapGrid.OutsideMapFrame.is_monkey_patched = True
+QgsLayoutItemMapGrid.OutsideMapFrame.__doc__ = "Draw annotations outside the map frame"
+Qgis.MapGridAnnotationPosition.__doc__ = """Position for map grid annotations.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.AnnotationPosition.
+
+.. versionadded:: 4.0
+
+* ``InsideMapFrame``: Draw annotations inside the map frame
+* ``OutsideMapFrame``: Draw annotations outside the map frame
+
+"""
+# --
+Qgis.MapGridAnnotationPosition.baseClass = Qgis
+QgsLayoutItemMapGrid.AnnotationDirection = Qgis.MapGridAnnotationDirection
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.Horizontal = Qgis.MapGridAnnotationDirection.Horizontal
+QgsLayoutItemMapGrid.Horizontal.is_monkey_patched = True
+QgsLayoutItemMapGrid.Horizontal.__doc__ = "Draw annotations horizontally"
+QgsLayoutItemMapGrid.Vertical = Qgis.MapGridAnnotationDirection.Vertical
+QgsLayoutItemMapGrid.Vertical.is_monkey_patched = True
+QgsLayoutItemMapGrid.Vertical.__doc__ = "Draw annotations vertically, ascending"
+QgsLayoutItemMapGrid.VerticalDescending = Qgis.MapGridAnnotationDirection.VerticalDescending
+QgsLayoutItemMapGrid.VerticalDescending.is_monkey_patched = True
+QgsLayoutItemMapGrid.VerticalDescending.__doc__ = "Draw annotations vertically, descending"
+QgsLayoutItemMapGrid.BoundaryDirection = Qgis.MapGridAnnotationDirection.BoundaryDirection
+QgsLayoutItemMapGrid.BoundaryDirection.is_monkey_patched = True
+QgsLayoutItemMapGrid.BoundaryDirection.__doc__ = "Annotations follow the boundary direction"
+QgsLayoutItemMapGrid.AboveTick = Qgis.MapGridAnnotationDirection.AboveTick
+QgsLayoutItemMapGrid.AboveTick.is_monkey_patched = True
+QgsLayoutItemMapGrid.AboveTick.__doc__ = "Draw annotations parallel to tick (above the line)"
+QgsLayoutItemMapGrid.OnTick = Qgis.MapGridAnnotationDirection.OnTick
+QgsLayoutItemMapGrid.OnTick.is_monkey_patched = True
+QgsLayoutItemMapGrid.OnTick.__doc__ = "Draw annotations parallel to tick (on the line)"
+QgsLayoutItemMapGrid.UnderTick = Qgis.MapGridAnnotationDirection.UnderTick
+QgsLayoutItemMapGrid.UnderTick.is_monkey_patched = True
+QgsLayoutItemMapGrid.UnderTick.__doc__ = "Draw annotations parallel to tick (under the line)"
+Qgis.MapGridAnnotationDirection.__doc__ = """Direction of grid annotations.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.AnnotationDirection.
+
+.. versionadded:: 4.0
+
+* ``Horizontal``: Draw annotations horizontally
+* ``Vertical``: Draw annotations vertically, ascending
+* ``VerticalDescending``: Draw annotations vertically, descending
+* ``BoundaryDirection``: Annotations follow the boundary direction
+* ``AboveTick``: Draw annotations parallel to tick (above the line)
+* ``OnTick``: Draw annotations parallel to tick (on the line)
+* ``UnderTick``: Draw annotations parallel to tick (under the line)
+
+"""
+# --
+Qgis.MapGridAnnotationDirection.baseClass = Qgis
+QgsLayoutItemMapGrid.AnnotationFormat = Qgis.MapGridAnnotationFormat
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.Decimal = Qgis.MapGridAnnotationFormat.Decimal
+QgsLayoutItemMapGrid.Decimal.is_monkey_patched = True
+QgsLayoutItemMapGrid.Decimal.__doc__ = "Decimal degrees, use - for S/W coordinates"
+QgsLayoutItemMapGrid.DegreeMinute = Qgis.MapGridAnnotationFormat.DegreeMinute
+QgsLayoutItemMapGrid.DegreeMinute.is_monkey_patched = True
+QgsLayoutItemMapGrid.DegreeMinute.__doc__ = "Degree/minutes, use NSEW suffix"
+QgsLayoutItemMapGrid.DegreeMinuteSecond = Qgis.MapGridAnnotationFormat.DegreeMinuteSecond
+QgsLayoutItemMapGrid.DegreeMinuteSecond.is_monkey_patched = True
+QgsLayoutItemMapGrid.DegreeMinuteSecond.__doc__ = "Degree/minutes/seconds, use NSEW suffix"
+QgsLayoutItemMapGrid.DecimalWithSuffix = Qgis.MapGridAnnotationFormat.DecimalWithSuffix
+QgsLayoutItemMapGrid.DecimalWithSuffix.is_monkey_patched = True
+QgsLayoutItemMapGrid.DecimalWithSuffix.__doc__ = "Decimal degrees, use NSEW suffix"
+QgsLayoutItemMapGrid.DegreeMinuteNoSuffix = Qgis.MapGridAnnotationFormat.DegreeMinuteNoSuffix
+QgsLayoutItemMapGrid.DegreeMinuteNoSuffix.is_monkey_patched = True
+QgsLayoutItemMapGrid.DegreeMinuteNoSuffix.__doc__ = "Degree/minutes, use - for S/W coordinates"
+QgsLayoutItemMapGrid.DegreeMinutePadded = Qgis.MapGridAnnotationFormat.DegreeMinutePadded
+QgsLayoutItemMapGrid.DegreeMinutePadded.is_monkey_patched = True
+QgsLayoutItemMapGrid.DegreeMinutePadded.__doc__ = "Degree/minutes, with minutes using leading zeros where required"
+QgsLayoutItemMapGrid.DegreeMinuteSecondNoSuffix = Qgis.MapGridAnnotationFormat.DegreeMinuteSecondNoSuffix
+QgsLayoutItemMapGrid.DegreeMinuteSecondNoSuffix.is_monkey_patched = True
+QgsLayoutItemMapGrid.DegreeMinuteSecondNoSuffix.__doc__ = "Degree/minutes/seconds, use - for S/W coordinates"
+QgsLayoutItemMapGrid.DegreeMinuteSecondPadded = Qgis.MapGridAnnotationFormat.DegreeMinuteSecondPadded
+QgsLayoutItemMapGrid.DegreeMinuteSecondPadded.is_monkey_patched = True
+QgsLayoutItemMapGrid.DegreeMinuteSecondPadded.__doc__ = "Degree/minutes/seconds, with minutes using leading zeros where required"
+QgsLayoutItemMapGrid.CustomFormat = Qgis.MapGridAnnotationFormat.CustomFormat
+QgsLayoutItemMapGrid.CustomFormat.is_monkey_patched = True
+QgsLayoutItemMapGrid.CustomFormat.__doc__ = "Custom expression-based format"
+Qgis.MapGridAnnotationFormat.__doc__ = """Format for displaying map grid annotations.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.AnnotationFormat.
+
+.. versionadded:: 4.0
+
+* ``Decimal``: Decimal degrees, use - for S/W coordinates
+* ``DegreeMinute``: Degree/minutes, use NSEW suffix
+* ``DegreeMinuteSecond``: Degree/minutes/seconds, use NSEW suffix
+* ``DecimalWithSuffix``: Decimal degrees, use NSEW suffix
+* ``DegreeMinuteNoSuffix``: Degree/minutes, use - for S/W coordinates
+* ``DegreeMinutePadded``: Degree/minutes, with minutes using leading zeros where required
+* ``DegreeMinuteSecondNoSuffix``: Degree/minutes/seconds, use - for S/W coordinates
+* ``DegreeMinuteSecondPadded``: Degree/minutes/seconds, with minutes using leading zeros where required
+* ``CustomFormat``: Custom expression-based format
+
+"""
+# --
+Qgis.MapGridAnnotationFormat.baseClass = Qgis
+QgsLayoutItemMapGrid.BorderSide = Qgis.MapGridBorderSide
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.Left = Qgis.MapGridBorderSide.Left
+QgsLayoutItemMapGrid.Left.is_monkey_patched = True
+QgsLayoutItemMapGrid.Left.__doc__ = "Left border"
+QgsLayoutItemMapGrid.Right = Qgis.MapGridBorderSide.Right
+QgsLayoutItemMapGrid.Right.is_monkey_patched = True
+QgsLayoutItemMapGrid.Right.__doc__ = "Right border"
+QgsLayoutItemMapGrid.Bottom = Qgis.MapGridBorderSide.Bottom
+QgsLayoutItemMapGrid.Bottom.is_monkey_patched = True
+QgsLayoutItemMapGrid.Bottom.__doc__ = "Bottom border"
+QgsLayoutItemMapGrid.Top = Qgis.MapGridBorderSide.Top
+QgsLayoutItemMapGrid.Top.is_monkey_patched = True
+QgsLayoutItemMapGrid.Top.__doc__ = "Top border"
+Qgis.MapGridBorderSide.__doc__ = """Border sides for map grid annotations.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.BorderSide.
+
+.. versionadded:: 4.0
+
+* ``Left``: Left border
+* ``Right``: Right border
+* ``Bottom``: Bottom border
+* ``Top``: Top border
+
+"""
+# --
+Qgis.MapGridBorderSide.baseClass = Qgis
+QgsLayoutItemMapGrid.FrameStyle = Qgis.MapGridFrameStyle
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.NoFrame = Qgis.MapGridFrameStyle.NoFrame
+QgsLayoutItemMapGrid.NoFrame.is_monkey_patched = True
+QgsLayoutItemMapGrid.NoFrame.__doc__ = "Disable grid frame"
+QgsLayoutItemMapGrid.Zebra = Qgis.MapGridFrameStyle.Zebra
+QgsLayoutItemMapGrid.Zebra.is_monkey_patched = True
+QgsLayoutItemMapGrid.Zebra.__doc__ = "Black/white pattern"
+QgsLayoutItemMapGrid.InteriorTicks = Qgis.MapGridFrameStyle.InteriorTicks
+QgsLayoutItemMapGrid.InteriorTicks.is_monkey_patched = True
+QgsLayoutItemMapGrid.InteriorTicks.__doc__ = "Tick markers drawn inside map frame"
+QgsLayoutItemMapGrid.ExteriorTicks = Qgis.MapGridFrameStyle.ExteriorTicks
+QgsLayoutItemMapGrid.ExteriorTicks.is_monkey_patched = True
+QgsLayoutItemMapGrid.ExteriorTicks.__doc__ = "Tick markers drawn outside map frame"
+QgsLayoutItemMapGrid.InteriorExteriorTicks = Qgis.MapGridFrameStyle.InteriorExteriorTicks
+QgsLayoutItemMapGrid.InteriorExteriorTicks.is_monkey_patched = True
+QgsLayoutItemMapGrid.InteriorExteriorTicks.__doc__ = "Tick markers drawn both inside and outside the map frame"
+QgsLayoutItemMapGrid.LineBorder = Qgis.MapGridFrameStyle.LineBorder
+QgsLayoutItemMapGrid.LineBorder.is_monkey_patched = True
+QgsLayoutItemMapGrid.LineBorder.__doc__ = "Simple solid line frame"
+QgsLayoutItemMapGrid.LineBorderNautical = Qgis.MapGridFrameStyle.LineBorderNautical
+QgsLayoutItemMapGrid.LineBorderNautical.is_monkey_patched = True
+QgsLayoutItemMapGrid.LineBorderNautical.__doc__ = "Simple solid line frame, with nautical style diagonals on corners"
+QgsLayoutItemMapGrid.ZebraNautical = Qgis.MapGridFrameStyle.ZebraNautical
+QgsLayoutItemMapGrid.ZebraNautical.is_monkey_patched = True
+QgsLayoutItemMapGrid.ZebraNautical.__doc__ = "Black/white pattern, with nautical style diagonals on corners"
+Qgis.MapGridFrameStyle.__doc__ = """Style for map grid frames.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.FrameStyle.
+
+.. versionadded:: 4.0
+
+* ``NoFrame``: Disable grid frame
+* ``Zebra``: Black/white pattern
+* ``InteriorTicks``: Tick markers drawn inside map frame
+* ``ExteriorTicks``: Tick markers drawn outside map frame
+* ``InteriorExteriorTicks``: Tick markers drawn both inside and outside the map frame
+* ``LineBorder``: Simple solid line frame
+* ``LineBorderNautical``: Simple solid line frame, with nautical style diagonals on corners
+* ``ZebraNautical``: Black/white pattern, with nautical style diagonals on corners
+
+"""
+# --
+Qgis.MapGridFrameStyle.baseClass = Qgis
+QgsLayoutItemMapGrid.TickLengthMode = Qgis.MapGridTickLengthMode
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.OrthogonalTicks = Qgis.MapGridTickLengthMode.OrthogonalTicks
+QgsLayoutItemMapGrid.OrthogonalTicks.is_monkey_patched = True
+QgsLayoutItemMapGrid.OrthogonalTicks.__doc__ = "Align ticks orthogonaly"
+QgsLayoutItemMapGrid.NormalizedTicks = Qgis.MapGridTickLengthMode.NormalizedTicks
+QgsLayoutItemMapGrid.NormalizedTicks.is_monkey_patched = True
+QgsLayoutItemMapGrid.NormalizedTicks.__doc__ = "Constant tick lengths"
+Qgis.MapGridTickLengthMode.__doc__ = """Map grid tick length mode (useful for rotated grids).
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.TickLengthMode.
+
+.. versionadded:: 4.0
+
+* ``OrthogonalTicks``: Align ticks orthogonaly
+* ``NormalizedTicks``: Constant tick lengths
+
+"""
+# --
+Qgis.MapGridTickLengthMode.baseClass = Qgis
+QgsLayoutItemMapGrid.FrameSideFlag = Qgis.MapGridFrameSideFlag
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.FrameLeft = Qgis.MapGridFrameSideFlag.Left
+QgsLayoutItemMapGrid.FrameSideFlag.FrameLeft = Qgis.MapGridFrameSideFlag.Left
+QgsLayoutItemMapGrid.FrameLeft.is_monkey_patched = True
+QgsLayoutItemMapGrid.FrameLeft.__doc__ = "Left side of map"
+QgsLayoutItemMapGrid.FrameRight = Qgis.MapGridFrameSideFlag.Right
+QgsLayoutItemMapGrid.FrameSideFlag.FrameRight = Qgis.MapGridFrameSideFlag.Right
+QgsLayoutItemMapGrid.FrameRight.is_monkey_patched = True
+QgsLayoutItemMapGrid.FrameRight.__doc__ = "Right side of map"
+QgsLayoutItemMapGrid.FrameTop = Qgis.MapGridFrameSideFlag.Top
+QgsLayoutItemMapGrid.FrameSideFlag.FrameTop = Qgis.MapGridFrameSideFlag.Top
+QgsLayoutItemMapGrid.FrameTop.is_monkey_patched = True
+QgsLayoutItemMapGrid.FrameTop.__doc__ = "Top side of map"
+QgsLayoutItemMapGrid.FrameBottom = Qgis.MapGridFrameSideFlag.Bottom
+QgsLayoutItemMapGrid.FrameSideFlag.FrameBottom = Qgis.MapGridFrameSideFlag.Bottom
+QgsLayoutItemMapGrid.FrameBottom.is_monkey_patched = True
+QgsLayoutItemMapGrid.FrameBottom.__doc__ = "Bottom side of map"
+Qgis.MapGridFrameSideFlag.__doc__ = """Flags for controlling which side of the map a frame is drawn on.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.FrameSideFlag.
+
+.. versionadded:: 4.0
+
+* ``Left``: Left side of map
+
+  Available as ``QgsLayoutItemMapGrid.FrameLeft`` in older QGIS releases.
+
+* ``Right``: Right side of map
+
+  Available as ``QgsLayoutItemMapGrid.FrameRight`` in older QGIS releases.
+
+* ``Top``: Top side of map
+
+  Available as ``QgsLayoutItemMapGrid.FrameTop`` in older QGIS releases.
+
+* ``Bottom``: Bottom side of map
+
+  Available as ``QgsLayoutItemMapGrid.FrameBottom`` in older QGIS releases.
+
+
+"""
+# --
+Qgis.MapGridFrameSideFlag.baseClass = Qgis
+QgsLayoutItemMapGrid.FrameSideFlags = Qgis.MapGridFrameSideFlags
+Qgis.MapGridFrameSideFlags.baseClass = Qgis
+MapGridFrameSideFlags = Qgis  # dirty hack since SIP seems to introduce the flags in module
+QgsLayoutItemMapGrid.AnnotationCoordinate = Qgis.MapGridAnnotationType
+# monkey patching scoped based enum
+QgsLayoutItemMapGrid.Longitude = Qgis.MapGridAnnotationType.Longitude
+QgsLayoutItemMapGrid.Longitude.is_monkey_patched = True
+QgsLayoutItemMapGrid.Longitude.__doc__ = "Coordinate is a longitude value"
+QgsLayoutItemMapGrid.Latitude = Qgis.MapGridAnnotationType.Latitude
+QgsLayoutItemMapGrid.Latitude.is_monkey_patched = True
+QgsLayoutItemMapGrid.Latitude.__doc__ = "Coordinate is a latitude value"
+Qgis.MapGridAnnotationType.__doc__ = """Annotation coordinate type.
+
+.. note::
+
+   Prior to QGIS 4.0 this was available as :py:class:`QgsLayoutItemMapGrid`.AnnotationCoordinate.
+
+.. versionadded:: 4.0
+
+* ``Longitude``: Coordinate is a longitude value
+* ``Latitude``: Coordinate is a latitude value
+
+"""
+# --
+Qgis.MapGridAnnotationType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.InputControllerType.Map2D.__doc__ = "2D map controller"
 Qgis.InputControllerType.Map3D.__doc__ = "3D map controller"
@@ -9775,18 +11011,48 @@ Qgis.PostgresRelKind.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.DatabaseProviderConnectionCapability2.SetFieldComment.__doc__ = "Can set comments for fields via setFieldComment()"
 Qgis.DatabaseProviderConnectionCapability2.SetFieldAlias.__doc__ = "Can set aliases for fields via setFieldAlias()"
+Qgis.DatabaseProviderConnectionCapability2.SetTableComment.__doc__ = "Can set comments for tables via setTableComment() \n.. versionadded:: 3.44"
+Qgis.DatabaseProviderConnectionCapability2.EditFieldDomain.__doc__ = "Can edit existing field domain \n.. versionadded:: 4.0"
+Qgis.DatabaseProviderConnectionCapability2.DeleteFieldDomain.__doc__ = "Can delete existing field domain \n.. versionadded:: 4.0"
 Qgis.DatabaseProviderConnectionCapability2.__doc__ = """The Capability enum represents the extended operations supported by the connection.
 
 .. versionadded:: 3.32
 
 * ``SetFieldComment``: Can set comments for fields via setFieldComment()
 * ``SetFieldAlias``: Can set aliases for fields via setFieldAlias()
+* ``SetTableComment``: Can set comments for tables via setTableComment()
+
+  .. versionadded:: 3.44
+
+* ``EditFieldDomain``: Can edit existing field domain
+
+  .. versionadded:: 4.0
+
+* ``DeleteFieldDomain``: Can delete existing field domain
+
+  .. versionadded:: 4.0
+
 
 """
 # --
 Qgis.DatabaseProviderConnectionCapability2.baseClass = Qgis
 Qgis.DatabaseProviderConnectionCapabilities2.baseClass = Qgis
 DatabaseProviderConnectionCapabilities2 = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.DatabaseProviderTableImportCapability.SetGeometryColumnName.__doc__ = "Can set the name of the geometry column"
+Qgis.DatabaseProviderTableImportCapability.SetPrimaryKeyName.__doc__ = "Can set the name of the primary key column"
+Qgis.DatabaseProviderTableImportCapability.__doc__ = """Represents capabilities of a database provider connection when importing table data.
+
+.. versionadded:: 3.44
+
+* ``SetGeometryColumnName``: Can set the name of the geometry column
+* ``SetPrimaryKeyName``: Can set the name of the primary key column
+
+"""
+# --
+Qgis.DatabaseProviderTableImportCapability.baseClass = Qgis
+Qgis.DatabaseProviderTableImportCapabilities.baseClass = Qgis
+DatabaseProviderTableImportCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
 # monkey patching scoped based enum
 Qgis.ProviderStyleStorageCapability.SaveToDatabase.__doc__ = ""
 Qgis.ProviderStyleStorageCapability.LoadFromDatabase.__doc__ = ""
@@ -10052,6 +11318,21 @@ Qgis.AttributeFormPythonInitCodeSource.__doc__ = """The Python init code source 
 # --
 Qgis.AttributeFormPythonInitCodeSource.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.AttributeFormReuseLastValuePolicy.NotAllowed.__doc__ = "Reuse of last values not allowed"
+Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn.__doc__ = "Reuse of last values allowed and enabled by default"
+Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOff.__doc__ = "Reuse of last values allowed and disabled by default"
+Qgis.AttributeFormReuseLastValuePolicy.__doc__ = """Attribute form policy for reusing last entered values.
+
+.. versionadded:: 4.0
+
+* ``NotAllowed``: Reuse of last values not allowed
+* ``AllowedDefaultOn``: Reuse of last values allowed and enabled by default
+* ``AllowedDefaultOff``: Reuse of last values allowed and disabled by default
+
+"""
+# --
+Qgis.AttributeFormReuseLastValuePolicy.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ExpressionType.Qgis.__doc__ = "Native QGIS expression"
 Qgis.ExpressionType.PointCloud.__doc__ = "Point cloud expression"
 Qgis.ExpressionType.RasterCalculator.__doc__ = "Raster calculator expression \n.. versionadded:: 3.34"
@@ -10308,7 +11589,10 @@ Qgis.ZonalStatistic.Minority.__doc__ = "Minority of pixel values"
 Qgis.ZonalStatistic.Majority.__doc__ = "Majority of pixel values"
 Qgis.ZonalStatistic.Variety.__doc__ = "Variety (count of distinct) pixel values"
 Qgis.ZonalStatistic.Variance.__doc__ = "Variance of pixel values"
-Qgis.ZonalStatistic.All.__doc__ = "All statistics"
+Qgis.ZonalStatistic.MinimumPoint.__doc__ = "Pixel centroid for minimum pixel value \n.. versionadded:: 3.42"
+Qgis.ZonalStatistic.MaximumPoint.__doc__ = "Pixel centroid for maximum pixel value \n.. versionadded:: 3.42"
+Qgis.ZonalStatistic.All.__doc__ = "All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead."
+Qgis.ZonalStatistic.AllNumeric.__doc__ = "All numeric statistics \n.. versionadded:: 3.42"
 Qgis.ZonalStatistic.Default.__doc__ = "Default statistics"
 Qgis.ZonalStatistic.__doc__ = """Statistics to be calculated during a zonal statistics operation.
 
@@ -10326,7 +11610,19 @@ Qgis.ZonalStatistic.__doc__ = """Statistics to be calculated during a zonal stat
 * ``Majority``: Majority of pixel values
 * ``Variety``: Variety (count of distinct) pixel values
 * ``Variance``: Variance of pixel values
-* ``All``: All statistics
+* ``MinimumPoint``: Pixel centroid for minimum pixel value
+
+  .. versionadded:: 3.42
+
+* ``MaximumPoint``: Pixel centroid for maximum pixel value
+
+  .. versionadded:: 3.42
+
+* ``All``: All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+* ``AllNumeric``: All numeric statistics
+
+  .. versionadded:: 3.42
+
 * ``Default``: Default statistics
 
 """
@@ -10742,6 +12038,245 @@ Qgis.ColorModel.__doc__ = """Color model types
 """
 # --
 Qgis.ColorModel.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DocumentationApi.PyQgis.__doc__ = "PyQgis API documentation"
+Qgis.DocumentationApi.PyQgisSearch.__doc__ = "Search in PyQgis API documentation"
+Qgis.DocumentationApi.CppQgis.__doc__ = "C++ QGIS API documentation"
+Qgis.DocumentationApi.Qt.__doc__ = "Qt API documentation"
+Qgis.DocumentationApi.__doc__ = """Documentation API
+
+.. versionadded:: 3.42
+
+* ``PyQgis``: PyQgis API documentation
+* ``PyQgisSearch``: Search in PyQgis API documentation
+* ``CppQgis``: C++ QGIS API documentation
+* ``Qt``: Qt API documentation
+
+"""
+# --
+Qgis.DocumentationApi.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.DocumentationBrowser.DeveloperToolsPanel.__doc__ = "Embedded webview in the DevTools panel"
+Qgis.DocumentationBrowser.SystemWebBrowser.__doc__ = "Default system web browser"
+Qgis.DocumentationBrowser.__doc__ = """Documentation API browser
+
+.. versionadded:: 3.42
+
+* ``DeveloperToolsPanel``: Embedded webview in the DevTools panel
+* ``SystemWebBrowser``: Default system web browser
+
+"""
+# --
+Qgis.DocumentationBrowser.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MouseHandlesAction.MoveItem.__doc__ = "Move item"
+Qgis.MouseHandlesAction.ResizeUp.__doc__ = "Resize up (Top handle)"
+Qgis.MouseHandlesAction.ResizeDown.__doc__ = "Resize down (Bottom handle)"
+Qgis.MouseHandlesAction.ResizeLeft.__doc__ = "Resize left (Left handle)"
+Qgis.MouseHandlesAction.ResizeRight.__doc__ = "Resize right (Right handle)"
+Qgis.MouseHandlesAction.ResizeLeftUp.__doc__ = "Resize left up (Top left handle)"
+Qgis.MouseHandlesAction.ResizeRightUp.__doc__ = "Resize right up (Top right handle)"
+Qgis.MouseHandlesAction.ResizeLeftDown.__doc__ = "Resize left down (Bottom left handle)"
+Qgis.MouseHandlesAction.ResizeRightDown.__doc__ = "Resize right down (Bottom right handle)"
+Qgis.MouseHandlesAction.RotateTopLeft.__doc__ = "Rotate from top left handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateTopRight.__doc__ = "Rotate from top right handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateBottomLeft.__doc__ = "Rotate from bottom left handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.RotateBottomRight.__doc__ = "Rotate right bottom right handle. \n.. versionadded:: 4.0"
+Qgis.MouseHandlesAction.SelectItem.__doc__ = "Select item"
+Qgis.MouseHandlesAction.NoAction.__doc__ = "No action"
+Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
+
+.. versionadded:: 3.42
+
+* ``MoveItem``: Move item
+* ``ResizeUp``: Resize up (Top handle)
+* ``ResizeDown``: Resize down (Bottom handle)
+* ``ResizeLeft``: Resize left (Left handle)
+* ``ResizeRight``: Resize right (Right handle)
+* ``ResizeLeftUp``: Resize left up (Top left handle)
+* ``ResizeRightUp``: Resize right up (Top right handle)
+* ``ResizeLeftDown``: Resize left down (Bottom left handle)
+* ``ResizeRightDown``: Resize right down (Bottom right handle)
+* ``RotateTopLeft``: Rotate from top left handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateTopRight``: Rotate from top right handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateBottomLeft``: Rotate from bottom left handle.
+
+  .. versionadded:: 4.0
+
+* ``RotateBottomRight``: Rotate right bottom right handle.
+
+  .. versionadded:: 4.0
+
+* ``SelectItem``: Select item
+* ``NoAction``: No action
+
+"""
+# --
+Qgis.MouseHandlesAction.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MeshRangeLimit.NotSet.__doc__ = "User defined"
+Qgis.MeshRangeLimit.MinimumMaximum.__doc__ = "Real min-max values"
+Qgis.MeshRangeLimit.__doc__ = """Describes the limits used to compute mesh ranges (min/max values).
+
+.. versionadded:: 3.42
+
+* ``NotSet``: User defined
+* ``MinimumMaximum``: Real min-max values
+
+"""
+# --
+Qgis.MeshRangeLimit.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MeshRangeExtent.WholeMesh.__doc__ = "Whole mesh is used to compute statistics"
+Qgis.MeshRangeExtent.FixedCanvas.__doc__ = "Current extent of the canvas (at the time of computation) is used to compute statistics"
+Qgis.MeshRangeExtent.UpdatedCanvas.__doc__ = "Constantly updated extent of the canvas is used to compute statistics"
+Qgis.MeshRangeExtent.__doc__ = """Describes the extent used to compute mesh ranges (min/max values).
+
+.. versionadded:: 3.42
+
+* ``WholeMesh``: Whole mesh is used to compute statistics
+* ``FixedCanvas``: Current extent of the canvas (at the time of computation) is used to compute statistics
+* ``UpdatedCanvas``: Constantly updated extent of the canvas is used to compute statistics
+
+"""
+# --
+Qgis.MeshRangeExtent.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudAccessType.Local.__doc__ = "Local means the source is a local file on the machine"
+Qgis.PointCloudAccessType.Remote.__doc__ = "Remote means it's loaded through a protocol like HTTP"
+Qgis.PointCloudAccessType.__doc__ = """The access type of the data, local is for local files and remote for remote files (over HTTP).
+
+.. seealso:: :py:class:`QgsPointCloudIndex`
+
+.. versionadded:: 3.42
+
+* ``Local``: Local means the source is a local file on the machine
+* ``Remote``: Remote means it's loaded through a protocol like HTTP
+
+"""
+# --
+Qgis.PointCloudAccessType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = "Render only point cloud extents when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = "Render overview point cloud when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = "Render point cloud extents over overview point cloud"
+Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
+
+.. versionadded:: 3.42
+
+* ``RenderExtents``: Render only point cloud extents when zoomed out
+* ``RenderOverview``: Render overview point cloud when zoomed out
+* ``RenderOverviewAndExtents``: Render point cloud extents over overview point cloud
+
+"""
+# --
+Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SegmentCalculationMethod.Standard.__doc__ = "Standard sagitta-based calculation"
+Qgis.SegmentCalculationMethod.Adaptive.__doc__ = "Adaptive calculation based on radius size"
+Qgis.SegmentCalculationMethod.AreaError.__doc__ = "Calculation based on area error"
+Qgis.SegmentCalculationMethod.ConstantDensity.__doc__ = "Simple calculation with constant segment density"
+Qgis.SegmentCalculationMethod.__doc__ = """brief Method used to calculate the number of segments for circle approximation
+
+.. versionadded:: 3.44
+
+* ``Standard``: Standard sagitta-based calculation
+* ``Adaptive``: Adaptive calculation based on radius size
+* ``AreaError``: Calculation based on area error
+* ``ConstantDensity``: Simple calculation with constant segment density
+
+"""
+# --
+Qgis.SegmentCalculationMethod.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.StacObjectType.Unknown.__doc__ = "Type is not known"
+Qgis.StacObjectType.Catalog.__doc__ = "STAC catalog"
+Qgis.StacObjectType.Collection.__doc__ = "STAC collection"
+Qgis.StacObjectType.Item.__doc__ = "STAC item"
+Qgis.StacObjectType.__doc__ = """Available types of stac objects
+
+.. versionadded:: 3.44
+
+* ``Unknown``: Type is not known
+* ``Catalog``: STAC catalog
+* ``Collection``: STAC collection
+* ``Item``: STAC item
+
+"""
+# --
+Qgis.StacObjectType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.RasterProcessingParameterCapability.WmsScale.__doc__ = "The parameter supports a reference scale for WMS source layers"
+Qgis.RasterProcessingParameterCapability.WmsDpi.__doc__ = "The parameter supports a server resolution for WMS source layers"
+Qgis.RasterProcessingParameterCapability.__doc__ = """Capabilities of a raster layer processing parameter.
+
+.. versionadded:: 4.0
+
+* ``WmsScale``: The parameter supports a reference scale for WMS source layers
+* ``WmsDpi``: The parameter supports a server resolution for WMS source layers
+
+"""
+# --
+Qgis.RasterProcessingParameterCapability.baseClass = Qgis
+Qgis.RasterProcessingParameterCapabilities.baseClass = Qgis
+RasterProcessingParameterCapabilities = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.DevToolsNodeRole.Status.__doc__ = "Request status role"
+Qgis.DevToolsNodeRole.Id.__doc__ = "Request ID role"
+Qgis.DevToolsNodeRole.ElapsedTime.__doc__ = "Elapsed time"
+Qgis.DevToolsNodeRole.MaximumTime.__doc__ = "Maximum encountered elapsed time"
+Qgis.DevToolsNodeRole.Sort.__doc__ = "Sort order role"
+Qgis.DevToolsNodeRole.__doc__ = """Dev tools node custom data roles.
+
+.. versionadded:: 4.0
+
+* ``Status``: Request status role
+* ``Id``: Request ID role
+* ``ElapsedTime``: Elapsed time
+* ``MaximumTime``: Maximum encountered elapsed time
+* ``Sort``: Sort order role
+
+"""
+# --
+Qgis.DevToolsNodeRole.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.ExtrusionFace.NoFace.__doc__ = ""
+Qgis.ExtrusionFace.Walls.__doc__ = ""
+Qgis.ExtrusionFace.Roof.__doc__ = ""
+Qgis.ExtrusionFace.Floor.__doc__ = ""
+Qgis.ExtrusionFace.__doc__ = """Extrusion face types for the :py:class:`QgsTessellator`.
+
+.. versionadded:: 4.0
+
+* ``NoFace``: 
+* ``Walls``: 
+* ``Roof``: 
+* ``Floor``: 
+
+"""
+# --
+Qgis.ExtrusionFace.baseClass = Qgis
+Qgis.ExtrusionFaces.baseClass = Qgis
+ExtrusionFaces = Qgis  # dirty hack since SIP seems to introduce the flags in module
+# monkey patching scoped based enum
+Qgis.TriangulationAlgorithm.ConstrainedDelaunay.__doc__ = ""
+Qgis.TriangulationAlgorithm.Earcut.__doc__ = ""
+Qgis.TriangulationAlgorithm.__doc__ = """Triangulation algorithms.
+
+.. versionadded:: 4.0
+
+* ``ConstrainedDelaunay``: 
+* ``Earcut``: 
+
+"""
+# --
+Qgis.TriangulationAlgorithm.baseClass = Qgis
 from enum import Enum
 
 
@@ -10775,8 +12310,12 @@ Qgis.DataItemProviderCapability.__or__ = lambda flag1, flag2: Qgis.DataItemProvi
 Qgis.VectorRenderingSimplificationFlag.__or__ = lambda flag1, flag2: Qgis.VectorRenderingSimplificationFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.DataProviderReadFlag.__or__ = lambda flag1, flag2: Qgis.DataProviderReadFlags(_force_int(flag1) | _force_int(flag2))
 Qgis.VectorProviderCapability.__or__ = lambda flag1, flag2: Qgis.VectorProviderCapabilities(_force_int(flag1) | _force_int(flag2))
+Qgis.LayoutRenderFlag.__or__ = lambda flag1, flag2: Qgis.LayoutRenderFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.CurvedTextFlag.__or__ = lambda flag1, flag2: Qgis.CurvedTextFlags(_force_int(flag1) | _force_int(flag2))
+Qgis.MapGridFrameSideFlag.__or__ = lambda flag1, flag2: Qgis.MapGridFrameSideFlags(_force_int(flag1) | _force_int(flag2))
 try:
-    Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 4.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.'}
+    Qgis.__attribute_docs__ = {'QGIS_DEV_VERSION': 'The development version', 'DEFAULT_SEARCH_RADIUS_MM': 'Identify search radius in mm', 'DEFAULT_MAPTOPIXEL_THRESHOLD': 'Default threshold between map coordinates and device coordinates for map2pixel simplification', 'DEFAULT_HIGHLIGHT_COLOR': 'Default highlight color.  The transparency is expected to only be applied to polygon\nfill. Lines and outlines are rendered opaque.', 'DEFAULT_HIGHLIGHT_BUFFER_MM': 'Default highlight buffer in mm.', 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': 'Default highlight line/stroke minimum width in mm.', 'SCALE_PRECISION': 'Fudge factor used to compare two scales. The code is often going from scale to scale\ndenominator. So it looses precision and, when a limit is inclusive, can lead to errors.\nTo avoid that, use this factor instead of using <= or >=.\n\n.. deprecated:: 3.40\n\n   No longer used by QGIS and will be removed in QGIS 5.0.', 'DEFAULT_Z_COORDINATE': 'Default Z coordinate value.\nThis value have to be assigned to the Z coordinate for the vertex.', 'DEFAULT_M_COORDINATE': 'Default M coordinate value.\nThis value have to be assigned to the M coordinate for the vertex.\n\n.. versionadded:: 3.20', 'UI_SCALE_FACTOR': 'UI scaling factor. This should be applied to all widget sizes obtained from font metrics,\nto account for differences in the default font sizes across different platforms.', 'DEFAULT_SNAP_TOLERANCE': 'Default snapping distance tolerance.', 'DEFAULT_SNAP_UNITS': 'Default snapping distance units.', 'USER_CRS_START_ID': 'Minimum ID number for a user-defined projection.', 'DEFAULT_POINT_SIZE': 'The default size (in millimeters) for point marker symbols', 'DEFAULT_LINE_WIDTH': 'The default width (in millimeters) for line symbols', 'DEFAULT_SEGMENT_EPSILON': 'Default snapping tolerance for segments'}
+    Qgis.__annotations__ = {'QGIS_DEV_VERSION': str, 'DEFAULT_SEARCH_RADIUS_MM': float, 'DEFAULT_MAPTOPIXEL_THRESHOLD': float, 'DEFAULT_HIGHLIGHT_COLOR': 'QColor', 'DEFAULT_HIGHLIGHT_BUFFER_MM': float, 'DEFAULT_HIGHLIGHT_MIN_WIDTH_MM': float, 'SCALE_PRECISION': float, 'DEFAULT_Z_COORDINATE': float, 'DEFAULT_M_COORDINATE': float, 'UI_SCALE_FACTOR': float, 'DEFAULT_SNAP_TOLERANCE': float, 'DEFAULT_SNAP_UNITS': 'Qgis.MapToolUnit', 'USER_CRS_START_ID': int, 'DEFAULT_POINT_SIZE': float, 'DEFAULT_LINE_WIDTH': float, 'DEFAULT_SEGMENT_EPSILON': float}
     Qgis.version = staticmethod(Qgis.version)
     Qgis.versionInt = staticmethod(Qgis.versionInt)
     Qgis.releaseName = staticmethod(Qgis.releaseName)
@@ -10787,5 +12326,14 @@ try:
     Qgis.geosVersionMinor = staticmethod(Qgis.geosVersionMinor)
     Qgis.geosVersionPatch = staticmethod(Qgis.geosVersionPatch)
     Qgis.geosVersion = staticmethod(Qgis.geosVersion)
-except NameError:
+    Qgis.hasSfcgal = staticmethod(Qgis.hasSfcgal)
+    Qgis.sfcgalVersionInt = staticmethod(Qgis.sfcgalVersionInt)
+    Qgis.hasGeographicLib = staticmethod(Qgis.hasGeographicLib)
+    Qgis.geographicLibVersion = staticmethod(Qgis.geographicLibVersion)
+    Qgis.hasQtWebkit = staticmethod(Qgis.hasQtWebkit)
+    Qgis.geoNone = staticmethod(Qgis.geoNone)
+    Qgis.geographicCrsAuthId = staticmethod(Qgis.geographicCrsAuthId)
+    Qgis.geoWkt = staticmethod(Qgis.geoWkt)
+    Qgis.geoProj4 = staticmethod(Qgis.geoProj4)
+except (NameError, AttributeError):
     pass

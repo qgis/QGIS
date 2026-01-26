@@ -13,8 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaplayerconfigwidget.h"
-#include "qgspanelwidget.h"
+
 #include "qgslayertreegroup.h"
+#include "qgspanelwidget.h"
+
+#include "moc_qgsmaplayerconfigwidget.cpp"
 
 //
 // QgsMapLayerConfigWidgetContext
@@ -39,7 +42,6 @@ QgsMapLayerConfigWidget::QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanv
   , mLayer( layer )
   , mMapCanvas( canvas )
 {
-
 }
 
 void QgsMapLayerConfigWidget::setMapLayerConfigWidgetContext( const QgsMapLayerConfigWidgetContext &context )

@@ -17,12 +17,12 @@
 #ifndef QGSELEVATIONPROFILETOOLMEASURE_H
 #define QGSELEVATIONPROFILETOOLMEASURE_H
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgsplottool.h"
 #include "qgsprofilepoint.h"
-#include "qgscoordinatereferencesystem.h"
 
-#include <QPointer>
 #include <QDialog>
+#include <QPointer>
 
 class QgsElevationProfileCanvas;
 class QGraphicsLineItem;
@@ -33,7 +33,6 @@ class QgsProfileMeasureResultsDialog : public QDialog
     Q_OBJECT
 
   public:
-
     QgsProfileMeasureResultsDialog();
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -49,13 +48,11 @@ class QgsProfileMeasureResultsDialog : public QDialog
     void clear();
 
   private:
-
     QLabel *mTotalLabel = nullptr;
     QLabel *mDistanceLabel = nullptr;
     QLabel *mElevationLabel = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
-
 };
 
 class QgsElevationProfileToolMeasure : public QgsPlotTool
@@ -70,6 +67,8 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
     void plotMoveEvent( QgsPlotMouseEvent *event ) override;
     void plotPressEvent( QgsPlotMouseEvent *event ) override;
     void plotReleaseEvent( QgsPlotMouseEvent *event ) override;
+
+    void clear();
 
   signals:
 
@@ -92,7 +91,6 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
     QgsProfilePoint mStartPoint;
     QgsProfilePoint mEndPoint;
     bool mMeasureInProgress = false;
-
 };
 
 #endif // QGSELEVATIONPROFILETOOLMEASURE_H

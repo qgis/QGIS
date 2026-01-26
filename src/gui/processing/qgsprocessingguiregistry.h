@@ -20,8 +20,8 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsprocessinggui.h"
 #include "qgsprocessingwidgetwrapper.h"
+
 #include <QList>
 #include <QMap>
 
@@ -32,8 +32,7 @@ class QgsProcessingModelerParameterWidget;
 class QgsProcessingParameterWidgetContext;
 
 /**
- * The QgsProcessingGuiRegistry is a home for widgets for processing
- * configuration widgets.
+ * A registry for widgets for use with the Processing framework.
  *
  * QgsProcessingGuiRegistry is not usually directly created, but rather accessed through
  * QgsGui::processingGuiRegistry().
@@ -44,7 +43,6 @@ class QgsProcessingParameterWidgetContext;
 class GUI_EXPORT QgsProcessingGuiRegistry
 {
   public:
-
     /**
      * Constructor. Should never be called manually, is already
      * created by QgsGui.
@@ -116,7 +114,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.4
      */
-    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) SIP_FACTORY;
+    QgsAbstractProcessingParameterWidgetWrapper *createParameterWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) SIP_FACTORY;
 
     /**
      * Creates a new modeler parameter widget for the given \a parameter. This widget allows
@@ -135,9 +133,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.4
      */
-    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
-        const QString &childId,
-        const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
+    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Creates a new parameter definition widget allowing for configuration of an instance of
@@ -160,16 +156,11 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.10
      */
-    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type,
-        QgsProcessingContext &context,
-        const QgsProcessingParameterWidgetContext &widgetContext,
-        const QgsProcessingParameterDefinition *definition = nullptr,
-        const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
 
   private:
-
-    QList <QgsProcessingAlgorithmConfigurationWidgetFactory *> mAlgorithmConfigurationWidgetFactories;
-    QMap< QString, QgsProcessingParameterWidgetFactoryInterface *> mParameterWidgetFactories;
+    QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> mAlgorithmConfigurationWidgetFactories;
+    QMap<QString, QgsProcessingParameterWidgetFactoryInterface *> mParameterWidgetFactories;
 };
 
 #endif // QGSPROCESSINGGUIREGISTRY_H

@@ -14,10 +14,10 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include "qgsgeometryisvalidcheck.h"
-#include "qgssettingsregistrycore.h"
+
 #include "qgsgeometryvalidator.h"
 #include "qgssettingsentryimpl.h"
-
+#include "qgssettingsregistrycore.h"
 
 QgsGeometryIsValidCheck::QgsGeometryIsValidCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsSingleGeometryCheck( context, configuration )
@@ -38,8 +38,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryIsValidCheck::processGeometry( c
 
   QgsGeometryValidator validator( geometry, &errors, method );
 
-  QObject::connect( &validator, &QgsGeometryValidator::errorFound, &validator, [ &errors ]( const QgsGeometry::Error & error )
-  {
+  QObject::connect( &validator, &QgsGeometryValidator::errorFound, &validator, [&errors]( const QgsGeometry::Error &error ) {
     errors.append( error );
   } );
 
@@ -65,7 +64,7 @@ QStringList QgsGeometryIsValidCheck::resolutionMethods() const
 ///@cond private
 QList<Qgis::GeometryType> QgsGeometryIsValidCheck::factoryCompatibleGeometryTypes()
 {
-  return {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon};
+  return { Qgis::GeometryType::Line, Qgis::GeometryType::Polygon };
 }
 
 bool QgsGeometryIsValidCheck::factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP
@@ -80,7 +79,7 @@ QString QgsGeometryIsValidCheck::factoryDescription()
 
 QString QgsGeometryIsValidCheck::factoryId()
 {
-  return QStringLiteral( "QgsIsValidCheck" );
+  return u"QgsIsValidCheck"_s;
 }
 
 QgsGeometryCheck::Flags QgsGeometryIsValidCheck::factoryFlags()
@@ -98,7 +97,6 @@ QgsGeometryIsValidCheckError::QgsGeometryIsValidCheckError( const QgsSingleGeome
   : QgsSingleGeometryCheckError( check, geometry, errorLocation )
   , mDescription( errorDescription )
 {
-
 }
 
 QString QgsGeometryIsValidCheckError::description() const

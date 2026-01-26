@@ -16,16 +16,16 @@
 #ifndef QGSVECTORLAYERTOOLSCONTEXT_H
 #define QGSVECTORLAYERTOOLSCONTEXT_H
 
-#include "qgsexpressioncontext.h"
-#include "qgis_core.h"
-
 #include <memory>
+
+#include "qgis_core.h"
+#include "qgsexpressioncontext.h"
 
 /**
  * \ingroup core
  * \class QgsVectorLayerToolsContext
  * \brief Contains settings which reflect the context in which vector layer tool operations should
- * consider.
+ * be considered.
  * \since QGIS 3.38
  */
 class CORE_EXPORT QgsVectorLayerToolsContext

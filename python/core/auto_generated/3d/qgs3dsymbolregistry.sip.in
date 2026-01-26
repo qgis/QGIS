@@ -30,7 +30,8 @@ Stores metadata about one 3D symbol class.
 
     Qgs3DSymbolAbstractMetadata( const QString &type, const QString &visibleName );
 %Docstring
-Constructor for Qgs3DSymbolAbstractMetadata, with the specified ``type`` and ``visibleName``.
+Constructor for Qgs3DSymbolAbstractMetadata, with the specified ``type``
+and ``visibleName``.
 %End
 
     virtual ~Qgs3DSymbolAbstractMetadata();
@@ -65,8 +66,8 @@ class Qgs3DSymbolRegistry
 %Docstring(signature="appended")
 Registry of available 3D symbol classes.
 
-Qgs3DSymbolRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.symbol3DRegistry()`.
+Qgs3DSymbolRegistry is not usually directly created, but rather accessed
+through :py:func:`QgsApplication.symbol3DRegistry()`.
 
 .. versionadded:: 3.16
 %End
@@ -82,7 +83,8 @@ Qgs3DSymbolRegistry is not usually directly created, but rather accessed through
 
     Qgs3DSymbolAbstractMetadata *symbolMetadata( const QString &type ) const;
 %Docstring
-Returns metadata for specified symbol ``type``. Returns ``None`` if not found
+Returns metadata for specified symbol ``type``. Returns ``None`` if not
+found
 %End
 
     QStringList symbolTypes() const;
@@ -92,7 +94,8 @@ Returns a list of all available symbol types.
 
     bool addSymbolType( Qgs3DSymbolAbstractMetadata *metadata /Transfer/ );
 %Docstring
-Registers a new symbol type. Takes ownership of the ``metadata`` instance.
+Registers a new symbol type. Takes ownership of the ``metadata``
+instance.
 %End
 
     QgsAbstract3DSymbol *createSymbol( const QString &type ) const /Factory/;
@@ -106,7 +109,8 @@ Returns ``None`` if the specified type is not found in the registry.
 
     QgsAbstract3DSymbol *defaultSymbolForGeometryType( Qgis::GeometryType type ) /Factory/;
 %Docstring
-Creates a new instance of the default 3D symbol for the specified geometry ``type``.
+Creates a new instance of the default 3D symbol for the specified
+geometry ``type``.
 
 The caller takes ownership of the returned symbol.
 %End

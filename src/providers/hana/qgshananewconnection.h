@@ -17,10 +17,11 @@
 #ifndef QGSHANANEWCONNECTION_H
 #define QGSHANANEWCONNECTION_H
 
+#include "ui_qgshananewconnectionbase.h"
+
 #include "qgsguiutils.h"
 #include "qgshanasettings.h"
 #include "qgshelp.h"
-#include "ui_qgshananewconnectionbase.h"
 
 /**
  * \class QgsHanaNewConnection
@@ -35,7 +36,8 @@ class QgsHanaNewConnection : public QDialog, private Ui::QgsHanaNewConnectionBas
     QgsHanaNewConnection(
       QWidget *parent = nullptr,
       const QString &connName = QString(),
-      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags
+    );
 
     void resizeEvent( QResizeEvent *ev ) override;
 

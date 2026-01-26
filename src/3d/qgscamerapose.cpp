@@ -15,32 +15,33 @@
 
 #include "qgscamerapose.h"
 
-#include <Qt3DRender/QCamera>
+#include "qgs3dutils.h"
 
 #include <QDomDocument>
+#include <Qt3DRender/QCamera>
 
 QDomElement QgsCameraPose::writeXml( QDomDocument &doc ) const
 {
-  QDomElement elemCamera = doc.createElement( QStringLiteral( "camera-pose" ) );
-  elemCamera.setAttribute( QStringLiteral( "x" ), mCenterPoint.x() );
-  elemCamera.setAttribute( QStringLiteral( "y" ), mCenterPoint.y() );
-  elemCamera.setAttribute( QStringLiteral( "z" ), mCenterPoint.z() );
-  elemCamera.setAttribute( QStringLiteral( "dist" ), mDistanceFromCenterPoint );
-  elemCamera.setAttribute( QStringLiteral( "pitch" ), mPitchAngle );
-  elemCamera.setAttribute( QStringLiteral( "heading" ), mHeadingAngle );
+  QDomElement elemCamera = doc.createElement( u"camera-pose"_s );
+  elemCamera.setAttribute( u"x"_s, mCenterPoint.x() );
+  elemCamera.setAttribute( u"y"_s, mCenterPoint.y() );
+  elemCamera.setAttribute( u"z"_s, mCenterPoint.z() );
+  elemCamera.setAttribute( u"dist"_s, mDistanceFromCenterPoint );
+  elemCamera.setAttribute( u"pitch"_s, mPitchAngle );
+  elemCamera.setAttribute( u"heading"_s, mHeadingAngle );
   return elemCamera;
 }
 
 void QgsCameraPose::readXml( const QDomElement &elem )
 {
-  const double x = elem.attribute( QStringLiteral( "x" ) ).toDouble();
-  const double y = elem.attribute( QStringLiteral( "y" ) ).toDouble();
-  const double z = elem.attribute( QStringLiteral( "z" ) ).toDouble();
+  const double x = elem.attribute( u"x"_s ).toDouble();
+  const double y = elem.attribute( u"y"_s ).toDouble();
+  const double z = elem.attribute( u"z"_s ).toDouble();
   mCenterPoint = QgsVector3D( x, y, z );
 
-  mDistanceFromCenterPoint = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
-  mPitchAngle = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
-  mHeadingAngle = elem.attribute( QStringLiteral( "heading" ) ).toFloat();
+  mDistanceFromCenterPoint = elem.attribute( u"dist"_s ).toFloat();
+  mPitchAngle = elem.attribute( u"pitch"_s ).toFloat();
+  mHeadingAngle = elem.attribute( u"heading"_s ).toFloat();
 }
 
 void QgsCameraPose::setCenterPoint( const QgsVector3D &point )
@@ -60,26 +61,43 @@ void QgsCameraPose::setDistanceFromCenterPoint( float distance )
 void QgsCameraPose::setPitchAngle( float pitch )
 {
   // prevent going over the head
-  // prevent bug in QgsCameraPose::updateCamera when updating camera rotation.
-  // With a mPitchAngle < 0.2 or > 179.8, QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 )
-  // will return bad rotation angle in Qt5.
-  // See https://bugreports.qt.io/browse/QTBUG-72103
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  mPitchAngle = std::clamp( pitch, 0.2f, 179.8f );
-#else
   mPitchAngle = std::clamp( pitch, 0.0f, 180.0f );
-#endif
 }
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
-  // basic scene setup:
-  // - x grows to the right
-  // - z grows to the bottom
-  // - y grows towards camera
-  // so a point on the plane (x',y') is transformed to (x,-z) in our 3D world
-  camera->setUpVector( QVector3D( 0, 0, -1 ) );
-  camera->setPosition( QVector3D( mCenterPoint.x(), mDistanceFromCenterPoint + mCenterPoint.y(), mCenterPoint.z() ) );
-  camera->setViewCenter( QVector3D( mCenterPoint.x(), mCenterPoint.y(), mCenterPoint.z() ) );
-  camera->rotateAboutViewCenter( QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 ) );
+  // first rotate by pitch angle around X axis, then by heading angle around Z axis
+  QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( mPitchAngle, mHeadingAngle );
+  QVector3D cameraToCenter = q * QVector3D( 0, 0, -mDistanceFromCenterPoint );
+  camera->setUpVector( q * QVector3D( 0, 1, 0 ) );
+  camera->setPosition( mCenterPoint.toVector3D() - cameraToCenter );
+  camera->setViewCenter( mCenterPoint.toVector3D() );
+}
+
+void QgsCameraPose::updateCameraGlobe( Qt3DRender::QCamera *camera, double lat, double lon )
+{
+  // how the camera setup works:
+  // - we are using ECEF coordinates (https://en.wikipedia.org/wiki/Earth-centered,_Earth-fixed_coordinate_system)
+  //    - point (0,0,0) is in the center of reference ellipsoid
+  //    - X and Y axes define equator plane
+  //    - X axis grows towards the prime meridian (zero longitude)
+  //    - Y axis grows towards 90 degrees of longitude
+  //    - Z axis grows towards the north pole
+
+  QVector3D viewCenter = mCenterPoint.toVector3D();
+
+  // rotate camera so that it is looking towards the tangent plane to ellipsoid at given
+  // lat/lon coordinates
+  QQuaternion qLatLon = QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), static_cast<float>( lon ) ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, -1, 0 ), static_cast<float>( lat ) );
+
+  // rotate camera using the pitch and heading angles
+  QQuaternion qPitchHeading = QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), mHeadingAngle ) * QQuaternion::fromAxisAndAngle( QVector3D( 0, 1, 0 ), mPitchAngle );
+
+  // combine the two rotations (the order is important: pitch/heading is applied first)
+  QQuaternion q = qLatLon * qPitchHeading;
+
+  QVector3D cameraToCenter = ( q * QVector3D( -1, 0, 0 ) ) * mDistanceFromCenterPoint;
+  camera->setUpVector( q * QVector3D( 0, 0, 1 ) );
+  camera->setPosition( viewCenter - cameraToCenter );
+  camera->setViewCenter( viewCenter );
 }

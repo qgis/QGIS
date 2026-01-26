@@ -15,17 +15,20 @@
  ***************************************************************************/
 
 #include "qgslayoutitempolygon.h"
-#include "qgslayoutitemregistry.h"
-#include "qgslayoututils.h"
-#include "qgslayout.h"
-#include "qgslayoutrendercontext.h"
-#include "qgsreadwritecontext.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgsfillsymbol.h"
 
 #include <limits>
+
+#include "qgsfillsymbol.h"
+#include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoututils.h"
+#include "qgsreadwritecontext.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+
+#include "moc_qgslayoutitempolygon.cpp"
 
 QgsLayoutItemPolygon::QgsLayoutItemPolygon( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )
@@ -53,7 +56,7 @@ int QgsLayoutItemPolygon::type() const
 
 QIcon QgsLayoutItemPolygon::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolygon.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemPolygon.svg"_s );
 }
 
 bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
@@ -68,14 +71,14 @@ bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
 void QgsLayoutItemPolygon::createDefaultPolygonStyleSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
-  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  properties.insert( u"color"_s, u"white"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"solid"_s );
+  properties.insert( u"color_border"_s, u"black"_s );
+  properties.insert( u"width_border"_s, u"0.3"_s );
+  properties.insert( u"joinstyle"_s, u"miter"_s );
 
-  mPolygonStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  mPolygonStyleSymbol = QgsFillSymbol::createSimple( properties );
 
   refreshSymbol();
 }
@@ -129,6 +132,24 @@ QgsGeometry QgsLayoutItemPolygon::clipPath() const
   return QgsGeometry::fromQPolygonF( path );
 }
 
+
+bool QgsLayoutItemPolygon::isValid() const
+{
+  // A Polygon is valid if it has at least 3 unique points
+  QList<QPointF> uniquePoints;
+  int seen = 0;
+  for ( QPointF point : mPolygon )
+  {
+    if ( !uniquePoints.contains( point ) )
+    {
+      uniquePoints.append( point );
+      if ( ++seen > 2 )
+        return true;
+    }
+  }
+  return false;
+}
+
 QgsFillSymbol *QgsLayoutItemPolygon::symbol()
 {
   return mPolygonStyleSymbol.get();
@@ -157,7 +178,7 @@ void QgsLayoutItemPolygon::_draw( QgsLayoutItemRenderContext &context, const QSt
 
 void QgsLayoutItemPolygon::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
 {
-  mPolygonStyleSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context ) );
+  mPolygonStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( elmt, context );
 }
 
 void QgsLayoutItemPolygon::setSymbol( QgsFillSymbol *symbol )
@@ -177,20 +198,15 @@ void QgsLayoutItemPolygon::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt,
 
 bool QgsLayoutItemPolygon::_removeNode( const int index )
 {
-  if ( index < 0 || index >= mPolygon.size() )
+  if ( index < 0 || index >= mPolygon.size() || mPolygon.size() <= 3 )
     return false;
 
   mPolygon.remove( index );
 
-  if ( mPolygon.size() < 3 )
-    mPolygon.clear();
-  else
-  {
-    int newSelectNode = index;
-    if ( index == mPolygon.size() )
-      newSelectNode = 0;
-    setSelectedNode( newSelectNode );
-  }
+  int newSelectNode = index;
+  if ( index == mPolygon.size() )
+    newSelectNode = 0;
+  setSelectedNode( newSelectNode );
 
   return true;
 }

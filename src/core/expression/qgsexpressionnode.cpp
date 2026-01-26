@@ -14,8 +14,8 @@
  ***************************************************************************/
 
 #include "qgsexpressionnode.h"
-#include "qgsexpression.h"
 
+#include "qgsexpression.h"
 
 QVariant QgsExpressionNode::eval( QgsExpression *parent, const QgsExpressionContext *context )
 {
@@ -29,8 +29,7 @@ QVariant QgsExpressionNode::eval( QgsExpression *parent, const QgsExpressionCont
   }
   else
   {
-    QVariant res = evalNode( parent, context );
-    return res;
+    return evalNode( parent, context );
   }
 }
 
@@ -76,6 +75,9 @@ QgsExpressionNode::QgsExpressionNode( const QgsExpressionNode &other )
 
 QgsExpressionNode &QgsExpressionNode::operator=( const QgsExpressionNode &other )
 {
+  if ( &other == this )
+    return *this;
+
   parserFirstLine = other.parserFirstLine;
   parserFirstColumn = other.parserFirstColumn;
   parserLastLine = other.parserLastLine;
@@ -97,4 +99,3 @@ void QgsExpressionNode::cloneTo( QgsExpressionNode *target ) const
   target->parserFirstColumn = parserFirstColumn;
   target->parserFirstLine = parserFirstLine;
 }
-

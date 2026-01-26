@@ -13,21 +13,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrylineintersectioncheck.h"
+
+#include "qgsfeedback.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgslinestring.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheckerror.h"
 
-void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
+  QMap<QString, QSet<QVariant>> uniqueIds;
   const QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesA( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext, true );
   QList<QString> layerIds = featureIds.keys();
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureA : layerFeaturesA )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
+    if ( context()->uniqueIdFieldIndex != -1 )
+    {
+      QgsGeometryCheck::Result result = checkUniqueId( layerFeatureA, uniqueIds );
+      if ( result != QgsGeometryCheck::Result::Success )
+      {
+        return result;
+      }
+    }
+
     // Ensure each pair of layers only gets compared once: remove the current layer from the layerIds, but add it to the layerList for layerFeaturesB
     layerIds.removeOne( layerFeatureA.layer()->id() );
 
@@ -42,10 +59,15 @@ void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFea
       }
 
       // Check whether the line intersects with any other lines
-      const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, line->boundingBox(), {Qgis::GeometryType::Line}, mContext );
+      const QgsGeometryCheckerUtils::LayerFeatures layerFeaturesB( featurePools, QList<QString>() << layerFeatureA.layer()->id() << layerIds, line->boundingBox(), { Qgis::GeometryType::Line }, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeatureB : layerFeaturesB )
       {
-        // > : only report intersections within same layer once
+        if ( feedback && feedback->isCanceled() )
+        {
+          return QgsGeometryCheck::Result::Canceled;
+        }
+
+        // only report intersections within same layer once
         if ( layerFeatureA.layer()->id() == layerFeatureB.layer()->id() && layerFeatureB.feature().id() > layerFeatureA.feature().id() )
         {
           continue;
@@ -64,7 +86,7 @@ void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFea
           {
             continue;
           }
-          const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
+          const QList<QgsPoint> intersections = QgsGeometryCheckerUtils::lineIntersections( line, testLine, mContext->tolerance );
           for ( const QgsPoint &inter : intersections )
           {
             errors.append( new QgsGeometryCheckError( this, layerFeatureA, inter, QgsVertexId( iPart ), layerFeatureB.id() ) );
@@ -73,6 +95,7 @@ void QgsGeometryLineIntersectionCheck::collectErrors( const QMap<QString, QgsFea
       }
     }
   }
+  return QgsGeometryCheck::Result::Success;
 }
 
 void QgsGeometryLineIntersectionCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const

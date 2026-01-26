@@ -16,128 +16,141 @@
 #ifndef QGSTEST_H
 #define QGSTEST_H
 
-#include <QtTest/QTest>
-#include <QDir>
-#include <QFile>
-#include <QTextStream>
-#include <QDesktopServices>
-
-#include "qgsapplication.h"
-
+#include "qgis_test.h"
 #include "qgsabstractgeometry.h"
-#include "qgscurve.h"
+#include "qgsapplication.h"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
-#include "qgslinestring.h"
+#include "qgscurve.h"
+#include "qgscurvepolygon.h"
 #include "qgsgeometrycollection.h"
+#include "qgsinterval.h"
+#include "qgslinestring.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
-#include "qgsmultisurface.h"
 #include "qgsmultipolygon.h"
+#include "qgsmultirenderchecker.h"
+#include "qgsmultisurface.h"
 #include "qgspoint.h"
-#include "qgssurface.h"
-#include "qgscurvepolygon.h"
 #include "qgspolygon.h"
-#include "qgstriangle.h"
+#include "qgsrange.h"
 #include "qgsrectangle.h"
 #include "qgsregularpolygon.h"
-#include "qgsrange.h"
-#include "qgsinterval.h"
 #include "qgsrenderchecker.h"
-#include "qgsmultirenderchecker.h"
+#include "qgssurface.h"
+#include "qgstriangle.h"
 #include "qgsunittypes.h"
-#include "qgis_test.h"
 
-#define QGSTEST_MAIN(TestObject) \
-  QT_BEGIN_NAMESPACE \
-  QT_END_NAMESPACE \
-  int main(int argc, char *argv[]) \
-  { \
-    QgsApplication app(argc, argv, false); \
-    app.init(); \
-    app.setAttribute(Qt::AA_Use96Dpi, true); \
-    QTEST_DISABLE_KEYPAD_NAVIGATION \
-    TestObject tc; \
-    QTEST_SET_MAIN_SOURCE_PATH \
-    return QTest::qExec(&tc, argc, argv); \
+#include <QDesktopServices>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
+#include <QtTest/QTest>
+
+#define QGSTEST_MAIN( TestObject )             \
+  QT_BEGIN_NAMESPACE                           \
+  QT_END_NAMESPACE                             \
+  int main( int argc, char *argv[] )           \
+  {                                            \
+    QgsApplication app( argc, argv, false );   \
+    app.init();                                \
+    app.setAttribute( Qt::AA_Use96Dpi, true ); \
+    QTEST_DISABLE_KEYPAD_NAVIGATION            \
+    TestObject tc;                             \
+    QTEST_SET_MAIN_SOURCE_PATH                 \
+    return QTest::qExec( &tc, argc, argv );    \
   }
 
 
-#define QGSCOMPARENEAR(value,expected,epsilon) { \
-    bool _xxxresult = qgsDoubleNear( value, expected, epsilon ); \
-    if ( !_xxxresult  ) \
-    { \
-      qDebug( "Expecting %.10f got %.10f (diff %.10f > %.10f)", static_cast< double >( expected ), static_cast< double >( value ), std::fabs( static_cast< double >( expected ) - value ), static_cast< double >( epsilon ) ); \
-    } \
-    QVERIFY( qgsDoubleNear( value, expected, epsilon ) ); \
-  }(void)(0)
+#define QGSCOMPARENEAR( value, expected, epsilon )                                                                                                                                                                     \
+  {                                                                                                                                                                                                                    \
+    bool _xxxresult = qgsDoubleNear( value, expected, epsilon );                                                                                                                                                       \
+    if ( !_xxxresult )                                                                                                                                                                                                 \
+    {                                                                                                                                                                                                                  \
+      qDebug( "Expecting %.10f got %.10f (diff %.10f > %.10f)", static_cast<double>( expected ), static_cast<double>( value ), std::fabs( static_cast<double>( expected ) - value ), static_cast<double>( epsilon ) ); \
+    }                                                                                                                                                                                                                  \
+    QVERIFY( qgsDoubleNear( value, expected, epsilon ) );                                                                                                                                                              \
+  }                                                                                                                                                                                                                    \
+  ( void ) ( 0 )
 
-#define QGSCOMPARENOTNEAR(value,not_expected,epsilon) { \
-    bool _xxxresult = qgsDoubleNear( value, not_expected, epsilon ); \
-    if ( _xxxresult  ) \
-    { \
-      qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast< double >( value ), static_cast< double >( not_expected ), std::fabs( static_cast< double >( not_expected ) - value ), static_cast< double >( epsilon ) ); \
-    } \
-    QVERIFY( !qgsDoubleNear( value, not_expected, epsilon ) ); \
-  }(void)(0)
+#define QGSCOMPARENOTNEAR( value, not_expected, epsilon )                                                                                                                                                                             \
+  {                                                                                                                                                                                                                                   \
+    bool _xxxresult = qgsDoubleNear( value, not_expected, epsilon );                                                                                                                                                                  \
+    if ( _xxxresult )                                                                                                                                                                                                                 \
+    {                                                                                                                                                                                                                                 \
+      qDebug( "Expecting %f to be differerent from %f (diff %f > %f)", static_cast<double>( value ), static_cast<double>( not_expected ), std::fabs( static_cast<double>( not_expected ) - value ), static_cast<double>( epsilon ) ); \
+    }                                                                                                                                                                                                                                 \
+    QVERIFY( !qgsDoubleNear( value, not_expected, epsilon ) );                                                                                                                                                                        \
+  }                                                                                                                                                                                                                                   \
+  ( void ) ( 0 )
 
-#define QGSVERIFYLESSTHAN(value,expected) { \
-    bool _xxxresult = ( value ) < ( expected ); \
-    if ( !_xxxresult  ) \
-    { \
-      qDebug( "Expecting < %.10f got %.10f", static_cast< double >( expected ), static_cast< double >( value ) ); \
-    } \
-    QVERIFY( ( value ) < ( expected ) ); \
-  }(void)(0)
+#define QGSVERIFYLESSTHAN( value, expected )                                                                  \
+  {                                                                                                           \
+    bool _xxxresult = ( value ) < ( expected );                                                               \
+    if ( !_xxxresult )                                                                                        \
+    {                                                                                                         \
+      qDebug( "Expecting < %.10f got %.10f", static_cast<double>( expected ), static_cast<double>( value ) ); \
+    }                                                                                                         \
+    QVERIFY( ( value ) < ( expected ) );                                                                      \
+  }                                                                                                           \
+  ( void ) ( 0 )
 
-#define QGSCOMPARENEARPOINT(point1,point2,epsilon) { \
+#define QGSCOMPARENEARPOINT( point1, point2, epsilon ) \
+  {                                                    \
     QGSCOMPARENEAR( point1.x(), point2.x(), epsilon ); \
     QGSCOMPARENEAR( point1.y(), point2.y(), epsilon ); \
-  }(void)(0)
+  }                                                    \
+  ( void ) ( 0 )
 
-#define QGSCOMPARENEARRECTANGLE(rectangle1,rectangle2,epsilon) { \
+#define QGSCOMPARENEARRECTANGLE( rectangle1, rectangle2, epsilon )           \
+  {                                                                          \
     QGSCOMPARENEAR( rectangle1.xMinimum(), rectangle2.xMinimum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.xMaximum(), rectangle2.xMaximum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.yMinimum(), rectangle2.yMinimum(), epsilon ); \
     QGSCOMPARENEAR( rectangle1.yMaximum(), rectangle2.yMaximum(), epsilon ); \
-  }(void)(0)
+  }                                                                          \
+  ( void ) ( 0 )
 
-#define QGSCOMPARENEARVECTOR3D(v1,v2,epsilon) { \
-    QGSCOMPARENEAR( v1.x(), v2.x(), epsilon ); \
-    QGSCOMPARENEAR( v1.y(), v2.y(), epsilon ); \
-    QGSCOMPARENEAR( v1.z(), v2.z(), epsilon ); \
-  }(void)(0)
+#define QGSCOMPARENEARVECTOR3D( v1, v2, epsilon ) \
+  {                                               \
+    QGSCOMPARENEAR( v1.x(), v2.x(), epsilon );    \
+    QGSCOMPARENEAR( v1.y(), v2.y(), epsilon );    \
+    QGSCOMPARENEAR( v1.z(), v2.z(), epsilon );    \
+  }                                               \
+  ( void ) ( 0 )
 
 //sometimes GML attributes are in a different order - but that's ok
-#define QGSCOMPAREGML(result,expected) { \
-    QCOMPARE( result.replace( QStringLiteral("ts=\" \" cs=\",\""), QStringLiteral("cs=\",\" ts=\" \"") ), expected ); \
-  }(void)(0)
+#define QGSCOMPAREGML( result, expected )                                                   \
+  {                                                                                         \
+    QCOMPARE( result.replace( "ts=\" \" cs=\",\""_L1, "cs=\",\" ts=\" \""_L1 ), expected ); \
+  }                                                                                         \
+  ( void ) ( 0 )
 
 // Start your PostgreSQL-backend connection requiring test with this macro
-#define QGSTEST_NEED_PGTEST_DB() \
+#define QGSTEST_NEED_PGTEST_DB()         \
   if ( getenv( "QGIS_PGTEST_DB_SKIP" ) ) \
     QSKIP( "Test disabled due to QGIS_PGTEST_DB_SKIP env variable being set" );
 
 // args are:
 // const QString &name, const QString &referenceImage, const QgsMapSettings &mapSettings, int allowedMismatch = 0, int colorTolerance = 0
-#define QGSRENDERMAPSETTINGSCHECK(...) renderMapSettingsCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
-#define QGSVERIFYRENDERMAPSETTINGSCHECK(...) QVERIFY( renderMapSettingsCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+#define QGSRENDERMAPSETTINGSCHECK( ... ) renderMapSettingsCheck( __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__ )
+#define QGSVERIFYRENDERMAPSETTINGSCHECK( ... ) QVERIFY( renderMapSettingsCheck( __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__ ) )
 
 // args are either:
 // const QString &name, const QString &referenceName, const QString &actualStr
-#define QGSCOMPARELONGSTR(...) QVERIFY (checkLongStr(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+#define QGSCOMPARELONGSTR( ... ) QVERIFY( checkLongStr( __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__ ) )
 
 // args are either:
 // const QString &name, const QString &referenceImage, const QImage &image, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
 // const QString &name, const QString &referenceImage, const QString &renderedFileName, const QString &controlName = QString(), int allowedMismatch = 20, const QSize &sizeTolerance = QSize( 0, 0 ), const int colorTolerance = 0
-#define QGSIMAGECHECK(...) imageCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
-#define QGSVERIFYIMAGECHECK(...) QVERIFY( imageCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+#define QGSIMAGECHECK( ... ) imageCheck( __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__ )
+#define QGSVERIFYIMAGECHECK( ... ) QVERIFY( imageCheck( __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__ ) )
 
 // args are:
 // const QString &name, QgsLayout *layout, int page = 0, int allowedMismatch = 0, const QSize size = QSize(), int colorTolerance = 0
-#define QGSLAYOUTCHECK(...) layoutCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
-#define QGSVERIFYLAYOUTCHECK(...) QVERIFY( layoutCheck(__FILE__, __FUNCTION__, __LINE__, __VA_ARGS__) )
+#define QGSLAYOUTCHECK( ... ) layoutCheck( __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__ )
+#define QGSVERIFYLAYOUTCHECK( ... ) QVERIFY( layoutCheck( __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__ ) )
 
 /**
  * Base class for tests.
@@ -149,16 +162,15 @@ class TEST_EXPORT QgsTest : public QObject
     Q_OBJECT
 
   public:
-
     //! Returns TRUE if test is running on a CI infrastructure
     static bool isCIRun()
     {
-      return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" );
+      return qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s;
     }
 
     static bool runFlakyTests()
     {
-      return qgetenv( "RUN_FLAKY_TESTS" ) == QStringLiteral( "true" );
+      return qgetenv( "RUN_FLAKY_TESTS" ) == u"true"_s;
     }
 
     QgsTest( const QString &name, const QString &controlPathPrefix = QString() )
@@ -194,12 +206,12 @@ class TEST_EXPORT QgsTest : public QObject
 
       // lazy create temporary dir
       if ( !mTemporaryDir )
-        mTemporaryDir = std::make_unique< QTemporaryDir >();
+        mTemporaryDir = std::make_unique<QTemporaryDir>();
 
       // we put all copies into a subdirectory of the temporary dir, so that we isolate clean copies
       // of the same source file used by different test functions
       mTemporaryCopyCount++;
-      const QString temporarySubdirectory = QStringLiteral( "test_%1" ).arg( mTemporaryCopyCount );
+      const QString temporarySubdirectory = u"test_%1"_s.arg( mTemporaryCopyCount );
       QDir().mkdir( mTemporaryDir->filePath( temporarySubdirectory ) );
 
       const QString copiedDataPath = mTemporaryDir->filePath( temporarySubdirectory + '/' + srcFileInfo.fileName() );
@@ -250,12 +262,12 @@ class TEST_EXPORT QgsTest : public QObject
 
       // lazy create temporary dir
       if ( !mTemporaryDir )
-        mTemporaryDir = std::make_unique< QTemporaryDir >();
+        mTemporaryDir = std::make_unique<QTemporaryDir>();
 
       // we put all copies into a subdirectory of the temporary dir, so that we isolate clean copies
       // of the same source file used by different test functions
       mTemporaryCopyCount++;
-      const QString temporarySubdirectory = QStringLiteral( "test_%1" ).arg( mTemporaryCopyCount );
+      const QString temporarySubdirectory = u"test_%1"_s.arg( mTemporaryCopyCount );
       QDir().mkdir( mTemporaryDir->filePath( temporarySubdirectory ) );
 
       const QString copiedDataPath = mTemporaryDir->filePath( temporarySubdirectory + '/' + srcFileInfo.fileName() );
@@ -265,11 +277,10 @@ class TEST_EXPORT QgsTest : public QObject
     }
 
   protected:
-
     QString mName;
     QString mReport;
     QString mControlPathPrefix;
-    std::unique_ptr< QTemporaryDir > mTemporaryDir;
+    std::unique_ptr<QTemporaryDir> mTemporaryDir;
     int mTemporaryCopyCount = 0;
 
     const QDir mTestDataDir;
@@ -291,7 +302,6 @@ class TEST_EXPORT QgsTest : public QObject
       if ( !result )
       {
         appendToReport( name, checker.report(), checker.markdownReport() );
-
       }
       return result;
     }
@@ -305,7 +315,7 @@ class TEST_EXPORT QgsTest : public QObject
       QString subPath = "control_files/" + mControlPathPrefix + "/expected_" + name + "/" + "expected_" + referenceName;
       QString expectedPath = testDataPath( subPath );
       QFile expectedFile( expectedPath );
-      if ( ! expectedFile.open( QFile::ReadOnly  | QIODevice::Text ) )
+      if ( !expectedFile.open( QFile::ReadOnly | QIODevice::Text ) )
       {
         qWarning() << header.toStdString().c_str() << "Unable to open expected data file" << expectedPath;
         return false;
@@ -337,8 +347,19 @@ class TEST_EXPORT QgsTest : public QObject
             qWarning() << header.toStdString().c_str() << "Unable to write actual data to file" << actualPath << ".";
           }
 
+          QString errPos = "_";
+          for ( int i = 0; i < std::min( act.size(), exp.size() ); i++ )
+          {
+            if ( act[i] == exp[i] )
+              errPos += "__";
+            else
+              break;
+          }
+          errPos += "^^";
           qWarning() << header.toStdString().c_str() << "Hex version of the parts of array that differ starting from char" << i << "."
-                     <<  "\n   Actual hex:  " << act.toHex() << "\n   Expected hex:" << exp.toHex();
+                     << "\n   Actual hex:  " << act.toHex()
+                     << "\n   Expected hex:" << exp.toHex()
+                     << "\n   Char error:  " << errPos.toStdString().c_str();
           QString msg = QString( "%1 Comparison failed in starting from char %2." ).arg( header ).arg( QString::number( i ) );
 
           // create copies of data as QTest::compare_helper will delete them
@@ -349,9 +370,9 @@ class TEST_EXPORT QgsTest : public QObject
           memcpy( expectedCopy, exp.data(), exp.size() );
           expectedCopy[exp.size()] = 0;
 
-          return QTest::compare_helper( act == exp, msg.toStdString().c_str(), // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
-                                        actualCopy, expectedCopy,
-                                        actualPath.toStdString().c_str(), subPath.toStdString().c_str(),
+          return QTest::compare_helper( act == exp, msg.toStdString().c_str(),                           // NOLINT(clang-analyzer-cplusplus.NewDeleteLeaks)
+                                        actualCopy, expectedCopy,                                        //
+                                        actualPath.toStdString().c_str(), subPath.toStdString().c_str(), //
                                         file, line );
         }
       }
@@ -424,26 +445,25 @@ class TEST_EXPORT QgsTest : public QObject
     {
       QString testIdentifier;
       if ( QTest::currentDataTag() )
-        testIdentifier = QStringLiteral( "%1 (%2: %3)" ).arg( testName, QTest::currentTestFunction(), QTest::currentDataTag() );
+        testIdentifier = u"%1 (%2: %3)"_s.arg( testName, QTest::currentTestFunction(), QTest::currentDataTag() );
       else
-        testIdentifier = QStringLiteral( "%1 (%2)" ).arg( testName, QTest::currentTestFunction() );
+        testIdentifier = u"%1 (%2)"_s.arg( testName, QTest::currentTestFunction() );
 
       if ( !html.isEmpty() )
       {
-        mReport += QStringLiteral( "<h2>%1</h2>\n" ).arg( testIdentifier );
+        mReport += u"<h2>%1</h2>\n"_s.arg( testIdentifier );
         mReport += html;
       }
 
       const QString markdownContent = markdown.isEmpty() ? html : markdown;
       if ( !markdownContent.isEmpty() )
       {
-        mMarkdownReport += QStringLiteral( "## %1\n\n" ).arg( testIdentifier );
-        mMarkdownReport += markdownContent + QStringLiteral( "\n\n" );
+        mMarkdownReport += u"## %1\n\n"_s.arg( testIdentifier );
+        mMarkdownReport += markdownContent + u"\n\n"_s;
       }
     }
 
   private:
-
     QString mMarkdownReport;
 
     /**
@@ -461,8 +481,8 @@ class TEST_EXPORT QgsTest : public QObject
 
       QFile::OpenMode mode = QIODevice::WriteOnly;
       bool fileIsEmpty = true;
-      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" )
-           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == QStringLiteral( "true" ) )
+      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s
+           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == u"true"_s )
       {
         mode |= QIODevice::Append;
         if ( file.open( QIODevice::ReadOnly ) )
@@ -488,21 +508,21 @@ class TEST_EXPORT QgsTest : public QObject
           }
 
           // embed render checker script so that we can run the HTML report from anywhere
-          stream << QStringLiteral( "<script>" );
+          stream << u"<script>"_s;
           QFile renderCheckerScript( QStringLiteral( TEST_DATA_DIR ) + "/../renderchecker.js" );
           if ( renderCheckerScript.open( QIODevice::ReadOnly ) )
           {
             stream << renderCheckerScript.readAll();
           }
-          stream << QStringLiteral( "</script>" );
+          stream << u"</script>"_s;
         }
 
-        stream << QStringLiteral( "<h1>%1</h1>\n" ).arg( mName );
+        stream << u"<h1>%1</h1>\n"_s.arg( mName );
         stream << report;
         file.close();
 
         if ( !isCIRun() )
-          QDesktopServices::openUrl( QStringLiteral( "file:///%1" ).arg( reportFile ) );
+          QDesktopServices::openUrl( u"file:///%1"_s.arg( reportFile ) );
       }
     }
 
@@ -519,8 +539,8 @@ class TEST_EXPORT QgsTest : public QObject
       QFile file( reportFile );
 
       QFile::OpenMode mode = QIODevice::WriteOnly;
-      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == QStringLiteral( "true" )
-           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == QStringLiteral( "true" ) )
+      if ( qgetenv( "QGIS_CONTINUOUS_INTEGRATION_RUN" ) == u"true"_s
+           || qgetenv( "QGIS_APPEND_TO_TEST_REPORT" ) == u"true"_s )
         mode |= QIODevice::Append;
       else
         mode |= QIODevice::Truncate;
@@ -532,7 +552,6 @@ class TEST_EXPORT QgsTest : public QObject
         file.close();
       }
     }
-
 };
 
 /**
@@ -645,16 +664,12 @@ char *toString( const QgsCircle &geom )
 
 char *toString( const QgsDateTimeRange &range )
 {
-  return QTest::toString( QStringLiteral( "<QgsDateTimeRange: %1%2, %3%4>" ).arg(
-                            range.includeBeginning() ? QStringLiteral( "[" ) : QStringLiteral( "(" ),
-                            range.begin().toString( Qt::ISODateWithMs ),
-                            range.end().toString( Qt::ISODateWithMs ),
-                            range.includeEnd() ? QStringLiteral( "]" ) : QStringLiteral( ")" ) ) );
+  return QTest::toString( u"<QgsDateTimeRange: %1%2, %3%4>"_s.arg( range.includeBeginning() ? u"["_s : u"("_s, range.begin().toString( Qt::ISODateWithMs ), range.end().toString( Qt::ISODateWithMs ), range.includeEnd() ? u"]"_s : u")"_s ) );
 }
 
 char *toString( const QgsInterval &interval )
 {
-  return QTest::toString( QStringLiteral( "<QgsInterval: %1 %2>" ).arg( interval.originalDuration() ).arg( QgsUnitTypes::toString( interval.originalUnit() ) ) );
+  return QTest::toString( u"<QgsInterval: %1 %2>"_s.arg( interval.originalDuration() ).arg( QgsUnitTypes::toString( interval.originalUnit() ) ) );
 }
 
 

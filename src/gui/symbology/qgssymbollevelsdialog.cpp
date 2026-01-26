@@ -15,16 +15,17 @@
 
 #include "qgssymbollevelsdialog.h"
 
-#include "qgssymbollayerutils.h"
-#include "qgssymbollayer.h"
-#include "qgssymbol.h"
 #include "qgsguiutils.h"
+#include "qgssymbol.h"
+#include "qgssymbollayer.h"
+#include "qgssymbollayerutils.h"
 
-#include <QTableWidgetItem>
+#include <QDialogButtonBox>
 #include <QItemDelegate>
 #include <QSpinBox>
-#include <QDialogButtonBox>
+#include <QTableWidgetItem>
 
+#include "moc_qgssymbollevelsdialog.cpp"
 
 ////////////////
 
@@ -226,7 +227,7 @@ QgsLegendSymbolList QgsSymbolLevelsDialog::symbolLevels() const
 
 void QgsSymbolLevelsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#symbols-levels" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#symbols-levels"_s );
 }
 
 /// @cond PRIVATE

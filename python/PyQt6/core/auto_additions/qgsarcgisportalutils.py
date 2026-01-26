@@ -5,5 +5,5 @@ try:
     QgsArcGisPortalUtils.retrieveGroupContent = staticmethod(QgsArcGisPortalUtils.retrieveGroupContent)
     QgsArcGisPortalUtils.retrieveGroupItemsOfType = staticmethod(QgsArcGisPortalUtils.retrieveGroupItemsOfType)
     QgsArcGisPortalUtils.__group__ = ['providers', 'arcgis']
-except NameError:
+except (NameError, AttributeError):
     pass

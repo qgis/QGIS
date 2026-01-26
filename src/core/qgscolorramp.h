@@ -16,14 +16,15 @@
 #ifndef QGSCOLORRAMP_H
 #define QGSCOLORRAMP_H
 
-#include "qgis_core.h"
-#include <QColor>
 #include "qgis.h"
+#include "qgis_core.h"
+
+#include <QColor>
 
 /**
  * \ingroup core
  * \class QgsColorRamp
- * \brief Abstract base class for color ramps
+ * \brief Abstract base class for color ramps.
  */
 class CORE_EXPORT QgsColorRamp
 {

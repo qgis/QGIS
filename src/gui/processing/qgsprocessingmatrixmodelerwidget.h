@@ -18,9 +18,11 @@
 
 #define SIP_NO_FILE
 
+#include "ui_qgsprocessingmatrixmodelerwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingmatrixmodelerwidgetbase.h"
+
 #include <QStandardItem>
 #include <QStandardItemModel>
 
@@ -37,7 +39,6 @@ class GUI_EXPORT QgsProcessingMatrixModelerWidget : public QWidget, private Ui::
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMatrixModelerWidget.
      */

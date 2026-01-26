@@ -10,12 +10,11 @@
 
 
 
-
 class QgsSettingsRegistryGui : QgsSettingsRegistry
 {
 %Docstring(signature="appended")
-:py:class:`QgsSettingsRegistryGui` is used for settings introspection and collects all
-:py:class:`QgsSettingsEntry` instances of gui.
+Used for settings introspection and collects all
+:py:class:`QgsSettingsEntry` instances of GUI.
 
 .. versionadded:: 3.22
 %End
@@ -24,10 +23,8 @@ class QgsSettingsRegistryGui : QgsSettingsRegistry
 #include "qgssettingsregistrygui.h"
 %End
   public:
-
     QgsSettingsRegistryGui();
-    virtual ~QgsSettingsRegistryGui();
-
+    ~QgsSettingsRegistryGui();
 
 };
 

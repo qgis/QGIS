@@ -14,23 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassvectormap.h"
+
+#include "qgsgrass.h"
+#include "qgsgrassundocommand.h"
+#include "qgsgrassvectormaplayer.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include "qgslinestring.h"
-#include "qgspolygon.h"
-#include "qgspoint.h"
-
-#include "qgslogger.h"
-#include "qgsgrass.h"
-#include "qgsgrassvectormap.h"
-#include "qgsgrassvectormaplayer.h"
-#include "qgsgrassundocommand.h"
+#include "moc_qgsgrassvectormap.cpp"
 
 extern "C"
 {
 #include <grass/version.h>
-#if defined(_MSC_VER) && defined(M_PI_4)
+#if defined( _MSC_VER ) && defined( M_PI_4 )
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
@@ -41,13 +43,6 @@ extern "C"
 
 QgsGrassVectorMap::QgsGrassVectorMap( const QgsGrassObject &grassObject )
   : mGrassObject( grassObject )
-  , mValid( false )
-  , mOpen( false )
-  , mFrozen( false )
-  , mIsEdited( false )
-  , mVersion( 0 )
-  , mIs3d( false )
-  , mOldNumLines( 0 )
 {
   QgsDebugMsgLevel( "grassObject = " + grassObject.toString(), 2 );
   openMap();
@@ -111,7 +106,7 @@ bool QgsGrassVectorMap::openMap()
   QgsGrass::setLocation( mGrassObject.gisdbase(), mGrassObject.location() );
 
   // Find the vector
-  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().constData(),  mGrassObject.mapset().toUtf8().constData() );
+  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
 
   if ( !ms )
   {
@@ -151,9 +146,7 @@ bool QgsGrassVectorMap::openMap()
   }
   else if ( level == 1 )
   {
-    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ),
-                                      QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ),
-                                      QMessageBox::Ok | QMessageBox::Cancel );
+    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, u"Warning"_s, QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ), QMessageBox::Ok | QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel )
     {
@@ -170,7 +163,7 @@ bool QgsGrassVectorMap::openMap()
   }
   G_CATCH( QgsGrass::Exception & e )
   {
-    QgsGrass::warning( QStringLiteral( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
+    QgsGrass::warning( u"Cannot open GRASS vector: %1"_s.arg( e.what() ) );
     QgsGrass::unlock();
     return false;
   }
@@ -183,7 +176,7 @@ bool QgsGrassVectorMap::openMap()
     }
     G_CATCH( QgsGrass::Exception & e )
     {
-      QgsGrass::warning( QStringLiteral( "Cannot build topology: %1" ).arg( e.what() ) );
+      QgsGrass::warning( u"Cannot build topology: %1"_s.arg( e.what() ) );
       QgsGrass::unlock();
       return false;
     }
@@ -418,7 +411,7 @@ void QgsGrassVectorMap::closeLayer( QgsGrassVectorMapLayer *layer )
   lockOpenCloseLayer();
   layer->removeUser();
 
-  if ( layer->userCount() == 0 )   // No more users, free sources
+  if ( layer->userCount() == 0 ) // No more users, free sources
   {
     QgsDebugMsgLevel( "No more users -> clear", 2 );
     layer->clear();
@@ -480,7 +473,6 @@ void QgsGrassVectorMap::update()
 
 bool QgsGrassVectorMap::mapOutdated()
 {
-
   QString dp = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name();
   QFileInfo di( dp );
 
@@ -501,7 +493,6 @@ bool QgsGrassVectorMap::mapOutdated()
 
 bool QgsGrassVectorMap::attributesOutdated()
 {
-
   QString dp = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name() + "/dbln";
   QFileInfo di( dp );
 
@@ -516,19 +507,17 @@ bool QgsGrassVectorMap::attributesOutdated()
 
 int QgsGrassVectorMap::numLines()
 {
-
   return ( Vect_get_num_lines( mMap ) );
 }
 
 int QgsGrassVectorMap::numAreas()
 {
-
   return ( Vect_get_num_areas( mMap ) );
 }
 
-QString QgsGrassVectorMap::toString()
+QString QgsGrassVectorMap::toString() const
 {
-  return mGrassObject.mapsetPath() + "/" +  mGrassObject.name();
+  return mGrassObject.mapsetPath() + "/" + mGrassObject.name();
 }
 
 void QgsGrassVectorMap::printDebug()
@@ -666,7 +655,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
   QgsPolygon *polygon = new QgsPolygon();
 
   struct line_pnts *points = Vect_new_line_struct();
-  QgsDebugMsgLevel( QString( "points= %1" ).arg( ( quint64 )points ), 3 );
+  QgsDebugMsgLevel( QString( "points= %1" ).arg( ( quint64 ) points ), 3 );
   // Vect_get_area_points and Vect_get_isle_pointsis using static variable -> lock
   // TODO: Faster to lock the whole feature iterator? Maybe only for areas?
   QgsGrass::lock();
@@ -693,7 +682,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
     pointList.reserve( points->n_points );
     for ( int i = 0; i < points->n_points; i++ )
     {
-      pointList <<  QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, points->x[i], points->y[i], points->z[i] );
+      pointList << QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, points->x[i], points->y[i], points->z[i] );
     }
     ring = new QgsLineString();
     ring->setPoints( pointList );
@@ -710,7 +699,7 @@ void QgsGrassVectorMap::closeAllIterators()
   // cancel and close all iterator
   // Iterators must be connected properly, otherwise may it result in dead lock!
   emit cancelIterators(); // non blocking
-  emit closeIterators(); // blocking
+  emit closeIterators();  // blocking
   QgsDebugMsgLevel( "iterators closed", 2 );
 }
 

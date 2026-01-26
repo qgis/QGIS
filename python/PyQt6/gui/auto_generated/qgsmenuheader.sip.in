@@ -8,10 +8,12 @@
 
 
 
+
 class QgsMenuHeader : QWidget
 {
 %Docstring(signature="appended")
-Custom widget for displaying subheaders within a QMenu in a standard style.
+Custom widget for displaying subheaders within a QMenu in a standard
+style.
 
 .. seealso:: :py:class:`QgsMenuHeaderWidgetAction`
 %End
@@ -20,7 +22,6 @@ Custom widget for displaying subheaders within a QMenu in a standard style.
 #include "qgsmenuheader.h"
 %End
   public:
-
     explicit QgsMenuHeader( const QString &text, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMenuHeader, showing the specified ``text``.
@@ -32,16 +33,16 @@ Constructor for QgsMenuHeader, showing the specified ``text``.
 
 
   protected:
-
     virtual void paintEvent( QPaintEvent *event );
 
 
 };
 
-class QgsMenuHeaderWidgetAction: QWidgetAction
+class QgsMenuHeaderWidgetAction : QWidgetAction
 {
 %Docstring(signature="appended")
-Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
+Custom QWidgetAction for displaying subheaders within a QMenu in a
+standard style.
 
 .. seealso:: :py:class:`QgsMenuHeader`
 %End
@@ -50,12 +51,11 @@ Custom QWidgetAction for displaying subheaders within a QMenu in a standard styl
 #include "qgsmenuheader.h"
 %End
   public:
-
     QgsMenuHeaderWidgetAction( const QString &text, QObject *parent = 0 );
 %Docstring
-Constructor for QgsMenuHeaderWidgetAction, showing the specified ``text``.
+Constructor for QgsMenuHeaderWidgetAction, showing the specified
+``text``.
 %End
-
 };
 
 /************************************************************************

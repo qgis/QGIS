@@ -16,24 +16,26 @@
 
 #include "qgslabelingengine.h"
 
-#include "qgslogger.h"
-
 #include "feature.h"
 #include "labelposition.h"
 #include "layer.h"
 #include "pal.h"
 #include "problem.h"
-#include "qgsrendercontext.h"
-#include "qgsmaplayer.h"
-#include "qgssymbol.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgsvectorlayerlabelprovider.h"
-#include "qgslabelingresults.h"
 #include "qgsfillsymbol.h"
-#include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
+#include "qgslabelingresults.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
+#include "qgsrendercontext.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssymbol.h"
+#include "qgstextlabelfeature.h"
+#include "qgsvectorlayerlabelprovider.h"
 
 #include <QUuid>
+
+#include "moc_qgslabelingengine.cpp"
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )
@@ -270,7 +272,7 @@ void QgsLabelingEngine::processProvider( QgsAbstractLabelProvider *provider, Qgs
     catch ( std::exception &e )
     {
       Q_UNUSED( e )
-      QgsDebugMsgLevel( QStringLiteral( "Ignoring feature %1 due PAL exception:" ).arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
+      QgsDebugMsgLevel( u"Ignoring feature %1 due PAL exception:"_s.arg( feature->id() ) + QString::fromLatin1( e.what() ), 4 );
       continue;
     }
   }
@@ -289,7 +291,7 @@ void QgsLabelingEngine::registerLabels( QgsRenderContext &context )
   std::unique_ptr< QgsScopedRuntimeProfile > registeringProfile;
   if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
   {
-    registeringProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Registering labels" ), QStringLiteral( "rendering" ) );
+    registeringProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Registering labels" ), u"rendering"_s );
   }
 
   QgsLabelingEngineFeedback *feedback = qobject_cast< QgsLabelingEngineFeedback * >( context.feedback() );
@@ -371,11 +373,11 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
     QgsFeature f;
     f.setGeometry( mapBoundaryGeom );
     QVariantMap properties;
-    properties.insert( QStringLiteral( "style" ), QStringLiteral( "no" ) );
-    properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
-    properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "#0000ff" ) );
-    properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
-    properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+    properties.insert( u"style"_s, u"no"_s );
+    properties.insert( u"style_border"_s, u"solid"_s );
+    properties.insert( u"color_border"_s, u"#0000ff"_s );
+    properties.insert( u"width_border"_s, u"0.3"_s );
+    properties.insert( u"joinstyle"_s, u"miter"_s );
     std::unique_ptr< QgsFillSymbol > boundarySymbol( QgsFillSymbol::createSimple( properties ) );
     boundarySymbol->startRender( context );
     boundarySymbol->renderFeature( f, context );
@@ -438,7 +440,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
       {
         pal::LabelPosition *lp = mProblem->featureCandidate( i, j );
 
-        QgsPalLabeling::drawLabelCandidateRect( lp, painter, &xform );
+        drawLabelCandidateRect( lp, context, &xform );
       }
     }
   }
@@ -452,7 +454,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
   // sort labels
   std::sort( mLabels.begin(), mLabels.end(), QgsLabelSorter( mLayerRenderingOrderIds ) );
 
-  QgsDebugMsgLevel( QStringLiteral( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( mLabels.size() ), 4 );
+  QgsDebugMsgLevel( u"LABELING work:  %1 ms ... labels# %2"_s.arg( t.elapsed() ).arg( mLabels.size() ), 4 );
 }
 
 void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &layerId )
@@ -463,7 +465,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   std::unique_ptr< QgsScopedRuntimeProfile > drawingProfile;
   if ( context.flags() & Qgis::RenderContextFlag::RecordProfile )
   {
-    drawingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering labels" ), QStringLiteral( "rendering" ) );
+    drawingProfile = std::make_unique< QgsScopedRuntimeProfile >( QObject::tr( "Rendering labels" ), u"rendering"_s );
   }
 
   const QgsLabelingEngineSettings &settings = mMapSettings.labelingEngineSettings();
@@ -486,7 +488,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   }
 
   QgsExpressionContextScope *symbolScope = new QgsExpressionContextScope();
-  std::unique_ptr< QgsExpressionContextScopePopper > symbolScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
+  auto symbolScopePopper = std::make_unique< QgsExpressionContextScopePopper >( context.expressionContext(), symbolScope );
 
   // draw label backgrounds
   for ( pal::LabelPosition *label : std::as_const( mLabels ) )
@@ -515,41 +517,90 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
     lf->provider()->drawLabelBackground( context, label );
   }
 
-  // draw the labels
-  for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+  if ( engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )
   {
-    if ( context.renderingStopped() )
-      break;
+    // features are pre-rotated but not scaled/translated,
+    // so we only disable rotation here. Ideally, they'd be
+    // also pre-scaled/translated, as suggested here:
+    // https://github.com/qgis/QGIS/issues/20071
+    QgsMapToPixel xform = context.mapToPixel();
+    xform.setMapRotation( 0, 0, 0 );
 
-    QgsLabelFeature *lf = label->getFeaturePart()->feature();
-    if ( !lf )
+    std::function<void( pal::LabelPosition * )> drawLabelRect;
+    drawLabelRect = [&xform, painter, &drawLabelRect]( pal::LabelPosition * label )
     {
-      continue;
+      QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+
+      QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+      QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+      painter->save();
+      painter->setRenderHint( QPainter::Antialiasing, false );
+      painter->translate( QPointF( outPt.x(), outPt.y() ) );
+      painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+      if ( label->conflictsWithObstacle() )
+      {
+        painter->setBrush( QColor( 255, 0, 0, 100 ) );
+        painter->setPen( QColor( 255, 0, 0, 150 ) );
+      }
+      else
+      {
+        painter->setBrush( QColor( 0, 255, 0, 100 ) );
+        painter->setPen( QColor( 0, 255, 0, 150 ) );
+      }
+
+      painter->drawRect( rect );
+      painter->restore();
+
+      if ( pal::LabelPosition *nextPart = label->nextPart() )
+        drawLabelRect( nextPart );
+    };
+
+    for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+    {
+      drawLabelRect( label );
     }
 
-    if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
-      continue;
-
-    context.expressionContext().setFeature( lf->feature() );
-    context.expressionContext().setFields( lf->feature().fields() );
-
-    QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
-    if ( lf->symbol() )
+    if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) )
     {
-      symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+      for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+      {
+        drawLabelRect( label );
+      }
     }
-    lf->provider()->drawLabel( context, label );
-    // finished with symbol -- we can't keep it around after this, it may be deleted
-    lf->setSymbol( nullptr );
   }
-
-  // draw unplaced labels. These are always rendered on top
-  if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
+  else
   {
-    for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+    if ( engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) )
+    {
+      // features are pre-rotated but not scaled/translated,
+      // so we only disable rotation here. Ideally, they'd be
+      // also pre-scaled/translated, as suggested here:
+      // https://github.com/qgis/QGIS/issues/20071
+      QgsMapToPixel xform = context.mapToPixel();
+      xform.setMapRotation( 0, 0, 0 );
+
+      std::function<void( pal::LabelPosition * )> drawLabelMetricsRecursive;
+      drawLabelMetricsRecursive = [&xform, &context, &drawLabelMetricsRecursive]( pal::LabelPosition * label )
+      {
+        QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+        QgsLabelingEngine::drawLabelMetrics( label, xform, context, outPt );
+        if ( pal::LabelPosition *nextPart = label->nextPart() )
+          drawLabelMetricsRecursive( nextPart );
+      };
+
+      for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+      {
+        drawLabelMetricsRecursive( label );
+      }
+    }
+
+    // draw the labels
+    for ( pal::LabelPosition *label : std::as_const( mLabels ) )
     {
       if ( context.renderingStopped() )
         break;
+
       QgsLabelFeature *lf = label->getFeaturePart()->feature();
       if ( !lf )
       {
@@ -567,9 +618,39 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
       {
         symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
       }
-      lf->provider()->drawUnplacedLabel( context, label );
+      lf->provider()->drawLabel( context, label );
       // finished with symbol -- we can't keep it around after this, it may be deleted
       lf->setSymbol( nullptr );
+    }
+
+    // draw unplaced labels. These are always rendered on top
+    if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
+    {
+      for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+      {
+        if ( context.renderingStopped() )
+          break;
+        QgsLabelFeature *lf = label->getFeaturePart()->feature();
+        if ( !lf )
+        {
+          continue;
+        }
+
+        if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
+          continue;
+
+        context.expressionContext().setFeature( lf->feature() );
+        context.expressionContext().setFields( lf->feature().fields() );
+
+        QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
+        if ( lf->symbol() )
+        {
+          symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+        }
+        lf->provider()->drawUnplacedLabel( context, label );
+        // finished with symbol -- we can't keep it around after this, it may be deleted
+        lf->setSymbol( nullptr );
+      }
     }
   }
 
@@ -587,7 +668,7 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
   // Reset composition mode for further drawing operations
   painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
-  QgsDebugMsgLevel( QStringLiteral( "LABELING draw:  %1 ms" ).arg( t.elapsed() ), 4 );
+  QgsDebugMsgLevel( u"LABELING draw:  %1 ms"_s.arg( t.elapsed() ), 4 );
 }
 
 void QgsLabelingEngine::cleanup()
@@ -601,6 +682,141 @@ void QgsLabelingEngine::cleanup()
 QgsLabelingResults *QgsLabelingEngine::takeResults()
 {
   return mResults.release();
+}
+
+void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRenderContext &context, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
+{
+  QPainter *painter = context.painter();
+  if ( !painter )
+    return;
+
+  QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
+
+  painter->save();
+
+  QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
+  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+  painter->translate( QPointF( outPt.x(), outPt.y() ) );
+  painter->rotate( -lp->getAlpha() * 180 / M_PI );
+
+  if ( lp->conflictsWithObstacle() )
+  {
+    painter->setPen( QColor( 255, 0, 0, 64 ) );
+  }
+  else
+  {
+    painter->setPen( QColor( 0, 0, 0, 64 ) );
+  }
+  painter->drawRect( rect );
+  painter->restore();
+
+  // save the rect
+  rect.moveTo( outPt.x(), outPt.y() );
+  if ( candidates )
+    candidates->append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
+
+  // show all parts of the multipart label
+  if ( lp->nextPart() )
+    drawLabelCandidateRect( lp->nextPart(), context, xform, candidates );
+}
+
+void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMapToPixel &xform, QgsRenderContext &context, const QPointF &renderPoint )
+{
+  QPainter *painter = context.painter();
+  if ( !painter )
+    return;
+
+  QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+  QRectF rect( 0, 0, outPt2.x() - renderPoint.x(), outPt2.y() - renderPoint.y() );
+  painter->save();
+  painter->setRenderHint( QPainter::Antialiasing, false );
+  painter->translate( QPointF( renderPoint.x(), renderPoint.y() ) );
+  painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+  painter->setBrush( Qt::NoBrush );
+  painter->setPen( QColor( 255, 0, 0, 220 ) );
+
+  painter->drawRect( rect );
+
+  painter->setPen( QColor( 0, 0, 0, 60 ) );
+  const QgsMargins &margins = label->getFeaturePart()->feature()->visualMargin();
+  if ( margins.top() > 0 )
+  {
+    const double topMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+    painter->drawLine( QPointF( rect.left(), rect.top() - topMargin ), QPointF( rect.right(), rect.top() - topMargin ) );
+  }
+  if ( margins.bottom() > 0 )
+  {
+    const double bottomMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+    painter->drawLine( QPointF( rect.left(), rect.bottom() + bottomMargin ), QPointF( rect.right(), rect.bottom() + bottomMargin ) );
+  }
+
+  const QRectF outerBounds = label->getFeaturePart()->feature()->outerBounds();
+  if ( !outerBounds.isNull() )
+  {
+    const QRectF mapOuterBounds = QRectF( label->getX() + outerBounds.left(),
+                                          label->getY() + outerBounds.top(),
+                                          outerBounds.width(), outerBounds.height() );
+
+    QgsPointXY outerBoundsPt1 = xform.transform( mapOuterBounds.left(), mapOuterBounds.top() );
+    QgsPointXY outerBoundsPt2 = xform.transform( mapOuterBounds.right(), mapOuterBounds.bottom() );
+
+    const QRectF outerBoundsPixel( outerBoundsPt1.x() - renderPoint.x(),
+                                   outerBoundsPt1.y() - renderPoint.y(),
+                                   outerBoundsPt2.x() - outerBoundsPt1.x(),
+                                   outerBoundsPt2.y() - outerBoundsPt1.y() );
+
+    QPen pen( QColor( 255, 0, 255, 140 ) );
+    pen.setCosmetic( true );
+    pen.setWidth( 1 );
+    painter->setPen( pen );
+    painter->drawRect( outerBoundsPixel );
+  }
+
+  if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
+  {
+    const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
+    const QgsTextDocument &document = textFeature->document();
+    const int blockCount = document.size();
+
+    double prevBlockBaseline = rect.bottom() - rect.top();
+    const double verticalAlignOffset = -metrics.blockVerticalMargin( document.size() - 1 );
+
+    // draw block baselines
+    for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
+    {
+      const double blockBaseLine = metrics.baselineOffset( blockIndex, Qgis::TextLayoutMode::Labeling );
+
+      const QgsTextBlock &block = document.at( blockIndex );
+      const int fragmentCount = block.size();
+      double left = metrics.blockLeftMargin( blockIndex );
+      for ( int fragmentIndex = 0; fragmentIndex < fragmentCount; ++fragmentIndex )
+      {
+        const double fragmentVerticalOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+        const double right = left + metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+
+        if ( fragmentIndex > 0 )
+        {
+          QPen pen( QColor( 0, 0, 255, 220 ) );
+          pen.setStyle( Qt::PenStyle::DashLine );
+
+          painter->setPen( pen );
+
+          painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ),
+                             QPointF( rect.left() + left, rect.top() + prevBlockBaseline + verticalAlignOffset ) );
+
+        }
+
+        painter->setPen( QColor( 0, 0, 255, 220 ) );
+        painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ),
+                           QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ) );
+        left = right;
+      }
+      prevBlockBaseline = blockBaseLine;
+    }
+  }
+
+  painter->restore();
 }
 
 
@@ -741,43 +957,43 @@ QString QgsLabelingUtils::encodePredefinedPositionOrder( const QVector<Qgis::Lab
     switch ( position )
     {
       case Qgis::LabelPredefinedPointPosition::TopLeft:
-        predefinedOrderString << QStringLiteral( "TL" );
+        predefinedOrderString << u"TL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopSlightlyLeft:
-        predefinedOrderString << QStringLiteral( "TSL" );
+        predefinedOrderString << u"TSL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopMiddle:
-        predefinedOrderString << QStringLiteral( "T" );
+        predefinedOrderString << u"T"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopSlightlyRight:
-        predefinedOrderString << QStringLiteral( "TSR" );
+        predefinedOrderString << u"TSR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::TopRight:
-        predefinedOrderString << QStringLiteral( "TR" );
+        predefinedOrderString << u"TR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::MiddleLeft:
-        predefinedOrderString << QStringLiteral( "L" );
+        predefinedOrderString << u"L"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::MiddleRight:
-        predefinedOrderString << QStringLiteral( "R" );
+        predefinedOrderString << u"R"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomLeft:
-        predefinedOrderString << QStringLiteral( "BL" );
+        predefinedOrderString << u"BL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft:
-        predefinedOrderString << QStringLiteral( "BSL" );
+        predefinedOrderString << u"BSL"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomMiddle:
-        predefinedOrderString << QStringLiteral( "B" );
+        predefinedOrderString << u"B"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomSlightlyRight:
-        predefinedOrderString << QStringLiteral( "BSR" );
+        predefinedOrderString << u"BSR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::BottomRight:
-        predefinedOrderString << QStringLiteral( "BR" );
+        predefinedOrderString << u"BR"_s;
         break;
       case Qgis::LabelPredefinedPointPosition::OverPoint:
-        predefinedOrderString << QStringLiteral( "O" );
+        predefinedOrderString << u"O"_s;
         break;
     }
   }
@@ -792,31 +1008,31 @@ QVector<Qgis::LabelPredefinedPointPosition> QgsLabelingUtils::decodePredefinedPo
   for ( const QString &position : predefinedOrderList )
   {
     QString cleaned = position.trimmed().toUpper();
-    if ( cleaned == QLatin1String( "TL" ) )
+    if ( cleaned == "TL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopLeft;
-    else if ( cleaned == QLatin1String( "TSL" ) )
+    else if ( cleaned == "TSL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopSlightlyLeft;
-    else if ( cleaned == QLatin1String( "T" ) )
+    else if ( cleaned == "T"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopMiddle;
-    else if ( cleaned == QLatin1String( "TSR" ) )
+    else if ( cleaned == "TSR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopSlightlyRight;
-    else if ( cleaned == QLatin1String( "TR" ) )
+    else if ( cleaned == "TR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::TopRight;
-    else if ( cleaned == QLatin1String( "L" ) )
+    else if ( cleaned == "L"_L1 )
       result << Qgis::LabelPredefinedPointPosition::MiddleLeft;
-    else if ( cleaned == QLatin1String( "R" ) )
+    else if ( cleaned == "R"_L1 )
       result << Qgis::LabelPredefinedPointPosition::MiddleRight;
-    else if ( cleaned == QLatin1String( "BL" ) )
+    else if ( cleaned == "BL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomLeft;
-    else if ( cleaned == QLatin1String( "BSL" ) )
+    else if ( cleaned == "BSL"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomSlightlyLeft;
-    else if ( cleaned == QLatin1String( "B" ) )
+    else if ( cleaned == "B"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomMiddle;
-    else if ( cleaned == QLatin1String( "BSR" ) )
+    else if ( cleaned == "BSR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomSlightlyRight;
-    else if ( cleaned == QLatin1String( "BR" ) )
+    else if ( cleaned == "BR"_L1 )
       result << Qgis::LabelPredefinedPointPosition::BottomRight;
-    else if ( cleaned == QLatin1String( "O" ) )
+    else if ( cleaned == "O"_L1 )
       result << Qgis::LabelPredefinedPointPosition::OverPoint;
   }
   return result;
@@ -826,13 +1042,13 @@ QString QgsLabelingUtils::encodeLinePlacementFlags( Qgis::LabelLinePlacementFlag
 {
   QStringList parts;
   if ( flags & Qgis::LabelLinePlacementFlag::OnLine )
-    parts << QStringLiteral( "OL" );
+    parts << u"OL"_s;
   if ( flags & Qgis::LabelLinePlacementFlag::AboveLine )
-    parts << QStringLiteral( "AL" );
+    parts << u"AL"_s;
   if ( flags & Qgis::LabelLinePlacementFlag::BelowLine )
-    parts << QStringLiteral( "BL" );
+    parts << u"BL"_s;
   if ( !( flags & Qgis::LabelLinePlacementFlag::MapOrientation ) )
-    parts << QStringLiteral( "LO" );
+    parts << u"LO"_s;
   return parts.join( ',' );
 }
 
@@ -844,13 +1060,13 @@ Qgis::LabelLinePlacementFlags QgsLabelingUtils::decodeLinePlacementFlags( const 
   for ( const QString &flag : flagList )
   {
     QString cleaned = flag.trimmed().toUpper();
-    if ( cleaned == QLatin1String( "OL" ) )
+    if ( cleaned == "OL"_L1 )
       flags |= Qgis::LabelLinePlacementFlag::OnLine;
-    else if ( cleaned == QLatin1String( "AL" ) )
+    else if ( cleaned == "AL"_L1 )
       flags |= Qgis::LabelLinePlacementFlag::AboveLine;
-    else if ( cleaned == QLatin1String( "BL" ) )
+    else if ( cleaned == "BL"_L1 )
       flags |= Qgis::LabelLinePlacementFlag::BelowLine;
-    else if ( cleaned == QLatin1String( "LO" ) )
+    else if ( cleaned == "LO"_L1 )
       foundLineOrientationFlag = true;
   }
   if ( !foundLineOrientationFlag )

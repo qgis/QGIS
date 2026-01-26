@@ -15,11 +15,12 @@
 #ifndef QGSSPATIALITEDATAITEMS_H
 #define QGSSPATIALITEDATAITEMS_H
 
-#include "qgslayeritem.h"
+#include "qgsconfig.h"
+
+#include "qgsconnectionsitem.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
-#include "qgsconnectionsitem.h"
-#include "qgsconfig.h"
+#include "qgslayeritem.h"
 
 class QgsSLLayerItem : public QgsLayerItem
 {
@@ -30,7 +31,6 @@ class QgsSLLayerItem : public QgsLayerItem
     // QgsDataItem interface
     QVector<QgsDataItem *> createChildren() override;
 };
-
 
 
 class QgsSLConnectionItem : public QgsDataCollectionItem
@@ -76,7 +76,7 @@ namespace SpatiaLiteUtils
 {
   bool createDb( const QString &dbPath, QString &errCause );
   bool deleteLayer( const QString &dbPath, const QString &tableName, QString &errCause );
-}
+} // namespace SpatiaLiteUtils
 
 //! Provider for SpatiaLite root data item
 class QgsSpatiaLiteDataItemProvider : public QgsDataItemProvider

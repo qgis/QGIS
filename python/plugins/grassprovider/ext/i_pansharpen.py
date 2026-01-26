@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "March 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 import os
 from qgis.core import QgsProcessingParameterString
@@ -27,19 +27,20 @@ from grassprovider.grass_utils import GrassUtils
 
 def processCommand(alg, parameters, context, feedback):
     # Temporary remove outputs and add a virtual output parameter
-    outputName = 'output_{}'.format(os.path.basename(getTempFilename(context=context)))
-    param = QgsProcessingParameterString('output', 'virtual output',
-                                         outputName, False, False)
+    outputName = f"output_{os.path.basename(getTempFilename(context=context))}"
+    param = QgsProcessingParameterString(
+        "output", "virtual output", outputName, False, False
+    )
     alg.addParameter(param)
     alg.processCommand(parameters, context, feedback, True)
 
 
 def processOutputs(alg, parameters, context, feedback):
-    outputName = alg.parameterAsString(parameters, 'output', context)
+    outputName = alg.parameterAsString(parameters, "output", context)
     createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
-    for channel in ['red', 'green', 'blue']:
-        fileName = alg.parameterAsOutputLayer(parameters, '{}output'.format(channel), context)
-        grassName = '{}_{}'.format(outputName, channel)
+    for channel in ["red", "green", "blue"]:
+        fileName = alg.parameterAsOutputLayer(parameters, f"{channel}output", context)
+        grassName = f"{outputName}_{channel}"
         outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(grassName, fileName, True, outFormat, createOpt, metaOpt)

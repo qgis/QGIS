@@ -21,10 +21,12 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QDialog>
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgspdfexportoptions.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 class QgsGeospatialPdfLayerTreeModel;
 class QgsGeospatialPdfLayerFilteredTreeModel;
@@ -36,12 +38,11 @@ class QgsGeospatialPdfLayerFilteredTreeModel;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::QgsPdfExportOptionsDialog
+class GUI_EXPORT QgsLayoutPdfExportOptionsDialog : public QDialog, private Ui::QgsPdfExportOptionsDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutPdfExportOptionsDialog
      * \param parent parent widget
@@ -51,11 +52,7 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
      * will instead be appended to the end of the geospatial PDF layer list
      * \param flags window flags
      */
-    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr,
-                                     bool allowGeospatialPdfExport = true,
-                                     const QString &geospatialPdfReason = QString(),
-                                     const QStringList &geospatialPdfLayerOrder = QStringList(),
-                                     Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsLayoutPdfExportOptionsDialog( QWidget *parent = nullptr, bool allowGeospatialPdfExport = true, const QString &geospatialPdfReason = QString(), const QStringList &geospatialPdfLayerOrder = QStringList(), Qt::WindowFlags flags = Qt::WindowFlags() );
 
     //! Sets the text render format
     void setTextRenderFormat( Qgis::TextRenderFormat format );
@@ -94,11 +91,6 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     //! Returns whether Geospatial PDF export is enabled
     bool exportGeospatialPdf() const;
 
-    //! Sets whether to use OGC best-practice format
-    void setUseOgcBestPracticeFormat( bool enabled );
-    //! Returns whether use of OGC best-practice format is enabled
-    bool useOgcBestPracticeFormat() const;
-
     //! Sets the list of export themes
     void setExportThemes( const QStringList &themes );
     //! Returns the list of export themes
@@ -121,12 +113,10 @@ class GUI_EXPORT QgsLayoutPdfExportOptionsDialog: public QDialog, private Ui::Qg
     void showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index );
 
   private:
-
     bool mGeospatialPdfAvailable = true;
     QgsGeospatialPdfLayerTreeModel *mGeospatialPdfStructureModel = nullptr;
     QgsGeospatialPdfLayerFilteredTreeModel *mGeospatialPdfStructureProxyModel = nullptr;
     QMenu *mGeospatialPdfStructureTreeMenu = nullptr;
-
 };
 
 #endif // QGSLAYOUTPDFEXPORTOPTIONSDIALOG_H

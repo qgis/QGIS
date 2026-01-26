@@ -3,5 +3,5 @@ try:
     QgsSettings.globalSettingsPath = staticmethod(QgsSettings.globalSettingsPath)
     QgsSettings.setGlobalSettingsPath = staticmethod(QgsSettings.setGlobalSettingsPath)
     QgsSettings.__group__ = ['settings']
-except NameError:
+except (NameError, AttributeError):
     pass

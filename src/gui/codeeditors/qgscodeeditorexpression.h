@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorsql.h - A SQL editor based on QScintilla
+    qgscodeeditorexpression.h - A SQL editor based on QScintilla
      --------------------------------------
     Date                 : 06-Oct-2013
     Copyright            : (C) 2013 by Salvatore Larosa
@@ -16,8 +16,8 @@
 #ifndef QGSCODEEDITOREXPRESSION_H
 #define QGSCODEEDITOREXPRESSION_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgscodeeditor.h"
 #include "qgsexpressioncontext.h"
 
@@ -28,8 +28,9 @@ SIP_IF_MODULE( HAVE_QSCI_SIP )
 /**
  * \ingroup gui
  *
- * \brief A QGIS expression editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A QGIS expression editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  *
  * \since QGIS 3.4
  */
@@ -42,6 +43,7 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
     QgsCodeEditorExpression( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     Qgis::ScriptLanguage language() const override;
+    Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
 
     /**
      * Variables and functions from this expression context will be added to
@@ -55,8 +57,9 @@ class GUI_EXPORT QgsCodeEditorExpression : public QgsCodeEditor
      */
     void setFields( const QgsFields &fields );
 
-  protected:
+    void toggleComment() override;
 
+  protected:
     void initializeLexer() override;
 
   private:

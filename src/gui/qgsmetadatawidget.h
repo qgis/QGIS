@@ -17,15 +17,16 @@
 #ifndef QgsAbstractMetadataBaseWIDGET_H
 #define QgsAbstractMetadataBaseWIDGET_H
 
-#include <QStandardItemModel>
-#include <QStyledItemDelegate>
-#include <QStringListModel>
+#include "ui_qgsmetadatawidget.h"
 
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
 #include "qgslayermetadata.h"
-#include "ui_qgsmetadatawidget.h"
+
+#include <QStandardItemModel>
+#include <QStringListModel>
+#include <QStyledItemDelegate>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -43,7 +44,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     Q_PROPERTY( QString title READ title WRITE setTitle NOTIFY titleChanged )
 
   public:
-
     /**
      * Widget modes.
      * \since QGIS 3.2
@@ -51,7 +51,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     enum Mode
     {
       LayerMetadata = 0, //!< Show layer metadata
-      ProjectMetadata, //!< Show project metadata
+      ProjectMetadata,   //!< Show project metadata
     };
 
     /**
@@ -214,7 +214,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeSelectedHistory();
 
   private:
-
     void fillComboBox();
     void setUiFromMetadata();
     void syncFromCategoriesTabToKeywordsTab();
@@ -224,7 +223,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
     QgsCoordinateReferenceSystem mCrs;
-    std::unique_ptr< QgsAbstractMetadataBase > mMetadata;
+    std::unique_ptr<QgsAbstractMetadataBase> mMetadata;
     QStandardItemModel *mConstraintsModel = nullptr;
     QStandardItemModel *mLinksModel = nullptr;
     QStringListModel *mCategoriesModel = nullptr;
@@ -245,11 +244,9 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
  */
 class LinkItemDelegate : public QStyledItemDelegate
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * \brief LinkItemDelegate constructor
      * \param parent
@@ -270,11 +267,9 @@ class LinkItemDelegate : public QStyledItemDelegate
  */
 class ConstraintItemDelegate : public QStyledItemDelegate
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * \brief ConstraintItemDelegate constructor
      * \param parent

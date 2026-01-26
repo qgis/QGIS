@@ -18,19 +18,19 @@
 #ifndef QGSABSTRACTRELATIONEDITORWIDGET_H
 #define QGSABSTRACTRELATIONEDITORWIDGET_H
 
-#include <QWidget>
-#include "qobjectuniqueptr.h"
-
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorcontext.h"
 #include "qgsrelation.h"
-#include "qgis_sip.h"
-#include "qgis_gui.h"
+#include "qobjectuniqueptr.h"
+
+#include <QWidget>
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
-% ModuleHeaderCode
+//%ModuleHeaderCode
 #include "qgsrelationeditorwidget.h"
-% End
+//%End
 #endif
 
 class QgsFeature;
@@ -44,7 +44,6 @@ class QgsVectorLayer;
  */
 class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsRelationEditorWidget *>( sipCpp ) )
@@ -57,8 +56,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     Q_OBJECT
 
   public:
-
-
     /**
      * Constructor
      */
@@ -84,13 +81,13 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
      * Returns the relation
      * \since QGIS 3.18
      */
-    QgsRelation relation() const {return mRelation;}
+    QgsRelation relation() const { return mRelation; }
 
     /**
      * Returns the nm relation
      * \since QGIS 3.18
      */
-    QgsRelation nmRelation() const {return mNmRelation;}
+    QgsRelation nmRelation() const { return mNmRelation; }
 
     /**
      * Sets the \a feature being edited and updates the UI unless \a update is set to FALSE
@@ -114,7 +111,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     /**
      * Returns the attribute editor context.
      */
-    QgsAttributeEditorContext editorContext( ) const;
+    QgsAttributeEditorContext editorContext() const;
 
     /**
      * Defines if a title label should be shown for this widget.
@@ -259,7 +256,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     void duplicateFeatures( const QgsFeatureIds &fids );
 
   protected:
-
     QgsAttributeEditorContext mEditorContext;
     QgsRelation mRelation;
     QgsRelation mNmRelation;
@@ -272,7 +268,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
     /**
      * Refresh the UI when the widget becomes visible
      */
-    void showEvent( QShowEvent * );
+    void showEvent( QShowEvent * ) override;
 
     /**
      * Updates the title contents to reflect the current state of the widget
@@ -334,7 +330,7 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
 
 /**
  * \ingroup gui
- * \brief This class should be subclassed for every configurable relation widget type.
+ * \brief Abstract base class for configurable relation widget types.
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.
  *
@@ -343,7 +339,6 @@ class GUI_EXPORT QgsAbstractRelationEditorWidget : public QWidget
  */
 class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsRelationEditorConfigWidget *>( sipCpp ) )
@@ -355,7 +350,6 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 
     Q_OBJECT
   public:
-
     /**
      * Create a new configuration widget
      *
@@ -417,7 +411,7 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 
 
 /**
- * Factory class for creating relation widgets and their corresponding config widgets
+ * Factory class for creating relation widgets and their corresponding config widgets.
  * \ingroup gui
  * \class QgsAbstractRelationEditorWidgetFactory
  * \since QGIS 3.18
@@ -425,7 +419,6 @@ class GUI_EXPORT QgsAbstractRelationEditorConfigWidget : public QWidget
 class GUI_EXPORT QgsAbstractRelationEditorWidgetFactory
 {
   public:
-
     /**
      * Creates a new relation widget factory with given \a name
      */

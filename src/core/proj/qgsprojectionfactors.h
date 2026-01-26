@@ -19,12 +19,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
 #include <QString>
 
 /**
  * \class QgsProjectionFactors
  * \ingroup core
- * \brief contains various cartographic properties, such as scale factors, angular distortion and meridian convergence.
+ * \brief Contains various cartographic properties, such as scale factors, angular distortion and meridian convergence.
  * \since QGIS 3.20
  */
 class CORE_EXPORT QgsProjectionFactors
@@ -78,11 +79,11 @@ class CORE_EXPORT QgsProjectionFactors
     QString str;
     if ( !sipCpp->isValid() )
     {
-      str = QStringLiteral( "<QgsProjectionFactors: invalid>" );
+      str = u"<QgsProjectionFactors: invalid>"_s;
     }
     else
     {
-      str = QStringLiteral( "<QgsProjectionFactors>" );
+      str = u"<QgsProjectionFactors>"_s;
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

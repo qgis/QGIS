@@ -25,7 +25,7 @@
 class QDomElement;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Null shading material used for rendering models and scenes with native textures.
  *
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
@@ -36,7 +36,6 @@ class QDomElement;
 class _3D_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsNullMaterialSettings() = default;
 
     QString type() const override;
@@ -52,13 +51,13 @@ class _3D_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
     static QgsAbstractMaterialSettings *create() SIP_FACTORY;
 
     QgsNullMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     QMap<QString, QString> toExportParameters() const override;
 #ifndef SIP_RUN
-    Qt3DRender::QMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
+    QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
 #endif
-
 };
 
 

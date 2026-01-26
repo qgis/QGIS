@@ -47,7 +47,7 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionTiledScene = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "tiled-scene" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionTiledScene = QgsSettingsTree::sTreeConnections->createNamedListNode( u"tiled-scene"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsProvider;
     static const QgsSettingsEntryString *settingsUrl;
@@ -69,8 +69,8 @@ class CORE_EXPORT QgsTiledSceneProviderConnection : public QgsAbstractProviderCo
      */
     QgsTiledSceneProviderConnection( const QString &uri, const QString &provider, const QVariantMap &configuration );
 
-    virtual void store( const QString &name ) const override;
-    virtual void remove( const QString &name ) const override;
+    void store( const QString &name ) const override;
+    void remove( const QString &name ) const override;
 
     /**
      * Returns the data provider associated with the connection.

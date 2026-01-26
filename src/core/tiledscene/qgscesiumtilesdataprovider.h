@@ -19,10 +19,10 @@
 #ifndef QGSCESIUMTILESDATAPROVIDER_H
 #define QGSCESIUMTILESDATAPROVIDER_H
 
-#include "qgis_core.h"
-#include "qgstiledscenedataprovider.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprovidermetadata.h"
+#include "qgstiledscenedataprovider.h"
 
 #define SIP_NO_FILE
 
@@ -71,6 +71,8 @@ class CORE_EXPORT QgsCesiumTilesDataProvider final: public QgsTiledSceneDataProv
     QgsHttpHeaders mHeaders;
 
     std::shared_ptr<QgsCesiumTilesDataProviderSharedData> mShared;  //!< Mutable data shared between provider instances
+
+    Qgis::DataProviderFlags mProviderFlags = Qgis::DataProviderFlag::FastExtent2D;
 
 };
 

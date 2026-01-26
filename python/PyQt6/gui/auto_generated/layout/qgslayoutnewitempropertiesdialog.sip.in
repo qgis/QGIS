@@ -12,17 +12,17 @@
 class QgsLayoutItemPropertiesDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog for configuring properties like the size and position of layout items.
+A dialog for configuring properties like the size and position of layout
+items.
 
-This is usually used only when constructing new layout items, allowing users to precisely
-enter their sizes and positions.
+This is usually used only when constructing new layout items, allowing
+users to precisely enter their sizes and positions.
 %End
 
 %TypeHeaderCode
 #include "qgslayoutnewitempropertiesdialog.h"
 %End
   public:
-
     QgsLayoutItemPropertiesDialog( QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for :py:class:`QgsLayoutNewItemPropertiesDialog`.

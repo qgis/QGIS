@@ -16,19 +16,19 @@
 #ifndef QGSLABELINGRESULTS_H
 #define QGSLABELINGRESULTS_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslabelposition.h"
 #include "qgscalloutposition.h"
-
-#include <memory>
+#include "qgslabelposition.h"
 
 class QgsMapSettings;
 class QgsLabelSearchTree;
 
 /**
  * \ingroup core
- * \brief Class that stores computed placement from labeling engine.
+ * \brief Stores computed placement from labeling engine.
  */
 class CORE_EXPORT QgsLabelingResults
 {

@@ -18,12 +18,14 @@
 #ifndef QGSSUBSTITUTIONLISTWIDGET_H
 #define QGSSUBSTITUTIONLISTWIDGET_H
 
-#include <QDialog>
+#include "ui_qgssubstitutionlistwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgspanelwidget.h"
-#include "ui_qgssubstitutionlistwidgetbase.h"
 #include "qgsstringutils.h"
-#include "qgis_gui.h"
+
+#include <QDialog>
 
 /**
  * \class QgsSubstitutionListWidget
@@ -38,7 +40,6 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
     Q_PROPERTY( QgsStringReplacementCollection substitutions READ substitutions WRITE setSubstitutions NOTIFY substitutionsChanged )
 
   public:
-
     /**
      * Constructor for QgsSubstitutionListWidget.
      * \param parent parent widget
@@ -72,9 +73,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
     void mButtonImport_clicked();
 
   private:
-
     void addSubstitution( const QgsStringReplacement &substitution );
-
 };
 
 /**
@@ -90,7 +89,6 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
     Q_PROPERTY( QgsStringReplacementCollection substitutions READ substitutions WRITE setSubstitutions )
 
   public:
-
     /**
      * Constructor for QgsSubstitutionListDialog.
      * \param parent parent widget
@@ -112,9 +110,7 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
 
 
   private:
-
     QgsSubstitutionListWidget *mWidget = nullptr;
-
 };
 
 #endif // QGSSUBSTITUTIONLISTWIDGET_H

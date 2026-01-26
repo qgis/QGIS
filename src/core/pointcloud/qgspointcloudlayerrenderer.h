@@ -18,25 +18,25 @@
 #ifndef QGSPOINTCLOUDLAYERRENDERER_H
 #define QGSPOINTCLOUDLAYERRENDERER_H
 
+#include <optional>
+
 #include "qgis_core.h"
 #include "qgscolorramp.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsreadwritecontext.h"
-#include "qgspointcloudindex.h"
-#include "qgsgeometry.h"
-
 #include "qgserror.h"
-#include "qgspointcloudindex.h"
+#include "qgsgeometry.h"
 #include "qgsidentifycontext.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudextentrenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudrenderer.h"
 #include "qgsrasterinterface.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDomElement>
-#include <QString>
-#include <QPainter>
 #include <QElapsedTimer>
+#include <QPainter>
+#include <QString>
 
 class QgsRenderContext;
 class QgsPointCloudLayer;
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
 
     //! Ctor
     explicit QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context );
-    ~QgsPointCloudLayerRenderer();
+    ~QgsPointCloudLayerRenderer() override;
 
     bool render() override;
     Qgis::MapLayerRendererFlags flags() const override;
@@ -72,14 +72,14 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsFeedback *feedback() const override { return mFeedback.get(); }
 
   private:
-    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, const QgsRenderContext &context, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels );
-    int renderNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
-    int renderNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
-    int renderNodesSorted( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order );
+    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, const QgsRenderContext &context, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels );
+    int renderNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
+    int renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled );
+    int renderNodesSorted( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order );
     void renderTriangulatedSurface( QgsPointCloudRenderContext &context );
-    bool renderIndex( QgsPointCloudIndex *pc );
+    bool renderIndex( QgsPointCloudIndex &pc );
 
-    QgsPointCloudLayer *mLayer = nullptr;
+    QgsPointCloudIndex mIndex;
     QString mLayerName;
 
     std::unique_ptr< QgsPointCloudRenderer > mRenderer;
@@ -94,7 +94,12 @@ class CORE_EXPORT QgsPointCloudLayerRenderer: public QgsMapLayerRenderer
     QgsPointCloudAttributeCollection mAttributes;
     QgsGeometry mCloudExtent;
     QList< QgsMapClippingRegion > mClippingRegions;
+
+    bool mIsVpc = false;
     const QVector< QgsPointCloudSubIndex > mSubIndexes;
+    std::optional<QgsPointCloudIndex> mOverviewIndex;
+    double mAverageSubIndexWidth = 0;
+    double mAverageSubIndexHeight = 0;
 
     int mRenderTimeHint = 0;
     bool mBlockRenderUpdates = false;

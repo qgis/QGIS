@@ -10,57 +10,107 @@
 
 
 
-%MappedType QList<QgsSearchWidgetWrapper::FilterFlag>
+
+
+%MappedType QList<QgsSearchWidgetWrapper::FilterFlag> /TypeHintIn = "Iterable[QgsSearchWidgetWrapper.FilterFlag]",TypeHintOut = "List[QgsSearchWidgetWrapper.FilterFlag]", TypeHintValue = "[]"/
 {
 %TypeHeaderCode
 #include <QList>
 %End
 
 %ConvertFromTypeCode
-  // Create the list.
-  PyObject *l;
+  PyObject *l = PyList_New( sipCpp->size() );
 
-  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
-    return NULL;
+  if ( !l )
+    return 0;
 
-  // Set the list elements.
-  QList<QgsSearchWidgetWrapper::FilterFlag>::iterator it = sipCpp->begin();
-  for ( int i = 0; it != sipCpp->end(); ++it, ++i )
+  for ( int i = 0; i < sipCpp->size(); ++i )
   {
-    PyObject *tobj;
+    PyObject *eobj = sipConvertFromEnum( static_cast<int>( sipCpp->at( i ) ), sipType_QgsSearchWidgetWrapper_FilterFlag );
 
-    if ( ( tobj = sipConvertFromEnum( *it, sipType_QgsSearchWidgetWrapper_FilterFlag ) ) == NULL )
+    if ( !eobj )
     {
       Py_DECREF( l );
-      return NULL;
+
+      return 0;
     }
-    PyList_SET_ITEM( l, i, tobj );
+
+    PyList_SetItem( l, i, eobj );
   }
 
   return l;
 %End
 
 %ConvertToTypeCode
-  // Check the type if that is all that is required.
-  if ( sipIsErr == NULL )
-    return PyList_Check( sipPy );
+  PyObject *iter = PyObject_GetIter( sipPy );
 
-  QList<QgsSearchWidgetWrapper::FilterFlag> *qlist = new QList<QgsSearchWidgetWrapper::FilterFlag>;
-
-  for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+  if ( !sipIsErr )
   {
-    *qlist << ( QgsSearchWidgetWrapper::FilterFlag )PyLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
+    PyErr_Clear();
+    Py_XDECREF( iter );
+
+    return ( iter && !PyBytes_Check( sipPy ) && !PyUnicode_Check( sipPy ) );
   }
 
-  *sipCppPtr = qlist;
+  if ( !iter )
+  {
+    *sipIsErr = 1;
+
+    return 0;
+  }
+
+  QList<QgsSearchWidgetWrapper::FilterFlag> *ql = new QList<QgsSearchWidgetWrapper::FilterFlag>;
+
+  for ( Py_ssize_t i = 0;; ++i )
+  {
+    PyErr_Clear();
+    PyObject *itm = PyIter_Next( iter );
+
+    if ( !itm )
+    {
+      if ( PyErr_Occurred() )
+      {
+        delete ql;
+        Py_DECREF( iter );
+        *sipIsErr = 1;
+
+        return 0;
+      }
+
+      break;
+    }
+
+    int v = sipConvertToEnum( itm, sipType_QgsSearchWidgetWrapper_FilterFlag );
+
+    if ( PyErr_Occurred() )
+    {
+      PyErr_Format( PyExc_TypeError, "index %zd has type '%s' but 'QgsSearchWidgetWrapper.FilterFlag' is expected", i, sipPyTypeName( Py_TYPE( itm ) ) );
+
+      Py_DECREF( itm );
+      delete ql;
+      Py_DECREF( iter );
+      *sipIsErr = 1;
+
+      return 0;
+    }
+
+    ql->append( static_cast<QgsSearchWidgetWrapper::FilterFlag>( v ) );
+
+    Py_DECREF( itm );
+  }
+
+  Py_DECREF( iter );
+
+  *sipCppPtr = ql;
+
   return sipGetState( sipTransferObj );
 %End
 };
 
+
 class QgsSearchWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring(signature="appended")
-
 Shows a search widget on a filter form.
 %End
 
@@ -68,7 +118,6 @@ Shows a search widget on a filter form.
 #include "qgssearchwidgetwrapper.h"
 %End
   public:
-
     enum FilterFlag /BaseType=IntEnum/
     {
       EqualTo,
@@ -90,16 +139,18 @@ Shows a search widget on a filter form.
     typedef QFlags<QgsSearchWidgetWrapper::FilterFlag> FilterFlags;
 
 
-    static QList< QgsSearchWidgetWrapper::FilterFlag > exclusiveFilterFlags();
+    static QList<QgsSearchWidgetWrapper::FilterFlag> exclusiveFilterFlags();
 %Docstring
-Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
+Returns a list of exclusive filter flags, which cannot be combined with
+other flags (e.g., EqualTo/NotEqualTo)
 
 .. seealso:: :py:func:`nonExclusiveFilterFlags`
 %End
 
-    static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
+    static QList<QgsSearchWidgetWrapper::FilterFlag> nonExclusiveFilterFlags();
 %Docstring
-Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
+Returns a list of non-exclusive filter flags, which can be combined with
+other flags (e.g., CaseInsensitive)
 
 .. seealso:: :py:func:`exclusiveFilterFlags`
 %End
@@ -117,7 +168,8 @@ Create a new widget wrapper
 
 :param vl: The layer on which the field is
 :param fieldIdx: The field which will be controlled
-:param parent: A parent widget for this widget wrapper and the created widget.
+:param parent: A parent widget for this widget wrapper and the created
+               widget.
 %End
 
     virtual FilterFlags supportedFlags() const;
@@ -129,15 +181,16 @@ Returns filter flags supported by the search widget.
 
     virtual FilterFlags defaultFlags() const;
 %Docstring
-Returns the filter flags which should be set by default for the search widget.
+Returns the filter flags which should be set by default for the search
+widget.
 
 .. seealso:: :py:func:`supportedFlags`
 %End
 
     virtual QString expression() const = 0;
 %Docstring
-Will be used to access the widget's value. Read the value from the widget and
-return it properly formatted to be saved in the attribute.
+Will be used to access the widget's value. Read the value from the
+widget and return it properly formatted to be saved in the attribute.
 
 If an invalid variant is returned this will be interpreted as no change.
 Be sure to return a NULL QVariant if it should be set to NULL.
@@ -154,8 +207,8 @@ when its expression changes
 
     virtual QString createExpression( FilterFlags flags ) const;
 %Docstring
-Creates a filter expression based on the current state of the search widget
-and the specified filter flags.
+Creates a filter expression based on the current state of the search
+widget and the specified filter flags.
 
 :param flags: filter flags
 
@@ -164,9 +217,9 @@ and the specified filter flags.
 
     QString createFieldIdentifier() const;
 %Docstring
-Gets a field name or expression to use as field comparison.
-If in SearchMode returns a quoted field identifier.
-If in AggregateSearchMode returns an appropriate aggregate expression.
+Gets a field name or expression to use as field comparison. If in
+SearchMode returns a quoted field identifier. If in AggregateSearchMode
+returns an appropriate aggregate expression.
 %End
 
     QString aggregate() const;
@@ -192,7 +245,8 @@ Returns the field index
 
     virtual void clearWidget();
 %Docstring
-Clears the widget's current value and resets it back to the default state
+Clears the widget's current value and resets it back to the default
+state
 %End
 
     virtual void setEnabled( bool enabled );
@@ -218,15 +272,16 @@ Emitted when a user changes the value of the search widget.
 
     void valueCleared();
 %Docstring
-Emitted when a user changes the value of the search widget back
-to an empty, default state.
+Emitted when a user changes the value of the search widget back to an
+empty, default state.
 %End
 
   protected slots:
 
     virtual void setExpression( const QString &expression ) = 0;
 %Docstring
-Set the ``expression`` which is currently used as filter for this widget.
+Set the ``expression`` which is currently used as filter for this
+widget.
 %End
 
     virtual void setFeature( const QgsFeature &feature );

@@ -22,9 +22,10 @@
 #include "qgis_gui.h"
 #include "qgsabstractgeometry.h"
 #include "qgsmaptoolcapture.h"
+#include "qgsreferencedgeometry.h"
 
-#include <QString>
 #include <QIcon>
+#include <QString>
 
 class QgsMapMouseEvent;
 class QgsVectorLayer;
@@ -34,7 +35,7 @@ class QKeyEvent;
 
 /**
  * \ingroup gui
- * \brief QgsMapToolShapeAbstract is a base class for shape map tools to be used by QgsMapToolCapture.
+ * \brief Base class for shape map tools to be used by QgsMapToolCapture.
  * \since QGIS 3.26
  */
 class GUI_EXPORT QgsMapToolShapeAbstract
@@ -45,11 +46,11 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     //! List of different shapes
     enum class ShapeCategory
     {
-      Curve, //!< Curve
-      Circle,//!< Circle
-      Ellipse,//!< Ellipse
-      Rectangle,//!< Rectangle
-      RegularPolygon,//!< RegularPolygon (e.g pentagons or hexagons)
+      Curve,          //!< Curve
+      Circle,         //!< Circle
+      Ellipse,        //!< Ellipse
+      Rectangle,      //!< Rectangle
+      RegularPolygon, //!< RegularPolygon (e.g pentagons or hexagons)
     };
     Q_ENUM( ShapeCategory )
 
@@ -61,10 +62,10 @@ class GUI_EXPORT QgsMapToolShapeAbstract
       Q_ASSERT( parentTool );
     }
 
-    virtual ~QgsMapToolShapeAbstract();
+    ~QgsMapToolShapeAbstract() override;
 
     //! Returns the id of the shape tool (equivalent to the one from the metadata)
-    QString id() const {return mId;}
+    QString id() const { return mId; }
 
     /**
      * Called for a mouse release event
@@ -88,10 +89,14 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     virtual void keyReleaseEvent( QKeyEvent *e );
 
     //! Activates the map tool with the last captured map point
-    virtual void activate( QgsMapToolCapture::CaptureMode mode, const QgsPoint &lastCapturedMapPoint ) {Q_UNUSED( mode ); Q_UNUSED( lastCapturedMapPoint )}
+    virtual void activate( QgsMapToolCapture::CaptureMode mode, const QgsPoint &lastCapturedMapPoint )
+    {
+      Q_UNUSED( mode );
+      Q_UNUSED( lastCapturedMapPoint )
+    }
 
     //! Deactivates the map tool
-    virtual void deactivate() {clean();}
+    virtual void deactivate() { clean(); }
 
     //! Called to clean the map tool (after canceling the operation or when the digitization has finished)
     virtual void clean();
@@ -99,19 +104,38 @@ class GUI_EXPORT QgsMapToolShapeAbstract
     //! Called to undo last action (last point added)
     virtual void undo();
 
+  signals:
+
+    /**
+     * Emitted whenever the \a geometry associated with the tool is changed, including transient (i.e. non-finalized, hover state) changes.
+     *
+     * \since QGIS 4.0
+     */
+    void transientGeometryChanged( const QgsReferencedGeometry &geometry );
+
   private:
     QString mId;
 
   protected:
+    /**
+     * Sets the current \a geometry, including transient (i.e. non-finalized, hover state) changes.
+     *
+     * Subclasses should call this during their cadCanvasMoveEvent() implementations, whenever the transient
+     * geometry changes as a result of a mouse move.
+     *
+     * \a geometry should be in the current map canvas CRS.
+     *
+     * \since QGIS 4.0
+     */
+    void setTransientGeometry( const QgsGeometry &geometry );
+
     QgsMapToolCapture *mParentTool = nullptr;
 
     //! points (in map coordinates)
     QgsPointSequence mPoints;
 
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
-
 };
-
 
 
 #endif // QGSMAPTOOLSHAPEABSTRACT_H

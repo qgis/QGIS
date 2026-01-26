@@ -1,0 +1,30 @@
+{
+  "name": "to_bool",
+  "type": "function",
+  "groups": ["Conversions"],
+  "description": "Converts a given value to a boolean. The function will return false if the value is NULL, an empty string, an empty list, or 0.",
+  "arguments": [{
+    "arg": "value",
+    "description": "value to convert to boolean"
+  }],
+  "examples": [{
+    "expression": "to_bool('')",
+    "returns": "false"
+  },{
+    "expression": "to_bool('123')",
+    "returns": "true"
+  },{
+    "expression": "to_bool('false')",
+    "returns": "true"
+  },{
+    "expression": "to_bool(0)",
+    "returns": "false"
+  },{
+    "expression": "to_bool(1)",
+    "returns": "true"
+  },{
+    "expression": "to_bool(null)",
+    "returns": "false"
+  }],
+  "tags": ["converts", "boolean"]
+}

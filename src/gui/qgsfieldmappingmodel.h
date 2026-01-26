@@ -16,34 +16,33 @@
 #ifndef QGSFIELDMAPPINGMODEL_H
 #define QGSFIELDMAPPINGMODEL_H
 
+#include "qgis_gui.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsfieldconstraints.h"
+#include "qgsfields.h"
+#include "qgsproperty.h"
+#include "qgsvectordataprovider.h"
+
 #include <QAbstractTableModel>
 #include <QStyledItemDelegate>
 
-#include "qgsfields.h"
-#include "qgsexpressioncontextgenerator.h"
-#include "qgsfieldconstraints.h"
-#include "qgsproperty.h"
-#include "qgsvectordataprovider.h"
-#include "qgis_gui.h"
-
-
 /**
  * \ingroup gui
- * \brief The QgsFieldMappingModel holds mapping information for mapping from one set of QgsFields to another,
- * for each set of "destination" fields an expression defines how to obtain the values of the
+ * \brief Holds mapping information for mapping from one set of QgsFields to another.
+ *
+ * For each set of "destination" fields an expression defines how to obtain the values of the
  * "destination" fields.
+ *
  * The model can be optionally set "editable" allowing to modify all the fields, by default only
  * the mapping expression is editable.
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
+class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * The ColumnDataIndex enum represents the column index for the view
      */
@@ -66,12 +65,12 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      */
     struct Field
     {
-      //! The original name of the field
-      QString originalName;
-      //! The field in its current status (it might have been renamed)
-      QgsField field;
-      //! The expression for the mapped field from the source fields
-      QString expression;
+        //! The original name of the field
+        QString originalName;
+        //! The field in its current status (it might have been renamed)
+        QgsField field;
+        //! The expression for the mapped field from the source fields
+        QString expression;
     };
 
     /**
@@ -81,10 +80,18 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      * field name to the corresponding expression. A \a parent object
      * can be also specified.
      */
-    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(),
-                          const QgsFields &destinationFields = QgsFields(),
-                          const QMap<QString, QString> &expressions = QMap<QString, QString>(),
-                          QObject *parent = nullptr );
+    QgsFieldMappingModel( const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>(), QObject *parent = nullptr );
+
+    /**
+     * Sets the list of \a nativeTypes supported by a data provider.
+     *
+     * If this list is non-empty, then the destination field types will be populated
+     * accordingly. If the list is empty, then a set of default native types will be
+     * used instead.
+     *
+     * \since QGIS 3.44
+     */
+    void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
 
     //! Returns TRUE if the destination fields are editable
     bool destinationEditable() const;
@@ -116,14 +123,14 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      *
      * \see setFieldPropertyMap()
      */
-    QMap< QString, QgsProperty > fieldPropertyMap() const;
+    QMap<QString, QgsProperty> fieldPropertyMap() const;
 
     /**
      * Sets a map of destination field name to QgsProperty definition for field value.
      *
      * \see fieldPropertyMap()
      */
-    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+    void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 
     //! Appends a new \a field to the model, with an optional \a expression
     void appendField( const QgsField &field, const QString &expression = QString() );
@@ -154,8 +161,7 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      * optionally specified through \a expressions which is a map from the original
      * field name to the corresponding expression.
      */
-    void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
 
     // QAbstractItemModel interface
@@ -167,12 +173,9 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
   private:
-
-    class ExpressionContextGenerator: public QgsExpressionContextGenerator
+    class ExpressionContextGenerator : public QgsExpressionContextGenerator
     {
-
       public:
-
         ExpressionContextGenerator( const QgsFields &sourceFields );
 
         // QgsExpressionContextGenerator interface
@@ -181,11 +184,9 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
         void setSourceFields( const QgsFields &fields );
 
       private:
-
         const QgsExpressionContextGenerator *mBaseGenerator = nullptr;
 
         QgsFields mSourceFields;
-
     };
 
 
@@ -195,13 +196,13 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      * Returns the field type name matching the \a field settings.
      * \since QGIS 3.24
      */
-    static const QString qgsFieldToTypeName( const QgsField &field );
+    QString qgsFieldToTypeName( const QgsField &field ) const;
 
     /**
      * Sets the \a field type and subtype based on the type \a name provided.
      * \since QGIS 3.24
      */
-    static void setFieldTypeFromName( QgsField &field, const QString &name );
+    void setFieldTypeFromName( QgsField &field, const QString &name ) const;
 
     bool moveUpOrDown( const QModelIndex &index, bool up = true );
 
@@ -216,15 +217,15 @@ class GUI_EXPORT QgsFieldMappingModel: public QAbstractTableModel
      */
     QString findExpressionForDestinationField( const QgsFieldMappingModel::Field &field, QStringList &excludedFieldNames );
 
+    QList< QgsVectorDataProvider::NativeType > mNativeTypes;
+
     QList<Field> mMapping;
     bool mDestinationEditable = false;
     QgsFields mSourceFields;
     std::unique_ptr<ExpressionContextGenerator> mExpressionContextGenerator;
 
     friend class QgsAggregateMappingModel;
-
 };
-
 
 
 #endif // QGSFIELDMAPPINGMODEL_H

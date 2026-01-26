@@ -30,9 +30,7 @@
  */
 class QgsPdalThinByRadiusAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalThinByRadiusAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,10 +39,10 @@ class QgsPdalThinByRadiusAlgorithm : public QgsPdalAlgorithmBase
     QString groupId() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsPdalThinByRadiusAlgorithm *createInstance() const override SIP_FACTORY;
 
-    QStringList createArgumentLists( const QVariantMap &parameters,
-                                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     friend class TestQgsProcessingPdalAlgs;
 };

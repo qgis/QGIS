@@ -15,17 +15,16 @@
 #ifndef QGSARCGISRESTUTILS_H
 #define QGSARCGISRESTUTILS_H
 
-#include "qgswkbtypes.h"
-#include "qgscoordinatereferencesystem.h"
-
-#include "qgis_sip.h"
-
-#include <QStringList>
-#include <QVariant>
-#include <QTimeZone>
-
 #include <functional>
 #include <memory>
+
+#include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgswkbtypes.h"
+
+#include <QStringList>
+#include <QTimeZone>
+#include <QVariant>
 
 class QNetworkReply;
 class QgsNetworkAccessManager;
@@ -229,6 +228,7 @@ class CORE_EXPORT QgsArcGisRestUtils
     {
       IncludeGeometry = 1 << 0, //!< Whether to include the geometry definition
       IncludeNonObjectIdAttributes = 1 << 1, //!< Whether to include any non-objectId attributes
+      SkipUnsetAttributes = 1 << 2, //!< Skip unset attributes. \since QGIS 3.44
     };
     Q_ENUM( FeatureToJsonFlag );
 

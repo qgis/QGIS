@@ -20,8 +20,8 @@
 
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
-#include "qgsrenderer.h"
 #include "qgspallabeling.h"
+#include "qgsrenderer.h"
 
 class QgsAbstractFeatureSource;
 class QgsFeatureRenderer;
@@ -29,8 +29,9 @@ class QgsSymbol;
 
 /**
  * \ingroup core
- * \brief The QgsVectorLayerLabelProvider class implements a label provider
- * for vector layers. Parameters for the labeling are taken from the layer's
+ * \brief Implements a label provider for vector layers.
+ *
+ * Parameters for the labeling are taken from the layer's
  * custom properties or from the given settings.
  *
  * \note this class is not a part of public API yet. See notes in QgsLabelingEngine

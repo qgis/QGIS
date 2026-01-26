@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifconformancerequest.h"
+#include "moc_qgsoapifconformancerequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
 
 #include <QTextCodec>
 
-QgsOapifConformanceRequest::QgsOapifConformanceRequest( const QgsDataSourceUri &uri ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
+QgsOapifConformanceRequest::QgsOapifConformanceRequest( const QgsDataSourceUri &uri )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -58,7 +60,7 @@ void QgsOapifConformanceRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing Conformance response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing Conformance response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );

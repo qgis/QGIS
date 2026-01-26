@@ -34,16 +34,12 @@ QgsAABB::QgsAABB( float xMin, float yMin, float zMin, float xMax, float yMax, fl
 
 bool QgsAABB::intersects( const QgsAABB &other ) const
 {
-  return xMin < other.xMax && other.xMin < xMax &&
-         yMin < other.yMax && other.yMin < yMax &&
-         zMin < other.zMax && other.zMin < zMax;
+  return xMin < other.xMax && other.xMin < xMax && yMin < other.yMax && other.yMin < yMax && zMin < other.zMax && other.zMin < zMax;
 }
 
 bool QgsAABB::intersects( float x, float y, float z ) const
 {
-  return xMin <= x && xMax >= x &&
-         yMin <= y && yMax >= y &&
-         zMin <= z && zMax >= z;
+  return xMin <= x && xMax >= x && yMin <= y && yMax >= y && zMin <= z && zMax >= z;
 }
 
 
@@ -95,5 +91,5 @@ QList<QVector3D> QgsAABB::verticesForLines() const
 
 QString QgsAABB::toString() const
 {
-  return QStringLiteral( "X %1 - %2  Y %3 - %4  Z %5 - %6" ).arg( xMin ).arg( xMax ).arg( yMin ).arg( yMax ).arg( zMin ).arg( zMax );
+  return u"X %1 - %2  Y %3 - %4  Z %5 - %6"_s.arg( xMin ).arg( xMax ).arg( yMin ).arg( yMax ).arg( zMin ).arg( zMax );
 }

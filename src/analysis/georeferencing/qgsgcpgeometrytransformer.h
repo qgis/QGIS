@@ -18,11 +18,12 @@
 #ifndef QGSGCPGEOMETRYTRANSFORMER_H
 #define QGSGCPGEOMETRYTRANSFORMER_H
 
-#include "qgis_analysis.h"
-#include "qgsgeometrytransformer.h"
-#include "qgsgcptransformer.h"
-#include "qgsfeedback.h"
 #include <memory>
+
+#include "qgis_analysis.h"
+#include "qgsfeedback.h"
+#include "qgsgcptransformer.h"
+#include "qgsgeometrytransformer.h"
 
 class QgsGeometry;
 
@@ -36,7 +37,6 @@ class QgsGeometry;
 class ANALYSIS_EXPORT QgsGcpGeometryTransformer : public QgsAbstractGeometryTransformer
 {
   public:
-
     /**
      * Constructor for QgsGcpGeometryTransformer, which uses the specified \a gcpTransformer to
      * modify geometries.
@@ -91,8 +91,7 @@ class ANALYSIS_EXPORT QgsGcpGeometryTransformer : public QgsAbstractGeometryTran
     QgsGcpGeometryTransformer( const QgsGcpGeometryTransformer &other );
 #endif
 
-    std::unique_ptr< QgsGcpTransformerInterface > mGcpTransformer;
-
+    std::unique_ptr<QgsGcpTransformerInterface> mGcpTransformer;
 };
 
 #endif // QGSGCPGEOMETRYTRANSFORMER_H

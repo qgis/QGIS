@@ -14,7 +14,10 @@
  ***************************************************************************/
 
 #include "qgscustomprojectopenhandler.h"
+
 #include <QIcon>
+
+#include "moc_qgscustomprojectopenhandler.cpp"
 
 bool QgsCustomProjectOpenHandler::createDocumentThumbnailAfterOpen() const
 {

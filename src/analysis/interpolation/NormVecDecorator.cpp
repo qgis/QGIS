@@ -14,15 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QApplication>
-
-#include "qgsfeedback.h"
-#include "qgslogger.h"
-#include "qgsfields.h"
-#include "qgspoint.h"
-
 #include "NormVecDecorator.h"
 
+#include "qgsfeedback.h"
+#include "qgsfields.h"
+#include "qgslogger.h"
+#include "qgspoint.h"
+
+#include <QApplication>
 
 NormVecDecorator::~NormVecDecorator()
 {
@@ -47,9 +46,9 @@ int NormVecDecorator::addPoint( const QgsPoint &p )
     int pointno;
     pointno = mTIN->addPoint( p );
 
-    if ( pointno == -100 )//a numerical error occurred
+    if ( pointno == -100 ) //a numerical error occurred
     {
-// QgsDebugError("warning, numerical error");
+      // QgsDebugError("warning, numerical error");
       return -100;
     }
 
@@ -59,7 +58,7 @@ int NormVecDecorator::addPoint( const QgsPoint &p )
       estimateFirstDerivative( pointno );
       //update also the neighbours of the new point
       const QList<int> list = mTIN->surroundingTriangles( pointno );
-      auto it = list.constBegin();//iterate through the list and analyze it
+      auto it = list.constBegin(); //iterate through the list and analyze it
       while ( it != list.constEnd() )
       {
         int point;
@@ -95,7 +94,7 @@ bool NormVecDecorator::calcNormal( double x, double y, QgsPoint &result )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -110,26 +109,26 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, V
 
   if ( result )
   {
-    int numberofbreaks = 0;//number of breaklines around the point
-    int ffirstbp = -1000; //numbers of the points related to the first breakline
+    int numberofbreaks = 0; //number of breaklines around the point
+    int ffirstbp = -1000;   //numbers of the points related to the first breakline
     int lfirstbp = -1000;
-    bool pointfound = false;//is set to true, if the triangle with the point in is found
-    int numberofruns = 0;//number of runs of the loop. This integer can be used to prevent endless loops
-    const int limit = 100000;//ater this number of iterations, the method is terminated
+    bool pointfound = false;  //is set to true, if the triangle with the point in is found
+    int numberofruns = 0;     //number of runs of the loop. This integer can be used to prevent endless loops
+    const int limit = 100000; //ater this number of iterations, the method is terminated
 
     result->setX( 0 );
     result->setY( 0 );
     result->setZ( 0 );
 
-    const QList<int> vlist = surroundingTriangles( pointIndex );//get the value list
-    if ( vlist.empty() )//an error occurred in 'getSurroundingTriangles'
+    const QList<int> vlist = surroundingTriangles( pointIndex ); //get the value list
+    if ( vlist.empty() )                                         //an error occurred in 'getSurroundingTriangles'
     {
       return false;
     }
 
     if ( ( ( vlist.count() ) % 4 ) != 0 ) //number of items in vlist has to be a multiple of 4
     {
-      QgsDebugError( QStringLiteral( "warning, wrong number of items in vlist" ) );
+      QgsDebugError( u"warning, wrong number of items in vlist"_s );
       return false;
     }
 
@@ -137,17 +136,17 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, V
 
     bool firstrun;
 
-    while ( true )//endless loop to analyze vlist
+    while ( true ) //endless loop to analyze vlist
     {
       numberofruns++;
       if ( numberofruns > limit )
       {
-        QgsDebugError( QStringLiteral( "warning, a probable endless loop is detected" ) );
+        QgsDebugError( u"warning, a probable endless loop is detected"_s );
         return false;
       }
 
       int p1, p2, p3, line;
-      firstrun = false;//flag which tells, if it is the first run with a breakline
+      firstrun = false; //flag which tells, if it is the first run with a breakline
       p1 = ( *it );
       ++it;
       p2 = ( *it );
@@ -159,7 +158,6 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, V
 
       if ( numberofbreaks > 0 )
       {
-
         if ( p1 != -1 && p2 != -1 && p3 != -1 )
         {
           if ( MathUtils::pointInsideTriangle( x, y, point( p1 ), point( p2 ), point( p3 ) ) )
@@ -175,31 +173,30 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, V
         }
       }
 
-      if ( line == -10 )//we found a breakline
+      if ( line == -10 ) //we found a breakline
       {
-
-        if ( numberofbreaks == 0 )//it is the first breakline
+        if ( numberofbreaks == 0 ) //it is the first breakline
         {
           firstrun = true;
-          ffirstbp = p2;//set the marks to recognize the breakline later
+          ffirstbp = p2; //set the marks to recognize the breakline later
           lfirstbp = p3;
         }
 
-        if ( p2 == ffirstbp && p3 == lfirstbp && !firstrun )//we are back at the first breakline
+        if ( p2 == ffirstbp && p3 == lfirstbp && !firstrun ) //we are back at the first breakline
         {
-          if ( !pointfound )//the point with coordinates x, y was in no triangle
+          if ( !pointfound ) //the point with coordinates x, y was in no triangle
           {
-            QgsDebugError( QStringLiteral( "warning: point (x,y) was in no triangle" ) );
+            QgsDebugError( u"warning: point (x,y) was in no triangle"_s );
             return false;
           }
           result->standardise();
           break;
         }
 
-        if ( numberofbreaks > 0 && pointfound )//we found the second break line and the point is between the first and the second
+        if ( numberofbreaks > 0 && pointfound ) //we found the second break line and the point is between the first and the second
         {
           result->standardise();
-          numberofbreaks++;//to make the distinction between endpoints and points on a breakline easier
+          numberofbreaks++; //to make the distinction between endpoints and points on a breakline easier
           break;
         }
 
@@ -210,7 +207,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, V
       }
 
       ++it;
-      if ( it == vlist.constEnd() )//restart at the beginning of the loop
+      if ( it == vlist.constEnd() ) //restart at the beginning of the loop
       {
         it = vlist.constBegin();
       }
@@ -219,15 +216,13 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int pointIndex, V
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
-
 }
 
 bool NormVecDecorator::calcPoint( double x, double y, QgsPoint &result )
 {
-
   if ( !alreadyestimated )
   {
     estimateFirstDerivatives();
@@ -241,7 +236,7 @@ bool NormVecDecorator::calcPoint( double x, double y, QgsPoint &result )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -254,25 +249,25 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, Vector3D *
     int nr2 = 0;
     int nr3 = 0;
 
-    if ( TriDecorator::triangleVertices( x, y, p1, nr1, p2, nr2, p3, nr3 ) )//everything alright
+    if ( TriDecorator::triangleVertices( x, y, p1, nr1, p2, nr2, p3, nr3 ) ) //everything alright
     {
-      if ( ( *mNormVec )[ nr1 ] && ( *mNormVec )[ nr2 ] && ( *mNormVec )[ nr3 ] )
+      if ( ( *mNormVec )[nr1] && ( *mNormVec )[nr2] && ( *mNormVec )[nr3] )
       {
-        v1->setX( ( *mNormVec )[ nr1 ]->getX() );
-        v1->setY( ( *mNormVec )[nr1 ]->getY() );
-        v1->setZ( ( *mNormVec )[nr1 ]->getZ() );
+        v1->setX( ( *mNormVec )[nr1]->getX() );
+        v1->setY( ( *mNormVec )[nr1]->getY() );
+        v1->setZ( ( *mNormVec )[nr1]->getZ() );
 
-        v2->setX( ( *mNormVec )[nr2 ]->getX() );
-        v2->setY( ( *mNormVec )[nr2 ]->getY() );
-        v2->setZ( ( *mNormVec )[nr2 ]->getZ() );
+        v2->setX( ( *mNormVec )[nr2]->getX() );
+        v2->setY( ( *mNormVec )[nr2]->getY() );
+        v2->setZ( ( *mNormVec )[nr2]->getZ() );
 
-        v3->setX( ( *mNormVec )[nr3 ]->getX() );
-        v3->setY( ( *mNormVec )[nr3 ]->getY() );
-        v3->setZ( ( *mNormVec )[nr3 ]->getZ() );
+        v3->setX( ( *mNormVec )[nr3]->getX() );
+        v3->setY( ( *mNormVec )[nr3]->getY() );
+        v3->setZ( ( *mNormVec )[nr3]->getZ() );
       }
       else
       {
-        QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+        QgsDebugError( u"warning, null pointer"_s );
         return false;
       }
       return true;
@@ -285,7 +280,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, Vector3D *
 
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -298,8 +293,8 @@ NormVecDecorator::PointState NormVecDecorator::getState( int pointno ) const
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, number below 0" ) );
-    return mPointState->at( 0 );//just to avoid a compiler warning
+    QgsDebugError( u"warning, number below 0"_s );
+    return mPointState->at( 0 ); //just to avoid a compiler warning
   }
 }
 
@@ -308,7 +303,7 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, int &ptn1,
 {
   if ( v1 && v2 && v3 && state1 && state2 && state3 )
   {
-    if ( TriDecorator::triangleVertices( x, y, p1, ptn1, p2, ptn2, p3, ptn3 ) )//everything alright
+    if ( TriDecorator::triangleVertices( x, y, p1, ptn1, p2, ptn2, p3, ptn3 ) ) //everything alright
     {
       v1->setX( ( *mNormVec )[( ptn1 )]->getX() );
       v1->setY( ( *mNormVec )[( ptn1 )]->getY() );
@@ -334,11 +329,10 @@ bool NormVecDecorator::getTriangle( double x, double y, QgsPoint &p1, int &ptn1,
     {
       return false;
     }
-
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -355,19 +349,19 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   total.setX( 0 );
   total.setY( 0 );
   total.setZ( 0 );
-  int numberofbreaks = 0;//number of counted breaklines
-  double weights = 0;//sum of the weights
-  double currentweight = 0;//current weight
+  int numberofbreaks = 0;   //number of counted breaklines
+  double weights = 0;       //sum of the weights
+  double currentweight = 0; //current weight
   PointState status;
 
-  const QList<int> vlist = surroundingTriangles( pointno );//get the value list
+  const QList<int> vlist = surroundingTriangles( pointno ); //get the value list
 
   if ( vlist.empty() )
   {
     //something went wrong in getSurroundingTriangles, set the normal to (0,0,0)
-    if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if necessary
+    if ( mNormVec->size() <= mNormVec->count() ) //allocate more memory if necessary
     {
-      QgsDebugMsgLevel( QStringLiteral( "resizing mNormVec from %1 to %2" ).arg( mNormVec->size() ).arg( mNormVec->size() + 1 ), 2 );
+      QgsDebugMsgLevel( u"resizing mNormVec from %1 to %2"_s.arg( mNormVec->size() ).arg( mNormVec->size() + 1 ), 2 );
       mNormVec->resize( mNormVec->size() + 1 );
     }
 
@@ -389,11 +383,11 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
 
   if ( ( vlist.count() % 4 ) != 0 ) //number of items in vlist has to be a multiple of 4
   {
-    QgsDebugError( QStringLiteral( "warning, wrong number of items in vlist" ) );
+    QgsDebugError( u"warning, wrong number of items in vlist"_s );
     return false;
   }
 
-  auto it = vlist.constBegin();//iterate through the list and analyze it
+  auto it = vlist.constBegin(); //iterate through the list and analyze it
   while ( it != vlist.constEnd() )
   {
     int p1, p2, p3, flag;
@@ -411,12 +405,12 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
     ++it;
     flag = ( *it );
 
-    if ( flag == -10 )//we found a breakline.
+    if ( flag == -10 ) //we found a breakline.
     {
       numberofbreaks++;
     }
 
-    if ( p1 != -1 && p2 != -1 && p3 != -1 )//don't calculate normal, if a point is a virtual point
+    if ( p1 != -1 && p2 != -1 && p3 != -1 ) //don't calculate normal, if a point is a virtual point
     {
       MathUtils::normalFromPoints( point( p1 ), point( p2 ), point( p3 ), &part );
       const double dist1 = point( p3 )->distance3D( *point( p1 ) );
@@ -425,16 +419,16 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
       if ( ( point( p1 )->z() != point( p2 )->z() ) || ( point( p1 )->z() != point( p3 )->z() ) )
       {
         currentweight = 1 / ( dist1 * dist1 * dist2 * dist2 );
-        total.setX( total.getX() + part.getX()*currentweight );
-        total.setY( total.getY() + part.getY()*currentweight );
-        total.setZ( total.getZ() + part.getZ()*currentweight );
+        total.setX( total.getX() + part.getX() * currentweight );
+        total.setY( total.getY() + part.getY() * currentweight );
+        total.setZ( total.getZ() + part.getZ() * currentweight );
         weights += currentweight;
       }
     }
     ++it;
   }
 
-  if ( total.getX() == 0 && total.getY() == 0 && total.getZ() == 0 )//we have a point surrounded by horizontal triangles
+  if ( total.getX() == 0 && total.getY() == 0 && total.getZ() == 0 ) //we have a point surrounded by horizontal triangles
   {
     total.setZ( 1 );
   }
@@ -461,7 +455,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   }
 
   //insert the new calculated vector
-  if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if necessary
+  if ( mNormVec->size() <= mNormVec->count() ) //allocate more memory if necessary
   {
     mNormVec->resize( mNormVec->size() + 1 );
   }
@@ -498,7 +492,7 @@ bool NormVecDecorator::estimateFirstDerivatives( QgsFeedback *feedback )
   {
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( i ) / numberPoints );
+      feedback->setProgress( 100.0 * static_cast<double>( i ) / numberPoints );
     }
     estimateFirstDerivative( i );
   }
@@ -522,7 +516,7 @@ void NormVecDecorator::eliminateHorizontalTriangles()
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
   }
 }
 
@@ -534,7 +528,7 @@ void NormVecDecorator::setState( int pointno, PointState s )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, pointno>0" ) );
+    QgsDebugError( u"warning, pointno>0"_s );
   }
 }
 
@@ -563,7 +557,7 @@ bool NormVecDecorator::swapEdge( double x, double y )
   }
   else
   {
-    QgsDebugError( QStringLiteral( "warning, null pointer" ) );
+    QgsDebugError( u"warning, null pointer"_s );
     return false;
   }
 }
@@ -585,4 +579,3 @@ QgsMesh NormVecDecorator::triangulationToMesh( QgsFeedback *feedback ) const
   }
   return mTIN->triangulationToMesh( feedback );
 }
-

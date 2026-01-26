@@ -12,10 +12,11 @@ QgsVectorWarperTask.Result.__doc__ = """Task results
 """
 # --
 try:
-    QgsVectorWarper.__group__ = ['georeferencing']
-except NameError:
+    QgsVectorWarperTask.__overridden_methods__ = ['cancel', 'run']
+    QgsVectorWarperTask.__group__ = ['georeferencing']
+except (NameError, AttributeError):
     pass
 try:
-    QgsVectorWarperTask.__group__ = ['georeferencing']
-except NameError:
+    QgsVectorWarper.__group__ = ['georeferencing']
+except (NameError, AttributeError):
     pass

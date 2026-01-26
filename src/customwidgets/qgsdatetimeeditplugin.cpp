@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsdatetimeeditplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsdatetimeedit.h"
 
+#include "moc_qgsdatetimeeditplugin.cpp"
 
 QgsDateTimeEditPlugin::QgsDateTimeEditPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsDateTimeEditPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

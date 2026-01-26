@@ -14,6 +14,25 @@ set(PDAL_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
 )
 
+set(LAZPERF_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND LAZPERF_COMPILE_OPTIONS "-Wno-suggest-override")
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND LAZPERF_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (LAZPERF_COMPILE_OPTIONS)
+  set_source_files_properties(qgspdalprovider.cpp PROPERTIES COMPILE_OPTIONS "${LAZPERF_COMPILE_OPTIONS}")
+endif()
+
+
+IF(WIN32)
+  set_source_files_properties(
+    ${CMAKE_SOURCE_DIR}/external/untwine/api/QgisUntwine.cpp
+    PROPERTIES COMPILE_DEFINITIONS "UNICODE"
+  )
+endif()
+
 set(PDAL_HDRS
   qgspdalprovider.h
   qgspdalindexingtask.h
@@ -46,7 +65,8 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Reprocessor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.cpp
 
-  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Common.cpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/prep/FilePrep.cpp
+
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ThreadPool.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Untwine.cpp
@@ -72,8 +92,12 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Reprocessor.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.hpp
 
+  ${CMAKE_SOURCE_DIR}/external/untwine/prep/FilePrep.hpp
+
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Common.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FatalError.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FileDimInfo.hpp
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FileInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/GridKey.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Point.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.hpp
@@ -81,12 +105,28 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/VoxelKey.hpp
 )
 
+# MINGW must come before WIN32 test
+# APPLE must come before UNIX test
+if (MINGW)
+    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/mingw)
+elseif (WIN32)
+    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/windows)
+elseif (APPLE)
+    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/osx)
+elseif (UNIX)
+    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/generic)
+else()
+    message(FATAL_ERROR "OS not supported")
+endif()
+
 configure_file(${CMAKE_SOURCE_DIR}/external/untwine/untwine/Config.hpp.in ${CMAKE_BINARY_DIR}/untwine/Config.hpp)
 
 set(UNTWINE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine
+  ${CMAKE_SOURCE_DIR}/external/untwine/prep
   ${CMAKE_SOURCE_DIR}/external/untwine/epf
   ${CMAKE_SOURCE_DIR}/external/untwine/bu
+  ${CMAKE_SOURCE_DIR}/external/untwine
   ${CMAKE_SOURCE_DIR}/untwine/api
   ${CMAKE_BINARY_DIR}/untwine
 )
@@ -94,21 +134,21 @@ set(UNTWINE_INCLUDE_DIRS
 if (NOT LazPerf_FOUND)
   set(UNTWINE_SRCS
     ${UNTWINE_SRCS}
-    ${CMAKE_SOURCE_DIR}/external/lazperf/charbuf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/filestream.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/header.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/readers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/vlr.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/writers.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_byte14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_gpstime10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_nir14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_point14.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb10.cpp
-    ${CMAKE_SOURCE_DIR}/external/lazperf/detail/field_rgb14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/charbuf.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/filestream.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/header.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/lazperf.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/readers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/vlr.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/writers.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_byte14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_gpstime10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_nir14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_point14.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb10.cpp
+    ${CMAKE_SOURCE_DIR}/external/lazperf/lazperf/detail/field_rgb14.cpp
   )
 endif()
 
@@ -127,6 +167,10 @@ set(PDAL_WRENCH_SRCS
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/translate.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/utils.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/vpc.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/classify_ground.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/filter_noise.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/height_above_ground.cpp
+  ${CMAKE_SOURCE_DIR}/external/pdal_wrench/compare.cpp
 
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/tile.cpp
   ${CMAKE_SOURCE_DIR}/external/pdal_wrench/tile/BufferCache.cpp
@@ -146,7 +190,14 @@ include_directories(
 )
 
 add_executable(untwine ${UNTWINE_SRCS} ${UNTWINE_HDRS})
-target_compile_features(untwine PRIVATE cxx_std_17)
+target_compile_features(untwine PRIVATE cxx_std_20)
+
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  target_compile_options(untwine PRIVATE -Wno-suggest-override)
+endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  target_compile_options(untwine PRIVATE -Wno-suggest-destructor-override)
+endif()
 
 set_target_properties(untwine PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
@@ -156,18 +207,18 @@ target_link_libraries (untwine
   ${PDAL_LIBRARIES}
   Threads::Threads
 )
-target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
-
-if (LazPerf_FOUND)
-  # Use system laz-perf
-  target_include_directories(untwine PRIVATE ${LazPerf_INCLUDE_DIR})
-else()
-  target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external)
-endif()
+target_include_directories(untwine PRIVATE ${UNTWINE_OS_DIR} ${UNTWINE_INCLUDE_DIRS})
 
 if (PDAL_2_5_OR_HIGHER)
   add_executable(pdal_wrench ${PDAL_WRENCH_SRCS})
-  target_compile_features(pdal_wrench PRIVATE cxx_std_17)
+  target_compile_features(pdal_wrench PRIVATE cxx_std_20)
+
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    target_compile_options(pdal_wrench PRIVATE -Wno-suggest-override)
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    target_compile_options(pdal_wrench PRIVATE -Wno-suggest-destructor-override)
+  endif()
 
   set_target_properties(pdal_wrench PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}
@@ -189,8 +240,6 @@ if (PDAL_2_5_OR_HIGHER)
 endif()
 
 add_library (provider_pdal MODULE ${PDAL_SRCS} ${PDAL_HDRS} ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
-
-target_compile_features(provider_pdal PRIVATE cxx_std_17)
 
 target_link_libraries (provider_pdal
   qgis_core
@@ -215,9 +264,6 @@ endif()
 # static library
 add_library (provider_pdal_a STATIC ${PDAL_SRCS} ${PDAL_HDRS})
 
-# require c++17
-target_compile_features(provider_pdal_a PRIVATE cxx_std_17)
-
 target_link_libraries (provider_pdal_a
   ${PDAL_LIBRARIES}
   ${QT_VERSION_BASE}::Xml
@@ -232,9 +278,6 @@ target_link_libraries (provider_pdal_a
 if (WITH_GUI)
   add_library (provider_pdal_gui_a STATIC ${PDAL_GUI_SRCS} ${PDAL_GUI_HDRS})
 
-  # require c++17
-  target_compile_features(provider_pdal_gui_a PRIVATE cxx_std_17)
-
   target_link_libraries (provider_pdal_gui_a
     ${PDAL_LIBRARIES}
     ${QT_VERSION_BASE}::Xml
@@ -246,6 +289,17 @@ if (WITH_GUI)
     qgis_gui
   )
   add_dependencies(provider_pdal_gui_a ui)
+endif()
+
+if (LazPerf_FOUND)
+  # Use system laz-perf
+  target_include_directories(provider_pdal PRIVATE ${LazPerf_INCLUDE_DIR})
+  target_include_directories(provider_pdal_a PRIVATE ${LazPerf_INCLUDE_DIR})
+  target_include_directories(untwine PRIVATE ${LazPerf_INCLUDE_DIR})
+else()
+  target_include_directories(provider_pdal PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
+  target_include_directories(provider_pdal_a PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
+  target_include_directories(untwine PRIVATE ${CMAKE_SOURCE_DIR}/external/lazperf)
 endif()
 
 install(TARGETS provider_pdal

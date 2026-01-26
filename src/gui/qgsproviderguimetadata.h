@@ -18,11 +18,11 @@
 #ifndef QGSPROVIDERGUIMETADATA_H
 #define QGSPROVIDERGUIMETADATA_H
 
-#include <QList>
-#include <QMainWindow>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QList>
+#include <QMainWindow>
 
 class QgsDataItemGuiProvider;
 class QgsSourceSelectProvider;
@@ -33,14 +33,13 @@ class QgsMapLayerConfigWidgetFactory;
 
 /**
  * \ingroup gui
- * \brief Holds data for GUI part of the data providers
+ * \brief Holds data for the GUI part of the data providers.
  *
  * \since QGIS 3.10
  */
 class GUI_EXPORT QgsProviderGuiMetadata
 {
   public:
-
     /**
      * Constructor for provider gui metadata
      */
@@ -103,4 +102,3 @@ class GUI_EXPORT QgsProviderGuiMetadata
 };
 
 #endif //QGSPROVIDERGUIMETADATA_H
-

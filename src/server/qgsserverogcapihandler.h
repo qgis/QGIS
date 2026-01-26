@@ -16,12 +16,13 @@
 #ifndef QGSSERVEROGCAPIHANDLER_H
 #define QGSSERVEROGCAPIHANDLER_H
 
-#include <QRegularExpression>
-#include "qgis_server.h"
-#include "qgsserverquerystringparameter.h"
-#include "qgsserverogcapi.h"
 #include <nlohmann/json_fwd.hpp>
-#include "inja/inja.hpp"
+
+#include "qgis_server.h"
+#include "qgsserverogcapi.h"
+#include "qgsserverquerystringparameter.h"
+
+#include <QRegularExpression>
 
 #ifndef SIP_RUN
 using namespace nlohmann;
@@ -31,7 +32,7 @@ class QgsServerApiContext;
 
 /**
  * \ingroup server
- * \brief The QgsServerOgcApiHandler abstract class represents a OGC API handler to be registered
+ * \brief An abstract class which represents an OGC API handler to be registered
  * in QgsServerOgcApi class.
  *
  * Subclasses must override operational and informative methods and define
@@ -93,9 +94,7 @@ class QgsServerApiContext;
  */
 class SERVER_EXPORT QgsServerOgcApiHandler
 {
-
   public:
-
     virtual ~QgsServerOgcApiHandler();
 
     // /////////////////////////////////////////////
@@ -121,7 +120,11 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * Depending on the handler, it may be dynamic (per-request) or static.
      * \param context the request context
      */
-    virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const  { Q_UNUSED( context ); return { }; }
+    virtual QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const
+    {
+      Q_UNUSED( context );
+      return {};
+    }
 
     // /////////////////////////////////////////////
     // METADATA Sections (informative)
@@ -197,7 +200,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     // /////////////////////////////////////////////////////
     // Utility methods: override should not be required
 
-#ifndef SIP_RUN  // Skip SIP
+#ifndef SIP_RUN // Skip SIP
 
     /**
      * Writes \a data to the \a context response stream, content-type is calculated from the \a context request,
@@ -231,7 +234,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = QStringLiteral( "application/json" ) ) const;
+    void jsonDump( json &data, const QgsServerApiContext &context, const QString &contentType = u"application/json"_s ) const;
 
     /**
      * Writes \a data as HTML to the response stream in \a context using a template.
@@ -259,10 +262,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      * \param title title of the link
      * \note not available in Python bindings
      */
-    json link( const QgsServerApiContext &context,
-               const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self,
-               const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON,
-               const std::string &title = "" ) const;
+    json link( const QgsServerApiContext &context, const QgsServerOgcApi::Rel &linkType = QgsServerOgcApi::Rel::self, const QgsServerOgcApi::ContentType contentType = QgsServerOgcApi::ContentType::JSON, const std::string &title = "" ) const;
 
     /**
      * Returns all the links for the given request \a context.
@@ -286,7 +286,7 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      */
     QgsVectorLayer *layerFromContext( const QgsServerApiContext &context ) const;
 
-#endif  // SIP skipped
+#endif // SIP skipped
 
     /**
      * Writes \a data to the \a context response stream, content-type is calculated from the \a context request,
@@ -375,10 +375,9 @@ class SERVER_EXPORT QgsServerOgcApiHandler
      *
      * \note not available in Python bindings
      */
-    json jsonTags( ) const SIP_SKIP;
+    json jsonTags() const SIP_SKIP;
 
   protected:
-
     /**
      * Set the content types to \a contentTypes
      */
@@ -391,11 +390,8 @@ class SERVER_EXPORT QgsServerOgcApiHandler
     void setContentTypes( const QList<QgsServerOgcApi::ContentType> &contentTypes ) SIP_SKIP;
 
   private:
-
     //! List of content types this handler can serve, first is the default
     QList<QgsServerOgcApi::ContentType> mContentTypes = { QgsServerOgcApi::ContentType::JSON, QgsServerOgcApi::ContentType::HTML };
-
-
 };
 
 #endif // QGSSERVEROGCAPIHANDLER_H

@@ -31,7 +31,7 @@ class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief This is a container for configuration of the snapping of the project
+ * \brief Stores configuration of snapping settings for the project.
  */
 class CORE_EXPORT QgsSnappingConfig
 {
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsSnappingConfig
       VertexAndSegment = 2, //!< Both on vertices and segments
       Segment = 3, //!< On segments only
     };
-    // TODO QGIS 4: remove
+    // TODO QGIS 5: remove
     // this could not be tagged with Q_DECL_DEPRECATED due to Doxygen warning
     // might be fixed in newer Doxygen (does not on 1.8.15, might be ok on 1.8.16)
 
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Convenient method to return the translated name of the enum type
      * Qgis::SnappingTypes.
      * \since QGIS 3.12
-     * \deprecated QGIS 3.26. Use Qgis::snappingTypeToString instead.
+     * \deprecated QGIS 3.26. Use snappingTypeToString() instead.
      */
     Q_DECL_DEPRECATED static QString snappingTypeFlagToString( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToString( type );}
 
@@ -95,14 +95,14 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Convenient method to return an icon corresponding to the enum type
      * Qgis::SnappingTypes.
-     * \deprecated QGIS 3.26. Use Qgis::snappingTypeToString instead.
+     * \deprecated QGIS 3.26. Use snappingTypeToIcon() instead.
      * \since QGIS 3.20
      */
     Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
 
     /**
      * \ingroup core
-     * \brief This is a container of advanced configuration (per layer) of the snapping of the project
+     * \brief A container of advanced configuration (per layer) of the snapping of the project.
      */
     class CORE_EXPORT IndividualLayerSettings
     {
@@ -152,13 +152,13 @@ class CORE_EXPORT QgsSnappingConfig
 
         /**
          * Returns the flags type (vertices | segments | area | centroid | middle)
-         * \deprecated QGIS 3.12. Use typeFlag instead.
+         * \deprecated QGIS 3.12. Use typeFlag() instead.
          */
         Q_DECL_DEPRECATED QgsSnappingConfig::SnappingType type() const SIP_DEPRECATED;
 
         /**
          * define the type of snapping
-        * \deprecated QGIS 3.12. Use setTypeFlag instead.
+        * \deprecated QGIS 3.12. Use setTypeFlag() instead.
         */
         Q_DECL_DEPRECATED void setType( SnappingType type ) SIP_DEPRECATED;
 
@@ -249,13 +249,13 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * Returns the flags type (vertices | segments | area | centroid | middle)
-     * \deprecated QGIS 3.12. Use typeFlag instead.
+     * \deprecated QGIS 3.12. Use typeFlag() instead.
      */
     Q_DECL_DEPRECATED QgsSnappingConfig::SnappingType type() const SIP_DEPRECATED;
 
     /**
      * define the type of snapping
-    * \deprecated QGIS 3.12. Use setTypeFlag instead.
+    * \deprecated QGIS 3.12. Use setTypeFlag() instead.
     */
     Q_DECL_DEPRECATED void setType( QgsSnappingConfig::SnappingType type );
 

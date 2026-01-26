@@ -21,7 +21,7 @@
 
 QString QgsRemoveHolesAlgorithm::name() const
 {
-  return QStringLiteral( "deleteholes" );
+  return u"deleteholes"_s;
 }
 
 QString QgsRemoveHolesAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsRemoveHolesAlgorithm::group() const
 
 QString QgsRemoveHolesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsRemoveHolesAlgorithm::outputName() const
@@ -51,7 +51,7 @@ QString QgsRemoveHolesAlgorithm::outputName() const
 
 QList<int> QgsRemoveHolesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 Qgis::ProcessingSourceType QgsRemoveHolesAlgorithm::outputLayerType() const
@@ -68,6 +68,11 @@ QString QgsRemoveHolesAlgorithm::shortHelpString() const
                       "area threshold. Leaving this parameter as 0.0 results in all holes being removed." );
 }
 
+QString QgsRemoveHolesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer in which polygons with holes are replaced by polygons with only their external ring." );
+}
+
 QgsRemoveHolesAlgorithm *QgsRemoveHolesAlgorithm::createInstance() const
 {
   return new QgsRemoveHolesAlgorithm();
@@ -81,23 +86,19 @@ Qgis::ProcessingFeatureSourceFlags QgsRemoveHolesAlgorithm::sourceFlags() const
 
 void QgsRemoveHolesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterArea > minArea = std::make_unique< QgsProcessingParameterArea >( QStringLiteral( "MIN_AREA" ),
-      QObject::tr( "Remove holes with area less than" ),
-      0.0,
-      QStringLiteral( "INPUT" ),
-      false, 0 );
+  auto minArea = std::make_unique<QgsProcessingParameterArea>( u"MIN_AREA"_s, QObject::tr( "Remove holes with area less than" ), 0.0, u"INPUT"_s, false, 0 );
   minArea->setIsDynamic( true );
-  minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MIN_AREA" ), QObject::tr( "Remove holes with area less than" ), QgsPropertyDefinition::DoublePositive ) );
-  minArea->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  minArea->setDynamicPropertyDefinition( QgsPropertyDefinition( u"MIN_AREA"_s, QObject::tr( "Remove holes with area less than" ), QgsPropertyDefinition::DoublePositive ) );
+  minArea->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( minArea.release() );
 }
 
 bool QgsRemoveHolesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMinArea = parameterAsDouble( parameters, QStringLiteral( "MIN_AREA" ), context );
-  mDynamicMinArea = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MIN_AREA" ) );
+  mMinArea = parameterAsDouble( parameters, u"MIN_AREA"_s, context );
+  mDynamicMinArea = QgsProcessingParameters::isDynamic( parameters, u"MIN_AREA"_s );
   if ( mDynamicMinArea )
-    mMinAreaProperty = parameters.value( QStringLiteral( "MIN_AREA" ) ).value< QgsProperty >();
+    mMinAreaProperty = parameters.value( u"MIN_AREA"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -120,5 +121,3 @@ QgsFeatureList QgsRemoveHolesAlgorithm::processFeature( const QgsFeature &featur
 
 
 ///@endcond
-
-

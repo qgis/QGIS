@@ -17,15 +17,17 @@
 #ifndef QGSLAYOUTPAGECOLLECTION_H
 #define QGSLAYOUTPAGECOLLECTION_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayout.h"
-#include "qgslayoutitempage.h"
 #include "qgslayoutitem.h"
-#include "qgslayoutserializableobject.h"
+#include "qgslayoutitempage.h"
 #include "qgslayoutpoint.h"
+#include "qgslayoutserializableobject.h"
+
 #include <QObject>
-#include <memory>
 
 class QgsLayout;
 class QgsLayoutGuideCollection;
@@ -50,7 +52,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
 
     ~QgsLayoutPageCollection() override;
 
-    QString stringType() const override { return QStringLiteral( "LayoutPageCollection" ); }
+    QString stringType() const override { return u"LayoutPageCollection"_s; }
     QgsLayout *layout() override;
 
     /**
@@ -387,6 +389,13 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * Returns a reference to the collection's guide collection, which manages page snap guides.
      */
     SIP_SKIP const QgsLayoutGuideCollection &guides() const;
+
+    /**
+     * Apply the source page properties (size & background color) to all other pages
+     *
+     * \since QGIS 3.42
+     */
+    void applyPropertiesToAllOtherPages( int sourcePage );
 
   public slots:
 

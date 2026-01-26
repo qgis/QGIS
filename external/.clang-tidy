@@ -1,0 +1,4 @@
+# clang-tidy does not allow easy deactivation of a directory.
+# Use a dummy .clang-tidy file that disables all clang-tidy checks except one that will never match.
+# This one check is necessary; clang-tidy reports an error when no checks are enabled.
+Checks: '-*,llvm-twine-local'

@@ -16,10 +16,11 @@
 #ifndef QGS_GCP_LIST_H
 #define QGS_GCP_LIST_H
 
-#include <QList>
-#include <QVector>
 #include "qgis_app.h"
 #include "qgsunittypes.h"
+
+#include <QList>
+#include <QVector>
 
 class QgsGeorefDataPoint;
 class QgsGcpPoint;
@@ -33,19 +34,18 @@ class QgsGeorefTransform;
  *
  * The container does NOT own the points -- they have to be manually deleted elsewhere!!
  */
-class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
+class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint *>
 {
   public:
     QgsGCPList() = default;
     QgsGCPList( const QgsGCPList &list ) = delete;
-    QgsGCPList &operator =( const QgsGCPList &list ) = delete;
+    QgsGCPList &operator=( const QgsGCPList &list ) = delete;
 
     /**
      * Creates vectors of source and destination points, where the destination points are all transformed to the
      * specified \a targetCrs.
      */
-    void createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints,
-                           const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
+    void createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const;
 
     /**
      * Returns the count of currently enabled data points.
@@ -60,14 +60,12 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      * \param context transform context
      * \param residualUnit units for residual calculation. Supported values are QgsUnitTypes::RenderPixels or QgsUnitTypes::RenderMapUnits
      */
-    void updateResiduals( QgsGeorefTransform *georefTransform,
-                          const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context,
-                          Qgis::RenderUnit residualUnit );
+    void updateResiduals( QgsGeorefTransform *georefTransform, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context, Qgis::RenderUnit residualUnit );
 
     /**
      * Returns the container as a list of GCP points.
      */
-    QList< QgsGcpPoint > asPoints() const;
+    QList<QgsGcpPoint> asPoints() const;
 
     /**
      * Saves the GCPs to a text file.
@@ -79,9 +77,7 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      *
      * \returns TRUE on success
      */
-    bool saveGcps( const QString &filePath,
-                   const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context,
-                   QString &error ) const;
+    bool saveGcps( const QString &filePath, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context, QString &error ) const;
 
     /**
      * Loads GCPs from a text file.
@@ -93,11 +89,7 @@ class APP_EXPORT QgsGCPList : public QList<QgsGeorefDataPoint * >
      *
      * \returns TRUE on success
      */
-    static QList< QgsGcpPoint > loadGcps( const QString &filePath,
-                                          const QgsCoordinateReferenceSystem &defaultDestinationCrs,
-                                          QgsCoordinateReferenceSystem &actualDestinationCrs,
-                                          QString &error );
-
+    static QList<QgsGcpPoint> loadGcps( const QString &filePath, const QgsCoordinateReferenceSystem &defaultDestinationCrs, QgsCoordinateReferenceSystem &actualDestinationCrs, QString &error );
 };
 
 #endif

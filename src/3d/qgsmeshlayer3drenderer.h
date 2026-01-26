@@ -17,13 +17,11 @@
 #define QGSMESHLAYER3DRENDERER_H
 
 #include "qgis_3d.h"
-
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
-#include "qgsmesh3dsymbol.h"
-
-#include "qgsphongmaterialsettings.h"
 #include "qgsmaplayerref.h"
+#include "qgsmesh3dsymbol.h"
+#include "qgsphongmaterialsettings.h"
 
 #include <QObject>
 
@@ -82,8 +80,8 @@ class _3D_EXPORT QgsMeshLayer3DRenderer : public QgsAbstract3DRenderer
 
 
   private:
-    QgsMapLayerRef mLayerRef; //!< Layer used to extract mesh data from
-    std::unique_ptr<QgsMesh3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
+    QgsMapLayerRef mLayerRef;                 //!< Layer used to extract mesh data from
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol; //!< 3D symbol that defines appearance
 
   private:
 #ifdef SIP_RUN

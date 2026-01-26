@@ -16,30 +16,46 @@
 #ifndef QGSLABELINGENGINE_H
 #define QGSLABELINGENGINE_H
 
-#define SIP_NO_FILE
-
 #include "qgis_core.h"
-#include "qgsmapsettings.h"
-
 #include "qgsfeedback.h"
 #include "qgslabelobstaclesettings.h"
+#include "qgsmapsettings.h"
 
 class QgsLabelingEngine;
 class QgsLabelingResults;
 class QgsLabelFeature;
 class QgsLabelingEngineSettings;
 
+#ifndef SIP_RUN
 namespace pal
 {
   class Problem;
   class Pal;
   class LabelPosition;
 }
+#endif
 
 /**
  * \ingroup core
- * \brief The QgsAbstractLabelProvider class is an interface class. Implementations
- * return list of labels and their associated geometries - these are used by
+ * \brief Represents a label candidate.
+ */
+class CORE_EXPORT QgsLabelCandidate
+{
+  public:
+    QgsLabelCandidate( const QRectF &r, double c ): rect( r ), cost( c ) {}
+
+    QRectF rect;
+    double cost;
+};
+
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * \brief An abstract interface class for label providers.
+ *
+ * Implementations return list of labels and their associated geometries - these are used by
  * QgsLabelingEngine to compute the final layout of labels.
  *
  * Implementations also take care of drawing the returned final label positions.
@@ -148,7 +164,11 @@ class CORE_EXPORT QgsAbstractLabelProvider
     //! What placement strategy to use for the labels
     Qgis::LabelPlacement placement() const { return mPlacement; }
 
-    //! Default priority of labels (may be overridden by individual labels)
+    /**
+     * Default priority of labels (may be overridden by individual labels).
+     *
+     * This is a value between 0 to 1, where 0 = highest priority and 1 = lowest priority. The default is 0.5.
+     */
     double priority() const { return mPriority; }
 
     //! How the feature geometries will work as obstacles
@@ -187,7 +207,7 @@ class CORE_EXPORT QgsAbstractLabelProvider
     Flags mFlags = DrawLabels;
     //! Placement strategy
     Qgis::LabelPlacement mPlacement = Qgis::LabelPlacement::AroundPoint;
-    //! Default priority of labels
+    //! Default priority of labels. 0 = highest priority, 1 = lowest priority
     double mPriority = 0.5;
     //! Type of the obstacle of feature geometries
     QgsLabelObstacleSettings::ObstacleType mObstacleType = QgsLabelObstacleSettings::ObstacleType::PolygonBoundary;
@@ -307,7 +327,8 @@ class CORE_EXPORT QgsLabelingEngineFeedback : public QgsFeedback
 
 /**
  * \ingroup core
- * \brief The QgsLabelingEngine class provides map labeling functionality.
+ * \brief Provides map labeling functionality.
+ *
  * The input for the engine is a list of label provider objects and map settings.
  * Based on the input, the engine computes layout of labels for the given map view
  * with no collisions between the labels. Drawing of resulting labels is done
@@ -410,6 +431,20 @@ class CORE_EXPORT QgsLabelingEngine
 
     //! For internal use by the providers
     QgsLabelingResults *results() const { return mResults.get(); }
+
+    /**
+     * Draws label candidate rectangles.
+     *
+     * \see drawLabelMetrics()
+     */
+    static void drawLabelCandidateRect( pal::LabelPosition *lp, QgsRenderContext &context, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr );
+
+    /**
+     * Draws label metrics.
+     *
+     * \see drawLabelCandidateRect()
+     */
+    static void drawLabelMetrics( pal::LabelPosition *label, const QgsMapToPixel &xform, QgsRenderContext &context, const QPointF &renderPoint );
 
   protected:
     void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );
@@ -575,5 +610,7 @@ class CORE_EXPORT QgsLabelingUtils
     static Qgis::LabelLinePlacementFlags decodeLinePlacementFlags( const QString &string );
 
 };
+
+#endif
 
 #endif // QGSLABELINGENGINE_H

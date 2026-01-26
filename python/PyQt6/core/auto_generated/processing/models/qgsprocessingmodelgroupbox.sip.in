@@ -25,7 +25,8 @@ Represents a group box in a model.
 
     QgsProcessingModelGroupBox( const QString &description = QString() );
 %Docstring
-Constructor for QgsProcessingModelGroupBox with the specified ``description``.
+Constructor for QgsProcessingModelGroupBox with the specified
+``description``.
 %End
 
     virtual QgsProcessingModelGroupBox *clone() const /Factory/;

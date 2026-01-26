@@ -107,7 +107,7 @@
        <item>
         <widget class="QToolButton" name="btnAddCa">
          <property name="toolTip">
-          <string>Import certificate(s) to authentication database</string>
+          <string>Import certificate(s) to authentication storage</string>
          </property>
          <property name="text">
           <string/>
@@ -121,7 +121,7 @@
        <item>
         <widget class="QToolButton" name="btnRemoveCa">
          <property name="toolTip">
-          <string>Remove certificate from authentication database</string>
+          <string>Remove certificate from authentication storage</string>
          </property>
          <property name="text">
           <string/>

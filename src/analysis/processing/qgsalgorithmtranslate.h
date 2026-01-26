@@ -30,9 +30,7 @@
  */
 class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsTranslateAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -40,6 +38,7 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsTranslateAlgorithm *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
@@ -47,11 +46,11 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
-
+    mutable Qgis::WkbType mOutputWkbType = Qgis::WkbType::Unknown;
     double mDeltaX = 0.0;
     bool mDynamicDeltaX = false;
     QgsProperty mDeltaXProperty;
@@ -67,12 +66,9 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     double mDeltaM = 0.0;
     bool mDynamicDeltaM = false;
     QgsProperty mDeltaMProperty;
-
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMTRANSLATE_H
-
-

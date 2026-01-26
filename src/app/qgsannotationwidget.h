@@ -19,8 +19,10 @@
 #define QGSANNOTATIONWIDGET_H
 
 #include "ui_qgsannotationwidgetbase.h"
-#include "qgis_app.h"
+
 #include <memory>
+
+#include "qgis_app.h"
 
 class QgsMapCanvasAnnotationItem;
 class QgsMarkerSymbol;
@@ -32,11 +34,10 @@ class QgsSettingsEntryBool;
  *
  * Usually embedded by QgsAnnotation subclass configuration dialogs.
 */
-class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
+class APP_EXPORT QgsAnnotationWidget : public QWidget, private Ui::QgsAnnotationWidgetBase
 {
     Q_OBJECT
   public:
-
     static const QgsSettingsEntryBool *settingLiveUpdate;
 
     QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
@@ -47,7 +48,6 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
     void apply();
 
   private:
-
     void frameStyleChanged();
 
   signals:
@@ -59,7 +59,6 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
     void changed();
 
   private:
-
     QgsMapCanvasAnnotationItem *mItem = nullptr;
 
     void blockAllSignals( bool block );

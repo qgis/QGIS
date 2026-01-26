@@ -18,9 +18,10 @@
 
 #define SIP_NO_FILE
 
+#include <optional>
+
 #include "qgis_core.h"
 #include "qgssettings.h"
-#include <optional>
 
 /**
  * \class QgsSettingsProxy
@@ -48,7 +49,7 @@ class CORE_EXPORT QgsSettingsProxy
      */
     QgsSettings *operator->()
     {
-      return mOwnedSettings.has_value() ? &( mOwnedSettings.value() ) : mNonOwnedSettings;
+      return mOwnedSettings.has_value() ? &( *mOwnedSettings ) : mNonOwnedSettings;
     }
 
     /**
@@ -56,7 +57,7 @@ class CORE_EXPORT QgsSettingsProxy
      */
     QgsSettings &operator* ()
     {
-      return mOwnedSettings.has_value() ? mOwnedSettings.value() : *mNonOwnedSettings;
+      return mOwnedSettings.has_value() ? *mOwnedSettings : *mNonOwnedSettings;
     }
 
   private:

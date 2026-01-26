@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgswmsdimensiondialog.h"
-#include "qgsvectorlayer.h"
-#include "qgsfieldcombobox.h"
 
-#include <QStandardItemModel>
+#include "qgsfieldcombobox.h"
+#include "qgsvectorlayer.h"
+
 #include <QPushButton>
+#include <QStandardItemModel>
+
+#include "moc_qgswmsdimensiondialog.cpp"
 
 QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList alreadyDefinedDimensions, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -56,7 +59,7 @@ QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList
     const QString name( pnMetaEnum.key( i ) );
     if ( !alreadyDefinedDimensions.contains( name.toLower() ) )
     {
-      mNameComboBox->addItem( QStringLiteral( "%1%2" ).arg( !name.isEmpty() ? name.at( 0 ) : QString(), name.mid( 1 ).toLower() ), QVariant( pnMetaEnum.value( i ) ) );
+      mNameComboBox->addItem( u"%1%2"_s.arg( !name.isEmpty() ? name.at( 0 ) : QString(), name.mid( 1 ).toLower() ), QVariant( pnMetaEnum.value( i ) ) );
     }
   }
 
@@ -131,10 +134,7 @@ QgsMapLayerServerProperties::WmsDimensionInfo QgsWmsDimensionDialog::info() cons
   {
     refValue = mReferenceValueComboBox->currentData();
   }
-  return QgsMapLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(),
-         mEndFieldComboBox->currentField(),
-         mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(),
-         mDefaultDisplayComboBox->currentData().toInt(), refValue );
+  return QgsMapLayerServerProperties::WmsDimensionInfo( name, mFieldComboBox->currentField(), mEndFieldComboBox->currentField(), mUnitsLineEdit->text(), mUnitSymbolLineEdit->text(), mDefaultDisplayComboBox->currentData().toInt(), refValue );
 }
 
 void QgsWmsDimensionDialog::nameChanged( const QString &name )
@@ -157,14 +157,10 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     const int data = mNameComboBox->currentData().toInt();
     if ( data == QgsMapLayerServerProperties::TIME )
     {
-      const QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::String |
-          QgsFieldProxyModel::Int |
-          QgsFieldProxyModel::LongLong |
-          QgsFieldProxyModel::Date |
-          QgsFieldProxyModel::DateTime;
+      const QgsFieldProxyModel::Filters filters = QgsFieldProxyModel::String | QgsFieldProxyModel::Int | QgsFieldProxyModel::LongLong | QgsFieldProxyModel::Date | QgsFieldProxyModel::DateTime;
       mFieldComboBox->setFilters( filters );
       mEndFieldComboBox->setFilters( filters );
-      mUnitsLineEdit->setText( QStringLiteral( "ISO8601" ) );
+      mUnitsLineEdit->setText( u"ISO8601"_s );
       mUnitsLabel->setEnabled( false );
       mUnitsLineEdit->setEnabled( false );
       mUnitSymbolLabel->setEnabled( false );
@@ -180,7 +176,7 @@ void QgsWmsDimensionDialog::nameChanged( const QString &name )
     {
       mFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::Date );
       mEndFieldComboBox->setFilters( QgsFieldProxyModel::String | QgsFieldProxyModel::Date );
-      mUnitsLineEdit->setText( QStringLiteral( "ISO8601" ) );
+      mUnitsLineEdit->setText( u"ISO8601"_s );
       mUnitsLabel->setEnabled( false );
       mUnitsLineEdit->setEnabled( false );
       mUnitSymbolLabel->setEnabled( false );

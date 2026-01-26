@@ -15,26 +15,28 @@
 #ifndef QGSATTRIBUTEEDITORMODEL_H
 #define QGSATTRIBUTEEDITORMODEL_H
 
+#include "qgis_gui.h"
+#include "qgsconditionalstyle.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
+#include "qgsfeaturemodel.h"
 
-#include <QSortFilterProxyModel>
-#include <QVariant>
 #include <QItemSelectionModel>
 #include <QPointer>
-
-#include "qgsfeaturemodel.h"
-#include "qgsfeature.h" // QgsFeatureId
-#include "qgsexpressioncontext.h"
-#include "qgsconditionalstyle.h"
-#include "qgis_gui.h"
+#include <QSortFilterProxyModel>
+#include <QVariant>
 
 class QgsAttributeTableFilterModel;
 class QgsAttributeTableModel;
 class QgsVectorLayerCache;
 
+#define QGSFEATURELISTMODEL_CACHE_INDEX 1
+
 /**
  * \ingroup gui
  * \class QgsFeatureListModel
+ * \brief A proxy model for feature lists.
  */
 class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsFeatureModel
 {
@@ -44,7 +46,6 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     struct FeatureInfo
     {
       public:
-
         FeatureInfo() = default;
 
         //! True if feature is a newly added feature.
@@ -57,11 +58,11 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     enum Role
     {
       FeatureInfoRole = 0x1000, // Make sure no collisions with roles on QgsAttributeTableModel
-      FeatureRole
+      FeatureRole,              //!< Feature with all attributes and no geometry
+      FeatureWithGeometryRole,  //!< Feature with all attributes and geometry, \since QGIS 3.42
     };
 
   public:
-
     //! Constructor for QgsFeatureListModel
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -98,8 +99,10 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     QgsAttributeTableModel *masterModel();
 
     /**
-     *  \param  expression   A QgsExpression compatible string.
-     *  \returns TRUE if the expression could be set, FALSE if there was a parse error.
+     * Sets the display expression.
+     *
+     * \param expression A QgsExpression compatible string.
+     * \returns TRUE if the expression could be set, FALSE if there was a parse error.
      *          If it fails, the old expression will still be applied. Call parserErrorString()
      *          for a meaningful error message.
      */
@@ -199,9 +202,9 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     QString mParserErrorString;
     bool mInjectNull = false;
     mutable QgsExpressionContext mExpressionContext;
-    mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
+    mutable QMap<QgsFeatureId, QList<QgsConditionalStyle>> mRowStylesMap;
     bool mSortByDisplayExpression = false;
-    QPointer< QgsVectorLayer > mSourceLayer;
+    QPointer<QgsVectorLayer> mSourceLayer;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

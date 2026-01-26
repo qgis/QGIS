@@ -178,7 +178,7 @@ tests:
           geometry:
             normalize: True
 
-  - algorithm: qgis:checkvalidity
+  - algorithm: native:checkvalidity
     name: Check validity polygon ring self intersection
     params:
       INPUT_LAYER:
@@ -209,7 +209,7 @@ tests:
             fid: skip
           ignore_crs_check: true
 
-  - algorithm: qgis:checkvalidity
+  - algorithm: native:checkvalidity
     name: Check validity polygon ring self intersection, ignoring self intersections
     params:
       IGNORE_RING_SELF_INTERSECTION: true
@@ -271,7 +271,10 @@ tests:
         pk: id
 
   - algorithm: native:voronoipolygons
-    name: Vornoi with buffer region
+    name: Voronoi with buffer region (GEOS < 3.12.2)
+    condition:
+      geos:
+        less_than: 31202
     params:
       BUFFER: 10.0
       INPUT:
@@ -282,6 +285,28 @@ tests:
         name: expected/voronoi_buffer.gml
         type: vector
         pk: id
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:voronoipolygons
+    name: Voronoi with buffer region (GEOS 3.12.2+)
+    condition:
+      geos:
+        at_least: 31202
+    params:
+      BUFFER: 10.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi_buffer_geos312.gml
+        type: vector
+        pk: id
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:voronoipolygons
     name: Voronoi without source attributes
@@ -323,6 +348,25 @@ tests:
         name: expected/airportsvoronoidiagram.gml
         type: vector
         pk: ID
+        compare:
+          fields:
+            gml_id: skip
+          geometry:
+            precision: 2
+
+  - algorithm: native:voronoipolygons
+    name: Voronoi polygons, ensure filtering output to only polygon parts
+    params:
+      BUFFER: 0.0
+      COPY_ATTRIBUTES: true
+      INPUT:
+        name: custom/voronoi_points_extent_clip.json
+        type: vector
+      TOLERANCE: 0.0
+    results:
+      OUTPUT:
+        name: expected/voronoi_polygons_extent_clip.gml
+        type: vector
         compare:
           fields:
             gml_id: skip
@@ -371,7 +415,7 @@ tests:
  # This is VERY slow on proj 6+ builds due to the excessive amount of message log noise it causes to be emitted.
  # We need a way to disable the default handlers on individual QgsCoordinateTransform objects in order to avoid
  # this and speed the algorithm back up
- # - algorithm: qgis:findprojection
+ # - algorithm: native:findprojection
  #   name: Find projection
  #   params:
  #     INPUT:
@@ -518,7 +562,7 @@ tests:
               precision: 7
             fid: skip
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to centroid
     params:
       INPUT:
@@ -530,7 +574,7 @@ tests:
         name: expected/convert_poly_centroid.gml
         type: vector
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to multilinestring
     params:
       INPUT:
@@ -542,7 +586,7 @@ tests:
         name: expected/convert_poly_multiline.gml
         type: vector
 
-  - algorithm: qgis:convertgeometrytype
+  - algorithm: native:convertgeometrytype
     name: polygon to nodes
     params:
       INPUT:
@@ -1329,7 +1373,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (hull, no field)
     params:
       INPUT:
@@ -1347,7 +1391,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (hull, field)
     params:
       FIELD: name
@@ -1367,7 +1411,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (circle, field)
     params:
       FIELD: name
@@ -1387,7 +1431,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (circle, no field)
     params:
       INPUT:
@@ -1405,7 +1449,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (oriented rect, no field)
     params:
       INPUT:
@@ -1423,7 +1467,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (oriented rect, field)
     params:
       FIELD: name
@@ -1443,7 +1487,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (envelope, field)
     params:
       FIELD: name
@@ -1463,7 +1507,7 @@ tests:
             fid: skip
             id: skip
 
-  - algorithm: qgis:minimumboundinggeometry
+  - algorithm: native:minimumboundinggeometry
     name: Minimum enclosing geom (envelope, no field)
     params:
       INPUT:
@@ -2420,6 +2464,99 @@ tests:
     results:
       OUTPUT:
         name: expected/transect_multi_both_2_30.gml
+        type: vector
+
+  - algorithm: native:transectfixeddistance
+    name: Test (native:transectfixeddistance)
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      INTERVAL: 0.20
+      LENGTH: 1.0
+      SIDE: 2
+    results:
+      OUTPUT:
+        name: expected/transect_fixed_single_both.gml
+        type: vector
+
+  # Tests for DIRECTION parameter
+  # DIRECTION: 0 = Left to Right (default), 1 = Right to Left (hydraulic convention)
+  - algorithm: native:transect
+    name: Transect single left 90.0 0.5m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 0.5
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 0
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_single_left_05_swapped.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect single right 90.0 1m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 1.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      SIDE: 1
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_single_right_1_swapped.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi left 90.0 0.5m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 0.5
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 0
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_multi_left_05_swapped.gml
+        type: vector
+
+  - algorithm: native:transect
+    name: Transect multi right 90.0 1m right to left direction
+    params:
+      ANGLE: 90.0
+      LENGTH: 1.0
+      INPUT:
+        name: custom/transect_multi.gml
+        type: vector
+      SIDE: 1
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_multi_right_1_swapped.gml
+        type: vector
+
+  - algorithm: native:transectfixeddistance
+    name: Test (native:transectfixeddistance) right to left direction
+    params:
+      ANGLE: 90.0
+      INPUT:
+        name: custom/transect_single.gml
+        type: vector
+      INTERVAL: 0.20
+      LENGTH: 1.0
+      SIDE: 2
+      DIRECTION: 1
+    results:
+      OUTPUT:
+        name: expected/transect_fixed_single_both_swapped.gml
         type: vector
 
   - algorithm: qgis:distancematrix

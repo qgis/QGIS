@@ -15,7 +15,22 @@
 
 #ifndef QGS3DUTILS_H
 #define QGS3DUTILS_H
+#define SIP_NO_FILE
 
+#include <memory>
+
+#include "qgs3danimationsettings.h"
+#include "qgs3dmapcanvas.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3dtypes.h"
+#include "qgsaabb.h"
+#include "qgsray3d.h"
+#include "qgsraycastresult.h"
+
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCullFace>
+
+class QgsCameraPose;
 class QgsLineString;
 class QgsPolygon;
 class QgsFeedback;
@@ -31,38 +46,38 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
-#include "qgs3dmapsettings.h"
-#include "qgs3danimationsettings.h"
-#include "qgs3dtypes.h"
-#include "qgsaabb.h"
-#include "qgsray3d.h"
-#include "qgsraycastingutils.h"
-
-#include <QSize>
-#include <Qt3DRender/QCamera>
-#include <Qt3DRender/QCullFace>
-
-#include <memory>
-
-#define SIP_NO_FILE
-
+class QSurface;
 class Qgs3DRenderContext;
+class QgsRayCastContext;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Miscellaneous utility functions used from 3D code.
  * \note Not available in Python bindings
  */
 class _3D_EXPORT Qgs3DUtils
 {
   public:
-
     /**
      * Captures image of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.
      * \since QGIS 3.4
      */
     static QImage captureSceneImage( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
+     * Waits for a frame to be rendered. Useful to trigger once-per-frame updates.
+     * \warning Not to be used outside of tests!
+     * \since QGIS 3.42
+     */
+    static void waitForFrame( QgsAbstract3DEngine &engine, Qgs3DMapScene *scene );
+
+    /**
+     * Waits for all entities in the scene to be loaded.
+     * \warning Not to be used outside of tests!
+     * \since QGIS 4.0
+     */
+    static void waitForEntitiesLoaded( Qgs3DMapScene *scene );
 
     /**
      * Captures the depth buffer of the current 3D scene of a 3D engine. The function waits
@@ -99,15 +114,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.8
      */
-    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings,
-                                 Qgs3DMapSettings &mapSettings,
-                                 int framesPerSecond,
-                                 const QString &outputDirectory,
-                                 const QString &fileNameTemplate,
-                                 const QSize &outputSize,
-                                 QString &error,
-                                 QgsFeedback *feedback = nullptr
-                               );
+    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings, Qgs3DMapSettings &mapSettings, int framesPerSecond, const QString &outputDirectory, const QString &fileNameTemplate, const QSize &outputSize, QString &error, QgsFeedback *feedback = nullptr );
 
     /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
@@ -143,7 +150,7 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     //! Calculates (x,y,z) positions of (multi)point from the given feature
-    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
+    static void extractPointPositions( const QgsFeature &f, const Qgs3DRenderContext &context, const QgsVector3D &chunkOrigin, Qgis::AltitudeClamping altClamp, QVector<QVector3D> &positions );
 
     /**
      * Returns TRUE if bbox is completely outside the current viewing volume.
@@ -151,9 +158,9 @@ class _3D_EXPORT Qgs3DUtils
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
 
-    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts map coordinates to 3D world coordinates (applies offset)
     static QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin );
-    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    //! Converts 3D world coordinates to map coordinates (applies offset)
     static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
 
     /**
@@ -175,14 +182,19 @@ class _3D_EXPORT Qgs3DUtils
     static QgsAABB mapToWorldExtent( const QgsRectangle &extent, double zMin, double zMax, const QgsVector3D &mapOrigin );
 
     /**
+     * Converts 3D box in map coordinates to AABB in world coordinates.
+     * \since QGIS 3.42
+     */
+    static QgsAABB mapToWorldExtent( const QgsBox3D &box3D, const QgsVector3D &mapOrigin );
+
+    /**
      * Converts axis aligned bounding box in 3D world coordinates to extent in map coordinates
      * \since QGIS 3.12
      */
     static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
 
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
-    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
-        const QgsCoordinateTransformContext &context );
+    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
 
     /**
      * Try to estimate range of Z values used in the given vector layer and store that in zMin and zMax.
@@ -193,9 +205,6 @@ class _3D_EXPORT Qgs3DUtils
      */
     static void estimateVectorLayerZRange( QgsVectorLayer *layer, double &zMin, double &zMax );
 
-    //! Returns expression context for use in preparation of 3D data of a layer
-    static QgsExpressionContext globalProjectLayerExpressionContext( QgsVectorLayer *layer );
-
     //! Returns phong material settings object based on the Qt3D material
     static QgsPhongMaterialSettings phongMaterialFromQt3DComponent( Qt3DExtras::QPhongMaterial *material );
 
@@ -204,6 +213,10 @@ class _3D_EXPORT Qgs3DUtils
 
     /**
      * Converts the clicked mouse position to the corresponding 3D world coordinates
+     * \param screenPoint point on screen in pixel from top-left corner
+     * \param depth value from depth buffer in [0.0, 1.0] interval
+     * \param screenSize size of screen in pixels
+     * \param camera camera whose view/projection matrices are used
      * \since QGIS 3.24
      */
     static QVector3D screenPointToWorldPos( const QPoint &screenPoint, double depth, const QSize &screenSize, Qt3DRender::QCamera *camera );
@@ -246,16 +259,14 @@ class _3D_EXPORT Qgs3DUtils
      * \note This function was formerly in Qgs3DAppUtils
      * \since QGIS 3.26
      */
-    static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
+    static std::unique_ptr<QgsPointCloudLayer3DRenderer> convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
 
     /**
      * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
-     * The resulting hits are grouped by layer in a QHash.
-     * \note Hits on the terrain have nullptr as their key in the returning QHash.
      *
      * \since QGIS 3.32
      */
-    static QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastingUtils::RayCastContext &context );
+    static QgsRayCastResult castRay( Qgs3DMapScene *scene, const QgsRay3D &ray, const QgsRayCastContext &context );
 
     /**
      * Reprojects \a extent from \a crs1 to \a crs2 coordinate reference system with context \a context.
@@ -315,6 +326,82 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.40
      */
     static QByteArray addDefinesToShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Removes some define macros from a shader source code.
+     *
+     * \param shaderCode shader code
+     * \param defines list of defines to remove
+     *
+     * \since QGIS 3.40
+     */
+    static QByteArray removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Tries to decompose a 4x4 transform matrix into translation, rotation and scale components.
+     * It is expected that the matrix has been created by only applying these transforms, otherwise
+     * the results are undefined.
+     *
+     * \since QGIS 3.42
+     */
+    static void decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &translation, QQuaternion &rotation, QVector3D &scale );
+
+    /**
+     * Gets the maximum number of clip planes that can be used.
+     * This value depends on the OpenGL implementation. It should be at least 6.
+     *
+     * \since QGIS 3.42
+     */
+    static int openGlMaxClipPlanes( QSurface *surface );
+
+    /**
+     * Returns rotation quaternion that performs rotation around X axis by pitchAngle,
+     * followed by rotation around Z axis by headingAngle (both angles in degrees).
+     *
+     * \since QGIS 3.42
+     */
+    static QQuaternion rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle );
+
+    /**
+     * Transform the given screen point to \a QgsPoint in map coordinates
+     * \note This transformation is not unique as we pick point halfway between near and far plane on the ray from the camera.
+     * \param size size of canvas
+     * \param screenPoint point in screen coordinates
+     * \param cameraController camera controller attached to the scene
+     * \param mapSettings 3D map settings of the scene
+     * \since QGIS 3.44
+     */
+    static QgsPoint screenPointToMapCoordinates( const QPoint &screenPoint, QSize size, const QgsCameraController *cameraController, const Qgs3DMapSettings *mapSettings );
+
+    /**
+     * Computes the portion of the Y=y plane the camera is looking at
+     * \since QGIS 3.44
+     */
+    static void calculateViewExtent( const Qt3DRender::QCamera *camera, float maxRenderingDistance, float z, float &minX, float &maxX, float &minY, float &maxY, float &minZ, float &maxZ );
+
+    /**
+     * Returns a list of 4 planes derived from a line extending from \a startPoint to \a endPoint.
+     * The parameter \a distance defines the distance between the parallel clipping planes and the line.
+     * Each clipping plane is represented as a 4D vector, where the first three components correspond to
+     * the normalized normal of the plane, and the fourth component represents its distance from the origin of the scene.
+     * \note \a distance is expected to be positive
+     * \since QGIS 3.44
+     */
+    static QList<QVector4D> lineSegmentToClippingPlanes( const QgsVector3D &startPoint, const QgsVector3D &endPoint, double distance, const QgsVector3D &origin );
+
+    /**
+     * Returns the camera pose for a camera looking at mid-point between \a startPoint and \a endPoint.
+     * The camera is angled to provide a profile view and the heading angle is calculated to look from the right side of the line.
+     * The middle of \a elevationRange sets the z attribute of mid-point.
+     * \since QGIS 3.44
+     */
+    static QgsCameraPose lineSegmentToCameraPose( const QgsVector3D &startPoint, const QgsVector3D &endPoint, const QgsDoubleRange &elevationRange, float fieldOfView, const QgsVector3D &worldOrigin );
+
+    /**
+     * Returns new camera object with copied properties.
+     * \since QGIS 3.44
+     */
+    static std::unique_ptr<Qt3DRender::QCamera> copyCamera( Qt3DRender::QCamera *cam ) SIP_SKIP;
 };
 
 #endif // QGS3DUTILS_H

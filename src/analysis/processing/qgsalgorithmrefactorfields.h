@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsdistancearea.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -31,9 +31,7 @@
  */
 class QgsRefactorFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsRefactorFieldsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -41,29 +39,28 @@ class QgsRefactorFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsRefactorFieldsAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QgsFields mFields;
-    QList< QgsExpression > mExpressions;
+    QList<QgsExpression> mExpressions;
     bool mExpressionsPrepared = false;
     QgsExpressionContext mExpressionContext;
     QgsDistanceArea mDa;
     long long mRowNumber = 0;
-
 };
 
 ///@endcond PRIVATE

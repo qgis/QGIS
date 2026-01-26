@@ -18,7 +18,8 @@
 class QgsStoredExpression
 {
 %Docstring(signature="appended")
-Stored expression containing name, content (expression text) and a category tag.
+Stored expression containing name, content (expression text) and a
+category tag.
 
 .. versionadded:: 3.10
 %End
@@ -39,13 +40,14 @@ Stored expression containing name, content (expression text) and a category tag.
     QString id;
     QString name;
     QString expression;
-    Category tag;
+    QgsStoredExpression::Category tag;
 };
 
 class QgsStoredExpressionManager : QObject
 {
 %Docstring(signature="appended")
-Manages stored expressions regarding creation, modification and storing in the project
+Manages stored expressions regarding creation, modification and storing
+in the project.
 
 .. versionadded:: 3.10
 %End
@@ -63,7 +65,8 @@ Adds an expression to the list
 
 :param name: optional name of the expression
 :param expression: expression text
-:param tag: category of the expression use case - default FilterExpression
+:param tag: category of the expression use case - default
+            FilterExpression
 
 :return: generated id
 %End
@@ -127,7 +130,7 @@ Writes the stored expressions out in XML format
 
     bool readXml( const QDomNode &layerNode );
 %Docstring
-Reads the  stored expressions in in XML format
+Reads the stored expressions in in XML format
 %End
 
   signals:

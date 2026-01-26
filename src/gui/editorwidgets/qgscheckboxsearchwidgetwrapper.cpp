@@ -15,12 +15,14 @@
 
 #include "qgscheckboxsearchwidgetwrapper.h"
 
-#include "qgsfields.h"
 #include "qgscheckboxwidgetfactory.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 
-#include <QSettings>
 #include <QCheckBox>
+#include <QSettings>
+
+#include "moc_qgscheckboxsearchwidgetwrapper.cpp"
 
 QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
@@ -42,8 +44,19 @@ QVariant QgsCheckboxSearchWidgetWrapper::value() const
 {
   QVariant v;
 
+  const QMetaType::Type fieldType = layer()->fields().at( mFieldIdx ).type();
+
   if ( mCheckBox )
-    v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ), true ) : config( QStringLiteral( "UncheckedState" ), false );
+  {
+    if ( fieldType == QMetaType::Type::Bool )
+    {
+      v = mCheckBox->isChecked();
+    }
+    else
+    {
+      v = mCheckBox->isChecked() ? config( u"CheckedState"_s, true ) : config( u"UncheckedState"_s, false );
+    }
+  }
 
   return v;
 }
@@ -129,11 +142,25 @@ void QgsCheckboxSearchWidgetWrapper::setExpression( const QString &expression )
 {
   QString exp = expression;
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
+  const QMetaType::Type fieldType = layer()->fields().at( mFieldIdx ).type();
 
-  const QString str = QStringLiteral( "%1 = '%3'" )
-                      .arg( QgsExpression::quotedColumnRef( fieldName ),
-                            exp.replace( '\'', QLatin1String( "''" ) )
-                          );
+  QString str;
+  switch ( fieldType )
+  {
+    case QMetaType::Type::Bool:
+    case QMetaType::Type::Int:
+    case QMetaType::Type::UInt:
+    case QMetaType::Type::LongLong:
+    case QMetaType::Type::ULongLong:
+    case QMetaType::Type::Double:
+      str = u"%1 = %2"_s.arg( QgsExpression::quotedColumnRef( fieldName ), exp );
+      break;
+
+    default:
+      str = u"%1 = '%2'"_s
+              .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
+      break;
+  }
   mExpression = str;
 }
 
@@ -142,7 +169,18 @@ void QgsCheckboxSearchWidgetWrapper::stateChanged( int )
   if ( mCheckBox )
   {
     mCheckBox->setTristate( false );
-    const QString exp = value().toString();
+
+    QString exp;
+    const QVariant currentValue = value();
+    if ( currentValue.userType() == QMetaType::Type::Bool )
+    {
+      exp = currentValue.toBool() ? u"TRUE"_s : u"FALSE"_s;
+    }
+    else
+    {
+      exp = currentValue.toString();
+    }
+
     setExpression( exp );
     emit valueChanged();
     emit expressionChanged( mExpression );
@@ -166,5 +204,3 @@ void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget *editor )
     connect( mCheckBox, &QCheckBox::stateChanged, this, &QgsCheckboxSearchWidgetWrapper::stateChanged );
   }
 }
-
-

@@ -32,7 +32,7 @@
 class QgsChunkNode;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Element of a double-linked list
  *
  * \note Not available in Python bindings
@@ -40,20 +40,20 @@ class QgsChunkNode;
  */
 struct QgsChunkListEntry
 {
-  //! Constructs entry for a particular node
-  QgsChunkListEntry( QgsChunkNode *node )
-    : chunk( node )
-  {
-  }
+    //! Constructs entry for a particular node
+    QgsChunkListEntry( QgsChunkNode *node )
+      : chunk( node )
+    {
+    }
 
-  QgsChunkListEntry *prev = nullptr;
-  QgsChunkListEntry *next = nullptr;
-  QgsChunkNode *chunk;   //!< TODO: shared pointer
+    QgsChunkListEntry *prev = nullptr;
+    QgsChunkListEntry *next = nullptr;
+    QgsChunkNode *chunk; //!< TODO: shared pointer
 };
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Double linked list of chunks.
  *
  * The list does not own entries.

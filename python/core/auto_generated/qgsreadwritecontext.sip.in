@@ -13,7 +13,8 @@
 class QgsReadWriteContext
 {
 %Docstring(signature="appended")
-The class is used as a container of context for various read/write operations on other objects.
+A container for the context for various read/write operations on
+objects.
 %End
 
 %TypeHeaderCode
@@ -80,7 +81,7 @@ Append a message to the context
 .. versionadded:: 3.2
 %End
 
-QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
+      QgsReadWriteContextCategoryPopper enterCategory( const QString &category, const QString &details = QString() ) const /PyName=_enterCategory/;
 %Docstring
 Push a category to the stack
 
@@ -101,6 +102,7 @@ Push a category to the stack
 .. versionadded:: 3.2
 %End
 
+
     QList<QgsReadWriteContext::ReadWriteMessage> takeMessages();
 %Docstring
 Returns the stored messages and remove them
@@ -117,8 +119,9 @@ Returns the project translator
 
     void setProjectTranslator( QgsProjectTranslator *projectTranslator );
 %Docstring
-Sets the project translator.
-It's usually the :py:class:`QgsProject` where the function with the context is made and won't be changed anymore.
+Sets the project translator. It's usually the :py:class:`QgsProject`
+where the function with the context is made and won't be changed
+anymore.
 
 .. versionadded:: 3.4
 %End
@@ -141,14 +144,30 @@ Sets data coordinate transform context to ``transformContext``
 .. versionadded:: 3.8
 %End
 
+    const QString currentLayerId() const;
+%Docstring
+Returns the currently used layer id as string.
+
+.. versionadded:: 4.0
+%End
+
+    void setCurrentLayerId( const QString &layerId );
+%Docstring
+Sets the current layer id. So functions are able to emit the layer that
+is currently relevant.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 
 class QgsReadWriteContextCategoryPopper
 {
 %Docstring(signature="appended")
-Allows entering a context category and takes care of
-leaving this category on deletion of the class.
+Allows entering a context category and takes care of leaving this
+category on deletion of the class.
+
 This would happen when it gets out of scope.
 
 .. versionadded:: 3.2

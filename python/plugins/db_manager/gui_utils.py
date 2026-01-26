@@ -14,11 +14,7 @@ GUI Utilities
 import os
 from typing import Optional, Dict
 
-from qgis.PyQt.QtGui import (
-    QIcon,
-    QImage,
-    QPixmap
-)
+from qgis.PyQt.QtGui import QIcon, QImage, QPixmap
 
 
 class GuiUtils:
@@ -26,7 +22,7 @@ class GuiUtils:
     Utilities for GUI plugin components
     """
 
-    ICON_CACHE: Dict[str, QIcon] = {}
+    ICON_CACHE: dict[str, QIcon] = {}
 
     @staticmethod
     def get_icon(icon: str) -> QIcon:
@@ -62,12 +58,9 @@ class GuiUtils:
         :param icon: icon name (base part of file name)
         :return: icon svg path
         """
-        path = os.path.join(
-            os.path.dirname(__file__),
-            'icons',
-            icon + '.svg')
+        path = os.path.join(os.path.dirname(__file__), "icons", icon + ".svg")
         if not os.path.exists(path):
-            return ''
+            return ""
 
         return path
 
@@ -76,11 +69,8 @@ class GuiUtils:
         """
         Returns the path to a pixmap icon
         """
-        for suffix in ('.png', '.gif', '.xpm'):
-            path = os.path.join(
-                os.path.dirname(__file__),
-                'icons',
-                icon + suffix)
+        for suffix in (".png", ".gif", ".xpm"):
+            path = os.path.join(os.path.dirname(__file__), "icons", icon + suffix)
             if os.path.exists(path):
                 return path
 
@@ -107,11 +97,8 @@ class GuiUtils:
         :param file: file name (uifile name)
         :return: ui file path
         """
-        path = os.path.join(
-            os.path.dirname(__file__),
-            'ui',
-            file)
+        path = os.path.join(os.path.dirname(__file__), "ui", file)
         if not os.path.exists(path):
-            return ''
+            return ""
 
         return path

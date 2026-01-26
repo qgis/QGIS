@@ -19,22 +19,19 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
-
 class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
 
   public:
-
     QgsArcGisRestDataItemGuiProvider() = default;
 
     QString name() override
     {
-      return QStringLiteral( "afs_items" );
+      return u"afs_items"_s;
     }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void newConnection( QgsDataItem *item );

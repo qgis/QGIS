@@ -19,10 +19,9 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QDialog>
-
 #include "ui_qgstiledsceneconnectiondialog.h"
 
+#include <QDialog>
 
 class QgsTiledSceneConnectionDialog : public QDialog, public Ui::QgsTiledSceneConnectionDialog
 {
@@ -40,6 +39,8 @@ class QgsTiledSceneConnectionDialog : public QDialog, public Ui::QgsTiledSceneCo
   private slots:
     void updateOkButtonState();
 
+  private:
+    QString mOriginalConnectionName; //store initial name to delete entry in case of rename
 };
 
 ///@endcond

@@ -20,9 +20,11 @@
 #ifndef QGSWMSLAYERINFOS_H
 #define QGSWMSLAYERINFOS_H
 
-#include "qgsrectangle.h"
 #include "qgsmaplayerserverproperties.h"
+#include "qgsrectangle.h"
 
+class QgsCoordinateReferenceSystem;
+class QgsCoordinateTransformContext;
 class QgsServerInterface;
 class QgsProject;
 
@@ -41,15 +43,6 @@ class QgsWmsLayerInfos
 
     //! WMS layer name
     QString name;
-
-    //! WMS layer title
-    QString title;
-
-    //! WMS layer abstract
-    QString abstract;
-
-    //! WMS layer keywords
-    QStringList keywords;
 
     //! WMS layer WGS84 bounding rectangle (can be empty)
     QgsRectangle wgs84BoundingRect;
@@ -78,23 +71,10 @@ class QgsWmsLayerInfos
     //! WMS layer minimum scale (if negative, no maximum scale is defined)
     double minScale = -1.0;
 
-    //! WMS layer dataUrl
-    QString dataUrl;
-
-    //! WMS layer attribution
-    QString attribution;
-
-    //! WMS layer attribution URL
-    QString attributionUrl;
-
-    //! WMS layer metadata URLs
-    QList<QgsMapLayerServerProperties::MetadataUrl> metadataUrls;
-
     //! QGIS layer type
     Qgis::LayerType type;
 
   public:
-
     /**
      * Returns the WMS layers definition to build WMS capabilities
      *
@@ -109,10 +89,11 @@ class QgsWmsLayerInfos
      *
      * \since QGIS 3.28.0
      */
-    static QMap< QString, QgsWmsLayerInfos > buildWmsLayerInfos(
+    static QMap<QString, QgsWmsLayerInfos> buildWmsLayerInfos(
       QgsServerInterface *serverIface,
       const QgsProject *project,
-      const QList<QgsCoordinateReferenceSystem> &outputCrsList );
+      const QList<QgsCoordinateReferenceSystem> &outputCrsList
+    );
 
     /**
      * Returns a map with CRS authid as key and the transformed extent as value
@@ -126,11 +107,12 @@ class QgsWmsLayerInfos
      *
      * \since QGIS 3.28.0
      */
-    static QMap< QString, QgsRectangle > transformExtentToCrsList(
+    static QMap<QString, QgsRectangle> transformExtentToCrsList(
       const QgsRectangle &extent,
       const QgsCoordinateReferenceSystem &source,
       const QList<QgsCoordinateReferenceSystem> &destinations,
-      const QgsCoordinateTransformContext &context );
+      const QgsCoordinateTransformContext &context
+    );
 
     /**
      * Returns a transformed extent
@@ -150,7 +132,8 @@ class QgsWmsLayerInfos
       const QgsCoordinateReferenceSystem &source,
       const QgsCoordinateReferenceSystem &destination,
       const QgsCoordinateTransformContext &context,
-      const bool &ballparkTransformsAreAppropriate = false );
+      const bool &ballparkTransformsAreAppropriate = false
+    );
 
 }; // class QgsWmsLayerInfos
 

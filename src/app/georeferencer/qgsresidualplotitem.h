@@ -16,15 +16,15 @@
 #ifndef QGSRESIDUALPLOTITEM_H
 #define QGSRESIDUALPLOTITEM_H
 
-#include "qgslayoutitem.h"
 #include "qgsgcplist.h"
+#include "qgslayoutitem.h"
 #include "qgsrectangle.h"
 
 /**
  * A composer item to visualise the distribution of georeference residuals. For the visualisation,
  * the length of the residual arrows are scaled.
 */
-class QgsResidualPlotItem: public QgsLayoutItem
+class QgsResidualPlotItem : public QgsLayoutItem
 {
     Q_OBJECT
 
@@ -40,20 +40,21 @@ class QgsResidualPlotItem: public QgsLayoutItem
     void setGCPList( const QgsGCPList &list );
     const QgsGCPList &GCPList() const { return mGCPList; }
 
-    void setExtent( const QgsRectangle &rect ) { mExtent = rect;}
+    void setExtent( const QgsRectangle &rect ) { mExtent = rect; }
     QgsRectangle extent() const { return mExtent; }
 
     void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
     bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
 
     void draw( QgsLayoutItemRenderContext &context ) override;
+
   private:
     //gcp list
     QgsGCPList mGCPList;
 
     QgsRectangle mExtent;
     //! True if the scale bar units should be converted to map units. This can be done for transformation where the scaling in all directions is the same (helmert)
-    bool mConvertScaleToMapUnits;
+    bool mConvertScaleToMapUnits = false;
 
     //! Calculates maximal possible mm to pixel ratio such that the residual arrow is still inside the frame
     double maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM );

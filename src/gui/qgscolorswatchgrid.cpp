@@ -14,13 +14,17 @@
  ***************************************************************************/
 
 #include "qgscolorswatchgrid.h"
+
 #include "qgsapplication.h"
-#include "qgssymbollayerutils.h"
 #include "qgscolortooltip_p.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QMenu>
+#include "qgssymbollayerutils.h"
+
 #include <QBuffer>
+#include <QMenu>
+#include <QMouseEvent>
+#include <QPainter>
+
+#include "moc_qgscolorswatchgrid.cpp"
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 
@@ -28,11 +32,6 @@ QgsColorSwatchGrid::QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &c
   : QWidget( parent )
   , mScheme( scheme )
   , mContext( context )
-  , mDrawBoxDepressed( false )
-  , mCurrentHoverBox( -1 )
-  , mFocused( false )
-  , mCurrentFocusBox( 0 )
-  , mPressedOnWidget( false )
 {
   //need to receive all mouse over events
   setMouseTracking( true );
@@ -123,12 +122,11 @@ void QgsColorSwatchGrid::updateTooltip( const int colorIdx )
 
     QString info;
     if ( !colorName.isEmpty() )
-      info += QStringLiteral( "<h3>%1</h3><p>" ).arg( colorName );
+      info += u"<h3>%1</h3><p>"_s.arg( colorName );
 
     info += QgsColorTooltip::htmlDescription( color, this );
 
     setToolTip( info );
-
   }
   else
   {
@@ -150,7 +148,7 @@ void QgsColorSwatchGrid::mousePressEvent( QMouseEvent *event )
 
 void QgsColorSwatchGrid::mouseReleaseEvent( QMouseEvent *event )
 {
-  if ( ! mPressedOnWidget )
+  if ( !mPressedOnWidget )
   {
     return;
   }
@@ -175,11 +173,11 @@ void QgsColorSwatchGrid::keyPressEvent( QKeyEvent *event )
   //handle keyboard navigation
   if ( event->key() == Qt::Key_Right )
   {
-    mCurrentFocusBox = std::min< int >( mCurrentFocusBox + 1, mColors.length() - 1 );
+    mCurrentFocusBox = std::min<int>( mCurrentFocusBox + 1, mColors.length() - 1 );
   }
   else if ( event->key() == Qt::Key_Left )
   {
-    mCurrentFocusBox = std::max< int >( mCurrentFocusBox - 1, 0 );
+    mCurrentFocusBox = std::max<int>( mCurrentFocusBox - 1, 0 );
   }
   else if ( event->key() == Qt::Key_Up )
   {
@@ -263,8 +261,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
 
   //draw header text
   painter.setPen( headerTextColor );
-  painter.drawText( QRect( mLabelMargin, 0.25 * mLabelMargin, width() - 2 * mLabelMargin, mLabelHeight ),
-                    Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
+  painter.drawText( QRect( mLabelMargin, 0.25 * mLabelMargin, width() - 2 * mLabelMargin, mLabelHeight ), Qt::AlignLeft | Qt::AlignVCenter, mScheme->schemeName() );
 
   //draw color swatches
   QgsNamedColorList::const_iterator colorIt = mColors.constBegin();
@@ -274,9 +271,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
     const int row = index / NUMBER_COLORS_PER_ROW;
     const int column = index % NUMBER_COLORS_PER_ROW;
 
-    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin,
-                              row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin,
-                              mSwatchSize, mSwatchSize );
+    QRect swatchRect = QRect( column * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin, row * ( mSwatchSize + mSwatchSpacing ) + mSwatchMargin + mLabelHeight + 0.5 * mLabelMargin, mSwatchSize, mSwatchSize );
 
     if ( mCurrentHoverBox == index )
     {
@@ -331,7 +326,7 @@ QPixmap QgsColorSwatchGrid::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -362,8 +357,6 @@ int QgsColorSwatchGrid::swatchForPosition( QPoint position ) const
 QgsColorSwatchGridAction::QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu, const QString &context, QWidget *parent )
   : QWidgetAction( parent )
   , mMenu( menu )
-  , mSuppressRecurse( false )
-  , mDismissOnColorSelection( true )
 {
   mColorSwatchGrid = new QgsColorSwatchGrid( scheme, context, parent );
 

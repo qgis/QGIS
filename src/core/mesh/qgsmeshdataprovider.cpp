@@ -15,10 +15,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgis.h"
 #include "qgsmeshdataprovider.h"
+
+#include "qgis.h"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsthreadingutils.h"
+
+#include "moc_qgsmeshdataprovider.cpp"
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
     Qgis::DataProviderReadFlags flags )
@@ -135,7 +138,7 @@ bool QgsMeshDatasetSourceInterface::persistDatasetGroup(
   // Form DRIVER:filename
   QString filename = path;
   // ASCII dat supports face, edge and vertex datasets
-  QString driverName = QStringLiteral( "DAT" );
+  QString driverName = u"DAT"_s;
   QStringList parts = path.split( ':' );
   if ( parts.size() > 1 )
   {

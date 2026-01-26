@@ -16,26 +16,28 @@
 
 #include "qgsinternalgeometryengine.h"
 
+#include <functional>
+#include <geos_c.h>
+#include <memory>
+#include <random>
+
+#include "qgscircle.h"
+#include "qgscircularstring.h"
+#include "qgsfeedback.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgsgeometryutils.h"
+#include "qgsgeos.h"
+#include "qgslinesegment.h"
 #include "qgslinestring.h"
+#include "qgsmulticurve.h"
+#include "qgsmultilinestring.h"
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
-#include "qgsmulticurve.h"
-#include "qgscircularstring.h"
-#include "qgsgeometry.h"
-#include "qgsgeometryutils.h"
-#include "qgslinesegment.h"
-#include "qgscircle.h"
 #include "qgstessellator.h"
-#include "qgsfeedback.h"
-#include "qgsgeometryengine.h"
-#include "qgsmultilinestring.h"
-#include "qgsgeos.h"
+
 #include <QTransform>
-#include <functional>
-#include <memory>
 #include <queue>
-#include <random>
-#include <geos_c.h>
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
   : mGeometry( geometry.constGet() )
@@ -732,7 +734,7 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
     if ( extraNodesPerSegment < 0 )
     {
       // distance mode
-      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x2, y2, x1, y1 ) / distance );
+      extraNodesThisSegment = std::floor( QgsGeometryUtilsBase::distance2D( x1, y1, x2, y2 ) / distance );
       if ( extraNodesThisSegment >= 1 )
         multiplier = 1.0 / ( extraNodesThisSegment + 1 );
     }
@@ -768,6 +770,12 @@ QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = 
 
 QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extraNodesPerSegment = 1, double distance = 1 )
 {
+  if ( extraNodesPerSegment < 0 && qgsDoubleNear( distance, 0 ) )
+  {
+    // no change
+    return geom->clone();
+  }
+
   std::unique_ptr< QgsAbstractGeometry > segmentizedCopy;
   if ( QgsWkbTypes::isCurvedType( geom->wkbType() ) )
   {
@@ -841,9 +849,9 @@ QgsGeometry QgsInternalGeometryEngine::densifyByDistance( double distance ) cons
     return QgsGeometry();
   }
 
-  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point )
+  if ( QgsWkbTypes::geometryType( mGeometry->wkbType() ) == Qgis::GeometryType::Point || qgsDoubleNear( distance, 0 ) )
   {
-    return QgsGeometry( mGeometry->clone() ); // point geometry, nothing to do
+    return QgsGeometry( mGeometry->clone() ); // point geometry (or distance ~= 0), nothing to do
   }
 
   if ( const QgsGeometryCollection *gc = qgsgeometry_cast< const QgsGeometryCollection *>( mGeometry ) )
@@ -1098,7 +1106,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
   if ( linesToProcess.empty() )
   {
     QgsGeometry g;
-    g.mLastError = QStringLiteral( "Input geometry was not a curve type geometry" );
+    g.mLastError = u"Input geometry was not a curve type geometry"_s;
     return g;
   }
 
@@ -1154,7 +1162,7 @@ QgsGeometry QgsInternalGeometryEngine::variableWidthBuffer( int segments, const 
             // close ring
             points.append( points.at( 0 ) );
 
-            std::unique_ptr< QgsPolygon > poly = std::make_unique< QgsPolygon >();
+            auto poly = std::make_unique< QgsPolygon >();
             poly->setExteriorRing( new QgsLineString( points ) );
             if ( poly->area() > 0 )
               parts << QgsGeometry( std::move( poly ) );
@@ -1229,7 +1237,9 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 {
   // step 1 - tessellate the polygon to triangles
   QgsRectangle bounds = geometry->boundingBox();
-  QgsTessellator t( bounds, false, false, false, true );
+  QgsTessellator t;
+  t.setBounds( bounds );
+  t.setInputZValueIgnored( true );
 
   if ( const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geometry ) )
   {
@@ -1238,7 +1248,7 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
       if ( feedback && feedback->isCanceled() )
         return QVector< QgsPointXY >();
 
-      if ( QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i ) ) )
+      if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon * >( ms->geometryN( i ) ) )
       {
         t.addPolygon( *poly, 0 );
       }
@@ -1285,14 +1295,14 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
       return QVector< QgsPointXY >();
 
     const float aX = *it++;
+    const float aY = *it++;
     ( void )it++; // z
-    const float aY = -( *it++ );
     const float bX = *it++;
+    const float bY = *it++;
     ( void )it++; // z
-    const float bY = -( *it++ );
     const float cX = *it++;
+    const float cY = *it++;
     ( void )it++; // z
-    const float cY = -( *it++ );
 
     const double area = QgsGeometryUtilsBase::triangleArea( aX, aY, bX, bY, cX, cY );
     totalArea += area;
@@ -1338,11 +1348,11 @@ QVector<QgsPointXY> randomPointsInPolygonPoly2TriBackend( const QgsAbstractGeome
 
     // get triangle
     const double aX = triangleData.at( triangleIndex * 9 ) + bounds.xMinimum();
-    const double aY = -triangleData.at( triangleIndex * 9 + 2 ) + bounds.yMinimum();
+    const double aY = triangleData.at( triangleIndex * 9 + 1 ) + bounds.yMinimum();
     const double bX = triangleData.at( triangleIndex * 9 + 3 ) + bounds.xMinimum();
-    const double bY = -triangleData.at( triangleIndex * 9 + 5 ) + bounds.yMinimum();
+    const double bY = triangleData.at( triangleIndex * 9 + 4 ) + bounds.yMinimum();
     const double cX = triangleData.at( triangleIndex * 9 + 6 ) + bounds.xMinimum();
-    const double cY = -triangleData.at( triangleIndex * 9 + 8 ) + bounds.yMinimum();
+    const double cY = triangleData.at( triangleIndex * 9 + 7 ) + bounds.yMinimum();
     QgsGeometryUtilsBase::weightedPointInTriangle( aX, aY, bX, bY, cX, cY, weightB, weightC, x, y );
 
     QgsPointXY candidate( x, y );
@@ -1512,12 +1522,12 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
   {
     // already curved, so just return a copy
     std::unique_ptr< QgsCircularString > out;
-    out.reset( qgsgeometry_cast< QgsCircularString * >( curve )->clone() );
+    out.reset( qgsgeometry_cast< const QgsCircularString * >( curve )->clone() );
     return out;
   }
   else if ( flatType == Qgis::WkbType::CompoundCurve )
   {
-    std::unique_ptr< QgsCompoundCurve > out = std::make_unique< QgsCompoundCurve >();
+    auto out = std::make_unique< QgsCompoundCurve >();
     const QgsCompoundCurve *in = qgsgeometry_cast< const QgsCompoundCurve * >( curve );
     for ( int i = 0; i < in->nCurves(); i ++ )
     {
@@ -1541,9 +1551,9 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
   }
   else if ( flatType == Qgis::WkbType::LineString )
   {
-    const QgsLineString *lineString = qgsgeometry_cast< QgsLineString * >( curve );
+    const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( curve );
 
-    std::unique_ptr< QgsCompoundCurve > out = std::make_unique< QgsCompoundCurve >();
+    auto out = std::make_unique< QgsCompoundCurve >();
 
     /* Minimum number of edges, per quadrant, required to define an arc */
     const unsigned int minQuadEdges = 2;
@@ -1701,7 +1711,7 @@ std::unique_ptr< QgsCurve > lineToCurve( const QgsCurve *curve, double distanceT
         points.append( lineString->pointN( start ) );
         points.append( lineString->pointN( ( start + end + 1 ) / 2 ) );
         points.append( lineString->pointN( end + 1 ) );
-        std::unique_ptr< QgsCircularString > curvedSegment = std::make_unique< QgsCircularString >();
+        auto curvedSegment = std::make_unique< QgsCircularString >();
         curvedSegment->setPoints( points );
         out->addCurve( curvedSegment.release() );
       }
@@ -1746,7 +1756,7 @@ std::unique_ptr< QgsAbstractGeometry > convertGeometryToCurves( const QgsAbstrac
   {
     // polygon
     const QgsCurvePolygon *polygon = qgsgeometry_cast< const QgsCurvePolygon * >( geom );
-    std::unique_ptr< QgsCurvePolygon > result = std::make_unique< QgsCurvePolygon>();
+    auto result = std::make_unique< QgsCurvePolygon>();
 
     result->setExteriorRing( lineToCurve( polygon->exteriorRing(),
                                           distanceTolerance, angleTolerance ).release() );
@@ -1819,7 +1829,11 @@ QgsGeometry QgsInternalGeometryEngine::orientedMinimumBoundingBox( double &area,
   QgsPoint pt1;
   QgsPoint pt2;
   // get first point
-  hull->nextVertex( vertexId, pt0 );
+  if ( !hull->nextVertex( vertexId, pt0 ) )
+  {
+    return QgsGeometry();
+  }
+
   pt1 = pt0;
   double totalRotation = 0;
   while ( hull->nextVertex( vertexId, pt2 ) )
@@ -2016,7 +2030,7 @@ std::unique_ptr< QgsAbstractGeometry > triangularWavesPrivate( const QgsAbstract
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+    auto result = std::make_unique< QgsPolygon >();
 
     result->setExteriorRing( triangularWavesAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                              wavelength, amplitude, strictWavelength ).release() );
@@ -2047,7 +2061,7 @@ std::unique_ptr< QgsAbstractGeometry > triangularWavesRandomizedPrivate( const Q
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+    auto result = std::make_unique< QgsPolygon >();
 
     result->setExteriorRing( triangularWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                              minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
@@ -2312,7 +2326,7 @@ std::unique_ptr< QgsAbstractGeometry > squareWavesPrivate( const QgsAbstractGeom
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+    auto result = std::make_unique< QgsPolygon >();
 
     result->setExteriorRing( squareWavesAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                              wavelength, amplitude, strictWavelength ).release() );
@@ -2343,7 +2357,7 @@ std::unique_ptr< QgsAbstractGeometry > squareWavesRandomizedPrivate( const QgsAb
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+    auto result = std::make_unique< QgsPolygon >();
 
     result->setExteriorRing( squareWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                              minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
@@ -2467,7 +2481,7 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
 
   double distanceToNextPointFromStartOfSegment = wavelength / 8;
   int bufferIndex = 1;
-  std::unique_ptr< QgsLineString > out = std::make_unique< QgsLineString >();
+  auto out = std::make_unique< QgsLineString >();
 
   double segmentAngleRadians = 0;
   double remainingDistance = totalLength;
@@ -2491,14 +2505,7 @@ std::unique_ptr< QgsLineString > roundWavesAlongLine( const QgsLineString *line,
       const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
       const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
 
-      if ( bufferIndex == 0 )
-      {
-        xOutBuffer[0] = pX + side * amplitude * sinAngle;
-        yOutBuffer[0] = pY + side * amplitude * cosAngle;
-        bufferIndex = 1;
-        distanceToNextPointFromStartOfSegment += wavelength / 4;
-      }
-      else if ( bufferIndex == 1 && isFirstPart )
+      if ( bufferIndex == 1 && isFirstPart )
       {
         xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
         yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;
@@ -2595,7 +2602,7 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
 
   double distanceToNextPointFromStartOfSegment = wavelength / 8;
   int bufferIndex = 1;
-  std::unique_ptr< QgsLineString > out = std::make_unique< QgsLineString >();
+  auto out = std::make_unique< QgsLineString >();
 
   double segmentAngleRadians = 0;
 
@@ -2620,14 +2627,7 @@ std::unique_ptr< QgsLineString > roundWavesRandomizedAlongLine( const QgsLineStr
       const double sinAngle = std::sin( segmentAngleRadians + M_PI_2 );
       const double cosAngle = std::cos( segmentAngleRadians + M_PI_2 );
 
-      if ( bufferIndex == 0 )
-      {
-        xOutBuffer[0] = pX + side * amplitude * sinAngle;
-        yOutBuffer[0] = pY + side * amplitude * cosAngle;
-        bufferIndex = 1;
-        distanceToNextPointFromStartOfSegment += wavelength / 4;
-      }
-      else if ( bufferIndex == 1 && isFirstPart )
+      if ( bufferIndex == 1 && isFirstPart )
       {
         xOutBuffer[1] = ( xOutBuffer[0] + pX - side * amplitude * sinAngle ) * 0.5;
         yOutBuffer[1] = ( yOutBuffer[0] + pY - side * amplitude * cosAngle ) * 0.5;
@@ -2728,7 +2728,7 @@ std::unique_ptr< QgsAbstractGeometry > roundWavesPrivate( const QgsAbstractGeome
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+    auto result = std::make_unique< QgsPolygon >();
 
     result->setExteriorRing( roundWavesAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                              wavelength, amplitude, strictWavelength ).release() );
@@ -2759,7 +2759,7 @@ std::unique_ptr< QgsAbstractGeometry > roundWavesRandomizedPrivate( const QgsAbs
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsPolygon > result = std::make_unique< QgsPolygon >();
+    auto result = std::make_unique< QgsPolygon >();
 
     result->setExteriorRing( roundWavesRandomizedAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                              minimumWavelength, maximumWavelength, minimumAmplitude, maximumAmplitude, uniformDist, mt ).release() );
@@ -2874,7 +2874,7 @@ std::unique_ptr< QgsMultiLineString > dashPatternAlongLine( const QgsLineString 
   double prevX = *x++;
   double prevY = *y++;
 
-  std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+  auto result = std::make_unique< QgsMultiLineString >();
 
   QVector< double > outX;
   QVector< double > outY;
@@ -3111,7 +3111,7 @@ std::unique_ptr< QgsAbstractGeometry > applyDashPatternPrivate( const QgsAbstrac
   {
     // polygon
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
-    std::unique_ptr< QgsMultiLineString > result = std::make_unique< QgsMultiLineString >();
+    auto result = std::make_unique< QgsMultiLineString >();
 
     std::unique_ptr< QgsMultiLineString > exteriorParts = dashPatternAlongLine( static_cast< const QgsLineString * >( polygon->exteriorRing() ), pattern, startRule, endRule, adjustment, patternOffset );
     for ( int i = 0; i < exteriorParts->numGeometries(); ++i )

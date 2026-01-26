@@ -20,10 +20,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QVector>
-
-#include "qgsrasterrenderer.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterrenderer.h"
+
+#include <QVector>
 
 class QColor;
 class QDomElement;
@@ -155,7 +155,8 @@ class CORE_EXPORT QgsPalettedRasterRenderer: public QgsRasterRenderer
     QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
     QList<int> usesBands() const override;
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**

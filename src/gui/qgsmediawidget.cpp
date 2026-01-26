@@ -15,15 +15,17 @@
  ***************************************************************************/
 
 #include "qgsmediawidget.h"
+
 #include "qgsapplication.h"
 
-#include <QLabel>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QSlider>
+#include <QVBoxLayout>
 #include <QVideoWidget>
 
+#include "moc_qgsmediawidget.cpp"
 
 QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   : QWidget( parent )
@@ -42,7 +44,7 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
 
   mPlayButton = new QPushButton( this );
   mPlayButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
-  mPlayButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPlay.svg" ) ) );
+  mPlayButton->setIcon( QgsApplication::getThemeIcon( u"/mActionPlay.svg"_s ) );
   mPlayButton->setCheckable( true );
   controlsLayout->addWidget( mPlayButton );
 
@@ -54,9 +56,9 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   mDurationLabel = new QLabel( this );
   mDurationLabel->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
   mDurationLabel->setAlignment( Qt::AlignHCenter );
-  mDurationLabel->setText( QStringLiteral( "-" ) );
+  mDurationLabel->setText( u"-"_s );
   QFontMetrics fm( mDurationLabel->font() );
-  mDurationLabel->setMinimumWidth( fm.boundingRect( QStringLiteral( "00:00:00" ) ).width() );
+  mDurationLabel->setMinimumWidth( fm.boundingRect( u"00:00:00"_s ).width() );
   controlsLayout->addWidget( mDurationLabel );
 
   QWidget *controls = new QWidget();
@@ -71,18 +73,12 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   mMediaPlayer.setVideoOutput( mVideoWidget );
 
   connect( &mMediaPlayer, &QMediaPlayer::mediaStatusChanged, this, &QgsMediaWidget::mediaStatusChanged );
-  connect( &mMediaPlayer, &QMediaPlayer::positionChanged, this, [ = ]()
-  {
+  connect( &mMediaPlayer, &QMediaPlayer::positionChanged, this, [this]() {
     mPositionSlider->setValue( static_cast<int>( mMediaPlayer.position() / 1000 ) );
   } );
 
-  connect( mPlayButton, &QAbstractButton::clicked, this, [ = ]()
-  {
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+  connect( mPlayButton, &QAbstractButton::clicked, this, [this]() {
     if ( mMediaPlayer.playbackState() == QMediaPlayer::PlayingState )
-#else
-    if ( mMediaPlayer.state() == QMediaPlayer::PlayingState )
-#endif
     {
       mMediaPlayer.pause();
     }
@@ -91,8 +87,7 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
       mMediaPlayer.play();
     }
   } );
-  connect( mPositionSlider, &QAbstractSlider::sliderReleased, this, [ = ]()
-  {
+  connect( mPositionSlider, &QAbstractSlider::sliderReleased, this, [this]() {
     mMediaPlayer.setPosition( static_cast<qint64>( mPositionSlider->value() ) * 1000 );
   } );
 }
@@ -103,11 +98,7 @@ void QgsMediaWidget::setMediaPath( const QString &path )
     return;
 
   mMediaPath = path;
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   mMediaPlayer.setSource( QUrl::fromLocalFile( path ) );
-#else
-  mMediaPlayer.setMedia( QUrl::fromLocalFile( path ) );
-#endif
 }
 
 void QgsMediaWidget::setMode( Mode mode )
@@ -169,9 +160,7 @@ void QgsMediaWidget::mediaStatusChanged( QMediaPlayer::MediaStatus status )
       seconds -= hours * 3600;
       const int minutes = std::floor( seconds / 60 );
       seconds -= minutes * 60;
-      mDurationLabel->setText( QStringLiteral( "%1:%2:%3" ).arg( QString::number( hours ), 2, '0' )
-                               .arg( QString::number( minutes ), 2, '0' )
-                               .arg( QString::number( seconds ), 2, '0' ) );
+      mDurationLabel->setText( u"%1:%2:%3"_s.arg( QString::number( hours ), 2, '0' ).arg( QString::number( minutes ), 2, '0' ).arg( QString::number( seconds ), 2, '0' ) );
       break;
     }
 
@@ -197,13 +186,10 @@ void QgsMediaWidget::mediaStatusChanged( QMediaPlayer::MediaStatus status )
     }
 
     case QMediaPlayer::NoMedia:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    case QMediaPlayer::UnknownMediaStatus:
-#endif
-      {
-        setControlsEnabled( false );
-        mDurationLabel->setText( QStringLiteral( "-" ) );
-        break;
-      }
+    {
+      setControlsEnabled( false );
+      mDurationLabel->setText( u"-"_s );
+      break;
+    }
   }
 }

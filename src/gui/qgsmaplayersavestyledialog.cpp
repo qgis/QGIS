@@ -13,17 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaplayersavestyledialog.h"
+
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmaplayerstylecategoriesmodel.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPushButton>
 
-#include "qgsmaplayersavestyledialog.h"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsmaplayerstylecategoriesmodel.h"
-#include "qgsmaplayerstylemanager.h"
-#include "qgsvectorlayer.h"
+#include "moc_qgsmaplayersavestyledialog.cpp"
 
 QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -34,11 +37,10 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
 
   QgsSettings settings;
 
-  const QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
+  const QString myLastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
   // save style type combobox
-  connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
+  connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this, layer]( int ) {
     const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
     mFileLabel->setVisible( type != QgsLayerPropertiesDialog::DatasourceDatabase && type != QgsLayerPropertiesDialog::UserDatabase );
     mFileWidget->setVisible( type != QgsLayerPropertiesDialog::DatasourceDatabase && type != QgsLayerPropertiesDialog::UserDatabase );
@@ -63,18 +65,19 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsMapLayerSaveStyleDialog::updateSaveButtonState );
   mFileWidget->setStorageMode( QgsFileWidget::SaveFile );
   mFileWidget->setDefaultRoot( myLastUsedDir );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
-  {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, []( const QString &path ) {
     QgsSettings settings;
     const QFileInfo tmplFileInfo( path );
-    settings.setValue( QStringLiteral( "style/lastStyleDir" ), tmplFileInfo.absolutePath() );
+    settings.setValue( u"style/lastStyleDir"_s, tmplFileInfo.absolutePath() );
   } );
 
   // fill style categories
   mModel = new QgsMapLayerStyleCategoriesModel( mLayer->type(), this );
-  const QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( QStringLiteral( "style/lastStyleCategories" ), QgsMapLayer::AllStyleCategories );
+  const QgsMapLayer::StyleCategories lastStyleCategories = settings.flagValue( u"style/lastStyleCategories"_s, QgsMapLayer::AllStyleCategories );
   mModel->setCategories( lastStyleCategories );
   mStyleCategoriesListView->setModel( mModel );
+  mStyleCategoriesListView->setWordWrap( true );
+  mStyleCategoriesListView->setItemDelegate( new QgsCategoryDisplayLabelDelegate( this ) );
 
   // select and deselect all categories
   connect( mSelectAllButton, &QPushButton::clicked, this, &QgsMapLayerSaveStyleDialog::selectAll );
@@ -84,7 +87,6 @@ QgsMapLayerSaveStyleDialog::QgsMapLayerSaveStyleDialog( QgsMapLayer *layer, QWid
   mStyleCategoriesListView->adjustSize();
 
   setupMultipleStyles();
-
 }
 
 void QgsMapLayerSaveStyleDialog::invertSelection()
@@ -131,7 +133,7 @@ void QgsMapLayerSaveStyleDialog::populateStyleComboBox()
 
 void QgsMapLayerSaveStyleDialog::accept()
 {
-  QgsSettings().setFlagValue( QStringLiteral( "style/lastStyleCategories" ), styleCategories() );
+  QgsSettings().setFlagValue( u"style/lastStyleCategories"_s, styleCategories() );
   QDialog::accept();
 }
 
@@ -142,9 +144,9 @@ void QgsMapLayerSaveStyleDialog::updateSaveButtonState()
   switch ( type )
   {
     case QgsLayerPropertiesDialog::DatasourceDatabase:
-      if ( saveOnlyCurrentStyle( ) )
+      if ( saveOnlyCurrentStyle() )
       {
-        enabled = ! mDbStyleNameEdit->text().isEmpty();
+        enabled = !mDbStyleNameEdit->text().isEmpty();
       }
       else
       {
@@ -153,7 +155,7 @@ void QgsMapLayerSaveStyleDialog::updateSaveButtonState()
       break;
     case QgsLayerPropertiesDialog::QML:
     case QgsLayerPropertiesDialog::SLD:
-      enabled = ! mFileWidget->filePath().isEmpty();
+      enabled = !mFileWidget->filePath().isEmpty();
       break;
     case QgsLayerPropertiesDialog::UserDatabase:
       enabled = true;
@@ -189,7 +191,7 @@ QgsLayerPropertiesDialog::StyleType QgsMapLayerSaveStyleDialog::currentStyleType
 
 void QgsMapLayerSaveStyleDialog::readUiFileContent( const QString &filePath )
 {
-  QgsSettings myQSettings;  // where we keep last used filter in persistent state
+  QgsSettings myQSettings; // where we keep last used filter in persistent state
   mUiFileContent = QString();
 
   if ( filePath.isNull() )
@@ -201,17 +203,16 @@ void QgsMapLayerSaveStyleDialog::readUiFileContent( const QString &filePath )
   QFile uiFile( myFI.filePath() );
 
   const QString myPath = myFI.path();
-  myQSettings.setValue( QStringLiteral( "style/lastStyleDir" ), myPath );
+  myQSettings.setValue( u"style/lastStyleDir"_s, myPath );
 
   if ( uiFile.open( QIODevice::ReadOnly ) )
   {
     const QString content( uiFile.readAll() );
     QDomDocument doc;
 
-    if ( !doc.setContent( content ) || doc.documentElement().tagName().compare( QLatin1String( "ui" ) ) )
+    if ( !doc.setContent( content ) || doc.documentElement().tagName().compare( "ui"_L1 ) )
     {
-      QMessageBox::warning( this, tr( "Attach UI File" ),
-                            tr( "The selected file does not appear to be a valid Qt Designer UI file." ) );
+      QMessageBox::warning( this, tr( "Attach UI File" ), tr( "The selected file does not appear to be a valid Qt Designer UI file." ) );
       return;
     }
     mUiFileContent = content;
@@ -221,7 +222,7 @@ void QgsMapLayerSaveStyleDialog::readUiFileContent( const QString &filePath )
 void QgsMapLayerSaveStyleDialog::setupMultipleStyles()
 {
   // Show/hide part of the UI according to multiple style support
-  if ( ! mSaveOnlyCurrentStyle )
+  if ( !mSaveOnlyCurrentStyle )
   {
     const QgsMapLayerStyleManager *styleManager { mLayer->styleManager() };
     const QStringList constStyles = styleManager->styles();
@@ -246,8 +247,8 @@ void QgsMapLayerSaveStyleDialog::setupMultipleStyles()
     mDbStyleNameEdit->setToolTip( QString() );
   }
 
-  mStylesWidget->setVisible( ! mSaveOnlyCurrentStyle );
-  mStylesWidgetLabel->setVisible( ! mSaveOnlyCurrentStyle );
+  mStylesWidget->setVisible( !mSaveOnlyCurrentStyle );
+  mStylesWidgetLabel->setVisible( !mSaveOnlyCurrentStyle );
 
   mDbStyleDescriptionEdit->setVisible( mSaveOnlyCurrentStyle );
   descriptionLabel->setVisible( mSaveOnlyCurrentStyle );
@@ -279,7 +280,7 @@ Qgis::SldExportOptions QgsMapLayerSaveStyleDialog::sldExportOptions() const
 {
   Qgis::SldExportOptions options;
 
-  if ( mStyleTypeComboBox->currentData( ) == QgsLayerPropertiesDialog::SLD && mSldExportPng->isChecked() )
+  if ( mStyleTypeComboBox->currentData() == QgsLayerPropertiesDialog::SLD && mSldExportPng->isChecked() )
   {
     options.setFlag( Qgis::SldExportOption::Png );
   }
@@ -288,5 +289,5 @@ Qgis::SldExportOptions QgsMapLayerSaveStyleDialog::sldExportOptions() const
 
 void QgsMapLayerSaveStyleDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-and-share-layer-properties" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#save-and-share-layer-properties"_s );
 }

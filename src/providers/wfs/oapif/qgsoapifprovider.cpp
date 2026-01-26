@@ -13,40 +13,43 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsexpressionnodeimpl.h"
+#include "qgsoapifprovider.h"
+
+#include <algorithm>
+
+#include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgsbackgroundcachedfeaturesource.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
-#include "qgsoapifprovider.h"
-#include "qgsoapiflandingpagerequest.h"
 #include "qgsoapifapirequest.h"
 #include "qgsoapifcollection.h"
 #include "qgsoapifconformancerequest.h"
 #include "qgsoapifcreatefeaturerequest.h"
-#include "qgsoapifcql2textexpressioncompiler.h"
 #include "qgsoapifdeletefeaturerequest.h"
+#include "qgsoapifitemsrequest.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsoapifoptionsrequest.h"
 #include "qgsoapifpatchfeaturerequest.h"
 #include "qgsoapifputfeaturerequest.h"
-#include "qgsoapifitemsrequest.h"
-#include "qgsoapifoptionsrequest.h"
 #include "qgsoapifqueryablesrequest.h"
+#include "qgsoapifschemarequest.h"
+#include "qgsoapifshareddata.h"
 #include "qgsoapifsingleitemrequest.h"
+#include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
-#include "qgswfsutils.h" // for isCompatibleType()
+#include "qgswfsdescribefeaturetype.h"
+#include "qgsxmlschemaanalyzer.h"
 
-#include <algorithm>
 #include <QIcon>
-#include <QUrlQuery>
 
-const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = QStringLiteral( "OAPIF" );
-const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = QStringLiteral( "OGC API - Features data provider" );
+#include "moc_qgsoapifprovider.cpp"
 
-const QString QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS = QStringLiteral( "http://www.opengis.net/def/crs/OGC/1.3/CRS84" );
+const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = u"OAPIF"_s;
+const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = u"OGC API - Features data provider"_s;
 
 QgsOapifProvider::QgsOapifProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
-  : QgsVectorDataProvider( uri, options, flags ),
-    mShared( new QgsOapifSharedData( uri ) )
+  : QgsVectorDataProvider( uri, options, flags ), mShared( new QgsOapifSharedData( uri ) )
 {
-
   connect( mShared.get(), &QgsOapifSharedData::raiseError, this, &QgsOapifProvider::pushErrorSlot );
   connect( mShared.get(), &QgsOapifSharedData::extentUpdated, this, &QgsOapifProvider::fullExtentCalculated );
 
@@ -151,20 +154,16 @@ bool QgsOapifProvider::init()
       mShared->mPageSize = 100; // fallback to arbitrary page size
   }
 
-  mShared->mCollectionUrl =
-    landingPageRequest.collectionsUrl() + QStringLiteral( "/" ) + mShared->mURI.typeName();
-  std::unique_ptr<QgsOapifCollectionRequest> collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
-  if ( !collectionRequest->request( synchronous, forceRefresh ) ||
-       collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
+  mShared->mCollectionUrl = landingPageRequest.collectionsUrl() + u"/"_s + mShared->mURI.typeName();
+  auto collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
+  if ( !collectionRequest->request( synchronous, forceRefresh ) || collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
   {
-
     // Retry with a trailing slash. Works around a bug with
     // https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address not working
     // but https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address/ working
-    mShared->mCollectionUrl +=  QStringLiteral( "/" );
+    mShared->mCollectionUrl += '/'_L1;
     collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
-    if ( !collectionRequest->request( synchronous, forceRefresh ) ||
-         collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
+    if ( !collectionRequest->request( synchronous, forceRefresh ) || collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
     {
       return false;
     }
@@ -172,35 +171,27 @@ bool QgsOapifProvider::init()
 
   bool implementsPart2 = false;
   const QString &conformanceUrl = landingPageRequest.conformanceUrl();
+  bool implementsSchemas = false;
   if ( !conformanceUrl.isEmpty() )
   {
     QgsOapifConformanceRequest conformanceRequest( mShared->mURI.uri() );
     const QStringList conformanceClasses = conformanceRequest.conformanceClasses( conformanceUrl );
-    implementsPart2 = conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs" ) );
+    implementsPart2 = conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-2/1.0/conf/crs"_L1 );
 
-    const bool implementsCql2Text =
-      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text" ) ) ||
-        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text" ) ) );
-    mShared->mServerSupportsFilterCql2Text =
-      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2" ) ) ||
-        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2" ) ) ) &&
-      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter" ) ) ||
-        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter" ) ) ) &&
-      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter" ) ) ||
-        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter" ) ) ) &&
-      implementsCql2Text;
-    mShared->mServerSupportsLikeBetweenIn =
-      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators" ) ) ||
-        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators" ) ) );
-    mShared->mServerSupportsCaseI =
-      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison" ) ) ||
-        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison" ) ) );
-    mShared->mServerSupportsBasicSpatialOperators =
-      ( conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators" ) ) ||
-        conformanceClasses.contains( QLatin1String( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators" ) ) );
+    const bool implementsCql2Text = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/cql2-text"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/cql2-text"_L1 ) );
+    mShared->mServerSupportsFilterCql2Text = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-cql2"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-cql2"_L1 ) ) && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/filter"_L1 ) ) && ( conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/0.0/conf/features-filter"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-3/1.0/conf/features-filter"_L1 ) ) && implementsCql2Text;
+    mShared->mServerSupportsLikeBetweenIn = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/advanced-comparison-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/advanced-comparison-operators"_L1 ) );
+    mShared->mServerSupportsCaseI = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/case-insensitive-comparison"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/case-insensitive-comparison"_L1 ) );
+    mShared->mServerSupportsBasicSpatialFunctions = ( conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-functions"_L1 ) ||
+                                                      // Two below names are deprecated
+                                                      conformanceClasses.contains( "http://www.opengis.net/spec/cql2/0.0/conf/basic-spatial-operators"_L1 ) || conformanceClasses.contains( "http://www.opengis.net/spec/cql2/1.0/conf/basic-spatial-operators"_L1 ) );
+    implementsSchemas = conformanceClasses.contains( "http://www.opengis.net/spec/ogcapi-features-5/1.0/conf/schemas"_L1 );
   }
 
-  mLayerMetadata = collectionRequest->collection().mLayerMetadata;
+  const QgsOapifCollection &collectionDesc = collectionRequest->collection();
+
+  mLayerMetadata = collectionDesc.mLayerMetadata;
+  mFeatureCount = collectionDesc.mFeatureCount;
 
   QString srsName = mShared->mURI.SRSName();
   if ( implementsPart2 && !srsName.isEmpty() )
@@ -212,23 +203,30 @@ bool QgsOapifProvider::init()
   }
   else if ( implementsPart2 && mLayerMetadata.crs().isValid() )
   {
-    // WORKAROUND: Recreate a CRS object with fromOgcWmsCrs because when copying the
-    // CRS his mPj pointer gets deleted and it is impossible to create a transform
+    // Recreate a CRS object with fromOgcWmsCrs  because its mPj pointer got
+    // deleted because it got acquired by a thread that has now disappeared
+    // and without it, it is impossible to create a transform
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mLayerMetadata.crs().authid() );
     mShared->mSourceCrs.setCoordinateEpoch( mLayerMetadata.crs().coordinateEpoch() );
   }
   else
   {
     mShared->mSourceCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-                            QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+      OAPIF_PROVIDER_DEFAULT_CRS
+    );
   }
-  mShared->mCapabilityExtent = collectionRequest->collection().mBbox;
+  mShared->mCapabilityExtent = collectionDesc.mBbox;
 
   // Reproject extent of /collection request to the layer CRS
-  if ( !mShared->mCapabilityExtent.isNull() &&
-       collectionRequest->collection().mBboxCrs != mShared->mSourceCrs )
+  if ( !mShared->mCapabilityExtent.isNull() && collectionDesc.mBboxCrs != mShared->mSourceCrs )
   {
-    QgsCoordinateTransform ct( collectionRequest->collection().mBboxCrs, mShared->mSourceCrs, transformContext() );
+    // Recreate a CRS object with fromOgcWmsCrs because its mPj pointer got
+    // deleted because it got acquired by a thread that has now disappeared
+    // and without it, it is impossible to create a transform
+    QgsCoordinateReferenceSystem bboxCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( collectionDesc.mBboxCrs.authid() );
+    bboxCrs.setCoordinateEpoch( collectionDesc.mBboxCrs.coordinateEpoch() );
+
+    QgsCoordinateTransform ct( bboxCrs, mShared->mSourceCrs, transformContext() );
     ct.setBallparkTransformsAreAppropriate( true );
     QgsDebugMsgLevel( "before ext:" + mShared->mCapabilityExtent.toString(), 4 );
     try
@@ -248,14 +246,47 @@ bool QgsOapifProvider::init()
 
   if ( mShared->mServerSupportsFilterCql2Text )
   {
-    const QString queryablesUrl = mShared->mCollectionUrl +  QStringLiteral( "/queryables" );
+    const QString queryablesUrl = mShared->mCollectionUrl + u"/queryables"_s;
     QgsOapifQueryablesRequest queryablesRequest( mShared->mURI.uri() );
     mShared->mQueryables = queryablesRequest.queryables( queryablesUrl );
   }
 
-  mShared->mItemsUrl = mShared->mCollectionUrl +  QStringLiteral( "/items" );
+  mShared->mItemsUrl = mShared->mCollectionUrl + u"/items"_s;
 
-  QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QStringLiteral( "?limit=10" ) ) );
+  mShared->mFeatureFormat = mShared->mURI.outputFormat();
+  if ( !mShared->mFeatureFormat.isEmpty() )
+  {
+    auto it = collectionDesc.mMapFeatureFormatToUrl.find( mShared->mFeatureFormat );
+    if ( it != collectionDesc.mMapFeatureFormatToUrl.end() )
+    {
+      mShared->mItemsUrl = *it;
+
+      if ( mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
+      {
+        auto it2 = collectionDesc.mMapFeatureFormatToBulkDownloadUrl.find( mShared->mFeatureFormat );
+        if ( it2 != collectionDesc.mMapFeatureFormatToBulkDownloadUrl.end() )
+        {
+          mShared->mBulkDownloadGmlUrl = *it2;
+        }
+      }
+    }
+    else
+    {
+      mShared->mFeatureFormat.clear();
+    }
+  }
+
+  QString tenFeaturesRequestUrl = mShared->mItemsUrl;
+  if ( tenFeaturesRequestUrl.indexOf( '?'_L1 ) < 0 )
+    tenFeaturesRequestUrl += '?'_L1;
+  else
+    tenFeaturesRequestUrl += '&'_L1;
+  tenFeaturesRequestUrl += "limit=10"_L1;
+  if ( mShared->mSourceCrs
+       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
+    tenFeaturesRequestUrl += u"&crs=%1"_s.arg( mShared->mSourceCrs.toOgcUri() );
+
+  QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( tenFeaturesRequestUrl ), mShared->mFeatureFormat );
   if ( mShared->mCapabilityExtent.isNull() )
   {
     itemsRequest.setComputeBbox();
@@ -279,9 +310,9 @@ bool QgsOapifProvider::init()
     mShared->mCapabilityExtent = itemsRequest.bbox();
     if ( !mShared->mCapabilityExtent.isNull() )
     {
-      QgsCoordinateReferenceSystem defaultCrs =
-        QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-          QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+      QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
+        OAPIF_PROVIDER_DEFAULT_CRS
+      );
       if ( defaultCrs != mShared->mSourceCrs )
       {
         QgsCoordinateTransform ct( defaultCrs, mShared->mSourceCrs, transformContext() );
@@ -299,15 +330,88 @@ bool QgsOapifProvider::init()
         }
       }
     }
-
   }
 
   mShared->mFields = itemsRequest.fields();
+  mShared->mGeometryAttribute = itemsRequest.geometryColumnName();
   mShared->mWKBType = itemsRequest.wkbType();
   mShared->mFoundIdTopLevel = itemsRequest.foundIdTopLevel();
   mShared->mFoundIdInProperties = itemsRequest.foundIdInProperties();
 
   computeCapabilities( itemsRequest );
+
+  bool trySchemasLink = true;
+
+  // If we got a link to an XML schema and that the feature format is GML,
+  // try to analyze this XML schema to get the fields
+  if ( !collectionDesc.mXmlSchemaUrl.isEmpty() && mShared->mFeatureFormat.startsWith( "application/gml+xml"_L1 ) )
+  {
+    QgsWFSDescribeFeatureType describeFeatureType( mShared->mURI );
+    if ( !describeFeatureType.sendGET( collectionDesc.mXmlSchemaUrl, QString(), true, false ) )
+    {
+      QgsMessageLog::logMessage( QObject::tr( "Network request to get XML schema failed for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, describeFeatureType.errorMessage() ), QObject::tr( "OAPIF" ) );
+    }
+    else
+    {
+      QByteArray response = describeFeatureType.response();
+      QDomDocument describeFeatureDocument;
+      bool geometryMaybeMissing = false;
+      bool metadataRetrievalCanceled = false;
+      QString errorMsg;
+      const bool hasZ = QgsWkbTypes::hasZ( mShared->mWKBType );
+      if ( !describeFeatureDocument.setContent( response, true, &errorMsg ) )
+      {
+        QgsDebugMsgLevel( response, 4 );
+        QgsMessageLog::logMessage( QObject::tr( "Cannot parse XML schema for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, errorMsg ), QObject::tr( "OAPIF" ) );
+      }
+      else if ( !QgsXmlSchemaAnalyzer::readAttributesFromSchema(
+                  QObject::tr( "OAPIF" ), mShared.get(), mCapabilities,
+                  describeFeatureDocument, response, /* singleLayerContext = */ true,
+                  mShared->mURI.typeName(), mShared->mGeometryAttribute,
+                  mShared->mFields, mShared->mWKBType, geometryMaybeMissing,
+                  errorMsg, metadataRetrievalCanceled
+                ) )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Analysis of XML schema failed for url %1: %2" ).arg( collectionDesc.mXmlSchemaUrl, errorMsg ), QObject::tr( "OAPIF" ) );
+      }
+      else
+      {
+        // GML schema analysis cannot infer if Z is used. So if the sampling
+        // of the initial features has detected Z, add it back.
+        if ( hasZ )
+          mShared->mWKBType = QgsWkbTypes::addZ( mShared->mWKBType );
+        trySchemasLink = false;
+      }
+    }
+  }
+
+  if ( implementsSchemas && trySchemasLink )
+  {
+    QString schemaUrl;
+    // Find a link for rel=http://www.opengis.net/def/rel/ogc/1.0/schema (or [ogc-rel:schema])
+    // whose mime type is in priority "application/schema+json"
+    // Also accept "application/json" as lower priority
+    for ( const QgsAbstractMetadataBase::Link &link : mLayerMetadata.links() )
+    {
+      if ( link.name == "http://www.opengis.net/def/rel/ogc/1.0/schema"_L1 || link.name == "[ogc-rel:schema]"_L1 )
+      {
+        if ( link.mimeType == "application/schema+json" )
+        {
+          schemaUrl = link.url;
+          break;
+        }
+        else if ( link.mimeType == "application/json" )
+        {
+          schemaUrl = link.url;
+          // Go on in case there is a later mimeType == "application/schema+json"
+        }
+      }
+    }
+    if ( !schemaUrl.isEmpty() )
+    {
+      handleGetSchemaRequest( schemaUrl );
+    }
+  }
 
   return true;
 }
@@ -337,17 +441,26 @@ long long QgsOapifProvider::featureCount() const
   // If no filter is set try the fast way of retrieving the feature count
   if ( mSubsetString.isEmpty() )
   {
+    if ( mShared->mServerFilter.isEmpty() && mFeatureCount >= 0 )
+    {
+      return mFeatureCount;
+    }
+
     QString url = mShared->mItemsUrl;
-    url += QLatin1String( "?limit=1" );
+    if ( url.indexOf( '?'_L1 ) < 0 )
+      url += '?'_L1;
+    else
+      url += '&'_L1;
+    url += "limit=1"_L1;
     url = mShared->appendExtraQueryParameters( url );
 
     if ( !mShared->mServerFilter.isEmpty() )
     {
-      url += QLatin1Char( '&' );
+      url += '&'_L1;
       url += mShared->mServerFilter;
     }
 
-    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url );
+    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url, mShared->mFeatureFormat );
     if ( !itemsRequest.request( true, false ) )
       return -1;
     if ( itemsRequest.errorCode() != QgsBaseNetworkRequest::NoError )
@@ -381,7 +494,7 @@ long long QgsOapifProvider::featureCount() const
         countExact = false;
         break;
       }
-      count ++;
+      count++;
     }
 
     mShared->setFeatureCount( count, countExact );
@@ -418,9 +531,7 @@ bool QgsOapifProvider::isValid() const
 
 void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsRequest )
 {
-  mCapabilities = Qgis::VectorProviderCapability::SelectAtId |
-                  Qgis::VectorProviderCapability::ReadLayerMetadata |
-                  Qgis::VectorProviderCapability::ReloadData;
+  mCapabilities = Qgis::VectorProviderCapability::SelectAtId | Qgis::VectorProviderCapability::ReadLayerMetadata | Qgis::VectorProviderCapability::ReloadData;
 
   // Determine edition capabilities: create (POST on /items),
   // update (PUT on /items/some_id) and delete (DELETE on /items/some_id)
@@ -428,7 +539,7 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QgsOapifOptionsRequest optionsItemsRequest( uri );
   QStringList supportedOptions = optionsItemsRequest.sendOPTIONS( mShared->mItemsUrl );
-  if ( supportedOptions.contains( QLatin1String( "POST" ) ) )
+  if ( supportedOptions.contains( "POST"_L1 ) )
   {
     mCapabilities |= Qgis::VectorProviderCapability::AddFeatures;
 
@@ -443,23 +554,23 @@ void QgsOapifProvider::computeCapabilities( const QgsOapifItemsRequest &itemsReq
       // If there is no existing feature, it is not obvious to know if the
       // server supports PUT and DELETE on items. Attempt to request OPTIONS
       // on a fake object...
-      testId = QStringLiteral( "unknown_id" );
+      testId = u"unknown_id"_s;
     }
     QgsOapifOptionsRequest optionsOneItemRequest( uri );
     QString url( mShared->mItemsUrl );
-    url += QLatin1Char( '/' );
+    url += '/'_L1;
     url += testId;
     supportedOptions = optionsOneItemRequest.sendOPTIONS( url );
-    if ( supportedOptions.contains( QLatin1String( "PUT" ) ) )
+    if ( supportedOptions.contains( "PUT"_L1 ) )
     {
       mCapabilities |= Qgis::VectorProviderCapability::ChangeAttributeValues;
       mCapabilities |= Qgis::VectorProviderCapability::ChangeGeometries;
     }
-    if ( supportedOptions.contains( QLatin1String( "DELETE" ) ) )
+    if ( supportedOptions.contains( "DELETE"_L1 ) )
     {
       mCapabilities |= Qgis::VectorProviderCapability::DeleteFeatures;
     }
-    if ( supportedOptions.contains( QLatin1String( "PATCH" ) ) )
+    if ( supportedOptions.contains( "PATCH"_L1 ) )
     {
       mSupportsPatch = true;
     }
@@ -491,12 +602,13 @@ bool QgsOapifProvider::empty() const
   request.setLimit( 1 );
 #endif
   return !getFeatures( request ).nextFeature( f );
-
 };
+
+QString QgsOapifProvider::geometryColumnName() const { return mShared->mGeometryAttribute; }
 
 bool QgsOapifProvider::setSubsetString( const QString &filter, bool updateFeatureCount )
 {
-  QgsDebugMsgLevel( QStringLiteral( "filter = '%1'" ).arg( filter ), 4 );
+  QgsDebugMsgLevel( u"filter = '%1'"_s.arg( filter ), 4 );
 
   if ( filter == mSubsetString )
     return true;
@@ -551,7 +663,7 @@ QString QgsOapifProvider::subsetStringDialect() const
 
 QString QgsOapifProvider::subsetStringHelpUrl() const
 {
-  return QStringLiteral( "https://portal.ogc.org/files/96288#cql-core" );
+  return u"https://portal.ogc.org/files/96288#cql-core"_s;
 }
 
 bool QgsOapifProvider::supportsSubsetString() const
@@ -559,7 +671,7 @@ bool QgsOapifProvider::supportsSubsetString() const
   return true;
 }
 
-QgsOapifProvider::FilterTranslationState QgsOapifProvider::filterTranslatedState() const
+QgsOapifFilterTranslationState QgsOapifProvider::filterTranslatedState() const
 {
   return mShared->mFilterTranslationState;
 }
@@ -574,13 +686,26 @@ void QgsOapifProvider::handlePostCloneOperations( QgsVectorDataProvider *source 
   mShared = qobject_cast<QgsOapifProvider *>( source )->mShared;
 }
 
+void QgsOapifProvider::handleGetSchemaRequest( const QString &schemaUrl )
+{
+  QgsOapifSchemaRequest schemaRequest( mShared->mURI.uri() );
+  const QgsOapifSchemaRequest::Schema schema = schemaRequest.schema( schemaUrl );
+  if ( schemaRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+  {
+    mShared->mFields = schema.mFields;
+    mShared->mGeometryAttribute = schema.mGeometryColumnName;
+    if ( schema.mWKBType != Qgis::WkbType::Unknown )
+      mShared->mWKBType = schema.mWKBType;
+  }
+}
+
 bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 {
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QStringList jsonIds;
   QString contentCrs;
   if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -600,8 +725,7 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // If there's no feature["properties"]["id"] field in the JSON returned by the
     // /items request, but there's a "id" field, it means that feature["id"]
     // is non-numeric. Thus set the one returned by the createFeature() request
-    if ( !( flags & QgsFeatureSink::FastInsert ) &&
-         !mShared->mFoundIdInProperties && idFieldIdx >= 0 )
+    if ( !( flags & QgsFeatureSink::FastInsert ) && !mShared->mFoundIdInProperties && idFieldIdx >= 0 )
     {
       f.setAttribute( idFieldIdx, id );
     }
@@ -610,9 +734,8 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
     // /items/{id} request.
     if ( !( flags & QgsFeatureSink::FastInsert ) )
     {
-      QgsOapifSingleItemRequest itemRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QString( QStringLiteral( "/" ) + id ) ) );
-      if ( itemRequest.request( /*synchronous=*/ true, /*forceRefresh=*/ true ) &&
-           itemRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+      QgsOapifSingleItemRequest itemRequest( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mItemsUrl + QString( u"/"_s + id ) ) );
+      if ( itemRequest.request( /*synchronous=*/true, /*forceRefresh=*/true ) && itemRequest.errorCode() == QgsBaseNetworkRequest::NoError )
       {
         const QgsFeature &updatedFeature = itemRequest.feature();
         if ( updatedFeature.isValid() )
@@ -645,9 +768,9 @@ bool QgsOapifProvider::addFeatures( QgsFeatureList &flist, Flags flags )
   if ( !( flags & QgsFeatureSink::FastInsert ) )
   {
     // And now set the feature id from the one got from the database
-    QMap< QString, QgsFeatureId > map;
+    QMap<QString, QgsFeatureId> map;
     for ( int idx = 0; idx < serializedFeatureList.size(); idx++ )
-      map[ serializedFeatureList[idx].second ] = serializedFeatureList[idx].first.id();
+      map[serializedFeatureList[idx].second] = serializedFeatureList[idx].first.id();
 
     idIt = jsonIds.constBegin();
     featureIt = flist.begin();
@@ -666,7 +789,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QString contentCrs;
   if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -679,7 +802,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     QString jsonId = mShared->findUniqueId( qgisFid );
     if ( jsonId.isEmpty() )
     {
-      pushError( QStringLiteral( "Cannot identify feature of id %1" ).arg( qgisFid ) );
+      pushError( u"Cannot identify feature of id %1"_s.arg( qgisFid ) );
       return false;
     }
 
@@ -689,7 +812,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsOapifPatchFeatureRequest req( uri );
       if ( !req.patchFeature( mShared.get(), jsonId, geomIt.value(), contentCrs, hasAxisInverted ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -702,7 +825,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsFeature f;
       if ( !featureIterator.nextFeature( f ) )
       {
-        pushError( QStringLiteral( "Cannot retrieve feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot retrieve feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
 
@@ -713,7 +836,7 @@ bool QgsOapifProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
       QgsOapifPutFeatureRequest req( uri );
       if ( !req.putFeature( mShared.get(), jsonId, f, contentCrs, hasAxisInverted ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -728,7 +851,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
   QgsDataSourceUri uri( mShared->mURI.uri() );
   QString contentCrs;
   if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
+       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( OAPIF_PROVIDER_DEFAULT_CRS ) )
   {
     contentCrs = mShared->mSourceCrs.toOgcUri();
   }
@@ -741,7 +864,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
     QString jsonId = mShared->findUniqueId( qgisFid );
     if ( jsonId.isEmpty() )
     {
-      pushError( QStringLiteral( "Cannot identify feature of id %1" ).arg( qgisFid ) );
+      pushError( u"Cannot identify feature of id %1"_s.arg( qgisFid ) );
       return false;
     }
 
@@ -751,7 +874,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsOapifPatchFeatureRequest req( uri );
       if ( !req.patchFeature( mShared.get(), jsonId, attIt.value() ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -764,7 +887,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsFeature f;
       if ( !featureIterator.nextFeature( f ) )
       {
-        pushError( QStringLiteral( "Cannot retrieve feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot retrieve feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
 
@@ -779,7 +902,7 @@ bool QgsOapifProvider::changeAttributeValues( const QgsChangedAttributesMap &att
       QgsOapifPutFeatureRequest req( uri );
       if ( !req.putFeature( mShared.get(), jsonId, f, contentCrs, hasAxisInverted ) )
       {
-        pushError( QStringLiteral( "Cannot modify feature of id %1" ).arg( qgisFid ) );
+        pushError( u"Cannot modify feature of id %1"_s.arg( qgisFid ) );
         return false;
       }
     }
@@ -803,13 +926,13 @@ bool QgsOapifProvider::deleteFeatures( const QgsFeatureIds &ids )
     QString jsonId = mShared->findUniqueId( id );
     if ( jsonId.isEmpty() )
     {
-      pushError( QStringLiteral( "Cannot identify feature of id %1" ).arg( id ) );
+      pushError( u"Cannot identify feature of id %1"_s.arg( id ) );
       return false;
     }
 
     QgsOapifDeleteFeatureRequest req( uri );
-    QUrl url( mShared->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );
-    if ( ! req.sendDELETE( url ) )
+    QUrl url( mShared->mItemsUrl + QString( u"/"_s + jsonId ) );
+    if ( !req.sendDELETE( url ) )
     {
       pushError( tr( "Feature deletion failed: %1" ).arg( req.errorMessage() ) );
       return false;
@@ -837,653 +960,6 @@ QString QgsOapifProvider::description() const
 
 // ---------------------------------
 
-QgsOapifSharedData::QgsOapifSharedData( const QString &uri )
-  : QgsBackgroundCachedSharedData( "oapif", tr( "OAPIF" ) )
-  , mURI( uri )
-{
-  mHideProgressDialog = mURI.hideDownloadProgressDialog();
-}
-
-QgsOapifSharedData::~QgsOapifSharedData()
-{
-  QgsDebugMsgLevel( QStringLiteral( "~QgsOapifSharedData()" ), 4 );
-
-  cleanup();
-}
-
-QString QgsOapifSharedData::appendExtraQueryParameters( const QString &url ) const
-{
-  if ( mExtraQueryParameters.isEmpty() || url.indexOf( mExtraQueryParameters ) > 0 )
-    return url;
-  const int nPos = url.indexOf( '?' );
-  if ( nPos < 0 )
-    return url + '?' + mExtraQueryParameters;
-  return url + '&' + mExtraQueryParameters;
-}
-
-bool QgsOapifSharedData::isRestrictedToRequestBBOX() const
-{
-  return mURI.isRestrictedToRequestBBOX();
-}
-
-
-std::unique_ptr<QgsFeatureDownloaderImpl> QgsOapifSharedData::newFeatureDownloaderImpl( QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
-{
-  return std::unique_ptr<QgsFeatureDownloaderImpl>( new QgsOapifFeatureDownloaderImpl( this, downloader, requestMadeFromMainThread ) );
-}
-
-
-void QgsOapifSharedData::invalidateCacheBaseUnderLock()
-{
-}
-
-QgsOapifSharedData *QgsOapifSharedData::clone() const
-{
-  QgsOapifSharedData *copy = new QgsOapifSharedData( mURI.uri( true ) );
-  copy->mWKBType = mWKBType;
-  copy->mPageSize = mPageSize;
-  copy->mExtraQueryParameters = mExtraQueryParameters;
-  copy->mCollectionUrl = mCollectionUrl;
-  copy->mItemsUrl = mItemsUrl;
-  copy->mServerFilter = mServerFilter;
-  copy->mFoundIdTopLevel = mFoundIdTopLevel;
-  copy->mFoundIdInProperties = mFoundIdInProperties;
-  copy->mSimpleQueryables = mSimpleQueryables;
-  copy->mServerSupportsFilterCql2Text = mServerSupportsFilterCql2Text;
-  copy->mServerSupportsLikeBetweenIn = mServerSupportsLikeBetweenIn;
-  copy->mServerSupportsCaseI = mServerSupportsCaseI;
-  copy->mServerSupportsBasicSpatialOperators = mServerSupportsBasicSpatialOperators;
-  copy->mQueryables = mQueryables;
-  QgsBackgroundCachedSharedData::copyStateToClone( copy );
-
-  return copy;
-}
-
-static QDateTime getDateTimeValue( const QVariant &v )
-{
-  if ( v.userType() == QMetaType::Type::QString )
-    return QDateTime::fromString( v.toString(), Qt::ISODateWithMs );
-  else if ( v.userType() == QMetaType::Type::QDateTime )
-    return v.toDateTime();
-  return QDateTime();
-}
-
-static bool isDateTime( const QVariant &v )
-{
-  return getDateTimeValue( v ).isValid();
-}
-
-static QString getDateTimeValueAsString( const QVariant &v )
-{
-  if ( v.userType() == QMetaType::Type::QString )
-    return v.toString();
-  else if ( v.userType() == QMetaType::Type::QDateTime )
-    return v.toDateTime().toOffsetFromUtc( 0 ).toString( Qt::ISODateWithMs );
-  return QString();
-}
-
-static bool isDateTimeField( const QgsFields &fields, const QString &fieldName )
-{
-  const int idx = fields.indexOf( fieldName );
-  if ( idx >= 0 )
-  {
-    const auto type = fields.at( idx ).type();
-    return type == QMetaType::Type::QDateTime || type == QMetaType::Type::QDate;
-  }
-  return false;
-}
-
-static QString getEncodedQueryParam( const QString &key, const QString &value )
-{
-  QUrlQuery query;
-  query.addQueryItem( key, value );
-  return query.toString( QUrl::FullyEncoded );
-}
-
-static void collectTopLevelAndNodes( const QgsExpressionNode *node,
-                                     std::vector<const QgsExpressionNode *> &topAndNodes )
-{
-  if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
-  {
-    const auto binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
-    const auto op = binNode->op();
-    if ( op == QgsExpressionNodeBinaryOperator::boAnd )
-    {
-      collectTopLevelAndNodes( binNode->opLeft(), topAndNodes );
-      collectTopLevelAndNodes( binNode->opRight(), topAndNodes );
-      return;
-    }
-  }
-  topAndNodes.push_back( node );
-}
-
-QString QgsOapifSharedData::compileExpressionNodeUsingPart1(
-  const QgsExpressionNode *rootNode,
-  QgsOapifProvider::FilterTranslationState &translationState,
-  QString &untranslatedPart ) const
-{
-  std::vector<const QgsExpressionNode *> topAndNodes;
-  collectTopLevelAndNodes( rootNode, topAndNodes );
-  QDateTime minDate;
-  QDateTime maxDate;
-  QString minDateStr;
-  QString maxDateStr;
-  QStringList equalityComparisons;
-  bool hasTranslatedParts = false;
-  for ( size_t i = 0; i < topAndNodes.size(); /* do not increment here */ )
-  {
-    bool removeMe = false;
-    const auto node = topAndNodes[i];
-    if ( node->nodeType() == QgsExpressionNode::ntBinaryOperator )
-    {
-      const auto binNode = static_cast<const QgsExpressionNodeBinaryOperator *>( node );
-      const auto op = binNode->op();
-      if ( binNode->opLeft()->nodeType() == QgsExpressionNode::ntColumnRef &&
-           binNode->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
-      {
-        const auto left = static_cast<const QgsExpressionNodeColumnRef *>( binNode->opLeft() );
-        const auto right = static_cast<const QgsExpressionNodeLiteral *>( binNode->opRight() );
-        if ( isDateTimeField( mFields, left->name() ) &&
-             isDateTime( right->value() ) )
-        {
-          if ( op == QgsExpressionNodeBinaryOperator::boGE ||
-               op == QgsExpressionNodeBinaryOperator::boGT ||
-               op == QgsExpressionNodeBinaryOperator::boEQ )
-          {
-            removeMe = true;
-            if ( !minDate.isValid() || getDateTimeValue( right->value() ) > minDate )
-            {
-              minDate = getDateTimeValue( right->value() );
-              minDateStr = getDateTimeValueAsString( right->value() );
-            }
-          }
-          if ( op == QgsExpressionNodeBinaryOperator::boLE ||
-               op == QgsExpressionNodeBinaryOperator::boLT ||
-               op == QgsExpressionNodeBinaryOperator::boEQ )
-          {
-            removeMe = true;
-            if ( !maxDate.isValid() || getDateTimeValue( right->value() ) < maxDate )
-            {
-              maxDate = getDateTimeValue( right->value() );
-              maxDateStr = getDateTimeValueAsString( right->value() );
-            }
-          }
-        }
-        else if ( op == QgsExpressionNodeBinaryOperator::boEQ &&
-                  mFields.indexOf( left->name() ) >= 0 )
-        {
-          // Filtering based on Part 1 /rec/core/fc-filters recommendation.
-          const auto iter = mSimpleQueryables.find( left->name() );
-          if ( iter != mSimpleQueryables.end() )
-          {
-            if ( iter->mType == QLatin1String( "string" ) &&
-                 right->value().userType() == QMetaType::Type::QString )
-            {
-              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toString() );
-              removeMe = true;
-            }
-            else if ( ( iter->mType == QLatin1String( "integer" ) ||
-                        iter->mType == QLatin1String( "number" ) ) &&
-                      right->value().userType() == QMetaType::Type::Int )
-            {
-              equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toInt() ) );
-              removeMe = true;
-            }
-            else if ( iter->mType == QLatin1String( "number" ) &&
-                      right->value().userType() == QMetaType::Type::Double )
-            {
-              equalityComparisons << getEncodedQueryParam( left->name(), QString::number( right->value().toDouble() ) );
-              removeMe = true;
-            }
-            else if ( iter->mType == QLatin1String( "boolean" ) &&
-                      right->value().userType() == QMetaType::Type::Bool )
-            {
-              equalityComparisons << getEncodedQueryParam( left->name(), right->value().toBool() ? QLatin1String( "true" ) : QLatin1String( "false" ) );
-              removeMe = true;
-            }
-          }
-        }
-      }
-    }
-    if ( removeMe )
-    {
-      hasTranslatedParts = true;
-      topAndNodes.erase( topAndNodes.begin() + i );
-    }
-    else
-      ++i;
-  }
-
-  QString ret;
-  if ( minDate.isValid() && maxDate.isValid() )
-  {
-    if ( minDate == maxDate )
-    {
-      ret = QStringLiteral( "datetime=" ) + minDateStr;
-    }
-    else
-    {
-      ret = QStringLiteral( "datetime=" ) + minDateStr + QStringLiteral( "%2F" ) + maxDateStr;
-    }
-  }
-  else if ( minDate.isValid() )
-  {
-    // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
-    ret = QStringLiteral( "datetime=" ) + minDateStr + QStringLiteral( "%2F9999-12-31T00:00:00Z" );
-  }
-  else if ( maxDate.isValid() )
-  {
-    // TODO: use ellipsis '..' instead of dummy upper bound once more servers are compliant
-    ret = QStringLiteral( "datetime=0000-01-01T00:00:00Z%2F" ) + maxDateStr;
-  }
-
-  for ( const QString &equalityComparison : equalityComparisons )
-  {
-    if ( !ret.isEmpty() )
-      ret += QLatin1Char( '&' );
-    ret += equalityComparison;
-  }
-
-  if ( !hasTranslatedParts )
-  {
-    untranslatedPart = rootNode->dump();
-    translationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
-  }
-  else if ( topAndNodes.empty() )
-  {
-    untranslatedPart.clear();
-    translationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
-  }
-  else
-  {
-    translationState = QgsOapifProvider::FilterTranslationState::PARTIAL;
-
-    // Collect part(s) of the filter to be evaluated on client-side
-    if ( topAndNodes.size() == 1 )
-    {
-      untranslatedPart = topAndNodes[0]->dump();
-    }
-    else
-    {
-      for ( size_t i = 0; i < topAndNodes.size(); ++i )
-      {
-        if ( i == 0 )
-          untranslatedPart = QStringLiteral( "(" );
-        else
-          untranslatedPart += QLatin1String( " AND (" );
-        untranslatedPart += topAndNodes[i]->dump();
-        untranslatedPart += QLatin1Char( ')' );
-      }
-    }
-  }
-
-  return ret;
-}
-
-bool QgsOapifSharedData::computeFilter( const QgsExpression &expr,
-                                        QgsOapifProvider::FilterTranslationState &translationState,
-                                        QString &serverSideParameters,
-                                        QString &clientSideFilterExpression ) const
-{
-  const auto rootNode = expr.rootNode();
-  if ( !rootNode )
-    return false;
-
-  if ( mServerSupportsFilterCql2Text )
-  {
-    const bool invertAxisOrientation = mSourceCrs.hasAxisInverted();
-    QgsOapifCql2TextExpressionCompiler compiler(
-      mQueryables, mServerSupportsLikeBetweenIn, mServerSupportsCaseI,
-      mServerSupportsBasicSpatialOperators, invertAxisOrientation );
-    QgsOapifCql2TextExpressionCompiler::Result res = compiler.compile( &expr );
-    if ( res == QgsOapifCql2TextExpressionCompiler::Fail )
-    {
-      clientSideFilterExpression = expr.rootNode()->dump();
-      translationState = QgsOapifProvider::FilterTranslationState::FULLY_CLIENT;
-      return true;
-    }
-    serverSideParameters = getEncodedQueryParam( QStringLiteral( "filter" ), compiler.result() );
-    serverSideParameters += QLatin1String( "&filter-lang=cql2-text" );
-    if ( compiler.geometryLiteralUsed() )
-    {
-      if ( mSourceCrs
-           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
-      {
-        serverSideParameters += QStringLiteral( "&filter-crs=%1" ).arg( mSourceCrs.toOgcUri() );
-      }
-    }
-
-    clientSideFilterExpression.clear();
-    if ( res == QgsOapifCql2TextExpressionCompiler::Partial )
-    {
-      translationState = QgsOapifProvider::FilterTranslationState::PARTIAL;
-    }
-    else
-    {
-      translationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
-    }
-    return true;
-  }
-
-  serverSideParameters = compileExpressionNodeUsingPart1( rootNode, translationState, clientSideFilterExpression );
-  return true;
-}
-
-bool QgsOapifSharedData::computeServerFilter( QString &errorMsg )
-{
-  errorMsg.clear();
-  mClientSideFilterExpression = mURI.filter();
-  mServerFilter.clear();
-  if ( mClientSideFilterExpression.isEmpty() )
-  {
-    mFilterTranslationState = QgsOapifProvider::FilterTranslationState::FULLY_SERVER;
-    return true;
-  }
-
-  const QgsExpression expr( mClientSideFilterExpression );
-  bool ret = computeFilter( expr, mFilterTranslationState, mServerFilter, mClientSideFilterExpression );
-  if ( ret )
-  {
-    if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::PARTIAL )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "Part of the filter will be evaluated on client-side: %1" ).arg( mClientSideFilterExpression ), 2 );
-    }
-    else if ( mFilterTranslationState == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "Whole filter will be evaluated on client-side" ), 2 );
-    }
-  }
-  return ret;
-}
-
-QString QgsOapifSharedData::computedExpression( const QgsExpression &expression ) const
-{
-  if ( !expression.isValid() )
-    return QString();
-  QgsOapifProvider::FilterTranslationState translationState;
-  QString serverParameters;
-  QString clientSideFilterExpression;
-  computeFilter( expression, translationState, serverParameters, clientSideFilterExpression );
-  return serverParameters;
-}
-
-void QgsOapifSharedData::pushError( const QString &errorMsg ) const
-{
-  QgsMessageLog::logMessage( errorMsg, tr( "OAPIF" ) );
-  emit raiseError( errorMsg );
-}
-
-// ---------------------------------
-
-QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread ):
-  QgsFeatureDownloaderImpl( shared, downloader ),
-  mShared( shared )
-{
-  QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread );
-}
-
-QgsOapifFeatureDownloaderImpl::~QgsOapifFeatureDownloaderImpl()
-{
-}
-
-void QgsOapifFeatureDownloaderImpl::createProgressTask()
-{
-  QgsFeatureDownloaderImpl::createProgressTask( mNumberMatched );
-  CONNECT_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
-}
-
-void QgsOapifFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeatures )
-{
-  QEventLoop loop;
-  connect( this, &QgsOapifFeatureDownloaderImpl::doStop, &loop, &QEventLoop::quit );
-
-  const bool useProgressDialog = ( !mShared->mHideProgressDialog && maxFeatures != 1 );
-
-  long long maxTotalFeatures = 0;
-  if ( maxFeatures > 0 && mShared->mMaxFeatures > 0 )
-  {
-    maxTotalFeatures = std::min( maxFeatures, mShared->mMaxFeatures );
-  }
-  else if ( maxFeatures > 0 )
-  {
-    maxTotalFeatures = maxFeatures;
-  }
-  else
-  {
-    maxTotalFeatures = mShared->mMaxFeatures;
-  }
-
-  long long totalDownloadedFeatureCount = 0;
-  bool interrupted = false;
-  bool success = true;
-  QString errorMessage;
-  QString url;
-
-  long long maxFeaturesThisRequest = maxTotalFeatures;
-  if ( mShared->mPageSize > 0 )
-  {
-    if ( maxFeaturesThisRequest > 0 )
-    {
-      maxFeaturesThisRequest = std::min( maxFeaturesThisRequest, mShared->mPageSize );
-    }
-    else
-    {
-      maxFeaturesThisRequest = mShared->mPageSize;
-    }
-  }
-  url = mShared->mItemsUrl;
-  bool hasQueryParam = false;
-  if ( maxFeaturesThisRequest > 0 )
-  {
-    url += QStringLiteral( "?limit=%1" ).arg( maxFeaturesThisRequest );
-    hasQueryParam = true;
-  }
-
-  // mServerFilter comes from the translation of the uri "filter" parameter
-  // mServerExpression comes from the translation of a getFeatures() expression
-  if ( !mShared->mServerFilter.isEmpty() )
-  {
-    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
-    if ( !mShared->mServerExpression.isEmpty() )
-    {
-      // Combine mServerFilter and mServerExpression
-      QStringList components1 = mShared->mServerFilter.split( QLatin1Char( '&' ) );
-      QStringList components2 = mShared->mServerExpression.split( QLatin1Char( '&' ) );
-      Q_ASSERT( components1[0].startsWith( QLatin1String( "filter=" ) ) );
-      Q_ASSERT( components2[0].startsWith( QLatin1String( "filter=" ) ) );
-      url += QLatin1String( "filter=" );
-      url += '(';
-      url += components1[0].mid( static_cast<int>( strlen( "filter=" ) ) );
-      url += QLatin1String( ") AND (" );
-      url += components2[0].mid( static_cast<int>( strlen( "filter=" ) ) );
-      url += ')';
-      // Add components1 extra parameters: filter-lang and filter-crs
-      for ( int i = 1; i < components1.size(); ++i )
-      {
-        url += '&';
-        url += components1[i];
-      }
-      // Add components2 extra parameters, not already included in components1
-      for ( int i = 1; i < components2.size(); ++i )
-      {
-        if ( !components1.contains( components2[i] ) )
-        {
-          url += '&';
-          url += components1[i];
-        }
-      }
-    }
-    else
-    {
-      url += mShared->mServerFilter;
-    }
-    hasQueryParam = true;
-  }
-  else if ( !mShared->mServerExpression.isEmpty() )
-  {
-    url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
-    url += mShared->mServerExpression;
-    hasQueryParam = true;
-  }
-
-  QgsRectangle rect = mShared->currentRect();
-  if ( !rect.isNull() )
-  {
-    if ( mShared->mSourceCrs.isGeographic() )
-    {
-      // Clamp to avoid server errors.
-      rect.setXMinimum( std::max( -180.0, rect.xMinimum() ) );
-      rect.setYMinimum( std::max( -90.0, rect.yMinimum() ) );
-      rect.setXMaximum( std::min( 180.0, rect.xMaximum() ) );
-      rect.setYMaximum( std::min( 90.0, rect.yMaximum() ) );
-      if ( rect.xMinimum() > 180.0 || rect.yMinimum() > 90.0 || rect.xMaximum()  < -180.0 || rect.yMaximum() < -90.0 )
-      {
-        // completely out of range. Servers could error out
-        url.clear();
-        rect = QgsRectangle();
-      }
-    }
-
-    if ( mShared->mSourceCrs.hasAxisInverted() )
-      rect.invert();
-
-    if ( ! rect.isNull() )
-    {
-      url += ( hasQueryParam ? QStringLiteral( "&" ) : QStringLiteral( "?" ) );
-      url += QStringLiteral( "bbox=%1,%2,%3,%4" )
-             .arg( qgsDoubleToString( rect.xMinimum() ),
-                   qgsDoubleToString( rect.yMinimum() ),
-                   qgsDoubleToString( rect.xMaximum() ),
-                   qgsDoubleToString( rect.yMaximum() ) );
-
-      if ( mShared->mSourceCrs
-           != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
-        url += QStringLiteral( "&bbox-crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
-    }
-  }
-
-  if ( mShared->mSourceCrs
-       != QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) )
-    url += QStringLiteral( "&crs=%1" ).arg( mShared->mSourceCrs.toOgcUri() );
-
-  while ( !url.isEmpty() )
-  {
-    url = mShared->appendExtraQueryParameters( url );
-
-    if ( maxTotalFeatures > 0 && totalDownloadedFeatureCount >= maxTotalFeatures )
-    {
-      break;
-    }
-
-    QgsOapifItemsRequest itemsRequest( mShared->mURI.uri(), url );
-    connect( &itemsRequest, &QgsOapifItemsRequest::gotResponse, &loop, &QEventLoop::quit );
-    itemsRequest.request( false /* synchronous*/, true /* forceRefresh */ );
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
-    if ( mStop )
-    {
-      interrupted = true;
-      success = false;
-      break;
-    }
-    if ( itemsRequest.errorCode() != QgsBaseNetworkRequest::NoError )
-    {
-      errorMessage = itemsRequest.errorMessage();
-      success = false;
-      break;
-    }
-    if ( itemsRequest.features().empty() )
-    {
-      break;
-    }
-    url = itemsRequest.nextUrl();
-
-    // Consider if we should display a progress dialog
-    // We can only do that if we know how many features will be downloaded
-    if ( mNumberMatched < 0 && !mTimer && useProgressDialog && itemsRequest.numberMatched() > 0 )
-    {
-      mNumberMatched = itemsRequest.numberMatched();
-      CREATE_PROGRESS_TASK( QgsOapifFeatureDownloaderImpl );
-    }
-
-    totalDownloadedFeatureCount += itemsRequest.features().size();
-    if ( !mStop )
-    {
-      emit updateProgress( totalDownloadedFeatureCount );
-    }
-
-    QVector<QgsFeatureUniqueIdPair> featureList;
-    size_t i = 0;
-    const QgsFields srcFields = itemsRequest.fields();
-    const QgsFields dstFields = mShared->fields();
-    for ( const auto &pair : itemsRequest.features() )
-    {
-      // In the case the features of the current page have not the same schema
-      // as the layer, convert them
-      const QgsFeature &f = pair.first;
-      QgsFeature dstFeat( dstFields, f.id() );
-      if ( f.hasGeometry() )
-      {
-        QgsGeometry g = f.geometry();
-        if ( mShared->mSourceCrs.hasAxisInverted() )
-          g.get()->swapXy();
-        dstFeat.setGeometry( g );
-      }
-      const auto srcAttrs = f.attributes();
-      for ( int j = 0; j < dstFields.size(); j++ )
-      {
-        const int srcIdx = srcFields.indexOf( dstFields[j].name() );
-        if ( srcIdx >= 0 )
-        {
-          const QVariant &v = srcAttrs.value( srcIdx );
-          const auto dstFieldType = dstFields.at( j ).type();
-          if ( QgsVariantUtils::isNull( v ) )
-            dstFeat.setAttribute( j, QgsVariantUtils::createNullVariant( dstFieldType ) );
-          else if ( QgsWFSUtils::isCompatibleType( static_cast<QMetaType::Type>( v.userType() ), dstFieldType ) )
-            dstFeat.setAttribute( j, v );
-          else
-            dstFeat.setAttribute( j, QgsVectorDataProvider::convertValue( dstFieldType, v.toString() ) );
-        }
-      }
-
-      QString uniqueId( pair.second );
-      if ( uniqueId.isEmpty() )
-      {
-        uniqueId = QgsBackgroundCachedSharedData::getMD5( f );
-      }
-
-      featureList.push_back( QgsFeatureUniqueIdPair( dstFeat, uniqueId ) );
-
-      if ( ( i > 0 && ( i % 1000 ) == 0 ) || i + 1 == itemsRequest.features().size() )
-      {
-        // We call it directly to avoid asynchronous signal notification, and
-        // as serializeFeatures() can modify the featureList to remove features
-        // that have already been cached, so as to avoid to notify them several
-        // times to subscribers
-        if ( serializeFeatures )
-          mShared->serializeFeatures( featureList );
-
-        if ( !featureList.isEmpty() )
-        {
-          emitFeatureReceived( featureList );
-          emitFeatureReceived( featureList.size() );
-        }
-
-        featureList.clear();
-      }
-      i++;
-    }
-
-    if ( mShared->mPageSize <= 0 )
-    {
-      break;
-    }
-  }
-
-  endOfRun( serializeFeatures, success, totalDownloadedFeatureCount, false /* truncatedResponse */, interrupted, errorMessage );
-}
-
-// ---------------------------------
-
 QgsOapifProvider *QgsOapifProviderMetadata::createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
 {
   return new QgsOapifProvider( uri, options, flags );
@@ -1494,10 +970,10 @@ QList<Qgis::LayerType> QgsOapifProviderMetadata::supportedLayerTypes() const
   return { Qgis::LayerType::Vector };
 }
 
-QgsOapifProviderMetadata::QgsOapifProviderMetadata():
-  QgsProviderMetadata( QgsOapifProvider::OAPIF_PROVIDER_KEY, QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION ) {}
+QgsOapifProviderMetadata::QgsOapifProviderMetadata()
+  : QgsProviderMetadata( QgsOapifProvider::OAPIF_PROVIDER_KEY, QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION ) {}
 
 QIcon QgsOapifProviderMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconWfs.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconWfs.svg"_s );
 }

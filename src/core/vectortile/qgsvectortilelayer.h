@@ -18,9 +18,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsfeatureid.h"
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
-#include "qgsfeatureid.h"
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
@@ -49,11 +49,13 @@ class QgsVectorTileRawData;
  * Vector tile layer currently does not use the concept of data providers that other
  * layer types use. The process of rendering of vector tiles looks like this:
  *
+ * ~~~
  * +--------+                +------+                 +---------+
  * |  DATA  |                |  RAW |                 | DECODED |
  * |        | --> LOADER --> |      | --> DECODER --> |         | --> RENDERER
  * | SOURCE |                | TILE |                 |  TILE   |
  * +--------+                +------+                 +---------+
+ * ~~~
  *
  * Data source is a place from where tiles are fetched from (URL for HTTP access, local
  * files, MBTiles file, GeoPackage file or others. Loader (QgsVectorTileLoader) class
@@ -117,7 +119,7 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVectorTileLayer: '%1'>" ).arg( sipCpp->name() );
+    QString str = u"<QgsVectorTileLayer: '%1'>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -169,8 +171,8 @@ class CORE_EXPORT QgsVectorTileLayer : public QgsMapLayer
 
     QString loadDefaultMetadata( bool &resultFlag SIP_OUT ) override;
 
-    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const FINAL;
-    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const FINAL;
+    QString encodedSource( const QString &source, const QgsReadWriteContext &context ) const final;
+    QString decodedSource( const QString &source, const QString &provider, const QgsReadWriteContext &context ) const final;
     QString htmlMetadata() const override;
 
     // new methods

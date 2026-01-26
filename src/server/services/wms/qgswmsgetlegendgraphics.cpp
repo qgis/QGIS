@@ -18,29 +18,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgswmsgetlegendgraphics.h"
+
 #include "qgslayertree.h"
+#include "qgslayertreefiltersettings.h"
 #include "qgslegendrenderer.h"
+#include "qgsmapsettings.h"
+#include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturecounter.h"
-#include "qgslayertreefiltersettings.h"
-
-#include "qgswmsutils.h"
+#include "qgswmsrenderer.h"
 #include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
-#include "qgswmsgetlegendgraphics.h"
-#include "qgswmsrenderer.h"
-#include "qgsserverprojectutils.h"
-#include "qgsmapsettings.h"
+#include "qgswmsutils.h"
 
 #include <QImage>
-#include <QJsonObject>
 #include <QJsonDocument>
+#include <QJsonObject>
 
 namespace QgsWms
 {
-  void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
-                               const QgsWmsRequest &request,
-                               QgsServerResponse &response )
+  void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
   {
     // get parameters from query
     QgsWmsParameters parameters = request.wmsParameters();
@@ -99,8 +97,7 @@ namespace QgsWms
 
     if ( format == QgsWmsParameters::Format::NONE )
     {
-      throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
-                                    QStringLiteral( "Output format '%1' is not supported in the GetLegendGraphic request" ).arg( parameters.formatAsString() ) );
+      throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat, u"Output format '%1' is not supported in the GetLegendGraphic request"_s.arg( parameters.formatAsString() ) );
     }
 
     // Get cached image
@@ -113,7 +110,7 @@ namespace QgsWms
       const QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
       if ( !content.isEmpty() && image.loadFromData( content ) )
       {
-        response.setHeader( QStringLiteral( "Content-Type" ), imageContentType );
+        response.setHeader( u"Content-Type"_s, imageContentType );
         image.save( response.io(), qPrintable( imageSaveFormat ) );
         return;
       }
@@ -141,9 +138,9 @@ namespace QgsWms
       if ( !parameters.rule().isEmpty() )
       {
         QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
-        if ( ! node )
+        if ( !node )
         {
-          throw QgsException( QStringLiteral( "Could not get a legend node for the requested RULE" ) );
+          throw QgsException( u"Could not get a legend node for the requested RULE"_s );
         }
         result = renderer.getLegendGraphicsAsJson( *node, jsonFlags );
       }
@@ -152,7 +149,7 @@ namespace QgsWms
         result = renderer.getLegendGraphicsAsJson( *model.get(), jsonFlags );
       }
       tree->clear();
-      response.setHeader( QStringLiteral( "Content-Type" ), parameters.formatAsString() );
+      response.setHeader( u"Content-Type"_s, parameters.formatAsString() );
       const QJsonDocument doc( result );
       response.write( doc.toJson( QJsonDocument::Compact ) );
     }
@@ -162,9 +159,9 @@ namespace QgsWms
       if ( !parameters.rule().isEmpty() )
       {
         QgsLayerTreeModelLegendNode *node = legendNode( parameters.rule(), *model.get() );
-        if ( ! node )
+        if ( !node )
         {
-          throw QgsException( QStringLiteral( "Could not get a legend node for the requested RULE" ) );
+          throw QgsException( u"Could not get a legend node for the requested RULE"_s );
         }
         result.reset( renderer.getLegendGraphics( *node ) );
       }
@@ -187,7 +184,7 @@ namespace QgsWms
       }
       else
       {
-        throw QgsException( QStringLiteral( "Failed to compute GetLegendGraphics image" ) );
+        throw QgsException( u"Failed to compute GetLegendGraphics image"_s );
       }
     }
   }
@@ -196,42 +193,37 @@ namespace QgsWms
   {
     if ( parameters.allLayersNickname().isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
-                                    parameters[QgsWmsParameter::LAYERS] );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue, parameters[QgsWmsParameter::LAYERS] );
     }
 
     if ( parameters.format() == QgsWmsParameters::Format::NONE )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue,
-                                    parameters[QgsWmsParameter::FORMAT] );
+      throw QgsBadRequestException( QgsServiceException::QGIS_MissingParameterValue, parameters[QgsWmsParameter::FORMAT] );
     }
 
-    if ( ! parameters.bbox().isEmpty() && !parameters.rule().isEmpty() )
+    if ( !parameters.bbox().isEmpty() && !parameters.rule().isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    QStringLiteral( "BBOX parameter cannot be combined with RULE." ) );
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, u"BBOX parameter cannot be combined with RULE."_s );
     }
 
-    if ( ! parameters.bbox().isEmpty() && parameters.bboxAsRectangle().isEmpty() )
+    if ( !parameters.bbox().isEmpty() && parameters.bboxAsRectangle().isEmpty() )
     {
-      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue,
-                                    parameters[QgsWmsParameter::BBOX] );
+      throw QgsBadRequestException( QgsServiceException::QGIS_InvalidParameterValue, parameters[QgsWmsParameter::BBOX] );
     }
     // If we have a contextual legend (BBOX is set)
     // make sure (SRC)WIDTH and (SRC)HEIGHT are set, default to 800px width
     // height is calculated from that value, respecting the aspect
-    if ( ! parameters.bbox().isEmpty() )
+    if ( !parameters.bbox().isEmpty() )
     {
       // Calculate ratio from bbox
       QgsRectangle bbox { parameters.bboxAsRectangle() };
       const QString crs = parameters.crs();
-      if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
+      if ( crs.compare( u"CRS:84"_s, Qt::CaseInsensitive ) == 0 )
       {
         bbox.invert();
       }
       const QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-      if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
-           outputCrs.hasAxisInverted() )
+      if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && outputCrs.hasAxisInverted() )
       {
         bbox.invert();
       }
@@ -250,9 +242,8 @@ namespace QgsWms
 
   QgsLayerTreeModel *legendModel( const QgsWmsRenderContext &context, QgsLayerTree &tree )
   {
-
     const QgsWmsParameters parameters = context.parameters();
-    std::unique_ptr<QgsLayerTreeModel> model( new QgsLayerTreeModel( &tree ) );
+    auto model = std::make_unique<QgsLayerTreeModel>( &tree );
     std::unique_ptr<QgsMapSettings> mapSettings;
 
     if ( context.scaleDenominator() > 0 )
@@ -261,20 +252,19 @@ namespace QgsWms
     }
 
     // content based legend
-    if ( ! parameters.bbox().isEmpty() )
+    if ( !parameters.bbox().isEmpty() )
     {
       mapSettings = std::make_unique<QgsMapSettings>();
       mapSettings->setOutputSize( context.mapSize() );
       // Inverted axis?
       QgsRectangle bbox { parameters.bboxAsRectangle() };
       const QString crs = parameters.crs();
-      if ( crs.compare( QStringLiteral( "CRS:84" ), Qt::CaseInsensitive ) == 0 )
+      if ( crs.compare( u"CRS:84"_s, Qt::CaseInsensitive ) == 0 )
       {
         bbox.invert();
       }
       const QgsCoordinateReferenceSystem outputCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs );
-      if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) &&
-           outputCrs.hasAxisInverted() )
+      if ( parameters.versionAsNumber() >= QgsProjectVersion( 1, 3, 0 ) && outputCrs.hasAxisInverted() )
       {
         bbox.invert();
       }
@@ -297,23 +287,23 @@ namespace QgsWms
       const QString ruleLabel = parameters.ruleLabel();
       for ( QgsLayerTreeNode *node : children )
       {
-        if ( ! QgsLayerTree::isLayer( node ) )
+        if ( !QgsLayerTree::isLayer( node ) )
           continue;
 
         QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
 
         // layer titles - hidden or not
-        QgsLegendRenderer::setNodeLegendStyle( nodeLayer, parameters.layerTitleAsBool() ? QgsLegendStyle::Subgroup : QgsLegendStyle::Hidden );
+        QgsLegendRenderer::setNodeLegendStyle( nodeLayer, parameters.layerTitleAsBool() ? Qgis::LegendComponent::Subgroup : Qgis::LegendComponent::Hidden );
         // rule item titles
         if ( !parameters.ruleLabelAsBool() )
         {
           for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
           {
             // empty string = no override, so let's use one space
-            legendNode->setUserLabel( QStringLiteral( " " ) );
+            legendNode->setUserLabel( u" "_s );
           }
         }
-        else if ( ruleLabel.compare( QStringLiteral( "AUTO" ), Qt::CaseInsensitive ) == 0 )
+        else if ( ruleLabel.compare( u"AUTO"_s, Qt::CaseInsensitive ) == 0 )
         {
           for ( QgsLayerTreeModelLegendNode *legendNode : model->layerLegendNodes( nodeLayer ) )
           {
@@ -330,7 +320,7 @@ namespace QgsWms
 
   QgsLayerTree *layerTree( const QgsWmsRenderContext &context )
   {
-    std::unique_ptr<QgsLayerTree> tree( new QgsLayerTree() );
+    auto tree = std::make_unique<QgsLayerTree>();
 
     QList<QgsVectorLayerFeatureCounter *> counters;
     for ( QgsMapLayer *ml : context.layersToRender() )
@@ -344,7 +334,7 @@ namespace QgsWms
 
       // show feature count
       const bool showFeatureCount = context.parameters().showFeatureCountAsBool();
-      const QString property = QStringLiteral( "showFeatureCount" );
+      const QString property = u"showFeatureCount"_s;
       lt->setCustomProperty( property, showFeatureCount );
 
       if ( ml->type() != Qgis::LayerType::Vector || !showFeatureCount )
@@ -370,10 +360,10 @@ namespace QgsWms
   {
     if ( !projectRoot )
     {
-      return 0;
+      return nullptr;
     }
 
-    std::unique_ptr<QgsLayerTree> tree( new QgsLayerTree() );
+    auto tree = std::make_unique<QgsLayerTree>();
 
     QgsWmsParameters wmsParams = context.parameters();
     QStringList layerNicknames = wmsParams.allLayersNickname();
@@ -400,7 +390,7 @@ namespace QgsWms
     return tree.release();
   }
 
-  QgsLayerTreeModelLegendNode *legendNode( const QString &rule,  QgsLayerTreeModel &model )
+  QgsLayerTreeModelLegendNode *legendNode( const QString &rule, QgsLayerTreeModel &model )
   {
     for ( QgsLayerTreeLayer *layer : model.rootGroup()->findLayers() )
     {

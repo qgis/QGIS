@@ -27,14 +27,16 @@
 #ifndef QGSOGRSOURCESELECT_H
 #define QGSOGRSOURCESELECT_H
 
-#include <QDialog>
+#include "ui_qgsogrsourceselectbase.h"
+
 #include <vector>
 
-#include "ui_qgsogrsourceselectbase.h"
-#include "qgsproviderregistry.h"
-#include "qgsabstractdatasourcewidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsabstractdatasourcewidget.h"
+#include "qgsproviderregistry.h"
+
+#include <QDialog>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -57,11 +59,11 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     //! Opens a dialog to select a directory datasource
     QString openDirectory();
     //! Returns a list of selected datasources
-    QStringList dataSources();
+    QStringList dataSources() const;
     //! Returns the encoding selected for user
-    QString encoding();
+    QString encoding() const;
     //! Returns the connection type
-    QString dataSourceType();
+    QString dataSourceType() const;
 
   private:
     //! Stores the file vector filters
@@ -115,7 +117,6 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void credentialOptionsChanged();
 
   private:
-
     void computeDataSources( bool interactive );
     void clearOpenOptions();
     void fillOpenOptions();
@@ -124,7 +125,6 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     bool mIsOgcApi = false;
     QVariantMap mCredentialOptions;
     QString mVectorPath;
-
 };
 
 ///@endcond

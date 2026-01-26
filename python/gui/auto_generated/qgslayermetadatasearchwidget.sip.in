@@ -8,10 +8,13 @@
 
 
 
+
+
 class QgsLayerMetadataSearchWidget : QgsAbstractDataSourceWidget
 {
 %Docstring(signature="appended")
-The :py:class:`QgsLayerMetadataSearchWidget` class offers layer metadata search and filtering.
+Offers layer metadata search and filtering.
+
 It is designed to be embedded in the data source manager dialog.
 
 .. versionadded:: 3.28
@@ -21,7 +24,6 @@ It is designed to be embedded in the data source manager dialog.
 #include "qgslayermetadatasearchwidget.h"
 %End
   public:
-
     explicit QgsLayerMetadataSearchWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 %Docstring
 Creates a new QgsLayerMetadataSearchWidget.

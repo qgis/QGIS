@@ -1,0 +1,792 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgssfcgalgeometry.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsSfcgalGeometry
+{
+%Docstring(signature="appended")
+Wraps SFCGAL geometry object.
+
+SfcgalGeometry geometry type.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgssfcgalgeometry.h"
+%End
+  public:
+    QgsSfcgalGeometry();
+%Docstring
+Constructor for an empty SFCGAL geometry geometry.
+%End
+
+
+    QgsSfcgalGeometry( const QgsAbstractGeometry *qgsGeom ) throw( QgsSfcgalException );
+%Docstring
+Constructor with :py:class:`QgsAbstractGeometry` pointer.
+
+Will not take ownership.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QgsSfcgalGeometry( const QgsAbstractGeometry &qgsGeom ) throw( QgsSfcgalException );
+%Docstring
+Constructor with :py:class:`QgsAbstractGeometry` reference.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QgsSfcgalGeometry( const QgsGeometry &qgsGeom ) throw( QgsSfcgalException );
+%Docstring
+Constructor with :py:class:`QgsGeometry` reference.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QgsSfcgalGeometry( const QString &wkt ) throw( QgsSfcgalException );
+%Docstring
+Constructor from WKT
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom ) throw( QgsSfcgalException );
+%Docstring
+Copy constructor
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+
+
+    std::unique_ptr<QgsAbstractGeometry> asQgisGeometry() const throw( QgsSfcgalException );
+%Docstring
+Returns the geometry converted to a QGIS geometry object. This method is
+slow to call, as it always involves re-conversion of the underlying
+SFCGAL geometry object.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    Qgis::WkbType wkbType() const throw( QgsSfcgalException );
+%Docstring
+Returns type of the geometry as a WKB type (point / linestring / polygon
+etc.)
+
+:return: type of the geometry as a WKB type (point / linestring /
+         polygon etc.)
+
+:raises QgsNotSupportedException: when working with primitive and SFCGAL
+                                  is less than 2.3.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QString geometryType() const throw( QgsNotSupportedException, QgsSfcgalException ) /HoldGIL/;
+%Docstring
+Returns type of the geometry as a OGC string in CamelCase
+
+:return: type of the geometry as a OGC string in CamelCase
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: when working with primitive and SFCGAL
+                                  is less than 2.3.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> clone() const;
+%Docstring
+Clones the geometry by performing a deep copy
+%End
+
+    static std::unique_ptr<QgsSfcgalGeometry> fromWkb( const QgsConstWkbPtr &wkbPtr ) throw( QgsSfcgalException );
+%Docstring
+Creates a new geometry from a WKB byte pointer
+
+:param wkbPtr: WKB byte pointer
+
+:return: new geometry from WKB
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QByteArray asWkb( QgsAbstractGeometry::WkbFlags flags = QgsAbstractGeometry::WkbFlags() ) const throw( QgsSfcgalException );
+%Docstring
+Export the geometry as WKB
+
+:param flags: argument specifies flags controlling WKB export behavior.
+
+:return: WKB data
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    static std::unique_ptr<QgsSfcgalGeometry> fromWkt( const QString &wkt ) throw( QgsSfcgalException );
+%Docstring
+Creates a new geometry from a WKT string.
+
+:param wkt: WTK string
+
+:return: new geometry from WKT
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QString asWkt( int precision = -1 ) const throw( QgsSfcgalException );
+%Docstring
+Export the geometry as WKT
+
+:param precision: Floating point precision for WKT coordinates. Setting
+                  to -1 yields rational number WKT (not decimal) f.e.
+                  "Point(1/3, 1/6, 1/4)". Note that this will produce
+                  WKT which is not compatible with other QGIS methods or
+                  external libraries.
+
+:return: WKT data
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> boundary() const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Returns the closure of the combinatorial boundary of the geometry (ie
+the topological boundary of the geometry). For instance, a polygon
+geometry will have a boundary consisting of the linestrings for each
+ring in the polygon.
+
+:return: boundary for geometry. May be ``None`` for some geometry types.
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool operator==( const QgsSfcgalGeometry &other ) const throw( QgsNotSupportedException, QgsSfcgalException );
+
+    bool operator!=( const QgsSfcgalGeometry &other ) const throw( QgsNotSupportedException, QgsSfcgalException );
+
+    bool fuzzyEqual( const QgsSfcgalGeometry &other, double epsilon ) const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Returns true if this == other geometry modulo ``epsilon`` distance
+
+:param other: geometry to perform the operation
+:param epsilon: tolerance
+
+:return: true if this == other geometry modulo ``epsilon`` distance
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    int dimension() const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Returns the inherent dimension of the geometry. For example, this is 0
+for a point geometry, 1 for a linestring and 2 for a polygon.
+
+:return: geometry dimension
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    int partCount() const throw( QgsSfcgalException );
+%Docstring
+Returns the ``geom`` part count.
+
+- POINT, TRIANGLE, LINESTRING: vertex number
+- POLYGON, SOLID, POLYHEDRALSURFACE, TRIANGULATEDSURFACE: ring or patch
+  or shell number
+- MULTIPOINT, MULTILINESTRING, MULTIPOLYGON, MULTISOLID,
+  GEOMETRYCOLLECTION: number of geom in collection
+
+:return: geometry part count
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool addZValue( double zValue = 0 ) throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Adds a z-dimension to the geometry, initialized to a preset value
+(existing Z values remains unchanged).
+
+:param zValue: z value to use
+
+:return: true if success
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool addMValue( double mValue = 0 ) throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Adds a m-dimension to the geometry, initialized to a preset value
+(existing M values remains unchanged).
+
+:param mValue: m value to use
+
+:return: true if success
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool dropZValue() throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Drops the z coordinate of the geometry
+
+:return: true if success
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool dropMValue() throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Drops the m coordinate of the geometry
+
+:return: true if success
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    void swapXy() throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Swaps the x and y coordinates of the geometry
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool isValid() const throw( QgsSfcgalException );
+%Docstring
+Checks if ``geom`` is valid.
+
+:return: true if valid
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool isEmpty() const throw( QgsSfcgalException );
+%Docstring
+Checks if ``geom`` is empty.
+
+:return: true if empty
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    double area( bool withDiscretization = false ) const throw( QgsSfcgalException );
+%Docstring
+Computes the area of ``geom``.
+
+:param withDiscretization: If true, the area is computed using the real
+                           discretization with radial segments. If
+                           false, the area is computed for a perfect
+                           primitive. Defaults to false.
+
+:return: geometry area
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    double volume( bool withDiscretization = false ) const throw( QgsSfcgalException );
+%Docstring
+Computes the volume of the primitive ``prim``.
+
+:param withDiscretization: If true, the volume is computed using the
+                           real discretization with radial segments. If
+                           false, the volume is computed for a perfect
+                           primitive. Defaults to false.
+
+:return: primitive volume
+
+\pre apply only on primitive
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    double length() const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Computes the max length of ``geom``.
+
+:return: geometry length
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+\pre apply only on geometry
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool isSimple() const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Checks this geometry is simple.
+
+.. seealso:: :py:func:`QgsSfcgalEngine.isSimple`
+
+:return: true if simple
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    QgsPoint centroid() const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Calculates the centroid of this geometry.
+
+:return: geometry centroid
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> translate( const QgsVector3D &translation ) const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Translate this geometry by vector ``translation``.
+
+:param translation: translation vector (2D or 3D)
+
+:return: new geometry
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> scale( const QgsVector3D &scaleFactor, const QgsPoint &center = QgsPoint() ) const throw( QgsSfcgalException );
+%Docstring
+Scale this geometry by vector ``scaleFactor``.
+
+:param scaleFactor: scale factor vector (2D or 3D)
+:param center: optional parameter. If specified, scaling will be
+               performed relative to this center
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> rotate2D( double angle, const QgsPoint &center ) const throw( QgsSfcgalException );
+%Docstring
+2D Rotate this geometry around point ``center`` by angle ``angle``
+
+:param angle: rotation angle in radians
+:param center: rotation center
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> rotate3D( double angle, const QgsVector3D &axisVector, const QgsPoint &center = QgsPoint() ) const throw( QgsSfcgalException );
+%Docstring
+3D Rotate this geometry around axis ``axisVector`` by angle ``angle``
+
+:param angle: rotation angle in radians
+:param axisVector: rotation axis
+:param center: optional parameter. If specified, rotation will be
+               applied around axis and center point
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> transform( const QMatrix4x4 &mat ) const throw( QgsSfcgalException );
+%Docstring
+Apply 3D matrix transform ``mat`` to geometry ``geom``
+
+:param mat: 4x4 transformation matrix (translation is defined of the 4th
+            column)
+:param errorMsg: Error message returned by SFGCAL
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    bool intersects( const QgsAbstractGeometry *otherGeom ) const throw( QgsSfcgalException );
+%Docstring
+Checks if ``otherGeom`` intersects this.
+
+:param otherGeom: geometry to perform the operation
+
+:return: true if intersection exists
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool intersects( const QgsSfcgalGeometry &otherGeom ) const throw( QgsSfcgalException );
+%Docstring
+Checks if ``otherGeom`` intersects this.
+
+:param otherGeom: geometry to perform the operation
+
+:return: true if intersection exists
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsAbstractGeometry *otherGeom ) const throw( QgsSfcgalException );
+%Docstring
+Calculate the intersection of this and ``otherGeom``.
+
+:param otherGeom: geometry to perform the operation
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> intersection( const QgsSfcgalGeometry &otherGeom ) const throw( QgsSfcgalException );
+%Docstring
+Calculate the intersection of this and ``otherGeom``.
+
+:param otherGeom: geometry to perform the operation
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> combine( const QVector<QgsAbstractGeometry *> &geomList ) const throw( QgsSfcgalException );
+%Docstring
+Calculate the combination of this and ``geomList``.
+
+:param geomList: list of geometries to perform the operation
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsAbstractGeometry *otherGeom ) const throw( QgsSfcgalException );
+%Docstring
+Calculate the difference of this and ``otherGeom``.
+
+:param otherGeom: geometry to perform the operation
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> difference( const QgsSfcgalGeometry &otherGeom ) const throw( QgsSfcgalException );
+%Docstring
+Calculate the difference of this and ``otherGeom``.
+
+:param otherGeom: geometry to perform the operation
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> triangulate() const throw( QgsSfcgalException );
+%Docstring
+Triangulates this geometry using constraint 2D Delaunay Triangulation
+(keep Z if defined)
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> convexHull() const throw( QgsSfcgalException );
+%Docstring
+Calculate the convex hull (bounding box).
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> envelope() const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Calculate the envelope (bounding box).
+
+:return: new geometry
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    bool covers( const QgsSfcgalGeometry &otherGeom ) const throw( QgsSfcgalException );
+%Docstring
+Cover test on 2D or 3D geometries Checks if this covers ``otherGeom``. A
+3D covers test is conducted when at least one geometry is 3D; otherwise,
+a 2D covers test is carried out.
+
+:param otherGeom: second geometry to perform the operation
+
+:return: true if coverage exists
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> buffer3D( double radius, int segments, Qgis::JoinStyle3D joinStyle3D ) const throw( QgsSfcgalException );
+%Docstring
+Calculate a 3D buffer where all points are at ``distance`` from the
+original geometry. A negative distance shrinks the geometry rather than
+expanding it. It is limited to Point and LineString. If the operation
+fails, a null pointer is returned.
+
+:param radius: the buffer radius
+:param segments: the number of segments to use for approximating curved
+:param joinStyle3D: the type of buffer to compute
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> buffer2D( double radius, int segments, Qgis::JoinStyle joinStyle ) const throw( QgsSfcgalException );
+%Docstring
+Calculate a 2D buffer where all points are at ``distance`` from the
+original geometry. A negative distance shrinks the geometry rather than
+expanding it. If the operation fails, a null pointer is returned.
+
+:param radius: the buffer radius
+:param segments: the number of segments to use for approximating curved
+:param joinStyle: the type of buffer to compute. Only round is
+                  supported.
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> simplify( double tolerance, bool preserveTopology ) const throw( QgsNotSupportedException, QgsSfcgalException );
+%Docstring
+Simplifies a geometry using the CGAL algorithm
+
+:param tolerance: The distance (in geometry unit) threshold
+:param preserveTopology: Whether to preserve topology during
+                         simplification
+
+:return: new geometry
+
+This method requires a QGIS build based on SFCGAL 2.1 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL 2.0.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> extrude( const QgsVector3D &extrusion ) const throw( QgsSfcgalException );
+%Docstring
+Calculate an extrusion of the original geometry. If the operation fails,
+a null pointer is returned.
+
+:param extrusion: extrusion vector (2D or 3D)
+
+:return: new geometry
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> approximateMedialAxis() const throw( QgsSfcgalException );
+%Docstring
+Calculate a 2D approximate medial axis of ``geom`` based on its straight
+skeleton. The approximate medial axis is a simplified representation of
+a shape’s central skeleton It the geometry is 3D, the approximate medial
+axis will be calculated from its 2D projection If the operation fails, a
+null pointer is returned.
+
+:return: new geometry as 2D multilinestring
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+%End
+
+
+
+    static std::unique_ptr<QgsSfcgalGeometry> createCube( double size ) throw( QgsSfcgalException );
+%Docstring
+Create a cube primitive
+
+:param size: the cube size
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QList<std::pair<QString, QString>> primitiveParameters() const throw( QgsSfcgalException );
+%Docstring
+Returns the list of available parameter description for this primitive.
+
+Parameter description is a pair of string: name and type. Type can be
+one of int, double, :py:class:`QgsPoint`, :py:class:`QgsVector3D`
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QVariant primitiveParameter( const QString &name ) const throw( QgsSfcgalException );
+%Docstring
+Returns the parameter value according to its ``name``
+
+:param name: parameter name
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    void primitiveSetParameter( const QString &name, const QVariant &value ) throw( QgsSfcgalException );
+%Docstring
+Updates parameter value
+
+:param name: parameter name
+:param value: new parameter value
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    std::unique_ptr<QgsSfcgalGeometry> primitiveAsPolyhedralSurface() const throw( QgsSfcgalException );
+%Docstring
+Converts the current primitive to geometry. Works only with primitives.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+    QMatrix4x4 primitiveTransform() const throw( QgsSfcgalException );
+%Docstring
+Returns the primitive transform matrix.
+
+:raises QgsSfcgalException: if an error was encountered during the
+                            operation
+
+:raises QgsNotSupportedException: on QGIS builds based on SFCGAL < 2.3.
+%End
+
+  protected:
+
+    void clearCache() const;
+%Docstring
+Clears any cached parameters associated with the geometry, e.g.,
+bounding boxes
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgssfcgalgeometry.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

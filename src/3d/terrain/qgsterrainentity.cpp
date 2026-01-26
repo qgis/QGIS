@@ -15,23 +15,26 @@
 
 #include "qgsterrainentity.h"
 
-#include "qgsaabb.h"
+#include <memory>
+
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgsaabb.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
-#include "qgsraycastingutils_p.h"
+#include "qgsraycastingutils.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgs3dutils.h"
-
-#include "qgscoordinatetransform.h"
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
 
+#include "moc_qgsterrainentity.cpp"
 
 ///@cond PRIVATE
 
@@ -58,7 +61,7 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
 
 
 QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *parent )
-  : QgsChunkedEntity( map, map->maxTerrainScreenError(), map->terrainGenerator(), false, std::numeric_limits<int>::max(), parent )
+  : QgsChunkedEntity( map, map->terrainSettings()->maximumScreenError(), map->terrainGenerator(), false, std::numeric_limits<int>::max(), parent )
 {
   map->terrainGenerator()->setTerrain( this );
   mIsValid = map->terrainGenerator()->isValid();
@@ -69,17 +72,17 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
   connect( map, &Qgs3DMapSettings::layersChanged, this, &QgsTerrainEntity::onLayersChanged );
   connect( map, &Qgs3DMapSettings::backgroundColorChanged, this, &QgsTerrainEntity::invalidateMapImages );
   connect( map, &Qgs3DMapSettings::terrainMapThemeChanged, this, &QgsTerrainEntity::invalidateMapImages );
-  connect( map, &Qgs3DMapSettings::terrainElevationOffsetChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
+  connect( map, &Qgs3DMapSettings::terrainSettingsChanged, this, &QgsTerrainEntity::onTerrainElevationOffsetChanged );
 
   connectToLayersRepaintRequest();
 
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
-  mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
+  mUpdateJobFactory = std::make_unique<TerrainMapUpdateJobFactory>( mTextureGenerator );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, map->terrainElevationOffset(), 0.0f ) );
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, 0.0f, map->terrainSettings()->elevationOffset() ) );
   addComponent( mTerrainTransform );
 }
 
@@ -91,55 +94,58 @@ QgsTerrainEntity::~QgsTerrainEntity()
   delete mTextureGenerator;
 }
 
-QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const
+QList<QgsRayCastHit> QgsTerrainEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const
 {
   Q_UNUSED( context )
-  QVector<QgsRayCastingUtils::RayHit> result;
+  QList<QgsRayCastHit> result;
 
   float minDist = -1;
-  QVector3D intersectionPoint;
+  QgsVector3D intersectionPointMapCoords;
   switch ( mMapSettings->terrainGenerator()->type() )
   {
     case QgsTerrainGenerator::Flat:
     {
-      if ( ray.direction().y() == 0 )
-        break;  // the ray is parallel to the flat terrain
+      if ( ray.direction().z() == 0 )
+        break; // the ray is parallel to the flat terrain
 
-      const float dist = static_cast<float>( mMapSettings->terrainElevationOffset() - ray.origin().y() ) / ray.direction().y();
+      const float dist = static_cast<float>( mMapSettings->terrainSettings()->elevationOffset() - ray.origin().z() - mMapSettings->origin().z() ) / ray.direction().z();
       const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( terrainPlanePoint, mMapSettings->origin() );
       if ( mMapSettings->extent().contains( mapCoords.x(), mapCoords.y() ) )
       {
         minDist = dist;
-        intersectionPoint = terrainPlanePoint;
+        intersectionPointMapCoords = mapCoords;
       }
       break;
     }
     case QgsTerrainGenerator::Dem:
     {
       const QList<QgsChunkNode *> activeNodes = this->activeNodes();
+      QVector3D nearestIntersectionPoint;
       for ( QgsChunkNode *node : activeNodes )
       {
-        if ( node->entity() &&
-             ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-             QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+        QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
+
+        if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
         {
           Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
           auto *geom = rend->geometry();
           Qt3DCore::QTransform *tr = node->entity()->findChild<Qt3DCore::QTransform *>();
           QVector3D nodeIntPoint;
           DemTerrainTileGeometry *demGeom = static_cast<DemTerrainTileGeometry *>( geom );
-          if ( demGeom->rayIntersection( ray, tr->matrix(), nodeIntPoint ) )
+          if ( demGeom->rayIntersection( ray, context, tr->matrix(), nodeIntPoint ) )
           {
-            const float dist = ( ray.origin() - intersectionPoint ).length();
+            const float dist = ( ray.origin() - nodeIntPoint ).length();
             if ( minDist < 0 || dist < minDist )
             {
               minDist = dist;
-              intersectionPoint = nodeIntPoint;
+              nearestIntersectionPoint = nodeIntPoint;
             }
           }
         }
       }
+      if ( minDist >= 0 )
+        intersectionPointMapCoords = Qgs3DUtils::worldToMapCoordinates( nearestIntersectionPoint, mMapSettings->origin() );
       break;
     }
     case QgsTerrainGenerator::Mesh:
@@ -148,9 +154,11 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
       // not supported
       break;
   }
-  if ( !intersectionPoint.isNull() )
+  if ( minDist >= 0 )
   {
-    QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint );
+    QgsRayCastHit hit;
+    hit.setDistance( minDist );
+    hit.setMapCoordinates( intersectionPointMapCoords );
     result.append( hit );
   }
   return result;
@@ -164,7 +172,7 @@ void QgsTerrainEntity::onShowBoundingBoxesChanged()
 
 void QgsTerrainEntity::invalidateMapImages()
 {
-  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Invalidate textures" ) );
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, u"3D"_s, u"Invalidate textures"_s );
 
   // handle active nodes
 
@@ -209,14 +217,15 @@ void QgsTerrainEntity::connectToLayersRepaintRequest()
   }
 }
 
-void QgsTerrainEntity::onTerrainElevationOffsetChanged( float newOffset )
+void QgsTerrainEntity::onTerrainElevationOffsetChanged()
 {
-  mTerrainTransform->setTranslation( QVector3D( 0.0f, newOffset, 0.0f ) );
+  float newOffset = qobject_cast<Qgs3DMapSettings *>( sender() )->terrainSettings()->elevationOffset();
+  mTerrainTransform->setTranslation( QVector3D( 0.0f, 0.0f, newOffset ) );
 }
 
 float QgsTerrainEntity::terrainElevationOffset() const
 {
-  return mMapSettings->terrainElevationOffset();
+  return mMapSettings->terrainSettings()->elevationOffset();
 }
 
 
@@ -227,9 +236,15 @@ TerrainMapUpdateJob::TerrainMapUpdateJob( QgsTerrainTextureGenerator *textureGen
   : QgsChunkQueueJob( node )
   , mTextureGenerator( textureGenerator )
 {
+}
+
+void TerrainMapUpdateJob::start()
+{
+  QgsChunkNode *node = chunk();
+
   QgsTerrainTileEntity *entity = qobject_cast<QgsTerrainTileEntity *>( node->entity() );
-  connect( textureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
-  mJobId = textureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
+  connect( mTextureGenerator, &QgsTerrainTextureGenerator::tileReady, this, &TerrainMapUpdateJob::onTileReady );
+  mJobId = mTextureGenerator->render( entity->textureImage()->imageExtent(), node->tileId(), entity->textureImage()->imageDebugText() );
 }
 
 void TerrainMapUpdateJob::cancel()

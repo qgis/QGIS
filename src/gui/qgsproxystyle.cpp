@@ -14,22 +14,26 @@
  ***************************************************************************/
 
 #include "qgsproxystyle.h"
-#include "qgsimageoperation.h"
+
 #include "qgis.h"
-#include <QStyleFactory>
-#include <QStyle>
-#include <QStyleOption>
+#include "qgsimageoperation.h"
+
 #include <QApplication>
+#include <QStyle>
+#include <QStyleFactory>
+#include <QStyleOption>
 #include <QWindow>
+
+#include "moc_qgsproxystyle.cpp"
 
 QgsProxyStyle::QgsProxyStyle( QWidget *parent )
   : QProxyStyle( nullptr ) // no base style yet - it transfers ownership, so we need a NEW QStyle object for the base style
 {
   // get application style
   const QString appStyle = QApplication::style()->objectName();
-  if ( appStyle == QLatin1String( "QgsAppStyle" ) )
+  if ( appStyle == "QgsAppStyle"_L1 )
   {
-    setBaseStyle( static_cast< QgsAppStyle * >( QApplication::style() )->clone() );
+    setBaseStyle( static_cast<QgsAppStyle *>( QApplication::style() )->clone() );
   }
   else if ( !appStyle.isEmpty() )
   {
@@ -57,7 +61,7 @@ QgsAppStyle::QgsAppStyle( const QString &base )
       setBaseStyle( style );
   }
 
-  setObjectName( QStringLiteral( "QgsAppStyle" ) );
+  setObjectName( u"QgsAppStyle"_s );
 }
 
 QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &pixmap, const QStyleOption *opt ) const
@@ -90,9 +94,9 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
 void QgsAppStyle::polish( QWidget *widget )
 {
   QProxyStyle::polish( widget );
-#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
-  if ( mBaseStyle.contains( QLatin1String( "fusion" ), Qt::CaseInsensitive )
-       || mBaseStyle.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive ) )
+#if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
+  if ( mBaseStyle.contains( "fusion"_L1, Qt::CaseInsensitive )
+       || mBaseStyle.contains( "adwaita"_L1, Qt::CaseInsensitive ) )
   {
     // fix broken inactive window coloring applying to unfocused docks or list/tree widgets
     // see eg https://github.com/FedoraQt/adwaita-qt/issues/126

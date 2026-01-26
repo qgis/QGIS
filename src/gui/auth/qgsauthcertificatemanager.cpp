@@ -15,24 +15,27 @@
  ***************************************************************************/
 
 #include "qgsauthcertificatemanager.h"
+
 #include "qgssettings.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
+#include "moc_qgsauthcertificatemanager.cpp"
+
 QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
   const QgsSettings settings;
-  tabWidget->setCurrentIndex( settings.value( QStringLiteral( "AuthCertEditorsSelectedTab" ), 0, QgsSettings::Section::Auth ).toInt() );
+  tabWidget->setCurrentIndex( settings.value( u"AuthCertEditorsSelectedTab"_s, 0, QgsSettings::Section::Auth ).toInt() );
 }
 
 QgsAuthCertEditors::~QgsAuthCertEditors()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "AuthCertEditorsSelectedTab" ), tabWidget->currentIndex(), QgsSettings::Section::Auth );
+  settings.setValue( u"AuthCertEditorsSelectedTab"_s, tabWidget->currentIndex(), QgsSettings::Section::Auth );
 }
 
 
@@ -46,8 +49,7 @@ QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
   mCertEditors = new QgsAuthCertEditors( this );
   layout->addWidget( mCertEditors );
 
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
-      Qt::Horizontal, this );
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close, Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   layout->addWidget( buttonBox );

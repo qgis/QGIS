@@ -16,10 +16,10 @@
 #ifndef QGSWFSDATASOURCEURI_H
 #define QGSWFSDATASOURCEURI_H
 
-#include "qgsdatasourceuri.h"
-#include "qgsrectangle.h"
 #include "qgsapplication.h"
 #include "qgsauthorizationsettings.h"
+#include "qgsdatasourceuri.h"
+#include "qgsrectangle.h"
 
 #include <QNetworkRequest>
 #include <QSet>
@@ -32,14 +32,6 @@
 class QgsWFSDataSourceURI
 {
   public:
-
-    //! Http method for DCP URIs
-    enum Method
-    {
-      Get,
-      Post
-    };
-
     explicit QgsWFSDataSourceURI( const QString &uri );
 
     //! Copy constructor
@@ -55,7 +47,7 @@ class QgsWFSDataSourceURI
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
 
     //! Returns request URL (with SERVICE=WFS parameter)
-    QUrl requestUrl( const QString &request, const Method &method = Method::Get ) const;
+    QUrl requestUrl( const QString &request, Qgis::HttpMethod method = Qgis::HttpMethod::Get ) const;
 
     //! Gets WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
     QString version() const;
@@ -101,6 +93,9 @@ class QgsWFSDataSourceURI
     //! Sets OGC filter xml or a QGIS expression
     void setFilter( const QString &filterIn );
 
+    //! Returns TRUE if an initial get features should always be issued.
+    bool forceInitialGetFeature() const;
+
     //! Returns whether there is a geometry type filter.
     bool hasGeometryTypeFilter() const;
 
@@ -118,6 +113,9 @@ class QgsWFSDataSourceURI
 
     //! Sets GetFeature output format
     void setOutputFormat( const QString &outputFormat );
+
+    //! Returns the preferred HTTP method for requests
+    Qgis::HttpMethod httpMethod() const;
 
     //! Returns whether GetFeature request should include the request bounding box. Defaults to false
     bool isRestrictedToRequestBBOX() const;
@@ -140,13 +138,19 @@ class QgsWFSDataSourceURI
     //! Returns authorization parameters
     const QgsAuthorizationSettings &auth() const { return mAuth; }
 
+    //! How to analyze DescribeFeatureType response
+    enum class FeatureMode
+    {
+      Default,         //! If the server supports transaction, same as SIMPLE_FEATURE. Otherwise COMPLEX_FEATURE
+      SimpleFeatures,  //! Analyze DescribeFeatureType response with QGIS built-in Simple Feature analyzer
+      ComplexFeatures, //! Analyze DescribeFeatureType response with OGR GMLAS Complex Feature analyzer
+    };
+
+    //! Returns how to analyze DescribeFeatureType response.
+    FeatureMode featureMode() const;
+
     //! Builds a derived uri from a base uri
-    static QString build( const QString &uri,
-                          const QString &typeName,
-                          const QString &crsString = QString(),
-                          const QString &sql = QString(),
-                          const QString &filter = QString(),
-                          bool restrictToCurrentViewExtent = false );
+    static QString build( const QString &uri, const QString &typeName, const QString &crsString, const QString &sql, const QString &filter, bool restrictToCurrentViewExtent, const QString &featureFormat );
 
     //! Sets Get DCP endpoints
     void setGetEndpoints( const QgsStringMap &map );
@@ -164,7 +168,7 @@ class QgsWFSDataSourceURI
     QgsWFSDataSourceURI &operator=( const QgsWFSDataSourceURI &other );
 
   private:
-    QgsDataSourceUri    mURI;
+    QgsDataSourceUri mURI;
     QgsAuthorizationSettings mAuth;
     QgsStringMap mGetEndpoints;
     QgsStringMap mPostEndpoints;

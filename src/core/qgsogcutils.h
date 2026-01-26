@@ -21,9 +21,11 @@ class QDomElement;
 class QDomDocument;
 class QString;
 
+#include <list>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <list>
+
 #include <QVector>
 
 class QgsExpression;
@@ -43,8 +45,8 @@ class QgsMapLayer;
 
 /**
  * \ingroup core
- * \brief The QgsOgcUtils class provides various utility functions for conversion between
- *   OGC (Open Geospatial Consortium) standards and QGIS internal representations.
+ * \brief Provides various utility functions for conversion between
+ * OGC (Open Geospatial Consortium) standards and QGIS internal representations.
  *
  * Currently supported standards:
  *
@@ -130,13 +132,13 @@ class CORE_EXPORT QgsOgcUtils
      * Exports the rectangle to GML2 Box
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision = 17 );
+    static QDomElement rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc, int precision = 17 );
 
     /**
      * Exports the rectangle to GML2 Box
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
+    static QDomElement rectangleToGMLBox( const QgsRectangle *box, QDomDocument &doc,
                                           const QString &srsName,
                                           bool invertAxisOrientation,
                                           int precision = 17 );
@@ -145,13 +147,13 @@ class CORE_EXPORT QgsOgcUtils
      * Exports the rectangle to GML3 Envelope
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc, int precision = 17 );
+    static QDomElement rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc, int precision = 17 );
 
     /**
      * Exports the rectangle to GML3 Envelope
      * \returns QDomElement
      */
-    static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
+    static QDomElement rectangleToGMLEnvelope( const QgsRectangle *env, QDomDocument &doc,
         const QString &srsName,
         bool invertAxisOrientation,
         int precision = 17 );
@@ -299,6 +301,14 @@ class CORE_EXPORT QgsOgcUtils
         const QMap<QString, QString> &fieldNameToXPathMap = QMap<QString, QString>(),
         const QMap<QString, QString> &namespacePrefixToUriMap = QMap<QString, QString>() ) SIP_SKIP;
 
+    /**
+     * Returns the Qgis::WkbType corresponding to a GML geometry type.
+     *
+     * \note not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static Qgis::WkbType geomTypeFromPropertyType( const QString &gmlGeomType ) SIP_SKIP;
+
   private:
 
     //! Static method that creates geometry from GML Point
@@ -311,8 +321,12 @@ class CORE_EXPORT QgsOgcUtils
     static QgsGeometry geometryFromGMLMultiPoint( const QDomElement &geometryElement );
     //! Static method that creates geometry from GML MultiLineString
     static QgsGeometry geometryFromGMLMultiLineString( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML MultiCurve
+    static QgsGeometry geometryFromGMLMultiCurve( const QDomElement &geometryElement );
     //! Static method that creates geometry from GML MultiPolygon
     static QgsGeometry geometryFromGMLMultiPolygon( const QDomElement &geometryElement );
+    //! Static method that creates geometry from GML using GDAL GML parser
+    static QgsGeometry geometryFromGMLUsingGdal( const QDomElement &geometryElement );
 
     /**
      * Creates an empty \verbatim <Filter> \endverbatim QDomElement
@@ -330,7 +344,7 @@ class CORE_EXPORT QgsOgcUtils
      * \param elem the \verbatim <gml:coordinates> \endverbatim element
      * \returns boolean FALSE on success
     */
-    static bool readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem );
+    static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
 
     /**
      * Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
@@ -340,8 +354,7 @@ class CORE_EXPORT QgsOgcUtils
      *              \verbatim <gml:posList> \endverbatim element
      * \returns boolean FALSE on success
      */
-    static bool readGMLPositions( QgsPolylineXY &coords, const QDomElement &elem );
-
+    static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
 
     /**
      * Create a GML coordinates element from a point list.
@@ -379,6 +392,8 @@ class CORE_EXPORT QgsOgcUtils
     static QgsExpressionNodeBinaryOperator *nodePropertyIsNullFromOgcFilter( QDomElement &element, QString &errorMessage );
 };
 
+
+
 #ifndef SIP_RUN
 
 /**
@@ -414,20 +429,20 @@ class QgsOgcUtilsExprToFilter
 
   private:
     QDomDocument &mDoc;
-    bool mGMLUsed;
+    bool mGMLUsed = false;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
-    const QString &mNamespacePrefix;
-    const QString &mNamespaceURI;
-    const QString &mGeometryName;
-    const QString &mSrsName;
+    QString mNamespacePrefix;
+    QString mNamespaceURI;
+    QString mGeometryName;
+    QString mSrsName;
     bool mInvertAxisOrientation;
-    const QMap<QString, QString> &mFieldNameToXPathMap;
-    const QMap<QString, QString> &mNamespacePrefixToUriMap;
+    QMap<QString, QString> mFieldNameToXPathMap;
+    QMap<QString, QString> mNamespacePrefixToUriMap;
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
-    int mGeomId;
+    int mGeomId = 1;
 
     QDomElement expressionUnaryOperatorToOgcFilter( const QgsExpressionNodeUnaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
     QDomElement expressionBinaryOperatorToOgcFilter( const QgsExpressionNodeBinaryOperator *node, QgsExpression *expression, const QgsExpressionContext *context );
@@ -554,7 +569,7 @@ class QgsOgcUtilsSQLStatementToFilter
 
   private:
     QDomDocument &mDoc;
-    bool mGMLUsed;
+    bool mGMLUsed = false;
     QgsOgcUtils::GMLVersion mGMLVersion;
     QgsOgcUtils::FilterVersion mFilterVersion;
     const QList<QgsOgcUtils::LayerProperties> &mLayerProperties;
@@ -563,7 +578,7 @@ class QgsOgcUtilsSQLStatementToFilter
     QString mErrorMessage;
     QString mFilterPrefix;
     QString mPropertyName;
-    int mGeomId;
+    int mGeomId =  1 ;
     QString mCurrentSRSName;
     QMap<QString, QString> mMapTableAliasToNames;
     const QMap< QString, QString> &mMapUnprefixedTypenameToPrefixedTypename;

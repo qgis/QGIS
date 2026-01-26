@@ -11,7 +11,6 @@
             <VendorOption name="placement">centralPoint</VendorOption>
             <se:Stroke>
               <se:GraphicStroke>
-                <se:Gap>3.3</se:Gap>
                 <se:PerpendicularOffset>6.6</se:PerpendicularOffset>
                 <se:Graphic>
                   <se:Mark>
@@ -25,6 +24,9 @@
                   </se:Mark>
                   <se:Size>2</se:Size>
                 </se:Graphic>
+                <se:Gap>
+                  <ogc:Literal>3.3</ogc:Literal>
+                </se:Gap>
               </se:GraphicStroke>
             </se:Stroke>
           </se:LineSymbolizer>

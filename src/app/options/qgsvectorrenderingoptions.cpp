@@ -13,14 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsabstractgeometry.h"
 #include "qgsvectorrenderingoptions.h"
-#include "qgssettings.h"
+
+#include "qgsabstractgeometry.h"
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
+#include "qgssettings.h"
 #include "qgssettingsentryenumflag.h"
+#include "qgsvectorlayer.h"
 
 #include <QThread>
+
+#include "moc_qgsvectorrenderingoptions.cpp"
+
 //
 // QgsVectorRenderingOptionsWidget
 //
@@ -33,21 +37,21 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   QgsSettings settings;
 
   // Default simplify drawing configuration
-  mSimplifyDrawingGroupBox->setChecked( settings.enumValue( QStringLiteral( "/qgis/simplifyDrawingHints" ), Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ) != Qgis::VectorRenderingSimplificationFlag::NoSimplification );
+  mSimplifyDrawingGroupBox->setChecked( settings.enumValue( u"/qgis/simplifyDrawingHints"_s, Qgis::VectorRenderingSimplificationFlag::GeometrySimplification ) != Qgis::VectorRenderingSimplificationFlag::NoSimplification );
   mSimplifyDrawingSpinBox->setValue( QgsVectorLayer::settingsSimplifyDrawingTol->value() );
   mSimplifyDrawingAtProvider->setChecked( !QgsVectorLayer::settingsSimplifyLocal->value() );
 
   //segmentation tolerance type
   mToleranceTypeComboBox->addItem( tr( "Maximum Angle" ), QgsAbstractGeometry::MaximumAngle );
   mToleranceTypeComboBox->addItem( tr( "Maximum Difference" ), QgsAbstractGeometry::MaximumDifference );
-  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), QgsAbstractGeometry::MaximumAngle );
+  QgsAbstractGeometry::SegmentationToleranceType toleranceType = settings.enumValue( u"/qgis/segmentationToleranceType"_s, QgsAbstractGeometry::MaximumAngle );
   int toleranceTypeIndex = mToleranceTypeComboBox->findData( toleranceType );
   if ( toleranceTypeIndex != -1 )
   {
     mToleranceTypeComboBox->setCurrentIndex( toleranceTypeIndex );
   }
 
-  double tolerance = settings.value( QStringLiteral( "/qgis/segmentationTolerance" ), "0.01745" ).toDouble();
+  double tolerance = settings.value( u"/qgis/segmentationTolerance"_s, "0.01745" ).toDouble();
   if ( toleranceType == QgsAbstractGeometry::MaximumAngle )
   {
     tolerance = tolerance * 180.0 / M_PI; //value shown to the user is degree, not rad
@@ -56,7 +60,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
   mSegmentationToleranceSpinBox->setClearValue( 1.0 );
 
   QStringList myScalesList = Qgis::defaultProjectScales().split( ',' );
-  myScalesList.append( QStringLiteral( "1:1" ) );
+  myScalesList.append( u"1:1"_s );
   mSimplifyMaximumScaleComboBox->updateScales( myScalesList );
   mSimplifyMaximumScaleComboBox->setScale( QgsVectorLayer::settingsSimplifyMaxScale->value() );
 
@@ -69,7 +73,7 @@ QgsVectorRenderingOptionsWidget::QgsVectorRenderingOptionsWidget( QWidget *paren
 
 QString QgsVectorRenderingOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#vector-rendering-options" );
+  return u"introduction/qgis_configuration.html#vector-rendering-options"_s;
 }
 
 void QgsVectorRenderingOptionsWidget::apply()
@@ -91,15 +95,14 @@ void QgsVectorRenderingOptionsWidget::apply()
   QgsVectorLayer::settingsSimplifyMaxScale->setValue( mSimplifyMaximumScaleComboBox->scale() );
 
   //curve segmentation
-  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType )mToleranceTypeComboBox->currentData().toInt();
-  settings.setEnumValue( QStringLiteral( "/qgis/segmentationToleranceType" ), segmentationType );
+  QgsAbstractGeometry::SegmentationToleranceType segmentationType = ( QgsAbstractGeometry::SegmentationToleranceType ) mToleranceTypeComboBox->currentData().toInt();
+  settings.setEnumValue( u"/qgis/segmentationToleranceType"_s, segmentationType );
   double segmentationTolerance = mSegmentationToleranceSpinBox->value();
   if ( segmentationType == QgsAbstractGeometry::MaximumAngle )
   {
     segmentationTolerance = segmentationTolerance / 180.0 * M_PI; //user sets angle tolerance in degrees, internal classes need value in rad
   }
-  settings.setValue( QStringLiteral( "/qgis/segmentationTolerance" ), segmentationTolerance );
-
+  settings.setValue( u"/qgis/segmentationTolerance"_s, segmentationTolerance );
 }
 
 
@@ -107,14 +110,13 @@ void QgsVectorRenderingOptionsWidget::apply()
 // QgsVectorRenderingOptionsFactory
 //
 QgsVectorRenderingOptionsFactory::QgsVectorRenderingOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon(), QStringLiteral( "vector" ) )
+  : QgsOptionsWidgetFactory( tr( "Vector" ), QIcon(), u"vector"_s )
 {
-
 }
 
 QIcon QgsVectorRenderingOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mIconVector.svg" ) );
+  return QgsApplication::getThemeIcon( u"mIconVector.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsVectorRenderingOptionsFactory::createWidget( QWidget *parent ) const
@@ -124,5 +126,5 @@ QgsOptionsPageWidget *QgsVectorRenderingOptionsFactory::createWidget( QWidget *p
 
 QStringList QgsVectorRenderingOptionsFactory::path() const
 {
-  return {QStringLiteral( "rendering" ) };
+  return { u"rendering"_s };
 }

@@ -16,19 +16,20 @@
 #ifndef QGSEXPRESSIONHIGHLIGHTER_H
 #define QGSEXPRESSIONHIGHLIGHTER_H
 
-#include <QSyntaxHighlighter>
+#include "qgis_gui.h"
 
 #include <QHash>
-#include <QTextCharFormat>
-#include <QStringList>
 #include <QRegularExpression>
-#include "qgis_gui.h"
+#include <QStringList>
+#include <QSyntaxHighlighter>
+#include <QTextCharFormat>
 
 class QTextDocument;
 
 /**
  * \ingroup gui
  * \class QgsExpressionHighlighter
+ * \brief Syntax highlighter for QGIS expressions.
  */
 class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
 {
@@ -44,8 +45,8 @@ class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
   private:
     struct HighlightingRule
     {
-      QRegularExpression pattern;
-      QTextCharFormat format;
+        QRegularExpression pattern;
+        QTextCharFormat format;
     };
     QVector<HighlightingRule> highlightingRules;
 

@@ -14,11 +14,11 @@
  ***************************************************************************/
 
 #include "qgsappwindowmanager.h"
-#include "qgsstylemanagerdialog.h"
-#include "qgsstyle.h"
+
+#include "elevation/qgselevationprofilemanagerdialog.h"
 #include "qgisapp.h"
 #include "qgslayoutmanagerdialog.h"
-#include "qgsrasterlayer.h"
+#include "qgsstylemanagerdialog.h"
 
 #ifdef HAVE_3D
 #include "qgs3dviewsmanagerdialog.h"
@@ -30,6 +30,8 @@ QgsAppWindowManager::~QgsAppWindowManager()
     delete mStyleManagerDialog;
   if ( mLayoutManagerDialog )
     delete mLayoutManagerDialog;
+  if ( mElevationProfileManagerDialog )
+    delete mElevationProfileManagerDialog;
 }
 
 QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::StandardDialog dialog )
@@ -53,9 +55,11 @@ QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::Sta
 
 QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::ApplicationDialog dialog )
 {
+  // clang-tidy false positive
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( dialog )
   {
-    case DialogLayoutManager:
+    case ApplicationDialog::LayoutManager:
     {
       if ( !mLayoutManagerDialog )
       {
@@ -66,7 +70,7 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       mLayoutManagerDialog->activate();
       return mLayoutManagerDialog;
     }
-    case Dialog3DMapViewsManager:
+    case ApplicationDialog::Dialog3DMapViewsManager:
     {
 #ifdef HAVE_3D
       if ( !m3DMapViewsManagerDialog )
@@ -82,6 +86,18 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       return m3DMapViewsManagerDialog;
 #endif
     }
+    case ApplicationDialog::ElevationProfileManager:
+    {
+      if ( !mElevationProfileManagerDialog )
+      {
+        mElevationProfileManagerDialog = new QgsElevationProfileManagerDialog( QgisApp::instance(), Qt::Window );
+        mElevationProfileManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
+      }
+      mElevationProfileManagerDialog->show();
+      mElevationProfileManagerDialog->activate();
+      return mElevationProfileManagerDialog;
+    }
   }
+  // NOLINTEND(bugprone-branch-clone)
   return nullptr;
 }

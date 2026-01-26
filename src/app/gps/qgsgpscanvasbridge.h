@@ -16,13 +16,14 @@
 #ifndef QGSGPSCANVASBRIDGE_H
 #define QGSGPSCANVASBRIDGE_H
 
-#include <QObject>
-#include <QElapsedTimer>
-#include "qgspointxy.h"
+#include "qgis_app.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdistancearea.h"
 #include "qgsmapcanvasinteractionblocker.h"
-#include "qgis_app.h"
+#include "qgspointxy.h"
+
+#include <QElapsedTimer>
+#include <QObject>
 
 class QgsAppGpsConnection;
 class QgsMapCanvas;
@@ -43,7 +44,6 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryBool *settingShowBearingLine;
     static const QgsSettingsEntryString *settingBearingLineSymbol;
     static const QgsSettingsEntryInteger *settingMapExtentRecenteringThreshold;
@@ -75,7 +75,6 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
     void updateGpsDistanceStatusMessage( bool forceDisplay );
 
   private:
-
     QgsAppGpsConnection *mConnection = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
 
@@ -105,7 +104,7 @@ class APP_EXPORT QgsGpsCanvasBridge : public QObject, public QgsMapCanvasInterac
 
     QElapsedTimer mLastForcedStatusUpdate;
 
-    std::unique_ptr< QgsBearingNumericFormat > mBearingNumericFormat;
+    std::unique_ptr<QgsBearingNumericFormat> mBearingNumericFormat;
 };
 
 #endif // QGSGPSCANVASBRIDGE_H

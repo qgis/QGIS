@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsfeaturelistcomboboxplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsfeaturelistcombobox.h"
 
+#include "moc_qgsfeaturelistcomboboxplugin.cpp"
 
 QgsFeatureListComboBoxPlugin::QgsFeatureListComboBoxPlugin( QObject *parent )
   : QObject( parent )
@@ -92,5 +94,5 @@ QString QgsFeatureListComboBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

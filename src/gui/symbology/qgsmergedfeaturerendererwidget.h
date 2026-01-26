@@ -16,16 +16,17 @@
 #define QGSMERGEDFEATURERENDERERWIDGET_H
 
 #include "ui_qgsmergedfeaturerendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QMenu;
 class QgsMergedFeatureRenderer;
 
 /**
  * \ingroup gui
- * \brief A widget used represent options of a QgsMergedFeatureRenderer
+ * \brief A widget for configuring options for a QgsMergedFeatureRenderer.
  *
  * \since QGIS 3.18
  */
@@ -34,7 +35,6 @@ class GUI_EXPORT QgsMergedFeatureRendererWidget : public QgsRendererWidget, priv
     Q_OBJECT
 
   public:
-
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied

@@ -16,16 +16,16 @@
 #ifndef QGSVECTORSIMPLIFYMETHOD_H
 #define QGSVECTORSIMPLIFYMETHOD_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QFlags>
 #include <QObject>
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgis.h"
-
 /**
  * \ingroup core
- * \brief This class contains information how to simplify geometries fetched from a vector layer
+ * \brief Contains settings for simplifying geometries fetched from a vector layer.
  */
 class CORE_EXPORT QgsVectorSimplifyMethod
 {

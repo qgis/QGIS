@@ -15,16 +15,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofileexporter.h"
-#include "qgsabstractprofilesource.h"
-#include "qgsabstractprofilegenerator.h"
-#include "qgsdxfexport.h"
-#include "qgsprofilerenderer.h"
-#include "qgsmemoryproviderutils.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
 
-#include <QThread>
+#include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesource.h"
+#include "qgsdxfexport.h"
+#include "qgsmemoryproviderutils.h"
+#include "qgsprofilerenderer.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
+
 #include <QFileInfo>
+#include <QThread>
+
+#include "moc_qgsprofileexporter.cpp"
 
 QgsProfileExporter::QgsProfileExporter( const QList<QgsAbstractProfileSource *> &sources, const QgsProfileRequest &request, Qgis::ProfileExportType type )
   : mType( type )
@@ -72,7 +75,7 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
   {
     // first collate a master list of fields for this geometry type
     QgsFields outputFields;
-    outputFields.append( QgsField( QStringLiteral( "layer" ), QMetaType::Type::QString ) );
+    outputFields.append( QgsField( u"layer"_s, QMetaType::Type::QString ) );
 
     for ( const QgsAbstractProfileResults::Feature &feature : std::as_const( wkbTypeIt.value() ) )
     {
@@ -96,7 +99,7 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
 
     // note -- 2d profiles have no CRS associated, the coordinate values are not location based!
     std::unique_ptr< QgsVectorLayer > outputLayer( QgsMemoryProviderUtils::createMemoryLayer(
-          QStringLiteral( "profile" ),
+          u"profile"_s,
           outputFields,
           static_cast< Qgis::WkbType >( wkbTypeIt.key() ),
           mType == Qgis::ProfileExportType::Profile2D ? QgsCoordinateReferenceSystem() : mRequest.crs(),
@@ -120,7 +123,10 @@ QList< QgsVectorLayer *> QgsProfileExporter::toLayers()
       featuresToAdd << out;
     }
 
-    outputLayer->dataProvider()->addFeatures( featuresToAdd, QgsFeatureSink::FastInsert );
+    if ( !outputLayer->dataProvider()->addFeatures( featuresToAdd, QgsFeatureSink::FastInsert ) )
+    {
+      QgsDebugError( u"Error exporting feature: %1"_s.arg( outputLayer->dataProvider()->lastError() ) );
+    }
     res << outputLayer.release();
   }
   return res;
@@ -163,7 +169,7 @@ bool QgsProfileExporterTask::run()
     const QString fileExtension = destinationFileInfo.completeSuffix();
     const QString driverName = QgsVectorFileWriter::driverForExtension( fileExtension );
 
-    if ( driverName == QLatin1String( "DXF" ) )
+    if ( driverName == "DXF"_L1 )
     {
       // DXF gets special handling -- we use the inbuilt QgsDxfExport class
       QgsDxfExport dxf;
@@ -177,7 +183,7 @@ bool QgsProfileExporterTask::run()
       }
       dxf.addLayers( dxfLayers );
       QFile dxfFile( mDestination );
-      switch ( dxf.writeToFile( &dxfFile, QStringLiteral( "UTF-8" ) ) )
+      switch ( dxf.writeToFile( &dxfFile, u"UTF-8"_s ) )
       {
         case QgsDxfExport::ExportResult::Success:
           mResult = ExportResult::Success;
@@ -210,14 +216,14 @@ bool QgsProfileExporterTask::run()
           options.actionOnExistingFile = layerCount == 1 ? QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile
                                          : QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteLayer;
           if ( mLayers.size() > 1 )
-            options.layerName = QStringLiteral( "profile_%1" ).arg( layerCount );
+            options.layerName = u"profile_%1"_s.arg( layerCount );
         }
         else
         {
           options.actionOnExistingFile = QgsVectorFileWriter::ActionOnExistingFile::CreateOrOverwriteFile;
           if ( mLayers.size() > 1 )
           {
-            thisLayerFilename = QStringLiteral( "%1/%2_%3.%4" ).arg( destinationFileInfo.path(), destinationFileInfo.baseName() ).arg( layerCount ).arg( fileExtension );
+            thisLayerFilename = u"%1/%2_%3.%4"_s.arg( destinationFileInfo.path(), destinationFileInfo.baseName() ).arg( layerCount ).arg( fileExtension );
           }
           else
           {
@@ -226,7 +232,7 @@ bool QgsProfileExporterTask::run()
         }
         options.driverName = driverName;
         options.feedback = mFeedback.get();
-        options.fileEncoding = QStringLiteral( "UTF-8" );
+        options.fileEncoding = u"UTF-8"_s;
         QString newFileName;
         QgsVectorFileWriter::WriterError result = QgsVectorFileWriter::writeAsVectorFormatV3(
               layer,

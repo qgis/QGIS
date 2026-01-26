@@ -15,7 +15,8 @@
 class QgsNullPaintDevice: QPaintDevice
 {
 %Docstring(signature="appended")
-Null painter device that can be used for map renderer jobs which use custom painters.
+Null painter device that can be used for map renderer jobs which use
+custom painters.
 
 .. versionadded:: 3.24
 %End

@@ -98,7 +98,7 @@
    <item>
     <widget class="QGroupBox" name="mElevationGroupBox">
      <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
      <property name="title">
       <string>Elevation Clamping</string>
@@ -179,7 +179,7 @@
    <item>
     <widget class="QGroupBox" name="mBindingGroupBox">
      <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
      <property name="title">
       <string>Elevation Binding</string>
@@ -197,7 +197,7 @@
       <item row="2" column="0">
        <widget class="Line" name="line_4">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Orientation::Vertical</enum>
         </property>
        </widget>
       </item>
@@ -217,7 +217,7 @@
    <item>
     <widget class="QGroupBox" name="mExtrusionGroupBox">
      <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
      </property>
      <property name="title">
       <string>Enable Extrusion</string>
@@ -232,7 +232,7 @@
       <item row="3" column="0">
        <widget class="Line" name="line_5">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Orientation::Vertical</enum>
         </property>
        </widget>
       </item>
@@ -269,10 +269,61 @@
          <string>Extrusion controls how high features extend vertically above their base.</string>
         </property>
         <property name="textFormat">
-         <enum>Qt::PlainText</enum>
+         <enum>Qt::TextFormat::PlainText</enum>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mToleranceGroupBox">
+     <property name="focusPolicy">
+      <enum>Qt::FocusPolicy::StrongFocus</enum>
+     </property>
+     <property name="title">
+      <string>Custom Tolerance</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="syncGroup" stdset="0">
+      <string notr="true">vectorgeneral</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_Tolerance">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label_ToleranceExplanation">
+        <property name="text">
+         <string>Tolerance controls how far from the profile line a feature can reside to be included in the results. If set, this value overrides the tolerance defined in the Elevation Profile for this specific layer.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_Tolerance">
+        <property name="text">
+         <string>Tolerance</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QgsDoubleSpinBox" name="mToleranceSpinBox">
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="minimum">
+         <double>0.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>99999999999.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -385,7 +436,7 @@
             <item>
              <spacer name="horizontalSpacer">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -563,7 +614,7 @@
             <item>
              <spacer name="horizontalSpacer_2">
               <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+               <enum>Qt::Orientation::Horizontal</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
@@ -592,7 +643,7 @@
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
-      <enum>Qt::Vertical</enum>
+      <enum>Qt::Orientation::Vertical</enum>
      </property>
      <property name="sizeHint" stdset="0">
       <size>

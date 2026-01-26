@@ -18,9 +18,9 @@ From build dir, run: ctest -R PyQgsRasterPipe -V
 
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'June 2021'
-__copyright__ = '(C) 2021, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "June 2021"
+__copyright__ = "(C) 2021, Nyall Dawson"
 
 from qgis.core import (
     QgsExpressionContext,
@@ -44,9 +44,15 @@ class TestQgsRasterPipe(QgisTestCase):
     def test_data_defined_properties(self):
         pipe = QgsRasterPipe()
 
-        pipe.dataDefinedProperties().setProperty(QgsRasterPipe.Property.RendererOpacity, QgsProperty.fromExpression('100/2'))
-        self.assertEqual(pipe.dataDefinedProperties().property(QgsRasterPipe.Property.RendererOpacity),
-                         QgsProperty.fromExpression('100/2'))
+        pipe.dataDefinedProperties().setProperty(
+            QgsRasterPipe.Property.RendererOpacity, QgsProperty.fromExpression("100/2")
+        )
+        self.assertEqual(
+            pipe.dataDefinedProperties().property(
+                QgsRasterPipe.Property.RendererOpacity
+            ),
+            QgsProperty.fromExpression("100/2"),
+        )
 
         pipe.set(QgsSingleBandPseudoColorRenderer(None))
         self.assertTrue(pipe.renderer())
@@ -57,5 +63,5 @@ class TestQgsRasterPipe(QgisTestCase):
         self.assertEqual(pipe.renderer().opacity(), 0.5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

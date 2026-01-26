@@ -10,3 +10,7 @@ QgsMapCanvasAnnotationItem.ResizeFrameLeftUp = QgsMapCanvasAnnotationItem.MouseM
 QgsMapCanvasAnnotationItem.ResizeFrameRightUp = QgsMapCanvasAnnotationItem.MouseMoveAction.ResizeFrameRightUp
 QgsMapCanvasAnnotationItem.ResizeFrameLeftDown = QgsMapCanvasAnnotationItem.MouseMoveAction.ResizeFrameLeftDown
 QgsMapCanvasAnnotationItem.ResizeFrameRightDown = QgsMapCanvasAnnotationItem.MouseMoveAction.ResizeFrameRightDown
+try:
+    QgsMapCanvasAnnotationItem.__overridden_methods__ = ['updatePosition', 'boundingRect', 'paint']
+except (NameError, AttributeError):
+    pass

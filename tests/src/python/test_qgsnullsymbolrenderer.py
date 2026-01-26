@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'April 2016'
-__copyright__ = '(C) 2016, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "April 2016"
+__copyright__ = "(C) 2016, Nyall Dawson"
 
 import os
 
@@ -44,12 +44,12 @@ class TestQgsNullSymbolRenderer(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):
-        return 'null_renderer'
+        return "null_renderer"
 
     def setUp(self):
         self.iface = get_iface()
-        myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
-        self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
+        myShpFile = os.path.join(TEST_DATA_DIR, "polys.shp")
+        self.layer = QgsVectorLayer(myShpFile, "Polys", "ogr")
         QgsProject.instance().addMapLayer(self.layer)
 
         self.renderer = QgsNullSymbolRenderer()
@@ -68,16 +68,20 @@ class TestQgsNullSymbolRenderer(QgisTestCase):
     def testRender(self):
         # test no features are rendered
         self.assertTrue(
-            self.render_map_settings_check('nullrenderer_render', 'nullrenderer_render', self.mapsettings)
+            self.render_map_settings_check(
+                "nullrenderer_render", "nullrenderer_render", self.mapsettings
+            )
         )
 
     def testSelected(self):
         # select a feature and render
         self.layer.select([1, 2, 3])
         self.assertTrue(
-            self.render_map_settings_check('nullrenderer_selected', 'nullrenderer_selected', self.mapsettings)
+            self.render_map_settings_check(
+                "nullrenderer_selected", "nullrenderer_selected", self.mapsettings
+            )
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

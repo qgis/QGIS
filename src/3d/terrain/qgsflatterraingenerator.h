@@ -17,9 +17,9 @@
 #define QGSFLATTERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
 #include "qgsterraingenerator.h"
 #include "qgsterraintileloader.h"
+
 #include <Qt3DExtras/QPlaneGeometry>
 
 #define SIP_NO_FILE
@@ -35,6 +35,8 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
     //! Construct the loader for a node
     FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
 
+    void start() override;
+
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
@@ -44,7 +46,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
 ///@endcond
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Terrain generator that creates a simple square flat area.
  *
  */
@@ -52,6 +54,10 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+    /**
+     * Creates a new instance of a QgsFlatTerrainGenerator object.
+     */
+    static QgsTerrainGenerator *create() SIP_FACTORY;
 
     QgsFlatTerrainGenerator() = default;
 
@@ -62,22 +68,15 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
 
-    //! Sets CRS of the terrain
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
-    //! Returns CRS of the terrain
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
   private:
-
     void updateTilingScheme();
 
     QgsCoordinateReferenceSystem mCrs;
 };
-
-
 
 
 #endif // QGSFLATTERRAINGENERATOR_H

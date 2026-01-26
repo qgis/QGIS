@@ -11,6 +11,9 @@
 
 struct QgsVertexId
 {
+%TypeHeaderCode
+#include "qgsvertexid.h"
+%End
 
   explicit QgsVertexId( int _part = -1, int _ring = -1, int _vertex = -1, Qgis::VertexType _type = Qgis::VertexType::Segment ) /HoldGIL/;
 %Docstring
@@ -27,19 +30,21 @@ Returns ``True`` if the vertex id is valid
 
   bool partEqual( QgsVertexId o ) const /HoldGIL/;
 %Docstring
-Returns ``True`` if this vertex ID belongs to the same part as another vertex ID.
+Returns ``True`` if this vertex ID belongs to the same part as another
+vertex ID.
 %End
 
   bool ringEqual( QgsVertexId o ) const /HoldGIL/;
 %Docstring
-Returns ``True`` if this vertex ID belongs to the same ring as another vertex ID (i.e. the part
-and ring number are equal).
+Returns ``True`` if this vertex ID belongs to the same ring as another
+vertex ID (i.e. the part and ring number are equal).
 %End
 
   bool vertexEqual( QgsVertexId o ) const /HoldGIL/;
 %Docstring
-Returns ``True`` if this vertex ID corresponds to the same vertex as another vertex ID (i.e. the part,
-ring number and vertex number are equal).
+Returns ``True`` if this vertex ID corresponds to the same vertex as
+another vertex ID (i.e. the part, ring number and vertex number are
+equal).
 %End
 
   bool isValid( const QgsAbstractGeometry *geom ) const /HoldGIL/;

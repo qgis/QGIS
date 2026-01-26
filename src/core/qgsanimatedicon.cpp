@@ -16,6 +16,8 @@
 
 #include "qgsanimatedicon.h"
 
+#include "moc_qgsanimatedicon.cpp"
+
 QgsAnimatedIcon::QgsAnimatedIcon( const QString &iconPath, QObject *parent )
   : QObject( parent )
   , mMovie( new QMovie( this ) )

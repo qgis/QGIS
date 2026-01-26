@@ -16,19 +16,22 @@
  ***************************************************************************/
 
 #include "qgssvgannotationdialog.h"
-#include "qgsannotationwidget.h"
-#include "qgssvgannotation.h"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsproject.h"
+
 #include "qgsannotationmanager.h"
+#include "qgsannotationwidget.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssvgannotation.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+
+#include "moc_qgssvgannotationdialog.cpp"
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -52,7 +55,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
 
   if ( mItem && mItem->annotation() )
   {
-    QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
+    QgsSvgAnnotation *annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
     mFileLineEdit->setText( annotation->filePath() );
   }
 
@@ -98,12 +101,11 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
   {
     if ( !mFileLineEdit->text().isEmpty() )
     {
-      QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
+      QgsSvgAnnotation *annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
       annotation->setFilePath( mFileLineEdit->text() );
       mItem->update();
     }
   }
-
 }
 
 void QgsSvgAnnotationDialog::deleteItem()
@@ -123,7 +125,7 @@ void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsSvgAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-annotations"_s );
 }
 
 void QgsSvgAnnotationDialog::onSettingsChanged()

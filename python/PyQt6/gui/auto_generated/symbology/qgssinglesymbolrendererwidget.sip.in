@@ -11,6 +11,9 @@
 
 class QgsSingleSymbolRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring :py:class:`QgsSingleSymbolRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgssinglesymbolrendererwidget.h"
@@ -30,7 +33,7 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 
 
   protected:
-    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
+    virtual void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled );
 
 
 };

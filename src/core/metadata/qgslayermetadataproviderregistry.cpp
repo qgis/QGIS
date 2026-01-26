@@ -14,8 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayermetadataproviderregistry.h"
+
 #include "qgsabstractlayermetadataprovider.h"
 #include "qgsfeedback.h"
+
+#include "moc_qgslayermetadataproviderregistry.cpp"
 
 QgsLayerMetadataProviderRegistry::QgsLayerMetadataProviderRegistry( QObject *parent )
   : QObject( parent )

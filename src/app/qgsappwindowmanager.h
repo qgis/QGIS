@@ -18,11 +18,13 @@
 
 #include "qgis.h"
 #include "qgswindowmanagerinterface.h"
+
 #include <QPointer>
 
 class QgsStyleManagerDialog;
 class QgsLayoutManagerDialog;
 class Qgs3DViewsManagerDialog;
+class QgsElevationProfileManagerDialog;
 
 /**
  * \ingroup gui
@@ -31,16 +33,16 @@ class Qgs3DViewsManagerDialog;
 class QgsAppWindowManager : public QgsWindowManagerInterface
 {
   public:
-
     //! Application-only QGIS dialogs
-    enum ApplicationDialog
+    enum class ApplicationDialog : int
     {
-      DialogLayoutManager = 0, //!< Layout manager dialog
+      LayoutManager = 0,           //!< Layout manager dialog
       Dialog3DMapViewsManager = 1, //!< 3D map views manager dialog
+      ElevationProfileManager = 2, //!< Elevation profile manager dialog
     };
 
     QgsAppWindowManager() = default;
-    ~QgsAppWindowManager();
+    ~QgsAppWindowManager() override;
 
     QWidget *openStandardDialog( QgsWindowManagerInterface::StandardDialog dialog ) override;
 
@@ -55,10 +57,10 @@ class QgsAppWindowManager : public QgsWindowManagerInterface
     QWidget *openApplicationDialog( ApplicationDialog dialog );
 
   private:
-    QPointer< QgsStyleManagerDialog > mStyleManagerDialog;
-    QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
-    QPointer< Qgs3DViewsManagerDialog > m3DMapViewsManagerDialog;
-
+    QPointer<QgsStyleManagerDialog> mStyleManagerDialog;
+    QPointer<QgsLayoutManagerDialog> mLayoutManagerDialog;
+    QPointer<Qgs3DViewsManagerDialog> m3DMapViewsManagerDialog;
+    QPointer<QgsElevationProfileManagerDialog> mElevationProfileManagerDialog;
 };
 
 

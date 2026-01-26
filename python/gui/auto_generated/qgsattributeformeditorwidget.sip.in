@@ -9,12 +9,16 @@
 
 
 
+
 class QgsAttributeFormEditorWidget : QgsAttributeFormWidget
 {
 %Docstring(signature="appended")
-A widget consisting of both an editor widget and additional widgets for controlling the behavior
-of the editor widget depending on a number of possible modes. For instance, if the parent attribute
-form is in the multi edit mode, this widget will show both the editor widget and a tool button for
+A widget consisting of both an editor widget and additional widgets for
+controlling the behavior of the editor widget depending on a number of
+possible modes.
+
+For instance, if the parent attribute form is in the multi edit mode,
+this widget will show both the editor widget and a tool button for
 controlling the multi edit results.
 %End
 
@@ -22,13 +26,12 @@ controlling the multi edit results.
 #include "qgsattributeformeditorwidget.h"
 %End
   public:
-
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
-                                           QgsAttributeForm *form  /TransferThis/ );
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form /TransferThis/ );
 %Docstring
 Constructor for QgsAttributeFormEditorWidget.
 
-:param editorWidget: associated editor widget wrapper (for default/edit modes)
+:param editorWidget: associated editor widget wrapper (for default/edit
+                     modes)
 :param widgetType: the type identifier of the widget passed in the
                    wrapper
 :param form: parent attribute form
@@ -44,13 +47,16 @@ Constructor for QgsAttributeFormEditorWidget.
 Resets the widget to an initial value.
 
 :param initialValue: initial value to show in widget
-:param mixedValues: set to ``True`` to initially show the mixed values state
-:param additionalFieldValues: a variant map of additional field names with their corresponding values
+:param mixedValues: set to ``True`` to initially show the mixed values
+                    state
+:param additionalFieldValues: a variant map of additional field names
+                              with their corresponding values
 %End
 
     bool hasChanged() const;
 %Docstring
-Returns ``True`` if the widget's value has been changed since it was initialized.
+Returns ``True`` if the widget's value has been changed since it was
+initialized.
 
 .. seealso:: :py:func:`initialize`
 %End
@@ -67,7 +73,16 @@ Set the constraint status for this widget.
 
     void setConstraintResultVisible( bool editable );
 %Docstring
-Set the constraint result label visible or invisible according to the layer editable status
+Set the constraint result label visible or invisible according to the
+layer editable status
+%End
+
+    void setRememberLastValue( bool remember );
+%Docstring
+Sets whether the widget value will be remembered for potential reuse
+when creating new features
+
+.. versionadded:: 4.0
 %End
 
     QgsEditorWidgetWrapper *editorWidget() const;
@@ -101,7 +116,7 @@ Emitted when the widget's value changes
 
 .. deprecated:: 3.10
 
-   Use valuesChanged instead.
+   Use :py:func:`~QgsAttributeFormEditorWidget.valuesChanged` instead.
 %End
 
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );
@@ -112,6 +127,17 @@ Emitted when the widget's value changes
 :param additionalFieldValues: of the potential additional fields
 
 .. versionadded:: 3.10
+%End
+
+    void rememberLastValueChanged( int index, bool remember );
+%Docstring
+Emitted when the widget's remember last value toggle changes
+
+:param index: the field index
+:param remember: the value is ``True`` when the last value should be
+                 remembered
+
+.. versionadded:: 4.0
 %End
 
 };

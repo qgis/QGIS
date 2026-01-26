@@ -18,9 +18,11 @@
 
 #define SIP_NO_FILE
 
+#include "ui_qgsprocessingenummodelerwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingenummodelerwidgetbase.h"
+
 #include <QStandardItem>
 #include <QStandardItemModel>
 
@@ -37,7 +39,6 @@ class GUI_EXPORT QgsProcessingEnumModelerWidget : public QWidget, private Ui::Qg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingEnumModelerWidget.
      */

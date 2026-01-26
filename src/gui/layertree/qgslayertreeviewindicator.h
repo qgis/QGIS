@@ -25,6 +25,7 @@
 /**
  * \ingroup gui
  * \brief Indicator that can be used in a layer tree view to display icons next to items of the layer tree.
+ *
  * They add extra context to the item and interactivity (using clicked() signal).
  *
  * Indicators can be added/removed to individual layer tree items using QgsLayerTreeView::addIndicator()
@@ -42,7 +43,11 @@ class GUI_EXPORT QgsLayerTreeViewIndicator : public QObject
     //! Indicator icon that will be displayed in the layer tree view
     QIcon icon() const { return mIcon; }
     //! Sets indicator icon that will be displayed in the layer tree view
-    void setIcon( const QIcon &icon ) { mIcon = icon; emit changed(); }
+    void setIcon( const QIcon &icon )
+    {
+      mIcon = icon;
+      emit changed();
+    }
 
     //! Returns tool tip text that will be shown when user hovers mouse over the indicator
     QString toolTip() const { return mToolTip; }

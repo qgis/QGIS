@@ -12,8 +12,8 @@
 class QgsSpatialIndexKDBushData
 {
 %Docstring(signature="appended")
-
-A container for data stored inside a :py:class:`QgsSpatialIndexKDBush` index.
+A container for data stored inside a :py:class:`QgsSpatialIndexKDBush`
+index.
 
 .. versionadded:: 3.4
 %End
@@ -25,8 +25,8 @@ A container for data stored inside a :py:class:`QgsSpatialIndexKDBush` index.
 
     QgsSpatialIndexKDBushData( QgsFeatureId id, double x, double y );
 %Docstring
-Constructor for QgsSpatialIndexKDBushData, for a feature with the
-given ``id`` and ``x``, ``y`` coordinate.
+Constructor for QgsSpatialIndexKDBushData, for a feature with the given
+``id`` and ``x``, ``y`` coordinate.
 %End
 
 

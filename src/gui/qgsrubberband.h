@@ -15,19 +15,18 @@
 #ifndef QGSRUBBERBAND_H
 #define QGSRUBBERBAND_H
 
-#include "qgsmapcanvasitem.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvasitem.h"
 
 #include <QBrush>
-#include <QVector>
+#include <QObject>
 #include <QPen>
 #include <QPolygon>
-#include <QObject>
 #include <QSvgRenderer>
-
-#include "qgis_gui.h"
+#include <QVector>
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -36,15 +35,15 @@ class QPaintEvent;
 class QgsSymbol;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsrubberband.h>
-% End
+//%End
 #endif
 
 /**
  * \ingroup gui
- * \brief A class for drawing transient features (e.g. digitizing lines) on the map.
+ * \brief Responsible for drawing transient features (e.g. digitizing lines) on the map.
  *
  * The QgsRubberBand class provides a transparent overlay widget
  * for tracking the mouse while drawing polylines or polygons.
@@ -73,7 +72,6 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     SIP_END
 #endif
   public:
-
     Q_PROPERTY( QColor fillColor READ fillColor WRITE setFillColor )
     Q_PROPERTY( QColor strokeColor READ strokeColor WRITE setStrokeColor )
     Q_PROPERTY( int iconSize READ iconSize WRITE setIconSize )
@@ -376,8 +374,8 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
      */
     int numberOfVertices() const;
 
-    // TODO QGIS 4: rename i to geometryIndex, j to vertexIndex
-    // TODO QGIS 4: reorder parameters to geom, ring, ring
+    // TODO QGIS 5: rename i to geometryIndex, j to vertexIndex
+    // TODO QGIS 5: reorder parameters to geom, ring, ring
 
     /**
      * Returns a vertex
@@ -419,6 +417,7 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     void setSymbol( QgsSymbol *symbol SIP_TRANSFER );
 
   protected:
+    using QgsMapCanvasItem::paint;
 
     /**
      * Paints the rubber band in response to an update event.
@@ -456,18 +455,17 @@ class GUI_EXPORT QgsRubberBand : public QgsMapCanvasItem
     std::unique_ptr<QSvgRenderer> mSvgRenderer;
     QPoint mSvgOffset;
 
-    std::unique_ptr< QgsSymbol > mSymbol;
+    std::unique_ptr<QgsSymbol> mSymbol;
 
     /**
      * Nested lists used for multitypes
      */
-    QVector< QVector< QVector <QgsPointXY> > > mPoints;
+    QVector<QVector<QVector<QgsPointXY>>> mPoints;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Polygon;
     double mTranslationOffsetX = 0.0;
     double mTranslationOffsetY = 0.0;
 
     QgsRubberBand();
-
 };
 
 #endif

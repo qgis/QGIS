@@ -16,24 +16,21 @@
 #ifndef QGSTABWIDGET_H
 #define QGSTABWIDGET_H
 
-#include <QTabWidget>
-#include "qgstabbarproxystyle.h"
-#include "qgsattributeeditorelement.h"
-
 #include "qgis_gui.h"
+#include "qgsattributeeditorelement.h"
+#include "qgstabbarproxystyle.h"
+
+#include <QTabWidget>
 
 /**
  * \ingroup gui
- * \brief The QgsTabWidget class is the same as the QTabWidget but with additional methods to
- * temporarily hide/show tabs.
- *
+ * \brief A QTabWidget with additional methods to temporarily hide/show tabs.
  */
 class GUI_EXPORT QgsTabWidget : public QTabWidget
 {
     Q_OBJECT
 
   public:
-
     /**
      * Create a new QgsTabWidget with the optionally provided parent.
      *
@@ -93,20 +90,20 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
 
     struct TabInformation
     {
-      TabInformation( QWidget *wdg, const QString &lbl )
-        : widget( wdg )
-        , label( lbl )
-      {}
+        TabInformation( QWidget *wdg, const QString &lbl )
+          : widget( wdg )
+          , label( lbl )
+        {}
 
-      TabInformation() = default;
+        TabInformation() = default;
 
-      bool operator ==( const TabInformation &other ) const;
-      bool operator !=( const TabInformation &other ) const;
+        bool operator==( const TabInformation &other ) const;
+        bool operator!=( const TabInformation &other ) const;
 
-      int sourceIndex = -1;
-      QWidget *widget = nullptr;
-      QString label;
-      bool visible = true;
+        int sourceIndex = -1;
+        QWidget *widget = nullptr;
+        QString label;
+        bool visible = true;
     };
 
     TabInformation tabInfo( QWidget *widget );

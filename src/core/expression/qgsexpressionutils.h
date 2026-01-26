@@ -19,17 +19,20 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfeature.h"
+#include <functional>
+
+#include "qgscoordinatereferencesystem.h"
 #include "qgsexpression.h"
-#include "qgsvariantutils.h"
+#include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
+#include "qgsreferencedgeometry.h"
+#include "qgsvariantutils.h"
 
 #include <QDate>
 #include <QDateTime>
-#include <QTime>
-#include <QThread>
 #include <QLocale>
-#include <functional>
+#include <QThread>
+#include <QTime>
 
 class QgsMapLayer;
 class QgsGradientColorRamp;
@@ -94,15 +97,16 @@ class CORE_EXPORT QgsExpressionUtils
         return Unknown;
 
       //handle some special cases
+      int userType = value.userType();
       if ( value.type() == QVariant::UserType )
       {
-        if ( value.userType() == qMetaTypeId< QgsGeometry>() )
+        if ( userType == qMetaTypeId< QgsGeometry>() || userType == qMetaTypeId<QgsReferencedGeometry>() )
         {
           //geom is false if empty
-          const QgsGeometry geom = value.value<QgsGeometry>();
+          const QgsGeometry geom = getGeometry( value, nullptr );
           return geom.isNull() ? False : True;
         }
-        else if ( value.userType() == qMetaTypeId<QgsFeature>() )
+        else if ( userType == qMetaTypeId<QgsFeature>() )
         {
           //feat is false if non-valid
           const QgsFeature feat = value.value<QgsFeature>();
@@ -110,14 +114,15 @@ class CORE_EXPORT QgsExpressionUtils
         }
       }
 
-      if ( value.userType() == QMetaType::Type::Int )
+      if ( userType == QMetaType::Type::Int )
         return value.toInt() != 0 ? True : False;
 
       bool ok;
       const double x = value.toDouble( &ok );
       if ( !ok )
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
         return Unknown;
       }
       return !qgsDoubleNear( x, 0.0 ) ? True : False;
@@ -198,7 +203,7 @@ class CORE_EXPORT QgsExpressionUtils
       return v.userType() == QMetaType::Type::QVariantList || v.userType() == QMetaType::Type::QStringList;
     }
 
-// implicit conversion to string
+    // implicit conversion to string
     static QString getStringValue( const QVariant &value, QgsExpression * )
     {
       return value.toString();
@@ -215,7 +220,8 @@ class CORE_EXPORT QgsExpressionUtils
     {
       if ( value.userType() != QMetaType::Type::QByteArray )
       {
-        parent->setEvalErrorString( QObject::tr( "Value is not a binary value" ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Value is not a binary value" ) );
         return QByteArray();
       }
       return value.toByteArray();
@@ -227,7 +233,8 @@ class CORE_EXPORT QgsExpressionUtils
       const double x = value.toDouble( &ok );
       if ( !ok || std::isnan( x ) || !std::isfinite( x ) )
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to double" ).arg( value.toString() ) );
         return 0;
       }
       return x;
@@ -243,7 +250,8 @@ class CORE_EXPORT QgsExpressionUtils
       }
       else
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
         return 0;
       }
     }
@@ -258,7 +266,8 @@ class CORE_EXPORT QgsExpressionUtils
       }
       else
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to native int" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to native int" ).arg( value.toString() ) );
         return 0;
       }
     }
@@ -278,7 +287,8 @@ class CORE_EXPORT QgsExpressionUtils
           return QDateTime( QDate( 1, 1, 1 ), t );
         }
 
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to DateTime" ).arg( value.toString() ) );
         return QDateTime();
       }
     }
@@ -292,7 +302,8 @@ class CORE_EXPORT QgsExpressionUtils
       }
       else
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Date" ).arg( value.toString() ) );
         return QDate();
       }
     }
@@ -306,7 +317,8 @@ class CORE_EXPORT QgsExpressionUtils
       }
       else
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to Time" ).arg( value.toString() ) );
         return QTime();
       }
     }
@@ -324,7 +336,7 @@ class CORE_EXPORT QgsExpressionUtils
         return inter;
       }
       // If we get here then we can't convert so we just error and return invalid.
-      if ( report_error )
+      if ( report_error && parent )
         parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to interval" ).arg( value.toString() ) );
 
       return QgsInterval();
@@ -332,12 +344,16 @@ class CORE_EXPORT QgsExpressionUtils
 
     static QgsGradientColorRamp getRamp( const QVariant &value, QgsExpression *parent, bool report_error = false );
 
-    static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent )
+    static QgsGeometry getGeometry( const QVariant &value, QgsExpression *parent, bool tolerant = false )
     {
+      if ( value.userType() == qMetaTypeId< QgsReferencedGeometry>() )
+        return value.value<QgsReferencedGeometry>();
+
       if ( value.userType() == qMetaTypeId< QgsGeometry>() )
         return value.value<QgsGeometry>();
 
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
+      if ( !tolerant && parent )
+        parent->setEvalErrorString( u"Cannot convert to geometry"_s );
       return QgsGeometry();
     }
 
@@ -346,16 +362,32 @@ class CORE_EXPORT QgsExpressionUtils
       if ( value.userType() == qMetaTypeId<QgsFeature>() )
         return value.value<QgsFeature>();
 
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to feature" ) );
+      if ( parent )
+        parent->setEvalErrorString( u"Cannot convert to feature"_s );
       return 0;
     }
+
+    /**
+     * Tries to convert a \a value to a coordinate reference system.
+     *
+     * \since QGIS 3.42
+     */
+    static QgsCoordinateReferenceSystem getCrsValue( const QVariant &value, QgsExpression *parent );
+
+    /**
+     * Tries to convert a \a value to a time zone.
+     *
+     * \since QGIS 4.0
+     */
+    static QTimeZone getTimeZoneValue( const QVariant &value, QgsExpression *parent );
 
     static QgsExpressionNode *getNode( const QVariant &value, QgsExpression *parent )
     {
       if ( value.canConvert<QgsExpressionNode *>() )
         return value.value<QgsExpressionNode *>();
 
-      parent->setEvalErrorString( QStringLiteral( "Cannot convert to node" ) );
+      if ( parent )
+        parent->setEvalErrorString( u"Cannot convert to node"_s );
       return nullptr;
     }
 
@@ -403,7 +435,8 @@ class CORE_EXPORT QgsExpressionUtils
       }
       else
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to array" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to array" ).arg( value.toString() ) );
         return QVariantList();
       }
     }
@@ -416,7 +449,8 @@ class CORE_EXPORT QgsExpressionUtils
       }
       else
       {
-        parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to map" ).arg( value.toString() ) );
+        if ( parent )
+          parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to map" ).arg( value.toString() ) );
         return QVariantMap();
       }
     }
@@ -486,7 +520,7 @@ class CORE_EXPORT QgsExpressionUtils
      * \param foundFeatures An optional boolean parameter that will be set when features are found.
      * \since QGIS 3.22
      */
-    static std::tuple<QMetaType::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request = QgsFeatureRequest(), QgsExpressionContext context = QgsExpressionContext(), bool *foundFeatures = nullptr );
+    static std::tuple<QMetaType::Type, int> determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsExpressionContext &context = QgsExpressionContext(), bool *foundFeatures = nullptr );
 
   private:
 

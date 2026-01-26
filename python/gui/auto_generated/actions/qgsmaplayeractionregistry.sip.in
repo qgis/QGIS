@@ -14,23 +14,22 @@
 class QgsMapLayerActionRegistry : QObject
 {
 %Docstring(signature="appended")
-This class tracks map layer actions.
+A registry which tracks map layer actions.
 
-:py:class:`QgsMapLayerActionRegistry` is not usually directly created, but rather accessed through
-:py:func:`QgsGui.mapLayerActionRegistry()`.
+:py:class:`QgsMapLayerActionRegistry` is not usually directly created,
+but rather accessed through :py:func:`QgsGui.mapLayerActionRegistry()`.
 %End
 
 %TypeHeaderCode
 #include "qgsmaplayeractionregistry.h"
 %End
   public:
-
     QgsMapLayerActionRegistry( QObject *parent = 0 );
 %Docstring
 Constructor for QgsMapLayerActionRegistry.
 
-QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
-:py:func:`QgsGui.mapLayerActionRegistry()`.
+QgsMapLayerActionRegistry is not usually directly created, but rather
+accessed through :py:func:`QgsGui.mapLayerActionRegistry()`.
 %End
 
     void addMapLayerAction( QgsMapLayerAction *action );
@@ -60,7 +59,6 @@ Returns the default action for a layer
 %End
 
   protected:
-
 
   signals:
     void changed();

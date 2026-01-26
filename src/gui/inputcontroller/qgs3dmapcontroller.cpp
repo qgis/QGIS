@@ -15,10 +15,11 @@
 
 #include "qgs3dmapcontroller.h"
 
+#include "moc_qgs3dmapcontroller.cpp"
+
 QgsAbstract3DMapController::QgsAbstract3DMapController( QObject *parent )
   : QgsAbstractInputController( parent )
 {
-
 }
 
 Qgis::InputControllerType QgsAbstract3DMapController::type() const

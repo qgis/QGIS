@@ -20,9 +20,8 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "qgssettingseditorwidgetwrapperimpl.h"
 #include "qgslogger.h"
-
+#include "qgssettingseditorwidgetwrapperimpl.h"
 #include "qgssettingsentryenumflag.h"
 
 #include <QComboBox>
@@ -30,11 +29,11 @@
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for flags settings
+ * \brief A factory for editors of flags settings.
  *
  * \since QGIS 3.32
  */
-template <class ENUM, class FLAGS>
+template<class ENUM, class FLAGS>
 class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<FLAGS>, QComboBox, FLAGS>
 {
   public:
@@ -45,18 +44,17 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
     void enableAutomaticUpdatePrivate() override
     {
-      QObject::connect( &mModel, &QStandardItemModel::itemChanged, this, [ = ]( const QStandardItem * item )
-      {
+      QObject::connect( &mModel, &QStandardItemModel::itemChanged, this, [this]( const QStandardItem *item ) {
         Q_UNUSED( item )
         setSettingFromWidget();
       } );
     }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsFlagsEditorWidgetWrapper<ENUM, FLAGS>( parent ); }
 
-    virtual QString id() const override
+    QString id() const override
     {
-      return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() );
+      return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<FLAGS>().name() );
     }
 
     QVariant variantValueFromWidget() const override
@@ -74,7 +72,7 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }
@@ -113,13 +111,12 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }
 
   protected:
-
     void configureEditorPrivateImplementation() override
     {
       mModel.clear();
@@ -140,11 +137,11 @@ class GUI_EXPORT QgsSettingsFlagsEditorWidgetWrapper : public QgsSettingsEditorW
 
 /**
  * \ingroup gui
- * \brief This class is a factory of editor for enum settings
+ * \brief A factory for editors for enum settings.
  *
  * \since QGIS 3.32
  */
-template <class ENUM>
+template<class ENUM>
 class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryEnumFlag<ENUM>, QComboBox, ENUM>
 {
   public:
@@ -155,17 +152,16 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
 
     void enableAutomaticUpdatePrivate() override
     {
-      QObject::connect( this->mEditor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
-      {
+      QObject::connect( this->mEditor, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int index ) {
         Q_UNUSED( index );
         ENUM value = this->mEditor->currentData().template value<ENUM>();
         this->mSetting->setValue( value, this->mDynamicKeyPartList );
       } );
     }
 
-    virtual QString id() const override
+    QString id() const override
     {
-      return QStringLiteral( "%1-%2" ).arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
+      return u"%1-%2"_s.arg( sSettingsTypeMetaEnum.valueToKey( static_cast<int>( Qgis::SettingsType::EnumFlag ) ), QMetaEnum::fromType<ENUM>().name() );
     }
 
     /**
@@ -175,7 +171,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
      */
     void setDisplayStrings( const QMap<ENUM, QString> &displayStrings ) { mDisplayStrings = displayStrings; }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsEnumEditorWidgetWrapper<ENUM>( parent );}
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsEnumEditorWidgetWrapper<ENUM>( parent ); }
 
     QVariant variantValueFromWidget() const override
     {
@@ -192,7 +188,7 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }
@@ -220,13 +216,12 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "Settings editor not set for %1" ).arg( this->mSetting->definitionKey() ), 2 );
+        QgsDebugMsgLevel( u"Settings editor not set for %1"_s.arg( this->mSetting->definitionKey() ), 2 );
       }
       return false;
     }
 
   protected:
-
     void configureEditorPrivateImplementation() override
     {
       const QMap<ENUM, QString> enumMap = qgsEnumMap<ENUM>();
@@ -239,7 +234,6 @@ class QgsSettingsEnumEditorWidgetWrapper : public QgsSettingsEditorWidgetWrapper
 
   private:
     QMap<ENUM, QString> mDisplayStrings;
-
 };
 
 #endif // QGSSETTINGSENUMFLAGEDITORWIDGETWRAPPER_H

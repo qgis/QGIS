@@ -16,16 +16,19 @@
  ***************************************************************************/
 
 #include "qgstiledscenesourceselect.h"
-#include "qgstiledsceneconnection.h"
+
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderutils.h"
-#include "qgsmanageconnectionsdialog.h"
+#include "qgstiledsceneconnection.h"
 #include "qgstiledsceneconnectiondialog.h"
-#include "qgshelp.h"
 
 #include <QMenu>
 #include <QMessageBox>
+
+#include "moc_qgstiledscenesourceselect.cpp"
 
 ///@cond PRIVATE
 
@@ -41,14 +44,12 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   mRadioSourceService->setChecked( true );
   mStackedWidget->setCurrentIndex( 1 );
 
-  connect( mRadioSourceFile, &QRadioButton::toggled, this, [this]
-  {
+  connect( mRadioSourceFile, &QRadioButton::toggled, this, [this] {
     mStackedWidget->setCurrentIndex( 0 );
 
     emit enableButtons( !mFileWidget->filePath().isEmpty() );
   } );
-  connect( mRadioSourceService, &QRadioButton::toggled, this, [this]
-  {
+  connect( mRadioSourceService, &QRadioButton::toggled, this, [this] {
     mStackedWidget->setCurrentIndex( 1 );
 
     emit enableButtons( !cmbConnections->currentText().isEmpty() );
@@ -58,11 +59,11 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   QMenu *newMenu = new QMenu( btnNew );
 
   QAction *actionNew = new QAction( tr( "New Cesium 3D Tiles Connection…" ), this );
-  connect( actionNew, &QAction::triggered, this, [ this ]() { newConnection( "cesiumtiles" ); } );
+  connect( actionNew, &QAction::triggered, this, [this]() { newConnection( "cesiumtiles" ); } );
   newMenu->addAction( actionNew );
 
   actionNew = new QAction( tr( "New Quantized Mesh Connection…" ), this );
-  connect( actionNew, &QAction::triggered, this, [ this ]() { newConnection( "quantizedmesh" ); } );
+  connect( actionNew, &QAction::triggered, this, [this]() { newConnection( "quantizedmesh" ); } );
   newMenu->addAction( actionNew );
 
   btnNew->setMenu( newMenu );
@@ -81,8 +82,7 @@ QgsTiledSceneSourceSelect::QgsTiledSceneSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setFilter( QgsProviderRegistry::instance()->fileTiledSceneFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
-  {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     emit enableButtons( !path.isEmpty() );
   } );
 }
@@ -104,13 +104,12 @@ void QgsTiledSceneSourceSelect::btnEdit_clicked()
     populateConnectionList();
     emit connectionsChanged();
   }
-
 }
 
 void QgsTiledSceneSourceSelect::btnDelete_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                      .arg( cmbConnections->currentText() );
+                        .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -128,8 +127,7 @@ void QgsTiledSceneSourceSelect::btnSave_clicked()
 
 void QgsTiledSceneSourceSelect::btnLoad_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -151,7 +149,7 @@ void QgsTiledSceneSourceSelect::addButtonClicked()
   else if ( mRadioSourceFile->isChecked() )
   {
     const QString filePath = mFileWidget->filePath();
-    const QList< QgsProviderRegistry::ProviderCandidateDetails > providers = QgsProviderRegistry::instance()->preferredProvidersForUri( filePath );
+    const QList<QgsProviderRegistry::ProviderCandidateDetails> providers = QgsProviderRegistry::instance()->preferredProvidersForUri( filePath );
     QString providerKey;
     for ( const QgsProviderRegistry::ProviderCandidateDetails &details : providers )
     {
@@ -162,7 +160,7 @@ void QgsTiledSceneSourceSelect::addButtonClicked()
     }
 
     QVariantMap parts;
-    parts.insert( QStringLiteral( "path" ), filePath );
+    parts.insert( u"path"_s, filePath );
     const QString uri = QgsProviderRegistry::instance()->encodeUri( providerKey, parts );
 
     emit addLayer( Qgis::LayerType::TiledScene, uri, QgsProviderUtils::suggestLayerNameFromFilePath( filePath ), providerKey );
@@ -226,7 +224,7 @@ void QgsTiledSceneSourceSelect::cmbConnections_currentTextChanged( const QString
 
 void QgsTiledSceneSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
 }
 
 ///@endcond

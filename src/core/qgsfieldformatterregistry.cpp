@@ -15,18 +15,20 @@
  ***************************************************************************/
 
 #include "qgsfieldformatterregistry.h"
-#include "qgsfieldformatter.h"
 
-#include "qgsvaluerelationfieldformatter.h"
-#include "qgsvaluemapfieldformatter.h"
+#include "qgscheckboxfieldformatter.h"
 #include "qgsdatetimefieldformatter.h"
-#include "qgsrelationreferencefieldformatter.h"
+#include "qgsfallbackfieldformatter.h"
+#include "qgsfieldformatter.h"
 #include "qgskeyvaluefieldformatter.h"
 #include "qgslistfieldformatter.h"
 #include "qgsrangefieldformatter.h"
-#include "qgscheckboxfieldformatter.h"
-#include "qgsfallbackfieldformatter.h"
 #include "qgsreadwritelocker.h"
+#include "qgsrelationreferencefieldformatter.h"
+#include "qgsvaluemapfieldformatter.h"
+#include "qgsvaluerelationfieldformatter.h"
+
+#include "moc_qgsfieldformatterregistry.cpp"
 
 QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
   : QObject( parent )
@@ -40,14 +42,14 @@ QgsFieldFormatterRegistry::QgsFieldFormatterRegistry( QObject *parent )
   addFieldFormatter( new QgsRangeFieldFormatter() );
   addFieldFormatter( new QgsCheckBoxFieldFormatter() );
 
-  mFallbackFieldFormatter = new QgsFallbackFieldFormatter();
+  mFallbackFieldFormatter = std::make_unique<QgsFallbackFieldFormatter>();
 }
 
 QgsFieldFormatterRegistry::~QgsFieldFormatterRegistry()
 {
   const QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Write );
   qDeleteAll( mFieldFormatters );
-  delete mFallbackFieldFormatter;
+
 }
 
 void QgsFieldFormatterRegistry::addFieldFormatter( QgsFieldFormatter *formatter )
@@ -76,10 +78,10 @@ void QgsFieldFormatterRegistry::removeFieldFormatter( const QString &id )
 QgsFieldFormatter *QgsFieldFormatterRegistry::fieldFormatter( const QString &id ) const
 {
   const QgsReadWriteLocker locker( mLock, QgsReadWriteLocker::Read );
-  return mFieldFormatters.value( id, mFallbackFieldFormatter );
+  return mFieldFormatters.value( id, mFallbackFieldFormatter.get() );
 }
 
 QgsFieldFormatter *QgsFieldFormatterRegistry::fallbackFieldFormatter() const
 {
-  return mFallbackFieldFormatter;
+  return mFallbackFieldFormatter.get();
 }

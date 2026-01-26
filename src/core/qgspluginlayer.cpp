@@ -14,6 +14,10 @@
  ***************************************************************************/
 #include "qgspluginlayer.h"
 
+#include "qgsiconutils.h"
+
+#include "moc_qgspluginlayer.cpp"
+
 QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
   : QgsMapLayer( Qgis::LayerType::Plugin, layerName )
   , mPluginLayerType( layerType )
@@ -29,7 +33,7 @@ QgsPluginLayer::~QgsPluginLayer()
   delete mDataProvider;
 }
 
-QString QgsPluginLayer::pluginLayerType()
+QString QgsPluginLayer::pluginLayerType() const
 {
   return mPluginLayerType;
 }
@@ -53,6 +57,11 @@ QgsDataProvider *QgsPluginLayer::dataProvider()
 const QgsDataProvider *QgsPluginLayer::dataProvider() const
 {
   return mDataProvider;
+}
+
+QIcon QgsPluginLayer::icon() const
+{
+  return QgsIconUtils::iconForLayerType( Qgis::LayerType::Plugin );
 }
 
 //

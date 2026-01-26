@@ -25,12 +25,106 @@ Base class for plot/chart/graphs.
 
 %TypeHeaderCode
 #include "qgsplot.h"
+#include "qgsbarchartplot.h"
+#include "qgslinechartplot.h"
+#include "qgspiechartplot.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsPlot *item = dynamic_cast< QgsPlot * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsBarChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsBarChartPlot;
+      }
+      else if ( dynamic_cast<QgsLineChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsLineChartPlot;
+      }
+      else if ( dynamic_cast<QgsPieChartPlot *>( item ) != NULL )
+      {
+        sipType = sipType_QgsPieChartPlot;
+      }
+      else if ( dynamic_cast<Qgs2DXyPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DXyPlot;
+      }
+      else if ( dynamic_cast<Qgs2DPlot *>( item ) != NULL )
+      {
+        sipType = sipType_Qgs2DPlot;
+      }
+      else
+      {
+        sipType = sipType_QgsPlot;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
 %End
   public:
+
+    enum class DataDefinedProperty /BaseType=IntEnum/
+      {
+      MarginLeft,
+      MarginTop,
+      MarginRight,
+      MarginBottom,
+      XAxisMajorInterval,
+      XAxisMinorInterval,
+      XAxisLabelInterval,
+      YAxisMajorInterval,
+      YAxisMinorInterval,
+      YAxisLabelInterval,
+      XAxisMinimum,
+      XAxisMaximum,
+      YAxisMinimum,
+      YAxisMaximum,
+    };
 
     QgsPlot();
 
     virtual ~QgsPlot();
+
+    virtual QString type() const;
+%Docstring
+Returns the plot's type.
+
+.. versionadded:: 4.0
+%End
+
+    void setDataDefinedProperty( DataDefinedProperty key, const QgsProperty &property );
+%Docstring
+Sets a data defined property for the plot. Any existing property with
+the same key will be overwritten.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 4.0
+%End
+
+    QgsPropertyCollection &dataDefinedProperties();
+%Docstring
+Returns a reference to the plot's property collection, used for data
+defined overrides.
+
+.. seealso:: :py:func:`setDataDefinedProperties`
+
+.. versionadded:: 4.0
+%End
+
+
+    void setDataDefinedProperties( const QgsPropertyCollection &collection );
+%Docstring
+Sets the plot's property collection, used for data defined overrides.
+
+:param collection: property collection. Existing properties will be
+                   replaced.
+
+.. seealso:: :py:func:`dataDefinedProperties`
+
+.. versionadded:: 4.0
+%End
 
     virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
@@ -40,6 +134,191 @@ Writes the plot's properties into an XML ``element``.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the plot's properties from an XML ``element``.
+%End
+
+    static const QgsPropertiesDefinition &propertyDefinitions();
+%Docstring
+Returns the plot property definitions.
+%End
+
+  protected:
+
+};
+
+
+class QgsPlotRenderContext
+{
+%Docstring(signature="appended")
+Contains information about the context of a plot rendering operation.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    QgsPlotRenderContext();
+%Docstring
+Constructor for QgsPlotRenderContext.
+%End
+    ~QgsPlotRenderContext();
+};
+
+
+class QgsAbstractPlotSeries
+{
+%Docstring(signature="appended")
+An abstract class used to encapsulate the data for a plot series.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+%ConvertToSubClassCode
+    if ( QgsAbstractPlotSeries *item = dynamic_cast< QgsAbstractPlotSeries * >( sipCpp ) )
+    {
+      if ( dynamic_cast<QgsXyPlotSeries *>( item ) != NULL )
+      {
+        sipType = sipType_QgsXyPlotSeries;
+      }
+      else
+      {
+        sipType = sipType_QgsAbstractPlotSeries;
+      }
+    }
+    else
+    {
+      sipType = NULL;
+    }
+%End
+  public:
+
+    QgsAbstractPlotSeries();
+    virtual ~QgsAbstractPlotSeries();
+
+    QString name() const;
+%Docstring
+Returns the series' name.
+%End
+
+    void setName( const QString &name );
+%Docstring
+Sets the series' name.
+%End
+
+    virtual QgsAbstractPlotSeries *clone() const = 0 /Factory/;
+%Docstring
+Clones the series
+%End
+
+};
+
+class QgsXyPlotSeries : QgsAbstractPlotSeries
+{
+%Docstring(signature="appended")
+Encapsulates the data for an XY plot series.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    QgsXyPlotSeries();
+    ~QgsXyPlotSeries();
+
+    QList<std::pair<double, double>> data() const;
+%Docstring
+Returns the series' list of XY pairs of double.
+%End
+
+    void setData( const QList<std::pair<double, double>> &data );
+%Docstring
+Sets the series' list of XY pairs of double.
+%End
+
+    void append( double x, double y );
+%Docstring
+Appends a pair of X/Y double values to the series.
+%End
+
+    void clear();
+%Docstring
+Clears the series' data.
+%End
+
+    virtual QgsAbstractPlotSeries *clone() const /Factory/;
+
+
+};
+
+class QgsPlotData
+{
+%Docstring(signature="appended")
+Encapsulates one or more plot series.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    QgsPlotData();
+    ~QgsPlotData();
+
+    QgsPlotData( const QgsPlotData &other );
+
+    QList<QgsAbstractPlotSeries *> series() const;
+%Docstring
+Returns the list of series forming the plot data.
+
+.. note::
+
+   the series' ownership is retained by this object.
+%End
+
+    void addSeries( QgsAbstractPlotSeries *series /Transfer/ );
+%Docstring
+Adds a series to the plot data.
+
+.. note::
+
+   the series' ownership is transferred to this object.
+%End
+
+    void clearSeries();
+%Docstring
+Clears all series from the plot data.
+%End
+
+    QStringList categories() const;
+%Docstring
+Returns the name of the series' categories.
+%End
+
+    void setCategories( const QStringList &categories );
+%Docstring
+Sets the name of the series' ``categories``.
 %End
 
 };
@@ -73,6 +352,20 @@ Writes the axis' properties into an XML ``element``.
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the axis' properties from an XML ``element``.
+%End
+
+    Qgis::PlotAxisType type() const;
+%Docstring
+Returns the axis type.
+
+.. versionadded:: 4.0
+%End
+
+    void setType( Qgis::PlotAxisType type );
+%Docstring
+Sets the axis type.
+
+.. versionadded:: 4.0
 %End
 
     double gridIntervalMinor() const;
@@ -181,7 +474,8 @@ Ownership of ``format`` is transferred to the plot.
 
     QString labelSuffix() const;
 %Docstring
-Returns the axis label suffix, or an empty string if no label suffix is to be used.
+Returns the axis label suffix, or an empty string if no label suffix is
+to be used.
 
 .. seealso:: :py:func:`setLabelSuffix`
 
@@ -192,7 +486,8 @@ Returns the axis label suffix, or an empty string if no label suffix is to be us
 
     void setLabelSuffix( const QString &suffix );
 %Docstring
-Sets the axis label ``suffix``. Set to an empty string if no label suffix is to be used.
+Sets the axis label ``suffix``. Set to an empty string if no label
+suffix is to be used.
 
 .. seealso:: :py:func:`labelSuffix`
 
@@ -232,9 +527,6 @@ class Qgs2DPlot : QgsPlot
 %Docstring(signature="appended")
 Base class for 2-dimensional plot/chart/graphs.
 
-The base class is responsible for rendering the axis, grid lines and chart area. Subclasses
-can implement the :py:func:`~renderContent` method to render their actual plot content.
-
 .. warning::
 
    This class is not considered stable API, and may change in future!
@@ -260,51 +552,131 @@ Constructor for Qgs2DPlot.
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
 
-    void render( QgsRenderContext &context );
+    virtual void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() );
 %Docstring
 Renders the plot.
 %End
 
-    virtual void renderContent( QgsRenderContext &context, const QRectF &plotArea );
+    virtual void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() );
 %Docstring
 Renders the plot content.
 
-Subclasses can implement this method to render the actual plot content (e.g. bar charts, scatter plots).
-This method will be called after the chart background and grid are rendered, but before the chart border is rendered.
+Subclasses can implement this method to render the actual plot content
+(e.g. bar charts, scatter plots). This method will be called after the
+chart background and grid are rendered, but before the chart border is
+rendered.
 
 The default implementation does nothing.
 
-The ``plotArea`` argument specifies that area of the plot which corresponds to the actual plot content. Implementations
-should take care to scale values accordingly to render points correctly inside this plot area.
+The ``plotArea`` argument specifies that area of the plot which
+corresponds to the actual plot content. Implementations should take care
+to scale values accordingly to render points correctly inside this plot
+area.
 %End
 
     QSizeF size() const;
 %Docstring
-Returns the overall size of the plot (in millimeters) (including titles and other components which sit outside the plot area).
+Returns the overall size of the plot (in millimeters) (including titles
+and other components which sit outside the plot area).
 
 .. seealso:: :py:func:`setSize`
 %End
 
     void setSize( QSizeF size );
 %Docstring
-Sets the overall ``size`` of the plot (including titles and over components which sit outside the plot area).
+Sets the overall ``size`` of the plot (including titles and over
+components which sit outside the plot area).
 
 .. seealso:: :py:func:`size`
 %End
 
-    QRectF interiorPlotArea( QgsRenderContext &context ) const;
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
 %Docstring
-Returns the area of the plot which corresponds to the actual plot content (excluding all titles and other components which sit
-outside the plot area).
+Returns the area of the plot which corresponds to the actual plot
+content (excluding all titles and other components which sit outside the
+plot area).
 %End
 
-    void calculateOptimisedIntervals( QgsRenderContext &context );
+    const QgsMargins &margins() const;
 %Docstring
-Automatically sets the grid and label intervals to optimal values
-for display in the given render ``context``.
+Returns the margins of the plot area (in millimeters)
 
-Intervals will be calculated in order to avoid overlapping axis labels and to ensure
-round values are shown.
+.. seealso:: :py:func:`setMargins`
+%End
+
+    void setMargins( const QgsMargins &margins );
+%Docstring
+Sets the ``margins`` of the plot area (in millimeters)
+
+.. seealso:: :py:func:`setMargins`
+%End
+
+  protected:
+
+    void applyDataDefinedProperties( QgsRenderContext &context, QgsMargins &margins ) const;
+%Docstring
+Applies 2D plot data-defined properties
+%End
+
+  private:
+    Qgs2DPlot( const Qgs2DPlot &other );
+};
+
+class Qgs2DXyPlot : Qgs2DPlot
+{
+%Docstring(signature="appended")
+Base class for 2-dimensional plot/chart/graphs with an X and Y axes.
+
+The base class is responsible for rendering the axis, grid lines and
+chart area. Subclasses can implement the :py:func:`~renderContent`
+method to render their actual plot content.
+
+.. warning::
+
+   This class is not considered stable API, and may change in future!
+
+.. versionadded:: 3.26
+%End
+
+%TypeHeaderCode
+#include "qgsplot.h"
+%End
+  public:
+
+    Qgs2DXyPlot();
+%Docstring
+Constructor for Qgs2DXyPlot.
+%End
+
+    ~Qgs2DXyPlot();
+
+
+    virtual bool writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
+
+
+    virtual void render( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QgsPlotData &plotData = QgsPlotData() );
+
+%Docstring
+Renders the plot.
+%End
+
+    virtual QRectF interiorPlotArea( QgsRenderContext &context, QgsPlotRenderContext &plotContext ) const;
+
+%Docstring
+Returns the area of the plot which corresponds to the actual plot
+content (excluding all titles and other components which sit outside the
+plot area).
+%End
+
+    void calculateOptimisedIntervals( QgsRenderContext &context, QgsPlotRenderContext &plotContext );
+%Docstring
+Automatically sets the grid and label intervals to optimal values for
+display in the given render ``context``.
+
+Intervals will be calculated in order to avoid overlapping axis labels
+and to ensure round values are shown.
 %End
 
     double xMinimum() const;
@@ -411,28 +783,21 @@ Ownership of ``symbol`` is transferred to the plot.
 .. seealso:: :py:func:`chartBorderSymbol`
 %End
 
-    const QgsMargins &margins() const;
+  protected:
+
+    void applyDataDefinedProperties( QgsRenderContext &context, double &minX, double &maxX, double &minY, double &maxY, double &majorIntervalX, double &minorIntervalX, double &labelIntervalX, double &majorIntervalY, double &minorIntervalY, double &labelIntervalY ) const;
 %Docstring
-Returns the margins of the plot area (in millimeters)
-
-.. seealso:: :py:func:`setMargins`
-%End
-
-    void setMargins( const QgsMargins &margins );
-%Docstring
-Sets the ``margins`` of the plot area (in millimeters)
-
-.. seealso:: :py:func:`setMargins`
+Applies 2D XY plot data-defined properties
 %End
 
   private:
-    Qgs2DPlot( const Qgs2DPlot &other );
+    Qgs2DXyPlot( const Qgs2DXyPlot &other );
 };
 
 class QgsPlotDefaultSettings
 {
 %Docstring(signature="appended")
-Manages default settings for plot objects
+Manages default settings for plot objects.
 
 .. warning::
 
@@ -467,7 +832,8 @@ Returns the default line symbol to use for axis minor grid lines.
 
     static QgsFillSymbol *chartBackgroundSymbol() /Factory/;
 %Docstring
-Returns the default fill symbol to use for the chart area background fill.
+Returns the default fill symbol to use for the chart area background
+fill.
 
 .. seealso:: :py:func:`chartBorderSymbol`
 %End
@@ -479,6 +845,51 @@ Returns the default fill symbol to use for the chart area border.
 .. seealso:: :py:func:`chartBackgroundSymbol`
 %End
 
+    static QgsMarkerSymbol *lineChartMarkerSymbol() /Factory/;
+%Docstring
+Returns the default marker symbol to use for line charts.
+
+.. seealso:: :py:func:`lineChartLineSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    static QgsLineSymbol *lineChartLineSymbol() /Factory/;
+%Docstring
+Returns the default line symbol to use for line charts.
+
+.. seealso:: :py:func:`lineChartMarkerSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    static QgsFillSymbol *barChartFillSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for bar charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsFillSymbol *pieChartFillSymbol() /Factory/;
+%Docstring
+Returns the default fill symbol to use for pie charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsColorRamp *pieChartColorRamp() /Factory/;
+%Docstring
+Returns the default color ramp to use for pie charts.
+
+.. versionadded:: 4.0
+%End
+
+    static QgsNumericFormat *pieChartNumericFormat() /Factory/;
+%Docstring
+Returns the default color ramp to use for pie charts.
+
+.. versionadded:: 4.0
+%End
 };
 
 /************************************************************************

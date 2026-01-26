@@ -30,9 +30,7 @@
  */
 class QgsNearestNeighbourAnalysisAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsNearestNeighbourAnalysisAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -40,15 +38,15 @@ class QgsNearestNeighbourAnalysisAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QString svgIconPath() const override;
     QIcon icon() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsNearestNeighbourAnalysisAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

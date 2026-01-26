@@ -9,14 +9,15 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-__author__ = 'René-Luc DHONT'
-__date__ = '24/06/2020'
-__copyright__ = 'Copyright 2020, The QGIS Project'
+
+__author__ = "René-Luc DHONT"
+__date__ = "24/06/2020"
+__copyright__ = "Copyright 2020, The QGIS Project"
 
 import os
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
-os.environ['QT_HASH_SEED'] = '1'
+os.environ["QT_HASH_SEED"] = "1"
 
 import subprocess
 import tempfile
@@ -43,7 +44,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         # * Poppler w/o Cairo does not always correctly render vectors in PDF to image
         # * muPDF renders correctly, but slightly shifts colors
         for util in [
-            'pdftocairo',
+            "pdftocairo",
             # 'mudraw',
         ]:
             PDFUTIL = getExecutablePath(util)
@@ -52,37 +53,62 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
 
         # noinspection PyUnboundLocalVariable
         if not PDFUTIL:
-            assert False, ('PDF-to-image utility not found on PATH: '
-                           'install Poppler (with Cairo)')
+            assert False, (
+                "PDF-to-image utility not found on PATH: "
+                "install Poppler (with Cairo)"
+            )
 
-        if PDFUTIL.strip().endswith('pdftocairo'):
+        if PDFUTIL.strip().endswith("pdftocairo"):
             filebase = os.path.join(
                 os.path.dirname(rendered_file_path),
-                os.path.splitext(os.path.basename(rendered_file_path))[0]
+                os.path.splitext(os.path.basename(rendered_file_path))[0],
             )
             call = [
-                PDFUTIL, '-png', '-singlefile', '-r', str(dpi),
-                '-x', '0', '-y', '0', '-f', str(page), '-l', str(page),
-                pdf_file_path, filebase
+                PDFUTIL,
+                "-png",
+                "-singlefile",
+                "-r",
+                str(dpi),
+                "-x",
+                "0",
+                "-y",
+                "0",
+                "-f",
+                str(page),
+                "-l",
+                str(page),
+                pdf_file_path,
+                filebase,
             ]
-        elif PDFUTIL.strip().endswith('mudraw'):
+        elif PDFUTIL.strip().endswith("mudraw"):
             call = [
-                PDFUTIL, '-c', 'rgba',
-                '-r', str(dpi), '-f', str(page), '-l', str(page),
+                PDFUTIL,
+                "-c",
+                "rgba",
+                "-r",
+                str(dpi),
+                "-f",
+                str(page),
+                "-l",
+                str(page),
                 # '-b', '8',
-                '-o', rendered_file_path, pdf_file_path
+                "-o",
+                rendered_file_path,
+                pdf_file_path,
             ]
         else:
-            return False, ''
+            return False, ""
 
         print(f"exportToPdf call: {' '.join(call)}")
         try:
             subprocess.check_call(call)
         except subprocess.CalledProcessError as e:
-            assert False, ("exportToPdf failed!\n"
-                           "cmd: {}\n"
-                           "returncode: {}\n"
-                           "message: {}".format(e.cmd, e.returncode, e.message))
+            assert False, (
+                "exportToPdf failed!\n"
+                "cmd: {}\n"
+                "returncode: {}\n"
+                "message: {}".format(e.cmd, e.returncode, e.message)
+            )
 
     def _pdf_diff(self, pdf, control_image, max_diff, max_size_diff=QSize(), dpi=96):
 
@@ -103,22 +129,37 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
             color_tolerance=0,
             allowed_mismatch=max_diff,
             size_tolerance=max_size_diff,
-            control_path_prefix="qgis_server"
+            control_path_prefix="qgis_server",
         )
 
-    def _pdf_diff_error(self, response, headers, image, max_diff=100, max_size_diff=QSize(),
-                        unittest_data_path='control_images', dpi=96):
+    def _pdf_diff_error(
+        self,
+        response,
+        headers,
+        image,
+        max_diff=100,
+        max_size_diff=QSize(),
+        unittest_data_path="control_images",
+        dpi=96,
+    ):
 
-        reference_path = unitTestDataPath(unittest_data_path) + '/qgis_server/' + image + '/' + image + '.pdf'
+        reference_path = (
+            unitTestDataPath(unittest_data_path)
+            + "/qgis_server/"
+            + image
+            + "/"
+            + image
+            + ".pdf"
+        )
         self.store_reference(reference_path, response)
 
         self.assertEqual(
-            headers.get("Content-Type"), 'application/pdf',
-            f"Content type is wrong: {headers.get('Content-Type')} instead of application/pdf\n{response}")
-
-        self.assertTrue(
-            self._pdf_diff(response, image, max_diff, max_size_diff, dpi)
+            headers.get("Content-Type"),
+            "application/pdf",
+            f"Content type is wrong: {headers.get('Content-Type')} instead of application/pdf\n{response}",
         )
+
+        self.assertTrue(self._pdf_diff(response, image, max_diff, max_size_diff, dpi))
 
     def _svg_to_png(svg_file_path, rendered_file_path, width):
         svgr = QSvgRenderer(svg_file_path)
@@ -133,7 +174,7 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
         svgr.render(p)
         p.end()
 
-        res = image.save(rendered_file_path, 'png')
+        res = image.save(rendered_file_path, "png")
         if not res:
             os.unlink(rendered_file_path)
 
@@ -142,33 +183,47 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
     def test_wms_getprint_basic(self):
 
         # Output JPEG
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(self.projectPath),
-            "SERVICE": "WMS",
-            "VERSION": "1.1.1",
-            "REQUEST": "GetPrint",
-            "TEMPLATE": "layoutA4",
-            "FORMAT": "jpeg",
-            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
-            "LAYERS": "Country,Hello",
-            "CRS": "EPSG:3857"
-        }.items())])
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.1.1",
+                        "REQUEST": "GetPrint",
+                        "TEMPLATE": "layoutA4",
+                        "FORMAT": "jpeg",
+                        "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+                        "LAYERS": "Country,Hello",
+                        "CRS": "EPSG:3857",
+                    }.items()
+                )
+            ]
+        )
 
         r, h = self._result(self._execute_request(qs))
-        self._img_diff_error(r, h, "WMS_GetPrint_Basic", outputFormat='JPG')
+        self._img_diff_error(r, h, "WMS_GetPrint_Basic", outputFormat="JPG")
 
         # Output PDF
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(self.projectPath),
-            "SERVICE": "WMS",
-            "VERSION": "1.1.1",
-            "REQUEST": "GetPrint",
-            "TEMPLATE": "layoutA4",
-            "FORMAT": "pdf",
-            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
-            "LAYERS": "Country,Hello",
-            "CRS": "EPSG:3857"
-        }.items())])
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.1.1",
+                        "REQUEST": "GetPrint",
+                        "TEMPLATE": "layoutA4",
+                        "FORMAT": "pdf",
+                        "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+                        "LAYERS": "Country,Hello",
+                        "CRS": "EPSG:3857",
+                    }.items()
+                )
+            ]
+        )
 
         r, h = self._result(self._execute_request(qs))
         self._pdf_diff_error(r, h, "WMS_GetPrint_Basic_Pdf", dpi=300)
@@ -176,23 +231,30 @@ class PyQgsServerWMSGetPrintOutputs(QgsServerTestBase):
     def test_wms_getprint_selection(self):
 
         # Output PDF
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
-            "MAP": urllib.parse.quote(self.projectPath),
-            "SERVICE": "WMS",
-            "VERSION": "1.1.1",
-            "REQUEST": "GetPrint",
-            "TEMPLATE": "layoutA4",
-            "FORMAT": "pdf",
-            "LAYERS": "Country,Hello",
-            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
-            "map0:LAYERS": "Country,Hello",
-            "CRS": "EPSG:3857",
-            "SELECTION": "Country: 4"
-        }.items())])
+        qs = "?" + "&".join(
+            [
+                "%s=%s" % i
+                for i in list(
+                    {
+                        "MAP": urllib.parse.quote(self.projectPath),
+                        "SERVICE": "WMS",
+                        "VERSION": "1.1.1",
+                        "REQUEST": "GetPrint",
+                        "TEMPLATE": "layoutA4",
+                        "FORMAT": "pdf",
+                        "LAYERS": "Country,Hello",
+                        "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+                        "map0:LAYERS": "Country,Hello",
+                        "CRS": "EPSG:3857",
+                        "SELECTION": "Country: 4",
+                    }.items()
+                )
+            ]
+        )
 
         r, h = self._result(self._execute_request(qs))
         self._pdf_diff_error(r, h, "WMS_GetPrint_Selection_Pdf", dpi=300)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

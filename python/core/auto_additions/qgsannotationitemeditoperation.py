@@ -14,30 +14,35 @@ QgsAbstractAnnotationItemEditOperation.Type.__doc__ = """Operation type
 """
 # --
 try:
-    QgsAnnotationItemEditContext.__group__ = ['annotations']
-except NameError:
-    pass
-try:
+    QgsAbstractAnnotationItemEditOperation.__abstract_methods__ = ['type']
     QgsAbstractAnnotationItemEditOperation.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsAnnotationItemEditOperationMoveNode.__overridden_methods__ = ['type']
     QgsAnnotationItemEditOperationMoveNode.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsAnnotationItemEditOperationDeleteNode.__overridden_methods__ = ['type']
     QgsAnnotationItemEditOperationDeleteNode.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsAnnotationItemEditOperationAddNode.__overridden_methods__ = ['type']
     QgsAnnotationItemEditOperationAddNode.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsAnnotationItemEditOperationTranslateItem.__overridden_methods__ = ['type']
     QgsAnnotationItemEditOperationTranslateItem.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
+    pass
+try:
+    QgsAnnotationItemEditContext.__group__ = ['annotations']
+except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationItemEditOperationTransientResults.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

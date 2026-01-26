@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPECIRCLE3POINTS_H
 #define QGSMAPTOOLSHAPECIRCLE3POINTS_H
 
-#include "qgsmaptoolshapecircleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapecircleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeCircle3PointsMetadata : public QgsMapToolShapeMetadata
@@ -37,12 +37,13 @@ class APP_EXPORT QgsMapToolShapeCircle3PointsMetadata : public QgsMapToolShapeMe
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeCircle3Points: public QgsMapToolShapeCircleAbstract
+class APP_EXPORT QgsMapToolShapeCircle3Points : public QgsMapToolShapeCircleAbstract
 {
     Q_OBJECT
 
   public:
-    QgsMapToolShapeCircle3Points( QgsMapToolCapture *parentTool ) : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle3PointsMetadata::TOOL_ID, parentTool ) {}
+    QgsMapToolShapeCircle3Points( QgsMapToolCapture *parentTool )
+      : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle3PointsMetadata::TOOL_ID, parentTool ) {}
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;

@@ -16,14 +16,14 @@
 #ifndef QGSPROCESSINGHELPEDITORWIDGET_H
 #define QGSPROCESSINGHELPEDITORWIDGET_H
 
+#include "ui_qgsprocessinghelpeditorwidgetbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessinghelpeditorwidgetbase.h"
 
 #include <QDialog>
 
 class QgsProcessingAlgorithm;
-
 
 
 ///@cond NOT_STABLE
@@ -41,7 +41,6 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsProcessingHelpEditorWidget, with the specified \a parent widget.
      */
@@ -65,7 +64,6 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
     void changeItem( QTreeWidgetItem *current, QTreeWidgetItem *previous );
 
   private:
-
     QString formattedHelp() const;
 
     void storeCurrentValue();
@@ -74,7 +72,7 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
 
     QString mCurrentName;
 
-    std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
+    std::unique_ptr<QgsProcessingAlgorithm> mAlgorithm;
 
     static const QString ALGORITHM_DESCRIPTION;
     static const QString ALGORITHM_CREATOR;
@@ -83,7 +81,6 @@ class GUI_EXPORT QgsProcessingHelpEditorWidget : public QWidget, public Ui::QgsP
     static const QString ALGORITHM_SHORT_DESCRIPTION;
     static const QString ALGORITHM_HELP_URL;
     static const QString ALGORITHM_EXAMPLES;
-
 };
 
 /**
@@ -97,7 +94,6 @@ class GUI_EXPORT QgsProcessingHelpEditorDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingHelpEditorDialog, with the specified \a parent and \a flags.
      */
@@ -114,7 +110,6 @@ class GUI_EXPORT QgsProcessingHelpEditorDialog : public QDialog
     QVariantMap helpContent();
 
   private:
-
     QgsProcessingHelpEditorWidget *mWidget = nullptr;
 };
 

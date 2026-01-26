@@ -14,20 +14,22 @@
  ***************************************************************************/
 
 #include "qgssettingstreewidget.h"
-#include "qgssettingstreemodel.h"
+
 #include "qgssettingstree.h"
+#include "qgssettingstreemodel.h"
 
 #include <QAction>
-#include <QTreeView>
 #include <QHBoxLayout>
+#include <QTreeView>
 #include <QVBoxLayout>
 
+#include "moc_qgssettingstreewidget.cpp"
 
 QgsSettingsTreeWidget::QgsSettingsTreeWidget( QWidget *parent )
   : QWidget( parent )
   , QgsOptionsDialogHighlightWidget( this )
 {
-  setObjectName( QStringLiteral( "mSettingsTreeWidget" ) );
+  setObjectName( u"mSettingsTreeWidget"_s );
 
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
   mainLayout->setContentsMargins( 0, 0, 0, 0 );

@@ -16,15 +16,16 @@
 #ifndef QGSGEOMETRYPAINTDEVICE_H
 #define QGSGEOMETRYPAINTDEVICE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsgeometrycollection.h"
 #include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
 
-#include <QPainterPath>
 #include <QPaintDevice>
 #include <QPaintEngine>
-#include <memory>
+#include <QPainterPath>
 
 class QgsLineString;
 
@@ -103,8 +104,6 @@ class QgsGeometryPaintEngine: public QPaintEngine
 
     void addSubpathGeometries( const QPainterPath &path, const QTransform &matrix );
     void addStrokedLine( const QgsLineString *line, double penWidth, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, const QTransform *matrix );
-    static Qgis::EndCapStyle penStyleToCapStyle( Qt::PenCapStyle style );
-    static Qgis::JoinStyle penStyleToJoinStyle( Qt::PenJoinStyle style );
 
     bool mUsePathStroker = false;
     QPen mPen;

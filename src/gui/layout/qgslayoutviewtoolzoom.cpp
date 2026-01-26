@@ -14,17 +14,23 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolzoom.h"
-#include "qgslayoutviewmouseevent.h"
+
+#include <memory>
+
 #include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
 #include "qgslayoutviewrubberband.h"
 #include "qgsrectangle.h"
+
 #include <QScrollBar>
+
+#include "moc_qgslayoutviewtoolzoom.cpp"
 
 QgsLayoutViewToolZoom::QgsLayoutViewToolZoom( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Pan" ) )
 {
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
-  mRubberBand.reset( new QgsLayoutViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsLayoutViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 70, 50, 255, 25 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 70, 50, 255, 100 ) ), 0 ) );
 }
@@ -112,10 +118,7 @@ void QgsLayoutViewToolZoom::keyPressEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-
-    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }
@@ -125,10 +128,7 @@ void QgsLayoutViewToolZoom::keyReleaseEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-
-    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }

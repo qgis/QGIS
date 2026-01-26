@@ -5,22 +5,26 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Stefanos Natsis'
-__date__ = '2024-01'
-__copyright__ = 'Copyright 2024, The QGIS Project'
+
+__author__ = "Stefanos Natsis"
+__date__ = "2024-01"
+__copyright__ = "Copyright 2024, The QGIS Project"
 
 import os
 
 from qgis.PyQt.QtCore import QDir, QMimeData, QPointF, QSize, QSizeF, Qt
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
-from qgis.PyQt.QtGui import QColor, QImage, QPolygonF
+from qgis.PyQt.QtGui import QColor, QImage, QPolygonF, QPainter
 from qgis.core import (
     QgsAbstractMeshLayerLabeling,
     QgsCoordinateReferenceSystem,
     QgsFontUtils,
     QgsMapSettings,
     QgsMeshLayer,
-    QgsMeshLayerSimpleLabeling
+    QgsPalLayerSettings,
+    QgsMeshLayerSimpleLabeling,
+    QgsTextFormat,
+    QgsProperty,
 )
 import unittest
 from utilities import unitTestDataPath
@@ -35,15 +39,61 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
     def control_path_prefix(cls):
         return "mesh_labeling"
 
+    def testHasNonDefaultCompositionModeSimple(self):
+        settings = QgsPalLayerSettings()
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertFalse(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        t.setBlendMode(QPainter.CompositionMode.CompositionMode_DestinationAtop)
+        settings.setFormat(t)
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        t = QgsTextFormat()
+        settings.setFormat(t)
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.FontBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.ShadowBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.BufferBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
+        settings = QgsPalLayerSettings()
+        settings.dataDefinedProperties().setProperty(
+            QgsPalLayerSettings.Property.ShapeBlendMode,
+            QgsProperty.fromValue("multiply"),
+        )
+        labeling = QgsMeshLayerSimpleLabeling(settings)
+        self.assertTrue(labeling.hasNonDefaultCompositionMode())
+
     def testSimpleLabelVertices(self):
-        ml = QgsMeshLayer(os.path.join(unitTestDataPath(), 'mesh', 'quad_flower.2dm'), 'mdal', 'mdal')
+        ml = QgsMeshLayer(
+            os.path.join(unitTestDataPath(), "mesh", "quad_flower.2dm"), "mdal", "mdal"
+        )
         self.assertTrue(ml.isValid())
-        ml.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        ml.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
 
         ms = QgsMapSettings()
         ms.setOutputSize(QSize(400, 400))
         ms.setOutputDpi(96)
-        ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         ms.setExtent(ml.extent().buffered(200))
         ms.setLayers([ml])
 
@@ -51,7 +101,7 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
         s.fieldName = "$vertex_index"
         s.isExpression = True
         f = s.format()
-        f.setFont(QgsFontUtils.getStandardTestFont('Bold'))
+        f.setFont(QgsFontUtils.getStandardTestFont("Bold"))
         f.setSize(20)
         f.buffer().setEnabled(True)
         s.setFormat(f)
@@ -62,9 +112,7 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check(
-                'simple_label_vertices',
-                'simple_label_vertices',
-                ms
+                "simple_label_vertices", "simple_label_vertices", ms
             )
         )
 
@@ -72,21 +120,21 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check(
-                'simple_label_disabled',
-                'simple_label_disabled',
-                ms
+                "simple_label_disabled", "simple_label_disabled", ms
             )
         )
 
     def testSimpleLabelFaces(self):
-        ml = QgsMeshLayer(os.path.join(unitTestDataPath(), 'mesh', 'quad_flower.2dm'), 'mdal', 'mdal')
+        ml = QgsMeshLayer(
+            os.path.join(unitTestDataPath(), "mesh", "quad_flower.2dm"), "mdal", "mdal"
+        )
         self.assertTrue(ml.isValid())
-        ml.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        ml.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
 
         ms = QgsMapSettings()
         ms.setOutputSize(QSize(400, 400))
         ms.setOutputDpi(96)
-        ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         ms.setExtent(ml.extent().buffered(200))
         ms.setLayers([ml])
 
@@ -94,7 +142,7 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
         s.fieldName = "$face_index"
         s.isExpression = True
         f = s.format()
-        f.setFont(QgsFontUtils.getStandardTestFont('Bold'))
+        f.setFont(QgsFontUtils.getStandardTestFont("Bold"))
         f.setSize(20)
         f.buffer().setEnabled(True)
         s.setFormat(f)
@@ -105,9 +153,7 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check(
-                'simple_label_faces',
-                'simple_label_faces',
-                ms
+                "simple_label_faces", "simple_label_faces", ms
             )
         )
 
@@ -115,12 +161,10 @@ class TestQgsMeshLayerLabeling(QgisTestCase):
 
         self.assertTrue(
             self.render_map_settings_check(
-                'simple_label_disabled',
-                'simple_label_disabled',
-                ms
+                "simple_label_disabled", "simple_label_disabled", ms
             )
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

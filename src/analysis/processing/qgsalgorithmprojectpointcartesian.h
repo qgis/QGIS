@@ -30,9 +30,7 @@
  */
 class QgsProjectPointCartesianAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsProjectPointCartesianAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -40,31 +38,27 @@ class QgsProjectPointCartesianAlgorithm : public QgsProcessingFeatureBasedAlgori
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     QgsProjectPointCartesianAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     double mBearing = 0.0;
     bool mDynamicBearing = false;
     QgsProperty mBearingProperty;
     double mDistance = 0.0;
     bool mDynamicDistance = false;
     QgsProperty mDistanceProperty;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMPROJECTPOINTCARTESIAN_H
-
-

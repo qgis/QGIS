@@ -19,6 +19,7 @@
 
 #include "qgis_core.h"
 #include "qgsscalebarrenderer.h"
+
 #include <QString>
 
 /**
@@ -43,6 +44,7 @@ class CORE_EXPORT QgsSingleBoxScaleBarRenderer: public QgsScaleBarRenderer
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const override;
 
+    bool applyDefaultSettings( QgsScaleBarSettings &settings ) const override;
 };
 
 #endif // QGSSINGLEBOXSCALEBARRENDERER_H

@@ -25,16 +25,18 @@ from qgis.PyQt.QtCore import Qt, QFileInfo
 from qgis.PyQt.QtWidgets import QDialog, QFileDialog, QMessageBox, QApplication
 from qgis.PyQt.QtGui import QCursor
 
-from qgis.core import (QgsVectorFileWriter,
-                       QgsVectorDataProvider,
-                       QgsCoordinateReferenceSystem,
-                       QgsVectorLayerExporter,
-                       QgsSettings)
+from qgis.core import (
+    QgsVectorFileWriter,
+    QgsVectorDataProvider,
+    QgsCoordinateReferenceSystem,
+    QgsVectorLayerExporter,
+    QgsSettings,
+)
 from qgis.utils import OverrideCursor
 
 from .gui_utils import GuiUtils
 
-Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgExportVector.ui'))
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgExportVector.ui"))
 
 
 class DlgExportVector(QDialog, Ui_Dialog):
@@ -46,8 +48,8 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.setupUi(self)
 
         vectorFilterName = "lastVectorFileFilter"  # "lastRasterFileFilter"
-        self.lastUsedVectorFilterSettingsKey = "/UI/{}".format(vectorFilterName)
-        self.lastUsedVectorDirSettingsKey = "/UI/{}Dir".format(vectorFilterName)
+        self.lastUsedVectorFilterSettingsKey = f"/UI/{vectorFilterName}"
+        self.lastUsedVectorDirSettingsKey = f"/UI/{vectorFilterName}Dir"
 
         # update UI
         self.setupWorkingMode()
@@ -65,7 +67,7 @@ class DlgExportVector(QDialog, Ui_Dialog):
         self.checkSupports()
 
     def checkSupports(self):
-        """ update options available for the current input layer """
+        """update options available for the current input layer"""
         allowSpatial = self.db.connector.hasSpatialSupport()
         hasGeomType = self.inLayer and self.inLayer.isSpatial()
         self.chkSourceSrid.setEnabled(allowSpatial and hasGeomType)
@@ -82,19 +84,22 @@ class DlgExportVector(QDialog, Ui_Dialog):
         selected_filter = QgsVectorFileWriter.filterForDriver(selected_driver)
 
         # ask for a filename
-        filename, filter = QFileDialog.getSaveFileName(self, self.tr("Choose where to save the file"), lastUsedDir,
-                                                       selected_filter)
+        filename, filter = QFileDialog.getSaveFileName(
+            self, self.tr("Choose where to save the file"), lastUsedDir, selected_filter
+        )
         if filename == "":
             return
 
-        ext = selected_filter[selected_filter.find('.'):]
-        ext = ext[:ext.find(' ')]
+        ext = selected_filter[selected_filter.find(".") :]
+        ext = ext[: ext.find(" ")]
 
         if not filename.lower().endswith(ext):
             filename += ext
 
         # store the last used dir
-        settings.setValue(self.lastUsedVectorDirSettingsKey, QFileInfo(filename).filePath())
+        settings.setValue(
+            self.lastUsedVectorDirSettingsKey, QFileInfo(filename).filePath()
+        )
 
         self.editOutputFile.setText(filename)
 
@@ -127,23 +132,31 @@ class DlgExportVector(QDialog, Ui_Dialog):
     def accept(self):
         # sanity checks
         if self.editOutputFile.text() == "":
-            QMessageBox.information(self, self.tr("Export to file"), self.tr("Output file name is required"))
+            QMessageBox.information(
+                self, self.tr("Export to file"), self.tr("Output file name is required")
+            )
             return
 
         if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
             try:
                 sourceSrid = int(self.editSourceSrid.text())
             except ValueError:
-                QMessageBox.information(self, self.tr("Export to file"),
-                                        self.tr("Invalid source srid: must be an integer"))
+                QMessageBox.information(
+                    self,
+                    self.tr("Export to file"),
+                    self.tr("Invalid source srid: must be an integer"),
+                )
                 return
 
         if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
             try:
                 targetSrid = int(self.editTargetSrid.text())
             except ValueError:
-                QMessageBox.information(self, self.tr("Export to file"),
-                                        self.tr("Invalid target srid: must be an integer"))
+                QMessageBox.information(
+                    self,
+                    self.tr("Export to file"),
+                    self.tr("Invalid target srid: must be an integer"),
+                )
                 return
 
         with OverrideCursor(Qt.CursorShape.WaitCursor):
@@ -157,15 +170,15 @@ class DlgExportVector(QDialog, Ui_Dialog):
 
                 # set the OGR driver will be used
                 driverName = self.cboFileFormat.currentData()
-                options['driverName'] = driverName
+                options["driverName"] = driverName
 
                 # set the output file encoding
                 if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
                     enc = self.cboEncoding.currentText()
-                    options['fileEncoding'] = enc
+                    options["fileEncoding"] = enc
 
                 if self.chkDropTable.isChecked():
-                    options['overwrite'] = True
+                    options["overwrite"] = True
 
                 outCrs = QgsCoordinateReferenceSystem()
                 if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
@@ -179,8 +192,9 @@ class DlgExportVector(QDialog, Ui_Dialog):
                     self.inLayer.setCrs(inCrs)
 
                 # do the export!
-                ret, errMsg = QgsVectorLayerExporter.exportLayer(self.inLayer, uri, providerName, outCrs,
-                                                                 False, options)
+                ret, errMsg = QgsVectorLayerExporter.exportLayer(
+                    self.inLayer, uri, providerName, outCrs, False, options
+                )
             except Exception as e:
                 ret = -1
                 errMsg = str(e)
@@ -190,12 +204,18 @@ class DlgExportVector(QDialog, Ui_Dialog):
                 self.inLayer.setCrs(prevInCrs)
 
         if ret != 0:
-            QMessageBox.warning(self, self.tr("Export to file"), self.tr("Error {0}\n{1}").format(ret, errMsg))
+            QMessageBox.warning(
+                self,
+                self.tr("Export to file"),
+                self.tr("Error {0}\n{1}").format(ret, errMsg),
+            )
             return
 
         # create spatial index
         # if self.chkSpatialIndex.isEnabled() and self.chkSpatialIndex.isChecked():
         #       self.db.connector.createSpatialIndex( (schema, table), geom )
 
-        QMessageBox.information(self, self.tr("Export to file"), self.tr("Export finished."))
+        QMessageBox.information(
+            self, self.tr("Export to file"), self.tr("Export finished.")
+        )
         return QDialog.accept(self)

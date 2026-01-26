@@ -9,14 +9,18 @@
 
 
 
+
+
 class QgsDial : QDial
 {
+%Docstring(signature="appended")
+A QDial subclass with additional refinements.
+%End
 
 %TypeHeaderCode
 #include "qgsdial.h"
 %End
   public:
-
     QgsDial( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDial
@@ -38,6 +42,7 @@ Constructor for QgsDial
 
 
 };
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

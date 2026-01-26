@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsRelief
 {
 %Docstring(signature="appended")
@@ -22,10 +24,10 @@ Produces colored relief rasters from DEM.
   public:
     struct ReliefColor
     {
-      ReliefColor( const QColor &c, double min, double max );
-      QColor color;
-      double minElevation;
-      double maxElevation;
+        ReliefColor( const QColor &c, double min, double max );
+        QColor color;
+        double minElevation;
+        double maxElevation;
     };
 
     QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
@@ -34,9 +36,11 @@ Produces colored relief rasters from DEM.
 
     int processRaster( QgsFeedback *feedback = 0 );
 %Docstring
-Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+Starts the calculation, reads from mInputFile and stores the result in
+mOutputFile
 
-:param feedback: feedback object that receives update and that is checked for cancellation.
+:param feedback: feedback object that receives update and that is
+                 checked for cancellation.
 
 :return: 0 in case of success
 %End
@@ -46,12 +50,13 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 
     void clearReliefColors();
     void addReliefColorClass( const QgsRelief::ReliefColor &color );
-    QList< QgsRelief::ReliefColor > reliefColors() const;
-    void setReliefColors( const QList< QgsRelief::ReliefColor > &c );
+    QList<QgsRelief::ReliefColor> reliefColors() const;
+    void setReliefColors( const QList<QgsRelief::ReliefColor> &c );
 
-    QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
+    QList<QgsRelief::ReliefColor> calculateOptimizedReliefClasses();
 %Docstring
-Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+Calculates class breaks according with the method of Buenzli (2011)
+using an iterative algorithm for segmented regression
 
 :return: ``True`` in case of success
 %End

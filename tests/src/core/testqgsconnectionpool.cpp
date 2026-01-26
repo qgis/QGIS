@@ -17,18 +17,19 @@
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgspoint.h"
 #include "qgslinestring.h"
+#include "qgspoint.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+
 #include <QEventLoop>
+#include <QFutureWatcher>
 #include <QObject>
 #include <QTemporaryFile>
 #include <QtConcurrentMap>
-#include <QFutureWatcher>
-#include "qgstest.h"
 
-class TestQgsConnectionPool: public QObject
+class TestQgsConnectionPool : public QObject
 {
     Q_OBJECT
 
@@ -40,9 +41,10 @@ class TestQgsConnectionPool: public QObject
   private:
     struct ReadJob
     {
-      explicit ReadJob( QgsVectorLayer *_layer ) : source( std::make_shared< QgsVectorLayerFeatureSource >( _layer ) ) {}
-      std::shared_ptr< QgsVectorLayerFeatureSource> source;
-      QList<QgsFeature> features;
+        explicit ReadJob( QgsVectorLayer *_layer )
+          : source( std::make_shared<QgsVectorLayerFeatureSource>( _layer ) ) {}
+        std::shared_ptr<QgsVectorLayerFeatureSource> source;
+        QList<QgsFeature> features;
     };
 
     static void processJob( ReadJob &job )
@@ -54,14 +56,12 @@ class TestQgsConnectionPool: public QObject
         job.features.append( f );
       }
     }
-
 };
 
 void TestQgsConnectionPool::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
-
 }
 
 void TestQgsConnectionPool::cleanupTestCase()
@@ -76,29 +76,29 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   const int nWaypoints = 100000;
   const int nRoutes = 100000;
   const int nRoutePts = 10;
-  QTemporaryFile testFile( QStringLiteral( "testXXXXXX.gpx" ) );
+  QTemporaryFile testFile( u"testXXXXXX.gpx"_s );
   testFile.setAutoRemove( false );
-  testFile.open();
+  QVERIFY( testFile.open() );
   testFile.write( "<gpx version=\"1.1\" creator=\"qgis\">\n" );
   for ( int i = 0; i < nWaypoints; ++i )
   {
-    testFile.write( QStringLiteral( "<wpt lon=\"%1\" lat=\"%1\"><name></name></wpt>\n" ).arg( i ).toLocal8Bit() );
+    testFile.write( u"<wpt lon=\"%1\" lat=\"%1\"><name></name></wpt>\n"_s.arg( i ).toLocal8Bit() );
   }
   for ( int i = 0; i < nRoutes; ++i )
   {
     testFile.write( "<rte><name></name><number></number>\n" );
     for ( int j = 0; j < nRoutePts; ++j )
     {
-      testFile.write( QStringLiteral( "<rtept lon=\"%1\" lat=\"%2\"/>\n" ).arg( j ).arg( i ).toLocal8Bit() );
+      testFile.write( u"<rtept lon=\"%1\" lat=\"%2\"/>\n"_s.arg( j ).arg( i ).toLocal8Bit() );
     }
     testFile.write( "</rte>\n" );
   }
   testFile.write( "</gpx>\n" );
   testFile.close();
 
-  QgsVectorLayer *layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", QStringLiteral( "Waypoints" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( testFile.fileName() + "|layername=waypoints", u"Waypoints"_s, u"ogr"_s );
   QVERIFY( layer1->isValid() );
-  QgsVectorLayer *layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", QStringLiteral( "Routes" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( testFile.fileName() + "|layername=routes", u"Routes"_s, u"ogr"_s );
   QVERIFY( layer2->isValid() );
 
   QList<ReadJob> jobs = QList<ReadJob>() << ReadJob( layer1 ) << ReadJob( layer2 );

@@ -18,12 +18,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
-
 #include "qgsexpressioncontext.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayertoolscontext.h"
+
+#include <QObject>
 
 class QgsFeatureRequest;
 class QgsVectorLayer;
@@ -31,7 +31,8 @@ class QgsProject;
 
 /**
  * \ingroup core
- * \brief Methods in this class are used to handle basic operations on vector layers.
+ * \brief Used to handle basic editing operations on vector layers.
+ *
  * With an implementation of this class, parts of the application can ask for
  * an operation to be done and the implementation will then take care of it.
  *
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
   public:
     QgsVectorLayerTools();
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * This method should/will be called, whenever a new feature will be added to the layer
@@ -90,7 +91,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
       return addFeature( layer, defaultValues, defaultGeometry, feature, context.parentWidget(), context.showModal(), context.hideParent() );
     }
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * This will be called, whenever a vector layer should be switched to edit mode. Check the providers
@@ -104,7 +105,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     virtual bool startEditing( QgsVectorLayer *layer ) const = 0;
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * Will be called, when an editing session is ended and the features should be committed.
@@ -117,7 +118,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const = 0;
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * Should be called, when the features should be committed but the editing session is not ended.
@@ -128,7 +129,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      */
     virtual bool saveEdits( QgsVectorLayer *layer ) const = 0;
 
-    // TODO QGIS 4: remove const qualifier
+    // TODO QGIS 5: remove const qualifier
 
     /**
      * Copy and move features with defined translation.

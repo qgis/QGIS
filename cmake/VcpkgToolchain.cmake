@@ -2,19 +2,47 @@ set(NUGET_SOURCE "https://nuget.pkg.github.com/qgis/index.json" CACHE STRING "Nu
 set(NUGET_USERNAME "qgis" CACHE STRING "Nuget user")
 
 # Setup features (dependencies) based on cmake configuration
+if(WITH_3D)
+  list(APPEND VCPKG_MANIFEST_FEATURES "3d")
+endif()
+if(WITH_AUTH)
+  list(APPEND VCPKG_MANIFEST_FEATURES "auth")
+endif()
 if(WITH_BINDINGS)
   list(APPEND VCPKG_MANIFEST_FEATURES "bindings")
 endif()
-if(WITH_3D)
-  list(APPEND VCPKG_MANIFEST_FEATURES "3d")
+if(WITH_EXIV2)
+  list(APPEND VCPKG_MANIFEST_FEATURES "exiv2")
 endif()
 if(WITH_GUI)
   list(APPEND VCPKG_MANIFEST_FEATURES "gui")
 endif()
+if(WITH_ORACLE)
+  list(APPEND VCPKG_MANIFEST_FEATURES "oracle")
+endif()
+if(WITH_PDAL)
+  list(APPEND VCPKG_MANIFEST_FEATURES "pdal")
+endif()
+if(WITH_QTPOSITIONING)
+  list(APPEND VCPKG_MANIFEST_FEATURES "qtpositioning")
+endif()
+if(WITH_SFCGAL)
+  list(APPEND VCPKG_MANIFEST_FEATURES "sfcgal")
+endif()
+# We cannot detect the EMSCRIPTEN variable yet, as we didn't load the toolchain file at this point.
+# So we use the target triplet to determine if we are building for wasm.
+if(VCPKG_TARGET_TRIPLET MATCHES "^wasm32-")
+  set(VCPKG_MANIFEST_NO_DEFAULT_FEATURES ON)
+endif()
 
-# Setup binary cache
-if(NOT "${NUGET_TOKEN}" STREQUAL "" AND WIN32)
-  set(_VCPKG_EXECUTABLE "vcpkg.exe")
+# Binarycache can only be used on Windows or if mono is available.
+find_program(_VCPKG_MONO mono)
+if(NOT "${NUGET_TOKEN}" STREQUAL "" AND (CMAKE_HOST_WIN32 OR EXISTS "${_VCPKG_MONO}"))
+  if(CMAKE_HOST_WIN32)
+    set(_VCPKG_EXECUTABLE "$ENV{VCPKG_ROOT}/vcpkg.exe")
+  else()
+    set(_VCPKG_EXECUTABLE "$ENV{VCPKG_ROOT}/vcpkg")
+  endif()
 
   execute_process(
     COMMAND ${_VCPKG_EXECUTABLE} fetch nuget
@@ -24,7 +52,11 @@ if(NOT "${NUGET_TOKEN}" STREQUAL "" AND WIN32)
   STRING(REGEX REPLACE "\n" ";" _FETCH_NUGET_OUTPUT "${_FETCH_NUGET_OUTPUT}")
   list(GET _FETCH_NUGET_OUTPUT -1 _NUGET_PATH)
 
-  set(_NUGET_EXE ${_NUGET_PATH})
+  if(CMAKE_HOST_WIN32)
+    set(_NUGET_EXE ${_NUGET_PATH})
+  else()
+    set(_NUGET_EXE ${_VCPKG_MONO} ${_NUGET_PATH})
+  endif()
 
   set(_CONFIG_PATH "${CMAKE_BINARY_DIR}/github-NuGet.Config")
 

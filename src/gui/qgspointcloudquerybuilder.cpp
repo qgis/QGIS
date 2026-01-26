@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudquerybuilder.h"
-#include "qgssettings.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudexpression.h"
-#include "qgshelp.h"
+
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgspointcloudexpression.h"
+#include "qgspointcloudlayer.h"
 #include "qgsquerybuilder.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -28,9 +29,9 @@
 #include <QPushButton>
 #include <QTextStream>
 
+#include "moc_qgspointcloudquerybuilder.cpp"
 
-QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
-    QWidget *parent, Qt::WindowFlags fl )
+QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
   , mLayer( layer )
 {
@@ -72,10 +73,7 @@ QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
   pbn->setToolTip( tr( "Load query from QQF file" ) );
   connect( pbn, &QAbstractButton::clicked, this, &QgsPointCloudQueryBuilder::loadQuery );
 
-  mOrigSubsetString = layer->subsetString();
-
   lblDataUri->setText( tr( "Set provider filter on %1" ).arg( layer->name() ) );
-  mTxtSql->setText( mOrigSubsetString );
 }
 
 void QgsPointCloudQueryBuilder::showEvent( QShowEvent *event )
@@ -125,7 +123,7 @@ void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex 
 
   mModelValues->clear();
   const QString attribute = current.data().toString();
-  if ( attribute.compare( QLatin1String( "Classification" ), Qt::CaseInsensitive ) == 0 )
+  if ( attribute.compare( "Classification"_L1, Qt::CaseInsensitive ) == 0 )
   {
     const QMap<int, QString> codes = QgsPointCloudDataProvider::translatedLasClassificationCodes();
     for ( int i = 0; i <= 18; ++i )
@@ -166,37 +164,37 @@ void QgsPointCloudQueryBuilder::lstAttributes_currentChanged( const QModelIndex 
 
 void QgsPointCloudQueryBuilder::lstAttributes_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( QStringLiteral( "%1 " ).arg( mModelAttributes->data( index ).toString() ) );
+  mTxtSql->insertText( u"%1 "_s.arg( mModelAttributes->data( index ).toString() ) );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
-  mTxtSql->insertText( QStringLiteral( "%1 " ).arg( mModelValues->data( index, Qt::UserRole ).toString() ) );
+  mTxtSql->insertText( u"%1 "_s.arg( mModelValues->data( index, Qt::UserRole ).toString() ) );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "= " ) );
+  mTxtSql->insertText( u"= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnLessThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "< " ) );
+  mTxtSql->insertText( u"< "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnGreaterThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "> " ) );
+  mTxtSql->insertText( u"> "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "IN () " ) );
+  mTxtSql->insertText( u"IN () "_s );
   int i, j;
   mTxtSql->getCursorPosition( &i, &j );
   mTxtSql->setCursorPosition( i, j - 2 );
@@ -205,7 +203,7 @@ void QgsPointCloudQueryBuilder::btnIn_clicked()
 
 void QgsPointCloudQueryBuilder::btnNotIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "NOT IN () " ) );
+  mTxtSql->insertText( u"NOT IN () "_s );
   int i, j;
   mTxtSql->getCursorPosition( &i, &j );
   mTxtSql->setCursorPosition( i, j - 2 );
@@ -214,64 +212,56 @@ void QgsPointCloudQueryBuilder::btnNotIn_clicked()
 
 void QgsPointCloudQueryBuilder::btnLessEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "<= " ) );
+  mTxtSql->insertText( u"<= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnGreaterEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( ">= " ) );
+  mTxtSql->insertText( u">= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnNotEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "!= " ) );
+  mTxtSql->insertText( u"!= "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnAnd_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "AND " ) );
+  mTxtSql->insertText( u"AND "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::btnOr_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "OR " ) );
+  mTxtSql->insertText( u"OR "_s );
   mTxtSql->setFocus();
 }
 
 void QgsPointCloudQueryBuilder::accept()
 {
-  if ( mTxtSql->text() != mOrigSubsetString )
-  {
-    if ( !mLayer->setSubsetString( mTxtSql->text() ) )
-    {
-      QMessageBox::warning( this, tr( "Query Result" ), tr( "Error in query. The subset string could not be set." ) );
-      return;
-    }
-  }
+  if ( !test( true ) )
+    return;
 
   QDialog::accept();
 }
 
 void QgsPointCloudQueryBuilder::reject()
 {
-  if ( mLayer->subsetString() != mOrigSubsetString )
-    mLayer->setSubsetString( mOrigSubsetString );
+  mTxtSql->setText( mOrigSubsetString );
 
   QDialog::reject();
 }
 
-void QgsPointCloudQueryBuilder::test()
+bool QgsPointCloudQueryBuilder::test( bool skipConfirmation )
 {
   QgsPointCloudExpression expression( mTxtSql->text() );
   if ( !expression.isValid() && !mTxtSql->text().isEmpty() )
   {
-    QMessageBox::warning( this,
-                          tr( "Query Result" ),
-                          tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
+    QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
+    return false;
   }
   else
   {
@@ -279,26 +269,22 @@ void QgsPointCloudQueryBuilder::test()
     int offset;
     for ( const auto &attribute : attributes )
     {
-      if ( mLayer->dataProvider() &&
-           !mLayer->dataProvider()->attributes().find( attribute, offset ) )
+      if ( mLayer->dataProvider() && !mLayer->dataProvider()->attributes().find( attribute, offset ) )
       {
-        QMessageBox::warning( this,
-                              tr( "Query Result" ),
-                              tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
-        return;
+        QMessageBox::warning( this, tr( "Query Result" ), tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
+        return false;
       }
     }
-    mLayer->setSubsetString( mTxtSql->text() );
-    QMessageBox::information( this,
-                              tr( "Query Result" ),
-                              tr( "The expression was successfully parsed." ) );
+
+    if ( !skipConfirmation )
+      QMessageBox::information( this, tr( "Query Result" ), tr( "The expression was successfully parsed." ) );
   }
+  return true;
 }
 
 void QgsPointCloudQueryBuilder::clear()
 {
   mTxtSql->clear();
-  mLayer->setSubsetString( QString() );
 }
 
 void QgsPointCloudQueryBuilder::saveQuery()

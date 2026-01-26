@@ -16,13 +16,13 @@
 #ifndef QGSACTIONMENU_H
 #define QGSACTIONMENU_H
 
-#include <QMenu>
-#include "qgis_sip.h"
-
-#include "qgsfeature.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgsaction.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsaction.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsfeature.h"
+
+#include <QMenu>
 
 class QgsMapLayer;
 class QgsMapLayerAction;
@@ -32,26 +32,23 @@ class QgsMapLayerActionContextGenerator;
 
 /**
  * \ingroup gui
- * \brief This class is a menu that is populated automatically with the actions defined for a given layer.
+ * \brief A menu that is populated automatically with the actions defined for a given layer.
  */
-
 class GUI_EXPORT QgsActionMenu : public QMenu
 {
     Q_OBJECT
 
   public:
-
     struct GUI_EXPORT ActionData
     {
+        ActionData() = default;
+        ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+        ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-      ActionData() = default;
-      ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
-      ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
-
-      Qgis::ActionType actionType = Qgis::ActionType::Invalid;
-      QVariant actionData;
-      QgsFeatureId featureId = 0;
-      QgsMapLayer *mapLayer = nullptr;
+        Qgis::ActionType actionType = Qgis::ActionType::Invalid;
+        QVariant actionData;
+        QgsFeatureId featureId = 0;
+        QgsMapLayer *mapLayer = nullptr;
     };
 
     /**
@@ -116,7 +113,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      *
      * \since QGIS 3.12
      */
-    QList<QgsAction> menuActions();
+    QList<QgsAction> menuActions() const;
 
     /**
      * Returns TRUE if the menu has no valid actions.
@@ -131,6 +128,22 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * Emitted after actions have been reloaded.
      */
     void reinit();
+
+    /**
+     * Emitted when a \a message should be shown to the user in the application message bar.
+     *
+     * \see messageDiscarded()
+     * \since QGIS 4.0
+     */
+    void messageEmitted( const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
+
+    /**
+     * Emitted when the previous message from the tool should be cleared from the application message bar.
+     *
+     * \see messageEmitted()
+     * \since QGIS 4.0
+     */
+    void messageDiscarded();
 
   private slots:
     void triggerAction();

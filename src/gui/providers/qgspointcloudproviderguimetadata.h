@@ -21,10 +21,10 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+#include "qgsproviderguimetadata.h"
+
 #include <QList>
 #include <QMainWindow>
-
-#include "qgsproviderguimetadata.h"
 
 /**
  * \ingroup gui
@@ -35,7 +35,7 @@
  *
  * \since QGIS 3.18
  */
-class QgsPointCloudProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsPointCloudProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsPointCloudProviderGuiMetadata();

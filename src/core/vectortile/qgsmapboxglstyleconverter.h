@@ -16,14 +16,15 @@
 #ifndef QGSMAPBOXGLSTYLECONVERTER_H
 #define QGSMAPBOXGLSTYLECONVERTER_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsproperty.h"
 #include "qgspropertycollection.h"
 
-#include <memory>
-#include <QVariantMap>
 #include <QImage>
+#include <QVariantMap>
 
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
@@ -103,36 +104,46 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
     void setPixelSizeConversionFactor( double sizeConversionFactor );
 
     /**
-     * Returns the sprite image to use during conversion, or an invalid image if this is not set.
+     * Returns the list of sprite categories to use during conversion, or an empty list of none is set.
      *
+     * \see spriteDefinitions()
+     * \see spriteImage()
+     * \since QGIS 3.44
+     */
+    QStringList spriteCategories() const;
+
+    /**
+     * Returns the sprite image for a given \a category to use during conversion, or an invalid image if this is not set.
+     *
+     * \see spriteCategories()
      * \see spriteDefinitions()
      * \see setSprites()
      */
-    QImage spriteImage() const;
+    QImage spriteImage( const QString &category = QString() ) const;
 
     /**
-     * Returns the sprite definitions to use during conversion.
+     * Returns the sprite definitions for a given \a category to use during conversion.
      *
      * \see spriteImage()
      * \see setSprites()
      */
-    QVariantMap spriteDefinitions() const;
+    QVariantMap spriteDefinitions( const QString &category = QString() ) const;
 
     /**
-     * Sets the sprite \a image and \a definitions JSON to use during conversion.
+     * Sets the sprite \a image and \a definitions JSON for a given \a category to use during conversion.
      *
      * \see spriteImage()
      * \see spriteDefinitions()
      */
-    void setSprites( const QImage &image, const QVariantMap &definitions );
+    void setSprites( const QImage &image, const QVariantMap &definitions, const QString &category = QString() );
 
     /**
-     * Sets the sprite \a image and \a definitions JSON string to use during conversion.
+     * Sets the sprite \a image and \a definitions JSON string for a given \a category to use during conversion.
      *
      * \see spriteImage()
      * \see spriteDefinitions()
      */
-    void setSprites( const QImage &image, const QString &definitions );
+    void setSprites( const QImage &image, const QString &definitions, const QString &category = QString() );
 
     /**
      * Returns the layer ID of the layer currently being converted.
@@ -158,8 +169,8 @@ class CORE_EXPORT QgsMapBoxGlStyleConversionContext
 
     double mSizeConversionFactor = 1.0;
 
-    QImage mSpriteImage;
-    QVariantMap mSpriteDefinitions;
+    QMap<QString, QImage> mSpriteImage;
+    QMap<QString, QVariantMap> mSpriteDefinitions;
 };
 
 
@@ -575,7 +586,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
+    static QgsProperty parseInterpolateOpacityByZoom( const QVariantMap &json, int maxOpacity, QgsMapBoxGlStyleConversionContext *contextPtr = nullptr );
 
     /**
      * Takes values from stops and uses either scale_linear() or scale_exp() functions
@@ -728,7 +739,7 @@ class CORE_EXPORT QgsMapBoxGlStyleConverter
      *
      * \warning This is private API only, and may change in future QGIS versions
      */
-    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = 0 );
+    static QString interpolateExpression( double zoomMin, double zoomMax, QVariant valueMin, QVariant valueMax, double base, double multiplier = 1, QgsMapBoxGlStyleConversionContext *contextPtr = nullptr );
 
     /**
      * Converts a value to Qt::PenCapStyle enum from JSON value.

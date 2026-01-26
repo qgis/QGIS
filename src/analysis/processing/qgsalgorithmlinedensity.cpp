@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmlinedensity.h"
+
 #include "qgscircle.h"
 #include "qgsgeometryengine.h"
 #include "qgsrasterfilewriter.h"
@@ -24,7 +25,7 @@
 
 QString QgsLineDensityAlgorithm::name() const
 {
-  return QStringLiteral( "linedensity" );
+  return u"linedensity"_s;
 }
 
 QString QgsLineDensityAlgorithm::displayName() const
@@ -44,32 +45,50 @@ QString QgsLineDensityAlgorithm::group() const
 
 QString QgsLineDensityAlgorithm::groupId() const
 {
-  return QStringLiteral( "interpolation" );
+  return u"interpolation"_s;
 }
 
 void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field " ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Numeric, false, true ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "RADIUS" ), QObject::tr( "Search radius" ), 10, QStringLiteral( "INPUT" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 10, QStringLiteral( "INPUT" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input line layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
+  addParameter( new QgsProcessingParameterField( u"WEIGHT"_s, QObject::tr( "Weight field " ), QVariant(), u"INPUT"_s, Qgis::ProcessingFieldParameterDataType::Numeric, false, true ) );
+  addParameter( new QgsProcessingParameterDistance( u"RADIUS"_s, QObject::tr( "Search radius" ), 10, u"INPUT"_s, false, 0 ) );
+  addParameter( new QgsProcessingParameterDistance( u"PIXEL_SIZE"_s, QObject::tr( "Pixel size" ), 10, u"INPUT"_s, false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > createOptsParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( {{QStringLiteral( "widget_wrapper" ), QVariantMap( {{QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) }} ) }} ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  // backwards compatibility parameter
+  // TODO QGIS 5: remove parameter and related logic
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATE_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Line density raster" ) ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Line density raster" ) ) );
 }
 
 QString QgsLineDensityAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "The line density interpolation algorithm calculates a density measure of linear features "
+  return QObject::tr( "This algorithm calculates a density measure of linear features "
                       "which is obtained in a circular neighborhood within each raster cell. "
                       "First, the length of the segment of each line that is intersected by the circular neighborhood "
                       "is multiplied with the lines weight factor. In a second step, all length values are summed and "
                       "divided by the area of the circular neighborhood. This process is repeated for all raster cells."
-                    );
+  );
+}
+
+Qgis::ProcessingAlgorithmDocumentationFlags QgsLineDensityAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
+QString QgsLineDensityAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates a density measure of linear features "
+                      "which is obtained in a circular neighborhood within each raster cell." );
 }
 
 QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const
@@ -80,18 +99,18 @@ QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const
 bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
-  mSource.reset( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  mSource.reset( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !mSource )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  mWeightField = parameterAsString( parameters, QStringLiteral( "WEIGHT" ), context );
+  mWeightField = parameterAsString( parameters, u"WEIGHT"_s, context );
 
-  mPixelSize = parameterAsDouble( parameters, QStringLiteral( "PIXEL_SIZE" ), context );
+  mPixelSize = parameterAsDouble( parameters, u"PIXEL_SIZE"_s, context );
 
-  mSearchRadius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
+  mSearchRadius = parameterAsDouble( parameters, u"RADIUS"_s, context );
   if ( mSearchRadius < 0.5 * mPixelSize * std::sqrt( 2 ) )
     throw QgsProcessingException( QObject::tr( "Raster cells must be fully contained by the search circle. Therefore, "
-                                  "the search radius must not be smaller than half of the pixel diagonal." ) );
+                                               "the search radius must not be smaller than half of the pixel diagonal." ) );
 
   mExtent = mSource->sourceExtent();
   mCrs = mSource->sourceCrs();
@@ -131,27 +150,33 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
     }
   }
 
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
+  QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
 
-  const int rows = std::max( std::ceil( mExtent.height() / mPixelSize ), 1.0 );
-  const int cols = std::max( std::ceil( mExtent.width() / mPixelSize ), 1.0 );
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
+
+  // round up width and height to the nearest integer as GDAL does (e.g. in gdal_rasterize)
+  // see https://github.com/qgis/QGIS/issues/43547
+  const int rows = static_cast<int>( 0.5 + mExtent.height() / mPixelSize );
+  const int cols = static_cast<int>( 0.5 + mExtent.width() / mPixelSize );
 
   //build new raster extent based on number of columns and cellsize
   //this prevents output cellsize being calculated too small
   const QgsRectangle rasterExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMaximum() - ( rows * mPixelSize ), mExtent.xMinimum() + ( cols * mPixelSize ), mExtent.yMaximum() );
 
   QgsRasterFileWriter writer = QgsRasterFileWriter( outputFile );
-  writer.setOutputProviderKey( QStringLiteral( "gdal" ) );
+  writer.setOutputProviderKey( u"gdal"_s );
   writer.setOutputFormat( outputFormat );
-  if ( !createOptions.isEmpty() )
+  if ( !creationOptions.isEmpty() )
   {
-    writer.setCreateOptions( createOptions.split( '|' ) );
+    writer.setCreationOptions( creationOptions.split( '|' ) );
   }
 
-  std::unique_ptr<QgsRasterDataProvider > provider( writer.createOneBandRaster( Qgis::DataType::Float32, cols, rows, rasterExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider> provider( writer.createOneBandRaster( Qgis::DataType::Float32, cols, rows, rasterExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
@@ -159,10 +184,13 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
   provider->setNoDataValue( 1, -9999 );
 
+  const bool hasReportsDuringClose = provider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+
   const qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
-  std::unique_ptr< QgsRasterBlock > rasterDataLine = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, cols, 1 );
+  auto rasterDataLine = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float32, cols, 1 );
 
   for ( int row = 0; row < rows; row++ )
   {
@@ -180,7 +208,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
       if ( !fids.isEmpty() )
       {
-        std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
+        std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
         engine->prepareGeometry();
 
         double absDensity = 0;
@@ -193,7 +221,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
             double analysisLineLength = 0;
             try
             {
-              analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
+              analysisLineLength = mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
             }
             catch ( QgsCsException & )
             {
@@ -207,7 +235,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
               weight = mFeatureWeights.value( id );
             }
 
-            absDensity += ( analysisLineLength *  weight );
+            absDensity += ( analysisLineLength * weight );
           }
         }
 
@@ -235,17 +263,31 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
         rasterDataLine->setValue( 0, col, 0.0 );
       }
 
-      feedback->setProgress( static_cast<double>( cellcnt ) / static_cast<double>( totalCellcnt ) * 100 );
+      feedback->setProgress( static_cast<double>( cellcnt ) / static_cast<double>( totalCellcnt ) * maxProgressDuringBlockWriting );
       cellcnt++;
     }
-    provider->writeBlock( rasterDataLine.get(), 1, 0, row );
+    if ( !provider->writeBlock( rasterDataLine.get(), 1, 0, row ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( provider->error().summary() ) );
+    }
 
     //'carriage return and newline' for search geometry
     mSearchGeometry.translate( ( cols - 1 ) * -mPixelSize, -mPixelSize );
   }
 
+  if ( hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

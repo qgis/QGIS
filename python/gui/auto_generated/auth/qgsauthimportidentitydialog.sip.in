@@ -13,7 +13,8 @@
 class QgsAuthImportIdentityDialog : QDialog
 {
 %Docstring(signature="appended")
-Widget for importing an identity certificate/key bundle into the authentication database
+Widget for importing an identity certificate/key bundle into the
+authentication database.
 %End
 
 %TypeHeaderCode
@@ -38,8 +39,7 @@ Widget for importing an identity certificate/key bundle into the authentication 
       Unknown
     };
 
-    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent /TransferThis/ = 0 );
+    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog for importing identities
 
@@ -47,13 +47,13 @@ Construct a dialog for importing identities
 :param parent: Parent widget
 %End
 
-    QgsAuthImportIdentityDialog::IdentityType identityType();
+    QgsAuthImportIdentityDialog::IdentityType identityType() const;
 %Docstring
 Gets identity type
 %End
 
 
-    const QgsPkiBundle pkiBundleToImport();
+    const QgsPkiBundle pkiBundleToImport() const;
 %Docstring
 Gets certificate/key bundle to be imported as a PKI bundle object
 %End

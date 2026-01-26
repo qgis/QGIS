@@ -13,22 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvassnappingutils.h"
-#include "qgssnappingconfig.h"
-#include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptooladdfeature.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
+#include "qgssnappingconfig.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgswkbtypes.h"
-#include "qgsmapmouseevent.h"
 #include "testqgsmaptoolutils.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
@@ -47,7 +46,7 @@ namespace QTest
     QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
-}
+} // namespace QTest
 
 
 /**
@@ -61,8 +60,8 @@ class TestQgsMapToolAddFeatureLineZ : public QObject
     TestQgsMapToolAddFeatureLineZ();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testZ();
     void testZSnapping();
@@ -90,9 +89,9 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
   QgsSettings settings;
   settings.clear();
 
@@ -100,10 +99,10 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   // make testing layers
-  mLayerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
+  mLayerLine = new QgsVectorLayer( u"LineString?crs=EPSG:27700"_s, u"layer line"_s, u"memory"_s );
   QVERIFY( mLayerLine->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine );
 
@@ -115,13 +114,13 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
   mFidLineF1 = lineF1.id();
-  QCOMPARE( mLayerLine->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLine->featureCount(), ( long ) 1 );
 
   // just one added feature
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
   // make testing layers
-  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mLayerLineZ = new QgsVectorLayer( u"LineStringZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mLayerLineZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
 
@@ -132,7 +131,7 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
 
   mLayerLineZ->startEditing();
   mLayerLineZ->addFeature( lineF2 );
-  QCOMPARE( mLayerLineZ->featureCount(), ( long )1 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 1 );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -143,17 +142,17 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
   // make layer for topologicalEditing with Z
-  mLayerTopoZ = new QgsVectorLayer( QStringLiteral( "MultiLineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer topologicalEditing Z" ), QStringLiteral( "memory" ) );
+  mLayerTopoZ = new QgsVectorLayer( u"MultiLineStringZ?crs=EPSG:27700"_s, u"layer topologicalEditing Z"_s, u"memory"_s );
   QVERIFY( mLayerTopoZ->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerTopoZ );
 
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
   topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ("
-                        "(10 0 0, 10 10 0),"
-                        "(20 0 10, 20 10 10),"
-                        "(30 0 0, 30 10 10)"
-                        ")" ) );
+                                              "(10 0 0, 10 10 0),"
+                                              "(20 0 10, 20 10 10),"
+                                              "(30 0 0, 30 10 10)"
+                                              ")" ) );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );

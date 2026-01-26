@@ -10,6 +10,7 @@
 
 
 
+
 class QgsElevationProfileCanvas : QgsPlotCanvas
 {
 %Docstring(signature="appended")
@@ -22,10 +23,10 @@ A canvas for elevation profiles.
 #include "qgselevationprofilecanvas.h"
 %End
   public:
-
     QgsElevationProfileCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsElevationProfileCanvas, with the specified ``parent`` widget.
+Constructor for QgsElevationProfileCanvas, with the specified ``parent``
+widget.
 %End
 
     ~QgsElevationProfileCanvas();
@@ -62,42 +63,61 @@ Scales the plot axis by the given factors.
 
     QRectF plotArea() const;
 %Docstring
-Returns the interior rectangle representing the surface of the plot, in canvas coordinates.
+Returns the interior rectangle representing the surface of the plot, in
+canvas coordinates.
 %End
 
     virtual void refresh();
 
 %Docstring
-Triggers a complete regeneration of the profile, causing the profile extraction to perform in the
-background.
+Triggers a complete regeneration of the profile, causing the profile
+extraction to perform in the background.
 %End
 
     void invalidateCurrentPlotExtent();
 %Docstring
-Invalidates the current plot extent, which means that the visible plot area will be
-recalculated and "zoom full" operation occur when the next profile generation completes.
+Invalidates the current plot extent, which means that the visible plot
+area will be recalculated and "zoom full" operation occur when the next
+profile generation completes.
 %End
 
     void setProject( QgsProject *project );
 %Docstring
 Sets the ``project`` associated with the profile.
 
-This must be set before any layers which utilize terrain based elevation settings can be
-included in the canvas.
+This must be set before any layers which utilize terrain based elevation
+settings can be included in the canvas.
 %End
 
-    void setLayers( const QList< QgsMapLayer * > &layers );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
 Sets the list of ``layers`` to include in the profile.
 
 .. seealso:: :py:func:`layers`
 %End
 
-    QList< QgsMapLayer * > layers() const;
+    QList<QgsMapLayer *> layers() const;
 %Docstring
 Returns the list of layers included in the profile.
 
 .. seealso:: :py:func:`setLayers`
+%End
+
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+%Docstring
+Sets the list of ``sources`` to include in the profile.
+
+.. seealso:: :py:func:`sources`
+%End
+
+    QList<QgsAbstractProfileSource *> sources() const;
+%Docstring
+Returns the list of sources included in the profile.
+
+It includes both layer profile sources and custom sources from the
+profile source registry.
+
+.. seealso:: :py:func:`setSources`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -111,7 +131,8 @@ Sets the ``crs`` associated with the canvas' map coordinates.
 %Docstring
 Sets the profile ``curve``.
 
-The CRS associated with ``curve`` is set via :py:func:`~QgsElevationProfileCanvas.setCrs`.
+The CRS associated with ``curve`` is set via
+:py:func:`~QgsElevationProfileCanvas.setCrs`.
 
 Ownership is transferred to the plot canvas.
 
@@ -122,29 +143,38 @@ Ownership is transferred to the plot canvas.
 %Docstring
 Returns the profile curve.
 
-The CRS associated with the curve is retrieved via :py:func:`~QgsElevationProfileCanvas.crs`.
+The CRS associated with the curve is retrieved via
+:py:func:`~QgsElevationProfileCanvas.crs`.
 
 .. seealso:: :py:func:`setProfileCurve`
 %End
 
     void setTolerance( double tolerance );
 %Docstring
-Sets the profile tolerance (in :py:func:`~QgsElevationProfileCanvas.crs` units).
+Sets the profile tolerance (in :py:func:`~QgsElevationProfileCanvas.crs`
+units).
 
-This value determines how far from the :py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for inclusion of results. For instance,
-when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
-actual profile curve a point can reside within to be included in the results.
+This value determines how far from the
+:py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for
+inclusion of results. For instance, when a profile is generated for a
+point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the
+results.
 
 .. seealso:: :py:func:`tolerance`
 %End
 
     double tolerance() const;
 %Docstring
-Returns the tolerance of the profile (in :py:func:`~QgsElevationProfileCanvas.crs` units).
+Returns the tolerance of the profile (in
+:py:func:`~QgsElevationProfileCanvas.crs` units).
 
-This value determines how far from the :py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for inclusion of results. For instance,
-when a profile is generated for a point vector layer this tolerance distance will dictate how far from the
-actual profile curve a point can reside within to be included in the results.
+This value determines how far from the
+:py:func:`~QgsElevationProfileCanvas.profileCurve` is appropriate for
+inclusion of results. For instance, when a profile is generated for a
+point vector layer this tolerance distance will dictate how far from the
+actual profile curve a point can reside within to be included in the
+results.
 
 .. seealso:: :py:func:`setTolerance`
 %End
@@ -177,7 +207,7 @@ Returns the elevation range currently visible in the plot.
 %End
 
 
-    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DXyPlot &plotSettings );
 %Docstring
 Renders a portion of the profile using the specified render ``context``.
 %End
@@ -208,7 +238,8 @@ Converts a plot point to the equivalent canvas point.
 
     bool lockAxisScales() const;
 %Docstring
-Returns ``True`` if the distance and elevation scales are locked to each other.
+Returns ``True`` if the distance and elevation scales are locked to each
+other.
 
 .. seealso:: :py:func:`setLockAxisScales`
 
@@ -222,6 +253,35 @@ Sets whether the distance and elevation scales are locked to each other.
 .. seealso:: :py:func:`lockAxisScales`
 
 .. versionadded:: 3.32
+%End
+
+    double axisScaleRatio() const;
+%Docstring
+Returns the current ratio of horizontal (distance) to vertical
+(elevation) scale for the plot.
+
+.. seealso:: :py:func:`setAxisScaleRatio`
+
+.. versionadded:: 4.0
+%End
+
+    void setAxisScaleRatio( double scale );
+%Docstring
+Sets the ratio of horizontal (distance) to vertical (elevation) scale
+for the plot.
+
+E.g. a ``scale`` of 3 indicates a ratio of 3:1 for distance vs
+elevation, whereas a scale of 0.3333 indicates a ratio of 1:3 for
+distance vs elevation.
+
+This will immediately update the visible plot area to match the
+specified scale.
+
+.. seealso:: :py:func:`axisScaleRatio`
+
+.. seealso:: :py:func:`setLockAxisScales`
+
+.. versionadded:: 4.0
 %End
 
     Qgis::DistanceUnit distanceUnit() const;
@@ -246,10 +306,30 @@ Sets the distance ``unit`` used by the canvas.
 %Docstring
 Sets the background ``color`` to use for the profile canvas.
 
-The chart text, border and axis color will be automatically updated to ensure
-readability with the new background color.
+The chart text, border and axis color will be automatically updated to
+ensure readability with the new background color.
 
 .. versionadded:: 3.34
+%End
+
+    QgsLineSymbol *subsectionsSymbol();
+%Docstring
+Returns the symbol used to draw the subsections.
+
+.. seealso:: :py:func:`setSubsectionsSymbol`
+
+.. versionadded:: 3.44
+%End
+
+    void setSubsectionsSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the ``symbol`` used to draw the subsections. If ``symbol`` is
+``None``, the subsections are not drawn. Ownership of ``symbol`` is
+transferred.
+
+.. seealso:: :py:func:`subsectionsSymbol`
+
+.. versionadded:: 3.44
 %End
 
   signals:
@@ -261,9 +341,18 @@ Emitted when the number of active background jobs changes.
 
     void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
 %Docstring
-Emitted when the mouse hovers over the specified point (in canvas coordinates).
+Emitted when the mouse hovers over the specified point (in canvas
+coordinates).
 
-The ``profilePoint`` argument gives the hovered profile point, which may be snapped.
+The ``profilePoint`` argument gives the hovered profile point, which may
+be snapped.
+%End
+
+    void scaleChanged();
+%Docstring
+Emitted when the plot scale is changed.
+
+.. versionadded:: 4.0
 %End
 
   public slots:

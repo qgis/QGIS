@@ -26,8 +26,7 @@ from .plugin import DbError, ConnectionError
 class DBConnector:
 
     def __init__(self, uri):
-        """Creates a new DB connector
-        """
+        """Creates a new DB connector"""
 
         self.connection = None
         self._uri = uri
@@ -95,17 +94,22 @@ class DBConnector:
         return cursor
 
     def _execute_and_commit(self, sql):
-        """ tries to execute and commit some action, on error it rolls back the change """
+        """tries to execute and commit some action, on error it rolls back the change"""
         self._execute(None, sql)
         self._commit()
 
     def _get_cursor(self, name=None):
         try:
             if name is not None:
-                name = str(name).encode('ascii', 'replace').replace('?', "_")
-                self._last_cursor_named_id = 0 if not hasattr(self,
-                                                              '_last_cursor_named_id') else self._last_cursor_named_id + 1
-                return self.connection.cursor("%s_%d" % (name, self._last_cursor_named_id))
+                name = str(name).encode("ascii", "replace").replace("?", "_")
+                self._last_cursor_named_id = (
+                    0
+                    if not hasattr(self, "_last_cursor_named_id")
+                    else self._last_cursor_named_id + 1
+                )
+                return self.connection.cursor(
+                    "%s_%d" % (name, self._last_cursor_named_id)
+                )
 
             return self.connection.cursor()
 
@@ -183,36 +187,33 @@ class DBConnector:
 
     @classmethod
     def quoteId(self, identifier):
-        if hasattr(identifier, '__iter__') and not isinstance(identifier, str):
-            return '.'.join(
-                self.quoteId(i)
-                for i in identifier
-                if i is not None and i != ""
+        if hasattr(identifier, "__iter__") and not isinstance(identifier, str):
+            return ".".join(
+                self.quoteId(i) for i in identifier if i is not None and i != ""
             )
 
-        identifier = str(
-            identifier) if identifier is not None else ''  # make sure it's python unicode string
+        identifier = (
+            str(identifier) if identifier is not None else ""
+        )  # make sure it's python unicode string
         return '"%s"' % identifier.replace('"', '""')
 
     @classmethod
     def quoteString(self, txt):
-        """ make the string safe - replace ' with '' """
-        if hasattr(txt, '__iter__') and not isinstance(txt, str):
-            return '.'.join(
-                self.quoteString(i)
-                for i in txt
-                if i is not None
-            )
+        """make the string safe - replace ' with ''"""
+        if hasattr(txt, "__iter__") and not isinstance(txt, str):
+            return ".".join(self.quoteString(i) for i in txt if i is not None)
 
-        txt = str(txt) if txt is not None else ''  # make sure it's python unicode string
+        txt = (
+            str(txt) if txt is not None else ""
+        )  # make sure it's python unicode string
         return "'%s'" % txt.replace("'", "''")
 
     @classmethod
     def getSchemaTableName(self, table):
-        if not hasattr(table, '__iter__') and not isinstance(table, str):
+        if not hasattr(table, "__iter__") and not isinstance(table, str):
             return (None, table)
         if isinstance(table, str):
-            table = table.split('.')
+            table = table.split(".")
         if len(table) < 2:
             return (None, table[0])
         else:
@@ -220,7 +221,7 @@ class DBConnector:
 
     @classmethod
     def getSqlDictionary(self):
-        """ return a generic SQL dictionary """
+        """return a generic SQL dictionary"""
         try:
             from ..sql_dictionary import getSqlDictionary
 
@@ -230,7 +231,7 @@ class DBConnector:
 
     def getComment(self, tablename, field):
         """Returns the comment for a field"""
-        return ''
+        return ""
 
     def commentTable(self, schema, tablename, comment=None):
         """Comment the table"""

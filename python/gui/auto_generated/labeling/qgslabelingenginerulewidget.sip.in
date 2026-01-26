@@ -9,10 +9,12 @@
 
 
 
+
 class QgsLabelingEngineRuleWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-Base class for widgets which allow control over the properties of :py:class:`QgsAbstractLabelingEngineRule` subclasses
+Base class for widgets which allow control over the properties of
+:py:class:`QgsAbstractLabelingEngineRule` subclasses.
 
 .. seealso:: :py:class:`QgsLabelingEngineRulesWidget` for a widget for configuring multiple rules
 
@@ -25,7 +27,6 @@ Base class for widgets which allow control over the properties of :py:class:`Qgs
 #include "qgslabelingenginerulewidget.h"
 %End
   public:
-
     QgsLabelingEngineRuleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLabelingEngineRuleWidget.
@@ -53,7 +54,6 @@ Ownership of the returned object is transferred to the caller
 %Docstring
 Emitted whenever the configuration of the rule is changed.
 %End
-
 };
 
 

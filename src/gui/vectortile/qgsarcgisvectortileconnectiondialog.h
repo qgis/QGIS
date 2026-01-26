@@ -19,10 +19,9 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QDialog>
-
 #include "ui_qgsarcgisvectortileconnectiondialog.h"
 
+#include <QDialog>
 
 class QgsArcgisVectorTileConnectionDialog : public QDialog, public Ui::QgsArcgisVectorTileConnectionDialog
 {
@@ -39,7 +38,6 @@ class QgsArcgisVectorTileConnectionDialog : public QDialog, public Ui::QgsArcgis
 
   private slots:
     void updateOkButtonState();
-
 };
 
 ///@endcond

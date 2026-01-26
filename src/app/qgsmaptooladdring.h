@@ -13,11 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmaptoolcapture.h"
+#ifndef QGSMAPTOOLADDRING_H
+#define QGSMAPTOOLADDRING_H
+
 #include "qgis_app.h"
+#include "qgsmaptoolcapture.h"
 
 //! A tool to cut holes into polygons and multipolygon features
-class APP_EXPORT QgsMapToolAddRing: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddRing : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
@@ -31,3 +34,5 @@ class APP_EXPORT QgsMapToolAddRing: public QgsMapToolCapture
     QgsVectorLayer *getCheckLayer();
     void polygonCaptured( const QgsCurvePolygon *polygon ) override;
 };
+
+#endif // QGSMAPTOOLADDRING_H

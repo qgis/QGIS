@@ -19,8 +19,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QRectF>
+
 #include <QList>
+#include <QRectF>
 
 class QgsRenderContext;
 class QgsScaleBarSettings;
@@ -66,7 +67,7 @@ class CORE_EXPORT QgsScaleBarRenderer
      * Contains parameters regarding scalebar calculations.
      * \note The need to attribute the parameters vary depending on the targeted scalebar.
      */
-    struct ScaleBarContext
+    struct CORE_EXPORT ScaleBarContext
     {
 
       /**
@@ -86,7 +87,14 @@ class CORE_EXPORT QgsScaleBarRenderer
       double scale { 1.0 };
 
       //! Scalebar renderer flags
-      Flags flags;
+      QgsScaleBarRenderer::Flags flags;
+
+      /**
+       * Returns TRUE if the context has valid settings.
+       *
+       * \since QGIS 3.40
+       */
+      bool isValid() const;
 
     };
 

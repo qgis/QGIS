@@ -15,11 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswebenginepage.h"
 #include "qgsconfig.h"
-#include <QWebEnginePage>
+#include "qgswebenginepage.h"
+
 #include <QEventLoop>
 #include <QSizeF>
+#include <QWebEnginePage>
+
+#include "moc_qgswebenginepage.cpp"
 
 #ifdef HAVE_PDF4QT
 #include "qgspdfrenderer.h"
@@ -209,7 +212,9 @@ bool QgsWebEnginePage::render( QPainter *painter, const QRectF &painterRect )
 
   // generate file name for temporary intermediate PDF file
   QTemporaryFile f;
-  f.open();
+  if ( !f.open() )
+    return false;
+
   f.close();
 
   const QPageLayout layout = QPageLayout( QPageSize( pageSize, QPageSize::Inch ),

@@ -21,14 +21,14 @@
 #include <memory>
 
 #include "qgis_core.h"
+#include "qgsabstractprofilesource.h"
+#include "qgscoordinatetransform.h"
 #include "qgsinterval.h"
 #include "qgsmaplayer.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
-#include "qgsmeshtimesettings.h"
 #include "qgsmeshsimplificationsettings.h"
-#include "qgscoordinatetransform.h"
-#include "qgsabstractprofilesource.h"
+#include "qgsmeshtimesettings.h"
 
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
@@ -47,7 +47,7 @@ class QgsAbstractMeshLayerLabeling;
 /**
  * \ingroup core
  *
- * \brief Represents a mesh layer supporting display of data on structured or unstructured meshes
+ * \brief Represents a mesh layer supporting display of data on structured or unstructured meshes.
  *
  * The QgsMeshLayer is instantiated by specifying the name of a data provider,
  * such as mdal, and url defining the specific data set to connect to.
@@ -65,10 +65,10 @@ class QgsAbstractMeshLayerLabeling;
  * \subsection mesh_memory Memory data providerType (mesh_memory)
  *
  * The memory data provider is used to construct in memory data, for example scratch
- * data. There is no inherent persistent storage of the data. The data source uri is constructed.
- * Data can be populated by setMesh(const QString &vertices, const QString &faces), where
- * vertices and faces is comma separated coordinates and connections for mesh.
- * E.g. to create mesh with one quad and one triangle
+ * data. There is no inherent persistent storage of the data. The data source uri is
+ * constructed where vertices and faces are comma separated coordinates and connections
+ * for the mesh.
+ * E.g. to create a mesh with one quad and one triangle
  *
  * \code{py}
  *  uri = "1.0, 2.0 \n" \
@@ -156,7 +156,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      * \param options general mesh layer options
      */
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = u"mesh_memory"_s,
                            const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
 
     ~QgsMeshLayer() override;
@@ -167,7 +167,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMeshLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsMeshLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -177,6 +177,9 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsMeshLayer *clone() const override SIP_FACTORY;
     QgsRectangle extent() const override;
     QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsAbstractProfileSource *profileSource() override {return this;}
+    QString profileSourceId() const override {return id();}
+    QString profileSourceName() const override {return name();}
     QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) override SIP_FACTORY;
     bool readSymbology( const QDomNode &node, QString &errorMessage,
                         QgsReadWriteContext &context, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories ) override;
@@ -195,21 +198,28 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QString htmlMetadata() const override;
     bool isEditable() const override;
     bool supportsEditing() const override;
-    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) FINAL;
-
-    //! Returns the provider type for this layer
-    QString providerType() const;
+    QString loadDefaultStyle( bool &resultFlag SIP_OUT ) final;
 
     /**
-     * Adds datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
+     * Adds datasets to the mesh from file with \a path. Use the time \a defaultReferenceTime as reference time is not provided in the file
      *
-     * \param path the path to the atasets file
+     * \param path the path to the datasets file
      * \param defaultReferenceTime reference time used if not provided in the file
      * \return whether the dataset is added
      *
      * \since QGIS 3.14
      */
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
+
+    /**
+     * Removes datasets from the mesh with given \a name.
+     *
+     * \param name name of dataset group to remove
+     * \return whether the dataset is removed
+     *
+     * \since QGIS 3.42
+     */
+    bool removeDatasets( const QString &name );
 
     /**
      * Adds extra datasets to the mesh. Take ownership.
@@ -299,8 +309,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 
     //! Returns renderer settings
     QgsMeshRendererSettings rendererSettings() const;
-    //! Sets new renderer settings
-    void setRendererSettings( const QgsMeshRendererSettings &settings );
+
+    /**
+     * Sets new renderer settings
+     *
+     * \param settings
+     * \param repaint should the update of renderer settings trigger repaint and emit rendererChanged signal
+     */
+    void setRendererSettings( const QgsMeshRendererSettings &settings, const bool repaint = true );
 
     /**
      * Returns time format settings
@@ -708,6 +724,34 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     QgsPointXY snapOnElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius );
 
     /**
+      * Returns the index of the snapped point on the mesh element closest to \a point intersecting with
+      * the searching area defined by \a point and \a searchRadius
+      * The position of the snapped point on the closest element is stored in \a projectedPoint
+      *
+      * For vertex, the snapped position is the vertex position
+      * For edge, the snapped position is the projected point on the edge, extremity of edge if outside the edge
+      * For face, the snapped position is the centroid of the face
+      * The snapped position is in map coordinates.
+      *
+      * \note It uses previously cached and indexed triangular mesh
+      * and so if the layer has not been rendered previously
+      * (e.g. when used in a script) it returns empty QgsPointXY
+      * \see updateTriangularMesh()
+      *
+      * \note This is similar to the snapOnElement() method, except it also returns the index of the snapped point
+      * \see snapOnElement()
+      *
+      * \param elementType the type of element to snap
+      * \param point the center of the search area in map coordinates
+      * \param searchRadius the radius of the search area in map units
+      * \param projectedPoint the position of the snapped point on the closest element, empty QgsPointXY if no element of type \a elementType
+      * \return index of the snapped point on the closest element, -1 if no element of type \a elementType
+      *
+      * \since QGIS 3.44
+      */
+    int closestElement( QgsMesh::ElementType elementType, const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint SIP_OUT ) const;
+
+    /**
      * Returns a list of vertex indexes that meet the condition defined by \a expression with the context \a expressionContext
      *
      * To express the relation with a vertex, the expression can be defined with function returning value
@@ -932,6 +976,41 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      */
     void setLabeling( QgsAbstractMeshLayerLabeling *labeling SIP_TRANSFER );
 
+    /**
+     * Extracts minimum and maximum value for active scalar dataset on mesh faces.
+     * \param extent extent in which intersecting faces are searched for
+     * \param datasetIndex index for which dataset the values should be extracted
+     * \param min minimal value
+     * \param max maximal value
+     * \return TRUE if values were extracted
+     * \since QGIS 3.42
+     */
+    bool minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min SIP_OUT, double &max SIP_OUT );
+
+    /**
+     * Returns current active scalar dataset index for current renderer context.
+     *
+     * \since QGIS 3.42
+     */
+    QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
+
+    /**
+     * Checks whether that datasets path is already added to this mesh layer. Return TRUE if the
+     * dataset path is not already added.
+     *
+     * \param path the path to the datasets file
+     * \return whether the datasets path is unique
+     *
+     * \since QGIS 3.42
+     */
+    bool datasetsPathUnique( const QString &path );
+
+    /**
+     * Returns the list of extra dataset URIs associated with this layer
+     *
+     * \since QGIS 4.0
+     */
+    QStringList extraDatasetUris() const { return mExtraDatasetUri; }
 
   public slots:
 
@@ -986,7 +1065,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \param flags provider flags since QGIS 3.16
      */
     bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
-
 #ifdef SIP_RUN
     QgsMeshLayer( const QgsMeshLayer &rhs );
 #endif
@@ -1049,16 +1127,14 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     //! Labeling configuration
     QgsAbstractMeshLayerLabeling *mLabeling = nullptr;
 
+    //! Returns the exact position in map coordinates of the closest vertex in the search area
     int closestEdge( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
 
-    //! Returns the exact position in map coordinates of the closest vertex in the search area
-    QgsPointXY snapOnVertex( const QgsPointXY &point, double searchRadius );
+    //!Returns the position of the projected point on the closest edge in the search area
+    int closestVertex( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
 
     //!Returns the position of the projected point on the closest edge in the search area
-    QgsPointXY snapOnEdge( const QgsPointXY &point, double searchRadius );
-
-    //!Returns the position of the centroid point on the closest face in the search area
-    QgsPointXY snapOnFace( const QgsPointXY &point, double searchRadius );
+    int closestFace( const QgsPointXY &point, double searchRadius, QgsPointXY &projectedPoint ) const;
 
     void updateActiveDatasetGroups();
 

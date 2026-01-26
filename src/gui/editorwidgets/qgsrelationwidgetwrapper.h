@@ -16,31 +16,29 @@
 #ifndef QGSRELATIONWIDGETWRAPPER_H
 #define QGSRELATIONWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsattributeeditorrelation.h"
-
+#include "qgswidgetwrapper.h"
 
 class QgsAbstractRelationEditorWidget;
 
 /**
  * \ingroup gui
  * \class QgsRelationWidgetWrapper
+ * \brief A widget wrapper for relation widgets.
  */
-
 class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsRelationWidgetWrapper
     QgsRelationWidgetWrapper(
       QgsVectorLayer *vl,
       const QgsRelation &relation,
       QWidget *editor SIP_CONSTRAINED = nullptr,
-      QWidget *parent SIP_TRANSFERTHIS SIP_CONSTRAINED  = nullptr
+      QWidget *parent SIP_TRANSFERTHIS SIP_CONSTRAINED = nullptr
     );
 
     //! Constructor for QgsRelationWidgetWrapper

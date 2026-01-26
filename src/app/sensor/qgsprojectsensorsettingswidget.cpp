@@ -22,6 +22,8 @@
 #include "qgssensormanager.h"
 #include "qgssensortablewidget.h"
 
+#include "moc_qgsprojectsensorsettingswidget.cpp"
+
 QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
 {
@@ -29,10 +31,9 @@ QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent 
 
   QgsSensorTableWidget *widget = new QgsSensorTableWidget( this );
   mPanelStack->setMainPanel( widget );
-  connect( widget, &QgsPanelWidget::showPanel, this, [ = ]( QgsPanelWidget * panel )
-  {
+  connect( widget, &QgsPanelWidget::showPanel, this, [this]( QgsPanelWidget *panel ) {
     mSensorIntroductionLabel->setVisible( false );
-    connect( panel, &QgsPanelWidget::panelAccepted, this, [ = ]() { mSensorIntroductionLabel->setVisible( true ); } );
+    connect( panel, &QgsPanelWidget::panelAccepted, this, [this]() { mSensorIntroductionLabel->setVisible( true ); } );
   } );
 
   QDomElement sensorElem = QgsProject::instance()->sensorManager()->writeXml( mPreviousSensors );
@@ -47,11 +48,10 @@ QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent 
     }
   }
 
-  connect( QgsProject::instance()->sensorManager(), &QgsSensorManager::sensorErrorOccurred, this, [ = ]( const QString & id )
-  {
+  connect( QgsProject::instance()->sensorManager(), &QgsSensorManager::sensorErrorOccurred, this, [this]( const QString &id ) {
     if ( QgsAbstractSensor *sensor = QgsProject::instance()->sensorManager()->sensor( id ) )
     {
-      mMessageBar->pushCritical( tr( "Sensor Error" ), QStringLiteral( "%1: %2" ).arg( sensor->name(), sensor->errorString() ) );
+      mMessageBar->pushCritical( tr( "Sensor Error" ), u"%1: %2"_s.arg( sensor->name(), sensor->errorString() ) );
     }
   } );
 }
@@ -118,7 +118,7 @@ bool QgsProjectSensorSettingsWidget::isValid()
 //
 
 QgsProjectSensorSettingsWidgetFactory::QgsProjectSensorSettingsWidgetFactory( QObject *parent )
-  : QgsOptionsWidgetFactory( tr( "Sensors" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/sensor.svg" ) ), QStringLiteral( "sensor" ) )
+  : QgsOptionsWidgetFactory( tr( "Sensors" ), QgsApplication::getThemeIcon( u"propertyicons/sensor.svg"_s ), u"sensor"_s )
 {
   setParent( parent );
 }

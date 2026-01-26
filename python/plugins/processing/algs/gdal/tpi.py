@@ -15,19 +15,21 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'October 2013'
-__copyright__ = '(C) 2013, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "October 2013"
+__copyright__ = "(C) 2013, Alexander Bruy"
 
 import os
 
-from qgis.core import (QgsProcessingException,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterBand,
-                       QgsProcessingParameterString,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterRasterDestination)
+from qgis.core import (
+    QgsProcessingException,
+    QgsProcessingParameterDefinition,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterBand,
+    QgsProcessingParameterString,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterRasterDestination,
+)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -35,73 +37,111 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class tpi(GdalAlgorithm):
-    INPUT = 'INPUT'
-    BAND = 'BAND'
-    COMPUTE_EDGES = 'COMPUTE_EDGES'
-    OPTIONS = 'OPTIONS'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    BAND = "BAND"
+    COMPUTE_EDGES = "COMPUTE_EDGES"
+    OPTIONS = "OPTIONS"
+    CREATION_OPTIONS = "CREATION_OPTIONS"
+    OUTPUT = "OUTPUT"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT, self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterBand(self.BAND,
-                                                     self.tr('Band number'),
-                                                     1,
-                                                     parentLayerParameterName=self.INPUT))
-        self.addParameter(QgsProcessingParameterBoolean(self.COMPUTE_EDGES,
-                                                        self.tr('Compute edges'),
-                                                        defaultValue=False))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(self.INPUT, self.tr("Input layer"))
+        )
+        self.addParameter(
+            QgsProcessingParameterBand(
+                self.BAND,
+                self.tr("Band number"),
+                1,
+                parentLayerParameterName=self.INPUT,
+            )
+        )
+        self.addParameter(
+            QgsProcessingParameterBoolean(
+                self.COMPUTE_EDGES, self.tr("Compute edges"), defaultValue=False
+            )
+        )
 
-        options_param = QgsProcessingParameterString(self.OPTIONS,
-                                                     self.tr('Additional creation options'),
-                                                     defaultValue='',
-                                                     optional=True)
-        options_param.setFlags(options_param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
-        options_param.setMetadata({'widget_wrapper': {'widget_type': 'rasteroptions'}})
+        # backwards compatibility parameter
+        # TODO QGIS 5: remove parameter and related logic
+        options_param = QgsProcessingParameterString(
+            self.OPTIONS,
+            self.tr("Additional creation options"),
+            defaultValue="",
+            optional=True,
+        )
+        options_param.setFlags(
+            options_param.flags() | QgsProcessingParameterDefinition.Flag.Hidden
+        )
+        options_param.setMetadata({"widget_wrapper": {"widget_type": "rasteroptions"}})
         self.addParameter(options_param)
 
-        self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Topographic Position Index')))
+        creation_options_param = QgsProcessingParameterString(
+            self.CREATION_OPTIONS,
+            self.tr("Additional creation options"),
+            defaultValue="",
+            optional=True,
+        )
+        creation_options_param.setFlags(
+            creation_options_param.flags()
+            | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+        )
+        creation_options_param.setMetadata(
+            {"widget_wrapper": {"widget_type": "rasteroptions"}}
+        )
+        self.addParameter(creation_options_param)
+
+        self.addParameter(
+            QgsProcessingParameterRasterDestination(
+                self.OUTPUT, self.tr("Topographic Position Index")
+            )
+        )
 
     def name(self):
-        return 'tpitopographicpositionindex'
+        return "tpitopographicpositionindex"
 
     def displayName(self):
-        return self.tr('Topographic Position Index (TPI)')
+        return self.tr("Topographic Position Index (TPI)")
 
     def group(self):
-        return self.tr('Raster analysis')
+        return self.tr("Raster analysis")
 
     def groupId(self):
-        return 'rasteranalysis'
+        return "rasteranalysis"
 
     def commandName(self):
-        return 'gdaldem'
+        return "gdaldem"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        arguments = ['TPI']
+        arguments = ["TPI"]
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
-            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
-        input_details = GdalUtils.gdal_connection_details_from_layer(
-            inLayer)
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
+        input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
 
         arguments.append(input_details.connection_string)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         self.setOutputValue(self.OUTPUT, out)
         arguments.append(out)
 
-        arguments.append('-b')
+        arguments.append("-b")
         arguments.append(str(self.parameterAsInt(parameters, self.BAND, context)))
 
         if self.parameterAsBoolean(parameters, self.COMPUTE_EDGES, context):
-            arguments.append('-compute_edges')
+            arguments.append("-compute_edges")
 
         if input_details.credential_options:
             arguments.extend(input_details.credential_options_as_arguments())
 
-        options = self.parameterAsString(parameters, self.OPTIONS, context)
+        options = self.parameterAsString(parameters, self.CREATION_OPTIONS, context)
+        # handle backwards compatibility parameter OPTIONS
+        if self.OPTIONS in parameters and parameters[self.OPTIONS] not in (None, ""):
+            options = self.parameterAsString(parameters, self.OPTIONS, context)
         if options:
             arguments.extend(GdalUtils.parseCreationOptions(options))
 

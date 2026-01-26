@@ -16,9 +16,9 @@
 #ifndef QGSMESHDATASETGROUPTREEWIDGET_H
 #define QGSMESHDATASETGROUPTREEWIDGET_H
 
-#include "qgis_gui.h"
 #include "ui_qgsmeshdatasetgrouptreewidgetbase.h"
 
+#include "qgis_gui.h"
 #include "qgsmeshdataset.h"
 
 SIP_NO_FILE
@@ -28,8 +28,10 @@ class QgsMeshLayer;
 /**
  * \ingroup gui
  * \class QgsMeshDatasetGroupTreeWidget
+ *
+ * \brief A widget for configuring dataset groups attached to a QgsMeshLayer.
  */
-class GUI_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
+class GUI_EXPORT QgsMeshDatasetGroupTreeWidget : public QWidget, private Ui::QgsMeshDatasetGroupTreeWidgetBase
 {
     Q_OBJECT
   public:
@@ -44,10 +46,12 @@ class GUI_EXPORT QgsMeshDatasetGroupTreeWidget: public QWidget, private Ui::QgsM
     void apply();
 
   signals:
-    void datasetGroupAdded();
+    //! Emitted when dataset groups changed (addition or removal)
+    void datasetGroupsChanged();
 
   private slots:
     void addDataset();
+    void removeDataset();
 
   private:
     QgsMeshLayer *mMeshLayer;

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsquadrilateral.h"
+
 #include "qgsgeometryutils.h"
 
 QgsQuadrilateral::QgsQuadrilateral() = default;
@@ -385,7 +386,7 @@ QgsPointSequence QgsQuadrilateral::points() const
 
 QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 {
-  std::unique_ptr<QgsPolygon> polygon = std::make_unique< QgsPolygon >();
+  auto polygon = std::make_unique< QgsPolygon >();
   if ( !isValid() )
   {
     return polygon.release();
@@ -398,7 +399,7 @@ QgsPolygon *QgsQuadrilateral::toPolygon( bool force2D ) const
 
 QgsLineString *QgsQuadrilateral::toLineString( bool force2D ) const
 {
-  std::unique_ptr<QgsLineString> ext = std::make_unique< QgsLineString>();
+  auto ext = std::make_unique< QgsLineString>();
   if ( !isValid() )
   {
     return ext.release();
@@ -422,9 +423,9 @@ QString QgsQuadrilateral::toString( int pointPrecision ) const
 {
   QString rep;
   if ( !isValid() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "Quadrilateral (Point 1: %1, Point 2: %2, Point 3: %3, Point 4: %4)" )
+    rep = u"Quadrilateral (Point 1: %1, Point 2: %2, Point 3: %3, Point 4: %4)"_s
           .arg( mPoint1.asWkt( pointPrecision ), 0, 's' )
           .arg( mPoint2.asWkt( pointPrecision ), 0, 's' )
           .arg( mPoint3.asWkt( pointPrecision ), 0, 's' )

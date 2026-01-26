@@ -18,12 +18,12 @@
 #ifndef QGSLOCATORMODELBRIDGE_H
 #define QGSLOCATORMODELBRIDGE_H
 
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
+
+#include <QObject>
 
 class QItemSelection;
 
@@ -36,8 +36,7 @@ class QgsLocatorProxyModel;
 
 /**
  * \ingroup core
- * \brief The QgsLocatorModelBridge class provides the core functionality
- * to be used in a locator widget.
+ * \brief Provides the core functionality to be used in a locator widget.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsLocatorModelBridge : public QObject
@@ -47,7 +46,7 @@ class CORE_EXPORT QgsLocatorModelBridge : public QObject
   public:
     //! Constructor of QgsLocatorModelBridge
     explicit QgsLocatorModelBridge( QObject *parent = nullptr );
-    virtual ~QgsLocatorModelBridge() = default;
+    ~QgsLocatorModelBridge() override = default;
 
     //! Perform a search
     Q_INVOKABLE void performSearch( const QString &text );

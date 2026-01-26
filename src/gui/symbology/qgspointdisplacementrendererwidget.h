@@ -19,17 +19,19 @@
 #define QGSPOINTDISPLACEMENTRENDERERWIDGET_H
 
 #include "ui_qgspointdisplacementrendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QgsPointDisplacementRenderer;
 
 /**
  * \ingroup gui
  * \class QgsPointDisplacementRendererWidget
+ * \brief A widget for configuring QgsPointDisplacementRenderer.
  */
-class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, private Ui::QgsPointDisplacementRendererWidgetBase
+class GUI_EXPORT QgsPointDisplacementRendererWidget : public QgsRendererWidget, private Ui::QgsPointDisplacementRendererWidgetBase
 {
     Q_OBJECT
   public:
@@ -43,7 +45,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, p
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    std::unique_ptr< QgsPointDisplacementRenderer > mRenderer;
+    std::unique_ptr<QgsPointDisplacementRenderer> mRenderer;
 
     void blockAllSignals( bool block );
     void setupBlankUi( const QString &layerName );

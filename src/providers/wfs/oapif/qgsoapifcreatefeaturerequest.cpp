@@ -14,15 +14,17 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsjsonutils.h"
 #include "qgsoapifcreatefeaturerequest.h"
-#include "qgsoapifprovider.h"
+#include "moc_qgsoapifcreatefeaturerequest.cpp"
+#include "qgsoapifshareddata.h"
 
-QgsOapifCreateFeatureRequest::QgsOapifCreateFeatureRequest( const QgsDataSourceUri &uri ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
+QgsOapifCreateFeatureRequest::QgsOapifCreateFeatureRequest( const QgsDataSourceUri &uri )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
 {
 }
 
@@ -54,20 +56,20 @@ QString QgsOapifCreateFeatureRequest::createFeature( const QgsOapifSharedData *s
   QList<QNetworkReply::RawHeaderPair> extraHeaders;
   if ( !contentCrs.isEmpty() )
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
-  if ( !sendPOST( sharedData->mItemsUrl, "application/geo+json", jsonFeature.toUtf8(), extraHeaders ) )
+  if ( !sendPOST( sharedData->mItemsUrl, "application/geo+json", jsonFeature.toUtf8(), true /*synchronous*/, extraHeaders ) )
     return QString();
 
   QString location;
   for ( const auto &headerKeyValue : mResponseHeaders )
   {
-    if ( headerKeyValue.first == QByteArray( "Location" ) )
+    if ( headerKeyValue.first.compare( QByteArray( "Location" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
     {
       location = QString::fromUtf8( headerKeyValue.second );
       break;
     }
   }
 
-  const int posItems = location.lastIndexOf( QLatin1String( "/items/" ) );
+  const int posItems = location.lastIndexOf( "/items/"_L1 );
   if ( posItems < 0 )
     return QString();
 

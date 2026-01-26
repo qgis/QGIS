@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 """
 ***************************************************************************
@@ -18,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Radim Blazek'
-__date__ = 'October 2015'
-__copyright__ = '(C) 2015 by Radim Blazek'
+__author__ = "Radim Blazek"
+__date__ = "October 2015"
+__copyright__ = "(C) 2015 by Radim Blazek"
 
 
 ############################################################################
@@ -38,33 +37,35 @@ __copyright__ = '(C) 2015 by Radim Blazek'
 #
 #############################################################################
 
-#%Module
-#% description: Upgrade all vectors from GRASS 6 to GRASS 7
-#% keywords: vector, upgrade
-#%End
+# %Module
+# % description: Upgrade all vectors from GRASS 6 to GRASS 7
+# % keywords: vector, upgrade
+# %End
 
 try:
     from grass.script import core as grass
 except ImportError:
     import grass
 except:
-    raise Exception("Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4")
+    raise Exception(
+        "Cannot find 'grass' Python module. Python is supported by GRASS from version >= 6.4"
+    )
 
 
 def main():
     # see https://grasswiki.osgeo.org/wiki/Convert_all_GRASS_6_vector_maps_to_GRASS_7
-    grass.message('Building topology')
-    if grass.run_command('v.build.all') != 0:
-        grass.warning('Cannot build topology')
+    grass.message("Building topology")
+    if grass.run_command("v.build.all") != 0:
+        grass.warning("Cannot build topology")
 
-    grass.message('Creating new DB connection')
-    if grass.run_command('db.connect', flags='d') != 0:
-        grass.warning('Cannot create new DB connection')
+    grass.message("Creating new DB connection")
+    if grass.run_command("db.connect", flags="d") != 0:
+        grass.warning("Cannot create new DB connection")
         return
 
-    grass.message('Transferring tables to the new DB')
-    if grass.run_command('v.db.reconnect.all', flags='cd') != 0:
-        grass.warning('Cannot transfer tables')
+    grass.message("Transferring tables to the new DB")
+    if grass.run_command("v.db.reconnect.all", flags="cd") != 0:
+        grass.warning("Cannot transfer tables")
 
 
 if __name__ == "__main__":

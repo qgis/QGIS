@@ -16,17 +16,16 @@
 #ifndef QGSPOLYMORPHICRELATION_H
 #define QGSPOLYMORPHICRELATION_H
 
-#include <QList>
-#include <QDomNode>
-#include <QPair>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsfields.h"
 #include "qgsreadwritecontext.h"
-#include "qgsrelationcontext.h"
 #include "qgsrelation.h"
+#include "qgsrelationcontext.h"
 
-#include "qgis_sip.h"
+#include <QDomNode>
+#include <QList>
+#include <QPair>
 
 class QgsFeatureIterator;
 class QgsFeature;
@@ -37,7 +36,10 @@ class QgsPolymorphicRelationPrivate;
 class QgsExpressionContext;
 
 /**
- * \brief A polymorphic relation consists of the same properties like a normal relation except for the referenced layer which is calculated based on one or several fields of the referencing layer.
+ * \brief A relation where the referenced (parent) layer is calculated based on fields from the referencing (child) layer.
+ *
+ * A polymorphic relation consists of the same properties like a normal relation except for the referenced (parent) layer which
+ * is calculated based on one or several fields of the referencing (child) layer.
  *
  * In its most simple form, the referencing layer will just insert the layer name of the referenced layer into this field.
  * To be more precise, a polymorphic relation is a set of normal relations having the same referencing layer but having the referenced layer dynamically defined.
@@ -76,6 +78,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      * changed.
      */
     QgsPolymorphicRelation( const QgsPolymorphicRelation &other );
+    SIP_SKIP QgsPolymorphicRelation( QgsPolymorphicRelation &&other );
 
     /**
      * Copies a relation.
@@ -83,6 +86,7 @@ class CORE_EXPORT QgsPolymorphicRelation
      * changed.
      */
     QgsPolymorphicRelation &operator=( const QgsPolymorphicRelation &other );
+    QgsPolymorphicRelation &operator=( QgsPolymorphicRelation &&other );
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.

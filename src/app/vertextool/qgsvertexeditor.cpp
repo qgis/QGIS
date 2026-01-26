@@ -17,43 +17,47 @@
  ***************************************************************************/
 
 #include "qgsvertexeditor.h"
+
+#include <memory>
+
+#include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
+#include "qgsdoublevalidator.h"
+#include "qgsgeometryutils.h"
+#include "qgslockedfeature.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagelog.h"
-#include "qgslockedfeature.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometryutils.h"
-#include "qgsproject.h"
-#include "qgscoordinatetransform.h"
-#include "qgsdoublevalidator.h"
 #include "qgspanelwidgetstack.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgsvectorlayer.h"
 
-
-#include <QClipboard>
-#include <QLabel>
-#include <QTableWidget>
-#include <QHeaderView>
-#include <QVBoxLayout>
-#include <QStyledItemDelegate>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QVector2D>
 #include <QCheckBox>
-#include <QStackedWidget>
+#include <QClipboard>
+#include <QHeaderView>
+#include <QKeyEvent>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
+#include <QStackedWidget>
+#include <QStyledItemDelegate>
+#include <QTableWidget>
+#include <QVBoxLayout>
+#include <QVector2D>
 
-const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( QStringLiteral( "auto-popup-vertex-editor-dock" ), QgsSettingsTree::sTreeDigitizing, true, QStringLiteral( "Whether the auto-popup behavior of the vertex editor dock should be enabled" ) );
+#include "moc_qgsvertexeditor.cpp"
+
+const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( u"auto-popup-vertex-editor-dock"_s, QgsSettingsTree::sTreeDigitizing, true, u"Whether the auto-popup behavior of the vertex editor dock should be enabled"_s );
 
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 
 QgsVertexEditorModel::QgsVertexEditorModel( QgsMapCanvas *canvas, QObject *parent )
   : QAbstractTableModel( parent )
-  , mCanvas( canvas )
 {
-  QWidget *parentWidget = qobject_cast< QWidget * >( parent );
+  Q_UNUSED( canvas )
+  QWidget *parentWidget = qobject_cast<QWidget *>( parent );
   if ( parentWidget )
     mWidgetFont = parentWidget->font();
 }
@@ -99,8 +103,7 @@ int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() || !mLockedFeature ||
-       ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
+  if ( !index.isValid() || !mLockedFeature || ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
     return QVariant();
 
   if ( index.row() >= mLockedFeature->vertexMap().count() )
@@ -178,7 +181,6 @@ QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
   {
     return QVariant();
   }
-
 }
 
 QVariant QgsVertexEditorModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -329,7 +331,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
   , mVertexModel( new QgsVertexEditorModel( mCanvas, this ) )
 {
   setPanelTitle( tr( "Vertex Editor" ) );
-  setObjectName( QStringLiteral( "VertexEditor" ) );
+  setObjectName( u"VertexEditor"_s );
 
   QVBoxLayout *layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -340,8 +342,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
 
   QVBoxLayout *pageHintLayout = new QVBoxLayout();
   mHintLabel = new QLabel();
-  mHintLabel->setText( QStringLiteral( "%1\n\n%2" ).arg( tr( "Right click on an editable feature to show its table of vertices." ),
-                       tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
+  mHintLabel->setText( u"%1\n\n%2"_s.arg( tr( "Right click on an editable feature to show its table of vertices." ), tr( "When a feature is bound to this panel, dragging a rectangle to select vertices on the canvas will only select those of the bound feature." ) ) );
   mHintLabel->setWordWrap( true );
 
   pageHintLayout->addStretch();
@@ -373,8 +374,7 @@ QgsVertexEditorWidget::QgsVertexEditorWidget( QgsMapCanvas *canvas )
   QAction *autoPopupAction = new QAction( tr( "Auto-open Table" ), this );
   autoPopupAction->setCheckable( true );
   autoPopupAction->setChecked( QgsVertexEditor::settingAutoPopupVertexEditorDock->value() );
-  connect( autoPopupAction, &QAction::toggled, this, [ = ]( bool checked )
-  {
+  connect( autoPopupAction, &QAction::toggled, this, []( bool checked ) {
     QgsVertexEditor::settingAutoPopupVertexEditorDock->setValue( checked );
   } );
   mWidgetMenu->addAction( autoPopupAction );
@@ -466,7 +466,7 @@ void QgsVertexEditorWidget::updateVertexSelection( const QItemSelection &, const
     // create a bounding box of selected vertices
     const QgsPointXY point( mLockedFeature->vertexMap().at( vertexIdx )->point() );
     if ( !bbox )
-      bbox.reset( new QgsRectangle( point, point ) );
+      bbox = std::make_unique<QgsRectangle>( point, point );
     else
       bbox->combineExtentWith( point );
   }
@@ -526,7 +526,7 @@ void QgsVertexEditorWidget::keyPressEvent( QKeyEvent *e )
 QgsVertexEditor::QgsVertexEditor( QgsMapCanvas *canvas )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
-  setObjectName( QStringLiteral( "VertexEditor" ) );
+  setObjectName( u"VertexEditor"_s );
 
   QgsPanelWidgetStack *stack = new QgsPanelWidgetStack();
   setWidget( stack );
@@ -556,7 +556,6 @@ void QgsVertexEditor::closeEvent( QCloseEvent *event )
 CoordinateItemDelegate::CoordinateItemDelegate( const QgsCoordinateReferenceSystem &crs, QObject *parent )
   : QStyledItemDelegate( parent ), mCrs( crs )
 {
-
 }
 
 QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale & ) const
@@ -588,7 +587,7 @@ void CoordinateItemDelegate::setEditorData( QWidget *editor, const QModelIndex &
   QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor );
   if ( lineEdit && index.isValid() )
   {
-    lineEdit->setText( displayText( index.data( ).toDouble( ), QLocale() ).replace( QLocale().groupSeparator(), QString( ) ) );
+    lineEdit->setText( displayText( index.data().toDouble(), QLocale() ).replace( QLocale().groupSeparator(), QString() ) );
   }
 }
 

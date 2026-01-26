@@ -18,16 +18,16 @@
 #ifndef QGSPASSWORDLINEEDIT_H
 #define QGSPASSWORDLINEEDIT_H
 
-#include <QLineEdit>
-#include <QAction>
-
 #include "qgis_gui.h"
+
+#include <QAction>
+#include <QLineEdit>
 
 /**
  * \class QgsPasswordLineEdit
  * \ingroup gui
  * \brief QLineEdit subclass with built in support for showing/hiding
- * entered password.
+ * the entered password.
  */
 class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
 {
@@ -35,7 +35,6 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     Q_PROPERTY( bool showLockIcon READ showLockIcon WRITE setShowLockIcon )
 
   public:
-
     /**
      * Constructor for QgsPasswordLineEdit.
      * \param parent parent widget
@@ -63,7 +62,6 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     void togglePasswordVisibility( bool toggled );
 
   private:
-
     QAction *mActionShowHidePassword = nullptr;
     QAction *mActionLock = nullptr;
 

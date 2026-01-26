@@ -10,5 +10,5 @@ try:
     QgsPainting.applyScaleFixForQPictureDpi = staticmethod(QgsPainting.applyScaleFixForQPictureDpi)
     QgsPainting.drawPicture = staticmethod(QgsPainting.drawPicture)
     QgsPainting.__group__ = ['painting']
-except NameError:
+except (NameError, AttributeError):
     pass

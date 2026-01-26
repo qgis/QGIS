@@ -18,6 +18,8 @@ set(QGIS_GUI_SRCS
   raster/qgsrasterbandcombobox.cpp
   raster/qgsrastercontourrendererwidget.cpp
   raster/qgsrasterhistogramwidget.cpp
+  raster/qgsrasterlabelingwidget.cpp
+  raster/qgsrasterlabelsettingswidget.cpp
   raster/qgsrasterlayerproperties.cpp
   raster/qgsrasterlayertemporalpropertieswidget.cpp
   raster/qgsrasterminmaxwidget.cpp
@@ -33,7 +35,12 @@ set(QGIS_GUI_SRCS
   vector/qgsattributeactiondialog.cpp
   vector/qgsattributeactionpropertiesdialog.cpp
   vector/qgsattributesforminitcode.cpp
+  vector/qgsattributesformmodel.cpp
   vector/qgsattributesformproperties.cpp
+  vector/qgsattributesformtreeviewindicator.cpp
+  vector/qgsattributesformtreeviewindicatorprovider.cpp
+  vector/qgsattributesformtreeviewitemdelegate.cpp
+  vector/qgsattributesformview.cpp
   vector/qgsdiagramproperties.cpp
   vector/qgsdiagramwidget.cpp
   vector/qgsfieldcalculator.cpp
@@ -80,6 +87,7 @@ set(QGIS_GUI_SRCS
   symbology/qgssymbolbuffersettingswidget.cpp
   symbology/qgssymbollayerwidget.cpp
   symbology/qgssymbollevelsdialog.cpp
+  symbology/qgsextentbufferdialog.cpp
   symbology/qgssymbolslistwidget.cpp
   symbology/qgssymbolselectordialog.cpp
   symbology/qgssymbolwidgetcontext.cpp
@@ -116,9 +124,12 @@ set(QGIS_GUI_SRCS
   annotations/qgsannotationitemguiregistry.cpp
   annotations/qgsannotationitemwidget.cpp
   annotations/qgsannotationitemwidget_impl.cpp
+  annotations/qgsannotationmaptool.cpp
   annotations/qgscreateannotationitemmaptool.cpp
   annotations/qgscreateannotationitemmaptool_impl.cpp
   annotations/qgsmaptoolmodifyannotation.cpp
+  annotations/qgsmaptoolselectannotation.cpp
+  annotations/qgsmaptoolselectannotationmousehandles.cpp
 
   auth/qgsauthauthoritieseditor.cpp
   auth/qgsauthcertificateinfo.cpp
@@ -157,8 +168,13 @@ set(QGIS_GUI_SRCS
   codeeditors/qgscodeeditorexpression.cpp
   codeeditors/qgscodeeditorwidget.cpp
 
+  devtools/qgsdevtoolsmodelnode.cpp
   devtools/qgsdevtoolwidget.cpp
   devtools/qgsdevtoolwidgetfactory.cpp
+  devtools/networklogger/qgsnetworklogger.cpp
+  devtools/networklogger/qgsnetworkloggernode.cpp
+  devtools/networklogger/qgsnetworkloggerpanelwidget.cpp
+  devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
 
   editorwidgets/core/qgseditorconfigwidget.cpp
   editorwidgets/core/qgseditorwidgetautoconf.cpp
@@ -207,6 +223,7 @@ set(QGIS_GUI_SRCS
   editorwidgets/qgslistwidgetwrapper.cpp
   editorwidgets/qgslistconfigdlg.cpp
   editorwidgets/qgsmultiedittoolbutton.cpp
+  editorwidgets/qgsqmlwidgetwrapper.cpp
   editorwidgets/qgsrangeconfigdlg.cpp
   editorwidgets/qgsrangewidgetwrapper.cpp
   editorwidgets/qgsrangewidgetfactory.cpp
@@ -266,7 +283,9 @@ set(QGIS_GUI_SRCS
   labeling/qgslabellineanchorwidget.cpp
   labeling/qgslabelobstaclesettingswidget.cpp
   labeling/qgslabelsettingswidgetbase.cpp
+  labeling/qgslabelremoveduplicatesettingswidget.cpp
   labeling/qgsrulebasedlabelingwidget.cpp
+  labeling/qgstabpositionwidget.cpp
 
   layertree/qgscustomlayerorderwidget.cpp
   layertree/qgslayertreeembeddedconfigwidget.cpp
@@ -294,6 +313,8 @@ set(QGIS_GUI_SRCS
   layout/qgslayoutitemguiregistry.cpp
   layout/qgslayoutitemslistview.cpp
   layout/qgslayoutitemwidget.cpp
+  layout/qgslayoutchartwidget.cpp
+  layout/qgslayoutchartseriesdetailswidget.cpp
   layout/qgslayoutlabelwidget.cpp
   layout/qgslayoutlegendlayersdialog.cpp
   layout/qgslayoutlegendwidget.cpp
@@ -339,8 +360,9 @@ set(QGIS_GUI_SRCS
   maptools/qgsmaptoolcapture.cpp
   maptools/qgsmaptoolcapturelayergeometry.cpp
   maptools/qgsmaptoolcapturerubberband.cpp
-  maptools/qgsmaptooledit.cpp
   maptools/qgsmaptooldigitizefeature.cpp
+  maptools/qgsmaptooledit.cpp
+  maptools/qgsmaptooleditblanksegments.cpp
   maptools/qgsmaptoolemitpoint.cpp
   maptools/qgsmaptoolextent.cpp
   maptools/qgsmaptoolidentify.cpp
@@ -380,6 +402,7 @@ set(QGIS_GUI_SRCS
   plot/qgsplottoolxaxiszoom.cpp
   plot/qgsplottoolzoom.cpp
   plot/qgsplottransienttools.cpp
+  plot/qgsplotwidget.cpp
 
   pointcloud/qgspointcloudattributebyramprendererwidget.cpp
   pointcloud/qgspointcloudclassifiedrendererwidget.cpp
@@ -402,6 +425,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingfeaturesourceoptionswidget.cpp
   processing/qgsprocessingfieldmapwidgetwrapper.cpp
   processing/qgsprocessingguiregistry.cpp
+  processing/qgsprocessingguiutils.cpp
   processing/qgsprocessinghelpeditorwidget.cpp
   processing/qgsprocessinghistoryprovider.cpp
   processing/qgsprocessinghistorywidget.cpp
@@ -417,6 +441,7 @@ set(QGIS_GUI_SRCS
   processing/qgsprocessingpointcloudexpressionlineedit.cpp
   processing/qgsprocessingrastercalculatorexpressionlineedit.cpp
   processing/qgsprocessingrasteroptionswidgetwrapper.cpp
+  processing/qgsprocessingrastersourceoptionswidget.cpp
   processing/qgsprocessingrecentalgorithmlog.cpp
   processing/qgsprocessingtininputlayerswidget.cpp
   processing/qgsprocessingtoolboxmodel.cpp
@@ -441,6 +466,7 @@ set(QGIS_GUI_SRCS
   processing/models/qgsmodelviewmousehandles.cpp
   processing/models/qgsmodelviewrubberband.cpp
   processing/models/qgsmodelviewtool.cpp
+  processing/models/qgsmodelviewtoollink.cpp
   processing/models/qgsmodelviewtoolpan.cpp
   processing/models/qgsmodelviewtoolselect.cpp
   processing/models/qgsmodelviewtooltemporarykeypan.cpp
@@ -508,7 +534,11 @@ set(QGIS_GUI_SRCS
   stac/qgsstacconnectiondialog.cpp
   stac/qgsstacdataitemguiprovider.cpp
   stac/qgsstacdownloadassetsdialog.cpp
+  stac/qgsstacitemlistmodel.cpp
   stac/qgsstacobjectdetailsdialog.cpp
+  stac/qgsstacsearchparametersdialog.cpp
+  stac/qgsstacsourceselect.cpp
+  stac/qgsstacsourceselectprovider.cpp
 
   tableeditor/qgstableeditordialog.cpp
   tableeditor/qgstableeditorformattingwidget.cpp
@@ -578,11 +608,13 @@ set(QGIS_GUI_SRCS
   qgscustomprojectopenhandler.cpp
   qgscurveeditorwidget.cpp
   qgsdatabaseschemacombobox.cpp
+  qgsdatabaseschemaselectiondialog.cpp
   qgsdatabasetablecombobox.cpp
   qgsdataitemguiprovider.cpp
   qgsdataitemguiproviderregistry.cpp
   qgsdataitemguiproviderutils.cpp
   qgsdatasourceselectdialog.cpp
+  qgsdbimportvectorlayerdialog.cpp
   qgsdbqueryhistoryprovider.cpp
   qgsdbrelationshipwidget.cpp
   qgsdecoratedscrollbar.cpp
@@ -634,6 +666,7 @@ set(QGIS_GUI_SRCS
   qgsgeocoderlocatorfilter.cpp
   qgsgeometryrubberband.cpp
   qgsgeometrywidget.cpp
+  qgsgpstoolsinterface.cpp
   qgsgradientcolorrampdialog.cpp
   qgsgradientstopeditor.cpp
   qgsgraphicsviewmousehandles.cpp
@@ -675,6 +708,7 @@ set(QGIS_GUI_SRCS
   qgsmaplayerloadstyledialog.cpp
   qgsmaplayerrefreshsettingswidget.cpp
   qgsmaplayersavestyledialog.cpp
+  qgsmaplayerserverpropertieswidget.cpp
   qgsmaplayerstylecategoriesmodel.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmaplayerstylemanagerwidget.cpp
@@ -730,6 +764,7 @@ set(QGIS_GUI_SRCS
   qgsprovidersourcewidgetproviderregistry.cpp
   qgsprovidersublayersdialog.cpp
   qgsprojectstorageguiregistry.cpp
+  qgsprojecttrustdialog.cpp
   qgsproviderconnectioncombobox.cpp
   qgsproxystyle.cpp
   qgsquerybuilder.cpp
@@ -744,6 +779,7 @@ set(QGIS_GUI_SRCS
   qgsrichtexteditor.cpp
   qgsrubberband.cpp
   qgsscalecombobox.cpp
+  qgsscalemethodwidget.cpp
   qgsscalerangewidget.cpp
   qgsscalevisibilitydialog.cpp
   qgsscalewidget.cpp
@@ -763,6 +799,7 @@ set(QGIS_GUI_SRCS
   qgssqlcomposerdialog.cpp
   qgsstackedwidget.cpp
   qgsstatusbar.cpp
+  qgsstoredquerymanager.cpp
   qgssymbolbutton.cpp
   qgssymbollayerselectionwidget.cpp
   qgstabbarproxystyle.cpp
@@ -847,10 +884,12 @@ set(QGIS_GUI_HDRS
   qgsdataitemguiproviderutils.h
   qgsdatasourcemanagerdialog.h
   qgsdatasourceselectdialog.h
+  qgsdbimportvectorlayerdialog.h
   qgsdbqueryhistoryprovider.h
   qgsdbrelationshipwidget.h
   qgsdecoratedscrollbar.h
   qgsnewdatabasetablenamewidget.h
+  qgsdatabaseschemaselectiondialog.h
   qgsdetaileditemdata.h
   qgsdetaileditemdelegate.h
   qgsdetaileditemwidget.h
@@ -900,6 +939,7 @@ set(QGIS_GUI_HDRS
   qgsgeocoderlocatorfilter.h
   qgsgeometryrubberband.h
   qgsgeometrywidget.h
+  qgsgpstoolsinterface.h
   qgsgradientcolorrampdialog.h
   qgsgradientstopeditor.h
   qgsgraphicsviewmousehandles.h
@@ -940,6 +980,7 @@ set(QGIS_GUI_HDRS
   qgsmaplayerconfigwidget.h
   qgsmaplayerconfigwidgetfactory.h
   qgsmaplayersavestyledialog.h
+  qgsmaplayerserverpropertieswidget.h
   qgsmaplayerloadstyledialog.h
   qgsmaplayerrefreshsettingswidget.h
   qgsmaplayerstylecategoriesmodel.h
@@ -990,6 +1031,7 @@ set(QGIS_GUI_HDRS
   qgsprevieweffect.h
   qgsprojectstorageguiprovider.h
   qgsprojectstorageguiregistry.h
+  qgsprojecttrustdialog.h
   qgspropertyassistantwidget.h
   qgspropertyoverridebutton.h
   qgsproviderconnectioncombobox.h
@@ -1013,6 +1055,7 @@ set(QGIS_GUI_HDRS
   qgsrichtexteditor.h
   qgsrubberband.h
   qgsscalecombobox.h
+  qgsscalemethodwidget.h
   qgsscalerangewidget.h
   qgsscalevisibilitydialog.h
   qgsscalewidget.h
@@ -1031,6 +1074,7 @@ set(QGIS_GUI_HDRS
   qgssqlcomposerdialog.h
   qgsstackedwidget.h
   qgsstatusbar.h
+  qgsstoredquerymanager.h
   qgsstyleitemslistwidget.h
   qgssublayersdialog.h
   qgssubstitutionlistwidget.h
@@ -1066,9 +1110,12 @@ set(QGIS_GUI_HDRS
   annotations/qgsannotationitemcommonpropertieswidget.h
   annotations/qgsannotationitemguiregistry.h
   annotations/qgsannotationitemwidget.h
+  annotations/qgsannotationmaptool.h
   annotations/qgscreateannotationitemmaptool.h
   annotations/qgscreateannotationitemmaptool_impl.h
   annotations/qgsmaptoolmodifyannotation.h
+  annotations/qgsmaptoolselectannotation.h
+  annotations/qgsmaptoolselectannotationmousehandles.h
 
   attributeformconfig/qgsattributeformcontaineredit.h
   attributeformconfig/qgsattributetypedialog.h
@@ -1131,8 +1178,13 @@ set(QGIS_GUI_HDRS
   codeeditors/qgscodeeditorsql.h
   codeeditors/qgscodeeditorwidget.h
 
+  devtools/qgsdevtoolsmodelnode.h
   devtools/qgsdevtoolwidget.h
   devtools/qgsdevtoolwidgetfactory.h
+  devtools/networklogger/qgsnetworklogger.h
+  devtools/networklogger/qgsnetworkloggernode.h
+  devtools/networklogger/qgsnetworkloggerpanelwidget.h
+  devtools/networklogger/qgsnetworkloggerwidgetfactory.h
 
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetautoconf.h
@@ -1180,6 +1232,7 @@ set(QGIS_GUI_HDRS
   editorwidgets/qgslistwidgetfactory.h
   editorwidgets/qgslistwidgetwrapper.h
   editorwidgets/qgsmultiedittoolbutton.h
+  editorwidgets/qgsqmlwidgetwrapper.h
   editorwidgets/qgsrangeconfigdlg.h
   editorwidgets/qgsrangewidgetfactory.h
   editorwidgets/qgsrangewidgetwrapper.h
@@ -1244,7 +1297,9 @@ set(QGIS_GUI_HDRS
   labeling/qgslabellineanchorwidget.h
   labeling/qgslabelobstaclesettingswidget.h
   labeling/qgslabelsettingswidgetbase.h
+  labeling/qgslabelremoveduplicatesettingswidget.h
   labeling/qgsrulebasedlabelingwidget.h
+  labeling/qgstabpositionwidget.h
 
   layertree/qgscustomlayerorderwidget.h
   layertree/qgslayertreeembeddedconfigwidget.h
@@ -1273,6 +1328,8 @@ set(QGIS_GUI_HDRS
   layout/qgslayoutitemguiregistry.h
   layout/qgslayoutitemslistview.h
   layout/qgslayoutitemwidget.h
+  layout/qgslayoutchartwidget.h
+  layout/qgslayoutchartseriesdetailswidget.h
   layout/qgslayoutlabelwidget.h
   layout/qgslayoutlegendlayersdialog.h
   layout/qgslayoutlegendwidget.h
@@ -1320,6 +1377,7 @@ set(QGIS_GUI_HDRS
   maptools/qgsmaptoolcapturerubberband.h
   maptools/qgsmaptooldigitizefeature.h
   maptools/qgsmaptooledit.h
+  maptools/qgsmaptooleditblanksegments.h
   maptools/qgsmaptoolemitpoint.h
   maptools/qgsmaptoolextent.h
   maptools/qgsmaptoolidentify.h
@@ -1359,6 +1417,7 @@ set(QGIS_GUI_HDRS
   plot/qgsplottoolxaxiszoom.h
   plot/qgsplottoolzoom.h
   plot/qgsplottransienttools.h
+  plot/qgsplotwidget.h
 
   pointcloud/qgspointcloudattributebyramprendererwidget.h
   pointcloud/qgspointcloudclassifiedrendererwidget.h
@@ -1381,6 +1440,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingfieldmapwidgetwrapper.h
   processing/qgsprocessinggui.h
   processing/qgsprocessingguiregistry.h
+  processing/qgsprocessingguiutils.h
   processing/qgsprocessinghelpeditorwidget.h
   processing/qgsprocessinghistoryprovider.h
   processing/qgsprocessinghistorywidget.h
@@ -1396,6 +1456,7 @@ set(QGIS_GUI_HDRS
   processing/qgsprocessingpointcloudexpressionlineedit.h
   processing/qgsprocessingrastercalculatorexpressionlineedit.h
   processing/qgsprocessingrasteroptionswidgetwrapper.h
+  processing/qgsprocessingrastersourceoptionswidget.h
   processing/qgsprocessingrecentalgorithmlog.h
   processing/qgsprocessingtininputlayerswidget.h
   processing/qgsprocessingtoolboxmodel.h
@@ -1421,6 +1482,7 @@ set(QGIS_GUI_HDRS
   processing/models/qgsmodelviewrubberband.h
   processing/models/qgsmodelviewtool.h
   processing/models/qgsmodelviewtoolpan.h
+  processing/models/qgsmodelviewtoollink.h
   processing/models/qgsmodelviewtoolselect.h
   processing/models/qgsmodelviewtooltemporarykeypan.h
   processing/models/qgsmodelviewtooltemporarykeyzoom.h
@@ -1488,6 +1550,8 @@ set(QGIS_GUI_HDRS
   raster/qgsrasterbandcombobox.h
   raster/qgsrastercontourrendererwidget.h
   raster/qgsrasterhistogramwidget.h
+  raster/qgsrasterlabelingwidget.h
+  raster/qgsrasterlabelsettingswidget.h
   raster/qgsrasterminmaxwidget.h
   raster/qgsrasterrendererwidget.h
   raster/qgsrastertransparencywidget.h
@@ -1502,7 +1566,12 @@ set(QGIS_GUI_HDRS
   vector/qgsattributeactiondialog.h
   vector/qgsattributeactionpropertiesdialog.h
   vector/qgsattributesforminitcode.h
+  vector/qgsattributesformmodel.h
   vector/qgsattributesformproperties.h
+  vector/qgsattributesformtreeviewindicator.h
+  vector/qgsattributesformtreeviewindicatorprovider.h
+  vector/qgsattributesformtreeviewitemdelegate.h
+  vector/qgsattributesformview.h
   vector/qgsdiagramproperties.h
   vector/qgsdiagramwidget.h
   vector/qgsfieldcalculator.h
@@ -1549,6 +1618,7 @@ set(QGIS_GUI_HDRS
   symbology/qgssymbolbuffersettingswidget.h
   symbology/qgssymbollayerwidget.h
   symbology/qgssymbollevelsdialog.h
+  symbology/qgsextentbufferdialog.h
   symbology/qgssymbolselectordialog.h
   symbology/qgssymbolslistwidget.h
   symbology/qgssymbolwidgetcontext.h
@@ -1568,7 +1638,11 @@ set(QGIS_GUI_HDRS
   stac/qgsstacconnectiondialog.h
   stac/qgsstacdataitemguiprovider.h
   stac/qgsstacdownloadassetsdialog.h
+  stac/qgsstacitemlistmodel.h
   stac/qgsstacobjectdetailsdialog.h
+  stac/qgsstacsearchparametersdialog.h
+  stac/qgsstacsourceselect.h
+  stac/qgsstacsourceselectprovider.h
 
   tableeditor/qgstableeditordialog.h
   tableeditor/qgstableeditorformattingwidget.h
@@ -1601,24 +1675,166 @@ set(QGIS_GUI_PRIVATE_HDRS
   attributetable/qgsfeaturefilterwidget_p.h
 )
 
-find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml QuickWidgets UiTools REQUIRED)
-
-if(${QT_VERSION_BASE}Qml_FOUND)
-  add_definitions(-DWITH_QML)
-  set(QGIS_GUI_HDRS
-    ${QGIS_GUI_HDRS}
-    editorwidgets/qgsqmlwidgetwrapper.h
+if(WITH_INTERNAL_QWT)
+  set(QGIS_QWT_SRCS
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_abstract_legend.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_abstract_scale.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_abstract_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_abstract_slider.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_analog_clock.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_arrow_button.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_bezier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_clipper.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_color_map.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_column_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_compass.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_compass_rose.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_counter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_curve_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_date.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_date_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_date_scale_engine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_dial.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_dial_needle.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_dyngrid_layout.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_event_pattern.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_graphic.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_interval.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_interval_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_knob.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_legend.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_legend_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_legend_label.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_magnifier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_math.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_matrix_raster_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_null_paintdevice.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_painter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_painter_command.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_panner.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_picker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_picker_machine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_pixel_matrix.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_abstract_barchart.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_abstract_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_axis.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_barchart.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_curve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_dict.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_directpainter.cpp
+#    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_glcanvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_graphicitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_grid.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_histogram.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_intervalcurve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_item.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_layout.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_legenditem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_magnifier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_marker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_multi_barchart.cpp
+#    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_opengl_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_panner.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_picker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_rasteritem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_renderer.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_rescaler.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_scaleitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_seriesitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_shapeitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_spectrocurve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_spectrogram.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_svgitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_textlabel.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_tradingcurve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_vectorfield.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_zoneitem.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_zoomer.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_point_3d.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_point_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_point_mapper.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_point_polar.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_canvas.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_curve.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_grid.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_item.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_itemdict.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_layout.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_magnifier.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_marker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_panner.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_picker.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_plot.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_renderer.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_spectrogram.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_raster_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_round_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_sampling_thread.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_scale_div.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_scale_draw.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_scale_engine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_scale_map.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_scale_widget.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_series_data.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_slider.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_basis.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_cubic.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_curve_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_local.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_parametrization.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_pleasing.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_polynomial.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_system_clock.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_text.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_text_engine.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_text_label.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_thermo.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_transform.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_vectorfield_symbol.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_weeding_curve_fitter.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_wheel.cpp
+    ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_widget_overlay.cpp
   )
-endif()
 
-# for installing headers
+  add_definitions(-DQWT_MAKEDLL)
 
-if(${QT_VERSION_BASE}Qml_FOUND)
+  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    set_source_files_properties(
+      ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_picker.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_picker_machine.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_polar_renderer.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_plot_picker.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwt-6.3.0/qwt_spline_cubic.cpp
+      PROPERTIES COMPILE_FLAGS "-Wno-implicit-fallthrough -Wno-unused-function -Wno-unused-private-field"
+    )
+  endif()
+
+  set(QWT_COMPILE_OPTIONS)
+  if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-override")
+  endif()
+  if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+    list(APPEND QWT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+  endif()
+  if (QWT_COMPILE_OPTIONS)
+    set_source_files_properties($QGIS_QWT_SRCS PROPERTIES COMPILE_OPTIONS "${QWT_COMPILE_OPTIONS}")
+  endif()
+
   set(QGIS_GUI_SRCS
     ${QGIS_GUI_SRCS}
-    editorwidgets/qgsqmlwidgetwrapper.cpp
+    ${QGIS_QWT_SRCS}
   )
 endif()
+
+find_package(${QT_VERSION_BASE} COMPONENTS Multimedia MultimediaWidgets Qml QuickWidgets UiTools REQUIRED)
+
+# for installing headers
 
 set_property(GLOBAL PROPERTY QGIS_GUI_HDRS ${QGIS_GUI_HDRS})
 
@@ -1669,27 +1885,29 @@ endif()
 #############################################################
 # qgis_gui library
 
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  win32_version_info("QGIS GUI Library" "qgis_gui" QGIS_GUI_SRCS)
+endif()
 add_library(qgis_gui ${LIBRARY_TYPE}
   ${QGIS_GUI_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_PRIVATE_HDRS}
 )
+if(QGISPOSTFIX)
+  set_target_properties(qgis_gui PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_gui${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_gui${QGISPOSTFIX}
+  )
+endif()
 
-# require c++17
-target_compile_features(qgis_gui PRIVATE cxx_std_17)
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_gui PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_gui PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 target_include_directories(qgis_gui SYSTEM PUBLIC
   ${QWT_INCLUDE_DIR}
   ${QSCINTILLA_INCLUDE_DIR}
 )
-
-target_include_directories(qgis_gui SYSTEM PRIVATE
-  ${QT_QTUITOOLS_INCLUDE_DIR}
-)
-
-if (BUILD_WITH_QT6)
-  target_include_directories(qgis_gui SYSTEM PRIVATE
-    ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  )
-endif()
 
 target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui
@@ -1702,6 +1920,7 @@ target_include_directories(qgis_gui PUBLIC
   ${CMAKE_SOURCE_DIR}/src/gui/callouts
   ${CMAKE_SOURCE_DIR}/src/gui/codeeditors
   ${CMAKE_SOURCE_DIR}/src/gui/devtools
+  ${CMAKE_SOURCE_DIR}/src/gui/devtools/networklogger
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
   ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
   ${CMAKE_SOURCE_DIR}/src/gui/effects
@@ -1761,36 +1980,12 @@ GENERATE_EXPORT_HEADER(
 
 set(QGIS_GUI_HDRS ${QGIS_GUI_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_gui.h)
 
-if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
-  if (WIN32)
-    include_directories(${CMAKE_SOURCE_DIR}/src/native/win)
-  elseif (APPLE)
-    include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
-  elseif (UNIX)
-    include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
-  endif()
-  install(FILES ${QGIS_GUI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-else()
+if (WIN32)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/win)
+elseif (APPLE)
   include_directories(${CMAKE_SOURCE_DIR}/src/native/mac)
-  set_target_properties(qgis_gui PROPERTIES
-    CLEAN_DIRECT_OUTPUT 1
-    FRAMEWORK 1
-    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_gui
-    BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_GUI_HDRS}"
-    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
-  )
-  # generated export header does not get copied with PUBLIC_HEADER files
-  add_custom_command(TARGET qgis_gui
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy qgis_gui.h
-            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_gui.framework/Headers"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS qgis_gui.h
-  )
+elseif (UNIX)
+  include_directories(${CMAKE_SOURCE_DIR}/src/native/linux)
 endif()
 
 #generate unversioned libs for android
@@ -1807,24 +2002,30 @@ add_dependencies(qgis_gui ui)
 target_link_libraries(qgis_gui
   qgis_core
   qgis_native
-  ${QT_VERSION_BASE}::UiTools
+  Qt::UiTools
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
-  ${QT_VERSION_BASE}::QuickWidgets
-  ${QT_VERSION_BASE}::Multimedia
-  ${QT_VERSION_BASE}::MultimediaWidgets
+  Qt::Qml
+  Qt::QuickWidgets
+  Qt::Multimedia
+  Qt::MultimediaWidgets
 )
 
-if (BUILD_WITH_QT6)
-  find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+find_package(Qt6 COMPONENTS SvgWidgets REQUIRED)
+target_link_libraries(qgis_gui
+  Qt6::SvgWidgets
+)
+
+if (WITH_QTWEBENGINE)
+  find_package(${QT_VERSION_BASE} COMPONENTS WebEngineWidgets REQUIRED)
   target_link_libraries(qgis_gui
-    Qt6::SvgWidgets
+    Qt::WebEngineWidgets
   )
 endif()
 
 if (WITH_QTGAMEPAD)
     target_link_libraries(qgis_gui
-      ${QT_VERSION_BASE}::Gamepad
+      Qt::Gamepad
     )
 endif()
 
@@ -1850,15 +2051,16 @@ if (FORCE_STATIC_LIBS)
 endif()
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_gui ${QT_VERSION_BASE}::Test)
+  target_link_libraries(qgis_gui Qt::Test)
 endif()
 
 # We use private headers from core that need this
 target_compile_definitions(qgis_gui PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(qgis_gui PRIVATE "-DQT_NO_FOREACH")
 
+add_definitions(-DQWT_DLL)
+
 if(WIN32)
-  add_definitions(-DQWT_DLL)
   add_definitions(-DQSCINTILLA_DLL)
 endif()
 
@@ -1871,26 +2073,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_GUI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_gui
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-# ui headers to install, don't exist at target definition time, install manually
-if (APPLE AND QGIS_MACAPP_FRAMEWORK)
-  install(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_FW_SUBDIR}/qgis_gui.framework/Headers)
-else()
-  install(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-endif()
-
-# Mac dev frameworks
-
-if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  install(TARGETS qgis_gui FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  install(FILES ${QGIS_GUI_UI_HDRS} DESTINATION ${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/Headers)
-  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_gui\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/qgis_gui\")")
-  install(CODE "execute_process(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_gui.framework/qgis_gui\")")
-endif()
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})

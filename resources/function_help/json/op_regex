@@ -23,5 +23,5 @@
     "expression": "'abc123' ~ '\\\\\\\\d+'",
     "returns": "TRUE"
   }],
-  "tags": ["white", "space", "regular", "performs", "backslash", "characters", "escaped", "character", "expression", "match"]
+  "tags": ["white", "space", "regular", "performs", "backslash", "characters", "escaped", "character", "expression", "match", "regexp"]
 }

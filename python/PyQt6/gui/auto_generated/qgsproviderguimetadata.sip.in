@@ -14,7 +14,7 @@
 class QgsProviderGuiMetadata
 {
 %Docstring(signature="appended")
-Holds data for GUI part of the data providers
+Holds data for the GUI part of the data providers.
 
 .. versionadded:: 3.10
 %End
@@ -23,7 +23,6 @@ Holds data for GUI part of the data providers
 #include "qgsproviderguimetadata.h"
 %End
   public:
-
     explicit QgsProviderGuiMetadata( const QString &key );
 %Docstring
 Constructor for provider gui metadata
@@ -33,8 +32,9 @@ Constructor for provider gui metadata
 
     virtual void registerGui( QMainWindow *widget );
 %Docstring
-Called during GUI initialization - allows provider to do its internal initialization
-of GUI components, possibly making use of the passed pointer to the QGIS main window.
+Called during GUI initialization - allows provider to do its internal
+initialization of GUI components, possibly making use of the passed
+pointer to the QGIS main window.
 %End
 
     virtual QList<QgsDataItemGuiProvider *> dataItemGuiProviders() /Factory/;
@@ -103,7 +103,6 @@ Returns unique provider key
 %End
 
 };
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

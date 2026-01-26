@@ -13,17 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTreeWidget>
-#include <QVBoxLayout>
-#include <QPointer>
-#include <QScreen>
-
 #include "qgssymbollayerselectionwidget.h"
+
+#include "qgsguiutils.h"
+#include "qgsstyleentityvisitor.h"
 #include "qgsvectorlayer.h"
 #include "symbology/qgsrenderer.h"
-#include "qgsstyleentityvisitor.h"
 #include "symbology/qgssymbollayerutils.h"
-#include "qgsguiutils.h"
+
+#include <QPointer>
+#include <QScreen>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include "moc_qgssymbollayerselectionwidget.cpp"
 
 QgsSymbolLayerSelectionWidget::QgsSymbolLayerSelectionWidget( QWidget *parent )
   : QWidget( parent )
@@ -87,7 +90,7 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
           slItem->setData( 0, Qt::UserRole, idx );
           slItem->setIcon( 0, slIcon );
           auto flags = slItem->flags();
-          if ( ! subSymbol || subSymbol->symbolLayerCount() == 0 )
+          if ( !subSymbol || subSymbol->symbolLayerCount() == 0 )
           {
             flags.setFlag( Qt::ItemIsUserCheckable, true );
             slItem->setCheckState( 0, Qt::Unchecked );
@@ -111,12 +114,12 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
 
       bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
       {
-        if ( ! leaf.entity || leaf.entity->type() != QgsStyle::SymbolEntity )
+        if ( !leaf.entity || leaf.entity->type() != QgsStyle::SymbolEntity )
           return true;
 
         const auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
         const QgsSymbol *symbol = symbolEntity->symbol();
-        if ( ! symbol )
+        if ( !symbol )
           return true;
 
         // either leaf.description or mCurrentDescription is defined
@@ -138,13 +141,13 @@ void QgsSymbolLayerSelectionWidget::setLayer( const QgsVectorLayer *layer )
       QTreeWidgetItem *mLayerItem;
       const QgsVectorLayer *mLayer;
       QHash<QString, QTreeWidgetItem *> &mItems;
-      QPointer< QScreen > mScreen;
+      QPointer<QScreen> mScreen;
   };
 
   // populate the tree
-  if ( ! mLayer )
+  if ( !mLayer )
     return;
-  if ( ! mLayer->renderer() )
+  if ( !mLayer->renderer() )
     return;
 
   TreeFillVisitor visitor( mTree->invisibleRootItem(), mLayer, mItems, screen() );

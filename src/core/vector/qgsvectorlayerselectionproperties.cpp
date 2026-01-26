@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerselectionproperties.h"
+
 #include "qgscolorutils.h"
 #include "qgssymbollayerutils.h"
+
+#include "moc_qgsvectorlayerselectionproperties.cpp"
 
 QgsVectorLayerSelectionProperties::QgsVectorLayerSelectionProperties( QObject *parent )
   :  QgsMapLayerSelectionProperties( parent )
@@ -29,15 +32,15 @@ QgsVectorLayerSelectionProperties::~QgsVectorLayerSelectionProperties() = defaul
 
 QDomElement QgsVectorLayerSelectionProperties::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context )
 {
-  QDomElement element = document.createElement( QStringLiteral( "selection" ) );
+  QDomElement element = document.createElement( u"selection"_s );
 
-  element.setAttribute( QStringLiteral( "mode" ), qgsEnumValueToKey( mSelectionRenderingMode ) );
+  element.setAttribute( u"mode"_s, qgsEnumValueToKey( mSelectionRenderingMode ) );
 
-  QgsColorUtils::writeXml( mSelectionColor, QStringLiteral( "selectionColor" ), document, element, context );
+  QgsColorUtils::writeXml( mSelectionColor, u"selectionColor"_s, document, element, context );
 
   if ( mSelectionSymbol )
   {
-    QDomElement selectionSymbolElement = document.createElement( QStringLiteral( "selectionSymbol" ) );
+    QDomElement selectionSymbolElement = document.createElement( u"selectionSymbol"_s );
     selectionSymbolElement.appendChild( QgsSymbolLayerUtils::saveSymbol( QString(), mSelectionSymbol.get(), document, context ) );
     element.appendChild( selectionSymbolElement );
   }
@@ -48,23 +51,23 @@ QDomElement QgsVectorLayerSelectionProperties::writeXml( QDomElement &parentElem
 
 bool QgsVectorLayerSelectionProperties::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QDomElement selectionElement = element.firstChildElement( QStringLiteral( "selection" ) ).toElement();
+  const QDomElement selectionElement = element.firstChildElement( u"selection"_s ).toElement();
   if ( selectionElement.isNull() )
     return false;
 
-  mSelectionRenderingMode = qgsEnumKeyToValue( selectionElement.attribute( QStringLiteral( "mode" ) ), Qgis::SelectionRenderingMode::Default );
-  mSelectionColor = QgsColorUtils::readXml( selectionElement, QStringLiteral( "selectionColor" ), context );
+  mSelectionRenderingMode = qgsEnumKeyToValue( selectionElement.attribute( u"mode"_s ), Qgis::SelectionRenderingMode::Default );
+  mSelectionColor = QgsColorUtils::readXml( selectionElement, u"selectionColor"_s, context );
 
   {
-    const QDomElement selectionSymbolElement = selectionElement.firstChildElement( QStringLiteral( "selectionSymbol" ) ).firstChildElement( QStringLiteral( "symbol" ) );
-    mSelectionSymbol.reset( QgsSymbolLayerUtils::loadSymbol( selectionSymbolElement, context ) );
+    const QDomElement selectionSymbolElement = selectionElement.firstChildElement( u"selectionSymbol"_s ).firstChildElement( u"symbol"_s );
+    mSelectionSymbol = QgsSymbolLayerUtils::loadSymbol( selectionSymbolElement, context );
   }
   return true;
 }
 
 QgsVectorLayerSelectionProperties *QgsVectorLayerSelectionProperties::clone() const
 {
-  std::unique_ptr< QgsVectorLayerSelectionProperties > res = std::make_unique< QgsVectorLayerSelectionProperties >( nullptr );
+  auto res = std::make_unique< QgsVectorLayerSelectionProperties >( nullptr );
   res->mSelectionRenderingMode = mSelectionRenderingMode;
   res->mSelectionColor = mSelectionColor;
   res->mSelectionSymbol.reset( mSelectionSymbol ? mSelectionSymbol->clone() : nullptr );
@@ -78,7 +81,13 @@ QColor QgsVectorLayerSelectionProperties::selectionColor() const
 
 void QgsVectorLayerSelectionProperties::setSelectionColor( const QColor &color )
 {
+  if ( mSelectionColor == color )
+  {
+    return;
+  }
+
   mSelectionColor = color;
+  emit selectionColorChanged();
 }
 
 QgsSymbol *QgsVectorLayerSelectionProperties::selectionSymbol() const
@@ -89,6 +98,7 @@ QgsSymbol *QgsVectorLayerSelectionProperties::selectionSymbol() const
 void QgsVectorLayerSelectionProperties::setSelectionSymbol( QgsSymbol *symbol )
 {
   mSelectionSymbol.reset( symbol );
+  emit selectionSymbolChanged();
 }
 
 Qgis::SelectionRenderingMode QgsVectorLayerSelectionProperties::selectionRenderingMode() const
@@ -98,5 +108,11 @@ Qgis::SelectionRenderingMode QgsVectorLayerSelectionProperties::selectionRenderi
 
 void QgsVectorLayerSelectionProperties::setSelectionRenderingMode( Qgis::SelectionRenderingMode mode )
 {
+  if ( mSelectionRenderingMode == mode )
+  {
+    return;
+  }
+
   mSelectionRenderingMode = mode;
+  emit selectionRenderingModeChanged();
 }

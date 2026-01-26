@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgspluginlayerregistry.h"
+
 #include "qgslogger.h"
 #include "qgspluginlayer.h"
 #include "qgsproject.h"
@@ -56,7 +57,7 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" ), 2 );
+    QgsDebugMsgLevel( u"QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty"_s, 2 );
     const QStringList keys = mPluginLayerTypes.keys();
     for ( const QString &key : keys )
     {
@@ -89,7 +90,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
     return false;
 
   // remove all remaining layers of this type - to avoid invalid behavior
-  const QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values();
+  const QList<QgsMapLayer *> layers = QgsProject::instance()->mapLayers().values(); // skip-keyword-check
   const auto constLayers = layers;
   for ( QgsMapLayer *layer : constLayers )
   {
@@ -98,7 +99,7 @@ bool QgsPluginLayerRegistry::removePluginLayerType( const QString &typeName )
       QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( layer );
       if ( pl->pluginLayerType() == typeName )
       {
-        QgsProject::instance()->removeMapLayers(
+        QgsProject::instance()->removeMapLayers( // skip-keyword-check
           QStringList() << layer->id() );
       }
     }

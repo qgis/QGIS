@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgstiledsceneboundingvolume.h"
+
 #include "qgscoordinatetransform.h"
-#include "qgsmatrix4x4.h"
-#include "qgsvector3d.h"
-#include "qgsmultipoint.h"
 #include "qgsgeos.h"
+#include "qgsmatrix4x4.h"
+#include "qgsmultipoint.h"
 #include "qgspolygon.h"
+#include "qgsvector3d.h"
 
 QgsTiledSceneBoundingVolume::QgsTiledSceneBoundingVolume( const QgsOrientedBox3D &box )
   : mBox( box )
@@ -66,7 +67,7 @@ QgsBox3D QgsTiledSceneBoundingVolume::bounds( const QgsCoordinateTransform &tran
 
 QgsAbstractGeometry *QgsTiledSceneBoundingVolume::as2DGeometry( const QgsCoordinateTransform &transform, Qgis::TransformDirection direction ) const
 {
-  std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+  auto polygon = std::make_unique< QgsPolygon >();
 
   const QVector< QgsVector3D > corners = mBox.corners();
   QVector< double > x;
@@ -88,7 +89,7 @@ QgsAbstractGeometry *QgsTiledSceneBoundingVolume::as2DGeometry( const QgsCoordin
     transform.transformInPlace( x, y, z, direction );
   }
 
-  std::unique_ptr< QgsMultiPoint > mp = std::make_unique< QgsMultiPoint >( x, y );
+  auto mp = std::make_unique< QgsMultiPoint >( x, y );
   QgsGeos geosMp( mp.get() );
   return geosMp.convexHull();
 }

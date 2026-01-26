@@ -18,8 +18,8 @@
 #ifndef QGSORACLETRANSACTION_H
 #define QGSORACLETRANSACTION_H
 
-#include "qgstransaction.h"
 #include "qgis_sip.h"
+#include "qgstransaction.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -45,7 +45,6 @@ class QgsOracleTransaction : public QgsTransaction
     bool beginTransaction( QString &error, int statementTimeout ) override;
     bool commitTransaction( QString &error ) override;
     bool rollbackTransaction( QString &error ) override;
-
 };
 
 ///@endcond

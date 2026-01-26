@@ -14,15 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsmaptopixelgeometrysimplifier.h"
+
 #include <limits>
 #include <memory>
 
-#include "qgsmaptopixelgeometrysimplifier.h"
-#include "qgsrectangle.h"
 #include "qgsgeometry.h"
+#include "qgsgeometrycollection.h"
 #include "qgslinestring.h"
 #include "qgspolygon.h"
-#include "qgsgeometrycollection.h"
+#include "qgsrectangle.h"
 #include "qgsvertexid.h"
 
 QgsMapToPixelSimplifier::QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, Qgis::VectorSimplificationAlgorithm simplifyAlgorithm )
@@ -94,22 +95,22 @@ static std::unique_ptr< QgsAbstractGeometry > generalizeWkbGeometryByBoundingBox
   }
   else
   {
-    std::unique_ptr< QgsLineString > ext = std::make_unique< QgsLineString >(
-        QVector< double >() << x1
-        << x2
-        << x2
-        << x1
-        << x1,
-        QVector< double >() << y1
-        << y1
-        << y2
-        << y2
-        << y1 );
+    auto ext = std::make_unique< QgsLineString >(
+                 QVector< double >() << x1
+                 << x2
+                 << x2
+                 << x1
+                 << x1,
+                 QVector< double >() << y1
+                 << y1
+                 << y2
+                 << y2
+                 << y1 );
     if ( geometryType == Qgis::WkbType::LineString )
       return std::move( ext );
     else
     {
-      std::unique_ptr< QgsPolygon > polygon = std::make_unique< QgsPolygon >();
+      auto polygon = std::make_unique< QgsPolygon >();
       polygon->setExteriorRing( ext.release() );
       return std::move( polygon );
     }
@@ -376,14 +377,14 @@ std::unique_ptr< QgsAbstractGeometry > QgsMapToPixelSimplifier::simplifyGeometry
   else if ( flatType == Qgis::WkbType::Polygon )
   {
     const QgsPolygon &srcPolygon = dynamic_cast<const QgsPolygon &>( geometry );
-    std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+    auto polygon = std::make_unique<QgsPolygon>();
     std::unique_ptr<QgsAbstractGeometry> extRing = simplifyGeometry( simplifyFlags, simplifyAlgorithm, *srcPolygon.exteriorRing(), map2pixelTol, true );
-    polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( extRing.release() ) );
+    polygon->setExteriorRing( qgis::down_cast<QgsCurve *>( extRing.release() ) );
     for ( int i = 0; i < srcPolygon.numInteriorRings(); ++i )
     {
       const QgsCurve *sub = srcPolygon.interiorRing( i );
       std::unique_ptr< QgsAbstractGeometry > ring = simplifyGeometry( simplifyFlags, simplifyAlgorithm, *sub, map2pixelTol, true );
-      polygon->addInteriorRing( qgsgeometry_cast<QgsCurve *>( ring.release() ) );
+      polygon->addInteriorRing( qgis::down_cast<QgsCurve *>( ring.release() ) );
     }
     return std::move( polygon );
   }

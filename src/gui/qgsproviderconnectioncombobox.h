@@ -16,31 +16,31 @@
 #ifndef QGSPROVIDERCONNECTIONCOMBOBOX_H
 #define QGSPROVIDERCONNECTIONCOMBOBOX_H
 
-#include <QComboBox>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QComboBox>
 #include <QSortFilterProxyModel>
 
 class QgsProviderConnectionModel;
 
 ///@cond PRIVATE
 #ifndef SIP_RUN
-class GUI_EXPORT QgsProviderConnectionComboBoxSortModel: public QSortFilterProxyModel
+class GUI_EXPORT QgsProviderConnectionComboBoxSortModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
     explicit QgsProviderConnectionComboBoxSortModel( QObject *parent = nullptr );
+
   protected:
     bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
-
 };
 #endif
 ///@endcond
 
 /**
  * \ingroup gui
- * \brief The QgsProviderConnectionComboBox class is a combo box which displays the list of connections registered for a given provider.
+ * \brief A combo box which displays the list of connections registered for a given provider.
  *
  * \warning The provider must support the connection API methods in its QgsProviderMetadata implementation
  * in order for the model to work correctly.
@@ -52,7 +52,6 @@ class GUI_EXPORT QgsProviderConnectionComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProviderConnectionComboBox, for the specified \a provider.
      *

@@ -14,13 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QFileInfo>
-
-#include "qgslogger.h"
+#include "qgsgrassvector.h"
 
 #include "qgsgrass.h"
+#include "qgslogger.h"
 
-#include "qgsgrassvector.h"
+#include <QFileInfo>
+
+#include "moc_qgsgrassvector.cpp"
 
 extern "C"
 {
@@ -28,7 +29,7 @@ extern "C"
 #include <unistd.h>
 #endif
 #include <grass/version.h>
-#if defined(_MSC_VER) && defined(M_PI_4)
+#if defined( _MSC_VER ) && defined( M_PI_4 )
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
@@ -107,7 +108,7 @@ QgsFields QgsGrassVectorLayer::fields()
     mFieldsTimeStamp.setSecsSinceEpoch( 0 );
     return mFields;
   }
-  if ( dblnFileInfo.lastModified() >  mFieldsTimeStamp && !mDriver.isEmpty()
+  if ( dblnFileInfo.lastModified() > mFieldsTimeStamp && !mDriver.isEmpty()
        && !mDatabase.isEmpty() && !mTable.isEmpty() && !mKey.isEmpty() )
   {
     QgsDebugMsgLevel( "reload fields", 2 );
@@ -117,7 +118,7 @@ QgsFields QgsGrassVectorLayer::fields()
 
     QgsDebugMsgLevel( "open database " + mDatabase + " by driver " + mDriver, 2 );
     QgsGrass::lock();
-    QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(),  mGrassObject.mapset() );
+    QgsGrass::setMapset( mGrassObject.gisdbase(), mGrassObject.location(), mGrassObject.mapset() );
     dbDriver *driver = db_start_driver_open_database( mDriver.toUtf8().constData(), mDatabase.toUtf8().constData() );
 
     if ( !driver )
@@ -153,19 +154,19 @@ QgsFields QgsGrassVectorLayer::fields()
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
-              type = QStringLiteral( "int" );
+              type = u"int"_s;
               qtype = QMetaType::Type::Int;
               break;
             case DB_C_TYPE_DOUBLE:
-              type = QStringLiteral( "double" );
+              type = u"double"_s;
               qtype = QMetaType::Type::Double;
               break;
             case DB_C_TYPE_STRING:
-              type = QStringLiteral( "string" );
+              type = u"string"_s;
               qtype = QMetaType::Type::QString;
               break;
             case DB_C_TYPE_DATETIME:
-              type = QStringLiteral( "datetime" );
+              type = u"datetime"_s;
               qtype = QMetaType::Type::QString;
               break;
           }
@@ -182,8 +183,7 @@ QgsFields QgsGrassVectorLayer::fields()
 
 
 /*********************** QgsGrassVector ***********************/
-QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset,
-                                const QString &name, QObject *parent )
+QgsGrassVector::QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset, const QString &name, QObject *parent )
   : QObject( parent )
   , mGrassObject( gisdbase, location, mapset, name )
   , mNodeCount( 0 )

@@ -16,16 +16,16 @@
 #ifndef QGSMAPTOOLSHAPEELLIPSEABSTRACT_H
 #define QGSMAPTOOLSHAPEELLIPSEABSTRACT_H
 
-#include "qgsmaptoolshapeabstract.h"
-#include "qgsellipse.h"
-#include "qgssettingsregistrycore.h"
 #include "qgis_app.h"
+#include "qgsellipse.h"
+#include "qgsmaptoolshapeabstract.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 class QgsGeometryRubberBand;
 class QgsSnapIndicator;
 
-class APP_EXPORT QgsMapToolShapeEllipseAbstract: public QgsMapToolShapeAbstract
+class APP_EXPORT QgsMapToolShapeEllipseAbstract : public QgsMapToolShapeAbstract
 {
     Q_OBJECT
   public:
@@ -42,7 +42,7 @@ class APP_EXPORT QgsMapToolShapeEllipseAbstract: public QgsMapToolShapeAbstract
     QgsEllipse mEllipse;
 
     //! convenient method to return the number of segments
-    unsigned int segments( ) { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12; }
+    unsigned int segments() { return QgsSettingsRegistryCore::settingsDigitizingOffsetQuadSeg->value() * 12; }
 };
 
 #endif // QGSMAPTOOLSHAPEELLIPSEABSTRACT_H

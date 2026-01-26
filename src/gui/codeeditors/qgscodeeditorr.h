@@ -16,9 +16,10 @@
 #ifndef QGSCODEEDITORR_H
 #define QGSCODEEDITORR_H
 
-#include "qgscodeeditor.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscodeeditor.h"
+
 #include <Qsci/qscilexer.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
@@ -30,7 +31,6 @@ class GUI_EXPORT QgsQsciLexerR : public QsciLexer
 {
     Q_OBJECT
   public:
-
     enum Styles
     {
       Default = 0,
@@ -57,16 +57,15 @@ class GUI_EXPORT QgsQsciLexerR : public QsciLexer
     int lexerId() const override;
     QString description( int style ) const override;
     const char *keywords( int set ) const override;
-
-
 };
 ///@endcond
 #endif
 
 /**
  * \ingroup gui
- * \brief A R stats code editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A R stats code editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsCodeEditorR : public QgsCodeEditor
@@ -74,14 +73,12 @@ class GUI_EXPORT QgsCodeEditorR : public QgsCodeEditor
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsCodeEditorR
     QgsCodeEditorR( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
     Qgis::ScriptLanguage language() const override;
 
   protected:
     void initializeLexer() override;
-
 };
 
 #endif // QGSCODEEDITORR_H

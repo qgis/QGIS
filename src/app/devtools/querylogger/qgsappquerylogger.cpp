@@ -14,19 +14,23 @@
  ***************************************************************************/
 
 #include "qgsappquerylogger.h"
-#include "qgsdatabasequeryloggernode.h"
-#include "qgsapplication.h"
+
 #include "devtools/qgsdevtoolsmodelnode.h"
-#include "qgssettings.h"
 #include "qgis.h"
-#include <QThread>
+#include "qgsapplication.h"
+#include "qgsdatabasequeryloggernode.h"
+#include "qgssettings.h"
+
 #include <QApplication>
-#include <QUrlQuery>
 #include <QPainter>
+#include <QThread>
+#include <QUrlQuery>
+
+#include "moc_qgsappquerylogger.cpp"
 
 QgsAppQueryLogger::QgsAppQueryLogger( QObject *parent )
   : QAbstractItemModel( parent )
-  , mRootNode( std::make_unique< QgsDatabaseQueryLoggerRootNode >() )
+  , mRootNode( std::make_unique<QgsDatabaseQueryLoggerRootNode>() )
 {
   // logger must be created on the main thread
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
@@ -52,7 +56,7 @@ void QgsAppQueryLogger::queryLogged( const QgsDatabaseQueryLogEntry &query )
 
   beginInsertRows( QModelIndex(), childCount, childCount );
 
-  std::unique_ptr< QgsDatabaseQueryLoggerQueryGroup > group = std::make_unique< QgsDatabaseQueryLoggerQueryGroup >( query );
+  auto group = std::make_unique<QgsDatabaseQueryLoggerQueryGroup>( query );
   mQueryGroups.insert( query.queryId, group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();
@@ -74,7 +78,7 @@ void QgsAppQueryLogger::queryFinished( const QgsDatabaseQueryLogEntry &query )
     queryGroup->setSql( query.query );
   }
 
-  const long long newMaxCost = std::max< long long >( static_cast< long long >( query.finishedTime - query.startedTime ), mMaxCost );
+  const long long newMaxCost = std::max<long long>( static_cast<long long>( query.finishedTime - query.startedTime ), mMaxCost );
 
   // Calculate the number of children: if error or not fetched rows 1 row is added else 2 rows are added
   beginInsertRows( requestIndex, queryGroup->childCount(), queryGroup->childCount() + ( query.fetchedRows != -1 ? 1 : 0 ) );
@@ -102,7 +106,7 @@ QList<QAction *> QgsAppQueryLogger::actions( const QModelIndex &index, QObject *
 {
   QgsDevToolsModelNode *node = index2node( index );
   if ( !node )
-    return QList< QAction * >();
+    return QList<QAction *>();
 
   return node->actions( parent );
 }
@@ -125,7 +129,7 @@ QModelIndex QgsAppQueryLogger::indexOfParentLayerTreeNode( QgsDevToolsModelNode 
 
   QgsDevToolsModelGroup *grandParentNode = parentNode->parent();
   if ( !grandParentNode )
-    return QModelIndex();  // root node -> invalid index
+    return QModelIndex(); // root node -> invalid index
 
   int row = grandParentNode->indexOf( parentNode );
   Q_ASSERT( row >= 0 );
@@ -135,12 +139,12 @@ QModelIndex QgsAppQueryLogger::indexOfParentLayerTreeNode( QgsDevToolsModelNode 
 
 void QgsAppQueryLogger::removeRequestRows( const QList<int> &rows )
 {
-  QList< int > res = rows;
-  std::sort( res.begin(), res.end(), std::greater< int >() );
+  QList<int> res = rows;
+  std::sort( res.begin(), res.end(), std::greater<int>() );
 
   for ( int row : std::as_const( res ) )
   {
-    int popId = data( index( row, 0, QModelIndex() ), QgsDevToolsModelNode::RoleId ).toInt();
+    int popId = data( index( row, 0, QModelIndex() ), static_cast<int>( Qgis::DevToolsNodeRole::Id ) ).toInt();
     mQueryGroups.remove( popId );
 
     beginRemoveRows( QModelIndex(), row, row );
@@ -171,11 +175,10 @@ int QgsAppQueryLogger::columnCount( const QModelIndex &parent ) const
 
 QModelIndex QgsAppQueryLogger::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( column < 0 || column >= columnCount( parent ) ||
-       row < 0 || row >= rowCount( parent ) )
+  if ( column < 0 || column >= columnCount( parent ) || row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsDevToolsModelGroup *n = dynamic_cast< QgsDevToolsModelGroup * >( index2node( parent ) );
+  QgsDevToolsModelGroup *n = dynamic_cast<QgsDevToolsModelGroup *>( index2node( parent ) );
   if ( !n )
     return QModelIndex(); // have no children
 
@@ -217,11 +220,11 @@ QVariant QgsAppQueryLogger::data( const QModelIndex &index, int role ) const
       switch ( role )
       {
         case Qt::DisplayRole:
-        case QgsDevToolsModelNode::RoleElapsedTime:
-        case QgsDevToolsModelNode::RoleSort:
-          return node->data( QgsDevToolsModelNode::RoleElapsedTime );
+        case static_cast<int>( Qgis::DevToolsNodeRole::ElapsedTime ):
+        case static_cast<int>( Qgis::DevToolsNodeRole::Sort ):
+          return node->data( static_cast<int>( Qgis::DevToolsNodeRole::ElapsedTime ) );
 
-        case QgsDevToolsModelNode::RoleMaximumTime:
+        case static_cast<int>( Qgis::DevToolsNodeRole::MaximumTime ):
           return mMaxCost;
 
         default:
@@ -280,10 +283,10 @@ void QgsDatabaseQueryLoggerProxyModel::setFilterString( const QString &string )
 
 bool QgsDatabaseQueryLoggerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  if ( ! mFilterString.isEmpty() )
+  if ( !mFilterString.isEmpty() )
   {
     QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
-    if ( QgsDatabaseQueryLoggerQueryGroup *request = dynamic_cast< QgsDatabaseQueryLoggerQueryGroup * >( node ) )
+    if ( QgsDatabaseQueryLoggerQueryGroup *request = dynamic_cast<QgsDatabaseQueryLoggerQueryGroup *>( node ) )
     {
       if ( request->data().toString().contains( mFilterString, Qt::CaseInsensitive ) )
       {
@@ -328,7 +331,7 @@ void QueryCostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &op
   const auto fraction = std::abs( float( cost ) / totalCost );
 
   auto rect = option.rect;
-  rect.setWidth( static_cast< int >( rect.width() * fraction ) );
+  rect.setWidth( static_cast<int>( rect.width() * fraction ) );
 
   const auto &brush = painter->brush();
   const auto &pen = painter->pen();
@@ -343,7 +346,7 @@ void QueryCostDelegate::paint( QPainter *painter, const QStyleOptionViewItem &op
     painter->drawRect( option.rect );
   }
 
-  const auto color = QColor::fromHsv( static_cast< int >( 120 - fraction * 120 ), 255, 255, static_cast< int >( ( -( ( fraction - 1 ) * ( fraction - 1 ) ) ) * 120 + 120 ) );
+  const auto color = QColor::fromHsv( static_cast<int>( 120 - fraction * 120 ), 255, 255, static_cast<int>( ( -( ( fraction - 1 ) * ( fraction - 1 ) ) ) * 120 + 120 ) );
   painter->setBrush( color );
   painter->drawRect( rect );
 

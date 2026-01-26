@@ -14,19 +14,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionwidgetwrapper.h"
-#include "qgsexpressioncontextutils.h"
+
 #include "qgsattributeform.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgui.h"
+#include "qgsmessagebar.h"
 
 #include <QLayout>
 
-QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
+#include "moc_qgsactionwidgetwrapper.cpp"
+
+QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsWidgetWrapper( layer, editor, parent )
+  , mMessageBar( messageBar )
 {
-  connect( this, &QgsWidgetWrapper::contextChanged, [ = ]
-  {
+  connect( this, &QgsWidgetWrapper::contextChanged, [this] {
     const bool actionIsVisible {
-      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::SingleEditMode ) ||
-      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::AddFeatureMode ) };
+      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::SingleEditMode ) || ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::AddFeatureMode )
+    };
     if ( mActionButton )
     {
       mActionButton->setVisible( actionIsVisible );
@@ -64,7 +69,6 @@ QWidget *QgsActionWidgetWrapper::createWidget( QWidget *parent )
 
 void QgsActionWidgetWrapper::initWidget( QWidget *editor )
 {
-
   mActionButton = qobject_cast<QPushButton *>( editor );
 
   if ( !mActionButton )
@@ -73,11 +77,11 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
   if ( valid() && layer() )
   {
     const QString shortTitle { mAction.shortTitle() }; // might be empty
-    const QString description { mAction.name() };  // mandatory
-    const QIcon icon { mAction.icon() };  // might be invalid
+    const QString description { mAction.name() };      // mandatory
+    const QIcon icon { mAction.icon() };               // might be invalid
 
     // Configure push button
-    if ( ! icon.isNull() )
+    if ( !icon.isNull() )
     {
       mActionButton->setIcon( icon );
       mActionButton->setToolTip( description );
@@ -85,7 +89,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
     else
     {
       mActionButton->setText( shortTitle.isEmpty() ? description : shortTitle );
-      if ( ! shortTitle.isEmpty() )
+      if ( !shortTitle.isEmpty() )
       {
         mActionButton->setToolTip( description );
       }
@@ -97,30 +101,52 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
     }
 
     // Always connect
-    connect( mActionButton, &QPushButton::clicked, this, [ & ]
-    {
+    connect( mActionButton, &QPushButton::clicked, this, [&] {
       const QgsAttributeEditorContext attributecontext = context();
       QgsExpressionContext expressionContext = layer()->createExpressionContext();
       expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
       expressionContext.setFeature( mFeature );
-      if ( mAction.type() == Qgis::AttributeActionType::GenericPython )
+      switch ( mAction.type() )
       {
-        if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
         {
-          const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
-          .arg( ( quint64 ) form );
-          QgsAction action { mAction };
-          action.setCommand( formCode + mAction.command() );
-          action.run( layer(), mFeature, expressionContext );
+          if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
+          {
+            const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+            if ( !allowed )
+            {
+              if ( mMessageBar )
+              {
+                mMessageBar->pushMessage(
+                  tr( "Security warning" ),
+                  tr( "The action contains an embedded script which has been denied execution." ),
+                  Qgis::MessageLevel::Warning
+                );
+              }
+              return;
+            }
+
+            const QString formCode = u"locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n"_s
+                                       .arg( ( quint64 ) form );
+            QgsAction action { mAction };
+            action.setCommand( formCode + mAction.command() );
+            action.run( layer(), mFeature, expressionContext );
+          }
+          break;
+        }
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          mAction.run( layer(), mFeature, expressionContext );
+          break;
         }
       }
-      else
-      {
-        mAction.run( layer(), mFeature, expressionContext );
-      }
     } );
-
   }
-
 }
-

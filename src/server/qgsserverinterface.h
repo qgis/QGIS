@@ -22,11 +22,13 @@
 #define QGSSERVERINTERFACE_H
 
 #include "qgsconfig.h"
+
 #include "qgis_sip.h"
 #include "qgscapabilitiescache.h"
 #include "qgsrequesthandler.h"
 #include "qgsserverfilter.h"
 #include "qgsserversettings.h"
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"
@@ -46,9 +48,7 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
 /**
  * \ingroup server
- * \brief QgsServerInterface
- * Class defining interfaces exposed by QGIS Server and
- * made available to plugins.
+ * \brief Defines interfaces exposed by QGIS Server and made available to plugins.
  *
  * This class provides methods to access the request handler and
  * the capabilities cache. A method to read the environment
@@ -60,7 +60,6 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 class SERVER_EXPORT QgsServerInterface
 {
   public:
-
     //! Constructor
     QgsServerInterface() SIP_SKIP;
 

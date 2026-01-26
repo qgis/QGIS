@@ -20,41 +20,46 @@
 
 struct QgsWFSConstants
 {
-  static const QString GML_NAMESPACE;
-  static const QString OGC_NAMESPACE;
-  static const QString OWS_NAMESPACE;
-  static const QString WFS_NAMESPACE;
-  static const QString XMLSCHEMA_NAMESPACE;
+    static const QString GML_NAMESPACE;
+    static const QString OGC_NAMESPACE;
+    static const QString OWS_NAMESPACE;
+    static const QString WFS_NAMESPACE;
+    static const QString XMLSCHEMA_NAMESPACE;
 
-  // URI parameters
-  static const QString URI_PARAM_URL;
-  static const QString URI_PARAM_USERNAME;
-  // QgsDataSourceURI recognizes "user" instead of "username"
-  // we are going to check both
-  static const QString URI_PARAM_USER;
-  static const QString URI_PARAM_PASSWORD;
-  static const QString URI_PARAM_AUTHCFG;
-  static const QString URI_PARAM_VERSION;
-  static const QString URI_PARAM_TYPENAME;
-  static const QString URI_PARAM_SRSNAME;
-  static const QString URI_PARAM_FILTER;
-  static const QString URI_PARAM_OUTPUTFORMAT;
-  static const QString URI_PARAM_BBOX;
-  static const QString URI_PARAM_RESTRICT_TO_REQUEST_BBOX;
-  static const QString URI_PARAM_MAXNUMFEATURES;
-  static const QString URI_PARAM_IGNOREAXISORIENTATION;
-  static const QString URI_PARAM_INVERTAXISORIENTATION;
-  static const QString URI_PARAM_VALIDATESQLFUNCTIONS;
-  static const QString URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG;
-  static const QString URI_PARAM_PAGING_ENABLED;
-  static const QString URI_PARAM_PAGE_SIZE;
-  static const QString URI_PARAM_WFST_1_1_PREFER_COORDINATES;
-  static const QString URI_PARAM_SKIP_INITIAL_GET_FEATURE;
-  static const QString URI_PARAM_GEOMETRY_TYPE_FILTER;
-  static const QString URI_PARAM_SQL;
+    // URI parameters
+    static const QString URI_PARAM_URL;
+    static const QString URI_PARAM_USERNAME;
+    // QgsDataSourceURI recognizes "user" instead of "username"
+    // we are going to check both
+    static const QString URI_PARAM_USER;
+    static const QString URI_PARAM_PASSWORD;
+    static const QString URI_PARAM_AUTHCFG;
+    static const QString URI_PARAM_VERSION;
+    static const QString URI_PARAM_TYPENAME;
+    static const QString URI_PARAM_SRSNAME;
+    static const QString URI_PARAM_FILTER;
+    static const QString URI_PARAM_OUTPUTFORMAT;
+    static const QString URI_PARAM_BBOX;
+    static const QString URI_PARAM_RESTRICT_TO_REQUEST_BBOX;
+    static const QString URI_PARAM_MAXNUMFEATURES;
+    static const QString URI_PARAM_IGNOREAXISORIENTATION;
+    static const QString URI_PARAM_INVERTAXISORIENTATION;
+    static const QString URI_PARAM_VALIDATESQLFUNCTIONS;
+    static const QString URI_PARAM_HIDEDOWNLOADPROGRESSDIALOG;
+    static const QString URI_PARAM_PAGING_ENABLED;
+    static const QString URI_PARAM_PAGE_SIZE;
+    static const QString URI_PARAM_WFST_1_1_PREFER_COORDINATES;
+    //! Internally set after the feature type has been determined (with or without an initial getFeature)
+    static const QString URI_PARAM_SKIP_INITIAL_GET_FEATURE;
+    //! User-controlled flag to force an initial getFeature, e.g. to identify Z geometries
+    static const QString URI_PARAM_FORCE_INITIAL_GET_FEATURE;
+    static const QString URI_PARAM_GEOMETRY_TYPE_FILTER;
+    static const QString URI_PARAM_SQL;
+    static const QString URI_PARAM_HTTPMETHOD;
+    static const QString URI_PARAM_FEATURE_MODE;
 
-  //
-  static const QString VERSION_AUTO;
+    //
+    static const QString VERSION_AUTO;
 };
 
 #endif // QGSWFSCONSTANTS_H

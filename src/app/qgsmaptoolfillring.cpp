@@ -15,17 +15,22 @@
  ***************************************************************************/
 
 #include "qgsmaptoolfillring.h"
-#include "qgsgeometry.h"
-#include "qgsfeatureiterator.h"
-#include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
-#include "qgsattributedialog.h"
-#include "qgisapp.h"
-#include "qgsvectorlayerutils.h"
-#include "qgsmapmouseevent.h"
-#include "qgscurvepolygon.h"
 
 #include <limits>
+
+#include "qgisapp.h"
+#include "qgsattributedialog.h"
+#include "qgscurvepolygon.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
+
+#include "moc_qgsmaptoolfillring.cpp"
 
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePolygon )
@@ -88,7 +93,7 @@ void QgsMapToolFillRing::polygonCaptured( const QgsCurvePolygon *polygon )
     {
       errorMessage = tr( "the inserted Ring is not closed" );
     }
-    else if ( addRingReturnCode ==  Qgis::GeometryOperationResult::AddRingNotValid )
+    else if ( addRingReturnCode == Qgis::GeometryOperationResult::AddRingNotValid )
     {
       errorMessage = tr( "the inserted Ring is not a valid geometry" );
     }
@@ -116,7 +121,6 @@ void QgsMapToolFillRing::polygonCaptured( const QgsCurvePolygon *polygon )
 
 void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureId fid )
 {
-
   QgsVectorLayer *vlayer = getCheckLayer();
   if ( !vlayer )
     return;
@@ -135,7 +139,24 @@ void QgsMapToolFillRing::createFeature( const QgsGeometry &geometry, QgsFeatureI
     QgsFeature ft { QgsVectorLayerUtils::makeFeatureCompatible( ft1, vlayer ).at( 0 ) };
 
     bool res = false;
-    if ( QApplication::keyboardModifiers() == Qt::ControlModifier )
+
+    //show the dialog to enter attribute values
+    //only show if enabled in settings
+    bool isDisabledAttributeValuesDlg = QgsSettingsRegistryCore::settingsDigitizingDisableEnterAttributeValuesDialog->value();
+    // override application-wide setting with any layer setting
+    switch ( vlayer->editFormConfig().suppress() )
+    {
+      case Qgis::AttributeFormSuppression::On:
+        isDisabledAttributeValuesDlg = true;
+        break;
+      case Qgis::AttributeFormSuppression::Off:
+        isDisabledAttributeValuesDlg = false;
+        break;
+      case Qgis::AttributeFormSuppression::Default:
+        break;
+    }
+
+    if ( isDisabledAttributeValuesDlg || QApplication::keyboardModifiers() == Qt::ControlModifier )
     {
       res = vlayer->addFeature( ft );
     }
@@ -196,7 +217,7 @@ void QgsMapToolFillRing::fillRingUnderPoint( const QgsPointXY &p )
       pol = g.asMultiPolygon();
     }
 
-    for ( int i = 0; i < pol.size() ; ++i )
+    for ( int i = 0; i < pol.size(); ++i )
     {
       //for each part
       if ( pol[i].size() > 1 )

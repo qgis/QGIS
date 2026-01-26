@@ -13,12 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsexpression.h"
 #include "qgspointcloudexpression.h"
-#include "qgspointcloudexpressionnodeimpl.h"
+
+#include "qgsexpression.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression_p.h"
-
+#include "qgspointcloudexpressionnodeimpl.h"
 
 QgsPointCloudExpression::QgsPointCloudExpression()
   : d( new QgsPointCloudExpressionPrivate )
@@ -203,7 +203,7 @@ QList<const QgsPointCloudExpressionNode *> QgsPointCloudExpression::nodes() cons
 bool QgsPointCloudExpression::checkExpression( const QgsExpression &expression, const QgsPointCloudBlock *block, QString &errorMessage )
 {
   QgsPointCloudExpression exp( expression );
-  exp.prepare( block );
+  ( void )exp.prepare( block );
   errorMessage = exp.parserErrorString();
   return !exp.hasParserError();
 }

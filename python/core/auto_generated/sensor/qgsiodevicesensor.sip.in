@@ -13,7 +13,7 @@
 class QgsIODeviceSensor : QgsAbstractSensor
 {
 %Docstring(signature="appended")
-An abstract class QIODevice-based sensor classes
+An abstract class for QIODevice-based sensors.
 
 .. versionadded:: 3.32
 %End
@@ -25,7 +25,8 @@ An abstract class QIODevice-based sensor classes
 
     explicit QgsIODeviceSensor( QObject *parent = 0 );
 %Docstring
-Constructor for a abstract QIODevice-based sensor, bound to the specified ``parent``.
+Constructor for a abstract QIODevice-based sensor, bound to the
+specified ``parent``.
 %End
     ~QgsIODeviceSensor();
 
@@ -57,7 +58,7 @@ Parses the data read from the device when available.
 class QgsTcpSocketSensor : QgsIODeviceSensor
 {
 %Docstring(signature="appended")
-A TCP socket sensor class
+A TCP socket sensor class.
 
 .. versionadded:: 3.32
 %End
@@ -122,7 +123,7 @@ Sets the ``port`` the socket connects to.
 class QgsUdpSocketSensor : QgsIODeviceSensor
 {
 %Docstring(signature="appended")
-A UDP socket sensor class
+A UDP socket sensor class.
 
 .. versionadded:: 3.32
 %End
@@ -189,7 +190,7 @@ Sets the ``port`` the socket connects to.
 class QgsSerialPortSensor : QgsIODeviceSensor
 {
 %Docstring(signature="appended")
-A serial port sensor class
+A serial port sensor class.
 
 .. versionadded:: 3.32
 %End

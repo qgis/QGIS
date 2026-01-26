@@ -15,13 +15,14 @@
 #ifndef QGSBROWSERDOCKWIDGET_H
 #define QGSBROWSERDOCKWIDGET_H
 
+#include "qgis_gui.h"
 #include "qgsbrowsertreeview.h"
 #include "qgsdockwidget.h"
 #include "qgsmimedatautils.h"
-#include "qgis_gui.h"
 
 class QgsMessageBar;
 class QgsBrowserWidget;
+class QgsMapCanvas;
 
 /**
  * \ingroup gui
@@ -31,7 +32,6 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-
     /**
       * Constructor for QgsBrowserDockWidget
       * \param name name of the widget
@@ -50,7 +50,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
 
     /**
      * Add directory to favorites.
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 - use the methods in QgsBrowserModel instead.
      */
     Q_DECL_DEPRECATED void addFavoriteDirectory( const QString &favDir, const QString &name = QString() ) SIP_DEPRECATED;
 
@@ -75,6 +75,24 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
     QgsMessageBar *messageBar();
 
     /**
+     * Sets a map \a canvas to use alongside the dock.
+     *
+     * Setting this allows items to utilize the canvas during GUI operations.
+     *
+     * \see mapCanvas()
+     * \since QGIS 3.44
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Returns the map canvas associated with the dock.
+     *
+     * \see setMapCanvas()
+     * \since QGIS 3.44
+     */
+    QgsMapCanvas *mapCanvas();
+
+    /**
      * Sets the customization for data items based on item's data provider key
      *
      * By default browser model shows all items from all available data items provider and few special
@@ -96,32 +114,32 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
      * Returns TRUE if the index was successfully intrepreted as a map layer and loaded, or
      * FALSE if the index is not a map layer or could not be loaded.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - retrieve the QgsLayerItem itself and manually add to project.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 - retrieve the QgsLayerItem itself and manually add to project.
      */
     Q_DECL_DEPRECATED bool addLayerAtIndex( const QModelIndex &index ) SIP_DEPRECATED;
 
     /**
      * Show context menu.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void showContextMenu( QPoint ) SIP_DEPRECATED;
 
     /**
      * Add current item to favorite.
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 - use the methods in QgsBrowserModel instead.
      */
     Q_DECL_DEPRECATED void addFavorite() SIP_DEPRECATED;
 
     /**
      * Add directory from file dialog to favorite.
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 - use the methods in QgsBrowserModel instead.
      */
     Q_DECL_DEPRECATED void addFavoriteDirectory() SIP_DEPRECATED;
 
     /**
      * Remove from favorite.
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - use the methods in QgsBrowserModel instead.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 - use the methods in QgsBrowserModel instead.
      */
     Q_DECL_DEPRECATED void removeFavorite() SIP_DEPRECATED;
 
@@ -133,83 +151,83 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
     /**
      * Show/hide filter widget.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void showFilterWidget( bool visible ) SIP_DEPRECATED;
 
     /**
      * Enable/disable properties widget.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void enablePropertiesWidget( bool enable ) SIP_DEPRECATED;
 
     /**
      * Sets filter syntax.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void setFilterSyntax( QAction * ) SIP_DEPRECATED;
 
     /**
      * Sets filter case sensitivity.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void setCaseSensitive( bool caseSensitive ) SIP_DEPRECATED;
 
     /**
      * Apply filter to the model.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void setFilter() SIP_DEPRECATED;
 
     /**
      * Sets the selection to \a index and expand it.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void setActiveIndex( const QModelIndex &index ) SIP_DEPRECATED;
 
     /**
      * Update project home directory.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void updateProjectHome() SIP_DEPRECATED;
 
     /**
      * Add selected layers to the project
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
     */
     Q_DECL_DEPRECATED void addSelectedLayers() SIP_DEPRECATED;
 
     /**
      * Show the layer properties.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
     */
     Q_DECL_DEPRECATED void showProperties() SIP_DEPRECATED;
 
     /**
      * Hide current item.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
     */
     Q_DECL_DEPRECATED void hideItem() SIP_DEPRECATED;
 
     /**
      * Toggle fast scan
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED void toggleFastScan() SIP_DEPRECATED;
 
     /**
      * Selection has changed.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 -- this method is not intended for public use.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 -- this method is not intended for public use.
      */
     Q_DECL_DEPRECATED void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected ) SIP_DEPRECATED;
 
@@ -229,7 +247,6 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
     void connectionsChanged();
 
   private:
-
     QgsBrowserWidget *mWidget = nullptr;
 };
 

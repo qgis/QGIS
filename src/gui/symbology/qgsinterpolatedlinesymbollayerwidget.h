@@ -16,21 +16,21 @@
 #ifndef QGSINTERPOLATEDLINESYMBOLLAYERWIDGET_H
 #define QGSINTERPOLATEDLINESYMBOLLAYERWIDGET_H
 
+#include "ui_qgsinterpolatedlinesymbollayerwidgetbase.h"
+
+#include "qgsinterpolatedlinerenderer.h"
 #include "qgsrendererwidget.h"
 #include "qgssymbollayerwidget.h"
-#include "qgsinterpolatedlinerenderer.h"
-#include "ui_qgsinterpolatedlinesymbollayerwidgetbase.h"
 
 /**
  * \ingroup gui
- * \brief QgsInterpolatedLineSymbolLayerWidget
+ * \brief A widget for configuring a QgsInterpolatedLineSymbolLayer.
  * \since QGIS 3.20
  */
-class GUI_EXPORT QgsInterpolatedLineSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::QgsInterpolatedLineSymbolLayerWidgetBase
+class GUI_EXPORT QgsInterpolatedLineSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::QgsInterpolatedLineSymbolLayerWidgetBase
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor
      * \param layer the layer where this symbol layer is applied

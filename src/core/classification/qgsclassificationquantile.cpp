@@ -15,6 +15,7 @@
 
 
 #include "qgsclassificationquantile.h"
+
 #include "qgsapplication.h"
 
 QgsClassificationQuantile::QgsClassificationQuantile()
@@ -29,13 +30,13 @@ QString QgsClassificationQuantile::name() const
 
 QString QgsClassificationQuantile::id() const
 {
-  return QStringLiteral( "Quantile" );
+  return u"Quantile"_s;
 }
 
-QgsClassificationMethod *QgsClassificationQuantile::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationQuantile::clone() const
 {
-  QgsClassificationQuantile *c = new QgsClassificationQuantile();
-  copyBase( c );
+  auto c = std::make_unique< QgsClassificationQuantile >();
+  copyBase( c.get() );
   return c;
 }
 

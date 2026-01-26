@@ -14,14 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgrasstools.h"
-#include "qgsgrassmodule.h"
-#include "qgsgrassregion.h"
-#include "qgsgrass.h"
 #include "qgsconfig.h"
+#include "qgsgrasstools.h"
 
 #include "qgisinterface.h"
 #include "qgsapplication.h"
+#include "qgsgrass.h"
+#include "qgsgrassmodule.h"
+#include "qgsgrassregion.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
@@ -32,6 +32,8 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QRegularExpression>
+
+#include "moc_qgsgrasstools.cpp"
 
 //
 // For experimental model view alternative ui by Tim
@@ -56,7 +58,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   connect( mDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mDebugButton_clicked );
   connect( mCloseDebugButton, &QPushButton::clicked, this, &QgsGrassTools::mCloseDebugButton_clicked );
   connect( mViewModeButton, &QToolButton::clicked, this, &QgsGrassTools::mViewModeButton_clicked );
-  QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( QStringLiteral( "mActionFileExit.svg" ) ), tr( "Close mapset" ), this );
+  QPushButton *closeMapsetButton = new QPushButton( QgsApplication::getThemeIcon( u"mActionFileExit.svg"_s ), tr( "Close mapset" ), this );
   mTabWidget->setCornerWidget( closeMapsetButton );
   connect( closeMapsetButton, &QAbstractButton::clicked, this, &QgsGrassTools::closeMapset );
 
@@ -80,12 +82,11 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   mTreeModel = new QStandardItemModel( 0, 1 );
   mTreeModelProxy = new QgsGrassToolsTreeFilterProxyModel( this );
   mTreeModelProxy->setSourceModel( mTreeModel );
-  mTreeModelProxy->setFilterRole( Qt::UserRole + Search );
+  mTreeModelProxy->setFilterRole( static_cast< int >( DataRole::Search ) );
 
   mTreeView->setModel( mTreeModelProxy );
 
-  connect( mTreeView, &QAbstractItemView::clicked,
-           this, &QgsGrassTools::itemClicked );
+  connect( mTreeView, &QAbstractItemView::clicked, this, &QgsGrassTools::itemClicked );
 
   // List view with filter
   mModulesListModel = new QStandardItemModel( 0, 1 );
@@ -94,8 +95,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface, QWidget *parent, const char 
   mModelProxy->setFilterRole( Qt::UserRole + 2 );
 
   mListView->setModel( mModelProxy );
-  connect( mListView, &QAbstractItemView::clicked,
-           this, &QgsGrassTools::itemClicked );
+  connect( mListView, &QAbstractItemView::clicked, this, &QgsGrassTools::itemClicked );
 
   mListView->hide();
 
@@ -129,7 +129,6 @@ void QgsGrassTools::resetTitle()
 
 void QgsGrassTools::showTabs()
 {
-
   resetTitle();
 
   // Build modules tree if empty
@@ -160,7 +159,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 {
   if ( name.length() == 0 )
   {
-    return;  // Section
+    return; // Section
   }
 
   // set wait cursor because starting module may be slow because of getting temporal datasets (t.list)
@@ -219,16 +218,16 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
     QMessageBox::warning( nullptr, tr( "Warning" ), tr( "The config file (%1) not found." ).arg( filePath ) );
     return false;
   }
-  if ( ! file.open( QIODevice::ReadOnly ) )
+  if ( !file.open( QIODevice::ReadOnly ) )
   {
     QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open config file (%1)." ).arg( filePath ) );
     return false;
   }
 
-  QDomDocument doc( QStringLiteral( "qgisgrass" ) );
+  QDomDocument doc( u"qgisgrass"_s );
   QString err;
   int line, column;
-  if ( !doc.setContent( &file,  &err, &line, &column ) )
+  if ( !doc.setContent( &file, &err, &line, &column ) )
   {
     QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
@@ -239,7 +238,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
   }
 
   QDomElement docElem = doc.documentElement();
-  QDomNodeList modulesNodes = docElem.elementsByTagName( QStringLiteral( "modules" ) );
+  QDomNodeList modulesNodes = docElem.elementsByTagName( u"modules"_s );
 
   if ( modulesNodes.count() == 0 )
   {
@@ -294,9 +293,9 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
     QDomElement e = n.toElement();
     if ( !e.isNull() )
     {
-// QgsDebugMsgLevel(QString("tag = %1").arg(e.tagName()), 3);
+      // QgsDebugMsgLevel(QString("tag = %1").arg(e.tagName()), 3);
 
-      if ( e.tagName() != QLatin1String( "section" ) && e.tagName() != QLatin1String( "grass" ) )
+      if ( e.tagName() != "section"_L1 && e.tagName() != "grass"_L1 )
       {
         QgsDebugError( QString( "Unknown tag: %1" ).arg( e.tagName() ) );
         continue;
@@ -304,38 +303,38 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
 
       // Check GRASS version
       QStringList errors;
-      if ( !QgsGrassModuleOption::checkVersion( e.attribute( QStringLiteral( "version_min" ) ), e.attribute( QStringLiteral( "version_max" ) ), errors ) )
+      if ( !QgsGrassModuleOption::checkVersion( e.attribute( u"version_min"_s ), e.attribute( u"version_max"_s ), errors ) )
       {
         // TODO: show somehow errors only in debug mode, but without reloading tree
         if ( !errors.isEmpty() )
         {
-          QString label = e.attribute( QStringLiteral( "label" ) ) + e.attribute( QStringLiteral( "name" ) ); // one should be non empty
-          label += "\n  ERROR:\t" + errors.join( QLatin1String( "\n\t" ) );
+          QString label = e.attribute( u"label"_s ) + e.attribute( u"name"_s ); // one should be non empty
+          label += "\n  ERROR:\t" + errors.join( "\n\t"_L1 );
           QStandardItem *item = new QStandardItem( label );
-          item->setData( label, Qt::UserRole + Label );
-          item->setData( label, Qt::UserRole + Search );
-          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ), Qt::DecorationRole );
+          item->setData( label, static_cast< int >( DataRole::Label ) );
+          item->setData( label, static_cast< int >( DataRole::Search ) );
+          item->setData( QgsApplication::getThemeIcon( u"mIconWarning.svg"_s ), Qt::DecorationRole );
           appendItem( treeModel, parent, item );
         }
         n = n.nextSibling();
         continue;
       }
 
-      if ( e.tagName() == QLatin1String( "section" ) )
+      if ( e.tagName() == "section"_L1 )
       {
-        QString label = QApplication::translate( "grasslabel", e.attribute( QStringLiteral( "label" ) ).toUtf8() );
+        QString label = QApplication::translate( "grasslabel", e.attribute( u"label"_s ).toUtf8() );
         QgsDebugMsgLevel( QString( "label = %1" ).arg( label ), 3 );
         QStandardItem *item = new QStandardItem( label );
-        item->setData( label, Qt::UserRole + Label ); // original label, for debug
-        item->setData( label, Qt::UserRole + Search ); // for filtering later
+        item->setData( label, static_cast< int >( DataRole::Label ) );  // original label, for debug
+        item->setData( label, static_cast< int >( DataRole::Search ) ); // for filtering later
 
         addModules( item, e, treeModel, modulesListModel, direct );
         appendItem( treeModel, parent, item );
       }
-      else if ( e.tagName() == QLatin1String( "grass" ) )
+      else if ( e.tagName() == "grass"_L1 )
       {
         // GRASS module
-        QString name = e.attribute( QStringLiteral( "name" ) );
+        QString name = e.attribute( u"name"_s );
         QgsDebugMsgLevel( QString( "name = %1" ).arg( name ), 3 );
 
         //QString path = QgsApplication::pkgDataPath() + "/grass/modules/" + name;
@@ -347,9 +346,9 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           QString label = name + " - " + description.label;
           QPixmap pixmap = QgsGrassModule::pixmap( path, 32 );
           QStandardItem *item = new QStandardItem( name + "\n" + description.label );
-          item->setData( name, Qt::UserRole + Name ); // for calling runModule later
-          item->setData( label, Qt::UserRole + Label ); // original label, for debug
-          item->setData( label, Qt::UserRole + Search ); // for filtering later
+          item->setData( name, static_cast< int >( DataRole::Name ) );    // for calling runModule later
+          item->setData( label, static_cast< int >( DataRole::Label ) );  // original label, for debug
+          item->setData( label, static_cast< int >( DataRole::Search ) ); // for filtering later
           item->setData( pixmap, Qt::DecorationRole );
           item->setCheckable( false );
           item->setEditable( false );
@@ -358,7 +357,7 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
           bool exists = false;
           for ( int i = 0; i < modulesListModel->rowCount(); i++ )
           {
-            if ( modulesListModel->item( i )->data( Qt::UserRole + Name ).toString() == name )
+            if ( modulesListModel->item( i )->data( static_cast< int >( DataRole::Name ) ).toString() == name )
             {
               exists = true;
               break;
@@ -384,7 +383,6 @@ void QgsGrassTools::addModules( QStandardItem *parent, QDomElement &element, QSt
     }
     n = n.nextSibling();
   }
-
 }
 
 // used for direct
@@ -430,7 +428,6 @@ void QgsGrassTools::closeMapset()
 
 void QgsGrassTools::mapsetChanged()
 {
-
   mTabWidget->setCurrentIndex( 0 );
   closeTools();
   mRegion->mapsetChanged();
@@ -439,7 +436,7 @@ void QgsGrassTools::mapsetChanged()
 
 QString QgsGrassTools::appDir( void )
 {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
   return QgsGrass::shortPath( QgsApplication::applicationDirPath() );
 #else
   return QgsApplication::applicationDirPath();
@@ -463,7 +460,6 @@ void QgsGrassTools::emitRegionChanged()
 
 void QgsGrassTools::closeTools()
 {
-
   for ( int i = mTabWidget->count() - 1; i > 1; i-- ) // first is module tree, second is region
   {
     delete mTabWidget->widget( i );
@@ -522,7 +518,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
     QStandardItem *mypItem = model->itemFromIndex( modelIndex );
     if ( mypItem )
     {
-      QString myModuleName = mypItem->data( Qt::UserRole + Name ).toString();
+      QString myModuleName = mypItem->data( static_cast< int >( DataRole::Name ) ).toString();
       runModule( myModuleName, false );
     }
   }
@@ -530,7 +526,6 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
 
 void QgsGrassTools::mDebugButton_clicked()
 {
-
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   int errors = 0;
@@ -549,8 +544,8 @@ int QgsGrassTools::debug( QStandardItem *item )
   {
     return 0;
   }
-  QString name = item->data( Qt::UserRole + Name ).toString();
-  QString label = item->data( Qt::UserRole + Label ).toString();
+  QString name = item->data( static_cast< int >( DataRole::Name ) ).toString();
+  QString label = item->data( static_cast< int >( DataRole::Label ) ).toString();
   if ( name.isEmpty() ) // section
   {
     int errors = 0;
@@ -563,7 +558,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     if ( errors > 0 )
     {
       label += " ( " + tr( "%n error(s)", nullptr, errors ) + " )";
-      item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) ) );
+      item->setIcon( QgsApplication::getThemeIcon( u"mIconWarning.svg"_s ) );
     }
     else
     {
@@ -579,7 +574,7 @@ int QgsGrassTools::debug( QStandardItem *item )
     for ( QString error : module->errors() )
     {
       // each error may have multiple rows and may be html formatted (<br>)
-      label += "\n  ERROR:\t" + error.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) ).replace( QLatin1String( "\n" ), QLatin1String( "\n\t" ) );
+      label += "\n  ERROR:\t" + error.replace( "<br>"_L1, "\n"_L1 ).replace( "\n"_L1, "\n\t"_L1 );
     }
     item->setText( label );
     int nErrors = module->errors().size();
@@ -600,13 +595,13 @@ void QgsGrassTools::mViewModeButton_clicked()
   {
     mListView->hide();
     mTreeView->show();
-    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconListView.svg" ) ) );
+    mViewModeButton->setIcon( QgsApplication::getThemeIcon( u"mIconListView.svg"_s ) );
   }
   else
   {
     mTreeView->hide();
     mListView->show();
-    mViewModeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconTreeView.svg" ) ) );
+    mViewModeButton->setIcon( QgsApplication::getThemeIcon( u"mIconTreeView.svg"_s ) );
   }
 }
 
@@ -630,7 +625,7 @@ void QgsGrassToolsTreeFilterProxyModel::setFilter( const QString &filter )
     return;
   }
   mFilter = filter;
-  mRegExp = QRegularExpression( QRegularExpression::wildcardToRegularExpression( QStringLiteral( "*%1*" ).arg( mFilter.trimmed() ) ), QRegularExpression::CaseInsensitiveOption );
+  mRegExp = QRegularExpression( QRegularExpression::wildcardToRegularExpression( u"*%1*"_s.arg( mFilter.trimmed() ) ), QRegularExpression::CaseInsensitiveOption );
 
   invalidateFilter();
 }

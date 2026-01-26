@@ -18,12 +18,12 @@
 #ifndef QGSSINGLEBANDGRAYRENDERER_H
 #define QGSSINGLEBANDGRAYRENDERER_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrasterrenderer.h"
 #include "qgscolorramplegendnodesettings.h"
-
-#include <memory>
+#include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
 class QDomElement;
@@ -82,7 +82,8 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const override;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Returns the color ramp shader legend settings.
@@ -102,6 +103,17 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
      */
     void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
 
+    /**
+     * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
+     * If \a min or \a max size is greater than 1, the last values are ignored.
+     * If \a forceRefresh is TRUE, this will force the refresh even if needsRefresh() returns FALSE.
+     * \returns TRUE if the renderer has been refreshed
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    bool refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh = false ) override SIP_SKIP;
+
   private:
 #ifdef SIP_RUN
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
@@ -109,7 +121,7 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
 #endif
 
     int mGrayBand;
-    Gradient mGradient;
+    Gradient mGradient = BlackToWhite;
     std::unique_ptr< QgsContrastEnhancement > mContrastEnhancement;
     std::unique_ptr< QgsColorRampLegendNodeSettings > mLegendSettings;
 };

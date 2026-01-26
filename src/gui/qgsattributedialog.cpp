@@ -17,12 +17,14 @@
 
 #include "qgsattributedialog.h"
 
+#include "qgsactionmenu.h"
 #include "qgsattributeform.h"
 #include "qgshighlight.h"
-#include "qgssettings.h"
-#include "qgsmessagebar.h"
-#include "qgsactionmenu.h"
 #include "qgsmaplayeractioncontext.h"
+#include "qgsmessagebar.h"
+#include "qgssettings.h"
+
+#include "moc_qgsattributedialog.cpp"
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )
@@ -48,14 +50,14 @@ void QgsAttributeDialog::saveGeometry()
 {
   // WARNING!!!! Don't use QgsGui::enableAutoGeometryRestore for this dialog -- the object name
   // is dynamic and is set to match the layer/feature combination.
-  QgsSettings().setValue( QStringLiteral( "Windows/AttributeDialog/geometry" ), QDialog::saveGeometry() );
+  QgsSettings().setValue( u"Windows/AttributeDialog/geometry"_s, QDialog::saveGeometry() );
 }
 
 void QgsAttributeDialog::restoreGeometry()
 {
   // WARNING!!!! Don't use QgsGui::enableAutoGeometryRestore for this dialog -- the object name
   // is dynamic and is set to match the layer/feature combination.
-  QDialog::restoreGeometry( QgsSettings().value( QStringLiteral( "Windows/AttributeDialog/geometry" ) ).toByteArray() );
+  QDialog::restoreGeometry( QgsSettings().value( u"Windows/AttributeDialog/geometry"_s ).toByteArray() );
 }
 
 void QgsAttributeDialog::setHighlight( QgsHighlight *h )
@@ -78,9 +80,7 @@ void QgsAttributeDialog::accept()
     if ( error.isEmpty() )
       error = tr( "An unknown error was encountered saving attributes" );
 
-    mMessageBar->pushMessage( QString(),
-                              error,
-                              Qgis::MessageLevel::Critical );
+    mMessageBar->pushMessage( QString(), error, Qgis::MessageLevel::Critical );
   }
 }
 
@@ -138,7 +138,7 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
   connect( layer, &QObject::destroyed, this, &QWidget::close );
 
-  mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
+  mMenu = new QgsActionMenu( layer, mAttributeForm->feature(), u"Feature"_s, this );
   mMenu->setActionContextGenerator( this );
   if ( !mMenu->isEmpty() )
   {
@@ -190,4 +190,3 @@ QgsMapLayerActionContext QgsAttributeDialog::createActionContext()
   context.setMessageBar( mMessageBar );
   return context;
 }
-

@@ -16,8 +16,20 @@
 
 #include "qgsoptionsdialogbase.h"
 
+#include <functional>
+
+#include "qgsapplication.h"
+#include "qgsfilterlineedit.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgsoptionsdialoghighlightwidget.h"
+#include "qgsoptionswidgetfactory.h"
+#include "qgsscrollarea.h"
+#include "qgsvariantutils.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QHeaderView>
 #include <QLayout>
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -26,20 +38,11 @@
 #include <QScrollBar>
 #include <QSplitter>
 #include <QStackedWidget>
-#include <QTimer>
 #include <QStandardItem>
+#include <QTimer>
 #include <QTreeView>
-#include <QHeaderView>
-#include <functional>
 
-#include "qgsfilterlineedit.h"
-#include "qgslogger.h"
-#include "qgsoptionsdialoghighlightwidget.h"
-#include "qgsoptionswidgetfactory.h"
-#include "qgsguiutils.h"
-#include "qgsapplication.h"
-#include "qgsvariantutils.h"
-#include "qgsscrollarea.h"
+#include "moc_qgsoptionsdialogbase.cpp"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QDialog( parent, fl )
@@ -52,9 +55,9 @@ QgsOptionsDialogBase::~QgsOptionsDialogBase()
 {
   if ( mInit )
   {
-    mSettings->setValue( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ), saveGeometry() );
-    mSettings->setValue( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ), mOptSplitter->saveState() );
-    mSettings->setValue( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), mOptStackedWidget->currentIndex() );
+    mSettings->setValue( u"/Windows/%1/geometry"_s.arg( mOptsKey ), saveGeometry() );
+    mSettings->setValue( u"/Windows/%1/splitState"_s.arg( mOptsKey ), mOptSplitter->saveState() );
+    mSettings->setValue( u"/Windows/%1/tab"_s.arg( mOptsKey ), mOptStackedWidget->currentIndex() );
   }
 
   if ( mDelSettings ) // local settings obj to delete
@@ -92,34 +95,34 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   }
 
   // start with copy of qgsoptionsdialog_template.ui to ensure existence of these objects
-  mOptListWidget = findChild<QListWidget *>( QStringLiteral( "mOptionsListWidget" ) );
-  mOptTreeView = findChild<QTreeView *>( QStringLiteral( "mOptionsTreeView" ) );
+  mOptListWidget = findChild<QListWidget *>( u"mOptionsListWidget"_s );
+  mOptTreeView = findChild<QTreeView *>( u"mOptionsTreeView"_s );
   if ( mOptTreeView )
   {
-    mOptTreeModel = qobject_cast< QStandardItemModel * >( mOptTreeView->model() );
+    mOptTreeModel = qobject_cast<QStandardItemModel *>( mOptTreeView->model() );
     mTreeProxyModel = new QgsOptionsProxyModel( this );
     mTreeProxyModel->setSourceModel( mOptTreeModel );
     mOptTreeView->setModel( mTreeProxyModel );
     mOptTreeView->expandAll();
   }
 
-  QFrame *optionsFrame = findChild<QFrame *>( QStringLiteral( "mOptionsFrame" ) );
-  mOptStackedWidget = findChild<QStackedWidget *>( QStringLiteral( "mOptionsStackedWidget" ) );
-  mOptSplitter = findChild<QSplitter *>( QStringLiteral( "mOptionsSplitter" ) );
-  mOptButtonBox = findChild<QDialogButtonBox *>( QStringLiteral( "buttonBox" ) );
-  QFrame *buttonBoxFrame = findChild<QFrame *>( QStringLiteral( "mButtonBoxFrame" ) );
-  mSearchLineEdit = findChild<QgsFilterLineEdit *>( QStringLiteral( "mSearchLineEdit" ) );
+  QFrame *optionsFrame = findChild<QFrame *>( u"mOptionsFrame"_s );
+  mOptStackedWidget = findChild<QStackedWidget *>( u"mOptionsStackedWidget"_s );
+  mOptSplitter = findChild<QSplitter *>( u"mOptionsSplitter"_s );
+  mOptButtonBox = findChild<QDialogButtonBox *>( u"buttonBox"_s );
+  QFrame *buttonBoxFrame = findChild<QFrame *>( u"mButtonBoxFrame"_s );
+  mSearchLineEdit = findChild<QgsFilterLineEdit *>( u"mSearchLineEdit"_s );
 
   if ( ( !mOptListWidget && !mOptTreeView ) || !mOptStackedWidget || !mOptSplitter || !optionsFrame )
   {
     return;
   }
 
-  QAbstractItemView *optView = mOptListWidget ? static_cast< QAbstractItemView * >( mOptListWidget ) : static_cast< QAbstractItemView * >( mOptTreeView );
+  QAbstractItemView *optView = mOptListWidget ? static_cast<QAbstractItemView *>( mOptListWidget ) : static_cast<QAbstractItemView *>( mOptTreeView );
   int iconSize = 16;
   if ( mOptListWidget )
   {
-    int size = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 24 ).toInt() );
+    int size = QgsGuiUtils::scaleIconSize( mSettings->value( u"/IconSize"_s, 24 ).toInt() );
     // buffer size to match displayed icon size in toolbars, and expected geometry restore
     // newWidth (above) may need adjusted if you adjust iconBuffer here
     const int iconBuffer = QgsGuiUtils::scaleIconSize( 4 );
@@ -127,7 +130,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   }
   else if ( mOptTreeView )
   {
-    iconSize = QgsGuiUtils::scaleIconSize( mSettings->value( QStringLiteral( "/IconSize" ), 16 ).toInt() );
+    iconSize = QgsGuiUtils::scaleIconSize( mSettings->value( u"/IconSize"_s, 16 ).toInt() );
     mOptTreeView->header()->setVisible( false );
   }
   optView->setIconSize( QSize( iconSize, iconSize ) );
@@ -162,8 +165,7 @@ void QgsOptionsDialogBase::initOptionsBase( bool restoreUi, const QString &title
   if ( mOptTreeView )
   {
     // sync selection in tree view with current stacked widget index
-    connect( mOptTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, mOptStackedWidget, [ = ]( const QItemSelection &, const QItemSelection & )
-    {
+    connect( mOptTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, mOptStackedWidget, [this]( const QItemSelection &, const QItemSelection & ) {
       const QModelIndexList selected = mOptTreeView->selectionModel()->selectedIndexes();
       if ( selected.isEmpty() )
         return;
@@ -222,19 +224,20 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
   }
   updateWindowTitle();
 
-  restoreGeometry( mSettings->value( QStringLiteral( "/Windows/%1/geometry" ).arg( mOptsKey ) ).toByteArray() );
+  restoreGeometry( mSettings->value( u"/Windows/%1/geometry"_s.arg( mOptsKey ) ).toByteArray() );
   // mOptListWidget width is fixed to take up less space in QtDesigner
   // revert it now unless the splitter's state hasn't been saved yet
-  QAbstractItemView *optView = mOptListWidget ? static_cast< QAbstractItemView * >( mOptListWidget ) : static_cast< QAbstractItemView * >( mOptTreeView );
+  QAbstractItemView *optView = mOptListWidget ? static_cast<QAbstractItemView *>( mOptListWidget ) : static_cast<QAbstractItemView *>( mOptTreeView );
   if ( optView )
   {
     optView->setMaximumWidth(
-      QgsVariantUtils::isNull( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ) ) ? 150 : 16777215 );
+      QgsVariantUtils::isNull( mSettings->value( u"/Windows/%1/splitState"_s.arg( mOptsKey ) ) ) ? 150 : 16777215
+    );
     // get rid of annoying outer focus rect on Mac
     optView->setAttribute( Qt::WA_MacShowFocusRect, false );
   }
 
-  mOptSplitter->restoreState( mSettings->value( QStringLiteral( "/Windows/%1/splitState" ).arg( mOptsKey ) ).toByteArray() );
+  mOptSplitter->restoreState( mSettings->value( u"/Windows/%1/splitState"_s.arg( mOptsKey ) ).toByteArray() );
 
   restoreLastPage();
 
@@ -250,7 +253,7 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
 void QgsOptionsDialogBase::restoreLastPage()
 {
-  int curIndx = mSettings->value( QStringLiteral( "/Windows/%1/tab" ).arg( mOptsKey ), 0 ).toInt();
+  int curIndx = mSettings->value( u"/Windows/%1/tab"_s.arg( mOptsKey ), 0 ).toInt();
 
   // if the last used tab is out of range or not enabled display the first enabled one
   if ( mOptStackedWidget->count() < curIndx + 1
@@ -430,7 +433,7 @@ void QgsOptionsDialogBase::insertPage( const QString &title, const QString &tool
       else if ( mOptTreeModel )
       {
         QModelIndex sourceIndexBefore = mTreeProxyModel->pageNumberToSourceIndex( page );
-        QList< QModelIndex > sourceBeforeIndices;
+        QList<QModelIndex> sourceBeforeIndices;
         while ( sourceIndexBefore.parent().isValid() )
         {
           sourceBeforeIndices.insert( 0, sourceIndexBefore );
@@ -542,7 +545,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
       }
     }
 
-    for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
+    for ( const QPair<QgsOptionsDialogHighlightWidget *, int> &rsw : std::as_const( mRegisteredSearchWidgets ) )
     {
       if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
       {
@@ -552,7 +555,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
   }
   else if ( mTreeProxyModel )
   {
-    QMap< int, bool > hiddenPages;
+    QMap<int, bool> hiddenPages;
     for ( int r = 0; r < mOptStackedWidget->count(); ++r )
     {
       hiddenPages.insert( r, text.length() >= minimumTextLength );
@@ -560,8 +563,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
 
     std::function<void( const QModelIndex & )> traverseModel;
     // traverse through the model, showing pages which match by page name
-    traverseModel = [&]( const QModelIndex & parent )
-    {
+    traverseModel = [&]( const QModelIndex &parent ) {
       for ( int row = 0; row < mOptTreeModel->rowCount( parent ); ++row )
       {
         const QModelIndex currentIndex = mOptTreeModel->index( row, 0, parent );
@@ -574,7 +576,7 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     };
     traverseModel( QModelIndex() );
 
-    for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : std::as_const( mRegisteredSearchWidgets ) )
+    for ( const QPair<QgsOptionsDialogHighlightWidget *, int> &rsw : std::as_const( mRegisteredSearchWidgets ) )
     {
       if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
       {
@@ -609,14 +611,13 @@ void QgsOptionsDialogBase::searchText( const QString &text )
     if ( mOptButtonBox )
       mOptButtonBox->hide();
   }
-  else if ( mOptTreeView )
+  else if ( mOptTreeView && mTreeProxyModel )
   {
     const QModelIndex currentSourceIndex = mTreeProxyModel->pageNumberToSourceIndex( mOptStackedWidget->currentIndex() );
     if ( !mTreeProxyModel->filterAcceptsRow( currentSourceIndex.row(), currentSourceIndex.parent() ) )
     {
       std::function<QModelIndex( const QModelIndex & )> traverseModel;
-      traverseModel = [&]( const QModelIndex & parent ) -> QModelIndex
-      {
+      traverseModel = [&]( const QModelIndex &parent ) -> QModelIndex {
         for ( int row = 0; row < mTreeProxyModel->rowCount(); ++row )
         {
           const QModelIndex proxyIndex = mTreeProxyModel->index( row, 0, parent );
@@ -663,7 +664,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
 
   for ( int i = 0; i < mOptStackedWidget->count(); i++ )
   {
-    const QList< QWidget * > widgets = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
+    const QList<QWidget *> widgets = mOptStackedWidget->widget( i )->findChildren<QWidget *>();
     for ( QWidget *widget : widgets )
     {
       // see if the widget also inherits QgsOptionsDialogHighlightWidget
@@ -690,7 +691,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
       }
       if ( shw && shw->isValid() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "Registering: %1" ).arg( widget->objectName() ), 4 );
+        QgsDebugMsgLevel( u"Registering: %1"_s.arg( widget->objectName() ), 4 );
         mRegisteredSearchWidgets.append( qMakePair( shw, i ) );
       }
       else
@@ -745,14 +746,15 @@ void QgsOptionsDialogBase::paintEvent( QPaintEvent *e )
 
 void QgsOptionsDialogBase::updateWindowTitle()
 {
-  const QString itemText = mOptListWidget && mOptListWidget->currentItem() ? mOptListWidget->currentItem()->text()
-                           : mOptTreeView && mOptTreeView->currentIndex().isValid() ? mOptTreeView->currentIndex().data( Qt::DisplayRole ).toString() : QString();
+  const QString itemText = mOptListWidget && mOptListWidget->currentItem()          ? mOptListWidget->currentItem()->text()
+                           : mOptTreeView && mOptTreeView->currentIndex().isValid() ? mOptTreeView->currentIndex().data( Qt::DisplayRole ).toString()
+                                                                                    : QString();
   if ( !itemText.isEmpty() )
   {
-    setWindowTitle( QStringLiteral( "%1 %2 %3" )
-                    .arg( mDialogTitle )
-                    .arg( QChar( 0x2014 ) ) // em-dash unicode
-                    .arg( itemText ) );
+    setWindowTitle( u"%1 %2 %3"_s
+                      .arg( mDialogTitle )
+                      .arg( QChar( 0x2014 ) ) // em-dash unicode
+                      .arg( itemText ) );
   }
   else
   {
@@ -765,7 +767,7 @@ void QgsOptionsDialogBase::updateOptionsListVerticalTabs()
   if ( !mInit )
     return;
 
-  QAbstractItemView *optView = mOptListWidget ? static_cast< QAbstractItemView * >( mOptListWidget ) : static_cast< QAbstractItemView * >( mOptTreeView );
+  QAbstractItemView *optView = mOptListWidget ? static_cast<QAbstractItemView *>( mOptListWidget ) : static_cast<QAbstractItemView *>( mOptTreeView );
   if ( optView )
   {
     if ( optView->maximumWidth() != 16777215 )
@@ -833,7 +835,7 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int index )
     mOptTreeModel->removeRow( index );
   }
 
-  QList<QPair< QgsOptionsDialogHighlightWidget *, int > >::iterator it = mRegisteredSearchWidgets.begin();
+  QList<QPair<QgsOptionsDialogHighlightWidget *, int>>::iterator it = mRegisteredSearchWidgets.begin();
   while ( it != mRegisteredSearchWidgets.end() )
   {
     if ( ( *it ).second == index )
@@ -845,12 +847,10 @@ void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int index )
 
 void QgsOptionsDialogBase::warnAboutMissingObjects()
 {
-  QMessageBox::warning( nullptr, tr( "Missing Objects" ),
-                        tr( "Base options dialog could not be initialized.\n\n"
-                            "Missing some of the .ui template objects:\n" )
-                        + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter,\n mOptionsListFrame",
-                        QMessageBox::Ok,
-                        QMessageBox::Ok );
+  QMessageBox::warning( nullptr, tr( "Missing Objects" ), tr( "Base options dialog could not be initialized.\n\n"
+                                                              "Missing some of the .ui template objects:\n" )
+                                                            + " mOptionsListWidget,\n mOptionsStackedWidget,\n mOptionsSplitter,\n mOptionsListFrame",
+                        QMessageBox::Ok, QMessageBox::Ok );
 }
 
 
@@ -863,13 +863,13 @@ QgsOptionsProxyModel::QgsOptionsProxyModel( QObject *parent )
 
 void QgsOptionsProxyModel::setPageHidden( int page, bool hidden )
 {
-  mHiddenPages[ page ] = hidden;
+  mHiddenPages[page] = hidden;
   invalidateFilter();
 }
 
 QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
 {
-  QStandardItemModel *itemModel = qobject_cast< QStandardItemModel * >( sourceModel() );
+  QStandardItemModel *itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
   if ( !itemModel )
     return QModelIndex();
 
@@ -877,8 +877,7 @@ QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
   std::function<QModelIndex( const QModelIndex & )> traversePages;
 
   // traverse through the model, counting all selectable items until we hit the desired page number
-  traversePages = [&]( const QModelIndex & parent ) -> QModelIndex
-  {
+  traversePages = [&]( const QModelIndex &parent ) -> QModelIndex {
     for ( int row = 0; row < itemModel->rowCount( parent ); ++row )
     {
       const QModelIndex currentIndex = itemModel->index( row, 0, parent );
@@ -887,7 +886,8 @@ QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
         if ( pagesRemaining == 0 )
           return currentIndex;
 
-        else pagesRemaining--;
+        else
+          pagesRemaining--;
       }
 
       const QModelIndex res = traversePages( currentIndex );
@@ -902,7 +902,7 @@ QModelIndex QgsOptionsProxyModel::pageNumberToSourceIndex( int page ) const
 
 int QgsOptionsProxyModel::sourceIndexToPageNumber( const QModelIndex &index ) const
 {
-  QStandardItemModel *itemModel = qobject_cast< QStandardItemModel * >( sourceModel() );
+  QStandardItemModel *itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
   if ( !itemModel )
     return 0;
 
@@ -911,8 +911,7 @@ int QgsOptionsProxyModel::sourceIndexToPageNumber( const QModelIndex &index ) co
   std::function<int( const QModelIndex & )> traverseModel;
 
   // traverse through the model, counting all which correspond to pages till we hit the desired index
-  traverseModel = [&]( const QModelIndex & parent ) -> int
-  {
+  traverseModel = [&]( const QModelIndex &parent ) -> int {
     for ( int row = 0; row < itemModel->rowCount( parent ); ++row )
     {
       const QModelIndex currentIndex = itemModel->index( row, 0, parent );
@@ -934,7 +933,7 @@ int QgsOptionsProxyModel::sourceIndexToPageNumber( const QModelIndex &index ) co
 
 bool QgsOptionsProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
-  QStandardItemModel *itemModel = qobject_cast< QStandardItemModel * >( sourceModel() );
+  QStandardItemModel *itemModel = qobject_cast<QStandardItemModel *>( sourceModel() );
   if ( !itemModel )
     return true;
 

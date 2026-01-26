@@ -15,13 +15,15 @@
  ***************************************************************************/
 #include "qgstransactiongroup.h"
 
-#include "qgstransaction.h"
-#include "qgsvectorlayer.h"
 #include "qgsdatasourceuri.h"
-#include "qgsvectordataprovider.h"
 #include "qgslogger.h"
+#include "qgstransaction.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QTimer>
+
+#include "moc_qgstransactiongroup.cpp"
 
 QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
   : QObject( parent )
@@ -81,13 +83,22 @@ void QgsTransactionGroup::onEditingStarted()
   QString errorMsg;
   mTransaction->begin( errorMsg );
 
+  const auto triggeringLayer = qobject_cast<QgsVectorLayer *>( sender() );
+
   const auto constMLayers = mLayers;
   for ( QgsVectorLayer *layer : constMLayers )
   {
     mTransaction->addLayer( layer, true );
-    layer->startEditing();
+
+    // Do not start editing the triggering layer, it will be started by the caller
+    if ( layer != triggeringLayer )
+    {
+      layer->startEditing();
+    }
+
     connect( layer, &QgsVectorLayer::beforeCommitChanges, this, &QgsTransactionGroup::onBeforeCommitChanges );
     connect( layer, &QgsVectorLayer::beforeRollBack, this, &QgsTransactionGroup::onRollback );
+
   }
 }
 
@@ -125,7 +136,7 @@ void QgsTransactionGroup::onBeforeCommitChanges( bool stopEditing )
     {
       if ( ! mTransaction->begin( errMsg ) )
       {
-        QgsDebugError( QStringLiteral( "Could not restart a transaction for %1: %2" ).arg( triggeringLayer->name() ).arg( errMsg ) );
+        QgsDebugError( u"Could not restart a transaction for %1: %2"_s.arg( triggeringLayer->name() ).arg( errMsg ) );
       }
     }
 

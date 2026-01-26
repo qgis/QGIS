@@ -14,9 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoolpan.h"
-#include "qgsmodelviewmouseevent.h"
+
 #include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+
 #include <QScrollBar>
+
+#include "moc_qgsmodelviewtoolpan.cpp"
 
 QgsModelViewToolPan::QgsModelViewToolPan( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Pan" ) )

@@ -27,13 +27,13 @@
 // version without notice, or even be removed.
 //
 
-#include "qgscoordinatetransform.h"
+#include "qgs3drendercontext.h"
 #include "qgschunkedentity.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenetile.h"
-#include "qgs3drendercontext.h"
 
 #include <QFutureWatcher>
 
@@ -44,7 +44,7 @@ class QgsTiledSceneChunkLoaderFactory;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief This loader class is responsible for async loading of data for a single tile
  * of tiled scene chunk entity and creation of final 3D entity from the data
  * previously prepared in a worker thread.
@@ -56,13 +56,16 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
     Q_OBJECT
   public:
     QgsTiledSceneChunkLoader( QgsChunkNode *node, const QgsTiledSceneIndex &index, const QgsTiledSceneChunkLoaderFactory &factory, double zValueScale, double zValueOffset );
+    void start() override;
 
-    ~QgsTiledSceneChunkLoader();
+    ~QgsTiledSceneChunkLoader() override;
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent );
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsTiledSceneChunkLoaderFactory &mFactory;
+    double mZValueScale;
+    double mZValueOffset;
     QgsTiledSceneIndex mIndex;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     Qt3DCore::QEntity *mEntity = nullptr;
@@ -70,7 +73,7 @@ class QgsTiledSceneChunkLoader : public QgsChunkLoader
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief This loader factory is responsible for creation of loaders for individual tiles
  * of tiled scene chunk entity whenever a new tile is requested by the entity.
  *
@@ -81,15 +84,20 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
   public:
     QgsTiledSceneChunkLoaderFactory(
-      const Qgs3DRenderContext &context, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs,
-      double zValueScale, double zValueOffset );
+      const Qgs3DRenderContext &context,
+      const QgsTiledSceneIndex &index,
+      QgsCoordinateReferenceSystem tileCrs,
+      QgsCoordinateReferenceSystem layerCrs,
+      double zValueScale,
+      double zValueOffset
+    );
 
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
-    virtual QgsChunkNode *createRootNode() const override;
-    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
-    virtual bool canCreateChildren( QgsChunkNode *node ) override;
-    virtual void prepareChildren( QgsChunkNode *node ) override;
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    void prepareChildren( QgsChunkNode *node ) override;
 
     QgsChunkNode *nodeForTile( const QgsTiledSceneTile &t, const QgsChunkNodeId &nodeId, QgsChunkNode *parent ) const;
     void fetchHierarchyForNode( long long nodeId, QgsChunkNode *origNode );
@@ -100,13 +108,14 @@ class QgsTiledSceneChunkLoaderFactory : public QgsChunkLoaderFactory
     double mZValueScale = 1.0;
     double mZValueOffset = 0;
     QgsCoordinateTransform mBoundsTransform;
+    QgsCoordinateReferenceSystem mLayerCrs;
     QSet<long long> mPendingHierarchyFetches;
     QSet<long long> mFutureHierarchyFetches;
 };
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D entity used for rendering of tiled scene layers.
  *
  * It is implemented using tiling approach with QgsChunkedEntity. Internally it uses
@@ -119,12 +128,11 @@ class QgsTiledSceneLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, double maximumScreenError, bool showBoundingBoxes,
-        double zValueScale, double zValueOffset );
+    explicit QgsTiledSceneLayerChunkedEntity( Qgs3DMapSettings *map, const QgsTiledSceneIndex &index, QgsCoordinateReferenceSystem tileCrs, QgsCoordinateReferenceSystem layerCrs, double maximumScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset );
 
-    ~QgsTiledSceneLayerChunkedEntity();
+    ~QgsTiledSceneLayerChunkedEntity() override;
 
-    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
     int pendingJobsCount() const override;
 

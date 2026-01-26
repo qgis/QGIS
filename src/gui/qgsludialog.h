@@ -19,15 +19,17 @@
 #define QGSLUDIALOG_H
 
 #include "ui_qgsludialogbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsguiutils.h"
 
 /**
  * \ingroup gui
  * \class QgsLUDialog
+ * \brief A dialog for setting a lower and upper range value.
  */
-class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
+class GUI_EXPORT QgsLUDialog : public QDialog, private Ui::QgsLUDialogBase
 {
     Q_OBJECT
   public:
@@ -50,7 +52,6 @@ class GUI_EXPORT QgsLUDialog: public QDialog, private Ui::QgsLUDialogBase
     void setUpperValue( const QString &val );
 
   private:
-
     void setDecimalPlaces( QgsDoubleSpinBox *widget, double value ) const;
 };
 

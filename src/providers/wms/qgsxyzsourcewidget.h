@@ -17,8 +17,10 @@
 #ifndef QGGXYZSOURCEWIDGET_H
 #define QGGXYZSOURCEWIDGET_H
 
-#include "qgsprovidersourcewidget.h"
 #include "ui_qgsxyzsourcewidgetbase.h"
+
+#include "qgsprovidersourcewidget.h"
+
 #include <QVariantMap>
 
 class QgsWmsInterpretationComboBox;
@@ -64,7 +66,6 @@ class QgsXyzSourceWidget : public QgsProviderSourceWidget, private Ui::QgsXyzSou
     void validate();
 
   private:
-
     QVariantMap mSourceParts;
     bool mIsValid = false;
 

@@ -16,20 +16,20 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsaveselectedfeatures.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Selected features" ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Selected features" ) ) );
 }
 
 QString QgsSaveSelectedFeatures::name() const
 {
-  return QStringLiteral( "saveselectedfeatures" );
+  return u"saveselectedfeatures"_s;
 }
 
 QString QgsSaveSelectedFeatures::displayName() const
@@ -49,13 +49,18 @@ QString QgsSaveSelectedFeatures::group() const
 
 QString QgsSaveSelectedFeatures::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsSaveSelectedFeatures::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a new layer with all the selected features in a given vector layer.\n\n"
                       "If the selected layer has no selected features, the newly created layer will be empty." );
+}
+
+QString QgsSaveSelectedFeatures::shortDescription() const
+{
+  return QObject::tr( "Creates a layer with all the selected features in a given vector layer." );
 }
 
 QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
@@ -65,9 +70,9 @@ QgsSaveSelectedFeatures *QgsSaveSelectedFeatures::createInstance() const
 
 bool QgsSaveSelectedFeatures::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !selectLayer )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   mSelection = selectLayer->selectedFeatureIds();
   return true;
@@ -75,14 +80,14 @@ bool QgsSaveSelectedFeatures::prepareAlgorithm( const QVariantMap &parameters, Q
 
 QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsVectorLayer *selectLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
   if ( !selectLayer )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, selectLayer->fields(), selectLayer->wkbType(), selectLayer->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, selectLayer->fields(), selectLayer->wkbType(), selectLayer->sourceCrs() ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
 
   const int count = mSelection.count();
@@ -99,17 +104,16 @@ QVariantMap QgsSaveSelectedFeatures::processAlgorithm( const QVariantMap &parame
     }
 
     if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
 
     feedback->setProgress( current++ * step );
   }
 
+  sink->finalize();
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
   return outputs;
 }
 
 ///@endcond
-
-
-

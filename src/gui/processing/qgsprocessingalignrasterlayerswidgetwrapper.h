@@ -18,12 +18,12 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingcontext.h"
-#include "qgsprocessingwidgetwrapper.h"
-#include "qgsprocessingmultipleselectiondialog.h"
-#include "qgsalignrasterdata.h"
-
 #include "ui_qgsprocessingalignrasterlayerdetailswidgetbase.h"
+
+#include "qgsalignrasterdata.h"
+#include "qgsprocessingcontext.h"
+#include "qgsprocessingmultipleselectiondialog.h"
+#include "qgsprocessingwidgetwrapper.h"
 
 class QLineEdit;
 class QToolButton;
@@ -51,14 +51,14 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersPanelWidget : public QgsProcessin
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingAlignRasterLayersPanelWidget.
      */
     QgsProcessingAlignRasterLayersPanelWidget(
       const QVariant &value,
       QgsProject *project,
-      QWidget *parent SIP_TRANSFERTHIS = nullptr );
+      QWidget *parent SIP_TRANSFERTHIS = nullptr
+    );
 
   private slots:
 
@@ -78,7 +78,6 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidget : public QWidget
     Q_OBJECT
 
   public:
-
     QgsProcessingAlignRasterLayersWidget( QWidget *parent = nullptr );
 
     QVariant value() const { return mValue; }
@@ -95,7 +94,6 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidget : public QWidget
     void showDialog();
 
   private:
-
     void updateSummaryText();
 
     QLineEdit *mLineEdit = nullptr;
@@ -114,28 +112,21 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidgetWrapper : public QgsAbstrac
     Q_OBJECT
 
   public:
-
-    QgsProcessingAlignRasterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+    QgsProcessingAlignRasterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, Qgis::ProcessingMode type = Qgis::ProcessingMode::Standard, QWidget *parent = nullptr );
 
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
-    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;
+    QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type ) override;
 
     // QgsProcessingParameterWidgetWrapper interface
     QWidget *createWidget() override SIP_FACTORY;
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
 
   protected:
-
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
-    QStringList compatibleParameterTypes() const override;
-    QStringList compatibleOutputTypes() const override;
-
   private:
-
     QgsProcessingAlignRasterLayersWidget *mPanel = nullptr;
 
     friend class TestProcessingGui;

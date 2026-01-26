@@ -13,21 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapcanvas.h"
 #include "qgsgeoreftooladdpoint.h"
+
+#include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 
-QgsGeorefToolAddPoint::QgsGeorefToolAddPoint( QgsMapCanvas *canvas )
-  : QgsMapToolEmitPoint( canvas )
+#include "moc_qgsgeoreftooladdpoint.cpp"
+
+QgsGeorefToolAddPoint::QgsGeorefToolAddPoint( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *advancedDigitizingDockWidget )
+  : QgsMapToolCapture( canvas, advancedDigitizingDockWidget, QgsMapToolCapture::CaptureMode::CapturePoint )
 {
 }
 
-// Mouse press event for overriding
-void QgsGeorefToolAddPoint::canvasPressEvent( QgsMapMouseEvent *e )
+void QgsGeorefToolAddPoint::pointCaptured( const QgsPoint &point )
 {
-  // Only add point on Qt:LeftButton
-  if ( Qt::LeftButton == e->button() )
-  {
-    emit showCoordDialog( toMapCoordinates( e->pos() ) );
-  }
+  emit showCoordDialog( point );
 }

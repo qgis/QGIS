@@ -17,10 +17,11 @@
 #define QGSLABELLINEANCHORWIDGET_H
 
 #include "ui_qgslabellineanchorwidgetbase.h"
-#include "qgslabelsettingswidgetbase.h"
-#include "qgspallabeling.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgslabelsettingswidgetbase.h"
+#include "qgspallabeling.h"
 
 /**
  * \ingroup gui
@@ -33,7 +34,6 @@ class GUI_EXPORT QgsLabelLineAnchorWidget : public QgsLabelSettingsWidgetBase, p
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelLineAnchorWidget.
      * \param parent parent widget
@@ -58,7 +58,6 @@ class GUI_EXPORT QgsLabelLineAnchorWidget : public QgsLabelSettingsWidgetBase, p
     void updateDataDefinedProperties( QgsPropertyCollection &properties ) override;
 
   private:
-
     bool mBlockSignals = false;
 
     void updateAnchorTypeHint();

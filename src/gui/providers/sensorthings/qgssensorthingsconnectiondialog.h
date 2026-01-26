@@ -19,10 +19,9 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include <QDialog>
-
 #include "ui_qgssensorthingsconnectiondialog.h"
 
+#include <QDialog>
 
 struct QgsSensorThingsConnection;
 

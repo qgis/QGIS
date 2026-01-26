@@ -18,13 +18,13 @@
 
 #include "qgis_3d.h"
 
-#include <QString>
-#include <QObject>
 #include <QDir>
+#include <QObject>
+#include <QString>
 
 /**
- * \brief Manages the various settings the user can choose from when exporting a 3D scene
- * \ingroup 3d
+ * \brief Manages the various settings the user can choose from when exporting a 3D scene.
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT Qgs3DMapExportSettings

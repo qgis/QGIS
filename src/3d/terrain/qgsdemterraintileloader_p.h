@@ -29,16 +29,16 @@
 
 #define SIP_NO_FILE
 
-#include <QtConcurrent/QtConcurrentRun>
-#include <QFutureWatcher>
-#include <QElapsedTimer>
-#include <QMutex>
-
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader.h"
 #include "qgstilingscheme.h"
+
+#include <QElapsedTimer>
+#include <QFutureWatcher>
+#include <QMutex>
+#include <QtConcurrent/QtConcurrentRun>
 
 class QgsRasterDataProvider;
 class QgsRasterLayer;
@@ -46,7 +46,7 @@ class QgsCoordinateTransformContext;
 class QgsTerrainGenerator;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Chunk loader for DEM terrain tiles.
  */
 class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
@@ -56,31 +56,32 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     //! Constructs loader for the given chunk node
     QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node, QgsTerrainGenerator *terrainGenerator );
 
+    void start() override;
+
     Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private slots:
     void onHeightMapReady( int jobId, const QByteArray &heightMap );
 
   private:
-
-    int mHeightMapJobId;
+    int mHeightMapJobId = -1;
     QByteArray mHeightMap;
-    int mResolution;
-    float mSkirtHeight;
+    int mResolution = 0;
+    float mSkirtHeight = 0;
+    QgsTerrainGenerator *mTerrainGenerator;
 };
 
 
 class QgsTerrainDownloader;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Utility class to asynchronously create heightmaps from DEM raster for given tiles of terrain.
  */
 class QgsDemHeightMapGenerator : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructs height map generator based on a raster layer with elevation model,
      * terrain's tiling scheme and height map resolution (number of height values on each side of tile)
@@ -118,20 +119,20 @@ class QgsDemHeightMapGenerator : public QObject
 
     int mResolution;
 
-    int mLastJobId;
+    int mLastJobId = 0;
 
     std::unique_ptr<QgsTerrainDownloader> mDownloader;
 
     struct JobData
     {
-      int jobId;
-      QgsChunkNodeId tileId;
-      QgsRectangle extent;
-      QFuture<QByteArray> future;
-      QElapsedTimer timer;
+        int jobId;
+        QgsChunkNodeId tileId;
+        QgsRectangle extent;
+        QFuture<QByteArray> future;
+        QElapsedTimer timer;
     };
 
-    QHash<QFutureWatcher<QByteArray>*, JobData> mJobs;
+    QHash<QFutureWatcher<QByteArray> *, JobData> mJobs;
 
     void lazyLoadDtmCoarseData( int res, const QgsRectangle &rect );
     mutable QMutex mLazyLoadDtmCoarseDataMutex;

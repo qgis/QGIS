@@ -29,15 +29,15 @@
 
 #define SIP_NO_FILE
 
-#include "qgsfieldconstraints.h"
-#include "qgseditorwidgetsetup.h"
-#include "qgsdefaultvalue.h"
-#include "qgsfield.h"
 #include "qgis.h"
+#include "qgsdefaultvalue.h"
+#include "qgseditorwidgetsetup.h"
+#include "qgsfield.h"
+#include "qgsfieldconstraints.h"
 
+#include <QSharedData>
 #include <QString>
 #include <QVariant>
-#include <QSharedData>
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -85,6 +85,7 @@ class QgsFieldPrivate : public QSharedData
       , editorWidgetSetup( other.editorWidgetSetup )
       , splitPolicy( other.splitPolicy )
       , duplicatePolicy( other.duplicatePolicy )
+      , mergePolicy( other.mergePolicy )
       , isReadOnly( other.isReadOnly )
     {
     }
@@ -101,6 +102,7 @@ class QgsFieldPrivate : public QSharedData
                && ( constraints == other.constraints )  && ( flags == other.flags )
                && ( splitPolicy == other.splitPolicy )
                && ( duplicatePolicy == other.duplicatePolicy )
+               && ( mergePolicy == other.mergePolicy )
                && ( isReadOnly == other.isReadOnly )
                && ( editorWidgetSetup == other.editorWidgetSetup ) );
     }
@@ -148,6 +150,9 @@ class QgsFieldPrivate : public QSharedData
 
     //! Duplicate policy
     Qgis::FieldDuplicatePolicy duplicatePolicy = Qgis::FieldDuplicatePolicy::Duplicate;
+
+    //! Merge policy
+    Qgis::FieldDomainMergePolicy mergePolicy = Qgis::FieldDomainMergePolicy::UnsetField;
 
     //! Read-only
     bool isReadOnly = false;

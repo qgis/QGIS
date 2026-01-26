@@ -18,11 +18,12 @@
 #define QGSELEVATIONPROFILEPDFEXPORTDIALOG_H
 
 #include "ui_qgselevationprofilepdfexportoptionsdialog.h"
+
 #include "qgslayoutmeasurementconverter.h"
 
 #include <QDialog>
 
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsElevationProfileExportSettingsWidget;
 
 /**
@@ -32,18 +33,17 @@ class QgsElevationProfilePdfExportDialog : public QDialog, private Ui::QgsElevat
 {
     Q_OBJECT
   public:
-
     QgsElevationProfilePdfExportDialog( QWidget *parent = nullptr );
 
     /**
      * Sets the initial plot settings to show in the widget.
      */
-    void setPlotSettings( const Qgs2DPlot &plot );
+    void setPlotSettings( const Qgs2DXyPlot &plot );
 
     /**
      * Updates plot settings based on the widget's state.
      */
-    void updatePlotSettings( Qgs2DPlot &plot );
+    void updatePlotSettings( Qgs2DXyPlot &plot );
 
     QgsLayoutSize pageSizeMM() const;
 
@@ -54,7 +54,6 @@ class QgsElevationProfilePdfExportDialog : public QDialog, private Ui::QgsElevat
     void setToCustomSize();
 
   private:
-
     QgsElevationProfileExportSettingsWidget *mProfileSettingsWidget = nullptr;
     QgsLayoutMeasurementConverter mConverter;
     bool mSettingPresetSize = false;

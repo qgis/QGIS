@@ -17,12 +17,10 @@
 #define QGSVECTORTILEUTILS_H
 
 #include "qgis_core.h"
+#include "qgshttpheaders.h"
 
 #include <QSet>
 #include <QVariantMap>
-
-#include "qgshttpheaders.h"
-
 
 class QPointF;
 class QPolygon;
@@ -41,7 +39,7 @@ class QgsMapBoxGlStyleConversionContext;
 
 /**
  * \ingroup core
- * \brief Random utility functions for working with vector tiles
+ * \brief Utility functions for working with vector tiles.
  *
  * \since QGIS 3.14
  */

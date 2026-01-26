@@ -18,13 +18,13 @@
 #ifndef QGSMAPTOOLLABEL_H
 #define QGSMAPTOOLLABEL_H
 
+#include "qgis_app.h"
+#include "qgscallout.h"
+#include "qgscalloutposition.h"
+#include "qgsdiagramrenderer.h"
+#include "qgslabelposition.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspallabeling.h"
-#include "qgslabelposition.h"
-#include "qgscalloutposition.h"
-#include "qgscallout.h"
-#include "qgsdiagramrenderer.h"
-#include "qgis_app.h"
 
 class QgsRubberBand;
 
@@ -33,14 +33,13 @@ typedef QMap<QgsDiagramLayerSettings::Property, int> QgsDiagramIndexes;
 typedef QMap<QgsCallout::Property, int> QgsCalloutIndexes;
 
 //! Base class for map tools that modify label properties
-class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
+class APP_EXPORT QgsMapToolLabel : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
 
   public:
     QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
     ~QgsMapToolLabel() override;
-
 
 
     void deactivate() override;
@@ -89,12 +88,12 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
 
     struct APP_EXPORT LabelDetails
     {
-      LabelDetails() = default;
-      explicit LabelDetails( const QgsLabelPosition &p, QgsMapCanvas *canvas );
-      bool valid = false;
-      QgsLabelPosition pos;
-      QgsVectorLayer *layer = nullptr;
-      QgsPalLayerSettings settings;
+        LabelDetails() = default;
+        explicit LabelDetails( const QgsLabelPosition &p, QgsMapCanvas *canvas );
+        bool valid = false;
+        QgsLabelPosition pos;
+        QgsVectorLayer *layer = nullptr;
+        QgsPalLayerSettings settings;
     };
 
     //! Currently dragged label position
@@ -186,7 +185,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
     QVariant evaluateDataDefinedProperty( QgsPalLayerSettings::Property property, const QgsPalLayerSettings &labelSettings, const QgsFeature &feature, const QVariant &defaultValue ) const;
 
     //! Returns whether to preserve predefined rotation data during label pin/unpin operations
-    bool currentLabelPreserveRotation();
+    bool currentLabelPreserveRotation() const;
 
     /**
      * Gets data defined position of current label
@@ -208,7 +207,8 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapToolAdvancedDigitizing
       double &lineAnchorPercent, bool &lineAnchorPercentSuccess, int &lineAnchorPercentCol,
       QString &lineAnchorClipping, bool &lineAnchorClippingSuccess, int &lineAnchorClippingCol,
       QString &lineAnchorType, bool &lineAnchorTypeSuccess, int &lineAnchorTypeCol,
-      QString &lineAnchorTextPoint, bool &lineAnchorTextPointSuccess, int &lineAnchorTextPointCol ) const;
+      QString &lineAnchorTextPoint, bool &lineAnchorTextPointSuccess, int &lineAnchorTextPointCol
+    ) const;
 
     /**
     * Returns data defined rotation of current label

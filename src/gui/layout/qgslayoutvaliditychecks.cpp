@@ -15,15 +15,15 @@
  ***************************************************************************/
 
 #include "qgslayoutvaliditychecks.h"
-#include "qgsvaliditycheckcontext.h"
-#include "qgslayoutitemscalebar.h"
+
+#include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
-#ifndef WITH_QTWEBKIT
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutmultiframe.h"
-#endif
-#include "qgslayout.h"
 #include "qgssettings.h"
+#include "qgsvaliditycheckcontext.h"
+
 #include <QUrl>
 
 //
@@ -37,12 +37,12 @@ QgsLayoutScaleBarValidityCheck *QgsLayoutScaleBarValidityCheck::create() const
 
 QString QgsLayoutScaleBarValidityCheck::id() const
 {
-  return QStringLiteral( "layout_scalebar_check" );
+  return u"layout_scalebar_check"_s;
 }
 
 int QgsLayoutScaleBarValidityCheck::checkType() const
 {
-  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
+  return static_cast<int>( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -50,11 +50,11 @@ bool QgsLayoutScaleBarValidityCheck::prepareCheck( const QgsValidityCheckContext
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
-  QList< QgsLayoutItemScaleBar * > barItems;
+  QList<QgsLayoutItemScaleBar *> barItems;
   layoutContext->layout->layoutItems( barItems );
   for ( QgsLayoutItemScaleBar *bar : std::as_const( barItems ) )
   {
@@ -89,12 +89,12 @@ QgsLayoutNorthArrowValidityCheck *QgsLayoutNorthArrowValidityCheck::create() con
 
 QString QgsLayoutNorthArrowValidityCheck::id() const
 {
-  return QStringLiteral( "layout_northarrow_check" );
+  return u"layout_northarrow_check"_s;
 }
 
 int QgsLayoutNorthArrowValidityCheck::checkType() const
 {
-  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
+  return static_cast<int>( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -102,14 +102,14 @@ bool QgsLayoutNorthArrowValidityCheck::prepareCheck( const QgsValidityCheckConte
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
   QgsSettings settings;
-  const QString defaultPath = settings.value( QStringLiteral( "LayoutDesigner/defaultNorthArrow" ), QStringLiteral( ":/images/north_arrows/layout_default_north_arrow.svg" ), QgsSettings::Gui ).toString();
+  const QString defaultPath = settings.value( u"LayoutDesigner/defaultNorthArrow"_s, u":/images/north_arrows/layout_default_north_arrow.svg"_s, QgsSettings::Gui ).toString();
 
-  QList< QgsLayoutItemPicture * > pictureItems;
+  QList<QgsLayoutItemPicture *> pictureItems;
   layoutContext->layout->layoutItems( pictureItems );
   for ( QgsLayoutItemPicture *picture : std::as_const( pictureItems ) )
   {
@@ -135,7 +135,6 @@ QList<QgsValidityCheckResult> QgsLayoutNorthArrowValidityCheck::runCheck( const 
 }
 
 
-
 //
 // QgsLayoutOverviewValidityCheck
 //
@@ -147,12 +146,12 @@ QgsLayoutOverviewValidityCheck *QgsLayoutOverviewValidityCheck::create() const
 
 QString QgsLayoutOverviewValidityCheck::id() const
 {
-  return QStringLiteral( "layout_overview_check" );
+  return u"layout_overview_check"_s;
 }
 
 int QgsLayoutOverviewValidityCheck::checkType() const
 {
-  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
+  return static_cast<int>( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -160,11 +159,11 @@ bool QgsLayoutOverviewValidityCheck::prepareCheck( const QgsValidityCheckContext
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
-  QList< QgsLayoutItemMap * > mapItems;
+  QList<QgsLayoutItemMap *> mapItems;
   layoutContext->layout->layoutItems( mapItems );
   for ( QgsLayoutItemMap *map : std::as_const( mapItems ) )
   {
@@ -192,7 +191,6 @@ QList<QgsValidityCheckResult> QgsLayoutOverviewValidityCheck::runCheck( const Qg
 }
 
 
-
 //
 // QgsLayoutPictureSourceValidityCheck
 //
@@ -204,12 +202,12 @@ QgsLayoutPictureSourceValidityCheck *QgsLayoutPictureSourceValidityCheck::create
 
 QString QgsLayoutPictureSourceValidityCheck::id() const
 {
-  return QStringLiteral( "layout_picture_source_check" );
+  return u"layout_picture_source_check"_s;
 }
 
 int QgsLayoutPictureSourceValidityCheck::checkType() const
 {
-  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
+  return static_cast<int>( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -217,11 +215,11 @@ bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckCo
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
-  QList< QgsLayoutItemPicture * > pictureItems;
+  QList<QgsLayoutItemPicture *> pictureItems;
   layoutContext->layout->layoutItems( pictureItems );
   for ( QgsLayoutItemPicture *picture : std::as_const( pictureItems ) )
   {
@@ -235,8 +233,7 @@ bool QgsLayoutPictureSourceValidityCheck::prepareCheck( const QgsValidityCheckCo
       const QUrl picUrl = QUrl::fromUserInput( picture->evaluatedPath() );
       const bool isLocalFile = picUrl.isLocalFile();
 
-      res.detailedDescription = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name,
-                                isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
+      res.detailedDescription = QObject::tr( "The source for picture “%1” could not be loaded or is corrupt:<p>%2" ).arg( name, isLocalFile ? QDir::toNativeSeparators( picture->evaluatedPath() ) : picture->evaluatedPath() );
       mResults.append( res );
     }
   }
@@ -249,7 +246,6 @@ QList<QgsValidityCheckResult> QgsLayoutPictureSourceValidityCheck::runCheck( con
   return mResults;
 }
 
-#ifndef WITH_QTWEBKIT
 //
 // QgsLayoutHtmlItemValidityCheck
 //
@@ -261,12 +257,12 @@ QgsLayoutHtmlItemValidityCheck *QgsLayoutHtmlItemValidityCheck::create() const
 
 QString QgsLayoutHtmlItemValidityCheck::id() const
 {
-  return QStringLiteral( "layout_html_item_check" );
+  return u"layout_html_item_check"_s;
 }
 
 int QgsLayoutHtmlItemValidityCheck::checkType() const
 {
-  return static_cast< int >( QgsAbstractValidityCheck::Type::LayoutCheck );
+  return static_cast<int>( QgsAbstractValidityCheck::Type::LayoutCheck );
 }
 
 bool QgsLayoutHtmlItemValidityCheck::prepareCheck( const QgsValidityCheckContext *context, QgsFeedback * )
@@ -274,7 +270,7 @@ bool QgsLayoutHtmlItemValidityCheck::prepareCheck( const QgsValidityCheckContext
   if ( context->type() != QgsValidityCheckContext::TypeLayoutContext )
     return false;
 
-  const QgsLayoutValidityCheckContext *layoutContext = static_cast< const QgsLayoutValidityCheckContext * >( context );
+  const QgsLayoutValidityCheckContext *layoutContext = static_cast<const QgsLayoutValidityCheckContext *>( context );
   if ( !layoutContext )
     return false;
 
@@ -299,4 +295,3 @@ QList<QgsValidityCheckResult> QgsLayoutHtmlItemValidityCheck::runCheck( const Qg
 {
   return mResults;
 }
-#endif

@@ -23,7 +23,7 @@ class QgsFeedback;
 
 /**
  * \ingroup core
- * \brief Internal feature iterator to be implemented within data providers
+ * \brief Internal feature iterator to be implemented within data providers.
  */
 class CORE_EXPORT QgsAbstractFeatureIterator
 {
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     bool mZombie = false;
 
-    // TODO QGIS 4: make this private
+    // TODO QGIS 5: make this private
 
     /**
      * reference counting (to allow seamless copying of QgsFeatureIterator instances)
@@ -284,7 +284,7 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
 
 /**
  * \ingroup core
- * \brief Wrapper for iterator of features from vector data provider or vector layer
+ * \brief Wrapper for iterator of features from vector data provider or vector layer.
  */
 class CORE_EXPORT QgsFeatureIterator
 {
@@ -298,7 +298,7 @@ class CORE_EXPORT QgsFeatureIterator
 
     SIP_PYOBJECT __next__() SIP_TYPEHINT( QgsFeature );
     % MethodCode
-    std::unique_ptr< QgsFeature > f = std::make_unique< QgsFeature >();
+    auto f = std::make_unique< QgsFeature >();
     bool result = false;
     Py_BEGIN_ALLOW_THREADS
     result = ( sipCpp->nextFeature( *f ) );

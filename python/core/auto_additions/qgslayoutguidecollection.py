@@ -56,13 +56,15 @@ QgsLayoutGuideCollection.CustomRole.baseClass = QgsLayoutGuideCollection
 try:
     QgsLayoutGuide.__attribute_docs__ = {'positionChanged': "Emitted when the guide's position is changed.\n"}
     QgsLayoutGuide.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutGuideCollection.__overridden_methods__ = ['stringType', 'layout', 'rowCount', 'columnCount', 'data', 'setData', 'flags', 'headerData', 'removeRows', 'writeXml', 'readXml']
     QgsLayoutGuideCollection.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsLayoutGuideProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
     QgsLayoutGuideProxyModel.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -20,11 +20,11 @@
 #ifndef QGSREQUESTHANDLER_H
 #define QGSREQUESTHANDLER_H
 
-#include <QMap>
-#include "qgis_sip.h"
-#include <QString>
-
 #include "qgis_server.h"
+#include "qgis_sip.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsServerException;
 class QgsServerRequest;
@@ -32,13 +32,12 @@ class QgsServerResponse;
 
 /**
  * \ingroup server
- * \brief This class is an interface hiding the details of reading input and writing
+ * \brief An interface hiding the details of reading input and writing
  * output from/to a wms request mechanism.
  */
 class SERVER_EXPORT QgsRequestHandler
 {
   public:
-
     /**
      * Constructor
      *
@@ -115,9 +114,10 @@ class SERVER_EXPORT QgsRequestHandler
     int statusCode() const;
 
     /**
-     * Returns the parsed parameters as a key-value pair, to modify
-     * a parameter setParameter( const QString &key, const QString &value)
-     * and removeParameter(const QString &key) must be used
+     * Returns the parsed parameters as a key-value pair.
+     *
+     * \see setParameter()
+     * \see removeParameter()
      */
     QMap<QString, QString> parameterMap() const;
 
@@ -153,11 +153,10 @@ class SERVER_EXPORT QgsRequestHandler
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
     QString mService;
-    bool mExceptionRaised;
+    bool mExceptionRaised = false;
 
-    QgsServerRequest   &mRequest;
-    QgsServerResponse  &mResponse;
-
+    QgsServerRequest &mRequest;
+    QgsServerResponse &mResponse;
 };
 
 #endif

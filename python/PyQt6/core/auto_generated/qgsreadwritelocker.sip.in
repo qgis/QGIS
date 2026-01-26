@@ -13,16 +13,20 @@
 class QgsReadWriteLocker
 {
 %Docstring(signature="appended")
-The :py:class:`QgsReadWriteLocker` class is a convenience class that simplifies locking and unlocking QReadWriteLocks.
+A convenience class that simplifies locking and unlocking
+QReadWriteLocks.
 
-Locking and unlocking a QReadWriteLocks in complex functions and statements or in exception handling code
-is error-prone and difficult to debug.
-:py:class:`QgsReadWriteLocker` can be used in such situations to ensure that the state of the lock is always well-defined.
+Locking and unlocking a QReadWriteLocks in complex functions and
+statements or in exception handling code is error-prone and difficult to
+debug. :py:class:`QgsReadWriteLocker` can be used in such situations to
+ensure that the state of the lock is always well-defined.
 
-:py:class:`QgsReadWriteLocker` should be created within a function where a QReadWriteLock needs to be locked.
-The lock may be locked when :py:class:`QgsReadWriteLocker` is created or when changeMode is called.
-You can unlock and relock the lock with :py:func:`~unlock` and :py:func:`~changeMode`.
-If locked, the lock will be unlocked when the :py:class:`QgsReadWriteLocker` is destroyed.
+:py:class:`QgsReadWriteLocker` should be created within a function where
+a QReadWriteLock needs to be locked. The lock may be locked when
+:py:class:`QgsReadWriteLocker` is created or when changeMode is called.
+You can unlock and relock the lock with :py:func:`~unlock` and
+:py:func:`~changeMode`. If locked, the lock will be unlocked when the
+:py:class:`QgsReadWriteLocker` is destroyed.
 
 .. versionadded:: 3.4
 %End
@@ -46,14 +50,14 @@ Create a new QgsReadWriteLocker for ``lock`` and initialize in ``mode``.
 
     void changeMode( Mode mode );
 %Docstring
-Change the mode of the lock to ``mode``.
-The lock will be unlocked and relocked as required.
+Change the mode of the lock to ``mode``. The lock will be unlocked and
+relocked as required.
 %End
 
     void unlock();
 %Docstring
-Unlocks the lock.
-Equivalent to doing ``changeMode( QgsReadWriteLocker.Unlock );``
+Unlocks the lock. Equivalent to doing ``changeMode(
+QgsReadWriteLocker.Unlock );``
 %End
 
     ~QgsReadWriteLocker();

@@ -15,11 +15,15 @@
  ***************************************************************************/
 
 #include "qgslegendpatchshapewidget.h"
-#include "qgsstylesavedialog.h"
+
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgsstylesavedialog.h"
+
 #include <QDialogButtonBox>
 #include <QMessageBox>
+
+#include "moc_qgslegendpatchshapewidget.cpp"
 
 QgsLegendPatchShapeWidget::QgsLegendPatchShapeWidget( QWidget *parent, const QgsLegendPatchShape &shape )
   : QgsPanelWidget( parent )
@@ -91,10 +95,7 @@ void QgsLegendPatchShapeWidget::saveShape()
   // check if there is no shape with same name
   if ( style->legendPatchShapeNames().contains( saveDlg.name() ) )
   {
-    const int res = QMessageBox::warning( this, tr( "Save Legend Patch Shape" ),
-                                          tr( "A legend patch shape with the name '%1' already exists. Overwrite?" )
-                                          .arg( saveDlg.name() ),
-                                          QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save Legend Patch Shape" ), tr( "A legend patch shape with the name '%1' already exists. Overwrite?" ).arg( saveDlg.name() ), QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;

@@ -14,10 +14,12 @@ email                : matthias@opengis.ch
  ***************************************************************************/
 
 #include "qgsvectorlayerfeaturepool.h"
-#include "qgsthreadingutils.h"
 
 #include "qgsfeaturerequest.h"
+#include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgsvectorlayerfeaturepool.cpp"
 
 QgsVectorLayerFeaturePool::QgsVectorLayerFeaturePool( QgsVectorLayer *layer )
   : QObject()
@@ -33,8 +35,7 @@ bool QgsVectorLayerFeaturePool::addFeature( QgsFeature &feature, Flags flags )
 
   bool res = false;
 
-  auto addFeatureSynchronized = [ this, &feature, &res ]()
-  {
+  auto addFeatureSynchronized = [this, &feature, &res]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
       res = lyr->addFeature( feature );
@@ -71,8 +72,7 @@ bool QgsVectorLayerFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatur
 
   bool res = false;
 
-  auto addFeatureSynchronized = [ this, &features, &res ]()
-  {
+  auto addFeatureSynchronized = [this, &features, &res]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
       res = lyr->addFeatures( features );
@@ -108,8 +108,10 @@ bool QgsVectorLayerFeaturePool::addFeatures( QgsFeatureList &features, QgsFeatur
 
 void QgsVectorLayerFeaturePool::updateFeature( QgsFeature &feature )
 {
-  QgsThreadingUtils::runOnMainThread( [this, &feature]()
-  {
+  QgsFeature origFeature;
+  getFeature( feature.id(), origFeature );
+
+  QgsThreadingUtils::runOnMainThread( [this, &feature]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
     {
@@ -117,14 +119,13 @@ void QgsVectorLayerFeaturePool::updateFeature( QgsFeature &feature )
     }
   } );
 
-  refreshCache( feature );
+  refreshCache( feature, origFeature );
 }
 
 void QgsVectorLayerFeaturePool::deleteFeature( QgsFeatureId fid )
 {
   removeFeature( fid );
-  QgsThreadingUtils::runOnMainThread( [this, fid]()
-  {
+  QgsThreadingUtils::runOnMainThread( [this, fid]() {
     QgsVectorLayer *lyr = layer();
     if ( lyr )
     {
@@ -135,14 +136,12 @@ void QgsVectorLayerFeaturePool::deleteFeature( QgsFeatureId fid )
 
 void QgsVectorLayerFeaturePool::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &geometry )
 {
-  Q_UNUSED( geometry )
-
-  if ( isFeatureCached( fid ) )
-  {
-    QgsFeature feature;
-    getFeature( fid, feature );
-    refreshCache( feature );
-  }
+  QgsFeature feature;
+  QgsFeature origFeature;
+  getFeature( fid, origFeature );
+  feature = origFeature;
+  feature.setGeometry( geometry );
+  refreshCache( feature, origFeature );
 }
 
 void QgsVectorLayerFeaturePool::onFeatureDeleted( QgsFeatureId fid )

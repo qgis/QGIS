@@ -133,6 +133,11 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mOpacityWidget</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mEffectWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

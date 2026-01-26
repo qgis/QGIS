@@ -12,8 +12,8 @@
 class QgsAbstractGeometryTransformer
 {
 %Docstring(signature="appended")
-An abstract base class for classes which transform geometries by transforming
-input points to output points.
+An abstract base class for classes which transform geometries by
+transforming input points to output points.
 
 .. versionadded:: 3.18
 %End
@@ -27,19 +27,23 @@ input points to output points.
 
     virtual bool transformPoint( double &x /In,Out/, double &y /In,Out/, double &z /In,Out/, double &m  /In,Out/ ) = 0;
 %Docstring
-Transforms the point defined by the coordinates (``x``, ``y``, ``z``) and the specified ``m`` value.
+Transforms the point defined by the coordinates (``x``, ``y``, ``z``)
+and the specified ``m`` value.
 
 :param x: point x coordinate
 :param y: point y coordinate
 :param z: point z coordinate, or NaN if the input point is 2D only
 :param m: point m value, or NaN if not available
 
-:return: ``True`` if point was transformed (or no transformation was required), or ``False`` if point could not be transformed successfully.
+:return: ``True`` if point was transformed (or no transformation was
+         required), or ``False`` if point could not be transformed
+         successfully.
 
 Example
 -------------------------------------
 
-A transformer which multiples the x coordinate by 3 and adds 10 to the y coordinate:
+A transformer which multiples the x coordinate by 3 and adds 10 to the y
+coordinate:
 
 .. code-block:: python
 

@@ -16,16 +16,20 @@
  ***************************************************************************/
 
 #include "qgstaskmanagerwidget.h"
-#include "qgstaskmanager.h"
+
 #include "qgsapplication.h"
-#include <QPainter>
-#include <QMouseEvent>
-#include <QTreeView>
-#include <QLayout>
-#include <QToolBar>
-#include <QProgressBar>
+#include "qgstaskmanager.h"
+
 #include <QAction>
 #include <QHeaderView>
+#include <QLayout>
+#include <QMouseEvent>
+#include <QPainter>
+#include <QProgressBar>
+#include <QToolBar>
+#include <QTreeView>
+
+#include "moc_qgstaskmanagerwidget.cpp"
 
 //
 // QgsTaskManagerWidget
@@ -47,10 +51,10 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setRootIsDecorated( false );
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
 
-  const int progressColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
+  const int progressColWidth = static_cast<int>( fontMetrics().horizontalAdvance( 'X' ) * 10 * Qgis::UI_SCALE_FACTOR );
   mTreeView->setColumnWidth( QgsTaskManagerModel::Progress, progressColWidth );
 
-  const int statusColWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
+  const int statusColWidth = static_cast<int>( fontMetrics().horizontalAdvance( 'X' ) * 2 * Qgis::UI_SCALE_FACTOR );
   mTreeView->setColumnWidth( QgsTaskManagerModel::Status, statusColWidth );
   mTreeView->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
@@ -81,18 +85,16 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, in
     QProgressBar *progressBar = new QProgressBar();
     progressBar->setAutoFillBackground( true );
     progressBar->setRange( 0, 0 );
-    connect( task, &QgsTask::progressChanged, progressBar, [progressBar]( double progress )
-    {
+    connect( task, &QgsTask::progressChanged, progressBar, [progressBar]( double progress ) {
       //until first progress report, we show a progress bar of interderminant length
       if ( progress > 0 )
       {
         progressBar->setMaximum( 100 );
-        progressBar->setValue( static_cast< int >( std::round( progress ) ) );
+        progressBar->setValue( static_cast<int>( progress ) );
       }
       else
         progressBar->setMaximum( 0 );
-    }
-           );
+    } );
     mTreeView->setIndexWidget( mModel->index( row, QgsTaskManagerModel::Progress ), progressBar );
 
     QgsTaskStatusWidget *statusWidget = new QgsTaskStatusWidget( nullptr, task->status(), task->canCancel() );
@@ -151,7 +153,6 @@ QModelIndex QgsTaskManagerModel::index( int row, int column, const QModelIndex &
 
   //only top level supported
   return QModelIndex();
-
 }
 
 QModelIndex QgsTaskManagerModel::parent( const QModelIndex &index ) const
@@ -206,7 +207,7 @@ QVariant QgsTaskManagerModel::data( const QModelIndex &index, int role ) const
             return QVariant();
         }
 
-      case static_cast< int >( CustomRole::Status ):
+      case static_cast<int>( CustomRole::Status ):
         return static_cast<int>( task->status() );
 
       case Qt::ToolTipRole:
@@ -235,7 +236,7 @@ Qt::ItemFlags QgsTaskManagerModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  if ( ! index.isValid() )
+  if ( !index.isValid() )
   {
     return flags;
   }
@@ -276,8 +277,7 @@ bool QgsTaskManagerModel::setData( const QModelIndex &index, const QVariant &val
 
 void QgsTaskManagerModel::taskAdded( long id )
 {
-  beginInsertRows( QModelIndex(), mRowToTaskIdList.count(),
-                   mRowToTaskIdList.count() );
+  beginInsertRows( QModelIndex(), mRowToTaskIdList.count(), mRowToTaskIdList.count() );
   mRowToTaskIdList << id;
   endInsertRows();
 }
@@ -401,7 +401,7 @@ QString QgsTaskManagerModel::createTooltip( QgsTask *task, ToolTipType type )
   if ( task->progress() > 0 )
   {
     // estimate time remaining
-    const qint64 msRemain = static_cast< qint64 >( elapsed * 100.0 / task->progress() - elapsed );
+    const qint64 msRemain = static_cast<qint64>( elapsed * 100.0 / task->progress() - elapsed );
     if ( msRemain > 120 * 1000 )
     {
       const long long minutes = msRemain / 1000 / 60;
@@ -484,7 +484,7 @@ QSize QgsTaskStatusWidget::sizeHint() const
 
 void QgsTaskStatusWidget::setStatus( int status )
 {
-  mStatus = static_cast< QgsTask::TaskStatus >( status );
+  mStatus = static_cast<QgsTask::TaskStatus>( status );
   update();
 }
 
@@ -495,26 +495,26 @@ void QgsTaskStatusWidget::paintEvent( QPaintEvent *e )
   QIcon icon;
   if ( mInside && ( mCanCancel || ( mStatus == QgsTask::Queued || mStatus == QgsTask::OnHold ) ) )
   {
-    icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskCancel.svg" ) );
+    icon = QgsApplication::getThemeIcon( u"/mTaskCancel.svg"_s );
   }
   else
   {
     switch ( mStatus )
     {
       case QgsTask::Queued:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskQueued.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskQueued.svg"_s );
         break;
       case QgsTask::OnHold:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskOnHold.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskOnHold.svg"_s );
         break;
       case QgsTask::Running:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskRunning.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskRunning.svg"_s );
         break;
       case QgsTask::Complete:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskComplete.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskComplete.svg"_s );
         break;
       case QgsTask::Terminated:
-        icon = QgsApplication::getThemeIcon( QStringLiteral( "/mTaskTerminated.svg" ) );
+        icon = QgsApplication::getThemeIcon( u"/mTaskTerminated.svg"_s );
         break;
     }
   }
@@ -574,8 +574,8 @@ QgsTaskManagerFloatingWidget::QgsTaskManagerFloatingWidget( QgsTaskManager *mana
   setLayout( new QVBoxLayout() );
   QgsTaskManagerWidget *w = new QgsTaskManagerWidget( manager );
 
-  const int minWidth = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
-  const int minHeight = static_cast< int >( fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR );
+  const int minWidth = static_cast<int>( fontMetrics().horizontalAdvance( 'X' ) * 60 * Qgis::UI_SCALE_FACTOR );
+  const int minHeight = static_cast<int>( fontMetrics().height() * 15 * Qgis::UI_SCALE_FACTOR );
   setMinimumSize( minWidth, minHeight );
   layout()->addWidget( w );
   setStyleSheet( ".QgsTaskManagerFloatingWidget { border-top-left-radius: 8px;"
@@ -616,7 +616,7 @@ QgsTaskManagerStatusBarWidget::QgsTaskManagerStatusBarWidget( QgsTaskManager *ma
 
 QSize QgsTaskManagerStatusBarWidget::sizeHint() const
 {
-  const int width = static_cast< int >( fontMetrics().horizontalAdvance( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
+  const int width = static_cast<int>( fontMetrics().horizontalAdvance( 'X' ) * 20 * Qgis::UI_SCALE_FACTOR );
   const int height = QToolButton::sizeHint().height();
   return QSize( width, height );
 }
@@ -644,7 +644,7 @@ void QgsTaskManagerStatusBarWidget::toggleDisplay()
 
 void QgsTaskManagerStatusBarWidget::overallProgressChanged( double progress )
 {
-  mProgressBar->setValue( static_cast< int >( std::round( progress ) ) );
+  mProgressBar->setValue( static_cast<int>( progress ) );
   if ( qgsDoubleNear( progress, 0.0 ) )
     mProgressBar->setMaximum( 0 );
   else if ( mProgressBar->maximum() == 0 )

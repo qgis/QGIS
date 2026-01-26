@@ -23,7 +23,7 @@ class QgsLayoutDesignerDialog;
 class QgsReportSectionFieldGroup;
 class QgsReportOrganizerWidget;
 
-class QgsReportSectionFieldGroupWidget: public QWidget, private Ui::QgsReportWidgetFieldGroupSectionBase
+class QgsReportSectionFieldGroupWidget : public QWidget, private Ui::QgsReportWidgetFieldGroupSectionBase
 {
     Q_OBJECT
   public:
@@ -44,11 +44,9 @@ class QgsReportSectionFieldGroupWidget: public QWidget, private Ui::QgsReportWid
     void setField( const QString &field );
 
   private:
-
     QgsReportOrganizerWidget *mOrganizer = nullptr;
     QgsReportSectionFieldGroup *mSection = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
-
 };
 
 #endif // QGSREPORTFIELDGROUPSECTIONWIDGET_H

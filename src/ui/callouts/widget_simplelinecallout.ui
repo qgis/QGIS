@@ -492,13 +492,13 @@
   <tabstop>mMinCalloutLengthSpin</tabstop>
   <tabstop>mMinCalloutWidthUnitWidget</tabstop>
   <tabstop>mMinCalloutLengthDDBtn</tabstop>
+  <tabstop>mDrawToAllPartsCheck</tabstop>
+  <tabstop>mDrawToAllPartsDDBtn</tabstop>
+  <tabstop>mLabelAnchorPointComboBox</tabstop>
+  <tabstop>mLabelAnchorPointDDBtn</tabstop>
   <tabstop>mOffsetFromLabelSpin</tabstop>
   <tabstop>mOffsetFromLabelUnitWidget</tabstop>
   <tabstop>mOffsetFromLabelDDBtn</tabstop>
-  <tabstop>mLabelAnchorPointComboBox</tabstop>
-  <tabstop>mLabelAnchorPointDDBtn</tabstop>
-  <tabstop>mDrawToAllPartsCheck</tabstop>
-  <tabstop>mDrawToAllPartsDDBtn</tabstop>
   <tabstop>mOffsetFromAnchorSpin</tabstop>
   <tabstop>mOffsetFromAnchorUnitWidget</tabstop>
   <tabstop>mOffsetFromAnchorDDBtn</tabstop>

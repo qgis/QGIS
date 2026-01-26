@@ -12,9 +12,8 @@
 class QgsLabelThinningSettings
 {
 %Docstring(signature="appended")
-
-Contains settings related to how the label engine removes candidate label positions and reduces the number
-of displayed labels.
+Contains settings related to how the label engine removes candidate
+label positions and reduces the number of displayed labels.
 
 .. versionadded:: 3.12
 %End
@@ -26,7 +25,8 @@ of displayed labels.
 
     bool limitNumberOfLabelsEnabled() const;
 %Docstring
-Returns ``True`` if the number of labels drawn for the layer should be limited.
+Returns ``True`` if the number of labels drawn for the layer should be
+limited.
 
 .. seealso:: :py:func:`maximumNumberLabels`
 
@@ -35,7 +35,8 @@ Returns ``True`` if the number of labels drawn for the layer should be limited.
 
     void setLimitNumberLabelsEnabled( bool enabled );
 %Docstring
-Sets whether the the number of labels drawn for the layer should be limited.
+Sets whether the the number of labels drawn for the layer should be
+limited.
 
 .. seealso:: :py:func:`setMaximumNumberLabels`
 
@@ -44,8 +45,10 @@ Sets whether the the number of labels drawn for the layer should be limited.
 
     int maximumNumberLabels() const;
 %Docstring
-Returns the maximum number of labels which should be drawn for this layer.
-This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is ``True``.
+Returns the maximum number of labels which should be drawn for this
+layer. This only has an effect if
+:py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is
+``True``.
 
 .. seealso:: :py:func:`limitNumberOfLabelsEnabled`
 
@@ -54,8 +57,10 @@ This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabe
 
     void setMaximumNumberLabels( int number );
 %Docstring
-Sets the maximum ``number`` of labels which should be drawn for this layer.
-This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is ``True``.
+Sets the maximum ``number`` of labels which should be drawn for this
+layer. This only has an effect if
+:py:func:`~QgsLabelThinningSettings.limitNumberOfLabelsEnabled` is
+``True``.
 
 .. seealso:: :py:func:`setLimitNumberLabelsEnabled`
 
@@ -64,25 +69,229 @@ This only has an effect if :py:func:`~QgsLabelThinningSettings.limitNumberOfLabe
 
     double minimumFeatureSize() const;
 %Docstring
-Returns the minimum feature size (in millimeters) for a feature to be labelled.
+Returns the minimum feature size (in millimeters) for a feature to be
+labelled.
 
 .. seealso:: :py:func:`setMinimumFeatureSize`
 %End
 
     void setMinimumFeatureSize( double size );
 %Docstring
-Sets the minimum feature ``size`` (in millimeters) for a feature to be labelled.
+Sets the minimum feature ``size`` (in millimeters) for a feature to be
+labelled.
 
 .. seealso:: :py:func:`minimumFeatureSize`
 %End
 
+    double labelMarginDistance() const;
+%Docstring
+Returns the minimum distance to other labels (i.e. the minimum
+space/margin around labels).
+
+Units are specified through
+:py:func:`~QgsLabelThinningSettings.labelMarginDistanceUnit`.
+
+.. seealso:: :py:func:`setLabelMarginDistance`
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setLabelMarginDistance( double distance );
+%Docstring
+Sets the minimum ``distance`` to other labels (i.e. the minimum
+space/margin around labels).
+
+Units are specified through
+:py:func:`~QgsLabelThinningSettings.setLabelMarginDistanceUnit`.
+
+.. seealso:: :py:func:`labelMarginDistance`
+
+.. seealso:: :py:func:`setLabelMarginDistanceUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setLabelMarginDistanceUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the minimum distance to other labels.
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. seealso:: :py:func:`setLabelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
+    Qgis::RenderUnit labelMarginDistanceUnit() const;
+%Docstring
+Returns the units for the minimum distance to other labels.
+
+.. seealso:: :py:func:`setLabelMarginDistanceUnit`
+
+.. seealso:: :py:func:`labelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
+    void setLabelMarginDistanceMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the minimum distance to other labels.
+
+.. seealso:: :py:func:`labelMarginDistanceMapUnitScale`
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. seealso:: :py:func:`setLabelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
+    const QgsMapUnitScale &labelMarginDistanceMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum distance to other labels.
+
+.. seealso:: :py:func:`setLabelMarginDistanceMapUnitScale`
+
+.. seealso:: :py:func:`labelMarginDistanceUnit`
+
+.. seealso:: :py:func:`labelMarginDistance`
+
+.. versionadded:: 3.44
+%End
+
+
+    double minimumDistanceToDuplicate() const;
+%Docstring
+Returns the minimum distance to labels with duplicate text.
+
+Units are specified through
+:py:func:`~QgsLabelThinningSettings.minimumDistanceToDuplicateUnit`.
+
+.. note::
+
+   This setting is only respected if :py:func:`~QgsLabelThinningSettings.allowDuplicateRemoval` is ``True``.
+
+.. seealso:: :py:func:`setMinimumDistanceToDuplicate`
+
+.. seealso:: :py:func:`minimumDistanceToDuplicateUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setMinimumDistanceToDuplicate( double distance );
+%Docstring
+Sets the minimum ``distance`` to labels with duplicate text.
+
+Units are specified through
+:py:func:`~QgsLabelThinningSettings.setMinimumDistanceToDuplicateUnit`.
+
+.. note::
+
+   This setting is only respected if :py:func:`~QgsLabelThinningSettings.allowDuplicateRemoval` is ``True``.
+
+.. seealso:: :py:func:`minimumDistanceToDuplicate`
+
+.. seealso:: :py:func:`setMinimumDistanceToDuplicateUnit`
+
+.. versionadded:: 3.44
+%End
+
+    void setMinimumDistanceToDuplicateUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` for the minimum distance to labels with duplicate
+text.
+
+.. note::
+
+   This setting is only respected if :py:func:`~QgsLabelThinningSettings.allowDuplicateRemoval` is ``True``.
+
+.. seealso:: :py:func:`minimumDistanceToDuplicateUnit`
+
+.. seealso:: :py:func:`setMinimumDistanceToDuplicate`
+
+.. versionadded:: 3.44
+%End
+
+    Qgis::RenderUnit minimumDistanceToDuplicateUnit() const;
+%Docstring
+Returns the units for the minimum distance to labels with duplicate
+text.
+
+.. note::
+
+   This setting is only respected if :py:func:`~QgsLabelThinningSettings.allowDuplicateRemoval` is ``True``.
+
+.. seealso:: :py:func:`setMinimumDistanceToDuplicateUnit`
+
+.. seealso:: :py:func:`minimumDistanceToDuplicate`
+
+.. versionadded:: 3.44
+%End
+
+    void setMinimumDistanceToDuplicateMapUnitScale( const QgsMapUnitScale &scale );
+%Docstring
+Sets the map unit ``scale`` for the minimum distance to labels with
+duplicate text.
+
+.. note::
+
+   This setting is only respected if :py:func:`~QgsLabelThinningSettings.allowDuplicateRemoval` is ``True``.
+
+.. seealso:: :py:func:`minimumDistanceToDuplicateMapUnitScale`
+
+.. seealso:: :py:func:`minimumDistanceToDuplicateUnit`
+
+.. seealso:: :py:func:`setMinimumDistanceToDuplicate`
+
+.. versionadded:: 3.44
+%End
+
+    const QgsMapUnitScale &minimumDistanceToDuplicateMapUnitScale() const;
+%Docstring
+Returns the map unit scale for the minimum distance to labels with
+duplicate text.
+
+.. note::
+
+   This setting is only respected if :py:func:`~QgsLabelThinningSettings.allowDuplicateRemoval` is ``True``.
+
+.. seealso:: :py:func:`setMinimumDistanceToDuplicateMapUnitScale`
+
+.. seealso:: :py:func:`minimumDistanceToDuplicateUnit`
+
+.. seealso:: :py:func:`minimumDistanceToDuplicate`
+
+.. versionadded:: 3.44
+%End
+
+    bool allowDuplicateRemoval() const;
+%Docstring
+Returns whether duplicate label removal is permitted for this layer.
+
+.. seealso:: :py:func:`setAllowDuplicateRemoval`
+
+.. versionadded:: 3.44
+%End
+
+    void setAllowDuplicateRemoval( bool allow );
+%Docstring
+Sets whether duplicate label removal is permitted for this layer.
+
+.. seealso:: :py:func:`setAllowDuplicateRemoval`
+
+.. versionadded:: 3.44
+%End
+
     void updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context );
 %Docstring
-Updates the thinning settings to respect any data defined properties
-set within the specified ``properties`` collection.
+Updates the thinning settings to respect any data defined properties set
+within the specified ``properties`` collection.
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

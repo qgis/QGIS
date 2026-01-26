@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgssurface.h"
+
+#include <memory>
+
+#include "qgsgeos.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
-#include "qgsgeos.h"
-#include <memory>
 
 bool QgsSurface::isValid( QString &error, Qgis::GeometryValidityFlags flags ) const
 {
@@ -30,7 +32,7 @@ bool QgsSurface::isValid( QString &error, Qgis::GeometryValidityFlags flags ) co
     return error.isEmpty();
   }
 
-  const QgsGeos geos( this );
+  const QgsGeos geos( this, 0, Qgis::GeosCreationFlags() );
   const bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {

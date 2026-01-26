@@ -16,8 +16,12 @@
 #ifndef QGSMAPLAYERLEGEND_H
 #define QGSMAPLAYERLEGEND_H
 
-#include <QObject>
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_sip.h"
+
+#include <QObject>
 
 class QDomDocument;
 class QDomElement;
@@ -39,8 +43,7 @@ class QgsSymbol;
 
 /**
  * \ingroup core
- * \brief The QgsMapLayerLegend class is abstract interface for implementations
- * of legends for one map layer.
+ * \brief An abstract interface for implementations of legends for one map layer.
  *
  */
 class CORE_EXPORT QgsMapLayerLegend : public QObject
@@ -52,6 +55,33 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
     explicit QgsMapLayerLegend( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     // TODO: type
+
+    /**
+     * Returns flags associated with the legend.
+     *
+     * \see setFlag()
+     * \see setFlags()
+     * \since QGIS 4.0
+     */
+    Qgis::MapLayerLegendFlags flags() const { return mFlags; }
+
+    /**
+     * Enables or disables a particular \a flag (other flags are not affected).
+     *
+     * \see flags()
+     * \see setFlags()
+     * \since QGIS 4.0
+     */
+    void setFlag( Qgis::MapLayerLegendFlag flag, bool on = true ) { mFlags.setFlag( flag, on ); }
+
+    /**
+     * Sets the \a flags associated with the legend.
+     *
+     * \see setFlag()
+     * \see flags()
+     * \since QGIS 4.0
+     */
+    void setFlags( Qgis::MapLayerLegendFlags flags ) { mFlags = flags; }
 
     /**
      * Reads configuration from a DOM element previously written by writeXml()
@@ -91,13 +121,16 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
   signals:
     //! Emitted when existing items/nodes got invalid and should be replaced by new ones
     void itemsChanged();
+
+  private:
+
+    Qgis::MapLayerLegendFlags mFlags;
 };
 
 
 /**
  * \ingroup core
- * \brief Miscellaneous utility functions for handling of map layer legend
- *
+ * \brief Miscellaneous utility functions for handling of map layer legend.
  */
 class CORE_EXPORT QgsMapLayerLegendUtils
 {
@@ -170,7 +203,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
      * \see setLegendNodeCustomSymbol()
      * \since QGIS 3.14
      */
-    static QgsSymbol *legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbol > legendNodeCustomSymbol( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
     /**
      * Sets a custom legend color ramp \a settings for the legend node belonging to \a nodeLayer at the specified \a originalIndex.
@@ -228,7 +261,7 @@ class CORE_EXPORT QgsMapLayerLegendUtils
 
 /**
  * \ingroup core
- * \brief Default legend implementation for vector layers
+ * \brief Default legend implementation for vector layers.
  */
 class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 {
@@ -309,7 +342,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
 
 /**
  * \ingroup core
- * \brief Default legend implementation for raster layers
+ * \brief Default legend implementation for raster layers.
  */
 class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 {
@@ -327,7 +360,7 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
 
 /**
  * \ingroup core
- * \brief Default legend implementation for mesh layers
+ * \brief Default legend implementation for mesh layers.
  * \since QGIS 3.4
  */
 class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
@@ -346,7 +379,7 @@ class CORE_EXPORT QgsDefaultMeshLayerLegend : public QgsMapLayerLegend
 
 /**
  * \ingroup core
- * \brief Default legend implementation for point cloud layers
+ * \brief Default legend implementation for point cloud layers.
  * \since QGIS 3.18
  */
 class CORE_EXPORT QgsDefaultPointCloudLayerLegend : public QgsMapLayerLegend

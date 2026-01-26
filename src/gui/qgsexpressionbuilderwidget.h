@@ -16,18 +16,17 @@
 #ifndef QGSEXPRESSIONBUILDER_H
 #define QGSEXPRESSIONBUILDER_H
 
-#include <QWidget>
-#include <QStandardItemModel>
-#include <QSortFilterProxyModel>
-
 #include "ui_qgsexpressionbuilder.h"
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include "qgsexpressioncontext.h"
+#include "qgis_sip.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
 #include "qgsexpressiontreeview.h"
 
+#include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QWidget>
 
 class QgsFields;
 class QgsExpressionHighlighter;
@@ -35,28 +34,28 @@ class QgsRelation;
 class QgsCodeEditorExpression;
 
 #ifndef SIP_RUN
-static const QString DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME = QStringLiteral( "[Project Functions]" );
+static const QString DEFAULT_PROJECT_FUNCTIONS_ITEM_NAME = u"[Project Functions]"_s;
 #endif
 
 /**
  * \ingroup gui
- * \brief A reusable widget that can be used to build a expression string.
-  * See QgsExpressionBuilderDialog for example of usage.
-  */
+ * \brief A reusable widget that can be used to build an expression string.
+ *
+ * \see QgsExpressionBuilderDialog for example of usage.
+ */
 class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
 {
     Q_OBJECT
   public:
-
     /**
      * Flag to determine what should be loaded
      * \since QGIS 3.14
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      LoadNothing = 0, //!< Do not load anything
-      LoadRecent = 1 << 1, //!< Load recent expressions given the collection key
-      LoadUserExpressions = 1 << 2, //!< Load user expressions
+      LoadNothing = 0,                            //!< Do not load anything
+      LoadRecent = 1 << 1,                        //!< Load recent expressions given the collection key
+      LoadUserExpressions = 1 << 2,               //!< Load user expressions
       LoadAll = LoadRecent | LoadUserExpressions, //!< Load everything
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -73,19 +72,19 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Initialize without any layer
      * \since QGIS 3.14
      */
-    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
+    void init( const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = u"generic"_s, QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
      * Initialize with a layer
      * \since QGIS 3.14
      */
-    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
+    void initWithLayer( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = u"generic"_s, QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
      * Initialize with given fields without any layer
      * \since QGIS 3.14
      */
-    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = QStringLiteral( "generic" ), QgsExpressionBuilderWidget::Flags flags = LoadAll );
+    void initWithFields( const QgsFields &fields, const QgsExpressionContext &context = QgsExpressionContext(), const QString &recentCollection = u"generic"_s, QgsExpressionBuilderWidget::Flags flags = LoadAll );
 
     /**
      * Sets layer in order to get the fields and values
@@ -99,10 +98,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsVectorLayer *layer() const;
 
     //! \deprecated QGIS 3.14. This is now done automatically.
-    Q_DECL_DEPRECATED void loadFieldNames() {} SIP_DEPRECATED
+    Q_DECL_DEPRECATED void loadFieldNames() SIP_DEPRECATED {}
 
     //! \deprecated QGIS 3.14. Use expressionTree()->loadFieldNames() instead.
-    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) {mExpressionTreeView->loadFieldNames( fields );} SIP_DEPRECATED
+    Q_DECL_DEPRECATED void loadFieldNames( const QgsFields &fields ) SIP_DEPRECATED { mExpressionTreeView->loadFieldNames( fields ); }
 
     /**
      * Loads field names and values from the specified map.
@@ -170,7 +169,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      *
      * \since QGIS 3.38
      */
-    void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, const std::function< QgsExpressionContext( const QVariant & ) > &previewContextGenerator );
+    void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator );
 #else
 
     /**
@@ -186,29 +185,28 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      *
      * \since QGIS 3.38
      */
-    void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, SIP_PYCALLABLE );
-    % MethodCode
+    void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, SIP_PYCALLABLE );
+    //%MethodCode
     Py_XINCREF( a2 );
     Py_BEGIN_ALLOW_THREADS
-    sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value )->QgsExpressionContext
-    {
-      QgsExpressionContext res;
-      SIP_BLOCK_THREADS
-      PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
-      int state;
-      int sipIsError = 0;
-      QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-      if ( sipIsError == 0 )
-      {
-        res = QgsExpressionContext( *t1 );
-      }
-      sipReleaseType( t1, sipType_QgsExpressionContext, state );
-      SIP_UNBLOCK_THREADS
-      return res;
-    } );
+      sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value ) -> QgsExpressionContext {
+        QgsExpressionContext res;
+        SIP_BLOCK_THREADS
+        PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
+        int state;
+        int sipIsError = 0;
+        QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+        if ( sipIsError == 0 )
+        {
+          res = QgsExpressionContext( *t1 );
+        }
+        sipReleaseType( t1, sipType_QgsExpressionContext, state );
+        SIP_UNBLOCK_THREADS
+        return res;
+      } );
 
     Py_END_ALLOW_THREADS
-    % End
+    //%End
 #endif
 
 
@@ -224,7 +222,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * By default it is loaded from the collection "generic".
      * \deprecated QGIS 3.14. Use expressionTree()->loadRecent() instead.
      */
-    Q_DECL_DEPRECATED void loadRecent( const QString &collection = QStringLiteral( "generic" ) )SIP_DEPRECATED ;
+    Q_DECL_DEPRECATED void loadRecent( const QString &collection = u"generic"_s ) SIP_DEPRECATED;
 
     /**
      * Returns the expression tree
@@ -286,7 +284,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void updateFunctionFileList( const QString &path );
 
     /**
-     * Saves the current function editor text to a project entry.
+     * Writes the current function editor text to a project entry.
+     * The project becomes dirty.
      *
      * \since QGIS 3.40
      */
@@ -369,12 +368,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Auto save the current Python function code.
+     * \note Auto save does not apply to Project Functions.
      */
     void autosave();
 
     /**
      * Enabled or disable auto saving. When enabled Python scripts will be auto saved
      * when text changes.
+     * \note Auto save does not apply to Project Functions.
      * \param enabled TRUE to enable auto saving.
      */
     void setAutoSave( bool enabled ) { mAutoSave = enabled; }
@@ -383,14 +384,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Adds the current expressions to the stored user expressions.
      * \since QGIS 3.12
      */
-    void storeCurrentUserExpression( );
+    void storeCurrentUserExpression();
 
     /**
      * Removes the selected expression from the stored user expressions,
      * the selected expression must be a user stored expression.
      * \since QGIS 3.12
      */
-    void removeSelectedUserExpression( );
+    void removeSelectedUserExpression();
 
     /**
      * Edits the selected expression from the stored user expressions,
@@ -412,6 +413,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void onExpressionParsed( bool state );
     void expressionTreeItemChanged( QgsExpressionItem *item );
     void operatorButtonClicked();
+    void commentLinesClicked();
     void btnRun_pressed();
     void btnNewFile_pressed();
     void btnRemoveFile_pressed();
@@ -484,6 +486,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void clearFunctionMarkers();
     void clearErrors();
     void runPythonCode( const QString &code );
+    void displayTemporaryLabel( const QString &text );
     QgsVectorLayer *contextLayer( const QgsExpressionItem *item ) const;
     void fillFieldValues( const QString &fieldName, QgsVectorLayer *layer, int countLimit, bool forceUsedValues = false );
     QString getFunctionHelp( QgsExpressionFunction *function );
@@ -504,10 +507,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
-    QgsExpressionHighlighter *highlighter = nullptr;
     bool mExpressionValid = false;
     QgsExpressionContext mExpressionContext;
-    QPointer< QgsProject > mProject;
+    QPointer<QgsProject> mProject;
 
     // Translated name of the user expressions group
     QString mUserExpressionsGroupName;

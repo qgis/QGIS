@@ -13,14 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <QLocale>
-
 #include "qgsadvanceddigitizingtools.h"
+
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"
+
+#include <QEnterEvent>
+#include <QLocale>
+#include <QMouseEvent>
+
+#include "moc_qgsadvanceddigitizingtools.cpp"
 
 QgsAdvancedDigitizingTool::QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QObject( canvas ? canvas->viewport() : nullptr )
@@ -56,9 +59,8 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Digitize = new QToolButton( toolWidget );
   mCircle1Digitize->setCheckable( true );
   mCircle1Digitize->setChecked( false );
-  mCircle1Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
-  connect( mCircle1Digitize, &QAbstractButton::toggled, this, [ = ]( bool checked )
-  {
+  mCircle1Digitize->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
+  connect( mCircle1Digitize, &QAbstractButton::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
       mCircle2Digitize->setChecked( false );
@@ -66,36 +68,39 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   } );
   layout->addWidget( mCircle1Digitize, 1, 2, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "x" ), toolWidget );
+  label = new QLabel( u"x"_s, toolWidget );
   layout->addWidget( label, 1, 0 );
 
   mCircle1X = new QgsDoubleSpinBox( toolWidget );
   mCircle1X->setToolTip( tr( "X coordinate" ) );
   mCircle1X->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle1X->setMaximum( std::numeric_limits<double>::max() );
+  mCircle1X->setDecimals( mCadDockWidget->constraintX()->precision() );
   mCircle1X->setClearValue( 0.0 );
-  connect( mCircle1X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
+  connect( mCircle1X, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1X, 1, 1 );
 
-  label = new QLabel( QStringLiteral( "y" ), toolWidget );
+  label = new QLabel( u"y"_s, toolWidget );
   layout->addWidget( label, 2, 0 );
 
   mCircle1Y = new QgsDoubleSpinBox( toolWidget );
   mCircle1Y->setToolTip( tr( "Y coordinate" ) );
   mCircle1Y->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle1Y->setMaximum( std::numeric_limits<double>::max() );
+  mCircle1Y->setDecimals( mCadDockWidget->constraintY()->precision() );
   mCircle1Y->setClearValue( 0.0 );
-  connect( mCircle1Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle1Digitize->setChecked( false ); } );
+  connect( mCircle1Y, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1Y, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "d" ), toolWidget );
+  label = new QLabel( u"d"_s, toolWidget );
   layout->addWidget( label, 3, 0 );
 
   mCircle1Distance = new QgsDoubleSpinBox( toolWidget );
   mCircle1Distance->setToolTip( tr( "Distance" ) );
   mCircle1Distance->setMinimum( 0 );
   mCircle1Distance->setMaximum( std::numeric_limits<double>::max() );
-  connect( mCircle1Distance, &QgsDoubleSpinBox::returnPressed, this, [ = ]() { mCircle2Digitize->setChecked( true ); } );
+  mCircle1Distance->setDecimals( mCadDockWidget->constraintX()->precision() );
+  connect( mCircle1Distance, &QgsDoubleSpinBox::returnPressed, this, [this]() { mCircle2Digitize->setChecked( true ); } );
   layout->addWidget( mCircle1Distance, 3, 1 );
 
   label = new QLabel( tr( "Circle #2" ), toolWidget );
@@ -104,9 +109,8 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2Digitize = new QToolButton( toolWidget );
   mCircle2Digitize->setCheckable( true );
   mCircle2Digitize->setChecked( false );
-  mCircle2Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
-  connect( mCircle2Digitize, &QAbstractButton::toggled, this, [ = ]( bool checked )
-  {
+  mCircle2Digitize->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
+  connect( mCircle2Digitize, &QAbstractButton::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
       mCircle1Digitize->setChecked( false );
@@ -114,43 +118,46 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   } );
   layout->addWidget( mCircle2Digitize, 5, 2, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "x" ), toolWidget );
+  label = new QLabel( u"x"_s, toolWidget );
   layout->addWidget( label, 5, 0 );
 
   mCircle2X = new QgsDoubleSpinBox( toolWidget );
   mCircle2X->setToolTip( tr( "X coordinate" ) );
   mCircle2X->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle2X->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2X->setDecimals( mCadDockWidget->constraintX()->precision() );
   mCircle2X->setClearValue( 0.0 );
-  connect( mCircle2X, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
+  connect( mCircle2X, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2X, 5, 1 );
 
-  label = new QLabel( QStringLiteral( "y" ), toolWidget );
+  label = new QLabel( u"y"_s, toolWidget );
   layout->addWidget( label, 6, 0 );
 
   mCircle2Y = new QgsDoubleSpinBox( toolWidget );
   mCircle2Y->setToolTip( tr( "Y coordinate" ) );
   mCircle2Y->setMinimum( std::numeric_limits<double>::lowest() );
   mCircle2Y->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2Y->setDecimals( mCadDockWidget->constraintY()->precision() );
   mCircle2Y->setClearValue( 0.0 );
-  connect( mCircle2Y, &QgsDoubleSpinBox::textEdited, this, [ = ]() { mCircle2Digitize->setChecked( false ); } );
+  connect( mCircle2Y, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2Y, 6, 1 );
 
-  label = new QLabel( QStringLiteral( "d" ), toolWidget );
+  label = new QLabel( u"d"_s, toolWidget );
   layout->addWidget( label, 7, 0 );
 
   mCircle2Distance = new QgsDoubleSpinBox( toolWidget );
   mCircle1Distance->setToolTip( tr( "Distance" ) );
   mCircle2Distance->setMinimum( 0 );
   mCircle2Distance->setMaximum( std::numeric_limits<double>::max() );
+  mCircle2Distance->setDecimals( mCadDockWidget->constraintX()->precision() );
   layout->addWidget( mCircle2Distance, 7, 1 );
 
-  connect( mCircle1X, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
-  connect( mCircle1Y, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
-  connect( mCircle1Distance, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
-  connect( mCircle2X, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
-  connect( mCircle2Y, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
-  connect( mCircle2Distance, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { processParameters(); } );
+  connect( mCircle1X, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { processParameters(); } );
+  connect( mCircle1Y, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { processParameters(); } );
+  connect( mCircle1Distance, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { processParameters(); } );
+  connect( mCircle2X, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { processParameters(); } );
+  connect( mCircle2Y, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { processParameters(); } );
+  connect( mCircle2Distance, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double ) { processParameters(); } );
 
 
   bool focusOnCircle2 = false;
@@ -191,9 +198,7 @@ void QgsAdvancedDigitizingCirclesIntersectionTool::processParameters()
 {
   mP1 = QgsPointXY();
   mP2 = QgsPointXY();
-  QgsGeometryUtils::circleCircleIntersections( QgsPointXY( mCircle1X->value(), mCircle1Y->value() ), mCircle1Distance->value(),
-      QgsPointXY( mCircle2X->value(), mCircle2Y->value() ), mCircle2Distance->value(),
-      mP1, mP2 );
+  QgsGeometryUtils::circleCircleIntersections( QgsPointXY( mCircle1X->value(), mCircle1Y->value() ), mCircle1Distance->value(), QgsPointXY( mCircle2X->value(), mCircle2Y->value() ), mCircle2Distance->value(), mP1, mP2 );
   emit paintRequested();
 }
 

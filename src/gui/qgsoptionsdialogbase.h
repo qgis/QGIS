@@ -17,16 +17,16 @@
 #ifndef QGSOPTIONSDIALOGBASE_H
 #define QGSOPTIONSDIALOGBASE_H
 
+#include <functional>
+
+#include "qgis_gui.h"
 #include "qgsguiutils.h"
 #include "qgssettings.h"
-#include "qgis_gui.h"
-
-#include <functional>
 
 #include <QDialog>
 #include <QPointer>
-#include <QStyledItemDelegate>
 #include <QSortFilterProxyModel>
+#include <QStyledItemDelegate>
 
 class QDialogButtonBox;
 class QListWidget;
@@ -49,7 +49,6 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
-
     QgsOptionsProxyModel( QObject *parent );
 
     void setPageHidden( int page, bool hidden );
@@ -58,7 +57,7 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
-    QMap< int, bool > mHiddenPages;
+    QMap<int, bool> mHiddenPages;
 };
 ///@endcond
 #endif
@@ -68,6 +67,7 @@ class GUI_EXPORT QgsOptionsProxyModel : public QSortFilterProxyModel
  * \ingroup gui
  * \class QgsOptionsDialogBase
  * \brief A base dialog for options and properties dialogs that offers vertical tabs.
+ *
  * It handles saving/restoring of geometry, splitter and current tab states,
  * switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
  * and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
@@ -88,7 +88,6 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param settingsKey QgsSettings subgroup key for saving/restore ui states, e.g. "ProjectProperties".
@@ -133,7 +132,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * Determine if the options list is in icon only mode
      */
-    bool iconOnly() {return mIconOnly;}
+    bool iconOnly() const { return mIconOnly; }
 
     /**
      * Sets the dialog \a page (by object name) to show.
@@ -218,7 +217,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     QStandardItem *createItem( const QString &name, const QString &tooltip, const QString &icon ) SIP_SKIP;
 
-    QList< QPair< QgsOptionsDialogHighlightWidget *, int > > mRegisteredSearchWidgets;
+    QList<QPair<QgsOptionsDialogHighlightWidget *, int>> mRegisteredSearchWidgets;
 
     QString mOptsKey;
     bool mInit = false;
@@ -239,9 +238,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     bool mDelSettings = false;
 
   private:
-
     void setListToItemAtIndex( int index );
-
 };
 
 #endif // QGSOPTIONSDIALOGBASE_H

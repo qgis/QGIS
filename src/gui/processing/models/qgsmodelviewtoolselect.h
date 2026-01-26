@@ -17,11 +17,13 @@
 #ifndef QGSMODELVIEWTOOLSELECT_H
 #define QGSMODELVIEWTOOLSELECT_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgsmodelviewtool.h"
-#include "qgsmodelviewrubberband.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmodelviewrubberband.h"
+#include "qgsmodelviewtool.h"
+#include "qgsmodelviewtoollink.h"
 
 class QgsModelViewMouseHandles;
 class QGraphicsItem;
@@ -35,11 +37,9 @@ class QGraphicsItem;
  */
 class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsModelViewToolSelect.
      */
@@ -69,11 +69,12 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
     void resetCache();
 
   private:
-
     bool mIsSelecting = false;
 
     //! Rubber band item
-    std::unique_ptr< QgsModelViewRubberBand > mRubberBand;
+    std::unique_ptr<QgsModelViewRubberBand> mRubberBand;
+
+    std::unique_ptr<QgsModelViewToolLink> mLinkTool = nullptr;
 
     //! Start position for mouse press
     QPoint mMousePressStartPos;
@@ -81,8 +82,8 @@ class GUI_EXPORT QgsModelViewToolSelect : public QgsModelViewTool
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 
-    QPointer< QgsModelViewMouseHandles > mMouseHandles; //owned by scene
-    QList< QGraphicsItem * > mHoverEnteredItems;
+    QPointer<QgsModelViewMouseHandles> mMouseHandles; //owned by scene
+    QList<QGraphicsItem *> mHoverEnteredItems;
 };
 
 #endif // QGSMODELVIEWTOOLSELECT_H

@@ -15,9 +15,10 @@
 #ifndef QGSLABELINGENGINESETTINGS_H
 #define QGSLABELINGENGINESETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QColor>
 
 class QgsProject;
@@ -28,13 +29,13 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * \brief Stores global configuration for labeling engine
+ * \brief Stores global configuration for labeling engine.
  */
 class CORE_EXPORT QgsLabelingEngineSettings
 {
   public:
 
-    // TODO QGIS 4 - remove
+    // TODO QGIS 5 - remove
 
     /**
      * Search methods in the PAL library to remove colliding labels
@@ -53,7 +54,10 @@ class CORE_EXPORT QgsLabelingEngineSettings
     ~QgsLabelingEngineSettings();
 
     QgsLabelingEngineSettings( const QgsLabelingEngineSettings &other );
+    SIP_SKIP QgsLabelingEngineSettings( QgsLabelingEngineSettings &&other );
+
     QgsLabelingEngineSettings &operator=( const QgsLabelingEngineSettings &other );
+    QgsLabelingEngineSettings &operator=( QgsLabelingEngineSettings &&other );
 
     //! Returns the configuration to the defaults
     void clear();
@@ -133,7 +137,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      */
     Q_DECL_DEPRECATED Search searchMethod() const SIP_DEPRECATED { return Chain; }
 
-    // TODO QGIS 4.0 -- remove these, and just use read/writeXml directly:
+    // TODO QGIS 5.0 -- remove these, and just use read/writeXml directly:
 
     /**
      * Read configuration of the labeling engine from a project
@@ -182,9 +186,9 @@ class CORE_EXPORT QgsLabelingEngineSettings
      *
      * \since QGIS 3.40
      */
-    void resolveReferences( const QgsProject *project );
+    void resolveReferences( const QgsProject *project ); // cppcheck-suppress functionConst
 
-    // TODO QGIS 4.0: In reality the text render format settings don't only apply to labels, but also
+    // TODO QGIS 5.0: In reality the text render format settings don't only apply to labels, but also
     // ANY text rendered using QgsTextRenderer (including some non-label text items in layouts).
     // These methods should possibly be moved out of here and into the general QgsProject settings.
 
@@ -243,7 +247,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     void setPlacementVersion( Qgis::LabelPlacementEngineVersion version );
 
     /**
-     * Returns a list of labeling engine rules which must be satifisfied
+     * Returns a list of labeling engine rules which must be satisfied
      * while placing labels.
      *
      * \see addRule()
@@ -253,7 +257,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     QList< QgsAbstractLabelingEngineRule * > rules();
 
     /**
-     * Returns a list of labeling engine rules which must be satifisfied
+     * Returns a list of labeling engine rules which must be satisfied
      * while placing labels.
      *
      * \see addRule()
@@ -263,7 +267,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     QList< const QgsAbstractLabelingEngineRule * > rules() const SIP_SKIP;
 
     /**
-     * Adds a labeling engine \a rule which must be satifisfied
+     * Adds a labeling engine \a rule which must be satisfied
      * while placing labels.
      *
      * Ownership of the rule is transferred to the settings.
@@ -275,7 +279,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     void addRule( QgsAbstractLabelingEngineRule *rule SIP_TRANSFER );
 
     /**
-     * Sets the labeling engine \a rules which must be satifisfied
+     * Sets the labeling engine \a rules which must be satisfied
      * while placing labels.
      *
      * Ownership of the rules are transferred to the settings.

@@ -2,6 +2,12 @@
 try:
     QgsMergedFeatureRenderer.create = staticmethod(QgsMergedFeatureRenderer.create)
     QgsMergedFeatureRenderer.convertFromRenderer = staticmethod(QgsMergedFeatureRenderer.convertFromRenderer)
+    QgsMergedFeatureRenderer.__overridden_methods__ = ['clone', 'startRender', 'flags', 'renderFeature', 'stopRender', 'dump', 'usedAttributes', 'filterNeedsGeometry', 'capabilities', 'symbols', 'symbolForFeature', 'originalSymbolForFeature', 'symbolsForFeature', 'originalSymbolsForFeature', 'legendKeysForFeature', 'legendKeyToExpression', 'legendSymbolItems', 'willRenderFeature', 'save', 'setEmbeddedRenderer', 'embeddedRenderer', 'setLegendSymbolItem', 'legendSymbolItemsCheckable', 'legendSymbolItemChecked', 'checkLegendSymbolItem', 'accept']
     QgsMergedFeatureRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
+    pass
+try:
+    QgsMergedFeatureRenderer.FeatureDecoration.__doc__ = """Class used to represent features that must be rendered
+with decorations (selection, vertex markers)"""
+except (NameError, AttributeError):
     pass

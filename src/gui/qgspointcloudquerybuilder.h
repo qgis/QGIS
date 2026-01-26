@@ -14,14 +14,16 @@
  ***************************************************************************/
 #ifndef QGSPOINTCLOUDQUERYBUILDER_H
 #define QGSPOINTCLOUDQUERYBUILDER_H
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QModelIndex>
 #include "ui_qgspointcloudquerybuilderbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsguiutils.h"
-#include "qgis_gui.h"
 #include "qgssubsetstringeditorinterface.h"
+
+#include <QModelIndex>
+#include <QStandardItem>
+#include <QStandardItemModel>
 
 class QgsPointCloudLayer;
 class QgsCodeEditor;
@@ -42,7 +44,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 {
     Q_OBJECT
   public:
-
     /**
      * This constructor is used when the query builder is called from the
      * layer properties dialog
@@ -50,8 +51,7 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
      * \param parent Parent widget
      * \param fl dialog flags
      */
-    QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                               Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     void showEvent( QShowEvent *event ) override;
 
@@ -67,8 +67,9 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 
     /**
      * Test if the typed expression is valid and can be used as a \a QgsPointCloudExpression
+     * Returns TRUE if valid, otherwise FALSE
      */
-    virtual void test();
+    bool test( bool skipConfirmation = false );
 
     /**
      * Clears the typed expression
@@ -100,7 +101,6 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     void btnOr_clicked();
 
   private:
-
     //! Populate the attribute list for the selected layer
     void populateAttributes();
 

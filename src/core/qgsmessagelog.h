@@ -16,11 +16,11 @@
 #ifndef QGSMESSAGELOG_H
 #define QGSMESSAGELOG_H
 
-#include <QString>
-#include <QObject>
-
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
+#include <QObject>
+#include <QString>
 
 /**
  * \ingroup core
@@ -44,6 +44,15 @@ class CORE_EXPORT QgsMessageLog : public QObject
 
     QgsMessageLog() = default;
 
+    // TODO: Update this code to use std::source_location from C++20 when transitioning to a fully C++20-compliant codebase.
+    //       Currently, we rely on __builtin_XXX functions (e.g., __builtin_FILE(), __builtin_LINE()),
+    //       which have been successfully tested across multiple systems (Windows, macOS, Linux, FreeBSD)
+    //       and compilers (LLVM, GCC, MSVC).
+    // Note: We tested with LLVM on FreeBSD and macOS, and std::experimental::source_location is not available.
+    //       It works fine with GNU. It also seems unavailable with MSVC.
+    //       For now, we stick with __builtin_XXX because it is "portable" and functional across all tested environments.
+    //       We'll switch to std::source_location once the transition to C++20 is complete.
+
     /**
      * Adds a \a message to the log instance (and creates it if necessary).
      *
@@ -51,7 +60,8 @@ class CORE_EXPORT QgsMessageLog : public QObject
      * If it is FALSE, the message should appear in logs silently. Note that log viewer implementations may
      * only respect notification hints for certain message levels.
      */
-    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true );
+    static void logMessage( const QString &message, const QString &tag = QString(), Qgis::MessageLevel level = Qgis::MessageLevel::Warning, bool notifyUser = true,
+                            const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() );
 
   signals:
 
@@ -63,7 +73,7 @@ class CORE_EXPORT QgsMessageLog : public QObject
      */
     void messageReceived( const QString &message, const QString &tag, Qgis::MessageLevel level );
 
-    //TODO QGIS 4.0 - remove received argument
+    //TODO QGIS 5.0 - remove received argument
 
     /**
      * Emitted whenever the log receives a message which is not a Qgis::MessageLevel::Info level message
@@ -123,7 +133,7 @@ class CORE_EXPORT QgsMessageLogNotifyBlocker
 
 /**
  * \ingroup core
- * \brief Default implementation of message logging interface
+ * \brief Default implementation of message logging interface.
  *
  * This class outputs log messages to the standard error. Therefore it might
  * be the right choice for applications without GUI.

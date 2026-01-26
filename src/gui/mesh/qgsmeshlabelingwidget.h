@@ -18,14 +18,14 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QWidget>
-
 #include "ui_qgsmeshlabelingwidget.h"
-#include "qgspallabeling.h"
-#include "qgsmeshlayerlabeling.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsmeshlayerlabeling.h"
+#include "qgspallabeling.h"
+
+#include <QWidget>
 
 class QgsLabelingGui;
 class QgsMapCanvas;
@@ -77,7 +77,6 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
     void labelModeChanged( int index );
 
   private:
-
     enum Mode
     {
       ModeNone,
@@ -90,8 +89,8 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
     QgsMessageBar *mMessageBar = nullptr;
 
     QWidget *mWidget = nullptr;
-    std::unique_ptr< QgsPalLayerSettings > mSettings;
-    std::unique_ptr< QgsAbstractMeshLayerLabeling > mOldSettings;
+    std::unique_ptr<QgsPalLayerSettings> mSettings;
+    std::unique_ptr<QgsAbstractMeshLayerLabeling> mOldSettings;
     bool mOldLabelsEnabled = false;
 };
 

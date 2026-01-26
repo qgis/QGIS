@@ -2,5 +2,5 @@
 try:
     QgsMapLayerActionRegistry.__attribute_docs__ = {'changed': 'Triggered when an action is added or removed from the registry\n'}
     QgsMapLayerActionRegistry.__group__ = ['actions']
-except NameError:
+except (NameError, AttributeError):
     pass

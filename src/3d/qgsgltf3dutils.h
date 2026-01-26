@@ -30,11 +30,10 @@
 #define SIP_NO_FILE
 
 #include "qgis_3d.h"
-
 #include "qgsmatrix4x4.h"
 
-#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
-#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
+#define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
+#define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
 #include "tiny_gltf.h"
 
 class QgsCoordinateTransform;
@@ -45,7 +44,7 @@ namespace Qt3DCore
 }
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  *
  * Utility functions for dealing with GLTF models in 3D map views.
  *
@@ -54,22 +53,21 @@ namespace Qt3DCore
 class _3D_EXPORT QgsGltf3DUtils
 {
   public:
-
     //! Helper struct to keep track of transforms to be applied to positions
     struct EntityTransform
     {
-      //! 3D scene's origin in coordinates of the target CRS
-      QgsVector3D sceneOriginTargetCrs;
-      //! Tile's matrix to transform GLTF model coordinates to ECEF (normally EPSG:4978)
-      QgsMatrix4x4 tileTransform;
-      //! Transform from ECEF (normally EPSG:4978) to the target CRS
-      const QgsCoordinateTransform *ecefToTargetCrs = nullptr;
+        //! chunk's origin in coordinates of the target CRS
+        QgsVector3D chunkOriginTargetCrs;
+        //! Tile's matrix to transform GLTF model coordinates to ECEF (normally EPSG:4978)
+        QgsMatrix4x4 tileTransform;
+        //! Transform from ECEF (normally EPSG:4978) to the target CRS
+        const QgsCoordinateTransform *ecefToTargetCrs = nullptr;
 
-      //! Axis to treat as up axis in the GLTF model
-      Qgis::Axis gltfUpAxis = Qgis::Axis::Y;
+        //! Axis to treat as up axis in the GLTF model
+        Qgis::Axis gltfUpAxis = Qgis::Axis::Y;
 
-      double zValueScale = 1;
-      double zValueOffset = 0;
+        double zValueScale = 1;
+        double zValueOffset = 0;
     };
 
     /**
@@ -92,7 +90,6 @@ class _3D_EXPORT QgsGltf3DUtils
      * \see gltfToEntity()
      */
     static Qt3DCore::QEntity *parsedGltfToEntity( tinygltf::Model &model, const QgsGltf3DUtils::EntityTransform &transform, QString baseUri, QStringList *errors );
-
 };
 
 ///@endcond

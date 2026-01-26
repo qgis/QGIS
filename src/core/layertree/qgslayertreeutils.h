@@ -16,11 +16,12 @@
 #ifndef QGSLAYERTREEUTILS_H
 #define QGSLAYERTREEUTILS_H
 
-#include <qnamespace.h>
+#include "qgis_core.h"
+
+#include <QDomNodeList>
 #include <QList>
 #include <QPair>
-#include <QDomNodeList>
-#include "qgis_core.h"
+#include <qnamespace.h>
 
 class QDomElement;
 class QDomDocument;

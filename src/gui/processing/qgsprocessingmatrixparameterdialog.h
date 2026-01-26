@@ -16,9 +16,10 @@
 #ifndef QGSPROCESSINGMATRIXPARAMETERDIALOG_H
 #define QGSPROCESSINGMATRIXPARAMETERDIALOG_H
 
+#include "ui_qgsprocessingmatrixparameterdialogbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingmatrixparameterdialogbase.h"
 #include "qgsprocessingparameters.h"
 
 #define SIP_NO_FILE
@@ -39,12 +40,10 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingMatrixParameterDialog.
      */
-    QgsProcessingMatrixParameterPanelWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsProcessingParameterMatrix *param = nullptr,
-        const QVariantList &initialTable = QVariantList() );
+    QgsProcessingMatrixParameterPanelWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsProcessingParameterMatrix *param = nullptr, const QVariantList &initialTable = QVariantList() );
 
     /**
      * Returns the table's contents as a 1 dimensional array.
@@ -58,7 +57,6 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanelWidget : public QgsPanelWidget
     void deleteAllRows();
 
   private:
-
     QPushButton *mButtonAdd = nullptr;
     QPushButton *mButtonRemove = nullptr;
     QPushButton *mButtonRemoveAll = nullptr;
@@ -83,10 +81,9 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
     Q_OBJECT
 
   public:
-
     QgsProcessingMatrixParameterPanel( QWidget *parent = nullptr, const QgsProcessingParameterMatrix *param = nullptr );
 
-    QVariantList value() const { return mTable; }
+    QVariantList value() const;
 
     void setValue( const QVariantList &value );
 
@@ -99,7 +96,6 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
     void showDialog();
 
   private:
-
     void updateSummaryText();
 
     const QgsProcessingParameterMatrix *mParam = nullptr;
@@ -107,6 +103,7 @@ class GUI_EXPORT QgsProcessingMatrixParameterPanel : public QWidget
     QToolButton *mToolButton = nullptr;
 
     QVariantList mTable;
+    QPointer< QgsProcessingMatrixParameterPanelWidget > mPanelWidget;
 
     friend class TestProcessingGui;
 };

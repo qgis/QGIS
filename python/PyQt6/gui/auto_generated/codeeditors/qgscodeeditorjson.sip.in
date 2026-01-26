@@ -13,8 +13,9 @@
 class QgsCodeEditorJson : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A JSON editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A JSON editor based on QScintilla2.
+
+Adds syntax highlighting and code autocompletion.
 
 .. versionadded:: 3.20
 %End
@@ -23,7 +24,6 @@ code autocompletion.
 #include "qgscodeeditorjson.h"
 %End
   public:
-
     QgsCodeEditorJson( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorJson
@@ -34,7 +34,6 @@ Constructor for QgsCodeEditorJson
 
   protected:
     virtual void initializeLexer();
-
 
 };
 

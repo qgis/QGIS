@@ -13,76 +13,78 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMenu>
-#include <QEvent>
-#include <QCoreApplication>
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <cmath>
+#include <memory>
 
-#include "qgsadvanceddigitizingdockwidget.h"
-#include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
+#include "qgsadvanceddigitizingfloater.h"
 #include "qgsadvanceddigitizingtoolsregistry.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscadutils.h"
 #include "qgsexpression.h"
+#include "qgsfocuswatcher.h"
 #include "qgsgui.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaptooledit.h"
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qgsmessagebaritem.h"
-#include "qgsfocuswatcher.h"
-#include "qgssettings.h"
-#include "qgssnappingutils.h"
-#include "qgsproject.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgsmaptooledit.h"
 #include "qgsmeshlayer.h"
-#include "qgsunittypes.h"
+#include "qgsmessagebaritem.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
+#include "qgssnappingutils.h"
+#include "qgsunittypes.h"
 #include "qgsuserinputwidget.h"
 
 #include <QActionGroup>
+#include <QCoreApplication>
+#include <QEvent>
+#include <QMenu>
 
+#include "moc_qgsadvanceddigitizingdockwidget.cpp"
 
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( QStringLiteral( "cad-snapping-prioritize-feature" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) ) ;
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-record-construction-guides" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) ) ;
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-show-construction-guides" ), QgsSettingsTree::sTreeDigitizing, true, tr( "Determines whether construction guides are shown." ) ) ;
-const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides = new QgsSettingsEntryBool( QStringLiteral( "cad-snap-to-construction-guides" ), QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) ) ;
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( u"cad-snapping-prioritize-feature"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides = new QgsSettingsEntryBool( u"cad-record-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadShowConstructionGuides = new QgsSettingsEntryBool( u"cad-show-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, true, tr( "Determines whether construction guides are shown." ) );
+const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnapToConstructionGuides = new QgsSettingsEntryBool( u"cad-snap-to-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if points will snap to construction guides." ) );
 
 
 QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *canvas, QWidget *parent, QgsUserInputWidget *userInputWidget )
   : QgsDockWidget( parent )
   , mMapCanvas( canvas )
   , mUserInputWidget( userInputWidget )
-  , mSnapIndicator( std::make_unique< QgsSnapIndicator>( canvas ) )
-  , mCommonAngleConstraint( QgsSettings().value( QStringLiteral( "/Cad/CommonAngle" ), 0.0 ).toDouble() )
+  , mSnapIndicator( std::make_unique<QgsSnapIndicator>( canvas ) )
+  , mCommonAngleConstraint( QgsSettings().value( u"/Cad/CommonAngle"_s, 0.0 ).toDouble() )
 {
   setupUi( this );
 
   mCadPaintItem = new QgsAdvancedDigitizingCanvasItem( canvas, this );
 
-  mAngleConstraint.reset( new CadConstraint( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton ) );
+  mAngleConstraint = std::make_unique<CadConstraint>( mAngleLineEdit, mLockAngleButton, mRelativeAngleButton, mRepeatingLockAngleButton );
   mAngleConstraint->setCadConstraintType( Qgis::CadConstraintType::Angle );
   mAngleConstraint->setMapCanvas( mMapCanvas );
-  mDistanceConstraint.reset( new CadConstraint( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton ) );
+  mDistanceConstraint = std::make_unique<CadConstraint>( mDistanceLineEdit, mLockDistanceButton, nullptr, mRepeatingLockDistanceButton );
   mDistanceConstraint->setCadConstraintType( Qgis::CadConstraintType::Distance );
   mDistanceConstraint->setMapCanvas( mMapCanvas );
-  mXConstraint.reset( new CadConstraint( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton ) );
+  mXConstraint = std::make_unique<CadConstraint>( mXLineEdit, mLockXButton, mRelativeXButton, mRepeatingLockXButton );
   mXConstraint->setCadConstraintType( Qgis::CadConstraintType::XCoordinate );
   mXConstraint->setMapCanvas( mMapCanvas );
-  mYConstraint.reset( new CadConstraint( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton ) );
+  mYConstraint = std::make_unique<CadConstraint>( mYLineEdit, mLockYButton, mRelativeYButton, mRepeatingLockYButton );
   mYConstraint->setCadConstraintType( Qgis::CadConstraintType::YCoordinate );
   mYConstraint->setMapCanvas( mMapCanvas );
-  mZConstraint.reset( new CadConstraint( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton ) );
+  mZConstraint = std::make_unique<CadConstraint>( mZLineEdit, mLockZButton, mRelativeZButton, mRepeatingLockZButton );
   mZConstraint->setCadConstraintType( Qgis::CadConstraintType::ZValue );
   mZConstraint->setMapCanvas( mMapCanvas );
-  mMConstraint.reset( new CadConstraint( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton ) );
+  mMConstraint = std::make_unique<CadConstraint>( mMLineEdit, mLockMButton, mRelativeMButton, mRepeatingLockMButton );
   mMConstraint->setCadConstraintType( Qgis::CadConstraintType::MValue );
   mMConstraint->setMapCanvas( mMapCanvas );
 
-  mLineExtensionConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
-  mXyVertexConstraint.reset( new CadConstraint( new QLineEdit(), new QToolButton() ) );
+  mLineExtensionConstraint = std::make_unique<CadConstraint>( new QLineEdit(), new QToolButton() );
+  mXyVertexConstraint = std::make_unique<CadConstraint>( new QLineEdit(), new QToolButton() );
   mXyVertexConstraint->setMapCanvas( mMapCanvas );
 
   mBetweenLineConstraint = Qgis::BetweenLineConstraint::NoConstraint;
@@ -117,12 +119,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   connect( mRepeatingLockYButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockZButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
   connect( mRepeatingLockMButton, &QAbstractButton::clicked, this, &QgsAdvancedDigitizingDockWidget::setConstraintRepeatingLock );
-  connect( mAngleLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
-  connect( mDistanceLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
-  connect( mXLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
-  connect( mYLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
-  connect( mZLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
-  connect( mMLineEdit, &QLineEdit::returnPressed, this, [ = ]() { lockConstraint(); } );
+  connect( mAngleLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mDistanceLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mXLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mYLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mZLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
+  connect( mMLineEdit, &QLineEdit::returnPressed, this, [this]() { lockConstraint(); } );
   connect( mAngleLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mDistanceLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
   connect( mXLineEdit, &QLineEdit::textEdited, this, &QgsAdvancedDigitizingDockWidget::constraintTextEdited );
@@ -132,15 +134,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   //also watch for focus out events on these widgets
   QgsFocusWatcher *angleWatcher = new QgsFocusWatcher( mAngleLineEdit );
   connect( angleWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
-  connect( angleWatcher, &QgsFocusWatcher::focusIn, this, [ = ]()
-  {
+  connect( angleWatcher, &QgsFocusWatcher::focusIn, this, [this]() {
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mAngleLineEdit->text(), Qgis::CadConstraintType::Angle ) };
     whileBlocking( mAngleLineEdit )->setText( cleanedInputValue );
   } );
   QgsFocusWatcher *distanceWatcher = new QgsFocusWatcher( mDistanceLineEdit );
   connect( distanceWatcher, &QgsFocusWatcher::focusOut, this, &QgsAdvancedDigitizingDockWidget::constraintFocusOut );
-  connect( distanceWatcher, &QgsFocusWatcher::focusIn, this, [ = ]()
-  {
+  connect( distanceWatcher, &QgsFocusWatcher::focusIn, this, [this]() {
     const QString cleanedInputValue { QgsAdvancedDigitizingDockWidget::CadConstraint::removeSuffix( mDistanceLineEdit->text(), Qgis::CadConstraintType::Distance ) };
     whileBlocking( mDistanceLineEdit )->setText( cleanedInputValue );
   } );
@@ -159,8 +159,8 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 #ifndef __clang_analyzer__
   QActionGroup *angleButtonGroup = new QActionGroup( mCommonAngleActionsMenu ); // actions are exclusive for common angles NOLINT
 #endif
-  QList< QPair< double, QString > > commonAngles;
-  const QList<double> anglesDouble( { 0.0, 0.1, 0.5, 1.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0} );
+  QList<QPair<double, QString>> commonAngles;
+  const QList<double> anglesDouble( { 0.0, 0.1, 0.5, 1.0, 5.0, 10.0, 15.0, 18.0, 22.5, 30.0, 45.0, 90.0 } );
   for ( QList<double>::const_iterator it = anglesDouble.constBegin(); it != anglesDouble.constEnd(); ++it )
   {
     commonAngles << QPair<double, QString>( *it, formatCommonAngleSnapping( *it ) );
@@ -177,17 +177,16 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     snappingPriorityActionGroup->addAction( anglesAction );
     snappingPriorityMenu->addAction( anglesAction );
     snappingPriorityMenu->addAction( featuresAction );
-    connect( anglesAction, &QAction::changed, this, [ = ]
-    {
+    connect( anglesAction, &QAction::changed, this, [this, featuresAction] {
       mSnappingPrioritizeFeatures = featuresAction->isChecked();
       settingsCadSnappingPriorityPrioritizeFeature->setValue( featuresAction->isChecked() );
     } );
-    featuresAction->setChecked( settingsCadSnappingPriorityPrioritizeFeature->value( ) );
-    anglesAction->setChecked( ! featuresAction->isChecked() );
+    featuresAction->setChecked( settingsCadSnappingPriorityPrioritizeFeature->value() );
+    anglesAction->setChecked( !featuresAction->isChecked() );
     mCommonAngleActionsMenu->addMenu( snappingPriorityMenu );
   }
 
-  for ( QList< QPair<double, QString > >::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
+  for ( QList<QPair<double, QString>>::const_iterator it = commonAngles.constBegin(); it != commonAngles.constEnd(); ++it )
   {
     QAction *action = new QAction( it->second, mCommonAngleActionsMenu );
     action->setCheckable( true );
@@ -207,14 +206,13 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mRecordConstructionGuides->setCheckable( true );
   mRecordConstructionGuides->setChecked( settingsCadRecordConstructionGuides->value() );
   constructionSettingsMenu->addAction( mRecordConstructionGuides );
-  connect( mRecordConstructionGuides, &QAction::triggered, this, [ = ]() { settingsCadRecordConstructionGuides->setValue( mRecordConstructionGuides->isChecked() ); } );
+  connect( mRecordConstructionGuides, &QAction::triggered, this, [this]() { settingsCadRecordConstructionGuides->setValue( mRecordConstructionGuides->isChecked() ); } );
 
   mShowConstructionGuides = new QAction( tr( "Show Construction Guides" ), constructionSettingsMenu );
   mShowConstructionGuides->setCheckable( true );
   mShowConstructionGuides->setChecked( settingsCadShowConstructionGuides->value() );
   constructionSettingsMenu->addAction( mShowConstructionGuides );
-  connect( mShowConstructionGuides, &QAction::triggered, this, [ = ]()
-  {
+  connect( mShowConstructionGuides, &QAction::triggered, this, [this]() {
     settingsCadShowConstructionGuides->setValue( mShowConstructionGuides->isChecked() );
     updateCadPaintItem();
   } );
@@ -223,44 +221,41 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   mSnapToConstructionGuides->setCheckable( true );
   mSnapToConstructionGuides->setChecked( settingsCadSnapToConstructionGuides->value() );
   constructionSettingsMenu->addAction( mSnapToConstructionGuides );
-  connect( mSnapToConstructionGuides, &QAction::triggered, this, [ = ]() { settingsCadSnapToConstructionGuides->setValue( mSnapToConstructionGuides->isChecked() ); } );
+  connect( mSnapToConstructionGuides, &QAction::triggered, this, [this]() { settingsCadSnapToConstructionGuides->setValue( mSnapToConstructionGuides->isChecked() ); } );
 
   constructionSettingsMenu->addSeparator();
 
   mClearConstructionGuides = new QAction( tr( "Clear Construction Guides" ), constructionSettingsMenu );
   constructionSettingsMenu->addAction( mClearConstructionGuides );
-  connect( mClearConstructionGuides, &QAction::triggered, this, [ = ]()
-  {
+  connect( mClearConstructionGuides, &QAction::triggered, this, [this]() {
     resetConstructionGuides();
     updateCadPaintItem();
   } );
 
-  QToolButton *constructionModeToolButton = qobject_cast< QToolButton *>( mToolbar->widgetForAction( mConstructionModeAction ) );
+  QToolButton *constructionModeToolButton = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mConstructionModeAction ) );
   constructionModeToolButton->setPopupMode( QToolButton::MenuButtonPopup );
   constructionModeToolButton->setMenu( constructionSettingsMenu );
-  constructionModeToolButton->setObjectName( QStringLiteral( "ConstructionModeButton" ) );
+  constructionModeToolButton->setObjectName( u"ConstructionModeButton"_s );
 
   // Tools
   QMenu *toolsMenu = new QMenu( this );
-  connect( toolsMenu, &QMenu::aboutToShow, this, [ = ]()
-  {
+  connect( toolsMenu, &QMenu::aboutToShow, this, [this, toolsMenu]() {
     toolsMenu->clear();
     const QStringList toolMetadataNames = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadataNames();
     for ( const QString &name : toolMetadataNames )
     {
       QgsAdvancedDigitizingToolAbstractMetadata *toolMetadata = QgsGui::instance()->advancedDigitizingToolsRegistry()->toolMetadata( name );
       QAction *toolAction = new QAction( toolMetadata->icon(), toolMetadata->visibleName(), toolsMenu );
-      connect( toolAction, &QAction::triggered, this, [ = ]()
-      {
+      connect( toolAction, &QAction::triggered, this, [this, toolMetadata]() {
         setTool( toolMetadata->createTool( mMapCanvas, this ) );
       } );
       toolsMenu->addAction( toolAction );
     }
   } );
-  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mToolsAction ) )->setPopupMode( QToolButton::InstantPopup );
+  qobject_cast<QToolButton *>( mToolbar->widgetForAction( mToolsAction ) )->setPopupMode( QToolButton::InstantPopup );
   mToolsAction->setMenu( toolsMenu );
 
-  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
+  qobject_cast<QToolButton *>( mToolbar->widgetForAction( mSettingsAction ) )->setPopupMode( QToolButton::InstantPopup );
   mSettingsAction->setMenu( mCommonAngleActionsMenu );
   mSettingsAction->setCheckable( true );
   mSettingsAction->setToolTip( "<b>" + tr( "Snap to common angles" ) + "</b><br>(" + tr( "press n to cycle through the options" ) + ")" );
@@ -280,15 +275,12 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
   constructionMenu->addAction( mXyVertexAction );
   connect( mXyVertexAction, &QAction::triggered, this, &QgsAdvancedDigitizingDockWidget::lockParameterlessConstraint );
 
-  auto constructionToolBar = qobject_cast< QToolButton *>( mToolbar->widgetForAction( mConstructionAction ) );
+  auto constructionToolBar = qobject_cast<QToolButton *>( mToolbar->widgetForAction( mConstructionAction ) );
   constructionToolBar->setPopupMode( QToolButton::InstantPopup );
-  constructionToolBar->setMenu( constructionMenu );
-  constructionToolBar->setObjectName( QStringLiteral( "ConstructionButton" ) );
-
-  mConstructionAction->setMenu( mCommonAngleActionsMenu );
+  mConstructionAction->setMenu( constructionMenu );
+  constructionToolBar->setObjectName( u"ConstructionButton"_s );
   mConstructionAction->setCheckable( true );
   mConstructionAction->setToolTip( tr( "Construction Tools" ) );
-//  connect( constructionMenu, &QMenu::triggered, this, &QgsAdvancedDigitizingDockWidget::settingsButtonTriggered );
 
   // set tooltips
   mConstructionModeAction->setToolTip( "<b>" + tr( "Construction mode" ) + "</b><br>(" + tr( "press c to toggle on/off" ) + ")" );
@@ -331,7 +323,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
 
   // Create the floater
   mFloaterActionsMenu = new QMenu( this );
-  qobject_cast< QToolButton *>( mToolbar->widgetForAction( mFloaterAction ) )->setPopupMode( QToolButton::InstantPopup );
+  qobject_cast<QToolButton *>( mToolbar->widgetForAction( mFloaterAction ) )->setPopupMode( QToolButton::InstantPopup );
   mFloaterAction->setMenu( mFloaterActionsMenu );
   mFloaterAction->setCheckable( true );
   mFloater = new QgsAdvancedDigitizingFloater( canvas, this );
@@ -343,8 +335,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     action->setCheckable( true );
     action->setChecked( mFloater->active() );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setActive( checked );
       mFloaterAction->setChecked( checked );
     } );
@@ -356,89 +347,108 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas *
     QAction *action = new QAction( tr( "Show distance" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/DistanceShowInFloater" ), true ).toBool() );
+    const bool isDistanceChecked = QgsSettings().value( u"/Cad/DistanceShowInFloater"_s, true ).toBool();
+    action->setChecked( isDistanceChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Distance, isDistanceChecked );
   }
 
   {
     QAction *action = new QAction( tr( "Show angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/AngleShowInFloater" ), true ).toBool() );
+    const bool isAngleChecked = QgsSettings().value( u"/Cad/AngleShowInFloater"_s, true ).toBool();
+    action->setChecked( isAngleChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Angle, isAngleChecked );
   }
 
   {
     QAction *action = new QAction( tr( "Show XY coordinates" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, checked );
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, checked );
     } );
     // There is no separate menu option for X and Y so let's check for X only.
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/XCoordinateShowInFloater" ), true ).toBool() );
+    const bool isXCoordinateChecked = QgsSettings().value( u"/Cad/XCoordinateShowInFloater"_s, true ).toBool();
+    action->setChecked( isXCoordinateChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::XCoordinate, isXCoordinateChecked );
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::YCoordinate, isXCoordinateChecked );
   }
 
   {
     QAction *action = new QAction( tr( "Show Z value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, checked && mTargetLayerSupportsZ );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/ZCoordinateShowInFloater" ), true ).toBool() );
+    const bool isZCoordinateChecked = QgsSettings().value( u"/Cad/ZCoordinateShowInFloater"_s, true ).toBool();
+    action->setChecked( isZCoordinateChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::ZCoordinate, isZCoordinateChecked );
   }
 
   {
     QAction *action = new QAction( tr( "Show M value" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
-      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked );
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
+      mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, checked && mTargetLayerSupportsM );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/MCoordinateShowInFloater" ), true ).toBool() );
+    const bool isMCoordinateChecked = QgsSettings().value( u"/Cad/MCoordinateShowInFloater"_s, true ).toBool();
+    action->setChecked( isMCoordinateChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::MCoordinate, isMCoordinateChecked );
   }
 
   {
     QAction *action = new QAction( tr( "Show bearing/azimuth" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/BearingShowInFloater" ), false ).toBool() );
+    const bool isBearingChecked = QgsSettings().value( u"/Cad/BearingShowInFloater"_s, false ).toBool();
+    action->setChecked( isBearingChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::Bearing, isBearingChecked );
   }
 
   {
     QAction *action = new QAction( tr( "Show common snapping angle" ), mFloaterActionsMenu );
     action->setCheckable( true );
     mFloaterActionsMenu->addAction( action );
-    connect( action, &QAction::toggled, this, [ = ]( bool checked )
-    {
+    connect( action, &QAction::toggled, this, [this]( bool checked ) {
       mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, checked );
     } );
-    action->setChecked( QgsSettings().value( QStringLiteral( "/Cad/CommonAngleSnappingShowInFloater" ), false ).toBool() );
+    const bool isCommonAngleSnappingChecked = QgsSettings().value( u"/Cad/CommonAngleSnappingShowInFloater"_s, false ).toBool();
+    action->setChecked( isCommonAngleSnappingChecked );
+    // Call this explicitly because toggled won't be called if there is no change
+    // See issue #61587
+    mFloater->setItemVisibility( QgsAdvancedDigitizingFloater::FloaterItem::CommonAngleSnapping, isCommonAngleSnappingChecked );
   }
 
   updateCapacity( true );
-  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [ = ] { updateCapacity( true ); } );
+  connect( QgsProject::instance(), &QgsProject::snappingConfigChanged, this, [this] { updateCapacity( true ); } );
 
-  connect( QgsProject::instance(), &QgsProject::cleared, this, [ = ]()
-  {
+  connect( QgsProject::instance(), &QgsProject::cleared, this, [this]() {
     mConstructionGuidesLayer.reset();
   } );
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ] { updateConstructionGuidesCrs(); } );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [this] { updateConstructionGuidesCrs(); } );
 
   disable();
 }
@@ -454,7 +464,7 @@ QgsAdvancedDigitizingDockWidget::~QgsAdvancedDigitizingDockWidget()
 QString QgsAdvancedDigitizingDockWidget::formatCommonAngleSnapping( double angle )
 {
   if ( angle == 0 )
-    return  tr( "Do Not Snap to Common Angles" );
+    return tr( "Do Not Snap to Common Angles" );
   else
     return QString( tr( "%1, %2, %3, %4°…" ) ).arg( angle, 0, 'f', 1 ).arg( angle * 2, 0, 'f', 1 ).arg( angle * 3, 0, 'f', 1 ).arg( angle * 4, 0, 'f', 1 );
 }
@@ -600,7 +610,7 @@ void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 }
 
 
-void QgsAdvancedDigitizingDockWidget::switchZM( )
+void QgsAdvancedDigitizingDockWidget::switchZM()
 {
   bool enableZ = false;
   bool enableM = false;
@@ -636,12 +646,19 @@ void QgsAdvancedDigitizingDockWidget::switchZM( )
     }
   }
 
+  mTargetLayerSupportsM = enableM;
+  mTargetLayerSupportsZ = enableZ;
+
   setEnabledZ( enableZ );
   setEnabledM( enableM );
 }
 
 void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
 {
+  if ( enable && !mTargetLayerSupportsZ )
+  {
+    enable = false;
+  }
   mRelativeZButton->setEnabled( enable );
   mZLabel->setEnabled( enable );
   mZLineEdit->setEnabled( enable );
@@ -655,6 +672,10 @@ void QgsAdvancedDigitizingDockWidget::setEnabledZ( bool enable )
 
 void QgsAdvancedDigitizingDockWidget::setEnabledM( bool enable )
 {
+  if ( enable && !mTargetLayerSupportsM )
+  {
+    enable = false;
+  }
   mRelativeMButton->setEnabled( enable );
   mMLabel->setEnabled( enable );
   mMLineEdit->setEnabled( enable );
@@ -802,7 +823,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
     {
       it.value()->setChecked( true );
       mCommonAngleConstraint = it.key();
-      QgsSettings().setValue( QStringLiteral( "/Cad/CommonAngle" ), it.key() );
+      QgsSettings().setValue( u"/Cad/CommonAngle"_s, it.key() );
       mSettingsAction->setChecked( mCommonAngleConstraint != 0 );
       emit valueCommonAngleSnappingChanged( mCommonAngleConstraint );
       return;
@@ -812,7 +833,7 @@ void QgsAdvancedDigitizingDockWidget::settingsButtonTriggered( QAction *action )
 
 QgsMapLayer *QgsAdvancedDigitizingDockWidget::targetLayer() const
 {
-  if ( QgsMapToolAdvancedDigitizing *advancedTool = qobject_cast< QgsMapToolAdvancedDigitizing * >( mMapCanvas->mapTool() ) )
+  if ( QgsMapToolAdvancedDigitizing *advancedTool = qobject_cast<QgsMapToolAdvancedDigitizing *>( mMapCanvas->mapTool() ) )
   {
     return advancedTool->layer();
   }
@@ -915,19 +936,19 @@ QgsAdvancedDigitizingDockWidget::CadConstraint *QgsAdvancedDigitizingDockWidget:
   {
     constraint = mDistanceConstraint.get();
   }
-  else if ( obj == mXLineEdit  || obj == mLockXButton )
+  else if ( obj == mXLineEdit || obj == mLockXButton )
   {
     constraint = mXConstraint.get();
   }
-  else if ( obj == mYLineEdit  || obj == mLockYButton )
+  else if ( obj == mYLineEdit || obj == mLockYButton )
   {
     constraint = mYConstraint.get();
   }
-  else if ( obj == mZLineEdit  || obj == mLockZButton )
+  else if ( obj == mZLineEdit || obj == mLockZButton )
   {
     constraint = mZConstraint.get();
   }
-  else if ( obj == mMLineEdit  || obj == mLockMButton )
+  else if ( obj == mMLineEdit || obj == mLockMButton )
   {
     constraint = mMConstraint.get();
   }
@@ -949,7 +970,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
   const QString cleanedInputValue { CadConstraint::removeSuffix( inputValue, type ) };
   double value = qgsPermissiveToDouble( cleanedInputValue, ok );
 
-  if ( ! ok )
+  if ( !ok )
   {
     // try to evaluate expression
     QgsExpression expr( inputValue );
@@ -965,7 +986,7 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
         inputValueC.remove( QLocale().groupSeparator() );
         QgsExpression exprC( inputValueC );
         const QVariant resultC = exprC.evaluate();
-        if ( ! exprC.hasEvalError() )
+        if ( !exprC.hasEvalError() )
         {
           value = resultC.toDouble( &ok );
         }
@@ -974,9 +995,9 @@ double QgsAdvancedDigitizingDockWidget::parseUserInput( const QString &inputValu
       // Second: be nice with non-dot locales
       if ( !ok && QLocale().decimalPoint() != QChar( '.' ) && inputValueC.contains( QLocale().decimalPoint() ) )
       {
-        QgsExpression exprC( inputValueC .replace( QLocale().decimalPoint(), QChar( '.' ) ) );
+        QgsExpression exprC( inputValueC.replace( QLocale().decimalPoint(), QChar( '.' ) ) );
         const QVariant resultC = exprC.evaluate();
-        if ( ! exprC.hasEvalError() )
+        if ( !exprC.hasEvalError() )
         {
           value = resultC.toDouble( &ok );
         }
@@ -1101,7 +1122,7 @@ void QgsAdvancedDigitizingDockWidget::constraintTextEdited( const QString &textV
 
 void QgsAdvancedDigitizingDockWidget::constraintFocusOut()
 {
-  QLineEdit *lineEdit = qobject_cast< QLineEdit * >( sender()->parent() );
+  QLineEdit *lineEdit = qobject_cast<QLineEdit *>( sender()->parent() );
   if ( !lineEdit )
     return;
 
@@ -1157,7 +1178,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {
-    newCapacities |=  RelativeCoordinates;
+    newCapacities |= RelativeCoordinates;
     if ( !isGeographic )
     {
       newCapacities |= AbsoluteAngle;
@@ -1179,7 +1200,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
   // update the UI according to new capacities
   // still keep the old to compare
 
-  const bool distance =  mCadEnabled && newCapacities.testFlag( Distance );
+  const bool distance = mCadEnabled && newCapacities.testFlag( Distance );
   const bool relativeAngle = mCadEnabled && newCapacities.testFlag( RelativeAngle );
   const bool absoluteAngle = mCadEnabled && newCapacities.testFlag( AbsoluteAngle );
   const bool relativeCoordinates = mCadEnabled && newCapacities.testFlag( RelativeCoordinates );
@@ -1271,7 +1292,7 @@ static QgsCadUtils::AlignMapPointConstraint _constraint( QgsAdvancedDigitizingDo
   return constr;
 }
 
-void QgsAdvancedDigitizingDockWidget::toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, QgsPointLocator::Match previouslySnap )
+void QgsAdvancedDigitizingDockWidget::toggleLockedSnapVertex( const QgsPointLocator::Match &snapMatch, const QgsPointLocator::Match &previouslySnap )
 {
   // do nothing if not activated
   if ( !mLineExtensionConstraint->isLocked() && !mXyVertexConstraint->isLocked() )
@@ -1281,7 +1302,7 @@ void QgsAdvancedDigitizingDockWidget::toggleLockedSnapVertex( const QgsPointLoca
 
   // if the first is same actual, not toggle if previously snapped
   const int lastIndex = mLockedSnapVertices.length() - 1;
-  for ( int i = lastIndex ; i >= 0; --i )
+  for ( int i = lastIndex; i >= 0; --i )
   {
     if ( mLockedSnapVertices[i].point() == snapMatch.point() )
     {
@@ -1315,6 +1336,11 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   context.mConstraint = _constraint( mMConstraint.get() );
   context.distanceConstraint = _constraint( mDistanceConstraint.get() );
   context.angleConstraint = _constraint( mAngleConstraint.get() );
+
+  // if mAngleConstraint is only soft locked, do not consider that the context angle constraint
+  // is locked, as this would prevent the common angles constraint from being applied
+  context.angleConstraint.locked = mAngleConstraint->lockMode() == CadConstraint::HardLock;
+
   context.snappingToFeaturesOverridesCommonAngle = mSnappingPrioritizeFeatures;
 
   context.lineExtensionConstraint = _constraint( mLineExtensionConstraint.get() );
@@ -1391,7 +1417,9 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent *e )
   mSnapMatch = context.snappingUtils->snapToMap( point, nullptr, true );
   if ( mSnapMatch.layer() )
   {
-    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( point == mSnapMatch.point() ) )
+    // note ND: I'm not 100% sure if the point == mSnapMatch.point() comparison was intended be done using QgsPointXY or QgsPoint objects here!
+    // I'm using QgsPointXY here to keep the behavior the same from before a duplicate QgsPointXY == operator was removed...
+    if ( ( ( mSnapMatch.hasVertex() || mSnapMatch.hasLineEndpoint() ) && ( QgsPointXY( point ) == mSnapMatch.point() ) )
          || ( mSnapMatch.hasEdge() && QgsProject::instance()->topologicalEditing() ) )
     {
       e->snapPoint();
@@ -1448,23 +1476,24 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
   const QgsPoint penultimatePt = penultimatePointV2( &penulPointExist );
 
   // --- angle
-  if ( !mAngleConstraint->isLocked() && previousPointExist )
+  if ( previousPointExist )
   {
     double prevAngle = 0.0;
 
     if ( penulPointExist && mAngleConstraint->relative() )
     {
       // previous angle
-      prevAngle = std::atan2( previousPt.y() - penultimatePt.y(),
-                              previousPt.x() - penultimatePt.x() )  * 180 / M_PI;
+      prevAngle = std::atan2( previousPt.y() - penultimatePt.y(), previousPt.x() - penultimatePt.x() ) * 180 / M_PI;
     }
 
-    const double xAngle { std::atan2( point.y() - previousPt.y(),
-                                      point.x() - previousPt.x() ) * 180 / M_PI };
+    const double xAngle { std::atan2( point.y() - previousPt.y(), point.x() - previousPt.x() ) * 180 / M_PI };
 
     // Modulus
     const double angle = std::fmod( xAngle - prevAngle, 360.0 );
-    mAngleConstraint->setValue( angle );
+    if ( !mAngleConstraint->isLocked() )
+    {
+      mAngleConstraint->setValue( angle );
+    }
 
     // Bearing (azimuth)
     double bearing { std::fmod( xAngle, 360.0 ) };
@@ -1472,7 +1501,6 @@ void QgsAdvancedDigitizingDockWidget::updateUnlockedConstraintValues( const QgsP
     const QgsNumericFormatContext context;
     const QString bearingText { QgsProject::instance()->displaySettings()->bearingFormat()->formatDouble( bearing, context ) };
     emit valueBearingChanged( bearingText );
-
   }
   // --- distance
   if ( !mDistanceConstraint->isLocked() && previousPointExist )
@@ -1891,7 +1919,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
-      else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
@@ -1921,7 +1949,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
-      else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
@@ -1951,7 +1979,7 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
         emit pointChangedV2( mCadPointList.value( 0 ) );
         e->accept();
       }
-      else if ( type == QEvent::ShortcutOverride &&  e->modifiers() == Qt::ShiftModifier )
+      else if ( type == QEvent::ShortcutOverride && e->modifiers() == Qt::ShiftModifier )
       {
         if ( mCapacities.testFlag( RelativeCoordinates ) )
         {
@@ -2065,8 +2093,8 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent *e )
       if ( type == QEvent::ShortcutOverride )
       {
         const QList<double> constActionKeys { mCommonAngleActions.keys() };
-        const int currentAngleActionIndex { static_cast<int>( constActionKeys .indexOf( mCommonAngleConstraint ) ) };
-        const QList<QAction *> constActions { mCommonAngleActions.values( ) };
+        const int currentAngleActionIndex { static_cast<int>( constActionKeys.indexOf( mCommonAngleConstraint ) ) };
+        const QList<QAction *> constActions { mCommonAngleActions.values() };
         QAction *nextAngleAction;
         if ( e->modifiers() == Qt::ShiftModifier )
         {
@@ -2200,13 +2228,13 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
         QgsFeature feature;
         QgsGeometry geom( mConstructionGuideLine.clone() );
         feature.setGeometry( geom );
-        mConstructionGuidesLayer->dataProvider()->addFeature( feature );
+        ( void ) mConstructionGuidesLayer->dataProvider()->addFeature( feature );
         mConstructionGuideId = feature.id();
       }
       else if ( mConstructionGuideLine.numPoints() > 2 )
       {
         QgsGeometry geom( mConstructionGuideLine.clone() );
-        mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
+        ( void ) mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
       }
     }
     else
@@ -2216,7 +2244,7 @@ void QgsAdvancedDigitizingDockWidget::addPoint( const QgsPointXY &point )
         mConstructionGuideLine.addVertex( pt );
 
         QgsGeometry geom( mConstructionGuideLine.clone() );
-        mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
+        ( void ) mConstructionGuidesLayer->dataProvider()->changeGeometryValues( { { mConstructionGuideId, geom } } );
         mConstructionGuideLine.clear();
       }
     }
@@ -2285,7 +2313,6 @@ void QgsAdvancedDigitizingDockWidget::CadConstraint::setLockMode( LockMode mode 
   {
     mLineEdit->clear();
   }
-
 }
 
 void QgsAdvancedDigitizingDockWidget::CadConstraint::setRepeatingLock( bool repeating )
@@ -2336,7 +2363,7 @@ QString QgsAdvancedDigitizingDockWidget::CadConstraint::displayValue() const
       const Qgis::DistanceUnit displayUnits { QgsProject::instance()->distanceUnits() };
       // Convert from canvas units
       const Qgis::DistanceUnit canvasUnits { mMapCanvas->mapSettings().mapUnits() };
-      const double value { QgsUnitTypes::fromUnitToUnitFactor( canvasUnits, displayUnits ) *mValue };
+      const double value { QgsUnitTypes::fromUnitToUnitFactor( canvasUnits, displayUnits ) * mValue };
       return QgsDistanceArea::formatDistance( value, mPrecision, displayUnits, true );
     }
     case Qgis::CadConstraintType::Generic:
@@ -2459,12 +2486,12 @@ QgsPoint QgsAdvancedDigitizingDockWidget::pointXYToPoint( const QgsPointXY &poin
   return QgsPoint( point.x(), point.y(), getLineZ(), getLineM() );
 }
 
-double QgsAdvancedDigitizingDockWidget::getLineZ( ) const
+double QgsAdvancedDigitizingDockWidget::getLineZ() const
 {
   return mZLineEdit->isEnabled() ? QLocale().toDouble( mZLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
 
-double QgsAdvancedDigitizingDockWidget::getLineM( ) const
+double QgsAdvancedDigitizingDockWidget::getLineM() const
 {
   return mMLineEdit->isEnabled() ? QLocale().toDouble( mMLineEdit->text() ) : std::numeric_limits<double>::quiet_NaN();
 }
@@ -2518,8 +2545,5 @@ void QgsAdvancedDigitizingDockWidget::resetConstructionGuides()
   }
 
   const QgsVectorLayer::LayerOptions options( QgsProject::instance()->transformContext(), false, false );
-  mConstructionGuidesLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=%1" ).arg( mMapCanvas->mapSettings().destinationCrs().authid() ),
-                             QStringLiteral( "constructionGuides" ),
-                             QStringLiteral( "memory" ),
-                             options );
+  mConstructionGuidesLayer = std::make_unique<QgsVectorLayer>( u"LineString?crs=%1"_s.arg( mMapCanvas->mapSettings().destinationCrs().authid() ), u"constructionGuides"_s, u"memory"_s, options );
 }

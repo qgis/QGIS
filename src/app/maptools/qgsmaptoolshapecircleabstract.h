@@ -16,38 +16,35 @@
 #ifndef QGSMAPTOOLSHAPECIRCLEABSTRACT_H
 #define QGSMAPTOOLSHAPECIRCLEABSTRACT_H
 
-#include "qgsmaptoolshapeabstract.h"
-#include "qgscircle.h"
 #include "qgis_app.h"
+#include "qgscircle.h"
+#include "qgsmaptoolshapeabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 #include "qgspointlocator.h"
 
-
-
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
+    bool acceptMatch( const QgsPointLocator::Match &m ) override { return m.hasEdge(); }
 };
 
 
-class APP_EXPORT QgsMapToolShapeCircleAbstract: public QgsMapToolShapeAbstract
+class APP_EXPORT QgsMapToolShapeCircleAbstract : public QgsMapToolShapeAbstract
 {
     Q_OBJECT
 
   public:
-    QgsMapToolShapeCircleAbstract( const QString &id, QgsMapToolCapture *parentTool ) : QgsMapToolShapeAbstract( id, parentTool ) {}
+    QgsMapToolShapeCircleAbstract( const QString &id, QgsMapToolCapture *parentTool )
+      : QgsMapToolShapeAbstract( id, parentTool ) {}
 
-    virtual ~QgsMapToolShapeCircleAbstract() = default;
+    ~QgsMapToolShapeCircleAbstract() override = default;
 
     void clean() override;
 
   protected:
-
     void addCircleToParentTool();
 
     //! Circle
     QgsCircle mCircle;
-
 };
 
 #endif // QGSMAPTOOLSHAPECIRCLEABSTRACT_H

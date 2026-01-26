@@ -31,9 +31,7 @@ class QgsWFSUtils
 
     static inline bool isCompatibleType( QMetaType::Type a, QMetaType::Type b )
     {
-      return a == b ||
-             ( a == QMetaType::Type::QStringList && b == QMetaType::Type::QVariantList ) ||
-             ( a == QMetaType::Type::QVariantList && b == QMetaType::Type::QStringList );
+      return a == b || ( a == QMetaType::Type::QStringList && b == QMetaType::Type::QVariantList ) || ( a == QMetaType::Type::QVariantList && b == QMetaType::Type::QStringList );
     }
 };
 

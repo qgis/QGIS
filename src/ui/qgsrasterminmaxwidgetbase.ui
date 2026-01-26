@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>324</width>
-    <height>252</height>
+    <height>261</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -165,37 +165,10 @@ standard de&amp;viation ×</string>
          </widget>
         </item>
         <item row="4" column="1" colspan="3">
-         <widget class="QComboBox" name="mStatisticsExtentCombo">
-          <item>
-           <property name="text">
-            <string>Whole raster</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Current canvas</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Updated canvas</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QComboBox" name="mStatisticsExtentCombo"/>
         </item>
         <item row="5" column="1" colspan="3">
-         <widget class="QComboBox" name="cboAccuracy">
-          <item>
-           <property name="text">
-            <string>Estimate (faster)</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Actual (slower)</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QComboBox" name="cboAccuracy"/>
         </item>
        </layout>
       </item>

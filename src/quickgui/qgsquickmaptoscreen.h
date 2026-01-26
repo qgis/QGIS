@@ -16,17 +16,18 @@
 #ifndef QGSQUICKMAPTOSCREEN_H
 #define QGSQUICKMAPTOSCREEN_H
 
+#include "qgspoint.h"
 #include "qgsquickmapsettings.h"
 
 #include <QObject>
 #include <QPointF>
-#include <qgspoint.h>
 
 /**
  * \ingroup quick
  *
- * \brief The QgsQuickMapToScreen class transform map points to screen coordinates as
- * well as distances from map to screen units. Screen points and/or distances will be
+ * \brief Transform map points to screen coordinates as well as distances from map to screen units.
+ *
+ * Screen points and/or distances will be
  * automatically updated on map extent changes.
  *
  * \since QGIS 3.32
@@ -49,7 +50,6 @@ class QUICK_EXPORT QgsQuickMapToScreen : public QObject
     Q_PROPERTY( double screenDistance READ screenDistance NOTIFY screenDistanceChanged )
 
   public:
-
     //! Creates a map to screen object
     explicit QgsQuickMapToScreen( QObject *parent = nullptr );
 

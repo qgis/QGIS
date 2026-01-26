@@ -13,25 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QItemDelegate>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QPainter>
-#include <QToolButton>
-
 #include "qgsattributetabledelegate.h"
+
+#include "qgsactionmanager.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
 #include "qgsattributetableview.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsfeatureselectionmodel.h"
-#include "qgsvectordataprovider.h"
-#include "qgsactionmanager.h"
 #include "qgsgui.h"
-#include "qgsvectorlayerjoininfo.h"
-#include "qgsvectorlayerjoinbuffer.h"
 #include "qgsrendercontext.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayerjoinbuffer.h"
+#include "qgsvectorlayerjoininfo.h"
+
+#include <QComboBox>
+#include <QItemDelegate>
+#include <QLineEdit>
+#include <QPainter>
+#include <QToolButton>
+
+#include "moc_qgsattributetabledelegate.cpp"
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
@@ -66,16 +69,17 @@ QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   if ( !vl )
     return nullptr;
 
-  const int fieldIdx = index.model()->data( index, static_cast< int >( QgsAttributeTableModel::CustomRole::FieldIndex ) ).toInt();
+  const int fieldIdx = index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FieldIndex ) ).toInt();
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
 
   // Update the editor form context with the feature being edited
-  const QgsFeatureId fid( index.model()->data( index, static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong() );
+  const QgsFeatureId fid( index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong() );
   context.setFormFeature( vl->getFeature( fid ) );
 
   QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vl, fieldIdx, nullptr, parent, context );
-  QWidget *w = eww->widget();
+  eww->setFeature( context.formFeature() );
 
+  QWidget *w = eww->widget();
   w->setAutoFillBackground( true );
   w->setFocusPolicy( Qt::StrongFocus ); // to make sure QMouseEvents are propagated to the editor widget
 
@@ -103,8 +107,8 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
   if ( !vl )
     return;
 
-  const int fieldIdx = model->data( index, static_cast< int >( QgsAttributeTableModel::CustomRole::FieldIndex ) ).toInt();
-  const QgsFeatureId fid = model->data( index, static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
+  const int fieldIdx = model->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FieldIndex ) ).toInt();
+  const QgsFeatureId fid = model->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
   const QVariant oldValue = model->data( index, Qt::EditRole );
 
   QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
@@ -175,7 +179,7 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
 
 void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  const QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, static_cast< int >( QgsAttributeTableFilterModel::CustomRole::Type ) ).toInt() );
+  const QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, static_cast<int>( QgsAttributeTableFilterModel::CustomRole::Type ) ).toInt() );
 
   if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {
@@ -183,7 +187,7 @@ void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionView
   }
   else
   {
-    const QgsFeatureId fid = index.model()->data( index, static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
+    const QgsFeatureId fid = index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
 
     QStyleOptionViewItem myOpt = option;
 

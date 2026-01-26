@@ -48,13 +48,13 @@ class XMLFile
     bool checkEqual( const xmlChar *xmlString, const std::string &str ) const;
 
     //! Gets string attribute
-    std::string attribute( xmlNodePtr node, std::string name ) const;
+    std::string attribute( xmlNodePtr node, const std::string &name ) const;
 
     //! Gets double attribute
-    double queryDoubleAttribute( xmlNodePtr elem, std::string name ) const;
+    double queryDoubleAttribute( xmlNodePtr elem, const std::string &name ) const;
 
     //! Gets size_t attribute
-    size_t querySizeTAttribute( xmlNodePtr elem, std::string name ) const;
+    size_t querySizeTAttribute( xmlNodePtr elem, const std::string &name ) const;
 
     //! Gets element text
     std::string content( xmlNodePtr node ) const;
@@ -69,7 +69,7 @@ class XMLFile
     //! Throws an error
     [[ noreturn ]] void error( const std::string &str ) const;
 
-    xmlDocPtr mXmlDoc;
+    xmlDocPtr mXmlDoc = nullptr;
     std::string mFileName;
 };
 

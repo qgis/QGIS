@@ -16,11 +16,11 @@
 #ifndef QGSCHECKBOXWIDGETWRAPPER_H
 #define QGSCHECKBOXWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QCheckBox>
 #include <QGroupBox>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -41,7 +41,6 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsCheckboxWidgetWrapper.
      *
@@ -66,7 +65,7 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   private:
-    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
     QCheckBox *mCheckBox = nullptr;
     QGroupBox *mGroupBox = nullptr;

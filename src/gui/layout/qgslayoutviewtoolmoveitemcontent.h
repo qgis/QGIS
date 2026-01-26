@@ -16,8 +16,8 @@
 #ifndef QGSLAYOUTVIEWTOOLMOVEITEMCONTENT_H
 #define QGSLAYOUTVIEWTOOLMOVEITEMCONTENT_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutviewtool.h"
 
 /**
@@ -26,11 +26,9 @@
  */
 class GUI_EXPORT QgsLayoutViewToolMoveItemContent : public QgsLayoutViewTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewToolMoveItemContent.
      */
@@ -42,7 +40,6 @@ class GUI_EXPORT QgsLayoutViewToolMoveItemContent : public QgsLayoutViewTool
     void wheelEvent( QWheelEvent *event ) override;
 
   private:
-
     //! Item to move content
     QgsLayoutItem *mMoveContentItem = nullptr;
 

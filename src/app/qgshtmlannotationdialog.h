@@ -16,12 +16,13 @@
 #define QgsHTMLAnnotationDialog_H
 
 #include "ui_qgsformannotationdialogbase.h"
+
 #include "qgis_app.h"
 
 class QgsAnnotationWidget;
 class QgsMapCanvasAnnotationItem;
 
-class APP_EXPORT QgsHtmlAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
+class APP_EXPORT QgsHtmlAnnotationDialog : public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:

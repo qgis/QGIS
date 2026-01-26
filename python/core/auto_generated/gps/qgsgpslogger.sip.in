@@ -19,8 +19,8 @@ class QgsGpsLogger : QObject
 %Docstring(signature="appended")
 Base class for objects which log incoming GPS data.
 
-This class handles generic logic regarding logging GPS data, such as creation of tracks
-from incoming GPS location points.
+This class handles generic logic regarding logging GPS data, such as
+creation of tracks from incoming GPS location points.
 
 .. versionadded:: 3.30
 %End
@@ -41,7 +41,8 @@ from incoming GPS location points.
 %Docstring
 Constructor for QgsGpsLogger with the specified ``parent`` object.
 
-The logger will automatically record GPS information from the specified ``connection``.
+The logger will automatically record GPS information from the specified
+``connection``.
 %End
 
     ~QgsGpsLogger();
@@ -62,7 +63,8 @@ Sets the associated GPS connection.
 
     void setEllipsoid( const QString &ellipsoid );
 %Docstring
-Sets the ``ellipsoid`` which will be used for calculating distances in the log.
+Sets the ``ellipsoid`` which will be used for calculating distances in
+the log.
 %End
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -96,14 +98,17 @@ These points will always be in WGS84 coordinate reference system.
 
     QgsGeometry currentGeometry( Qgis::WkbType type, QString &error /Out/ ) const;
 %Docstring
-Returns the current logged GPS positions as a geometry of the specified ``type``.
+Returns the current logged GPS positions as a geometry of the specified
+``type``.
 
-The returned geometries will always be in the WGS84 (EPSG:4326) coordinate reference system.
+The returned geometries will always be in the WGS84 (EPSG:4326)
+coordinate reference system.
 
 :param type: desired geometry type
 
 :return: - logged GPS positions as a geometry.
-         - error: Will be set to a user-friendly error if the logged positions could not be converted to an appropriate geometry
+         - error: Will be set to a user-friendly error if the logged
+           positions could not be converted to an appropriate geometry
 %End
 
     QgsPointXY lastPosition() const;
@@ -117,16 +122,16 @@ The returned point will always be in WGS84 coordinate reference system.
 %Docstring
 Returns the last recorded timestamp from the device.
 
-The returned time value will respect all user settings regarding GPS time zone
-handling.
+The returned time value will respect all user settings regarding GPS
+time zone handling.
 %End
 
     QDateTime trackStartTime() const;
 %Docstring
 Returns the timestamp at which the current track was started.
 
-The returned time value will respect all user settings regarding GPS time zone
-handling.
+The returned time value will respect all user settings regarding GPS
+time zone handling.
 %End
 
     double lastElevation() const;
@@ -136,7 +141,8 @@ Returns the last recorded elevation the device.
 
     double lastMValue() const;
 %Docstring
-Returns the last recorded value corresponding to the QgsGpsLogger.settingsGpsMValueComponent setting.
+Returns the last recorded value corresponding to the
+QgsGpsLogger.settingsGpsMValueComponent setting.
 %End
 
     void resetTrack();
@@ -154,8 +160,8 @@ the GPS position is changed.
 
     void setAutomaticallyAddTrackVertices( bool enabled );
 %Docstring
-Sets whether track vertices will be automatically added whenever
-the GPS position is changed.
+Sets whether track vertices will be automatically added whenever the GPS
+position is changed.
 
 .. seealso:: :py:func:`automaticallyAddTrackVertices`
 %End
@@ -174,7 +180,8 @@ The returned length is calculated using ellipsoidal calculations.
 
     double trackDistanceFromStart() const;
 %Docstring
-Returns the direct length from the first vertex in the track to the last (in meters).
+Returns the direct length from the first vertex in the track to the last
+(in meters).
 
 The returned length is calculated using ellipsoidal calculations.
 %End
@@ -188,7 +195,8 @@ Returns the value of the corresponding GPS information ``component``.
 
     void trackIsEmptyChanged( bool isEmpty );
 %Docstring
-Emitted whenever the current track changes from being empty to non-empty or vice versa.
+Emitted whenever the current track changes from being empty to non-empty
+or vice versa.
 %End
 
     void trackReset();
@@ -210,7 +218,8 @@ Emitted whenever the associated GPS device state is changed.
 
     void distanceAreaChanged();
 %Docstring
-Emitted whenever the distance area used to calculate track distances is changed.
+Emitted whenever the distance area used to calculate track distances is
+changed.
 %End
 
   protected:

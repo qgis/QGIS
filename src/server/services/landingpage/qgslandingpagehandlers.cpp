@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgslandingpagehandlers.h"
-#include "qgslandingpageutils.h"
-#include "qgsserverinterface.h"
-#include "qgsserverresponse.h"
-#include "qgsserverprojectutils.h"
-#include "qgsvectorlayer.h"
-#include "qgslayertreenode.h"
-#include "qgslayertree.h"
 
-#include <QDir>
+#include "qgslandingpageutils.h"
+#include "qgslayertree.h"
+#include "qgslayertreenode.h"
+#include "qgsserverinterface.h"
+#include "qgsserverprojectutils.h"
+#include "qgsserverresponse.h"
+#include "qgsvectorlayer.h"
+
 #include <QCryptographicHash>
+#include <QDir>
 
 QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings )
   : mSettings( settings )
@@ -36,7 +37,7 @@ QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings 
 void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   const QString requestPrefix { prefix( context.serverInterface()->serverSettings() ) };
-  auto urlPath { context.request()->url().path( ) };
+  auto urlPath { context.request()->url().path() };
 
   while ( urlPath.endsWith( '/' ) )
   {
@@ -46,29 +47,27 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
   if ( urlPath == requestPrefix )
   {
     QUrl url { context.request()->url() };
-    url.setPath( QStringLiteral( "%1/index.%2" )
-                 .arg( requestPrefix,
-                       QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
+    url.setPath( u"%1/index.%2"_s
+                   .arg( requestPrefix, QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
     context.response()->setStatusCode( 302 );
-    context.response()->setHeader( QStringLiteral( "Location" ), url.toString() );
+    context.response()->setHeader( u"Location"_s, url.toString() );
   }
   else
   {
-    const json projects = projectsData( *context.request() ) ;
-    json data
-    {
+    const json projects = projectsData( *context.request() );
+    json data {
       { "links", links( context ) },
       { "projects", projects },
       { "projects_count", projects.size() }
     };
-    write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
+    write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
   }
 }
 
 const QString QgsLandingPageHandler::templatePath( const QgsServerApiContext &context ) const
 {
   QString path { context.serverInterface()->serverSettings()->apiResourcesDirectory() };
-  path += QLatin1String( "/ogc/static/landingpage/index.html" );
+  path += "/ogc/static/landingpage/index.html"_L1;
   return path;
 }
 
@@ -81,7 +80,7 @@ QString QgsLandingPageHandler::prefix( const QgsServerSettings *settings )
     prefix.chop( 1 );
   }
 
-  if ( ! prefix.isEmpty() && ! prefix.startsWith( '/' ) )
+  if ( !prefix.isEmpty() && !prefix.startsWith( '/' ) )
   {
     prefix.prepend( '/' );
   }
@@ -100,7 +99,7 @@ json QgsLandingPageHandler::projectsData( const QgsServerRequest &request ) cons
     }
     catch ( QgsServerException & )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Could not open project '%1': skipping." ).arg( it.value() ), QStringLiteral( "Landing Page" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( u"Could not open project '%1': skipping."_s.arg( it.value() ), u"Landing Page"_s, Qgis::MessageLevel::Critical );
     }
   }
   return j;
@@ -116,14 +115,14 @@ QgsLandingPageMapHandler::QgsLandingPageMapHandler( const QgsServerSettings *set
 void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json data;
-  data[ "links" ] = json::array();
+  data["links"] = json::array();
   const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path(), *mSettings ) };
   if ( projectPath.isEmpty() )
   {
-    throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );
+    throw QgsServerApiNotFoundError( u"Requested project hash not found!"_s );
   }
-  data[ "project" ] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request() );
-  write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
+  data["project"] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request() );
+  write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
 }
 
 QRegularExpression QgsLandingPageMapHandler::path() const

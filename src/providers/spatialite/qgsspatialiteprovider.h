@@ -19,10 +19,10 @@ email                : a.furieri@lqt.it
 
 extern "C"
 {
-#include <sys/types.h>
 #include <sqlite3.h>
-#include <spatialite/gaiageo.h>
+#include <sys/types.h>
 #include <spatialite.h>
+#include <spatialite/gaiageo.h>
 }
 
 #include "qgsvectordataprovider.h"
@@ -48,12 +48,11 @@ class QgsTransaction;
  * interface defined in the QgsDataProvider class to provide access to spatial
  * data residing in a SQLite/SpatiaLite enabled database.
   */
-class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
+class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
 {
     Q_OBJECT
 
   public:
-
     static const QString SPATIALITE_KEY;
     static const QString SPATIALITE_DESCRIPTION;
 
@@ -65,6 +64,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
+      QString &createdLayerUri,
       QString *errorMessage = nullptr,
       const QMap<QString, QVariant> *coordinateTransformContext = nullptr
     );
@@ -76,7 +76,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      */
     explicit QgsSpatiaLiteProvider( QString const &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
-    ~ QgsSpatiaLiteProvider() override;
+    ~QgsSpatiaLiteProvider() override;
 
     Qgis::DataProviderFlags flags() const override;
     QgsAbstractFeatureSource *featureSource() const override;
@@ -107,11 +107,11 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
     QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
-    QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
-                                       QgsFeedback *feedback = nullptr ) const override;
+    QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1, QgsFeedback *feedback = nullptr ) const override;
 
     bool isValid() const override;
     Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
@@ -132,7 +132,7 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the SpatiaLite
     //   (following the PostgreSQL provider example)
-    bool supportsNativeTransform()
+    bool supportsNativeTransform() const
     {
       return false;
     }
@@ -140,45 +140,44 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;
+    QString geometryColumnName() const override;
     void invalidateConnections( const QString &connection ) override;
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
     static QString providerKey();
 
     // static functions
-    static void convertToGeosWKB( const unsigned char *blob, int blob_size,
-                                  unsigned char **wkb, int *geom_size );
-    static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
-                                      int endian_arch );
+    static void convertToGeosWKB( const unsigned char *blob, int blob_size, unsigned char **wkb, int *geom_size );
+    static int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian, int endian_arch );
 
-    struct SLFieldNotFound {}; //! Exception to throw
+    struct SLFieldNotFound
+    {}; //! Exception to throw
 
     struct SLException
     {
-        explicit SLException( char *msg ) : errMsg( msg )
+        explicit SLException( const QString &msg )
+          : errMsg( msg )
         {
         }
 
-        SLException( const SLException &e ) : errMsg( e.errMsg )
+        SLException( const SLException &e )
+          : errMsg( e.errMsg )
         {
         }
 
         ~SLException()
         {
-          if ( errMsg )
-            sqlite3_free( errMsg );
         }
 
         SLException &operator=( const SLException &other ) = delete;
 
         QString errorMessage() const
         {
-          return errMsg ? QString::fromUtf8( errMsg ) : QStringLiteral( "unknown cause" );
+          return !errMsg.isEmpty() ? errMsg : u"unknown cause"_s;
         }
 
       private:
-        char *errMsg = nullptr;
-
+        QString errMsg;
     };
 
     //! Check if version is above major and minor
@@ -193,10 +192,9 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     /**
      * Sqlite exec sql wrapper for SQL logging
      */
-    static int exec_sql( sqlite3 *handle, const QString &sql, const QString &uri, char *errMsg = nullptr, const QString &origin = QString() );
+    static int exec_sql( sqlite3 *handle, const QString &sql, const QString &uri, QString &errMsg, const QString &origin = QString() );
 
   private:
-
     //! Loads fields from input file to member mAttributeFields
     void loadFields();
 
@@ -336,8 +334,6 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     //! SpatiaLite minor version
     int mSpatialiteVersionMinor = 0;
 
-    //! Internal transaction handling (for addFeatures etc.)
-    int mSavepointId;
     static QAtomicInt sSavepointId;
 
     /**
@@ -358,37 +354,18 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     bool getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr );
     void loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr );
     void getViewSpatialIndexName();
-    bool prepareStatement( sqlite3_stmt *&stmt,
-                           const QgsAttributeList &fetchAttributes,
-                           bool fetchGeometry,
-                           QString whereClause );
-    bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
-                     QgsFeature &feature,
-                     const QgsAttributeList &fetchAttributes );
+    bool prepareStatement( sqlite3_stmt *&stmt, const QgsAttributeList &fetchAttributes, bool fetchGeometry, QString whereClause );
+    bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry, QgsFeature &feature, const QgsAttributeList &fetchAttributes );
 
     void updatePrimaryKeyCapabilities();
 
-    int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
-                                   int little_endian,
-                                   int endian_arch );
-    int computeSizeFromMultiWKB3D( const unsigned char *p_in, int nDims,
-                                   int little_endian,
-                                   int endian_arch );
-    void convertFromGeosWKB2D( const unsigned char *blob, int blob_size,
-                               unsigned char *wkb, int geom_size,
-                               int nDims, int little_endian, int endian_arch );
-    void convertFromGeosWKB3D( const unsigned char *blob, int blob_size,
-                               unsigned char *wkb, int geom_size,
-                               int nDims, int little_endian, int endian_arch );
-    void convertFromGeosWKB( const unsigned char *blob, int blob_size,
-                             unsigned char **wkb, int *geom_size,
-                             int dims );
-    int computeSizeFromGeosWKB3D( const unsigned char *blob, int size,
-                                  Qgis::WkbType type, int nDims, int little_endian,
-                                  int endian_arch );
-    int computeSizeFromGeosWKB2D( const unsigned char *blob, int size,
-                                  Qgis::WkbType type, int nDims, int little_endian,
-                                  int endian_arch );
+    int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims, int little_endian, int endian_arch );
+    int computeSizeFromMultiWKB3D( const unsigned char *p_in, int nDims, int little_endian, int endian_arch );
+    void convertFromGeosWKB2D( const unsigned char *blob, int blob_size, unsigned char *wkb, int geom_size, int nDims, int little_endian, int endian_arch );
+    void convertFromGeosWKB3D( const unsigned char *blob, int blob_size, unsigned char *wkb, int geom_size, int nDims, int little_endian, int endian_arch );
+    void convertFromGeosWKB( const unsigned char *blob, int blob_size, unsigned char **wkb, int *geom_size, int dims );
+    int computeSizeFromGeosWKB3D( const unsigned char *blob, int size, Qgis::WkbType type, int nDims, int little_endian, int endian_arch );
+    int computeSizeFromGeosWKB2D( const unsigned char *blob, int size, Qgis::WkbType type, int nDims, int little_endian, int endian_arch );
 
     void fetchConstraints();
 
@@ -397,12 +374,12 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
     /**
      * Handles an error encountered while executing an sql statement.
      */
-    void handleError( const QString &sql, char *errorMessage, const QString &savepointId );
+    void handleError( const QString &sql, const QString &errorMessage, const QString &savepointId );
 
     /**
      * Returns the sqlite handle to be used, if we are inside a transaction it will be the transaction's handle
      */
-    sqlite3 *sqliteHandle( ) const;
+    sqlite3 *sqliteHandle() const;
 
     static QString createIndexName( QString tableName, QString field );
 
@@ -410,13 +387,12 @@ class QgsSpatiaLiteProvider final: public QgsVectorDataProvider
 
     // QgsVectorDataProvider interface
   public:
-    virtual QString defaultValueClause( int fieldIndex ) const override;
+    QString defaultValueClause( int fieldIndex ) const override;
 
     Qgis::VectorLayerTypeFlags vectorLayerTypeFlags() const override;
-
 };
 
-class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
+class QgsSpatiaLiteProviderMetadata final : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -426,27 +402,21 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
     void cleanupProvider() override;
     QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
     bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
-    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle,
-                    const QString &styleName, const QString &styleDescription,
-                    const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
     QString loadStyle( const QString &uri, QString &errCause ) override;
-    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
-    int listStyles( const QString &uri, QStringList &ids, QStringList &names,
-                    QStringList &descriptions, QString &errCause ) override;
+    QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     ProviderCapabilities providerCapabilities() const override;
     QgsSpatiaLiteProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 
-    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields,
-        Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs,
-        bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage,
-        const QMap<QString, QVariant> *options ) override;
+    Qgis::VectorExportResult createEmptyLayer( const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerUri ) override;
     bool createDb( const QString &dbPath, QString &errCause ) override;
-    QList< QgsDataItemProvider * > dataItemProviders() const override;
+    QList<QgsDataItemProvider *> dataItemProviders() const override;
 
     // QgsProviderMetadata interface
   public:
@@ -457,7 +427,6 @@ class QgsSpatiaLiteProviderMetadata final: public QgsProviderMetadata
     QgsTransaction *createTransaction( const QString &connString ) override;
 
   protected:
-
     QgsAbstractProviderConnection *createConnection( const QString &uri, const QVariantMap &configuration ) override;
 };
 

@@ -16,8 +16,9 @@
 #ifndef QGSLINESYMBOLLAYER_H
 #define QGSLINESYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgsblanksegmentutils.h"
 #include "qgssymbollayer.h"
 
 #include <QPen>
@@ -31,7 +32,7 @@ class QgsColorRamp;
 class QgsFillSymbol;
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(35,35,35)
-#define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
+#define DEFAULT_SIMPLELINE_WIDTH     Qgis::DEFAULT_LINE_WIDTH
 #define DEFAULT_SIMPLELINE_PENSTYLE  Qt::SolidLine
 #define DEFAULT_SIMPLELINE_JOINSTYLE Qt::BevelJoin
 #define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
@@ -79,7 +80,8 @@ class CORE_EXPORT QgsSimpleLineSymbolLayer : public QgsLineSymbolLayer
     void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsSimpleLineSymbolLayer *clone() const override SIP_FACTORY;
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const override;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;
@@ -802,17 +804,39 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     */
     const QgsMapUnitScale &averageAngleMapUnitScale() const { return mAverageAngleLengthMapUnitScale; }
 
+
+    /**
+     * Sets the \a unit for blank segments start and end distances
+     *
+     * \see blankSegmentsUnit()
+     * \since QGIS 4.0
+    */
+    void setBlankSegmentsUnit( Qgis::RenderUnit unit ) { mBlankSegmentsUnit = unit; }
+
+    /**
+     * Returns the unit for for blank segments start and end distances
+     *
+     * \see setBlankSegmentsUnit()
+     * \since QGIS 4.0
+    */
+    Qgis::RenderUnit blankSegmentsUnit() const { return mBlankSegmentsUnit; }
+
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
-    void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) FINAL;
-    Qgis::RenderUnit outputUnit() const FINAL;
+    void renderPolygonStroke( const QPolygonF &points, const QVector<QPolygonF> *rings, QgsSymbolRenderContext &context ) final;
+    Qgis::RenderUnit outputUnit() const final;
     void setOutputUnit( Qgis::RenderUnit unit ) override;
-    void setMapUnitScale( const QgsMapUnitScale &scale ) FINAL;
-    QgsMapUnitScale mapUnitScale() const FINAL;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) final;
+    QgsMapUnitScale mapUnitScale() const final;
     QVariantMap properties() const override;
     bool canCauseArtifactsBetweenAdjacentTiles() const override;
 
     void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+
+    /**
+     * Copies all common properties of this layer to another templated symbol layer \a destLayer.
+     */
+    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
 
   protected:
 
@@ -849,21 +873,20 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     virtual void renderSymbol( const QPointF &point, const QgsFeature *feature, QgsRenderContext &context, int layer = -1, bool selected = false ) = 0;
 
     /**
-     * Copies all common properties of this layer to another templated symbol layer.
-     */
-    void copyTemplateSymbolProperties( QgsTemplatedLineSymbolLayerBase *destLayer ) const;
-
-    /**
      * Sets all common symbol properties in the \a destLayer, using the settings
      * serialized in the \a properties map.
      */
     static void setCommonProperties( QgsTemplatedLineSymbolLayerBase *destLayer, const QVariantMap &properties );
 
+  protected:
+    int mRingIndex = 0; // current ring index while rendering
+
   private:
 
-    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
-    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement = Qgis::MarkerLinePlacement::Vertex );
-    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver );
+    void renderPolylineInterval( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+    void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+    void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context, double averageAngleOver, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
+
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
 
     /**
@@ -875,15 +898,18 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
      * along the line's vertices.
      * \param context render context
      * \param placement marker placement
+     * \param blankSegments segment where vertex should not be rendered
      * \see setoffsetAlongLine
      * \see setOffsetAlongLineUnit
      */
     void renderOffsetVertexAlongLine( const QPolygonF &points, int vertex, double distance, QgsSymbolRenderContext &context,
-                                      Qgis::MarkerLinePlacement placement );
+                                      Qgis::MarkerLinePlacement placement, const QgsBlankSegmentUtils::BlankSegments &blankSegments );
 
 
     static void collectOffsetPoints( const QVector< QPointF> &points,
-                                     QVector< QPointF> &dest, double intervalPainterUnits, double initialOffset, double initialLag = 0,
+                                     QVector< QPointF> &dest, double intervalPainterUnits, double initialOffset,
+                                     QList<int> *pointIndices = nullptr,
+                                     double initialLag = 0,
                                      int numberPointsRequired = -1 );
 
     bool mRotateSymbols = true;
@@ -897,6 +923,7 @@ class CORE_EXPORT QgsTemplatedLineSymbolLayerBase : public QgsLineSymbolLayer
     double mAverageAngleLength = 4;
     Qgis::RenderUnit mAverageAngleLengthUnit = Qgis::RenderUnit::Millimeters;
     QgsMapUnitScale mAverageAngleLengthMapUnitScale;
+    Qgis::RenderUnit mBlankSegmentsUnit = Qgis::RenderUnit::MapUnits;
     bool mPlaceOnEveryPart = true;
 
     bool mRenderingFeature = false;
@@ -950,7 +977,8 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsTemplatedLineSymbolLayerB
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsMarkerLineSymbolLayer *clone() const override SIP_FACTORY;
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     void setColor( const QColor &color ) override;
     QColor color() const override;
     QgsSymbol *subSymbol() override;
@@ -1208,7 +1236,7 @@ class CORE_EXPORT QgsRasterLineSymbolLayer : public QgsAbstractBrushedLineSymbol
      * Constructor for QgsRasterLineSymbolLayer, with the specified raster image path.
      */
     QgsRasterLineSymbolLayer( const QString &path = QString() );
-    virtual ~QgsRasterLineSymbolLayer();
+    ~QgsRasterLineSymbolLayer() override;
 
     /**
      * Creates a new QgsRasterLineSymbolLayer, using the settings
@@ -1400,6 +1428,8 @@ class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
     QString layerType() const override;
     void startRender( QgsSymbolRenderContext &context ) override;
     void stopRender( QgsSymbolRenderContext &context ) override;
+    void startFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
+    void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context ) override;
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     QVariantMap properties() const override;
     QgsFilledLineSymbolLayer *clone() const override SIP_FACTORY;
@@ -1459,5 +1489,3 @@ class CORE_EXPORT QgsFilledLineSymbolLayer : public QgsLineSymbolLayer
 };
 
 #endif
-
-

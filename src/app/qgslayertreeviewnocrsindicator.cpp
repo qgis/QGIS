@@ -14,14 +14,17 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewnocrsindicator.h"
-#include "qgslayertreeview.h"
+
+#include "qgisapp.h"
+#include "qgsannotationlayer.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
-#include "qgsvectorlayer.h"
-#include "qgisapp.h"
+#include "qgslayertreeview.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgsannotationlayer.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayertreeviewnocrsindicator.cpp"
 
 QgsLayerTreeViewNoCrsIndicatorProvider::QgsLayerTreeViewNoCrsIndicatorProvider( QgsLayerTreeView *view )
   : QgsLayerTreeViewIndicatorProvider( view )
@@ -51,13 +54,13 @@ void QgsLayerTreeViewNoCrsIndicatorProvider::onIndicatorClicked( const QModelInd
 
 bool QgsLayerTreeViewNoCrsIndicatorProvider::acceptLayer( QgsMapLayer *layer )
 {
-  return layer && layer->isValid() && layer->isSpatial() && !layer->crs().isValid() && !qobject_cast< QgsAnnotationLayer * >( layer );
+  return layer && layer->isValid() && layer->isSpatial() && !layer->crs().isValid() && !qobject_cast<QgsAnnotationLayer *>( layer );
 }
 
 QString QgsLayerTreeViewNoCrsIndicatorProvider::iconName( QgsMapLayer *layer )
 {
   Q_UNUSED( layer )
-  return QStringLiteral( "/mIndicatorNoCRS.svg" );
+  return u"/mIndicatorNoCRS.svg"_s;
 }
 
 QString QgsLayerTreeViewNoCrsIndicatorProvider::tooltipText( QgsMapLayer *layer )

@@ -17,10 +17,11 @@
 #ifndef QGSAUTHMASTERPASSWORDRESETDIALOG_H
 #define QGSAUTHMASTERPASSWORDRESETDIALOG_H
 
-#include <QDialog>
-
 #include "ui_qgsauthmasterpassresetdialog.h"
+
 #include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 
@@ -42,17 +43,17 @@ class GUI_EXPORT QgsMasterPasswordResetDialog : public QDialog, private Ui::QgsM
   public:
     explicit QgsMasterPasswordResetDialog( QWidget *parent = nullptr );
 
+    /**
+     * Returns the old password line edit widget.
+     */
+    QgsPasswordLineEdit *oldPasswordLineEdit();
+
     bool requestMasterPasswordReset( QString *newpass, QString *oldpass, bool *keepbackup );
 
   private slots:
-    void leMasterPassCurrent_textChanged( const QString &pass );
-    void leMasterPassNew_textChanged( const QString &pass );
-
-  private:
     void validatePasswords();
 
-    bool mPassCurOk = false;
-    bool mPassNewOk = false;
+  private:
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

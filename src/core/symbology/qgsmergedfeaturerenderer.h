@@ -15,19 +15,19 @@
 #ifndef QGSMERGEDFEATURERENDERER_H
 #define QGSMERGEDFEATURERENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsrenderer.h"
 #include "qgsexpression.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 
 /**
  * \ingroup core
- * \brief QgsMergedFeatureRenderer is a polygon or line-only feature renderer used to
- * renderer a set of features merged (or dissolved) into a single geometry.
+ * \brief A polygon or line-only feature renderer used to
+ * render a set of features merged (or dissolved) into a single geometry.
  *
  * It is designed on top of another feature renderer, which is called "embedded"
  * Most of the methods are then only proxies to the embedded renderer. E.g. if

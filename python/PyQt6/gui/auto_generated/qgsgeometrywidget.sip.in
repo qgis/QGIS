@@ -10,15 +10,15 @@
 
 
 
-
 class QgsGeometryWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget for storing and interacting with a :py:class:`QgsGeometry` object.
+A widget for storing and interacting with a :py:class:`QgsGeometry`
+object.
 
-This widget can be used in places where an dialog needs to expose a geometry
-value to users, and allow them to safely interact with it (such as changing
-the stored geometry value).
+This widget can be used in places where an dialog needs to expose a
+geometry value to users, and allow them to safely interact with it (such
+as changing the stored geometry value).
 
 .. versionadded:: 3.30
 %End
@@ -27,7 +27,6 @@ the stored geometry value).
 #include "qgsgeometrywidget.h"
 %End
   public:
-
     explicit QgsGeometryWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeometryWidget, with the specified ``parent`` widget.
@@ -63,14 +62,16 @@ Returns the current geometry value for the widget.
 
     void setAcceptedWkbTypes( const QList<Qgis::WkbType> &types );
 %Docstring
-Sets the list of WKB geometry ``types`` which are permitted for the widget.
+Sets the list of WKB geometry ``types`` which are permitted for the
+widget.
 
 .. seealso:: :py:func:`acceptedWkbTypes`
 %End
 
-    QList< Qgis::WkbType > acceptedWkbTypes() const;
+    QList<Qgis::WkbType> acceptedWkbTypes() const;
 %Docstring
-Returns the list of WKB geometry types which are permitted for the widget.
+Returns the list of WKB geometry types which are permitted for the
+widget.
 
 .. seealso:: :py:func:`setAcceptedWkbTypes`
 %End

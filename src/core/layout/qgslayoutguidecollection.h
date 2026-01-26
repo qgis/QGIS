@@ -16,16 +16,18 @@
 #ifndef QGSLAYOUTGUIDECOLLECTION_H
 #define QGSLAYOUTGUIDECOLLECTION_H
 
+#include <memory>
+
 #include "qgis_core.h"
+#include "qgslayoutitempage.h"
 #include "qgslayoutmeasurement.h"
 #include "qgslayoutpoint.h"
-#include "qgslayoutitempage.h"
 #include "qgslayoutserializableobject.h"
-#include <QPen>
+
 #include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include <QGraphicsLineItem>
-#include <memory>
+#include <QPen>
+#include <QSortFilterProxyModel>
 
 class QgsLayout;
 class QgsLayoutPageCollection;
@@ -198,7 +200,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
     ~QgsLayoutGuideCollection() override;
 
-    QString stringType() const override { return QStringLiteral( "LayoutGuideCollection" ); }
+    QString stringType() const override { return u"LayoutGuideCollection"_s; }
     QgsLayout *layout() override;
 
     int rowCount( const QModelIndex & ) const override;

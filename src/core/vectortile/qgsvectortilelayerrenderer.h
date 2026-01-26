@@ -18,10 +18,10 @@
 
 #define SIP_NO_FILE
 
-#include "qgsmaplayerrenderer.h"
-#include "qgsvectortilerenderer.h"
 #include "qgsmapclippingregion.h"
+#include "qgsmaplayerrenderer.h"
 #include "qgsvectortilematrixset.h"
+#include "qgsvectortilerenderer.h"
 
 class QgsVectorTileLayer;
 class QgsVectorTileRawData;
@@ -31,7 +31,8 @@ class QgsVectorTileDataProvider;
 
 /**
  * \ingroup core
- * \brief This class provides map rendering functionality for vector tile layers.
+ * \brief Provides map rendering functionality for vector tile layers.
+ *
  * In render() function (assumed to be run in a worker thread) it will:
  *
  * - fetch vector tiles using QgsVectorTileLoader
@@ -47,8 +48,8 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     QgsVectorTileLayerRenderer( QgsVectorTileLayer *layer, QgsRenderContext &context );
     ~QgsVectorTileLayerRenderer() override;
 
-    virtual bool render() override;
-    virtual QgsFeedback *feedback() const override { return mFeedback.get(); }
+    bool render() override;
+    QgsFeedback *feedback() const override { return mFeedback.get(); }
     bool forceRasterRender() const override;
 
   private:
@@ -63,11 +64,16 @@ class QgsVectorTileLayerRenderer : public QgsMapLayerRenderer
     //! Tile renderer object to do rendering of individual tiles
     std::unique_ptr<QgsVectorTileRenderer> mRenderer;
 
+    QPainter::CompositionMode mLayerBlendMode = QPainter::CompositionMode::CompositionMode_SourceOver;
+
     /**
      * Label provider that handles registration of labels.
      * No need to delete: if exists it is owned by labeling engine.
      */
     QgsVectorTileLabelProvider *mLabelProvider = nullptr;
+
+    // Decoded tile data
+    QMap<QString, QgsVectorTileRendererData> mTileDataMap;
 
     //! Whether to draw boundaries of tiles (useful for debugging)
     bool mDrawTileBoundaries = false;

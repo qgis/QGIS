@@ -26,14 +26,14 @@ add_custom_command(TARGET pyconsole
   POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy ${UI_FILES} ${PYTHON_OUTPUT_DIRECTORY}/console
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-  DEPENDS ${UI_FILES}
+  # DEPENDS ${UI_FILES}
 )
 foreach(pyfile ${PY_CONSOLE_FILES})
   add_custom_command(TARGET pyconsole
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy ${pyfile} ${PYTHON_OUTPUT_DIRECTORY}/console
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DEPENDS ${pyfile}
+    # DEPENDS ${pyfile}
   )
 endforeach(pyfile)
 PY_COMPILE(pyconsole "${PYTHON_OUTPUT_DIRECTORY}/console")

@@ -61,7 +61,8 @@ Creates a new marker annotation item.
 %Docstring
 Returns the point geometry of the marker.
 
-The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the point will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`setGeometry`
 %End
@@ -70,7 +71,8 @@ The coordinate reference system for the point will be the parent layer's :py:fun
 %Docstring
 Sets the point ``geometry`` location of the marker.
 
-The coordinate reference system for the point will be the parent layer's :py:func:`QgsAnnotationLayer.crs()`.
+The coordinate reference system for the point will be the parent layer's
+:py:func:`QgsAnnotationLayer.crs()`.
 
 .. seealso:: :py:func:`geometry`
 %End

@@ -17,9 +17,7 @@
 #define QGSSETTINGSTREEWIDGET_H
 
 #include "qgis_gui.h"
-
 #include "qgsoptionsdialoghighlightwidget.h"
-
 
 class QTreeView;
 
@@ -28,7 +26,7 @@ class QgsSettingsTreeProxyModel;
 /**
  * \ingroup gui
  * \class QgsSettingsTreeWidget
- * \brief QgsSettingsTreeWidget is a widget with the settings tree to visualize, search and edit settings
+ * \brief A widget with the settings tree to visualize, search and edit settings.
  *
  * \since QGIS 3.32
  */

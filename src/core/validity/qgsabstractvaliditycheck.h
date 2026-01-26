@@ -17,8 +17,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QString>
+
 #include <QObject>
+#include <QString>
 
 class QgsValidityCheckContext;
 class QgsFeedback;
@@ -46,7 +47,7 @@ class CORE_EXPORT QgsValidityCheckResult
     };
 
     //! Result type
-    Type type;
+    QgsValidityCheckResult::Type type;
 
     /**
      * A short, translated string summarising the result. Ideally a single sentence.

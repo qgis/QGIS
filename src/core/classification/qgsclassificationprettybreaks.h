@@ -21,8 +21,7 @@
 
 /**
  * \ingroup core
- * \brief QgsClassificationPrettyBreaks is an implementation of QgsClassificationMethod
- * for pretty breaks
+ * \brief A classification method which applies pretty breaks to data.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationPrettyBreaks : public QgsClassificationMethod
@@ -32,7 +31,7 @@ class CORE_EXPORT QgsClassificationPrettyBreaks : public QgsClassificationMethod
 
     QString name() const override;
     QString id() const override;
-    QgsClassificationMethod *clone() const override;
+    std::unique_ptr< QgsClassificationMethod > clone() const override;
     QIcon icon() const override;
 
     bool valuesRequired() const override {return false;}

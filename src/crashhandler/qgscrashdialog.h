@@ -17,14 +17,14 @@
 #ifndef QGSCRASHDIALOG_H
 #define QGSCRASHDIALOG_H
 
+#include "ui_qgscrashdialog.h"
+
+#include "qgscrashreport.h"
+
 #include <QDialog>
 #include <QFormLayout>
 #include <QPlainTextEdit>
 #include <QPushButton>
-
-#include "qgscrashreport.h"
-
-#include "ui_qgscrashdialog.h"
 
 /**
  * A dialog to show a nicer crash dialog to the user.
@@ -33,7 +33,6 @@ class QgsCrashDialog : public QDialog, private Ui::QgsCrashDialog
 {
     Q_OBJECT
   public:
-
     /**
      * A dialog to show a nicer crash dialog to the user.
      */

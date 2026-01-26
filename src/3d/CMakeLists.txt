@@ -8,6 +8,8 @@ set(QGIS_3D_SRCS
   qgsaabb.cpp
   qgsabstract3dengine.cpp
   qgsabstractvectorlayer3drenderer.cpp
+  qgsannotationlayer3drenderer.cpp
+  qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
   qgs3dmapexportsettings.cpp
@@ -15,6 +17,7 @@ set(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dmaptool.cpp
   qgs3dmapcanvas.cpp
+  qgscrosssection.cpp
   qgs3drendercontext.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
@@ -22,13 +25,17 @@ set(QGIS_3D_SRCS
   qgscameracontroller.cpp
   qgscamerapose.cpp
   qgsfeature3dhandler_p.cpp
-  qgsfgutils.cpp
-  qgsframegraph.cpp
+  qgsfonttextureatlasgenerator.cpp
+  qgsgeotransform.cpp
+  qgsglobechunkedentity.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
+  qgsraycastcontext.cpp
+  qgsraycasthit.cpp
+  qgsraycastresult.cpp
   qgsrulebased3drenderer.cpp
   qgsrulebasedchunkloader_p.cpp
   qgstessellatedpolygongeometry.cpp
@@ -41,15 +48,11 @@ set(QGIS_3D_SRCS
   qgswindow3dengine.cpp
   qgsskyboxentity.cpp
   qgsskyboxsettings.cpp
-  qgspostprocessingentity.cpp
-  qgsrenderpassquad.cpp
-  qgsambientocclusionrenderentity.cpp
-  qgsambientocclusionblurentity.cpp
-  qgspreviewquad.cpp
   qgsshadowsettings.cpp
   qgscolorramptexture.cpp
   qgsrubberband3d.cpp
   qgsambientocclusionsettings.cpp
+  qgstextureatlasgenerator.cpp
 
   qgspointcloudlayer3drenderer.cpp
   qgspointcloudlayerchunkloader_p.cpp
@@ -67,7 +70,9 @@ set(QGIS_3D_SRCS
   lights/qgspointlightsettings.cpp
 
   materials/qgsabstractmaterialsettings.cpp
+  materials/qgsglobematerial.cpp
   materials/qgsgoochmaterialsettings.cpp
+  materials/qgsmaterial.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsmetalroughmaterial.cpp
   materials/qgsmetalroughmaterialsettings.cpp
@@ -80,6 +85,22 @@ set(QGIS_3D_SRCS
 
   processing/qgs3dalgorithms.cpp
   processing/qgsalgorithmtessellate.cpp
+
+  framegraph/qgsabstractrenderview.cpp
+  framegraph/qgs3daxisrenderview.cpp
+  framegraph/qgsambientocclusionrenderentity.cpp
+  framegraph/qgsambientocclusionrenderview.cpp
+  framegraph/qgsambientocclusionblurentity.cpp
+  framegraph/qgsdebugtextureentity.cpp
+  framegraph/qgsdebugtexturerenderview.cpp
+  framegraph/qgsdepthentity.cpp
+  framegraph/qgsdepthrenderview.cpp
+  framegraph/qgsforwardrenderview.cpp
+  framegraph/qgspostprocessingentity.cpp
+  framegraph/qgsrenderpassquad.cpp
+  framegraph/qgsshadowrenderview.cpp
+  framegraph/qgsframegraph.cpp
+  framegraph/qgsframegraphutils.cpp
 
   symbols/qgsbillboardgeometry.cpp
   symbols/qgsline3dsymbol.cpp
@@ -95,12 +116,19 @@ set(QGIS_3D_SRCS
   symbols/qgspointcloud3dsymbol.cpp
   symbols/qgspointcloud3dsymbol_p.cpp
 
+  terrain/qgs3dterrainregistry.cpp
+  terrain/qgsabstractterrainsettings.cpp
   terrain/qgsdemterraingenerator.cpp
+  terrain/qgsdemterrainsettings.cpp
   terrain/qgsdemterraintilegeometry_p.cpp
   terrain/qgsdemterraintileloader_p.cpp
   terrain/qgsflatterraingenerator.cpp
+  terrain/qgsflatterrainsettings.cpp
+  terrain/qgsmeshterrainsettings.cpp
   terrain/qgsonlineterraingenerator.cpp
+  terrain/qgsonlinedemterrainsettings.cpp
   terrain/qgsquantizedmeshterraingenerator.cpp
+  terrain/qgsquantizedmeshterrainsettings.cpp
   terrain/qgsterraindownloader.cpp
   terrain/qgsterrainentity.cpp
   terrain/qgsterraingenerator.cpp
@@ -129,19 +157,26 @@ set(QGIS_3D_HDRS
   qgs3dtypes.h
   qgs3dutils.h
   qgs3dmapcanvas.h
+  qgscrosssection.h
   qgs3dwiredmesh_p.h
   qgsaabb.h
   qgsabstract3dengine.h
   qgsabstractvectorlayer3drenderer.h
+  qgsannotationlayer3drenderer.h
+  qgsannotationlayerchunkloader_p.h
   qgscameracontroller.h
   qgscamerapose.h
-  qgsfgutils.h
-  qgsframegraph.h
+  qgsfonttextureatlasgenerator.h
+  qgsgeotransform.h
+  qgsglobechunkedentity.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
   qgsraycastingutils.h
+  qgsraycastcontext.h
+  qgsraycasthit.h
+  qgsraycastresult.h
   qgsrulebased3drenderer.h
   qgstessellatedpolygongeometry.h
   qgstiledscenechunkloader_p.h
@@ -151,21 +186,19 @@ set(QGIS_3D_HDRS
   qgswindow3dengine.h
   qgsskyboxentity.h
   qgsskyboxsettings.h
-  qgspostprocessingentity.h
-  qgspreviewquad.h
   qgsshadowsettings.h
   qgspointcloudlayer3drenderer.h
-  qgsrenderpassquad.h
-  qgsambientocclusionrenderentity.h
-  qgsambientocclusionblurentity.h
   qgsambientocclusionsettings.h
+  qgstextureatlasgenerator.h
 
   lights/qgsdirectionallightsettings.h
   lights/qgslightsource.h
   lights/qgspointlightsettings.h
 
   materials/qgsabstractmaterialsettings.h
+  materials/qgsglobematerial.h
   materials/qgsgoochmaterialsettings.h
+  materials/qgsmaterial.h
   materials/qgsmaterialregistry.h
   materials/qgsmetalroughmaterial.h
   materials/qgsmetalroughmaterialsettings.h
@@ -176,6 +209,22 @@ set(QGIS_3D_HDRS
   materials/qgssimplelinematerialsettings.h
   materials/qgstexturematerial.h
 
+  framegraph/qgsabstractrenderview.h
+  framegraph/qgs3daxisrenderview.h
+  framegraph/qgsambientocclusionrenderentity.h
+  framegraph/qgsambientocclusionrenderview.h
+  framegraph/qgsambientocclusionblurentity.h
+  framegraph/qgsdebugtextureentity.h
+  framegraph/qgsdebugtexturerenderview.h
+  framegraph/qgsdepthentity.h
+  framegraph/qgsdepthrenderview.h
+  framegraph/qgsforwardrenderview.h
+  framegraph/qgsframegraph.h
+  framegraph/qgsframegraphutils.h
+  framegraph/qgspostprocessingentity.h
+  framegraph/qgsrenderpassquad.h
+  framegraph/qgsshadowrenderview.h
+
   symbols/qgsbillboardgeometry.h
   symbols/qgsline3dsymbol.h
   symbols/qgsmesh3dsymbol.h
@@ -184,10 +233,17 @@ set(QGIS_3D_HDRS
   symbols/qgspolygon3dsymbol.h
   symbols/qgspointcloud3dsymbol.h
 
+  terrain/qgs3dterrainregistry.h
+  terrain/qgsabstractterrainsettings.h
   terrain/qgsdemterraingenerator.h
+  terrain/qgsdemterrainsettings.h
   terrain/qgsflatterraingenerator.h
+  terrain/qgsflatterrainsettings.h
+  terrain/qgsmeshterrainsettings.h
   terrain/qgsonlineterraingenerator.h
+  terrain/qgsonlinedemterrainsettings.h
   terrain/qgsquantizedmeshterraingenerator.h
+  terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
   terrain/qgsterraintileloader.h
@@ -234,23 +290,27 @@ set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
-
-# require c++17
-target_compile_features(qgis_3d PRIVATE cxx_std_17)
-
-if (BUILD_WITH_QT6)
-  target_include_directories(qgis_3d SYSTEM PUBLIC
-    ${QT6_3DEXTRA_INCLUDE_DIR}
-  )
-else()
-  target_include_directories(qgis_3d SYSTEM PUBLIC
-    ${QT5_3DEXTRA_INCLUDE_DIR}
+if(QGISPOSTFIX)
+  set_target_properties(qgis_3d PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_3d${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_3d${QGISPOSTFIX}
   )
 endif()
+
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_3d PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
+target_include_directories(qgis_3d SYSTEM PUBLIC
+  ${QT6_3DEXTRA_INCLUDE_DIR}
+)
 
 target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/chunks
+  ${CMAKE_CURRENT_SOURCE_DIR}/framegraph
   ${CMAKE_CURRENT_SOURCE_DIR}/lights
   ${CMAKE_CURRENT_SOURCE_DIR}/materials
   ${CMAKE_CURRENT_SOURCE_DIR}/mesh
@@ -262,13 +322,16 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_BINARY_DIR}/src/3d
   ${CMAKE_SOURCE_DIR}/external/delaunator-cpp
   ${CMAKE_SOURCE_DIR}/external/tinygltf
+  ${CMAKE_SOURCE_DIR}/external/rectpack2D
 )
 
-if (BUILD_WITH_QT6)
-  target_link_libraries(qgis_3d Qt6::3DCore Qt6::3DRender Qt6::3DInput Qt6::3DLogic Qt6::3DExtras)
-else()
-  target_link_libraries(qgis_3d Qt5::3DCore Qt5::3DRender Qt5::3DInput Qt5::3DLogic Qt5::3DExtras)
-endif()
+target_link_libraries(qgis_3d
+  ${QT_VERSION_BASE}::3DCore
+  ${QT_VERSION_BASE}::3DRender
+  ${QT_VERSION_BASE}::3DInput
+  ${QT_VERSION_BASE}::3DLogic
+  ${QT_VERSION_BASE}::3DExtras
+)
 
 GENERATE_EXPORT_HEADER(
    qgis_3d
@@ -278,30 +341,6 @@ GENERATE_EXPORT_HEADER(
 
 set(QGIS_3D_HDRS ${QGIS_3D_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_3d.h)
 
-if(NOT APPLE OR NOT QGIS_MACAPP_FRAMEWORK)
-  install(FILES ${QGIS_3D_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
-else()
-  set_target_properties(qgis_3d PROPERTIES
-    # no moc headers, messes up PROPERTIES syntax
-    CLEAN_DIRECT_OUTPUT 1
-    FRAMEWORK 1
-    FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
-    MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
-    MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
-    MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis3_3d
-    BUILD_WITH_INSTALL_RPATH TRUE
-    PUBLIC_HEADER "${QGIS_3D_HDRS}"
-    LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}"
-  )
-  # generated export header does not get copied with PUBLIC_HEADER files
-  add_custom_command(TARGET qgis_3d
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy qgis_3d.h
-            "${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR}/qgis_3d.framework/Headers"
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    DEPENDS qgis_3d.h
-  )
-endif()
 
 #generate unversioned libs for android
 if (NOT ANDROID)
@@ -322,18 +361,11 @@ if(CLANG_TIDY_EXE)
 endif()
 
 # install
+if(NOT QGIS_MAC_BUNDLE)
+  install(FILES ${QGIS_3D_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+endif()
 
 install(TARGETS qgis_3d
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
-  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
-  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
-
-# Mac dev frameworks
-
-if (APPLE AND QGIS_MACAPP_INSTALL_DEV)
-  install(TARGETS qgis_3d FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
-  install(CODE "execute_process(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_3d\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
-  install(CODE "execute_process(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_3d.framework/qgis_3d\")")
-endif()
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR})

@@ -37,7 +37,7 @@ QNetworkReply *O1Requestor::addTimer(QNetworkReply *reply) {
     return reply;
 }
 
-QNetworkRequest O1Requestor::setup(const QNetworkRequest &req, const QList<O0RequestParameter> &signingParameters, QNetworkAccessManager::Operation operation) {
+QNetworkRequest O1Requestor::setup(const QNetworkRequest &request, const QList<O0RequestParameter> &signingParameters, QNetworkAccessManager::Operation operation) {
     // Collect OAuth parameters
     QList<O0RequestParameter> oauthParams;
     oauthParams.append(O0RequestParameter(O2_OAUTH_CONSUMER_KEY, authenticator_->clientId().toLatin1()));
@@ -45,13 +45,17 @@ QNetworkRequest O1Requestor::setup(const QNetworkRequest &req, const QList<O0Req
     oauthParams.append(O0RequestParameter(O2_OAUTH_TOKEN, authenticator_->token().toLatin1()));
     oauthParams.append(O0RequestParameter(O2_OAUTH_SIGNATURE_METHOD, authenticator_->signatureMethod().toLatin1()));
     oauthParams.append(O0RequestParameter(O2_OAUTH_NONCE, O1::nonce()));
+#if QT_VERSION >= QT_VERSION_CHECK(5,8,0)
+    oauthParams.append(O0RequestParameter(O2_OAUTH_TIMESTAMP, QString::number(QDateTime::currentSecsSinceEpoch()).toLatin1()));
+#else
     oauthParams.append(O0RequestParameter(O2_OAUTH_TIMESTAMP, QString::number(QDateTime::currentDateTimeUtc().toTime_t()).toLatin1()));
+#endif
 
     // Add signature parameter
-    oauthParams.append(O0RequestParameter(O2_OAUTH_SIGNATURE, authenticator_->generateSignature(oauthParams, req, signingParameters, operation)));
+    oauthParams.append(O0RequestParameter(O2_OAUTH_SIGNATURE, authenticator_->generateSignature(oauthParams, request, signingParameters, operation)));
 
     // Return a copy of the original request with authorization header set
-    QNetworkRequest request(req);
-    request.setRawHeader(O2_HTTP_AUTHORIZATION_HEADER, O1::buildAuthorizationHeader(oauthParams));
-    return request;
+    QNetworkRequest req(request);
+    authenticator_->decorateRequest(req, oauthParams);
+    return req;
 }

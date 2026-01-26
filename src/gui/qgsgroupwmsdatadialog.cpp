@@ -13,46 +13,91 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgsgroupwmsdatadialog.h"
+
+#include "qgsgui.h"
+#include "qgsmaplayerserverproperties.h"
 
 #include <QRegularExpressionValidator>
 
+#include "moc_qgsgroupwmsdatadialog.cpp"
+
 QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( QWidget *parent, Qt::WindowFlags fl )
-  : QDialog( parent, fl )
+  : QgsGroupWmsDataDialog( QgsMapLayerServerProperties(), parent, fl )
 {
-  setupUi( this );
-  // WMS Name validator
-  QValidator *shortNameValidator = new QRegularExpressionValidator( QgsApplication::shortNameRegularExpression(), this );
-  mShortNameLineEdit->setValidator( shortNameValidator );
 }
 
-QString QgsGroupWmsDataDialog::groupShortName()
+QgsGroupWmsDataDialog::QgsGroupWmsDataDialog( const QgsMapLayerServerProperties &serverProperties, QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mServerProperties( std::make_unique<QgsMapLayerServerProperties>() )
 {
-  return mShortNameLineEdit->text();
+  setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
+  serverProperties.copyTo( mServerProperties.get() );
+
+  mMapLayerServerPropertiesWidget->setHasWfsTitle( false );
+  mMapLayerServerPropertiesWidget->setServerProperties( mServerProperties.get() );
+}
+
+QString QgsGroupWmsDataDialog::groupShortName() const
+{
+  mMapLayerServerPropertiesWidget->save();
+  return mServerProperties->shortName();
 }
 
 void QgsGroupWmsDataDialog::setGroupShortName( const QString &shortName )
 {
-  mShortNameLineEdit->setText( shortName );
+  mServerProperties->setShortName( shortName );
+  mMapLayerServerPropertiesWidget->sync();
 }
 
-QString QgsGroupWmsDataDialog::groupTitle()
+QString QgsGroupWmsDataDialog::groupTitle() const
 {
-  return mTitleLineEdit->text();
+  mMapLayerServerPropertiesWidget->save();
+  return mServerProperties->title();
 }
 
 void QgsGroupWmsDataDialog::setGroupTitle( const QString &title )
 {
-  mTitleLineEdit->setText( title );
+  mServerProperties->setTitle( title );
+  mMapLayerServerPropertiesWidget->sync();
 }
 
-QString QgsGroupWmsDataDialog::groupAbstract()
+QString QgsGroupWmsDataDialog::groupAbstract() const
 {
-  return mAbstractTextEdit->toPlainText();
+  mMapLayerServerPropertiesWidget->save();
+  return mServerProperties->abstract();
 }
 
 void QgsGroupWmsDataDialog::setGroupAbstract( const QString &abstract )
 {
-  mAbstractTextEdit->setPlainText( abstract );
+  mServerProperties->setAbstract( abstract );
+  mMapLayerServerPropertiesWidget->sync();
+}
+
+QgsMapLayerServerProperties *QgsGroupWmsDataDialog::serverProperties()
+{
+  return mServerProperties.get();
+}
+
+const QgsMapLayerServerProperties *QgsGroupWmsDataDialog::serverProperties() const
+{
+  return mServerProperties.get();
+}
+
+void QgsGroupWmsDataDialog::accept()
+{
+  mMapLayerServerPropertiesWidget->save();
+  QDialog::accept();
+}
+
+bool QgsGroupWmsDataDialog::hasTimeDimension() const
+{
+  return mComputeTimeDimension->checkState() == Qt::Checked;
+}
+
+void QgsGroupWmsDataDialog::setHasTimeDimension( bool hasTimeDimension )
+{
+  mComputeTimeDimension->setCheckState( hasTimeDimension ? Qt::Checked : Qt::Unchecked );
 }

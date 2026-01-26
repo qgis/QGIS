@@ -12,8 +12,8 @@
 class QgsVector3D
 {
 %Docstring(signature="appended")
-Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
-instead of single precision floating point numbers.
+A 3D vector (similar to QVector3D) with the difference that it uses
+double precision instead of single precision floating point numbers.
 %End
 
 %TypeHeaderCode
@@ -82,6 +82,8 @@ Sets vector coordinates
 
     QgsVector3D operator+( const QgsVector3D &other ) const /HoldGIL/;
 
+    QgsVector3D &operator+=( const QgsVector3D &other ) /HoldGIL/;
+
     QgsVector3D operator-( const QgsVector3D &other ) const /HoldGIL/;
 
     const QgsVector3D operator-() const /HoldGIL/;
@@ -102,7 +104,18 @@ Returns the cross product of two vectors
 
     double length() const /HoldGIL/;
 %Docstring
-Returns the length of the vector
+Returns the length of the vector.
+
+.. seealso:: :py:func:`lengthSquared`
+%End
+
+    double lengthSquared() const /HoldGIL/;
+%Docstring
+Returns the squared length of the vector.
+
+.. seealso:: :py:func:`length`
+
+.. versionadded:: 4.0
 %End
 
     void normalize() /HoldGIL/;
@@ -122,8 +135,8 @@ Returns the perpendicular point of vector ``vp`` from [``v1`` - ``v2``]
 
     QString toString( int precision = 17 ) const /HoldGIL/;
 %Docstring
-Returns a string representation of the 3D vector.
-Members will be truncated to the specified ``precision``.
+Returns a string representation of the 3D vector. Members will be
+truncated to the specified ``precision``.
 %End
 
     QVector3D toVector3D() const /HoldGIL/;

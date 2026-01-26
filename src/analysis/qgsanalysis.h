@@ -18,23 +18,22 @@
 #ifndef QGSANALYSIS_H
 #define QGSANALYSIS_H
 
+#include <memory>
+
 #include "qgis_analysis.h"
 #include "qgis_sip.h"
-
-#include <memory>
 
 class QgsGeometryCheckRegistry;
 
 /**
  * \ingroup analysis
- * \brief QgsAnalysis is a singleton class containing various registry and other global members
+ * \brief A singleton class containing various registry and other global members
  * related to analysis classes.
  * \since QGIS 3.4
  */
 class ANALYSIS_EXPORT QgsAnalysis
 {
   public:
-
     QgsAnalysis( const QgsAnalysis &other ) = delete;
     QgsAnalysis &operator=( const QgsAnalysis &other ) = delete;
 
@@ -49,7 +48,6 @@ class ANALYSIS_EXPORT QgsAnalysis
     static QgsGeometryCheckRegistry *geometryCheckRegistry() SIP_KEEPREFERENCE;
 
   private:
-
     QgsAnalysis();
 
     std::unique_ptr<QgsGeometryCheckRegistry> mGeometryCheckRegistry;
@@ -57,7 +55,6 @@ class ANALYSIS_EXPORT QgsAnalysis
 #ifdef SIP_RUN
     QgsAnalysis( const QgsAnalysis &other );
 #endif
-
 };
 
 #endif // QGSANALYSIS_H

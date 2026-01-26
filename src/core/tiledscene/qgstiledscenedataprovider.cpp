@@ -16,7 +16,10 @@
  ***************************************************************************/
 
 #include "qgstiledscenedataprovider.h"
+
 #include "qgsthreadingutils.h"
+
+#include "moc_qgstiledscenedataprovider.cpp"
 
 QgsTiledSceneDataProvider::QgsTiledSceneDataProvider(
   const QString &uri,

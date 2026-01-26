@@ -11,7 +11,7 @@
  ****************************************************************************/
 
 
-#include "EpfTypes.hpp"
+#include "untwine/FileInfo.hpp"
 #include "Grid.hpp"
 #include "Cell.hpp"
 
@@ -29,8 +29,8 @@ class Writer;
 class FileProcessor
 {
 public:
-    FileProcessor(const FileInfo& fi, size_t pointSize, const Grid& grid, Writer *writer,
-        ProgressWriter& progress);
+    FileProcessor(const FileInfo& fi, size_t pointSize, const Grid& grid, const Transform& xform,
+        Writer *writer, ProgressWriter& progress);
 
     Cell *getCell(const VoxelKey& key);
     void run();
@@ -39,6 +39,7 @@ private:
     FileInfo m_fi;
     CellMgr m_cellMgr;
     Grid m_grid;
+    Transform m_xform;
     ProgressWriter& m_progress;
 };
 

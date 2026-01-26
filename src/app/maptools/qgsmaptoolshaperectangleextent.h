@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPERECTANGLEEXTENT_H
 #define QGSMAPTOOLSHAPERECTANGLEEXTENT_H
 
-#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshaperectangleabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeRectangleExtentMetadata : public QgsMapToolShapeMetadata
@@ -37,7 +37,7 @@ class APP_EXPORT QgsMapToolShapeRectangleExtentMetadata : public QgsMapToolShape
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeRectangleExtent: public QgsMapToolShapeRectangleAbstract
+class APP_EXPORT QgsMapToolShapeRectangleExtent : public QgsMapToolShapeRectangleAbstract
 {
     Q_OBJECT
 

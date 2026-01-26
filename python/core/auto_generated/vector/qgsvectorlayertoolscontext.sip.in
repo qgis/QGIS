@@ -12,8 +12,8 @@
 class QgsVectorLayerToolsContext
 {
 %Docstring(signature="appended")
-Contains settings which reflect the context in which vector layer tool operations should
-consider.
+Contains settings which reflect the context in which vector layer tool
+operations should be considered.
 
 .. versionadded:: 3.38
 %End
@@ -31,7 +31,8 @@ consider.
 %Docstring
 Sets the optional expression context used by the vector layer tools.
 
-:param context: expression context pointer. Ownership is not transferred.
+:param context: expression context pointer. Ownership is not
+                transferred.
 
 .. seealso:: :py:func:`expressionContext`
 
@@ -49,16 +50,19 @@ Returns the optional expression context used by the vector layer tools.
 
     void setAdditionalExpressionContextScope( const QgsExpressionContextScope *scope );
 %Docstring
-Sets an additional expression context scope to be made available when calculating expressions.
+Sets an additional expression context scope to be made available when
+calculating expressions.
 
-:param scope: additional scope. Ownership is not transferred and a copy will be made.
+:param scope: additional scope. Ownership is not transferred and a copy
+              will be made.
 
 .. seealso:: :py:func:`additionalExpressionContextScope`
 %End
 
     const QgsExpressionContextScope *additionalExpressionContextScope() const;
 %Docstring
-Returns an additional expression context scope to be made available when calculating expressions.
+Returns an additional expression context scope to be made available when
+calculating expressions.
 
 .. seealso:: :py:func:`setAdditionalExpressionContextScope`
 %End
@@ -87,12 +91,14 @@ Sets whether tools' dialogues should be modal.
 
     bool hideParent() const;
 %Docstring
-Returns whether the parent widget should be hidden when showing tools' dialogues.
+Returns whether the parent widget should be hidden when showing tools'
+dialogues.
 %End
 
     void setHideParent( bool hide );
 %Docstring
-Sets whether the parent widget should be hidden when showing tools' dialogues.
+Sets whether the parent widget should be hidden when showing tools'
+dialogues.
 %End
 
 };

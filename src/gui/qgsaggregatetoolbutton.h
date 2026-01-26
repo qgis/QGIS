@@ -16,25 +16,24 @@
 #ifndef QGSAGGREGATETOOLBUTTON_H
 #define QGSAGGREGATETOOLBUTTON_H
 
+#include "qgis_gui.h"
+#include "qgsaggregatecalculator.h"
+
 #include <QToolButton>
 #include <QVariant>
-
-#include "qgsaggregatecalculator.h"
-#include "qgis_gui.h"
 
 /**
  * \ingroup gui
  *
  * \brief Offers a toolbutton to choose between different aggregate functions.
- * Functions are filtered based on the type.
  *
+ * Functions are filtered based on the type.
  */
 class GUI_EXPORT QgsAggregateToolButton : public QToolButton
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */

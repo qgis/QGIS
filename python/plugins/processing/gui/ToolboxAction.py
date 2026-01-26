@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -32,7 +32,7 @@ class ToolboxAction:
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
 
-    def tr(self, string, context=''):
-        if context == '':
+    def tr(self, string, context=""):
+        if context == "":
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)

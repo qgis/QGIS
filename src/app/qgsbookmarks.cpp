@@ -16,28 +16,31 @@
  ***************************************************************************/
 
 
+#include "qgsbookmarks.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
-#include "qgsbookmarks.h"
 #include "qgsbookmarkeditordialog.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsmessagelog.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
 #include "qgsbookmarkmanager.h"
 #include "qgsbookmarkmodel.h"
+#include "qgsgui.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 
+#include <QAbstractTableModel>
+#include <QDoubleSpinBox>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QModelIndex>
-#include <QDoubleSpinBox>
-#include <QAbstractTableModel>
 #include <QToolButton>
 #include <QUrl>
+
+#include "moc_qgsbookmarks.cpp"
 
 const int QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES = 6;
 
@@ -53,12 +56,12 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   connect( lstBookmarks, &QTreeView::customContextMenuRequested, this, &QgsBookmarks::lstBookmarks_customContextMenuRequested );
 
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
-  static_cast< QGridLayout * >( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
+  static_cast<QGridLayout *>( bookmarksDockContents->layout() )->setVerticalSpacing( 0 );
 
   QToolButton *btnImpExp = new QToolButton;
   btnImpExp->setAutoRaise( true );
   btnImpExp->setToolTip( tr( "Import/Export Bookmarks" ) );
-  btnImpExp->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharing.svg" ) ) );
+  btnImpExp->setIcon( QgsApplication::getThemeIcon( u"/mActionSharing.svg"_s ) );
   btnImpExp->setPopupMode( QToolButton::InstantPopup );
 
   QMenu *share = new QMenu( this );
@@ -83,7 +86,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   lstBookmarks->sortByColumn( 0, Qt::AscendingOrder );
 
   const QgsSettings settings;
-  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "Windows/Bookmarks/headerstateV2" ) ).toByteArray() );
+  lstBookmarks->header()->restoreState( settings.value( u"Windows/Bookmarks/headerstateV2"_s ).toByteArray() );
 }
 
 QgsBookmarks::~QgsBookmarks()
@@ -94,7 +97,7 @@ QgsBookmarks::~QgsBookmarks()
 void QgsBookmarks::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Bookmarks/headerstateV2" ), lstBookmarks->header()->saveState() );
+  settings.setValue( u"Windows/Bookmarks/headerstateV2"_s, lstBookmarks->header()->saveState() );
 }
 
 void QgsBookmarks::addClicked()
@@ -125,9 +128,7 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ),
-       tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
-       QMessageBox::Yes | QMessageBox::No ) )
+  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ), tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ), QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   // Remove in reverse order to keep the merged model indexes
@@ -169,7 +170,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
   menu.addAction( actionDelete );
 
   // Get the bookmark
-  const QString id = lstBookmarks->model()->data( index, static_cast< int >( QgsBookmarkManagerModel::CustomRole::Id ) ).toString();
+  const QString id = lstBookmarks->model()->data( index, static_cast<int>( QgsBookmarkManagerModel::CustomRole::Id ) ).toString();
   QgsBookmark bookmark = QgsApplication::bookmarkManager()->bookmarkById( id );
   bool inProject = false;
   if ( bookmark.id().isEmpty() )
@@ -180,8 +181,7 @@ void QgsBookmarks::lstBookmarks_customContextMenuRequested( QPoint pos )
 
   // Add an edit action (similar to the one in QgsBookmarksItemGuiProvider)
   QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), &menu );
-  connect( actionEdit, &QAction::triggered, this, [bookmark, inProject]
-  {
+  connect( actionEdit, &QAction::triggered, this, [bookmark = std::move( bookmark ), inProject] {
     QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmark, inProject, QgisApp::instance(), QgisApp::instance()->mapCanvas() );
     dlg->setAttribute( Qt::WA_DeleteOnClose );
     dlg->show();
@@ -200,12 +200,12 @@ void QgsBookmarks::zoomToBookmark()
 
 void QgsBookmarks::zoomToBookmarkIndex( const QModelIndex &index )
 {
-  const QgsReferencedRectangle rect = index.data( static_cast< int >( QgsBookmarkManagerModel::CustomRole::Extent ) ).value< QgsReferencedRectangle >();
+  const QgsReferencedRectangle rect = index.data( static_cast<int>( QgsBookmarkManagerModel::CustomRole::Extent ) ).value<QgsReferencedRectangle>();
   try
   {
     if ( QgisApp::instance()->mapCanvas()->setReferencedExtent( rect ) )
     {
-      QgisApp::instance()->mapCanvas()->setRotation( index.data( static_cast< int >( QgsBookmarkManagerModel::CustomRole::Rotation ) ).toDouble() );
+      QgisApp::instance()->mapCanvas()->setRotation( index.data( static_cast<int>( QgsBookmarkManagerModel::CustomRole::Rotation ) ).toDouble() );
       QgisApp::instance()->mapCanvas()->refresh();
     }
     else
@@ -223,9 +223,8 @@ void QgsBookmarks::importFromXml()
 {
   const QgsSettings settings;
 
-  const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString lastUsedDir = settings.value( u"Windows/Bookmarks/LastUsedDirectory"_s, QDir::homePath() ).toString();
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -262,39 +261,35 @@ QMap<QString, QModelIndex> QgsBookmarks::getIndexMap()
   }
 
   return map;
-
 }
 
 void QgsBookmarks::exportToXml()
 {
   QgsSettings settings;
 
-  const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Bookmarks" ), lastUsedDir,
-                     tr( "XML files (*.xml *.XML)" ) );
+  const QString lastUsedDir = settings.value( u"Windows/Bookmarks/LastUsedDirectory"_s, QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Bookmarks" ), lastUsedDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
   }
 
   // ensure the user never omitted the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( ".xml"_L1, Qt::CaseInsensitive ) )
   {
-    fileName += QLatin1String( ".xml" );
+    fileName += ".xml"_L1;
   }
 
-  if ( !QgsBookmarkManager::exportToFile( fileName, QList< const QgsBookmarkManager * >() << QgsApplication::bookmarkManager()
-                                          << QgsProject::instance()->bookmarkManager() ) )
+  if ( !QgsBookmarkManager::exportToFile( fileName, QList<const QgsBookmarkManager *>() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager() ) )
   {
     QgisApp::instance()->messageBar()->pushWarning( tr( "Export Bookmarks" ), tr( "Error exporting bookmark file" ) );
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" )
-        .arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+    QgisApp::instance()->messageBar()->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   }
 
-  settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
+  settings.setValue( u"Windows/Bookmarks/LastUsedDirectory"_s, QFileInfo( fileName ).path() );
 }
 
 //
@@ -304,7 +299,6 @@ void QgsBookmarks::exportToXml()
 QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent, int decimals )
   : QStyledItemDelegate( parent ), mDecimals( decimals == -1 ? QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES : decimals )
 {
-
 }
 
 QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, const QLocale &locale ) const

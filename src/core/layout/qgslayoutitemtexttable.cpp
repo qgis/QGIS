@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgslayoutitemtexttable.h"
-#include "qgslayouttablecolumn.h"
-#include "qgslayoutframe.h"
+
 #include "qgslayout.h"
+#include "qgslayoutframe.h"
+#include "qgslayouttablecolumn.h"
+
+#include "moc_qgslayoutitemtexttable.cpp"
 
 QgsLayoutItemTextTable::QgsLayoutItemTextTable( QgsLayout *layout )
   : QgsLayoutTable( layout )

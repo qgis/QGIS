@@ -7,9 +7,9 @@
 
 """
 
-__author__ = 'elpaso@itopen.it'
-__date__ = '2022-11-07'
-__copyright__ = 'Copyright 2022, ItOpen'
+__author__ = "elpaso@itopen.it"
+__date__ = "2022-11-07"
+__copyright__ = "Copyright 2022, ItOpen"
 
 import os
 
@@ -23,7 +23,7 @@ from stylestoragebase import StyleStorageTestBase
 class StyleStorageTest(unittest.TestCase, StyleStorageTestBase):
 
     # Provider test cases must define the provider name (e.g. "postgres" or "ogr")
-    providerKey = 'ogr'
+    providerKey = "ogr"
 
     def setUp(self):
 
@@ -31,10 +31,10 @@ class StyleStorageTest(unittest.TestCase, StyleStorageTestBase):
         self.temp_dir = QTemporaryDir()
         self.temp_path = self.temp_dir.path()
         md = QgsProviderRegistry.instance().providerMetadata(self.providerKey)
-        self.test_uri = os.path.join(self.temp_path, 'test.gpkg')
+        self.test_uri = os.path.join(self.temp_path, "test.gpkg")
         self.assertTrue(md.createDatabase(self.test_uri)[0])
         self.uri = self.test_uri
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

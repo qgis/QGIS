@@ -20,20 +20,21 @@
 class QLabel;
 class QLineEdit;
 
-#include "qgsdialog.h"
 #include "qgis_gui.h"
+#include "qgsdialog.h"
+
 #include <QRegularExpression>
 
 /**
  * \ingroup gui
- * \brief New name, for example new layer name dialog. If existing names are provided,
- * the dialog warns users if an entered name already exists.
+ * \brief A dialog for prompting users for a new name, for example new layer name dialog.
+ *
+ * If existing names are provided, the dialog warns users if an entered name already exists.
  */
 class GUI_EXPORT QgsNewNameDialog : public QgsDialog
 {
     Q_OBJECT
   public:
-
     /**
      * New dialog constructor.
      * \param source original data source name, e.g. original layer name of the layer to be copied
@@ -46,10 +47,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \note Earlier versions had a similar constructor but with extra arguments for \a regexp which were removed in QGIS 3.22 as they relied on the deprecated QRegExp class. Use setRegularExpression() instead.
      * \since QGIS 3.22
      */
-    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(),
-                      const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(),
-                      Qt::CaseSensitivity cs = Qt::CaseSensitive,
-                      QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
+    QgsNewNameDialog( const QString &source = QString(), const QString &initial = QString(), const QStringList &extensions = QStringList(), const QStringList &existing = QStringList(), Qt::CaseSensitivity cs = Qt::CaseSensitive, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 
     /**
      * Sets the hint string for the dialog (the text shown above the name
@@ -77,6 +75,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     /**
      * Returns whether users are permitted to overwrite existing names.
      * \see setOverwriteEnabled()
+     * \see setShowExistingNamesCompleter()
      */
     bool overwriteEnabled() const { return mOverwriteEnabled; }
 
@@ -116,6 +115,19 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     void setRegularExpression( const QString &expression );
 
     /**
+     * Sets whether a completer for existing names should be used in the line edit.
+     *
+     * This is not shown by default. If the dialog is expected to be used in a context
+     * where overwriting is permitted, consider enabling this so that users can more
+     * easily enter an existing name.
+     *
+     * \see overwriteEnabled()
+     *
+     * \since QGIS 3.44
+     */
+    void setShowExistingNamesCompleter( bool show );
+
+    /**
      * Name entered by user.
      * \returns new name
      * \see newNameChanged()
@@ -130,11 +142,10 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
      * \param cs case sensitivity for new name to existing names comparison
      * \returns TRUE if name exists
      */
-    static bool exists( const QString &name, const QStringList &extensions,
-                        const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
+    static bool exists( const QString &name, const QStringList &extensions, const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
   signals:
 
-    // TODO QGIS 4.0 - rename to nameChanged
+    // TODO QGIS 5.0 - rename to nameChanged
 
     /**
      * Emitted when the name is changed in the dialog.
@@ -143,7 +154,7 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     void newNameChanged();
 
   public slots:
-    // TODO QGIS 4.0 - rename to onNameChanged
+    // TODO QGIS 5.0 - rename to onNameChanged
     void nameChanged();
 
   protected:
@@ -161,11 +172,10 @@ class GUI_EXPORT QgsNewNameDialog : public QgsDialog
     bool mAllowEmptyName = false;
     QString mConflictingNameWarning;
 
-    QString highlightText( const QString &text );
+    static QString highlightText( const QString &text );
     static QStringList fullNames( const QString &name, const QStringList &extensions );
     // get list of existing names
-    static QStringList matching( const QStringList &newNames, const QStringList &existingNames,
-                                 Qt::CaseSensitivity cs = Qt::CaseSensitive );
+    static QStringList matching( const QStringList &newNames, const QStringList &existingNames, Qt::CaseSensitivity cs = Qt::CaseSensitive );
 };
 
 #endif // QGSNEWNAMEDIALOG_H

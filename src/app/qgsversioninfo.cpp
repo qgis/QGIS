@@ -14,20 +14,23 @@
  ***************************************************************************/
 
 #include "qgsversioninfo.h"
+
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
+
 #include <QUrl>
+
+#include "moc_qgsversioninfo.cpp"
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 void QgsVersionInfo::checkVersion()
 {
-  QNetworkRequest request( QUrl( QStringLiteral( "https://version.qgis.org/version.txt" ) ) );
+  QNetworkRequest request( QUrl( u"https://version.qgis.org/version.txt"_s ) );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork );
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
   connect( reply, &QNetworkReply::finished, this, &QgsVersionInfo::versionReplyFinished );
@@ -56,7 +59,7 @@ void QgsVersionInfo::versionReplyFinished()
     QString versionMessage = reply->readAll();
 
     // strip the header
-    const QString contentFlag = QStringLiteral( "#QGIS Version" );
+    const QString contentFlag = u"#QGIS Version"_s;
     int pos = versionMessage.indexOf( contentFlag );
 
     if ( pos > -1 )

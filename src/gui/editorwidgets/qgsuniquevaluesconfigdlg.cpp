@@ -15,6 +15,8 @@
 
 #include "qgsuniquevaluesconfigdlg.h"
 
+#include "moc_qgsuniquevaluesconfigdlg.cpp"
+
 QgsUniqueValuesConfigDlg::QgsUniqueValuesConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
@@ -27,12 +29,12 @@ QVariantMap QgsUniqueValuesConfigDlg::config()
 {
   QVariantMap cfg;
 
-  cfg.insert( QStringLiteral( "Editable" ), editableUniqueValues->isChecked() );
+  cfg.insert( u"Editable"_s, editableUniqueValues->isChecked() );
 
   return cfg;
 }
 
 void QgsUniqueValuesConfigDlg::setConfig( const QVariantMap &config )
 {
-  editableUniqueValues->setChecked( config.value( QStringLiteral( "Editable" ), false ).toBool() );
+  editableUniqueValues->setChecked( config.value( u"Editable"_s, false ).toBool() );
 }

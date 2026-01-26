@@ -16,13 +16,13 @@
 #ifndef QGSHISTORYENTRY_H
 #define QGSHISTORYENTRY_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
+#include <QDateTime>
 #include <QMap>
 #include <QString>
-#include <QDateTime>
 #include <QVariant>
 
 /**
@@ -34,7 +34,6 @@
 class GUI_EXPORT QgsHistoryEntry
 {
   public:
-
     /**
      * Constructor for an invalid entry.
      */
@@ -82,12 +81,11 @@ class GUI_EXPORT QgsHistoryEntry
 
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
-    % MethodCode
-    const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
+    //%MethodCode
+    const QString str = u"<QgsHistoryEntry: %1 %2>"_s.arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-    % End
+    //%End
 #endif
-
 };
 
 Q_DECLARE_METATYPE( QgsHistoryEntry );

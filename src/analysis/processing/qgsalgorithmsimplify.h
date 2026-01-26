@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 class QgsMapToPixelSimplifier;
 
@@ -33,19 +33,18 @@ class QgsMapToPixelSimplifier;
  */
 class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsSimplifyAlgorithm() = default;
     ~QgsSimplifyAlgorithm() override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSimplify.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSimplify.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSimplify.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSimplify.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSimplifyAlgorithm *createInstance() const override SIP_FACTORY;
     QList<int> inputLayerTypes() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
@@ -53,21 +52,18 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-  private:
 
+  private:
     double mTolerance = 1.0;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
     Qgis::VectorSimplificationAlgorithm mMethod = Qgis::VectorSimplificationAlgorithm::Distance;
-    std::unique_ptr< QgsMapToPixelSimplifier > mSimplifier;
-
+    std::unique_ptr<QgsMapToPixelSimplifier> mSimplifier;
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSIMPLIFY_H
-
-

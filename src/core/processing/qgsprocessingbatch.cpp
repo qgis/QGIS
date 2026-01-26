@@ -17,6 +17,8 @@
 
 #include "qgsprocessingbatch.h"
 
+#include "moc_qgsprocessingbatch.cpp"
+
 QgsProcessingBatchFeedback::QgsProcessingBatchFeedback( int tasks, QgsProcessingFeedback *feedback )
   :  QgsProcessingMultiStepFeedback( tasks, feedback )
 {

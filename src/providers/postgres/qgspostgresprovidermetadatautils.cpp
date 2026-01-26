@@ -15,10 +15,11 @@
  ***************************************************************************/
 
 #include "qgspostgresprovidermetadatautils.h"
+
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
 #include "qgspostgresconn.h"
-#include "qgsfeedback.h"
 
 #include <QTextStream>
 
@@ -29,31 +30,31 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
   QgsDataSourceUri dsUri( uri );
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri, false );
-  if ( conn && ( ! feedback || ! feedback->isCanceled() ) )
+  if ( conn && ( !feedback || !feedback->isCanceled() ) )
   {
-
-    QString schemaName { QStringLiteral( "public" ) };
-    const QString schemaQuery = QStringLiteral( "SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'" );
+    QString schemaName { u"public"_s };
+    const QString schemaQuery = u"SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'"_s;
     QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresProviderMetadata", schemaQuery ) );
-    if ( res.PQntuples( ) > 0 )
+    if ( res.PQntuples() > 0 )
     {
       schemaName = res.PQgetvalue( 0, 0 );
     }
 
     QStringList where;
 
-    if ( ! searchString.isEmpty() )
+    if ( !searchString.isEmpty() )
     {
       where.push_back( QStringLiteral( R"SQL((
       abstract ILIKE %1 OR
       identifier ILIKE %1 OR
       REGEXP_REPLACE(UPPER(array_to_string((xpath('//keyword', qmd))::varchar[], ' ')),'</?KEYWORD>', '', 'g') ILIKE %1
-      ))SQL" ).arg( QgsPostgresConn::quotedValue( QString( searchString ).prepend( QChar( '%' ) ).append( QChar( '%' ) ) ) ) );
+      ))SQL" )
+                         .arg( QgsPostgresConn::quotedValue( QString( searchString ).prepend( QChar( '%' ) ).append( QChar( '%' ) ) ) ) );
     }
 
-    if ( ! geographicExtent.isEmpty() )
+    if ( !geographicExtent.isEmpty() )
     {
-      where.push_back( QStringLiteral( "ST_Intersects( extent, ST_GeomFromText( %1, 4326 ) )" ).arg( QgsPostgresConn::quotedValue( geographicExtent.asWktPolygon() ) ) );
+      where.push_back( u"ST_Intersects( extent, ST_GeomFromText( %1, 4326 ) )"_s.arg( QgsPostgresConn::quotedValue( geographicExtent.asWktPolygon() ) ) );
     }
 
     const QString listQuery = QStringLiteral( R"SQL(
@@ -74,18 +75,18 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
               ,update_time
            FROM %1.qgis_layer_metadata
              %2
-           )SQL" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ), where.isEmpty() ? QString() : ( QStringLiteral( " WHERE %1 " ).arg( where.join( QLatin1String( " AND " ) ) ) ) );
+           )SQL" )
+                                .arg( QgsPostgresConn::quotedIdentifier( schemaName ), where.isEmpty() ? QString() : ( u" WHERE %1 "_s.arg( where.join( " AND "_L1 ) ) ) );
 
     res = conn->LoggedPQexec( "QgsPostgresProviderMetadata", listQuery );
 
     if ( res.PQresultStatus() != PGRES_TUPLES_OK )
     {
-      throw QgsProviderConnectionException( QObject::tr( "Error while fetching metadata from %1: %2" ).arg( dsUri.connectionInfo( false ), res.PQresultErrorMessage() ) );
+      throw QgsProviderConnectionException( QObject::tr( "Error while fetching metadata from %1: %2" ).arg( QgsPostgresConn::connectionInfo( dsUri, false ), res.PQresultErrorMessage() ) );
     }
 
-    for ( int row = 0; row < res.PQntuples( ); ++row )
+    for ( int row = 0; row < res.PQntuples(); ++row )
     {
-
       if ( feedback && feedback->isCanceled() )
       {
         break;
@@ -102,28 +103,28 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
       uri.setSchema( res.PQgetvalue( row, 1 ) );
       uri.setTable( res.PQgetvalue( row, 2 ) );
       uri.setGeometryColumn( res.PQgetvalue( row, 3 ) );
-      const Qgis::WkbType wkbType =  QgsWkbTypes::parseType( res.PQgetvalue( row, 7 ) );
+      const Qgis::WkbType wkbType = QgsWkbTypes::parseType( res.PQgetvalue( row, 7 ) );
       uri.setWkbType( wkbType );
-      result.setStandardUri( QStringLiteral( "http://mrcc.com/qgis.dtd" ) );
+      result.setStandardUri( u"http://mrcc.com/qgis.dtd"_s );
       result.setGeometryType( QgsWkbTypes::geometryType( wkbType ) );
       QgsPolygon geographicExtent;
       geographicExtent.fromWkt( res.PQgetvalue( row, 8 ) );
       result.setGeographicExtent( geographicExtent );
       result.setAuthid( res.PQgetvalue( row, 9 ) );
       const QString layerType { res.PQgetvalue( row, 10 ) };
-      if ( layerType == QLatin1String( "raster" ) )
+      if ( layerType == "raster"_L1 )
       {
-        result.setDataProviderName( QStringLiteral( "postgresraster" ) );
+        result.setDataProviderName( u"postgresraster"_s );
         result.setLayerType( Qgis::LayerType::Raster );
       }
-      else if ( layerType == QLatin1String( "vector" ) )
+      else if ( layerType == "vector"_L1 )
       {
-        result.setDataProviderName( QStringLiteral( "postgres" ) );
+        result.setDataProviderName( u"postgres"_s );
         result.setLayerType( Qgis::LayerType::Vector );
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Unsupported layer type '%1': skipping metadata record" ).arg( layerType ) );
+        QgsDebugError( u"Unsupported layer type '%1': skipping metadata record"_s.arg( layerType ) );
         continue;
       }
       result.setUri( uri.uri() );
@@ -132,7 +133,7 @@ QList<QgsLayerMetadataProviderResult> QgsPostgresProviderMetadataUtils::searchLa
   }
   else
   {
-    throw QgsProviderConnectionException( QObject::tr( "Connection to database %1 failed" ).arg( dsUri.connectionInfo( false ) ) );
+    throw QgsProviderConnectionException( QObject::tr( "Connection to database %1 failed" ).arg( QgsPostgresConn::connectionInfo( dsUri, false ) ) );
   }
   return results;
 }
@@ -145,11 +146,11 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
 
   if ( layerType == Qgis::LayerType::Vector )
   {
-    layerTypeString = QStringLiteral( "vector" );
+    layerTypeString = u"vector"_s;
   }
   else if ( layerType == Qgis::LayerType::Raster )
   {
-    layerTypeString = QStringLiteral( "raster" );
+    layerTypeString = u"raster"_s;
   }
   else
   {
@@ -170,18 +171,17 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
   }
 
   // Try to load metadata
-  QString schemaName { dsUri.schema().isEmpty() ? QStringLiteral( "public" ) : dsUri.schema() };
-  const QString schemaQuery = QStringLiteral( "SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'" );
+  QString schemaName { dsUri.schema().isEmpty() ? u"public"_s : dsUri.schema() };
+  const QString schemaQuery = u"SELECT table_schema FROM information_schema.tables WHERE table_name = 'qgis_layer_metadata'"_s;
   QgsPostgresResult res( conn->LoggedPQexec( "QgsPostgresProviderMetadataUtils", schemaQuery ) );
-  const bool metadataTableFound { res.PQntuples( ) > 0 };
+  const bool metadataTableFound { res.PQntuples() > 0 };
   if ( metadataTableFound )
   {
-    schemaName = res.PQgetvalue( 0, 0 ) ;
+    schemaName = res.PQgetvalue( 0, 0 );
   }
   else
   {
-    QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadataUtils" ),
-                           QStringLiteral( R"SQL(
+    QgsPostgresResult res( conn->LoggedPQexec( u"QgsPostgresProviderMetadataUtils"_s, QStringLiteral( R"SQL(
             CREATE TABLE %1.qgis_layer_metadata (
               id SERIAL PRIMARY KEY
               ,f_table_catalog VARCHAR NOT NULL
@@ -200,7 +200,8 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
               ,update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
               UNIQUE (f_table_catalog, f_table_schema, f_table_name, f_geometry_column, geometry_type, crs, layer_type)
             )
-          )SQL" ).arg( QgsPostgresConn::quotedIdentifier( schemaName ) ) ) );
+          )SQL" )
+                                                                                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) ) ) );
     if ( res.PQresultStatus() != PGRES_COMMAND_OK )
     {
       errorMessage = QObject::tr( "Unable to save layer metadata. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
@@ -212,13 +213,13 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
   const QString wkbTypeString = QgsWkbTypes::displayString( dsUri.wkbType() );
 
   const QgsCoordinateReferenceSystem metadataCrs { metadata.crs() };
-  QgsCoordinateReferenceSystem destCrs {QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) };
+  QgsCoordinateReferenceSystem destCrs { QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) };
   QgsRectangle extents;
 
   const auto cExtents { metadata.extent().spatialExtents() };
   for ( const auto &ext : std::as_const( cExtents ) )
   {
-    QgsRectangle bbox {  ext.bounds.toRectangle()  };
+    QgsRectangle bbox { ext.bounds.toRectangle() };
     // Note: a default transform context is used here because we don't need high accuracy
     QgsCoordinateTransform ct { ext.extentCrs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsCoordinateTransformContext() };
     ct.transform( bbox );
@@ -227,11 +228,11 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
 
   // export metadata to XML
   QDomImplementation domImplementation;
-  QDomDocumentType documentType = domImplementation.createDocumentType( QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocumentType documentType = domImplementation.createDocumentType( u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s );
   QDomDocument document( documentType );
 
-  QDomElement rootNode = document.createElement( QStringLiteral( "qgis" ) );
-  rootNode.setAttribute( QStringLiteral( "version" ), Qgis::version() );
+  QDomElement rootNode = document.createElement( u"qgis"_s );
+  rootNode.setAttribute( u"version"_s, Qgis::version() );
   document.appendChild( rootNode );
 
   if ( !metadata.writeMetadataXml( rootNode, document ) )
@@ -265,20 +266,20 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
               ,qmd) VALUES (
                %2,%3,%4,%5,%6,%7,%8,%9,ST_GeomFromText(%10, 4326),%11,%12,XMLPARSE(DOCUMENT %13))
              )SQL" )
-                      .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
-                      .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
-                      .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
-                      .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                      .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
-                      .arg( QgsPostgresConn::quotedValue( metadata.identifier() ) )
-                      .arg( QgsPostgresConn::quotedValue( metadata.title() ) )
-                      .arg( QgsPostgresConn::quotedValue( metadata.abstract() ) )
-                      .arg( QgsPostgresConn::quotedValue( wkbTypeString ) )
-                      .arg( QgsPostgresConn::quotedValue( extents.asWktPolygon() ) )
-                      .arg( QgsPostgresConn::quotedValue( metadataCrs.authid() ) )
-                      .arg( QgsPostgresConn::quotedValue( layerTypeString ) )
-                      // Must be the final .arg replacement - see above
-                      .arg( QgsPostgresConn::quotedValue( metadataXml ) );
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
+                        .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                        .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                        .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                        .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) )
+                        .arg( QgsPostgresConn::quotedValue( metadata.identifier() ) )
+                        .arg( QgsPostgresConn::quotedValue( metadata.title() ) )
+                        .arg( QgsPostgresConn::quotedValue( metadata.abstract() ) )
+                        .arg( QgsPostgresConn::quotedValue( wkbTypeString ) )
+                        .arg( QgsPostgresConn::quotedValue( extents.asWktPolygon() ) )
+                        .arg( QgsPostgresConn::quotedValue( metadataCrs.authid() ) )
+                        .arg( QgsPostgresConn::quotedValue( layerTypeString ) )
+                        // Must be the final .arg replacement - see above
+                        .arg( QgsPostgresConn::quotedValue( metadataXml ) );
 
   QString checkQuery = QStringLiteral( R"SQL(
             SELECT
@@ -291,14 +292,12 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
                 AND f_geometry_column %5
                 AND layer_type = %7
            )SQL" )
-                       .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
-                       .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
-                       .arg( dsUri.geometryColumn().isEmpty() ?
-                             QStringLiteral( "IS NULL" ) :
-                             QStringLiteral( "=%1" ).arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
-                       .arg( QgsPostgresConn::quotedValue( layerTypeString ) );
+                         .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
+                         .arg( QgsPostgresConn::quotedValue( dsUri.database() ) )
+                         .arg( QgsPostgresConn::quotedValue( dsUri.schema() ) )
+                         .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
+                         .arg( dsUri.geometryColumn().isEmpty() ? u"IS NULL"_s : u"=%1"_s.arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) ) )
+                         .arg( QgsPostgresConn::quotedValue( layerTypeString ) );
 
   res = conn->LoggedPQexec( "QgsPostgresProviderMetadataUtils", checkQuery );
   if ( res.PQntuples() > 0 )
@@ -317,16 +316,15 @@ bool QgsPostgresProviderMetadataUtils::saveLayerMetadata( const Qgis::LayerType 
                     WHERE
                         id = %2
                  )SQL" )
-                .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
-                .arg( id )
-                .arg( QgsPostgresConn::quotedValue( metadata.title() ) )
-                .arg( QgsPostgresConn::quotedValue( metadata.abstract() ) )
-                .arg( QgsPostgresConn::quotedValue( wkbTypeString ) )
-                .arg( QgsPostgresConn::quotedValue( extents.asWktPolygon() ) )
-                .arg( QgsPostgresConn::quotedValue( metadataCrs.authid() ) )
-                // Must be the final .arg replacement - see above
-                .arg( QgsPostgresConn::quotedValue( metadataXml ) );
-
+                  .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
+                  .arg( id )
+                  .arg( QgsPostgresConn::quotedValue( metadata.title() ) )
+                  .arg( QgsPostgresConn::quotedValue( metadata.abstract() ) )
+                  .arg( QgsPostgresConn::quotedValue( wkbTypeString ) )
+                  .arg( QgsPostgresConn::quotedValue( extents.asWktPolygon() ) )
+                  .arg( QgsPostgresConn::quotedValue( metadataCrs.authid() ) )
+                  // Must be the final .arg replacement - see above
+                  .arg( QgsPostgresConn::quotedValue( metadataXml ) );
   }
 
   res = conn->LoggedPQexec( "QgsPostgresProviderMetadataUtils", upsertSql );

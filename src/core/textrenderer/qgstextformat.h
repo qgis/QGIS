@@ -16,15 +16,15 @@
 #ifndef QGSTEXTFORMAT_H
 #define QGSTEXTFORMAT_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgstextbuffersettings.h"
-#include "qgstextbackgroundsettings.h"
-#include "qgstextshadowsettings.h"
-#include "qgstextmasksettings.h"
-#include "qgsstringutils.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsscreenproperties.h"
+#include "qgsstringutils.h"
+#include "qgstextbackgroundsettings.h"
+#include "qgstextbuffersettings.h"
+#include "qgstextmasksettings.h"
+#include "qgstextshadowsettings.h"
 
 #include <QSharedDataPointer>
 
@@ -48,8 +48,10 @@ class CORE_EXPORT QgsTextFormat
     QgsTextFormat();
 
     QgsTextFormat( const QgsTextFormat &other );
+    SIP_SKIP QgsTextFormat( QgsTextFormat &&other );
 
     QgsTextFormat &operator=( const QgsTextFormat &other );
+    QgsTextFormat &operator=( QgsTextFormat &&other );
 
     ~QgsTextFormat();
 
@@ -462,6 +464,9 @@ class CORE_EXPORT QgsTextFormat
     /**
      * Returns the distance for tab stops.
      *
+     * \note This value will be ignored if tabPositions() is non-empty.
+     *
+     * \see tabPositions()
      * \see tabStopDistanceUnit()
      * \see setTabStopDistance()
      *
@@ -470,8 +475,13 @@ class CORE_EXPORT QgsTextFormat
     double tabStopDistance() const;
 
     /**
-     * Sets the \a distance for tab stops. The units are specified using setTabStopDistanceUnit().
+     * Sets the \a distance for tab stops.
      *
+     * The units are specified using setTabStopDistanceUnit().
+     *
+     * \note This value will be ignored if tabPositions() is non-empty.
+     *
+     * \see tabPositions()
      * \see tabStopDistance()
      * \see setTabStopDistanceUnit()
      *
@@ -480,9 +490,88 @@ class CORE_EXPORT QgsTextFormat
     void setTabStopDistance( double distance );
 
     /**
+     * \ingroup core
+     * \brief Defines a tab position for a text format.
+     * \since QGIS 3.42
+     */
+    class CORE_EXPORT Tab
+    {
+      public:
+
+        /**
+         * Constructor for a Tab at the specified \a position.
+         */
+        explicit Tab( double position );
+
+        /**
+         * Sets the tab position.
+         *
+         * \see position()
+         */
+        void setPosition( double position ) { mPosition = position; }
+
+        /**
+         * Returns the tab position.
+         *
+         * \see setPosition()
+         */
+        double position() const { return mPosition; }
+
+        bool operator==( const QgsTextFormat::Tab &other ) const
+        {
+          return qgsDoubleNear( mPosition, other.mPosition );
+        }
+
+#ifdef SIP_RUN
+        SIP_PYOBJECT __repr__();
+        % MethodCode
+        const QString str = u"<QgsTextFormat.Tab: %1>"_s.arg( sipCpp->position() );
+        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
+        % End
+#endif
+
+      private:
+
+        double mPosition = 0;
+
+    };
+
+    /**
+     * Returns the list of tab positions for tab stops.
+     *
+     * The units are specified using tabStopDistanceUnit().
+     *
+     * \note If non-empty, this list overrides any distance defined by tabStopDistance().
+     *
+     * \see setTabPositions()
+     * \see tabStopDistance()
+     * \see tabStopDistanceUnit()
+     * \see setTabStopDistance()
+     *
+     * \since QGIS 3.42
+     */
+    QList< QgsTextFormat::Tab > tabPositions() const;
+
+    /**
+     * Sets the list of tab \a positions for tab stops.
+     *
+     * The units are specified using setTabStopDistanceUnit().
+     *
+     * \note If non-empty, this list overrides any distance defined by setTabStopDistance().
+     *
+     * \see tabPositions()
+     * \see setTabStopDistance()
+     * \see setTabStopDistanceUnit()
+     *
+     * \since QGIS 3.42
+     */
+    void setTabPositions( const QList< QgsTextFormat::Tab > &positions );
+
+    /**
      * Returns the units for the tab stop distance.
      *
      * \see tabStopDistance()
+     * \see tabPositions()
      * \see setTabStopDistanceUnit()
      *
      * \since QGIS 3.38
@@ -493,6 +582,7 @@ class CORE_EXPORT QgsTextFormat
      * Sets the \a unit used for the tab stop distance.
      *
      * \see setTabStopDistance()
+     * \see setTabPositions()
      * \see tabStopDistanceUnit()
      *
      * \since QGIS 3.38
@@ -652,6 +742,15 @@ class CORE_EXPORT QgsTextFormat
      * such as blend modes, which require output in raster formats to be fully respected.
      */
     bool containsAdvancedEffects() const;
+
+    /**
+     * Returns TRUE if any component of the font format requires a non-default composition mode.
+     *
+     * The default composition mode is QPainter::CompositionMode_SourceOver.
+     *
+     * \since QGIS 3.44
+     */
+    bool hasNonDefaultCompositionMode() const;
 
     /**
      * Returns TRUE if the specified font was found on the system, or FALSE

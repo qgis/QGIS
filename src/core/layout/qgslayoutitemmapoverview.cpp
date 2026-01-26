@@ -16,24 +16,27 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmapoverview.h"
-#include "qgslayoutitemmap.h"
+
+#include "qgsexception.h"
+#include "qgsfillsymbol.h"
 #include "qgslayout.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoututils.h"
 #include "qgspainting.h"
 #include "qgsreadwritecontext.h"
-#include "qgslayoututils.h"
-#include "qgsexception.h"
-#include "qgsvectorlayer.h"
 #include "qgssinglesymbolrenderer.h"
 #include "qgsstyleentityvisitor.h"
-#include "qgsfillsymbol.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
 
+#include "moc_qgslayoutitemmapoverview.cpp"
+
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )
-  , mExtentLayer( std::make_unique< QgsVectorLayer >( QStringLiteral( "Polygon?crs=EPSG:4326" ), tr( "Overview" ), QStringLiteral( "memory" ), QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
+  , mExtentLayer( std::make_unique< QgsVectorLayer >( u"Polygon?crs=EPSG:4326"_s, tr( "Overview" ), u"memory"_s, QgsVectorLayer::LayerOptions( map && map->layout() && map->layout()->project() ? map->layout()->project()->transformContext() : QgsCoordinateTransformContext() ) ) )
 {
   createDefaultFrameSymbol();
 }
@@ -43,10 +46,10 @@ QgsLayoutItemMapOverview::~QgsLayoutItemMapOverview() = default;
 void QgsLayoutItemMapOverview::createDefaultFrameSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,75" ) );
-  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
-  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
-  mFrameSymbol.reset( QgsFillSymbol::createSimple( properties ) );
+  properties.insert( u"color"_s, u"255,0,0,75"_s );
+  properties.insert( u"style"_s, u"solid"_s );
+  properties.insert( u"style_border"_s, u"no"_s );
+  mFrameSymbol = QgsFillSymbol::createSimple( properties );
 
   mExtentLayer->setRenderer( new QgsSingleSymbolRenderer( mFrameSymbol->clone() ) );
 }
@@ -100,7 +103,8 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
   //setup render context
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, painter );
-  context.setForceVectorOutput( true );
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::Default )
+    context.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
   QgsExpressionContext expressionContext = createExpressionContext();
   context.setExpressionContext( expressionContext );
 
@@ -160,12 +164,12 @@ bool QgsLayoutItemMapOverview::writeXml( QDomElement &elem, QDomDocument &doc, c
   }
 
   //overview map frame
-  QDomElement overviewFrameElem = doc.createElement( QStringLiteral( "ComposerMapOverview" ) );
+  QDomElement overviewFrameElem = doc.createElement( u"ComposerMapOverview"_s );
 
-  overviewFrameElem.setAttribute( QStringLiteral( "frameMap" ), mFrameMap ? mFrameMap ->uuid() : QString() );
-  overviewFrameElem.setAttribute( QStringLiteral( "blendMode" ), static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
-  overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
-  overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
+  overviewFrameElem.setAttribute( u"frameMap"_s, mFrameMap ? mFrameMap ->uuid() : QString() );
+  overviewFrameElem.setAttribute( u"blendMode"_s, static_cast< int >( QgsPainting::getBlendModeEnum( mBlendMode ) ) );
+  overviewFrameElem.setAttribute( u"inverted"_s, mInverted );
+  overviewFrameElem.setAttribute( u"centered"_s, mCentered );
 
   QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol.get(), doc, context );
   overviewFrameElem.appendChild( frameStyleElem );
@@ -185,17 +189,17 @@ bool QgsLayoutItemMapOverview::readXml( const QDomElement &itemElem, const QDomD
 
   bool ok = QgsLayoutItemMapItem::readXml( itemElem, doc, context );
 
-  mFrameMapUuid = itemElem.attribute( QStringLiteral( "frameMap" ) );
+  mFrameMapUuid = itemElem.attribute( u"frameMap"_s );
   setLinkedMap( nullptr );
 
-  mBlendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( itemElem.attribute( QStringLiteral( "blendMode" ), QStringLiteral( "0" ) ).toUInt() ) );
-  mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
-  mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mBlendMode = QgsPainting::getCompositionMode( static_cast< Qgis::BlendMode >( itemElem.attribute( u"blendMode"_s, u"0"_s ).toUInt() ) );
+  mInverted = ( itemElem.attribute( u"inverted"_s, u"0"_s ) != "0"_L1 );
+  mCentered = ( itemElem.attribute( u"centered"_s, u"0"_s ) != "0"_L1 );
 
-  QDomElement frameStyleElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
+  QDomElement frameStyleElem = itemElem.firstChildElement( u"symbol"_s );
   if ( !frameStyleElem.isNull() )
   {
-    mFrameSymbol.reset( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context ) );
+    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context );
   }
   return ok;
 }
@@ -318,7 +322,7 @@ bool QgsLayoutItemMapOverview::accept( QgsStyleEntityVisitorInterface *visitor )
   if ( mFrameSymbol )
   {
     QgsStyleSymbolEntity entity( mFrameSymbol.get() );
-    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, QStringLiteral( "overview" ), QObject::tr( "Overview" ) ) ) )
+    if ( !visitor->visit( QgsStyleEntityVisitorInterface::StyleLeaf( &entity, u"overview"_s, QObject::tr( "Overview" ) ) ) )
       return false;
   }
 
@@ -424,14 +428,14 @@ QgsLayoutItemMapOverview *QgsLayoutItemMapOverviewStack::overview( const int ind
   return qobject_cast<QgsLayoutItemMapOverview *>( item );
 }
 
-QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx )
+QgsLayoutItemMapOverview &QgsLayoutItemMapOverviewStack::operator[]( int idx ) // cppcheck-suppress duplInheritedMember
 {
   QgsLayoutItemMapItem *item = mItems.at( idx );
   QgsLayoutItemMapOverview *overview = qobject_cast<QgsLayoutItemMapOverview *>( item );
   return *overview;
 }
 
-QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const
+QList<QgsLayoutItemMapOverview *> QgsLayoutItemMapOverviewStack::asList() const // cppcheck-suppress duplInheritedMember
 {
   QList< QgsLayoutItemMapOverview * > list;
   QList< QgsLayoutItemMapItem * >::const_iterator it = mItems.begin();
@@ -451,11 +455,11 @@ bool QgsLayoutItemMapOverviewStack::readXml( const QDomElement &elem, const QDom
   removeItems();
 
   //read overview stack
-  QDomNodeList mapOverviewNodeList = elem.elementsByTagName( QStringLiteral( "ComposerMapOverview" ) );
+  QDomNodeList mapOverviewNodeList = elem.elementsByTagName( u"ComposerMapOverview"_s );
   for ( int i = 0; i < mapOverviewNodeList.size(); ++i )
   {
     QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
-    QgsLayoutItemMapOverview *mapOverview = new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), mMap );
+    QgsLayoutItemMapOverview *mapOverview = new QgsLayoutItemMapOverview( mapOverviewElem.attribute( u"name"_s ), mMap );
     mapOverview->readXml( mapOverviewElem, doc, context );
     mItems.append( mapOverview );
   }
@@ -476,7 +480,7 @@ QList<QgsMapLayer *> QgsLayoutItemMapOverviewStack::modifyMapLayerList( const QL
     if ( !l )
       continue;
 
-    l->setCustomProperty( QStringLiteral( "_noset_layer_expression_context" ), true );
+    l->setCustomProperty( u"_noset_layer_expression_context"_s, true );
 
     switch ( item->stackingPosition() )
     {

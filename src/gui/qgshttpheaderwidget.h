@@ -21,15 +21,16 @@
 #ifndef QGSHTTPHEADERWIDGET_H
 #define QGSHTTPHEADERWIDGET_H
 
-#include <QWidget>
 #include "ui_qgshttpheaderwidget.h"
+
 #include "qgshttpheaders.h"
 
+#include <QWidget>
 
 /**
  * \ingroup gui
  * \class QgsHttpHeaderWidget
- * \brief Display referer http header field and collapsible table of key/value pairs
+ * \brief Displays referer HTTP header field and collapsible table of key/value pairs.
  *
  * \since QGIS 3.24
  */
@@ -38,16 +39,15 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     Q_OBJECT
 
   public:
-
     /**
      * Default constructor
      * \param parent parent widget
      */
     explicit QgsHttpHeaderWidget( QWidget *parent = nullptr );
-    ~QgsHttpHeaderWidget();
+    ~QgsHttpHeaderWidget() override;
 
     /**
-     * \return build a new \a QgsHttpHeaders according to data in the UI
+     * Returns the headers as defined in the widget.
      */
     QgsHttpHeaders httpHeaders() const;
 
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
      * \see QgsHttpHeaders::setFromSettings()
      * \param settings
      * \param key
-     * \deprecated QGIS 3.30. Use setFromHeaders instead.
+     * \deprecated QGIS 3.30. Use setFromHeaders() instead.
      */
     Q_DECL_DEPRECATED void setFromSettings( const QgsSettings &settings, const QString &key ) SIP_DEPRECATED;
 
@@ -89,7 +89,6 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
 
   private:
     void addQueryPairRow( const QString &key, const QString &val );
-
 };
 
 #endif // QGSHTTPHEADERWIDGET_H

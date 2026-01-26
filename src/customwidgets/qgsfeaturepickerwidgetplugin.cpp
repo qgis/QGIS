@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsfeaturepickerwidgetplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsfeaturepickerwidget.h"
 
+#include "moc_qgsfeaturepickerwidgetplugin.cpp"
 
 QgsFeaturePickerWidgetPlugin::QgsFeaturePickerWidgetPlugin( QObject *parent )
   : QObject( parent )
@@ -92,5 +94,5 @@ QString QgsFeaturePickerWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

@@ -18,19 +18,19 @@
 #ifndef QGSCAPABILITIESCACHE_H
 #define QGSCAPABILITIESCACHE_H
 
+#include "qgis_server.h"
+#include "qgsserversettings.h"
+
+#include <QDateTime>
 #include <QDomDocument>
 #include <QFileSystemWatcher>
 #include <QHash>
 #include <QObject>
-#include <QDateTime>
 #include <QTimer>
-
-#include "qgis_server.h"
-#include "qgsserversettings.h"
 
 /**
  * \ingroup server
- * \brief A cache for capabilities xml documents (by configuration file path)
+ * \brief A cache for capabilities xml documents (by configuration file path).
  */
 class SERVER_EXPORT QgsCapabilitiesCache : public QObject
 {
@@ -62,8 +62,8 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     void removeCapabilitiesDocument( const QString &path );
 
   private:
-    QHash< QString, QHash< QString, QDomDocument > > mCachedCapabilities;
-    QHash< QString, QDateTime> mCachedCapabilitiesTimestamps;
+    QHash<QString, QHash<QString, QDomDocument>> mCachedCapabilities;
+    QHash<QString, QDateTime> mCachedCapabilitiesTimestamps;
     QFileSystemWatcher mFileSystemWatcher;
     QTimer mTimer;
     int mCacheSize;

@@ -11,13 +11,11 @@
 
 
 
-
-
 template<T,V,U>
 class QgsSettingsEditorWidgetWrapperTemplate : QgsSettingsEditorWidgetWrapper
 {
 %Docstring(signature="appended")
-This class is a base factory of editor for settings
+Base factory for editors for settings.
 
 .. versionadded:: 3.32
 %End
@@ -32,11 +30,13 @@ Constructor
 %End
     virtual QString id() const = 0;
 
+
     virtual bool setWidgetFromSetting() const;
 
     virtual bool setSettingFromWidget() const = 0;
 
-    virtual void setWidgetFromVariant( const QVariant &value ) const;
+
+    virtual bool setWidgetFromVariant( const QVariant &value ) const;
 
     virtual bool setWidgetValue( const U &value ) const = 0;
 %Docstring
@@ -62,6 +62,7 @@ Returns the setting
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const = 0;
 
+
   protected:
     virtual QWidget *createEditorPrivate( QWidget *parent = 0 ) const;
 
@@ -69,19 +70,20 @@ Returns the setting
 
     virtual void configureEditorPrivateImplementation();
 %Docstring
-To be re-implemented to implemeent type specific configuration (e.g. opacity for colors)
+To be re-implemented to implemeent type specific configuration (e.g.
+opacity for colors)
 %End
 
 };
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QLineEdit,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase /NoTypeName/;
 
 class QgsSettingsStringLineEditWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQLineEditQStringBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for string settings with a line edit
+A factory for editors for string settings with a line edit.
 
 .. versionadded:: 3.32
 %End
@@ -98,7 +100,8 @@ Constructor of the factory
 
     QgsSettingsStringLineEditWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
 
@@ -122,12 +125,12 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString,QComboBox,QString> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase /NoTypeName/;
 
 class QgsSettingsStringComboBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryStringQComboBoxQStringBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for string settings with a combo box
+A factory for editors of string settings with a combo box.
 
 .. versionadded:: 3.40
 %End
@@ -150,12 +153,22 @@ Constructor of the factory
 
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
+%End
+
+    QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, int role, const QStringList &dynamicKeyPartList = QStringList() );
+%Docstring
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
+
+.. versionadded:: 3.44.3
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -179,12 +192,12 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool,QCheckBox,bool> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase /NoTypeName/;
 
 class QgsSettingsBoolCheckBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryBoolQCheckBoxboolBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for boolean settings with a checkbox
+A factory for editors of boolean settings with a checkbox.
 
 .. versionadded:: 3.32
 %End
@@ -201,7 +214,8 @@ Constructor of the factory
 
     QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -223,12 +237,12 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 };
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger,QSpinBox,int> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase /NoTypeName/;
 
 class QgsSettingsIntegerSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryIntegerQSpinBoxintBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for integer settings with a spin box
+A factory for editors for integer settings with a spin box.
 
 .. versionadded:: 3.32
 %End
@@ -245,7 +259,8 @@ Constructor of the factory
 
     QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -268,12 +283,12 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble,QDoubleSpinBox,double> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase /NoTypeName/;
 
 class QgsSettingsDoubleSpinBoxWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryDoubleQDoubleSpinBoxdoubleBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for double settings with a double spin box
+A factory for editors for double settings with a double spin box.
 
 .. versionadded:: 3.32
 %End
@@ -290,7 +305,8 @@ Constructor of the factory
 
     QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -313,12 +329,12 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
 
 
 
-typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase;
+typedef QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor,QgsColorButton,QColor> QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase /NoTypeName/;
 
 class QgsSettingsColorButtonWrapper : QgsSettingsEditorWidgetWrapperTemplateQgsSettingsEntryColorQgsColorButtonQColorBase
 {
 %Docstring(signature="appended")
-This class is a factory of editor for color settings with a color button
+A factory for editors of color settings with a color button.
 
 .. versionadded:: 3.32
 %End
@@ -335,7 +351,8 @@ Constructor of the factory
 
     QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
 %Docstring
-Constructor of the wrapper for a given ``setting`` and its widget ``editor``
+Constructor of the wrapper for a given ``setting`` and its widget
+``editor``
 %End
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = 0 ) const;
@@ -358,7 +375,6 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
     virtual void enableAutomaticUpdatePrivate();
 
 };
-
 
 
 

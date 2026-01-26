@@ -11,18 +11,19 @@
 class QgsAbstractProviderConnection
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAbstractProviderConnection` provides an interface for data provider connections.
+An interface for data provider connections.
 
-Connections objects can be constructed loading them from the connections stored
-in the settings by passing the connection name.
-A new connection object can also be created by passing a data source URI in the constructor.
+Connections objects can be constructed loading them from the connections
+stored in the settings by passing the connection name. A new connection
+object can also be created by passing a data source URI in the
+constructor.
 
-Provider metadata keep a cache of the existing connections, to manage stored
-connections it is recommendend to call metadata methods instead of loading and
-storing the connections directly.
+Provider metadata keep a cache of the existing connections, to manage
+stored connections it is recommendend to call metadata methods instead
+of loading and storing the connections directly.
 
-Concrete classes must implement methods to retrieve, save and remove connections from
-the settings.
+Concrete classes must implement methods to retrieve, save and remove
+connections from the settings.
 
 .. versionadded:: 3.10
 %End
@@ -48,8 +49,9 @@ the settings.
 
     QgsAbstractProviderConnection( const QString &name );
 %Docstring
-Creates a new connection with ``name`` by reading its configuration from the settings.
-If a connection with this name cannot be found, an empty connection will be returned.
+Creates a new connection with ``name`` by reading its configuration from
+the settings. If a connection with this name cannot be found, an empty
+connection will be returned.
 %End
 
     QgsAbstractProviderConnection( const QString &uri, const QVariantMap &configuration );

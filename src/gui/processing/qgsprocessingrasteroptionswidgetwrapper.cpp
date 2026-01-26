@@ -16,26 +16,29 @@
  ***************************************************************************/
 
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
-#include "qgsrasterformatsaveoptionswidget.h"
-#include "qgsprocessingparameters.h"
+
 #include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
+#include "qgsrasterformatsaveoptionswidget.h"
 
 #include <QComboBox>
 #include <QLineEdit>
 
+#include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
+
 /// @cond private
 
-QgsProcessingRasterOptionsWidgetWrapper::QgsProcessingRasterOptionsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QWidget *parent )
+QgsProcessingRasterOptionsWidgetWrapper::QgsProcessingRasterOptionsWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type, QWidget *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
 }
 
 QString QgsProcessingRasterOptionsWidgetWrapper::parameterType() const
 {
-  return QStringLiteral( "rasteroptions" );
+  return u"rasteroptions"_s;
 }
 
-QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterOptionsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type )
+QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterOptionsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )
 {
   return new QgsProcessingRasterOptionsWidgetWrapper( parameter, type );
 }
@@ -44,23 +47,21 @@ QWidget *QgsProcessingRasterOptionsWidgetWrapper::createWidget()
 {
   switch ( type() )
   {
-    case QgsProcessingGui::Standard:
+    case Qgis::ProcessingMode::Standard:
     {
       mOptionsWidget = new QgsRasterFormatSaveOptionsWidget();
       mOptionsWidget->setToolTip( parameterDefinition()->toolTip() );
-      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [ = ]
-      {
+      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [this] {
         emit widgetValueHasChanged( this );
       } );
       return mOptionsWidget;
     }
-    case QgsProcessingGui::Batch:
-    case QgsProcessingGui::Modeler:
+    case Qgis::ProcessingMode::Batch:
+    case Qgis::ProcessingMode::Modeler:
     {
       mLineEdit = new QLineEdit();
       mLineEdit->setToolTip( parameterDefinition()->toolTip() );
-      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
-      {
+      connect( mLineEdit, &QLineEdit::textChanged, this, [this] {
         emit widgetValueHasChanged( this );
       } );
       return mLineEdit;
@@ -102,33 +103,6 @@ QVariant QgsProcessingRasterOptionsWidgetWrapper::widgetValue() const
   }
   else
     return QVariant();
-}
-
-QStringList QgsProcessingRasterOptionsWidgetWrapper::compatibleParameterTypes() const
-{
-  return QStringList()
-         << QgsProcessingParameterString::typeName()
-         << QgsProcessingParameterAuthConfig::typeName()
-         << QgsProcessingParameterNumber::typeName()
-         << QgsProcessingParameterDistance::typeName()
-         << QgsProcessingParameterArea::typeName()
-         << QgsProcessingParameterVolume::typeName()
-         << QgsProcessingParameterDuration::typeName()
-         << QgsProcessingParameterScale::typeName()
-         << QgsProcessingParameterFile::typeName()
-         << QgsProcessingParameterField::typeName()
-         << QgsProcessingParameterExpression::typeName()
-         << QgsProcessingParameterCoordinateOperation::typeName()
-         << QgsProcessingParameterProviderConnection::typeName();
-}
-
-QStringList QgsProcessingRasterOptionsWidgetWrapper::compatibleOutputTypes() const
-{
-  return QStringList() << QgsProcessingOutputNumber::typeName()
-         << QgsProcessingOutputVariant::typeName()
-         << QgsProcessingOutputFile::typeName()
-         << QgsProcessingOutputFolder::typeName()
-         << QgsProcessingOutputString::typeName();
 }
 
 /// @endcond

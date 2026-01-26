@@ -18,10 +18,9 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-
 #include "qgs3drendererregistry.h"
-#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsphongmaterialsettings.h"
 
 #include <QObject>
@@ -49,6 +48,7 @@ class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstract
 /**
  * \ingroup core
  * \brief 3D renderer that renders all features of a vector layer with the same 3D symbol.
+ *
  * The appearance is completely defined by the symbol.
  */
 class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRenderer
@@ -70,7 +70,7 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRende
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
   private:
-    std::unique_ptr<QgsAbstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
+    std::unique_ptr<QgsAbstract3DSymbol> mSymbol; //!< 3D symbol that defines appearance
 
   private:
 #ifdef SIP_RUN

@@ -9,18 +9,18 @@
 
 
 
+
 class QgsDetailedItemData
 {
 %Docstring(signature="appended")
-This class is the data only representation of a
-:py:class:`QgsDetailedItemWidget`, designed to be used in custom views.
+The data only representation of a :py:class:`QgsDetailedItemWidget`,
+designed to be used in custom views.
 %End
 
 %TypeHeaderCode
 #include "qgsdetaileditemdata.h"
 %End
   public:
-
     QgsDetailedItemData();
 
     void setTitle( const QString &title );
@@ -74,9 +74,8 @@ Sets whether the item is enabled.
 
     void setRenderAsWidget( bool flag );
 %Docstring
-This is a hint to the delegate to render using
-a widget rather than manually painting every
-part of the list item.
+This is a hint to the delegate to render using a widget rather than
+manually painting every part of the list item.
 
 .. note::
 

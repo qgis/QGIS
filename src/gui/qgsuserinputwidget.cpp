@@ -17,13 +17,15 @@
 
 #include <QFrame>
 
+#include "moc_qgsuserinputwidget.cpp"
+
 QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   : QgsFloatingWidget( parent ? parent->window() : nullptr )
 {
   //TODO add title tr( "User Input Panel" )
 
   QFrame *f = new QFrame();
-  f->setObjectName( QStringLiteral( "mUserInputContainer" ) );
+  f->setObjectName( u"mUserInputContainer"_s );
 
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );

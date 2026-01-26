@@ -15,25 +15,26 @@
 #ifndef QGSFEATUREREQUEST_H
 #define QGSFEATUREREQUEST_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QFlags>
-#include <QList>
 #include <memory>
 
 #include "qgis.h"
-#include "qgsfeature.h"
-#include "qgsrectangle.h"
-#include "qgsexpression.h"
-#include "qgsexpressioncontext.h"
-#include "qgssimplifymethod.h"
-#include "qgscoordinatetransformcontext.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeature.h"
+#include "qgsrectangle.h"
+#include "qgssimplifymethod.h"
+
+#include <QFlags>
+#include <QList>
 
 /**
  * \ingroup core
- * \brief This class wraps a request for features to a vector layer (or directly its vector data provider).
+ * \brief Wraps a request for features to a vector layer (or directly its vector data provider).
  *
  * The request may apply an attribute/ID filter to fetch only a particular subset of features. Currently supported filters:
  *
@@ -57,7 +58,7 @@
  * The options may be chained, e.g.:
  *
  * \code{.py}
- *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(QgsFeatureRequest.ExactIntersect)
+ *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1)).setFlags(Qgis.FeatureRequestFlag.ExactIntersect)
  * \endcode
  *
  * Examples:
@@ -68,7 +69,7 @@
  *   # fetch all features, only one attribute
  *   QgsFeatureRequest().setSubsetOfAttributes(['myfield'], layer.fields())
  *   # fetch all features, without geometries
- *   QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+ *   QgsFeatureRequest().setFlags(Qgis.FeatureRequestFlag.NoGeometry)
  *   # fetch only features from particular extent
  *   QgsFeatureRequest().setFilterRect(QgsRectangle(0,0,1,1))
  *   # fetch only features from particular extent, where the 'type' attribute is equal to 'road':
@@ -302,7 +303,9 @@ class CORE_EXPORT QgsFeatureRequest
     //! construct a request with a filter expression
     explicit QgsFeatureRequest( const QgsExpression &expr, const QgsExpressionContext &context = QgsExpressionContext() );
     QgsFeatureRequest( const QgsFeatureRequest &rh );
+    SIP_SKIP QgsFeatureRequest( QgsFeatureRequest &&rh );
     QgsFeatureRequest &operator=( const QgsFeatureRequest &rh );
+    QgsFeatureRequest &operator=( QgsFeatureRequest &&rh );
 
     /**
      * Compare two requests for equality, ignoring Expression Context, Transform Error Callback, Feedback and Invalid Geometry Callback
@@ -510,7 +513,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
      */
-    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const SIP_SKIP { return mInvalidGeometryCallback; }
 
     /**
      * Set the filter \a expression. {\see QgsExpression}
@@ -763,7 +766,7 @@ class CORE_EXPORT QgsFeatureRequest
      * when they are originally in \a sourceCrs.
      *
      * This method will return coordinateTransform() if it is set (ignoring \a sourceCrs), otherwise
-     * it will calculate an appriopriate transform from \a sourceCrs to destinationCrs().
+     * it will calculate an appropriate transform from \a sourceCrs to destinationCrs().
      *
      * \since QGIS 3.40
      */
@@ -863,7 +866,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \see setTransformErrorCallback()
      * \see destinationCrs()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const SIP_SKIP { return mTransformErrorCallback; }
 
 
     /**
@@ -1031,7 +1034,7 @@ class QgsAbstractFeatureIterator;
 
 /**
  * \ingroup core
- * \brief Base class that can be used for any class that is capable of returning features
+ * \brief Base class that can be used for any class that is capable of returning features.
  */
 class CORE_EXPORT QgsAbstractFeatureSource
 {

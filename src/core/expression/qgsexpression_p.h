@@ -17,13 +17,14 @@
 #ifndef QGSEXPRESSIONPRIVATE_H
 #define QGSEXPRESSIONPRIVATE_H
 
-#include <QString>
 #include <memory>
 
-#include "qgsexpression.h"
-#include "qgsdistancearea.h"
 #include "qgis.h"
+#include "qgsdistancearea.h"
+#include "qgsexpression.h"
 #include "qgsexpressionnode.h"
+
+#include <QString>
 
 ///@cond
 
@@ -60,12 +61,12 @@ class QgsExpressionPrivate
 
     ~QgsExpressionPrivate()
     {
-      delete mRootNode;
+
     }
 
     QAtomicInt ref;
 
-    QgsExpressionNode *mRootNode = nullptr;
+    std::unique_ptr<QgsExpressionNode> mRootNode;
 
     QString mParserErrorString;
     QString mEvalErrorString;

@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgslayoutsize.h"
+
 #include "qgis.h"
 #include "qgsunittypes.h"
+
 #include <QStringList>
 
 QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgis::LayoutUnit units )
@@ -25,6 +27,9 @@ QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgi
   , mHeight( height )
   , mUnits( units )
 {
+#ifdef QGISDEBUG
+  Q_ASSERT_X( !std::isnan( width ) && !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
+#endif
 }
 
 QgsLayoutSize::QgsLayoutSize( const QSizeF size, const Qgis::LayoutUnit units )
@@ -52,7 +57,7 @@ QSizeF QgsLayoutSize::toQSizeF() const
 
 QString QgsLayoutSize::encodeSize() const
 {
-  return QStringLiteral( "%1,%2,%3" ).arg( mWidth ).arg( mHeight ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
+  return u"%1,%2,%3"_s.arg( mWidth ).arg( mHeight ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
 }
 
 QgsLayoutSize QgsLayoutSize::decodeSize( const QString &string )
@@ -62,8 +67,13 @@ QgsLayoutSize QgsLayoutSize::decodeSize( const QString &string )
   {
     return QgsLayoutSize();
   }
-  return QgsLayoutSize( parts[0].toDouble(), parts[1].toDouble(), QgsUnitTypes::decodeLayoutUnit( parts[2] ) );
 
+  const double width = parts[0].toDouble();
+  const double height = parts[1].toDouble();
+  if ( std::isnan( width ) || std::isnan( height ) )
+    return QgsLayoutSize();
+
+  return QgsLayoutSize( width, height, QgsUnitTypes::decodeLayoutUnit( parts[2] ) );
 }
 
 bool QgsLayoutSize::operator==( const QgsLayoutSize &other ) const

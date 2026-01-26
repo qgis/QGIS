@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerstylewidget.h"
-#include "qgspointcloudrendererpropertieswidget.h"
-#include "qgsstyle.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
+#include "qgspointcloudrendererpropertieswidget.h"
+#include "qgsstyle.h"
+
+#include "moc_qgspointcloudlayerstylewidget.cpp"
 
 QgsPointCloudRendererWidgetFactory::QgsPointCloudRendererWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Symbology" ) );
 }
 
 QgsMapLayerConfigWidget *QgsPointCloudRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *, bool, QWidget *parent ) const
 {
-  return new QgsPointCloudRendererPropertiesWidget( qobject_cast< QgsPointCloudLayer * >( layer ), QgsStyle::defaultStyle(), parent );
+  return new QgsPointCloudRendererPropertiesWidget( qobject_cast<QgsPointCloudLayer *>( layer ), QgsStyle::defaultStyle(), parent );
 }
 
 bool QgsPointCloudRendererWidgetFactory::supportLayerPropertiesDialog() const
@@ -49,5 +52,5 @@ bool QgsPointCloudRendererWidgetFactory::supportsLayer( QgsMapLayer *layer ) con
 
 QString QgsPointCloudRendererWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Rendering" );
+  return u"mOptsPage_Rendering"_s;
 }

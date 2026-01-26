@@ -14,15 +14,18 @@
  ***************************************************************************/
 
 #include "qgsactionmenu.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaplayeractioncontextgenerator.h"
-#include "qgsmaplayeraction.h"
-#include "qgsmaplayeractionregistry.h"
+
 #include "qgsactionmanager.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgui.h"
+#include "qgsmaplayeraction.h"
+#include "qgsmaplayeractioncontextgenerator.h"
+#include "qgsmaplayeractionregistry.h"
+#include "qgsvectorlayer.h"
 
-QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget  *parent )
+#include "moc_qgsactionmenu.cpp"
+
+QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent )
   : QMenu( parent )
   , mLayer( layer )
   , mFeature( feature )
@@ -32,7 +35,7 @@ QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, 
   init();
 }
 
-QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget  *parent )
+QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent )
   : QMenu( parent )
   , mLayer( layer )
   , mFeatureId( fid )
@@ -112,14 +115,39 @@ void QgsActionMenu::triggerAction()
     }
     case Qgis::ActionType::AttributeAction:
     {
+      const QgsAction act = data.actionData.value<QgsAction>();
+      switch ( act.type() )
+      {
+        case Qgis::AttributeActionType::GenericPython:
+        case Qgis::AttributeActionType::Mac:
+        case Qgis::AttributeActionType::Windows:
+        case Qgis::AttributeActionType::Unix:
+        {
+          const bool allowed = QgsGui::allowExecutionOfEmbeddedScripts( QgsProject::instance() );
+          if ( !allowed )
+          {
+            emit messageEmitted( tr( "The action contains embedded scripts which have been denied execution." ), Qgis::MessageLevel::Warning );
+            return;
+          }
+          break;
+        }
+
+        case Qgis::AttributeActionType::Generic:
+        case Qgis::AttributeActionType::OpenUrl:
+        case Qgis::AttributeActionType::SubmitUrlEncoded:
+        case Qgis::AttributeActionType::SubmitUrlMultipart:
+        {
+          break;
+        }
+      }
+
       // define custom substitutions: layer id and clicked coords
       QgsExpressionContext context = mLayer->createExpressionContext();
       context.setFeature( mFeature );
 
       QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
-      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( u"action_scope"_s, mActionScope, true ) );
       context << actionScope;
-      const QgsAction act = data.actionData.value<QgsAction>();
       act.run( context );
       break;
     }
@@ -204,7 +232,7 @@ void QgsActionMenu::layerWillBeDeleted()
 
 QgsActionMenu::ActionData::ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer )
   : actionType( Qgis::ActionType::MapLayerAction )
-  , actionData( QVariant::fromValue<QgsMapLayerAction*>( action ) )
+  , actionData( QVariant::fromValue<QgsMapLayerAction *>( action ) )
   , featureId( featureId )
   , mapLayer( mapLayer )
 {}
@@ -229,7 +257,7 @@ QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
   return mExpressionContextScope;
 }
 
-QList<QgsAction> QgsActionMenu::menuActions()
+QList<QgsAction> QgsActionMenu::menuActions() const
 {
   return mActions;
 }

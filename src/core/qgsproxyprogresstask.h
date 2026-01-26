@@ -18,8 +18,8 @@
 #ifndef QGSPROXYPROGRESSTASK_H
 #define QGSPROXYPROGRESSTASK_H
 
-#include "qgsvirtuallayerdefinition.h"
 #include "qgstaskmanager.h"
+#include "qgsvirtuallayerdefinition.h"
 
 #include <QWaitCondition>
 
@@ -88,7 +88,9 @@ class CORE_EXPORT QgsProxyProgressTask : public QgsTask
 /**
  * \ingroup core
  *
- * \brief Scoped QgsScopedProxyProgressTask, which automatically adds the proxy task
+ * \brief A QgsProxyProgressTask with automatic lifetime.
+ *
+ * QgsScopedProxyProgressTask implements a QgsProxyProgressTask which automatically adds the proxy task
  * to the application task manager on construction and finalizes the task
  * when it goes out of scope.
  *

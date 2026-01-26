@@ -16,14 +16,16 @@
 #ifndef QGSSEARCHQUERYBUILDER_H
 #define QGSSEARCHQUERYBUILDER_H
 
+#include "ui_qgsquerybuilderbase.h"
+
 #include <map>
 #include <vector>
-#include <QStandardItemModel>
-#include <QModelIndex>
 
-#include "ui_qgsquerybuilderbase.h"
-#include "qgsguiutils.h"
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+
+#include <QModelIndex>
+#include <QStandardItemModel>
 
 class QgsField;
 class QgsVectorLayer;
@@ -31,8 +33,8 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsSearchQueryBuilder
- * \brief Query Builder for search strings
- * \deprecated QGIS 3.40. Will be removed in QGIS 4.
+ * \brief Query builder for search strings.
+ * \deprecated QGIS 3.40. Will be removed in QGIS 5.
  */
 class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
 {
@@ -40,9 +42,7 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
 
   public:
     //! Constructor - takes pointer to vector layer as a parameter
-    QgsSearchQueryBuilder( QgsVectorLayer *layer,
-                           QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     //! returns newly created search string
     QString searchString();
@@ -96,7 +96,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void btnSampleValues_clicked();
 
   private:
-
     /**
      * Populate the field list for the selected table
      */
@@ -125,7 +124,6 @@ class GUI_EXPORT QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBui
     void showHelp();
 
   private:
-
     //! Layer for which is the query builder opened
     QgsVectorLayer *mLayer = nullptr;
     //! Map that holds field information, keyed by field name

@@ -83,8 +83,8 @@ Contains information about a datum ensemble.
 
     bool isValid() const;
 %Docstring
-Returns ``True`` if the datum ensemble is a valid object, or ``False`` if it is a null/invalid
-object.
+Returns ``True`` if the datum ensemble is a valid object, or ``False``
+if it is a null/invalid object.
 %End
 
     QString name() const;

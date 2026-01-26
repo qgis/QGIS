@@ -12,29 +12,30 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsconfig.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include "qgsdistancearea.h"
+#include "qgsexception.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfieldbuffer.h"
+#include "qgsgeometryengine.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
 #include "qgssimplifymethod.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
-#include "qgsexpressioncontext.h"
-#include "qgsdistancearea.h"
-#include "qgsproject.h"
-#include "qgsmessagelog.h"
-#include "qgsexception.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsgeometryengine.h"
-#include "qgsconfig.h"
 
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>
 #endif
 
 #include <deque>
+#include <memory>
 
 QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *layer )
 {
@@ -61,7 +62,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
     }
   }
 
-  mExpressionFieldBuffer.reset( new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer ) );
+  mExpressionFieldBuffer = std::make_unique<QgsExpressionFieldBuffer>( *layer->mExpressionFieldBuffer );
   mCrs = layer->crs();
 
   mHasEditBuffer = layer->editBuffer();
@@ -136,7 +137,6 @@ QString QgsVectorLayerFeatureSource::id() const
 
 QgsVectorLayerFeatureIterator::QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource>( source, ownSource, request )
-  , mFetchedFid( false )
 {
   mTransform = mRequest.calculateTransform( mSource->mCrs );
   mHasValidTransform = mTransform.isValid();
@@ -852,14 +852,14 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   const QList<QgsExpressionFieldBuffer::ExpressionField> &exps = mSource->mExpressionFieldBuffer->expressions();
 
   const int oi = mSource->mFields.fieldOriginIndex( fieldIdx );
-  std::unique_ptr<QgsExpression> exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
+  auto exp = std::make_unique<QgsExpression>( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
-  da.setEllipsoid( QgsProject::instance()->ellipsoid() );
+  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() ); // skip-keyword-check
+  da.setEllipsoid( QgsProject::instance()->ellipsoid() ); // skip-keyword-check
   exp->setGeomCalculator( &da );
-  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  exp->setAreaUnits( QgsProject::instance()->areaUnits() );
+  exp->setDistanceUnits( QgsProject::instance()->distanceUnits() ); // skip-keyword-check
+  exp->setAreaUnits( QgsProject::instance()->areaUnits() ); // skip-keyword-check
 
   if ( !mExpressionContext )
     createExpressionContext();
@@ -1182,11 +1182,11 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
   const QString joinFieldName = joinInfo->joinFieldName();
 
-  subsetString.append( QStringLiteral( "\"%1\"" ).arg( joinFieldName ) );
+  subsetString.append( u"\"%1\""_s.arg( joinFieldName ) );
 
   if ( QgsVariantUtils::isNull( joinValue ) )
   {
-    subsetString += QLatin1String( " IS NULL" );
+    subsetString += " IS NULL"_L1;
   }
   else
   {
@@ -1200,7 +1200,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
 
       default:
       case QMetaType::Type::QString:
-        v.replace( '\'', QLatin1String( "''" ) );
+        v.replace( '\'', "''"_L1 );
         v.prepend( '\'' ).append( '\'' );
         break;
     }
@@ -1231,6 +1231,7 @@ void QgsVectorLayerFeatureIterator::FetchJoinInfo::addJoinedAttributesDirect( Qg
   request.setSubsetOfAttributes( joinedAttributeIndices );
   request.setFilterExpression( subsetString );
   request.setLimit( 1 );
+  request.setRequestMayBeNested( true );
   QgsFeatureIterator fi = joinSource->getFeatures( request );
 
   // get first feature
@@ -1337,7 +1338,7 @@ void QgsVectorLayerFeatureIterator::createExpressionContext()
 {
   mExpressionContext = std::make_unique< QgsExpressionContext >();
   mExpressionContext->appendScope( QgsExpressionContextUtils::globalScope() );
-  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) );
+  mExpressionContext->appendScope( QgsExpressionContextUtils::projectScope( QgsProject::instance() ) ); // skip-keyword-check
   mExpressionContext->appendScope( new QgsExpressionContextScope( mSource->mLayerScope ) );
   mExpressionContext->setFeedback( mRequest.feedback() );
 }

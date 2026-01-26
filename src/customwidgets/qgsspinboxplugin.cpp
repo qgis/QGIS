@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgsspinboxplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgsspinbox.h"
 
+#include "moc_qgsspinboxplugin.cpp"
 
 QgsSpinBoxPlugin::QgsSpinBoxPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsSpinBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

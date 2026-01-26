@@ -13,12 +13,12 @@
 class QgsSensorManager : QObject
 {
 %Docstring(signature="appended")
-
 Manages sensors.
 
-:py:class:`QgsSensorManager` handles the storage, serializing and deserializing
-of sensors. Usually this class is not constructed directly, but
-rather accessed through a :py:class:`QgsProject` via :py:func:`QgsProject.sensorManager()`.
+:py:class:`QgsSensorManager` handles the storage, serializing and
+deserializing of sensors. Usually this class is not constructed
+directly, but rather accessed through a :py:class:`QgsProject` via
+:py:func:`QgsProject.sensorManager()`.
 
 .. versionadded:: 3.32
 %End
@@ -53,11 +53,11 @@ matching sensor is found, a ``None`` will be returned.
 
     void addSensor( QgsAbstractSensor *sensor /Transfer/ );
 %Docstring
-Registers a new ``sensor``.
-The sensor name does not require uniqueness; sensors will the same
-name will store their data in the same sensor name key, allowing for
-registration of sensors to cover multiple devices (e.g. two serial port
-sensors with alternative port name to cover two machines).
+Registers a new ``sensor``. The sensor name does not require uniqueness;
+sensors will the same name will store their data in the same sensor name
+key, allowing for registration of sensors to cover multiple devices
+(e.g. two serial port sensors with alternative port name to cover two
+machines).
 
 .. note::
 
@@ -78,7 +78,8 @@ Returns a list of registered sensor names.
 
     QgsAbstractSensor::SensorData sensorData( const QString &name ) const;
 %Docstring
-Returns the last captured data from a registered sensor matching a given ``name``.
+Returns the last captured data from a registered sensor matching a given
+``name``.
 %End
 
     QMap<QString, QgsAbstractSensor::SensorData> sensorsData() const;

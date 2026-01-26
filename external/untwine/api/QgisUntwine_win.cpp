@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include "QgisUntwine.hpp"
+#include "../untwine/windows/stringconv.hpp" // untwine/os
 
 namespace untwine
 {
@@ -28,7 +29,7 @@ bool QgisUntwine::start(Options& options)
         cmdline += "--" + op.first + " \"" + op.second + "\" ";
 
     PROCESS_INFORMATION processInfo;
-    STARTUPINFOA startupInfo;
+    STARTUPINFO startupInfo;
 
     ZeroMemory(&processInfo, sizeof(PROCESS_INFORMATION));
     ZeroMemory(&startupInfo, sizeof(STARTUPINFO));
@@ -40,18 +41,26 @@ bool QgisUntwine::start(Options& options)
     startupInfo.dwFlags = STARTF_USESTDHANDLES;
     **/
 
-    std::vector<char> ncCmdline(cmdline.begin(), cmdline.end());
-    ncCmdline.push_back((char)0);
-    bool ok = CreateProcessA(m_path.c_str(), ncCmdline.data(),
-        NULL, /* process attributes */
-        NULL, /* thread attributes */
-        TRUE, /* inherit handles */
-        CREATE_NO_WINDOW, /* creation flags */
-        NULL, /* environment */
-        NULL, /* current directory */
-        &startupInfo, /* startup info */
-        &processInfo /* process information */
-    );
+    bool ok = false;
+    try
+    {
+        auto ncCmdline = os::toNative(cmdline);
+        ok = CreateProcess(os::toNative(m_path).c_str(), ncCmdline.data(),
+            NULL, /* process attributes */
+            NULL, /* thread attributes */
+            TRUE, /* inherit handles */
+            CREATE_NO_WINDOW, /* creation flags */
+            NULL, /* environment */
+            NULL, /* current directory */
+            &startupInfo, /* startup info */
+            &processInfo /* process information */
+        );
+    }
+    catch (const untwine::FatalError& err)
+    {
+        m_errorMsg = err.what();
+    }
+
     if (ok)
     {
         m_pid = processInfo.hProcess;

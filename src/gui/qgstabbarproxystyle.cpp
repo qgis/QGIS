@@ -13,10 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstabbarproxystyle.h"
+
+#include <QDebug>
 #include <QPainter>
 #include <QStyleOption>
-#include <QDebug>
 
+#include "moc_qgstabbarproxystyle.cpp"
 
 ///@cond PRIVATE
 
@@ -27,7 +29,6 @@ QgsTabBarProxyStyle::QgsTabBarProxyStyle( QTabBar *tabBar )
 
 void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget ) const
 {
-
   QTabBar *tabBar { qobject_cast<QTabBar *>( parent() ) };
 
   if ( tabBar )
@@ -43,7 +44,7 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
           painter->setFont( style.font );
         }
         QStyleOptionTab opt { *tab };
-        if ( style.overrideColor && style.color.isValid( ) )
+        if ( style.overrideColor && style.color.isValid() )
         {
           opt.palette.setBrush( QPalette::WindowText, style.color );
         }
@@ -55,7 +56,6 @@ void QgsTabBarProxyStyle::drawControl( ControlElement element, const QStyleOptio
   }
 
   QProxyStyle::drawControl( element, option, painter, widget );
-
 }
 
 void QgsTabBarProxyStyle::addStyle( int tabIndex, const QgsAttributeEditorElement::LabelStyle &style )
@@ -104,7 +104,6 @@ QSize QgsTabBar::tabSizeHint( int index ) const
     return QTabBar::tabSizeHint( index );
   }
 }
-
 
 
 ///@endcond

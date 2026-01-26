@@ -18,14 +18,14 @@
 #ifndef QGSGPSCONNECTION_H
 #define QGSGPSCONNECTION_H
 
-#include <QDateTime>
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgsgpsinformation.h"
+#include "qgspoint.h"
+
+#include <QDateTime>
 #include <QObject>
 #include <QString>
-
-#include "qgis_core.h"
-#include "qgspoint.h"
-#include "qgsgpsinformation.h"
 
 class QIODevice;
 
@@ -44,14 +44,12 @@ template<class T> class QgsSettingsEntryEnumFlag;
 
 /**
  * \ingroup core
- * \brief Abstract base class for connection to a GPS device
+ * \brief Abstract base class for connections to a GPS device.
 */
 class CORE_EXPORT QgsGpsConnection : public QObject
 {
-#ifdef SIP_RUN
-#include <qgsgpsdconnection.h>
-#include <qgsnmeaconnection.h>
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgsgpsdconnection.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsnmeaconnection.h" );
 
 
 #ifdef SIP_RUN
@@ -151,7 +149,7 @@ class CORE_EXPORT QgsGpsConnection : public QObject
      */
     void stateChanged( const QgsGpsInformation &info );
 
-    // TODO QGIS 4.0 -- move to QgsNmeaConnection, it makes no sense in the base class
+    // TODO QGIS 5.0 -- move to QgsNmeaConnection, it makes no sense in the base class
 
     /**
      * Emitted whenever the GPS device receives a raw NMEA sentence.

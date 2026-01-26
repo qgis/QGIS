@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgstiledscenetexturerendererwidget.h"
+
+#include "qgsfillsymbol.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenetexturerenderer.h"
-#include "qgsfillsymbol.h"
+
+#include "moc_qgstiledscenetexturerendererwidget.cpp"
 
 ///@cond PRIVATE
 
@@ -28,7 +31,7 @@ QgsTiledSceneTextureRendererWidget::QgsTiledSceneTextureRendererWidget( QgsTiled
   setupUi( this );
 
   mFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
-  mFillSymbolButton->setSymbol( QgsTiledSceneTextureRenderer::createDefaultFillSymbol() );
+  mFillSymbolButton->setSymbol( QgsTiledSceneTextureRenderer::createDefaultFillSymbol().release() );
 
   if ( layer )
   {
@@ -45,8 +48,8 @@ QgsTiledSceneRendererWidget *QgsTiledSceneTextureRendererWidget::create( QgsTile
 
 QgsTiledSceneRenderer *QgsTiledSceneTextureRendererWidget::renderer()
 {
-  std::unique_ptr< QgsTiledSceneTextureRenderer > renderer = std::make_unique< QgsTiledSceneTextureRenderer >();
-  renderer->setFillSymbol( mFillSymbolButton->clonedSymbol< QgsFillSymbol >() );
+  auto renderer = std::make_unique<QgsTiledSceneTextureRenderer>();
+  renderer->setFillSymbol( mFillSymbolButton->clonedSymbol<QgsFillSymbol>() );
 
   return renderer.release();
 }
@@ -61,7 +64,7 @@ void QgsTiledSceneTextureRendererWidget::setFromRenderer( const QgsTiledSceneRen
 {
   mBlockChangedSignal = true;
 
-  if ( const QgsTiledSceneTextureRenderer *textureRenderer = dynamic_cast< const QgsTiledSceneTextureRenderer * >( renderer ) )
+  if ( const QgsTiledSceneTextureRenderer *textureRenderer = dynamic_cast<const QgsTiledSceneTextureRenderer *>( renderer ) )
   {
     mFillSymbolButton->setSymbol( textureRenderer->fillSymbol()->clone() );
   }

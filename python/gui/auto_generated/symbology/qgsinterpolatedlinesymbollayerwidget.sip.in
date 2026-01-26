@@ -7,10 +7,11 @@
  ************************************************************************/
 
 
-class QgsInterpolatedLineSymbolLayerWidget: QgsSymbolLayerWidget
+
+class QgsInterpolatedLineSymbolLayerWidget : QgsSymbolLayerWidget
 {
 %Docstring(signature="appended")
-:py:class:`QgsInterpolatedLineSymbolLayerWidget`
+A widget for configuring a :py:class:`QgsInterpolatedLineSymbolLayer`.
 
 .. versionadded:: 3.20
 %End
@@ -19,7 +20,6 @@ class QgsInterpolatedLineSymbolLayerWidget: QgsSymbolLayerWidget
 #include "qgsinterpolatedlinesymbollayerwidget.h"
 %End
   public:
-
     QgsInterpolatedLineSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

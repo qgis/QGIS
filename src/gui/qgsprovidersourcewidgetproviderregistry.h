@@ -17,10 +17,10 @@
 #ifndef QGSPROVIDERSOURCEWIDGETPROVIDERREGISTRY_H
 #define QGSPROVIDERSOURCEWIDGETPROVIDERREGISTRY_H
 
-#include <QWidget>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsProviderSourceWidget;
@@ -29,7 +29,7 @@ class QgsProviderGuiRegistry;
 
 /**
  * \ingroup gui
- * \brief This class keeps a list of provider source widget providers.
+ * \brief A registry that keeps a list of provider source widget providers.
  *
  * QgsProviderSourceWidgetProviderRegistry is not usually directly created, but rather accessed through
  * QgsGui::QgsProviderSourceWidgetProviderRegistry().
@@ -39,7 +39,6 @@ class QgsProviderGuiRegistry;
 class GUI_EXPORT QgsProviderSourceWidgetProviderRegistry
 {
   public:
-
     QgsProviderSourceWidgetProviderRegistry();
     ~QgsProviderSourceWidgetProviderRegistry();
 
@@ -47,7 +46,7 @@ class GUI_EXPORT QgsProviderSourceWidgetProviderRegistry
     QgsProviderSourceWidgetProviderRegistry &operator=( const QgsProviderSourceWidgetProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers
-    QList< QgsProviderSourceWidgetProvider *> providers();
+    QList<QgsProviderSourceWidgetProvider *> providers();
 
     //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsProviderSourceWidgetProvider *provider SIP_TRANSFER );

@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -32,25 +32,13 @@
  */
 class QgsDistanceWithinAlgorithm : public QgsProcessingAlgorithm
 {
-
   protected:
-
     void addDistanceParameter();
-    void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource,
-                  QgsFeatureSource *referenceSource,
-                  double distance, const QgsProperty &distanceProperty,
-                  const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback,
-                  QgsExpressionContext &expressionContext );
+    void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, double distance, const QgsProperty &distanceProperty, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext );
 
   private:
-
-    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource,
-        double distance, const QgsProperty &distanceProperty,
-        const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds,
-        QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext );
-    void processByIteratingOverReferenceSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource,
-        double distance,
-        const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback );
+    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, double distance, const QgsProperty &distanceProperty, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, QgsExpressionContext &expressionContext );
+    void processByIteratingOverReferenceSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *referenceSource, double distance, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback );
 };
 
 
@@ -59,13 +47,11 @@ class QgsDistanceWithinAlgorithm : public QgsProcessingAlgorithm
  */
 class QgsSelectWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
 {
-
   public:
-
     QgsSelectWithinDistanceAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSelectDistance.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSelectDistance.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSelectDistance.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSelectDistance.svg"_s ); }
     QString name() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString displayName() const override;
@@ -73,13 +59,11 @@ class QgsSelectWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSelectWithinDistanceAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 /**
@@ -87,9 +71,7 @@ class QgsSelectWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
  */
 class QgsExtractWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
 {
-
   public:
-
     QgsExtractWithinDistanceAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -98,17 +80,13 @@ class QgsExtractWithinDistanceAlgorithm : public QgsDistanceWithinAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExtractWithinDistanceAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMDISTANCEWITHIN_H
-
-

@@ -16,13 +16,13 @@
 #ifndef QGSGEOMETRYCHECKREGISTRY_H
 #define QGSGEOMETRYCHECKREGISTRY_H
 
-#include <QString>
-#include <QMap>
-#include <QVariant>
-
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsgeometrycheck.h"
+
+#include <QMap>
+#include <QString>
+#include <QVariant>
 
 class QgsGeometryCheckFactory;
 class QgsGeometryCheckContext;
@@ -30,7 +30,7 @@ class QgsGeometryCheckContext;
 
 /**
  * \ingroup analysis
- * \brief This class manages all known geometry check factories.
+ * \brief A registry for all known geometry check factories.
  *
  * QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
  * QgsAnalysis::geometryCheckRegistry().
@@ -41,7 +41,6 @@ class QgsGeometryCheckContext;
 class ANALYSIS_EXPORT QgsGeometryCheckRegistry
 {
   public:
-
     /**
      * Constructor for QgsGeometryCheckRegistry. QgsGeometryCheckRegistry is not usually directly created, but rather accessed through
      * QgsAnalysis::geometryCheckRegistry().
@@ -69,7 +68,7 @@ class ANALYSIS_EXPORT QgsGeometryCheckRegistry
      *
      * \since QGIS 3.4
      */
-    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer,  QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = QgsGeometryCheck::Flags() ) const;
+    QList<QgsGeometryCheckFactory *> geometryCheckFactories( QgsVectorLayer *layer, QgsGeometryCheck::CheckType type, QgsGeometryCheck::Flags flags = QgsGeometryCheck::Flags() ) const;
 
     /**
      * Registers a new geometry check factory.

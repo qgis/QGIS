@@ -16,9 +16,11 @@
 #ifndef QGSRASTERATTRIBUTETABLEDIALOG_H
 #define QGSRASTERATTRIBUTETABLEDIALOG_H
 
-#include <QDialog>
-#include "qgis_gui.h"
 #include "ui_qgsrasterattributetabledialogbase.h"
+
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 #ifndef SIP_RUN
 class QgsRasterLayer;
@@ -26,15 +28,14 @@ class QgsRasterLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsRasterAttributeTableDialog class embeds an attribute table widget.
+ * \brief A dialog which embeds a raster attribute table widget.
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsRasterAttributeTableDialog: public QDialog, private Ui::QRasterAttributeTableDialogBase
+class GUI_EXPORT QgsRasterAttributeTableDialog : public QDialog, private Ui::QRasterAttributeTableDialogBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Create a new QgsRasterAttributeTableDialog
      */
@@ -44,7 +45,6 @@ class GUI_EXPORT QgsRasterAttributeTableDialog: public QDialog, private Ui::QRas
   public slots:
 
     void reject() override;
-
 };
 
 #endif // QGSRASTERATTRIBUTETABLEDIALOG_H

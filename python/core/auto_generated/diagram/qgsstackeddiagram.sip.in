@@ -30,7 +30,8 @@ A diagram composed of several subdiagrams, located side by side.
 
     void subDiagramPosition( QPointF &newPos, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramSettings &subSettings );
 %Docstring
-Calculates the position for the next subdiagram, updating the ``newPos`` object.
+Calculates the position for the next subdiagram, updating the ``newPos``
+object.
 
 :param newPos: out: position of the previous diagram
 :param c: renderer context

@@ -16,11 +16,11 @@
 #ifndef QGSCLASSIFICATIONMETHOD_H
 #define QGSCLASSIFICATIONMETHOD_H
 
-#include <QIcon>
-
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsprocessingparameters.h"
+
+#include <QIcon>
 
 class QgsVectorLayer;
 class QgsRendererRange;
@@ -43,7 +43,7 @@ class QgsRendererRange;
 
 /**
  * \ingroup core
- * \brief QgsClassificationRange contains the information about a classification range
+ * \brief Contains the information about a classification range.
  * \since QGIS 3.10
  */
 class CORE_EXPORT QgsClassificationRange
@@ -66,7 +66,7 @@ class CORE_EXPORT QgsClassificationRange
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsClassificationRange: '%1'>" ).arg( sipCpp->label() );
+    QString str = u"<QgsClassificationRange: '%1'>"_s.arg( sipCpp->label() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -81,7 +81,7 @@ class CORE_EXPORT QgsClassificationRange
 
 /**
  * \ingroup core
- * \brief QgsClassificationMethod is an abstract class for implementations of classification methods
+ * \brief An abstract class for implementations of classification methods.
  * \see QgsClassificationMethodRegistry
  * \since QGIS 3.10
  */
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * Returns a clone of the method.
      * Implementation can take advantage of copyBase method which copies the parameters of the base class
      */
-    virtual QgsClassificationMethod *clone() const = 0 SIP_FACTORY;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const = 0;
 
     //! The readable and translate name of the method
     virtual QString name() const = 0;
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsClassificationMethod SIP_ABSTRACT
      * \param element the DOM element
      * \param context the read/write context
      */
-    static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static std::unique_ptr< QgsClassificationMethod > create( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint

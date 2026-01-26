@@ -18,8 +18,8 @@
 
 #include "qgis_3d.h"
 
-#include <QObject>
 #include <QElapsedTimer>
+#include <QObject>
 
 #define SIP_NO_FILE
 
@@ -37,12 +37,12 @@ namespace Qt3DRender
   class QRenderSettings;
   class QCamera;
   class QFrameGraphNode;
-}
+} // namespace Qt3DRender
 
 class QgsFrameGraph;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for 3D engine implementation. A 3D engine is responsible for setting up
  * rendering with Qt3D. This means mainly:
  *
@@ -61,7 +61,6 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsAbstract3DEngine with the specified \a parent object.
      */
@@ -112,21 +111,6 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
     QgsFrameGraph *frameGraph() { return mFrameGraph; }
 
     /**
-     * Sets whether it will be possible to render to an image
-     *
-     * \note for QgsWindow3DEngine render capture will be disabled by default
-     *  and for QgsOffscreen3DEngine it is enabled by default
-     * \since QGIS 3.18
-     */
-    void setRenderCaptureEnabled( bool enabled );
-
-    /**
-     * Returns whether it will be possible to render to an image
-     * \since QGIS 3.18
-     */
-    bool renderCaptureEnabled() const;
-
-    /**
      * Dump the current frame graph and scene graph to the console
      */
     void dumpFrameGraphToConsole() const;
@@ -153,6 +137,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      *  \since QGIS 3.30
      */
     void sizeChanged();
+
   protected:
     QgsFrameGraph *mFrameGraph = nullptr;
 };

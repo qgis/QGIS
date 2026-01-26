@@ -10,6 +10,7 @@
 
 
 
+
 class QgsVectorLayerTemporalPropertiesWidget : QWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
@@ -22,7 +23,6 @@ A widget for configuring the temporal properties for a vector layer.
 #include "qgsvectorlayertemporalpropertieswidget.h"
 %End
   public:
-
     QgsVectorLayerTemporalPropertiesWidget( QWidget *parent = 0, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsVectorLayerTemporalPropertiesWidget.

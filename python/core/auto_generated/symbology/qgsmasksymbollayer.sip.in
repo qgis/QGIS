@@ -13,7 +13,7 @@
 class QgsMaskMarkerSymbolLayer : QgsMarkerSymbolLayer
 {
 %Docstring(signature="appended")
-Special symbol layer that uses its sub symbol as a selective mask
+Special symbol layer that uses its sub symbol as a selective mask.
 
 .. versionadded:: 3.12
 %End
@@ -33,7 +33,8 @@ Simple constructor
 %Docstring
 Create a new QgsMaskMarkerSymbolLayer
 
-:param properties: A property map to deserialize saved information from :py:func:`~QgsMaskMarkerSymbolLayer.properties`
+:param properties: A property map to deserialize saved information from
+                   :py:func:`~QgsMaskMarkerSymbolLayer.properties`
 
 :return: A new QgsMaskMarkerSymbolLayer
 %End
@@ -71,6 +72,8 @@ Create a new QgsMaskMarkerSymbolLayer
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size );
 
+
+
     bool enabled() const;
 %Docstring
 Whether some masked symbol layers are defined
@@ -79,11 +82,21 @@ Whether some masked symbol layers are defined
     virtual QList<QgsSymbolLayerReference> masks() const;
 
 %Docstring
-Returns a list of references to symbol layers that are masked by the sub symbol's shape.
+Returns a list of references to symbol layers that are masked by the sub
+symbol's shape.
 
 :return: a list of references to masked symbol layers
 
 .. seealso:: :py:func:`setMasks`
+%End
+
+    void clearMasks();
+%Docstring
+Remove masks defined by this symbol layer.
+
+.. seealso:: :py:func:`masks`
+
+.. versionadded:: 3.42
 %End
 
     void setMasks( const QList<QgsSymbolLayerReference> &maskedLayers );
@@ -98,8 +111,6 @@ Sets the symbol layers that will be masked by the sub symbol's shape.
   private:
     QgsMaskMarkerSymbolLayer( const QgsMaskMarkerSymbolLayer & );
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

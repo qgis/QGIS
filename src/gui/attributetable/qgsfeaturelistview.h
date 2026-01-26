@@ -16,13 +16,13 @@
 #ifndef QGSFEATURELISTVIEW_H
 #define QGSFEATURELISTVIEW_H
 
-#include <QListView>
-#include "qgis_sip.h"
-#include <qdebug.h>
-
-#include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsfeature.h"
+
+#include <QListView>
 #include <QTimer>
+#include <qdebug.h>
 
 class QgsAttributeTableFilterModel;
 class QgsFeatureListModel;
@@ -37,7 +37,7 @@ class QgsActionMenu;
 
 /**
  * \ingroup gui
- * \brief Shows a list of features and renders a edit button next to each feature.
+ * \brief Shows a list of features and renders an edit button next to each feature.
  *
  * Accepts a display expression to define the way, features are rendered.
  * Uses a QgsFeatureListModel as source model.
@@ -48,7 +48,6 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     Q_OBJECT
 
   public:
-
     /**
      * Creates a feature list view
      *
@@ -198,26 +197,25 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      * editFirstFeature will try to edit the first feature of the list
      * \since QGIS 3.8
      */
-    void editFirstFeature() {editOtherFeature( First );}
+    void editFirstFeature() { editOtherFeature( First ); }
 
     /**
      * editNextFeature will try to edit next feature of the list
      * \since QGIS 3.8
      */
-    void editNextFeature() {editOtherFeature( Next );}
+    void editNextFeature() { editOtherFeature( Next ); }
 
     /**
      * editPreviousFeature will try to edit previous feature of the list
      * \since QGIS 3.8
      */
-    void editPreviousFeature() {editOtherFeature( Previous );}
+    void editPreviousFeature() { editOtherFeature( Previous ); }
 
     /**
      * editLastFeature will try to edit the last feature of the list
      * \since QGIS 3.8
      */
-    void editLastFeature() {editOtherFeature( Last );}
-
+    void editLastFeature() { editOtherFeature( Last ); }
 
 
   private slots:

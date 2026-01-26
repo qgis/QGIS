@@ -18,14 +18,15 @@
 #define QGSHISTOGRAMWIDGET_H
 
 #include "ui_qgshistogramwidgetbase.h"
-#include "qgis_sip.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsgraduatedsymbolrenderer.h"
 #include "qgshistogram.h"
 #include "qgsstatisticalsummary.h"
-#include "qgsgraduatedsymbolrenderer.h"
-#include <QPen>
+
 #include <QBrush>
-#include "qgis_gui.h"
+#include <QPen>
 
 class QgsVectorLayer;
 class QgsGraduatedSymbolRenderer;
@@ -50,7 +51,6 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     Q_OBJECT
 
   public:
-
     /**
      * QgsHistogramWidget constructor. If layer and fieldOrExp are specified then the histogram
      * will be initially populated with the corresponding values.
@@ -184,7 +184,6 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     void setSourceFieldExp( const QString &fieldOrExp );
 
   protected:
-
     /**
      * Updates and redraws the histogram.
      */
@@ -192,10 +191,9 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
 
     QwtPlot *mPlot = nullptr;
     QgsRangeList mRanges;
-    QList< QwtPlotMarker * > mRangeMarkers;
+    QList<QwtPlotMarker *> mRangeMarkers;
 
   private:
-
     QgsVectorLayer *mVectorLayer = nullptr;
     QString mSourceFieldExp;
     QList<double> mValues;
@@ -213,7 +211,6 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
     void clearHistogram();
 
     QwtPlotHistogram *createPlotHistogram( const QString &title, const QBrush &brush, const QPen &pen = Qt::NoPen ) const;
-
 };
 
 #endif //QGSHISTOGRAMWIDGET_H

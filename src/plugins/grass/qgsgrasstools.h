@@ -16,13 +16,13 @@
 #ifndef QGSGRASSTOOLS_H
 #define QGSGRASSTOOLS_H
 
-#include "qgsdockwidget.h"
-
 #include "ui_qgsgrasstoolsbase.h"
 
+#include "qgsdockwidget.h"
+
+#include <QRegularExpression>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
-#include <QRegularExpression>
 
 class QDomElement;
 class QSortFilterProxyModel;
@@ -40,14 +40,13 @@ class QgsGrassToolsTreeFilterProxyModel;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
+class QgsGrassTools : public QgsDockWidget, public Ui::QgsGrassToolsBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsGrassTools( QgisInterface *iface,
-                   QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsGrassTools( QgisInterface *iface, QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
 
     //! Append item to model or parent
@@ -102,12 +101,12 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
     void regionChanged();
 
   private:
-    // data offset to Qt::UserRole for items data
-    enum DataOffset
+    // custom Qt::UserRoles for items data
+    enum class DataRole : int
     {
-      Label, // original label
-      Name, // module name
-      Search // search text
+      Label = Qt::UserRole,     // original label
+      Name = Qt::UserRole + 1,  // module name
+      Search = Qt::UserRole + 2 // search text
     };
 
     // debug item recursively, return number of errors
@@ -151,9 +150,8 @@ class QgsGrassToolsTreeFilterProxyModel : public QSortFilterProxyModel
     void setFilter( const QString &filter );
 
   protected:
-
     QAbstractItemModel *mModel = nullptr;
-    QString mFilter; // filter string provided
+    QString mFilter;            // filter string provided
     QRegularExpression mRegExp; // regular expression constructed from filter string
 
     bool filterAcceptsString( const QString &value ) const;

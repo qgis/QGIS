@@ -9,6 +9,7 @@
 
 
 
+
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
 %ModuleCode
@@ -17,6 +18,9 @@
 
 class QgsFeatureSelectionDlg : QDialog
 {
+%Docstring(signature="appended")
+A dialog for selecting features from a vector layer.
+%End
 
 %TypeHeaderCode
 #include "qgsfeatureselectiondlg.h"
@@ -28,7 +32,6 @@ class QgsFeatureSelectionDlg : QDialog
       sipType = 0;
 %End
   public:
-
     explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFeatureSelectionDlg
@@ -54,7 +57,6 @@ Set form filter expression
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *evt );
 
 

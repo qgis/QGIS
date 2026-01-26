@@ -16,14 +16,11 @@
 #ifndef QGSEXTENTGROUPBOX_H
 #define QGSEXTENTGROUPBOX_H
 
-#include "qgscollapsiblegroupbox.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-
+#include "qgscollapsiblegroupbox.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgis_gui.h"
-
-#include <memory>
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayer;
@@ -49,17 +46,16 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
-
-    // TODO QGIS 4.0 -- use QgsExtentWidget enum instead
+    // TODO QGIS 5.0 -- use QgsExtentWidget enum instead
 
     //! Available states for the current extent selection in the widget
     enum ExtentState
     {
-      OriginalExtent,  //!< Layer's extent
-      CurrentExtent,   //!< Map canvas extent
-      UserExtent,      //!< Extent manually entered/modified by the user
+      OriginalExtent,     //!< Layer's extent
+      CurrentExtent,      //!< Map canvas extent
+      UserExtent,         //!< Extent manually entered/modified by the user
       ProjectLayerExtent, //!< Extent taken from a layer within the project
-      DrawOnCanvas, //!< Extent taken from a rectangled drawn onto the map canvas
+      DrawOnCanvas,       //!< Extent taken from a rectangled drawn onto the map canvas
     };
 
     /**
@@ -202,6 +198,12 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
      */
     void extentChanged( const QgsRectangle &r );
 
+    /**
+     * Emitted when the extent layer is changed.
+     * \since QGIS 3.44
+     */
+    void extentLayerChanged( QgsMapLayer *layer );
+
   private slots:
 
     void groupBoxClicked();
@@ -217,7 +219,6 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
 
     //! Base part of the title used for the extent
     QString mTitleBase;
-
 };
 
 #endif // QGSEXTENTGROUPBOX_H

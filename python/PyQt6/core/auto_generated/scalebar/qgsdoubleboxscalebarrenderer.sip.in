@@ -8,6 +8,7 @@
 
 
 
+
 class QgsDoubleBoxScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring(signature="appended")
@@ -35,6 +36,8 @@ Double box with alternating colors.
      virtual void draw( QgsRenderContext &context,
                const QgsScaleBarSettings &settings,
                const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
+
+    virtual bool applyDefaultSettings( QgsScaleBarSettings &settings ) const;
 
 };
 

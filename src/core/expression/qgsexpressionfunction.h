@@ -18,15 +18,15 @@
 
 #include <functional>
 
-#include <QString>
-#include <QVariant>
-#include <QSet>
-#include <QJsonDocument>
-#include <QJsonObject>
-
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgsexpressionnode.h"
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QSet>
+#include <QString>
+#include <QVariant>
 
 class QgsExpressionNodeFunction;
 class QgsExpression;
@@ -35,7 +35,7 @@ class QgsExpressionContextScope;
 
 /**
  * \ingroup core
- * \brief A abstract base class for defining QgsExpression functions.
+ * \brief An abstract base class for defining QgsExpression functions.
  */
 class CORE_EXPORT QgsExpressionFunction
 {
@@ -329,7 +329,7 @@ class CORE_EXPORT QgsExpressionFunction
 
 /**
  * \ingroup core
-  * \brief c++ helper class for defining QgsExpression functions.
+  * \brief Helper class for defining QgsExpression functions.
   * \note not available in Python bindings
   */
 #ifndef SIP_RUN

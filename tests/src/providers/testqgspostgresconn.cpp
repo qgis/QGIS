@@ -12,14 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
 #include "qgsconfig.h"
-#include <QObject>
 
-#include <qgspostgresconn.h>
-#include <qgsfields.h>
-#include <qgspostgresprovider.h>
-#include <qgsdatasourceuri.h>
+#include "qgsdatasourceuri.h"
+#include "qgsfields.h"
+#include "qgspostgresconn.h"
+#include "qgspostgresprovider.h"
+#include "qgspostgresutils.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 // Helper function for QCOMPARE
 char *toString( const QgsPostgresGeometryColumnType &t )
@@ -53,7 +55,7 @@ char *toString( const QgsPostgresGeometryColumnType &t )
   return qstrcpy( dst, ptr );
 }
 
-class TestQgsPostgresConn: public QObject
+class TestQgsPostgresConn : public QObject
 {
     Q_OBJECT
 
@@ -64,10 +66,11 @@ class TestQgsPostgresConn: public QObject
 
     QgsPostgresConn *getConnection()
     {
-      if ( ! _connection )
+      if ( !_connection )
       {
         const char *connstring = getenv( "QGIS_PGTEST_DB" );
-        if ( !connstring ) connstring = "service=qgis_test";
+        if ( !connstring )
+          connstring = "service=qgis_test";
         _connection = QgsPostgresConn::connectDb( connstring, true );
       }
       return _connection;
@@ -78,21 +81,22 @@ class TestQgsPostgresConn: public QObject
     void initTestCase() // will be called before the first testfunction is executed.
     {
 #ifdef ENABLE_PGTEST
-      this->_connection = 0;
+      this->_connection = nullptr;
 #endif
     }
     void cleanupTestCase() // will be called after the last testfunction was executed.
     {
 #ifdef ENABLE_PGTEST
-      if ( this->_connection ) this->_connection->unref();
+      if ( this->_connection )
+        this->_connection->unref();
 #endif
     }
 
     void quotedValueHstore()
     {
       QVariantMap map;
-      map[QStringLiteral( "1" )] = "2";
-      map[QStringLiteral( "a" )] = "b \"c' \\x";
+      map[u"1"_s] = "2";
+      map[u"a"_s] = "b \"c' \\x";
 
       const QString actual = QgsPostgresConn::quotedValue( map );
       QCOMPARE( actual, QString( "E'\"1\"=>\"2\",\"a\"=>\"b \\\\\"c\\' \\\\\\\\x\"'::hstore" ) );
@@ -131,13 +135,13 @@ class TestQgsPostgresConn: public QObject
       qvlist.append( 123LL );
       shared->insertFid( 1LL, qvlist );
 
-      QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, NULL, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( shared ) ), QString( "\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123" ) );
+      QCOMPARE( QgsPostgresUtils::whereClause( 1LL, fields, nullptr, QgsPostgresPrimaryKeyType::PktFidMap, pkAttrs, std::shared_ptr<QgsPostgresSharedData>( shared ) ), QString( "\"ts\"='2020-05-07T17:56:00.000' AND \"pk\"=123" ) );
     }
 
     void quotedValueStringArray()
     {
       QStringList list;
-      list << QStringLiteral( "a" ) << QStringLiteral( "b \"c' \\x" );
+      list << u"a"_s << u"b \"c' \\x"_s;
       const QString actual = QgsPostgresConn::quotedValue( list );
       QCOMPARE( actual, QString( "E'{\"a\",\"b \\\\\"c\\' \\\\\\\\x\"}'" ) );
     }
@@ -153,7 +157,7 @@ class TestQgsPostgresConn: public QObject
     void quotedValue2DimArray()
     {
       QStringList list;
-      list << QStringLiteral( "{\"hello foo\",b}" ) << QStringLiteral( "{c,\"hello bar\"}" );
+      list << u"{\"hello foo\",b}"_s << u"{c,\"hello bar\"}"_s;
       const QString actual = QgsPostgresConn::quotedValue( list );
       QCOMPARE( actual, QString( "E'{{\"hello foo\",b},{c,\"hello bar\"}}'" ) );
     }
@@ -164,21 +168,21 @@ class TestQgsPostgresConn: public QObject
       QGSTEST_NEED_PGTEST_DB();
 
       QgsPostgresConn *conn = getConnection();
-      QVERIFY( conn != 0 );
+      QVERIFY( conn != nullptr );
       QVector<QgsPostgresLayerProperty> layers;
       QMap<QString, QgsPostgresLayerProperty> layersMap;
 
       const bool success = conn->supportedLayers(
-                             layers,
-                             false, // searchGeometryColumnsOnly
-                             false, // searchPublicOnly
-                             false, // allowGeometrylessTables
-                             "qgis_test" // schema
-                           );
+        layers,
+        false,      // searchGeometryColumnsOnly
+        false,      // allowGeometrylessTables
+        false,      // allowRasterOverviewTables
+        "qgis_test" // schema
+      );
       QVERIFY( success );
 
       // Test no duplicates are reported by supportedLayers
-      for ( const auto &l : layers )
+      for ( const QgsPostgresLayerProperty &l : std::as_const( layers ) )
       {
         const QString key = QString( "%1.%2.%3" ).arg( l.schemaName, l.tableName, l.geometryColName );
         const auto i = layersMap.find( key );
@@ -187,10 +191,14 @@ class TestQgsPostgresConn: public QObject
           QFAIL(
             QString(
               "Layer %1 returned multiple times by supportedLayers"
-            ).arg( key ).toUtf8().data()
+            )
+              .arg( key )
+              .toUtf8()
+              .data()
           );
         }
         layersMap.insert( key, l );
+        QCOMPARE( l.schemaName, u"qgis_test"_s );
       }
 
       // Test qgis_test.TopoLayer1.topogeom
@@ -203,7 +211,34 @@ class TestQgsPostgresConn: public QObject
       QCOMPARE( lit->geometryColName, "topogeom" );
       QCOMPARE( lit->geometryColType, SctTopoGeometry );
       // TODO: add more tests
+    }
 
+    void testGetSchemas()
+    {
+      QGSTEST_NEED_PGTEST_DB();
+
+      QgsPostgresConn *conn = getConnection();
+      QVERIFY( conn );
+
+      QList<QgsPostgresSchemaProperty> schemas;
+      conn->getSchemas( schemas );
+
+      QList<QgsPostgresSchemaProperty> filteredSchemas;
+      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) {
+        return schema.name == "qgis_test"_L1;
+      } );
+      QCOMPARE( filteredSchemas.size(), 1 );
+      filteredSchemas.clear();
+      std::copy_if( schemas.constBegin(), schemas.constEnd(), std::back_inserter( filteredSchemas ), []( const QgsPostgresSchemaProperty &schema ) {
+        return schema.name == "public"_L1;
+      } );
+      QCOMPARE( filteredSchemas.size(), 1 );
+
+      // restrict to matching schemas
+      schemas.clear();
+      conn->getSchemas( schemas, { u"qgis_test"_s } );
+      QCOMPARE( schemas.size(), 1 );
+      QCOMPARE( schemas.at( 0 ).name, u"qgis_test"_s );
     }
 
     void connectDb()
@@ -211,22 +246,23 @@ class TestQgsPostgresConn: public QObject
       QGSTEST_NEED_PGTEST_DB();
 
       QgsPostgresConn *conn = getConnection();
-      QVERIFY( conn != 0 );
+      QVERIFY( conn != nullptr );
 
-      const QString sql = QStringLiteral( "SELECT SESSION_USER, CURRENT_USER;" );
+      const QString sql = u"SELECT SESSION_USER, CURRENT_USER;"_s;
 
       QgsPostgresResult result( conn->PQexec( sql ) );
       // current_user is the same as session_user
       QCOMPARE( result.PQgetvalue( 0, 0 ), result.PQgetvalue( 0, 1 ) );
 
       const char *connstring = getenv( "QGIS_PGTEST_DB" );
-      if ( !connstring ) connstring = "service=qgis_test";
+      if ( !connstring )
+        connstring = "service=qgis_test";
       const QString conninfo( connstring );
       QgsDataSourceUri uri( conninfo );
 
       // Update postgres uri to use qgis_test_user which is member of qgis_test_group
-      uri.setUsername( QStringLiteral( "qgis_test_user" ) );
-      uri.setPassword( QStringLiteral( "qgis_test_user_password" ) );
+      uri.setUsername( u"qgis_test_user"_s );
+      uri.setPassword( u"qgis_test_user_password"_s );
 
       // Connection with qgis_test_user without session_role
       conn = QgsPostgresConn::connectDb( uri, true );
@@ -239,7 +275,7 @@ class TestQgsPostgresConn: public QObject
       conn->unref();
 
       // Add known session_role parameter to postgres uri
-      uri.setParam( QStringLiteral( "session_role" ),  QStringLiteral( "qgis_test_group" ) );
+      uri.setParam( u"session_role"_s, u"qgis_test_group"_s );
       conn = QgsPostgresConn::connectDb( uri, true );
       QVERIFY( conn );
       result = conn->PQexec( sql );
@@ -250,13 +286,13 @@ class TestQgsPostgresConn: public QObject
       conn->unref();
 
       // Add unknown session_role parameter to postgres uri
-      // uri.setParam( QStringLiteral( "session_role" ),  QStringLiteral( "qgis_test_unknown_group" ) );
+      // uri.setParam( u"session_role"_s,  u"qgis_test_unknown_group"_s );
       // conn = QgsPostgresConn::connectDb( uri.connectionInfo( true ), true );
       // QVERIFY( !conn );
       // conn->unref();
 
       // Remove session_role parameter from postgre uri
-      uri.removeParam( QStringLiteral( "session_role" ) );
+      uri.removeParam( u"session_role"_s );
       conn = QgsPostgresConn::connectDb( uri, true );
       QVERIFY( conn );
       result = conn->PQexec( sql );

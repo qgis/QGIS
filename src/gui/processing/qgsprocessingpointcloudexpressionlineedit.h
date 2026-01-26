@@ -20,16 +20,16 @@
 
 #define SIP_NO_FILE
 
-#include <QWidget>
-#include <QDialog>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QModelIndex>
+#include "ui_qgsprocessingpointcloudexpressiondialogbase.h"
 
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingpointcloudexpressiondialogbase.h"
 
+#include <QDialog>
+#include <QModelIndex>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QWidget>
 
 class QgsFilterLineEdit;
 class QToolButton;
@@ -49,7 +49,6 @@ class GUI_EXPORT QgsProcessingPointCloudExpressionLineEdit : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingPointCloudExpressionLineEdit.
      * \param parent parent widget
@@ -117,7 +116,6 @@ class GUI_EXPORT QgsProcessingPointCloudExpressionDialog : public QDialog, priva
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingPointCloudExpressionDialog.
      */

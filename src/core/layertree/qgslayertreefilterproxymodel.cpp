@@ -20,10 +20,12 @@
 #include "qgslayertreemodel.h"
 #include "qgssymbol.h"
 
+#include "moc_qgslayertreefilterproxymodel.cpp"
+
 QgsLayerTreeFilterProxyModel::QgsLayerTreeFilterProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-  connect( QgsProject::instance(), &QgsProject::readProject, this, [this]
+  connect( QgsProject::instance(), &QgsProject::readProject, this, [this] // skip-keyword-check
   {
     beginResetModel();
     endResetModel();

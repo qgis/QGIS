@@ -15,22 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSlider>
-#include "qgis_sip.h"
-#include <QVariant>
+#ifndef QGSSLIDER_H
+#define QGSSLIDER_H
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QSlider>
+#include <QVariant>
 
 class QPaintEvent;
 
 /**
  * \ingroup gui
  * \class QgsSlider
+ * \brief A custom QSlider with additional refinements.
  */
 class GUI_EXPORT QgsSlider : public QSlider
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsSlider
     QgsSlider( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -57,3 +61,5 @@ class GUI_EXPORT QgsSlider : public QSlider
 
     QVariant mMin, mMax, mStep, mValue;
 };
+
+#endif // QGSSLIDER_H

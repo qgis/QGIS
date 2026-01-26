@@ -8,14 +8,18 @@
 
 
 
+
 class QgsSmartGroupCondition : QWidget
 {
+%Docstring(signature="appended")
+A widget for configuring the conditions attached to a style smart group.
+%End
 
 %TypeHeaderCode
 #include "qgssmartgroupeditordialog.h"
 %End
   public:
-    QgsSmartGroupCondition( int id,  QWidget *parent /TransferThis/ = 0 );
+    QgsSmartGroupCondition( int id, QWidget *parent /TransferThis/ = 0 );
 
     QString constraint();
 %Docstring
@@ -53,7 +57,6 @@ Emitted when the group with the specified ``id`` is removed.
 %End
 
   protected:
-
 };
 
 
@@ -62,6 +65,9 @@ Emitted when the group with the specified ``id`` is removed.
 
 class QgsSmartGroupEditorDialog : QDialog
 {
+%Docstring(signature="appended")
+A dialog for configuring a style smart group.
+%End
 
 %TypeHeaderCode
 #include "qgssmartgroupeditordialog.h"

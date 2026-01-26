@@ -11,7 +11,7 @@
 class QgsAlignRasterData
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAlignRasterData` class provides data structures and enums for align raster tool.
+Provides data structures and enums for the align raster tool.
 
 .. versionadded:: 3.34
 %End

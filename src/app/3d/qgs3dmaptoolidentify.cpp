@@ -15,22 +15,23 @@
 
 #include "qgs3dmaptoolidentify.h"
 
-#include <QScreen>
-
-#include "qgsapplication.h"
+#include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
-#include "qgsvector3d.h"
-
-#include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgscameracontroller.h"
+#include "qgscoordinateutils.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolidentifyaction.h"
-
 #include "qgspointcloudlayer.h"
+#include "qgsraycastcontext.h"
 #include "qgstiledscenelayer.h"
-#include "qgscameracontroller.h"
+#include "qgsvector3d.h"
 
+#include <QScreen>
+
+#include "moc_qgs3dmaptoolidentify.cpp"
 
 Qgs3DMapToolIdentify::Qgs3DMapToolIdentify( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
@@ -48,8 +49,7 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolIdentify::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !mMouseHasMoved &&
-       ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
+  if ( !mMouseHasMoved && ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
     mMouseHasMoved = true;
   }
@@ -60,112 +60,134 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   if ( event->button() != Qt::MouseButton::LeftButton || mMouseHasMoved )
     return;
 
-  const QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( event->pos(), mCanvas->size(), mCanvas->cameraController()->camera() );
-  QHash<QgsMapLayer *, QVector<QgsRayCastingUtils::RayHit>> allHits = Qgs3DUtils::castRay( mCanvas->scene(), ray, QgsRayCastingUtils::RayCastContext( false, mCanvas->size(), mCanvas->cameraController()->camera()->farPlane() ) );
+  QgsRayCastContext context;
+  context.setSingleResult( false );
+  context.setMaximumDistance( mCanvas->cameraController()->camera()->farPlane() );
+  context.setAngleThreshold( 0.5f );
+  const QgsRayCastResult results = mCanvas->castRay( event->pos(), context );
 
-  QHash<QgsPointCloudLayer *, QVector<QVariantMap>> pointCloudResults;
-  QHash<QgsTiledSceneLayer *, QVector<QVariantMap>> tiledSceneResults;
-
-  QList<QgsMapToolIdentify::IdentifyResult> identifyResults;
+  QList<QgsMapToolIdentify::IdentifyResult> tiledSceneIdentifyResults;
+  QList<QgsMapToolIdentify::IdentifyResult> pointCloudIdentifyResults;
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   identifyTool2D->clearResults();
 
+  QgsMapCanvas *canvas2D = identifyTool2D->canvas();
+  const QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
+
   bool showTerrainResults = true;
 
-  for ( auto it = allHits.constKeyValueBegin(); it != allHits.constKeyValueEnd(); ++it )
+  const QList<QgsMapLayer *> layers = results.layers();
+  for ( QgsMapLayer *layer : layers )
   {
     //  We can directly show vector layer results
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer * >( it->first ) )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
-      const QgsRayCastingUtils::RayHit hit = it->second.first();
-      const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
-      const QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
-      identifyTool2D->showResultsForFeature( vlayer, hit.fid, pt );
+      const QList<QgsRayCastHit> layerHits = results.layerHits( layer );
+      const QgsRayCastHit hit = layerHits.constFirst();
+      const QgsVector3D mapCoords = hit.mapCoordinates();
+      QgsVector3D mapCoordsCanvas2D;
+      try
+      {
+        mapCoordsCanvas2D = ct.transform( mapCoords );
+      }
+      catch ( QgsCsException &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( u"Could not transform identified coordinates to project crs: %1"_s.arg( e.what() ) );
+      }
+
+      const QgsPoint pt( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y(), mapCoordsCanvas2D.z() );
+      identifyTool2D->showResultsForFeature( vlayer, hit.properties().value( u"fid"_s, FID_NULL ).toLongLong(), pt );
       showTerrainResults = false;
     }
-    // We need to restructure point cloud layer results to display them later
-    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
+    // We need to restructure point cloud layer results to display them later. We may have multiple hits for each layer.
+    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( layer ) )
     {
-      pointCloudResults[ pclayer ] = QVector<QVariantMap>();
-      for ( const QgsRayCastingUtils::RayHit &hit : it->second )
+      QVector<QVariantMap> pointCloudResults;
+      const QList<QgsRayCastHit> layerHits = results.layerHits( layer );
+      for ( const QgsRayCastHit &hit : layerHits )
       {
-        pointCloudResults[ pclayer ].append( hit.attributes );
+        pointCloudResults.append( hit.properties() );
       }
+      identifyTool2D->fromPointCloudIdentificationToIdentifyResults( pclayer, pointCloudResults, pointCloudIdentifyResults );
     }
-    else if ( QgsTiledSceneLayer *tslayer = qobject_cast<QgsTiledSceneLayer *>( it->first ) )
+    else if ( QgsTiledSceneLayer *tslayer = qobject_cast<QgsTiledSceneLayer *>( layer ) )
     {
-      tiledSceneResults[ tslayer ] = QVector<QVariantMap>();
-      for ( const QgsRayCastingUtils::RayHit &hit : it->second )
-      {
-        tiledSceneResults[ tslayer ].append( hit.attributes );
-      }
-    }
-  }
+      Q_UNUSED( tslayer )
+      // We are only handling a single hit for each layer
+      const QList<QgsRayCastHit> layerHits = results.layerHits( layer );
+      const QgsRayCastHit hit = layerHits.constFirst();
+      const QgsVector3D mapCoords = hit.mapCoordinates();
 
-  // We only handle terrain results if there were no vector layer results
-  if ( showTerrainResults && allHits.contains( nullptr ) )
-  {
-    const QgsRayCastingUtils::RayHit hit = allHits.value( nullptr ).first();
-    // estimate search radius
-    Qgs3DMapScene *scene = mCanvas->scene();
-    const double searchRadiusMM = QgsMapTool::searchRadiusMM();
-    const double pixelsPerMM = mCanvas->screen()->logicalDotsPerInchX() / 25.4;
-    const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
-    const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
-
-    QgsMapCanvas *canvas2D = identifyTool2D->canvas();
-
-    // transform the point and search radius to CRS of the map canvas (if they are different)
-    const QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
-
-    const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
-    const QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
-
-    QgsPointXY mapPointCanvas2D = mapPoint;
-    double searchRadiusCanvas2D = searchRadiusMapUnits;
-    try
-    {
-      mapPointCanvas2D = ct.transform( mapPoint );
-      const QgsPointXY mapPointSearchRadius( mapPoint.x() + searchRadiusMapUnits, mapPoint.y() );
-      const QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
-      searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
-    }
-    catch ( QgsException &e )
-    {
-      Q_UNUSED( e )
-      QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
-    }
-
-    identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );
-  }
-
-  // Finally add all point cloud layers' results
-  for ( auto it = pointCloudResults.constKeyValueBegin(); it != pointCloudResults.constKeyValueEnd(); ++it )
-  {
-    QgsMapToolIdentify identifyTool( nullptr );
-    identifyTool.fromPointCloudIdentificationToIdentifyResults( it->first, it->second, identifyResults );
-    identifyTool2D->showIdentifyResults( identifyResults );
-  }
-
-  for ( auto it = tiledSceneResults.constKeyValueBegin(); it != tiledSceneResults.constKeyValueEnd(); ++it )
-  {
-    // for the whole layer
-    for ( const QVariantMap &hitAttributes : it->second )
-    {
       QMap<QString, QString> derivedAttributes;
+      QString x;
+      QString y;
+      QgsCoordinateUtils::formatCoordinatePartsForProject(
+        QgsProject::instance(),
+        QgsPointXY( mapCoords.x(), mapCoords.y() ),
+        mCanvas->mapSettings()->crs(),
+        6, x, y
+      );
+
+      derivedAttributes.insert( tr( "(clicked coordinate X)" ), x );
+      derivedAttributes.insert( tr( "(clicked coordinate Y)" ), y );
+      derivedAttributes.insert( tr( "(clicked coordinate Z)" ), QLocale().toString( mapCoords.z(), 'f' ) );
+
+      const QVariantMap hitAttributes = hit.properties();
       const QList<QString> keys = hitAttributes.keys();
       for ( const QString &key : keys )
       {
         derivedAttributes[key] = hitAttributes[key].toString();
       }
-      QString nodeId = hitAttributes["node_id"].toString();
-      QgsMapToolIdentify::IdentifyResult res( it->first, nodeId, QMap<QString, QString>(), derivedAttributes );
-      identifyResults.append( res );
+      QString nodeId = derivedAttributes[u"node_id"_s];
+      // only derived attributes are supported for now, so attributes is empty
+      QgsMapToolIdentify::IdentifyResult res( layer, nodeId, {}, derivedAttributes );
+      tiledSceneIdentifyResults.append( res );
     }
-
-    identifyTool2D->showIdentifyResults( identifyResults );
   }
 
+  // We only handle terrain results if there were no vector layer results so they don't get overwritten
+  if ( showTerrainResults && results.hasTerrainHits() )
+  {
+    const QgsRayCastHit hit = results.terrainHits().constFirst();
+    // estimate search radius
+    Qgs3DMapScene *scene = mCanvas->scene();
+    const double searchRadiusMM = QgsMapTool::searchRadiusMM();
+    const double pixelsPerMM = mCanvas->screen()->logicalDotsPerInchX() / 25.4;
+    const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
+    const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance() );
+
+    const QgsVector3D mapCoords = hit.mapCoordinates();
+
+    try
+    {
+      const QgsVector3D mapCoordsCanvas2D = ct.transform( mapCoords );
+      const QgsVector3D mapCoordsSearchRadiusX = ct.transform( QgsVector3D( mapCoords.x() + searchRadiusMapUnits, mapCoords.y(), mapCoords.z() ) );
+      const QgsVector3D mapCoordsSearchRadiusY = ct.transform( QgsVector3D( mapCoords.x(), mapCoords.y() + searchRadiusMapUnits, mapCoords.z() ) );
+      const QgsVector3D mapCoordsSearchRadiusZ = ct.transform( QgsVector3D( mapCoords.x(), mapCoords.y(), mapCoords.z() + searchRadiusMapUnits ) );
+      const double searchRadiusX = mapCoordsCanvas2D.distance( mapCoordsSearchRadiusX );
+      const double searchRadiusY = mapCoordsCanvas2D.distance( mapCoordsSearchRadiusY );
+      const double searchRadiusZ = mapCoordsCanvas2D.distance( mapCoordsSearchRadiusZ );
+      const double searchRadiusCanvas2D = std::max( searchRadiusX, std::max( searchRadiusY, searchRadiusZ ) );
+
+      QgsMapToolIdentify::IdentifyProperties props;
+      props.searchRadiusMapUnits = searchRadiusCanvas2D;
+      props.skip3DLayers = true;
+      identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( QgsPointXY( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y() ) ), props );
+    }
+    catch ( QgsCsException &e )
+    {
+      Q_UNUSED( e )
+      QgsDebugError( u"Could not transform identified coordinates to project crs: %1"_s.arg( e.what() ) );
+    }
+  }
+
+  // We need to show other layer type results AFTER terrain results so they don't get overwritten
+  identifyTool2D->showIdentifyResults( tiledSceneIdentifyResults );
+
+  // Finally add all point cloud layers' results
+  // We add those last as the list can be quite big.
+  identifyTool2D->showIdentifyResults( pointCloudIdentifyResults );
 }
 
 void Qgs3DMapToolIdentify::activate()

@@ -14,24 +14,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmtsutils.h"
-#include "qgswmtsparameters.h"
 #include "qgswmtsgettile.h"
+
+#include "qgswmtsparameters.h"
+#include "qgswmtsutils.h"
 
 #include <QImage>
 
 namespace QgsWmts
 {
 
-  void writeGetTile( QgsServerInterface *serverIface, const QgsProject *project,
-                     const QString &version, const QgsServerRequest &request,
-                     QgsServerResponse &response )
+  void writeGetTile( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
   {
     Q_UNUSED( version )
     const QgsWmtsParameters params( QUrlQuery( request.url() ) );
 
     // WMS query
-    const QUrlQuery query = translateWmtsParamToWmsQueryItem( QStringLiteral( "GetMap" ), params, project, serverIface );
+    const QUrlQuery query = translateWmtsParamToWmsQueryItem( u"GetMap"_s, params, project, serverIface );
 
     // Get cached image
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -45,21 +44,21 @@ namespace QgsWmts
       std::unique_ptr<QImage> image;
       if ( f == QgsWmtsParameters::Format::JPG )
       {
-        contentType = QStringLiteral( "image/jpeg" );
-        saveFormat = QStringLiteral( "JPEG" );
+        contentType = u"image/jpeg"_s;
+        saveFormat = u"JPEG"_s;
         image = std::make_unique<QImage>( 256, 256, QImage::Format_RGB32 );
       }
       else
       {
-        contentType = QStringLiteral( "image/png" );
-        saveFormat = QStringLiteral( "PNG" );
+        contentType = u"image/png"_s;
+        saveFormat = u"PNG"_s;
         image = std::make_unique<QImage>( 256, 256, QImage::Format_ARGB32_Premultiplied );
       }
 
       const QByteArray content = cacheManager->getCachedImage( project, request, accessControl );
       if ( !content.isEmpty() && image->loadFromData( content ) )
       {
-        response.setHeader( QStringLiteral( "Content-Type" ), contentType );
+        response.setHeader( u"Content-Type"_s, contentType );
         image->save( response.io(), qPrintable( saveFormat ) );
         return;
       }
@@ -81,7 +80,3 @@ namespace QgsWmts
   }
 
 } // namespace QgsWmts
-
-
-
-

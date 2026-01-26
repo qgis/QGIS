@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsHistoryEntryNode
 {
 %Docstring(signature="appended")
@@ -20,7 +22,6 @@ Base class for nodes representing a :py:class:`QgsHistoryEntry`.
 #include "qgshistoryentrynode.h"
 %End
   public:
-
     QgsHistoryEntryNode();
     virtual ~QgsHistoryEntryNode();
 
@@ -44,19 +45,22 @@ Returns the number of child nodes owned by this node.
 
     virtual QString html( const QgsHistoryWidgetContext &context ) const;
 %Docstring
-Returns a HTML formatted text string which should be shown to a user when
-selecting the node.
+Returns a HTML formatted text string which should be shown to a user
+when selecting the node.
 
-Subclasses should implement this method or :py:func:`~QgsHistoryEntryNode.createWidget`, but not both.
+Subclasses should implement this method or
+:py:func:`~QgsHistoryEntryNode.createWidget`, but not both.
 
 .. seealso:: :py:func:`createWidget`
 %End
 
     virtual QWidget *createWidget( const QgsHistoryWidgetContext &context ) /Factory/;
 %Docstring
-Returns a new widget which should be shown to users when selecting the node.
+Returns a new widget which should be shown to users when selecting the
+node.
 
-If a ``None`` is returned, the node's :py:func:`~QgsHistoryEntryNode.html` method will be called instead to
+If a ``None`` is returned, the node's
+:py:func:`~QgsHistoryEntryNode.html` method will be called instead to
 create the node's content.
 
 .. seealso:: :py:func:`html`
@@ -64,15 +68,17 @@ create the node's content.
 
     virtual bool doubleClicked( const QgsHistoryWidgetContext &context );
 %Docstring
-Called when the node is double-clicked. The default implementation does nothing.
+Called when the node is double-clicked. The default implementation does
+nothing.
 
-Returns ``True`` if the node handled the double-click event and it should not
-be further processed.
+Returns ``True`` if the node handled the double-click event and it
+should not be further processed.
 %End
 
     virtual void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext &context );
 %Docstring
-Allows the node to populate a context ``menu`` before display to the user.
+Allows the node to populate a context ``menu`` before display to the
+user.
 
 Actions should be parented to the specified ``menu``.
 %End
@@ -94,7 +100,8 @@ within the node's DisplayRole.
 class QgsHistoryEntryGroup : QgsHistoryEntryNode
 {
 %Docstring(signature="appended")
-Base class for history entry "group" nodes, which contain children of their own.
+Base class for history entry "group" nodes, which contain children of
+their own.
 
 .. versionadded:: 3.32
 %End
@@ -103,7 +110,6 @@ Base class for history entry "group" nodes, which contain children of their own.
 #include "qgshistoryentrynode.h"
 %End
   public:
-
     QgsHistoryEntryGroup();
     ~QgsHistoryEntryGroup();
 
@@ -146,17 +152,13 @@ Removes the child at the specified ``index``.
 Clears the group, removing all its children.
 %End
 
-    virtual int childCount() const ${SIP_FINAL};
-
+    int childCount() const final;
 
   protected:
 
   private:
     QgsHistoryEntryGroup( const QgsHistoryEntryGroup &other );
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

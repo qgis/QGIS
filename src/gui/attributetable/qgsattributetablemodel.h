@@ -17,18 +17,18 @@
 #ifndef QGSATTRIBUTETABLEMODEL_H
 #define QGSATTRIBUTETABLEMODEL_H
 
-#include <QAbstractTableModel>
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsconditionalstyle.h"
+#include "qgsmaplayeractionregistry.h"
+
+#include <QAbstractTableModel>
+#include <QHash>
+#include <QMap>
 #include <QModelIndex>
 #include <QObject>
-#include <QHash>
 #include <QQueue>
-#include <QMap>
-
-#include "qgsconditionalstyle.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgsmaplayeractionregistry.h"
-#include "qgis_gui.h"
 
 class QgsMapCanvas;
 class QgsEditorWidgetFactory;
@@ -46,12 +46,11 @@ class QgsVectorLayerCache;
  *
  * \see <a href="http://doc.qt.digia.com/qt/model-view-programming.html">Qt Model View Programming</a>
  */
-class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
+class GUI_EXPORT QgsAttributeTableModel : public QAbstractTableModel
 {
     Q_OBJECT
 
   public:
-
     // *INDENT-OFF*
 
     /**
@@ -62,17 +61,16 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAttributeTableModel, Role ) : int
     {
-      FeatureId SIP_MONKEYPATCH_COMPAT_NAME(FeatureIdRole)= Qt::UserRole, //!< Get the feature id of the feature in this row
-      FieldIndex SIP_MONKEYPATCH_COMPAT_NAME(FieldIndexRole),               //!< Get the field index of this column
-      User SIP_MONKEYPATCH_COMPAT_NAME(UserRole),                     //!< Start further roles starting from this role
+      FeatureId SIP_MONKEYPATCH_COMPAT_NAME( FeatureIdRole ) = Qt::UserRole, //!< Get the feature id of the feature in this row
+      FieldIndex SIP_MONKEYPATCH_COMPAT_NAME( FieldIndexRole ),              //!< Get the field index of this column
+      User SIP_MONKEYPATCH_COMPAT_NAME( UserRole ),                          //!< Start further roles starting from this role
       // Insert new values here, SortRole needs to be the last one
-      Sort SIP_MONKEYPATCH_COMPAT_NAME(SortRole),                     //!< Role used for sorting start here
+      Sort SIP_MONKEYPATCH_COMPAT_NAME( SortRole ), //!< Role used for sorting start here
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
 
   public:
-
     /**
      * Constructor
      * \param layerCache  A layer cache to use as backend
@@ -232,7 +230,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      */
     void setRequest( const QgsFeatureRequest &request );
 
-    // TODO QGIS 4: return copy instead of reference
+    // TODO QGIS 5: return copy instead of reference
 
     /**
      * Gets the the feature request
@@ -368,17 +366,17 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     struct WidgetData
     {
-      QgsFieldFormatter *fieldFormatter = nullptr;
-      QVariant cache;
-      QVariantMap config;
-      bool loaded = false;
+        QgsFieldFormatter *fieldFormatter = nullptr;
+        QVariant cache;
+        QVariantMap config;
+        bool loaded = false;
     };
     mutable QVector<WidgetData> mWidgetDatas;
 
     QHash<QgsFeatureId, int> mIdRowMap;
     QHash<int, QgsFeatureId> mRowIdMap;
-    mutable QHash<QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
-    mutable QHash<QgsFeatureId, QHash<int, QgsConditionalStyle> > mConstraintStylesMap;
+    mutable QHash<QgsFeatureId, QList<QgsConditionalStyle>> mRowStylesMap;
+    mutable QHash<QgsFeatureId, QHash<int, QgsConditionalStyle>> mConstraintStylesMap;
 
     mutable QgsExpressionContext mExpressionContext;
 
@@ -417,13 +415,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 
     struct SortCache
     {
-      //! If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression
-      int sortFieldIndex;
-      //! The currently cached column
-      QgsExpression sortCacheExpression;
-      QgsAttributeList sortCacheAttributes;
-      //! Allows caching of one value per column (used for sorting)
-      QHash<QgsFeatureId, QVariant> sortCache;
+        //! If it is set, a simple field is used for sorting, if it's -1 it's the mSortCacheExpression
+        int sortFieldIndex;
+        //! The currently cached column
+        QgsExpression sortCacheExpression;
+        QgsAttributeList sortCacheAttributes;
+        //! Allows caching of one value per column (used for sorting)
+        QHash<QgsFeatureId, QVariant> sortCache;
     };
 
     std::vector<SortCache> mSortCaches;
@@ -456,7 +454,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     bool mShowValidityState = false;
 
     friend class TestQgsAttributeTable;
-
 };
 
 

@@ -15,10 +15,11 @@
 #ifndef QGSVIRTUALRASTERPROVIDER_H
 #define QGSVIRTUALRASTERPROVIDER_H
 
-#include <QObject>
-#include "qgsrasterdataprovider.h"
 #include "qgsprovidermetadata.h"
 #include "qgsrastercalculator.h"
+#include "qgsrasterdataprovider.h"
+
+#include <QObject>
 
 /**
  * The QgsVirtualRasterProvider class implements a raster data provider that enable the use of the raster calculator
@@ -29,47 +30,55 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
 {
     Q_OBJECT
   public:
-
     QgsVirtualRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions );
-    virtual ~QgsVirtualRasterProvider() override;
+    ~QgsVirtualRasterProvider() override;
 
-    QgsVirtualRasterProvider &operator =( QgsVirtualRasterProvider other ) = delete;
+    QgsVirtualRasterProvider &operator=( QgsVirtualRasterProvider other ) = delete;
 
     QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
-    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override
-    { Q_UNUSED( bandNo ) Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); Q_UNUSED( feedback ); return true; }
+
+    using QgsRasterDataProvider::readBlock;
+    bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override
+    {
+      Q_UNUSED( bandNo )
+      Q_UNUSED( viewExtent );
+      Q_UNUSED( width );
+      Q_UNUSED( height );
+      Q_UNUSED( data );
+      Q_UNUSED( feedback );
+      return true;
+    }
 
     // QgsDataProvider interface
     Qgis::DataProviderFlags flags() const override;
-    virtual bool isValid() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsRectangle extent() const override;
-    virtual QString name() const override;
-    virtual QString description() const override;
+    bool isValid() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
+    QString name() const override;
+    QString description() const override;
 
     // QgsRasterInterface interface
-    virtual int xBlockSize() const override;
-    virtual int yBlockSize() const override;
-    virtual int bandCount() const override;
-    virtual QgsVirtualRasterProvider *clone() const override;
-    virtual Qgis::DataType dataType( int bandNo ) const override;
-    virtual Qgis::DataType sourceDataType( int bandNo ) const override;
+    int xBlockSize() const override;
+    int yBlockSize() const override;
+    int bandCount() const override;
+    QgsVirtualRasterProvider *clone() const override;
+    Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType sourceDataType( int bandNo ) const override;
 
     int xSize() const override;
     int ySize() const override;
 
     // QgsRasterDataProvider interface
-    virtual QString htmlMetadata() const override;
-    virtual QString lastErrorTitle() override;
-    virtual QString lastError() override;
+    QString htmlMetadata() const override;
+    QString lastErrorTitle() override;
+    QString lastError() override;
     Qgis::RasterInterfaceCapabilities capabilities() const override;
 
     static QString providerKey();
 
-    QString formulaString();
+    QString formulaString() const;
 
   private:
-
     QgsVirtualRasterProvider( const QgsVirtualRasterProvider &other );
 
     bool mValid = false;
@@ -86,11 +95,11 @@ class QgsVirtualRasterProvider : public QgsRasterDataProvider
     QVector<QgsRasterCalculatorEntry> mRasterEntries;
     QString mLastError;
 
-    std::unique_ptr< QgsRasterCalcNode > mCalcNode;
-    QVector <QgsRasterLayer *> mRasterLayers;
+    std::unique_ptr<QgsRasterCalcNode> mCalcNode;
+    QVector<QgsRasterLayer *> mRasterLayers;
 };
 
-class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
+class QgsVirtualRasterProviderMetadata : public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -99,8 +108,7 @@ class QgsVirtualRasterProviderMetadata: public QgsProviderMetadata
     QgsVirtualRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSVIRTUALRASTERPROVIDER_H
-

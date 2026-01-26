@@ -17,17 +17,17 @@
 #ifndef QGSPGSOURCESELECT_H
 #define QGSPGSOURCESELECT_H
 
-#include "qgsguiutils.h"
-#include "qgsdatasourceuri.h"
-#include "qgshelp.h"
-#include "qgsproviderregistry.h"
 #include "qgsabstractdbsourceselect.h"
+#include "qgsdatasourceuri.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgspostgresconn.h"
+#include "qgsproviderregistry.h"
 
-#include <QMap>
-#include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
+#include <QMap>
+#include <QPair>
 
 class QPushButton;
 class QgsGeomColumnTypeThread;
@@ -76,6 +76,8 @@ class QgsPgSourceSelect : public QgsAbstractDbSourceSelect
     QString connectionInfo( bool expandAuthCfg = true );
     //! Data source URI
     QgsDataSourceUri dataSourceUri();
+
+    QString settingPath() const override;
 
   signals:
     void addGeometryColumn( const QgsPostgresLayerProperty & );
@@ -140,7 +142,7 @@ class QgsPgSourceSelect : public QgsAbstractDbSourceSelect
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata = false;
     // Storage for the range of layer type icons
-    QMap<QString, QPair<QString, QIcon> > mLayerIcons;
+    QMap<QString, QPair<QString, QIcon>> mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsPgTableModel *mTableModel = nullptr;

@@ -15,13 +15,18 @@
 ***************************************************************************
 """
 
-
 import inspect
 import string
 import traceback
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsFeatureRequest, Qgis
+from qgis._core import (
+    QgsExpressionFunction,
+    QgsExpression,
+    QgsMessageLog,
+    QgsFeatureRequest,
+    Qgis,
+)
 
 
 class QgsPyExpressionFunction(QgsExpressionFunction):
@@ -93,14 +98,14 @@ class QgsPyExpressionFunction(QgsExpressionFunction):
 def register_function(
     function,
     args="auto",
-    group="custom",
-    usesgeometry=False,
+    group: str = "custom",
+    usesgeometry: bool = False,
     referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES],
-    handlesnull=False,
-    params_as_list=None,
+    handlesnull: bool = False,
+    params_as_list: bool = False,
     **kwargs,
 ):
-    """
+    r"""
     Register a Python function to be used as a expression function.
 
     The function signature may contain special parameters (in any order at the end of the signature):
@@ -112,20 +117,30 @@ def register_function(
     If those parameters are present in the function signature, they will be automatically passed to the function,
     without the need to specify them in the expression.
 
-    Functions should return a value compatible with QVariant
-    Eval errors can be raised using parent.setEvalErrorString("Error message")
+    Functions should return a value compatible with QVariant.
+
+    Evaluation errors can be raised using:
+
+    .. code-block:: python
+
+        parent.setEvalErrorString("Error message")
 
     :param function: the Python function to be used as an expression function
-    :param args: DEPRECATED since QGIS 3.32.  Use ``params_as_list`` if you want to pass parameters as a list.
-    :param group: the expression group in which the function should be added
-    :param usesgeometry: Defines if this expression requires the geometry. By default False.
-    :param referenced_columns: An array of names of fields on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Specifying a subset of fields or an empty list will result in a faster execution.
-    :param handlesnull: Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
-    :param params_as_list: If True, the function will receive the expression parameters as a list. If False, the function will receive the parameters as individual arguments. False by default.
+    :param args: Argument list
 
+      .. deprecated:: 3.32
+          Use ``params_as_list`` if you want to pass parameters as a list.
+
+    :param group: the expression group in which the function should be added
+    :param usesgeometry: Defines if this expression requires the geometry. By default ``False``.
+    :param referenced_columns: An array of names of fields on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Specifying a subset of fields or an empty list will result in a faster execution.
+    :param handlesnull: Defines if this expression has custom handling for NULL values. If ``False``, the result will always be NULL as soon as any parameter is NULL. ``False`` by default.
+    :param params_as_list: If True, the function will receive the expression parameters as a list. If ``False``, the function will receive the parameters as individual arguments. ``False`` by default.
+    :param \**kwargs:
+        See below
     :Keyword Arguments:
 
-    * *register* (``bool``): Set to False to create the QgsPyExpressionFunction without registering it. Useful for testing puposes. By default True.
+    * *register* (``bool``): Set to ``False`` to create the QgsPyExpressionFunction without registering it. Useful for testing puposes. By default ``True``.
     * *name* (``str``): If provided, replace the function name
     * *helpText* (``str``): If provided, used in the help tooltip instead of the function docstring
 
@@ -133,7 +148,7 @@ def register_function(
     """
 
     # Format the help text
-    helptemplate = string.Template("<h3>$name function</h3><br>$doc")
+    helptemplate = string.Template("<h3>function $name</h3>\n$doc")
     name = kwargs.get("name", function.__name__)
     helptext = kwargs.get("helpText") or function.__doc__ or ""
     helptext = helptext.strip()
@@ -143,7 +158,8 @@ def register_function(
         if not QgsExpression.unregisterFunction(name):
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
             msg = QCoreApplication.translate(
-                "UserExpressions", "The user expression {0} already exists and could not be unregistered."
+                "UserExpressions",
+                "The user expression {0} already exists and could not be unregistered.",
             ).format(name)
             QgsMessageLog.logMessage(msg + "\n", msgtitle, Qgis.MessageLevel.Warning)
             return None
@@ -154,7 +170,14 @@ def register_function(
     # Legacy: if args was not 'auto', parameters were passed as a list
     params_as_list = params_as_list or args != "auto"
     f = QgsPyExpressionFunction(
-        function, name, group, helptext, usesgeometry, referenced_columns, handlesnull, params_as_list
+        function,
+        name,
+        group,
+        helptext,
+        usesgeometry,
+        referenced_columns,
+        handlesnull,
+        params_as_list,
     )
 
     if register:
@@ -162,41 +185,50 @@ def register_function(
     return f
 
 
-def qgsfunction(args="auto", group="custom", **kwargs):
+def qgsfunction(args="auto", group: str = "custom", **kwargs):
     r"""
     Decorator function used to define a user expression function.
 
     The decorated function signature may contain special parameters (in any order at the end of the signature):
 
-    - feature: the QgsFeature related to the current evaluation
-    - parent: the QgsExpressionFunction parent
-    - context: the QgsExpressionContext related to the current evaluation
+    - ``feature``: the QgsFeature related to the current evaluation
+    - ``parent``: the QgsExpressionFunction parent
+    - ``context``: the QgsExpressionContext related to the current evaluation
 
     If those parameters are present in the function signature, they will be automatically passed to the function,
     without the need to specify them in the expression.
 
-    Functions should return a value compatible with QVariant
-    Eval errors can be raised using parent.setEvalErrorString("Error message")
+    Functions should return a value compatible with QVariant.
 
-    :param args: DEPRECATED since QGIS 3.32. Use the "params_as_list" keyword argument if you want to pass parameters as a list.
-    :param group: The expression group to which this expression should be added.
+    Evaluation errors can be raised using:
+
+    .. code-block:: python
+
+        parent.setEvalErrorString("Error message")
+
+    :param args: Argument list
+
+      .. deprecated:: 3.32
+          Use ``params_as_list`` if you want to pass parameters as a list.
+
+    :param str group: The expression group to which this expression should be added.
     :param \**kwargs:
         See below
     :Keyword Arguments:
-        * *usesgeometry* (``bool``) --
-          Defines if this expression requires the geometry. By default False.
-        * *referenced_columns* (``list``) --
+        * **usesgeometry** (*bool*) --
+          Defines if this expression requires the geometry. By default ``False``.
+        * **referenced_columns** (*List[str]*) --
           An array of names of fields on which this expression works. By default ``[QgsFeatureRequest.ALL_ATTRIBUTES]``. Specifying a subset of fields or an empty list will result in a faster execution.
-        * *handlesnull* (``bool``) --
-          Defines if this expression has custom handling for NULL values. If False, the result will always be NULL as soon as any parameter is NULL. False by default.
-        * *params_as_list* (``bool``) \since QGIS 3.32 --
-          Defines if the parameters are passed to the function as a list. If set the False, they will be expanded. By default False.
-        * *register* (``bool``) --
-            Set to False to create the QgsPyExpressionFunction without registering it. Useful for testing puposes. By default True.
-        * *name* (``str``) --
-            If provided, replace the function name
-        * *helpText* (``str``) --
-            If provided, used in the help tooltip instead of the function docstring
+        * **handlesnull** (*bool*) --
+          Defines if this expression has custom handling for NULL values. If ``False``, the result will always be NULL as soon as any parameter is NULL. ``False`` by default.
+        * **params_as_list** (*bool*) --
+          Defines if the parameters are passed to the function as a list. If set to ``False``, they will be expanded. By default ``False``. Since QGIS 3.32.
+        * **register** (*bool*) --
+          Set to ``False`` to create the QgsPyExpressionFunction without registering it. Useful for testing puposes. By default ``True``.
+        * **name** (*str*) --
+          If provided, replace the function name.
+        * **helpText** (*str*) --
+          If provided, used in the help tooltip instead of the function docstring.
 
 
     Example 1 (Basic function, with default parameters)
@@ -209,8 +241,8 @@ def qgsfunction(args="auto", group="custom", **kwargs):
             return text.center(width, fillchar)
 
     This registers a function called "center" in the "python" group.
-    This expression requires two parameters: text and width.
-    An optional third parameter can be provided: fillchar.
+    This expression requires two parameters: ``text`` and ``width``.
+    An optional third parameter can be provided: ``fillchar``.
 
     .. code-block:: text
 
@@ -263,8 +295,8 @@ def qgsfunction(args="auto", group="custom", **kwargs):
                 parent.setEvalErrorString(f"Field {fieldname} not found")
 
     This registers a function called "display_field" in the "custom" group.
-    This expression requires an unique parameter: fieldname. Feature is automatically passed to the function.
-    parent is the QgsExpressionFunction parent, and can be used to raise an error.
+    This expression requires an unique parameter: ``fieldname``. ``feature`` is automatically passed to the function.
+    ``parent`` is the QgsExpressionFunction parent, and can be used to raise an error.
 
     .. code-block:: text
 

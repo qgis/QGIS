@@ -13,11 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeformwidget.h"
-#include <QHBoxLayout>
-#include <QStackedWidget>
 
 #include "qgsattributeform.h"
 #include "qgssearchwidgettoolbutton.h"
+
+#include <QHBoxLayout>
+#include <QStackedWidget>
+
+#include "moc_qgsattributeformwidget.cpp"
 
 QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAttributeForm *form )
   : QWidget( form )
@@ -40,9 +43,8 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
   mSearchPage->setLayout( l );
   l->addWidget( mSearchFrame, 1 );
   mSearchWidgetToolButton = new QgsSearchWidgetToolButton();
-  mSearchWidgetToolButton->setObjectName( QStringLiteral( "SearchWidgetToolButton" ) );
-  connect( mSearchWidgetToolButton, &QgsSearchWidgetToolButton::activeFlagsChanged,
-           this, &QgsAttributeFormWidget::searchWidgetFlagsChanged );
+  mSearchWidgetToolButton->setObjectName( u"SearchWidgetToolButton"_s );
+  connect( mSearchWidgetToolButton, &QgsSearchWidgetToolButton::activeFlagsChanged, this, &QgsAttributeFormWidget::searchWidgetFlagsChanged );
   l->addWidget( mSearchWidgetToolButton, 0 );
 
   mStack = new QStackedWidget();
@@ -137,14 +139,14 @@ QString QgsAttributeFormWidget::currentFilterExpression() const
     // special case: Between search
     const QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::GreaterThanOrEqualTo );
     const QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::LessThanOrEqualTo );
-    return QStringLiteral( "%1 AND %2" ).arg( filter1, filter2 );
+    return u"%1 AND %2"_s.arg( filter1, filter2 );
   }
   else if ( mSearchWidgetToolButton->activeFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
     // special case: Is Not Between search
     const QString filter1 = mSearchWidgets.at( 0 )->createExpression( QgsSearchWidgetWrapper::LessThan );
     const QString filter2 = mSearchWidgets.at( 1 )->createExpression( QgsSearchWidgetWrapper::GreaterThan );
-    return QStringLiteral( "%1 OR %2" ).arg( filter1, filter2 );
+    return u"%1 OR %2"_s.arg( filter1, filter2 );
   }
 
   return mSearchWidgets.at( 0 )->createExpression( mSearchWidgetToolButton->activeFlags() );
@@ -170,8 +172,7 @@ void QgsAttributeFormWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::F
   const auto constMSearchWidgets = mSearchWidgets;
   for ( QgsSearchWidgetWrapper *widget : constMSearchWidgets )
   {
-    widget->setEnabled( !( flags & QgsSearchWidgetWrapper::IsNull )
-                        && !( flags & QgsSearchWidgetWrapper::IsNotNull ) );
+    widget->setEnabled( !( flags & QgsSearchWidgetWrapper::IsNull ) && !( flags & QgsSearchWidgetWrapper::IsNotNull ) );
     if ( !mSearchWidgetToolButton->isActive() )
     {
       widget->clearWidget();
@@ -180,8 +181,7 @@ void QgsAttributeFormWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::F
 
   if ( mSearchWidgets.count() >= 2 )
   {
-    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between ||
-        flags & QgsSearchWidgetWrapper::IsNotBetween );
+    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between || flags & QgsSearchWidgetWrapper::IsNotBetween );
   }
 }
 

@@ -37,16 +37,10 @@ class QgsCurvePolygon;
 class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryCheckError
 {
   public:
-
     /**
      * Create a new missing vertex check error.
      */
-    QgsGeometryMissingVertexCheckError( const QgsGeometryCheck *check,
-                                        const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                                        const QgsPointXY &errorLocation,
-                                        QgsVertexId vidx = QgsVertexId(),
-                                        const QVariant &value = QVariant(),
-                                        ValueType valueType = ValueOther );
+    QgsGeometryMissingVertexCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx = QgsVertexId(), const QVariant &value = QVariant(), ValueType valueType = ValueOther );
 
     QgsRectangle affectedAreaBBox() const override;
 
@@ -86,16 +80,16 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheckError : public QgsGeometryChe
  */
 class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
 {
+    Q_GADGET
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryMissingVertexCheck )
 
   public:
-
     /**
      * The available resolutions for missing vertex check.
      */
     enum ResolutionMethod
     {
-      NoChange, //!< Do nothing
+      NoChange,        //!< Do nothing
       AddMissingVertex //!< Add the missing vertex
     };
     Q_ENUM( ResolutionMethod )
@@ -104,7 +98,7 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
      * Creates a new missing vertex geometry check with \a context and the provided \a geometryCheckConfiguration.
      */
     explicit QgsGeometryMissingVertexCheck( const QgsGeometryCheckContext *context, const QVariantMap &geometryCheckConfiguration );
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
 
@@ -114,21 +108,20 @@ class ANALYSIS_EXPORT QgsGeometryMissingVertexCheck : public QgsGeometryCheck
     QgsGeometryCheck::Flags flags() const override;
     QgsGeometryCheck::CheckType checkType() const override;
 
-///@cond private
+    ///@cond private
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() SIP_SKIP;
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP;
     static QString factoryDescription() SIP_SKIP;
     static QString factoryId() SIP_SKIP;
     static QgsGeometryCheck::Flags factoryFlags() SIP_SKIP;
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
-///@endcond
+    ///@endcond
 
   private:
     void processPolygon( const QgsCurvePolygon *polygon, QgsFeaturePool *featurePool, QList<QgsGeometryCheckError *> &errors, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, QgsFeedback *feedback ) const;
 
     QgsRectangle contextBoundingBox( const QgsCurvePolygon *polygon, const QgsVertexId &vertexId, const QgsPoint &point ) const;
 };
-
 
 
 #endif // QGSGEOMETRYMISSINGVERTEXCHECK_H

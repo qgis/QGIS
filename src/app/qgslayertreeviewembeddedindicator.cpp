@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewembeddedindicator.h"
+
+#include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgsapplication.h"
+
+#include "moc_qgslayertreeviewembeddedindicator.cpp"
 
 QgsLayerTreeViewEmbeddedIndicatorProvider::QgsLayerTreeViewEmbeddedIndicatorProvider( QgsLayerTreeView *view )
   : QObject( view )
   , mLayerTreeView( view )
 {
-  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorEmbedded.svg" ) );
+  mIcon = QgsApplication::getThemeIcon( u"/mIndicatorEmbedded.svg"_s );
 
   QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
   onAddedChildren( tree, 0, tree->children().count() - 1 );
@@ -42,21 +45,21 @@ void QgsLayerTreeViewEmbeddedIndicatorProvider::onAddedChildren( QgsLayerTreeNod
     if ( QgsLayerTree::isGroup( childNode ) )
     {
       onAddedChildren( childNode, 0, childNode->children().count() - 1 );
-      if ( childNode->customProperty( QStringLiteral( "embedded" ) ).toInt() )
+      if ( childNode->customProperty( u"embedded"_s ).toInt() )
       {
         addIndicatorForEmbeddedLayer( childNode );
       }
     }
-    else if ( QgsLayerTree::isLayer( childNode ) && childNode->customProperty( QStringLiteral( "embedded" ) ).toInt() )
+    else if ( QgsLayerTree::isLayer( childNode ) && childNode->customProperty( u"embedded"_s ).toInt() )
     {
       addIndicatorForEmbeddedLayer( childNode );
     }
   }
 }
 
-std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewEmbeddedIndicatorProvider::newIndicator( const QString &project )
+std::unique_ptr<QgsLayerTreeViewIndicator> QgsLayerTreeViewEmbeddedIndicatorProvider::newIndicator( const QString &project )
 {
-  std::unique_ptr< QgsLayerTreeViewIndicator > indicator = std::make_unique< QgsLayerTreeViewIndicator >( this );
+  auto indicator = std::make_unique<QgsLayerTreeViewIndicator>( this );
   indicator->setIcon( mIcon );
   indicator->setToolTip( tr( "Embedded from <b>%1</b>" ).arg( project ) );
   mIndicators.insert( indicator.get() );
@@ -65,13 +68,13 @@ std::unique_ptr< QgsLayerTreeViewIndicator > QgsLayerTreeViewEmbeddedIndicatorPr
 
 void QgsLayerTreeViewEmbeddedIndicatorProvider::addIndicatorForEmbeddedLayer( QgsLayerTreeNode *node )
 {
-  QString project = node->customProperty( QStringLiteral( "embedded_project" ) ).toString();
+  QString project = node->customProperty( u"embedded_project"_s ).toString();
   QgsLayerTreeNode *nextNode = node;
   while ( project.isEmpty() && nextNode )
   {
     nextNode = nextNode->parent();
     if ( nextNode )
-      project = nextNode->customProperty( QStringLiteral( "embedded_project" ) ).toString();
+      project = nextNode->customProperty( u"embedded_project"_s ).toString();
   }
 
   const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );

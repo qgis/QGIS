@@ -15,19 +15,22 @@
  ***************************************************************************/
 
 #include "qgslayoutpdfexportoptionsdialog.h"
+
 #include "qgis.h"
-#include "qgssettings.h"
+#include "qgsabstractgeopdfexporter.h"
+#include "qgsgeopdflayertreemodel.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsabstractgeopdfexporter.h"
-#include "qgsproject.h"
-#include "qgsmapthemecollection.h"
-#include "qgsgeopdflayertreemodel.h"
 #include "qgslayertree.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 
 #include <QCheckBox>
-#include <QPushButton>
 #include <QMenu>
+#include <QPushButton>
+
+#include "moc_qgslayoutpdfexportoptionsdialog.cpp"
 
 QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, bool allowGeospatialPdfExport, const QString &geospatialPdfReason, const QStringList &geospatialPdfLayerOrder, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -36,8 +39,9 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
 
   mGeospatialPdfStructureTreeMenu = new QMenu( this );
 
-  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysOutlines ) );
-  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysText ) );
+  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast<int>( Qgis::TextRenderFormat::AlwaysOutlines ) );
+  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast<int>( Qgis::TextRenderFormat::AlwaysText ) );
+  mTextRenderFormatComboBox->addItem( tr( "Prefer Exporting Text as Text Objects" ), static_cast<int>( Qgis::TextRenderFormat::PreferText ) );
 
   mGeospatialPdfAvailable = allowGeospatialPdfExport && QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable();
   mGeospatialPDFGroupBox->setEnabled( mGeospatialPdfAvailable );
@@ -55,8 +59,6 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   else
   {
     mGeospatialPDFOptionsStackedWidget->setCurrentIndex( 1 );
-    mGeospatialPdfFormatComboBox->addItem( tr( "ISO 32000 Extension (recommended)" ) );
-    mGeospatialPdfFormatComboBox->addItem( tr( "OGC Best Practice" ) );
   }
 
   mComboImageCompression->addItem( tr( "Lossy (JPEG)" ), false );
@@ -71,7 +73,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     mThemesList->addItem( item );
   }
 
-  QList< QgsMapLayer * > order = QgsProject::instance()->layerTreeRoot()->layerOrder();
+  QList<QgsMapLayer *> order = QgsProject::instance()->layerTreeRoot()->layerOrder();
   for ( auto it = geospatialPdfLayerOrder.rbegin(); it != geospatialPdfLayerOrder.rend(); ++it )
   {
     for ( int i = 0; i < order.size(); ++i )
@@ -97,8 +99,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mGeospatialPdfStructureTree->setDefaultDropAction( Qt::MoveAction );
 
   mGeospatialPdfStructureTree->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mGeospatialPdfStructureTree, &QTreeView::customContextMenuRequested, this, [ = ]( const QPoint & point )
-  {
+  connect( mGeospatialPdfStructureTree, &QTreeView::customContextMenuRequested, this, [this]( const QPoint &point ) {
     const QModelIndex index = mGeospatialPdfStructureTree->indexAt( point );
     if ( index.isValid() )
       showContextMenuForGeospatialPdfStructure( point, mGeospatialPdfStructureProxyModel->mapToSource( index ) );
@@ -110,12 +111,12 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
 
 void QgsLayoutPdfExportOptionsDialog::setTextRenderFormat( Qgis::TextRenderFormat format )
 {
-  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( static_cast< int >( format ) ) );
+  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( static_cast<int>( format ) ) );
 }
 
 Qgis::TextRenderFormat QgsLayoutPdfExportOptionsDialog::textRenderFormat() const
 {
-  return static_cast< Qgis::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() );
+  return static_cast<Qgis::TextRenderFormat>( mTextRenderFormatComboBox->currentData().toInt() );
 }
 
 void QgsLayoutPdfExportOptionsDialog::setForceVector( bool force )
@@ -199,26 +200,6 @@ bool QgsLayoutPdfExportOptionsDialog::exportGeospatialPdf() const
   return mGeospatialPDFGroupBox->isChecked();
 }
 
-void QgsLayoutPdfExportOptionsDialog::setUseOgcBestPracticeFormat( bool enabled )
-{
-  if ( !mGeospatialPdfAvailable )
-    return;
-
-  if ( enabled )
-    mGeospatialPdfFormatComboBox->setCurrentIndex( 1 );
-  else
-    mGeospatialPdfFormatComboBox->setCurrentIndex( 0 );
-}
-
-bool QgsLayoutPdfExportOptionsDialog::useOgcBestPracticeFormat() const
-{
-  if ( !mGeospatialPdfAvailable )
-    return false;
-
-  return mGeospatialPdfFormatComboBox->currentIndex() == 1;
-}
-
-
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
 {
   if ( !mGeospatialPdfAvailable )
@@ -256,7 +237,7 @@ QStringList QgsLayoutPdfExportOptionsDialog::geospatialPdfLayerOrder() const
   QStringList order;
   for ( int row = 0; row < mGeospatialPdfStructureProxyModel->rowCount(); ++row )
   {
-    order << mGeospatialPdfStructureProxyModel->data( mGeospatialPdfStructureProxyModel->index( row, 0 ), static_cast< int >( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
+    order << mGeospatialPdfStructureProxyModel->data( mGeospatialPdfStructureProxyModel->index( row, 0 ), static_cast<int>( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
   }
   return order;
 }
@@ -288,7 +269,7 @@ bool QgsLayoutPdfExportOptionsDialog::openAfterExporting() const
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  QgsHelp::openHelp( u"print_composer/create_output.html"_s );
 }
 
 void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index )
@@ -302,14 +283,12 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( 
     {
       QAction *selectAll = new QAction( tr( "Select All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( selectAll );
-      connect( selectAll, &QAction::triggered, this, [ = ]
-      {
+      connect( selectAll, &QAction::triggered, this, [this, index] {
         mGeospatialPdfStructureModel->checkAll( true, QModelIndex(), index.column() );
       } );
       QAction *deselectAll = new QAction( tr( "Deselect All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( deselectAll );
-      connect( deselectAll, &QAction::triggered, this, [ = ]
-      {
+      connect( deselectAll, &QAction::triggered, this, [this, index] {
         mGeospatialPdfStructureModel->checkAll( false, QModelIndex(), index.column() );
       } );
       break;

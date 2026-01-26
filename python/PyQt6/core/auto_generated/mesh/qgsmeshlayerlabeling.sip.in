@@ -16,7 +16,8 @@
 class QgsAbstractMeshLayerLabeling
 {
 %Docstring(signature="appended")
-Abstract base class - its implementations define different approaches to the labeling of a mesh layer.
+Abstract base class - its implementations define different approaches to
+the labeling of a mesh layer.
 
 .. versionadded:: 3.36
 %End
@@ -52,8 +53,8 @@ Gets list of sub-providers within the layer's labeling.
 
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const = 0;
 %Docstring
-Gets associated label settings. In case of multiple sub-providers with different settings,
-they are identified by their ID.
+Gets associated label settings. In case of multiple sub-providers with
+different settings, they are identified by their ID.
 %End
 
     virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() ) = 0;
@@ -66,17 +67,31 @@ Set pal settings for a specific provider (takes ownership).
 
     virtual bool requiresAdvancedEffects() const = 0;
 %Docstring
-Returns ``True`` if drawing labels requires advanced effects like composition
-modes, which could prevent it being used as an isolated cached image
-or exported to a vector format.
+Returns ``True`` if drawing labels requires advanced effects like
+composition modes, which could prevent it being used as an isolated
+cached image or exported to a vector format.
+%End
+
+    virtual bool hasNonDefaultCompositionMode() const = 0;
+%Docstring
+Returns ``True`` the labeling requires a non-default composition mode.
+
+This method is pessimistic, in that it will return ``True`` in cases
+where composition modes cannot be easily determined in advance (e.g.
+when data-defined overrides are in place for composition modes).
+
+The default composition mode is QPainter.CompositionMode_SourceOver.
+
+.. versionadded:: 3.44
 %End
 
     virtual void multiplyOpacity( double opacityFactor );
 %Docstring
 Multiply opacity by ``opacityFactor``.
 
-This method multiplies the opacity of the labeling elements (text, shadow, buffer etc.)
-by ``opacity`` effectively changing the opacity of the whole labeling elements.
+This method multiplies the opacity of the labeling elements (text,
+shadow, buffer etc.) by ``opacity`` effectively changing the opacity of
+the whole labeling elements.
 %End
 
 
@@ -87,21 +102,23 @@ Try to create instance of an implementation based on the XML data
 
     virtual void toSld( QDomNode &parent, const QVariantMap &props ) const;
 %Docstring
-Writes the SE 1.1 TextSymbolizer element based on the current layer labeling settings
+Writes the SE 1.1 TextSymbolizer element based on the current layer
+labeling settings
 %End
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 %Docstring
-Accepts the specified symbology ``visitor``, causing it to visit all symbols associated
-with the labeling.
+Accepts the specified symbology ``visitor``, causing it to visit all
+symbols associated with the labeling.
 
-Returns ``True`` if the visitor should continue visiting other objects, or ``False`` if visiting
-should be canceled.
+Returns ``True`` if the visitor should continue visiting other objects,
+or ``False`` if visiting should be canceled.
 %End
 
     static QgsPalLayerSettings defaultSettingsForLayer( const QgsMeshLayer *layer );
 %Docstring
-Returns the default layer settings to use for the specified mesh ``layer``.
+Returns the default layer settings to use for the specified mesh
+``layer``.
 %End
 
   private:
@@ -111,7 +128,7 @@ Returns the default layer settings to use for the specified mesh ``layer``.
 class QgsMeshLayerSimpleLabeling : QgsAbstractMeshLayerLabeling
 {
 %Docstring(signature="appended")
-Basic implementation of the labeling interface for mesh layer.
+Basic implementation of the labeling interface for mesh layers.
 
 .. versionadded:: 3.36
 %End
@@ -123,8 +140,9 @@ Basic implementation of the labeling interface for mesh layer.
 
     explicit QgsMeshLayerSimpleLabeling( const QgsPalLayerSettings &settings, bool labelFaces = false );
 %Docstring
-Constructs simple labeling configuration with given initial ``settings``.
-Labels are placed on mesh vertices unless ``labelFaces`` is ``True``, when they are placed on mesh faces.
+Constructs simple labeling configuration with given initial
+``settings``. Labels are placed on mesh vertices unless ``labelFaces``
+is ``True``, when they are placed on mesh faces.
 %End
 
     virtual QString type() const;
@@ -148,6 +166,8 @@ Set pal settings (takes ownership).
 %End
 
     virtual bool requiresAdvancedEffects() const;
+
+    virtual bool hasNonDefaultCompositionMode() const;
 
     virtual void multiplyOpacity( double opacityFactor );
 

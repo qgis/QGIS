@@ -16,7 +16,6 @@
 #include "qgstest.h"
 #include "qobjectuniqueptr.h"
 
-#include "qgstest.h"
 #include <QPointer>
 
 class TestQObjectChild;
@@ -24,7 +23,6 @@ class TestQObjectOwner : public QObject
 {
     Q_OBJECT
   public:
-
     ~TestQObjectOwner() override;
 
     void setChild( TestQObjectChild *child )
@@ -33,15 +31,12 @@ class TestQObjectOwner : public QObject
     }
 
   private:
-
     TestQObjectChild *mChild = nullptr;
-
 };
 
 class TestQObjectChild
 {
   public:
-
     TestQObjectChild( TestQObjectOwner *parent )
       : mParent( parent )
     {
@@ -63,10 +58,8 @@ class TestQObjectChild
     int value() const { return mValue; }
 
   private:
-
     TestQObjectOwner *mParent = nullptr;
     int mValue = 0;
-
 };
 
 
@@ -169,7 +162,6 @@ void TestQObjectParentUniquePtr::testDeleteLater()
   QVERIFY( obj.isNull() );
   QVERIFY( obj2.isNull() );
 }
-
 
 
 QGSTEST_MAIN( TestQObjectParentUniquePtr )

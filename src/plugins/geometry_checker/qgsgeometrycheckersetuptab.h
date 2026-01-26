@@ -17,9 +17,9 @@
 #ifndef QGS_GEOMETRY_CHECKER_SETUP_TAB_H
 #define QGS_GEOMETRY_CHECKER_SETUP_TAB_H
 
-#include <QMutex>
-
 #include "ui_qgsgeometrycheckersetuptab.h"
+
+#include <QMutex>
 
 class QgisInterface;
 class QgsVectorLayer;
@@ -44,8 +44,6 @@ class QgsGeometryCheckerSetupTab : public QWidget
     void checkerFinished( bool );
 
   private:
-    QgisInterface *mIface = nullptr;
-    QDialog *mCheckerDialog;
     Ui::QgsGeometryCheckerSetupTab ui;
     QPushButton *mRunButton = nullptr;
     QPushButton *mAbortButton = nullptr;

@@ -16,13 +16,13 @@
 #ifndef QGSTEXTEDITWRAPPER_H
 #define QGSTEXTEDITWRAPPER_H
 
+#include "qgis_gui.h"
+#include "qgsattributeform.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QTextBrowser>
-#include "qgsattributeform.h"
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
@@ -42,7 +42,6 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTextEditWrapper.
      *
@@ -65,7 +64,7 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
      * Returns whether the text edit widget contains Invalid JSON
      * \since QGIS 3.12
      */
-    bool isInvalidJSON();
+    bool isInvalidJSON() const;
 
     /**
      * Add a hint text on the widget

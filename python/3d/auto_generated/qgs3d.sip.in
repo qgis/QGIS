@@ -13,7 +13,7 @@
 class Qgs3D
 {
 %Docstring(signature="appended")
-Qgs3D is a singleton class containing various registries and other global members
+A singleton class containing various registries and other global members
 related to 3D classes.
 
 .. versionadded:: 3.16
@@ -23,7 +23,6 @@ related to 3D classes.
 #include "qgs3d.h"
 %End
   public:
-
 
     static Qgs3D *instance();
 %Docstring
@@ -40,6 +39,11 @@ Initializes the 3D framework.
     static QgsMaterialRegistry *materialRegistry();
 %Docstring
 Returns the material registry, used for managing 3D materials.
+%End
+
+    static Qgs3DTerrainRegistry *terrainRegistry();
+%Docstring
+Returns the terrain registry, used for managing 3D terrains.
 %End
 
   private:

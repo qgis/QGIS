@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgsrasterrenderer.h"
-#include "qgsrastertransparency.h"
+
+#include <memory>
 
 #include "qgscolorutils.h"
 #include "qgslayertreemodellegendnode.h"
+#include "qgsrastertransparency.h"
+#include "qgssldexportcontext.h"
 
 #include <QCoreApplication>
 #include <QDomDocument>
@@ -38,7 +41,7 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterInterface *input, const QString &
 
 QgsRasterRenderer::~QgsRasterRenderer()
 {
-  delete mRasterTransparency;
+
 }
 
 int QgsRasterRenderer::bandCount() const
@@ -52,7 +55,7 @@ int QgsRasterRenderer::bandCount() const
 
 Qgis::DataType QgsRasterRenderer::dataType( int bandNo ) const
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+  QgsDebugMsgLevel( u"Entered"_s, 4 );
 
   if ( mOn ) return Qgis::DataType::ARGB32_Premultiplied;
 
@@ -118,8 +121,8 @@ bool QgsRasterRenderer::usesTransparency() const
 
 void QgsRasterRenderer::setRasterTransparency( QgsRasterTransparency *t )
 {
-  delete mRasterTransparency;
-  mRasterTransparency = t;
+  mRasterTransparency.reset( t );
+
 }
 
 QList< QPair< QString, QColor > > QgsRasterRenderer::legendSymbologyItems() const
@@ -162,17 +165,17 @@ void QgsRasterRenderer::_writeXml( QDomDocument &doc, QDomElement &rasterRendere
     return;
   }
 
-  rasterRendererElem.setAttribute( QStringLiteral( "type" ), mType );
-  rasterRendererElem.setAttribute( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
-  rasterRendererElem.setAttribute( QStringLiteral( "alphaBand" ), mAlphaBand );
-  rasterRendererElem.setAttribute( QStringLiteral( "nodataColor" ), mNodataColor.isValid() ? QgsColorUtils::colorToString( mNodataColor ) : QString() );
+  rasterRendererElem.setAttribute( u"type"_s, mType );
+  rasterRendererElem.setAttribute( u"opacity"_s, QString::number( mOpacity ) );
+  rasterRendererElem.setAttribute( u"alphaBand"_s, mAlphaBand );
+  rasterRendererElem.setAttribute( u"nodataColor"_s, mNodataColor.isValid() ? QgsColorUtils::colorToString( mNodataColor ) : QString() );
 
   if ( mRasterTransparency )
   {
     mRasterTransparency->writeXml( doc, rasterRendererElem );
   }
 
-  QDomElement minMaxOriginElem = doc.createElement( QStringLiteral( "minMaxOrigin" ) );
+  QDomElement minMaxOriginElem = doc.createElement( u"minMaxOrigin"_s );
   mMinMaxOrigin.writeXml( doc, minMaxOriginElem );
   rasterRendererElem.appendChild( minMaxOriginElem );
 }
@@ -192,21 +195,21 @@ void QgsRasterRenderer::readXml( const QDomElement &rendererElem )
     return;
   }
 
-  mType = rendererElem.attribute( QStringLiteral( "type" ) );
-  mOpacity = rendererElem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
-  mAlphaBand = rendererElem.attribute( QStringLiteral( "alphaBand" ), QStringLiteral( "-1" ) ).toInt();
-  const QString colorEncoded = rendererElem.attribute( QStringLiteral( "nodataColor" ) );
+  mType = rendererElem.attribute( u"type"_s );
+  mOpacity = rendererElem.attribute( u"opacity"_s, u"1.0"_s ).toDouble();
+  mAlphaBand = rendererElem.attribute( u"alphaBand"_s, u"-1"_s ).toInt();
+  const QString colorEncoded = rendererElem.attribute( u"nodataColor"_s );
   mNodataColor = !colorEncoded.isEmpty() ? QgsColorUtils::colorFromString( colorEncoded ) : QColor();
 
-  const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( QStringLiteral( "rasterTransparency" ) );
+  const QDomElement rasterTransparencyElem = rendererElem.firstChildElement( u"rasterTransparency"_s );
   if ( !rasterTransparencyElem.isNull() )
   {
-    delete mRasterTransparency;
-    mRasterTransparency = new QgsRasterTransparency();
+    mRasterTransparency = std::make_unique<QgsRasterTransparency>( );
+
     mRasterTransparency->readXml( rasterTransparencyElem );
   }
 
-  const QDomElement minMaxOriginElem = rendererElem.firstChildElement( QStringLiteral( "minMaxOrigin" ) );
+  const QDomElement minMaxOriginElem = rendererElem.firstChildElement( u"minMaxOrigin"_s );
   if ( !minMaxOriginElem.isNull() )
   {
     mMinMaxOrigin.readXml( minMaxOriginElem );
@@ -226,21 +229,52 @@ void QgsRasterRenderer::copyCommonProperties( const QgsRasterRenderer *other, bo
     setMinMaxOrigin( other->minMaxOrigin() );
 }
 
-void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap & ) const
+void QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
 {
-  QDomElement rasterSymbolizerElem = doc.createElement( QStringLiteral( "sld:RasterSymbolizer" ) );
+  QgsSldExportContext context;
+  context.setExtraProperties( props );
+  toSld( doc, element, context );
+}
+
+bool QgsRasterRenderer::toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext & ) const
+{
+  QDomElement rasterSymbolizerElem = doc.createElement( u"sld:RasterSymbolizer"_s );
   element.appendChild( rasterSymbolizerElem );
 
   // add opacity only is different from default
   if ( !qgsDoubleNear( opacity(), 1.0 ) )
   {
-    QDomElement opacityElem = doc.createElement( QStringLiteral( "sld:Opacity" ) );
+    QDomElement opacityElem = doc.createElement( u"sld:Opacity"_s );
     opacityElem.appendChild( doc.createTextNode( QString::number( opacity() ) ) );
     rasterSymbolizerElem.appendChild( opacityElem );
   }
+  return true;
 }
 
 bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
 {
+  return true;
+}
+
+bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
+{
+  if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
+       mMinMaxOrigin.limits() != Qgis::RasterRangeLimit::NotSet &&
+       mMinMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
+  {
+    return true;
+  }
+
+  return false;
+}
+
+bool QgsRasterRenderer::refresh( const QgsRectangle &extent, const QList<double> &, const QList<double> &, bool forceRefresh )
+{
+  if ( !needsRefresh( extent ) && !forceRefresh )
+  {
+    return false;
+  }
+
+  mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
   return true;
 }

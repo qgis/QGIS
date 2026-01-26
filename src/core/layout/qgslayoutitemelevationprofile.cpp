@@ -16,28 +16,35 @@
  ***************************************************************************/
 
 #include "qgslayoutitemelevationprofile.h"
-#include "qgslayoutitemregistry.h"
-#include "qgsplot.h"
-#include "qgslayout.h"
-#include "qgsmessagelog.h"
-#include "qgsmaplayerlistutils_p.h"
+
+#include <memory>
+
 #include "qgscurve.h"
-#include "qgsprofilerequest.h"
-#include "qgsprojectelevationproperties.h"
-#include "qgsterrainprovider.h"
-#include "qgsprofilerenderer.h"
-#include "qgslayoututils.h"
-#include "qgsvectorlayer.h"
+#include "qgslayout.h"
+#include "qgslayoutitemregistry.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
+#include "qgslayoututils.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsmessagelog.h"
+#include "qgsplot.h"
+#include "qgsprofilerenderer.h"
+#include "qgsprofilerequest.h"
 #include "qgsprofilesourceregistry.h"
+#include "qgsprojectelevationproperties.h"
+#include "qgssymbollayerutils.h"
+#include "qgsterrainprovider.h"
+#include "qgsvectorlayer.h"
 
 #include <QTimer>
+
+#include "moc_qgslayoutitemelevationprofile.cpp"
 
 #define CACHE_SIZE_LIMIT 5000
 
 ///@cond PRIVATE
-class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
+class QgsLayoutItemElevationProfilePlot : public Qgs2DXyPlot
 {
   public:
 
@@ -51,13 +58,16 @@ class QgsLayoutItemElevationProfilePlot : public Qgs2DPlot
       mRenderer = renderer;
     }
 
-    void renderContent( QgsRenderContext &rc, const QRectF &plotArea ) override
+    void renderContent( QgsRenderContext &rc, QgsPlotRenderContext &, const QRectF &plotArea, const QgsPlotData & ) override
     {
       if ( mRenderer )
       {
+        const double distanceMin = xMinimum() * xScale;
+        const double distanceMax = xMaximum() * xScale;
         rc.painter()->translate( plotArea.left(), plotArea.top() );
-        mRenderer->render( rc, plotArea.width(), plotArea.height(), xMinimum() * xScale, xMaximum() * xScale, yMinimum(), yMaximum() );
+        mRenderer->render( rc, plotArea.width(), plotArea.height(), distanceMin, distanceMax, yMinimum(), yMaximum() );
         rc.painter()->translate( -plotArea.left(), -plotArea.top() );
+        mRenderer->renderSubsectionsIndicator( rc, plotArea, distanceMin, distanceMax, yMinimum(), yMaximum() );
       }
     }
 
@@ -92,6 +102,11 @@ QgsLayoutItemElevationProfile::QgsLayoutItemElevationProfile( QgsLayout *layout 
 
   //default to no background
   setBackgroundEnabled( false );
+
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceRegistered, this, &QgsLayoutItemElevationProfile::setSourcesPrivate );
+  connect( QgsApplication::profileSourceRegistry(), &QgsProfileSourceRegistry::profileSourceUnregistered, this, &QgsLayoutItemElevationProfile::setSourcesPrivate );
+
+  setSourcesPrivate(); // Initialize with registered sources
 }
 
 QgsLayoutItemElevationProfile::~QgsLayoutItemElevationProfile()
@@ -117,7 +132,7 @@ int QgsLayoutItemElevationProfile::type() const
 
 QIcon QgsLayoutItemElevationProfile::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mLayoutItemElevationProfile.svg" ) );
+  return QgsApplication::getThemeIcon( u"mLayoutItemElevationProfile.svg"_s );
 }
 
 void QgsLayoutItemElevationProfile::refreshDataDefinedProperty( DataDefinedProperty property )
@@ -460,12 +475,12 @@ bool QgsLayoutItemElevationProfile::containsAdvancedEffects() const
   return mEvaluatedOpacity < 1.0;
 }
 
-Qgs2DPlot *QgsLayoutItemElevationProfile::plot()
+Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot()
 {
   return mPlot.get();
 }
 
-const Qgs2DPlot *QgsLayoutItemElevationProfile::plot() const
+const Qgs2DXyPlot *QgsLayoutItemElevationProfile::plot() const
 {
   return mPlot.get();
 }
@@ -481,6 +496,42 @@ void QgsLayoutItemElevationProfile::setLayers( const QList<QgsMapLayer *> &layer
     return;
 
   mLayers = _qgis_listRawToRef( layers );
+  invalidateCache();
+}
+
+QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
+{
+  if ( mSources.isEmpty() && !mLayers.isEmpty() )
+  {
+    // Legacy: If we have layers, extract their sources and return them.
+    // We don't set mSources here, because we want the previous check to
+    // continue failing if only layers are set.
+    // TODO: Remove in QGIS 5.0.
+    QList< QgsAbstractProfileSource * > sources;
+    const QList<QgsMapLayer *> layersToGenerate = layers();
+    sources.reserve( layersToGenerate.size() );
+
+    for ( QgsMapLayer *layer : layersToGenerate )
+    {
+      if ( QgsAbstractProfileSource *source = layer->profileSource() )
+        sources << source;
+    }
+
+    // More legacy: elevation profile layers are in opposite direction
+    // to what the layer tree requires, and are in the same direction as
+    // the renderer expects, but since we reverse sources() (i.e., layers)
+    // before passing them to the renderer, then we need to reverse here first.
+    std::reverse( sources.begin(), sources.end() );
+
+    return sources;
+  }
+
+  return mSources;
+}
+
+void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSource *> &sources )
+{
+  mSources = sources;
   invalidateCache();
 }
 
@@ -634,15 +685,16 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
 
     QSizeF layoutSize = mLayout->convertToLayoutUnits( sizeWithUnits() );
 
-    if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagLosslessImageRendering )
+    if ( mLayout->renderContext().flags() & Qgis::LayoutRenderFlag::LosslessImageRendering )
       painter->setRenderHint( QPainter::LosslessImageRendering, true );
 
     mPlot->xScale = QgsUnitTypes::fromUnitToUnitFactor( mDistanceUnit, mCrs.mapUnits() );
 
     if ( !qgsDoubleNear( layoutSize.width(), 0.0 ) && !qgsDoubleNear( layoutSize.height(), 0.0 ) )
     {
+      const bool forceVector = mLayout && mLayout->renderContext().rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector;
       if ( ( containsAdvancedEffects() || ( blendModeForRender() != QPainter::CompositionMode_SourceOver ) )
-           && ( !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
+           && !forceVector )
       {
         // rasterize
         double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle, painter ) * 25.4;
@@ -673,15 +725,12 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QList< QgsAbstractProfileSource * > sources;
-        sources << QgsApplication::profileSourceRegistry()->profileSources();
-        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-        {
-          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
-            sources.append( source );
-        }
+        QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+        std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-        QgsProfilePlotRenderer renderer( sources, profileRequest() );
+        QgsProfilePlotRenderer renderer( sourcesToRender, profileRequest() );
+        std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
+        renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
         renderer.generateSynchronously();
         mPlot->setRenderer( &renderer );
@@ -689,7 +738,8 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         // size must be in pixels, not layout units
         mPlot->setSize( layoutSize );
 
-        mPlot->render( rc );
+        QgsPlotRenderContext plotContext;
+        mPlot->render( rc, plotContext );
 
         mPlot->setRenderer( nullptr );
 
@@ -726,16 +776,12 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         const double mapUnitsPerPixel = static_cast<double>( mPlot->xMaximum() - mPlot->xMinimum() ) * mPlot->xScale / layoutSize.width();
         rc.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
-        QList< QgsAbstractProfileSource * > sources;
-        sources << QgsApplication::profileSourceRegistry()->profileSources();
-        for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-        {
-          if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
-            sources.append( source );
-        }
+        QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+        std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-        QgsProfilePlotRenderer renderer( sources, profileRequest() );
-
+        QgsProfilePlotRenderer renderer( sourcesToRender, profileRequest() );
+        std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
+        renderer.setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
 
         // TODO
         // we should be able to call renderer.start()/renderer.waitForFinished() here and
@@ -749,7 +795,8 @@ void QgsLayoutItemElevationProfile::paint( QPainter *painter, const QStyleOption
         // size must be in pixels, not layout units
         mPlot->setSize( layoutSize );
 
-        mPlot->render( rc );
+        QgsPlotRenderContext plotContext;
+        mPlot->render( rc, plotContext );
 
         mPlot->setRenderer( nullptr );
 
@@ -803,37 +850,68 @@ void QgsLayoutItemElevationProfile::draw( QgsLayoutItemRenderContext & )
 bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layoutProfileElem, QDomDocument &doc, const QgsReadWriteContext &rwContext ) const
 {
   {
-    QDomElement plotElement = doc.createElement( QStringLiteral( "plot" ) );
+    QDomElement plotElement = doc.createElement( u"plot"_s );
     mPlot->writeXml( plotElement, doc, rwContext );
     layoutProfileElem.appendChild( plotElement );
   }
 
-  layoutProfileElem.setAttribute( QStringLiteral( "distanceUnit" ), qgsEnumValueToKey( mDistanceUnit ) );
+  layoutProfileElem.setAttribute( u"distanceUnit"_s, qgsEnumValueToKey( mDistanceUnit ) );
 
-  layoutProfileElem.setAttribute( QStringLiteral( "tolerance" ), mTolerance );
-  layoutProfileElem.setAttribute( QStringLiteral( "atlasDriven" ), mAtlasDriven ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  layoutProfileElem.setAttribute( u"tolerance"_s, mTolerance );
+  layoutProfileElem.setAttribute( u"atlasDriven"_s, mAtlasDriven ? u"1"_s : u"0"_s );
   if ( mCrs.isValid() )
   {
-    QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
+    QDomElement crsElem = doc.createElement( u"crs"_s );
     mCrs.writeXml( crsElem, doc );
     layoutProfileElem.appendChild( crsElem );
   }
   if ( mCurve )
   {
-    QDomElement curveElem = doc.createElement( QStringLiteral( "curve" ) );
+    QDomElement curveElem = doc.createElement( u"curve"_s );
     curveElem.appendChild( doc.createTextNode( mCurve->asWkt( ) ) );
     layoutProfileElem.appendChild( curveElem );
   }
 
   {
-    QDomElement layersElement = doc.createElement( QStringLiteral( "layers" ) );
+    QDomElement layersElement = doc.createElement( u"layers"_s );
     for ( const QgsMapLayerRef &layer : mLayers )
     {
-      QDomElement layerElement = doc.createElement( QStringLiteral( "layer" ) );
+      QDomElement layerElement = doc.createElement( u"layer"_s );
       layer.writeXml( layerElement, rwContext );
       layersElement.appendChild( layerElement );
     }
     layoutProfileElem.appendChild( layersElement );
+  }
+
+  {
+    QDomElement sourcesElement = doc.createElement( u"profileSources"_s );
+    for ( QgsAbstractProfileSource *source : mSources )
+    {
+      if ( source )
+      {
+        if ( QgsApplication::profileSourceRegistry()->findSourceById( source->profileSourceId() ) )
+        {
+          QDomElement sourceElement = doc.createElement( u"profileCustomSource"_s );
+          sourceElement.setAttribute( u"id"_s, source->profileSourceId() );
+          sourcesElement.appendChild( sourceElement );
+        }
+        else if ( auto layer = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( source ) ) )
+        {
+          QDomElement sourceElement = doc.createElement( u"profileLayerSource"_s );
+          layer.writeXml( sourceElement, rwContext );
+          sourcesElement.appendChild( sourceElement );
+        }
+      }
+    }
+    layoutProfileElem.appendChild( sourcesElement );
+  }
+
+  if ( mSubsectionsSymbol )
+  {
+    QDomElement subsectionsElement = doc.createElement( u"subsections"_s );
+    const QDomElement symbolElement = QgsSymbolLayerUtils::saveSymbol( u"subsections"_s, mSubsectionsSymbol.get(), doc, rwContext );
+    subsectionsElement.appendChild( symbolElement );
+    layoutProfileElem.appendChild( subsectionsElement );
   }
 
   return true;
@@ -841,13 +919,13 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
 
 bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext &context )
 {
-  const QDomElement plotElement = itemElem.firstChildElement( QStringLiteral( "plot" ) );
+  const QDomElement plotElement = itemElem.firstChildElement( u"plot"_s );
   if ( !plotElement.isNull() )
   {
     mPlot->readXml( plotElement, context );
   }
 
-  const QDomNodeList crsNodeList = itemElem.elementsByTagName( QStringLiteral( "crs" ) );
+  const QDomNodeList crsNodeList = itemElem.elementsByTagName( u"crs"_s );
   QgsCoordinateReferenceSystem crs;
   if ( !crsNodeList.isEmpty() )
   {
@@ -856,9 +934,9 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
   }
   mCrs = crs;
 
-  setDistanceUnit( qgsEnumKeyToValue( itemElem.attribute( QStringLiteral( "distanceUnit" ) ), mCrs.mapUnits() ) );
+  setDistanceUnit( qgsEnumKeyToValue( itemElem.attribute( u"distanceUnit"_s ), mCrs.mapUnits() ) );
 
-  const QDomNodeList curveNodeList = itemElem.elementsByTagName( QStringLiteral( "curve" ) );
+  const QDomNodeList curveNodeList = itemElem.elementsByTagName( u"curve"_s );
   if ( !curveNodeList.isEmpty() )
   {
     const QDomElement curveElem = curveNodeList.at( 0 ).toElement();
@@ -873,13 +951,13 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
     }
   }
 
-  mTolerance = itemElem.attribute( QStringLiteral( "tolerance" ) ).toDouble();
-  mAtlasDriven = static_cast< bool >( itemElem.attribute( QStringLiteral( "atlasDriven" ), QStringLiteral( "0" ) ).toInt() );
+  mTolerance = itemElem.attribute( u"tolerance"_s ).toDouble();
+  mAtlasDriven = static_cast< bool >( itemElem.attribute( u"atlasDriven"_s, u"0"_s ).toInt() );
 
   {
     mLayers.clear();
-    const QDomElement layersElement = itemElem.firstChildElement( QStringLiteral( "layers" ) );
-    QDomElement layerElement = layersElement.firstChildElement( QStringLiteral( "layer" ) );
+    const QDomElement layersElement = itemElem.firstChildElement( u"layers"_s );
+    QDomElement layerElement = layersElement.firstChildElement( u"layer"_s );
     while ( !layerElement.isNull() )
     {
       QgsMapLayerRef ref;
@@ -887,9 +965,50 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
       ref.resolveWeakly( mLayout->project() );
       mLayers.append( ref );
 
-      layerElement = layerElement.nextSiblingElement( QStringLiteral( "layer" ) );
+      layerElement = layerElement.nextSiblingElement( u"layer"_s );
     }
   }
+
+  {
+    mSources.clear();
+    const QDomElement sourcesElement = itemElem.firstChildElement( u"profileSources"_s );
+    QDomElement sourceElement = sourcesElement.firstChildElement();
+    while ( !sourceElement.isNull() )
+    {
+      if ( sourceElement.tagName() == "profileCustomSource"_L1 )
+      {
+        const QString sourceId = sourceElement.attribute( u"id"_s );
+        if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
+        {
+          mSources.append( profileSource );
+        }
+      }
+      else if ( sourceElement.tagName() == "profileLayerSource"_L1 )
+      {
+        QgsMapLayerRef ref;
+        ref.readXml( sourceElement, context );
+        ref.resolveWeakly( mLayout->project() );
+        if ( ref.get() )
+        {
+          mSources.append( ref.get()->profileSource() );
+        }
+      }
+
+      sourceElement = sourceElement.nextSiblingElement();
+    }
+  }
+
+  const QDomElement subsectionsElement = itemElem.firstChildElement( u"subsections"_s );
+  const QDomElement symbolsElement = subsectionsElement.firstChildElement( u"symbol"_s );
+  if ( !symbolsElement.isNull() )
+  {
+    std::unique_ptr< QgsLineSymbol > subSectionsSymbol = QgsSymbolLayerUtils::loadSymbol<QgsLineSymbol >( symbolsElement, context );
+    if ( subSectionsSymbol )
+    {
+      setSubsectionsSymbol( subSectionsSymbol.release() );
+    }
+  }
+
 
   return true;
 }
@@ -945,7 +1064,7 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   if ( w <= 0 || h <= 0 )
     return;
 
-  mCacheRenderingImage.reset( new QImage( w, h, QImage::Format_ARGB32 ) );
+  mCacheRenderingImage = std::make_unique<QImage>( w, h, QImage::Format_ARGB32 );
 
   // set DPI of the image
   mCacheRenderingImage->setDotsPerMeterX( static_cast< int >( std::round( 1000 * w / widthLayoutUnits ) ) );
@@ -960,17 +1079,14 @@ void QgsLayoutItemElevationProfile::recreateCachedImageInBackground()
   }
 
   mCacheInvalidated = false;
-  mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
+  mPainter = std::make_unique<QPainter>( mCacheRenderingImage.get() );
 
-  QList< QgsAbstractProfileSource * > sources;
-  sources << QgsApplication::profileSourceRegistry()->profileSources();
-  for ( const QgsMapLayerRef &layer : std::as_const( mLayers ) )
-  {
-    if ( QgsAbstractProfileSource *source = dynamic_cast< QgsAbstractProfileSource * >( layer.get() ) )
-      sources.append( source );
-  }
+  QList< QgsAbstractProfileSource *> sourcesToRender = sources();
+  std::reverse( sourcesToRender.begin(), sourcesToRender.end() ); // sources are rendered from bottom to top
 
-  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sources, profileRequest() );
+  mRenderJob = std::make_unique< QgsProfilePlotRenderer >( sourcesToRender, profileRequest() );
+  std::unique_ptr<QgsLineSymbol> rendererSubSectionsSymbol( subsectionsSymbol() ? subsectionsSymbol()->clone() : nullptr );
+  mRenderJob->setSubsectionsSymbol( rendererSubSectionsSymbol.release() );
   connect( mRenderJob.get(), &QgsProfilePlotRenderer::generationFinished, this, &QgsLayoutItemElevationProfile::profileGenerationFinished );
   mRenderJob->startGeneration();
 
@@ -992,7 +1108,8 @@ void QgsLayoutItemElevationProfile::profileGenerationFinished()
   // size must be in pixels, not layout units
   mPlot->setSize( mCacheRenderingImage->size() );
 
-  mPlot->render( rc );
+  QgsPlotRenderContext plotContext;
+  mPlot->render( rc, plotContext );
 
   mPlot->setRenderer( nullptr );
 
@@ -1064,7 +1181,7 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
     case Qgis::DistanceUnit::MilesUSSurvey:
     case Qgis::DistanceUnit::Fathoms:
     case Qgis::DistanceUnit::MetersGermanLegal:
-      mPlot->xAxis().setLabelSuffix( QStringLiteral( " %1" ).arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) ) );
+      mPlot->xAxis().setLabelSuffix( u" %1"_s.arg( QgsUnitTypes::toAbbreviatedString( mDistanceUnit ) ) );
       break;
 
     case Qgis::DistanceUnit::Degrees:
@@ -1077,3 +1194,12 @@ void QgsLayoutItemElevationProfile::setDistanceUnit( Qgis::DistanceUnit unit )
   }
 }
 
+void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol )
+{
+  mSubsectionsSymbol.reset( symbol );
+}
+
+void QgsLayoutItemElevationProfile::setSourcesPrivate()
+{
+  mSources = QgsApplication::profileSourceRegistry()->profileSources();
+}

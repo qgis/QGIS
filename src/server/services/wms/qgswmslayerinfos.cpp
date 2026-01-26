@@ -18,23 +18,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsserverprojectutils.h"
-#include "qgscoordinatetransform.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgswmslayerinfos.h"
-#include "qgsmessagelog.h"
-#include "qgsserverinterface.h"
-#include "qgsmaplayerstylemanager.h"
 
 #include <algorithm>
+
+#include "qgscoordinatetransform.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgsserverinterface.h"
+#include "qgsserverprojectutils.h"
+#include "qgsvectorlayer.h"
 
 QgsRectangle QgsWmsLayerInfos::transformExtent(
   const QgsRectangle &extent,
   const QgsCoordinateReferenceSystem &source,
   const QgsCoordinateReferenceSystem &destination,
   const QgsCoordinateTransformContext &context,
-  const bool &ballparkTransformsAreAppropriate )
+  const bool &ballparkTransformsAreAppropriate
+)
 {
   QgsCoordinateTransform transformer { source, destination, context };
   transformer.setBallparkTransformsAreAppropriate( ballparkTransformsAreAppropriate );
@@ -42,13 +44,14 @@ QgsRectangle QgsWmsLayerInfos::transformExtent(
   return transformer.transformBoundingBox( extent );
 }
 
-QMap< QString, QgsRectangle > QgsWmsLayerInfos::transformExtentToCrsList(
+QMap<QString, QgsRectangle> QgsWmsLayerInfos::transformExtentToCrsList(
   const QgsRectangle &extent,
   const QgsCoordinateReferenceSystem &source,
   const QList<QgsCoordinateReferenceSystem> &destinations,
-  const QgsCoordinateTransformContext &context )
+  const QgsCoordinateTransformContext &context
+)
 {
-  QMap< QString, QgsRectangle > crsExtents;
+  QMap<QString, QgsRectangle> crsExtents;
   if ( extent.isEmpty() )
   {
     return crsExtents;
@@ -57,7 +60,7 @@ QMap< QString, QgsRectangle > QgsWmsLayerInfos::transformExtentToCrsList(
   {
     // Transform extent and do not catch exception
     QgsCoordinateTransform crsTransform { source, destination, context };
-    crsExtents[ destination.authid() ] = crsTransform.transformBoundingBox( extent );
+    crsExtents[destination.authid()] = crsTransform.transformBoundingBox( extent );
   }
   return crsExtents;
 }
@@ -69,7 +72,8 @@ bool setBoundingRect(
   QgsMapLayer *ml,
   const QgsRectangle &wmsExtent,
   const QgsCoordinateReferenceSystem &wgs84,
-  const QList<QgsCoordinateReferenceSystem> &outputCrsList )
+  const QList<QgsCoordinateReferenceSystem> &outputCrsList
+)
 {
   QgsRectangle layerExtent = ml->extent();
   if ( layerExtent.isEmpty() )
@@ -93,7 +97,7 @@ bool setBoundingRect(
         }
         catch ( QgsCsException &cse )
         {
-          QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+          QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
           return false;
         }
       }
@@ -106,7 +110,7 @@ bool setBoundingRect(
     }
     catch ( const QgsCsException &cse )
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
       return false;
     }
   }
@@ -118,12 +122,12 @@ bool setBoundingRect(
   try
   {
     pLayer.crsExtents = QgsWmsLayerInfos::transformExtentToCrsList(
-                          layerExtent, ml->crs(), outputCrsList, project->transformContext()
-                        );
+      layerExtent, ml->crs(), outputCrsList, project->transformContext()
+    );
   }
   catch ( QgsCsException &cse )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error transforming extent for layer %1: %2" ).arg( ml->name() ).arg( cse.what() ), QStringLiteral( "Server" ), Qgis::MessageLevel::Warning );
+    QgsMessageLog::logMessage( u"Error transforming extent for layer %1: %2"_s.arg( ml->name() ).arg( cse.what() ), u"Server"_s, Qgis::MessageLevel::Warning );
     return false;
   }
 
@@ -133,22 +137,23 @@ bool setBoundingRect(
 // ===================================
 // Get wms layer infos
 // ===================================
-QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
+QMap<QString, QgsWmsLayerInfos> QgsWmsLayerInfos::buildWmsLayerInfos(
   QgsServerInterface *serverIface,
   const QgsProject *project,
-  const QList<QgsCoordinateReferenceSystem> &outputCrsList )
+  const QList<QgsCoordinateReferenceSystem> &outputCrsList
+)
 {
-  QMap< QString, QgsWmsLayerInfos > wmsLayers;
+  QMap<QString, QgsWmsLayerInfos> wmsLayers;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-  ( void )serverIface;
+  ( void ) serverIface;
 #endif
 
   bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );
   const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
   const QgsRectangle wmsExtent = QgsServerProjectUtils::wmsExtent( *project );
-  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( geoEpsgCrsAuthId() );
+  const QgsCoordinateReferenceSystem wgs84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( Qgis::geographicCrsAuthId() );
 
   for ( QgsMapLayer *ml : project->mapLayers() )
   {
@@ -196,27 +201,14 @@ QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
     {
       pLayer.name = ml->serverProperties()->shortName();
     }
-    // layer title
-    pLayer.title = ml->serverProperties()->title();
-    if ( pLayer.title.isEmpty() )
-    {
-      pLayer.title = ml->name();
-    }
-    // layer abstract
-    pLayer.abstract = ml->serverProperties()->abstract();
     // layer is queryable
     pLayer.queryable = ml->flags().testFlag( QgsMapLayer::Identifiable );
-    // layer keywords
-    if ( !ml->serverProperties()->keywordList().isEmpty() )
-    {
-      pLayer.keywords = ml->serverProperties()->keywordList().split( ',' );
-    }
     // layer styles
     pLayer.styles = ml->styleManager()->styles();
     // layer legend URL
-    pLayer.legendUrl = ml->legendUrl();
+    pLayer.legendUrl = ml->serverProperties()->legendUrl();
     // layer legend URL format
-    pLayer.legendUrlFormat = ml->legendUrlFormat();
+    pLayer.legendUrlFormat = ml->serverProperties()->legendUrlFormat();
     // layer min/max scales
     if ( ml->hasScaleBasedVisibility() )
     {
@@ -224,17 +216,9 @@ QMap< QString, QgsWmsLayerInfos > QgsWmsLayerInfos::buildWmsLayerInfos(
       pLayer.maxScale = ml->maximumScale();
       pLayer.minScale = ml->minimumScale();
     }
-    // layer data URL
-    pLayer.dataUrl = ml->serverProperties()->dataUrl();
-    // layer attribution
-    pLayer.attribution = ml->serverProperties()->attribution();
-    pLayer.attributionUrl = ml->serverProperties()->attributionUrl();
-    // layer metadata URLs
-    pLayer.metadataUrls = ml->serverProperties()->metadataUrls();
 
     wmsLayers[pLayer.id] = pLayer;
   }
 
   return wmsLayers;
 }
-

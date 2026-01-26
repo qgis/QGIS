@@ -32,7 +32,7 @@ class QgsElevationProfilePlotItem;
 /**
  * \ingroup quick
  *
- * \brief This class implements a visual Qt Quick Item that does elevation profile rendering
+ * \brief Implements a visual Qt Quick Item that does elevation profile rendering
  * according to the current project settings and a profile curve geometry.
  *
  * \since QGIS 3.30
@@ -58,12 +58,11 @@ class QUICK_EXPORT QgsQuickElevationProfileCanvas : public QQuickItem
     Q_PROPERTY( bool isRendering READ isRendering NOTIFY isRenderingChanged )
 
   public:
-
     /**
      * Constructor for QgsElevationProfileCanvas, with the specified \a parent widget.
      */
     explicit QgsQuickElevationProfileCanvas( QQuickItem *parent = nullptr );
-    ~QgsQuickElevationProfileCanvas();
+    ~QgsQuickElevationProfileCanvas() override;
 
     QSGNode *updatePaintNode( QSGNode *oldNode, QQuickItem::UpdatePaintNodeData * ) override;
 
@@ -203,11 +202,7 @@ class QUICK_EXPORT QgsQuickElevationProfileCanvas : public QQuickItem
     void isRenderingChanged();
 
   protected:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    void geometryChanged( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
-#else
     void geometryChange( const QRectF &newGeometry, const QRectF &oldGeometry ) override;
-#endif
 
   public slots:
 
@@ -259,8 +254,6 @@ class QUICK_EXPORT QgsQuickElevationProfileCanvas : public QQuickItem
 
     QgsGeometry mProfileCurve;
     double mTolerance = 0;
-
-    bool mFirstDrawOccurred = false;
 
     bool mZoomFullWhenJobFinished = true;
 

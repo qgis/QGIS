@@ -19,8 +19,9 @@
 #define QGSVECTORLAYERTEMPORALPROPERTIESWIDGET_H
 
 #include "ui_qgsvectorlayertemporalpropertieswidgetbase.h"
-#include "qgsexpressioncontextgenerator.h"
+
 #include "qgis_gui.h"
+#include "qgsexpressioncontextgenerator.h"
 
 class QgsVectorLayer;
 
@@ -35,7 +36,6 @@ class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, public
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsVectorLayerTemporalPropertiesWidget.
      */
@@ -54,11 +54,9 @@ class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, public
     void syncToLayer();
 
   private:
-
     /**
      * The corresponding map layer with temporal attributes
      */
     QgsVectorLayer *mLayer = nullptr;
-
 };
 #endif // QGSVECTORLAYERTEMPORALPROPERTIESWIDGET_H

@@ -15,18 +15,20 @@
 ***************************************************************************
 """
 
-__author__ = 'Marco Bernasocchi'
-__date__ = 'June 2016'
-__copyright__ = '(C) 2016, Marco Bernasocchi'
+__author__ = "Marco Bernasocchi"
+__date__ = "June 2016"
+__copyright__ = "(C) 2016, Marco Bernasocchi"
 
-from qgis.PyQt.QtWidgets import (QGroupBox,
-                                 QPushButton,
-                                 QSizePolicy,
-                                 QLabel,
-                                 QHBoxLayout,
-                                 QVBoxLayout,
-                                 QListWidget,
-                                 QAbstractItemView)
+from qgis.PyQt.QtWidgets import (
+    QGroupBox,
+    QPushButton,
+    QSizePolicy,
+    QLabel,
+    QHBoxLayout,
+    QVBoxLayout,
+    QListWidget,
+    QAbstractItemView,
+)
 from qgis.PyQt.QtGui import QFont
 from qgis.PyQt.QtCore import Qt, QSize, pyqtSignal
 
@@ -152,8 +154,7 @@ class ListMultiSelectWidget(QGroupBox):
         self.selection_changed.emit()
 
     def _setupUI(self):
-        self.setSizePolicy(
-            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
 
         self.setMinimumHeight(180)
 
@@ -166,7 +167,7 @@ class ListMultiSelectWidget(QGroupBox):
         self.deselected_widget = QListWidget(self)
         self._set_list_widget_defaults(self.deselected_widget)
         deselected_label = QLabel()
-        deselected_label.setText('Deselected')
+        deselected_label.setText("Deselected")
         deselected_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         deselected_label.setFont(italic_font)
         deselected_v_layout = QVBoxLayout()
@@ -177,7 +178,7 @@ class ListMultiSelectWidget(QGroupBox):
         self.selected_widget = QListWidget(self)
         self._set_list_widget_defaults(self.selected_widget)
         selected_label = QLabel()
-        selected_label.setText('Selected')
+        selected_label.setText("Selected")
         selected_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         selected_label.setFont(italic_font)
         selected_v_layout = QVBoxLayout()
@@ -188,14 +189,14 @@ class ListMultiSelectWidget(QGroupBox):
         self.buttons_vertical_layout = QVBoxLayout()
         self.buttons_vertical_layout.setContentsMargins(0, -1, 0, -1)
 
-        self.select_all_btn = SmallQPushButton('>>')
-        self.deselect_all_btn = SmallQPushButton('<<')
-        self.select_btn = SmallQPushButton('>')
-        self.deselect_btn = SmallQPushButton('<')
-        self.select_btn.setToolTip('Add the selected items')
-        self.deselect_btn.setToolTip('Remove the selected items')
-        self.select_all_btn.setToolTip('Add all')
-        self.deselect_all_btn.setToolTip('Remove all')
+        self.select_all_btn = SmallQPushButton(">>")
+        self.deselect_all_btn = SmallQPushButton("<<")
+        self.select_btn = SmallQPushButton(">")
+        self.deselect_btn = SmallQPushButton("<")
+        self.select_btn.setToolTip("Add the selected items")
+        self.deselect_btn.setToolTip("Remove the selected items")
+        self.select_all_btn.setToolTip("Add all")
+        self.deselect_all_btn.setToolTip("Remove all")
 
         # add buttons
         spacer_label = QLabel()  # pragmatic way to create a spacer with
@@ -229,6 +230,7 @@ class SmallQPushButton(QPushButton):
         QPushButton.__init__(self)
         self.setText(text)
         buttons_size_policy = QSizePolicy(
-            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+            QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed
+        )
         self.setSizePolicy(buttons_size_policy)
         self.setMaximumSize(QSize(30, 30))

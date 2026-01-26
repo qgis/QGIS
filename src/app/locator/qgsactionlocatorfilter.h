@@ -21,10 +21,7 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
-
-
 class QAction;
-
 
 
 class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
@@ -32,23 +29,21 @@ class APP_EXPORT QgsActionLocatorFilter : public QgsLocatorFilter
     Q_OBJECT
 
   public:
-
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
     QgsActionLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "actions" ); }
+    QString name() const override { return u"actions"_s; }
     QString displayName() const override { return tr( "Actions" ); }
     Priority priority() const override { return Lowest; }
-    QString prefix() const override { return QStringLiteral( "." ); }
+    QString prefix() const override { return u"."_s; }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+
   private:
+    QList<QWidget *> mActionParents;
 
-    QList< QWidget * > mActionParents;
-
-    void searchActions( const QString &string, QWidget *parent, QList< QAction *> &found );
-
+    void searchActions( const QString &string, QWidget *parent, QList<QAction *> &found );
 };
 
 

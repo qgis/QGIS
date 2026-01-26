@@ -19,6 +19,8 @@
  *                                                                         *
  ***************************************************************************/
 
+class QgsServerResponse;
+
 namespace QgsWms
 {
 
@@ -28,7 +30,3 @@ namespace QgsWms
   void writeGetSchemaExtension( QgsServerResponse &response );
 
 } // namespace QgsWms
-
-
-
-

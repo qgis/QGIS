@@ -17,26 +17,26 @@
 #ifndef QGSAUTHCONFIGEDITOR_H
 #define QGSAUTHCONFIGEDITOR_H
 
-#include <QSqlTableModel>
-#include "qgis_sip.h"
-#include <QWidget>
-
 #include "ui_qgsauthconfigeditor.h"
-#include "qgsauthmanager.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthmanager.h"
+
+#include <QSqlTableModel>
+#include <QWidget>
 
 class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief Widget for editing authentication configuration database
+ * \brief Widget for editing authentication configuration database.
  */
 class GUI_EXPORT QgsAuthConfigEditor : public QWidget, private Ui::QgsAuthConfigEditor
 {
     Q_OBJECT
 
   public:
-
     /**
      * Widget for editing authentication configurations directly in database
      * \param parent Parent widget

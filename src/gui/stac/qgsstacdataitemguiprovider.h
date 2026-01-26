@@ -19,22 +19,18 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include "qgsdataitemguiprovider.h"
 #include "qgis_gui.h"
-
+#include "qgsdataitemguiprovider.h"
 
 class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-
     QgsStacDataItemGuiProvider() = default;
 
-    QString name() override { return QStringLiteral( "STAC" ); }
+    QString name() override { return u"STAC"_s; }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems,
-                              QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void newConnection( QgsDataItem *item );

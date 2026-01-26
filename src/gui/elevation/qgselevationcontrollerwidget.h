@@ -21,6 +21,7 @@
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrange.h"
+
 #include <QWidget>
 #include <QWidgetAction>
 
@@ -36,7 +37,6 @@ class GUI_EXPORT QgsElevationControllerLabels : public QWidget SIP_SKIP
     Q_OBJECT
 
   public:
-
     QgsElevationControllerLabels( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void paintEvent( QPaintEvent *event ) override;
@@ -44,29 +44,25 @@ class GUI_EXPORT QgsElevationControllerLabels : public QWidget SIP_SKIP
     void setLimits( const QgsDoubleRange &limits );
     void setRange( const QgsDoubleRange &range );
     void setInverted( bool inverted );
-    void setSignificantElevations( const QList< double > &elevations );
+    void setSignificantElevations( const QList<double> &elevations );
 
   private:
-
     QgsDoubleRange mLimits;
     QgsDoubleRange mRange;
     bool mInverted = false;
-    QList< double > mSignificantElevations;
-
+    QList<double> mSignificantElevations;
 };
 
-class GUI_EXPORT QgsElevationControllerSettingsAction: public QWidgetAction
+class GUI_EXPORT QgsElevationControllerSettingsAction : public QWidgetAction
 {
     Q_OBJECT
 
   public:
-
     QgsElevationControllerSettingsAction( QWidget *parent = nullptr );
 
     QgsDoubleSpinBox *sizeSpin();
 
   private:
-
     QgsDoubleSpinBox *mSizeSpin = nullptr;
 };
 
@@ -81,7 +77,6 @@ class GUI_EXPORT QgsElevationControllerSettingsAction: public QWidgetAction
  */
 class GUI_EXPORT QgsElevationControllerWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsElevationControllerWidget *>( sipCpp ) != nullptr )
@@ -94,7 +89,6 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsElevationControllerWidget, with the specified \a parent widget.
      */
@@ -176,7 +170,7 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     /**
      * Sets a list of significant \a elevations to highlight in the widget.
      */
-    void setSignificantElevations( const QList< double > &elevations );
+    void setSignificantElevations( const QList<double> &elevations );
 
   signals:
 
@@ -204,7 +198,6 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     void invertedChanged( bool inverted );
 
   private:
-
     void updateWidgetMask();
 
     QToolButton *mConfigureButton = nullptr;
@@ -218,7 +211,6 @@ class GUI_EXPORT QgsElevationControllerWidget : public QWidget
     double mFixedRangeSize = -1;
     int mBlockSliderChanges = 0;
     double mSliderPrecision = 100;
-
 };
 
 #endif // QGSELEVATIONCONTROLLERWIDGET_H

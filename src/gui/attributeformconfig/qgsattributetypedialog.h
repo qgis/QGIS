@@ -22,16 +22,16 @@
 
 #include "ui_qgsattributetypeedit.h"
 
+#include "qgis_gui.h"
 #include "qgseditorconfigwidget.h"
 #include "qgsfeature.h"
-#include "qgsvectordataprovider.h"
 #include "qgshelp.h"
-#include "qgis_gui.h"
+#include "qgsvectordataprovider.h"
 
 class QWidget;
 class QStandardItem;
 
-class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
+class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -49,7 +49,15 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
 
     const QString editorWidgetText();
 
-    void setEditorWidgetType( const QString &type );
+    /**
+     * Sets the \a type in the widget combobox. Widget config is remembered,
+     * allowing users to switch between types without losing configs, unless
+     * \a forceWidgetRefresh is passed as true.
+     *
+     * \param type Editor widget type to be set
+     * \param forceWidgetRefresh Always sets the config, ensuring a widget refresh
+     */
+    void setEditorWidgetType( const QString &type, bool forceWidgetRefresh = false );
 
     const QVariantMap editorWidgetConfig();
 
@@ -67,20 +75,20 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     bool labelOnTop() const;
 
     /**
-     * Setter for checkbox to reuse last entered values for the field.
+     * Setter for checkbox to remember last entered values by default for the field.
      *
-     * \see reuseLastValues()
-     * \since QGIS 3.20
+     * \see reuseLastValuePolicy()
+     * \since QGIS 4.0
      */
-    void setReuseLastValues( bool reuse );
+    void setReuseLastValuePolicy( Qgis::AttributeFormReuseLastValuePolicy policy );
 
     /**
-     * Getter for checkbox to reuse last entered values for the field.
+     * Getter for checkbox to remember last entered values by default for the field.
      *
-     * \see setReuseLastValues()
-     * \since QGIS 3.20
+     * \see setReuseLastValuePolicy()
+     * \since QGIS 4.0
      */
-    bool reuseLastValues() const;
+    Qgis::AttributeFormReuseLastValuePolicy reuseLastValuePolicy() const;
 
     /**
      * Setter for label alias
@@ -263,6 +271,24 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
      */
     void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy );
 
+    /**
+     * Returns the field's merge policy.
+     *
+     * \see setMergePolicy()
+     *
+     * \since QGIS 3.44
+     */
+    Qgis::FieldDomainMergePolicy mergePolicy() const;
+
+    /**
+     * Sets the field's merge policy.
+     *
+     * \see mergePolicy()
+     *
+     * \since QGIS 3.44
+     */
+    void setMergePolicy( Qgis::FieldDomainMergePolicy policy );
+
   private slots:
 
     /**
@@ -273,9 +299,13 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
 
     void defaultExpressionChanged();
 
+    void updateReuseLastValuePolicyLabel();
+
     void updateSplitPolicyLabel();
 
     void updateDuplicatePolicyLabel();
+
+    void updateMergePolicyLabel();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
@@ -284,7 +314,7 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     QVariantMap mWidgetConfig;
 
     //! Cached configuration dialog (lazy loaded)
-    QMap< QString, QgsEditorConfigWidget * > mEditorConfigWidgets;
+    QMap<QString, QgsEditorConfigWidget *> mEditorConfigWidgets;
 
     QStandardItem *currentItem() const;
 

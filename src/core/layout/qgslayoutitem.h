@@ -18,12 +18,13 @@
 #define QGSLAYOUTITEM_H
 
 #include "qgis_core.h"
-#include "qgslayoutobject.h"
-#include "qgslayoutsize.h"
-#include "qgslayoutpoint.h"
-#include "qgsrendercontext.h"
-#include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
+#include "qgslayoutobject.h"
+#include "qgslayoutpoint.h"
+#include "qgslayoutsize.h"
+#include "qgslayoutundocommand.h"
+#include "qgsrendercontext.h"
+
 #include <QGraphicsRectItem>
 #include <QIcon>
 #include <QPainter>
@@ -74,7 +75,7 @@ class CORE_EXPORT QgsLayoutItemRenderContext
      *
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the current view zoom (scale factor). It can be
@@ -105,21 +106,20 @@ class CORE_EXPORT QgsLayoutItemRenderContext
  */
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem, public QgsLayoutUndoObjectInterface
 {
-#ifdef SIP_RUN
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitempicture.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitempolygon.h"
-#include "qgslayoutitempolyline.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitemmarker.h"
-#include "qgslayoutitemelevationprofile.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemgroup.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmap.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempicture.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemlabel.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemlegend.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempolygon.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempolyline.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemscalebar.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutframe.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemshape.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempage.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmarker.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemelevationprofile.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemchart.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -185,6 +185,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       case QGraphicsItem::UserType + 118:
         sipType = sipType_QgsLayoutItemElevationProfile;
         *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 119:
+        sipType = sipType_QgsLayoutItemChart;
+        *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
         break;
 
       // did you read that comment above? NO? Go read it now. You're about to break stuff.
@@ -282,6 +286,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendGroupFont, //!< Legend group font
       UndoLegendLayerFont, //!< Legend layer font
       UndoLegendItemFont, //!< Legend item font
+      UndoLegendAutoWrapAfter, //!< Legend auto wrap lines after distance. \since QGIS 3.44
       UndoScaleBarLineWidth, //!< Scalebar line width
       UndoScaleBarSegmentSize, //!< Scalebar segment size
       UndoScaleBarSegmentsLeft, //!< Scalebar segments left
@@ -318,6 +323,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoElevationProfileMaximumDistance, //!< Change elevation profile maximum distance
       UndoElevationProfileMinimumElevation, //!< Change elevation profile minimum elevation
       UndoElevationProfileMaximumElevation, //!< Change elevation profile maximum elevation
+      UndoElevationProfileSubsectionLines, //!< Change elevation profile subsection indicator symbol. \since QGIS 3.44
 
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
@@ -1383,6 +1389,3 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLayoutItem::Flags )
 
 #endif //QGSLAYOUTITEM_H
-
-
-

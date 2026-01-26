@@ -13,25 +13,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssvgselectorwidget.h"
+#include "qgstest.h"
+
 #include <QPixmapCache>
 #include <QTemporaryFile>
-
-#include "qgstest.h"
-#include "qgssvgselectorwidget.h"
 
 class TestQgsSvgSelectorWidget : public QgsTest
 {
     Q_OBJECT
 
   public:
-
-    TestQgsSvgSelectorWidget() : QgsTest( QStringLiteral( "SVG Selector Widget Tests" ) ) {}
+    TestQgsSvgSelectorWidget()
+      : QgsTest( u"SVG Selector Widget Tests"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void testPixmapCache();
 };
 
@@ -60,8 +60,8 @@ void TestQgsSvgSelectorWidget::testPixmapCache()
   // So we force a cache image different from the one we set to the model to check that this is
   // the cache image returned, not the model svg one
 
-  const QPixmap cachePixmap( QStringLiteral( "%1/rgb256x256.png" ).arg( TEST_DATA_DIR ) );
-  const QString sampleSvg = QStringLiteral( "%1/sample_svg.svg" ).arg( TEST_DATA_DIR );
+  const QPixmap cachePixmap( u"%1/rgb256x256.png"_s.arg( TEST_DATA_DIR ) );
+  const QString sampleSvg = u"%1/sample_svg.svg"_s.arg( TEST_DATA_DIR );
   QPixmapCache::insert( sampleSvg, cachePixmap );
 
   QgsSvgSelectorListModel model( nullptr );

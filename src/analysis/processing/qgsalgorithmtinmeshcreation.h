@@ -25,14 +25,14 @@
 ///@cond PRIVATE
 struct QgsMesh;
 
-class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
+class QgsTinMeshCreationAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
     QString shortDescription() const override;
+    QStringList tags() const override;
     QString name() const override;
     QString displayName() const override;
     bool canExecute( QString *errorMessage ) const override;
@@ -50,10 +50,10 @@ class QgsTinMeshCreationAlgorithm: public QgsProcessingAlgorithm
 
     struct Layer
     {
-      QgsFeatureIterator fit;
-      QgsCoordinateTransform transform;
-      int attributeIndex;
-      long long featureCount;
+        QgsFeatureIterator fit;
+        QgsCoordinateTransform transform;
+        int attributeIndex;
+        long long featureCount;
     };
 
     QList<Layer> mVerticesLayer;

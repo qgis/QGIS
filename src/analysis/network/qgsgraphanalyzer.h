@@ -16,23 +16,21 @@
 #ifndef QGSGRAPHANALYZER_H
 #define QGSGRAPHANALYZER_H
 
-#include <QVector>
-
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
+
+#include <QVector>
 
 class QgsGraph;
 
 /**
  * \ingroup analysis
- * \brief This class performs graph analysis, e.g. calculates shortest path between two
- * points using different strategies with Dijkstra algorithm
+ * \brief Performs graph analysis, e.g. calculates shortest path between two
+ * points using different strategies with Dijkstra's algorithm.
  */
-
 class ANALYSIS_EXPORT QgsGraphAnalyzer
 {
   public:
-
     /**
      * Solve shortest path problem using Dijkstra algorithm
      * \param source source graph
@@ -40,14 +38,15 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
      * \param criterionNum index of the optimization strategy
      * \param resultTree array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1.
      * Note that the startVertexIdx will also have a value of -1 and may need special handling by callers.
-     * \param resultCost array of the paths costs
+     * \param resultCost array of the path's costs
      */
-    static void SIP_PYALTERNATIVETYPE( SIP_PYLIST ) dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );
-
-#ifdef SIP_RUN
-    % MethodCode
-    QVector< int > treeResult;
-    QVector< double > costResult;
+#ifndef SIP_RUN
+    static void dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = nullptr, QVector<double> *resultCost = nullptr );
+#else
+    static SIP_PYOBJECT dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree SIP_DOCSTRING_OUT = nullptr, QVector<double> *resultCost SIP_DOCSTRING_OUT = nullptr ) SIP_TYPEHINT( Tuple[List[int], List[float]] );
+    //%MethodCode
+    QVector<int> treeResult;
+    QVector<double> costResult;
     QgsGraphAnalyzer::dijkstra( a0, a1, a2, &treeResult, &costResult );
 
     PyObject *l1 = PyList_New( treeResult.size() );
@@ -72,7 +71,7 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
     sipRes = PyTuple_New( 2 );
     PyTuple_SET_ITEM( sipRes, 0, l1 );
     PyTuple_SET_ITEM( sipRes, 1, l2 );
-    % End
+    //%End
 #endif
 
     /**

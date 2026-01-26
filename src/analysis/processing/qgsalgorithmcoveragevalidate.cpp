@@ -17,16 +17,16 @@
 
 
 #include "qgsalgorithmcoveragevalidate.h"
-#include "qgsgeometrycollection.h"
-#include "qgsprocessingoutputs.h"
-#include "qgsgeos.h"
 
+#include "qgsgeometrycollection.h"
+#include "qgsgeos.h"
+#include "qgsprocessingoutputs.h"
 
 ///@cond PRIVATE
 
 QString QgsCoverageValidateAlgorithm::name() const
 {
-  return QStringLiteral( "coveragevalidate" );
+  return u"coveragevalidate"_s;
 }
 
 QString QgsCoverageValidateAlgorithm::displayName() const
@@ -46,24 +46,23 @@ QString QgsCoverageValidateAlgorithm::group() const
 
 QString QgsCoverageValidateAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorcoverage" );
+  return u"vectorcoverage"_s;
 }
 
 void QgsCoverageValidateAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
-  std::unique_ptr< QgsProcessingParameterDistance> gapWidthParam = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "GAP_WIDTH" ),
-      QObject::tr( "Gap width" ), 0.0, QStringLiteral( "INPUT" ), false, 0, 10000000.0 );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  auto gapWidthParam = std::make_unique<QgsProcessingParameterDistance>( u"GAP_WIDTH"_s, QObject::tr( "Gap width" ), 0.0, u"INPUT"_s, false, 0, 10000000.0 );
   gapWidthParam->setHelp( QObject::tr( "The maximum width of gaps to detect" ) );
   addParameter( gapWidthParam.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "INVALID_EDGES" ), QObject::tr( "Invalid edges" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
-  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "IS_VALID" ), QObject::tr( "Coverage is valid" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"INVALID_EDGES"_s, QObject::tr( "Invalid edges" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
+  addOutput( new QgsProcessingOutputBoolean( u"IS_VALID"_s, QObject::tr( "Coverage is valid" ) ) );
 }
 
 QString QgsCoverageValidateAlgorithm::shortDescription() const
 {
-  return QObject::tr( "Analyzes a coverage of polygon features to find places where the assumption of exactly matching edges is not met" );
+  return QObject::tr( "Analyzes a coverage of polygon features to find places where the assumption of exactly matching edges is not met." );
 }
 
 QString QgsCoverageValidateAlgorithm::shortHelpString() const
@@ -82,21 +81,21 @@ QgsCoverageValidateAlgorithm *QgsCoverageValidateAlgorithm::createInstance() con
 
 QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
-  const double gapWidth = parameterAsDouble( parameters, QStringLiteral( "GAP_WIDTH" ), context );
+  const double gapWidth = parameterAsDouble( parameters, u"GAP_WIDTH"_s, context );
 
   QString sinkId;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "INVALID_EDGES" ), context, sinkId, QgsFields(), Qgis::WkbType::LineString, source->sourceCrs() ) );
-  if ( !sink && parameters.value( QStringLiteral( "INVALID_EDGES" ) ).isValid() )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "INVALID_EDGES" ) ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"INVALID_EDGES"_s, context, sinkId, QgsFields(), Qgis::WkbType::LineString, source->sourceCrs() ) );
+  if ( !sink && parameters.value( u"INVALID_EDGES"_s ).isValid() )
+    throw QgsProcessingException( invalidSinkError( parameters, u"INVALID_EDGES"_s ) );
 
   QgsGeometryCollection collection;
 
   const long count = source->featureCount();
-  if ( count >  0 )
+  if ( count > 0 )
   {
     collection.reserve( count );
   }
@@ -128,11 +127,11 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
 
   QgsGeos geos( &collection );
   QString error;
-  std::unique_ptr< QgsAbstractGeometry > invalidEdges;
+  std::unique_ptr<QgsAbstractGeometry> invalidEdges;
   Qgis::CoverageValidityResult result;
   try
   {
-    result = geos.validateCoverage( gapWidth, &invalidEdges, &error ) ;
+    result = geos.validateCoverage( gapWidth, &invalidEdges, &error );
   }
   catch ( QgsNotSupportedException &e )
   {
@@ -152,7 +151,7 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
             QgsFeature outFeature;
             outFeature.setGeometry( QgsGeometry( *partsIt ? ( *partsIt )->clone() : nullptr ) );
             if ( !sink->addFeature( outFeature, QgsFeatureSink::FastInsert ) )
-              throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+              throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
           }
         }
       }
@@ -168,10 +167,12 @@ QVariantMap QgsCoverageValidateAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   feedback->setProgress( 100 );
+  if ( sink )
+    sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), sinkId );
-  outputs.insert( QStringLiteral( "IS_VALID" ), result == Qgis::CoverageValidityResult::Valid );
+  outputs.insert( u"OUTPUT"_s, sinkId );
+  outputs.insert( u"IS_VALID"_s, result == Qgis::CoverageValidityResult::Valid );
   return outputs;
 }
 

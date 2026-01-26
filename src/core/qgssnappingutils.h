@@ -20,15 +20,15 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsmapsettings.h"
-#include "qgstolerance.h"
 #include "qgspointlocator.h"
 #include "qgssnappingconfig.h"
+#include "qgstolerance.h"
 
 class QgsSnappingConfig;
 
 /**
  * \ingroup core
- * \brief This class has all the configuration of snapping and can return answers to snapping queries.
+ * \brief Contains configuration of snapping and can return answers to snapping queries.
  *
  * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
  *
@@ -321,6 +321,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! Disable or not the snapping on all features. By default is always TRUE except for non visible features on map canvas.
     bool mEnableSnappingForInvisibleFeature = true;
+
+    friend class TestQgsSnappingUtils;
 };
 
 

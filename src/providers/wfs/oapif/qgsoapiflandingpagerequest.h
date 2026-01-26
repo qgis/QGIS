@@ -16,10 +16,10 @@
 #ifndef QGSOAPIFLANDINGPAGEREQUEST_H
 #define QGSOAPIFLANDINGPAGEREQUEST_H
 
-#include <QObject>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+
+#include <QObject>
 
 //! Manages the GetLandingPage request
 class QgsOapifLandingPageRequest : public QgsBaseNetworkRequest
@@ -74,7 +74,6 @@ class QgsOapifLandingPageRequest : public QgsBaseNetworkRequest
     QString mConformanceUrl;
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
-
 };
 
 #endif // QGSOAPIFLANDINGPAGEREQUEST_H

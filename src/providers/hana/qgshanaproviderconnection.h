@@ -22,7 +22,7 @@
 #include "qgshanaconnectionpool.h"
 #include "qgshanaresultset.h"
 
-struct QgsHanaEmptyProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsHanaEmptyProviderResultIterator : public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
     // QueryResultIterator interface
   private:
@@ -31,7 +31,7 @@ struct QgsHanaEmptyProviderResultIterator: public QgsAbstractDatabaseProviderCon
     long long rowCountPrivate() const override { return 0; };
 };
 
-struct QgsHanaProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsHanaProviderResultIterator : public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
     QgsHanaProviderResultIterator( QgsHanaConnectionRef &&conn, QgsHanaResultSetRef &&resultSet );
 
@@ -57,13 +57,8 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsHanaProviderConnection( const QString &uri, const QVariantMap &configuration );
 
   public:
-    void createVectorTable( const QString &schema,
-                            const QString &name,
-                            const QgsFields &fields,
-                            Qgis::WkbType wkbType,
-                            const QgsCoordinateReferenceSystem &srs, bool overwrite,
-                            const QMap<QString, QVariant> *options ) const override;
-
+    void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
     void renameVectorTable( const QString &schema, const QString &name, const QString &newName ) const override;
@@ -72,9 +67,8 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     void renameSchema( const QString &name, const QString &newName ) const override;
     QueryResult execSql( const QString &sql, QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
-    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
-        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
-    QStringList schemas( ) const override;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QStringList schemas() const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
@@ -83,13 +77,14 @@ class QgsHanaProviderConnection : public QgsAbstractDatabaseProviderConnection
     QgsVectorLayer *createSqlVectorLayer( const SqlVectorLayerOptions &options ) const override;
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
 
   private:
     QgsHanaConnectionRef createConnection() const;
     void executeSqlStatement( const QString &sql ) const;
     void setCapabilities();
-    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesWithFilter( const QString &schema,
-        const TableFlags &flags = TableFlags(), const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr ) const;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesWithFilter( const QString &schema, const TableFlags &flags = TableFlags(), const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr ) const;
 };
 
 #endif // QGSHANAPROVIDERCONNECTION_H

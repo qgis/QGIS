@@ -19,9 +19,9 @@
 
 #include "ui_qgsmeshtransformcoordinatesdockwidgetbase.h"
 
+#include "qgisapp.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgsmeshadvancedediting.h"
-#include "qgisapp.h"
 
 class QgsMeshLayer;
 
@@ -30,15 +30,14 @@ class QgsMeshLayer;
  *
  * \since QGIS 3.22
  */
-class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDockWidgetBase
+class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDockWidgetBase
 {
     Q_OBJECT
   public:
-
     //! Constructor
     QgsMeshTransformCoordinatesDockWidget( QWidget *parent );
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
     //! Returns the vertex with index \a vertexIndex after calculation
     QgsMeshVertex transformedVertex( int vertexIndex );
@@ -71,7 +70,7 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, pu
 
   private:
     QgsMeshTransformVerticesByExpression mTransformVertices;
-    QgsMeshLayer *mInputLayer;
+    QgsMeshLayer *mInputLayer = nullptr;
     QList<int> mInputVertices;
     bool mIsCalculated = false;
     bool mIsResultValid = false;
@@ -80,7 +79,6 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, pu
 
     QString displayCoordinateText( const QgsCoordinateReferenceSystem &crs, double value );
     void importVertexCoordinates();
-
 };
 
 #endif // QGSMESHTRANSFORMCOORDINATESDOCKWIDGET_H

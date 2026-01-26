@@ -16,26 +16,28 @@
  ***************************************************************************/
 
 #include "qgsjoindialog.h"
+
+#include "qgsfieldcombobox.h"
+#include "qgshelp.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayercombobox.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerjoininfo.h"
-#include "qgsmaplayercombobox.h"
-#include "qgsfieldcombobox.h"
-#include "qgshelp.h"
 
-#include <QStandardItemModel>
 #include <QPushButton>
+#include <QStandardItemModel>
+
+#include "moc_qgsjoindialog.cpp"
 
 QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alreadyJoinedLayers, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
   , mLayer( layer )
 {
   setupUi( this );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
-  {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#joins-properties" ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#joins-properties"_s );
   } );
 
   if ( !mLayer )
@@ -209,9 +211,7 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer *layer )
 
 void QgsJoinDialog::checkDefinitionValid()
 {
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mJoinLayerComboBox->currentIndex() != -1
-      && mJoinFieldComboBox->currentIndex() != -1
-      && mTargetFieldComboBox->currentIndex() != -1 );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mJoinLayerComboBox->currentIndex() != -1 && mJoinFieldComboBox->currentIndex() != -1 && mTargetFieldComboBox->currentIndex() != -1 );
 }
 
 void QgsJoinDialog::editableJoinLayerChanged()

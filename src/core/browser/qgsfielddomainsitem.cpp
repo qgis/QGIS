@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsfielddomainsitem.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsapplication.h"
 #include "qgsfielddomain.h"
 #include "qgsmessagelog.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include "moc_qgsfielddomainsitem.cpp"
 
 QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
     const QString &path,
@@ -72,21 +75,21 @@ QVector<QgsDataItem *> QgsFieldDomainsItem::createChildren()
 
         if ( !domainError.isEmpty() )
         {
-          children.push_back( new QgsErrorItem( this, domainError, path() + QStringLiteral( "/domainerror" ) ) );
+          children.push_back( new QgsErrorItem( this, domainError, path() + u"/domainerror"_s ) );
         }
       }
     }
   }
   catch ( const QgsProviderConnectionException &ex )
   {
-    children.push_back( new QgsErrorItem( this, ex.what(), path() + QStringLiteral( "/error" ) ) );
+    children.push_back( new QgsErrorItem( this, ex.what(), path() + u"/error"_s ) );
   }
   return children;
 }
 
 QIcon QgsFieldDomainsItem::icon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "mSourceFields.svg" ) );
+  return QgsApplication::getThemeIcon( u"mSourceFields.svg"_s );
 }
 
 QString QgsFieldDomainsItem::connectionUri() const
@@ -106,6 +109,8 @@ QgsFieldDomainItem::QgsFieldDomainItem( QgsDataItem *parent, QgsFieldDomain *dom
   Q_ASSERT( dynamic_cast<QgsFieldDomainsItem *>( parent ) );
   setState( Qgis::BrowserItemState::Populated );
   setToolTip( domain->description().isEmpty() ? domain->name() : domain->description() );
+  QgsFieldDomainsItem *domainsItem = qobject_cast<QgsFieldDomainsItem *>( parent );
+  mConnectionUri = domainsItem->connectionUri();
 }
 
 QIcon QgsFieldDomainItem::icon()
@@ -113,11 +118,11 @@ QIcon QgsFieldDomainItem::icon()
   switch ( mDomain->type() )
   {
     case Qgis::FieldDomainType::Coded:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconFieldText.svg"_s );
     case Qgis::FieldDomainType::Range:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconFieldInteger.svg"_s );
     case Qgis::FieldDomainType::Glob:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconFieldText.svg"_s );
   }
   BUILTIN_UNREACHABLE
 }
@@ -129,3 +134,7 @@ const QgsFieldDomain *QgsFieldDomainItem::fieldDomain()
 
 QgsFieldDomainItem::~QgsFieldDomainItem() = default;
 
+QString QgsFieldDomainItem::connectionUri() const
+{
+  return mConnectionUri;
+}

@@ -17,31 +17,23 @@
 
 #include "qgszonalstatistics.h"
 
+#include "processing/qgsrasteranalysisutils.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
 #include "qgsgeometry.h"
+#include "qgsproject.h"
+#include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "processing/qgsrasteranalysisutils.h"
-#include "qgsrasterlayer.h"
-#include "qgsproject.h"
 
 #include <QFile>
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
-  : QgsZonalStatistics( polygonLayer,
-                        rasterLayer ? rasterLayer->dataProvider() : nullptr,
-                        rasterLayer ? rasterLayer->crs() : QgsCoordinateReferenceSystem(),
-                        rasterLayer ? rasterLayer->rasterUnitsPerPixelX() : 0,
-                        rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0,
-                        attributePrefix,
-                        rasterBand,
-                        stats )
+  : QgsZonalStatistics( polygonLayer, rasterLayer ? rasterLayer->dataProvider() : nullptr, rasterLayer ? rasterLayer->crs() : QgsCoordinateReferenceSystem(), rasterLayer ? rasterLayer->rasterUnitsPerPixelX() : 0, rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0, attributePrefix, rasterBand, stats )
 {
 }
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface,
-                                        const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
   : mRasterInterface( rasterInterface )
   , mRasterCrs( rasterCrs )
   , mCellSizeX( std::fabs( rasterUnitsPerPixelX ) )
@@ -100,7 +92,7 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
     if ( mStatistics & stat )
     {
       QString fieldName = getUniqueFieldName( mAttributePrefix + QgsZonalStatistics::shortName( stat ), newFieldList );
-      QgsField field( fieldName, QMetaType::Type::Double, QStringLiteral( "double precision" ) );
+      QgsField field( fieldName, QMetaType::Type::Double, u"double precision"_s );
       newFieldList.push_back( field );
       statFieldIndexes.insert( stat, oldFieldCount + newFieldList.count() - 1 );
     }
@@ -130,7 +122,7 @@ Qgis::ZonalStatisticResult QgsZonalStatistics::calculateStatistics( QgsFeedback 
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( featureCounter ) / featureCount );
+      feedback->setProgress( 100.0 * static_cast<double>( featureCounter ) / featureCount );
     }
 
     QgsGeometry featureGeometry = feature.geometry();
@@ -167,7 +159,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
 {
   QgsVectorDataProvider *dp = mPolygonLayer->dataProvider();
 
-  if ( !dp->storageType().contains( QLatin1String( "ESRI Shapefile" ) ) )
+  if ( !dp->storageType().contains( "ESRI Shapefile"_L1 ) )
   {
     return fieldName;
   }
@@ -192,7 +184,7 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
   }
 
   int n = 1;
-  shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+  shortName = u"%1_%2"_s.arg( fieldName.mid( 0, 8 ) ).arg( n );
   found = true;
   while ( found )
   {
@@ -204,11 +196,11 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const 
         n += 1;
         if ( n < 9 )
         {
-          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+          shortName = u"%1_%2"_s.arg( fieldName.mid( 0, 8 ) ).arg( n );
         }
         else
         {
-          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 7 ) ).arg( n );
+          shortName = u"%1_%2"_s.arg( fieldName.mid( 0, 7 ) ).arg( n );
         }
         found = true;
       }
@@ -235,6 +227,10 @@ QString QgsZonalStatistics::displayName( Qgis::ZonalStatistic statistic )
       return QObject::tr( "Minimum" );
     case Qgis::ZonalStatistic::Max:
       return QObject::tr( "Maximum" );
+    case Qgis::ZonalStatistic::MinimumPoint:
+      return QObject::tr( "Minimum point" );
+    case Qgis::ZonalStatistic::MaximumPoint:
+      return QObject::tr( "Maximum point" );
     case Qgis::ZonalStatistic::Range:
       return QObject::tr( "Range" );
     case Qgis::ZonalStatistic::Minority:
@@ -257,29 +253,33 @@ QString QgsZonalStatistics::shortName( Qgis::ZonalStatistic statistic )
   switch ( statistic )
   {
     case Qgis::ZonalStatistic::Count:
-      return QStringLiteral( "count" );
+      return u"count"_s;
     case Qgis::ZonalStatistic::Sum:
-      return QStringLiteral( "sum" );
+      return u"sum"_s;
     case Qgis::ZonalStatistic::Mean:
-      return QStringLiteral( "mean" );
+      return u"mean"_s;
     case Qgis::ZonalStatistic::Median:
-      return QStringLiteral( "median" );
+      return u"median"_s;
     case Qgis::ZonalStatistic::StDev:
-      return QStringLiteral( "stdev" );
+      return u"stdev"_s;
     case Qgis::ZonalStatistic::Min:
-      return QStringLiteral( "min" );
+      return u"min"_s;
     case Qgis::ZonalStatistic::Max:
-      return QStringLiteral( "max" );
+      return u"max"_s;
+    case Qgis::ZonalStatistic::MinimumPoint:
+      return u"minpoint"_s;
+    case Qgis::ZonalStatistic::MaximumPoint:
+      return u"maxpoint"_s;
     case Qgis::ZonalStatistic::Range:
-      return QStringLiteral( "range" );
+      return u"range"_s;
     case Qgis::ZonalStatistic::Minority:
-      return QStringLiteral( "minority" );
+      return u"minority"_s;
     case Qgis::ZonalStatistic::Majority:
-      return QStringLiteral( "majority" );
+      return u"majority"_s;
     case Qgis::ZonalStatistic::Variety:
-      return QStringLiteral( "variety" );
+      return u"variety"_s;
     case Qgis::ZonalStatistic::Variance:
-      return QStringLiteral( "variance" );
+      return u"variance"_s;
     case Qgis::ZonalStatistic::All:
     case Qgis::ZonalStatistic::Default:
       return QString();
@@ -294,7 +294,7 @@ QMap<int, QVariant> QgsZonalStatistics::calculateStatisticsInt( QgsRasterInterfa
   QMap<int, QVariant> pyResult;
   for ( auto it = result.constBegin(); it != result.constEnd(); ++it )
   {
-    pyResult.insert( static_cast< int >( it.key() ), it.value() );
+    pyResult.insert( static_cast<int>( it.key() ), it.value() );
   }
   return pyResult;
 }
@@ -314,11 +314,8 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
   if ( featureRect.isEmpty() )
     return results;
 
-  bool statsStoreValues = ( statistics & Qgis::ZonalStatistic::Median ) ||
-                          ( statistics & Qgis::ZonalStatistic::StDev ) ||
-                          ( statistics & Qgis::ZonalStatistic::Variance );
-  bool statsStoreValueCount = ( statistics & Qgis::ZonalStatistic::Minority ) ||
-                              ( statistics & Qgis::ZonalStatistic::Majority );
+  bool statsStoreValues = ( statistics & Qgis::ZonalStatistic::Median ) || ( statistics & Qgis::ZonalStatistic::StDev ) || ( statistics & Qgis::ZonalStatistic::Variance );
+  bool statsStoreValueCount = ( statistics & Qgis::ZonalStatistic::Minority ) || ( statistics & Qgis::ZonalStatistic::Majority );
 
   FeatureStats featureStats( statsStoreValues, statsStoreValueCount );
 
@@ -330,13 +327,13 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
   QgsRasterAnalysisUtils::cellInfoForBBox( rasterBBox, featureRect, cellSizeX, cellSizeY, nCellsX, nCellsY, nCellsXProvider, nCellsYProvider, rasterBlockExtent );
 
   featureStats.reset();
-  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value ) { featureStats.addValue( value ); } );
+  QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [&featureStats]( double value, const QgsPointXY &point ) { featureStats.addValue( value, point ); } );
 
   if ( featureStats.count <= 1 )
   {
     //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
     featureStats.reset();
-    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [ &featureStats ]( double value, double weight ) { featureStats.addValue( value, weight ); } );
+    QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( rasterInterface, rasterBand, geometry, nCellsX, nCellsY, cellSizeX, cellSizeY, rasterBlockExtent, [&featureStats]( double value, double weight, const QgsPointXY &point ) { featureStats.addValue( value, point, weight ); } );
   }
 
   // calculate the statistics
@@ -387,6 +384,10 @@ QMap<Qgis::ZonalStatistic, QVariant> QgsZonalStatistics::calculateStatistics( Qg
       results.insert( Qgis::ZonalStatistic::Min, QVariant( featureStats.min ) );
     if ( statistics & Qgis::ZonalStatistic::Max )
       results.insert( Qgis::ZonalStatistic::Max, QVariant( featureStats.max ) );
+    if ( statistics & Qgis::ZonalStatistic::MinimumPoint )
+      results.insert( Qgis::ZonalStatistic::MinimumPoint, QVariant( featureStats.minPoint ) );
+    if ( statistics & Qgis::ZonalStatistic::MaximumPoint )
+      results.insert( Qgis::ZonalStatistic::MaximumPoint, QVariant( featureStats.maxPoint ) );
     if ( statistics & Qgis::ZonalStatistic::Range )
       results.insert( Qgis::ZonalStatistic::Range, QVariant( featureStats.max - featureStats.min ) );
     if ( statistics & Qgis::ZonalStatistic::Minority || statistics & Qgis::ZonalStatistic::Majority )

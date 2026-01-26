@@ -15,24 +15,24 @@
 #ifndef QGSPANELWIDGET_H
 #define QGSPANELWIDGET_H
 
-#include <QWidget>
+#include "qgis_gui.h"
+
 #include <QKeyEvent>
 #include <QStack>
-#include "qgis_gui.h"
+#include <QWidget>
 
 class QMenu;
 
 /**
  * \ingroup gui
- * \brief Base class for any widget that can be shown as a inline panel
+ * \brief Base class for any widget that can be shown as an inline panel.
  */
 class GUI_EXPORT QgsPanelWidget : public QWidget
 {
     Q_OBJECT
   public:
-
     /**
-     * \brief Base class for any widget that can be shown as a inline panel
+     * \brief Base class for any widget that can be shown as an inline panel
      * \param parent Parent widget.
      */
     QgsPanelWidget( QWidget *parent = nullptr );
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * The title of the panel.
      * \returns The title pf the panel.
      */
-    QString panelTitle() { return mPanelTitle; }
+    QString panelTitle() const { return mPanelTitle; }
 
     /**
     * Connect the given sub panel widgets showPanel signals to this current panels
@@ -90,7 +90,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * will emit the showPanel signal to handle panel opening
      * If FALSE it will open dialogs when openPanel is called.
      */
-    bool dockMode() { return mDockMode; }
+    bool dockMode() const { return mDockMode; }
 
     /**
      * The the auto delete property on the widget. TRUE by default.
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * it will be deleted.
      * \returns The auto delete value for the widget.
      */
-    bool autoDelete() { return mAutoDelete; }
+    bool autoDelete() const { return mAutoDelete; }
 
     /**
      * Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
@@ -183,7 +183,6 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     void acceptPanel();
 
   protected:
-
     /**
      * \brief Overridden key press event to handle the esc event on the widget.
      * \param event The key event
@@ -194,7 +193,6 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
     bool mAutoDelete = true;
     QString mPanelTitle;
     bool mDockMode = false;
-
 };
 
 
@@ -206,11 +204,10 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
  * \note Generally you should use the QgsPanelWidget class if you can
  * and only use this wrapper if you can't update your code.
  */
-class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
+class GUI_EXPORT QgsPanelWidgetWrapper : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-
     /**
      * \brief Wrapper widget for existing widgets which can't have
      * the inheritance tree changed, e.g dialogs.
@@ -227,7 +224,6 @@ class GUI_EXPORT QgsPanelWidgetWrapper: public QgsPanelWidget
 
   private:
     QWidget *mWidget = nullptr;
-
 };
 
 #endif // QGSPANELWIDGET_H

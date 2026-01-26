@@ -13,36 +13,35 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgslogger.h>
 #include "qgsxyzconnection.h"
 
-#include "qgsowsconnection.h"
 #include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
-
 
 QString QgsXyzConnection::encodedUri() const
 {
   QgsDataSourceUri uri;
-  uri.setParam( QStringLiteral( "type" ), QStringLiteral( "xyz" ) );
-  uri.setParam( QStringLiteral( "url" ), url );
+  uri.setParam( u"type"_s, u"xyz"_s );
+  uri.setParam( u"url"_s, url );
   if ( zMin != -1 )
-    uri.setParam( QStringLiteral( "zmin" ), QString::number( zMin ) );
+    uri.setParam( u"zmin"_s, QString::number( zMin ) );
   if ( zMax != -1 )
-    uri.setParam( QStringLiteral( "zmax" ), QString::number( zMax ) );
-  if ( ! authCfg.isEmpty() )
+    uri.setParam( u"zmax"_s, QString::number( zMax ) );
+  if ( !authCfg.isEmpty() )
     uri.setAuthConfigId( authCfg );
-  if ( ! username.isEmpty() )
+  if ( !username.isEmpty() )
     uri.setUsername( username );
-  if ( ! password.isEmpty() )
+  if ( !password.isEmpty() )
     uri.setPassword( password );
 
   uri.setHttpHeaders( httpHeaders );
 
   if ( tilePixelRatio != 0 )
-    uri.setParam( QStringLiteral( "tilePixelRatio" ), QString::number( tilePixelRatio ) );
+    uri.setParam( u"tilePixelRatio"_s, QString::number( tilePixelRatio ) );
   if ( !interpretation.isEmpty() )
-    uri.setParam( QStringLiteral( "interpretation" ), interpretation );
+    uri.setParam( u"interpretation"_s, interpretation );
   return uri.encodedUri();
 }
 
@@ -51,7 +50,7 @@ QStringList QgsXyzConnectionUtils::connectionList()
   QStringList list = QgsXyzConnectionSettings::sTreeXyzConnections->items();
   for ( const QString &connection : std::as_const( list ) )
   {
-    if ( QgsXyzConnectionSettings::settingsUrl->origin( {connection} ) == Qgis::SettingsOrigin::Global )
+    if ( QgsXyzConnectionSettings::settingsUrl->origin( { connection } ) == Qgis::SettingsOrigin::Global )
       if ( QgsXyzConnectionSettings::settingsHidden->value( connection ) )
         list.removeOne( connection );
   }
@@ -77,7 +76,7 @@ QgsXyzConnection QgsXyzConnectionUtils::connection( const QString &name )
 
 void QgsXyzConnectionUtils::deleteConnection( const QString &name )
 {
-  if ( QgsXyzConnectionSettings::settingsUrl->origin( {name} ) == Qgis::SettingsOrigin::Global )
+  if ( QgsXyzConnectionSettings::settingsUrl->origin( { name } ) == Qgis::SettingsOrigin::Global )
   {
     QgsXyzConnectionSettings::settingsHidden->setValue( true, name );
   }
@@ -99,7 +98,6 @@ void QgsXyzConnectionUtils::addConnection( const QgsXyzConnection &conn )
   QgsXyzConnectionSettings::settingsTilePixelRatio->setValue( conn.tilePixelRatio, conn.name );
   QgsXyzConnectionSettings::settingsInterpretation->setValue( conn.interpretation, conn.name );
 
-  if ( QgsXyzConnectionSettings::settingsUrl->origin( {conn.name} ) == Qgis::SettingsOrigin::Global )
+  if ( QgsXyzConnectionSettings::settingsUrl->origin( { conn.name } ) == Qgis::SettingsOrigin::Global )
     QgsXyzConnectionSettings::settingsHidden->setValue( false, conn.name );
 }
-

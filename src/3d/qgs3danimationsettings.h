@@ -16,8 +16,8 @@
 #ifndef QGS3DANIMATIONSETTINGS_H
 #define QGS3DANIMATIONSETTINGS_H
 
-#include "qgsvector3d.h"
 #include "qgis_3d.h"
+#include "qgsvector3d.h"
 
 #include <QEasingCurve>
 #include <QVector>
@@ -29,26 +29,26 @@ class QgsReadWriteContext;
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
- * \brief Class that holds information about animation in 3D view. The animation is defined
- * as a series of keyframes
+ * \ingroup qgis_3d
+ * \brief Holds information about animation in 3D view.
+ *
+ * The animation is defined as a series of keyframes.
  * \note Not available in Python bindings
  * \since QGIS 3.8
  */
 class _3D_EXPORT Qgs3DAnimationSettings
 {
   public:
-
     Qgs3DAnimationSettings();
 
     //! keyframe definition
     struct Keyframe
     {
-      float time = 0;    //!< Relative time of the keyframe in seconds
-      QgsVector3D point; //!< Point towards which the camera is looking in 3D world coords
-      float dist = 0;    //!< Distance of the camera from the focal point
-      float pitch = 0;   //!< Tilt of the camera in degrees (0 = looking from the top, 90 = looking from the side, 180 = looking from the bottom)
-      float yaw = 0;     //!< Horizontal rotation around the focal point in degrees
+        float time = 0;    //!< Relative time of the keyframe in seconds
+        QgsVector3D point; //!< Point towards which the camera is looking in 3D map coords
+        float dist = 0;    //!< Distance of the camera from the focal point
+        float pitch = 0;   //!< Tilt of the camera in degrees (0 = looking from the top, 90 = looking from the side, 180 = looking from the bottom)
+        float yaw = 0;     //!< Horizontal rotation around the focal point in degrees
     };
 
     typedef QVector<Keyframe> Keyframes;

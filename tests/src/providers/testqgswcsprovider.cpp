@@ -14,43 +14,44 @@
  ***************************************************************************/
 #include <cmath>
 
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterchecker.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
 #include "qgstest.h"
+
+#include <QApplication>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
 #include <QTemporaryFile>
 
-#include <qgsdatasourceuri.h>
-#include <qgsrasterlayer.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasterchecker.h>
-#include <qgsproviderregistry.h>
-#include <qgsapplication.h>
-#include "qgsprovidermetadata.h"
-
-#define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
+#define TINY_VALUE std::numeric_limits<double>::epsilon() * 20
 
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
-class TestQgsWcsProvider: public QgsTest
+class TestQgsWcsProvider : public QgsTest
 {
     Q_OBJECT
 
   public:
-
-    TestQgsWcsProvider() : QgsTest( QStringLiteral( "WCS provider tests" ) ) {}
+    TestQgsWcsProvider()
+      : QgsTest( u"WCS provider tests"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void providerUriUpdates();
     void read();
+
   private:
     bool read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report );
     QString mTestDataDir;
@@ -79,7 +80,7 @@ void TestQgsWcsProvider::initTestCase()
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + "/raster";
   qDebug() << "mTestDataDir = " << mTestDataDir;
 
-  mUrl =  QStringLiteral( TEST_SERVER_URL ) + "/wcs";
+  mUrl = QStringLiteral( TEST_SERVER_URL ) + "/wcs";
 }
 
 //runs after all tests
@@ -97,43 +98,43 @@ void TestQgsWcsProvider::read()
   // 1x1 pixel response if GRIDORIGIN coordinate has a negative value, but it has to be
   // verified if the problem is really on Mapserver side
   //versions << "1.0" << "1.1";
-  versions << QStringLiteral( "1.0" );
+  versions << u"1.0"_s;
 
   QStringList identifiers;
 
   // identifiers in mapfile have the same name as files without .tif extension
-  identifiers << QStringLiteral( "band1_byte_noct_epsg4326" );
-  identifiers << QStringLiteral( "band1_int16_noct_epsg4326" );
-  identifiers << QStringLiteral( "band1_float32_noct_epsg4326" );
-  identifiers << QStringLiteral( "band3_byte_noct_epsg4326" );
-  identifiers << QStringLiteral( "band3_int16_noct_epsg4326" );
-  identifiers << QStringLiteral( "band3_float32_noct_epsg4326" );
+  identifiers << u"band1_byte_noct_epsg4326"_s;
+  identifiers << u"band1_int16_noct_epsg4326"_s;
+  identifiers << u"band1_float32_noct_epsg4326"_s;
+  identifiers << u"band3_byte_noct_epsg4326"_s;
+  identifiers << u"band3_int16_noct_epsg4326"_s;
+  identifiers << u"band3_float32_noct_epsg4326"_s;
 
   // How to reasonably log multiple fails within this loop?
-  QTemporaryFile *tmpFile = new QTemporaryFile( QStringLiteral( "qgis-wcs-test-XXXXXX.tif" ) );
-  tmpFile->open();
-  const QString tmpFilePath = tmpFile->fileName();
-  delete tmpFile; // removes the file
+  QTemporaryFile tmpFile( u"qgis-wcs-test-XXXXXX.tif"_s );
+  QVERIFY( tmpFile.open() );
+  const QString tmpFilePath = tmpFile.fileName();
+  tmpFile.close(); // removes the file
   for ( const QString &version : versions )
   {
     for ( const QString &identifier : identifiers )
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
       const QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
-      qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
+      qDebug() << "copy " << testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
-        mReport += QStringLiteral( "Cannot copy %1 to %2" ).arg( testFilePath, tmpFilePath );
+        mReport += u"Cannot copy %1 to %2"_s.arg( testFilePath, tmpFilePath );
         ok = false;
         continue;
       }
 
       QgsDataSourceUri uri;
-      uri.setParam( QStringLiteral( "url" ), mUrl );
-      uri.setParam( QStringLiteral( "identifier" ), identifier );
-      uri.setParam( QStringLiteral( "crs" ), QStringLiteral( "epsg:4326" ) );
-      uri.setParam( QStringLiteral( "version" ), version );
-      uri.setParam( QStringLiteral( "cache" ), QStringLiteral( "AlwaysNetwork" ) );
+      uri.setParam( u"url"_s, mUrl );
+      uri.setParam( u"identifier"_s, identifier );
+      uri.setParam( u"crs"_s, u"epsg:4326"_s );
+      uri.setParam( u"version"_s, version );
+      uri.setParam( u"cache"_s, u"AlwaysNetwork"_s );
 
       if ( !read( identifier, uri.encodedUri(), tmpFilePath, mReport ) )
       {
@@ -147,10 +148,10 @@ void TestQgsWcsProvider::read()
 
 bool TestQgsWcsProvider::read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report )
 {
-  report += QStringLiteral( "<h2>Identifier (coverage): %1</h2>" ).arg( identifier );
+  report += u"<h2>Identifier (coverage): %1</h2>"_s.arg( identifier );
 
   QgsRasterChecker checker;
-  const bool ok = checker.runTest( QStringLiteral( "wcs" ), wcsUri, QStringLiteral( "gdal" ), filePath );
+  const bool ok = checker.runTest( u"wcs"_s, wcsUri, u"gdal"_s, filePath );
 
   report += checker.report();
   return ok;
@@ -165,9 +166,7 @@ void TestQgsWcsProvider::providerUriUpdates()
                                       "testParam=true" );
 
   QVariantMap parts = metadata->decodeUri( uriString );
-  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) },  { QString( "dpiMode" ), QVariant( "7" ) },
-    { QString( "testParam" ), QVariant( "true" ) },  { QString( "layers" ), QVariant( "testlayer" ) },
-    { QString( "styles" ), QString() },  { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) }, { QString( "dpiMode" ), QVariant( "7" ) }, { QString( "testParam" ), QVariant( "true" ) }, { QString( "layers" ), QVariant( "testlayer" ) }, { QString( "styles" ), QString() }, { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
   QCOMPARE( parts, expectedParts );
 
   parts["testParam"] = QVariant( "false" );
@@ -180,7 +179,6 @@ void TestQgsWcsProvider::providerUriUpdates()
                                         "testParam=false&"
                                         "url=http://localhost:8380/mapserv" );
   QCOMPARE( updatedUri, expectedUri );
-
 }
 
 

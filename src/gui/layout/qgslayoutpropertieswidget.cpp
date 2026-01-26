@@ -15,16 +15,19 @@
  ***************************************************************************/
 
 #include "qgslayoutpropertieswidget.h"
-#include "qgslayout.h"
-#include "qgslayoutsnapper.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutundostack.h"
-#include "qgslayoutitemmap.h"
+
 #include "qgsexpressioncontextutils.h"
-#include "qgsprintlayout.h"
+#include "qgslayout.h"
 #include "qgslayoutatlas.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoutsnapper.h"
+#include "qgslayoutundostack.h"
 #include "qgsmargins.h"
+#include "qgsprintlayout.h"
+
+#include "moc_qgslayoutpropertieswidget.cpp"
 
 QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout )
   : QgsPanelWidget( parent )
@@ -46,22 +49,23 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 
   blockSignals( false );
 
-  connect( mSnapToleranceSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::snapToleranceChanged );
+  connect( mSnapToleranceSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::snapToleranceChanged );
 
   connect( mGridOffsetUnitsComboBox, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutPropertiesWidget::gridOffsetUnitsChanged );
   connect( mGridSpacingUnitsCombo, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutPropertiesWidget::gridResolutionUnitsChanged );
-  connect( mGridResolutionSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridResolutionChanged );
-  connect( mOffsetXSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetXChanged );
-  connect( mOffsetYSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetYChanged );
+  connect( mGridResolutionSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridResolutionChanged );
+  connect( mOffsetXSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetXChanged );
+  connect( mOffsetYSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetYChanged );
 
-  const double leftMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsLeftMargin" ) ).toDouble();
-  const double topMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsTopMargin" ) ).toDouble();
-  const double bottomMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsBottomMargin" ) ).toDouble();
-  const double rightMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsRightMargin" ) ).toDouble();
-  const Qgis::LayoutUnit marginUnit = static_cast< Qgis::LayoutUnit >(
-                                        mLayout->customProperty( QStringLiteral( "imageCropMarginUnit" ), static_cast< int >( Qgis::LayoutUnit::Millimeters ) ).toInt() );
+  const double leftMargin = mLayout->customProperty( u"resizeToContentsLeftMargin"_s ).toDouble();
+  const double topMargin = mLayout->customProperty( u"resizeToContentsTopMargin"_s ).toDouble();
+  const double bottomMargin = mLayout->customProperty( u"resizeToContentsBottomMargin"_s ).toDouble();
+  const double rightMargin = mLayout->customProperty( u"resizeToContentsRightMargin"_s ).toDouble();
+  const Qgis::LayoutUnit marginUnit = static_cast<Qgis::LayoutUnit>(
+    mLayout->customProperty( u"imageCropMarginUnit"_s, static_cast<int>( Qgis::LayoutUnit::Millimeters ) ).toInt()
+  );
 
-  const bool exportWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
+  const bool exportWorldFile = mLayout->customProperty( u"exportWorldFile"_s, false ).toBool();
   mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
   connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::worldFileToggled );
 
@@ -79,13 +83,13 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   mMarginUnitsComboBox->setUnit( marginUnit );
   mMarginUnitsComboBox->setConverter( &mLayout->renderContext().measurementConverter() );
 
-  connect( mTopMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
-  connect( mRightMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
-  connect( mBottomMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
-  connect( mLeftMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mTopMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mRightMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mBottomMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mLeftMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mResizePageButton, &QPushButton::clicked, this, &QgsLayoutPropertiesWidget::resizeToContents );
 
-  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::dpiChanged );
+  connect( mResolutionSpinBox, &QSpinBox::editingFinished, this, [this] { dpiChanged( mResolutionSpinBox->value() ); } );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
   mReferenceMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
@@ -108,7 +112,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 
 void QgsLayoutPropertiesWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
-  if ( QgsPrintLayout *printLayout = dynamic_cast< QgsPrintLayout * >( masterLayout ) )
+  if ( QgsPrintLayout *printLayout = dynamic_cast<QgsPrintLayout *>( masterLayout ) )
   {
     connect( printLayout, &QgsPrintLayout::nameChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
     connect( printLayout->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
@@ -120,10 +124,10 @@ void QgsLayoutPropertiesWidget::updateGui()
   whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
   whileBlocking( mResolutionSpinBox )->setValue( mLayout->renderContext().dpi() );
 
-  const bool rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  const bool rasterize = mLayout->customProperty( u"rasterize"_s, false ).toBool();
   whileBlocking( mRasterizeCheckBox )->setChecked( rasterize );
 
-  const bool forceVectors = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  const bool forceVectors = mLayout->customProperty( u"forceVector"_s, false ).toBool();
   whileBlocking( mForceVectorCheckBox )->setChecked( forceVectors );
 
   if ( rasterize )
@@ -196,22 +200,18 @@ void QgsLayoutPropertiesWidget::snapToleranceChanged( int tolerance )
 
 void QgsLayoutPropertiesWidget::resizeMarginsChanged()
 {
-  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsLeftMargin" ), mLeftMarginSpinBox->value() );
-  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsTopMargin" ), mTopMarginSpinBox->value() );
-  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsBottomMargin" ), mBottomMarginSpinBox->value() );
-  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsRightMargin" ), mRightMarginSpinBox->value() );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginUnit" ), static_cast< int >( mMarginUnitsComboBox->unit() ) );
+  mLayout->setCustomProperty( u"resizeToContentsLeftMargin"_s, mLeftMarginSpinBox->value() );
+  mLayout->setCustomProperty( u"resizeToContentsTopMargin"_s, mTopMarginSpinBox->value() );
+  mLayout->setCustomProperty( u"resizeToContentsBottomMargin"_s, mBottomMarginSpinBox->value() );
+  mLayout->setCustomProperty( u"resizeToContentsRightMargin"_s, mRightMarginSpinBox->value() );
+  mLayout->setCustomProperty( u"imageCropMarginUnit"_s, static_cast<int>( mMarginUnitsComboBox->unit() ) );
 }
 
 void QgsLayoutPropertiesWidget::resizeToContents()
 {
   mLayout->undoStack()->beginMacro( tr( "Resize to Contents" ) );
 
-  mLayout->pageCollection()->resizeToContents( QgsMargins( mLeftMarginSpinBox->value(),
-      mTopMarginSpinBox->value(),
-      mRightMarginSpinBox->value(),
-      mBottomMarginSpinBox->value() ),
-      mMarginUnitsComboBox->unit() );
+  mLayout->pageCollection()->resizeToContents( QgsMargins( mLeftMarginSpinBox->value(), mTopMarginSpinBox->value(), mRightMarginSpinBox->value(), mBottomMarginSpinBox->value() ), mMarginUnitsComboBox->unit() );
 
   mLayout->undoStack()->endMacro();
 }
@@ -219,7 +219,7 @@ void QgsLayoutPropertiesWidget::resizeToContents()
 void QgsLayoutPropertiesWidget::referenceMapChanged( QgsLayoutItem *item )
 {
   mLayout->undoStack()->beginCommand( mLayout, tr( "Set Reference Map" ) );
-  QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item );
+  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
   mLayout->setReferenceMap( map );
   mLayout->undoStack()->endCommand();
 }
@@ -235,12 +235,12 @@ void QgsLayoutPropertiesWidget::dpiChanged( int value )
 
 void QgsLayoutPropertiesWidget::worldFileToggled()
 {
-  mLayout->setCustomProperty( QStringLiteral( "exportWorldFile" ), mGenerateWorldFileCheckBox->isChecked() );
+  mLayout->setCustomProperty( u"exportWorldFile"_s, mGenerateWorldFileCheckBox->isChecked() );
 }
 
 void QgsLayoutPropertiesWidget::rasterizeToggled()
 {
-  mLayout->setCustomProperty( QStringLiteral( "rasterize" ), mRasterizeCheckBox->isChecked() );
+  mLayout->setCustomProperty( u"rasterize"_s, mRasterizeCheckBox->isChecked() );
 
   if ( mRasterizeCheckBox->isChecked() )
   {
@@ -255,7 +255,7 @@ void QgsLayoutPropertiesWidget::rasterizeToggled()
 
 void QgsLayoutPropertiesWidget::forceVectorToggled()
 {
-  mLayout->setCustomProperty( QStringLiteral( "forceVector" ), mForceVectorCheckBox->isChecked() );
+  mLayout->setCustomProperty( u"forceVector"_s, mForceVectorCheckBox->isChecked() );
 }
 
 void QgsLayoutPropertiesWidget::variablesChanged()
@@ -285,4 +285,3 @@ void QgsLayoutPropertiesWidget::blockSignals( bool block )
   mOffsetYSpinBox->blockSignals( block );
   mSnapToleranceSpinBox->blockSignals( block );
 }
-

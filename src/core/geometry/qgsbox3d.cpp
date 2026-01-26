@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgsbox3d.h"
-#include "qgspoint.h"
+
 #include "qgslogger.h"
+#include "qgspoint.h"
 #include "qgsvector3d.h"
+
+#include "moc_qgsbox3d.cpp"
 
 QgsBox3D::QgsBox3D( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax, bool normalize )
   : mBounds2d( xmin, ymin, xmax, ymax, false )
@@ -46,6 +49,17 @@ QgsBox3D::QgsBox3D( const QgsRectangle &rect, double zMin, double zMax, bool nor
   : mBounds2d( rect )
   , mZmin( zMin )
   , mZmax( zMax )
+{
+  if ( normalize )
+  {
+    QgsBox3D::normalize();
+  }
+}
+
+QgsBox3D::QgsBox3D( const QgsVector3D &corner1, const QgsVector3D &corner2, bool normalize )
+  : mBounds2d( corner1.x(), corner1.y(), corner2.x(), corner2.y(), false )
+  , mZmin( corner1.z() )
+  , mZmax( corner2.z() )
 {
   if ( normalize )
   {
@@ -233,7 +247,7 @@ void QgsBox3D::combineWith( double x, double y, double z )
   }
 }
 
-double QgsBox3D::distanceTo( const  QVector3D &point ) const
+double QgsBox3D::distanceTo( const QgsVector3D &point ) const
 {
   const double dx = std::max( mBounds2d.xMinimum() - point.x(), std::max( 0., point.x() - mBounds2d.xMaximum() ) );
   const double dy = std::max( mBounds2d.yMinimum() - point.y(), std::max( 0., point.y() - mBounds2d.yMaximum() ) );
@@ -286,6 +300,15 @@ void QgsBox3D::scale( double scaleFactor, double centerX, double centerY, double
   setZMaximum( centerZ + ( zMaximum() - centerZ ) * scaleFactor );
 }
 
+void QgsBox3D::grow( double delta )
+{
+  if ( isNull() )
+    return;
+  mBounds2d.grow( delta );
+  mZmin -= delta;
+  mZmax += delta;
+}
+
 bool QgsBox3D::isNull() const
 {
   return ( std::isnan( mBounds2d.xMinimum() ) && std::isnan( mBounds2d.xMaximum() )
@@ -318,11 +341,11 @@ QString QgsBox3D::toString( int precision ) const
   }
 
   if ( isNull() )
-    rep = QStringLiteral( "Null" );
+    rep = u"Null"_s;
   else if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "%1,%2,%3 : %4,%5,%6" )
+    rep = u"%1,%2,%3 : %4,%5,%6"_s
           .arg( mBounds2d.xMinimum(), 0, 'f', precision )
           .arg( mBounds2d.yMinimum(), 0, 'f', precision )
           .arg( mZmin, 0, 'f', precision )
@@ -330,7 +353,7 @@ QString QgsBox3D::toString( int precision ) const
           .arg( mBounds2d.yMaximum(), 0, 'f', precision )
           .arg( mZmax, 0, 'f', precision );
 
-  QgsDebugMsgLevel( QStringLiteral( "Extents : %1" ).arg( rep ), 4 );
+  QgsDebugMsgLevel( u"Extents : %1"_s.arg( rep ), 4 );
 
   return rep;
 }

@@ -13,20 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
-#include "qgshtmlannotation.h"
-#include "qgsannotationwidget.h"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
+
 #include "qgsannotationmanager.h"
+#include "qgsannotationwidget.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgshtmlannotation.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+
+#include "moc_qgshtmlannotationdialog.cpp"
 
 QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -47,7 +50,7 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
   if ( item && item->annotation() )
   {
-    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( item->annotation() );
+    QgsHtmlAnnotation *annotation = static_cast<QgsHtmlAnnotation *>( item->annotation() );
     const QString file = annotation->sourceFile();
     if ( !file.isEmpty() )
     {
@@ -87,7 +90,7 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( mItem->annotation() );
+    QgsHtmlAnnotation *annotation = static_cast<QgsHtmlAnnotation *>( mItem->annotation() );
     if ( mFileRadioButton->isChecked() )
     {
       annotation->setSourceFile( mFileLineEdit->text() );
@@ -112,7 +115,7 @@ void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
   {
     directory = QDir::homePath();
   }
-  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
+  const QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, u"HTML (*.html *.htm);;All files (*.*)"_s );
   if ( filename.isEmpty() )
   {
     return;
@@ -149,7 +152,7 @@ void QgsHtmlAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsHtmlAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-annotations"_s );
 }
 
 void QgsHtmlAnnotationDialog::onSettingsChanged()

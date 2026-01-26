@@ -14,23 +14,27 @@
  ***************************************************************************/
 
 #include "qgshistorywidget.h"
+
 #include "qgsgui.h"
 #include "qgshistoryentrymodel.h"
 #include "qgshistoryentrynode.h"
-#include "qgssettings.h"
 #include "qgsnative.h"
+#include "qgssettings.h"
 
+#include <QDesktopServices>
+#include <QFileInfo>
+#include <QMenu>
 #include <QTextBrowser>
 #include <QtGlobal>
-#include <QMenu>
-#include <QFileInfo>
-#include <QDesktopServices>
+
+#include "moc_qgshistorywidget.cpp"
 
 QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProviderBackends backends, QgsHistoryProviderRegistry *registry, const QgsHistoryWidgetContext &context, QWidget *parent )
   : QgsPanelWidget( parent )
   , mContext( context )
 {
   setupUi( this );
+  mContext.setHistoryWidget( this );
 
   mModel = new QgsHistoryEntryModel( providerId, backends, registry, mContext, this );
   mProxyModel = new QgsHistoryEntryProxyModel( this );
@@ -53,12 +57,11 @@ QgsHistoryWidget::QgsHistoryWidget( const QString &providerId, Qgis::HistoryProv
   mTreeView->expand( firstGroup );
 
   QgsSettings settings;
-  mSplitter->restoreState( settings.value( QStringLiteral( "history/splitterState%1" ).arg( providerId ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( u"history/splitterState%1"_s.arg( providerId ) ).toByteArray() );
 
-  connect( mSplitter, &QSplitter::splitterMoved, this, [providerId, this]
-  {
+  connect( mSplitter, &QSplitter::splitterMoved, this, [providerId, this] {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "history/splitterState%1" ).arg( providerId ), mSplitter->saveState() );
+    settings.setValue( u"history/splitterState%1"_s.arg( providerId ), mSplitter->saveState() );
   } );
 }
 
@@ -165,7 +168,7 @@ bool QgsHistoryEntryProxyModel::filterAcceptsRow( int source_row, const QModelIn
     return true;
 
   const QModelIndex sourceIndex = sourceModel()->index( source_row, 0, source_parent );
-  if ( QgsHistoryEntryNode *node = qobject_cast< QgsHistoryEntryModel * >( sourceModel() )->index2node( sourceIndex ) )
+  if ( QgsHistoryEntryNode *node = qobject_cast<QgsHistoryEntryModel *>( sourceModel() )->index2node( sourceIndex ) )
   {
     if ( !node->matchesString( mFilter ) )
     {

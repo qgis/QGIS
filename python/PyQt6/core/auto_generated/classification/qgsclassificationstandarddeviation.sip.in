@@ -11,8 +11,8 @@
 class QgsClassificationStandardDeviation : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationCustom` is an implementation of :py:class:`QgsClassificationMethod`
-based on standard deviation
+A classification method which classifies based on standard deviation of
+values.
 
 .. versionadded:: 3.10
 %End
@@ -27,7 +27,7 @@ based on standard deviation
 
     virtual QString id() const;
 
-    virtual QgsClassificationMethod *clone() const;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const;
 
     virtual QIcon icon() const;
 

@@ -17,8 +17,9 @@
 #define QGSDUMMYCONFIGDLG_H
 
 #include "ui_qgsdummyconfigdlgbase.h"
-#include "qgseditorconfigwidget.h"
+
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 
@@ -26,9 +27,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsDummyConfigDlg
+ * \brief Configuration widget for dummy widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsDummyConfigDlg : public QgsEditorConfigWidget, private Ui::QgsDummyConfigDlgBase
 {
     Q_OBJECT

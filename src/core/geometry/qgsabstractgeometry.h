@@ -19,12 +19,13 @@ email                : marco.hugentobler at sourcepole dot com
 #include <array>
 #include <functional>
 #include <type_traits>
-#include <QString>
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgswkbtypes.h"
+#include "qgis_core.h"
 #include "qgswkbptr.h"
+#include "qgswkbtypes.h"
+
+#include <QString>
 
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>
@@ -65,7 +66,7 @@ typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 /**
  * \ingroup core
  * \class QgsAbstractGeometry
- * \brief Abstract base class for all geometries
+ * \brief Abstract base class for all geometries.
  *
  * \note QgsAbstractGeometry objects are inherently Cartesian/planar geometries. They have no concept of geodesy, and none
  * of the methods or properties exposed from the QgsAbstractGeometry API (or QgsGeometry API) utilize
@@ -89,12 +90,20 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = sipType_QgsCircularString;
     else if ( qgsgeometry_cast<QgsCompoundCurve *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCompoundCurve;
+    else if ( qgsgeometry_cast<QgsNurbsCurve *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsNurbsCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
     else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
+    else if ( qgsgeometry_cast<QgsTriangulatedSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsTriangulatedSurface;
+    else if ( qgsgeometry_cast<QgsPolyhedralSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolyhedralSurface;
+    else if ( qgsgeometry_cast<QgsSurface *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsSurface;
     else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
@@ -560,8 +569,21 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \see length()
      * \see perimeter()
+     * \see area()
      */
     virtual double area() const;
+
+    /**
+     * Returns the 3-dimensional surface area of the geometry.
+     *
+     * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the area
+     * returned by this method is calculated using strictly Cartesian mathematics.
+     *
+     * \see area()
+     *
+     * \since QGIS 4.0
+     */
+    virtual double area3D() const;
 
     /**
      * Returns the length of the segment of the geometry which begins at \a startVertex.
@@ -833,7 +855,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * \brief The part_iterator class provides STL-style iterator for geometry parts.
+     * \brief The part_iterator class provides an STL-style iterator for geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT part_iterator
@@ -903,7 +925,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * \brief The part_iterator class provides STL-style iterator for const references to geometry parts.
+     * \brief The part_iterator class provides an STL-style iterator for const references to geometry parts.
      * \since QGIS 3.6
      */
     class CORE_EXPORT const_part_iterator
@@ -963,7 +985,7 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * \ingroup core
-     * \brief The vertex_iterator class provides STL-style iterator for vertices.
+     * \brief The vertex_iterator class provides an STL-style iterator for vertices.
      */
     class CORE_EXPORT vertex_iterator
     {
@@ -1046,22 +1068,22 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \code{.py}
      *   # print the WKT representation of each part in a multi-point geometry
-     *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
      *   for part in geometry.parts():
      *       print(part.asWkt())
      *
      *   # single part geometries only have one part - this loop will iterate once only
-     *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 10 10 )' )
+     *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 10 10 )' )
      *   for part in geometry.parts():
      *       print(part.asWkt())
      *
      *   # parts can be modified during the iteration
-     *   geometry = QgsMultiPoint.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
+     *   geometry = QgsGeometry.fromWkt( 'MultiPoint( 0 0, 1 1, 2 2)' )
      *   for part in geometry.parts():
-     *       part.transform(ct)
+     *       part.transform(ct=QgsCoordinateTransform()) # Dummy transform
      *
      *   # part iteration can also be combined with vertex iteration
-     *   geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
      *   for part in geometry.parts():
      *       for v in part.vertices():
      *           print(v.x(), v.y())
@@ -1084,12 +1106,12 @@ class CORE_EXPORT QgsAbstractGeometry
      *
      * \code{.py}
      *   # print the x and y coordinate for each vertex in a LineString
-     *   geometry = QgsLineString.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
+     *   geometry = QgsGeometry.fromWkt( 'LineString( 0 0, 1 1, 2 2)' )
      *   for v in geometry.vertices():
      *       print(v.x(), v.y())
      *
      *   # vertex iteration includes all parts and rings
-     *   geometry = QgsMultiPolygon.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
+     *   geometry = QgsGeometry.fromWkt( 'MultiPolygon((( 0 0, 0 10, 10 10, 10 0, 0 0 ),( 5 5, 5 6, 6 6, 6 5, 5 5)),((20 2, 22 2, 22 4, 20 4, 20 2)))' )
      *   for v in geometry.vertices():
      *       print(v.x(), v.y())
      * \endcode
@@ -1185,9 +1207,15 @@ class CORE_EXPORT QgsAbstractGeometry
 #ifndef SIP_RUN
 
 template <class T>
+inline T qgsgeometry_cast( QgsAbstractGeometry *geom )
+{
+  return std::remove_pointer<T>::type::cast( geom );
+}
+
+template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
-  return const_cast<T>( std::remove_pointer<T>::type::cast( geom ) );
+  return std::remove_pointer<T>::type::cast( geom );
 }
 
 #endif
@@ -1196,7 +1224,7 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 
 /**
  * \ingroup core
- * \brief Java-style iterator for traversal of vertices of a geometry
+ * \brief Java-style iterator for traversal of vertices of a geometry.
  */
 class CORE_EXPORT QgsVertexIterator
 {
@@ -1244,7 +1272,7 @@ class CORE_EXPORT QgsVertexIterator
 
 /**
  * \ingroup core
- * \brief Java-style iterator for traversal of parts of a geometry
+ * \brief Java-style iterator for traversal of parts of a geometry.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsGeometryPartIterator
@@ -1294,7 +1322,7 @@ class CORE_EXPORT QgsGeometryPartIterator
 
 /**
  * \ingroup core
- * \brief Java-style iterator for const traversal of parts of a geometry
+ * \brief Java-style iterator for const traversal of parts of a geometry.
  * \since QGIS 3.6
  */
 class CORE_EXPORT QgsGeometryConstPartIterator

@@ -12,23 +12,22 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-#include <QApplication>
-
 #include "qgis.h"
 #include "qgsapplication.h"
-#include "qgstest.h"
 #include "qgspoint.h"
-#include "qgsunittypes.h"
-
 #include "qgsquickmapsettings.h"
 #include "qgsquickmaptoscreen.h"
+#include "qgstest.h"
+#include "qgsunittypes.h"
 
-class TestQgsQuickMapSettings: public QObject
+#include <QApplication>
+#include <QObject>
+
+class TestQgsQuickMapSettings : public QObject
 {
     Q_OBJECT
   private slots:
-    void init() {} // will be called before each testfunction is executed.
+    void init() {}    // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
 
     void test_project_existency();

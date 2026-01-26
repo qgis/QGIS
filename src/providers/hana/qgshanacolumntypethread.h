@@ -19,6 +19,7 @@
 
 #include "qgsdatasourceuri.h"
 #include "qgshanatablemodel.h"
+
 #include <QThread>
 
 // A class that determines the geometry type of a given database
@@ -49,4 +50,4 @@ class QgsHanaColumnTypeThread : public QThread
     QString mErrorMessage;
 };
 
-#endif  // QGSHANACOLUMNTYPETHREAD_H
+#endif // QGSHANACOLUMNTYPETHREAD_H

@@ -16,15 +16,16 @@
 #ifndef QGSAPPGPSDIGITIZING_H
 #define QGSAPPGPSDIGITIZING_H
 
-#include <QObject>
-
-#include "qgscoordinatetransform.h"
 #include "qgis_app.h"
+#include "qgsattributes.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgpslogger.h"
 #include "qgsmaplayeraction.h"
-#include "qgsattributes.h"
+
+#include <QObject>
 
 class QgsAppGpsConnection;
+class QgsLineSymbol;
 class QgsMapCanvas;
 class QgsRubberBand;
 class QgsPoint;
@@ -39,23 +40,23 @@ class QgsUpdateGpsDetailsAction : public QgsMapLayerAction
     Q_OBJECT
 
   public:
-
     QgsUpdateGpsDetailsAction( QgsAppGpsConnection *connection, QgsAppGpsDigitizing *digitizing, QObject *parent );
     bool canRunUsingLayer( QgsMapLayer *layer ) const override;
     bool canRunUsingLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context ) const override;
+
+    using QgsMapLayerAction::triggerForFeature;
     void triggerForFeature( QgsMapLayer *layer, const QgsFeature &feature, const QgsMapLayerActionContext &context ) override;
+
   private:
     QgsAppGpsConnection *mConnection = nullptr;
     QgsAppGpsDigitizing *mDigitizing = nullptr;
-
 };
 
-class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
+class APP_EXPORT QgsAppGpsDigitizing : public QgsGpsLogger
 {
     Q_OBJECT
 
   public:
-
     static const QgsSettingsEntryString *settingTrackLineSymbol;
 
     QgsAppGpsDigitizing( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QObject *parent = nullptr );
@@ -68,15 +69,20 @@ class APP_EXPORT QgsAppGpsDigitizing: public QgsGpsLogger
      */
     QgsAttributeMap derivedAttributes() const;
 
+    /**
+     * Sets the QgsAppGpsDigitizing::settingTrackLineSymbol setting with the given line \a symbol.
+     */
+    static void setGpsTrackLineSymbol( QgsLineSymbol *symbol );
+
   public slots:
     void createFeature();
     void createVertexAtCurrentLocation();
+    void updateTrackAppearance();
 
   private slots:
     void addVertex( const QgsPoint &wgs84Point );
     void onTrackReset();
     void gpsSettingsChanged();
-    void updateTrackAppearance();
 
     void gpsConnected();
     void gpsDisconnected();

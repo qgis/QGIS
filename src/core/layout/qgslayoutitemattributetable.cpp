@@ -16,27 +16,30 @@
  ***************************************************************************/
 
 #include "qgslayoutitemattributetable.h"
-#include "qgslayout.h"
-#include "qgslayouttablecolumn.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoututils.h"
-#include "qgsfeatureiterator.h"
-#include "qgsvectorlayer.h"
-#include "qgslayoutframe.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
-#include "qgsfieldformatter.h"
-#include "qgsfieldformatterregistry.h"
-#include "qgsgeometry.h"
+
+#include "qgsconditionalstyle.h"
 #include "qgsexception.h"
-#include "qgslayoutreportcontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionnodeimpl.h"
-#include "qgsgeometryengine.h"
-#include "qgsconditionalstyle.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfieldformatter.h"
+#include "qgsfieldformatterregistry.h"
 #include "qgsfontutils.h"
-#include "qgsvariantutils.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgslayout.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemmap.h"
 #include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
+#include "qgslayouttablecolumn.h"
+#include "qgslayoututils.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayoutitemattributetable.cpp"
 
 //
 // QgsLayoutItemAttributeTable
@@ -62,7 +65,7 @@ int QgsLayoutItemAttributeTable::type() const
 
 QIcon QgsLayoutItemAttributeTable::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemTable.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mLayoutItemTable.svg"_s );
 }
 
 QgsLayoutItemAttributeTable *QgsLayoutItemAttributeTable::create( QgsLayout *layout )
@@ -424,7 +427,18 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
+    // NOLINTBEGIN(bugprone-branch-clone)
+    Q_NOWARN_DEPRECATED_PUSH
+    if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( layer->id(), req );
+    }
+    else
+    {
+      mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
+    }
+    Q_NOWARN_DEPRECATED_POP
+    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 
@@ -472,6 +486,10 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       atlasGeometryEngine.reset( QgsGeometry::createGeometryEngine( atlasGeometry.constGet() ) );
       atlasGeometryEngine->prepareGeometry();
     }
+    else
+    {
+      return false;
+    }
   }
 
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
@@ -481,7 +499,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
 
-  if ( !selectionRect.isEmpty() )
+  if ( !selectionRect.isNull() )
     req.setFilterRect( selectionRect );
 
   req.setFlags( mShowOnlyVisibleFeatures ? Qgis::FeatureRequestFlag::ExactIntersect : Qgis::FeatureRequestFlag::NoFlags );
@@ -533,9 +551,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     }
 
     //check against atlas feature intersection
-    if ( mFilterToAtlasIntersection )
+    if ( atlasGeometryEngine )
     {
-      if ( !f.hasGeometry() || !atlasGeometryEngine )
+      if ( !f.hasGeometry() )
       {
         continue;
       }
@@ -609,8 +627,8 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       else
       {
         // Lets assume it's an expression
-        std::unique_ptr< QgsExpression > expression = std::make_unique< QgsExpression >( column.attribute() );
-        context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), counter + 1, true ) );
+        auto expression = std::make_unique< QgsExpression >( column.attribute() );
+        context.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"row_number"_s, counter + 1, true ) );
         expression->prepare( &context );
         QVariant value = expression->evaluate( &context );
 
@@ -769,7 +787,7 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
     return variant;
 
   QString replaced = variant.toString();
-  replaced.replace( mWrapString, QLatin1String( "\n" ) );
+  replaced.replace( mWrapString, "\n"_L1 );
   return replaced;
 }
 
@@ -884,28 +902,28 @@ bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableEl
   if ( !QgsLayoutTable::writePropertiesToElement( tableElem, doc, context ) )
     return false;
 
-  tableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast< int >( mSource ) ) );
-  tableElem.setAttribute( QStringLiteral( "relationId" ), mRelationId );
-  tableElem.setAttribute( QStringLiteral( "showUniqueRowsOnly" ), mShowUniqueRowsOnly );
-  tableElem.setAttribute( QStringLiteral( "showOnlyVisibleFeatures" ), mShowOnlyVisibleFeatures );
-  tableElem.setAttribute( QStringLiteral( "filterToAtlasIntersection" ), mFilterToAtlasIntersection );
-  tableElem.setAttribute( QStringLiteral( "maxFeatures" ), mMaximumNumberOfFeatures );
-  tableElem.setAttribute( QStringLiteral( "filterFeatures" ), mFilterFeatures ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  tableElem.setAttribute( QStringLiteral( "featureFilter" ), mFeatureFilter );
-  tableElem.setAttribute( QStringLiteral( "wrapString" ), mWrapString );
-  tableElem.setAttribute( QStringLiteral( "useConditionalStyling" ), mUseConditionalStyling );
+  tableElem.setAttribute( u"source"_s, QString::number( static_cast< int >( mSource ) ) );
+  tableElem.setAttribute( u"relationId"_s, mRelationId );
+  tableElem.setAttribute( u"showUniqueRowsOnly"_s, mShowUniqueRowsOnly );
+  tableElem.setAttribute( u"showOnlyVisibleFeatures"_s, mShowOnlyVisibleFeatures );
+  tableElem.setAttribute( u"filterToAtlasIntersection"_s, mFilterToAtlasIntersection );
+  tableElem.setAttribute( u"maxFeatures"_s, mMaximumNumberOfFeatures );
+  tableElem.setAttribute( u"filterFeatures"_s, mFilterFeatures ? u"true"_s : u"false"_s );
+  tableElem.setAttribute( u"featureFilter"_s, mFeatureFilter );
+  tableElem.setAttribute( u"wrapString"_s, mWrapString );
+  tableElem.setAttribute( u"useConditionalStyling"_s, mUseConditionalStyling );
 
   if ( mMap )
   {
-    tableElem.setAttribute( QStringLiteral( "mapUuid" ), mMap->uuid() );
+    tableElem.setAttribute( u"mapUuid"_s, mMap->uuid() );
   }
 
   if ( mVectorLayer )
   {
-    tableElem.setAttribute( QStringLiteral( "vectorLayer" ), mVectorLayer.layerId );
-    tableElem.setAttribute( QStringLiteral( "vectorLayerName" ), mVectorLayer.name );
-    tableElem.setAttribute( QStringLiteral( "vectorLayerSource" ), mVectorLayer.source );
-    tableElem.setAttribute( QStringLiteral( "vectorLayerProvider" ), mVectorLayer.provider );
+    tableElem.setAttribute( u"vectorLayer"_s, mVectorLayer.layerId );
+    tableElem.setAttribute( u"vectorLayerName"_s, mVectorLayer.name );
+    tableElem.setAttribute( u"vectorLayerSource"_s, mVectorLayer.source );
+    tableElem.setAttribute( u"vectorLayerProvider"_s, mVectorLayer.provider );
   }
   return true;
 }
@@ -921,25 +939,25 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   if ( !QgsLayoutTable::readPropertiesFromElement( itemElem, doc, context ) )
     return false;
 
-  mSource = QgsLayoutItemAttributeTable::ContentSource( itemElem.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt() );
-  mRelationId = itemElem.attribute( QStringLiteral( "relationId" ), QString() );
+  mSource = QgsLayoutItemAttributeTable::ContentSource( itemElem.attribute( u"source"_s, u"0"_s ).toInt() );
+  mRelationId = itemElem.attribute( u"relationId"_s, QString() );
 
   if ( mSource == QgsLayoutItemAttributeTable::AtlasFeature )
   {
     mCurrentAtlasLayer = mLayout->reportContext().layer();
   }
 
-  mShowUniqueRowsOnly = itemElem.attribute( QStringLiteral( "showUniqueRowsOnly" ), QStringLiteral( "0" ) ).toInt();
-  mShowOnlyVisibleFeatures = itemElem.attribute( QStringLiteral( "showOnlyVisibleFeatures" ), QStringLiteral( "1" ) ).toInt();
-  mFilterToAtlasIntersection = itemElem.attribute( QStringLiteral( "filterToAtlasIntersection" ), QStringLiteral( "0" ) ).toInt();
-  mFilterFeatures = itemElem.attribute( QStringLiteral( "filterFeatures" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
-  mFeatureFilter = itemElem.attribute( QStringLiteral( "featureFilter" ), QString() );
-  mMaximumNumberOfFeatures = itemElem.attribute( QStringLiteral( "maxFeatures" ), QStringLiteral( "5" ) ).toInt();
-  mWrapString = itemElem.attribute( QStringLiteral( "wrapString" ) );
-  mUseConditionalStyling = itemElem.attribute( QStringLiteral( "useConditionalStyling" ), QStringLiteral( "0" ) ).toInt();
+  mShowUniqueRowsOnly = itemElem.attribute( u"showUniqueRowsOnly"_s, u"0"_s ).toInt();
+  mShowOnlyVisibleFeatures = itemElem.attribute( u"showOnlyVisibleFeatures"_s, u"1"_s ).toInt();
+  mFilterToAtlasIntersection = itemElem.attribute( u"filterToAtlasIntersection"_s, u"0"_s ).toInt();
+  mFilterFeatures = itemElem.attribute( u"filterFeatures"_s, u"false"_s ) == "true"_L1;
+  mFeatureFilter = itemElem.attribute( u"featureFilter"_s, QString() );
+  mMaximumNumberOfFeatures = itemElem.attribute( u"maxFeatures"_s, u"5"_s ).toInt();
+  mWrapString = itemElem.attribute( u"wrapString"_s );
+  mUseConditionalStyling = itemElem.attribute( u"useConditionalStyling"_s, u"0"_s ).toInt();
 
   //map
-  mMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+  mMapUuid = itemElem.attribute( u"mapUuid"_s );
   if ( mMap )
   {
     disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutTable::refreshAttributes );
@@ -949,10 +967,10 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   // setting new mMap occurs in finalizeRestoreFromXml
 
   //vector layer
-  QString layerId = itemElem.attribute( QStringLiteral( "vectorLayer" ) );
-  QString layerName = itemElem.attribute( QStringLiteral( "vectorLayerName" ) );
-  QString layerSource = itemElem.attribute( QStringLiteral( "vectorLayerSource" ) );
-  QString layerProvider = itemElem.attribute( QStringLiteral( "vectorLayerProvider" ) );
+  QString layerId = itemElem.attribute( u"vectorLayer"_s );
+  QString layerName = itemElem.attribute( u"vectorLayerName"_s );
+  QString layerSource = itemElem.attribute( u"vectorLayerSource"_s );
+  QString layerProvider = itemElem.attribute( u"vectorLayerProvider"_s );
   mVectorLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mVectorLayer.resolveWeakly( mLayout->project() );
 

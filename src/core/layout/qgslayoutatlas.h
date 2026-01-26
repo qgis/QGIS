@@ -17,17 +17,18 @@
 #define QGSLAYOUTATLAS_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayerref.h"
-#include "qgslayoutserializableobject.h"
 #include "qgsabstractlayoutiterator.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgslayoutserializableobject.h"
+#include "qgsvectorlayerref.h"
+
 #include <QObject>
 
 class QgsLayout;
 
 /**
  * \ingroup core
- * \brief Class used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
+ * \brief Used to render QgsLayout as an atlas, by iterating over the features from an associated vector layer.
  *
  * QgsLayoutAtlas implement the QgsAbstractLayoutIterator interface, allowing them to be used
  * directly with QgsLayoutExporter to automatically output all pages from the atlas.
@@ -54,7 +55,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Returns the atlas' layout.
      * \note Not available in Python bindings.
      */
-    const QgsLayout *layout() const SIP_SKIP;
+    const QgsLayout *layout() const SIP_SKIP;  // cppcheck-suppress duplInheritedMember
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
@@ -82,6 +83,22 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see hideCoverage()
      */
     void setHideCoverage( bool hide );
+
+    /**
+     * Returns TRUE if the atlas is set to limit rendering on the coverage layer to
+     * the current feature.
+     * \see setHideCoverage()
+     * \since QGIS 4.0
+     */
+    bool limitCoverageLayerRenderToCurrentFeature() const { return mLimitCoverageLayerRenderToCurrentFeature; }
+
+    /**
+     * Sets whether the rendering of the coverage layer should be limited to the
+     * current feature.
+     * \see hideCoverage()
+     * \since QGIS 4.0
+     */
+    void setLimitCoverageLayerRenderToCurrentFeature( bool limit );
 
     /**
      * Returns the filename expression used for generating output filenames for each
@@ -364,6 +381,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     bool mEnabled = false;
     bool mHideCoverage = false;
+    bool mLimitCoverageLayerRenderToCurrentFeature = false;
     QString mFilenameExpressionString;
     QString mFilenameExpressionError;
 

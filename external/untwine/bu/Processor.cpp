@@ -28,6 +28,8 @@
 #include "Processor.hpp"
 #include "PyramidManager.hpp"
 
+#include <stringconv.hpp>  // untwine/os
+
 namespace untwine
 {
 namespace bu
@@ -50,14 +52,12 @@ void Processor::run()
     }
     catch (const std::exception& ex)
     {
-        std::cerr << "Exception: " << ex.what() << "\n";
         m_manager.queueWithError(m_vi.octant(), ex.what());
         return;
     }
     catch (...)
     {
         std::string msg = std::string("Unexpected error processing ") + m_vi.key().toString() + ".";
-        std::cerr << "Exception: " << msg << "\n";
         m_manager.queueWithError(m_vi.octant(), msg);
         return;
     }
@@ -245,7 +245,7 @@ void Processor::writeBinOutput(Index& index)
     // pass.
     std::string filename = m_vi.key().toString() + ".bin";
     std::string fullFilename = m_b.opts.tempDir + "/" + filename;
-    std::ofstream out(toNative(fullFilename), std::ios::binary | std::ios::trunc);
+    std::ofstream out(os::toNative(fullFilename), std::ios::binary | std::ios::trunc);
     if (!out)
         throw FatalError("Couldn't open '" + fullFilename + "' for output.");
     for (size_t i = 0; i < index.size(); ++i)
@@ -482,13 +482,13 @@ void Processor::createChunk(const VoxelKey& key, pdal::PointViewPtr view)
 
     uint64_t location = m_manager.newChunk(key, chunk.size(), (uint32_t)view->size());
 
-    std::ofstream out(toNative(m_b.opts.outputName),
+    std::ofstream out(os::toNative(m_b.opts.outputName),
         std::ios::out | std::ios::in | std::ios::binary);
     out.seekp(std::ofstream::pos_type(location));
     out.write(reinterpret_cast<const char *>(chunk.data()), chunk.size());
     out.close();
     if (!out)
-        throw FatalError("Failure writing to '" + m_b.opts.outputName + "'.");
+        throw FatalError("Failure writing to file '" + m_b.opts.outputName + "'.");
 }
 
 void Processor::fillPointBuf(pdal::PointRef& point, std::vector<char>& buf,
@@ -524,13 +524,14 @@ void Processor::fillPointBuf(pdal::PointRef& point, std::vector<char>& buf,
         return i;
     };
 
-    int32_t x = converter((point.getFieldAs<double>(Id::X) - m_b.offset[0]) / m_b.scale[0], Id::X);
-    int32_t y = converter((point.getFieldAs<double>(Id::Y) - m_b.offset[1]) / m_b.scale[1], Id::Y);
-    int32_t z = converter((point.getFieldAs<double>(Id::Z) - m_b.offset[2]) / m_b.scale[2], Id::Z);
+    double x = point.getFieldAs<double>(Id::X);
+    int32_t xi = converter((x - m_b.xform.offset.x) / m_b.xform.scale.x, Id::X);
+    double y = point.getFieldAs<double>(Id::Y);
+    int32_t yi = converter((y - m_b.xform.offset.y) / m_b.xform.scale.y, Id::Y);
+    double z = point.getFieldAs<double>(Id::Z);
+    int32_t zi = converter((z - m_b.xform.offset.z) / m_b.xform.scale.z, Id::Z);
 
-    ostream << x;
-    ostream << y;
-    ostream << z;
+    ostream << xi << yi << zi;
 
     ostream << point.getFieldAs<uint16_t>(Id::Intensity);
     ostream << (uint8_t)(returnNumber | (numberOfReturns << 4));

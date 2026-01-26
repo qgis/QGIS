@@ -17,13 +17,14 @@
 #ifndef QGSCOORDINATETRANSFORM_H
 #define QGSCOORDINATETRANSFORM_H
 
-#include <QExplicitlySharedDataPointer>
-
 #include "qgsconfig.h"
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+
+#include <QExplicitlySharedDataPointer>
 
 class QgsCoordinateTransformPrivate;
 class QgsPointXY;
@@ -34,7 +35,7 @@ class QgsVector3D;
 
 /**
  * \ingroup core
-* \brief Class for doing transforms between two map coordinate systems.
+* \brief Handles coordinate transforms between two coordinate systems.
 *
 * This class can convert map coordinates to a different coordinate reference system.
 * It is normally associated with a map layer and is used to transform between the
@@ -128,7 +129,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * to \a destination coordinate reference system, with the specified
      * datum transforms (see QgsDatumTransform).
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0. Use the constructor with a QgsCoordinateTransformContext argument instead.
      */
     Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination,
@@ -257,6 +258,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param handle180Crossover set to TRUE if destination CRS is geographic and handling of extents
      * crossing the 180 degree longitude line is required
      * \returns rectangle in destination CRS
+     * \warning Do not call this method if the transformation involves geocentric CRS -- in this situation transformation of a 2D bounding box is meaningless! Calling this method with a geocentric CRS will result in a QgsCsException being thrown.
      * \throws QgsCsException if the transformation fails
      */
     QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const SIP_THROW( QgsCsException );
@@ -615,8 +617,8 @@ class CORE_EXPORT QgsCoordinateTransform
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsCoordinateTransform: %1 to %2>" ).arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : QStringLiteral( "NULL" ),
-                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : QStringLiteral( "NULL" ) );
+    QString str = u"<QgsCoordinateTransform: %1 to %2>"_s.arg( sipCpp->sourceCrs().isValid() ? sipCpp->sourceCrs().authid() : u"NULL"_s,
+                  sipCpp->destinationCrs().isValid() ? sipCpp->destinationCrs().authid() : u"NULL"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -770,8 +772,8 @@ class CORE_EXPORT QgsCoordinateTransform
 #ifndef SIP_RUN
 inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransform &r )
 {
-  QString mySummary( QStringLiteral( "\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:" ) );
-  mySummary += QLatin1String( "\n\tInitialized? : " );
+  QString mySummary( u"\n%%%%%%%%%%%%%%%%%%%%%%%%\nCoordinate Transform def begins:"_s );
+  mySummary += "\n\tInitialized? : "_L1;
   //prevent warnings
   if ( r.isValid() )
   {
@@ -818,7 +820,7 @@ inline std::ostream &operator << ( std::ostream &os, const QgsCoordinateTransfor
   }
 #endif
 
-  mySummary += QLatin1String( "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n" );
+  mySummary += "\nCoordinate Transform def ends \n%%%%%%%%%%%%%%%%%%%%%%%%\n"_L1;
   return os << mySummary.toLocal8Bit().data() << std::endl;
 }
 #endif

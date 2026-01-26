@@ -16,17 +16,19 @@
 #ifndef QGSALIGNMENTCOMBOBOX_H
 #define QGSALIGNMENTCOMBOBOX_H
 
-#include <QComboBox>
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui
  * \class QgsAlignmentComboBox
  * \brief A combo box which allows choice of alignment settings (e.g. left, right, ...).
  *
- * Currently only horizontal alignments are supported. Available alignment choices
- * can be manually specified by calling setAvailableAlignments(), which is useful
+ * Available alignment choices can be manually specified by calling
+ * setAvailableAlignments(), which is useful
  * when only a subset of Qt's alignment options should be exposed.
  *
  * \since QGIS 3.10
@@ -36,7 +38,6 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAlignmentComboBox, with the specified parent widget.
      */
@@ -62,6 +63,36 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
     void setCurrentAlignment( Qt::Alignment alignment );
 
     /**
+     * Returns the current alignment choice as a QGIS horizontal text alignment enum.
+     *
+     * \see verticalAlignment()
+     * \since QGIS 4.0
+     */
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+
+    /**
+     * Returns the current alignment choice as a QGIS horizontal text alignment enum.
+     *
+     * \see verticalAlignment()
+     * \since QGIS 4.0
+     */
+    Qgis::TextVerticalAlignment verticalAlignment() const;
+
+    /**
+     * Sets the current \a alignment choice from a QGIS horizontal text alignment enum.
+     *
+     * \since QGIS 4.0
+     */
+    void setCurrentAlignment( Qgis::TextHorizontalAlignment alignment );
+
+    /**
+     * Sets the current \a alignment choice from a QGIS vertical text alignment enum.
+     *
+     * \since QGIS 4.0
+     */
+    void setCurrentAlignment( Qgis::TextVerticalAlignment alignment );
+
+    /**
      * Sets the \a text and \a icon to use for a particular \a alignment option,
      * replacing the default text or icon.
      *
@@ -79,7 +110,6 @@ class GUI_EXPORT QgsAlignmentComboBox : public QComboBox
     void changed();
 
   private:
-
     void populate();
 
     Qt::Alignment mAlignments = Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight;

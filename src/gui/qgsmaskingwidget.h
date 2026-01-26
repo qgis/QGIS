@@ -20,13 +20,14 @@
 
 /// @cond PRIVATE
 
-#include <QPointer>
-
-#include "qgspanelwidget.h"
 #include "ui_qgsmaskingwidgetbase.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgspanelwidget.h"
+#include "qgsstyleentityvisitor.h"
+
+#include <QPointer>
 
 class QgsMessageBarItem;
 
@@ -37,7 +38,7 @@ class QgsMessageBarItem;
  * \note This class is not a part of public API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMaskingWidgetBase
+class GUI_EXPORT QgsMaskingWidget : public QgsPanelWidget, private Ui::QgsMaskingWidgetBase
 {
     Q_OBJECT
   public:
@@ -86,13 +87,11 @@ class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
     bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override;
 
     //! Process a symbol
-    void visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier, QVector<int> rootPath );
+    void visitSymbol( const QgsSymbol *symbol, const QString &leafIdentifier );
 
     bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override;
 
   private:
-    QString mSymbolKey;
-    QList<QPair<QgsSymbolLayerId, QList<QgsSymbolLayerReference>>> mMasks;
     SymbolLayerCallback mCallback;
 };
 

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsspatialiteexpressioncompiler.h"
+
 #include "qgsexpressionnodeimpl.h"
 
 QgsSpatialiteExpressionCompiler::QgsSpatialiteExpressionCompiler( const QgsFields &fields, bool ignoreStaticNodes )
@@ -23,8 +24,7 @@ QgsSpatialiteExpressionCompiler::QgsSpatialiteExpressionCompiler( const QgsField
 
 QString QgsSpatialiteExpressionCompiler::sqlFunctionFromFunctionName( const QString &fnName ) const
 {
-  static const QMap<QString, QString> FN_NAMES
-  {
+  static const QMap<QString, QString> FN_NAMES {
     { "abs", "abs" },
     { "char", "char" },
     { "coalesce", "coalesce" },
@@ -39,5 +39,3 @@ QString QgsSpatialiteExpressionCompiler::sqlFunctionFromFunctionName( const QStr
 
   return FN_NAMES.value( fnName, QString() );
 }
-
-

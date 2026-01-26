@@ -18,104 +18,98 @@
 #ifndef QGSORACLECONN_H
 #define QGSORACLECONN_H
 
-#include <QString>
-#include <QStringList>
-#include <QVector>
-#include <QMap>
-#include <QSet>
-#include <QThread>
-#include <QVariant>
-#include <QDateTime>
-
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectordataprovider.h"
 
+#include <QDateTime>
+#include <QMap>
+#include <QRecursiveMutex>
+#include <QSet>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QRecursiveMutex>
+#include <QString>
+#include <QStringList>
+#include <QThread>
+#include <QVariant>
+#include <QVector>
 
 class QgsField;
 
 // Oracle layer properties
 struct QgsOracleLayerProperty
 {
-  QList<Qgis::WkbType> types;
-  QList<int>           srids;
-  QString              ownerName;
-  QString              tableName;
-  QString              geometryColName;
-  bool                 isView = false;
-  QStringList          pkCols;
-  QString              sql;
+    QList<Qgis::WkbType> types;
+    QList<int> srids;
+    QString ownerName;
+    QString tableName;
+    QString geometryColName;
+    bool isView = false;
+    QStringList pkCols;
+    QString sql;
 
-  QgsOracleLayerProperty() = default;
+    QgsOracleLayerProperty() = default;
 
-  int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
+    int size() const
+    {
+      Q_ASSERT( types.size() == srids.size() );
+      return types.size();
+    }
 
-  bool operator==( const QgsOracleLayerProperty &other ) const
-  {
-    return types == other.types && srids == other.srids && ownerName == other.ownerName &&
-           tableName == other.tableName && geometryColName == other.geometryColName &&
-           isView == other.isView && pkCols == other.pkCols && sql == other.sql;
-  }
+    bool operator==( const QgsOracleLayerProperty &other ) const
+    {
+      return types == other.types && srids == other.srids && ownerName == other.ownerName && tableName == other.tableName && geometryColName == other.geometryColName && isView == other.isView && pkCols == other.pkCols && sql == other.sql;
+    }
 
-  QgsOracleLayerProperty at( int i ) const
-  {
-    QgsOracleLayerProperty property;
+    QgsOracleLayerProperty at( int i ) const
+    {
+      QgsOracleLayerProperty property;
 
-    Q_ASSERT( i >= 0 && i < size() );
+      Q_ASSERT( i >= 0 && i < size() );
 
-    property.types << types.at( i );
-    property.srids << srids.at( i );
-    property.ownerName       = ownerName;
-    property.tableName       = tableName;
-    property.geometryColName = geometryColName;
-    property.isView          = isView;
-    property.pkCols          = pkCols;
-    property.sql             = sql;
+      property.types << types.at( i );
+      property.srids << srids.at( i );
+      property.ownerName = ownerName;
+      property.tableName = tableName;
+      property.geometryColName = geometryColName;
+      property.isView = isView;
+      property.pkCols = pkCols;
+      property.sql = sql;
 
-    return property;
-  }
+      return property;
+    }
 
 #ifdef QGISDEBUG
-  QString toString() const
-  {
-    QString typeString;
-    const auto constTypes = types;
-    for ( Qgis::WkbType type : constTypes )
+    QString toString() const
     {
-      if ( !typeString.isEmpty() )
-        typeString += "|";
-      typeString += QString::number( static_cast< quint32>( type ) );
-    }
-    QString sridString;
-    const auto constSrids = srids;
-    for ( int srid : constSrids )
-    {
-      if ( !sridString.isEmpty() )
-        sridString += "|";
-      sridString += QString::number( srid );
-    }
+      QString typeString;
+      const auto constTypes = types;
+      for ( Qgis::WkbType type : constTypes )
+      {
+        if ( !typeString.isEmpty() )
+          typeString += "|";
+        typeString += QString::number( static_cast<quint32>( type ) );
+      }
+      QString sridString;
+      const auto constSrids = srids;
+      for ( int srid : constSrids )
+      {
+        if ( !sridString.isEmpty() )
+          sridString += "|";
+        sridString += QString::number( srid );
+      }
 
-    return QString( "%1.%2.%3 type=%4 srid=%5 view=%6%7 sql=%8" )
-           .arg( ownerName,
-                 tableName,
-                 geometryColName,
-                 typeString,
-                 sridString,
-                 isView ? "yes" : "no",
-                 isView ? QString( " pk=%1" ).arg( pkCols.join( "|" ) ) : "",
-                 sql );
-  }
+      return QString( "%1.%2.%3 type=%4 srid=%5 view=%6%7 sql=%8" )
+        .arg( ownerName, tableName, geometryColName, typeString, sridString, isView ? "yes" : "no", isView ? QString( " pk=%1" ).arg( pkCols.join( "|" ) ) : "", sql );
+    }
 #endif
 };
 
 
 #include "qgsconfig.h"
 constexpr int sOracleConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
-#define LoggedExec(_class, query) execLogged( query, true, nullptr, _class, QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
-#define LoggedExecPrivate(_class, query, sql, params ) execLogged( query, sql, params, _class, QString(QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")") )
+#define LoggedExec( _class, query ) execLogged( query, true, nullptr, _class, QString( QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
+#define LoggedExecPrivate( _class, query, sql, params ) execLogged( query, sql, params, _class, QString( QString( __FILE__ ).mid( sOracleConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )
 
 
 /**
@@ -125,6 +119,7 @@ constexpr int sOracleConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAK
 class QgsPoolOracleConn
 {
     class QgsOracleConn *mConn;
+
   public:
     QgsPoolOracleConn( const QString &connInfo );
     ~QgsPoolOracleConn();
@@ -176,11 +171,7 @@ class QgsOracleConn : public QObject
      * returned.
      *
      */
-    bool supportedLayers( QVector<QgsOracleLayerProperty> &layers,
-                          const QString &limitToSchema,
-                          bool geometryTablesOnly,
-                          bool userTablesOnly = true,
-                          bool allowGeometrylessTables = false );
+    bool supportedLayers( QVector<QgsOracleLayerProperty> &layers, const QString &limitToSchema, bool geometryTablesOnly, bool userTablesOnly = true, bool allowGeometrylessTables = false );
 
     void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
@@ -249,7 +240,7 @@ class QgsOracleConn : public QObject
     static void setSelectedConnection( const QString &connName );
     static QgsDataSourceUri connUri( const QString &connName );
     static bool userTablesOnly( const QString &connName );
-    static QString restrictToSchema( const QString &connName );
+    static QString schemaToRestrict( const QString &connName );
     static bool geometryColumnsOnly( const QString &connName );
     static bool allowGeometrylessTables( const QString &connName );
     static bool allowProjectsInDatabase( const QString &connName );
@@ -270,19 +261,19 @@ class QgsOracleConn : public QObject
     static QString getLastExecutedQuery( const QSqlQuery &query );
 
   private:
-    explicit QgsOracleConn( QgsDataSourceUri uri, bool transaction );
+    explicit QgsOracleConn( const QgsDataSourceUri &uri, bool transaction );
     ~QgsOracleConn() override;
 
     bool exec( QSqlQuery &qry, const QString &sql, const QVariantList &params );
     bool execLogged( QSqlQuery &qry, const QString &sql, const QVariantList &params, const QString &originatorClass = QString(), const QString &queryOrigin = QString() );
 
     //! reference count
-    int mRef;
+    int mRef = 1;
 
     QString mCurrentUser;
 
     //! has spatial
-    int mHasSpatial;
+    int mHasSpatial = -1;
 
     QSqlDatabase mDatabase;
     QSqlQuery mQuery;

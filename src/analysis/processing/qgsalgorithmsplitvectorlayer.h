@@ -31,9 +31,7 @@
  */
 class QgsSplitVectorLayerAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsSplitVectorLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -42,14 +40,13 @@ class QgsSplitVectorLayerAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSplitLayer.svg" ) ); }
+    QString shortDescription() const override;
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSplitLayer.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSplitLayer.svg"_s ); }
     QgsSplitVectorLayerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

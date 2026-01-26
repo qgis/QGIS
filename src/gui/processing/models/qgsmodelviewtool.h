@@ -16,10 +16,11 @@
 #ifndef QGSMODELVIEWTOOL_H
 #define QGSMODELVIEWTOOL_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include <QCursor>
+#include "qgis_sip.h"
+
 #include <QAction>
+#include <QCursor>
 #include <QPointer>
 
 class QMouseEvent;
@@ -42,15 +43,13 @@ class QgsModelGraphicsScene;
  */
 class GUI_EXPORT QgsModelViewTool : public QObject
 {
-
     Q_OBJECT
 
   public:
-
     //! Flags for controlling how a tool behaves
     enum Flag
     {
-      FlagSnaps = 1 << 1,  //!< Tool utilizes snapped coordinates.
+      FlagSnaps = 1 << 1, //!< Tool utilizes snapped coordinates.
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -178,7 +177,6 @@ class GUI_EXPORT QgsModelViewTool : public QObject
     void itemFocused( QgsModelComponentGraphicItem *item );
 
   protected:
-
     /**
      * Sets the combination of \a flags that will be used for the tool.
      * \see flags()
@@ -200,7 +198,6 @@ class GUI_EXPORT QgsModelViewTool : public QObject
     bool isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const;
 
   private:
-
     //! Pointer to model view.
     QgsModelGraphicsView *mView = nullptr;
 
@@ -210,12 +207,10 @@ class GUI_EXPORT QgsModelViewTool : public QObject
     QCursor mCursor = Qt::ArrowCursor;
 
     //! Optional action associated with tool
-    QPointer< QAction > mAction;
+    QPointer<QAction> mAction;
 
     //! Translated name of the map tool
     QString mToolName;
-
-
 };
 
 #endif // QGSMODELVIEWTOOL_H

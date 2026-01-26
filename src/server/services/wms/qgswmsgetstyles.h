@@ -21,24 +21,22 @@
 
 class QgsServerInterface;
 class QgsProject;
-class QgsWmsRequest;
 class QgsServerResponse;
 class QDomDocument;
 
 namespace QgsWms
 {
+  class QgsWmsRequest;
 
   /**
    * Output GetStyles response
    */
-  void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project,
-                       const QgsWmsRequest &request, QgsServerResponse &response );
+  void writeGetStyles( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
 
 
   /**
    * Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)
    */
-  QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project,
-                          const QgsWmsRequest &request );
+  QDomDocument getStyles( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request );
 
 } // namespace QgsWms

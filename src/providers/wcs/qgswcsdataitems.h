@@ -15,12 +15,12 @@
 #ifndef QGSWCSDATAITEMS_H
 #define QGSWCSDATAITEMS_H
 
-#include "qgsdatacollectionitem.h"
-#include "qgslayeritem.h"
-#include "qgsdatasourceuri.h"
-#include "qgswcscapabilities.h"
-#include "qgsdataitemprovider.h"
 #include "qgsconnectionsitem.h"
+#include "qgsdatacollectionitem.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdatasourceuri.h"
+#include "qgslayeritem.h"
+#include "qgswcscapabilities.h"
 
 class QgsWCSConnectionItem : public QgsDataCollectionItem
 {
@@ -44,9 +44,7 @@ class QgsWCSLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsWCSLayerItem( QgsDataItem *parent, QString name, QString path,
-                     const QgsWcsCapabilitiesProperty &capabilitiesProperty,
-                     const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary );
+    QgsWCSLayerItem( QgsDataItem *parent, QString name, QString path, const QgsWcsCapabilitiesProperty &capabilitiesProperty, const QgsDataSourceUri &dataSourceUri, const QgsWcsCoverageSummary &coverageSummary );
 
     QString createUri();
 

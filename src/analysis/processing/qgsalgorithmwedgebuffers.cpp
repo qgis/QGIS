@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsalgorithmwedgebuffers.h"
+
 #include "qgsmultipoint.h"
 #include "qgsmultisurface.h"
 
@@ -23,7 +24,7 @@
 
 QString QgsWedgeBuffersAlgorithm::name() const
 {
-  return QStringLiteral( "wedgebuffers" );
+  return u"wedgebuffers"_s;
 }
 
 QString QgsWedgeBuffersAlgorithm::displayName() const
@@ -43,7 +44,7 @@ QString QgsWedgeBuffersAlgorithm::group() const
 
 QString QgsWedgeBuffersAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsWedgeBuffersAlgorithm::outputName() const
@@ -75,9 +76,14 @@ QString QgsWedgeBuffersAlgorithm::shortHelpString() const
                       "be automatically segmentized to Polygons depending on the output format." );
 }
 
+QString QgsWedgeBuffersAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates wedge shaped buffers from input points." );
+}
+
 QList<int> QgsWedgeBuffersAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );
 }
 
 Qgis::ProcessingSourceType QgsWedgeBuffersAlgorithm::outputLayerType() const
@@ -92,28 +98,28 @@ QgsWedgeBuffersAlgorithm *QgsWedgeBuffersAlgorithm::createInstance() const
 
 void QgsWedgeBuffersAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > azimuth = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "AZIMUTH" ), QObject::tr( "Azimuth (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
+  auto azimuth = std::make_unique<QgsProcessingParameterNumber>( u"AZIMUTH"_s, QObject::tr( "Azimuth (degrees from North)" ), Qgis::ProcessingNumberParameterType::Double, 0, false );
   azimuth->setIsDynamic( true );
-  azimuth->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Azimuth" ), QObject::tr( "Azimuth (degrees from North)" ), QgsPropertyDefinition::Double ) );
-  azimuth->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  azimuth->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Azimuth"_s, QObject::tr( "Azimuth (degrees from North)" ), QgsPropertyDefinition::Double ) );
+  azimuth->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( azimuth.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > width = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "WIDTH" ), QObject::tr( "Wedge width (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 45, false, 0, 360.0 );
+  auto width = std::make_unique<QgsProcessingParameterNumber>( u"WIDTH"_s, QObject::tr( "Wedge width (in degrees)" ), Qgis::ProcessingNumberParameterType::Double, 45, false, 0, 360.0 );
   width->setIsDynamic( true );
-  width->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Width" ), QObject::tr( "Wedge width (in degrees)" ), QgsPropertyDefinition::DoublePositive ) );
-  width->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  width->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Width"_s, QObject::tr( "Wedge width (in degrees)" ), QgsPropertyDefinition::DoublePositive ) );
+  width->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( width.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > outerRadius = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "OUTER_RADIUS" ), QObject::tr( "Outer radius" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 );
+  auto outerRadius = std::make_unique<QgsProcessingParameterNumber>( u"OUTER_RADIUS"_s, QObject::tr( "Outer radius" ), Qgis::ProcessingNumberParameterType::Double, 1, false, 0 );
   outerRadius->setIsDynamic( true );
-  outerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Outer radius" ), QObject::tr( "Outer radius" ), QgsPropertyDefinition::DoublePositive ) );
-  outerRadius->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  outerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Outer radius"_s, QObject::tr( "Outer radius" ), QgsPropertyDefinition::DoublePositive ) );
+  outerRadius->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( outerRadius.release() );
 
-  std::unique_ptr< QgsProcessingParameterNumber > innerRadius = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "INNER_RADIUS" ), QObject::tr( "Inner radius" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
+  auto innerRadius = std::make_unique<QgsProcessingParameterNumber>( u"INNER_RADIUS"_s, QObject::tr( "Inner radius" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 );
   innerRadius->setIsDynamic( true );
-  innerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Inner radius" ), QObject::tr( "Inner radius" ), QgsPropertyDefinition::DoublePositive ) );
-  innerRadius->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  innerRadius->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Inner radius"_s, QObject::tr( "Inner radius" ), QgsPropertyDefinition::DoublePositive ) );
+  innerRadius->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( innerRadius.release() );
 }
 
@@ -124,25 +130,25 @@ Qgis::ProcessingFeatureSourceFlags QgsWedgeBuffersAlgorithm::sourceFlags() const
 
 bool QgsWedgeBuffersAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mAzimuth = parameterAsDouble( parameters, QStringLiteral( "AZIMUTH" ), context );
-  mDynamicAzimuth = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "AZIMUTH" ) );
+  mAzimuth = parameterAsDouble( parameters, u"AZIMUTH"_s, context );
+  mDynamicAzimuth = QgsProcessingParameters::isDynamic( parameters, u"AZIMUTH"_s );
   if ( mDynamicAzimuth )
-    mAzimuthProperty = parameters.value( QStringLiteral( "AZIMUTH" ) ).value< QgsProperty >();
+    mAzimuthProperty = parameters.value( u"AZIMUTH"_s ).value<QgsProperty>();
 
-  mWidth = parameterAsDouble( parameters, QStringLiteral( "WIDTH" ), context );
-  mDynamicWidth = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "WIDTH" ) );
+  mWidth = parameterAsDouble( parameters, u"WIDTH"_s, context );
+  mDynamicWidth = QgsProcessingParameters::isDynamic( parameters, u"WIDTH"_s );
   if ( mDynamicWidth )
-    mWidthProperty = parameters.value( QStringLiteral( "WIDTH" ) ).value< QgsProperty >();
+    mWidthProperty = parameters.value( u"WIDTH"_s ).value<QgsProperty>();
 
-  mOuterRadius = parameterAsDouble( parameters, QStringLiteral( "OUTER_RADIUS" ), context );
-  mDynamicOuterRadius = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "OUTER_RADIUS" ) );
+  mOuterRadius = parameterAsDouble( parameters, u"OUTER_RADIUS"_s, context );
+  mDynamicOuterRadius = QgsProcessingParameters::isDynamic( parameters, u"OUTER_RADIUS"_s );
   if ( mDynamicOuterRadius )
-    mOuterRadiusProperty = parameters.value( QStringLiteral( "OUTER_RADIUS" ) ).value< QgsProperty >();
+    mOuterRadiusProperty = parameters.value( u"OUTER_RADIUS"_s ).value<QgsProperty>();
 
-  mInnerRadius = parameterAsDouble( parameters, QStringLiteral( "INNER_RADIUS" ), context );
-  mDynamicInnerRadius = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "INNER_RADIUS" ) );
+  mInnerRadius = parameterAsDouble( parameters, u"INNER_RADIUS"_s, context );
+  mDynamicInnerRadius = QgsProcessingParameters::isDynamic( parameters, u"INNER_RADIUS"_s );
   if ( mDynamicInnerRadius )
-    mInnerRadiusProperty = parameters.value( QStringLiteral( "INNER_RADIUS" ) ).value< QgsProperty >();
+    mInnerRadiusProperty = parameters.value( u"INNER_RADIUS"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -171,8 +177,8 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
     const QgsGeometry g = f.geometry();
     if ( QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
-      const QgsMultiPoint *mp = static_cast< const QgsMultiPoint * >( g.constGet() );
-      std::unique_ptr< QgsMultiSurface > result = std::make_unique< QgsMultiSurface >();
+      const QgsMultiPoint *mp = static_cast<const QgsMultiPoint *>( g.constGet() );
+      auto result = std::make_unique<QgsMultiSurface>();
       result->reserve( mp->numGeometries() );
       for ( int i = 0; i < mp->numGeometries(); ++i )
       {
@@ -183,7 +189,7 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
     }
     else
     {
-      const QgsPoint *p = static_cast< const QgsPoint * >( g.constGet() );
+      const QgsPoint *p = static_cast<const QgsPoint *>( g.constGet() );
       f.setGeometry( QgsGeometry::createWedgeBuffer( *p, azimuth, width, outerRadius, innerRadius ) );
     }
   }
@@ -192,4 +198,3 @@ QgsFeatureList QgsWedgeBuffersAlgorithm::processFeature( const QgsFeature &featu
 }
 
 ///@endcond
-

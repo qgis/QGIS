@@ -16,20 +16,13 @@ if (WITH_GUI)
     gui/qgsauthpkipathsedit.h
   )
   set(AUTH_PKIPATHS_UIS gui/qgsauthpkipathsedit.ui)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
-  else()
-    QT5_WRAP_UI(AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
-  endif()
+  qt_wrap_ui(AUTH_PKIPATHS_UIS_H ${AUTH_PKIPATHS_UIS})
 endif()
 
 # static library
 add_library(authmethod_pkipaths_a STATIC ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_HDRS} ${AUTH_PKIPATHS_UIS_H})
 
 target_include_directories(authmethod_pkipaths_a PUBLIC ${CMAKE_SOURCE_DIR}/src/auth/pkipaths/core)
-
-# require c++17
-target_compile_features(authmethod_pkipaths_a PRIVATE cxx_std_17)
 
 target_link_libraries(authmethod_pkipaths_a qgis_core)
 
@@ -51,9 +44,6 @@ if (FORCE_STATIC_LIBS)
 else()
   # dynamically loaded module
   add_library(authmethod_pkipaths MODULE ${AUTH_PKIPATHS_SRCS} ${AUTH_PKIPATHS_HDRS} ${AUTH_PKIPATHS_UIS_H})
-
-  # require c++17
-  target_compile_features(authmethod_pkipaths PRIVATE cxx_std_17)
 
   target_link_libraries(authmethod_pkipaths qgis_core)
 

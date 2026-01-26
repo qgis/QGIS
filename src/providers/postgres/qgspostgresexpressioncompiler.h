@@ -16,19 +16,17 @@
 #ifndef QGSPOSTGRESEXPRESSIONCOMPILER_H
 #define QGSPOSTGRESEXPRESSIONCOMPILER_H
 
-#include "qgssqlexpressioncompiler.h"
 #include "qgsexpression.h"
 #include "qgspostgresconn.h"
 #include "qgspostgresfeatureiterator.h"
+#include "qgssqlexpressioncompiler.h"
 
 class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
-
     explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:
-
     QString quotedIdentifier( const QString &identifier ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
     Result compileNode( const QgsExpressionNode *node, QString &str ) override;

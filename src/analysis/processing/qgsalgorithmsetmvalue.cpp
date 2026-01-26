@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsetmvalue.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsSetMValueAlgorithm::name() const
 {
-  return QStringLiteral( "setmvalue" );
+  return u"setmvalue"_s;
 }
 
 QString QgsSetMValueAlgorithm::displayName() const
@@ -42,7 +43,7 @@ QString QgsSetMValueAlgorithm::group() const
 
 QString QgsSetMValueAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSetMValueAlgorithm::shortHelpString() const
@@ -52,6 +53,11 @@ QString QgsSetMValueAlgorithm::shortHelpString() const
                       "with the new value. If no M values exist, the geometry will be "
                       "upgraded to include M values and the specified value used as "
                       "the initial M value for all geometries." );
+}
+
+QString QgsSetMValueAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Sets the M value for geometries in a layer." );
 }
 
 QString QgsSetMValueAlgorithm::outputName() const
@@ -66,7 +72,7 @@ QgsSetMValueAlgorithm *QgsSetMValueAlgorithm::createInstance() const
 
 bool QgsSetMValueAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
@@ -85,19 +91,19 @@ Qgis::WkbType QgsSetMValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 
 void QgsSetMValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto mValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto mValueParam = std::make_unique<QgsProcessingParameterNumber>( u"M_VALUE"_s, QObject::tr( "M Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   mValueParam->setIsDynamic( true );
-  mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
-  mValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"M_VALUE"_s, QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
+  mValueParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( mValueParam.release() );
 }
 
 bool QgsSetMValueAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMValue = parameterAsDouble( parameters, QStringLiteral( "M_VALUE" ), context );
-  mDynamicMValue = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "M_VALUE" ) );
+  mMValue = parameterAsDouble( parameters, u"M_VALUE"_s, context );
+  mDynamicMValue = QgsProcessingParameters::isDynamic( parameters, u"M_VALUE"_s );
   if ( mDynamicMValue )
-    mMValueProperty = parameters.value( QStringLiteral( "M_VALUE" ) ).value< QgsProperty >();
+    mMValueProperty = parameters.value( u"M_VALUE"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -108,7 +114,7 @@ QgsFeatureList QgsSetMValueAlgorithm::processFeature( const QgsFeature &feature,
 
   if ( f.hasGeometry() )
   {
-    std::unique_ptr< QgsAbstractGeometry > newGeometry( f.geometry().constGet()->clone() );
+    std::unique_ptr<QgsAbstractGeometry> newGeometry( f.geometry().constGet()->clone() );
     // addMValue won't alter existing M values, so drop them first
     if ( QgsWkbTypes::hasM( newGeometry->wkbType() ) )
       newGeometry->dropMValue();

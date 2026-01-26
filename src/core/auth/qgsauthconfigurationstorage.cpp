@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include "qgsauthconfigurationstorage.h"
 
+#include "moc_qgsauthconfigurationstorage.cpp"
+
 QgsAuthConfigurationStorage::QgsAuthConfigurationStorage( const QMap<QString, QVariant> &configuration )
   : mConfiguration( configuration )
 {

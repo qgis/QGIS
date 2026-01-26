@@ -18,8 +18,9 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QString>
+
 #include <QIcon>
+#include <QString>
 
 class QgsDevToolWidget;
 class QWidget;
@@ -27,13 +28,12 @@ class QWidget;
 /**
  * \ingroup gui
  * \class QgsDevToolWidgetFactory
- * \brief Factory class for creating custom developer/debugging tool pages
+ * \brief Factory class for creating custom developer/debugging tool pages.
  * \since QGIS 3.14
  */
 class GUI_EXPORT QgsDevToolWidgetFactory
 {
   public:
-
     /**
      * Constructor for a QgsDevToolWidgetFactory with the specified \a title and \a icon.
      */

@@ -16,9 +16,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Arnaud Morvan'
-__date__ = 'January 2015'
-__copyright__ = '(C) 2015, Arnaud Morvan'
+__author__ = "Arnaud Morvan"
+__date__ = "January 2015"
+__copyright__ = "(C) 2015, Arnaud Morvan"
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import (
@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import (
     QSpacerItem,
     QWidget,
     QMenu,
-    QAction
+    QAction,
 )
 from qgis.PyQt.QtGui import QCursor
 
@@ -63,8 +63,11 @@ class CheckboxesPanel(QWidget):
             self._buttons.append((v, button))
             self._buttonGroup.addButton(button, i)
             layout.addWidget(button, i % rows, i / rows)
-        layout.addItem(QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
-                       0, columns)
+        layout.addItem(
+            QSpacerItem(0, 0, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum),
+            0,
+            columns,
+        )
         self.setLayout(layout)
 
         if multiple:
@@ -73,34 +76,30 @@ class CheckboxesPanel(QWidget):
 
     def showPopupMenu(self):
         popup_menu = QMenu()
-        select_all_action = QAction(self.tr('Select All'), popup_menu)
+        select_all_action = QAction(self.tr("Select All"), popup_menu)
         select_all_action.triggered.connect(self.selectAll)
-        clear_all_action = QAction(self.tr('Clear Selection'), popup_menu)
+        clear_all_action = QAction(self.tr("Clear Selection"), popup_menu)
         clear_all_action.triggered.connect(self.deselectAll)
         popup_menu.addAction(select_all_action)
         popup_menu.addAction(clear_all_action)
         popup_menu.exec(QCursor.pos())
 
     def selectAll(self):
-        for (v, button) in self._buttons:
+        for v, button in self._buttons:
             button.setChecked(True)
 
     def deselectAll(self):
-        for (v, button) in self._buttons:
+        for v, button in self._buttons:
             button.setChecked(False)
 
     def value(self):
         if self._multiple:
-            return [
-                v
-                for (v, checkbox) in self._buttons
-                if checkbox.isChecked()
-            ]
+            return [v for (v, checkbox) in self._buttons if checkbox.isChecked()]
         else:
             return self._options[self._buttonGroup.checkedId()][0]
 
     def setValue(self, value):
-        for (v, button) in self._buttons:
+        for v, button in self._buttons:
             if self._multiple:
                 button.setChecked(v in value)
             else:

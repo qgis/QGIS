@@ -19,6 +19,8 @@
 
 #include "qgswmsrequest.h"
 
+#include "moc_qgswmsrequest.cpp"
+
 namespace QgsWms
 {
   QgsWmsRequest::QgsWmsRequest( const QgsServerRequest &other )
@@ -54,4 +56,4 @@ namespace QgsWms
   {
     mWmsParams = QgsWmsParameters( serverParameters() );
   }
-}
+} // namespace QgsWms

@@ -13,13 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
 
 //qgis includes...
 #include <qgsmaplayer.h>
@@ -48,13 +49,14 @@ class TestQgsLineFillSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLineFillSymbol() : QgsTest( QStringLiteral( "Line Fill Symbol Tests" ) ) {}
+    TestQgsLineFillSymbol()
+      : QgsTest( u"Line Fill Symbol Tests"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void lineFillSymbol();
     void lineFillSymbolVector();
@@ -74,7 +76,7 @@ class TestQgsLineFillSymbol : public QgsTest
     void dataDefinedSubSymbol();
 
   private:
-    bool mTestHasError =  false ;
+    bool mTestHasError = false;
 
     bool imageCheck( const QString &type, QgsVectorLayer *layer = nullptr, bool forceVector = false );
     QgsMapSettings mMapSettings;
@@ -103,8 +105,7 @@ void TestQgsLineFillSymbol::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
-                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
@@ -122,7 +123,6 @@ void TestQgsLineFillSymbol::initTestCase()
   // and is more light weight
   //
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpPolysLayer );
-
 }
 void TestQgsLineFillSymbol::cleanupTestCase()
 {
@@ -134,18 +134,18 @@ void TestQgsLineFillSymbol::cleanupTestCase()
 void TestQgsLineFillSymbol::lineFillSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   mLineFill->setSubSymbol( lineSymbol );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill" ) ) );
+  QVERIFY( imageCheck( u"symbol_linefill"_s ) );
 }
 
 void TestQgsLineFillSymbol::lineFillSymbolVector()
 {
-  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -154,19 +154,19 @@ void TestQgsLineFillSymbol::lineFillSymbolVector()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   lineFill->setSubSymbol( lineSymbol );
 
-  QVERIFY( imageCheck( QStringLiteral( "symbol_vector_linefill" ), layer.get(), true ) );
+  QVERIFY( imageCheck( u"symbol_vector_linefill"_s, layer.get(), true ) );
 }
 
 void TestQgsLineFillSymbol::viewportLineFillSymbol()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsVectorSimplifyMethod simplifyMethod;
@@ -180,19 +180,19 @@ void TestQgsLineFillSymbol::viewportLineFillSymbol()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
   lineFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
 
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_viewport" ), layer.get() ) );
+  QVERIFY( imageCheck( u"symbol_linefill_viewport"_s, layer.get() ) );
 }
 
 void TestQgsLineFillSymbol::viewportLineFillSymbolVector()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -201,29 +201,29 @@ void TestQgsLineFillSymbol::viewportLineFillSymbolVector()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
   lineFill->setCoordinateReference( Qgis::SymbolCoordinateReference::Viewport );
 
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_viewport" ), layer.get(), true ) );
+  QVERIFY( imageCheck( u"symbol_linefill_vector_viewport"_s, layer.get(), true ) );
 }
 
 void TestQgsLineFillSymbol::lineFillSymbolOffset()
 {
   mLineFill->setOffset( 0.5 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_posoffset" ) ) );
+  QVERIFY( imageCheck( u"symbol_linefill_posoffset"_s ) );
 
   mLineFill->setOffset( -0.5 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_negoffset" ) ) );
+  QVERIFY( imageCheck( u"symbol_linefill_negoffset"_s ) );
   mLineFill->setOffset( 0 );
 }
 
 void TestQgsLineFillSymbol::lineFillSymbolOffsetVector()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -232,34 +232,34 @@ void TestQgsLineFillSymbol::lineFillSymbolOffsetVector()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
 
   lineFill->setOffset( 0.5 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_posoffset" ), layer.get(), true ) );
+  QVERIFY( imageCheck( u"symbol_linefill_vector_posoffset"_s, layer.get(), true ) );
 
   lineFill->setOffset( -0.5 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_negoffset" ), layer.get(), true ) );
+  QVERIFY( imageCheck( u"symbol_linefill_vector_negoffset"_s, layer.get(), true ) );
 }
 
 void TestQgsLineFillSymbol::lineFillLargeOffset()
 {
   // test line fill with large offset compared to line distance
   mLineFill->setOffset( 8 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_large_posoffset" ) ) );
+  QVERIFY( imageCheck( u"symbol_linefill_large_posoffset"_s ) );
 
   mLineFill->setOffset( -8 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_large_negoffset" ) ) );
+  QVERIFY( imageCheck( u"symbol_linefill_large_negoffset"_s ) );
   mLineFill->setOffset( 0 );
 }
 
 void TestQgsLineFillSymbol::lineFillLargeOffsetVector()
 {
   // test line fill with large offset compared to line distance
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -268,17 +268,17 @@ void TestQgsLineFillSymbol::lineFillLargeOffsetVector()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
 
   lineFill->setOffset( 8 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_large_posoffset" ), layer.get(), true ) );
+  QVERIFY( imageCheck( u"symbol_linefill_vector_large_posoffset"_s, layer.get(), true ) );
 
   lineFill->setOffset( -8 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_large_negoffset" ), layer.get(), true ) );
+  QVERIFY( imageCheck( u"symbol_linefill_vector_large_negoffset"_s, layer.get(), true ) );
 }
 
 void TestQgsLineFillSymbol::lineFillNegativeAngle()
@@ -286,7 +286,7 @@ void TestQgsLineFillSymbol::lineFillNegativeAngle()
   mLineFill->setOffset( -8 );
   mLineFill->setDistance( 2.2 );
   mLineFill->setLineAngle( -130 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_negangle" ) ) );
+  QVERIFY( imageCheck( u"symbol_linefill_negangle"_s ) );
   mLineFill->setOffset( 0 );
   mLineFill->setLineAngle( 45 );
   mLineFill->setDistance( 5 );
@@ -294,7 +294,7 @@ void TestQgsLineFillSymbol::lineFillNegativeAngle()
 
 void TestQgsLineFillSymbol::lineFillNegativeAngleVector()
 {
-  std::unique_ptr< QgsVectorLayer> layer = std::make_unique< QgsVectorLayer>( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -303,22 +303,22 @@ void TestQgsLineFillSymbol::lineFillNegativeAngleVector()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
   lineFill->setSubSymbol( lineSymbol );
 
   lineFill->setOffset( -8 );
   lineFill->setDistance( 2.2 );
   lineFill->setLineAngle( -130 );
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_vector_negangle" ), layer.get(), true ) );
+  QVERIFY( imageCheck( u"symbol_linefill_vector_negangle"_s, layer.get(), true ) );
 }
 
 void TestQgsLineFillSymbol::lineFillClipPainter()
 {
   // test clipping using painter path
-  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -327,17 +327,17 @@ void TestQgsLineFillSymbol::lineFillClipPainter()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
-  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
-  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
-  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"255,0,0,255"_s );
+  properties.insert( u"outline_color"_s, u"#ff0000"_s );
+  properties.insert( u"name"_s, u"circle"_s );
+  properties.insert( u"size"_s, u"3.0"_s );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -351,13 +351,13 @@ void TestQgsLineFillSymbol::lineFillClipPainter()
   lineFill->setDistance( 6 );
   lineFill->setClipMode( Qgis::LineClipMode::ClipPainterOnly );
 
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_painter" ), layer.get() ) );
+  QVERIFY( imageCheck( u"symbol_linefill_clip_painter"_s, layer.get() ) );
 }
 
 void TestQgsLineFillSymbol::lineFillClipIntersection()
 {
   // test clipping using intersections
-  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -366,17 +366,17 @@ void TestQgsLineFillSymbol::lineFillClipIntersection()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
-  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
-  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
-  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"255,0,0,255"_s );
+  properties.insert( u"outline_color"_s, u"#ff0000"_s );
+  properties.insert( u"name"_s, u"circle"_s );
+  properties.insert( u"size"_s, u"3.0"_s );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -390,13 +390,13 @@ void TestQgsLineFillSymbol::lineFillClipIntersection()
   lineFill->setDistance( 6 );
   lineFill->setClipMode( Qgis::LineClipMode::ClipToIntersection );
 
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_intersection" ), layer.get() ) );
+  QVERIFY( imageCheck( u"symbol_linefill_clip_intersection"_s, layer.get() ) );
 }
 
 void TestQgsLineFillSymbol::lineFillNoClip()
 {
   // test no clipping
-  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -405,17 +405,17 @@ void TestQgsLineFillSymbol::lineFillNoClip()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
-  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
-  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
-  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"255,0,0,255"_s );
+  properties.insert( u"outline_color"_s, u"#ff0000"_s );
+  properties.insert( u"name"_s, u"circle"_s );
+  properties.insert( u"size"_s, u"3.0"_s );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -429,13 +429,13 @@ void TestQgsLineFillSymbol::lineFillNoClip()
   lineFill->setDistance( 6 );
   lineFill->setClipMode( Qgis::LineClipMode::NoClipping );
 
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_no" ), layer.get() ) );
+  QVERIFY( imageCheck( u"symbol_linefill_clip_no"_s, layer.get() ) );
 }
 
 void TestQgsLineFillSymbol::lineFillDataDefinedClip()
 {
   // test data defined clipping
-  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer> ( mTestDataDir + "polys.shp" );
+  auto layer = std::make_unique<QgsVectorLayer>( mTestDataDir + "polys.shp" );
   QVERIFY( layer->isValid() );
 
   QgsLinePatternFillSymbolLayer *lineFill = new QgsLinePatternFillSymbolLayer();
@@ -444,17 +444,17 @@ void TestQgsLineFillSymbol::lineFillDataDefinedClip()
   layer->setRenderer( new QgsSingleSymbolRenderer( fillSymbol ) );
 
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
 
   properties.clear();
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "255,0,0,255" ) );
-  properties.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#ff0000" ) );
-  properties.insert( QStringLiteral( "name" ), QStringLiteral( "circle" ) );
-  properties.insert( QStringLiteral( "size" ), QStringLiteral( "3.0" ) );
-  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties );
+  properties.insert( u"color"_s, u"255,0,0,255"_s );
+  properties.insert( u"outline_color"_s, u"#ff0000"_s );
+  properties.insert( u"name"_s, u"circle"_s );
+  properties.insert( u"size"_s, u"3.0"_s );
+  QgsMarkerSymbol *pointSymbol = QgsMarkerSymbol::createSimple( properties ).release();
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
   markerLine->setSubSymbol( pointSymbol->clone() );
   markerLine->setPlacements( Qgis::MarkerLinePlacement::FirstVertex );
@@ -468,21 +468,22 @@ void TestQgsLineFillSymbol::lineFillDataDefinedClip()
   lineFill->setDistance( 6 );
   lineFill->setDataDefinedProperty(
     QgsSymbolLayer::Property::LineClipping,
-    QgsProperty::fromExpression( QStringLiteral( "case when $id % 3 =0 then 'no' when $id % 3 = 1 then 'during_render' else 'before_render' end" ) ) );
+    QgsProperty::fromExpression( u"case when $id % 3 =0 then 'no' when $id % 3 = 1 then 'during_render' else 'before_render' end"_s )
+  );
 
-  QVERIFY( imageCheck( QStringLiteral( "symbol_linefill_clip_data_defined" ), layer.get() ) );
+  QVERIFY( imageCheck( u"symbol_linefill_clip_data_defined"_s, layer.get() ) );
 }
 
 void TestQgsLineFillSymbol::dataDefinedSubSymbol()
 {
   QVariantMap properties;
-  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0,0,0,255" ) );
-  properties.insert( QStringLiteral( "width" ), QStringLiteral( "1" ) );
-  properties.insert( QStringLiteral( "capstyle" ), QStringLiteral( "flat" ) );
-  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties );
-  lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(\"Name\" ='Lake','#ff0000','#ff00ff')" ) ) );
+  properties.insert( u"color"_s, u"0,0,0,255"_s );
+  properties.insert( u"width"_s, u"1"_s );
+  properties.insert( u"capstyle"_s, u"flat"_s );
+  QgsLineSymbol *lineSymbol = QgsLineSymbol::createSimple( properties ).release();
+  lineSymbol->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( u"if(\"Name\" ='Lake','#ff0000','#ff00ff')"_s ) );
   mLineFill->setSubSymbol( lineSymbol );
-  QVERIFY( imageCheck( QStringLiteral( "datadefined_subsymbol" ) ) );
+  QVERIFY( imageCheck( u"datadefined_subsymbol"_s ) );
 }
 
 //
@@ -495,15 +496,19 @@ bool TestQgsLineFillSymbol::imageCheck( const QString &testType, QgsVectorLayer 
   if ( !layer )
     layer = mpPolysLayer;
 
-  mMapSettings.setLayers( {layer } );
+  mMapSettings.setLayers( { layer } );
 
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( layer->extent() );
   mMapSettings.setOutputDpi( 96 );
-  mMapSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, forceVector );
+  if ( forceVector )
+    mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
+  else
+    mMapSettings.setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::Default );
+
   QgsRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "symbol_linefill" ) );
+  myChecker.setControlPathPrefix( u"symbol_linefill"_s );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   const bool myResultFlag = myChecker.runTest( testType );

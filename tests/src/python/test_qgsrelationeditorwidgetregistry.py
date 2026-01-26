@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Matthias Kuhn'
-__date__ = '28/11/2015'
-__copyright__ = 'Copyright 2015, The QGIS Project'
+
+__author__ = "Matthias Kuhn"
+__date__ = "28/11/2015"
+__copyright__ = "Copyright 2015, The QGIS Project"
 
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -42,16 +43,23 @@ class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
 
     def test_cannot_delete_relation_editor(self):
         count_before = len(self.registry.relationWidgetNames())
-        self.registry.removeRelationWidget('relation_editor')
+        self.registry.removeRelationWidget("relation_editor")
         count_after = len(self.registry.relationWidgetNames())
 
         self.assertEqual(count_before, count_after)
-        self.assertIsInstance(self.registry.create('relation_editor', {}), QgsRelationEditorWidget)
-        self.assertIsInstance(self.registry.createConfigWidget('relation_editor', QgsRelation()), QgsRelationEditorConfigWidget)
+        self.assertIsInstance(
+            self.registry.create("relation_editor", {}), QgsRelationEditorWidget
+        )
+        self.assertIsInstance(
+            self.registry.createConfigWidget("relation_editor", QgsRelation()),
+            QgsRelationEditorConfigWidget,
+        )
 
     def test_returns_none_when_unknown_widget_id(self):
-        self.assertIsNone(self.registry.create('babinatatitrunkina', {}))
-        self.assertIsNone(self.registry.createConfigWidget('babinatatitrunkina', QgsRelation()))
+        self.assertIsNone(self.registry.create("babinatatitrunkina", {}))
+        self.assertIsNone(
+            self.registry.createConfigWidget("babinatatitrunkina", QgsRelation())
+        )
 
     def test_creates_new_widget(self):
         # define the widget
@@ -62,37 +70,41 @@ class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
 
                 self.setLayout(QGridLayout())
                 self.label = QLabel()
-                self.label.setText(f'According to the configuration, the checkboxin state was {str(config.get("checkboxin", "Unknown"))}')
+                self.label.setText(
+                    f'According to the configuration, the checkboxin state was {str(config.get("checkboxin", "Unknown"))}'
+                )
                 self.layout().addWidget(self.label)
 
             def config(self):
-                return {
-
-                }
+                return {}
 
             def setConfig(self, config):
-                self.label.setText(f'According to the configuration, the checkboxin state was {str(config.get("checkboxin", "Unknown"))}')
+                self.label.setText(
+                    f'According to the configuration, the checkboxin state was {str(config.get("checkboxin", "Unknown"))}'
+                )
 
         # define the config widget
-        class QgsExampleRelationEditorConfigWidget(QgsAbstractRelationEditorConfigWidget):
+        class QgsExampleRelationEditorConfigWidget(
+            QgsAbstractRelationEditorConfigWidget
+        ):
 
             def __init__(self, relation, parent):
                 super().__init__(relation, parent)
 
                 self.setLayout(QGridLayout())
-                self.checkbox = QCheckBox('Is this checkbox checkboxin?')
+                self.checkbox = QCheckBox("Is this checkbox checkboxin?")
                 self.layout().addWidget(self.checkbox)
 
             def config(self):
-                return {
-                    "checkboxin": self.checkbox.isChecked()
-                }
+                return {"checkboxin": self.checkbox.isChecked()}
 
             def setConfig(self, config):
-                self.checkbox.setChecked(config.get('checkboxin', False))
+                self.checkbox.setChecked(config.get("checkboxin", False))
 
         # define the widget factory
-        class QgsExampleRelationEditorWidgetFactory(QgsAbstractRelationEditorWidgetFactory):
+        class QgsExampleRelationEditorWidgetFactory(
+            QgsAbstractRelationEditorWidgetFactory
+        ):
             def type(self):
                 return "example"
 
@@ -105,14 +117,19 @@ class TestQgsRelationEditorWidgetRegistry(QgisTestCase):
             def configWidget(self, relation, parent):
                 return QgsExampleRelationEditorConfigWidget(relation, parent)
 
-        self.assertIsNone(self.registry.create('example', {}))
-        self.assertIsNone(self.registry.createConfigWidget('example', QgsRelation()))
+        self.assertIsNone(self.registry.create("example", {}))
+        self.assertIsNone(self.registry.createConfigWidget("example", QgsRelation()))
 
         self.registry.addRelationWidget(QgsExampleRelationEditorWidgetFactory())
 
-        self.assertIsInstance(self.registry.create('example', {}), QgsExampleRelationEditorWidget)
-        self.assertIsInstance(self.registry.createConfigWidget('example', QgsRelation()), QgsExampleRelationEditorConfigWidget)
+        self.assertIsInstance(
+            self.registry.create("example", {}), QgsExampleRelationEditorWidget
+        )
+        self.assertIsInstance(
+            self.registry.createConfigWidget("example", QgsRelation()),
+            QgsExampleRelationEditorConfigWidget,
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -8,12 +8,10 @@
 
 
 
-
 class QgsClassificationCustom : QgsClassificationMethod
 {
 %Docstring(signature="appended")
-:py:class:`QgsClassificationCustom` is a dummy implementation of :py:class:`QgsClassification`
-which does not compute any break.
+A dummy implementation class method which does not compute any breaks.
 
 .. versionadded:: 3.10
 %End
@@ -24,7 +22,7 @@ which does not compute any break.
   public:
     QgsClassificationCustom();
 
-    virtual QgsClassificationMethod *clone() const;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const;
 
     virtual QString name() const;
 

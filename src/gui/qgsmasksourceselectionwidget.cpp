@@ -13,21 +13,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QTreeWidget>
-#include <QVBoxLayout>
-#include <QPointer>
-#include <QScreen>
-
 #include "qgsmasksourceselectionwidget.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "symbology/qgsrenderer.h"
-#include "qgsstyleentityvisitor.h"
-#include "symbology/qgssymbollayerutils.h"
+
 #include "qgsguiutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
+#include "qgsproject.h"
+#include "qgsstyleentityvisitor.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
+#include "symbology/qgsrenderer.h"
+#include "symbology/qgssymbollayerutils.h"
+
+#include <QPointer>
+#include <QScreen>
+#include <QTreeWidget>
+#include <QVBoxLayout>
+
+#include "moc_qgsmasksourceselectionwidget.cpp"
 
 static void expandAll( QTreeWidgetItem *item )
 {
@@ -84,12 +87,12 @@ void QgsMaskSourceSelectionWidget::update()
 
       struct TreeNode
       {
-        TreeNode( const QgsSymbol *_symbol, const QgsSymbolLayer *_sl = nullptr )
-          : sl( _sl ), symbol( _symbol ) {};
+          TreeNode( const QgsSymbol *_symbol, const QgsSymbolLayer *_sl = nullptr )
+            : sl( _sl ), symbol( _symbol ) {};
 
-        const QgsSymbolLayer *sl = nullptr;
-        const QgsSymbol *symbol = nullptr;
-        QList<TreeNode> children;
+          const QgsSymbolLayer *sl = nullptr;
+          const QgsSymbol *symbol = nullptr;
+          QList<TreeNode> children;
       };
 
 
@@ -105,8 +108,7 @@ void QgsMaskSourceSelectionWidget::update()
           indexPath.append( idx );
 
           TreeNode node( symbol, sl );
-          if ( ( sl->layerType() == "MaskMarker" ) ||
-               ( subSymbol && visitSymbol( node, identifier, subSymbol, indexPath ) ) )
+          if ( ( sl->layerType() == "MaskMarker" ) || ( subSymbol && visitSymbol( node, identifier, subSymbol, indexPath ) ) )
           {
             ret = true;
             parent.children << node;
@@ -117,12 +119,12 @@ void QgsMaskSourceSelectionWidget::update()
 
       bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
       {
-        if ( ! leaf.entity || leaf.entity->type() != QgsStyle::SymbolEntity )
+        if ( !leaf.entity || leaf.entity->type() != QgsStyle::SymbolEntity )
           return true;
 
         const auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
         const QgsSymbol *symbol = symbolEntity->symbol();
-        if ( ! symbol )
+        if ( !symbol )
           return true;
 
         TreeNode node( symbol );
@@ -170,14 +172,14 @@ void QgsMaskSourceSelectionWidget::update()
       QTreeWidgetItem *mLayerItem;
       const QgsVectorLayer *mLayer;
       QHash<QgsSymbolLayerReference, QTreeWidgetItem *> &mItems;
-      QPointer< QScreen > mScreen;
+      QPointer<QScreen> mScreen;
   };
 
   class LabelMasksVisitor : public QgsStyleEntityVisitorInterface
   {
     public:
-      LabelMasksVisitor( QTreeWidgetItem *layerItem, const QgsVectorLayer *layer, QHash<QgsSymbolLayerReference, QTreeWidgetItem *> &items ):
-        mLayerItem( layerItem ), mLayer( layer ), mItems( items )
+      LabelMasksVisitor( QTreeWidgetItem *layerItem, const QgsVectorLayer *layer, QHash<QgsSymbolLayerReference, QTreeWidgetItem *> &items )
+        : mLayerItem( layerItem ), mLayer( layer ), mItems( items )
       {}
       bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
       {
@@ -197,8 +199,8 @@ void QgsMaskSourceSelectionWidget::update()
           if ( labelSettingsEntity->settings().format().mask().enabled() )
           {
             const QString maskTitle = currentRule.isEmpty()
-                                      ? QObject::tr( "Label mask" )
-                                      : QObject::tr( "Label mask for '%1' rule" ).arg( currentDescription );
+                                        ? QObject::tr( "Label mask" )
+                                        : QObject::tr( "Label mask for '%1' rule" ).arg( currentDescription );
             QTreeWidgetItem *slItem = new QTreeWidgetItem( mLayerItem, QStringList() << maskTitle );
             slItem->setFlags( slItem->flags() | Qt::ItemIsUserCheckable );
             slItem->setCheckState( 0, Qt::Unchecked );
@@ -224,12 +226,12 @@ void QgsMaskSourceSelectionWidget::update()
   {
     QgsMapLayer *layer = layerTreeLayer->layer();
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-    if ( ! vl )
+    if ( !vl )
       continue;
-    if ( ! vl->renderer() )
+    if ( !vl->renderer() )
       continue;
 
-    std::unique_ptr< QTreeWidgetItem > layerItem = std::make_unique< QTreeWidgetItem >( mTree, QStringList() << layer->name() );
+    auto layerItem = std::make_unique<QTreeWidgetItem>( mTree, QStringList() << layer->name() );
     layerItem->setData( 0, Qt::UserRole, QVariant::fromValue( vl ) );
 
     if ( vl->labeling() )

@@ -13,33 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include <Qt3DCore/QEntity>
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
-#include <Qt3DCore/QAttribute>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QGeometry>
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DExtras/QTextureMaterial>
-
 #include "qgsgltf3dutils.h"
 #include "qgsmetalroughmaterial.h"
+#include "qgstest.h"
+#include "qgstexturematerial.h"
 
-
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QGeometry>
+#include <Qt3DRender/QGeometryRenderer>
 
 /**
  * \ingroup UnitTests
@@ -49,11 +32,12 @@ class TestQgsGltf3DUtils : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsGltf3DUtils() : QgsTest( QStringLiteral( "GLTF 3D Utils" ) ) {}
+    TestQgsGltf3DUtils()
+      : QgsTest( u"GLTF 3D Utils"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testInvalid();
     void testBox();
@@ -113,29 +97,29 @@ void TestQgsGltf3DUtils::testBox()
   Qt3DRender::QGeometryRenderer *geomRenderer = geomRenderers[0];
   QCOMPARE( geomRenderer->vertexCount(), 36 );
   QCOMPARE( geomRenderer->primitiveType(), Qt3DRender::QGeometryRenderer::Triangles );
-  Qt3DQGeometry *geometry = geomRenderer->geometry();
+  Qt3DCore::QGeometry *geometry = geomRenderer->geometry();
   QVERIFY( geometry );
-  QVector<Qt3DQAttribute *> attributes = geometry->attributes();
+  QVector<Qt3DCore::QAttribute *> attributes = geometry->attributes();
   QCOMPARE( attributes.count(), 3 );
 
-  Qt3DQAttribute *positionAttr = attributes[0];
-  QCOMPARE( positionAttr->name(), Qt3DQAttribute::defaultPositionAttributeName() );
-  QCOMPARE( positionAttr->attributeType(), Qt3DQAttribute::VertexAttribute );
+  Qt3DCore::QAttribute *positionAttr = attributes[0];
+  QCOMPARE( positionAttr->name(), Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  QCOMPARE( positionAttr->attributeType(), Qt3DCore::QAttribute::VertexAttribute );
   QCOMPARE( positionAttr->count(), 24 );
-  QCOMPARE( positionAttr->vertexBaseType(), Qt3DQAttribute::Float );
+  QCOMPARE( positionAttr->vertexBaseType(), Qt3DCore::QAttribute::Float );
   QCOMPARE( positionAttr->vertexSize(), 3 );
 
-  Qt3DQAttribute *normalAttr = attributes[1];
-  QCOMPARE( normalAttr->name(), Qt3DQAttribute::defaultNormalAttributeName() );
-  QCOMPARE( normalAttr->attributeType(), Qt3DQAttribute::VertexAttribute );
+  Qt3DCore::QAttribute *normalAttr = attributes[1];
+  QCOMPARE( normalAttr->name(), Qt3DCore::QAttribute::defaultNormalAttributeName() );
+  QCOMPARE( normalAttr->attributeType(), Qt3DCore::QAttribute::VertexAttribute );
   QCOMPARE( normalAttr->count(), 24 );
-  QCOMPARE( normalAttr->vertexBaseType(), Qt3DQAttribute::Float );
+  QCOMPARE( normalAttr->vertexBaseType(), Qt3DCore::QAttribute::Float );
   QCOMPARE( normalAttr->vertexSize(), 3 );
 
-  Qt3DQAttribute *indexAttr = attributes[2];
-  QCOMPARE( indexAttr->attributeType(), Qt3DQAttribute::IndexAttribute );
+  Qt3DCore::QAttribute *indexAttr = attributes[2];
+  QCOMPARE( indexAttr->attributeType(), Qt3DCore::QAttribute::IndexAttribute );
   QCOMPARE( indexAttr->count(), 36 );
-  QCOMPARE( indexAttr->vertexBaseType(), Qt3DQAttribute::UnsignedShort );
+  QCOMPARE( indexAttr->vertexBaseType(), Qt3DCore::QAttribute::UnsignedShort );
   QCOMPARE( indexAttr->vertexSize(), 1 );
 
   QVector<QgsMetalRoughMaterial *> pbrMaterials = child->componentsOfType<QgsMetalRoughMaterial>();
@@ -168,41 +152,41 @@ void TestQgsGltf3DUtils::testBoxTextured()
   Qt3DRender::QGeometryRenderer *geomRenderer = geomRenderers[0];
   QCOMPARE( geomRenderer->vertexCount(), 36 );
   QCOMPARE( geomRenderer->primitiveType(), Qt3DRender::QGeometryRenderer::Triangles );
-  Qt3DQGeometry *geometry = geomRenderer->geometry();
+  Qt3DCore::QGeometry *geometry = geomRenderer->geometry();
   QVERIFY( geometry );
-  QVector<Qt3DQAttribute *> attributes = geometry->attributes();
+  QVector<Qt3DCore::QAttribute *> attributes = geometry->attributes();
   QCOMPARE( attributes.count(), 4 );
 
-  Qt3DQAttribute *positionAttr = attributes[0];
-  QCOMPARE( positionAttr->name(), Qt3DQAttribute::defaultPositionAttributeName() );
-  QCOMPARE( positionAttr->attributeType(), Qt3DQAttribute::VertexAttribute );
+  Qt3DCore::QAttribute *positionAttr = attributes[0];
+  QCOMPARE( positionAttr->name(), Qt3DCore::QAttribute::defaultPositionAttributeName() );
+  QCOMPARE( positionAttr->attributeType(), Qt3DCore::QAttribute::VertexAttribute );
   QCOMPARE( positionAttr->count(), 24 );
-  QCOMPARE( positionAttr->vertexBaseType(), Qt3DQAttribute::Float );
+  QCOMPARE( positionAttr->vertexBaseType(), Qt3DCore::QAttribute::Float );
   QCOMPARE( positionAttr->vertexSize(), 3 );
 
-  Qt3DQAttribute *normalAttr = attributes[1];
-  QCOMPARE( normalAttr->name(), Qt3DQAttribute::defaultNormalAttributeName() );
-  QCOMPARE( normalAttr->attributeType(), Qt3DQAttribute::VertexAttribute );
+  Qt3DCore::QAttribute *normalAttr = attributes[1];
+  QCOMPARE( normalAttr->name(), Qt3DCore::QAttribute::defaultNormalAttributeName() );
+  QCOMPARE( normalAttr->attributeType(), Qt3DCore::QAttribute::VertexAttribute );
   QCOMPARE( normalAttr->count(), 24 );
-  QCOMPARE( normalAttr->vertexBaseType(), Qt3DQAttribute::Float );
+  QCOMPARE( normalAttr->vertexBaseType(), Qt3DCore::QAttribute::Float );
   QCOMPARE( normalAttr->vertexSize(), 3 );
 
-  Qt3DQAttribute *texAttr = attributes[2];
-  QCOMPARE( texAttr->name(), Qt3DQAttribute::defaultTextureCoordinateAttributeName() );
-  QCOMPARE( texAttr->attributeType(), Qt3DQAttribute::VertexAttribute );
+  Qt3DCore::QAttribute *texAttr = attributes[2];
+  QCOMPARE( texAttr->name(), Qt3DCore::QAttribute::defaultTextureCoordinateAttributeName() );
+  QCOMPARE( texAttr->attributeType(), Qt3DCore::QAttribute::VertexAttribute );
   QCOMPARE( texAttr->count(), 24 );
-  QCOMPARE( texAttr->vertexBaseType(), Qt3DQAttribute::Float );
+  QCOMPARE( texAttr->vertexBaseType(), Qt3DCore::QAttribute::Float );
   QCOMPARE( texAttr->vertexSize(), 2 );
 
-  Qt3DQAttribute *indexAttr = attributes[3];
-  QCOMPARE( indexAttr->attributeType(), Qt3DQAttribute::IndexAttribute );
+  Qt3DCore::QAttribute *indexAttr = attributes[3];
+  QCOMPARE( indexAttr->attributeType(), Qt3DCore::QAttribute::IndexAttribute );
   QCOMPARE( indexAttr->count(), 36 );
-  QCOMPARE( indexAttr->vertexBaseType(), Qt3DQAttribute::UnsignedShort );
+  QCOMPARE( indexAttr->vertexBaseType(), Qt3DCore::QAttribute::UnsignedShort );
   QCOMPARE( indexAttr->vertexSize(), 1 );
 
-  QVector<Qt3DExtras::QTextureMaterial *> textureMaterials = child->componentsOfType<Qt3DExtras::QTextureMaterial>();
+  QVector<QgsTextureMaterial *> textureMaterials = child->componentsOfType<QgsTextureMaterial>();
   QCOMPARE( textureMaterials.count(), 1 );
-  Qt3DExtras::QTextureMaterial *textureMaterial = textureMaterials[0];
+  QgsTextureMaterial *textureMaterial = textureMaterials[0];
   QVERIFY( textureMaterial->texture() );
 
   delete entity;
@@ -213,9 +197,9 @@ static void extractTriangleCoordinates( Qt3DCore::QEntity *entity, QVector3D &v1
   Qt3DCore::QEntity *child = qobject_cast<Qt3DCore::QEntity *>( entity->children()[0] );
   QVector<Qt3DRender::QGeometryRenderer *> geomRenderers = child->componentsOfType<Qt3DRender::QGeometryRenderer>();
   Qt3DRender::QGeometryRenderer *geomRenderer = geomRenderers[0];
-  Qt3DQAttribute *positionAttr = geomRenderer->geometry()->attributes()[0];
+  Qt3DCore::QAttribute *positionAttr = geomRenderer->geometry()->attributes()[0];
   QByteArray positionBufferData = positionAttr->buffer()->data();
-  const float *f = ( float * )positionBufferData.constData();
+  const float *f = ( float * ) positionBufferData.constData();
   v1 = QVector3D( f[0], f[1], f[2] );
   v2 = QVector3D( f[3], f[4], f[5] );
   v3 = QVector3D( f[6], f[7], f[8] );
@@ -242,31 +226,27 @@ void TestQgsGltf3DUtils::testTransforms()
   extractTriangleCoordinates( entity1, v1, v2, v3 );
   QCOMPARE( v1, QVector3D( 0, 0, 0 ) );
   QCOMPARE( v2, QVector3D( 1, 0, 0 ) );
-  QCOMPARE( v3, QVector3D( 0, 1, 0 ) );
+  QCOMPARE( v3, QVector3D( 0, 0, 1 ) );
   delete entity1;
 
   QgsGltf3DUtils::EntityTransform transform2;
-  transform2.sceneOriginTargetCrs = QgsVector3D( -10, -20, 0 );
+  transform2.chunkOriginTargetCrs = QgsVector3D( -10, -20, 0 );
   Qt3DCore::QEntity *entity2 = QgsGltf3DUtils::gltfToEntity( gltfData, transform2, QString(), nullptr );
   extractTriangleCoordinates( entity2, v1, v2, v3 );
-  QCOMPARE( v1, QVector3D( 10, 0, -20 ) );
-  QCOMPARE( v2, QVector3D( 11, 0, -20 ) );
-  QCOMPARE( v3, QVector3D( 10, 1, -20 ) );
+  QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
+  QCOMPARE( v2, QVector3D( 11, 20, 0 ) );
+  QCOMPARE( v3, QVector3D( 10, 20, 1 ) );
   delete entity2;
 
   QgsGltf3DUtils::EntityTransform transform3;
-  transform3.tileTransform = QgsMatrix4x4( 2, 0, 0, 0,
-                             0, 2, 0, 0,
-                             0, 0, 2, 0,
-                             0, 0, 0, 1 );
-  transform3.sceneOriginTargetCrs = QgsVector3D( -10, -20, 0 );
+  transform3.tileTransform = QgsMatrix4x4( 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1 );
+  transform3.chunkOriginTargetCrs = QgsVector3D( -10, -20, 0 );
   Qt3DCore::QEntity *entity3 = QgsGltf3DUtils::gltfToEntity( gltfData, transform3, QString(), nullptr );
   extractTriangleCoordinates( entity3, v1, v2, v3 );
-  QCOMPARE( v1, QVector3D( 10, 0, -20 ) );
-  QCOMPARE( v2, QVector3D( 12, 0, -20 ) );
-  QCOMPARE( v3, QVector3D( 10, 2, -20 ) );
+  QCOMPARE( v1, QVector3D( 10, 20, 0 ) );
+  QCOMPARE( v2, QVector3D( 12, 20, 0 ) );
+  QCOMPARE( v3, QVector3D( 10, 20, 2 ) );
   delete entity3;
-
 }
 
 QGSTEST_MAIN( TestQgsGltf3DUtils )

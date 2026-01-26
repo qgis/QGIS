@@ -18,17 +18,18 @@
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
 
-#include <QList>
-#include <QPair>
-
 #include <QAbstractItemView>
+#include <QList>
 #include <QPainter>
+#include <QPair>
 #include <QPen>
+
+#include "moc_qgspenstylecombobox.cpp"
 
 QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget *parent )
   : QComboBox( parent )
 {
-  QList < QPair<Qt::PenStyle, QString> > styles;
+  QList<QPair<Qt::PenStyle, QString>> styles;
   styles << qMakePair( Qt::SolidLine, tr( "Solid Line" ) )
          << qMakePair( Qt::NoPen, tr( "No Line" ) )
          << qMakePair( Qt::DashLine, tr( "Dash Line" ) )

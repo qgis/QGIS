@@ -15,22 +15,22 @@
 
 #include "qgslayertreemapcanvasbridge.h"
 
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
-#include "qgsmaplayer.h"
-#include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
-#include "qgsgui.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgslayertreemapcanvasbridge.cpp"
 
 QgsLayerTreeMapCanvasBridge::QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
   , mRoot( root )
   , mCanvas( canvas )
-  , mPendingCanvasUpdate( false )
-  , mAutoSetupOnFirstLayer( true )
   , mHasLayersLoaded( !root->findLayers().isEmpty() )
 {
   connect( root, &QgsLayerTreeGroup::customPropertyChanged, this, &QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged );
@@ -60,7 +60,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
         allLayerOrder << nodeLayer->layer();
         if ( nodeLayer->isVisible() )
           canvasLayers << nodeLayer->layer();
-        if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
+        if ( nodeLayer->customProperty( u"overview"_s, 0 ).toInt() )
           overviewLayers << nodeLayer->layer();
       }
     }
@@ -111,14 +111,19 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers()
 
   if ( mFirstCRS.isValid() && firstLayers )
   {
-    const QgsGui::ProjectCrsBehavior projectCrsBehavior = QgsSettings().enumValue( QStringLiteral( "/projections/newProjectCrsBehavior" ),  QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );
+    const QgsGui::ProjectCrsBehavior projectCrsBehavior = QgsSettings().enumValue( u"/projections/newProjectCrsBehavior"_s, QgsGui::UseCrsOfFirstLayerAdded, QgsSettings::App );
     switch ( projectCrsBehavior )
     {
       case QgsGui::UseCrsOfFirstLayerAdded:
       {
-        const bool planimetric = QgsSettings().value( QStringLiteral( "measure/planimetric" ), true, QgsSettings::Core ).toBool();
+        const bool planimetric = QgsSettings().value( u"measure/planimetric"_s, true, QgsSettings::Core ).toBool();
         // Only adjust ellipsoid to CRS if it's not set to planimetric
-        QgsProject::instance()->setCrs( mFirstCRS, !planimetric );
+        QgsProject::instance()->setCrs( mFirstCRS.horizontalCrs(), !planimetric );
+        const QgsCoordinateReferenceSystem vertCrs = mFirstCRS.verticalCrs();
+        if ( vertCrs.isValid() )
+        {
+          QgsProject::instance()->setVerticalCrs( vertCrs );
+        }
         break;
       }
 
@@ -147,7 +152,7 @@ void QgsLayerTreeMapCanvasBridge::setCanvasLayers( QgsLayerTreeNode *node, QList
       allLayers << nodeLayer->layer();
       if ( nodeLayer->isVisible() )
         canvasLayers << nodeLayer->layer();
-      if ( nodeLayer->customProperty( QStringLiteral( "overview" ), 0 ).toInt() )
+      if ( nodeLayer->customProperty( u"overview"_s, 0 ).toInt() )
         overviewLayers << nodeLayer->layer();
     }
   }
@@ -185,7 +190,7 @@ void QgsLayerTreeMapCanvasBridge::nodeVisibilityChanged()
 void QgsLayerTreeMapCanvasBridge::nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key )
 {
   Q_UNUSED( node )
-  if ( key == QLatin1String( "overview" ) )
+  if ( key == "overview"_L1 )
     deferredSetCanvasLayers();
 }
 
@@ -195,14 +200,14 @@ void QgsLayerTreeMapCanvasBridge::layersAdded( const QList<QgsMapLayer *> &layer
   {
     if ( l )
     {
-      connect( l, &QgsMapLayer::dataSourceChanged, this, [ this, l ]
-      {
+      connect( l, &QgsMapLayer::dataSourceChanged, this, [this, l] {
         if ( l->isValid() && l->isSpatial() && mAutoSetupOnFirstLayer && !mHasValidLayersLoaded )
         {
           mHasValidLayersLoaded = true;
           // if we are moving from zero valid layers to non-zero VALID layers, let's zoom to those data
           mCanvas->zoomToProjectExtent();
         }
+        deferredSetCanvasLayers();
       } );
     }
   }

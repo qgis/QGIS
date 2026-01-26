@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsuserprofileselectiondialog.h"
+
+#include "qgsapplication.h"
+#include "qgsnewnamedialog.h"
+#include "qgsuserprofilemanager.h"
+
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
 
-#include "qgsapplication.h"
-#include "qgsuserprofilemanager.h"
-#include "qgsnewnamedialog.h"
-
-#include "qgsuserprofileselectiondialog.h"
+#include "moc_qgsuserprofileselectiondialog.cpp"
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
   : QDialog( parent ), mManager( manager )
@@ -37,11 +39,11 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   // Add a new profile on button click
   connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
 
-  const int iconSize = mManager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt();
+  const int iconSize = mManager->settings()->value( u"/selector/iconSize"_s, 24 ).toInt();
   mProfileListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   // Fill the list of profiles
-  mProfileListWidget->clear();  // Clear bogus profiles in the Ui form
+  mProfileListWidget->clear(); // Clear bogus profiles in the Ui form
   for ( auto profile : mManager->allProfiles() )
   {
     auto item = new QListWidgetItem( mManager->profileForName( profile )->icon(), profile );

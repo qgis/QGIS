@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 // QGIS Specific includes
-#include "qgsmaplayer.h"
-#include "qgsapplication.h"
 #include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgsguiutils.h"
+#include "qgsmaplayer.h"
 
 // Qt Related Includes
 #include <QAction>
@@ -29,6 +29,7 @@
 #include <QMenu>
 
 #include "topol.h"
+#include "moc_topol.cpp"
 #include "checkDock.h"
 
 static const QString sName = QObject::tr( "Topology Checker" );
@@ -36,7 +37,7 @@ static const QString sDescription = QObject::tr( "A Plugin for finding topologic
 static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyChecker.svg" );
+static const QString sPluginIcon = u":/topology/mActionTopologyChecker.svg"_s;
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -65,7 +66,7 @@ void Topol::initGui()
   delete mQActionPointer;
 
   mQActionPointer = new QAction( QIcon( sPluginIcon ), sName, this );
-  mQActionPointer->setObjectName( QStringLiteral( "mQActionPointer" ) );
+  mQActionPointer->setObjectName( u"mQActionPointer"_s );
   //mQActionPointer = new QAction( QIcon(), tr( "Topology Checker" ), this );
   mQActionPointer->setCheckable( true );
 

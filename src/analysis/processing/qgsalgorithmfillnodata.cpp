@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfillnodata.h"
+
 #include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 
 QString QgsFillNoDataAlgorithm::name() const
 {
-  return QStringLiteral( "fillnodata" );
+  return u"fillnodata"_s;
 }
 
 QString QgsFillNoDataAlgorithm::displayName() const
@@ -42,21 +43,28 @@ QString QgsFillNoDataAlgorithm::group() const
 
 QString QgsFillNoDataAlgorithm::groupId() const
 {
-  return QStringLiteral( "rastertools" );
+  return u"rastertools"_s;
 }
 
 void QgsFillNoDataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QStringLiteral( "Raster input" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band Number" ), 1, QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FILL_VALUE" ), QObject::tr( "Fill value" ), Qgis::ProcessingNumberParameterType::Double, 1, false ) );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, u"Raster input"_s ) );
+  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band Number" ), 1, u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterNumber( u"FILL_VALUE"_s, QObject::tr( "Fill value" ), Qgis::ProcessingNumberParameterType::Double, 1, false ) );
 
-  std::unique_ptr< QgsProcessingParameterString > createOptsParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( {{QStringLiteral( "widget_wrapper" ), QVariantMap( {{QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) }} ) }} ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  // backwards compatibility parameter
+  // TODO QGIS 5: remove parameter and related logic
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATE_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Output raster" ) ) );
 }
 
 QString QgsFillNoDataAlgorithm::shortHelpString() const
@@ -68,6 +76,11 @@ QString QgsFillNoDataAlgorithm::shortHelpString() const
                       "when applied to an integer raster)." );
 }
 
+QString QgsFillNoDataAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Generates a raster dataset with the NoData values in the input raster filled with a given value." );
+}
+
 QgsFillNoDataAlgorithm *QgsFillNoDataAlgorithm::createInstance() const
 {
   return new QgsFillNoDataAlgorithm();
@@ -76,13 +89,13 @@ QgsFillNoDataAlgorithm *QgsFillNoDataAlgorithm::createInstance() const
 bool QgsFillNoDataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
-  mInputRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-  mFillValue = parameterAsDouble( parameters, QStringLiteral( "FILL_VALUE" ), context );
+  mInputRaster = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
+  mFillValue = parameterAsDouble( parameters, u"FILL_VALUE"_s, context );
 
   if ( !mInputRaster )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  mBand = parameterAsInt( parameters, u"BAND"_s, context );
   if ( mBand < 1 || mBand > mInputRaster->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( mInputRaster->bandCount() ) );
 
@@ -104,18 +117,22 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
     feedback->reportError( QObject::tr( "Input raster has no NoData values. There exist no NoData cells to fill." ), false );
 
   //prepare output dataset
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
-  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
-  writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  writer->setOutputProviderKey( u"gdal"_s );
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mInterface->dataType( mBand ), mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( mInterface->dataType( mBand ), mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
@@ -126,11 +143,8 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
   destinationRasterProvider = provider.get();
   destinationRasterProvider->setEditable( true );
 
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const bool hasReportsDuringClose = destinationRasterProvider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
@@ -138,18 +152,21 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  std::unique_ptr< QgsRasterBlock > filledRasterBlock;
+  std::unique_ptr<QgsRasterBlock> filledRasterBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, filledRasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand ) );
 
     if ( feedback && feedback->isCanceled() )
       break;
 
     if ( !filledRasterBlock->hasNoDataValue() )
     {
-      destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+      if ( !destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+      }
       continue;
     }
 
@@ -163,12 +180,26 @@ QVariantMap QgsFillNoDataAlgorithm::processAlgorithm( const QVariantMap &paramet
           filledRasterBlock->setValue( row, column, mFillValue );
       }
     }
-    destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop );
+    if ( !destinationRasterProvider->writeBlock( filledRasterBlock.get(), mBand, iterLeft, iterTop ) )
+    {
+      throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+    }
   }
   destinationRasterProvider->setEditable( false );
 
+  if ( feedback && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !destinationRasterProvider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

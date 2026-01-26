@@ -58,7 +58,8 @@ class QgsOgrProviderMetadata final: public QgsProviderMetadata
       bool overwrite,
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
-      const QMap<QString, QVariant> *options ) override;
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerUri ) override;
     bool createDatabase( const QString &uri, QString &errorMessage ) override;
 
     // -----

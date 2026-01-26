@@ -16,16 +16,17 @@
 #define QGSEMBEDDEDSYMBOLRENDERERWIDGET_H
 
 #include "ui_qgsembeddedsymbolrendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QMenu;
 class QgsEmbeddedSymbolRenderer;
 
 /**
  * \ingroup gui
- * \brief A widget used represent options of a QgsEmbeddedSymbolRenderer
+ * \brief A widget for configuring options for a QgsEmbeddedSymbolRenderer.
  *
  * \since QGIS 3.20
  */
@@ -34,7 +35,6 @@ class GUI_EXPORT QgsEmbeddedSymbolRendererWidget : public QgsRendererWidget, pri
     Q_OBJECT
 
   public:
-
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied
@@ -59,7 +59,6 @@ class GUI_EXPORT QgsEmbeddedSymbolRendererWidget : public QgsRendererWidget, pri
   private:
     //! The renderer
     std::unique_ptr<QgsEmbeddedSymbolRenderer> mRenderer;
-
 };
 
 

@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsfielddomain.h"
-#include "qgsvariantutils.h"
+
 #include <memory>
+
+#include "qgsvariantutils.h"
 
 //
 // QgsFieldDomain
@@ -85,7 +87,7 @@ QString QgsCodedFieldDomain::typeName() const
 
 QgsCodedFieldDomain *QgsCodedFieldDomain::clone() const
 {
-  std::unique_ptr< QgsCodedFieldDomain > res = std::make_unique< QgsCodedFieldDomain >( mName, mDescription, mFieldType, mValues );
+  auto res = std::make_unique< QgsCodedFieldDomain >( mName, mDescription, mFieldType, mValues );
   res->mSplitPolicy = mSplitPolicy;
   res->mMergePolicy = mMergePolicy;
   return res.release();
@@ -122,7 +124,7 @@ QString QgsRangeFieldDomain::typeName() const
 
 QgsRangeFieldDomain *QgsRangeFieldDomain::clone() const
 {
-  std::unique_ptr< QgsRangeFieldDomain > res = std::make_unique< QgsRangeFieldDomain >( mName, mDescription, mFieldType, mMin, mMinIsInclusive, mMax, mMaxIsInclusive );
+  auto res = std::make_unique< QgsRangeFieldDomain >( mName, mDescription, mFieldType, mMin, mMinIsInclusive, mMax, mMaxIsInclusive );
   res->mSplitPolicy = mSplitPolicy;
   res->mMergePolicy = mMergePolicy;
   return res.release();
@@ -157,7 +159,7 @@ QString QgsGlobFieldDomain::typeName() const
 
 QgsGlobFieldDomain *QgsGlobFieldDomain::clone() const
 {
-  std::unique_ptr< QgsGlobFieldDomain > res = std::make_unique< QgsGlobFieldDomain >( mName, mDescription, mFieldType, mGlob );
+  auto res = std::make_unique< QgsGlobFieldDomain >( mName, mDescription, mFieldType, mGlob );
   res->mSplitPolicy = mSplitPolicy;
   res->mMergePolicy = mMergePolicy;
   return res.release();

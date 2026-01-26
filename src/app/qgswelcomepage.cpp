@@ -14,35 +14,37 @@
  ***************************************************************************/
 
 #include "qgswelcomepage.h"
-#include "qgsproject.h"
+
 #include "qgisapp.h"
-#include "qgsversioninfo.h"
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
 #include "qgsfocuskeeper.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
-#include "qgsstringutils.h"
-#include "qgsfileutils.h"
-#include "qgstemplateprojectsmodel.h"
-#include "qgsprojectlistitemdelegate.h"
 #include "qgsnewsfeedmodel.h"
 #include "qgsnewsfeedparser.h"
-
+#include "qgsproject.h"
+#include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgssettings.h"
+#include "qgsstringutils.h"
+#include "qgstemplateprojectsmodel.h"
+#include "qgsversioninfo.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QListView>
 #include <QDesktopServices>
-#include <QTextBrowser>
+#include <QHBoxLayout>
+#include <QListView>
 #include <QMessageBox>
-#include <QSplitter>
 #include <QRegularExpression>
+#include <QSplitter>
+#include <QTextBrowser>
 #include <QUrl>
+#include <QVBoxLayout>
+
+#include "moc_qgswelcomepage.cpp"
 
 #define FEED_URL "https://feed.qgis.org/"
 
@@ -63,7 +65,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   leftLayout->setContentsMargins( 0, 0, 0, 0 );
 
   const int titleSize = static_cast<int>( QApplication::fontMetrics().height() * 1.4 );
-  mRecentProjectsTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
+  mRecentProjectsTitle = new QLabel( u"<div style='font-size:%1px;font-weight:bold'>%2</div>"_s.arg( QString::number( titleSize ), tr( "Recent Projects" ) ) );
   mRecentProjectsTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
   leftLayout->addWidget( mRecentProjectsTitle, 0 );
 
@@ -86,14 +88,14 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QVBoxLayout *rightLayout = new QVBoxLayout;
   rightLayout->setContentsMargins( 0, 0, 0, 0 );
 
-  if ( !QgsSettings().value( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QStringLiteral( FEED_URL ) ) ), false, QgsSettings::Core ).toBool() )
+  if ( !QgsSettings().value( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QStringLiteral( FEED_URL ) ) ), false, QgsSettings::Core ).toBool() )
   {
     mSplitter2 = new QSplitter( Qt::Vertical );
     rightLayout->addWidget( mSplitter2 );
     QWidget *newsContainer = new QWidget();
     QVBoxLayout *newsLayout = new QVBoxLayout();
     newsLayout->setContentsMargins( 0, 0, 0, 0 );
-    mNewsFeedTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "News" ) ) );
+    mNewsFeedTitle = new QLabel( u"<div style='font-size:%1px;font-weight:bold'>%2</div>"_s.arg( titleSize ).arg( tr( "News" ) ) );
     mNewsFeedTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
     newsLayout->addWidget( mNewsFeedTitle, 0 );
 
@@ -120,7 +122,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   QWidget *templateContainer = new QWidget();
   QVBoxLayout *templateLayout = new QVBoxLayout();
   templateLayout->setContentsMargins( 0, 0, 0, 0 );
-  QLabel *templatesTitle = new QLabel( QStringLiteral( "<div style='font-size:%1px;font-weight:bold'>%2</div>" ).arg( titleSize ).arg( tr( "Project Templates" ) ) );
+  QLabel *templatesTitle = new QLabel( u"<div style='font-size:%1px;font-weight:bold'>%2</div>"_s.arg( titleSize ).arg( tr( "Project Templates" ) ) );
   templatesTitle->setContentsMargins( titleSize / 2, titleSize / 6, 0, 0 );
   templateLayout->addWidget( templatesTitle, 0 );
 
@@ -155,24 +157,24 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   mVersionInformation->setReadOnly( true );
   mVersionInformation->setOpenExternalLinks( true );
   mVersionInformation->setStyleSheet( QStringLiteral( "QTextEdit { background-color: #dff0d8; color:#000000; border: 1px solid #8e998a; padding-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
-                                      "QScrollBar { background-color: rgba(0,0,0,0); } "
-                                      "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
-                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " ) );
+                                                      "QScrollBar { background-color: rgba(0,0,0,0); } "
+                                                      "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
+                                                      "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " ) );
 
   mainLayout->addWidget( mVersionInformation );
   mVersionInformation->setVisible( false );
 
   mVersionInfo = new QgsVersionInfo();
-  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( QStringLiteral( "/qgis/allowVersionCheck" ), true ).toBool()
-       && settings.value( QStringLiteral( "qgis/checkVersion" ), true ).toBool() && !skipVersionCheck )
+  if ( !QgsApplication::isRunningFromBuildDir() && settings.value( u"/qgis/allowVersionCheck"_s, true ).toBool()
+       && settings.value( u"qgis/checkVersion"_s, true ).toBool() && !skipVersionCheck )
   {
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomePage::versionInfoReceived );
     mVersionInfo->checkVersion();
   }
 
-  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/WelcomePage/SplitState" ), QVariant(), QgsSettings::App ).toByteArray() );
+  mSplitter->restoreState( settings.value( u"Windows/WelcomePage/SplitState"_s, QVariant(), QgsSettings::App ).toByteArray() );
   if ( mSplitter2 )
-    mSplitter2->restoreState( settings.value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
+    mSplitter2->restoreState( settings.value( u"Windows/WelcomePage/SplitState2"_s, QVariant(), QgsSettings::App ).toByteArray() );
 
   connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::recentProjectItemActivated );
   connect( mTemplateProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::templateProjectItemActivated );
@@ -183,9 +185,9 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 QgsWelcomePage::~QgsWelcomePage()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState" ), mSplitter->saveState(), QgsSettings::App );
+  settings.setValue( u"Windows/WelcomePage/SplitState"_s, mSplitter->saveState(), QgsSettings::App );
   if ( mSplitter2 && mNewsFeedTitle->isVisible() )
-    settings.setValue( QStringLiteral( "Windows/WelcomePage/SplitState2" ), mSplitter2->saveState(), QgsSettings::App );
+    settings.setValue( u"Windows/WelcomePage/SplitState2"_s, mSplitter2->saveState(), QgsSettings::App );
 
   delete mVersionInfo;
 }
@@ -223,7 +225,7 @@ void QgsWelcomePage::newsItemActivated( const QModelIndex &index )
   if ( !index.isValid() )
     return;
 
-  const QUrl link = index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Link ) ).toUrl();
+  const QUrl link = index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Link ) ).toUrl();
   QDesktopServices::openUrl( link );
 }
 
@@ -235,9 +237,8 @@ void QgsWelcomePage::versionInfoReceived()
   if ( versionInfo->newVersionAvailable() )
   {
     mVersionInformation->setVisible( true );
-    mVersionInformation->setText( QStringLiteral( "<style> a, a:visited, a:hover { color:#268300; } </style><b>%1</b>: %2" )
-                                  .arg( tr( "New QGIS version available" ),
-                                        QgsStringUtils::insertLinks( versionInfo->downloadInfo() ) ) );
+    mVersionInformation->setText( u"<style> a, a:visited, a:hover { color:#268300; } </style><b>%1</b>: %2"_s
+                                    .arg( tr( "New QGIS version available" ), QgsStringUtils::insertLinks( versionInfo->downloadInfo() ) ) );
   }
 }
 
@@ -268,8 +269,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       if ( !pin )
       {
         QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
-        connect( pinAction, &QAction::triggered, this, [this, index]
-        {
+        connect( pinAction, &QAction::triggered, this, [this, index] {
           pinProject( index.row() );
         } );
         menu->addAction( pinAction );
@@ -277,8 +277,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       else
       {
         QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
-        connect( pinAction, &QAction::triggered, this, [this, index]
-        {
+        connect( pinAction, &QAction::triggered, this, [this, index] {
           unpinProject( index.row() );
         } );
         menu->addAction( pinAction );
@@ -292,8 +291,7 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
       if ( !path.isEmpty() )
       {
         QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
-        connect( openFolderAction, &QAction::triggered, this, [path]
-        {
+        connect( openFolderAction, &QAction::triggered, this, [path] {
           const QgsFocusKeeper focusKeeper;
           QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
         } );
@@ -303,14 +301,13 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
     else
     {
       QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
-      connect( rescanAction, &QAction::triggered, this, [this, index]
-      {
+      connect( rescanAction, &QAction::triggered, this, [this, index] {
         mRecentProjectsModel->recheckProject( index );
       } );
       menu->addAction( rescanAction );
 
       bool showClosestPath = storage ? false : true;
-      if ( storage && ( storage->type() == QLatin1String( "geopackage" ) ) )
+      if ( storage && ( storage->type() == "geopackage"_L1 ) )
       {
         const thread_local QRegularExpression reGpkg( "^(geopackage:)([^\?]+)\?(.+)$", QRegularExpression::CaseInsensitiveOption );
         const QRegularExpressionMatch matchGpkg = reGpkg.match( path );
@@ -327,16 +324,14 @@ void QgsWelcomePage::showContextMenuForProjects( QPoint point )
         // to help users re-find moved/renamed projects!
         const QString closestPath = QgsFileUtils::findClosestExistingPath( path );
         QAction *openFolderAction = new QAction( tr( "Open “%1”…" ).arg( QDir::toNativeSeparators( closestPath ) ), menu );
-        connect( openFolderAction, &QAction::triggered, this, [closestPath]
-        {
+        connect( openFolderAction, &QAction::triggered, this, [closestPath] {
           QDesktopServices::openUrl( QUrl::fromLocalFile( closestPath ) );
         } );
         menu->addAction( openFolderAction );
       }
     }
     QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
-    connect( removeProjectAction, &QAction::triggered, this, [this, index]
-    {
+    connect( removeProjectAction, &QAction::triggered, this, [this, index] {
       removeProject( index.row() );
     } );
     menu->addAction( removeProjectAction );
@@ -364,8 +359,7 @@ void QgsWelcomePage::showContextMenuForTemplates( QPoint point )
   if ( fileInfo.isWritable() )
   {
     QAction *deleteFileAction = new QAction( tr( "Delete Template…" ), menu );
-    connect( deleteFileAction, &QAction::triggered, this, [this, fileInfo, index]
-    {
+    connect( deleteFileAction, &QAction::triggered, this, [this, fileInfo, index] {
       QMessageBox msgBox( this );
       msgBox.setWindowTitle( tr( "Delete Template" ) );
       msgBox.setText( tr( "Do you want to delete the template %1? This action can not be undone." ).arg( index.data( QgsProjectListItemDelegate::TitleRole ).toString() ) );
@@ -391,31 +385,28 @@ void QgsWelcomePage::showContextMenuForNews( QPoint point )
   if ( !index.isValid() )
     return;
 
-  const int key = index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
+  const int key = index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt();
 
   QMenu *menu = new QMenu();
 
   QAction *dismissAction = new QAction( tr( "Dismiss" ), menu );
-  connect( dismissAction, &QAction::triggered, this, [this, key]
-  {
+  connect( dismissAction, &QAction::triggered, this, [this, key] {
     mNewsFeedParser->dismissEntry( key );
   } );
   menu->addAction( dismissAction );
   QAction *dismissAllAction = new QAction( tr( "Dismiss All" ), menu );
-  connect( dismissAllAction, &QAction::triggered, this, [this]
-  {
+  connect( dismissAllAction, &QAction::triggered, this, [this] {
     mNewsFeedParser->dismissAll();
   } );
   menu->addAction( dismissAllAction );
   menu->addSeparator();
   QAction *hideAction = new QAction( tr( "Hide QGIS News…" ), menu );
-  connect( hideAction, &QAction::triggered, this, [this]
-  {
-    if ( QMessageBox::question( this,  tr( "QGIS News" ), tr( "Are you sure you want to hide QGIS news? (The news feed can be re-enabled from the QGIS settings dialog.)" ) ) == QMessageBox::Yes )
+  connect( hideAction, &QAction::triggered, this, [this] {
+    if ( QMessageBox::question( this, tr( "QGIS News" ), tr( "Are you sure you want to hide QGIS news? (The news feed can be re-enabled from the QGIS settings dialog.)" ) ) == QMessageBox::Yes )
     {
       //...sad trombone...
       mNewsFeedParser->dismissAll();
-      QgsSettings().setValue( QStringLiteral( "%1/disabled" ).arg( QgsNewsFeedParser::keyForFeed( QStringLiteral( FEED_URL ) ) ), true, QgsSettings::Core );
+      QgsSettings().setValue( u"%1/disabled"_s.arg( QgsNewsFeedParser::keyForFeed( QStringLiteral( FEED_URL ) ) ), true, QgsSettings::Core );
     }
   } );
   menu->addAction( hideAction );
@@ -437,11 +428,11 @@ void QgsWelcomePage::updateNewsFeedVisibility()
   }
   else
   {
-    mSplitter2->restoreState( QgsSettings().value( QStringLiteral( "Windows/WelcomePage/SplitState2" ), QVariant(), QgsSettings::App ).toByteArray() );
+    mSplitter2->restoreState( QgsSettings().value( u"Windows/WelcomePage/SplitState2"_s, QVariant(), QgsSettings::App ).toByteArray() );
     if ( mSplitter2->sizes().first() == 0 )
     {
       const int splitSize = mSplitter2->height() / 2;
-      mSplitter2->setSizes( QList< int > { splitSize, splitSize} );
+      mSplitter2->setSizes( QList<int> { splitSize, splitSize } );
     }
   }
 }
@@ -450,7 +441,7 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
 {
   if ( obj == mNewsFeedListView->viewport() && event->type() == QEvent::MouseButtonRelease )
   {
-    QMouseEvent *mouseEvent = dynamic_cast< QMouseEvent *>( event );
+    QMouseEvent *mouseEvent = qgis::down_cast<QMouseEvent *>( event );
     if ( mouseEvent->button() == Qt::LeftButton )
     {
       const QModelIndex index = mNewsFeedListView->indexAt( mouseEvent->pos() );
@@ -459,7 +450,7 @@ bool QgsWelcomePage::eventFilter( QObject *obj, QEvent *event )
         const QPoint itemClickPoint = mouseEvent->pos() - mNewsFeedListView->visualRect( index ).topLeft();
         if ( QRect( mNewsDelegate->dismissRect().left(), mNewsDelegate->dismissRect().top(), mNewsDelegate->dismissRectSize().width(), mNewsDelegate->dismissRectSize().height() ).contains( itemClickPoint ) )
         {
-          mNewsFeedParser->dismissEntry( index.data( static_cast< int >( QgsNewsFeedModel::CustomRole::Key ) ).toInt() );
+          mNewsFeedParser->dismissEntry( index.data( static_cast<int>( QgsNewsFeedModel::CustomRole::Key ) ).toInt() );
         }
         return true;
       }
@@ -489,11 +480,7 @@ void QgsWelcomePage::unpinProject( int row )
 
 void QgsWelcomePage::clearRecentProjects()
 {
-  QMessageBox messageBox( QMessageBox::Question,
-                          tr( "Recent Projects" ),
-                          tr( "Are you sure you want to clear the list of recent projects?" ),
-                          QMessageBox::No | QMessageBox::Yes | QMessageBox::YesToAll,
-                          this );
+  QMessageBox messageBox( QMessageBox::Question, tr( "Recent Projects" ), tr( "Are you sure you want to clear the list of recent projects?" ), QMessageBox::No | QMessageBox::Yes | QMessageBox::YesToAll, this );
   messageBox.button( QMessageBox::YesToAll )->setText( tr( "Yes, including pinned projects" ) );
   int answer = messageBox.exec();
   if ( answer != QMessageBox::No )
@@ -503,4 +490,3 @@ void QgsWelcomePage::clearRecentProjects()
     emit projectsCleared( clearPinned );
   }
 }
-

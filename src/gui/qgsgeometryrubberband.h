@@ -18,23 +18,23 @@
 #ifndef QGSGEOMETRYRUBBERBAND_H
 #define QGSGEOMETRYRUBBERBAND_H
 
-#include "qgsmapcanvasitem.h"
-#include "qgswkbtypes.h"
-#include <QBrush>
-#include <QPen>
 #include "qgis_gui.h"
-
+#include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
-#include "qgscircularstring.h"
 #include "qgslinestring.h"
+#include "qgsmapcanvasitem.h"
 #include "qgspoint.h"
+#include "qgswkbtypes.h"
+
+#include <QBrush>
+#include <QPen>
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgsgeometryrubberband.h>
-% End
+//%End
 #endif
 
 class QgsAbstractGeometry;
@@ -45,9 +45,8 @@ struct QgsVertexId;
  * \ingroup gui
  * \brief A rubberband class for QgsAbstractGeometry (considering curved geometries).
 */
-class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
+class GUI_EXPORT QgsGeometryRubberBand : public QgsMapCanvasItem
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsGeometryRubberBand *>( sipCpp ) )
@@ -121,6 +120,7 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     void updatePosition() override;
 
   protected:
+    using QgsMapCanvasItem::paint;
     void paint( QPainter *painter ) override;
 
     //! Returns which geometry is handled by the rubber band, polygon or line
@@ -133,8 +133,8 @@ class GUI_EXPORT QgsGeometryRubberBand: public QgsMapCanvasItem
     std::unique_ptr<QgsAbstractGeometry> mGeometry = nullptr;
     QBrush mBrush;
     QPen mPen;
-    int mIconSize;
-    IconType mIconType;
+    int mIconSize = 5;
+    IconType mIconType = ICON_BOX;
     Qgis::GeometryType mGeometryType;
     bool mDrawVertices = true;
 

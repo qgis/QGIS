@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
-#include "qgsmaplayercombobox.h"
 #include "qgsmaplayercomboboxplugin.h"
 
+#include "qgiscustomwidgets.h"
+#include "qgsmaplayercombobox.h"
+
+#include "moc_qgsmaplayercomboboxplugin.cpp"
 
 QgsMapLayerComboBoxPlugin::QgsMapLayerComboBoxPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsMapLayerComboBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

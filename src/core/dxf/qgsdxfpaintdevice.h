@@ -20,9 +20,11 @@
 
 #define SIP_NO_FILE
 
-#include <QPaintDevice>
+#include <memory>
 
 #include "qgis_core.h"
+
+#include <QPaintDevice>
 
 class QgsDxfPaintEngine;
 class QgsDxfExport;
@@ -62,7 +64,7 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 
 
   private:
-    QgsDxfPaintEngine *mPaintEngine = nullptr;
+    std::unique_ptr<QgsDxfPaintEngine> mPaintEngine;
 
     QSizeF mDrawingSize; //size (in source coordinates)
     QRectF mRectangle; //size (in dxf coordinates)

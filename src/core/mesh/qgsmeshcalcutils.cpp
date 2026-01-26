@@ -16,16 +16,17 @@
  ***************************************************************************/
 ///@cond PRIVATE
 
-#include <QFileInfo>
-
-#include "qgsmeshcalcnode.h"
 #include "qgsmeshcalcutils.h"
-#include "qgsmeshmemorydataprovider.h"
-#include "qgstriangularmesh.h"
+
 #include "qgsmapsettings.h"
-#include "qgsmeshlayerutils.h"
+#include "qgsmeshcalcnode.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmeshmemorydataprovider.h"
 #include "qgsproject.h"
+#include "qgstriangularmesh.h"
+
+#include <QFileInfo>
 
 const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;
@@ -183,7 +184,7 @@ std::shared_ptr<QgsMeshMemoryDataset> QgsMeshCalcUtils::createMemoryDataset( con
 {
   Q_ASSERT( type != QgsMeshDatasetGroupMetadata::DataOnVolumes );
 
-  std::shared_ptr<QgsMeshMemoryDataset> ds = std::make_shared<QgsMeshMemoryDataset>();
+  auto ds = std::make_shared<QgsMeshMemoryDataset>();
   if ( type == QgsMeshDatasetGroupMetadata::DataOnVertices )
   {
     ds->values.resize( mMeshLayer->dataProvider()->vertexCount() );
@@ -562,7 +563,7 @@ std::shared_ptr<QgsMeshMemoryDataset>  QgsMeshCalcUtils::copy(
   Q_ASSERT( isValid() );
   Q_ASSERT( dataset0 );
 
-  std::shared_ptr<QgsMeshMemoryDataset> output = std::make_shared<QgsMeshMemoryDataset>();
+  auto output = std::make_shared<QgsMeshMemoryDataset>();
   output->values = dataset0->values; //deep copy
   output->active = dataset0->active; //deep copy
   output->time = dataset0->time;
@@ -842,8 +843,9 @@ const QgsTriangularMesh *QgsMeshCalcUtils::triangularMesh() const
 const QgsMesh *QgsMeshCalcUtils::nativeMesh() const
 {
   updateMesh();
-  Q_ASSERT( mMeshLayer->nativeMesh() );
-  return mMeshLayer->nativeMesh();
+  const QgsMesh *res = mMeshLayer->nativeMesh();
+  Q_ASSERT( res );
+  return res;
 }
 
 void QgsMeshCalcUtils::updateMesh() const

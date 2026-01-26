@@ -17,20 +17,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
-
-#include "testqgsmaptoolutils.h"
 #include "qgsmaptoolshapecircle2points.h"
+#include "qgsmaptoolshapecircle2tangentspoint.h"
 #include "qgsmaptoolshapecircle3points.h"
+#include "qgsmaptoolshapecircle3tangents.h"
 #include "qgsmaptoolshapecirclecenterpoint.h"
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
 
 class TestQgsMapToolCircle : public QObject
 {
@@ -45,6 +46,14 @@ class TestQgsMapToolCircle : public QObject
 
     void testCircle_data();
     void testCircle();
+    void testDrawCircleFrom2PointsNotEnoughPoints();
+    void testDrawCircleFrom3PointsNotEnoughPoints();
+    void testDrawCircleFromCenterPointNotEnoughPoints();
+    void testDrawCircleFrom3TangentsNotEnoughPoints();
+    void testDrawCircleFrom2TangentsNotEnoughPoints();
+    void testTransientGeometrySignalTwoPoints();
+    void testTransientGeometrySignalThreePoints();
+    void testTransientGeometrySignalCenterPoint();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -54,21 +63,22 @@ class TestQgsMapToolCircle : public QObject
     QgsMapCanvas *mCanvas = nullptr;
     std::map<QString, std::unique_ptr<QgsVectorLayer>> mVectorLayerMap = {};
 
-    const QList<QString> mCoordinateList =
-    {
+    const QList<QString> mCoordinateList = {
       "XY", "XYZ", "XYM", "XYZM"
     };
-    const QList<QString> mDrawingCircleMethods =
-    {
-      "2Points", "2PointsWithDeletedVertex",
-      "3Points", "3PointsWithDeletedVertex",
-      "centerPoint", "centerPointWithDeletedVertex",
+    const QList<QString> mDrawingCircleMethods = {
+      "2Points",
+      "2PointsWithDeletedVertex",
+      "3Points",
+      "3PointsWithDeletedVertex",
+      "centerPoint",
+      "centerPointWithDeletedVertex",
     };
     QMap<QString, QString> mDrawFunctionUserNames = {};
     QMap<QString, std::function<QgsFeatureId( void )>> mDrawFunctionPtrMap = {};
     QMap<QString, QString> mExpectedWkts = {};
 
-    void initAttributs();
+    void initAttributes();
 
     QgsFeatureId drawCircleFrom2Points();
     QgsFeatureId drawCircleFrom2PointsWithDeletedVertex();
@@ -93,24 +103,24 @@ void TestQgsMapToolCircle::initTestCase()
 
   mQgisApp = new QgisApp();
   mCanvas = new QgsMapCanvas();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   // make testing layers
   QList<QgsMapLayer *> layerList;
 
-  mVectorLayerMap["XY"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurve?crs=EPSG:27700" ), QStringLiteral( "layer line " ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XY"] = std::make_unique<QgsVectorLayer>( u"CompoundCurve?crs=EPSG:27700"_s, u"layer line "_s, u"memory"_s );
   QVERIFY( mVectorLayerMap["XY"]->isValid() );
   layerList << mVectorLayerMap["XY"].get();
 
-  mVectorLayerMap["XYZ"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurveZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XYZ"] = std::make_unique<QgsVectorLayer>( u"CompoundCurveZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mVectorLayerMap["XYZ"]->isValid() );
   layerList << mVectorLayerMap["XYZ"].get();
 
-  mVectorLayerMap["XYM"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurveM?crs=EPSG:27700" ), QStringLiteral( "layer line M" ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XYM"] = std::make_unique<QgsVectorLayer>( u"CompoundCurveM?crs=EPSG:27700"_s, u"layer line M"_s, u"memory"_s );
   QVERIFY( mVectorLayerMap["XYM"]->isValid() );
   layerList << mVectorLayerMap["XYM"].get();
 
-  mVectorLayerMap["XYZM"] = std::make_unique<QgsVectorLayer>( QStringLiteral( "CompoundCurveZM?crs=EPSG:27700" ), QStringLiteral( "layer line ZM" ), QStringLiteral( "memory" ) );
+  mVectorLayerMap["XYZM"] = std::make_unique<QgsVectorLayer>( u"CompoundCurveZM?crs=EPSG:27700"_s, u"layer line ZM"_s, u"memory"_s );
   QVERIFY( mVectorLayerMap["XYZM"]->isValid() );
   layerList << mVectorLayerMap["XYZM"].get();
 
@@ -122,10 +132,10 @@ void TestQgsMapToolCircle::initTestCase()
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
   mCanvas->setMapTool( mMapTool );
 
-  initAttributs();
+  initAttributes();
 }
 
-void TestQgsMapToolCircle::initAttributs()
+void TestQgsMapToolCircle::initAttributes()
 {
   mDrawFunctionUserNames["2Points"] = "from 2 points";
   mDrawFunctionUserNames["2PointsWithDeletedVertex"] = "from 2 points with deleted vertex";
@@ -141,33 +151,93 @@ void TestQgsMapToolCircle::initAttributs()
   mDrawFunctionPtrMap["centerPoint"] = std::bind( &TestQgsMapToolCircle::drawCircleFromCenterPoint, this );
   mDrawFunctionPtrMap["centerPointWithDeletedVertex"] = std::bind( &TestQgsMapToolCircle::drawCircleFromCenterPointWithDeletedVertex, this );
 
-  mExpectedWkts[QStringLiteral( "XY" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XY" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XY" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XY" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XY" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XY" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XY" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XY" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XY" "centerPoint" )] ;
+  mExpectedWkts[QStringLiteral( "XY"
+                                "2Points" )]
+    = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY"
+                                "2PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XY"
+                                    "2Points" )];
+  mExpectedWkts[QStringLiteral( "XY"
+                                "3Points" )]
+    = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY"
+                                "3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XY"
+                                    "3Points" )];
+  mExpectedWkts[QStringLiteral( "XY"
+                                "centerPoint" )]
+    = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::Point ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::Point ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XY"
+                                "centerPointWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XY"
+                                    "centerPoint" )];
 
-  mExpectedWkts[QStringLiteral( "XYZ" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYZ" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XYZ" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYZ" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XYZ" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYZ" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZ" "centerPoint" )] ;
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "2Points" )]
+    = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "2PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZ"
+                                    "2Points" )];
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "3Points" )]
+    = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZ"
+                                    "3Points" )];
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "centerPoint" )]
+    = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZ ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZ ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZ"
+                                "centerPointWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZ"
+                                    "centerPoint" )];
 
-  mExpectedWkts[QStringLiteral( "XYM" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYM" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XYM" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYM" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XYM" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYM" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYM" "centerPoint" )] ;
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "2Points" )]
+    = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "2PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYM"
+                                    "2Points" )];
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "3Points" )]
+    = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYM"
+                                    "3Points" )];
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "centerPoint" )]
+    = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYM"
+                                "centerPointWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYM"
+                                    "centerPoint" )];
 
-  mExpectedWkts[QStringLiteral( "XYZM" "2Points" )] = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYZM" "2PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "2Points" )];
-  mExpectedWkts[QStringLiteral( "XYZM" "3Points" )] = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYZM" "3PointsWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "3Points" )];
-  mExpectedWkts[QStringLiteral( "XYZM" "centerPoint" )] = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
-  mExpectedWkts[QStringLiteral( "XYZM" "centerPointWithDeletedVertex" )] = mExpectedWkts[QStringLiteral( "XYZM" "centerPoint" )] ;
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "2Points" )]
+    = QgsCircle::from2Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "2PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZM"
+                                    "2Points" )];
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "3Points" )]
+    = QgsCircle::from3Points( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 1, 1, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "3PointsWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZM"
+                                    "3Points" )];
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "centerPoint" )]
+    = QgsCircle::fromCenterPoint( QgsPoint( 0, 0, Z, M, Qgis::WkbType::PointZM ), QgsPoint( 0, 2, Z, M, Qgis::WkbType::PointZM ) ).toCircularString( true )->asWkt( WKT_PRECISION );
+  mExpectedWkts[QStringLiteral( "XYZM"
+                                "centerPointWithDeletedVertex" )]
+    = mExpectedWkts[QStringLiteral( "XYZM"
+                                    "centerPoint" )];
 }
 
 void TestQgsMapToolCircle::cleanupTestCase()
@@ -184,7 +254,7 @@ void TestQgsMapToolCircle::resetMapTool( QgsMapToolShapeMetadata *metadata )
 {
   mMapTool->clean();
   mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::Shape );
-  mMapTool->setCurrentShapeMapTool( metadata ) ;
+  mMapTool->setCurrentShapeMapTool( metadata );
 }
 
 QgsFeatureId TestQgsMapToolCircle::drawCircleFrom2Points()
@@ -273,7 +343,6 @@ QgsFeatureId TestQgsMapToolCircle::drawCircleFromCenterPointWithDeletedVertex()
   return utils.newFeatureId();
 }
 
-
 void TestQgsMapToolCircle::testCircle_data()
 {
   QTest::addColumn<QString>( "wktGeometry" );
@@ -310,7 +379,7 @@ void TestQgsMapToolCircle::testCircle_data()
       Q_ASSERT( compoundCurveGeom != nullptr );
       const QgsCurve *curveGeom = compoundCurveGeom->curveAt( 0 );
       Q_ASSERT( curveGeom != nullptr );
-      QTest::newRow( rowStringName.toStdString().c_str() ) << curveGeom->asWkt( WKT_PRECISION ) << wkt << mLayer->featureCount() << ( long )1;
+      QTest::newRow( rowStringName.toStdString().c_str() ) << curveGeom->asWkt( WKT_PRECISION ) << wkt << mLayer->featureCount() << ( long ) 1;
 
       mLayer->rollBack();
     }
@@ -329,6 +398,189 @@ void TestQgsMapToolCircle::testCircle()
   QFETCH( QString, wktGeometry );
   QFETCH( QString, wktExpected );
   QCOMPARE( wktGeometry, wktExpected );
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom2PointsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom3PointsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle3PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 1 );
+  utils.mouseClick( 1, 1, Qt::RightButton );
+
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFromCenterPointNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircleCenterPointMetadata md;
+  resetMapTool( &md );
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+
+  utils.keyClick( Qt::Key_Escape );
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseClick( 0, 0, Qt::RightButton );
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom3TangentsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle3TangentsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testDrawCircleFrom2TangentsNotEnoughPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+  const long long count = layer->featureCount();
+
+  QgsMapToolShapeCircle2TangentsPointMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  QCOMPARE( layer->featureCount(), count );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testTransientGeometrySignalTwoPoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  QgsMapToolShapeCircle2PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 0, 2 );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (0 2, 1 1, 0 0, -1 1, 0 2)"_s );
+
+  utils.mouseMove( 1, 3 );
+  QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 3, 2 1, 0 0, -1 2, 1 3)"_s );
+
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  utils.keyClick( Qt::Key_Escape );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testTransientGeometrySignalThreePoints()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  QgsMapToolShapeCircle3PointsMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 2, 0 );
+  QCOMPARE( spy.size(), 0 ); // not enough points
+  utils.mouseClick( 2, 0, Qt::LeftButton );
+  utils.mouseMove( 1, 2 );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 2, 2.3 0.8, 1 -0.5, -0.3 0.7, 1 2)"_s );
+
+  utils.mouseMove( 1, 3 );
+  QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 3, 2.7 1.3, 1 -0.3, -0.7 1.3, 1 3)"_s );
+
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  utils.keyClick( Qt::Key_Escape );
+  layer->rollBack();
+}
+
+void TestQgsMapToolCircle::testTransientGeometrySignalCenterPoint()
+{
+  QgsVectorLayer *layer = mVectorLayerMap["XY"].get();
+  mCanvas->setCurrentLayer( layer );
+  layer->startEditing();
+
+  QgsMapToolShapeCircleCenterPointMetadata md;
+  resetMapTool( &md );
+
+  TestQgsMapToolAdvancedDigitizingUtils utils( mMapTool );
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+  utils.mouseMove( 0, 2 );
+  QCOMPARE( spy.size(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (0 2, 2 0, 0 -2, -2 0, 0 2)"_s );
+
+  utils.mouseMove( 1, 3 );
+  QCOMPARE( spy.size(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CircularString (1 3, 3 -1, -1 -3, -3 1, 1 3)"_s );
+
+  utils.mouseClick( 0, 2, Qt::RightButton );
+
+  utils.keyClick( Qt::Key_Escape );
+  layer->rollBack();
 }
 
 

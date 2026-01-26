@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLEDIT_H
 #define QGSMAPTOOLEDIT_H
 
-#include "qgswkbtypes.h"
-#include "qgsmaptool.h"
 #include "qgis_gui.h"
+#include "qgsmaptool.h"
+#include "qgswkbtypes.h"
 
 class QgsRubberBand;
 class QgsGeometryRubberBand;
@@ -27,9 +27,9 @@ class QKeyEvent;
 
 /**
  * \ingroup gui
- * \brief Base class for map tools that edit vector geometry
+ * \brief Base class for map tools that edit vector geometry.
 */
-class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
+class GUI_EXPORT QgsMapToolEdit : public QgsMapTool
 {
     Q_OBJECT
 
@@ -72,7 +72,6 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     void cleanCanvas();
 
   protected:
-
     //! Returns stroke color for rubber bands (from global settings)
     static QColor digitizingStrokeColor();
     //! Returns stroke width for rubber bands (from global settings)
@@ -95,17 +94,17 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     //! Result of addTopologicalPoints
     enum TopologicalResult
     {
-      Success = 0, //!< AddTopologicalPoints was successful
+      Success = 0,       //!< AddTopologicalPoints was successful
       InvalidCanvas = 1, //!< AddTopologicalPoints failed due to an invalid canvas
-      InvalidLayer = 2, //!< AddTopologicalPoints failed due to an invalid canvas
+      InvalidLayer = 2,  //!< AddTopologicalPoints failed due to an invalid canvas
     };
 
     /**
      * Adds a list of \a vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
      * The \a vertices list specifies a set of topological points to add, in the layer's coordinate reference system.
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
-    Q_DECL_DEPRECATED TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices )  SIP_DEPRECATED;
+    Q_DECL_DEPRECATED TopologicalResult addTopologicalPoints( const QVector<QgsPointXY> &vertices ) SIP_DEPRECATED;
 
     /**
      * Adds a list of \a vertices to other features to keep topology up to date, e.g. to neighbouring polygons.

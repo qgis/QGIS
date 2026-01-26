@@ -20,20 +20,23 @@
 #include "qgsprocessingparametertype.h"
 #include "qgsvectortilewriter.h"
 
-
 /**
- * \brief A parameter for processing algorithms that need a list of input vector layers for writing
- * of vector tiles - this parameter provides processing framework's adapter for QList<QgsVectorTileWriter::Layer>.
+ * \brief A parameter for Processing algorithms that need a list of input vector layers for writing of vector tiles.
+ *
+ * This parameter provides Processing framework's adapter for QList<QgsVectorTileWriter::Layer>.
  *
  * A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
+ *
+ * \code{.py}
  * {
  *   'layer':  string or QgsMapLayer,
- *   // key-value pairs below are optional
+ *   # key-value pairs below are optional
  *   'layerName': string,
  *   'filterExpression': string,
  *   'minZoom': int,
  *   'maxZoom': int
  * }
+ * \endcode
  *
  * Static functions parametersAsLayers(), variantMapAsLayer(), layerAsVariantMap() provide conversion between
  * QgsVectorTileWriter::Layer representation and QVariant representation.
@@ -54,7 +57,7 @@ class CORE_EXPORT QgsProcessingParameterVectorTileWriterLayers : public QgsProce
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "vectortilewriterlayers" ); }
+    static QString typeName() { return u"vectortilewriterlayers"_s; }
 
     //! Converts a QVariant value (a QVariantList) to a list of input layers
     static QList<QgsVectorTileWriter::Layer> parameterAsLayers( const QVariant &layersVariant, QgsProcessingContext &context );
@@ -100,17 +103,27 @@ class CORE_EXPORT QgsProcessingParameterTypeVectorTileWriterLayers : public QgsP
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterVectorTileWriterLayers" );
+      return u"from qgis.core import QgsProcessingParameterVectorTileWriterLayers"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterVectorTileWriterLayers" );
+      return u"QgsProcessingParameterVectorTileWriterLayers"_s;
     }
 
     QStringList acceptedPythonTypes() const override
     {
       return QStringList() << QObject::tr( "list[dict]: list of input layers as dictionaries, see QgsProcessingParameterVectorTileWriterLayers docs" );
+    }
+
+    QStringList acceptedParameterTypes() const override
+    {
+      return QStringList();
+    }
+
+    QStringList acceptedOutputTypes() const override
+    {
+      return QStringList();
     }
 };
 

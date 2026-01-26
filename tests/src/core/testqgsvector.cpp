@@ -14,9 +14,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-
 #include "qgsvector3d.h"
-
 
 /**
  * \ingroup UnitTests
@@ -27,8 +25,8 @@ class TestQgsVector : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     // vector3d
     void vector3d();

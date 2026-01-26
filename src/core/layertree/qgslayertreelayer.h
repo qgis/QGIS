@@ -19,9 +19,9 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslayertreenode.h"
+#include "qgslegendpatchshape.h"
 #include "qgsmaplayerref.h"
 #include "qgsreadwritecontext.h"
-#include "qgslegendpatchshape.h"
 
 class QgsMapLayer;
 
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeLayer: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsLayerTreeLayer: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      * Read layer node from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;  // cppcheck-suppress duplInheritedMember
 
     /**
      * Read layer node from XML. Returns new instance.

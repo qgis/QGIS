@@ -16,15 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmaplayerutils.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "qgsprovidermetadata.h"
-#include "qgsproviderregistry.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
-#include "qgscoordinatetransform.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+#include "qgsrectangle.h"
+
 #include <QRegularExpression>
 
 QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layers, const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &transformContext )
@@ -35,7 +37,7 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
 
   // iterate through the map layers and test each layers extent
   // against the current min and max values
-  QgsDebugMsgLevel( QStringLiteral( "Layer count: %1" ).arg( layers.count() ), 5 );
+  QgsDebugMsgLevel( u"Layer count: %1"_s.arg( layers.count() ), 5 );
   for ( const QgsMapLayer *layer : layers )
   {
     QgsDebugMsgLevel( "Updating extent using " + layer->name(), 5 );
@@ -57,7 +59,7 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not reproject layer extent" ) );
+      QgsDebugError( u"Could not reproject layer extent"_s );
     }
   }
 
@@ -91,14 +93,14 @@ QgsRectangle QgsMapLayerUtils::combinedExtent( const QList<QgsMapLayer *> &layer
 
 QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( const QgsMapLayer *layer )
 {
-  if ( ! layer || ! layer->dataProvider() )
+  if ( !layer )
   {
     return nullptr;
   }
 
   try
   {
-    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( layer->dataProvider()->name() );
+    QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( layer->providerType() );
     if ( ! providerMetadata )
     {
       return nullptr;
@@ -109,7 +111,10 @@ QgsAbstractDatabaseProviderConnection *QgsMapLayerUtils::databaseConnection( con
   }
   catch ( const QgsProviderConnectionException &ex )
   {
-    QgsDebugError( QStringLiteral( "Error retrieving database connection for layer %1: %2" ).arg( layer->name(), ex.what() ) );
+    if ( !ex.what().contains( "createConnection"_L1 ) )
+    {
+      QgsDebugError( u"Error retrieving database connection for layer %1: %2"_s.arg( layer->name(), ex.what() ) );
+    }
     return nullptr;
   }
 }
@@ -120,7 +125,7 @@ bool QgsMapLayerUtils::layerSourceMatchesPath( const QgsMapLayer *layer, const Q
     return false;
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
-  return parts.value( QStringLiteral( "path" ) ).toString() == path;
+  return parts.value( u"path"_s ).toString() == path;
 }
 
 bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString &newPath )
@@ -129,10 +134,10 @@ bool QgsMapLayerUtils::updateLayerSourcePath( QgsMapLayer *layer, const QString 
     return false;
 
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
-  if ( !parts.contains( QStringLiteral( "path" ) ) )
+  if ( !parts.contains( u"path"_s ) )
     return false;
 
-  parts.insert( QStringLiteral( "path" ), newPath );
+  parts.insert( u"path"_s, newPath );
   const QString newUri = QgsProviderRegistry::instance()->encodeUri( layer->providerType(), parts );
   layer->setDataSource( newUri, layer->name(), layer->providerType() );
   return true;
@@ -158,10 +163,10 @@ QList<QgsMapLayer *> QgsMapLayerUtils::sortLayersByType( const QList<QgsMapLayer
 QString QgsMapLayerUtils::launderLayerName( const QString &name )
 {
   QString laundered = name.toLower();
-  const thread_local QRegularExpression sRxSwapChars( QStringLiteral( "\\s" ) );
-  laundered.replace( sRxSwapChars, QStringLiteral( "_" ) );
+  const thread_local QRegularExpression sRxSwapChars( u"\\s"_s );
+  laundered.replace( sRxSwapChars, u"_"_s );
 
-  const thread_local QRegularExpression sRxRemoveChars( QStringLiteral( "[^a-zA-Z0-9_]" ) );
+  const thread_local QRegularExpression sRxRemoveChars( u"[^a-zA-Z0-9_]"_s );
   laundered.replace( sRxRemoveChars, QString() );
 
   return laundered;
@@ -169,17 +174,44 @@ QString QgsMapLayerUtils::launderLayerName( const QString &name )
 
 bool QgsMapLayerUtils::isOpenStreetMapLayer( QgsMapLayer *layer )
 {
-  if ( layer->providerType() == QLatin1String( "wms" ) )
+  if ( layer->providerType() == "wms"_L1 )
   {
     if ( const QgsProviderMetadata *metadata = layer->providerMetadata() )
     {
       QVariantMap details = metadata->decodeUri( layer->source() );
-      QUrl url( details.value( QStringLiteral( "url" ) ).toString() );
-      if ( url.host().endsWith( QLatin1String( ".openstreetmap.org" ) ) || url.host().endsWith( QLatin1String( ".osm.org" ) ) )
+      QUrl url( details.value( u"url"_s ).toString() );
+      if ( url.host().endsWith( ".openstreetmap.org"_L1 ) || url.host().endsWith( ".osm.org"_L1 ) )
       {
         return true;
       }
     }
   }
   return false;
+}
+
+QString QgsMapLayerUtils::layerTypeToString( Qgis::LayerType type )
+{
+  switch ( type )
+  {
+    case Qgis::LayerType::Vector:
+      return QObject::tr( "Vector" );
+    case Qgis::LayerType::Raster:
+      return QObject::tr( "Raster" );
+    case Qgis::LayerType::Mesh:
+      return QObject::tr( "Mesh" );
+    case Qgis::LayerType::PointCloud:
+      return QObject::tr( "Point Cloud" );
+    case Qgis::LayerType::Annotation:
+      return QObject::tr( "Annotation" );
+    case Qgis::LayerType::VectorTile:
+      return QObject::tr( "Vector Tile" );
+    case Qgis::LayerType::Plugin:
+      return QObject::tr( "Plugin" );
+    case Qgis::LayerType::Group:
+      return QObject::tr( "Group" );
+    case Qgis::LayerType::TiledScene:
+      return QObject::tr( "Tiled Scene" );
+  }
+  Q_ASSERT( false );
+  return QString();
 }

@@ -21,8 +21,8 @@
 #include "ui_qgsanimationexportdialogbase.h"
 
 #include "qgisapp.h"
-#include "qgsrectangle.h"
 #include "qgshelp.h"
+#include "qgsrectangle.h"
 
 #include <QDialog>
 #include <QSize>
@@ -35,18 +35,15 @@ class QgsMapCanvas;
  * \brief A dialog for specifying map animation export settings.
  * \since QGIS 3.14
 */
-class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimationExportDialogBase
+class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnimationExportDialogBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnimationExportDialog
      */
-    QgsAnimationExportDialog( QWidget *parent = nullptr,
-                              QgsMapCanvas *mapCanvas = nullptr,
-                              const QList< QgsMapDecoration * > &decorations = QList< QgsMapDecoration * >() );
+    QgsAnimationExportDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QList<QgsMapDecoration *> &decorations = QList<QgsMapDecoration *>() );
 
     //! Returns extent rectangle
     QgsRectangle extent() const;
@@ -55,16 +52,23 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
     QSize size() const;
 
     //! Returns output directory for frames
-    QString outputDirectory( ) const;
+    QString outputDirectory() const;
 
     //! Returns filename template for frames
-    QString fileNameExpression( ) const;
+    QString fileNameExpression() const;
 
     //! Returns the overall animation range
     QgsDateTimeRange animationRange() const;
 
     //! Returns the duration of each individual frame
     QgsInterval frameInterval() const;
+
+    /**
+     * Returns the animation temporal range cumulative settings.
+     *
+     * \since QGIS 4.0
+     */
+    bool temporalRangeCumulative() const;
 
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
@@ -81,7 +85,6 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
     void setToProjectTime();
 
   private:
-
     void lockChanged( bool locked );
 
     void updateOutputWidth( int width );
@@ -95,7 +98,6 @@ class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimat
     QSize mSize;
 
     QString mInfoDetails;
-
 };
 
 #endif // QGSANIMATIONEXPORTDIALOG_H

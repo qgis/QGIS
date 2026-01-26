@@ -18,30 +18,29 @@
 #ifndef QGSSERVERPARAMETERS_H
 #define QGSSERVERPARAMETERS_H
 
+#include "qgis_server.h"
+#include "qgsgeometry.h"
+
+#include <QColor>
 #include <QMap>
 #include <QMetaEnum>
 #include <QUrlQuery>
-#include <QColor>
-#include "qgsgeometry.h"
-#include "qgis_server.h"
 
 /**
  * \ingroup server
  * \class QgsServerParameterDefinition
- * \brief Definition of a parameter with basic conversion methods
+ * \brief Definition of a parameter with basic conversion methods.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameterDefinition
 {
   public:
-
     /**
      * Constructor for QgsServerParameterDefinition.
      * \param type The type of the parameter
      * \param defaultValue The default value of the parameter
      */
-    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString,
-                                  const QVariant defaultValue = QVariant( "" ) );
+    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
 
 
     /**
@@ -50,8 +49,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * \param defaultValue The default value of the parameter
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    Q_DECL_DEPRECATED QgsServerParameterDefinition( const QVariant::Type type,
-        const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsServerParameterDefinition( const QVariant::Type type, const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
 
     virtual ~QgsServerParameterDefinition() = default;
 
@@ -83,33 +81,37 @@ class SERVER_EXPORT QgsServerParameterDefinition
      * Converts the parameter into a list of integers.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of integers
      */
-    QList<int> toIntList( bool &ok, char delimiter = ',' ) const;
+    QList<int> toIntList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of doubles.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of doubles
      */
-    QList<double> toDoubleList( bool &ok, char delimiter = ',' ) const;
+    QList<double> toDoubleList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of colors.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of colors
      */
-    QList<QColor> toColorList( bool &ok, char delimiter = ',' ) const;
+    QList<QColor> toColorList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of geometries.
      * \param ok TRUE if there's no error during the conversion, FALSE otherwise
      * \param delimiter The character used for delimiting
+     * \param skipEmptyParts for splitting
      * \returns A list of geometries
      */
-    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',' ) const;
+    QList<QgsGeometry> toGeomList( bool &ok, char delimiter = ',', bool skipEmptyParts = true ) const;
 
     /**
      * Converts the parameter into a list of OGC filters.
@@ -190,7 +192,7 @@ class SERVER_EXPORT QgsServerParameterDefinition
 /**
  * \ingroup server
  * \class QgsServerParameter
- * \brief Parameter common to all services (WMS, WFS, ...)
+ * \brief Parameter common to all services (WMS, WFS, ...).
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
@@ -216,9 +218,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
      * \param type The type of the parameter
      * \param defaultValue The default value to use if not defined
      */
-    QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
-                        const QMetaType::Type type = QMetaType::Type::QString,
-                        const QVariant defaultValue = QVariant( "" ) );
+    QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN, const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
 
     /**
      * Constructor for QgsServerParameter.
@@ -227,9 +227,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
      * \param defaultValue The default value to use if not defined
      * \deprecated QGIS 3.38. Use the method with a QMetaType::Type argument instead.
      */
-    Q_DECL_DEPRECATED QgsServerParameter( const QgsServerParameter::Name name,
-                                          const QVariant::Type type,
-                                          const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsServerParameter( const QgsServerParameter::Name name, const QVariant::Type type, const QVariant defaultValue = QVariant( "" ) ) SIP_DEPRECATED;
 
     /**
      * Raises an error in case of an invalid conversion.
@@ -254,7 +252,7 @@ class SERVER_EXPORT QgsServerParameter : public QgsServerParameterDefinition
 /**
  * \ingroup server
  * \class QgsServerParameters
- * \brief QgsServerParameters provides an interface to retrieve and manipulate global parameters received from the client.
+ * \brief Provides an interface to retrieve and manipulate global parameters received from the client.
  * \since QGIS 3.4
  */
 class SERVER_EXPORT QgsServerParameters
@@ -262,7 +260,6 @@ class SERVER_EXPORT QgsServerParameters
     Q_GADGET
 
   public:
-
     /**
      * Constructor.
      */
@@ -358,7 +355,6 @@ class SERVER_EXPORT QgsServerParameters
     virtual QString version() const;
 
   protected:
-
     /**
      * Loads a parameter with a specific value. This method should be
      * implemented in subclasses.

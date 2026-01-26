@@ -16,20 +16,19 @@
 #ifndef QGSFIELDMODEL_H
 #define QGSFIELDMODEL_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsfields.h"
+
 #include <QAbstractItemModel>
 #include <QComboBox>
 #include <QItemSelectionModel>
-
-#include "qgsfields.h"
-#include "qgis_core.h"
-
-#include "qgis_sip.h"
 
 class QgsVectorLayer;
 
 /**
  * \ingroup core
- * \brief The QgsFieldModel class is a model to display the list of fields in widgets
+ * \brief A model which displays the list of fields in widgets
  * (optionally associated with a vector layer).
  *
  * If allowed, expressions might be added to the end of the model.
@@ -91,7 +90,7 @@ class CORE_EXPORT QgsFieldModel : public QAbstractItemModel
      * Returns TRUE if the model allows custom expressions to be created and displayed.
      * \see setAllowExpression()
      */
-    bool allowExpression() { return mAllowExpression; }
+    bool allowExpression() const { return mAllowExpression; }
 
     /**
      * Sets whether an optional empty field ("not set") option is present in the model.

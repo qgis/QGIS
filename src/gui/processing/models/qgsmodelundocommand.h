@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+
 #include <QUndoCommand>
 
 class QgsProcessingModelAlgorithm;
@@ -48,7 +49,6 @@ class GUI_EXPORT QgsModelUndoCommand : public QUndoCommand
     bool mergeWith( const QUndoCommand *other ) override;
 
   private:
-
     //! Flag to prevent the first redo() if the command is pushed to the undo stack
     bool mFirstRun = true;
 

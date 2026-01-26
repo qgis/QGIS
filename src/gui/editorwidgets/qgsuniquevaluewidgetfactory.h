@@ -16,26 +16,25 @@
 #ifndef QGSUNIQUEVALUEWIDGETFACTORY_H
 #define QGSUNIQUEVALUEWIDGETFACTORY_H
 
-#include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
+#include "qgseditorwidgetfactory.h"
 
 SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsUniqueValueWidgetFactory
+ * \brief Editor widget factory for unique value widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsUniqueValueWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
-
     /**
      * Constructor for QgsUniqueValueWidgetFactory, where \a name is a human-readable
-     * name for the factory.
+     * name for the factory and \a icon provides a visual representation of this widget type.
      */
-    QgsUniqueValueWidgetFactory( const QString &name );
+    QgsUniqueValueWidgetFactory( const QString &name, const QIcon &icon = QIcon() );
 
     // QgsEditorWidgetFactory interface
   public:

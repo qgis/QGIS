@@ -20,12 +20,12 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QMap>
-#include <QDomElement>
-#include <QDomDocument>
-
-#include "qgsreadwritecontext.h"
 #include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
+#include <QDomDocument>
+#include <QDomElement>
+#include <QMap>
 
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
@@ -203,22 +203,40 @@ class CORE_EXPORT QgsEditFormConfig
     void setLabelOnTop( int idx, bool onTop );
 
     /**
-     * If this returns TRUE, the widget at the given \a index will remember the previously
-     * entered value from this QGIS session when creating new features.
+     * If this returns TRUE, the widget at the given \a index will reuse the last
+     * value within a QGIS session when creating new features.
      *
      * \see setReuseLastValue()
      * \since QGIS 3.20
+     * \deprecated QGIS 4.0. Use reuseLastValuePolicy instead.
      */
-    bool reuseLastValue( int index ) const;
+    Q_DECL_DEPRECATED bool reuseLastValue( int index ) const;
 
     /**
-     * Sets whether the widget at the given \a index will remember the previously
-     * entered value from this QGIS session when creating new features.
+     * Sets whether the widget at the given \a index will reuse the last value
+     * within a QGIS session when creating new features.
      *
      * \see reuseLastValue()
      * \since QGIS 3.20
+     * \deprecated QGIS 4.0. Use setReuseLastValuePolicy instead.
      */
-    void setReuseLastValue( int index, bool reuse );
+    Q_DECL_DEPRECATED void setReuseLastValue( int index, bool reuse );
+
+    /**
+     * Returns the reuse of last value policy for an attribute \a index.
+     *
+     * \see setReuseLastValuePolicy()
+     * \since QGIS 4.0
+     */
+    Qgis::AttributeFormReuseLastValuePolicy reuseLastValuePolicy( int index ) const;
+
+    /**
+     * Sets the reuse of last value policy for an attribute \a index.
+     *
+     * \see reuseLastValuePolicy()
+     * \since QGIS 4.0
+     */
+    void setReuseLastValuePolicy( int index, Qgis::AttributeFormReuseLastValuePolicy policy );
 
     // Python form init function stuff
 
@@ -331,7 +349,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Will be called by friend class QgsVectorLayer
      */
-    void onRelationsLoaded();
+    void onRelationsLoaded(); // cppcheck-suppress functionConst
 
     /**
      * Used for the backwards compatibility of the api, on setting nmrel or force-suppress-popup for relations.
@@ -340,7 +358,7 @@ class CORE_EXPORT QgsEditFormConfig
     bool legacyUpdateRelationWidgetInTabs( QgsAttributeEditorContainer *container,  const QString &widgetName, const QVariantMap &config );
 
   private:
-    void fixLegacyConfig( QDomElement &el );
+    void fixLegacyConfig( QDomElement &el ) const;
 
     QExplicitlySharedDataPointer<QgsEditFormConfigPrivate> d;
 

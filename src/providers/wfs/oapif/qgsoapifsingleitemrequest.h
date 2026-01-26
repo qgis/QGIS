@@ -16,11 +16,11 @@
 #ifndef QGSOAPIFSINGLEITEMREQUEST_H
 #define QGSOAPIFSINGLEITEMREQUEST_H
 
-#include <QObject>
-
-#include "qgsdatasourceuri.h"
 #include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
 #include "qgsfeature.h"
+
+#include <QObject>
 
 //! Manages the /items/{id} request
 class QgsOapifSingleItemRequest : public QgsBaseNetworkRequest
@@ -61,8 +61,6 @@ class QgsOapifSingleItemRequest : public QgsBaseNetworkRequest
 
   private:
     QString mUrl;
-
-    bool mComputeBbox = false;
 
     QgsFields mFields;
 

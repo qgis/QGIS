@@ -16,20 +16,23 @@
 #ifndef QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 #define QGSVALUERELATIONSEARCHWIDGETWRAPPER_H
 
-#include "qgssearchwidgetwrapper.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgssearchwidgetwrapper.h"
 #include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
 #include <QLineEdit>
-#include "qgis_gui.h"
 
 class QgsValueRelationWidgetFactory;
 
 /**
  * \ingroup gui
- * \brief Wraps a value relation search  widget. This widget will offer a combobox with values from another layer
+ * \brief Wraps a value relation search widget.
+ *
+ * This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
+ *
  * It will be used as a search widget and produces expression to look for in the layer.
  */
 
@@ -37,7 +40,6 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
 {
     Q_OBJECT
   public:
-
     //! Constructor for QgsValueRelationSearchWidgetWrapper
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     bool applyDirectly() override;
@@ -67,7 +69,6 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
     QLineEdit *mLineEdit = nullptr;
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsValueRelationWidgetFactory;
 };

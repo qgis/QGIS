@@ -25,57 +25,42 @@
 
 #include "modeltest.h"
 
-#include <QStringList>
-#include <QSize>
 #include <QAbstractItemModel>
 #include <QDebug>
+#include <QSize>
+#include <QStringList>
 
 /*!
     Connect to all of the models signals.  Whenever anything happens
     recheck everything.
 */
-ModelTest::ModelTest( QAbstractItemModel *_model, QObject *parent ) : QObject( parent ), model( _model )
+ModelTest::ModelTest( QAbstractItemModel *_model, QObject *parent )
+  : QObject( parent ), model( _model )
 {
   Q_ASSERT( model );
 
-  connect( model, &QAbstractItemModel::columnsAboutToBeInserted,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::columnsAboutToBeRemoved,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::columnsInserted,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::columnsRemoved,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::dataChanged,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::headerDataChanged,
-           this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::columnsAboutToBeInserted, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::columnsAboutToBeRemoved, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::columnsInserted, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::columnsRemoved, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::dataChanged, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::headerDataChanged, this, &ModelTest::runAllTests );
   connect( model, &QAbstractItemModel::layoutAboutToBeChanged, this, &ModelTest::runAllTests );
   connect( model, &QAbstractItemModel::layoutChanged, this, &ModelTest::runAllTests );
   connect( model, &QAbstractItemModel::modelReset, this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::rowsAboutToBeInserted,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::rowsAboutToBeRemoved,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::rowsInserted,
-           this, &ModelTest::runAllTests );
-  connect( model, &QAbstractItemModel::rowsRemoved,
-           this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::rowsAboutToBeInserted, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::rowsAboutToBeRemoved, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::rowsInserted, this, &ModelTest::runAllTests );
+  connect( model, &QAbstractItemModel::rowsRemoved, this, &ModelTest::runAllTests );
 
   // Special checks for inserting/removing
-  connect( model, &QAbstractItemModel::layoutAboutToBeChanged,
-           this, &ModelTest::layoutAboutToBeChanged );
-  connect( model, &QAbstractItemModel::layoutChanged,
-           this, &ModelTest::layoutChanged );
+  connect( model, &QAbstractItemModel::layoutAboutToBeChanged, this, &ModelTest::layoutAboutToBeChanged );
+  connect( model, &QAbstractItemModel::layoutChanged, this, &ModelTest::layoutChanged );
 
-  connect( model, &QAbstractItemModel::rowsAboutToBeInserted,
-           this, &ModelTest::rowsAboutToBeInserted );
-  connect( model, &QAbstractItemModel::rowsAboutToBeRemoved,
-           this, &ModelTest::rowsAboutToBeRemoved );
-  connect( model, &QAbstractItemModel::rowsInserted,
-           this, &ModelTest::rowsInserted );
-  connect( model, &QAbstractItemModel::rowsRemoved,
-           this, &ModelTest::rowsRemoved );
+  connect( model, &QAbstractItemModel::rowsAboutToBeInserted, this, &ModelTest::rowsAboutToBeInserted );
+  connect( model, &QAbstractItemModel::rowsAboutToBeRemoved, this, &ModelTest::rowsAboutToBeRemoved );
+  connect( model, &QAbstractItemModel::rowsInserted, this, &ModelTest::rowsInserted );
+  connect( model, &QAbstractItemModel::rowsRemoved, this, &ModelTest::rowsRemoved );
 
   runAllTests();
 }
@@ -386,7 +371,7 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       {
         //qDebug() << r << c << "has children" << model->rowCount(index);
         checkChildren( index, ++currentDepth );
-      }/* else { if (currentDepth >= 10) qDebug() << "checked 10 deep"; };*/
+      } /* else { if (currentDepth >= 10) qDebug() << "checked 10 deep"; };*/
 
       // make sure that after testing the children that the index doesn't change.
       QModelIndex newerIndex = model->index( r, c, parent );
@@ -410,7 +395,7 @@ void ModelTest::data()
   Q_ASSERT( model->index( 0, 0 ).isValid() );
 
   // shouldn't be able to set data on an invalid index
-  Q_ASSERT( model->setData( QModelIndex(), QLatin1String( "foo" ), Qt::DisplayRole ) == false );
+  Q_ASSERT( model->setData( QModelIndex(), "foo"_L1, Qt::DisplayRole ) == false );
 
   // General Purpose roles that should return a QString
   QVariant variant = model->data( model->index( 0, 0 ), Qt::ToolTipRole );
@@ -455,9 +440,7 @@ void ModelTest::data()
   if ( checkStateVariant.isValid() )
   {
     int state = checkStateVariant.toInt();
-    Q_ASSERT( state == Qt::Unchecked ||
-              state == Qt::PartiallyChecked ||
-              state == Qt::Checked );
+    Q_ASSERT( state == Qt::Unchecked || state == Qt::PartiallyChecked || state == Qt::Checked );
   }
 }
 
@@ -495,7 +478,7 @@ void ModelTest::rowsInserted( const QModelIndex &parent, int start, int end )
   }
   //*/
   Q_ASSERT( c.parent == parent );
-  Q_ASSERT_X( c.oldSize + ( end - start + 1 ) == model->rowCount( parent ), "Rows inserted", QStringLiteral( "%1 != %2" ).arg( c.oldSize + ( end - start + 1 ) ).arg( model->rowCount( parent ) ).toStdString().c_str() );
+  Q_ASSERT_X( c.oldSize + ( end - start + 1 ) == model->rowCount( parent ), "Rows inserted", u"%1 != %2"_s.arg( c.oldSize + ( end - start + 1 ) ).arg( model->rowCount( parent ) ).toStdString().c_str() );
   Q_ASSERT( c.last == model->data( model->index( start - 1, 0, c.parent ) ) );
   Q_ASSERT( c.next == model->data( model->index( end + 1, 0, c.parent ) ) );
 }
@@ -540,7 +523,7 @@ void ModelTest::rowsRemoved( const QModelIndex &parent, int start, int end )
 {
   Changing c = remove.pop();
   Q_ASSERT( c.parent == parent );
-  Q_ASSERT_X( c.oldSize - ( end - start + 1 ) == model->rowCount( parent ), "Rows removed", QStringLiteral( "%1 != %2" ).arg( c.oldSize + ( end - start + 1 ) ).arg( model->rowCount( parent ) ).toStdString().c_str() );
+  Q_ASSERT_X( c.oldSize - ( end - start + 1 ) == model->rowCount( parent ), "Rows removed", u"%1 != %2"_s.arg( c.oldSize + ( end - start + 1 ) ).arg( model->rowCount( parent ) ).toStdString().c_str() );
   Q_ASSERT( c.last == model->data( model->index( start - 1, 0, c.parent ) ) );
   Q_ASSERT( c.next == model->data( model->index( start, 0, c.parent ) ) );
 }

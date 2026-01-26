@@ -19,11 +19,13 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QDialog>
 #include "ui_qgsmaplayersavestyledialog.h"
-#include "qgsmaplayer.h"
-#include "qgslayerpropertiesdialog.h"
+
 #include "qgis_gui.h"
+#include "qgslayerpropertiesdialog.h"
+#include "qgsmaplayer.h"
+
+#include <QDialog>
 
 class QgsMapLayerStyleCategoriesModel;
 
@@ -31,8 +33,11 @@ class QgsMapLayerStyleCategoriesModel;
  * \ingroup gui
  * \class QgsMapLayerSaveStyleDialog
  *
- * \brief The QgsMapLayerSaveStyleDialog class provides the UI to save the current style
+ * \brief A dialog which allows saving map layer styles.
+ *
+ * This dialog provides the UI to save the current style
  * or multiple styles into different storage containers (QML, SLD and DB).
+ *
  * The user can select what categories must be saved.
  *
  * \since QGIS 3.34
@@ -42,7 +47,6 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
     Q_OBJECT
 
   public:
-
     struct SaveToDbSettings
     {
       public:
@@ -94,13 +98,13 @@ class GUI_EXPORT QgsMapLayerSaveStyleDialog : public QDialog, private Ui::QgsMap
     /**
      * Returns the styles list widget.
      */
-    const QListWidget *stylesWidget( );
+    const QListWidget *stylesWidget();
 
     /**
      * Returns the SLD export options.
      * \since QGIS 3.30
      */
-    Qgis::SldExportOptions sldExportOptions( ) const;
+    Qgis::SldExportOptions sldExportOptions() const;
 
   public slots:
     void accept() override;

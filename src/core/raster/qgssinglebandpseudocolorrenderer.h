@@ -56,7 +56,7 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     //! Returns the raster shader
     QgsRasterShader *shader() { return mShader.get(); }
 
-    //! \note available in Python as constShader
+    //! Returns the raster shader
     const QgsRasterShader *shader() const SIP_PYNAME( constShader ) { return mShader.get(); }
 
     bool canCreateRasterAttributeTable( ) const override;
@@ -81,7 +81,8 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     QList< QPair< QString, QColor > > legendSymbologyItems() const override;
     QList<QgsLayerTreeModelLegendNode *> createLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
     QList<int> usesBands() const override;
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
 
     /**
@@ -106,6 +107,18 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     double classificationMax() const { return mClassificationMax; }
     void setClassificationMin( double min );
     void setClassificationMax( double max );
+
+    /**
+     * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
+     * If \a min or \a max size is greater than 1, the last values are ignored.
+     * NaN values are ignored.
+     * If \a forceRefresh is TRUE, this will force the refresh even if needsRefresh() returns FALSE.
+     * \returns TRUE if the renderer has been refreshed
+     * \note not available in Python bindings
+     *
+     * \since QGIS 3.42
+     */
+    bool refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh = false ) override SIP_SKIP;
 
   private:
 #ifdef SIP_RUN

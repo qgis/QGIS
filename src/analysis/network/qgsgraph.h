@@ -25,12 +25,12 @@
 #ifndef QGSGRAPH_H
 #define QGSGRAPH_H
 
-#include <QList>
-#include <QVector>
-#include <QVariant>
-
-#include "qgspointxy.h"
 #include "qgis_analysis.h"
+#include "qgspointxy.h"
+
+#include <QList>
+#include <QVariant>
+#include <QVector>
 
 class QgsGraphVertex;
 
@@ -38,12 +38,11 @@ class QgsGraphVertex;
 /**
  * \ingroup analysis
  * \class QgsGraphEdge
- * \brief This class implements a graph edge
+ * \brief Represents an edge in a graph.
  */
 class ANALYSIS_EXPORT QgsGraphEdge
 {
   public:
-
     QgsGraphEdge() = default;
 
     /**
@@ -55,7 +54,7 @@ class ANALYSIS_EXPORT QgsGraphEdge
     /**
      * Returns array of available strategies
      */
-    QVector< QVariant > strategies() const;
+    QVector<QVariant> strategies() const;
 
     /**
      * Returns the index of the vertex at the end of this edge.
@@ -70,8 +69,7 @@ class ANALYSIS_EXPORT QgsGraphEdge
     int fromVertex() const;
 
   private:
-
-    QVector< QVariant > mStrategies;
+    QVector<QVariant> mStrategies;
 
     int mToIdx = 0;
     int mFromIdx = 0;
@@ -80,17 +78,16 @@ class ANALYSIS_EXPORT QgsGraphEdge
 };
 
 
-typedef QList< int > QgsGraphEdgeIds;
+typedef QList<int> QgsGraphEdgeIds;
 
 /**
  * \ingroup analysis
  * \class QgsGraphVertex
- * \brief This class implements a graph vertex
+ * \brief Represents vertex in a graph.
  */
 class ANALYSIS_EXPORT QgsGraphVertex
 {
   public:
-
     QgsGraphVertex() = default;
 
     /**
@@ -127,13 +124,12 @@ class ANALYSIS_EXPORT QgsGraphVertex
 /**
  * \ingroup analysis
  * \class QgsGraph
- * \brief Mathematical graph representation
+ * \brief Mathematical graph representation.
  */
 
 class ANALYSIS_EXPORT QgsGraph
 {
   public:
-
     QgsGraph() = default;
 
     // Graph constructing methods
@@ -147,7 +143,7 @@ class ANALYSIS_EXPORT QgsGraph
      * Add an edge to the graph, going from the \a fromVertexIdx
      * to \a toVertexIdx.
      */
-    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
+    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector<QVariant> &strategies );
 
     /**
      * Returns number of graph vertices
@@ -168,7 +164,7 @@ class ANALYSIS_EXPORT QgsGraph
      * \throws IndexError if the vertex is not found.
      */
     QgsGraphVertex vertex( int idx ) const;
-    % MethodCode
+    //%MethodCode
     if ( sipCpp->hasVertex( a0 ) )
     {
       return sipConvertFromNewType( new QgsGraphVertex( sipCpp->vertex( a0 ) ), sipType_QgsGraphVertex, Py_None );
@@ -178,7 +174,7 @@ class ANALYSIS_EXPORT QgsGraph
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
-    % End
+    //%End
 #endif
 
 #ifndef SIP_RUN
@@ -202,7 +198,7 @@ class ANALYSIS_EXPORT QgsGraph
      * \since QGIS 3.24
      */
     void removeVertex( int index );
-    % MethodCode
+    //%MethodCode
     if ( sipCpp->hasVertex( a0 ) )
     {
       sipCpp->removeVertex( a0 );
@@ -212,7 +208,7 @@ class ANALYSIS_EXPORT QgsGraph
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
-    % End
+    //%End
 #endif
 
     /**
@@ -234,7 +230,7 @@ class ANALYSIS_EXPORT QgsGraph
      * \throws IndexError if the edge is not found.
      */
     QgsGraphEdge edge( int idx ) const;
-    % MethodCode
+    //%MethodCode
     if ( sipCpp->hasEdge( a0 ) )
     {
       return sipConvertFromNewType( new QgsGraphEdge( sipCpp->edge( a0 ) ), sipType_QgsGraphEdge, Py_None );
@@ -244,7 +240,7 @@ class ANALYSIS_EXPORT QgsGraph
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
-    % End
+    //%End
 #endif
 
 
@@ -271,7 +267,7 @@ class ANALYSIS_EXPORT QgsGraph
      * \since QGIS 3.24
      */
     void removeEdge( int index );
-    % MethodCode
+    //%MethodCode
     if ( sipCpp->hasEdge( a0 ) )
     {
       sipCpp->removeEdge( a0 );
@@ -281,7 +277,7 @@ class ANALYSIS_EXPORT QgsGraph
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
-    % End
+    //%End
 #endif
 
     /**
@@ -320,7 +316,7 @@ class ANALYSIS_EXPORT QgsGraph
      * \since QGIS 3.24
     */
     int findOppositeEdge( int index ) const;
-    % MethodCode
+    //%MethodCode
     if ( sipCpp->hasEdge( a0 ) )
     {
       sipRes = sipCpp->findOppositeEdge( a0 );
@@ -330,7 +326,7 @@ class ANALYSIS_EXPORT QgsGraph
       PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
       sipIsErr = 1;
     }
-    % End
+    //%End
 #endif
 
     /**
@@ -348,7 +344,6 @@ class ANALYSIS_EXPORT QgsGraph
     bool hasVertex( int index ) const;
 
   protected:
-
 #ifndef SIP_RUN
     //! Graph vertices
     QHash<int, QgsGraphVertex> mGraphVertices;
@@ -359,7 +354,6 @@ class ANALYSIS_EXPORT QgsGraph
 
 
   private:
-
     int mNextVertexId = 0;
     int mNextEdgeId = 0;
 };

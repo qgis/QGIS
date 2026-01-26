@@ -13,13 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsvectorfieldsymbollayerwidget.h"
+
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent ): QgsSymbolLayerWidget( parent, vl )
+#include "moc_qgsvectorfieldsymbollayerwidget.cpp"
+
+QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
+  : QgsSymbolLayerWidget( parent, vl )
 {
   setupUi( this );
-  connect( mScaleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsVectorFieldSymbolLayerWidget::mScaleSpinBox_valueChanged );
+  connect( mScaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsVectorFieldSymbolLayerWidget::mScaleSpinBox_valueChanged );
   connect( mXAttributeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorFieldSymbolLayerWidget::mXAttributeComboBox_currentIndexChanged );
   connect( mYAttributeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVectorFieldSymbolLayerWidget::mYAttributeComboBox_currentIndexChanged );
   connect( mCartesianRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mCartesianRadioButton_toggled );
@@ -31,8 +35,7 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer
   connect( mCounterclockwiseFromEastRadioButton, &QRadioButton::toggled, this, &QgsVectorFieldSymbolLayerWidget::mCounterclockwiseFromEastRadioButton_toggled );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsVectorFieldSymbolLayerWidget::mDistanceUnitWidget_changed );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                 << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   if ( auto *lVectorLayer = vectorLayer() )
   {
@@ -52,7 +55,7 @@ QgsVectorFieldSymbolLayerWidget::QgsVectorFieldSymbolLayerWidget( QgsVectorLayer
 
 void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( layer->layerType() != QLatin1String( "VectorField" ) )
+  if ( layer->layerType() != "VectorField"_L1 )
   {
     return;
   }
@@ -90,7 +93,7 @@ void QgsVectorFieldSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
     mCounterclockwiseFromEastRadioButton->setChecked( true );
   }
 
-  const QgsVectorFieldSymbolLayer::AngleUnits  angleUnits = mLayer->angleUnits();
+  const QgsVectorFieldSymbolLayer::AngleUnits angleUnits = mLayer->angleUnits();
   if ( angleUnits == QgsVectorFieldSymbolLayer::Degrees )
   {
     mDegreesRadioButton->setChecked( true );
@@ -225,6 +228,3 @@ void QgsVectorFieldSymbolLayerWidget::mDistanceUnitWidget_changed()
   mLayer->setDistanceMapUnitScale( mDistanceUnitWidget->getMapUnitScale() );
   emit changed();
 }
-
-
-

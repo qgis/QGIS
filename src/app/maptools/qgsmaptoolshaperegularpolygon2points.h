@@ -17,9 +17,9 @@
 #ifndef QGSMAPTOOLSHAPEREGULARPOLYGON2POINTS_H
 #define QGSMAPTOOLSHAPEREGULARPOLYGON2POINTS_H
 
-#include "qgsmaptoolshaperegularpolygonabstract.h"
 #include "qgis_app.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgsmaptoolshaperegularpolygonabstract.h"
 
 class APP_EXPORT QgsMapToolShapeRegularPolygon2PointsMetadata : public QgsMapToolShapeMetadata
 {
@@ -37,7 +37,7 @@ class APP_EXPORT QgsMapToolShapeRegularPolygon2PointsMetadata : public QgsMapToo
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeRegularPolygon2Points: public QgsMapToolShapeRegularPolygonAbstract
+class APP_EXPORT QgsMapToolShapeRegularPolygon2Points : public QgsMapToolShapeRegularPolygonAbstract
 {
     Q_OBJECT
 
@@ -50,7 +50,6 @@ class APP_EXPORT QgsMapToolShapeRegularPolygon2Points: public QgsMapToolShapeReg
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
-
 };
 
 #endif // QGSMAPTOOLSHAPEREGULARPOLYGON2POINTS_H

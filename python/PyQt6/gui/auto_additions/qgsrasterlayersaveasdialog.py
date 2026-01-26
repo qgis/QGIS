@@ -6,3 +6,7 @@ QgsRasterLayerSaveAsDialog.CurrentCrs = QgsRasterLayerSaveAsDialog.CrsState.Curr
 QgsRasterLayerSaveAsDialog.UserCrs = QgsRasterLayerSaveAsDialog.CrsState.UserCrs
 QgsRasterLayerSaveAsDialog.OriginalResolution = QgsRasterLayerSaveAsDialog.ResolutionState.OriginalResolution
 QgsRasterLayerSaveAsDialog.UserResolution = QgsRasterLayerSaveAsDialog.ResolutionState.UserResolution
+try:
+    QgsRasterLayerSaveAsDialog.__overridden_methods__ = ['accept']
+except (NameError, AttributeError):
+    pass

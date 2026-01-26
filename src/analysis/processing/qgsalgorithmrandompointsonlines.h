@@ -22,8 +22,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -33,27 +33,39 @@
 class QgsRandomPointsOnLinesAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsRandomPointsOnLinesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRandomPointsOnLines.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmRandomPointsOnLines.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmRandomPointsOnLines.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmRandomPointsOnLines.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRandomPointsOnLinesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context,
-                                  QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 
   private:
+    // The algorithm parameter names:
+    static inline const QString INPUT = u"INPUT"_s;
+    static inline const QString POINTS_NUMBER = u"POINTS_NUMBER"_s;
+    static inline const QString MIN_DISTANCE_GLOBAL = u"MIN_DISTANCE_GLOBAL"_s;
+    static inline const QString MIN_DISTANCE = u"MIN_DISTANCE"_s;
+    static inline const QString MAX_TRIES_PER_POINT = u"MAX_TRIES_PER_POINT"_s;
+    static inline const QString SEED = u"SEED"_s;
+    static inline const QString INCLUDE_LINE_ATTRIBUTES = u"INCLUDE_LINE_ATTRIBUTES"_s;
+    static inline const QString OUTPUT = u"OUTPUT"_s;
+    static inline const QString OUTPUT_POINTS = u"OUTPUT_POINTS"_s;
+    static inline const QString POINTS_MISSED = u"POINTS_MISSED"_s;
+    static inline const QString LINES_WITH_MISSED_POINTS = u"LINES_WITH_MISSED_POINTS"_s;
+    static inline const QString FEATURES_WITH_EMPTY_OR_NO_GEOMETRY = u"FEATURES_WITH_EMPTY_OR_NO_GEOMETRY"_s;
+
     int mNumPoints = 0;
     bool mDynamicNumPoints = false;
     QgsProperty mNumPointsProperty;

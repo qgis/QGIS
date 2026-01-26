@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgsfeaturesource.h"
-#include "qgsfeaturerequest.h"
+
 #include "qgsfeatureiterator.h"
-#include "qgsmemoryproviderutils.h"
+#include "qgsfeaturerequest.h"
 #include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
+#include "qgsmemoryproviderutils.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
 Qgis::FeatureAvailability QgsFeatureSource::hasFeatures() const
 {

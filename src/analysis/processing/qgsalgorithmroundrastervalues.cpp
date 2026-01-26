@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmroundrastervalues.h"
+
 #include "qgsrasterfilewriter.h"
 
 ///@cond PRIVATE
 
 QString QgsRoundRasterValuesAlgorithm::name() const
 {
-  return QStringLiteral( "roundrastervalues" );
+  return u"roundrastervalues"_s;
 }
 
 QString QgsRoundRasterValuesAlgorithm::displayName() const
@@ -42,36 +43,49 @@ QString QgsRoundRasterValuesAlgorithm::group() const
 
 QString QgsRoundRasterValuesAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 void QgsRoundRasterValuesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QStringLiteral( "Input raster" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "ROUNDING_DIRECTION" ), QObject::tr( "Rounding direction" ), QStringList() << QObject::tr( "Round up" ) << QObject::tr( "Round to nearest" ) << QObject::tr( "Round down" ), false, 1 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "DECIMAL_PLACES" ), QObject::tr( "Number of decimals places" ), Qgis::ProcessingNumberParameterType::Integer, 2 ) );
-  std::unique_ptr< QgsProcessingParameterDefinition > baseParameter = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "BASE_N" ), QObject::tr( "Base n for rounding to multiples of n" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 1 );
+  addParameter( new QgsProcessingParameterRasterLayer( u"INPUT"_s, u"Input raster"_s ) );
+  addParameter( new QgsProcessingParameterBand( u"BAND"_s, QObject::tr( "Band number" ), 1, u"INPUT"_s ) );
+  addParameter( new QgsProcessingParameterEnum( u"ROUNDING_DIRECTION"_s, QObject::tr( "Rounding direction" ), QStringList() << QObject::tr( "Round up" ) << QObject::tr( "Round to nearest" ) << QObject::tr( "Round down" ), false, 1 ) );
+  addParameter( new QgsProcessingParameterNumber( u"DECIMAL_PLACES"_s, QObject::tr( "Number of decimals places" ), Qgis::ProcessingNumberParameterType::Integer, 2 ) );
+  std::unique_ptr<QgsProcessingParameterDefinition> baseParameter = std::make_unique<QgsProcessingParameterNumber>( u"BASE_N"_s, QObject::tr( "Base n for rounding to multiples of n" ), Qgis::ProcessingNumberParameterType::Integer, 10, true, 1 );
   baseParameter->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( baseParameter.release() );
-  std::unique_ptr< QgsProcessingParameterString > createOptsParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( {{QStringLiteral( "widget_wrapper" ), QVariantMap( {{QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) }} ) }} ) );
-  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+
+  // backwards compatibility parameter
+  // TODO QGIS 5: remove parameter and related logic
+  auto createOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATE_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Hidden );
   addParameter( createOptsParam.release() );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output raster" ) ) );
+  auto creationOptsParam = std::make_unique<QgsProcessingParameterString>( u"CREATION_OPTIONS"_s, QObject::tr( "Creation options" ), QVariant(), false, true );
+  creationOptsParam->setMetadata( QVariantMap( { { u"widget_wrapper"_s, QVariantMap( { { u"widget_type"_s, u"rasteroptions"_s } } ) } } ) );
+  creationOptsParam->setFlags( creationOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
+  addParameter( creationOptsParam.release() );
+
+  addParameter( new QgsProcessingParameterRasterDestination( u"OUTPUT"_s, QObject::tr( "Output raster" ) ) );
 }
 
 QString QgsRoundRasterValuesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm rounds the cell values of a raster dataset according to the specified number of decimals.\n "
+  return QObject::tr( "This algorithm rounds the cell values of a raster dataset to the specified number of decimals.\n "
                       "Alternatively, a negative number of decimal places may be used to round values to powers of a base n "
                       "(specified in the advanced parameter Base n). For example, with a Base value n of 10 and Decimal places of -1 "
                       "the algorithm rounds cell values to multiples of 10, -2 rounds to multiples of 100, and so on. Arbitrary base values "
                       "may be chosen, the algorithm applies the same multiplicative principle. Rounding cell values to multiples of "
                       "a base n may be used to generalize raster layers.\n"
                       "The algorithm preserves the data type of the input raster. Therefore byte/integer rasters can only be rounded "
-                      "to multiples of a base n, otherwise a warning is raised and the raster gets copied as byte/integer raster" );
+                      "to multiples of a base n, otherwise a warning is raised and the raster gets copied as byte/integer raster." );
+}
+
+QString QgsRoundRasterValuesAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Rounds the cell values of a raster dataset to a specified number of decimals." );
 }
 
 QgsRoundRasterValuesAlgorithm *QgsRoundRasterValuesAlgorithm::createInstance() const
@@ -82,20 +96,20 @@ QgsRoundRasterValuesAlgorithm *QgsRoundRasterValuesAlgorithm::createInstance() c
 bool QgsRoundRasterValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
-  QgsRasterLayer *inputRaster = parameterAsRasterLayer( parameters, QStringLiteral( "INPUT" ), context );
-  mDecimalPrecision = parameterAsInt( parameters, QStringLiteral( "DECIMAL_PLACES" ), context );
-  mBaseN = parameterAsInt( parameters, QStringLiteral( "BASE_N" ), context );
+  QgsRasterLayer *inputRaster = parameterAsRasterLayer( parameters, u"INPUT"_s, context );
+  mDecimalPrecision = parameterAsInt( parameters, u"DECIMAL_PLACES"_s, context );
+  mBaseN = parameterAsInt( parameters, u"BASE_N"_s, context );
   mMultipleOfBaseN = pow( mBaseN, abs( mDecimalPrecision ) );
   mScaleFactor = std::pow( 10.0, mDecimalPrecision );
 
   if ( !inputRaster )
-    throw QgsProcessingException( invalidRasterError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidRasterError( parameters, u"INPUT"_s ) );
 
-  mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
+  mBand = parameterAsInt( parameters, u"BAND"_s, context );
   if ( mBand < 1 || mBand > inputRaster->bandCount() )
     throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( inputRaster->bandCount() ) );
 
-  mRoundingDirection = parameterAsEnum( parameters, QStringLiteral( "ROUNDING_DIRECTION" ), context );
+  mRoundingDirection = parameterAsEnum( parameters, u"ROUNDING_DIRECTION"_s, context );
 
   mInterface.reset( inputRaster->dataProvider()->clone() );
   mDataType = mInterface->dataType( mBand );
@@ -129,18 +143,22 @@ bool QgsRoundRasterValuesAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   //prepare output dataset
-  const QString createOptions = parameterAsString( parameters, QStringLiteral( "CREATE_OPTIONS" ), context ).trimmed();
-  const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QFileInfo fi( outputFile );
-  const QString outputFormat = QgsRasterFileWriter::driverForExtension( fi.suffix() );
-  std::unique_ptr< QgsRasterFileWriter > writer = std::make_unique< QgsRasterFileWriter >( outputFile );
-  writer->setOutputProviderKey( QStringLiteral( "gdal" ) );
-  if ( !createOptions.isEmpty() )
+  QString creationOptions = parameterAsString( parameters, u"CREATION_OPTIONS"_s, context ).trimmed();
+  // handle backwards compatibility parameter CREATE_OPTIONS
+  const QString optionsString = parameterAsString( parameters, u"CREATE_OPTIONS"_s, context );
+  if ( !optionsString.isEmpty() )
+    creationOptions = optionsString;
+
+  const QString outputFile = parameterAsOutputLayer( parameters, u"OUTPUT"_s, context );
+  const QString outputFormat = parameterAsOutputRasterFormat( parameters, u"OUTPUT"_s, context );
+  auto writer = std::make_unique<QgsRasterFileWriter>( outputFile );
+  writer->setOutputProviderKey( u"gdal"_s );
+  if ( !creationOptions.isEmpty() )
   {
-    writer->setCreateOptions( createOptions.split( '|' ) );
+    writer->setCreationOptions( creationOptions.split( '|' ) );
   }
   writer->setOutputFormat( outputFormat );
-  std::unique_ptr<QgsRasterDataProvider > provider( writer->createOneBandRaster( mInterface->dataType( mBand ), mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider> provider( writer->createOneBandRaster( mInterface->dataType( mBand ), mNbCellsXProvider, mNbCellsYProvider, mExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
@@ -152,11 +170,8 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
   destinationRasterProvider->setEditable( true );
   destinationRasterProvider->setNoDataValue( 1, mInputNoDataValue );
 
-  const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
-  const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
-  const int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * mLayerWidth / maxWidth ) );
-  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * mLayerHeight / maxHeight ) );
-  const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
+  const bool hasReportsDuringClose = provider->hasReportsDuringClose();
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
 
   QgsRasterIterator iter( mInterface.get() );
   iter.startRasterRead( mBand, mLayerWidth, mLayerHeight, mExtent );
@@ -164,16 +179,19 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  std::unique_ptr< QgsRasterBlock > analysisRasterBlock;
+  std::unique_ptr<QgsRasterBlock> analysisRasterBlock;
   while ( iter.readNextRasterPart( mBand, iterCols, iterRows, analysisRasterBlock, iterLeft, iterTop ) )
   {
     if ( feedback )
-      feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
+      feedback->setProgress( maxProgressDuringBlockWriting * iter.progress( mBand ) );
     if ( mIsInteger && mDecimalPrecision > -1 )
     {
       //nothing to round, just write raster block
       analysisRasterBlock->setNoDataValue( mInputNoDataValue );
-      destinationRasterProvider->writeBlock( analysisRasterBlock.get(), mBand, iterLeft, iterTop );
+      if ( !destinationRasterProvider->writeBlock( analysisRasterBlock.get(), mBand, iterLeft, iterTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+      }
     }
     else
     {
@@ -217,20 +235,34 @@ QVariantMap QgsRoundRasterValuesAlgorithm::processAlgorithm( const QVariantMap &
             else
             {
               const double m = ( val < 0.0 ) ? -1.0 : 1.0;
-              roundedVal = roundDown( val,  m );
+              roundedVal = roundDown( val, m );
             }
             //integer values get automatically cast to double when reading and back to int when writing
             analysisRasterBlock->setValue( row, column, roundedVal );
           }
         }
       }
-      destinationRasterProvider->writeBlock( analysisRasterBlock.get(), mBand, iterLeft, iterTop );
+      if ( !destinationRasterProvider->writeBlock( analysisRasterBlock.get(), mBand, iterLeft, iterTop ) )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not write raster block: %1" ).arg( destinationRasterProvider->error().summary() ) );
+      }
     }
   }
   destinationRasterProvider->setEditable( false );
 
+  if ( feedback && hasReportsDuringClose )
+  {
+    std::unique_ptr<QgsFeedback> scaledFeedback( QgsFeedback::createScaledFeedback( feedback, maxProgressDuringBlockWriting, 100.0 ) );
+    if ( !provider->closeWithProgress( scaledFeedback.get() ) )
+    {
+      if ( feedback->isCanceled() )
+        return {};
+      throw QgsProcessingException( QObject::tr( "Could not write raster dataset" ) );
+    }
+  }
+
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), outputFile );
+  outputs.insert( u"OUTPUT"_s, outputFile );
   return outputs;
 }
 

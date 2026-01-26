@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsplitlineantimeridian.h"
-#include "qgscurve.h"
-#include "qgslinestring.h"
+
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
+#include "qgscurve.h"
 #include "qgsgeometrycollection.h"
+#include "qgslinestring.h"
 
 ///@cond PRIVATE
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::name() const
 {
-  return QStringLiteral( "antimeridiansplit" );
+  return u"antimeridiansplit"_s;
 }
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::displayName() const
@@ -46,7 +47,7 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::group() const
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSplitGeometryAtAntimeridianAlgorithm::shortDescription() const
@@ -67,9 +68,14 @@ QString QgsSplitGeometryAtAntimeridianAlgorithm::shortHelpString() const
                       "created at the antimeridian." );
 }
 
+Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitGeometryAtAntimeridianAlgorithm::documentationFlags() const
+{
+  return Qgis::ProcessingAlgorithmDocumentationFlag::RespectsEllipsoid;
+}
+
 QList<int> QgsSplitGeometryAtAntimeridianAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
 }
 
 Qgis::ProcessingSourceType QgsSplitGeometryAtAntimeridianAlgorithm::outputLayerType() const
@@ -121,6 +127,3 @@ QgsFeatureList QgsSplitGeometryAtAntimeridianAlgorithm::processFeature( const Qg
 
 
 ///@endcond
-
-
-

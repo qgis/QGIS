@@ -16,12 +16,15 @@
  ***************************************************************************/
 
 #include "qgsnewauxiliaryfielddialog.h"
+
+#include "qgsapplication.h"
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
-#include "qgsapplication.h"
 #include "qgsvariantutils.h"
 
 #include <QMessageBox>
+
+#include "moc_qgsnewauxiliaryfielddialog.cpp"
 
 QgsNewAuxiliaryFieldDialog::QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinition &def, QgsVectorLayer *layer, bool nameOnly, QWidget *parent )
   : QDialog( parent )
@@ -51,7 +54,7 @@ void QgsNewAuxiliaryFieldDialog::accept()
 
   if ( !mNameOnly )
   {
-    def.setDataType( static_cast< QgsPropertyDefinition::DataType >( mType->currentData().toInt() ) );
+    def.setDataType( static_cast<QgsPropertyDefinition::DataType>( mType->currentData().toInt() ) );
 
     def.setOrigin( "user" );
     def.setName( "custom" );

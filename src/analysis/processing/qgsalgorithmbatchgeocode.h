@@ -18,8 +18,8 @@
 #ifndef QGSALGORITHMBATCHGEOCODE_H
 #define QGSALGORITHMBATCHGEOCODE_H
 
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 
 class QgsGeocoderInterface;
@@ -38,6 +38,7 @@ class QgsGeocoderInterface;
  *
  *      def geocodeString(self, string, context, feedback):
  *         # calculate and return results...
+ *         pass
  *
  *   my_geocoder = MyGeocoder()
  *
@@ -67,9 +68,7 @@ class QgsGeocoderInterface;
  */
 class ANALYSIS_EXPORT QgsBatchGeocodeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     /**
      * Constructor for QgsBatchGeocodeAlgorithm.
      *
@@ -89,7 +88,7 @@ class ANALYSIS_EXPORT QgsBatchGeocodeAlgorithm : public QgsProcessingFeatureBase
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
     QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
@@ -101,10 +100,7 @@ class ANALYSIS_EXPORT QgsBatchGeocodeAlgorithm : public QgsProcessingFeatureBase
     QgsStringMap mInPlaceFieldMap;
     mutable QgsCoordinateReferenceSystem mOutputCrs;
     mutable QStringList mAdditionalFields;
-
 };
 
 
 #endif // QGSALGORITHMBATCHGEOCODE_H
-
-

@@ -27,11 +27,7 @@ include_directories(SYSTEM
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_CPP(QGIS_QUICK_APP_MOC_SRCS ${QGIS_QUICK_APP_MOC_HDRS})
-else()
-  QT5_WRAP_CPP(QGIS_QUICK_APP_MOC_SRCS ${QGIS_QUICK_APP_MOC_HDRS})
-endif()
+qt_wrap_cpp(QGIS_QUICK_APP_MOC_SRCS ${QGIS_QUICK_APP_MOC_HDRS})
 
 set(QGIS_QUICK_APP_RCCS qml.qrc)
 set(QGIS_QUICK_APP_NAME qgis_quickapp)
@@ -41,8 +37,9 @@ add_executable(${QGIS_QUICK_APP_NAME}
     ${QGIS_QUICK_APP_SRCS}
     ${QGIS_QUICK_APP_MOC_SRCS}
 )
-
-target_compile_features(${QGIS_QUICK_APP_NAME} PRIVATE cxx_std_17)
+if (QGISPOSTFIX)
+  set_target_properties(qgis_quickapp PROPERTIES RUNTIME_OUTPUT_NAME qgis_quickapp${QGISPOSTFIX})
+endif()
 
 target_link_libraries(${QGIS_QUICK_APP_NAME}
     ${QT_VERSION_BASE}::Gui

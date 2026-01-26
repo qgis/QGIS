@@ -15,8 +15,9 @@ class QgsQuadrilateral
 %Docstring(signature="appended")
 Quadrilateral geometry type.
 
-A quadrilateral is a polygon with four edges (or sides) and four vertices or corners.
-This class allows the creation of simple quadrilateral (which does not self-intersect).
+A quadrilateral is a polygon with four edges (or sides) and four
+vertices or corners. This class allows the creation of simple
+quadrilateral (which does not self-intersect).
 
 .. versionadded:: 3.6
 %End
@@ -64,13 +65,12 @@ Construct a QgsQuadrilateral from four :py:class:`QgsPointXY`.
 
     static QgsQuadrilateral rectangleFrom3Points( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, ConstructionOption mode ) /HoldGIL/;
 %Docstring
-Construct a QgsQuadrilateral as a Rectangle from 3 points.
-In the case where one of the points is of type PointZ. The other points
-will also be of type Z, even if they are of type Point. In addition,
-the z used will be the one of the first point with a Z.
-This ensures consistency in point types and the ability to export to a
-Polygon or LineString.
-M is taken from point ``p1``.
+Construct a QgsQuadrilateral as a Rectangle from 3 points. In the case
+where one of the points is of type PointZ. The other points will also be
+of type Z, even if they are of type Point. In addition, the z used will
+be the one of the first point with a Z. This ensures consistency in
+point types and the ability to export to a Polygon or LineString. M is
+taken from point ``p1``.
 
 :param p1: first point
 :param p2: second point
@@ -83,8 +83,7 @@ M is taken from point ``p1``.
     static QgsQuadrilateral rectangleFromExtent( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a rectangle from an extent, defined by
-two opposite corner points.
-Z and M are taken from point ``p1``.
+two opposite corner points. Z and M are taken from point ``p1``.
 QgsQuadrilateral will have the same dimension as ``p1`` dimension.
 
 :param p1: first point
@@ -94,9 +93,9 @@ QgsQuadrilateral will have the same dimension as ``p1`` dimension.
 
     static QgsQuadrilateral squareFromDiagonal( const QgsPoint &p1, const QgsPoint &p2 ) /HoldGIL/;
 %Docstring
-Construct a QgsQuadrilateral as a square from a diagonal.
-Z and M are taken from point ``p1``.
-QgsQuadrilateral will have the same dimension as ``p1`` dimension.
+Construct a QgsQuadrilateral as a square from a diagonal. Z and M are
+taken from point ``p1``. QgsQuadrilateral will have the same dimension
+as ``p1`` dimension.
 
 :param p1: first point
 :param p2: second point
@@ -105,8 +104,7 @@ QgsQuadrilateral will have the same dimension as ``p1`` dimension.
     static QgsQuadrilateral rectangleFromCenterPoint( const QgsPoint &center, const QgsPoint &point ) /HoldGIL/;
 %Docstring
 Construct a QgsQuadrilateral as a rectangle from center point ``center``
-and another point ``point``.
-Z and M are taken from point ``p1``.
+and another point ``point``. Z and M are taken from point ``p1``.
 QgsQuadrilateral will have the same dimension as ``center`` dimension.
 
 :param center: center point
@@ -115,7 +113,8 @@ QgsQuadrilateral will have the same dimension as ``center`` dimension.
 
     static QgsQuadrilateral fromRectangle( const QgsRectangle &rectangle ) /HoldGIL/;
 %Docstring
-Construct a QgsQuadrilateral as a rectangle from a :py:class:`QgsRectangle`.
+Construct a QgsQuadrilateral as a rectangle from a
+:py:class:`QgsRectangle`.
 
 :param rectangle: rectangle
 %End
@@ -123,7 +122,8 @@ Construct a QgsQuadrilateral as a rectangle from a :py:class:`QgsRectangle`.
 
     bool equals( const QgsQuadrilateral &other, double epsilon = 4 * DBL_EPSILON ) const /HoldGIL/;
 %Docstring
-Compares two QgsQuadrilateral, allowing specification of the maximum allowable difference between points.
+Compares two QgsQuadrilateral, allowing specification of the maximum
+allowable difference between points.
 
 :param other: the QgsQuadrilateral to compare
 :param epsilon: the maximum difference allowed / tolerance
@@ -133,9 +133,9 @@ Compares two QgsQuadrilateral, allowing specification of the maximum allowable d
 
     bool isValid() const /HoldGIL/;
 %Docstring
-Convenient method to determine if a QgsQuadrilateral is valid.
-A QgsQuadrilateral must be simple (not self-intersecting) and
-cannot have collinear points.
+Convenient method to determine if a QgsQuadrilateral is valid. A
+QgsQuadrilateral must be simple (not self-intersecting) and cannot have
+collinear points.
 %End
 
     enum Point /BaseType=IntEnum/
@@ -148,16 +148,15 @@ cannot have collinear points.
 
     bool setPoint( const QgsPoint &newPoint, Point index ) /HoldGIL/;
 %Docstring
-Sets the point ``newPoint`` at the ``index``.
-Returns ``False`` if the QgsQuadrilateral is not valid.
+Sets the point ``newPoint`` at the ``index``. Returns ``False`` if the
+QgsQuadrilateral is not valid.
 
 .. seealso:: Point
 %End
 
     bool setPoints( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 ) /HoldGIL/;
 %Docstring
-Set all points
-Returns ``False`` if the QgsQuadrilateral is not valid:
+Set all points Returns ``False`` if the QgsQuadrilateral is not valid:
 
 - The points do not have the same type
 - The quadrilateral would have auto intersections
@@ -172,28 +171,32 @@ Returns a list including the vertices of the quadrilateral.
 
     QgsPolygon *toPolygon( bool force2D = false ) const /Factory/;
 %Docstring
-Returns the quadrilateral as a new polygon. Ownership is transferred to the caller.
+Returns the quadrilateral as a new polygon. Ownership is transferred to
+the caller.
 %End
 
     QgsLineString *toLineString( bool force2D = false ) const /Factory/;
 %Docstring
-Returns the quadrilateral as a new linestring. Ownership is transferred to the caller.
+Returns the quadrilateral as a new linestring. Ownership is transferred
+to the caller.
 %End
 
     QString toString( int pointPrecision = 17 ) const;
 %Docstring
-Returns a string representation of the quadrilateral.
-Members will be truncated to the specified precision.
+Returns a string representation of the quadrilateral. Members will be
+truncated to the specified precision.
 %End
 
     double area() const /HoldGIL/;
 %Docstring
-Returns the area of the quadrilateral, or 0 if the quadrilateral is empty.
+Returns the area of the quadrilateral, or 0 if the quadrilateral is
+empty.
 %End
 
     double perimeter() const /HoldGIL/;
 %Docstring
-Returns the perimeter of the quadrilateral, or 0 if the quadrilateral is empty.
+Returns the perimeter of the quadrilateral, or 0 if the quadrilateral is
+empty.
 %End
     SIP_PYOBJECT __repr__();
 %MethodCode

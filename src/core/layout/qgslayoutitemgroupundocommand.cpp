@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgslayoutitemgroupundocommand.h"
-#include "qgslayoutitemgroup.h"
+
 #include "qgslayout.h"
+#include "qgslayoutitemgroup.h"
 #include "qgsproject.h"
+
+#include "moc_qgslayoutitemgroupundocommand.cpp"
 
 ///@cond PRIVATE
 QgsLayoutItemGroupUndoCommand::QgsLayoutItemGroupUndoCommand( State s, QgsLayoutItemGroup *group, QgsLayout *layout, const QString &text, QUndoCommand *parent )

@@ -18,9 +18,10 @@
 #ifndef QGSPREVIEWEFFECT_H
 #define QGSPREVIEWEFFECT_H
 
-#include <QGraphicsEffect>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QGraphicsEffect>
 
 /**
  * \ingroup gui
@@ -28,7 +29,7 @@
  * color blindness modes.
  */
 
-class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
+class GUI_EXPORT QgsPreviewEffect : public QGraphicsEffect
 {
     Q_OBJECT
 
@@ -62,8 +63,7 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
     void draw( QPainter *painter ) override;
 
   private:
-
-    PreviewMode mMode;
+    PreviewMode mMode = PreviewGrayscale;
 
     QRgb simulateColorBlindness( QRgb &originalColor, PreviewMode type );
     void simulateGrayscale( int &r, int &g, int &b, int &red, int &green, int &blue );

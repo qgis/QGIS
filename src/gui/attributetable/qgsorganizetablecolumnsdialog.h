@@ -17,13 +17,13 @@
 #ifndef QGSORGANIZEFILTERTABLESDIALOG_H_
 #define QGSORGANIZEFILTERTABLESDIALOG_H_
 
-#include <QDialog>
-
 #include "ui_qgsorganizetablecolumnsdialog.h"
 
-#include "qgsattributetableconfig.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsattributetableconfig.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 
@@ -37,7 +37,6 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      * \param vl The concerned vector layer
@@ -83,7 +82,6 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
 
   private:
     QgsAttributeTableConfig mConfig;
-
 };
 
 #endif

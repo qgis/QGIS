@@ -20,16 +20,16 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+#include "qgspointcloudattribute.h"
+
+#include <QByteArray>
 #include <QPair>
 #include <QString>
 #include <QVector>
-#include <QByteArray>
-
-#include "qgspointcloudattribute.h"
 
 /**
  * \ingroup core
- * \brief Base class for storing raw data from point cloud nodes
+ * \brief Base class for storing raw data from point cloud nodes.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *

@@ -10,15 +10,17 @@
 
 %ModuleHeaderCode
 // For ConvertToSubClassCode.
-#include <qgsmapcanvasannotationitem.h>
+#include "qgsmapcanvasannotationitem.h"
+
 %End
 
 
 
-class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
+class QgsMapCanvasAnnotationItem : QObject, QgsMapCanvasItem
 {
 %Docstring(signature="appended")
-An interactive map canvas item which displays a :py:class:`QgsAnnotation`.
+An interactive map canvas item which displays a
+:py:class:`QgsAnnotation`.
 %End
 
 %TypeHeaderCode
@@ -34,7 +36,6 @@ An interactive map canvas item which displays a :py:class:`QgsAnnotation`.
       sipType = nullptr;
 %End
   public:
-
     enum MouseMoveAction
     {
       NoAction,
@@ -72,7 +73,8 @@ Returns the item's annotation.
 
     MouseMoveAction moveActionForPosition( QPointF pos ) const;
 %Docstring
-Returns the mouse move behavior for a given position in scene coordinates
+Returns the mouse move behavior for a given position in scene
+coordinates
 %End
 
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;

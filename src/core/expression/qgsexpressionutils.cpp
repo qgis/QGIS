@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsexpressionutils.h"
-#include "qgsvectorlayer.h"
+
+#include <memory>
+
 #include "qgscolorrampimpl.h"
-#include "qgsproviderregistry.h"
-#include "qgsvariantutils.h"
 #include "qgsproject.h"
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
 
@@ -102,9 +105,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
     const QList< QgsMapLayerStore * > stores = context->layerStores();
     for ( QgsMapLayerStore *store : stores )
     {
-
-      QPointer< QgsMapLayerStore > storePointer( store );
-      auto findLayerInStoreFunction = [ storePointer, &ml, identifier ]
+      auto findLayerInStoreFunction = [ storePointer = QPointer< QgsMapLayerStore >( store ), &ml, identifier ]
       {
         if ( QgsMapLayerStore *store = storePointer.data() )
         {
@@ -124,7 +125,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
       if ( QThread::currentThread() == store->thread() )
         findLayerInStoreFunction();
       else
-        QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+        QMetaObject::invokeMethod( store, std::move( findLayerInStoreFunction ), Qt::BlockingQueuedConnection );
       if ( ml )
         return ml;
     }
@@ -133,7 +134,7 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   // last resort - QgsProject instance. This is bad, we need to remove this!
   auto getMapLayerFromProjectInstance = [ &ml, identifier ]
   {
-    QgsProject *project = QgsProject::instance();
+    QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
     // No pointer yet, maybe it's a layer id?
     ml = project->mapLayer( identifier );
@@ -147,10 +148,57 @@ QgsMapLayer *QgsExpressionUtils::getMapLayerPrivate( const QVariant &value, cons
   if ( QThread::currentThread() == qApp->thread() )
     getMapLayerFromProjectInstance();
   else
-    QMetaObject::invokeMethod( qApp, getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
+    QMetaObject::invokeMethod( qApp, std::move( getMapLayerFromProjectInstance ), Qt::BlockingQueuedConnection );
 #endif
 
   return ml;
+}
+
+QgsCoordinateReferenceSystem QgsExpressionUtils::getCrsValue( const QVariant &value, QgsExpression *parent )
+{
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+
+  const bool isCrs = value.userType() == qMetaTypeId<QgsCoordinateReferenceSystem>();
+
+  if ( !isCrs && value.toString().isEmpty() )
+  {
+    return QgsCoordinateReferenceSystem();
+  }
+
+  QgsCoordinateReferenceSystem crs = isCrs ? value.value<QgsCoordinateReferenceSystem>() : QgsCoordinateReferenceSystem( value.toString() );
+  if ( !crs.isValid() )
+  {
+    parent->setEvalErrorString( isCrs ? QObject::tr( "Input CRS is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to CRS" ).arg( value.toString() ) );
+  }
+
+  return crs;
+}
+
+QTimeZone QgsExpressionUtils::getTimeZoneValue( const QVariant &value, QgsExpression *parent )
+{
+  if ( QgsVariantUtils::isNull( value ) )
+  {
+    return QTimeZone();
+  }
+
+  QTimeZone tz;
+  bool isTz = false;
+  if ( value.userType() == qMetaTypeId< QTimeZone>() )
+  {
+    isTz = true;
+    tz = value.value<QTimeZone>();
+  }
+
+  if ( !tz.isValid() )
+  {
+    parent->setEvalErrorString( isTz ? QObject::tr( "Input time zone is invalid" )
+                                : QObject::tr( "Cannot convert '%1' to a time zone" ).arg( value.toString() ) );
+  }
+  return tz;
 }
 
 void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const QgsExpressionContext *context, QgsExpression *expression, const std::function<void ( QgsMapLayer * )> &function, bool &foundLayer )
@@ -174,8 +222,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
   }
   if ( ml )
   {
-    QPointer< QgsMapLayer > layerPointer( ml );
-    auto runFunction = [ layerPointer, &function, &foundLayer ]
+    auto runFunction = [ layerPointer = QPointer< QgsMapLayer >( ml ), &function, &foundLayer ]
     {
       if ( QgsMapLayer *layer = layerPointer.data() )
       {
@@ -190,7 +237,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     if ( QThread::currentThread() == ml->thread() )
       runFunction();
     else
-      QMetaObject::invokeMethod( ml, runFunction, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( ml, std::move( runFunction ), Qt::BlockingQueuedConnection );
 
     return;
   }
@@ -213,10 +260,10 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
 
     // Make sure we only deal with the project on the thread where it lives.
     // Anything else risks a crash.
-    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+    if ( QThread::currentThread() == QgsProject::instance()->thread() ) // skip-keyword-check
       runFunction();
     else
-      QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( QgsProject::instance(), runFunction, Qt::BlockingQueuedConnection ); // skip-keyword-check
   }
   else
   {
@@ -231,7 +278,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     for ( QgsMapLayerStore *store : stores )
     {
       QPointer< QgsMapLayerStore > storePointer( store );
-      auto findLayerInStoreFunction = [ storePointer, identifier, function, &foundLayer ]
+      auto findLayerInStoreFunction = [ storePointer = std::move( storePointer ), identifier, function, &foundLayer ]
       {
         QgsMapLayer *ml = nullptr;
         if ( QgsMapLayerStore *store = storePointer.data() )
@@ -257,7 +304,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
       if ( QThread::currentThread() == store->thread() )
         findLayerInStoreFunction();
       else
-        QMetaObject::invokeMethod( store, findLayerInStoreFunction, Qt::BlockingQueuedConnection );
+        QMetaObject::invokeMethod( store, std::move( findLayerInStoreFunction ), Qt::BlockingQueuedConnection );
 
       if ( foundLayer )
         return;
@@ -266,7 +313,7 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
     // last resort - QgsProject instance. This is bad, we need to remove this!
     auto getMapLayerFromProjectInstance = [ value, identifier, &function, &foundLayer ]
     {
-      QgsProject *project = QgsProject::instance();
+      QgsProject *project = QgsProject::instance(); // skip-keyword-check
 
       // maybe it's a layer id?
       QgsMapLayer *ml = project->mapLayer( identifier );
@@ -284,10 +331,10 @@ void QgsExpressionUtils::executeLambdaForMapLayer( const QVariant &value, const 
       }
     };
 
-    if ( QThread::currentThread() == QgsProject::instance()->thread() )
+    if ( QThread::currentThread() == QgsProject::instance()->thread() ) // skip-keyword-check
       getMapLayerFromProjectInstance();
     else
-      QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection );
+      QMetaObject::invokeMethod( QgsProject::instance(), getMapLayerFromProjectInstance, Qt::BlockingQueuedConnection ); // skip-keyword-check
   }
 #endif
 }
@@ -314,7 +361,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
+      featureSource = std::make_unique<QgsVectorLayerFeatureSource>( vl );
     }
   }, foundLayer );
 
@@ -334,7 +381,7 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
   if ( QgsMapLayer *layer = getMapLayer( value, context, parent ) )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
-    res = parts.value( QStringLiteral( "path" ) ).toString();
+    res = parts.value( u"path"_s ).toString();
   }
   Q_NOWARN_DEPRECATED_POP
 
@@ -350,8 +397,10 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
 
 ///@endcond
 
-std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, QgsFeatureRequest request, QgsExpressionContext context, bool *foundFeatures )
+std::tuple<QMetaType::Type, int> QgsExpressionUtils::determineResultType( const QString &expression, const QgsVectorLayer *layer, const QgsFeatureRequest &r, const QgsExpressionContext &c, bool *foundFeatures )
 {
+  QgsExpressionContext context = c;
+  QgsFeatureRequest request = r;
   QgsExpression exp( expression );
   request.setFlags( ( exp.needsGeometry() ) ?
                     Qgis::FeatureRequestFlag::NoFlags :

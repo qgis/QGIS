@@ -16,24 +16,23 @@
 #define QGSINVERTEDPOLYGONRENDERERWIDGET_H
 
 #include "ui_qgsinvertedpolygonrendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QMenu;
 class QgsInvertedPolygonRenderer;
 
 /**
  * \ingroup gui
- * \brief A widget used represent options of a QgsInvertedPolygonRenderer
- *
+ * \brief A widget for configuring options for a QgsInvertedPolygonRenderer.
  */
 class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererWidget, private Ui::QgsInvertedPolygonRendererWidgetBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied

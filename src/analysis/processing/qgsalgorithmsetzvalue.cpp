@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsetzvalue.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsSetZValueAlgorithm::name() const
 {
-  return QStringLiteral( "setzvalue" );
+  return u"setzvalue"_s;
 }
 
 QString QgsSetZValueAlgorithm::displayName() const
@@ -42,7 +43,7 @@ QString QgsSetZValueAlgorithm::group() const
 
 QString QgsSetZValueAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSetZValueAlgorithm::shortHelpString() const
@@ -52,6 +53,11 @@ QString QgsSetZValueAlgorithm::shortHelpString() const
                       "with the new value. If no Z values exist, the geometry will be "
                       "upgraded to include Z values and the specified value used as "
                       "the initial Z value for all geometries." );
+}
+
+QString QgsSetZValueAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Sets the Z value for geometries in a layer." );
 }
 
 QString QgsSetZValueAlgorithm::outputName() const
@@ -66,7 +72,7 @@ QgsSetZValueAlgorithm *QgsSetZValueAlgorithm::createInstance() const
 
 bool QgsSetZValueAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
@@ -85,19 +91,19 @@ Qgis::WkbType QgsSetZValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 
 void QgsSetZValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto zValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto zValueParam = std::make_unique<QgsProcessingParameterNumber>( u"Z_VALUE"_s, QObject::tr( "Z Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   zValueParam->setIsDynamic( true );
-  zValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Z_VALUE" ), QObject::tr( "Z Value" ), QgsPropertyDefinition::Double ) );
-  zValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  zValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"Z_VALUE"_s, QObject::tr( "Z Value" ), QgsPropertyDefinition::Double ) );
+  zValueParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( zValueParam.release() );
 }
 
 bool QgsSetZValueAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mZValue = parameterAsDouble( parameters, QStringLiteral( "Z_VALUE" ), context );
-  mDynamicZValue = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "Z_VALUE" ) );
+  mZValue = parameterAsDouble( parameters, u"Z_VALUE"_s, context );
+  mDynamicZValue = QgsProcessingParameters::isDynamic( parameters, u"Z_VALUE"_s );
   if ( mDynamicZValue )
-    mZValueProperty = parameters.value( QStringLiteral( "Z_VALUE" ) ).value< QgsProperty >();
+    mZValueProperty = parameters.value( u"Z_VALUE"_s ).value<QgsProperty>();
 
   return true;
 }
@@ -108,7 +114,7 @@ QgsFeatureList QgsSetZValueAlgorithm::processFeature( const QgsFeature &feature,
 
   if ( f.hasGeometry() )
   {
-    std::unique_ptr< QgsAbstractGeometry > newGeometry( f.geometry().constGet()->clone() );
+    std::unique_ptr<QgsAbstractGeometry> newGeometry( f.geometry().constGet()->clone() );
     // addZValue won't alter existing Z values, so drop them first
     if ( QgsWkbTypes::hasZ( newGeometry->wkbType() ) )
       newGeometry->dropZValue();

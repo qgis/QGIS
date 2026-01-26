@@ -73,11 +73,12 @@ class QgsAppScreenShots
     QPixmap takeScreenshot( QWidget *widget = nullptr, GrabMode mode = GrabWidgetAndFrame, QRect crop = QRect(), bool gradient = false );
 
     /**
-     * save screenshot from pixmap
-     * @param pixmap
-     * @param name
-     * @param crop the crop can have only one dimension (empty but not null rect)
-     * @param gradient
+     * Saves a screenshot from \a pixmap.
+     *
+     * \param pixmap
+     * \param name
+     * \param crop the crop can have only one dimension (empty but not null rect)
+     * \param gradient
      */
     void saveScreenshot( QPixmap &pixmap, const QString &name, const QString &folder );
 

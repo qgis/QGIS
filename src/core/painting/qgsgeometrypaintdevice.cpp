@@ -14,12 +14,14 @@
  ***************************************************************************/
 
 #include "qgsgeometrypaintdevice.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
+
 #include "qgsgeos.h"
-#include "qgsmultipolygon.h"
+#include "qgslinestring.h"
 #include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
 #include "qgspainting.h"
+#include "qgspolygon.h"
+#include "qgssymbollayerutils.h"
 
 //
 // QgsGeometryPaintEngine
@@ -67,19 +69,19 @@ void QgsGeometryPaintEngine::updateState( const QPaintEngineState &state )
 void QgsGeometryPaintEngine::drawImage( const QRectF &, const QImage &, const QRectF &, Qt::ImageConversionFlags )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawImage method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawImage method"_s );
 }
 
 void QgsGeometryPaintEngine::drawPixmap( const QRectF &, const QPixmap &, const QRectF & )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawPixmap method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawPixmap method"_s );
 }
 
 void QgsGeometryPaintEngine::drawTiledPixmap( const QRectF &, const QPixmap &, const QPointF & )
 {
   // ignore, we don't need to support raster drawing
-  QgsDebugError( QStringLiteral( "QgsGeometryPaintEngine does not support drawTiledPixmap method" ) );
+  QgsDebugError( u"QgsGeometryPaintEngine does not support drawTiledPixmap method"_s );
 }
 
 template <typename T>
@@ -395,42 +397,6 @@ void QgsGeometryPaintEngine::addStrokedLine( const QgsLineString *line, double p
   }
 }
 
-Qgis::EndCapStyle QgsGeometryPaintEngine::penStyleToCapStyle( Qt::PenCapStyle style )
-{
-  switch ( style )
-  {
-    case Qt::FlatCap:
-      return Qgis::EndCapStyle::Flat;
-    case Qt::SquareCap:
-      return Qgis::EndCapStyle::Square;
-    case Qt::RoundCap:
-      return Qgis::EndCapStyle::Round;
-    case Qt::MPenCapStyle:
-      // undocumented?
-      break;
-  }
-
-  return Qgis::EndCapStyle::Round;
-}
-
-Qgis::JoinStyle QgsGeometryPaintEngine::penStyleToJoinStyle( Qt::PenJoinStyle style )
-{
-  switch ( style )
-  {
-    case Qt::MiterJoin:
-    case Qt::SvgMiterJoin:
-      return Qgis::JoinStyle::Miter;
-    case Qt::BevelJoin:
-      return Qgis::JoinStyle::Bevel;
-    case Qt::RoundJoin:
-      return Qgis::JoinStyle::Round;
-    case Qt::MPenJoinStyle:
-      // undocumented?
-      break;
-  }
-  return Qgis::JoinStyle::Round;
-}
-
 // based on QPainterPath::toSubpathPolygons()
 void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, const QTransform &matrix )
 {
@@ -439,8 +405,8 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
 
   const bool transformIsIdentity = matrix.isIdentity();
 
-  const Qgis::EndCapStyle endCapStyle = penStyleToCapStyle( mPen.capStyle() );
-  const Qgis::JoinStyle joinStyle = penStyleToJoinStyle( mPen.joinStyle() );
+  const Qgis::EndCapStyle endCapStyle = QgsSymbolLayerUtils::penCapStyleToEndCapStyle( mPen.capStyle() );
+  const Qgis::JoinStyle joinStyle = QgsSymbolLayerUtils::penJoinStyleToJoinStyle( mPen.joinStyle() );
   const double penWidth = mPen.widthF() <= 0 ? 1 : mPen.widthF();
   const double miterLimit = mPen.miterLimit();
 
@@ -460,7 +426,7 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
       {
         if ( currentX.size() > 1 )
         {
-          std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
+          auto line = std::make_unique< QgsLineString >( currentX, currentY );
           if ( mUsePathStroker )
           {
             addStrokedLine( line.get(), penWidth, endCapStyle, joinStyle, miterLimit, transformIsIdentity ? nullptr : &matrix );
@@ -547,7 +513,7 @@ void QgsGeometryPaintEngine::addSubpathGeometries( const QPainterPath &path, con
 
   if ( currentX.size() > 1 )
   {
-    std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >( currentX, currentY );
+    auto line = std::make_unique< QgsLineString >( currentX, currentY );
     if ( mUsePathStroker )
     {
       addStrokedLine( line.get(), penWidth, endCapStyle, joinStyle, miterLimit, transformIsIdentity ? nullptr : &matrix );

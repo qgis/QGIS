@@ -14,11 +14,14 @@
  ***************************************************************************/
 
 #include "qgsvaluemapwidgetwrapper.h"
+
+#include "qgsapplication.h"
 #include "qgsvaluemapconfigdlg.h"
 #include "qgsvaluemapfieldformatter.h"
-#include "qgsapplication.h"
 
 #include <QSettings>
+
+#include "moc_qgsvaluemapwidgetwrapper.cpp"
 
 QgsValueMapWidgetWrapper::QgsValueMapWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -66,8 +69,7 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
   {
     QgsValueMapConfigDlg::populateComboBox( mComboBox, config(), false );
     mComboBox->view()->setVerticalScrollBarPolicy( Qt::ScrollBarAsNeeded );
-    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 

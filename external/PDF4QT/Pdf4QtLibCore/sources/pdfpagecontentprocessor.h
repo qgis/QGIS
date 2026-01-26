@@ -1,19 +1,24 @@
-//    Copyright (C) 2019-2021 Jakub Melka
+// MIT License
 //
-//    This file is part of PDF4QT.
+// Copyright (c) 2018-2025 Jakub Melka and Contributors
 //
-//    PDF4QT is free software: you can redistribute it and/or modify
-//    it under the terms of the GNU Lesser General Public License as published by
-//    the Free Software Foundation, either version 3 of the License, or
-//    with the written consent of the copyright owner, any later version.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
 //
-//    PDF4QT is distributed in the hope that it will be useful,
-//    but WITHOUT ANY WARRANTY; without even the implied warranty of
-//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//    GNU Lesser General Public License for more details.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
-//    You should have received a copy of the GNU Lesser General Public License
-//    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 #ifndef PDFPAGECONTENTPROCESSOR_H
 #define PDFPAGECONTENTPROCESSOR_H
@@ -48,6 +53,7 @@ class PDFOptionalContentActivity;
 
 static constexpr const char* PDF_RESOURCE_EXTGSTATE = "ExtGState";
 
+
 class PDFLineDashPattern
 {
 public:
@@ -77,6 +83,253 @@ public:
 private:
     std::vector<PDFReal> m_dashArray;
     PDFReal m_dashOffset = 0.0;
+};
+
+struct PDFOverprintMode
+{
+    bool overprintStroking = false;
+    bool overprintFilling = false;
+    int overprintMode = 0;
+
+    inline bool operator==(const PDFOverprintMode& other) const
+    {
+        return std::tie(overprintStroking, overprintFilling, overprintMode) == std::tie(other.overprintStroking, other.overprintFilling, other.overprintMode);
+    }
+    inline bool operator!=(const PDFOverprintMode& other) const
+    {
+        return !(*this == other);
+    }
+};
+
+/// Represents graphic state of the PDF (holding current graphic state parameters).
+/// Please see PDF Reference 1.7, Chapter 4.3 "Graphic State"
+class PDF4QTLIBCORESHARED_EXPORT PDFPageContentProcessorState
+{
+public:
+    explicit PDFPageContentProcessorState();
+    ~PDFPageContentProcessorState();
+
+    PDFPageContentProcessorState(const PDFPageContentProcessorState&) = default;
+    PDFPageContentProcessorState(PDFPageContentProcessorState&&) = default;
+
+    PDFPageContentProcessorState& operator=(PDFPageContentProcessorState&&) = delete;
+    PDFPageContentProcessorState& operator=(const PDFPageContentProcessorState& other);
+
+    enum StateFlag : uint64_t
+    {
+        StateUnchanged                      = 0x0000000000000000,
+        StateCurrentTransformationMatrix    = 0x0000000000000001,
+        StateStrokeColorSpace               = 0x0000000000000002,
+        StateFillColorSpace                 = 0x0000000000000004,
+        StateStrokeColor                    = 0x0000000000000008,
+        StateFillColor                      = 0x0000000000000010,
+        StateLineWidth                      = 0x0000000000000020,
+        StateLineCapStyle                   = 0x0000000000000040,
+        StateLineJoinStyle                  = 0x0000000000000080,
+        StateMitterLimit                    = 0x0000000000000100,
+        StateLineDashPattern                = 0x0000000000000200,
+        StateRenderingIntentName            = 0x0000000000000400,
+        StateFlatness                       = 0x0000000000000800,
+        StateSmoothness                     = 0x0000000000001000,
+        StateTextMatrix                     = 0x0000000000002000,
+        StateTextLineMatrix                 = 0x0000000000004000,
+        StateTextCharacterSpacing           = 0x0000000000008000,
+        StateTextWordSpacing                = 0x0000000000010000,
+        StateTextHorizontalScaling          = 0x0000000000020000,
+        StateTextLeading                    = 0x0000000000040000,
+        StateTextFont                       = 0x0000000000080000,
+        StateTextFontSize                   = 0x0000000000100000,
+        StateTextRenderingMode              = 0x0000000000200000,
+        StateTextRise                       = 0x0000000000400000,
+        StateTextKnockout                   = 0x0000000000800000,
+        StateAlphaStroking                  = 0x0000000001000000,
+        StateAlphaFilling                   = 0x0000000002000000,
+        StateBlendMode                      = 0x0000000004000000,
+        StateRenderingIntent                = 0x0000000008000000,
+        StateOverprint                      = 0x0000000010000000,
+        StateAlphaIsShape                   = 0x0000000020000000,
+        StateStrokeAdjustment               = 0x0000000040000000,
+        StateSoftMask                       = 0x0000000080000000,
+        StateBlackPointCompensation         = 0x0000000100000000,
+        StateBlackGenerationFunction        = 0x0000000200000000,
+        StateUndercolorRemovalFunction      = 0x0000000400000000,
+        StateTransferFunction               = 0x0000000800000000,
+        StateHalftone                       = 0x0000001000000000,
+        StateHalftoneOrigin                 = 0x0000002000000000,
+        StateAll                            = 0xFFFFFFFFFFFFFFFF
+    };
+
+    using StateFlags = PDFFlags<StateFlag>;
+
+    void setState(const PDFPageContentProcessorState& state);
+
+    const QTransform& getCurrentTransformationMatrix() const { return m_currentTransformationMatrix; }
+    void setCurrentTransformationMatrix(const QTransform& currentTransformationMatrix);
+
+    const PDFAbstractColorSpace* getStrokeColorSpace() const { return m_strokeColorSpace.data(); }
+    void setStrokeColorSpace(const QSharedPointer<PDFAbstractColorSpace>& strokeColorSpace);
+
+    const PDFAbstractColorSpace* getFillColorSpace() const { return m_fillColorSpace.data(); }
+    void setFillColorSpace(const QSharedPointer<PDFAbstractColorSpace>& fillColorSpace);
+
+    const QColor& getStrokeColor() const { return m_strokeColor; }
+    const PDFColor& getStrokeColorOriginal() const { return m_strokeColorOriginal; }
+    void setStrokeColor(const QColor& strokeColor, const PDFColor& originalColor);
+
+    const QColor& getFillColor() const { return m_fillColor; }
+    const PDFColor& getFillColorOriginal() const { return m_fillColorOriginal; }
+    void setFillColor(const QColor& fillColor, const PDFColor& originalColor);
+
+    PDFReal getLineWidth() const { return m_lineWidth; }
+    void setLineWidth(PDFReal lineWidth);
+
+    Qt::PenCapStyle getLineCapStyle() const { return m_lineCapStyle; }
+    void setLineCapStyle(Qt::PenCapStyle lineCapStyle);
+
+    Qt::PenJoinStyle getLineJoinStyle() const { return m_lineJoinStyle; }
+    void setLineJoinStyle(Qt::PenJoinStyle lineJoinStyle);
+
+    PDFReal getMitterLimit() const { return m_mitterLimit; }
+    void setMitterLimit(PDFReal mitterLimit);
+
+    const PDFLineDashPattern& getLineDashPattern() const { return m_lineDashPattern; }
+    void setLineDashPattern(PDFLineDashPattern pattern);
+
+    const QByteArray& getRenderingIntentName() const { return m_renderingIntentName; }
+    void setRenderingIntentName(const QByteArray& renderingIntentName);
+
+    PDFReal getFlatness() const { return m_flatness; }
+    void setFlatness(PDFReal flatness);
+
+    PDFReal getSmoothness() const { return m_smoothness; }
+    void setSmoothness(PDFReal smoothness);
+
+    StateFlags getStateFlags() const { return m_stateFlags; }
+    void setStateFlags(StateFlags stateFlags) { m_stateFlags = stateFlags; }
+
+    PDFReal getTextCharacterSpacing() const { return m_textCharacterSpacing; }
+    void setTextCharacterSpacing(PDFReal textCharacterSpacing);
+
+    PDFReal getTextWordSpacing() const { return m_textWordSpacing; }
+    void setTextWordSpacing(PDFReal textWordSpacing);
+
+    PDFReal getTextHorizontalScaling() const { return m_textHorizontalScaling; }
+    void setTextHorizontalScaling(PDFReal textHorizontalScaling);
+
+    PDFReal getTextLeading() const { return m_textLeading; }
+    void setTextLeading(PDFReal textLeading);
+
+    const PDFFontPointer& getTextFont() const { return m_textFont; }
+    void setTextFont(const PDFFontPointer& textFont);
+
+    PDFReal getTextFontSize() const { return m_textFontSize; }
+    void setTextFontSize(PDFReal textFontSize);
+
+    TextRenderingMode getTextRenderingMode() const { return m_textRenderingMode; }
+    void setTextRenderingMode(TextRenderingMode textRenderingMode);
+
+    PDFReal getTextRise() const { return m_textRise; }
+    void setTextRise(PDFReal textRise);
+
+    bool getTextKnockout() const { return m_textKnockout; }
+    void setTextKnockout(bool textKnockout);
+
+    const QTransform& getTextMatrix() const { return m_textMatrix; }
+    void setTextMatrix(const QTransform& textMatrix);
+
+    const QTransform& getTextLineMatrix() const { return m_textLineMatrix; }
+    void setTextLineMatrix(const QTransform& textLineMatrix);
+
+    PDFReal getAlphaStroking() const { return m_alphaStroking; }
+    void setAlphaStroking(PDFReal alpha);
+
+    PDFReal getAlphaFilling() const { return m_alphaFilling; }
+    void setAlphaFilling(PDFReal alpha);
+
+    BlendMode getBlendMode() const { return m_blendMode; }
+    void setBlendMode(BlendMode mode);
+
+    RenderingIntent getRenderingIntent() const { return m_renderingIntent; }
+    void setRenderingIntent(RenderingIntent renderingIntent);
+
+    /// Returns stroke color with alpha channel
+    QColor getStrokeColorWithAlpha() const;
+
+    /// Returns fill color with alpha channel
+    QColor getFillColorWithAlpha() const;
+
+    PDFOverprintMode getOverprintMode() const { return m_overprintMode; }
+    void setOverprintMode(PDFOverprintMode overprintMode);
+
+    bool getAlphaIsShape() const { return m_alphaIsShape; }
+    void setAlphaIsShape(bool alphaIsShape);
+
+    bool getStrokeAdjustment() const;
+    void setStrokeAdjustment(bool strokeAdjustment);
+
+    const PDFDictionary* getSoftMask() const;
+    void setSoftMask(const PDFDictionary* softMask);
+
+    BlackPointCompensationMode getBlackPointCompensationMode() const;
+    void setBlackPointCompensationMode(BlackPointCompensationMode blackPointCompensationMode);
+
+    PDFObject getBlackGenerationFunction() const;
+    void setBlackGenerationFunction(const PDFObject& blackGenerationFunction);
+
+    PDFObject getUndercolorRemovalFunction() const;
+    void setUndercolorRemovalFunction(const PDFObject& undercolorRemovalFunction);
+
+    PDFObject getTransferFunction() const;
+    void setTransferFunction(const PDFObject& transferFunction);
+
+    PDFObject getHalftone() const;
+    void setHalftone(const PDFObject& halftone);
+
+    QPointF getHalftoneOrigin() const;
+    void setHalftoneOrigin(const QPointF& halftoneOrigin);
+
+private:
+    QTransform m_currentTransformationMatrix;
+    PDFColorSpacePointer m_strokeColorSpace;
+    PDFColorSpacePointer m_fillColorSpace;
+    QColor m_strokeColor;
+    PDFColor m_strokeColorOriginal;
+    QColor m_fillColor;
+    PDFColor m_fillColorOriginal;
+    PDFReal m_lineWidth;
+    Qt::PenCapStyle m_lineCapStyle;
+    Qt::PenJoinStyle m_lineJoinStyle;
+    PDFReal m_mitterLimit;
+    PDFLineDashPattern m_lineDashPattern;
+    QByteArray m_renderingIntentName;
+    PDFReal m_flatness;
+    PDFReal m_smoothness;
+    PDFReal m_textCharacterSpacing; // T_c
+    PDFReal m_textWordSpacing;  // T_w
+    PDFReal m_textHorizontalScaling; // T_h, percentage
+    PDFReal m_textLeading; // T_l
+    PDFFontPointer m_textFont; // Text font
+    PDFReal m_textFontSize; // T_fs
+    TextRenderingMode m_textRenderingMode; // Text rendering mode
+    PDFReal m_textRise; // T_rise
+    bool m_textKnockout;
+    QTransform m_textMatrix;
+    QTransform m_textLineMatrix;
+    PDFReal m_alphaStroking;
+    PDFReal m_alphaFilling;
+    BlendMode m_blendMode;
+    RenderingIntent m_renderingIntent;
+    PDFOverprintMode m_overprintMode;
+    bool m_alphaIsShape;
+    bool m_strokeAdjustment;
+    const PDFDictionary* m_softMask;
+    BlackPointCompensationMode m_blackPointCompensationMode;
+    PDFObject m_blackGenerationFunction;
+    PDFObject m_undercolorRemovalFunction;
+    PDFObject m_transferFunction;
+    PDFObject m_halftone;
+    QPointF m_halftoneOrigin;
+    StateFlags m_stateFlags;
 };
 
 /// Process the contents of the page.
@@ -253,6 +506,29 @@ public:
     /// Returns true, if page content processing is being cancelled
     bool isProcessingCancelled() const;
 
+    /// Returns true, if we are in a text processing
+    bool isTextProcessing() const;
+
+
+    /// Converts PDF line cap to Qt's pen cap style. Function always succeeds,
+    /// if invalid \p lineCap occurs, then some valid pen cap style is returned.
+    /// \param lineCap PDF Line cap style (see PDF Reference 1.7, values can be 0, 1, and 2)
+    static Qt::PenCapStyle convertLineCapToPenCapStyle(PDFInteger lineCap);
+
+    /// Converts Qt's pen cap style to PDF's line cap style (defined in the PDF Reference)
+    /// \param penCapStyle Qt's pen cap style to be converted
+    static PDFInteger convertPenCapStyleToLineCap(Qt::PenCapStyle penCapStyle);
+
+    /// Converts PDF line join to Qt's pen join style. Function always succeeds,
+    /// if invalid \p lineJoin occurs, then some valid pen join style is returned.
+    /// \param lineJoin PDF Line join style (see PDF Reference 1.7, values can be 0, 1, and 2)
+    static Qt::PenJoinStyle convertLineJoinToPenJoinStyle(PDFInteger lineJoin);
+
+    /// Converts Qt's pen join style to PDF's line join style (defined in the PDF Reference)
+    /// \param penJoinStyle Qt's pen join style to be converted
+    static PDFInteger convertPenJoinStyleToLineJoin(Qt::PenJoinStyle penJoinStyle);
+
+
 protected:
 
     struct PDFTransparencyGroup
@@ -296,256 +572,20 @@ protected:
         friend class PDFPageContentProcessor;
     };
 
-    struct PDFOverprintMode
-    {
-        bool overprintStroking = false;
-        bool overprintFilling = false;
-        int overprintMode = 0;
-
-        inline bool operator==(const PDFOverprintMode& other) const
-        {
-            return std::tie(overprintStroking, overprintFilling, overprintMode) == std::tie(other.overprintStroking, other.overprintFilling, other.overprintMode);
-        }
-        inline bool operator!=(const PDFOverprintMode& other) const
-        {
-            return !(*this == other);
-        }
-    };
-
-    /// Represents graphic state of the PDF (holding current graphic state parameters).
-    /// Please see PDF Reference 1.7, Chapter 4.3 "Graphic State"
-    class PDFPageContentProcessorState
-    {
-    public:
-        explicit PDFPageContentProcessorState();
-        ~PDFPageContentProcessorState();
-
-        PDFPageContentProcessorState(const PDFPageContentProcessorState&) = default;
-        PDFPageContentProcessorState(PDFPageContentProcessorState&&) = default;
-
-        PDFPageContentProcessorState& operator=(PDFPageContentProcessorState&&) = delete;
-        PDFPageContentProcessorState& operator=(const PDFPageContentProcessorState& other);
-
-        enum StateFlag : uint64_t
-        {
-            StateUnchanged                      = 0x0000000000000000,
-            StateCurrentTransformationMatrix    = 0x0000000000000001,
-            StateStrokeColorSpace               = 0x0000000000000002,
-            StateFillColorSpace                 = 0x0000000000000004,
-            StateStrokeColor                    = 0x0000000000000008,
-            StateFillColor                      = 0x0000000000000010,
-            StateLineWidth                      = 0x0000000000000020,
-            StateLineCapStyle                   = 0x0000000000000040,
-            StateLineJoinStyle                  = 0x0000000000000080,
-            StateMitterLimit                    = 0x0000000000000100,
-            StateLineDashPattern                = 0x0000000000000200,
-            StateRenderingIntentName            = 0x0000000000000400,
-            StateFlatness                       = 0x0000000000000800,
-            StateSmoothness                     = 0x0000000000001000,
-            StateTextMatrix                     = 0x0000000000002000,
-            StateTextLineMatrix                 = 0x0000000000004000,
-            StateTextCharacterSpacing           = 0x0000000000008000,
-            StateTextWordSpacing                = 0x0000000000010000,
-            StateTextHorizontalScaling          = 0x0000000000020000,
-            StateTextLeading                    = 0x0000000000040000,
-            StateTextFont                       = 0x0000000000080000,
-            StateTextFontSize                   = 0x0000000000100000,
-            StateTextRenderingMode              = 0x0000000000200000,
-            StateTextRise                       = 0x0000000000400000,
-            StateTextKnockout                   = 0x0000000000800000,
-            StateAlphaStroking                  = 0x0000000001000000,
-            StateAlphaFilling                   = 0x0000000002000000,
-            StateBlendMode                      = 0x0000000004000000,
-            StateRenderingIntent                = 0x0000000008000000,
-            StateOverprint                      = 0x0000000010000000,
-            StateAlphaIsShape                   = 0x0000000020000000,
-            StateStrokeAdjustment               = 0x0000000040000000,
-            StateSoftMask                       = 0x0000000080000000,
-            StateBlackPointCompensation         = 0x0000000100000000,
-            StateBlackGenerationFunction        = 0x0000000200000000,
-            StateUndercolorRemovalFunction      = 0x0000000400000000,
-            StateTransferFunction               = 0x0000000800000000,
-            StateHalftone                       = 0x0000001000000000,
-            StateHalftoneOrigin                 = 0x0000002000000000,
-            StateAll                            = 0xFFFFFFFFFFFFFFFF
-        };
-
-        using StateFlags = PDFFlags<StateFlag>;
-
-        const QTransform& getCurrentTransformationMatrix() const { return m_currentTransformationMatrix; }
-        void setCurrentTransformationMatrix(const QTransform& currentTransformationMatrix);
-
-        const PDFAbstractColorSpace* getStrokeColorSpace() const { return m_strokeColorSpace.data(); }
-        void setStrokeColorSpace(const QSharedPointer<PDFAbstractColorSpace>& strokeColorSpace);
-
-        const PDFAbstractColorSpace* getFillColorSpace() const { return m_fillColorSpace.data(); }
-        void setFillColorSpace(const QSharedPointer<PDFAbstractColorSpace>& fillColorSpace);
-
-        const QColor& getStrokeColor() const { return m_strokeColor; }
-        const PDFColor& getStrokeColorOriginal() const { return m_strokeColorOriginal; }
-        void setStrokeColor(const QColor& strokeColor, const PDFColor& originalColor);
-
-        const QColor& getFillColor() const { return m_fillColor; }
-        const PDFColor& getFillColorOriginal() const { return m_fillColorOriginal; }
-        void setFillColor(const QColor& fillColor, const PDFColor& originalColor);
-
-        PDFReal getLineWidth() const { return m_lineWidth; }
-        void setLineWidth(PDFReal lineWidth);
-
-        Qt::PenCapStyle getLineCapStyle() const { return m_lineCapStyle; }
-        void setLineCapStyle(Qt::PenCapStyle lineCapStyle);
-
-        Qt::PenJoinStyle getLineJoinStyle() const { return m_lineJoinStyle; }
-        void setLineJoinStyle(Qt::PenJoinStyle lineJoinStyle);
-
-        PDFReal getMitterLimit() const { return m_mitterLimit; }
-        void setMitterLimit(PDFReal mitterLimit);
-
-        const PDFLineDashPattern& getLineDashPattern() const { return m_lineDashPattern; }
-        void setLineDashPattern(PDFLineDashPattern pattern);
-
-        const QByteArray& getRenderingIntentName() const { return m_renderingIntentName; }
-        void setRenderingIntentName(const QByteArray& renderingIntentName);
-
-        PDFReal getFlatness() const { return m_flatness; }
-        void setFlatness(PDFReal flatness);
-
-        PDFReal getSmoothness() const { return m_smoothness; }
-        void setSmoothness(PDFReal smoothness);
-
-        StateFlags getStateFlags() const { return m_stateFlags; }
-        void setStateFlags(StateFlags stateFlags) { m_stateFlags = stateFlags; }
-
-        PDFReal getTextCharacterSpacing() const { return m_textCharacterSpacing; }
-        void setTextCharacterSpacing(PDFReal textCharacterSpacing);
-
-        PDFReal getTextWordSpacing() const { return m_textWordSpacing; }
-        void setTextWordSpacing(PDFReal textWordSpacing);
-
-        PDFReal getTextHorizontalScaling() const { return m_textHorizontalScaling; }
-        void setTextHorizontalScaling(PDFReal textHorizontalScaling);
-
-        PDFReal getTextLeading() const { return m_textLeading; }
-        void setTextLeading(PDFReal textLeading);
-
-        const PDFFontPointer& getTextFont() const { return m_textFont; }
-        void setTextFont(const PDFFontPointer& textFont);
-
-        PDFReal getTextFontSize() const { return m_textFontSize; }
-        void setTextFontSize(PDFReal textFontSize);
-
-        TextRenderingMode getTextRenderingMode() const { return m_textRenderingMode; }
-        void setTextRenderingMode(TextRenderingMode textRenderingMode);
-
-        PDFReal getTextRise() const { return m_textRise; }
-        void setTextRise(PDFReal textRise);
-
-        bool getTextKnockout() const { return m_textKnockout; }
-        void setTextKnockout(bool textKnockout);
-
-        const QTransform& getTextMatrix() const { return m_textMatrix; }
-        void setTextMatrix(const QTransform& textMatrix);
-
-        const QTransform& getTextLineMatrix() const { return m_textLineMatrix; }
-        void setTextLineMatrix(const QTransform& textLineMatrix);
-
-        PDFReal getAlphaStroking() const { return m_alphaStroking; }
-        void setAlphaStroking(PDFReal alpha);
-
-        PDFReal getAlphaFilling() const { return m_alphaFilling; }
-        void setAlphaFilling(PDFReal alpha);
-
-        BlendMode getBlendMode() const { return m_blendMode; }
-        void setBlendMode(BlendMode mode);
-
-        RenderingIntent getRenderingIntent() const { return m_renderingIntent; }
-        void setRenderingIntent(RenderingIntent renderingIntent);
-
-        /// Returns stroke color with alpha channel
-        QColor getStrokeColorWithAlpha() const;
-
-        /// Returns fill color with alpha channel
-        QColor getFillColorWithAlpha() const;
-
-        PDFOverprintMode getOverprintMode() const { return m_overprintMode; }
-        void setOverprintMode(PDFOverprintMode overprintMode);
-
-        bool getAlphaIsShape() const { return m_alphaIsShape; }
-        void setAlphaIsShape(bool alphaIsShape);
-
-        bool getStrokeAdjustment() const;
-        void setStrokeAdjustment(bool strokeAdjustment);
-
-        const PDFDictionary* getSoftMask() const;
-        void setSoftMask(const PDFDictionary* softMask);
-
-        BlackPointCompensationMode getBlackPointCompensationMode() const;
-        void setBlackPointCompensationMode(BlackPointCompensationMode blackPointCompensationMode);
-
-        PDFObject getBlackGenerationFunction() const;
-        void setBlackGenerationFunction(const PDFObject& blackGenerationFunction);
-
-        PDFObject getUndercolorRemovalFunction() const;
-        void setUndercolorRemovalFunction(const PDFObject& undercolorRemovalFunction);
-
-        PDFObject getTransferFunction() const;
-        void setTransferFunction(const PDFObject& transferFunction);
-
-        PDFObject getHalftone() const;
-        void setHalftone(const PDFObject& halftone);
-
-        QPointF getHalftoneOrigin() const;
-        void setHalftoneOrigin(const QPointF& halftoneOrigin);
-
-    private:
-        QTransform m_currentTransformationMatrix;
-        PDFColorSpacePointer m_strokeColorSpace;
-        PDFColorSpacePointer m_fillColorSpace;
-        QColor m_strokeColor;
-        PDFColor m_strokeColorOriginal;
-        QColor m_fillColor;
-        PDFColor m_fillColorOriginal;
-        PDFReal m_lineWidth;
-        Qt::PenCapStyle m_lineCapStyle;
-        Qt::PenJoinStyle m_lineJoinStyle;
-        PDFReal m_mitterLimit;
-        PDFLineDashPattern m_lineDashPattern;
-        QByteArray m_renderingIntentName;
-        PDFReal m_flatness;
-        PDFReal m_smoothness;
-        PDFReal m_textCharacterSpacing; // T_c
-        PDFReal m_textWordSpacing;  // T_w
-        PDFReal m_textHorizontalScaling; // T_h, percentage
-        PDFReal m_textLeading; // T_l
-        PDFFontPointer m_textFont; // Text font
-        PDFReal m_textFontSize; // T_fs
-        TextRenderingMode m_textRenderingMode; // Text rendering mode
-        PDFReal m_textRise; // T_rise
-        bool m_textKnockout;
-        QTransform m_textMatrix;
-        QTransform m_textLineMatrix;
-        PDFReal m_alphaStroking;
-        PDFReal m_alphaFilling;
-        BlendMode m_blendMode;
-        RenderingIntent m_renderingIntent;
-        PDFOverprintMode m_overprintMode;
-        bool m_alphaIsShape;
-        bool m_strokeAdjustment;
-        const PDFDictionary* m_softMask;
-        BlackPointCompensationMode m_blackPointCompensationMode;
-        PDFObject m_blackGenerationFunction;
-        PDFObject m_undercolorRemovalFunction;
-        PDFObject m_transferFunction;
-        PDFObject m_halftone;
-        QPointF m_halftoneOrigin;
-        StateFlags m_stateFlags;
-    };
-
     enum class ProcessOrder
     {
         BeforeOperation,
         AfterOperation
     };
+
+    /// This function is used, when we directly want to intercept content
+    /// stream instructions and operands.
+    /// \param currentOperator Current operator
+    /// \param processOrder Mark before/after instruction is executed
+    /// \param operatorAsText Operator converted to text
+    virtual void performInterceptInstruction(Operator currentOperator,
+                                             ProcessOrder processOrder,
+                                             const QByteArray& operatorAsText);
 
     /// This function has to be implemented in the client drawing implementation, it should
     /// draw the path according to the parameters.
@@ -575,8 +615,9 @@ protected:
     /// original image, it should return true, so no conversion to QImage occurs,
     /// which can be performance bottleneck.
     /// \param image Image
+    /// \param stream Stream, from which image originated
     /// \returns true, if image is successfully processed
-    virtual bool performOriginalImagePainting(const PDFImage& image);
+    virtual bool performOriginalImagePainting(const PDFImage& image, const PDFStream* stream);
 
     /// This function has to be implemented in the client drawing implementation, it should
     /// draw the image.
@@ -645,6 +686,9 @@ protected:
     /// Implement to respond to text end operator
     virtual void performTextEnd(ProcessOrder order);
 
+    /// Implement to respond to text sequence processing
+    virtual void performProcessTextSequence(const TextSequence& textSequence, ProcessOrder order);
+
     enum class ContentKind
     {
         Shapes,     ///< General shapes (they can be also shaded / tiled)
@@ -652,6 +696,7 @@ protected:
         Images,     ///< Images
         Shading,    ///< Shading
         Tiling,     ///< Tiling
+        Forms,      ///< Forms
     };
 
     /// Override this function to disable particular content type (for example
@@ -706,6 +751,9 @@ protected:
     /// Returns optional content activity
     const PDFOptionalContentActivity* getOptionalContentActivity() const { return m_optionalContentActivity; }
 
+    /// Returns operand for current operator
+    const PDFFlatArray<PDFLexicalAnalyzer::Token, 33>& getOperands() const { return m_operands; }
+
     class PDF4QTLIBCORESHARED_EXPORT PDFTransparencyGroupGuard
     {
     public:
@@ -718,6 +766,14 @@ protected:
 
     /// Process form using form stream
     void processForm(const PDFStream* stream);
+
+    const PDFDictionary* getColorSpaceDictionary() const { return m_colorSpaceDictionary; }
+    const PDFDictionary* getFontDictionary() const { return m_fontDictionary; }
+    const PDFDictionary* getXObjectDictionary() const { return m_xobjectDictionary; }
+    const PDFDictionary* getExtendedGraphicStateDictionary() const { return m_extendedGraphicStateDictionary; }
+    const PDFDictionary* getPropertiesDictionary() const { return m_propertiesDictionary; }
+    const PDFDictionary* getShadingDictionary() const { return m_shadingDictionary; }
+    const PDFDictionary* getPatternDictionary() const { return m_patternDictionary; }
 
 private:
     /// Initializes the resources dictionaries
@@ -857,8 +913,6 @@ private:
     template<typename... Operands>
     inline QColor getColorFromColorSpace(const PDFAbstractColorSpace* colorSpace, Operands... operands)
     {
-
-
         constexpr const size_t operandCount = sizeof...(Operands);
         const size_t colorSpaceComponentCount = colorSpace->getColorComponentCount();
         if (operandCount == colorSpaceComponentCount)
@@ -870,24 +924,6 @@ private:
             throw PDFRendererException(RenderErrorType::Error, PDFTranslationContext::tr("Invalid color component count. Provided %1, required %2.").arg(operandCount).arg(colorSpaceComponentCount));
         }
     }
-
-    /// Converts PDF line cap to Qt's pen cap style. Function always succeeds,
-    /// if invalid \p lineCap occurs, then some valid pen cap style is returned.
-    /// \param lineCap PDF Line cap style (see PDF Reference 1.7, values can be 0, 1, and 2)
-    static Qt::PenCapStyle convertLineCapToPenCapStyle(PDFInteger lineCap);
-
-    /// Convers Qt's pen cap style to PDF's line cap style (defined in the PDF Reference)
-    /// \param penCapStyle Qt's pen cap style to be converted
-    static PDFInteger convertPenCapStyleToLineCap(Qt::PenCapStyle penCapStyle);
-
-    /// Converts PDF line join to Qt's pen join style. Function always succeeds,
-    /// if invalid \p lineJoin occurs, then some valid pen join style is returned.
-    /// \param lineJoin PDF Line join style (see PDF Reference 1.7, values can be 0, 1, and 2)
-    static Qt::PenJoinStyle convertLineJoinToPenJoinStyle(PDFInteger lineJoin);
-
-    /// Convers Qt's pen join style to PDF's line join style (defined in the PDF Reference)
-    /// \param penJoinStyle Qt's pen join style to be converted
-    static PDFInteger convertPenJoinStyleToLineJoin(Qt::PenJoinStyle penJoinStyle);
 
     // General graphic state        w, J, j, M, d, ri, i, gs
     void operatorSetLineWidth(PDFReal lineWidth);           ///< w, sets the line width

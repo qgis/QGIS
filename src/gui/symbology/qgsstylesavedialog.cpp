@@ -18,14 +18,16 @@
 #include "qgsstylesavedialog.h"
 
 #include "qgis.h"
-#include "qgsstyle.h"
-#include "qgsgui.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
+#include "qgsstyle.h"
 
-#include <QLineEdit>
 #include <QCheckBox>
+#include <QLineEdit>
+
+#include "moc_qgsstylesavedialog.cpp"
 
 QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity type )
   : QDialog( parent )
@@ -39,7 +41,7 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
   defaultTags.sort( Qt::CaseInsensitive );
   mTags->addItems( defaultTags );
 
-  QList< QgsStyle::StyleEntity > possibleEntities;
+  QList<QgsStyle::StyleEntity> possibleEntities;
   switch ( type )
   {
     case QgsStyle::SymbolEntity:
@@ -108,23 +110,23 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
           break;
 
         case QgsStyle::ColorrampEntity:
-          mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "styleicons/color.svg" ) ), tr( "Color Ramp" ), e );
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"styleicons/color.svg"_s ), tr( "Color Ramp" ), e );
           break;
 
         case QgsStyle::TextFormatEntity:
-          mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconFieldText.svg" ) ), tr( "Text Format" ), e );
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"mIconFieldText.svg"_s ), tr( "Text Format" ), e );
           break;
 
         case QgsStyle::LabelSettingsEntity:
-          mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "labelingSingle.svg" ) ), tr( "Label Settings" ), e );
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"labelingSingle.svg"_s ), tr( "Label Settings" ), e );
           break;
 
         case QgsStyle::LegendPatchShapeEntity:
-          mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "legend.svg" ) ), tr( "Legend Patch Shape" ), e );
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"legend.svg"_s ), tr( "Legend Patch Shape" ), e );
           break;
 
         case QgsStyle::Symbol3DEntity:
-          mComboSaveAs->addItem( QgsApplication::getThemeIcon( QStringLiteral( "3d.svg" ) ), tr( "3D Symbol" ), e );
+          mComboSaveAs->addItem( QgsApplication::getThemeIcon( u"3d.svg"_s ), tr( "3D Symbol" ), e );
           break;
 
         case QgsStyle::TagEntity:
@@ -159,14 +161,14 @@ bool QgsStyleSaveDialog::isFavorite() const
 QgsStyle::StyleEntity QgsStyleSaveDialog::selectedType() const
 {
   if ( mComboSaveAs->count() > 0 )
-    return static_cast< QgsStyle::StyleEntity >( mComboSaveAs->currentData().toInt() );
+    return static_cast<QgsStyle::StyleEntity>( mComboSaveAs->currentData().toInt() );
   else
     return mType;
 }
 
 QgsStyle *QgsStyleSaveDialog::destinationStyle()
 {
-  if ( QgsStyle *style = qobject_cast< QgsStyle * >( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >() ) )
+  if ( QgsStyle *style = qobject_cast<QgsStyle *>( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), static_cast<int>( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value<QObject *>() ) )
   {
     return style;
   }

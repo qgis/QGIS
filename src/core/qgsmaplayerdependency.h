@@ -20,11 +20,12 @@
 #define QGSMAPLAYERDEPENDENCY_H
 
 #include "qgis_core.h"
+
 #include <QString>
 
 /**
  * \ingroup core
- * \brief This class models dependencies with or between map layers.
+ * \brief Models dependencies with or between map layers.
  *
  * A dependency is defined by a layer ID, a type and an origin.
  * The two combinations of type/origin that are currently supported are:

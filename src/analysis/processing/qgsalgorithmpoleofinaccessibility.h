@@ -30,9 +30,7 @@
  */
 class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsPoleOfInaccessibilityAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -40,6 +38,7 @@ class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingFeatureBasedAlgori
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QString svgIconPath() const override;
     QIcon icon() const override;
     QList<int> inputLayerTypes() const override;
@@ -47,20 +46,18 @@ class QgsPoleOfInaccessibilityAlgorithm : public QgsProcessingFeatureBasedAlgori
     QgsPoleOfInaccessibilityAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     double mTolerance = 0.0;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
-
 };
 
 ///@endcond PRIVATE

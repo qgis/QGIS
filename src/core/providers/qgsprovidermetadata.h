@@ -20,19 +20,20 @@
 #define QGSPROVIDERMETADATA_H
 
 
+#include <functional>
+#include <memory>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsabstractproviderconnection.h"
+#include "qgsdataprovider.h"
+#include "qgsfields.h"
+
+#include <QList>
+#include <QMap>
+#include <QPair>
 #include <QString>
 #include <QVariantMap>
-#include <QMap>
-#include <QList>
-#include <memory>
-#include <QPair>
-
-#include "qgis_sip.h"
-#include "qgsdataprovider.h"
-#include "qgis_core.h"
-#include <functional>
-#include "qgsabstractproviderconnection.h"
-#include "qgsfields.h"
 
 class QgsDataItem;
 class QgsDataItemProvider;
@@ -49,7 +50,7 @@ struct QgsMesh;
 
 /**
  * \ingroup core
- * \brief Holds metadata about mesh driver
+ * \brief Holds metadata about mesh drivers.
  *
  * \since QGIS 3.12
  */
@@ -226,7 +227,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      */
     SIP_SKIP Q_DECL_DEPRECATED QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
 
-    virtual ~QgsProviderMetadata();
+    ~QgsProviderMetadata() override;
 
     /**
      * This returns the unique key associated with the provider
@@ -483,6 +484,11 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 
     /**
      * Creates new empty vector layer
+     *
+     * The \a createdLayerUri parameter will be set to the actual URI of the layer created.
+     * In some circumstances this may differ from \a uri, eg when the provider has had to
+     * automatically launder a layer name.
+     *
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
@@ -493,7 +499,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
         bool overwrite,
         QMap<int, int> &oldToNewAttrIdxMap,
         QString &errorMessage,
-        const QMap<QString, QVariant> *options );
+        const QMap<QString, QVariant> *options,
+        QString &createdLayerUri );
 #endif
 
     /**
@@ -512,6 +519,8 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.28
      */
     virtual bool createDatabase( const QString &uri, QString &errorMessage SIP_OUT );
+
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Creates a new instance of the raster data provider.
@@ -611,6 +620,13 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
      * \since QGIS 3.30
      */
     virtual QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Cleans a layer \a uri, e.g. to remove or hide sensitive information from the URI.
+     *
+     * \since QGIS 3.42
+     */
+    virtual QString cleanUri( const QString &uri, Qgis::UriCleaningFlags flags = Qgis::UriCleaningFlag::RemoveCredentials ) const;
 
     /**
      * Returns data item providers. Caller is responsible for ownership of the item providers
@@ -801,7 +817,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+    QString str = u"<QgsProviderMetadata: %1>"_s.arg( sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -842,7 +858,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
     // when all the providers are ready
     // T_provider_conn: subclass of QgsAbstractProviderConnection,
     // T_conn: provider connection class (such as QgsOgrDbConnection or QgsPostgresConn)
-    // TODO QGIS4: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
+    // TODO QGIS 5: remove all old provider conn classes and move functionality into QgsAbstractProviderConnection subclasses
     template <class T_provider_conn, class T_conn> QMap<QString, QgsAbstractProviderConnection *> connectionsProtected( bool cached = true )
     {
       if ( ! cached || mProviderConnections.isEmpty() )

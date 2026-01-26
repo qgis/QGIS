@@ -19,10 +19,11 @@
 #define QGSPOINTCLUSTERRENDERERWIDGET_H
 
 #include "ui_qgspointclusterrendererwidgetbase.h"
-#include "qgis_sip.h"
-#include "qgsrendererwidget.h"
-#include "qgsexpressioncontextgenerator.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsrendererwidget.h"
 
 class QgsPointClusterRenderer;
 
@@ -32,12 +33,11 @@ class QgsPointClusterRenderer;
  * \brief A widget which allows configuration of the properties for a QgsPointClusterRenderer.
  */
 
-class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, private Ui::QgsPointClusterRendererWidgetBase
+class GUI_EXPORT QgsPointClusterRendererWidget : public QgsRendererWidget, private Ui::QgsPointClusterRendererWidgetBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Returns a new QgsPointClusterRendererWidget.
      * \param layer associated vector layer
@@ -63,7 +63,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, privat
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    std::unique_ptr< QgsPointClusterRenderer > mRenderer;
+    std::unique_ptr<QgsPointClusterRenderer> mRenderer;
 
     void blockAllSignals( bool block );
     void setupBlankUi( const QString &layerName );

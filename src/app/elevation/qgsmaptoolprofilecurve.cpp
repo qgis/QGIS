@@ -15,15 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolprofilecurve.h"
+
 #include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
 #include "qgsmaptoolcapturerubberband.h"
+#include "qgsrubberband.h"
+
+#include "moc_qgsmaptoolprofilecurve.cpp"
 
 QgsMapToolProfileCurve::QgsMapToolProfileCurve( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolCapture( canvas, cadDockWidget, CaptureMode::CaptureLine )
 {
-  connect( canvas, &QgsMapCanvas::mapToolSet, this, [ = ]( QgsMapTool * tool, QgsMapTool * )
-  {
+  connect( canvas, &QgsMapCanvas::mapToolSet, this, [this]( QgsMapTool *tool, QgsMapTool * ) {
     if ( tool != this )
       mPreviousTool = tool;
   } );

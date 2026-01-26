@@ -34,12 +34,11 @@ class QgsRenderedAnnotationItemDetails;
  *
  * \since QGIS 3.22
 */
-class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
+class GUI_EXPORT QgsAnnotationItemBaseWidget : public QgsPanelWidget
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnnotationItemBaseWidget.
      */
@@ -124,7 +123,6 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
     void itemChanged();
 
   protected:
-
     /**
      * Attempts to update the widget to show the properties
      * for the specified \a item.
@@ -146,7 +144,7 @@ class GUI_EXPORT QgsAnnotationItemBaseWidget: public QgsPanelWidget
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
 
-    QPointer< QgsAnnotationLayer > mLayer;
+    QPointer<QgsAnnotationLayer> mLayer;
     QString mItemId;
 };
 

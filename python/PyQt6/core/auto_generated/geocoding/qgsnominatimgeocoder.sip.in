@@ -34,10 +34,12 @@ strings.
 %Docstring
 Constructor for QgsNominatimGeocoder.
 
-Optionally, ``countryCodes`` can be specified to restrict results to one or more countries. The codes
-must be in  ISO 3166-1alpha2 code and comma-separated.
+Optionally, ``countryCodes`` can be specified to restrict results to one
+or more countries. The codes must be in ISO 3166-1alpha2 code and
+comma-separated.
 
-The optional ``endpoint`` argument can be used to specify a non-default endpoint to use for request.
+The optional ``endpoint`` argument can be used to specify a non-default
+endpoint to use for request.
 %End
 
     virtual Flags flags() const;
@@ -56,7 +58,8 @@ Returns the URL generated for geocoding the specified ``address``.
 
     QgsGeocoderResult jsonToResult( const QVariantMap &json ) const;
 %Docstring
-Converts a JSON result returned from the Nominatim service to a geocoder result object.
+Converts a JSON result returned from the Nominatim service to a geocoder
+result object.
 %End
 
     QString endpoint() const;
@@ -68,7 +71,8 @@ Returns the API endpoint used for requests.
 
     void setEndpoint( const QString &endpoint );
 %Docstring
-Sets a specific API ``endpoint`` to use for requests. This is for internal testing purposes only.
+Sets a specific API ``endpoint`` to use for requests. This is for
+internal testing purposes only.
 
 .. seealso:: :py:func:`endpoint`
 %End
@@ -93,17 +97,19 @@ Sets the ``number`` of request per seconds to the endpoint.
 
     QString countryCodes() const;
 %Docstring
-Returns the optional region bias which will be used to prioritize results in a certain region.
+Returns the optional region bias which will be used to prioritize
+results in a certain region.
 
 .. seealso:: :py:func:`setCountryCodes`
 %End
 
     void setCountryCodes( const QString &countryCodes );
 %Docstring
-Sets the optional ``region`` bias which will be used to prioritize results in a certain region.
+Sets the optional ``region`` bias which will be used to prioritize
+results in a certain region.
 
-The ``region`` argument must be set to a two letter country code top-level domain value,
-e.g. "gb" for Great Britain.
+The ``region`` argument must be set to a two letter country code
+top-level domain value, e.g. "gb" for Great Britain.
 
 .. seealso:: :py:func:`countryCodes`
 %End

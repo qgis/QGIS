@@ -14,21 +14,25 @@
  ***************************************************************************/
 
 #include "qgslayoutitemwidget.h"
-#include "qgspropertyoverridebutton.h"
+
+#include "qgsexpressioncontextutils.h"
+#include "qgsfilterlineedit.h"
+#include "qgsfontbutton.h"
 #include "qgslayout.h"
-#include "qgsproject.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutdesignerinterface.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutmultiframe.h"
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgsprintlayout.h"
-#include "qgslayoutatlas.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgslayoutframe.h"
+#include "qgsproject.h"
+#include "qgspropertyoverridebutton.h"
 #include "qgssymbolbutton.h"
-#include "qgsfontbutton.h"
-#include "qgslayoutdesignerinterface.h"
-#include "qgslayoutpagecollection.h"
-#include "qgslayoutmultiframe.h"
-#include "qgsfilterlineedit.h"
+
 #include <QButtonGroup>
+
+#include "moc_qgslayoutitemwidget.cpp"
 
 //
 // QgsLayoutConfigObject
@@ -40,8 +44,7 @@ QgsLayoutConfigObject::QgsLayoutConfigObject( QWidget *parent, QgsLayoutObject *
 {
   if ( mLayoutObject->layout() )
   {
-    connect( &mLayoutObject->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
-             this, [ = ] { updateDataDefinedButtons(); } );
+    connect( &mLayoutObject->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, [this] { updateDataDefinedButtons(); } );
   }
   if ( layoutAtlas() )
   {
@@ -60,7 +63,7 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
   QgsLayoutObject::DataDefinedProperty key = QgsLayoutObject::DataDefinedProperty::NoProperty;
 
   if ( ddButton->propertyKey() >= 0 )
-    key = static_cast< QgsLayoutObject::DataDefinedProperty >( ddButton->propertyKey() );
+    key = static_cast<QgsLayoutObject::DataDefinedProperty>( ddButton->propertyKey() );
 
   if ( key == QgsLayoutObject::DataDefinedProperty::NoProperty )
   {
@@ -72,7 +75,7 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
   //set the data defined property and refresh the item
   if ( propertyAssociatesWithMultiFrame )
   {
-    if ( QgsLayoutFrame *frame = dynamic_cast< QgsLayoutFrame * >( mLayoutObject.data() ) )
+    if ( QgsLayoutFrame *frame = dynamic_cast<QgsLayoutFrame *>( mLayoutObject.data() ) )
     {
       if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
       {
@@ -80,7 +83,7 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
         multiFrame->refresh();
       }
     }
-    else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast< QgsLayoutMultiFrame * >( mLayoutObject.data() ) )
+    else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast<QgsLayoutMultiFrame *>( mLayoutObject.data() ) )
     {
       multiFrame->dataDefinedProperties().setProperty( key, ddButton->toProperty() );
       multiFrame->refresh();
@@ -95,7 +98,7 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
 
 void QgsLayoutConfigObject::updateDataDefinedButtons()
 {
-  const QList< QgsPropertyOverrideButton * > buttons = findChildren< QgsPropertyOverrideButton * >();
+  const QList<QgsPropertyOverrideButton *> buttons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
     button->setVectorLayer( coverageLayer() );
@@ -105,7 +108,7 @@ void QgsLayoutConfigObject::updateDataDefinedButtons()
 void QgsLayoutConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty key )
 {
   button->blockSignals( true );
-  button->init( static_cast< int >( key ), mLayoutObject->dataDefinedProperties(), QgsLayoutObject::propertyDefinitions(), coverageLayer() );
+  button->init( static_cast<int>( key ), mLayoutObject->dataDefinedProperties(), QgsLayoutObject::propertyDefinitions(), coverageLayer() );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayoutConfigObject::updateDataDefinedProperty, Qt::UniqueConnection );
   button->registerExpressionContextGenerator( mLayoutObject );
   button->blockSignals( false );
@@ -119,20 +122,20 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
   if ( button->propertyKey() < 0 || !mLayoutObject )
     return;
 
-  const QgsLayoutObject::DataDefinedProperty key = static_cast< QgsLayoutObject::DataDefinedProperty >( button->propertyKey() );
+  const QgsLayoutObject::DataDefinedProperty key = static_cast<QgsLayoutObject::DataDefinedProperty>( button->propertyKey() );
   const bool propertyAssociatesWithMultiFrame = QgsLayoutObject::propertyAssociatesWithParentMultiframe( key );
 
   //set the data defined property
   if ( propertyAssociatesWithMultiFrame )
   {
-    if ( QgsLayoutFrame *frame = dynamic_cast< QgsLayoutFrame * >( mLayoutObject.data() ) )
+    if ( QgsLayoutFrame *frame = dynamic_cast<QgsLayoutFrame *>( mLayoutObject.data() ) )
     {
       if ( QgsLayoutMultiFrame *multiFrame = frame->multiFrame() )
       {
         whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( key ) );
       }
     }
-    else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast< QgsLayoutMultiFrame * >( mLayoutObject.data() ) )
+    else if ( QgsLayoutMultiFrame *multiFrame = dynamic_cast<QgsLayoutMultiFrame *>( mLayoutObject.data() ) )
     {
       whileBlocking( button )->setToProperty( multiFrame->dataDefinedProperties().property( key ) );
     }
@@ -154,7 +157,7 @@ QgsLayoutAtlas *QgsLayoutConfigObject::layoutAtlas() const
     return nullptr;
   }
 
-  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayoutObject->layout() );
+  QgsPrintLayout *printLayout = qobject_cast<QgsPrintLayout *>( mLayoutObject->layout() );
 
   if ( !printLayout )
   {
@@ -191,7 +194,6 @@ QgsLayoutItemBaseWidget::QgsLayoutItemBaseWidget( QWidget *parent, QgsLayoutObje
   , mConfigObject( new QgsLayoutConfigObject( this, layoutObject ) )
   , mObject( layoutObject )
 {
-
 }
 
 QgsLayoutObject *QgsLayoutItemBaseWidget::layoutObject()
@@ -241,7 +243,6 @@ void QgsLayoutItemBaseWidget::setDesignerInterface( QgsLayoutDesignerInterface *
 
 void QgsLayoutItemBaseWidget::setMasterLayout( QgsMasterLayoutInterface * )
 {
-
 }
 
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
@@ -330,19 +331,19 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 
   connect( mFrameColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mFrameColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutItemPropertiesWidget::mBackgroundColorButton_colorChanged );
-  connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mStrokeWidthSpinBox_valueChanged );
+  connect( mStrokeWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mStrokeWidthSpinBox_valueChanged );
   connect( mStrokeUnitsComboBox, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutItemPropertiesWidget::strokeUnitChanged );
   connect( mFrameGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutItemPropertiesWidget::mFrameGroupBox_toggled );
   connect( mFrameJoinStyleCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutItemPropertiesWidget::mFrameJoinStyleCombo_currentIndexChanged );
   connect( mBackgroundGroupBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutItemPropertiesWidget::mBackgroundGroupBox_toggled );
   connect( mItemIdLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutItemPropertiesWidget::mItemIdLineEdit_editingFinished );
   connect( mExportGroupNameCombo, &QComboBox::currentTextChanged, this, &QgsLayoutItemPropertiesWidget::exportGroupNameEditingFinished );
-  connect( mPageSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mPageSpinBox_valueChanged );
-  connect( mXPosSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mXPosSpin_valueChanged );
-  connect( mYPosSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mYPosSpin_valueChanged );
+  connect( mPageSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mPageSpinBox_valueChanged );
+  connect( mXPosSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mXPosSpin_valueChanged );
+  connect( mYPosSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mYPosSpin_valueChanged );
   connect( mPosUnitsComboBox, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutItemPropertiesWidget::positionUnitsChanged );
-  connect( mWidthSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mWidthSpin_valueChanged );
-  connect( mHeightSpin, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mHeightSpin_valueChanged );
+  connect( mWidthSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mWidthSpin_valueChanged );
+  connect( mHeightSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mHeightSpin_valueChanged );
   connect( mSizeUnitsComboBox, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutItemPropertiesWidget::sizeUnitsChanged );
   connect( mUpperLeftRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mUpperLeftCheckBox_stateChanged );
   connect( mUpperMiddleRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mUpperMiddleCheckBox_stateChanged );
@@ -354,7 +355,7 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   connect( mLowerMiddleRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mLowerMiddleCheckBox_stateChanged );
   connect( mLowerRightRadioButton, &QRadioButton::toggled, this, &QgsLayoutItemPropertiesWidget::mLowerRightCheckBox_stateChanged );
   connect( mBlendModeCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutItemPropertiesWidget::mBlendModeCombo_currentIndexChanged );
-  connect( mItemRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mItemRotationSpinBox_valueChanged );
+  connect( mItemRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutItemPropertiesWidget::mItemRotationSpinBox_valueChanged );
   connect( mExcludeFromPrintsCheckBox, &QCheckBox::toggled, this, &QgsLayoutItemPropertiesWidget::mExcludeFromPrintsCheckBox_toggled );
 
   //make button exclusive
@@ -377,8 +378,7 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayoutItemPropertiesWidget::opacityChanged );
 
   updateVariables();
-  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, [ = ]
-  {
+  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, [this] {
     if ( !mBlockVariableUpdates )
       QgsLayoutItemPropertiesWidget::variablesChanged();
   } );
@@ -426,7 +426,7 @@ void QgsLayoutItemPropertiesWidget::setItem( QgsLayoutItem *item )
 
 void QgsLayoutItemPropertiesWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
-  if ( QgsPrintLayout *printLayout = dynamic_cast< QgsPrintLayout * >( masterLayout ) )
+  if ( QgsPrintLayout *printLayout = dynamic_cast<QgsPrintLayout *>( masterLayout ) )
   {
     connect( printLayout, &QgsPrintLayout::nameChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
     connect( printLayout->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, &QgsLayoutItemPropertiesWidget::updateVariables );
@@ -500,7 +500,7 @@ void QgsLayoutItemPropertiesWidget::variablesChanged()
   if ( !mItem )
     return;
 
-  if ( QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( mItem ) )
+  if ( QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( mItem ) )
   {
     if ( QgsLayoutMultiFrame *mf = frame->multiFrame() )
     {
@@ -625,8 +625,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements()
     return;
   }
 
-  auto block = [ = ]( bool blocked )
-  {
+  auto block = [this]( bool blocked ) {
     mXPosSpin->blockSignals( blocked );
     mYPosSpin->blockSignals( blocked );
     mPosUnitsComboBox->blockSignals( blocked );
@@ -747,7 +746,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   whileBlocking( mOpacityWidget )->setOpacity( mItem->itemOpacity() );
   whileBlocking( mItemRotationSpinBox )->setValue( mItem->itemRotation() );
   whileBlocking( mExcludeFromPrintsCheckBox )->setChecked( mItem->excludeFromExports() );
-  whileBlocking( mExportGroupNameCombo )->setCurrentText( mItem->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString() );
+  whileBlocking( mExportGroupNameCombo )->setCurrentText( mItem->customProperty( u"pdfExportGroup"_s ).toString() );
 }
 
 void QgsLayoutItemPropertiesWidget::initializeDataDefinedButtons()
@@ -766,7 +765,7 @@ void QgsLayoutItemPropertiesWidget::initializeDataDefinedButtons()
 
 void QgsLayoutItemPropertiesWidget::populateDataDefinedButtons()
 {
-  const QList< QgsPropertyOverrideButton * > buttons = findChildren< QgsPropertyOverrideButton * >();
+  const QList<QgsPropertyOverrideButton *> buttons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : buttons )
   {
     mConfigObject->updateDataDefinedButton( button );
@@ -782,26 +781,25 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiElements()
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
+  mBackgroundColorButton->setContext( u"composer"_s );
   mFrameColorButton->setColorDialogTitle( tr( "Select Frame Color" ) );
   mFrameColorButton->setAllowOpacity( true );
-  mFrameColorButton->setContext( QStringLiteral( "composer" ) );
+  mFrameColorButton->setContext( u"composer"_s );
 
   if ( QgsLayout *layout = mItem->layout() )
   {
     // collect export groups from layout, so that we can offer auto completion in the PDF export group combo
-    QList< QgsLayoutItem * > items;
+    QList<QgsLayoutItem *> items;
     layout->layoutItems( items );
     QStringList existingGroups;
     for ( const QgsLayoutItem *item : std::as_const( items ) )
     {
-      const QString groupName = item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+      const QString groupName = item->customProperty( u"pdfExportGroup"_s ).toString();
       if ( !groupName.isEmpty() && !existingGroups.contains( groupName ) )
         existingGroups.append( groupName );
     }
 
-    std::sort( existingGroups.begin(), existingGroups.end(), [ = ]( const QString & a, const QString & b ) -> bool
-    {
+    std::sort( existingGroups.begin(), existingGroups.end(), []( const QString &a, const QString &b ) -> bool {
       return a.localeAwareCompare( b ) < 0;
     } );
 
@@ -853,7 +851,7 @@ void QgsLayoutItemPropertiesWidget::exportGroupNameEditingFinished()
   if ( mItem )
   {
     mItem->layout()->undoStack()->beginCommand( mItem, tr( "Change Export Group Name" ), QgsLayoutItem::UndoExportLayerName );
-    mItem->setCustomProperty( QStringLiteral( "pdfExportGroup" ), mExportGroupNameCombo->currentText() );
+    mItem->setCustomProperty( u"pdfExportGroup"_s, mExportGroupNameCombo->currentText() );
     mItem->layout()->undoStack()->endCommand();
   }
 }

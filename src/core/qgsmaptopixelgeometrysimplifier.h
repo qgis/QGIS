@@ -17,12 +17,14 @@
 #ifndef QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 #define QGSMAPTOPIXELGEOMETRYSIMPLIFIER_H
 
+#include <memory>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsgeometrysimplifier.h"
+
 #include <QPolygonF>
-#include <memory>
 
 class QgsAbstractGeometry;
 class QgsWkbPtr;
@@ -31,7 +33,7 @@ class QgsConstWkbPtr;
 
 /**
  * \ingroup core
- * \brief Implementation of GeometrySimplifier using the "MapToPixel" algorithm
+ * \brief Implementation of a geometry simplifier using the "MapToPixel" algorithm.
  *
  * Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.
  * This class enables simplify the geometries to be rendered in a MapCanvas target to speed up the vector drawing.

@@ -16,13 +16,13 @@
 #ifndef QGSMAPTOOLSHAPECIRCULARSTRINGABSTRACT_H
 #define QGSMAPTOOLSHAPECIRCULARSTRINGABSTRACT_H
 
-#include "qgsmaptoolshapeabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapeabstract.h"
 
 class QgsGeometryRubberBand;
 
 
-class APP_EXPORT QgsMapToolShapeCircularStringAbstract: public QgsMapToolShapeAbstract
+class APP_EXPORT QgsMapToolShapeCircularStringAbstract : public QgsMapToolShapeAbstract
 {
     Q_OBJECT
   public:
@@ -39,7 +39,6 @@ class APP_EXPORT QgsMapToolShapeCircularStringAbstract: public QgsMapToolShapeAb
     void undo() override;
 
   protected:
-
     void addCurveToParentTool();
 
     //! The rubberband to show the already completed circular strings
@@ -48,7 +47,7 @@ class APP_EXPORT QgsMapToolShapeCircularStringAbstract: public QgsMapToolShapeAb
     QgsGeometryRubberBand *mTempRubberBand = nullptr;
 
     //center point rubber band
-    bool mShowCenterPointRubberBand;
+    bool mShowCenterPointRubberBand = false;
     QgsGeometryRubberBand *mCenterPointRubberBand = nullptr;
 
     void createCenterPointRubberBand();

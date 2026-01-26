@@ -14,12 +14,14 @@
  ***************************************************************************/
 #include "qgsfontoptions.h"
 
-#include "qgsbabelgpsdevice.h"
-#include "qgssettings.h"
 #include "qgsapplication.h"
+#include "qgsbabelgpsdevice.h"
 #include "qgsfontmanager.h"
+#include "qgssettings.h"
 
 #include <QDir>
+
+#include "moc_qgsfontoptions.cpp"
 
 //
 // QgsFontOptionsWidget
@@ -30,13 +32,13 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mTableReplacements->setHorizontalHeaderLabels( {tr( "Font Family" ), tr( "Replacement Family" ) } );
+  mTableReplacements->setHorizontalHeaderLabels( { tr( "Font Family" ), tr( "Replacement Family" ) } );
   mTableReplacements->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
 
-  mTableUserFonts->setHorizontalHeaderLabels( {tr( "File" ), tr( "Font Families" ) } );
+  mTableUserFonts->setHorizontalHeaderLabels( { tr( "File" ), tr( "Font Families" ) } );
   mTableUserFonts->horizontalHeader()->setSectionResizeMode( QHeaderView::Interactive );
 
-  const QMap< QString, QString > replacements = QgsApplication::fontManager()->fontFamilyReplacements();
+  const QMap<QString, QString> replacements = QgsApplication::fontManager()->fontFamilyReplacements();
   mTableReplacements->setRowCount( replacements.size() );
   int row = 0;
   for ( auto it = replacements.constBegin(); it != replacements.constEnd(); ++it )
@@ -46,17 +48,15 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
     row++;
   }
 
-  connect( mButtonAddReplacement, &QToolButton::clicked, this, [ = ]
-  {
+  connect( mButtonAddReplacement, &QToolButton::clicked, this, [this] {
     mTableReplacements->setRowCount( mTableReplacements->rowCount() + 1 );
     mTableReplacements->setFocus();
     mTableReplacements->setCurrentCell( mTableReplacements->rowCount() - 1, 0 );
   } );
 
-  connect( mButtonRemoveReplacement, &QToolButton::clicked, this, [ = ]
-  {
+  connect( mButtonRemoveReplacement, &QToolButton::clicked, this, [this] {
     const QModelIndexList selection = mTableReplacements->selectionModel()->selectedRows();
-    QList< int > selectedRows;
+    QList<int> selectedRows;
     for ( const QModelIndex &index : selection )
       selectedRows.append( index.row() );
 
@@ -70,7 +70,7 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
 
   mCheckBoxDownloadFonts->setChecked( QgsFontManager::settingsDownloadMissingFonts->value() );
 
-  const QMap< QString, QStringList > userFonts = QgsApplication::fontManager()->userFontToFamilyMap();
+  const QMap<QString, QStringList> userFonts = QgsApplication::fontManager()->userFontToFamilyMap();
   mTableUserFonts->setRowCount( userFonts.size() );
   mTableUserFonts->setSelectionBehavior( QAbstractItemView::SelectRows );
   row = 0;
@@ -87,10 +87,9 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
     row++;
   }
 
-  connect( mButtonRemoveUserFont, &QToolButton::clicked, this, [ = ]
-  {
+  connect( mButtonRemoveUserFont, &QToolButton::clicked, this, [this] {
     const QModelIndexList selection = mTableUserFonts->selectionModel()->selectedRows();
-    QList< int > selectedRows;
+    QList<int> selectedRows;
     for ( const QModelIndex &index : selection )
       selectedRows.append( index.row() );
 
@@ -101,17 +100,16 @@ QgsFontOptionsWidget::QgsFontOptionsWidget( QWidget *parent )
       mTableUserFonts->removeRow( row );
     }
   } );
-
 }
 
 QString QgsFontOptionsWidget::helpKey() const
 {
-  return QStringLiteral( "introduction/qgis_configuration.html#fonts-options" );
+  return u"introduction/qgis_configuration.html#fonts-options"_s;
 }
 
 void QgsFontOptionsWidget::apply()
 {
-  QMap< QString, QString > replacements;
+  QMap<QString, QString> replacements;
   for ( int row = 0; row < mTableReplacements->rowCount(); ++row )
   {
     const QString original = mTableReplacements->item( row, 0 )->text().trimmed();
@@ -125,8 +123,8 @@ void QgsFontOptionsWidget::apply()
 
   QgsFontManager::settingsDownloadMissingFonts->setValue( mCheckBoxDownloadFonts->isChecked() );
 
-  const QMap< QString, QStringList > userFonts = QgsApplication::fontManager()->userFontToFamilyMap();
-  QSet< QString > remainingUserFonts;
+  const QMap<QString, QStringList> userFonts = QgsApplication::fontManager()->userFontToFamilyMap();
+  QSet<QString> remainingUserFonts;
   for ( int row = 0; row < mTableUserFonts->rowCount(); ++row )
   {
     const QString fileName = mTableUserFonts->item( row, 0 )->data( Qt::UserRole ).toString();
@@ -145,13 +143,13 @@ void QgsFontOptionsWidget::apply()
 // QgsFontOptionsFactory
 //
 QgsFontOptionsFactory::QgsFontOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon(), QStringLiteral( "fonts" ) )
+  : QgsOptionsWidgetFactory( tr( "Fonts" ), QIcon(), u"fonts"_s )
 {
 }
 
 QIcon QgsFontOptionsFactory::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFonts.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconFonts.svg"_s );
 }
 
 QgsOptionsPageWidget *QgsFontOptionsFactory::createWidget( QWidget *parent ) const
@@ -161,6 +159,5 @@ QgsOptionsPageWidget *QgsFontOptionsFactory::createWidget( QWidget *parent ) con
 
 QString QgsFontOptionsFactory::pagePositionHint() const
 {
-  return QStringLiteral( "mOptionsPageComposer" );
+  return u"mOptionsPageComposer"_s;
 }
-

@@ -14,32 +14,33 @@
  ***************************************************************************/
 
 #include "qgstemplateprojectsmodel.h"
-#include "qgsziputils.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgis.h"
-#include "qgsprojectlistitemdelegate.h"
-#include "qgsproject.h"
-
-#include <QApplication>
-#include <QStandardPaths>
-#include <QDir>
-#include <QCryptographicHash>
-#include <QPainter>
 
 #include <memory>
 
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsproject.h"
+#include "qgsprojectlistitemdelegate.h"
+#include "qgssettings.h"
+#include "qgsziputils.h"
+
+#include <QApplication>
+#include <QCryptographicHash>
+#include <QDir>
+#include <QPainter>
+#include <QStandardPaths>
+
+#include "moc_qgstemplateprojectsmodel.cpp"
 
 QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   : QStandardItemModel( parent )
 {
   const QStringList paths = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation );
-  const QString templateDirName = QgsSettings().value( QStringLiteral( "qgis/projectTemplateDir" ),
-                                  QString( QgsApplication::qgisSettingsDirPath() + QStringLiteral( "project_templates" ) ) ).toString();
+  const QString templateDirName = QgsSettings().value( u"qgis/projectTemplateDir"_s, QString( QgsApplication::qgisSettingsDirPath() + u"project_templates"_s ) ).toString();
 
   for ( const QString &templatePath : paths )
   {
-    const QString path = templatePath + QDir::separator() + QStringLiteral( "project_templates" );
+    const QString path = templatePath + QDir::separator() + u"project_templates"_s;
     addTemplateDirectory( path );
   }
 
@@ -54,13 +55,13 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   emptyProjectItem->setData( tr( "New Empty Project" ), QgsProjectListItemDelegate::TitleRole );
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole ); } );
   emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), QgsProjectListItemDelegate::CrsRole );
-  emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
-  const double devicePixelRatio = qobject_cast< QGuiApplication * >( QCoreApplication::instance() )->devicePixelRatio();
+  emptyProjectItem->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled );
+  const double devicePixelRatio = qobject_cast<QGuiApplication *>( QCoreApplication::instance() )->devicePixelRatio();
   QImage image( QSize( 250 * devicePixelRatio, 177 * devicePixelRatio ), QImage::Format_ARGB32 );
   const QgsSettings settings;
-  const int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();
-  const int myGreen = settings.value( QStringLiteral( "qgis/default_canvas_color_green" ), 255 ).toInt();
-  const int myBlue = settings.value( QStringLiteral( "qgis/default_canvas_color_blue" ), 255 ).toInt();
+  const int myRed = settings.value( u"qgis/default_canvas_color_red"_s, 255 ).toInt();
+  const int myGreen = settings.value( u"qgis/default_canvas_color_green"_s, 255 ).toInt();
+  const int myBlue = settings.value( u"qgis/default_canvas_color_blue"_s, 255 ).toInt();
   image.fill( QColor( myRed, myGreen, myBlue ) );
   QPainter painter( &image );
   painter.setOpacity( 0.5 );
@@ -88,7 +89,7 @@ void QgsTemplateProjectsModel::addTemplateDirectory( const QString &path )
 void QgsTemplateProjectsModel::scanDirectory( const QString &path )
 {
   const QDir dir = QDir( path );
-  const QFileInfoList files = dir.entryInfoList( QStringList() << QStringLiteral( "*.qgs" ) << QStringLiteral( "*.qgz" ) );
+  const QFileInfoList files = dir.entryInfoList( QStringList() << u"*.qgs"_s << u"*.qgz"_s );
 
   // Remove any template from this directory
   for ( int i = rowCount() - 1; i >= 0; --i )
@@ -102,7 +103,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
   // Refill with templates from this directory
   for ( const QFileInfo &file : files )
   {
-    std::unique_ptr<QStandardItem> item = std::make_unique<QStandardItem>( file.fileName() ) ;
+    auto item = std::make_unique<QStandardItem>( file.fileName() );
 
     const QString fileId = QCryptographicHash::hash( file.filePath().toUtf8(), QCryptographicHash::Sha224 ).toHex();
 
@@ -111,7 +112,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
 
     QgsZipUtils::unzip( file.filePath(), mTemporaryDir.filePath( fileId ), files );
 
-    const QString filename( mTemporaryDir.filePath( fileId ) + QDir::separator() + QStringLiteral( "preview.png" ) );
+    const QString filename( mTemporaryDir.filePath( fileId ) + QDir::separator() + u"preview.png"_s );
 
     const QgsProjectPreviewImage thumbnail( filename );
 
@@ -122,7 +123,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
     item->setData( file.baseName(), QgsProjectListItemDelegate::TitleRole );
     item->setData( file.filePath(), QgsProjectListItemDelegate::NativePathRole );
 
-    item->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled ) ;
+    item->setFlags( Qt::ItemFlag::ItemIsSelectable | Qt::ItemFlag::ItemIsEnabled );
     appendRow( item.release() );
   }
 }

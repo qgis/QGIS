@@ -30,7 +30,7 @@ from .dlg_db_error import DlgDbError
 from .db_plugins.plugin import TableIndex
 from .gui_utils import GuiUtils
 
-Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgCreateIndex.ui'))
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgCreateIndex.ui"))
 
 
 class DlgCreateIndex(QDialog, Ui_Dialog):
@@ -52,12 +52,14 @@ class DlgCreateIndex(QDialog, Ui_Dialog):
             self.cboColumn.addItem(fld.name)
 
     def columnChanged(self):
-        self.editName.setText("idx_%s_%s" % (self.table.name, self.cboColumn.currentText()))
+        self.editName.setText(f"idx_{self.table.name}_{self.cboColumn.currentText()}")
 
     def createIndex(self):
         idx = self.getIndex()
         if idx.name == "":
-            QMessageBox.critical(self, self.tr("Error"), self.tr("Please enter a name for the index."))
+            QMessageBox.critical(
+                self, self.tr("Error"), self.tr("Please enter a name for the index.")
+            )
             return
 
         # now create the index

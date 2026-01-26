@@ -16,10 +16,9 @@
 #ifndef QGSGEOREFTOOLMOVEPOINT_H
 #define QGSGEOREFTOOLMOVEPOINT_H
 
-#include <QRubberBand>
-
 #include "qgsmaptool.h"
 #include "qgsrubberband.h"
+#include "qgssnapindicator.h"
 
 class QgsGeorefToolMovePoint : public QgsMapTool
 {
@@ -28,23 +27,25 @@ class QgsGeorefToolMovePoint : public QgsMapTool
   public:
     explicit QgsGeorefToolMovePoint( QgsMapCanvas *canvas );
 
-    void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
-    bool isCanvas( QgsMapCanvas * );
+    bool isCanvas( QgsMapCanvas * ) const;
+
+    QgsPointXY startPoint() const { return mStartPointMapCoords; }
+    void setStartPoint( const QgsPointXY &startPoint ) { mStartPointMapCoords = startPoint; }
 
   signals:
-    void pointPressed( QPoint p );
-    void pointMoved( QPoint p );
-    void pointReleased( QPoint p );
+    void pointBeginMove( const QgsPointXY &p );
+    void pointMoving( const QgsPointXY &p );
+    void pointEndMove( const QgsPointXY &p );
+    void pointCancelMove( const QgsPointXY &p );
 
   private:
     //! Start point of the move in map coordinates
-    QPoint mStartPointMapCoords;
-
-    //! Rubberband that shows the feature being moved
-    QRubberBand *mRubberBand = nullptr;
+    QgsPointXY mStartPointMapCoords;
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 };
 
 #endif // QGSGEOREFTOOLMOVEPOINT_H

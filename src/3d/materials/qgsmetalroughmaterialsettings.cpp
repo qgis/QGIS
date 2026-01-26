@@ -14,12 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmetalroughmaterialsettings.h"
-#include "qgssymbollayerutils.h"
+
 #include "qgsmetalroughmaterial.h"
+#include "qgssymbollayerutils.h"
 
 QString QgsMetalRoughMaterialSettings::type() const
 {
-  return QStringLiteral( "metalrough" );
+  return u"metalrough"_s;
 }
 
 bool QgsMetalRoughMaterialSettings::supportsTechnique( QgsMaterialSettingsRenderingTechnique technique )
@@ -50,25 +51,34 @@ QgsMetalRoughMaterialSettings *QgsMetalRoughMaterialSettings::clone() const
   return new QgsMetalRoughMaterialSettings( *this );
 }
 
+bool QgsMetalRoughMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
+{
+  const QgsMetalRoughMaterialSettings *otherMetal = dynamic_cast<const QgsMetalRoughMaterialSettings *>( other );
+  if ( !otherMetal )
+    return false;
+
+  return *this == *otherMetal;
+}
+
 void QgsMetalRoughMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mBaseColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( QStringLiteral( "base" ), QStringLiteral( "125,125,125" ) ) );
-  mMetalness = elem.attribute( QStringLiteral( "metalness" ) ).toFloat();
-  mRoughness = elem.attribute( QStringLiteral( "roughness" ) ).toFloat();
+  mBaseColor = QgsSymbolLayerUtils::decodeColor( elem.attribute( u"base"_s, u"125,125,125"_s ) );
+  mMetalness = elem.attribute( u"metalness"_s ).toDouble();
+  mRoughness = elem.attribute( u"roughness"_s ).toDouble();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
 
 void QgsMetalRoughMaterialSettings::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
-  elem.setAttribute( QStringLiteral( "base" ), QgsSymbolLayerUtils::encodeColor( mBaseColor ) );
-  elem.setAttribute( QStringLiteral( "metalness" ), mMetalness );
-  elem.setAttribute( QStringLiteral( "roughness" ), mRoughness );
+  elem.setAttribute( u"base"_s, QgsSymbolLayerUtils::encodeColor( mBaseColor ) );
+  elem.setAttribute( u"metalness"_s, mMetalness );
+  elem.setAttribute( u"roughness"_s, mRoughness );
 
   QgsAbstractMaterialSettings::writeXml( elem, context );
 }
 
-Qt3DRender::QMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
+QgsMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const
 {
   switch ( technique )
   {
@@ -77,7 +87,7 @@ Qt3DRender::QMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSet
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
-      QgsMetalRoughMaterial *material  = new QgsMetalRoughMaterial;
+      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
       material->setBaseColor( context.isSelected() ? context.selectionColor() : mBaseColor );
       material->setMetalness( mMetalness );
       material->setRoughness( mRoughness );
@@ -100,5 +110,4 @@ QMap<QString, QString> QgsMetalRoughMaterialSettings::toExportParameters() const
 
 void QgsMetalRoughMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
 {
-
 }

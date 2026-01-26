@@ -16,12 +16,13 @@
 #ifndef QGSCOLORRAMPIMPL_H
 #define QGSCOLORRAMPIMPL_H
 
+#include "qgis.h"
 #include "qgis_core.h"
+#include "qgscolorramp.h"
+#include "qgscolorscheme.h"
+
 #include <QColor>
 #include <QGradient>
-#include "qgis.h"
-#include "qgscolorscheme.h"
-#include "qgscolorramp.h"
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -160,7 +161,7 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "gradient" ); }
+    static QString typeString() { return u"gradient"_s; }
 
     QString type() const override;
     void invert() override;
@@ -368,7 +369,7 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "random" ); }
+    static QString typeString() { return u"random"_s; }
 
     QString type() const override;
     QgsLimitedRandomColorRamp *clone() const override SIP_FACTORY;
@@ -480,7 +481,9 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
 /**
  * \ingroup core
  * \class QgsRandomColorRamp
- * \brief Totally random color ramp. Returns colors generated at random, but constrained
+ * \brief A color ramp consisting of random colors, constrained within component ranges.
+ *
+ * Returns colors generated at random, but constrained
  * to some hardcoded saturation and value ranges to prevent ugly color generation.
  */
 class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
@@ -508,7 +511,7 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "randomcolors" ); }
+    static QString typeString() { return u"randomcolors"_s; }
 
     QString type() const override;
 
@@ -574,7 +577,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "preset" ); }
+    static QString typeString() { return u"preset"_s; }
 
     QString type() const override;
     void invert() override;
@@ -582,7 +585,7 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
     QVariantMap properties() const override;
     int count() const override;
 
-    QString schemeName() const override { return QStringLiteral( "preset" ); }
+    QString schemeName() const override { return u"preset"_s; }
     QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override;
     bool isEditable() const override { return true; }
 
@@ -630,7 +633,7 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "colorbrewer" ); }
+    static QString typeString() { return u"colorbrewer"_s; }
 
     QString type() const override { return QgsColorBrewerColorRamp::typeString(); }
     void invert() override;
@@ -730,14 +733,14 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
                          bool doLoadFile = true );
 
     //! Creates the symbol layer
-    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY;
+    static QgsColorRamp *create( const QVariantMap &properties = QVariantMap() ) SIP_FACTORY; // cppcheck-suppress duplInheritedMember
 
     /**
      * Returns the string identifier for QgsCptCityColorRamp.
      *
      * \since QGIS 3.16
      */
-    static QString typeString() { return QStringLiteral( "cpt-city" ); }
+    static QString typeString() { return u"cpt-city"_s; } // cppcheck-suppress duplInheritedMember
 
     QString type() const override;
 

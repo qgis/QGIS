@@ -12,27 +12,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QObject>
-
+#include "qgsattributeeditorcontainer.h"
 #include "qgsattributeeditorelement.h"
 #include "qgsattributeeditorfield.h"
-#include "qgsattributeeditorcontainer.h"
 #include "qgseditformconfig.h"
 #include "qgsfontutils.h"
-#include "qgstest.h"
 #include "qgssettings.h"
+#include "qgstest.h"
+
+#include <QObject>
 
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsAttributeEditorElement label font and color serialization
  */
-class TestQgsAttributeEditorElement: public QObject
+class TestQgsAttributeEditorElement : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testLabelFontAndColor();
 };
 
@@ -41,9 +41,9 @@ void TestQgsAttributeEditorElement::initTestCase()
   // Runs once before any tests are run
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -59,7 +59,6 @@ void TestQgsAttributeEditorElement::cleanupTestCase()
 
 void TestQgsAttributeEditorElement::testLabelFontAndColor()
 {
-
   QgsEditFormConfig editFormConfig;
 
   QFont font0 { QgsFontUtils::getStandardTestFont() };
@@ -68,8 +67,7 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
   font0.setUnderline( true );
   font0.setStrikeOut( false );
 
-  QgsAttributeEditorElement::LabelStyle style
-  {
+  QgsAttributeEditorElement::LabelStyle style {
     QColor( Qt::GlobalColor::darkCyan ),
     font0,
     true,
@@ -86,11 +84,11 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
   font1.setStrikeOut( true );
 
   field1->setLabelStyle(
-  {
-    QColor( Qt::GlobalColor::blue ),
-    font1,
-    true,
-    true} );
+    { QColor( Qt::GlobalColor::blue ),
+      font1,
+      true,
+      true }
+  );
 
   editFormConfig.invisibleRootContainer()->addChildElement( field1 );
 
@@ -99,20 +97,20 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
   QFont font2 { QgsFontUtils::getStandardTestFont() };
 
   field2->setLabelStyle(
-  {
-    QColor( Qt::GlobalColor::blue ),
-    font2,
-    false,
-    true } );
+    { QColor( Qt::GlobalColor::blue ),
+      font2,
+      false,
+      true }
+  );
 
   QgsAttributeEditorContainer *container = new QgsAttributeEditorContainer( "group1", nullptr );
   container->setLabelStyle(
-  {
-    QColor( Qt::GlobalColor::darkCyan ),
-    font0,
-    true,
-    true
-  } );
+    { QColor( Qt::GlobalColor::darkCyan ),
+      font0,
+      true,
+      true
+    }
+  );
 
   container->addChildElement( field2 );
   editFormConfig.addTab( container );
@@ -137,7 +135,6 @@ void TestQgsAttributeEditorElement::testLabelFontAndColor()
   const auto field2config { group1config->children().at( 0 ) };
   QCOMPARE( field2config->name(), QString( "f2" ) );
   QCOMPARE( field2config->labelStyle(), field2->labelStyle() );
-
 }
 
 QGSTEST_MAIN( TestQgsAttributeEditorElement )

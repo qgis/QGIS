@@ -16,14 +16,14 @@
 #ifndef QGSMAPLAYERACTIONREGISTRY_H
 #define QGSMAPLAYERACTIONREGISTRY_H
 
-#include "qgis_sip.h"
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsmaplayeractioncontext.h"
 
-#include <QObject>
 #include <QList>
 #include <QMap>
+#include <QObject>
 
 class QgsFeature;
 class QgsMapLayer;
@@ -32,7 +32,7 @@ class QgsMapLayerAction;
 
 /**
  * \ingroup gui
-* \brief This class tracks map layer actions.
+* \brief A registry which tracks map layer actions.
 *
 * QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
 * QgsGui::mapLayerActionRegistry().
@@ -42,7 +42,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsMapLayerActionRegistry.
      *
@@ -70,17 +69,14 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
 
   protected:
-
-    QList< QgsMapLayerAction * > mMapLayerActionList;
+    QList<QgsMapLayerAction *> mMapLayerActionList;
 
   signals:
     //! Triggered when an action is added or removed from the registry
     void changed();
 
   private:
-
-    QMap< QgsMapLayer *, QgsMapLayerAction * > mDefaultLayerActionMap;
-
+    QMap<QgsMapLayer *, QgsMapLayerAction *> mDefaultLayerActionMap;
 };
 
 #endif // QGSMAPLAYERACTIONREGISTRY_H

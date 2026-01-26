@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -32,33 +32,31 @@
 class QgsVoronoiPolygonsAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsVoronoiPolygonsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmVoronoi.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmVoronoi.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmVoronoi.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmVoronoi.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsVoronoiPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QString voronoiWithAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
     QString voronoiWithoutAttributes( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
-    std::unique_ptr< QgsProcessingFeatureSource > mSource;
-    double mBuffer;
-    double mTolerance;
-    bool mCopyAttributes;
+    std::unique_ptr<QgsProcessingFeatureSource> mSource;
+    double mBuffer = 0;
+    double mTolerance = 0;
+    bool mCopyAttributes = false;
 };
 
 ///@endcond PRIVATE

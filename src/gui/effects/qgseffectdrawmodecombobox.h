@@ -16,15 +16,15 @@
 #ifndef QGSEFFECTDRAWMODECOMBOBOX_H
 #define QGSEFFECTDRAWMODECOMBOBOX_H
 
-#include <QComboBox>
-#include "qgspainteffect.h"
 #include "qgis_gui.h"
+#include "qgspainteffect.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui
  * \class QgsEffectDrawModeComboBox
- * \brief A combo box allowing selection of paint effect draw modes
- *
+ * \brief A combobox allowing selection of paint effect draw modes.
  */
 
 class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
@@ -32,7 +32,6 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
     Q_OBJECT
 
   public:
-
     QgsEffectDrawModeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
@@ -46,7 +45,6 @@ class GUI_EXPORT QgsEffectDrawModeComboBox : public QComboBox
      * \param drawMode selected draw mode
      */
     void setDrawMode( QgsPaintEffect::DrawMode drawMode );
-
 };
 
 #endif //QGSEFFECTDRAWMODECOMBOBOX_H

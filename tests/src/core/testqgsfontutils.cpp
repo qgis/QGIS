@@ -12,30 +12,29 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QStringList>
-#include <QSettings>
-
 #include "qgsapplication.h"
 #include "qgsfontutils.h"
+#include "qgstest.h"
 
-class TestQgsFontUtils: public QObject
+#include <QObject>
+#include <QSettings>
+#include <QString>
+#include <QStringList>
+
+class TestQgsFontUtils : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
-    void xmlMethods(); //test saving and reading from xml
-    void fromChildNode(); //test reading from child node
-    void toCss(); //test converting font to CSS
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
+    void xmlMethods();      //test saving and reading from xml
+    void fromChildNode();   //test reading from child node
+    void toCss();           //test converting font to CSS
 
   private:
-
 };
 
 void TestQgsFontUtils::initTestCase()
@@ -51,26 +50,24 @@ void TestQgsFontUtils::cleanupTestCase()
 
 void TestQgsFontUtils::init()
 {
-
 }
 
 void TestQgsFontUtils::cleanup()
 {
-
 }
 
 void TestQgsFontUtils::xmlMethods()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
+  );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();
   f1.setPointSize( 48 );
-  QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
+  QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, u"test"_s );
 
   //test reading
   QFont f2;
@@ -83,8 +80,8 @@ void TestQgsFontUtils::xmlMethods()
   QCOMPARE( f2.styleName(), f1.styleName() );
 
   //test writing/reading with styles
-  f1 = QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) );
-  fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
+  f1 = QgsFontUtils::getStandardTestFont( u"Bold"_s );
+  fontElem = QgsFontUtils::toXmlElement( f1, doc, u"test"_s );
 #ifndef Q_OS_WIN
   QVERIFY( f2.styleName() != f1.styleName() );
 #else
@@ -103,7 +100,7 @@ void TestQgsFontUtils::xmlMethods()
 
   //test numeric weight
   f1.setWeight( QFont::ExtraLight );
-  fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "test" ) );
+  fontElem = QgsFontUtils::toXmlElement( f1, doc, u"test"_s );
   QVERIFY( f2.weight() != f1.weight() );
   QVERIFY( QgsFontUtils::setFromXmlElement( f2, fontElem ) );
   QCOMPARE( f2.weight(), f1.weight() );
@@ -117,15 +114,15 @@ void TestQgsFontUtils::fromChildNode()
 {
   //create a test dom element
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType =
-    DomImplementation.createDocumentType(
-      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  const QDomDocumentType documentType = DomImplementation.createDocumentType(
+    u"qgis"_s, u"http://mrcc.com/qgis.dtd"_s, u"SYSTEM"_s
+  );
   QDomDocument doc( documentType );
 
   QFont f1 = QgsFontUtils::getStandardTestFont();
   f1.setPointSize( 48 );
-  const QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, QStringLiteral( "testNode" ) );
-  QDomElement parentElem = doc.createElement( QStringLiteral( "parent" ) );
+  const QDomElement fontElem = QgsFontUtils::toXmlElement( f1, doc, u"testNode"_s );
+  QDomElement parentElem = doc.createElement( u"parent"_s );
 
   //first try with no child element
   QFont f2;

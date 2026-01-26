@@ -20,10 +20,11 @@
 #ifndef QGSACCESSCONTROLPLUGIN_H
 #define QGSACCESSCONTROLPLUGIN_H
 
-#include <QMultiMap>
-#include <QString>
 #include "qgis_server.h"
 #include "qgis_sip.h"
+
+#include <QMultiMap>
+#include <QString>
 
 SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
 
@@ -36,7 +37,7 @@ class QgsFeature;
 /**
  * \ingroup server
  * \class QgsAccessControlFilter
- * \brief Class defining access control interface for QGIS Server plugins.
+ * \brief Defines access control interface for QGIS Server plugins.
  *
  * Security can define any (or none) of the following method:
  *
@@ -49,9 +50,7 @@ class QgsFeature;
  */
 class SERVER_EXPORT QgsAccessControlFilter
 {
-
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors
@@ -64,10 +63,10 @@ class SERVER_EXPORT QgsAccessControlFilter
     //! Describe the layer permission
     struct LayerPermissions
     {
-      bool canRead;
-      bool canUpdate;
-      bool canInsert;
-      bool canDelete;
+        bool canRead;
+        bool canUpdate;
+        bool canInsert;
+        bool canDelete;
     };
 
     //! Returns the QgsServerInterface instance
@@ -117,10 +116,8 @@ class SERVER_EXPORT QgsAccessControlFilter
     virtual QString cacheKey() const;
 
   private:
-
     //! The server interface
     const QgsServerInterface *mServerInterface = nullptr;
-
 };
 
 //! The registry definition

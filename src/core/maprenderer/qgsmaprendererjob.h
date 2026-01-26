@@ -18,18 +18,18 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QFutureWatcher>
-#include <QImage>
-#include <QPainter>
-#include <QObject>
-#include <QTime>
-#include <QElapsedTimer>
-#include <QPicture>
-
-#include "qgsrendercontext.h"
 #include "qgslabelsink.h"
 #include "qgsmapsettings.h"
 #include "qgsmaskidprovider.h"
+#include "qgsrendercontext.h"
+
+#include <QElapsedTimer>
+#include <QFutureWatcher>
+#include <QImage>
+#include <QObject>
+#include <QPainter>
+#include <QPicture>
+#include <QTime>
 
 class QPicture;
 
@@ -403,7 +403,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
+    QgsLabelSink *labelSink() const SIP_SKIP { return mLabelSink; }
 
     /**
      * Assigns the label sink which will take over responsibility for handling labels
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
+    void setLabelSink( QgsLabelSink *sink ) SIP_SKIP { mLabelSink = sink; }
 
     /**
      * Returns the associated labeling engine feedback object.
@@ -564,6 +564,19 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
     bool prepareLabelCache() const SIP_SKIP;
 
     /**
+     * Returns TRUE if any component of the map labeling requires non-default composition modes.
+     *
+     * This method is pessimistic, in that it will return TRUE in cases where composition
+     * modes cannot be easily determined in advance (e.g. when data-defined overrides are
+     * in place for composition modes).
+     *
+     * The default composition mode is QPainter::CompositionMode_SourceOver.
+     *
+     * \since QGIS 3.44
+     */
+    bool labelingHasNonDefaultCompositionModes() const;
+
+    /**
      * Creates a list of layer rendering jobs and prepares them for later render.
      *
      * The \a painter argument specifies the destination painter. If not set, the jobs will
@@ -645,7 +658,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
     /**
      * \note not available in Python bindings
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static void drawLabeling( const QgsMapSettings &settings, QgsRenderContext &renderContext, QgsLabelingEngine *labelingEngine2, QPainter *painter ) SIP_SKIP;
 
@@ -697,7 +710,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
 
 /**
  * \ingroup core
- * \brief Intermediate base class adding functionality that allows client to query the rendered image.
+ * \brief Intermediate base class adding functionality that allows a client to query the rendered image.
  *
  * The image can be queried even while the rendering is still in progress to get intermediate result
  *

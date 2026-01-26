@@ -15,17 +15,19 @@
 
 #include "qgspainteffectpropertieswidget.h"
 
+#include "qgsapplication.h"
+#include "qgseffectstack.h"
+#include "qgslogger.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
+#include "qgspainteffectwidget.h"
+
 #include <QFile>
-#include <QStandardItem>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QStandardItem>
 
-#include "qgspainteffectregistry.h"
-#include "qgspainteffect.h"
-#include "qgspainteffectwidget.h"
-#include "qgseffectstack.h"
-#include "qgsapplication.h"
-#include "qgslogger.h"
+#include "moc_qgspainteffectpropertieswidget.cpp"
 
 static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f )
 {
@@ -34,13 +36,13 @@ static bool _initWidgetFunction( const QString &name, QgsPaintEffectWidgetFunc f
   QgsPaintEffectAbstractMetadata *abstractMetadata = registry->effectMetadata( name );
   if ( !abstractMetadata )
   {
-    QgsDebugError( QStringLiteral( "Failed to find paint effect entry in registry: %1" ).arg( name ) );
+    QgsDebugError( u"Failed to find paint effect entry in registry: %1"_s.arg( name ) );
     return false;
   }
   QgsPaintEffectMetadata *metadata = dynamic_cast<QgsPaintEffectMetadata *>( abstractMetadata );
   if ( !metadata )
   {
-    QgsDebugError( QStringLiteral( "Failed to cast paint effect's metadata: " ) .arg( name ) );
+    QgsDebugError( u"Failed to cast paint effect's metadata: "_s.arg( name ) );
     return false;
   }
   metadata->setWidgetFunction( f );
@@ -53,14 +55,14 @@ static void _initWidgetFunctions()
   if ( sInitialized )
     return;
 
-  _initWidgetFunction( QStringLiteral( "blur" ), QgsBlurWidget::create );
-  _initWidgetFunction( QStringLiteral( "dropShadow" ), QgsShadowEffectWidget::create );
-  _initWidgetFunction( QStringLiteral( "innerShadow" ), QgsShadowEffectWidget::create );
-  _initWidgetFunction( QStringLiteral( "drawSource" ), QgsDrawSourceWidget::create );
-  _initWidgetFunction( QStringLiteral( "outerGlow" ), QgsGlowWidget::create );
-  _initWidgetFunction( QStringLiteral( "innerGlow" ), QgsGlowWidget::create );
-  _initWidgetFunction( QStringLiteral( "transform" ), QgsTransformWidget::create );
-  _initWidgetFunction( QStringLiteral( "color" ), QgsColorEffectWidget::create );
+  _initWidgetFunction( u"blur"_s, QgsBlurWidget::create );
+  _initWidgetFunction( u"dropShadow"_s, QgsShadowEffectWidget::create );
+  _initWidgetFunction( u"innerShadow"_s, QgsShadowEffectWidget::create );
+  _initWidgetFunction( u"drawSource"_s, QgsDrawSourceWidget::create );
+  _initWidgetFunction( u"outerGlow"_s, QgsGlowWidget::create );
+  _initWidgetFunction( u"innerGlow"_s, QgsGlowWidget::create );
+  _initWidgetFunction( u"transform"_s, QgsTransformWidget::create );
+  _initWidgetFunction( u"color"_s, QgsColorEffectWidget::create );
 
   sInitialized = true;
 }
@@ -95,7 +97,7 @@ void QgsPaintEffectPropertiesWidget::populateEffectTypes()
   for ( const QString &type : constTypes )
   {
     //don't show stack effect
-    if ( type == QLatin1String( "effectStack" ) )
+    if ( type == "effectStack"_L1 )
       continue;
 
     mEffectTypeCombo->addItem( registry->effectMetadata( type )->visibleName(), type );
@@ -113,7 +115,7 @@ void QgsPaintEffectPropertiesWidget::updateEffectWidget( QgsPaintEffect *effect 
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsPaintEffectWidget *pew = qobject_cast< QgsPaintEffectWidget * >( stackedWidget->currentWidget() ) )
+    if ( QgsPaintEffectWidget *pew = qobject_cast<QgsPaintEffectWidget *>( stackedWidget->currentWidget() ) )
       disconnect( pew, &QgsPaintEffectWidget::changed, this, &QgsPaintEffectPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }

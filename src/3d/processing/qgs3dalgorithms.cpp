@@ -16,8 +16,11 @@
  ***************************************************************************/
 
 #include "qgs3dalgorithms.h"
+
 #include "qgsalgorithmtessellate.h"
 #include "qgsapplication.h"
+
+#include "moc_qgs3dalgorithms.cpp"
 
 ///@cond PRIVATE
 
@@ -27,22 +30,22 @@ Qgs3DAlgorithms::Qgs3DAlgorithms( QObject *parent )
 
 QIcon Qgs3DAlgorithms::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+  return QgsApplication::getThemeIcon( u"/providerQgis.svg"_s );
 }
 
 QString Qgs3DAlgorithms::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "providerQgis.svg" ) );
+  return QgsApplication::iconPath( u"providerQgis.svg"_s );
 }
 
 QString Qgs3DAlgorithms::id() const
 {
-  return QStringLiteral( "3d" );
+  return u"3d"_s;
 }
 
 QString Qgs3DAlgorithms::helpId() const
 {
-  return QStringLiteral( "qgis" );
+  return u"qgis"_s;
 }
 
 QString Qgs3DAlgorithms::name() const
@@ -62,6 +65,3 @@ void Qgs3DAlgorithms::loadAlgorithms()
 
 
 ///@endcond
-
-
-

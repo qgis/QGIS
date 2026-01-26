@@ -16,18 +16,20 @@
 #ifndef QGSCODEEDITORSQL_H
 #define QGSCODEEDITORSQL_H
 
-#include "qgscodeeditor.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgscodeeditor.h"
 #include "qgsfeature.h"
+
 #include <Qsci/qscilexersql.h>
 
 SIP_IF_MODULE( HAVE_QSCI_SIP )
 
 /**
  * \ingroup gui
- * \brief A SQL editor based on QScintilla2. Adds syntax highlighting and
- * code autocompletion.
+ * \brief A SQL editor based on QScintilla2.
+ *
+ * Adds syntax highlighting and code autocompletion.
  * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
@@ -40,7 +42,7 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
 
     Qgis::ScriptLanguage language() const override;
 
-    virtual ~QgsCodeEditorSQL();
+    ~QgsCodeEditorSQL() override;
 
     /**
      * Set field names to be added to the lexer API.
@@ -110,13 +112,14 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
  * \note not available in Python bindings
  * \ingroup gui
 */
-class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
+class QgsCaseInsensitiveLexerSQL : public QsciLexerSQL
 {
     Q_OBJECT
 
   public:
     //! constructor
-    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = nullptr ) : QsciLexerSQL( parent ) {}
+    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = nullptr )
+      : QsciLexerSQL( parent ) {}
 
     bool caseSensitive() const override { return false; }
 };

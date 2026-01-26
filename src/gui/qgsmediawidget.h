@@ -17,11 +17,11 @@
 #ifndef QGSMEDIAWIDGET_H
 #define QGSMEDIAWIDGET_H
 
-#include <QWidget>
-#include <QMediaPlayer>
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QMediaPlayer>
+#include <QWidget>
 
 class QLabel;
 class QVBoxLayout;
@@ -31,16 +31,14 @@ class QSlider;
 
 /**
  * \ingroup gui
- * \brief The QgsMediaWidget class creates a widget for playing back audio and video media files.
+ * \brief A widget for playing back audio and video media files.
  * \since QGIS 3.30
  */
 class GUI_EXPORT QgsMediaWidget : public QWidget
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * The mode determines the user interface elements visible within the widget.
     */
@@ -96,7 +94,6 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     void mediaStatusChanged( QMediaPlayer::MediaStatus status );
 
   private:
-
     void adjustControls();
     void setControlsEnabled( bool enabled );
 
@@ -111,7 +108,6 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     QMediaPlayer mMediaPlayer;
 
     QString mMediaPath;
-
 };
 
 #endif // QGSMEDIAWIDGET_H

@@ -15,24 +15,28 @@
 
 #include "qgsmaprendererparalleljob.h"
 
+#include <memory>
+
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsmaplayerrenderer.h"
-#include "qgsproject.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgsproject.h"
+#include "qgsthreadingutils.h"
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
+#include "moc_qgsmaprendererparalleljob.cpp"
+
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
-  , mStatus( Idle )
 {
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::ForceVectorOutput ) )
   {
-    QgsLogger::warning( QStringLiteral( "Vector rendering in parallel job is not supported, so Qgis::MapSettingsFlag::ForceVectorOutput option will be ignored!" ) );
+    QgsLogger::warning( u"Vector rendering in parallel job is not supported, so Qgis::MapSettingsFlag::ForceVectorOutput option will be ignored!"_s );
     mSettings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, false );
   }
 }
@@ -58,7 +62,7 @@ void QgsMapRendererParallelJob::startPrivate()
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
-    mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
+    mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -67,7 +71,7 @@ void QgsMapRendererParallelJob::startPrivate()
   mLabelJob = prepareLabelingJob( nullptr, mLabelingEngineV2.get(), canUseLabelCache );
   mSecondPassLayerJobs = prepareSecondPassJobs( mLayerJobs, mLabelJob );
 
-  QgsDebugMsgLevel( QStringLiteral( "QThreadPool max thread count is %1" ).arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
+  QgsDebugMsgLevel( u"QThreadPool max thread count is %1"_s.arg( QThreadPool::globalInstance()->maxThreadCount() ), 2 );
 
   // start async job
 
@@ -82,7 +86,7 @@ void QgsMapRendererParallelJob::cancel()
   if ( !isActive() )
     return;
 
-  QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
+  QgsDebugMsgLevel( u"PARALLEL cancel at status %1"_s.arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJob &job : mLayerJobs )
@@ -127,7 +131,7 @@ void QgsMapRendererParallelJob::cancelWithoutBlocking()
   if ( !isActive() )
     return;
 
-  QgsDebugMsgLevel( QStringLiteral( "PARALLEL cancel at status %1" ).arg( mStatus ), 2 );
+  QgsDebugMsgLevel( u"PARALLEL cancel at status %1"_s.arg( mStatus ), 2 );
 
   mLabelJob.context.setRenderingStopped( true );
   for ( LayerRenderJob &job : mLayerJobs )
@@ -158,7 +162,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mFutureWatcher.waitForFinished();
 
-    QgsDebugMsgLevel( QStringLiteral( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ), 2 );
+    QgsDebugMsgLevel( u"waitForFinished (1): %1 ms"_s.arg( t.elapsed() / 1000.0 ), 2 );
 
     renderLayersFinished();
   }
@@ -172,7 +176,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mLabelingFutureWatcher.waitForFinished();
 
-    QgsDebugMsgLevel( QStringLiteral( "waitForFinished (2): %1 ms" ).arg( t.elapsed() / 1000.0 ), 2 );
+    QgsDebugMsgLevel( u"waitForFinished (2): %1 ms"_s.arg( t.elapsed() / 1000.0 ), 2 );
 
     renderingFinished();
   }
@@ -186,7 +190,7 @@ void QgsMapRendererParallelJob::waitForFinished()
 
     mSecondPassFutureWatcher.waitForFinished();
 
-    QgsDebugMsgLevel( QStringLiteral( "waitForFinished (1): %1 ms" ).arg( t.elapsed() / 1000.0 ), 2 );
+    QgsDebugMsgLevel( u"waitForFinished (1): %1 ms"_s.arg( t.elapsed() / 1000.0 ), 2 );
 
     renderLayersSecondPassFinished();
   }
@@ -243,7 +247,7 @@ void QgsMapRendererParallelJob::renderLayersFinished()
     mFinalImage = composeImage( mSettings, mLayerJobs, mLabelJob, mCache );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "PARALLEL layers finished" ), 2 );
+  QgsDebugMsgLevel( u"PARALLEL layers finished"_s, 2 );
 
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) && !mLabelJob.context.renderingStopped() )
   {
@@ -301,7 +305,7 @@ void QgsMapRendererParallelJob::renderingFinished()
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "PARALLEL finished" ), 2 );
+    QgsDebugMsgLevel( u"PARALLEL finished"_s, 2 );
 
     logRenderingTime( mLayerJobs, mSecondPassLayerJobs, mLabelJob );
 
@@ -319,7 +323,7 @@ void QgsMapRendererParallelJob::renderingFinished()
 
 void QgsMapRendererParallelJob::renderLayersSecondPassFinished()
 {
-  QgsDebugMsgLevel( QStringLiteral( "PARALLEL finished" ), 2 );
+  QgsDebugMsgLevel( u"PARALLEL finished"_s, 2 );
 
   // compose second pass images into first pass images
   composeSecondPass( mSecondPassLayerJobs, mLabelJob );
@@ -370,7 +374,7 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
 
   QElapsedTimer t;
   t.start();
-  QgsDebugMsgLevel( QStringLiteral( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( u"job %1 start (layer %2)"_s.arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layerId ), 2 );
   try
   {
 #ifdef SIMULATE_SLOW_RENDERER
@@ -390,12 +394,12 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
   }
   catch ( ... )
   {
-    QgsDebugError( QStringLiteral( "Caught unhandled unknown exception" ) );
+    QgsDebugError( u"Caught unhandled unknown exception"_s );
   }
 
   job.errors = job.renderer->errors();
   job.renderingTime += t.elapsed();
-  QgsDebugMsgLevel( QStringLiteral( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
+  QgsDebugMsgLevel( u"job %1 end [%2 ms] (layer %3)"_s.arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layerId ), 2 );
 }
 
 
@@ -414,6 +418,10 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
       job.img->fill( 0 );
       painter.begin( job.img );
     }
+    else if ( job.picture )
+    {
+      painter.begin( job.picture.get() );
+    }
     else
     {
       painter.begin( &self->mFinalImage );
@@ -422,6 +430,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     // draw the labels!
     try
     {
+      QgsScopedThreadName threadName( u"labeling"_s );
       drawLabeling( job.context, self->mLabelingEngineV2.get(), &painter );
     }
     catch ( QgsException &e )
@@ -436,7 +445,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     }
     catch ( ... )
     {
-      QgsDebugError( QStringLiteral( "Caught unhandled unknown exception" ) );
+      QgsDebugError( u"Caught unhandled unknown exception"_s );
     }
 
     painter.end();

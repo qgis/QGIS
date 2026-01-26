@@ -30,7 +30,8 @@ Check whether exact font is on system
 
     static bool fontFamilyOnSystem( const QString &family );
 %Docstring
-Check whether font family is on system in a quick manner, which does not compare [foundry]
+Check whether font family is on system in a quick manner, which does not
+compare [foundry]
 
 :param family: The family to test
 
@@ -53,11 +54,13 @@ Check whether font family on system has specific style
 
     static QString resolveFontStyleName( const QFont &font );
 %Docstring
-Attempts to resolve the style name corresponding to the specified ``font`` object.
+Attempts to resolve the style name corresponding to the specified
+``font`` object.
 
-If a font has been modified by calling QFont.setBold or QFont.setItalic, then its QFont.styleName
-may return an empty string. This method attempts to determine the correct style name which
-corresponds to the font's bold and italic settings.
+If a font has been modified by calling QFont.setBold or QFont.setItalic,
+then its QFont.styleName may return an empty string. This method
+attempts to determine the correct style name which corresponds to the
+font's bold and italic settings.
 
 Returns an empty string if a matching style name could not be found.
 
@@ -69,7 +72,8 @@ Returns an empty string if a matching style name could not be found.
 Check whether font family is on system
 
 :param family: The family to test
-:param chosen: The actual family (possibly from different foundry) returned by system
+:param chosen: The actual family (possibly from different foundry)
+               returned by system
 :param match: Whether the family [foundry] returned by system is a match
 
 :return: Whether family was found on system
@@ -81,13 +85,15 @@ Updates font with named style and retain all font properties
 
 :param f: The font to update
 :param fontstyle: The style to try and switch the font to
-:param fallback: If no matching fontstyle found for font, assign most similar or first style found to font
+:param fallback: If no matching fontstyle found for font, assign most
+                 similar or first style found to font
 
-:return: Whether the font was updated (also returns ``True`` if the requested style matches font's current style)
+:return: Whether the font was updated (also returns ``True`` if the
+         requested style matches font's current style)
 
 .. note::
 
-   This is a more featured replacement for a Qt 4.8+ function: void QFont.setStyleName ( const QString & styleName )
+   This is a more featured replacement for a Qt 4.8+ function: void QFont.setStyleName().
 %End
 
     static QString standardTestFontFamily();
@@ -99,7 +105,8 @@ Gets standard test font family
 %Docstring
 Loads standard test fonts from filesystem or qrc resource
 
-:param loadstyles: List of styles to load, e.g. All, Roman, Oblique, Bold, Bold Oblique
+:param loadstyles: List of styles to load, e.g. All, Roman, Oblique,
+                   Bold, Bold Oblique
 
 :return: Whether any font was loaded
 
@@ -133,8 +140,8 @@ Returns a DOM element containing the properties of the font.
 
     static bool setFromXmlElement( QFont &font, const QDomElement &element );
 %Docstring
-Sets the properties of a font to match the properties stored in an XML element. Calling
-this will overwrite the current properties of the font.
+Sets the properties of a font to match the properties stored in an XML
+element. Calling this will overwrite the current properties of the font.
 
 :param font: font to update
 :param element: DOM element
@@ -148,14 +155,16 @@ this will overwrite the current properties of the font.
 
     static bool setFromXmlChildNode( QFont &font, const QDomElement &element, const QString &childNode );
 %Docstring
-Sets the properties of a font to match the properties stored in an XML child node. Calling
-this will overwrite the current properties of the font.
+Sets the properties of a font to match the properties stored in an XML
+child node. Calling this will overwrite the current properties of the
+font.
 
 :param font: font to update
 :param element: DOM element
 :param childNode: name of child node
 
-:return: ``True`` if child node exists and properties were successfully read from node
+:return: ``True`` if child node exists and properties were successfully
+         read from node
 
 .. seealso:: :py:func:`setFromXmlElement`
 
@@ -172,15 +181,16 @@ Caller takes responsibility for deleting the returned object.
 
     static QFont fromMimeData( const QMimeData *data, bool *ok /Out/ = 0 );
 %Docstring
-Attempts to parse the provided mime ``data`` as a QFont.
-If data can be parsed as a QFont, ``ok`` will be set to ``True``.
+Attempts to parse the provided mime ``data`` as a QFont. If data can be
+parsed as a QFont, ``ok`` will be set to ``True``.
 
 .. seealso:: :py:func:`toMimeData`
 %End
 
     static QString translateNamedStyle( const QString &namedStyle );
 %Docstring
-Returns the localized named style of a font, if such a translation is available.
+Returns the localized named style of a font, if such a translation is
+available.
 
 :param namedStyle: a named style, i.e. "Bold", "Italic", etc
 
@@ -202,15 +212,20 @@ Returns the english named style of a font, if possible.
 
     static QString asCSS( const QFont &font, double pointToPixelMultiplier = 1.0 );
 %Docstring
-Returns a CSS string representing the specified font as closely as possible.
+Returns a CSS string representing the specified font as closely as
+possible.
 
 :param font: QFont to convert
-:param pointToPixelMultiplier: scaling factor to apply to convert point sizes to pixel font sizes.
-                               The CSS returned by this function will always use pixels for font sizes, so this parameter
-                               should be set to a suitable value to convert point sizes to pixels (e.g., taking into account
-                               destination DPI)
+:param pointToPixelMultiplier: scaling factor to apply to convert point
+                               sizes to pixel font sizes. The CSS
+                               returned by this function will always use
+                               pixels for font sizes, so this parameter
+                               should be set to a suitable value to
+                               convert point sizes to pixels (e.g.,
+                               taking into account destination DPI)
 
-:return: partial CSS string, e.g., "font-family: Comic Sans; font-size: 12px;"
+:return: partial CSS string, e.g., "font-family: Comic Sans; font-size:
+         12px;"
 %End
 
     static void addRecentFontFamily( const QString &family );

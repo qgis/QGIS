@@ -1,11 +1,13 @@
 # The following has been generated automatically from src/core/qgsmaplayerlegend.h
 try:
-    QgsMapLayerLegend.__attribute_docs__ = {'itemsChanged': 'Emitted when existing items/nodes got invalid and should be replaced by new ones\n'}
+    QgsMapLayerLegend.__attribute_docs__ = {'itemsChanged': 'Emitted when existing items/nodes got invalid and should be replaced by\nnew ones\n'}
     QgsMapLayerLegend.defaultVectorLegend = staticmethod(QgsMapLayerLegend.defaultVectorLegend)
     QgsMapLayerLegend.defaultRasterLegend = staticmethod(QgsMapLayerLegend.defaultRasterLegend)
     QgsMapLayerLegend.defaultMeshLegend = staticmethod(QgsMapLayerLegend.defaultMeshLegend)
     QgsMapLayerLegend.defaultPointCloudLegend = staticmethod(QgsMapLayerLegend.defaultPointCloudLegend)
-except NameError:
+    QgsMapLayerLegend.__virtual_methods__ = ['readXml', 'writeXml']
+    QgsMapLayerLegend.__abstract_methods__ = ['createLayerTreeModelLegendNodes']
+except (NameError, AttributeError):
     pass
 try:
     QgsMapLayerLegendUtils.setLegendNodeOrder = staticmethod(QgsMapLayerLegendUtils.setLegendNodeOrder)
@@ -25,5 +27,21 @@ try:
     QgsMapLayerLegendUtils.setLegendNodeColumnBreak = staticmethod(QgsMapLayerLegendUtils.setLegendNodeColumnBreak)
     QgsMapLayerLegendUtils.legendNodeColumnBreak = staticmethod(QgsMapLayerLegendUtils.legendNodeColumnBreak)
     QgsMapLayerLegendUtils.applyLayerNodeProperties = staticmethod(QgsMapLayerLegendUtils.applyLayerNodeProperties)
-except NameError:
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultVectorLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes', 'readXml', 'writeXml']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultRasterLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultMeshLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes']
+except (NameError, AttributeError):
+    pass
+try:
+    QgsDefaultPointCloudLayerLegend.__overridden_methods__ = ['createLayerTreeModelLegendNodes']
+except (NameError, AttributeError):
     pass

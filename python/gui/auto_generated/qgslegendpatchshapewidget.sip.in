@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsLegendPatchShapeWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -21,10 +23,10 @@ Widget for configuring a custom legend patch shape.
 #include "qgslegendpatchshapewidget.h"
 %End
   public:
-
     QgsLegendPatchShapeWidget( QWidget *parent /TransferThis/ = 0, const QgsLegendPatchShape &shape = QgsLegendPatchShape() );
 %Docstring
-Constructor for QgsLegendPatchShapeWidget, with the specified ``parent`` widget.
+Constructor for QgsLegendPatchShapeWidget, with the specified ``parent``
+widget.
 %End
 
     QgsLegendPatchShape shape() const;
@@ -62,10 +64,10 @@ A dialog for configuring a custom legend patch shape.
 #include "qgslegendpatchshapewidget.h"
 %End
   public:
-
     QgsLegendPatchShapeDialog( const QgsLegendPatchShape &shape, QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsLegendPatchShapeDialog, initially showing the specified ``shape``.
+Constructor for QgsLegendPatchShapeDialog, initially showing the
+specified ``shape``.
 %End
 
     QgsLegendPatchShape shape() const;

@@ -18,10 +18,9 @@
 #ifndef QGSTILEDSCENERENDERER_H
 #define QGSTILEDSCENERENDERER_H
 
-#include "qgsrendercontext.h"
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsrendercontext.h"
 
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
@@ -55,7 +54,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
+    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
 
     /**
      * Returns the feedback object used to cancel rendering
@@ -123,9 +122,9 @@ class CORE_EXPORT QgsTiledSceneRenderer
     SIP_CONVERT_TO_SUBCLASS_CODE
 
     const QString type = sipCpp->type();
-    if ( type == QLatin1String( "texture" ) )
+    if ( type == "texture"_L1 )
       sipType = sipType_QgsTiledSceneTextureRenderer;
-    else if ( type == QLatin1String( "wireframe" ) )
+    else if ( type == "wireframe"_L1 )
       sipType = sipType_QgsTiledSceneWireframeRenderer;
     else
       sipType = 0;

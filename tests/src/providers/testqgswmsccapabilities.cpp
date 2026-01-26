@@ -12,18 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgstest.h"
+#include "qgswmscapabilities.h"
+
 #include <QFile>
 #include <QObject>
-#include "qgstest.h"
-#include <qgswmscapabilities.h>
-#include <qgsapplication.h>
 
 /**
  * \ingroup UnitTests
  * This is a unit test for the WMS-C capabilities parser
  * implemented as QgsWmsCapabilities::parseTileSetProfile
  */
-class TestQgsWmscCapabilities: public QObject
+class TestQgsWmscCapabilities : public QObject
 {
     Q_OBJECT
   private slots:
@@ -123,9 +124,9 @@ class TestQgsWmscCapabilities: public QObject
       QgsWmtsTileMatrix m;
 
       QCOMPARE( mCapabilities->supportedTileMatrixSets().size(), 4 );
-      QCOMPARE( mCapabilities->supportedTileMatrixSets()[QStringLiteral( "layerwtwa-wmsc-0" )].tileMatrices.size(), 2 );
+      QCOMPARE( mCapabilities->supportedTileMatrixSets()[u"layerwtwa-wmsc-0"_s].tileMatrices.size(), 2 );
 
-      m = mCapabilities->supportedTileMatrixSets()[QStringLiteral( "layerwtwa-wmsc-0" )].tileMatrices[603.400];
+      m = mCapabilities->supportedTileMatrixSets()[u"layerwtwa-wmsc-0"_s].tileMatrices[603.400];
 
       QCOMPARE( m.tileWidth, 256 );
       QCOMPARE( m.tileHeight, 256 );

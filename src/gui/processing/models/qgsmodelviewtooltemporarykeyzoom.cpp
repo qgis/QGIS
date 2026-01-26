@@ -14,11 +14,15 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtooltemporarykeyzoom.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelgraphicsview.h"
+
 #include "qgsapplication.h"
-#include <QScrollBar>
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+
 #include <QApplication>
+#include <QScrollBar>
+
+#include "moc_qgsmodelviewtooltemporarykeyzoom.cpp"
 
 QgsModelViewToolTemporaryKeyZoom::QgsModelViewToolTemporaryKeyZoom( QgsModelGraphicsView *view )
   : QgsModelViewToolZoom( view )
@@ -107,7 +111,5 @@ void QgsModelViewToolTemporaryKeyZoom::activate()
 
 void QgsModelViewToolTemporaryKeyZoom::updateCursor( Qt::KeyboardModifiers modifiers )
 {
-  view()->viewport()->setCursor( ( modifiers & Qt::AltModifier ) ?
-                                 QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-                                 QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+  view()->viewport()->setCursor( ( modifiers & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
 }

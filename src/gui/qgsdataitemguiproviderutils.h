@@ -16,13 +16,15 @@
 #ifndef QGSDATAITEMGUIPROVIDERUTILS_H
 #define QGSDATAITEMGUIPROVIDERUTILS_H
 
+#include <functional>
+
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgsdataitem.h"
 #include "qgsdataitemguiprovider.h"
+
 #include <QPointer>
-#include <functional>
 
 class QgsDataItem;
 
@@ -37,7 +39,6 @@ class QgsDataItem;
 class GUI_EXPORT QgsDataItemGuiProviderUtils
 {
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -46,9 +47,9 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
      * \note Not available in Python bindings
      */
     template<class T>
-    static void deleteConnections( const QList< T * > &items, const std::function< void( const QString & ) > &deleteConnection, QgsDataItemGuiContext context )
+    static void deleteConnections( const QList<T *> &items, const std::function<void( const QString & )> &deleteConnection, QgsDataItemGuiContext context )
     {
-      ( void )context;
+      ( void ) context;
       if ( items.empty() )
         return;
 
@@ -58,8 +59,8 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
       {
         connectionNames << item->name();
       }
-      QPointer< QgsDataItem > firstParent( items.at( 0 )->parent() );
-      deleteConnectionsPrivate( connectionNames, deleteConnection, firstParent );
+      QPointer<QgsDataItem> firstParent( items.at( 0 )->parent() );
+      deleteConnectionsPrivate( connectionNames, deleteConnection, std::move( firstParent ) );
     }
 
     /**
@@ -72,10 +73,62 @@ class GUI_EXPORT QgsDataItemGuiProviderUtils
      */
     static const QString uniqueName( const QString &name, const QStringList &connectionNames );
 
+    /**
+     * Handles dropping a vector layer for \a connection items.
+     *
+     * \note Not available in Python bindings
+     */
+    static bool handleDropUriForConnection(
+      std::unique_ptr< QgsAbstractDatabaseProviderConnection > connection,
+      const QgsMimeDataUtils::Uri &sourceUri,
+      const QString &destinationSchema,
+      QgsDataItemGuiContext context,
+      const QString &shortTitle,
+      const QString &longTitle,
+      const QVariantMap &destinationProviderOptions,
+      const std::function<void()> &onSuccessfulCompletion,
+      const std::function<void( Qgis::VectorExportResult error, const QString &errorMessage )> &onError,
+      QObject *connectionContext
+    );
+
+    /**
+     * Handles importing a vector layer for \a connection items.
+     *
+     * \note Not available in Python bindings
+     */
+    static void handleImportVectorLayerForConnection(
+      std::unique_ptr< QgsAbstractDatabaseProviderConnection > connection,
+      const QString &destinationSchema,
+      QgsDataItemGuiContext context,
+      const QString &shortTitle,
+      const QString &longTitle,
+      const QVariantMap &destinationProviderOptions,
+      const std::function<void()> &onSuccessfulCompletion,
+      const std::function<void( Qgis::VectorExportResult error, const QString &errorMessage )> &onError,
+      QObject *connectionContext
+    );
+
+    /**
+     * Add an \a actionToAdd to the sub menu with \a subMenuName in \a mainMenu. If the sub menu with given name does not exist it will be created.
+     *
+     * \param mainMenu The menu in which sub menu is search for or created.
+     * \param actionToAdd The action to add.
+     * \param subMenuName Translated name of the sub menu that is searched for or created.
+     *
+     * \since QGIS 4.0
+     */
+    static void addToSubMenu( QMenu *mainMenu, QAction *actionToAdd, const QString &subMenuName );
+
+    /**
+     * Refresh child of \a item that has give name
+     *
+     * \since QGIS 4.0
+     */
+    static void refreshChildWithName( QgsDataItem *item, const QString &name );
 #endif
 
   private:
-    static void deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void ( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent );
+    static void deleteConnectionsPrivate( const QStringList &connectionNames, const std::function<void( const QString & )> &deleteConnection, QPointer<QgsDataItem> firstParent );
 };
 
 #endif // QGSDATAITEMGUIPROVIDERUTILS_H

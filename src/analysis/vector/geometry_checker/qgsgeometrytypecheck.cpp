@@ -14,20 +14,20 @@
  ***************************************************************************/
 
 #include "qgsgeometrytypecheck.h"
+
+#include "qgsfeaturepool.h"
 #include "qgsgeometrycollection.h"
 #include "qgsmulticurve.h"
 #include "qgsmultilinestring.h"
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
-#include "qgsfeaturepool.h"
-
 
 QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry ) const
 {
   QList<QgsSingleGeometryCheckError *> errors;
   const QgsAbstractGeometry *geom = geometry.constGet();
   const Qgis::WkbType type = QgsWkbTypes::flatType( geom->wkbType() );
-  if ( ( mAllowedTypes & ( 1 << static_cast< quint32>( type ) ) ) == 0 )
+  if ( ( mAllowedTypes & ( 1 << static_cast<quint32>( type ) ) ) == 0 )
   {
     errors.append( new QgsGeometryTypeCheckError( this, geometry, geometry, type ) );
   }
@@ -36,7 +36,7 @@ QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( cons
 
 void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
+  QgsFeaturePool *featurePool = featurePools[error->layerId()];
   QgsFeature feature;
   if ( !featurePool->getFeature( error->featureId(), feature ) )
   {
@@ -48,7 +48,7 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
 
   // Check if error still applies
   const Qgis::WkbType type = QgsWkbTypes::flatType( geom->wkbType() );
-  if ( ( mAllowedTypes & ( 1 << static_cast< quint32>( type ) ) ) != 0 )
+  if ( ( mAllowedTypes & ( 1 << static_cast<quint32>( type ) ) ) != 0 )
   {
     error->setObsolete();
     return;
@@ -62,7 +62,7 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
   else if ( method == Convert )
   {
     // Check if corresponding single type is allowed
-    if ( QgsWkbTypes::isMultiType( type ) && ( ( 1 << static_cast< quint32>( QgsWkbTypes::singleType( type ) ) ) & mAllowedTypes ) != 0 )
+    if ( QgsWkbTypes::isMultiType( type ) && ( ( 1 << static_cast<quint32>( QgsWkbTypes::singleType( type ) ) ) & mAllowedTypes ) != 0 )
     {
       // Explode multi-type feature into single-type features
       for ( int iPart = 1, nParts = geom->partCount(); iPart < nParts; ++iPart )
@@ -79,7 +79,7 @@ void QgsGeometryTypeCheck::fixError( const QMap<QString, QgsFeaturePool *> &feat
       changes[error->layerId()][feature.id()].append( Change( ChangeFeature, ChangeChanged ) );
     }
     // Check if corresponding multi type is allowed
-    else if ( QgsWkbTypes::isSingleType( type ) && ( ( 1 << static_cast< quint32>( QgsWkbTypes::multiType( type ) ) ) & mAllowedTypes ) != 0 )
+    else if ( QgsWkbTypes::isSingleType( type ) && ( ( 1 << static_cast<quint32>( QgsWkbTypes::multiType( type ) ) ) & mAllowedTypes ) != 0 )
     {
       QgsGeometryCollection *geomCollection = nullptr;
       switch ( QgsWkbTypes::multiType( type ) )
@@ -166,7 +166,7 @@ QString QgsGeometryTypeCheck::description() const
 
 QString QgsGeometryTypeCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryTypeCheck" );
+  return u"QgsGeometryTypeCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometryTypeCheck::factoryCheckType()
@@ -186,11 +186,10 @@ QgsGeometryCheck::CheckType QgsGeometryTypeCheck::checkType() const
 
 bool QgsGeometryTypeCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
-  return QgsSingleGeometryCheckError::isEqual( other ) &&
-         mFlatType == static_cast<const QgsGeometryTypeCheckError *>( other )->mFlatType;
+  return QgsSingleGeometryCheckError::isEqual( other ) && mFlatType == static_cast<const QgsGeometryTypeCheckError *>( other )->mFlatType;
 }
 
 QString QgsGeometryTypeCheckError::description() const
 {
-  return QStringLiteral( "%1 (%2)" ).arg( mCheck->description(), QgsWkbTypes::displayString( mFlatType ) );
+  return u"%1 (%2)"_s.arg( mCheck->description(), QgsWkbTypes::displayString( mFlatType ) );
 }

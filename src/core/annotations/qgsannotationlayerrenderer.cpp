@@ -15,21 +15,26 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerrenderer.h"
+
+#include <optional>
+
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
-#include "qgsrenderedannotationitemdetails.h"
 #include "qgspainteffect.h"
 #include "qgsrendercontext.h"
-#include <optional>
+#include "qgsrenderedannotationitemdetails.h"
+#include "qgsthreadingutils.h"
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mFeedback( std::make_unique< QgsFeedback >() )
+  , mLayerName( layer->name() )
   , mLayerOpacity( layer->opacity() )
+  , mLayerBlendMode( layer->blendMode() )
 {
   if ( QgsMapLayer *linkedLayer = layer->linkedVisibilityLayer() )
   {
-    if ( !context.customProperties().value( QStringLiteral( "visible_layer_ids" ) ).toList().contains( linkedLayer->id() ) )
+    if ( !context.customProperties().value( u"visible_layer_ids"_s ).toList().contains( linkedLayer->id() ) )
     {
       mReadyToCompose = true;
       return;
@@ -78,6 +83,8 @@ QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
 
 bool QgsAnnotationLayerRenderer::render()
 {
+  QgsScopedThreadName threadName( u"render:%1"_s.arg( mLayerName ) );
+
   QgsRenderContext &context = *renderContext();
 
   if ( mPaintEffect )
@@ -107,7 +114,7 @@ bool QgsAnnotationLayerRenderer::render()
     if ( bounds.intersects( context.extent() ) )
     {
       item.second->render( context, mFeedback.get() );
-      std::unique_ptr< QgsRenderedAnnotationItemDetails > details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
+      auto details = std::make_unique< QgsRenderedAnnotationItemDetails >( mLayerID, item.first );
       details->setBoundingBox( bounds );
       appendRenderedItemDetails( details.release() );
     }
@@ -123,5 +130,21 @@ bool QgsAnnotationLayerRenderer::render()
 
 bool QgsAnnotationLayerRenderer::forceRasterRender() const
 {
-  return renderContext()->testFlag( Qgis::RenderContextFlag::UseAdvancedEffects ) && ( !qgsDoubleNear( mLayerOpacity, 1.0 ) );
+  switch ( renderContext()->rasterizedRenderingPolicy() )
+  {
+    case Qgis::RasterizedRenderingPolicy::Default:
+    case Qgis::RasterizedRenderingPolicy::PreferVector:
+      break;
+
+    case Qgis::RasterizedRenderingPolicy::ForceVector:
+      return false;
+  }
+
+  if ( !qgsDoubleNear( mLayerOpacity, 1.0 ) )
+    return true;
+
+  if ( mLayerBlendMode != QPainter::CompositionMode_SourceOver )
+    return true;
+
+  return false;
 }

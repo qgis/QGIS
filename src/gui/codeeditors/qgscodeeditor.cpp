@@ -14,66 +14,78 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscodeeditor.h"
-#include "qgssettings.h"
-#include "qgssymbollayerutils.h"
-#include "qgsgui.h"
+
+#include "qgsapplication.h"
+#include "qgsapplicationthemeregistry.h"
 #include "qgscodeeditorcolorschemeregistry.h"
 #include "qgscodeeditorhistorydialog.h"
-#include "qgsstringutils.h"
 #include "qgsfontutils.h"
+#include "qgsgui.h"
+#include "qgssettings.h"
+#include "qgssettingsentryimpl.h"
+#include "qgsshortcutsmanager.h"
+#include "qgsstringutils.h"
+#include "qgssymbollayerutils.h"
 
-#include <QLabel>
-#include <QWidget>
+#include <QClipboard>
+#include <QDebug>
+#include <QFileInfo>
+#include <QFocusEvent>
 #include <QFont>
 #include <QFontDatabase>
-#include <QDebug>
-#include <QFocusEvent>
-#include <Qsci/qscistyle.h>
+#include <QLabel>
 #include <QMenu>
-#include <QClipboard>
-#include <QScrollBar>
 #include <QMessageBox>
+#include <QScrollBar>
+#include <QWidget>
+#include <Qsci/qscilexer.h>
+#include <Qsci/qscistyle.h>
 
-QMap< QgsCodeEditorColorScheme::ColorRole, QString > QgsCodeEditor::sColorRoleToSettingsKey
-{
-  {QgsCodeEditorColorScheme::ColorRole::Default, QStringLiteral( "defaultFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Keyword, QStringLiteral( "keywordFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Class, QStringLiteral( "classFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Method, QStringLiteral( "methodFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Decoration, QStringLiteral( "decoratorFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Number, QStringLiteral( "numberFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Comment, QStringLiteral( "commentFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::CommentLine, QStringLiteral( "commentLineFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::CommentBlock, QStringLiteral( "commentBlockFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Background, QStringLiteral( "paperBackgroundColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Cursor, QStringLiteral( "cursorColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::CaretLine, QStringLiteral( "caretLineColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Operator, QStringLiteral( "operatorFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::QuotedOperator, QStringLiteral( "quotedOperatorFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Identifier, QStringLiteral( "identifierFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier, QStringLiteral( "quotedIdentifierFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Tag, QStringLiteral( "tagFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::UnknownTag, QStringLiteral( "unknownTagFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::SingleQuote, QStringLiteral( "singleQuoteFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::DoubleQuote, QStringLiteral( "doubleQuoteFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote, QStringLiteral( "tripleSingleQuoteFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote, QStringLiteral( "tripleDoubleQuoteFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::MarginBackground, QStringLiteral( "marginBackgroundColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::MarginForeground, QStringLiteral( "marginForegroundColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::SelectionBackground, QStringLiteral( "selectionBackgroundColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::SelectionForeground, QStringLiteral( "selectionForegroundColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground, QStringLiteral( "matchedBraceBackground" ) },
-  {QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground, QStringLiteral( "matchedBraceColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Edge, QStringLiteral( "edgeColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Fold, QStringLiteral( "foldColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::ErrorBackground, QStringLiteral( "stderrBackgroundColor" ) },
-  {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
-  {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
-  {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
-  {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QStringLiteral( "searchMatchBackground" ) }
+#include "moc_qgscodeeditor.cpp"
+
+///@cond PRIVATE
+const QgsSettingsEntryBool *QgsCodeEditor::settingContextHelpHover = new QgsSettingsEntryBool( u"context-help-hover"_s, sTreeCodeEditor, false, u"Whether the context help should works on hovered words"_s );
+///@endcond PRIVATE
+
+
+QMap<QgsCodeEditorColorScheme::ColorRole, QString> QgsCodeEditor::sColorRoleToSettingsKey {
+  { QgsCodeEditorColorScheme::ColorRole::Default, u"defaultFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Keyword, u"keywordFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Class, u"classFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Method, u"methodFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Decoration, u"decoratorFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Number, u"numberFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Comment, u"commentFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::CommentLine, u"commentLineFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::CommentBlock, u"commentBlockFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Background, u"paperBackgroundColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Cursor, u"cursorColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::CaretLine, u"caretLineColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Operator, u"operatorFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::QuotedOperator, u"quotedOperatorFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Identifier, u"identifierFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier, u"quotedIdentifierFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Tag, u"tagFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::UnknownTag, u"unknownTagFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::SingleQuote, u"singleQuoteFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::DoubleQuote, u"doubleQuoteFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote, u"tripleSingleQuoteFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote, u"tripleDoubleQuoteFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::MarginBackground, u"marginBackgroundColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::MarginForeground, u"marginForegroundColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::SelectionBackground, u"selectionBackgroundColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::SelectionForeground, u"selectionForegroundColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground, u"matchedBraceBackground"_s },
+  { QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground, u"matchedBraceColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Edge, u"edgeColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Fold, u"foldColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::Error, u"stderrFontColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::ErrorBackground, u"stderrBackgroundColor"_s },
+  { QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, u"foldIconForeground"_s },
+  { QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, u"foldIconHalo"_s },
+  { QgsCodeEditorColorScheme::ColorRole::IndentationGuide, u"indentationGuide"_s },
+  { QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, u"searchMatchBackground"_s }
 };
 
 QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin, QgsCodeEditor::Flags flags, QgsCodeEditor::Mode mode )
@@ -85,7 +97,7 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
-    setWindowTitle( QStringLiteral( "Text Editor" ) );
+    setWindowTitle( u"Text Editor"_s );
   }
   else
   {
@@ -104,13 +116,12 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
   SendScintilla( SCI_SETMULTIPASTE, 1 );
   SendScintilla( SCI_SETVIRTUALSPACEOPTIONS, SCVS_RECTANGULARSELECTION );
 
-  SendScintilla( SCI_SETMARGINTYPEN, static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), SC_MARGIN_SYMBOL );
-  SendScintilla( SCI_SETMARGINMASKN, static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 1 << MARKER_NUMBER );
-  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
+  SendScintilla( SCI_SETMARGINTYPEN, static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), SC_MARGIN_SYMBOL );
+  SendScintilla( SCI_SETMARGINMASKN, static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 1 << MARKER_NUMBER );
+  setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
   setAnnotationDisplay( QsciScintilla::AnnotationBoxed );
 
-  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [ = ]
-  {
+  connect( QgsGui::instance(), &QgsGui::optionsChanged, this, [this] {
     setSciWidget();
     initializeLexer();
   } );
@@ -143,6 +154,12 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
 #if QSCINTILLA_VERSION < 0x020d03
   installEventFilter( this );
 #endif
+
+  mLastEditTimer = new QTimer( this );
+  mLastEditTimer->setSingleShot( true );
+  mLastEditTimer->setInterval( 1000 );
+  connect( mLastEditTimer, &QTimer::timeout, this, &QgsCodeEditor::onLastEditTimeout );
+  connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -171,6 +188,7 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
   {
     QsciScintilla::focusOutEvent( event );
   }
+  onLastEditTimeout();
 }
 
 // This workaround a likely bug in QScintilla. The ESC key should not be consumned
@@ -190,6 +208,29 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     QWidget::keyPressEvent( event ); // NOLINT(bugprone-parent-virtual-call) clazy:exclude=skipped-base-method
     return;
   }
+
+  if ( event->matches( QKeySequence::StandardKey::HelpContents ) )
+  {
+    // Check if some text is selected
+    QString text = selectedText();
+
+    // Check if mouse is hovering over a word
+    if ( text.isEmpty() && settingContextHelpHover->value() )
+    {
+      text = wordAtPoint( mapFromGlobal( QCursor::pos() ) );
+    }
+
+    // Otherwise, check if there is a word at the current text cursor position
+    if ( text.isEmpty() )
+    {
+      int line, index;
+      getCursorPosition( &line, &index );
+      text = wordAtLineIndex( line, index );
+    }
+    emit helpRequested( text );
+    return;
+  }
+
 
   if ( mMode == QgsCodeEditor::Mode::CommandInput )
   {
@@ -216,29 +257,39 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
     }
   }
 
-  const bool ctrlModifier = event->modifiers() & Qt::ControlModifier;
-  const bool altModifier = event->modifiers() & Qt::AltModifier;
-
-  // Ctrl+Alt+F: reformat code
+  // check for reformat code sequence
   const bool canReformat = languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat;
-  if ( !isReadOnly() && canReformat && ctrlModifier && altModifier && event->key() == Qt::Key_F )
+  if ( !isReadOnly() && canReformat )
   {
-    event->accept();
-    reformatCode();
-    return;
+    const QKeySequence reformatCodeSequence = QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeReformat );
+    if ( !reformatCodeSequence.isEmpty() && reformatCodeSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      reformatCode();
+      return;
+    }
   }
 
-  // Toggle comment when user presses  Ctrl+:
+  // Check for toggle comment sequence
   const bool canToggle = languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment;
-  if ( !isReadOnly() && canToggle && ctrlModifier && event->key() == Qt::Key_Colon )
+  if ( !isReadOnly() && canToggle )
   {
-    event->accept();
-    toggleComment();
-    return;
+    const QKeySequence toggleCommentCodeSequence = QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeToggleComment );
+    if ( !toggleCommentCodeSequence.isEmpty() && toggleCommentCodeSequence.matches( event->key() | event->modifiers() ) )
+    {
+      event->accept();
+      toggleComment();
+      return;
+    }
   }
 
   QsciScintilla::keyPressEvent( event );
 
+  // Update calltips unless event is autorepeat
+  if ( !event->isAutoRepeat() )
+  {
+    callTip();
+  }
 }
 
 void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
@@ -250,8 +301,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       QMenu *menu = createStandardContextMenu();
       menu->setAttribute( Qt::WA_DeleteOnClose );
 
-      if ( ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat ) ||
-           ( languageCapabilities() & Qgis::ScriptLanguageCapability::CheckSyntax ) )
+      if ( ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat ) || ( languageCapabilities() & Qgis::ScriptLanguageCapability::CheckSyntax ) )
       {
         menu->addSeparator();
       }
@@ -259,8 +309,8 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::Reformat )
       {
         QAction *reformatAction = new QAction( tr( "Reformat Code" ), menu );
-        reformatAction->setShortcut( QStringLiteral( "Ctrl+Alt+F" ) );
-        reformatAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconFormatCode.svg" ) ) );
+        reformatAction->setShortcut( QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeReformat ) );
+        reformatAction->setIcon( QgsApplication::getThemeIcon( u"console/iconFormatCode.svg"_s ) );
         reformatAction->setEnabled( !isReadOnly() );
         connect( reformatAction, &QAction::triggered, this, &QgsCodeEditor::reformatCode );
         menu->addAction( reformatAction );
@@ -269,7 +319,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::CheckSyntax )
       {
         QAction *syntaxCheckAction = new QAction( tr( "Check Syntax" ), menu );
-        syntaxCheckAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconSyntaxErrorConsole.svg" ) ) );
+        syntaxCheckAction->setIcon( QgsApplication::getThemeIcon( u"console/iconSyntaxErrorConsole.svg"_s ) );
         connect( syntaxCheckAction, &QAction::triggered, this, &QgsCodeEditor::checkSyntax );
         menu->addAction( syntaxCheckAction );
       }
@@ -277,8 +327,8 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       if ( languageCapabilities() & Qgis::ScriptLanguageCapability::ToggleComment )
       {
         QAction *toggleCommentAction = new QAction( tr( "Toggle Comment" ), menu );
-        toggleCommentAction->setShortcut( QStringLiteral( "Ctrl+:" ) );
-        toggleCommentAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "console/iconCommentEditorConsole.svg" ) ) );
+        toggleCommentAction->setShortcut( QgsGui::shortcutsManager()->sequenceForCommonAction( QgsShortcutsManager::CommonAction::CodeToggleComment ) );
+        toggleCommentAction->setIcon( QgsApplication::getThemeIcon( u"console/iconCommentEditorConsole.svg"_s, palette().color( QPalette::ColorRole::WindowText ) ) );
         toggleCommentAction->setEnabled( !isReadOnly() );
         connect( toggleCommentAction, &QAction::triggered, this, &QgsCodeEditor::toggleComment );
         menu->addAction( toggleCommentAction );
@@ -295,7 +345,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
       QMenu *menu = new QMenu( this );
       QMenu *historySubMenu = new QMenu( tr( "Command History" ), menu );
 
-      historySubMenu->addAction( tr( "Show" ), this, &QgsCodeEditor::showHistory, QStringLiteral( "Ctrl+Shift+SPACE" ) );
+      historySubMenu->addAction( tr( "Show" ), this, &QgsCodeEditor::showHistory, u"Ctrl+Shift+SPACE"_s );
       historySubMenu->addAction( tr( "Clear File" ), this, &QgsCodeEditor::clearPersistentHistory );
       historySubMenu->addAction( tr( "Clear Session" ), this, &QgsCodeEditor::clearSessionHistory );
 
@@ -319,6 +369,24 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
   }
 }
 
+bool QgsCodeEditor::event( QEvent *event )
+{
+  if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( QKeyEvent *keyEvent = dynamic_cast<QKeyEvent *>( event ) )
+    {
+      if ( keyEvent->matches( QKeySequence::StandardKey::HelpContents ) )
+      {
+        // If the user pressed F1, we want to prevent the main help dialog to show
+        // and handle the event in QgsCodeEditor::keyPressEvent
+        keyEvent->accept();
+        return true;
+      }
+    }
+  }
+  return QsciScintilla::event( event );
+}
+
 bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 {
 #if QSCINTILLA_VERSION < 0x020d03
@@ -336,7 +404,6 @@ bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 
 void QgsCodeEditor::initializeLexer()
 {
-
 }
 
 QColor QgsCodeEditor::lexerColor( QgsCodeEditorColorScheme::ColorRole role ) const
@@ -379,7 +446,7 @@ QFont QgsCodeEditor::lexerFont() const
     font.setPointSize( mFontSize );
   else
   {
-    const int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
+    const int fontSize = settings.value( u"qgis/stylesheet/fontPointSize"_s, 10 ).toInt();
     font.setPointSize( fontSize );
   }
 #endif
@@ -396,11 +463,11 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
   setMatchedBraceBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground ) );
 
   SendScintilla( SCI_MARKERSETFORE, SC_MARKNUM_FOLDEROPEN, lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconHalo ) );
-  SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDEROPEN,  lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
+  SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDEROPEN, lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
   SendScintilla( SCI_MARKERSETFORE, SC_MARKNUM_FOLDER, lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconHalo ) );
-  SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDER,  lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
+  SendScintilla( SCI_MARKERSETBACK, SC_MARKNUM_FOLDER, lexerColor( QgsCodeEditorColorScheme::ColorRole::FoldIconForeground ) );
   SendScintilla( SCI_STYLESETFORE, STYLE_INDENTGUIDE, lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
-  SendScintilla( SCI_STYLESETBACK, STYLE_INDENTGUIDE,  lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
+  SendScintilla( SCI_STYLESETBACK, STYLE_INDENTGUIDE, lexerColor( QgsCodeEditorColorScheme::ColorRole::IndentationGuide ) );
 
   SendScintilla( QsciScintilla::SCI_INDICSETSTYLE, SEARCH_RESULT_INDICATOR, QsciScintilla::INDIC_STRAIGHTBOX );
   SendScintilla( QsciScintilla::SCI_INDICSETFORE, SEARCH_RESULT_INDICATOR, lexerColor( QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground ) );
@@ -419,6 +486,12 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
     setMarginsBackgroundColor( color( QgsCodeEditorColorScheme::ColorRole::Background ) );
     setEdgeMode( QsciScintilla::EdgeNone );
   }
+}
+
+void QgsCodeEditor::onLastEditTimeout()
+{
+  mLastEditTimer->stop();
+  emit editingTimeout();
 }
 
 void QgsCodeEditor::setSciWidget()
@@ -441,9 +514,9 @@ void QgsCodeEditor::setSciWidget()
 
   // temporarily disable folding, will be enabled later if required by updateFolding()
   setFolding( QsciScintilla::NoFoldStyle );
-  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
+  setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
 
-  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
+  setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
 
   setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
   setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
@@ -463,8 +536,7 @@ void QgsCodeEditor::setSciWidget()
   setAutoCompletionThreshold( 2 );
   setAutoCompletionSource( QsciScintilla::AcsAPIs );
 
-  markerDefine( QgsApplication::getThemePixmap( "console/iconSyntaxErrorConsoleParams.svg", lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ),
-                lexerColor( QgsCodeEditorColorScheme::ColorRole::ErrorBackground ), 16 ), MARKER_NUMBER );
+  markerDefine( QgsApplication::getThemePixmap( "console/iconSyntaxErrorConsoleParams.svg", lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ), lexerColor( QgsCodeEditorColorScheme::ColorRole::ErrorBackground ), 16 ), MARKER_NUMBER );
 }
 
 void QgsCodeEditor::setTitle( const QString &title )
@@ -521,15 +593,15 @@ void QgsCodeEditor::setMarginVisible( bool margin )
     marginFont.setPointSize( 10 );
     setMarginLineNumbers( 0, true );
     setMarginsFont( marginFont );
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), QStringLiteral( "00000" ) );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::LineNumbers ), u"00000"_s );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
     setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   }
   else
   {
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), 0 );
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::LineNumbers ), 0 );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
   }
 }
 
@@ -539,22 +611,22 @@ void QgsCodeEditor::setLineNumbersVisible( bool visible )
   {
     QFont marginFont = lexerFont();
     marginFont.setPointSize( 10 );
-    setMarginLineNumbers( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), true );
+    setMarginLineNumbers( static_cast<int>( QgsCodeEditor::MarginRole::LineNumbers ), true );
     setMarginsFont( marginFont );
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), QStringLiteral( "00000" ) );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::LineNumbers ), u"00000"_s );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
     setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
   }
   else
   {
-    setMarginLineNumbers( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), false );
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ), 0 );
+    setMarginLineNumbers( static_cast<int>( QgsCodeEditor::MarginRole::LineNumbers ), false );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::LineNumbers ), 0 );
   }
 }
 
 bool QgsCodeEditor::lineNumbersVisible() const
 {
-  return marginLineNumbers( static_cast< int >( QgsCodeEditor::MarginRole::LineNumbers ) );
+  return marginLineNumbers( static_cast<int>( QgsCodeEditor::MarginRole::LineNumbers ) );
 }
 
 void QgsCodeEditor::setFoldingVisible( bool folding )
@@ -565,7 +637,7 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   }
   else
   {
-    mFlags &= ~( static_cast< int >( QgsCodeEditor::Flag::CodeFolding ) );
+    mFlags &= ~( static_cast<int>( QgsCodeEditor::Flag::CodeFolding ) );
   }
   updateFolding();
 }
@@ -579,7 +651,7 @@ void QgsCodeEditor::updateFolding()
 {
   if ( ( mFlags & QgsCodeEditor::Flag::CodeFolding ) && mMode == QgsCodeEditor::Mode::ScriptEditor )
   {
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), "0" );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::FoldingControls ), "0" );
     setMarginsForegroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginForeground ) );
     setMarginsBackgroundColor( lexerColor( QgsCodeEditorColorScheme::ColorRole::MarginBackground ) );
     setFolding( QsciScintilla::PlainFoldStyle );
@@ -587,7 +659,7 @@ void QgsCodeEditor::updateFolding()
   else
   {
     setFolding( QsciScintilla::NoFoldStyle );
-    setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
+    setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::FoldingControls ), 0 );
   }
 }
 
@@ -600,10 +672,6 @@ bool QgsCodeEditor::readHistoryFile()
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    // Always use UTF-8
-    stream.setCodec( "UTF-8" );
-#endif
     QString line;
     while ( !stream.atEnd() )
     {
@@ -648,7 +716,6 @@ void QgsCodeEditor::updateHistory( const QStringList &commands, bool skipSoftHis
 
 void QgsCodeEditor::populateContextMenu( QMenu * )
 {
-
 }
 
 QString QgsCodeEditor::reformatCodeString( const QString &string )
@@ -681,7 +748,7 @@ void QgsCodeEditor::updatePrompt()
   if ( mInterpreter )
   {
     const QString prompt = mInterpreter->promptForState( mInterpreter->currentState() );
-    SendScintilla( QsciScintilla::SCI_MARGINSETTEXT, static_cast< uintptr_t >( 0 ), prompt.toUtf8().constData() );
+    SendScintilla( QsciScintilla::SCI_MARGINSETTEXT, static_cast<uintptr_t>( 0 ), prompt.toUtf8().constData() );
   }
 }
 
@@ -785,8 +852,142 @@ bool QgsCodeEditor::checkSyntax()
 
 void QgsCodeEditor::toggleComment()
 {
-
 }
+
+void QgsCodeEditor::toggleLineComments( const QString &commentPrefix )
+{
+  if ( isReadOnly() )
+  {
+    return;
+  }
+
+  beginUndoAction();
+  int startLine, startPos, endLine, endPos;
+  if ( hasSelectedText() )
+  {
+    getSelection( &startLine, &startPos, &endLine, &endPos );
+  }
+  else
+  {
+    getCursorPosition( &startLine, &startPos );
+    endLine = startLine;
+    endPos = startPos;
+  }
+
+  // Check comment state and minimum indentation for each selected line
+  bool allEmpty = true;
+  bool allCommented = true;
+  int minIndentation = -1;
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+    if ( !stripped.isEmpty() )
+    {
+      allEmpty = false;
+      if ( !stripped.startsWith( commentPrefix ) )
+      {
+        allCommented = false;
+      }
+      if ( minIndentation == -1 || minIndentation > indentation( line ) )
+      {
+        minIndentation = indentation( line );
+      }
+    }
+  }
+
+  // Special case, only empty lines
+  if ( allEmpty )
+  {
+    return;
+  }
+
+  // Selection shift to keep the same selected text after the prefix is added/removed
+  int delta = 0;
+
+  const int prefixLength = static_cast<int>( commentPrefix.length() );
+
+  const bool startLineEmpty = ( text( startLine ).trimmed().isEmpty() );
+  const bool endLineEmpty = ( text( endLine ).trimmed().isEmpty() );
+
+  for ( int line = startLine; line <= endLine; line++ )
+  {
+    const QString stripped = text( line ).trimmed();
+
+    // Empty line
+    if ( stripped.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( !allCommented )
+    {
+      insertAt( commentPrefix + ' ', line, minIndentation );
+      delta = -( prefixLength + 1 );
+    }
+    else
+    {
+      if ( !stripped.startsWith( commentPrefix ) )
+      {
+        continue;
+      }
+      if ( stripped.startsWith( commentPrefix + ' ' ) )
+      {
+        delta = prefixLength + 1;
+      }
+      else
+      {
+        delta = prefixLength;
+      }
+      setSelection( line, indentation( line ), line, indentation( line ) + delta );
+      removeSelectedText();
+    }
+  }
+
+  endUndoAction();
+  setSelection( startLine, startPos - ( startLineEmpty ? 0 : delta ), endLine, endPos - ( endLineEmpty ? 0 : delta ) );
+}
+
+void QgsCodeEditor::adjustScrollWidth()
+{
+  // A zero width would make setScrollWidth crash
+  long maxWidth = 10;
+
+  // Get the number of lines
+  int lineCount = lines();
+
+  // Loop through all the lines to get the longest one
+  for ( int line = 0; line < lineCount; line++ )
+  {
+    // Get the linear position at the end of the current line
+    const long endLine = SendScintilla( SCI_GETLINEENDPOSITION, line );
+    // Get the x coordinates of the end of the line
+    const long x = SendScintilla( SCI_POINTXFROMPOSITION, 0, endLine );
+    maxWidth = std::max( maxWidth, x );
+  }
+
+  // Use the longest line width as the new scroll width
+  setScrollWidth( static_cast<int>( maxWidth ) );
+}
+
+void QgsCodeEditor::setText( const QString &text )
+{
+  disconnect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
+  QsciScintilla::setText( text );
+  connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
+  onLastEditTimeout();
+  adjustScrollWidth();
+}
+
+int QgsCodeEditor::editingTimeoutInterval() const
+{
+  return mLastEditTimer->interval();
+}
+
+void QgsCodeEditor::setEditingTimeoutInterval( int timeout )
+{
+  mLastEditTimer->setInterval( timeout );
+}
+
 
 QStringList QgsCodeEditor::history() const
 {
@@ -825,7 +1026,10 @@ void QgsCodeEditor::clearPersistentHistory()
   if ( !mHistoryFilePath.isEmpty() && QFile::exists( mHistoryFilePath ) )
   {
     QFile file( mHistoryFilePath );
-    file.open( QFile::WriteOnly | QFile::Truncate );
+    if ( !file.open( QFile::WriteOnly | QFile::Truncate ) )
+    {
+      QgsDebugError( u"Could not truncate %1"_s.arg( mHistoryFilePath ) );
+    }
   }
 
   emit persistentHistoryCleared();
@@ -843,9 +1047,6 @@ bool QgsCodeEditor::writeHistoryFile()
   }
 
   QTextStream ts( &f );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  ts.setCodec( "UTF-8" );
-#endif
   for ( const QString &command : std::as_const( mHistory ) )
   {
     ts << command + '\n';
@@ -913,7 +1114,14 @@ void QgsCodeEditor::insertText( const QString &text )
 
 QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, const QString &theme )
 {
-  if ( theme.isEmpty() && QgsApplication::themeName() == QLatin1String( "default" ) )
+  bool useDefault = QgsApplication::themeName() == "default"_L1;
+  if ( !useDefault )
+  {
+    QFileInfo info( QgsApplication::instance()->applicationThemeRegistry()->themeFolder( QgsApplication::themeName() ) + "/qscintilla.ini" );
+    useDefault = !info.exists();
+  }
+
+  if ( theme.isEmpty() && useDefault )
   {
     // if using default theme, take certain colors from the palette
     const QPalette pal = qApp->palette();
@@ -931,67 +1139,66 @@ QColor QgsCodeEditor::defaultColor( QgsCodeEditorColorScheme::ColorRole role, co
   else if ( theme.isEmpty() )
   {
     // non default theme (e.g. Blend of Gray). Take colors from theme ini file...
-    const QSettings ini( QgsApplication::uiThemes().value( QgsApplication::themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
+    const QSettings ini( QgsApplication::instance()->applicationThemeRegistry()->themeFolder( QgsApplication::themeName() ) + "/qscintilla.ini", QSettings::IniFormat );
 
-    static const QMap< QgsCodeEditorColorScheme::ColorRole, QString > sColorRoleToIniKey
-    {
-      {QgsCodeEditorColorScheme::ColorRole::Default, QStringLiteral( "python/defaultFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Keyword, QStringLiteral( "python/keywordFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Class, QStringLiteral( "python/classFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Method, QStringLiteral( "python/methodFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Decoration, QStringLiteral( "python/decoratorFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Number, QStringLiteral( "python/numberFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Comment, QStringLiteral( "python/commentFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::CommentLine, QStringLiteral( "sql/commentLineFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::CommentBlock, QStringLiteral( "python/commentBlockFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Background, QStringLiteral( "python/paperBackgroundColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Cursor, QStringLiteral( "cursorColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::CaretLine, QStringLiteral( "caretLineColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Operator, QStringLiteral( "sql/operatorFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::QuotedOperator, QStringLiteral( "sql/QuotedOperatorFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Identifier, QStringLiteral( "sql/identifierFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier, QStringLiteral( "sql/QuotedIdentifierFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Tag, QStringLiteral( "html/tagFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::UnknownTag, QStringLiteral( "html/unknownTagFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::SingleQuote, QStringLiteral( "sql/singleQuoteFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::DoubleQuote, QStringLiteral( "sql/doubleQuoteFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote, QStringLiteral( "python/tripleSingleQuoteFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote, QStringLiteral( "python/tripleDoubleQuoteFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::MarginBackground, QStringLiteral( "marginBackgroundColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::MarginForeground, QStringLiteral( "marginForegroundColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::SelectionBackground, QStringLiteral( "selectionBackgroundColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::SelectionForeground, QStringLiteral( "selectionForegroundColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground, QStringLiteral( "matchedBraceBackground" ) },
-      {QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground, QStringLiteral( "matchedBraceColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Edge, QStringLiteral( "edgeColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Fold, QStringLiteral( "foldColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::Error, QStringLiteral( "stderrFontColor" ) },
-      {QgsCodeEditorColorScheme::ColorRole::ErrorBackground, QStringLiteral( "stderrBackground" ) },
-      {QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, QStringLiteral( "foldIconForeground" ) },
-      {QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, QStringLiteral( "foldIconHalo" ) },
-      {QgsCodeEditorColorScheme::ColorRole::IndentationGuide, QStringLiteral( "indentationGuide" ) },
-      {QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, QStringLiteral( "searchMatchBackground" ) },
+    static const QMap<QgsCodeEditorColorScheme::ColorRole, QString> sColorRoleToIniKey {
+      { QgsCodeEditorColorScheme::ColorRole::Default, u"python/defaultFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Keyword, u"python/keywordFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Class, u"python/classFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Method, u"python/methodFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Decoration, u"python/decoratorFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Number, u"python/numberFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Comment, u"python/commentFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::CommentLine, u"sql/commentLineFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::CommentBlock, u"python/commentBlockFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Background, u"python/paperBackgroundColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Cursor, u"cursorColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::CaretLine, u"caretLineColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Operator, u"sql/operatorFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::QuotedOperator, u"sql/QuotedOperatorFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Identifier, u"sql/identifierFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::QuotedIdentifier, u"sql/QuotedIdentifierFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Tag, u"html/tagFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::UnknownTag, u"html/unknownTagFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::SingleQuote, u"sql/singleQuoteFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::DoubleQuote, u"sql/doubleQuoteFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::TripleSingleQuote, u"python/tripleSingleQuoteFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::TripleDoubleQuote, u"python/tripleDoubleQuoteFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::MarginBackground, u"marginBackgroundColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::MarginForeground, u"marginForegroundColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::SelectionBackground, u"selectionBackgroundColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::SelectionForeground, u"selectionForegroundColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::MatchedBraceBackground, u"matchedBraceBackground"_s },
+      { QgsCodeEditorColorScheme::ColorRole::MatchedBraceForeground, u"matchedBraceColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Edge, u"edgeColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Fold, u"foldColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::Error, u"stderrFontColor"_s },
+      { QgsCodeEditorColorScheme::ColorRole::ErrorBackground, u"stderrBackground"_s },
+      { QgsCodeEditorColorScheme::ColorRole::FoldIconForeground, u"foldIconForeground"_s },
+      { QgsCodeEditorColorScheme::ColorRole::FoldIconHalo, u"foldIconHalo"_s },
+      { QgsCodeEditorColorScheme::ColorRole::IndentationGuide, u"indentationGuide"_s },
+      { QgsCodeEditorColorScheme::ColorRole::SearchMatchBackground, u"searchMatchBackground"_s },
     };
 
-    const QgsCodeEditorColorScheme defaultScheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( QStringLiteral( "default" ) );
+    const QgsCodeEditorColorScheme defaultScheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( u"default"_s );
     return QgsSymbolLayerUtils::decodeColor( ini.value( sColorRoleToIniKey.value( role ), defaultScheme.color( role ).name() ).toString() );
   }
 
-  const QgsCodeEditorColorScheme scheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( theme.isEmpty() ? QStringLiteral( "default" ) : theme );
+  const QgsCodeEditorColorScheme scheme = QgsGui::codeEditorColorSchemeRegistry()->scheme( theme.isEmpty() ? u"default"_s : theme );
   return scheme.color( role );
 }
 
 QColor QgsCodeEditor::color( QgsCodeEditorColorScheme::ColorRole role )
 {
   const QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "codeEditor/overrideColors" ), false, QgsSettings::Gui ).toBool() )
+  if ( !settings.value( u"codeEditor/overrideColors"_s, false, QgsSettings::Gui ).toBool() )
   {
-    const QString theme = settings.value( QStringLiteral( "codeEditor/colorScheme" ), QString(), QgsSettings::Gui ).toString();
+    const QString theme = settings.value( u"codeEditor/colorScheme"_s, QString(), QgsSettings::Gui ).toString();
     return defaultColor( role, theme );
   }
   else
   {
-    const QString color = settings.value( QStringLiteral( "codeEditor/%1" ).arg( sColorRoleToSettingsKey.value( role ) ), QString(), QgsSettings::Gui ).toString();
+    const QString color = settings.value( u"codeEditor/%1"_s.arg( sColorRoleToSettingsKey.value( role ) ), QString(), QgsSettings::Gui ).toString();
     return color.isEmpty() ? defaultColor( role ) : QgsSymbolLayerUtils::decodeColor( color );
   }
 }
@@ -1001,11 +1208,11 @@ void QgsCodeEditor::setColor( QgsCodeEditorColorScheme::ColorRole role, const QC
   QgsSettings settings;
   if ( color.isValid() )
   {
-    settings.setValue( QStringLiteral( "codeEditor/%1" ).arg( sColorRoleToSettingsKey.value( role ) ), color.name(), QgsSettings::Gui );
+    settings.setValue( u"codeEditor/%1"_s.arg( sColorRoleToSettingsKey.value( role ) ), color.name(), QgsSettings::Gui );
   }
   else
   {
-    settings.remove( QStringLiteral( "codeEditor/%1" ).arg( sColorRoleToSettingsKey.value( role ) ), QgsSettings::Gui );
+    settings.remove( u"codeEditor/%1"_s.arg( sColorRoleToSettingsKey.value( role ) ), QgsSettings::Gui );
   }
 }
 
@@ -1020,10 +1227,10 @@ QFont QgsCodeEditor::getMonospaceFont()
   QFont font = QFontDatabase::systemFont( QFontDatabase::FixedFont );
 
   const QgsSettings settings;
-  if ( !settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString().isEmpty() )
-    QgsFontUtils::setFontFamily( font, settings.value( QStringLiteral( "codeEditor/fontfamily" ), QString(), QgsSettings::Gui ).toString() );
+  if ( !settings.value( u"codeEditor/fontfamily"_s, QString(), QgsSettings::Gui ).toString().isEmpty() )
+    QgsFontUtils::setFontFamily( font, settings.value( u"codeEditor/fontfamily"_s, QString(), QgsSettings::Gui ).toString() );
 
-  const int fontSize = settings.value( QStringLiteral( "codeEditor/fontsize" ), 0, QgsSettings::Gui ).toInt();
+  const int fontSize = settings.value( u"codeEditor/fontsize"_s, 0, QgsSettings::Gui ).toInt();
 
 #ifdef Q_OS_MAC
   if ( fontSize > 0 )
@@ -1038,7 +1245,7 @@ QFont QgsCodeEditor::getMonospaceFont()
     font.setPointSize( fontSize );
   else
   {
-    const int fontSize = settings.value( QStringLiteral( "qgis/stylesheet/fontPointSize" ), 10 ).toInt();
+    const int fontSize = settings.value( u"qgis/stylesheet/fontPointSize"_s, 10 ).toInt();
     font.setPointSize( fontSize );
   }
 #endif
@@ -1062,15 +1269,11 @@ void QgsCodeEditor::setCustomAppearance( const QString &scheme, const QMap<QgsCo
 
 void QgsCodeEditor::addWarning( const int lineNumber, const QString &warning )
 {
-  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), "000" );
+  setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), "000" );
   markerAdd( lineNumber, MARKER_NUMBER );
   QFont font = lexerFont();
   font.setItalic( true );
-  const QsciStyle styleAnn = QsciStyle( -1, QStringLiteral( "Annotation" ),
-                                        lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ),
-                                        lexerColor( QgsCodeEditorColorScheme::ColorRole::ErrorBackground ),
-                                        font,
-                                        true );
+  const QsciStyle styleAnn = QsciStyle( -1, u"Annotation"_s, lexerColor( QgsCodeEditorColorScheme::ColorRole::Error ), lexerColor( QgsCodeEditorColorScheme::ColorRole::ErrorBackground ), font, true );
   annotate( lineNumber, warning, styleAnn );
   mWarningLines.push_back( lineNumber );
 }
@@ -1082,7 +1285,7 @@ void QgsCodeEditor::clearWarnings()
     markerDelete( line );
     clearAnnotations( line );
   }
-  setMarginWidth( static_cast< int >( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
+  setMarginWidth( static_cast<int>( QgsCodeEditor::MarginRole::ErrorIndicators ), 0 );
   mWarningLines.clear();
 }
 
@@ -1124,9 +1327,7 @@ void QgsCodeEditor::moveCursorToEnd()
 
 int QgsCodeEditor::linearPosition() const
 {
-  int line, index;
-  getCursorPosition( &line, &index );
-  return positionFromLineIndex( line, index );
+  return static_cast<int>( SendScintilla( SCI_GETCURRENTPOS ) );
 }
 
 void QgsCodeEditor::setLinearPosition( int linearIndex )
@@ -1172,4 +1373,234 @@ int QgsCodeInterpreter::exec( const QString &command )
 {
   mState = execCommandImpl( command );
   return mState;
+}
+
+
+int QgsCodeEditor::wrapPosition( int line )
+{
+  // If wrapping is disabled, return -1
+  if ( wrapMode() == WrapNone )
+  {
+    return -1;
+  }
+  // Get the current line
+  if ( line == -1 )
+  {
+    int _index;
+    lineIndexFromPosition( linearPosition(), &line, &_index );
+  }
+
+  // If line isn't wrapped, return -1
+  if ( SendScintilla( SCI_WRAPCOUNT, line ) <= 1 )
+  {
+    return -1;
+  }
+
+  // Get the linear position at the end of the current line
+  const long endLine = SendScintilla( SCI_GETLINEENDPOSITION, line );
+  // Get the y coordinates of the start of the last wrapped line
+  const long y = SendScintilla( SCI_POINTYFROMPOSITION, 0, endLine );
+  // Return the linear position of the start of the last wrapped line
+  return static_cast<int>( SendScintilla( SCI_POSITIONFROMPOINT, 0, y ) );
+}
+
+
+// Adapted from QsciScintilla source code (qsciscintilla.cpp) to handle line wrap
+void QgsCodeEditor::callTip()
+{
+  if ( callTipsStyle() == CallTipsNone || lexer() == nullptr )
+  {
+    return;
+  }
+
+  QsciAbstractAPIs *apis = lexer()->apis();
+
+  if ( !apis )
+    return;
+
+  int pos, commas = 0;
+  bool found = false;
+  char ch;
+
+  pos = linearPosition();
+
+  // Move backwards through the line looking for the start of the current
+  // call tip and working out which argument it is.
+  while ( ( ch = getCharacter( pos ) ) != '\0' )
+  {
+    if ( ch == ',' )
+      ++commas;
+    else if ( ch == ')' )
+    {
+      int depth = 1;
+
+      // Ignore everything back to the start of the corresponding
+      // parenthesis.
+      while ( ( ch = getCharacter( pos ) ) != '\0' )
+      {
+        if ( ch == ')' )
+          ++depth;
+        else if ( ch == '(' && --depth == 0 )
+          break;
+      }
+    }
+    else if ( ch == '(' )
+    {
+      found = true;
+      break;
+    }
+  }
+
+  // Cancel any existing call tip.
+  SendScintilla( SCI_CALLTIPCANCEL );
+
+  // Done if there is no new call tip to set.
+  if ( !found )
+    return;
+
+  int contextStart, lastWordStart;
+  QStringList context = apiContext( pos, contextStart, lastWordStart );
+
+  if ( context.isEmpty() )
+    return;
+
+  // The last word is complete, not partial.
+  context << QString();
+
+  QList<int> ctShifts;
+  QStringList ctEntries = apis->callTips( context, commas, callTipsStyle(), ctShifts );
+
+  int nbEntries = ctEntries.count();
+
+  if ( nbEntries == 0 )
+    return;
+
+  const int maxNumberOfCallTips = callTipsVisible();
+
+  // Clip to at most maxNumberOfCallTips entries.
+  if ( maxNumberOfCallTips > 0 && maxNumberOfCallTips < nbEntries )
+  {
+    ctEntries = ctEntries.mid( 0, maxNumberOfCallTips );
+    nbEntries = maxNumberOfCallTips;
+  }
+
+  int shift;
+  QString ct;
+
+  int nbShifts = ctShifts.count();
+
+  if ( maxNumberOfCallTips < 0 && nbEntries > 1 )
+  {
+    shift = ( nbShifts > 0 ? ctShifts.first() : 0 );
+    ct = ctEntries[0];
+    ct.prepend( '\002' );
+  }
+  else
+  {
+    if ( nbShifts > nbEntries )
+      nbShifts = nbEntries;
+
+    // Find the biggest shift.
+    shift = 0;
+
+    for ( int i = 0; i < nbShifts; ++i )
+    {
+      int sh = ctShifts[i];
+
+      if ( shift < sh )
+        shift = sh;
+    }
+
+    ct = ctEntries.join( "\n" );
+  }
+
+  QByteArray ctBa = ct.toLatin1();
+  const char *cts = ctBa.data();
+
+  const int currentWrapPosition = wrapPosition();
+
+  if ( currentWrapPosition != -1 )
+  {
+    SendScintilla( SCI_CALLTIPSHOW, currentWrapPosition, cts );
+  }
+  else
+  {
+    // Shift the position of the call tip (to take any context into account) but
+    // don't go before the start of the line.
+    if ( shift )
+    {
+      int ctmin = static_cast<int>( SendScintilla( SCI_POSITIONFROMLINE, SendScintilla( SCI_LINEFROMPOSITION, ct ) ) );
+      if ( lastWordStart - shift < ctmin )
+        lastWordStart = ctmin;
+    }
+
+    int line, index;
+    lineIndexFromPosition( lastWordStart, &line, &index );
+    SendScintilla( SCI_CALLTIPSHOW, positionFromLineIndex( line, index ), cts );
+  }
+
+  // Done if there is more than one call tip.
+  if ( nbEntries > 1 )
+    return;
+
+  // Highlight the current argument.
+  const char *astart;
+
+  if ( commas == 0 )
+    astart = strchr( cts, '(' );
+  else
+    for ( astart = strchr( cts, ',' ); astart && --commas > 0; astart = strchr( astart + 1, ',' ) )
+      ;
+
+  if ( !astart )
+    return;
+
+  astart++;
+  if ( !*astart )
+    return;
+
+  // The end is at the next comma or unmatched closing parenthesis.
+  const char *aend;
+  int depth = 0;
+
+  for ( aend = astart; *aend; ++aend )
+  {
+    char ch = *aend;
+
+    if ( ch == ',' && depth == 0 )
+      break;
+    else if ( ch == '(' )
+      ++depth;
+    else if ( ch == ')' )
+    {
+      if ( depth == 0 )
+        break;
+
+      --depth;
+    }
+  }
+
+  if ( astart != aend )
+    SendScintilla( SCI_CALLTIPSETHLT, astart - cts, aend - cts );
+}
+
+
+// Duplicated from QsciScintilla source code (qsciscintilla.cpp)
+// Get the "next" character (ie. the one before the current position) in the
+// current line.  The character will be '\0' if there are no more.
+char QgsCodeEditor::getCharacter( int &pos ) const
+{
+  if ( pos <= 0 )
+    return '\0';
+
+  char ch = static_cast<char>( SendScintilla( SCI_GETCHARAT, --pos ) );
+
+  // Don't go past the end of the previous line.
+  if ( ch == '\n' || ch == '\r' )
+  {
+    ++pos;
+    return '\0';
+  }
+
+  return ch;
 }

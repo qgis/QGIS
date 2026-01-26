@@ -16,10 +16,14 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayermodel.h"
-#include "qgsprovidersublayerdetails.h"
-#include "qgsiconutils.h"
+
 #include "qgsapplication.h"
+#include "qgsiconutils.h"
+#include "qgsprovidersublayerdetails.h"
+
 #include <QLocale>
+
+#include "moc_qgsprovidersublayermodel.cpp"
 
 //
 // QgsProviderSublayerModelNode
@@ -45,7 +49,7 @@ void QgsProviderSublayerModelGroup::populateFromSublayers( const QList<QgsProvid
         QgsProviderSublayerModelGroup *nextChild = groupNode->findGroup( currentPath.constLast() );
         if ( !nextChild )
         {
-          std::unique_ptr< QgsProviderSublayerModelGroup > newNode = std::make_unique< QgsProviderSublayerModelGroup >( currentPath.constLast() );
+          auto newNode = std::make_unique< QgsProviderSublayerModelGroup >( currentPath.constLast() );
           groupNode = qgis::down_cast< QgsProviderSublayerModelGroup * >( groupNode->addChild( std::move( newNode ) ) );
         }
         else
@@ -79,6 +83,7 @@ QgsProviderSublayerModelNode *QgsProviderSublayerModelGroup::addChild( std::uniq
 
   QgsProviderSublayerModelNode *res = child.get();
   mChildren.emplace_back( std::move( child ) );
+  // cppcheck-suppress returnDanglingLifetime
   return res;
 }
 
@@ -170,7 +175,7 @@ QVariant QgsProviderSublayerModelGroup::data( int role, int column ) const
     case Qt::DecorationRole:
     {
       if ( column == 0 )
-        return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
+        return QgsApplication::getThemeIcon( u"/mIconDbSchema.svg"_s );
       else
         return QVariant();
     }
@@ -211,11 +216,11 @@ QVariant QgsProviderSublayerModelSublayerNode::data( int role, int column ) cons
                 count = QLocale().toString( mSublayer.featureCount() );
 
               if ( !mSublayer.description().isEmpty() )
-                return QStringLiteral( "%1 - %2 (%3)" ).arg( mSublayer.description(),
-                       QgsWkbTypes::displayString( mSublayer.wkbType() ),
-                       count );
+                return u"%1 - %2 (%3)"_s.arg( mSublayer.description(),
+                                              QgsWkbTypes::displayString( mSublayer.wkbType() ),
+                                              count );
               else
-                return QStringLiteral( "%2 (%3)" ).arg(
+                return u"%2 (%3)"_s.arg(
                          QgsWkbTypes::displayString( mSublayer.wkbType() ),
                          count );
             }

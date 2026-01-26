@@ -16,13 +16,14 @@
 #ifndef QGSMASKPAINTDEVICE_H
 #define QGSMASKPAINTDEVICE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include <QPainterPath>
 #include <QPaintDevice>
 #include <QPaintEngine>
-#include <memory>
+#include <QPainterPath>
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
@@ -31,7 +32,7 @@ class QgsMaskPaintEngine: public QPaintEngine
 
   public:
 
-    Q_DECL_DEPRECATED QgsMaskPaintEngine( bool usePathStroker = false );
+    QgsMaskPaintEngine( bool usePathStroker = false );
 
     bool begin( QPaintDevice * ) override { return true; };
     bool end() override { return true; };
@@ -57,7 +58,7 @@ class QgsMaskPaintEngine: public QPaintEngine
 /**
  * \ingroup core
  * \brief Mask painter device that can be used to register everything painted into a QPainterPath
- * used later as clip path
+ * used later as clip path.
  * \deprecated QGIS 3.38. Use QgsGeometryPaintDevice instead.
  */
 class CORE_EXPORT QgsMaskPaintDevice: public QPaintDevice

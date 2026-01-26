@@ -16,29 +16,29 @@
  ***************************************************************************/
 
 #include "qgsgpxsourceselect.h"
-#include "qgsproviderregistry.h"
+
 #include "qgshelp.h"
+#include "qgsproviderregistry.h"
 
 #include <QMessageBox>
 
+#include "moc_qgsgpxsourceselect.cpp"
 
-QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
-  QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+QgsGpxSourceSelect::QgsGpxSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
   setupButtons( buttonBox );
 
   mFileWidget->setDialogTitle( tr( "Open GPX Dataset" ) );
-  mFileWidget->setFilter( QStringLiteral( "%1 (*.gpx *.GPX)" ).arg( tr( "GPX files" ) ) );
+  mFileWidget->setFilter( u"%1 (*.gpx *.GPX)"_s.arg( tr( "GPX files" ) ) );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
-  {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [this]( const QString &path ) {
     mGpxPath = path;
     emit enableButtons( !mGpxPath.isEmpty() );
   } );
 
-  connect( mFileWidget, &QgsFileWidget::fileChanged,
-           this, &QgsGpxSourceSelect::enableRelevantControls );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsGpxSourceSelect::enableRelevantControls );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsGpxSourceSelect::showHelp );
 }
@@ -47,47 +47,38 @@ void QgsGpxSourceSelect::addButtonClicked()
 {
   if ( mGpxPath.isEmpty() )
   {
-    QMessageBox::information( this,
-                              tr( "Add GPX Layer" ),
-                              tr( "No layers selected." ) );
+    QMessageBox::information( this, tr( "Add GPX Layer" ), tr( "No layers selected." ) );
     return;
   }
 
   const QFileInfo fileInfo( mGpxPath );
   if ( !fileInfo.isReadable() )
   {
-    QMessageBox::warning( nullptr, tr( "Add GPX Layer" ),
-                          tr( "Unable to read the selected file.\n"
-                              "Please select a valid file." ) );
+    QMessageBox::warning( nullptr, tr( "Add GPX Layer" ), tr( "Unable to read the selected file.\n"
+                                                              "Please select a valid file." ) );
     return;
   }
 
   if ( cbGPXTracks->isChecked() )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addVectorLayer( mGpxPath + "?type=track",
-                         fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    emit addVectorLayer( mGpxPath + "?type=track", fileInfo.baseName() + ", tracks", u"gpx"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=track",
-                   fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=track", fileInfo.baseName() + ", tracks", u"gpx"_s );
   }
   if ( cbGPXRoutes->isChecked() )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addVectorLayer( mGpxPath + "?type=route",
-                         fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    emit addVectorLayer( mGpxPath + "?type=route", fileInfo.baseName() + ", routes", u"gpx"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=route",
-                   fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=route", fileInfo.baseName() + ", routes", u"gpx"_s );
   }
   if ( cbGPXWaypoints->isChecked() )
   {
     Q_NOWARN_DEPRECATED_PUSH
-    emit addVectorLayer( mGpxPath + "?type=waypoint",
-                         fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    emit addVectorLayer( mGpxPath + "?type=waypoint", fileInfo.baseName() + ", waypoints", u"gpx"_s );
     Q_NOWARN_DEPRECATED_POP
-    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=waypoint",
-                   fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    emit addLayer( Qgis::LayerType::Vector, mGpxPath + "?type=waypoint", fileInfo.baseName() + ", waypoints", u"gpx"_s );
   }
 }
 
@@ -104,5 +95,5 @@ void QgsGpxSourceSelect::enableRelevantControls()
 
 void QgsGpxSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#gps" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#gps"_s );
 }

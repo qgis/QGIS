@@ -16,9 +16,9 @@
 #ifndef QGSABSTRACTSENSOR_H
 #define QGSABSTRACTSENSOR_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
 #include <QDateTime>
 #include <QDomElement>
@@ -27,31 +27,29 @@
 /**
  * \ingroup core
  * \class QgsAbstractSensor
- * \brief An abstract base class for sensor classes
+ * \brief An abstract base class for sensors.
  * \since QGIS 3.32
  */
 class CORE_EXPORT QgsAbstractSensor : public QObject
 {
-#ifdef SIP_RUN
-#include "qgsiodevicesensor.h"
-#include "qgssensorregistry.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgsiodevicesensor.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgssensorregistry.h" );
 
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( QgsAbstractSensor *item = qobject_cast< QgsAbstractSensor * >( sipCpp ) )
     {
-      if ( item->type() == QLatin1String( "tcp_socket" ) && dynamic_cast<QgsTcpSocketSensor *>( item ) != NULL )
+      if ( item->type() == "tcp_socket"_L1 && dynamic_cast<QgsTcpSocketSensor *>( item ) != NULL )
       {
         sipType = sipType_QgsTcpSocketSensor;
       }
-      else if ( item->type() == QLatin1String( "udp_socket" ) && dynamic_cast<QgsUdpSocketSensor *>( item ) != NULL )
+      else if ( item->type() == "udp_socket"_L1 && dynamic_cast<QgsUdpSocketSensor *>( item ) != NULL )
       {
         sipType = sipType_QgsUdpSocketSensor;
       }
 #if defined( HAVE_QTSERIALPORT )
-      else if ( item->type() == QLatin1String( "serial_port" ) && dynamic_cast<QgsSerialPortSensor *>( item ) != NULL )
+      else if ( item->type() == "serial_port"_L1 && dynamic_cast<QgsSerialPortSensor *>( item ) != NULL )
       {
         sipType = sipType_QgsSerialPortSensor;
       }
@@ -92,7 +90,7 @@ class CORE_EXPORT QgsAbstractSensor : public QObject
      * Constructor for an abstract sensor, bound to the specified \a parent.
      */
     explicit QgsAbstractSensor( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    virtual ~QgsAbstractSensor() = default;
+    ~QgsAbstractSensor() override = default;
 
     /**
      * Returns the sensor ID.

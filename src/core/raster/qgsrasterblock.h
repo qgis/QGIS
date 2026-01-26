@@ -18,14 +18,16 @@
 #ifndef QGSRASTERBLOCK_H
 #define QGSRASTERBLOCK_H
 
+#include <limits>
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <limits>
-#include <QImage>
-#include "qgis.h"
 #include "qgserror.h"
 #include "qgslogger.h"
 #include "qgsrasterrange.h"
+
+#include <QImage>
 
 class QgsRectangle;
 
@@ -125,10 +127,29 @@ class CORE_EXPORT QgsRasterBlock
       return typeSize( mDataType );
     }
 
-    //! Returns TRUE if data type is numeric
+    /**
+     * Returns TRUE if a data type is numeric.
+     *
+     * \see typeIsComplex()
+     * \see typeIsColor()
+     */
     static bool typeIsNumeric( Qgis::DataType type );
 
-    //! Returns TRUE if data type is color
+    /**
+     * Returns TRUE if a data type is a complex number type.
+     *
+     * \see typeIsNumeric()
+     * \see typeIsColor()
+     * \since QGIS 3.44
+     */
+    static bool typeIsComplex( Qgis::DataType type );
+
+    /**
+     * Returns TRUE if a data type is a color type.
+     *
+     * \see typeIsNumeric()
+     * \see typeIsComplex()
+     */
     static bool typeIsColor( Qgis::DataType type );
 
     //! Returns data type
@@ -320,7 +341,7 @@ class CORE_EXPORT QgsRasterBlock
         return false;
       if ( index >= static_cast< qgssize >( mWidth )*mHeight )
       {
-        QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+        QgsDebugError( u"Index %1 out of range (%2 x %3)"_s.arg( index ).arg( mWidth ).arg( mHeight ) );
         return true; // we consider no data if outside
       }
       if ( mHasNoDataValue )
@@ -367,12 +388,12 @@ class CORE_EXPORT QgsRasterBlock
     {
       if ( !mData )
       {
-        QgsDebugError( QStringLiteral( "Data block not allocated" ) );
+        QgsDebugError( u"Data block not allocated"_s );
         return false;
       }
       if ( index >= static_cast< qgssize >( mWidth ) *mHeight )
       {
-        QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+        QgsDebugError( u"Index %1 out of range (%2 x %3)"_s.arg( index ).arg( mWidth ).arg( mHeight ) );
         return false;
       }
       writeValue( mData, mDataType, index, value );
@@ -401,13 +422,13 @@ class CORE_EXPORT QgsRasterBlock
     {
       if ( !mImage )
       {
-        QgsDebugError( QStringLiteral( "Image not allocated" ) );
+        QgsDebugError( u"Image not allocated"_s );
         return false;
       }
 
       if ( index >= static_cast< qgssize >( mImage->width() ) * mImage->height() )
       {
-        QgsDebugError( QStringLiteral( "index %1 out of range" ).arg( index ) );
+        QgsDebugError( u"index %1 out of range"_s.arg( index ) );
         return false;
       }
 
@@ -527,6 +548,50 @@ class CORE_EXPORT QgsRasterBlock
       const int nodata = 0x80 >> bit;
       mNoDataBitmap[byte] = mNoDataBitmap[byte] & ~nodata;
     }
+
+#ifndef SIP_RUN
+    /**
+     * Fills the whole block with a constant \a value.
+     *
+     * This method only applies to numeric raster blocks, not color blocks.
+     *
+     * \returns TRUE on success
+     * \since QGIS 3.44
+    */
+    bool fill( double value );
+#else
+
+    /**
+     * Fills the whole block with a constant \a value.
+     *
+     * This method only applies to numeric raster blocks, not color blocks or complex number data types.
+     *
+     * \throws ValueError if the block is an empty, non-numeric or complex number type raster block.
+     * \since QGIS 3.44
+    */
+    void fill( double value );
+    % MethodCode
+    if ( !QgsRasterBlock::typeIsNumeric( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, u"Cannot fill a block with %1 data type"_s.arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( QgsRasterBlock::typeIsComplex( sipCpp->dataType() ) )
+    {
+      PyErr_SetString( PyExc_ValueError, u"Cannot fill a block with %1 complex data type"_s.arg( qgsEnumValueToKey( sipCpp->dataType() ) ).toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else if ( sipCpp->isEmpty() )
+    {
+      PyErr_SetString( PyExc_ValueError, u"Cannot fill an empty block"_s.toUtf8().constData() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      sipCpp->fill( a0 );
+    }
+    % End
+#endif
 
     /**
      * Gets access to raw data.
@@ -675,6 +740,68 @@ class CORE_EXPORT QgsRasterBlock
      */
     int height() const SIP_HOLDGIL { return mHeight; }
 
+    /**
+     * Returns the minimum value present in the raster block.
+     *
+     * \note If the minimum value is present multiple times in the raster block then the calculated row and column
+     * will refer to any instance of this minimum.
+     *
+     * \param minimum minimum value present
+     * \param row row containing minimum value pixel
+     * \param column column containing minimum value pixel
+     *
+     * \returns TRUE if a minimum value was found, or FALSE if it could not be found (eg due to non-numeric data types).
+     *
+     * \see maximum()
+     * \see minimumMaximum()
+     *
+     * \since QGIS 3.42
+     */
+    bool minimum( double &minimum SIP_OUT, int &row SIP_OUT, int &column SIP_OUT ) const;
+
+    /**
+     * Returns the maximum value present in the raster block.
+     *
+     * \note If the maximum value is present multiple times in the raster block then the calculated row and column
+     * will refer to any instance only of this maximum.
+     *
+     * \param maximum maximum value present
+     * \param row row containing maximum value pixel
+     * \param column column containing maximum value pixel
+     *
+     * \returns TRUE if a maximum value was found, or FALSE if it could not be found (eg due to non-numeric data types).
+     *
+     * \see minimum()
+     * \see minimumMaximum()
+     *
+     * \since QGIS 3.42
+     */
+    bool maximum( double &maximum SIP_OUT, int &row SIP_OUT, int &column SIP_OUT ) const;
+
+    /**
+     * Returns the minimum and maximum value present in the raster block.
+     *
+     * \note This method is more efficient than calling minimum() and maximum() separately.
+     *
+     * \note If the minimum or maximum value is present multiple times in the raster block then the calculated row and column
+     * will refer to any of instances of these values.
+     *
+     * \param minimum minimum value present
+     * \param minimumRow row containing minimum value pixel
+     * \param minimumColumn column containing minimum value pixel
+     * \param maximum maximum value present
+     * \param maximumRow row containing maximum value pixel
+     * \param maximumColumn column containing maximum value pixel
+     *
+     * \returns TRUE if a minimum and maximum value were found, or FALSE if they could not be found (eg due to non-numeric data types).
+     *
+     * \see minimum()
+     * \see maximum()
+     *
+     * \since QGIS 3.42
+     */
+    bool minimumMaximum( double &minimum SIP_OUT, int &minimumRow SIP_OUT, int &minimumColumn SIP_OUT, double &maximum SIP_OUT, int &maximumRow SIP_OUT, int &maximumColumn SIP_OUT ) const;
+
   private:
     static QImage::Format imageFormat( Qgis::DataType dataType );
     static Qgis::DataType dataType( QImage::Format format );
@@ -795,7 +922,7 @@ inline double QgsRasterBlock::readValue( void *data, Qgis::DataType type, qgssiz
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
+      QgsDebugError( u"Data type %1 is not supported"_s.arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
       break;
   }
 
@@ -839,7 +966,7 @@ inline void QgsRasterBlock::writeValue( void *data, Qgis::DataType type, qgssize
     case Qgis::DataType::ARGB32:
     case Qgis::DataType::ARGB32_Premultiplied:
     case Qgis::DataType::UnknownDataType:
-      QgsDebugError( QStringLiteral( "Data type %1 is not supported" ).arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
+      QgsDebugError( u"Data type %1 is not supported"_s.arg( qgsEnumValueToKey< Qgis::DataType >( type ) ) );
       break;
   }
 }
@@ -848,7 +975,7 @@ inline double QgsRasterBlock::value( qgssize index ) const SIP_SKIP
 {
   if ( !mData )
   {
-    QgsDebugError( QStringLiteral( "Data block not allocated" ) );
+    QgsDebugError( u"Data block not allocated"_s );
     return std::numeric_limits<double>::quiet_NaN();
   }
   return readValue( mData, mDataType, index );
@@ -858,13 +985,13 @@ inline double QgsRasterBlock::valueAndNoData( qgssize index, bool &isNoData ) co
 {
   if ( !mData )
   {
-    QgsDebugError( QStringLiteral( "Data block not allocated" ) );
+    QgsDebugError( u"Data block not allocated"_s );
     isNoData = true;
     return std::numeric_limits<double>::quiet_NaN();
   }
   if ( index >= static_cast< qgssize >( mWidth )*mHeight )
   {
-    QgsDebugError( QStringLiteral( "Index %1 out of range (%2 x %3)" ).arg( index ).arg( mWidth ).arg( mHeight ) );
+    QgsDebugError( u"Index %1 out of range (%2 x %3)"_s.arg( index ).arg( mWidth ).arg( mHeight ) );
     isNoData = true; // we consider no data if outside
     return std::numeric_limits<double>::quiet_NaN();
   }

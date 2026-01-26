@@ -15,10 +15,12 @@
 #ifndef QGSRELATIONADDPOLYMORPHICDIALOG_H
 #define QGSRELATIONADDPOLYMORPHICDIALOG_H
 
-#include <QDialog>
-#include "qgis_app.h"
 #include "ui_qgsrelationmanageraddpolymorphicdialogbase.h"
+
 #include "qgis.h"
+#include "qgis_app.h"
+
+#include <QDialog>
 
 class QgsPolymorphicRelation;
 
@@ -51,7 +53,7 @@ class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::Q
     /**
      * Returns field pairs
      */
-    QList< QPair< QString, QString > > fieldPairs() const;
+    QList<QPair<QString, QString>> fieldPairs() const;
 
     /**
      * Returns the polymorphic relation id
@@ -95,7 +97,6 @@ class APP_EXPORT QgsRelationAddPolymorphicDialog : public QDialog, private Ui::Q
     void updateFieldsMapping();
 
     bool mIsEditDialog = false;
-
 };
 
 #endif // QGSRELATIONADDPOLYMORPHICDIALOG_H

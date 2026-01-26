@@ -19,19 +19,24 @@
 """
 
 import sys
-from xml.etree import ElementTree as et
+
 from html import escape
+from xml.etree import ElementTree as et
 
 strings = {}
 
-d = et.parse('linux/org.qgis.qgis.appdata.xml.in')
+d = et.parse("linux/org.qgis.qgis.appdata.xml.in")
 
 r = d.getroot()
-for elem in ['name', 'summary', 'description']:
+for elem in ["name", "summary", "description"]:
     for c in r.iter(elem):
         if not c.attrib:
             l = list(c)
-            t = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
+            t = (
+                c.text
+                if not l
+                else "".join([et.tostring(x).decode("utf-8") for x in l])
+            )
             strings[t] = 1
 
 f = open("linux/org.qgis.qgis.desktop.in")
@@ -45,7 +50,8 @@ for r in f.readlines():
 
 f.close()
 
-print("""\
+print(
+    """\
 <?xml version="1.0" encoding="UTF-8"?>
  <!--
  This is NOT a proper UI code. This file is only designed to be caught
@@ -54,7 +60,8 @@ print("""\
  -->
 <ui version="4.0">
   <class>appinfo</class>;
-""")
+"""
+)
 
 for k in strings:
     print(f"<property><string>{escape(k)}</string></property>")

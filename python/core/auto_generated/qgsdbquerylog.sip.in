@@ -8,6 +8,7 @@
 
 
 
+
 class QgsDatabaseQueryLogEntry
 {
 %Docstring(signature="appended")
@@ -56,9 +57,10 @@ class QgsDatabaseQueryLog: QObject
 %Docstring(signature="appended")
 Handles logging of database queries.
 
-:py:class:`QgsDatabaseQueryLog` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.databaseQueryLog()`. Generally, clients should only access the
-static :py:func:`~log` method to register their queries.
+:py:class:`QgsDatabaseQueryLog` is not usually directly created, but
+rather accessed through :py:func:`QgsApplication.databaseQueryLog()`.
+Generally, clients should only access the static :py:func:`~log` method
+to register their queries.
 
 Example
 -------------------------------------
@@ -80,8 +82,8 @@ Example
 %Docstring
 Creates a new query log.
 
-QgsDatabaseQueryLog is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.databaseQueryLog()`.
+QgsDatabaseQueryLog is not usually directly created, but rather accessed
+through :py:func:`QgsApplication.databaseQueryLog()`.
 %End
 
 

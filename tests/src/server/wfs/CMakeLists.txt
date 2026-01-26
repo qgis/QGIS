@@ -27,11 +27,7 @@ set(MODULE_WFS_SRCS
 set(MODULE_WFS_HDRS
 )
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_CPP(MODULE_WFS_MOC_SRCS ${MODULE_WFS_HDRS})
-else()
-  QT5_WRAP_CPP(MODULE_WFS_MOC_SRCS ${MODULE_WFS_HDRS})
-endif()
+qt_wrap_cpp(MODULE_WFS_MOC_SRCS ${MODULE_WFS_HDRS})
 
 #############################################################
 # Tests:

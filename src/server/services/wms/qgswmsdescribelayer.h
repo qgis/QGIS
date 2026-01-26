@@ -19,20 +19,24 @@
  *                                                                         *
  ***************************************************************************/
 
+class QgsServerInterface;
+class QgsProject;
+class QgsServerResponse;
+class QDomDocument;
+
 namespace QgsWms
 {
+
+  class QgsWmsRequest;
 
   /**
    * Output GetMap response in DXF format
    */
-  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project,
-                           const QgsWmsRequest &request,
-                           QgsServerResponse &response );
+  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
 
   /**
    *  DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
    */
-  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project,
-                              const QgsWmsRequest &request );
+  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request );
 
 } // namespace QgsWms

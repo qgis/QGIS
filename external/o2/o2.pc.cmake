@@ -7,4 +7,4 @@ Description: OAuth 2.0 for Qt
 Version: @PROJECT_VERSION@
 
 Cflags: -I${includedir} @CMAKE_INCLUDE_PATH@
-Libs: -L${libdir} @CMAKE_LIBRARY_PATH@
+Libs: -L${libdir} -lo2

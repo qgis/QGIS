@@ -25,7 +25,7 @@ components to QGIS.
 
 */
 
-/** @defgroup 3d 3D library
+/** @defgroup qgis_3d 3D library
 
 The 3D library is build on top of the CORE library and Qt 3D framework. It adds support for display of GIS data in 3D scenes.
 

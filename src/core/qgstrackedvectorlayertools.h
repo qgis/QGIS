@@ -17,12 +17,13 @@
 #define QGSTRACKEDVECTORLAYERTOOLS_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayertools.h"
 #include "qgsexpressioncontext.h"
+#include "qgsvectorlayertools.h"
 
 /**
  * \ingroup core
  * \class QgsTrackedVectorLayerTools
+ * \brief Vector layer tools subclass which "tracks" edits.
  */
 class CORE_EXPORT QgsTrackedVectorLayerTools : public QgsVectorLayerTools
 {

@@ -17,13 +17,14 @@
 #ifndef QGSSCALEBARSETTINGS_H
 #define QGSSCALEBARSETTINGS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgstextformat.h"
+
+#include <QBrush>
 #include <QColor>
 #include <QFont>
 #include <QPen>
-#include <QBrush>
 
 class QgsNumericFormat;
 class QgsLineSymbol;
@@ -32,7 +33,7 @@ class QgsFillSymbol;
 /**
  * \class QgsScaleBarSettings
  * \ingroup core
- * \brief The QgsScaleBarSettings class stores the appearance and layout settings
+ * \brief Stores the appearance and layout settings
  * for scalebar drawing with QgsScaleBarRenderer.
 */
 class CORE_EXPORT QgsScaleBarSettings

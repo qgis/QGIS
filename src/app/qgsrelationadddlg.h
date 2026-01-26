@@ -15,10 +15,12 @@
 #ifndef QGSRELATIONADDDLG_H
 #define QGSRELATIONADDDLG_H
 
-#include <QDialog>
-#include "qgis_app.h"
 #include "ui_qgsrelationmanageradddialogbase.h"
+
 #include "qgis.h"
+#include "qgis_app.h"
+
+#include <QDialog>
 
 class QDialogButtonBox;
 class QComboBox;
@@ -45,7 +47,7 @@ class APP_EXPORT QgsCreateRelationDialog : public QDialog, private Ui::QgsRelati
 
     QString referencingLayerId() const;
     QString referencedLayerId() const;
-    QList< QPair< QString, QString > > references() const;
+    QList<QPair<QString, QString>> references() const;
     QString relationId() const;
     QString relationName() const;
     Qgis::RelationshipStrength relationStrength() const;
@@ -66,7 +68,6 @@ class APP_EXPORT QgsCreateRelationDialog : public QDialog, private Ui::QgsRelati
 
     QgsMapLayerComboBox *mReferencedLayerCombobox = nullptr;
     QgsMapLayerComboBox *mReferencingLayerCombobox = nullptr;
-
 };
 
 #endif // QGSRELATIONADDDLG_H

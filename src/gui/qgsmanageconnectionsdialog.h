@@ -18,15 +18,18 @@
 #ifndef QGSMANAGECONNECTIONSDIALOG_H
 #define QGSMANAGECONNECTIONSDIALOG_H
 
-#include <QDialog>
-#include <QDomDocument>
 #include "ui_qgsmanageconnectionsdialogbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDialog>
+#include <QDomDocument>
 
 /**
  * \ingroup gui
  * \class QgsManageConnectionsDialog
+ * \brief A dialog for importing or exporting stored connections.
  */
 class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnectionsDialogBase
 {
@@ -49,13 +52,13 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
       Oracle,
       HANA,
       XyzTiles,
-      ArcgisMapServer, // TODO QGIS 4: remove
+      ArcgisMapServer, // TODO QGIS 5: remove
       ArcgisFeatureServer,
       VectorTile,
-      TiledScene, //!< Tiled scene connection \since QGIS 3.34
+      TiledScene,   //!< Tiled scene connection \since QGIS 3.34
       SensorThings, //!< SensorThings connections \since QGIS 3.36
       CloudStorage, //!< Cloud storage connections \since QGIS 3.40
-      STAC, //!< SpatioTemporal Asset Catalog connections \since QGIS 3.40
+      STAC,         //!< SpatioTemporal Asset Catalog connections \since QGIS 3.40
     };
 
     /**
@@ -108,4 +111,3 @@ class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsMan
 // clazy:excludeall=qstring-allocations
 
 #endif // QGSMANAGECONNECTIONSDIALOG_H
-

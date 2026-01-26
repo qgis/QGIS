@@ -28,12 +28,16 @@ class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryChec
 {
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryDegeneratePolygonCheck )
   public:
-    enum ResolutionMethod { DeleteRing, NoChange };
+    enum ResolutionMethod
+    {
+      DeleteRing,
+      NoChange
+    };
 
     explicit QgsGeometryDegeneratePolygonCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration ) {}
 
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
+    QgsGeometryCheck::Result collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
     void fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> &mergeAttributeIndices, Changes &changes ) const override;
 
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
@@ -42,10 +46,10 @@ class ANALYSIS_EXPORT QgsGeometryDegeneratePolygonCheck : public QgsGeometryChec
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() {return {Qgis::GeometryType::Polygon}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Polygon with less than three nodes" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryDegeneratePolygonCheck" ); }
+    static QString factoryId() { return u"QgsGeometryDegeneratePolygonCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
   private:

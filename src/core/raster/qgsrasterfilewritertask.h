@@ -19,10 +19,10 @@
 #define QGSRASTERFILEWRITERTASK_H
 
 #include "qgis_core.h"
-#include "qgstaskmanager.h"
-#include "qgsrasterfilewriter.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgsrasterfilewriter.h"
 #include "qgsrasterinterface.h"
+#include "qgstaskmanager.h"
 
 class QgsRasterPipe;
 
@@ -30,7 +30,9 @@ class QgsRasterPipe;
  * \class QgsRasterFileWriterTask
  * \ingroup core
  * \brief QgsTask task which performs a QgsRasterFileWriter layer saving operation as a background
- * task. This can be used to save a raster layer out to a file without blocking the
+ * task.
+ *
+ * This can be used to save a raster layer out to a file without blocking the
  * QGIS interface.
  * \see QgsVectorFileWriterTask
  * \see QgsVectorFileExporterTask
@@ -83,7 +85,7 @@ class CORE_EXPORT QgsRasterFileWriterTask : public QgsTask
     /**
      * Emitted when an error occurs which prevented the file being written (or if
      * the task is canceled). The writing \a error will be reported.
-     * \deprecated QGIS 3.10. Use errorOccurred(int, const QString&).
+     * \deprecated QGIS 3.10. Use the signal with the errorMessage string instead.
      */
     void errorOccurred( int error );
 

@@ -22,16 +22,20 @@
 
 void QgsTransformAlgorithm::initParameters( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "TARGET_CRS" ), QObject::tr( "Target CRS" ), QStringLiteral( "EPSG:4326" ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"TARGET_CRS"_s, QObject::tr( "Target CRS" ), u"EPSG:4326"_s ) );
 
   // Convert curves to straight segments
-  auto convertCurvesParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "CONVERT_CURVED_GEOMETRIES" ), QObject::tr( "Convert curved geometries to straight segments" ), false, true );
+  auto convertCurvesParam = std::make_unique<QgsProcessingParameterBoolean>( u"CONVERT_CURVED_GEOMETRIES"_s, QObject::tr( "Convert curved geometries to straight segments" ), false );
   convertCurvesParam->setHelp( QObject::tr( "If checked, curved geometries will be converted to straight segments. Otherwise, they will be kept as curves. This can fix distortion issues." ) );
   addParameter( convertCurvesParam.release() );
 
+  // Transform Z
+  auto transformZParam = std::make_unique<QgsProcessingParameterBoolean>( u"TRANSFORM_Z"_s, QObject::tr( "Also transform Z coordinates" ), false );
+  transformZParam->setHelp( QObject::tr( "If checked, the z coordinates will also be transformed. This requires that the z coordinates in the geometries represent height relative to the vertical datum of the source CRS (generally ellipsoidal heights) and are expressed in its vertical units (generally meters). If unchecked, then z coordinates will not be changed by the transform." ) );
+  addParameter( transformZParam.release() );
+
   // Optional coordinate operation
-  auto crsOpParam = std::make_unique< QgsProcessingParameterCoordinateOperation >( QStringLiteral( "OPERATION" ), QObject::tr( "Coordinate operation" ),
-                    QVariant(), QStringLiteral( "INPUT" ), QStringLiteral( "TARGET_CRS" ), QVariant(), QVariant(), true );
+  auto crsOpParam = std::make_unique<QgsProcessingParameterCoordinateOperation>( u"OPERATION"_s, QObject::tr( "Coordinate operation" ), QVariant(), u"INPUT"_s, u"TARGET_CRS"_s, QVariant(), QVariant(), true );
   crsOpParam->setFlags( crsOpParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( crsOpParam.release() );
 }
@@ -53,7 +57,7 @@ Qgis::ProcessingFeatureSourceFlags QgsTransformAlgorithm::sourceFlags() const
 
 QString QgsTransformAlgorithm::name() const
 {
-  return QStringLiteral( "reprojectlayer" );
+  return u"reprojectlayer"_s;
 }
 
 QString QgsTransformAlgorithm::displayName() const
@@ -73,7 +77,7 @@ QString QgsTransformAlgorithm::group() const
 
 QString QgsTransformAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsTransformAlgorithm::shortHelpString() const
@@ -81,6 +85,11 @@ QString QgsTransformAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm reprojects a vector layer. It creates a new layer with the same features "
                       "as the input one, but with geometries reprojected to a new CRS.\n\n"
                       "Attributes are not modified by this algorithm." );
+}
+
+QString QgsTransformAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Creates a vector layer with geometries transformed to a new CRS." );
 }
 
 QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
@@ -91,10 +100,11 @@ QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
 bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   prepareSource( parameters, context );
-  mDestCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+  mDestCrs = parameterAsCrs( parameters, u"TARGET_CRS"_s, context );
   mTransformContext = context.transformContext();
-  mConvertCurveToSegments = parameterAsBoolean( parameters, QStringLiteral( "CONVERT_CURVED_GEOMETRIES" ), context );
-  mCoordOp = parameterAsString( parameters, QStringLiteral( "OPERATION" ), context );
+  mConvertCurveToSegments = parameterAsBoolean( parameters, u"CONVERT_CURVED_GEOMETRIES"_s, context );
+  mTransformZ = parameterAsBoolean( parameters, u"TRANSFORM_Z"_s, context );
+  mCoordOp = parameterAsString( parameters, u"OPERATION"_s, context );
   return true;
 }
 
@@ -122,7 +132,7 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
     }
     try
     {
-      if ( g.transform( mTransform ) == Qgis::GeometryOperationResult::Success )
+      if ( g.transform( mTransform, Qgis::TransformDirection::Forward, mTransformZ ) == Qgis::GeometryOperationResult::Success )
       {
         feature.setGeometry( g );
       }
@@ -150,6 +160,3 @@ QgsFeatureList QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsPr
 }
 
 ///@endcond
-
-
-

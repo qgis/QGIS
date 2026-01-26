@@ -15,14 +15,14 @@
 #ifndef QGSAUTHOAUTH2EDIT_H
 #define QGSAUTHOAUTH2EDIT_H
 
-#include <QWidget>
-#include <QNetworkReply>
-#include "qgsauthmethodedit.h"
 #include "ui_qgsauthoauth2edit.h"
 
 #include "qgsauthconfig.h"
+#include "qgsauthmethodedit.h"
 #include "qgsauthoauth2config.h"
 
+#include <QNetworkReply>
+#include <QWidget>
 
 /**
  * The QgsAuthOAuth2Edit class allows editing of an OAuth2 authentication configuration
@@ -34,7 +34,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     Q_OBJECT
 
   public:
-
     //! Construct a QgsAuthOAuth2Edit instance
     explicit QgsAuthOAuth2Edit( QWidget *parent = nullptr );
 
@@ -42,25 +41,25 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
      * Validate current configuration
      * \return TRUE if current configuration is valid
      */
-    bool validateConfig() override;
+    bool validateConfig() final;
 
     /**
      * Current configuration
      * \return current configuration map
      */
-    QgsStringMap configMap() const override;
+    QgsStringMap configMap() const final;
 
 
   public slots:
 
     //! Load the configuration from \a configMap
-    void loadConfig( const QgsStringMap &configmap ) override;
+    void loadConfig( const QgsStringMap &configmap ) final;
 
     //! Reset configuration to defaults
-    void resetConfig() override;
+    void resetConfig() final;
 
     //! Clear configuration
-    void clearConfig() override;
+    void clearConfig() final;
 
   private slots:
     void setupConnections();
@@ -90,6 +89,14 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     void clearQueryPairs();
 
     void populateQueryPairs( const QVariantMap &querypairs, bool append = false );
+
+    void addExtraToken();
+
+    void removeExtraToken();
+
+    void clearExtraTokens();
+
+    void populateExtraTokens( const QVariantMap &tokens, bool append = false );
 
     void queryTableSelectionChanged();
 
@@ -126,7 +133,6 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     void networkError( QNetworkReply::NetworkError error );
 
   private:
-
     void initGui();
     void parseSoftwareStatement( const QString &path );
 
@@ -140,6 +146,9 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
 
     void addQueryPairRow( const QString &key, const QString &val );
     QVariantMap queryPairs() const;
+
+    void addExtraTokenRow( const QString &key, const QString &val );
+    QVariantMap extraTokens() const;
 
     int customTab() const { return 0; }
     int definedTab() const { return 1; }

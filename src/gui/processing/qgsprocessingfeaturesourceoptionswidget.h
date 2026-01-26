@@ -16,9 +16,10 @@
 #ifndef QGSPROCESSINGFEATURESOURCEOPTIONSWIDGET_H
 #define QGSPROCESSINGFEATURESOURCEOPTIONSWIDGET_H
 
+#include "ui_qgsprocessingfeaturesourceoptionsbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingfeaturesourceoptionsbase.h"
 
 #define SIP_NO_FILE
 
@@ -35,7 +36,6 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProcessingFeatureSourceOptionsWidget, with the specified \a parent widget.
      */
@@ -97,7 +97,6 @@ class GUI_EXPORT QgsProcessingFeatureSourceOptionsWidget : public QgsPanelWidget
      * \see setFilterExpression()
      */
     QString filterExpression() const;
-
 };
 
 ///@endcond

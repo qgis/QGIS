@@ -18,20 +18,20 @@
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define DEFAULT_SCALE_METHOD              Qgis::ScaleMethod::ScaleDiameter
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsfields.h"
 #include "qgspropertycollection.h"
 #include "qgssymbolrendercontext.h"
 
 #include <QColor>
-#include <QMap>
-#include <QPointF>
-#include <QSet>
 #include <QDomDocument>
 #include <QDomElement>
-#include <QPainterPath>
 #include <QImage>
+#include <QMap>
+#include <QPainterPath>
+#include <QPointF>
+#include <QSet>
 
 class QPainter;
 class QSize;
@@ -42,6 +42,7 @@ class QgsExpression;
 class QgsRenderContext;
 class QgsPaintEffect;
 class QgsSymbolLayerReference;
+class QgsSldExportContext;
 
 #ifndef SIP_RUN
 typedef QMap<QString, QString> QgsStringMap;
@@ -50,12 +51,11 @@ typedef QMap<QString, QString> QgsStringMap;
 /**
  * \ingroup core
  * \class QgsSymbolLayer
+ * \brief Abstract base class for symbol layers.
  */
 class CORE_EXPORT QgsSymbolLayer
 {
-#ifdef SIP_RUN
-#include <qgslinesymbollayer.h>
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgslinesymbollayer.h" );
 
 
 #ifdef SIP_RUN
@@ -218,6 +218,7 @@ class CORE_EXPORT QgsSymbolLayer
       LineClipping SIP_MONKEYPATCH_COMPAT_NAME( PropertyLineClipping ), //!< Line clipping mode \since QGIS 3.24
       SkipMultiples, //!< Skip multiples of \since QGIS 3.40
       ShowMarker, //!< Show markers \since QGIS 3.40
+      BlankSegments, //!< String list of distance to define blank segments along line for templated line symbol layers. \since QGIS 4.0
     };
     // *INDENT-ON*
 
@@ -228,7 +229,6 @@ class CORE_EXPORT QgsSymbolLayer
 
     virtual ~QgsSymbolLayer();
 
-    QgsSymbolLayer( const QgsSymbolLayer &other ) = delete;
     QgsSymbolLayer &operator=( const QgsSymbolLayer &other ) = delete;
 
     /**
@@ -425,9 +425,21 @@ class CORE_EXPORT QgsSymbolLayer
      */
     virtual QgsSymbolLayer *clone() const = 0 SIP_FACTORY;
 
-    //! Saves the symbol layer as SLD
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
-    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "SymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
+    /**
+     * Saves the symbol layer as SLD.
+     *
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
+     */
+    Q_DECL_DEPRECATED virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const SIP_DEPRECATED;
+
+    /**
+     * Saves the symbol layer as SLD.
+     *
+     * Returns TRUE if the symbol layer was successfully exported to SLD.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const { Q_UNUSED( mmScaleFactor ) Q_UNUSED( mapUnitScaleFactor ); return QString(); }
 
@@ -452,6 +464,21 @@ class CORE_EXPORT QgsSymbolLayer
 
     //! Returns if the layer can be used below the specified symbol
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
+
+    /**
+     * Returns TRUE if this symbol layer will always render identically
+     * to an \a other symbol layer.
+     *
+     * \note This method is pessimistic, in that it will return FALSE in circumstances
+     * where it is not possible to guarantee that in 100% of cases the layer will
+     * render pixel-identically to the other layer. For instance, calling
+     * rendersIdenticallyTo() with the same symbol layer as \a other may
+     * return FALSE if the symbol layer contains data-defined overrides, such
+     * as those using feature attributes or expression variables.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool rendersIdenticallyTo( const QgsSymbolLayer *other ) const;
 
     /**
      * Returns TRUE if the symbol layer rendering can cause visible artifacts across a single feature
@@ -610,7 +637,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
      * Sets the symbol layer's property collection, used for data defined overrides.
@@ -674,6 +701,7 @@ class CORE_EXPORT QgsSymbolLayer
     bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
 
   protected:
+    QgsSymbolLayer( const QgsSymbolLayer &other ) SIP_SKIP;
 
     /**
      * Constructor for QgsSymbolLayer.
@@ -767,23 +795,6 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
 {
   public:
 
-    //! Symbol horizontal anchor points
-    enum HorizontalAnchorPoint
-    {
-      Left, //!< Align to left side of symbol
-      HCenter, //!< Align to horizontal center of symbol
-      Right, //!< Align to right side of symbol
-    };
-
-    //! Symbol vertical anchor points
-    enum VerticalAnchorPoint
-    {
-      Top, //!< Align to top of symbol
-      VCenter, //!< Align to vertical center of symbol
-      Bottom, //!< Align to bottom of symbol
-    };
-
-    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other ) = delete;
     QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
 
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -948,7 +959,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see horizontalAnchorPoint()
      * \see setVerticalAnchorPoint()
      */
-    void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
+    void setHorizontalAnchorPoint( Qgis::HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
 
     /**
      * Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
@@ -956,7 +967,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setHorizontalAnchorPoint()
      * \see verticalAnchorPoint()
      */
-    HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
+    Qgis::HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
 
     /**
      * Sets the vertical anchor point for positioning the symbol.
@@ -965,7 +976,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see verticalAnchorPoint()
      * \see setHorizontalAnchorPoint()
      */
-    void setVerticalAnchorPoint( VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
+    void setVerticalAnchorPoint( Qgis::VerticalAnchorPoint v ) { mVerticalAnchorPoint = v; }
 
     /**
      * Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
@@ -973,25 +984,35 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      * \see setVerticalAnchorPoint()
      * \see horizontalAnchorPoint()
      */
-    VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
+    Qgis::VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    using QgsSymbolLayer::toSld;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Writes the symbol layer definition as a SLD XML element.
      * \param doc XML document
      * \param element parent XML element
      * \param props symbol layer definition (see properties())
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
      */
-    virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const
-    { Q_UNUSED( props ) element.appendChild( doc.createComment( QStringLiteral( "QgsMarkerSymbolLayer %1 not implemented yet" ).arg( layerType() ) ) ); }
+    Q_DECL_DEPRECATED virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const SIP_DEPRECATED;
+
+    /**
+     * Writes the symbol layer definition as a SLD XML element.
+     * \param doc XML document
+     * \param element parent XML element
+     * \param context export context
+     * \since QGIS 3.44
+     */
+    virtual bool writeSldMarker( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     void setOutputUnit( Qgis::RenderUnit unit ) override;
     Qgis::RenderUnit outputUnit() const override;
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
-    virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
-    virtual double dxfAngle( QgsSymbolRenderContext &context ) const override;
+    double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfAngle( QgsSymbolRenderContext &context ) const override;
 
     /**
      * Returns the approximate bounding box of the marker symbol layer, taking into account
@@ -1001,6 +1022,8 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 
   protected:
+
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other ) SIP_SKIP;
 
     /**
      * Constructor for QgsMarkerSymbolLayer.
@@ -1029,7 +1052,19 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     void markerOffset( QgsSymbolRenderContext &context, double width, double height, double &offsetX, double &offsetY ) const SIP_PYNAME( markerOffsetWithWidthAndHeight );
 
-    //! \note available in Python bindings as markerOffset2
+    /**
+     * Calculates the required marker offset, including both the symbol offset
+     * and any displacement required to align with the marker's anchor point.
+     * \param context symbol render context
+     * \param width marker width
+     * \param height marker height
+     * \param widthUnit unit for marker width
+     * \param heightUnit unit for marker height
+     * \param offsetX will be set to required horizontal offset (in painter units)
+     * \param offsetY will be set to required vertical offset (in painter units)
+     * \param widthMapUnitScale map unit scale for marker width
+     * \param heightMapUnitScale map unit scale for marker height
+     */
     void markerOffset( QgsSymbolRenderContext &context, double width, double height,
                        Qgis::RenderUnit widthUnit, Qgis::RenderUnit heightUnit,
                        double &offsetX, double &offsetY,
@@ -1062,13 +1097,13 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     //! Marker size scaling method
     Qgis::ScaleMethod mScaleMethod = Qgis::ScaleMethod::ScaleDiameter;
     //! Horizontal anchor point
-    HorizontalAnchorPoint mHorizontalAnchorPoint = HCenter;
+    Qgis::HorizontalAnchorPoint mHorizontalAnchorPoint = Qgis::HorizontalAnchorPoint::Center;
     //! Vertical anchor point
-    VerticalAnchorPoint mVerticalAnchorPoint = VCenter;
+    Qgis::VerticalAnchorPoint mVerticalAnchorPoint = Qgis::VerticalAnchorPoint::Center;
 
   private:
-    static QgsMarkerSymbolLayer::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
-    static QgsMarkerSymbolLayer::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
+    static Qgis::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString &str );
+    static Qgis::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString &str );
 
 #ifdef SIP_RUN
     QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other );
@@ -1211,7 +1246,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
     */
     const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    // TODO QGIS 4.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
+    // TODO QGIS 5.0 - setWidthUnit(), widthUnit(), setWidthUnitScale(), widthUnitScale()
     // only apply to simple line symbol layers and do not belong here.
 
     /**

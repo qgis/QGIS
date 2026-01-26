@@ -14,14 +14,20 @@
  ***************************************************************************/
 
 #include "qgsprocessingtoolboxmodel.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsprocessingregistry.h"
-#include "qgsprocessingrecentalgorithmlog.h"
-#include "qgsprocessingfavoritealgorithmmanager.h"
+
 #include <functional>
-#include <QPalette>
+
+#include "qgsapplication.h"
+#include "qgsprocessingfavoritealgorithmmanager.h"
+#include "qgsprocessingrecentalgorithmlog.h"
+#include "qgsprocessingregistry.h"
+#include "qgsstringutils.h"
+#include "qgsvectorlayer.h"
+
 #include <QMimeData>
+#include <QPalette>
+
+#include "moc_qgsprocessingtoolboxmodel.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -49,7 +55,7 @@ QgsProcessingToolboxModelGroupNode *QgsProcessingToolboxModelNode::getChildGroup
   {
     if ( node->nodeType() == NodeType::Group )
     {
-      QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast< QgsProcessingToolboxModelGroupNode * >( node );
+      QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast<QgsProcessingToolboxModelGroupNode *>( node );
       if ( groupNode && groupNode->id() == groupId )
         return groupNode;
     }
@@ -110,6 +116,15 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModelAlgorithmNode::algorithm(
   return mAlgorithm;
 }
 
+QgsProcessingToolboxModelParameterNode::QgsProcessingToolboxModelParameterNode( const QgsProcessingParameterType *paramType )
+  : mParamType( paramType )
+{}
+
+const QgsProcessingParameterType *QgsProcessingToolboxModelParameterNode::parameterType() const
+{
+  return mParamType;
+}
+
 ///@endcond
 
 //
@@ -121,18 +136,21 @@ QgsProcessingToolboxModel::QgsProcessingToolboxModel( QObject *parent, QgsProces
   , mRegistry( registry ? registry : QgsApplication::processingRegistry() )
   , mRecentLog( recentLog )
   , mFavoriteManager( favoriteManager )
-  , mRootNode( std::make_unique< QgsProcessingToolboxModelGroupNode >( QString(), QString() ) )
+  , mRootNode( std::make_unique<QgsProcessingToolboxModelGroupNode>( QString(), QString() ) )
 {
   rebuild();
 
   if ( mRecentLog )
-    connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [ = ] { repopulateRecentAlgorithms(); } );
+    connect( mRecentLog, &QgsProcessingRecentAlgorithmLog::changed, this, [this] { repopulateRecentAlgorithms(); } );
 
   if ( mFavoriteManager )
-    connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [ = ] { repopulateFavoriteAlgorithms(); } );
+    connect( mFavoriteManager, &QgsProcessingFavoriteAlgorithmManager::changed, this, [this] { repopulateFavoriteAlgorithms(); } );
 
   connect( mRegistry, &QgsProcessingRegistry::providerAdded, this, &QgsProcessingToolboxModel::rebuild );
-  connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::providerRemoved );
+  connect( mRegistry, &QgsProcessingRegistry::providerRemoved, this, &QgsProcessingToolboxModel::rebuild );
+
+  connect( mRegistry, &QgsProcessingRegistry::parameterTypeAdded, this, &QgsProcessingToolboxModel::rebuild );
+  connect( mRegistry, &QgsProcessingRegistry::parameterTypeRemoved, this, &QgsProcessingToolboxModel::rebuild );
 }
 
 void QgsProcessingToolboxModel::rebuild()
@@ -145,7 +163,7 @@ void QgsProcessingToolboxModel::rebuild()
 
   if ( mRecentLog )
   {
-    std::unique_ptr< QgsProcessingToolboxModelRecentNode > recentNode = std::make_unique< QgsProcessingToolboxModelRecentNode >();
+    auto recentNode = std::make_unique<QgsProcessingToolboxModelRecentNode>();
     // cppcheck-suppress danglingLifetime
     mRecentNode = recentNode.get();
     mRootNode->addChildNode( recentNode.release() );
@@ -154,16 +172,38 @@ void QgsProcessingToolboxModel::rebuild()
 
   if ( mFavoriteManager )
   {
-    std::unique_ptr< QgsProcessingToolboxModelFavoriteNode > favoriteNode = std::make_unique< QgsProcessingToolboxModelFavoriteNode >();
+    auto favoriteNode = std::make_unique<QgsProcessingToolboxModelFavoriteNode>();
     // cppcheck-suppress danglingLifetime
     mFavoriteNode = favoriteNode.get();
     mRootNode->addChildNode( favoriteNode.release() );
     repopulateFavoriteAlgorithms( true );
   }
 
+
   if ( mRegistry )
   {
-    const QList< QgsProcessingProvider * > providers = mRegistry->providers();
+    auto groupNode = std::make_unique<QgsProcessingToolboxModelParameterGroupNode>();
+
+    QList<QgsProcessingParameterType *> available = QgsApplication::processingRegistry()->parameterTypes();
+
+    std::sort( available.begin(), available.end(), []( const QgsProcessingParameterType *a, const QgsProcessingParameterType *b ) -> bool {
+      return QString::localeAwareCompare( a->name(), b->name() ) < 0;
+    } );
+    for ( QgsProcessingParameterType *param : std::as_const( available ) )
+    {
+      if ( param->flags() & Qgis::ProcessingParameterTypeFlag::ExposeToModeler )
+      {
+        auto paramNode = std::make_unique<QgsProcessingToolboxModelParameterNode>( param );
+        groupNode->addChildNode( paramNode.release() );
+      }
+    }
+    mRootNode->addChildNode( groupNode.release() );
+  }
+
+
+  if ( mRegistry )
+  {
+    const QList<QgsProcessingProvider *> providers = mRegistry->providers();
     for ( QgsProcessingProvider *provider : providers )
     {
       addProvider( provider );
@@ -194,7 +234,7 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
   }
 
   const QStringList recentAlgIds = mRecentLog->recentAlgorithmIds();
-  QList< const QgsProcessingAlgorithm * > recentAlgorithms;
+  QList<const QgsProcessingAlgorithm *> recentAlgorithms;
   recentAlgorithms.reserve( recentAlgIds.count() );
   for ( const QString &id : recentAlgIds )
   {
@@ -217,7 +257,7 @@ void QgsProcessingToolboxModel::repopulateRecentAlgorithms( bool resetting )
 
   for ( const QgsProcessingAlgorithm *algorithm : std::as_const( recentAlgorithms ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = std::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
+    auto algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
     mRecentNode->addChildNode( algorithmNode.release() );
   }
 
@@ -254,7 +294,7 @@ void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
   }
 
   const QStringList favoriteAlgIds = mFavoriteManager->favoriteAlgorithmIds();
-  QList< const QgsProcessingAlgorithm * > favoriteAlgorithms;
+  QList<const QgsProcessingAlgorithm *> favoriteAlgorithms;
   favoriteAlgorithms.reserve( favoriteAlgIds.count() );
   for ( const QString &id : favoriteAlgIds )
   {
@@ -277,7 +317,7 @@ void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
 
   for ( const QgsProcessingAlgorithm *algorithm : std::as_const( favoriteAlgorithms ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = std::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
+    auto algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
     mFavoriteNode->addChildNode( algorithmNode.release() );
   }
 
@@ -286,39 +326,6 @@ void QgsProcessingToolboxModel::repopulateFavoriteAlgorithms( bool resetting )
     endInsertRows();
     emit favoriteAlgorithmAdded();
   }
-}
-
-void QgsProcessingToolboxModel::providerAdded( const QString &id )
-{
-  if ( !mRegistry )
-    return;
-
-  QgsProcessingProvider *provider = mRegistry->providerById( id );
-  if ( !provider )
-    return;
-
-  if ( !isTopLevelProvider( id ) )
-  {
-    int previousRowCount = rowCount();
-    beginInsertRows( QModelIndex(), previousRowCount, previousRowCount );
-    addProvider( provider );
-    endInsertRows();
-  }
-  else
-  {
-    // native providers use top level groups - that's too hard for us to
-    // work out exactly what's going to change, so just reset the model
-    beginResetModel();
-    addProvider( provider );
-    endResetModel();
-  }
-}
-
-void QgsProcessingToolboxModel::providerRemoved( const QString & )
-{
-  // native providers use top level groups - so we can't
-  // work out what to remove. Just rebuild the whole model instead.
-  rebuild();
 }
 
 QgsProcessingToolboxModelNode *QgsProcessingToolboxModel::index2node( const QModelIndex &index ) const
@@ -352,7 +359,7 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
   QgsProcessingToolboxModelNode *parentNode = nullptr;
   if ( !isTopLevelProvider( provider->id() ) )
   {
-    std::unique_ptr< QgsProcessingToolboxModelProviderNode > node = std::make_unique< QgsProcessingToolboxModelProviderNode >( provider );
+    auto node = std::make_unique<QgsProcessingToolboxModelProviderNode>( provider );
     parentNode = node.get();
     mRootNode->addChildNode( node.release() );
   }
@@ -361,10 +368,10 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
     parentNode = mRootNode.get();
   }
 
-  const QList< const QgsProcessingAlgorithm * > algorithms = provider->algorithms();
+  const QList<const QgsProcessingAlgorithm *> algorithms = provider->algorithms();
   for ( const QgsProcessingAlgorithm *algorithm : algorithms )
   {
-    std::unique_ptr< QgsProcessingToolboxModelAlgorithmNode > algorithmNode = std::make_unique< QgsProcessingToolboxModelAlgorithmNode >( algorithm );
+    auto algorithmNode = std::make_unique<QgsProcessingToolboxModelAlgorithmNode>( algorithm );
 
     const QString groupId = algorithm->groupId();
     if ( !groupId.isEmpty() )
@@ -390,20 +397,12 @@ void QgsProcessingToolboxModel::addProvider( QgsProcessingProvider *provider )
 
 bool QgsProcessingToolboxModel::isTopLevelProvider( const QString &providerId )
 {
-  return providerId == QLatin1String( "qgis" ) ||
-         providerId == QLatin1String( "native" ) ||
-         providerId == QLatin1String( "3d" ) ||
-         providerId == QLatin1String( "pdal" );
+  return providerId == "qgis"_L1 || providerId == "native"_L1 || providerId == "3d"_L1 || providerId == "pdal"_L1;
 }
 
 QString QgsProcessingToolboxModel::toolTipForAlgorithm( const QgsProcessingAlgorithm *algorithm )
 {
-  return QStringLiteral( "<p><b>%1</b></p>%2<p>%3</p>%4" ).arg(
-           algorithm->displayName(),
-           !algorithm->shortDescription().isEmpty() ? QStringLiteral( "<p>%1</p>" ).arg( algorithm->shortDescription() ) : QString(),
-           QObject::tr( "Algorithm ID: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( algorithm->id() ) ),
-           ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? QStringLiteral( "<b style=\"color:red\">%1</b>" ).arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString()
-         );
+  return u"<p><b>%1</b></p>%2<p>%3</p>%4"_s.arg( algorithm->displayName(), !algorithm->shortDescription().isEmpty() ? u"<p>%1</p>"_s.arg( algorithm->shortDescription() ) : QString(), QObject::tr( "Algorithm ID: ‘%1’" ).arg( u"<i>%1</i>"_s.arg( algorithm->id() ) ), ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues ) ? u"<b style=\"color:red\">%1</b>"_s.arg( QObject::tr( "Warning: Algorithm has known issues" ) ) : QString() );
 }
 
 Qt::ItemFlags QgsProcessingToolboxModel::flags( const QModelIndex &index ) const
@@ -419,10 +418,10 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
   if ( !index.isValid() )
     return QVariant();
 
-  if ( role == static_cast< int >( CustomRole::NodeType ) )
+  if ( role == static_cast<int>( CustomRole::NodeType ) )
   {
     if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
-      return static_cast< int >( node->nodeType() );
+      return static_cast<int>( node->nodeType() );
     else
       return QVariant();
   }
@@ -435,9 +434,14 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
   if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
     isFavoriteNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::Favorite;
 
+  bool isParameterGroupNode = false;
+  if ( QgsProcessingToolboxModelNode *node = index2node( index ) )
+    isParameterGroupNode = node->nodeType() == QgsProcessingToolboxModelNode::NodeType::ParameterGroup;
+
   QgsProcessingProvider *provider = providerForIndex( index );
-  QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast< QgsProcessingToolboxModelGroupNode * >( index2node( index ) );
+  QgsProcessingToolboxModelGroupNode *groupNode = qobject_cast<QgsProcessingToolboxModelGroupNode *>( index2node( index ) );
   const QgsProcessingAlgorithm *algorithm = algorithmForIndex( index );
+  const QgsProcessingParameterType *paramType = parameterTypeForIndex( index );
 
   switch ( role )
   {
@@ -450,12 +454,16 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
             return provider->name();
           else if ( algorithm )
             return algorithm->displayName();
+          else if ( paramType )
+            return paramType->name();
           else if ( groupNode )
             return groupNode->name();
           else if ( isRecentNode )
             return tr( "Recently used" );
           else if ( isFavoriteNode )
             return tr( "Favorites" );
+          else if ( isParameterGroupNode )
+            return tr( "Input parameters" );
           else
             return QVariant();
 
@@ -471,8 +479,12 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
         return provider->longName();
       else if ( algorithm )
         return toolTipForAlgorithm( algorithm );
+      else if ( paramType )
+        return paramType->description();
       else if ( groupNode )
         return groupNode->name();
+      else if ( isParameterGroupNode )
+        return tr( "Input parameters used in the modeler" );
       else
         return QVariant();
     }
@@ -496,16 +508,20 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           else if ( algorithm )
           {
             if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
-              return QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
+              return QgsApplication::getThemeIcon( u"mIconWarning.svg"_s );
             return algorithm->icon();
           }
+          else if ( paramType )
+            return QgsApplication::getThemeIcon( u"mIconModelInput.svg"_s );
           else if ( isRecentNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconHistory.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconHistory.svg"_s );
           else if ( isFavoriteNode )
-            return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavorites.svg" ) );
+            return QgsApplication::getThemeIcon( u"/mIconFavorites.svg"_s );
+          else if ( isParameterGroupNode )
+            return QgsApplication::getThemeIcon( u"/mIconModelInput.svg"_s );
           else if ( !index.parent().isValid() )
             // top level groups get the QGIS icon
-            return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+            return QgsApplication::getThemeIcon( u"/providerQgis.svg"_s );
           else
             return QVariant();
         }
@@ -516,13 +532,13 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       break;
     }
 
-    case static_cast< int >( CustomRole::AlgorithmFlags ):
+    case static_cast<int>( CustomRole::AlgorithmFlags ):
       switch ( index.column() )
       {
         case 0:
         {
           if ( algorithm )
-            return static_cast< int >( algorithm->flags() );
+            return static_cast<int>( algorithm->flags() );
           else
             return QVariant();
         }
@@ -532,17 +548,17 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case static_cast< int >( CustomRole::ProviderFlags ):
+    case static_cast<int>( CustomRole::ProviderFlags ):
       switch ( index.column() )
       {
         case 0:
         {
           if ( provider )
-            return static_cast< int >( provider->flags() );
+            return static_cast<int>( provider->flags() );
           else if ( algorithm && algorithm->provider() )
-            return static_cast< int >( algorithm->provider()->flags() );
-          else if ( index.parent().data( static_cast< int >( CustomRole::ProviderFlags ) ).isValid() ) // group node
-            return static_cast< int >( index.parent().data( static_cast< int >( CustomRole::ProviderFlags ) ).toInt() );
+            return static_cast<int>( algorithm->provider()->flags() );
+          else if ( index.parent().data( static_cast<int>( CustomRole::ProviderFlags ) ).isValid() ) // group node
+            return static_cast<int>( index.parent().data( static_cast<int>( CustomRole::ProviderFlags ) ).toInt() );
           else
             return QVariant();
         }
@@ -552,7 +568,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case static_cast< int >( CustomRole::AlgorithmId ):
+    case static_cast<int>( CustomRole::AlgorithmId ):
       switch ( index.column() )
       {
         case 0:
@@ -568,7 +584,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case static_cast< int >( CustomRole::AlgorithmName ):
+    case static_cast<int>( CustomRole::AlgorithmName ):
       switch ( index.column() )
       {
         case 0:
@@ -584,7 +600,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case static_cast< int >( CustomRole::AlgorithmTags ):
+    case static_cast<int>( CustomRole::AlgorithmTags ):
       switch ( index.column() )
       {
         case 0:
@@ -600,7 +616,7 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
       }
       break;
 
-    case static_cast< int >( CustomRole::AlgorithmShortDescription ):
+    case static_cast<int>( CustomRole::AlgorithmShortDescription ):
       switch ( index.column() )
       {
         case 0:
@@ -615,11 +631,25 @@ QVariant QgsProcessingToolboxModel::data( const QModelIndex &index, int role ) c
           return QVariant();
       }
       break;
+    case static_cast<int>( CustomRole::ParameterTypeId ):
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          if ( paramType )
+            return paramType->id();
+          else
+            return QVariant();
+        }
 
+        default:
+          return QVariant();
+      }
+      break;
     default:
       return QVariant();
   }
-#ifndef _MSC_VER  // avoid warning
+#ifndef _MSC_VER // avoid warning
   return QVariant();
 #endif
 }
@@ -668,18 +698,36 @@ QModelIndex QgsProcessingToolboxModel::parent( const QModelIndex &child ) const
 
 QMimeData *QgsProcessingToolboxModel::mimeData( const QModelIndexList &indexes ) const
 {
-  if ( !indexes.isEmpty() && isAlgorithm( indexes.at( 0 ) ) )
+  if ( indexes.isEmpty() )
+  {
+    return nullptr;
+  }
+  if ( isAlgorithm( indexes.at( 0 ) ) )
   {
     QByteArray encodedData;
     QDataStream stream( &encodedData, QIODevice::WriteOnly | QIODevice::Truncate );
 
-    std::unique_ptr< QMimeData > mimeData = std::make_unique< QMimeData >();
+    auto mimeData = std::make_unique<QMimeData>();
     const QgsProcessingAlgorithm *algorithm = algorithmForIndex( indexes.at( 0 ) );
     if ( algorithm )
     {
       stream << algorithm->id();
     }
-    mimeData->setData( QStringLiteral( "application/x-vnd.qgis.qgis.algorithmid" ), encodedData );
+    mimeData->setData( u"application/x-vnd.qgis.qgis.algorithmid"_s, encodedData );
+    return mimeData.release();
+  }
+  if ( isParameter( indexes.at( 0 ) ) )
+  {
+    QByteArray encodedData;
+    QDataStream stream( &encodedData, QIODevice::WriteOnly | QIODevice::Truncate );
+
+    auto mimeData = std::make_unique<QMimeData>();
+    const QgsProcessingParameterType *paramType = parameterTypeForIndex( indexes.at( 0 ) );
+    if ( paramType )
+    {
+      stream << paramType->id();
+    }
+    mimeData->setData( u"application/x-vnd.qgis.qgis.parametertypeid"_s, encodedData );
     return mimeData.release();
   }
   return nullptr;
@@ -691,7 +739,7 @@ QgsProcessingProvider *QgsProcessingToolboxModel::providerForIndex( const QModel
   if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Provider )
     return nullptr;
 
-  return qobject_cast< QgsProcessingToolboxModelProviderNode * >( n )->provider();
+  return qobject_cast<QgsProcessingToolboxModelProviderNode *>( n )->provider();
 }
 
 QString QgsProcessingToolboxModel::providerIdForIndex( const QModelIndex &index ) const
@@ -700,7 +748,7 @@ QString QgsProcessingToolboxModel::providerIdForIndex( const QModelIndex &index 
   if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Provider )
     return nullptr;
 
-  return qobject_cast< QgsProcessingToolboxModelProviderNode * >( n )->providerId();
+  return qobject_cast<QgsProcessingToolboxModelProviderNode *>( n )->providerId();
 }
 
 const QgsProcessingAlgorithm *QgsProcessingToolboxModel::algorithmForIndex( const QModelIndex &index ) const
@@ -709,7 +757,7 @@ const QgsProcessingAlgorithm *QgsProcessingToolboxModel::algorithmForIndex( cons
   if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Algorithm )
     return nullptr;
 
-  return qobject_cast< QgsProcessingToolboxModelAlgorithmNode * >( n )->algorithm();
+  return qobject_cast<QgsProcessingToolboxModelAlgorithmNode *>( n )->algorithm();
 }
 
 bool QgsProcessingToolboxModel::isAlgorithm( const QModelIndex &index ) const
@@ -718,10 +766,24 @@ bool QgsProcessingToolboxModel::isAlgorithm( const QModelIndex &index ) const
   return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeType::Algorithm );
 }
 
+bool QgsProcessingToolboxModel::isParameter( const QModelIndex &index ) const
+{
+  QgsProcessingToolboxModelNode *n = index2node( index );
+  return ( n && n->nodeType() == QgsProcessingToolboxModelNode::NodeType::Parameter );
+}
+
+const QgsProcessingParameterType *QgsProcessingToolboxModel::parameterTypeForIndex( const QModelIndex &index ) const
+{
+  QgsProcessingToolboxModelNode *n = index2node( index );
+  if ( !n || n->nodeType() != QgsProcessingToolboxModelNode::NodeType::Parameter )
+    return nullptr;
+
+  return qobject_cast<QgsProcessingToolboxModelParameterNode *>( n )->parameterType();
+}
+
 QModelIndex QgsProcessingToolboxModel::indexForProvider( const QString &providerId ) const
 {
-  std::function< QModelIndex( const QModelIndex &parent, const QString &providerId ) > findIndex = [&]( const QModelIndex & parent, const QString & providerId )->QModelIndex
-  {
+  std::function<QModelIndex( const QModelIndex &parent, const QString &providerId )> findIndex = [&]( const QModelIndex &parent, const QString &providerId ) -> QModelIndex {
     for ( int row = 0; row < rowCount( parent ); ++row )
     {
       QModelIndex current = index( row, 0, parent );
@@ -745,7 +807,7 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
 
   QgsProcessingToolboxModelNode *grandParentNode = parentNode->parent();
   if ( !grandParentNode )
-    return QModelIndex();  // root node -> invalid index
+    return QModelIndex(); // root node -> invalid index
 
   int row = grandParentNode->children().indexOf( parentNode );
   Q_ASSERT( row >= 0 );
@@ -757,8 +819,7 @@ QModelIndex QgsProcessingToolboxModel::indexOfParentTreeNode( QgsProcessingToolb
 // QgsProcessingToolboxProxyModel
 //
 
-QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry,
-    QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager )
+QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent, QgsProcessingRegistry *registry, QgsProcessingRecentAlgorithmLog *recentLog, QgsProcessingFavoriteAlgorithmManager *favoriteManager )
   : QSortFilterProxyModel( parent )
   , mModel( new QgsProcessingToolboxModel( this, registry, recentLog, favoriteManager ) )
 {
@@ -768,8 +829,8 @@ QgsProcessingToolboxProxyModel::QgsProcessingToolboxProxyModel( QObject *parent,
   setFilterCaseSensitivity( Qt::CaseInsensitive );
   sort( 0 );
 
-  connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [ = ] { invalidateFilter(); } );
-  connect( mModel, &QgsProcessingToolboxModel::favoriteAlgorithmAdded, this, [ = ] { invalidateFilter(); } );
+  connect( mModel, &QgsProcessingToolboxModel::recentAlgorithmAdded, this, [this] { invalidateFilter(); } );
+  connect( mModel, &QgsProcessingToolboxModel::favoriteAlgorithmAdded, this, [this] { invalidateFilter(); } );
 }
 
 QgsProcessingToolboxModel *QgsProcessingToolboxProxyModel::toolboxModel()
@@ -806,16 +867,16 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
   QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
   if ( mModel->isAlgorithm( sourceIndex ) )
   {
-    const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::KnownIssues );
+    const bool hasKnownIssues = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::KnownIssues );
     if ( hasKnownIssues && !( mFilters & Filter::ShowKnownIssues ) )
       return false;
 
     if ( !mFilterString.trimmed().isEmpty() )
     {
-      const QString algId = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString();
-      const QString algName = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmName ) ).toString();
-      const QStringList algTags = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmTags ) ).toStringList();
-      const QString shortDesc = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmShortDescription ) ).toString();
+      const QString algId = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmId ) ).toString();
+      const QString algName = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmName ) ).toString();
+      const QStringList algTags = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmTags ) ).toStringList();
+      const QString shortDesc = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmShortDescription ) ).toString();
 
       QStringList parentText;
       QModelIndex parent = sourceIndex.parent();
@@ -827,21 +888,22 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
         parent = parent.parent();
       }
 
-      const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
-
-      QStringList partsToSearch = sourceModel()->data( sourceIndex, Qt::DisplayRole ).toString().split( ' ' );
+      QStringList partsToSearch;
+      partsToSearch << sourceModel()->data( sourceIndex, Qt::DisplayRole ).toString().split( ' ' );
       partsToSearch << algId << algName;
       partsToSearch.append( algTags );
       if ( !shortDesc.isEmpty() )
         partsToSearch.append( shortDesc.split( ' ' ) );
       partsToSearch.append( parentText );
 
+      const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
       for ( const QString &part : partsToMatch )
       {
         bool found = false;
+        const QString unaccentedPart = QgsStringUtils::unaccent( part );
         for ( const QString &partToSearch : std::as_const( partsToSearch ) )
         {
-          if ( partToSearch.contains( part, Qt::CaseInsensitive ) )
+          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
           {
             found = true;
             break;
@@ -854,7 +916,7 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
     if ( mFilters & Filter::InPlace )
     {
-      const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits );
+      const bool supportsInPlace = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::SupportsInPlaceEdits );
       if ( !supportsInPlace )
         return false;
 
@@ -866,17 +928,50 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
     }
     if ( mFilters & Filter::Modeler )
     {
-      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromModeler );
+      bool isHiddenFromModeler = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::HideFromModeler );
       return !isHiddenFromModeler;
     }
     if ( mFilters & Filter::Toolbox )
     {
-      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast< int >( Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
+      bool isHiddenFromToolbox = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::AlgorithmFlags ) ).toInt() & static_cast<int>( Qgis::ProcessingAlgorithmFlag::HideFromToolbox );
       return !isHiddenFromToolbox;
     }
     return true;
   }
+  if ( mModel->isParameter( sourceIndex ) )
+  {
+    if ( mFilters & Filter::Toolbox )
+    {
+      /* Always hide in the toolbox */
+      return false;
+    }
 
+    if ( !mFilterString.trimmed().isEmpty() )
+    {
+      QStringList partsToSearch;
+      partsToSearch << sourceModel()->data( sourceIndex, Qt::DisplayRole ).toString().split( ' ' );
+      partsToSearch << sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::ParameterTypeId ) ).toString();
+
+      const QStringList partsToMatch = mFilterString.trimmed().split( ' ' );
+      for ( const QString &part : partsToMatch )
+      {
+        bool found = false;
+        const QString unaccentedPart = QgsStringUtils::unaccent( part );
+        for ( const QString &partToSearch : std::as_const( partsToSearch ) )
+        {
+          if ( QgsStringUtils::unaccent( partToSearch ).contains( unaccentedPart, Qt::CaseInsensitive ) )
+          {
+            found = true;
+            break;
+          }
+        }
+        if ( !found )
+          return false; // couldn't find a match for this word, so hide algorithm
+      }
+    }
+
+    return true;
+  }
   bool hasChildren = false;
   // groups/providers are shown only if they have visible children
   int count = sourceModel()->rowCount( sourceIndex );
@@ -894,8 +989,8 @@ bool QgsProcessingToolboxProxyModel::filterAcceptsRow( int sourceRow, const QMod
 
 bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsProcessingToolboxModelNode::NodeType leftType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( left, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
-  QgsProcessingToolboxModelNode::NodeType rightType = static_cast< QgsProcessingToolboxModelNode::NodeType >( sourceModel()->data( right, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
+  QgsProcessingToolboxModelNode::NodeType leftType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
+  QgsProcessingToolboxModelNode::NodeType rightType = static_cast<QgsProcessingToolboxModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() );
 
   if ( leftType == QgsProcessingToolboxModelNode::NodeType::Recent )
     return true;
@@ -922,7 +1017,7 @@ bool QgsProcessingToolboxProxyModel::lessThan( const QModelIndex &left, const QM
   QModelIndex parent = left.parent();
   while ( parent.isValid() )
   {
-    if ( mModel->data( parent, static_cast< int >( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() == static_cast< int >( QgsProcessingToolboxModelNode::NodeType::Recent ) )
+    if ( mModel->data( parent, static_cast<int>( QgsProcessingToolboxModel::CustomRole::NodeType ) ).toInt() == static_cast<int>( QgsProcessingToolboxModelNode::NodeType::Recent ) )
     {
       isRecentNode = true;
       break;
@@ -945,8 +1040,8 @@ QVariant QgsProcessingToolboxProxyModel::data( const QModelIndex &index, int rol
   if ( role == Qt::ForegroundRole && !mFilterString.isEmpty() )
   {
     QModelIndex sourceIndex = mapToSource( index );
-    const QVariant flags = sourceModel()->data( sourceIndex, static_cast< int >( QgsProcessingToolboxModel::CustomRole::ProviderFlags ) );
-    if ( flags.isValid() && flags.toInt() & static_cast< int >( Qgis::ProcessingProviderFlag::DeemphasiseSearchResults ) )
+    const QVariant flags = sourceModel()->data( sourceIndex, static_cast<int>( QgsProcessingToolboxModel::CustomRole::ProviderFlags ) );
+    if ( flags.isValid() && flags.toInt() & static_cast<int>( Qgis::ProcessingProviderFlag::DeemphasiseSearchResults ) )
     {
       QBrush brush( qApp->palette().color( QPalette::Text ), Qt::SolidPattern );
       QColor fadedTextColor = brush.color();

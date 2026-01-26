@@ -8,5 +8,5 @@ try:
     QgsXmlUtils.writeRectangle = staticmethod(QgsXmlUtils.writeRectangle)
     QgsXmlUtils.writeVariant = staticmethod(QgsXmlUtils.writeVariant)
     QgsXmlUtils.readVariant = staticmethod(QgsXmlUtils.readVariant)
-except NameError:
+except (NameError, AttributeError):
     pass

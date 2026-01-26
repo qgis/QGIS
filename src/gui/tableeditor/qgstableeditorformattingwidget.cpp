@@ -14,11 +14,15 @@
  ***************************************************************************/
 
 #include "qgstableeditorformattingwidget.h"
-#include "qgsnumericformatselectorwidget.h"
-#include "qgsnumericformat.h"
+
 #include "qgis.h"
+#include "qgsnumericformat.h"
+#include "qgsnumericformatselectorwidget.h"
 #include "qgsproperty.h"
+
 #include <QPointer>
+
+#include "moc_qgstableeditorformattingwidget.cpp"
 
 QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -42,19 +46,16 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
   mRowHeightSpinBox->setClearValue( 0, tr( "Automatic" ) );
   mColumnWidthSpinBox->setClearValue( 0, tr( "Automatic" ) );
 
-  connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this,  [ = ]
-  {
+  connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, [this] {
     if ( !mBlockSignals )
       emit backgroundColorChanged( mBackgroundColorButton->color() );
   } );
-  connect( mBackgroundColorButton, &QgsColorButton::cleared, this,  [ = ]
-  {
+  connect( mBackgroundColorButton, &QgsColorButton::cleared, this, [this] {
     if ( !mBlockSignals )
       emit backgroundColorChanged( QColor() );
   } );
 
-  connect( mFormatNumbersCheckBox, &QCheckBox::stateChanged, this, [ = ]( int state )
-  {
+  connect( mFormatNumbersCheckBox, &QCheckBox::stateChanged, this, [this]( int state ) {
     mCustomizeFormatButton->setEnabled( state == Qt::Checked );
     if ( state != Qt::PartiallyChecked )
       mFormatNumbersCheckBox->setTristate( false );
@@ -62,28 +63,24 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       emit numberFormatChanged();
   } );
 
-  connect( mFontButton, &QgsFontButton::changed, this, [ = ]
-  {
+  connect( mFontButton, &QgsFontButton::changed, this, [this] {
     if ( !mBlockSignals )
       emit textFormatChanged();
   } );
 
   mCustomizeFormatButton->setEnabled( false );
-  connect( mCustomizeFormatButton, &QPushButton::clicked, this, [ = ]
-  {
+  connect( mCustomizeFormatButton, &QPushButton::clicked, this, [this] {
     QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
     widget->setFormat( mNumericFormat.get() );
     widget->setPanelTitle( tr( "Number Format" ) );
-    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [ = ]
-    {
+    connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [this, widget] {
       mNumericFormat.reset( widget->format() );
       emit numberFormatChanged();
     } );
     openPanel( widget );
   } );
 
-  connect( mRowHeightSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double height )
-  {
+  connect( mRowHeightSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double height ) {
     if ( !mBlockSignals )
     {
       emit rowHeightChanged( height );
@@ -93,8 +90,7 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
       mBlockSignals--;
     }
   } );
-  connect( mColumnWidthSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [ = ]( double width )
-  {
+  connect( mColumnWidthSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this]( double width ) {
     if ( !mBlockSignals )
     {
       emit columnWidthChanged( width );
@@ -105,24 +101,21 @@ QgsTableEditorFormattingWidget::QgsTableEditorFormattingWidget( QWidget *parent 
     }
   } );
 
-  connect( mHorizontalAlignComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
-  {
+  connect( mHorizontalAlignComboBox, &QgsAlignmentComboBox::changed, this, [this] {
     if ( !mBlockSignals )
     {
       emit horizontalAlignmentChanged( mHorizontalAlignComboBox->currentAlignment() );
     }
   } );
 
-  connect( mVerticalAlignComboBox, &QgsAlignmentComboBox::changed, this, [ = ]
-  {
+  connect( mVerticalAlignComboBox, &QgsAlignmentComboBox::changed, this, [this] {
     if ( !mBlockSignals )
     {
       emit verticalAlignmentChanged( mVerticalAlignComboBox->currentAlignment() );
     }
   } );
 
-  connect( mExpressionEdit, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expression )
-  {
+  connect( mExpressionEdit, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, [this]( const QString &expression ) {
     if ( !mBlockSignals )
     {
       emit cellPropertyChanged( expression.isEmpty() ? QgsProperty() : QgsProperty::fromExpression( expression ) );
@@ -241,11 +234,11 @@ QgsExpressionContext QgsTableEditorFormattingWidget::createExpressionContext() c
 
   QgsExpressionContextScope *cellScope = new QgsExpressionContextScope();
   // TODO -- could set real row/column numbers here, in certain circumstances...
-  cellScope->setVariable( QStringLiteral( "row_number" ), 0 );
-  cellScope->setVariable( QStringLiteral( "column_number" ), 0 );
+  cellScope->setVariable( u"row_number"_s, 0 );
+  cellScope->setVariable( u"column_number"_s, 0 );
   context.appendScope( cellScope );
 
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) << QStringLiteral( "column_number" ) );
+  context.setHighlightedVariables( QStringList() << u"row_number"_s << u"column_number"_s );
   return context;
 }
 

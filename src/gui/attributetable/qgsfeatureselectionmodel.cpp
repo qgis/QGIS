@@ -12,18 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsfeatureselectionmodel.h"
+
 #include "qgsattributetablemodel.h"
 #include "qgsfeaturemodel.h"
 #include "qgsifeatureselectionmanager.h"
-#include "qgsfeatureselectionmodel.h"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgsfeatureselectionmodel.cpp"
 
 QgsFeatureSelectionModel::QgsFeatureSelectionModel( QAbstractItemModel *model, QgsFeatureModel *featureModel, QgsIFeatureSelectionManager *featureSelectionManager, QObject *parent )
   : QItemSelectionModel( model, parent )
   , mFeatureModel( featureModel )
-  , mSyncEnabled( true )
-  , mClearAndSelectBuffer( false )
 {
   setFeatureSelectionManager( featureSelectionManager );
 }
@@ -66,19 +67,19 @@ bool QgsFeatureSelectionModel::isSelected( QgsFeatureId fid )
 
 bool QgsFeatureSelectionModel::isSelected( const QModelIndex &index )
 {
-  return isSelected( index.model()->data( index, static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong() );
+  return isSelected( index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong() );
 }
 
 void QgsFeatureSelectionModel::selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command )
 {
   QgsFeatureIds ids;
 
-  QgsDebugMsgLevel( QStringLiteral( "Index count: %1" ).arg( selection.indexes().size() ), 2 );
+  QgsDebugMsgLevel( u"Index count: %1"_s.arg( selection.indexes().size() ), 2 );
 
   const auto constIndexes = selection.indexes();
   for ( const QModelIndex &index : constIndexes )
   {
-    const QgsFeatureId id = index.model()->data( index, static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
+    const QgsFeatureId id = index.model()->data( index, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).toLongLong();
 
     ids << id;
   }

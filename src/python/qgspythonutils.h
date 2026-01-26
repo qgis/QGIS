@@ -24,9 +24,8 @@
 #include <QString>
 #include <QStringList>
 
-
 class QgisInterface;
-#ifdef  HAVE_SERVER_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 class QgsServerInterface;
 #endif
 
@@ -44,7 +43,6 @@ class QgsServerInterface;
 class PYTHON_EXPORT QgsPythonUtils
 {
   public:
-
     virtual ~QgsPythonUtils() = default;
 
     /**
@@ -101,9 +99,21 @@ class PYTHON_EXPORT QgsPythonUtils
     virtual QString runStringUnsafe( const QString &command, bool single = true ) = 0;
 
     /**
+     * Runs a Python \a filename, showing an error message if one occurred.
+     * \returns TRUE if no error occurred
+     */
+    virtual bool runFile( const QString &filename, const QString &messageOnError = QString() ) = 0;
+
+    /**
      * Evaluates a Python \a command and stores the result in a the \a result string.
      */
     virtual bool evalString( const QString &command, QString &result ) = 0;
+
+    /**
+     * Sets sys.argv to the given Python \a arguments, showing an error message if one occurred.
+     * \returns TRUE if no error occurred
+     */
+    virtual bool setArgv( const QStringList &arguments, const QString &messageOnError = QString() ) = 0;
 
     /**
      * Gets information about error to the supplied arguments

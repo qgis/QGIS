@@ -13,13 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometryfollowboundariescheck.h"
+
+#include "qgsfeedback.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsgeometryengine.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheckerror.h"
 
 QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration, QgsVectorLayer *checkLayer )
   : QgsGeometryCheck( context, configuration )
@@ -36,20 +38,35 @@ QgsGeometryFollowBoundariesCheck::~QgsGeometryFollowBoundariesCheck()
   delete mIndex;
 }
 
-void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
+QgsGeometryCheck::Result QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids ) const
 {
   Q_UNUSED( messages )
 
   if ( !mIndex || !mCheckLayer )
   {
-    return;
+    return QgsGeometryCheck::Result::InvalidReferenceLayer;
   }
 
+  QMap<QString, QSet<QVariant>> uniqueIds;
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds( featurePools ) : ids.toMap();
   featureIds.remove( mCheckLayer->id() ); // Don't check layer against itself
   const QgsGeometryCheckerUtils::LayerFeatures layerFeatures( featurePools, featureIds, compatibleGeometryTypes(), feedback, mContext );
   for ( const QgsGeometryCheckerUtils::LayerFeature &layerFeature : layerFeatures )
   {
+    if ( feedback && feedback->isCanceled() )
+    {
+      return QgsGeometryCheck::Result::Canceled;
+    }
+
+    if ( context()->uniqueIdFieldIndex != -1 )
+    {
+      QgsGeometryCheck::Result result = checkUniqueId( layerFeature, uniqueIds );
+      if ( result != QgsGeometryCheck::Result::Success )
+      {
+        return result;
+      }
+    }
+
     const QgsAbstractGeometry *geom = layerFeature.geometry().constGet();
 
     // The geometry to crs of the check layer
@@ -57,7 +74,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
     QgsGeometry geomt( geom->clone() );
     geomt.transform( crst );
 
-    std::unique_ptr< QgsGeometryEngine > geomEngine = QgsGeometryCheckerUtils::createGeomEngine( geomt.constGet(), mContext->tolerance );
+    std::unique_ptr<QgsGeometryEngine> geomEngine( QgsGeometry::createGeometryEngine( geomt.constGet(), mContext->tolerance ) );
 
     // Get potential reference features
     QgsRectangle searchBounds = geomt.constGet()->boundingBox();
@@ -78,8 +95,13 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
       QgsFeature refFeature;
       while ( refFeatureIt.nextFeature( refFeature ) )
       {
+        if ( feedback && feedback->isCanceled() )
+        {
+          return QgsGeometryCheck::Result::Canceled;
+        }
+
         const QgsAbstractGeometry *refGeom = refFeature.geometry().constGet();
-        std::unique_ptr<QgsGeometryEngine> refgeomEngine( QgsGeometryCheckerUtils::createGeomEngine( refGeom, mContext->tolerance ) );
+        std::unique_ptr<QgsGeometryEngine> refgeomEngine( QgsGeometry::createGeometryEngine( refGeom, mContext->tolerance ) );
         const QgsGeometry reducedRefGeom( refgeomEngine->buffer( -mContext->tolerance, 0 ) );
         if ( !( geomEngine->contains( reducedRefGeom.constGet() ) || geomEngine->disjoint( reducedRefGeom.constGet() ) ) )
         {
@@ -89,6 +111,7 @@ void QgsGeometryFollowBoundariesCheck::collectErrors( const QMap<QString, QgsFea
       }
     }
   }
+  return QgsGeometryCheck::Result::Success;
 }
 
 void QgsGeometryFollowBoundariesCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes & /*changes*/ ) const

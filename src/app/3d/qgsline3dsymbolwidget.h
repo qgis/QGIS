@@ -16,11 +16,11 @@
 #ifndef QGSLINE3DSYMBOLWIDGET_H
 #define QGSLINE3DSYMBOLWIDGET_H
 
-#include "qgs3dsymbolwidget.h"
-
 #include "ui_line3dsymbolwidget.h"
 
 #include <memory>
+
+#include "qgs3dsymbolwidget.h"
 
 class QgsLine3DSymbol;
 
@@ -40,7 +40,6 @@ class QgsLine3DSymbolWidget : public Qgs3DSymbolWidget, private Ui::Line3DSymbol
   private slots:
     void updateGuiState();
     void simple3DLinesToggled( bool active );
-
 };
 
 #endif // QGSLINE3DSYMBOLWIDGET_H

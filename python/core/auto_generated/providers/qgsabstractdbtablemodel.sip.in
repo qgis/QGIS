@@ -12,7 +12,8 @@
 class QgsAbstractDbTableModel : QStandardItemModel
 {
 %Docstring(signature="appended")
-The :py:class:`QgsAbstractDbTableModel` class is a pure virtual model class for results in a database source widget selector
+Pure virtual model class for results in a database source widget
+selector.
 
 .. versionadded:: 3.24
 %End
@@ -33,7 +34,8 @@ Returns the list of columns in the table
 
     virtual int defaultSearchColumn() const = 0;
 %Docstring
-Returns the index of the column used by default to filter the results (probably the table name column if it exists)
+Returns the index of the column used by default to filter the results
+(probably the table name column if it exists)
 %End
 
     virtual bool searchableColumn( int column ) const;

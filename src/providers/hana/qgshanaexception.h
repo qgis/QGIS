@@ -17,9 +17,10 @@
 #ifndef QGSHANAEXCEPTION_H
 #define QGSHANAEXCEPTION_H
 
-#include "qexception.h"
-#include "qgslogger.h"
 #include "qgshanautils.h"
+#include "qgslogger.h"
+
+#include <qexception.h>
 
 class QgsHanaException final : public QException
 {
@@ -36,7 +37,7 @@ class QgsHanaException final : public QException
       QgsDebugError( what );
     }
 
-    void raise() const override  { throw *this;  }
+    void raise() const override { throw *this; }
 
     QgsHanaException *clone() const override
     {
@@ -52,4 +53,4 @@ class QgsHanaException final : public QException
     std::string mMessage;
 };
 
-#endif  // QGSHANAEXCEPTION_H
+#endif // QGSHANAEXCEPTION_H

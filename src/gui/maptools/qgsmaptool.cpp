@@ -13,16 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsmaptool.h"
+
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
-#include "qgsmapmouseevent.h"
 
-#include <QAction>
 #include <QAbstractButton>
+#include <QAction>
+
+#include "moc_qgsmaptool.cpp"
 
 QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
@@ -101,7 +104,7 @@ void QgsMapTool::activate()
 
   // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor( mCursor );
-  QgsDebugMsgLevel( QStringLiteral( "Cursor has been set" ), 4 );
+  QgsDebugMsgLevel( u"Cursor has been set"_s, 4 );
 
   emit activated();
 }
@@ -125,7 +128,6 @@ void QgsMapTool::reactivate()
 
 void QgsMapTool::clean()
 {
-
 }
 
 void QgsMapTool::setAction( QAction *action )
@@ -226,7 +228,7 @@ QgsMapCanvas *QgsMapTool::canvas() const
 double QgsMapTool::searchRadiusMM()
 {
   const QgsSettings settings;
-  const double radius = settings.value( QStringLiteral( "Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  const double radius = settings.value( u"Map/searchRadiusMM"_s, Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
 
   if ( radius > 0 )
   {
@@ -237,7 +239,7 @@ double QgsMapTool::searchRadiusMM()
 
 double QgsMapTool::searchRadiusMU( const QgsRenderContext &context )
 {
-  return searchRadiusMM() * context.scaleFactor() * context.mapToPixel().mapUnitsPerPixel();
+  return context.convertToMapUnits( searchRadiusMM(), Qgis::RenderUnit::Millimeters );
 }
 
 double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
@@ -248,13 +250,12 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
   }
   const QgsMapSettings mapSettings = canvas->mapSettings();
   const QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
-  return searchRadiusMU( context );
+  return searchRadiusMU( context ) / mapSettings.magnificationFactor();
 }
 
 
 void QgsMapTool::populateContextMenu( QMenu * )
 {
-
 }
 
 

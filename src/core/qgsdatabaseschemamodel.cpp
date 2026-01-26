@@ -13,9 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 #include "qgsdatabaseschemamodel.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
+#include "moc_qgsdatabaseschemamodel.cpp"
 
 QgsDatabaseSchemaModel::QgsDatabaseSchemaModel( const QString &provider, const QString &connection, QObject *parent )
   : QAbstractItemModel( parent )

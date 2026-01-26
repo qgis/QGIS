@@ -18,8 +18,8 @@
 #ifndef QGSVECTORFIELDSYMBOLLAYER_H
 #define QGSVECTORFIELDSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 class QgsLineSymbol;
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     static QgsSymbolLayer *create( const QVariantMap &properties = QVariantMap() );
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 
-    QString layerType() const override { return QStringLiteral( "VectorField" ); }
+    QString layerType() const override { return u"VectorField"_s; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
     QgsSymbol *subSymbol() override;
@@ -72,8 +72,8 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     QgsVectorFieldSymbolLayer *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;
     bool usesMapUnits() const override;
-
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 

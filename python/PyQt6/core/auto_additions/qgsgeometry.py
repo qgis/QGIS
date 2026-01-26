@@ -12,6 +12,7 @@ try:
     QgsGeometry.fromRect = staticmethod(QgsGeometry.fromRect)
     QgsGeometry.fromBox3D = staticmethod(QgsGeometry.fromBox3D)
     QgsGeometry.collectGeometry = staticmethod(QgsGeometry.collectGeometry)
+    QgsGeometry.collectTinPatches = staticmethod(QgsGeometry.collectTinPatches)
     QgsGeometry.createWedgeBuffer = staticmethod(QgsGeometry.createWedgeBuffer)
     QgsGeometry.createWedgeBufferFromAngles = staticmethod(QgsGeometry.createWedgeBufferFromAngles)
     QgsGeometry.unaryUnion = staticmethod(QgsGeometry.unaryUnion)
@@ -24,13 +25,13 @@ try:
     QgsGeometry.createGeometryEngine = staticmethod(QgsGeometry.createGeometryEngine)
     QgsGeometry.convertPointList = staticmethod(QgsGeometry.convertPointList)
     QgsGeometry.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsGeometryParameters.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsGeometry.Error.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

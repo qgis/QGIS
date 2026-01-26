@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgdalutils.h"
-#include "qgsninecellfilter.h"
-#include "qgslogger.h"
-#include "cpl_string.h"
-#include "qgsfeedback.h"
-#include "qgsogrutils.h"
-#include "qgsmessagelog.h"
 #include "qgsconfig.h"
+#include "qgsninecellfilter.h"
+
+#include <cpl_string.h>
+
+#include "qgsfeedback.h"
+#include "qgsgdalutils.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsogrutils.h"
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -33,34 +35,30 @@
 #include <QFileInfo>
 #include <iterator>
 
-
-
 QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )
   , mOutputFile( outputFile )
   , mOutputFormat( outputFormat )
 {
-
 }
 
-// TODO: return an anum instead of an int
-int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
+QgsNineCellFilter::Result QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 {
 #ifdef HAVE_OPENCL
-  if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && ! openClProgramBaseName( ).isEmpty() )
+  if ( QgsOpenClUtils::enabled() && QgsOpenClUtils::available() && !openClProgramBaseName().isEmpty() )
   {
     // Load the program sources
-    const QString source( QgsOpenClUtils::sourceFromBaseName( openClProgramBaseName( ) ) );
-    if ( ! source.isEmpty() )
+    const QString source( QgsOpenClUtils::sourceFromBaseName( openClProgramBaseName() ) );
+    if ( !source.isEmpty() )
     {
       try
       {
-        QgsDebugMsgLevel( QStringLiteral( "Running OpenCL program: %1" ).arg( openClProgramBaseName( ) ), 2 );
+        QgsDebugMsgLevel( u"Running OpenCL program: %1"_s.arg( openClProgramBaseName() ), 2 );
         return processRasterGPU( source, feedback );
       }
       catch ( cl::Error &e )
       {
-        const QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what( ), QgsOpenClUtils::errorText( e.err( ) ) );
+        const QString err = QObject::tr( "Error running OpenCL program: %1 - %2" ).arg( e.what(), QgsOpenClUtils::errorText( e.err() ) );
         QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
         throw QgsProcessingException( err );
       }
@@ -68,8 +66,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     else
     {
       const QString err = QObject::tr( "Error loading OpenCL program sources" );
-      QgsMessageLog::logMessage( err,
-                                 QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( err, QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Critical );
       throw QgsProcessingException( err );
     }
   }
@@ -78,7 +75,7 @@ int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
     return processRasterCPU( feedback );
   }
 #ifndef _MSC_VER
-  return 1;
+  return QgsNineCellFilter::Result::InputLayerError;
 #endif
 #else
   return processRasterCPU( feedback );
@@ -120,7 +117,6 @@ GDALDriverH QgsNineCellFilter::openOutputDriver()
   return outputDriver;
 }
 
-
 gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
 {
   if ( !inputDataset )
@@ -132,8 +128,9 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
   const int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
-  char **papszOptions = nullptr;
+  char **papszOptions = QgsGdalUtils::papszFromStringList( mCreationOptions );
   gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), xSize, ySize, 1, GDT_Float32, papszOptions ) );
+  CSLDestroy( papszOptions );
   if ( !outputDataset )
   {
     return outputDataset;
@@ -167,10 +164,8 @@ gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDa
 
 #ifdef HAVE_OPENCL
 
-// TODO: return an anum instead of an int
-int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *feedback )
+QgsNineCellFilter::Result QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *feedback )
 {
-
   GDALAllRegister();
 
   //open input file
@@ -178,43 +173,49 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   const gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
   if ( !inputDataset )
   {
-    return 1; //opening of input file failed
+    return QgsNineCellFilter::Result::InputLayerError; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
   if ( !outputDriver )
   {
-    return 2;
+    return QgsNineCellFilter::Result::DriverError;
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( inputDataset.get(), outputDriver ) );
   if ( !outputDataset )
   {
-    return 3; //create operation on output file failed
+    return QgsNineCellFilter::Result::CreateOutputError; //create operation on output file failed
   }
 
   //open first raster band for reading (operation is only for single band raster)
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset.get(), 1 );
   if ( !rasterBand )
   {
-    return 4;
+    return QgsNineCellFilter::Result::InputBandError;
   }
   mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
   if ( !outputRasterBand )
   {
-    return 5;
+    return QgsNineCellFilter::Result::OutputBandError;
   }
-  //try to set -9999 as nodata value
-  GDALSetRasterNoDataValue( outputRasterBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, nullptr );
+  // set nodata value
+  GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
-    return 6;
+    return QgsNineCellFilter::Result::RasterSizeError;
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
 
   // Prepare context and queue
   const cl::Context ctx = QgsOpenClUtils::context();
@@ -227,11 +228,11 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   // Cast to float (because double just crashes on some GPUs)
   std::vector<float> rasterParams;
 
-  rasterParams.push_back( mInputNodataValue ); //  0
+  rasterParams.push_back( mInputNodataValue );  //  0
   rasterParams.push_back( mOutputNodataValue ); // 1
-  rasterParams.push_back( mZFactor ); // 2
-  rasterParams.push_back( mCellSizeX ); // 3
-  rasterParams.push_back( mCellSizeY ); // 4
+  rasterParams.push_back( mZFactor );           // 2
+  rasterParams.push_back( mCellSizeX );         // 3
+  rasterParams.push_back( mCellSizeY );         // 4
 
   // Allow subclasses to add extra params needed for computation:
   // used to pass additional args to opencl program
@@ -244,23 +245,22 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   cl::Buffer scanLine1Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine2Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
   cl::Buffer scanLine3Buffer( ctx, CL_MEM_READ_ONLY, bufferSize, nullptr, nullptr );
-  cl::Buffer *scanLineBuffer[3] = {&scanLine1Buffer, &scanLine2Buffer, &scanLine3Buffer};
+  cl::Buffer *scanLineBuffer[3] = { &scanLine1Buffer, &scanLine2Buffer, &scanLine3Buffer };
   cl::Buffer resultLineBuffer( ctx, CL_MEM_WRITE_ONLY, inputSize, nullptr, nullptr );
 
   // Create a program from the kernel source
   const cl::Program program( QgsOpenClUtils::buildProgram( source, QgsOpenClUtils::ExceptionBehavior::Throw ) );
 
   // Create the OpenCL kernel
-  auto kernel = cl::KernelFunctor <
-                cl::Buffer &,
-                cl::Buffer &,
-                cl::Buffer &,
-                cl::Buffer &,
-                cl::Buffer &
-                > ( program, "processNineCellWindow" );
+  auto kernel = cl::KernelFunctor<
+    cl::Buffer &,
+    cl::Buffer &,
+    cl::Buffer &,
+    cl::Buffer &,
+    cl::Buffer &>( program, "processNineCellWindow" );
 
   // Rotate buffer index
-  std::vector<int> rowIndex = {0, 1, 2};
+  std::vector<int> rowIndex = { 0, 1, 2 };
 
   // values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
@@ -272,14 +272,14 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( i ) / ySize );
+      feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( i ) / ySize );
     }
 
     if ( i == 0 )
     {
       // Fill scanline 1 with (input) nodata for the values above the first row and
       // feed scanline2 with the first actual data row
-      for ( int a = 0; a < xSize + 2 ; ++a )
+      for ( int a = 0; a < xSize + 2; ++a )
       {
         scanLine[a] = mInputNodataValue;
       }
@@ -288,14 +288,14 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
       // Read scanline2: first real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
       queue.enqueueWriteBuffer( scanLine2Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
 
       // Read scanline3: second real raster row
       if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
       queue.enqueueWriteBuffer( scanLine3Buffer, CL_TRUE, 0, bufferSize, scanLine.get() );
     }
@@ -316,28 +316,19 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
       {
         if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, &scanLine[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
         {
-          QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+          QgsDebugError( u"Raster IO Error"_s );
         }
         queue.enqueueWriteBuffer( *scanLineBuffer[rowIndex[2]], CL_TRUE, 0, bufferSize, scanLine.get() ); // row 0
       }
     }
 
-    kernel( cl::EnqueueArgs(
-              queue,
-              cl::NDRange( xSize )
-            ),
-            *scanLineBuffer[rowIndex[0]],
-            *scanLineBuffer[rowIndex[1]],
-            *scanLineBuffer[rowIndex[2]],
-            resultLineBuffer,
-            rasterParamsBuffer
-          );
+    kernel( cl::EnqueueArgs( queue, cl::NDRange( xSize ) ), *scanLineBuffer[rowIndex[0]], *scanLineBuffer[rowIndex[1]], *scanLineBuffer[rowIndex[2]], resultLineBuffer, rasterParamsBuffer );
 
     queue.enqueueReadBuffer( resultLineBuffer, CL_TRUE, 0, inputSize, resultLine.get() );
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine.get(), xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
     std::rotate( rowIndex.begin(), rowIndex.begin() + 1, rowIndex.end() );
   }
@@ -346,17 +337,29 @@ int QgsNineCellFilter::processRasterGPU( const QString &source, QgsFeedback *fee
   {
     //delete the dataset without closing (because it is faster)
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return 7;
+    return QgsNineCellFilter::Result::Canceled;
   }
-  return 0;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  else if ( hasReportsDuringClose && feedback )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      return feedback->isCanceled() ? QgsNineCellFilter::Result::Canceled : QgsNineCellFilter::Result::CreateOutputError;
+    }
+  }
+#endif
+
+  return QgsNineCellFilter::Result::Success;
 }
 #endif
 
 
-// TODO: return an anum instead of an int
-int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
+QgsNineCellFilter::Result QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 {
-
   GDALAllRegister();
 
   //open input file
@@ -364,42 +367,48 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
   const gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
   if ( !inputDataset )
   {
-    return 1; //opening of input file failed
+    return QgsNineCellFilter::Result::InputLayerError; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
   if ( !outputDriver )
   {
-    return 2;
+    return QgsNineCellFilter::Result::DriverError;
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( inputDataset.get(), outputDriver ) );
   if ( !outputDataset )
   {
-    return 3; //create operation on output file failed
+    return QgsNineCellFilter::Result::CreateOutputError; //create operation on output file failed
   }
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  const bool hasReportsDuringClose = GDALDatasetGetCloseReportsProgress( outputDataset.get() );
+  const double maxProgressDuringBlockWriting = hasReportsDuringClose ? 50.0 : 100.0;
+#else
+  constexpr double maxProgressDuringBlockWriting = 100.0;
+#endif
 
   //open first raster band for reading (operation is only for single band raster)
   GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset.get(), 1 );
   if ( !rasterBand )
   {
-    return 4;
+    return QgsNineCellFilter::Result::InputBandError;
   }
   mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
   if ( !outputRasterBand )
   {
-    return 5;
+    return QgsNineCellFilter::Result::OutputBandError;
   }
-  //try to set -9999 as nodata value
-  GDALSetRasterNoDataValue( outputRasterBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, nullptr );
+  // set nodata value
+  GDALSetRasterNoDataValue( outputRasterBand, mOutputNodataValue );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
-    return 6;
+    return QgsNineCellFilter::Result::RasterSizeError;
   }
 
   //keep only three scanlines in memory at a time, make room for initial and final nodata
@@ -420,20 +429,20 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
 
     if ( feedback )
     {
-      feedback->setProgress( 100.0 * static_cast< double >( yIndex ) / ySize );
+      feedback->setProgress( maxProgressDuringBlockWriting * static_cast<double>( yIndex ) / ySize );
     }
 
     if ( yIndex == 0 )
     {
       //fill scanline 1 with (input) nodata for the values above the first row and feed scanline2 with the first row
-      for ( int a = 0; a < xSize + 2 ; ++a )
+      for ( int a = 0; a < xSize + 2; ++a )
       {
         scanLine1[a] = mInputNodataValue;
       }
       // Read scanline2
       if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, &scanLine2[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
     }
     else
@@ -457,7 +466,7 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
     {
       if ( GDALRasterIO( rasterBand, GF_Read, 0, yIndex + 1, xSize, 1, &scanLine3[1], xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
       {
-        QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+        QgsDebugError( u"Raster IO Error"_s );
       }
     }
     // Set first and last extra columns to nodata
@@ -466,20 +475,16 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
     scanLine3[0] = scanLine3[xSize + 1] = mInputNodataValue;
 
 
-
     // j is the x axis index, skip 0 and last cell that have been filled with nodata
-    for ( int xIndex = 0; xIndex < xSize ; ++xIndex )
+    for ( int xIndex = 0; xIndex < xSize; ++xIndex )
     {
       // cells(x, y) x11, x21, x31, x12, x22, x32, x13, x23, x33
-      resultLine[ xIndex ] = processNineCellWindow( &scanLine1[ xIndex ], &scanLine1[ xIndex + 1 ], &scanLine1[ xIndex + 2 ],
-                             &scanLine2[ xIndex ], &scanLine2[ xIndex + 1 ], &scanLine2[ xIndex + 2 ],
-                             &scanLine3[ xIndex ], &scanLine3[ xIndex + 1 ], &scanLine3[ xIndex + 2 ] );
-
+      resultLine[xIndex] = processNineCellWindow( &scanLine1[xIndex], &scanLine1[xIndex + 1], &scanLine1[xIndex + 2], &scanLine2[xIndex], &scanLine2[xIndex + 1], &scanLine2[xIndex + 2], &scanLine3[xIndex], &scanLine3[xIndex + 1], &scanLine3[xIndex + 2] );
     }
 
     if ( GDALRasterIO( outputRasterBand, GF_Write, 0, yIndex, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
     {
-      QgsDebugError( QStringLiteral( "Raster IO Error" ) );
+      QgsDebugError( u"Raster IO Error"_s );
     }
   }
 
@@ -492,7 +497,21 @@ int QgsNineCellFilter::processRasterCPU( QgsFeedback *feedback )
   {
     //delete the dataset without closing (because it is faster)
     gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
-    return 7;
+    return QgsNineCellFilter::Result::Canceled;
   }
-  return 0;
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 13, 0 )
+  else if ( hasReportsDuringClose && feedback )
+  {
+    QgsGdalProgressAdapter progress( feedback, maxProgressDuringBlockWriting );
+    if ( GDALDatasetRunCloseWithoutDestroyingEx(
+           outputDataset.get(), QgsGdalProgressAdapter::progressCallback, &progress
+         )
+         != CE_None )
+    {
+      return feedback->isCanceled() ? QgsNineCellFilter::Result::Canceled : QgsNineCellFilter::Result::OutputBandError;
+    }
+  }
+#endif
+
+  return QgsNineCellFilter::Result::Success;
 }

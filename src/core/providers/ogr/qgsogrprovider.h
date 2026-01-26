@@ -18,9 +18,10 @@ email                : sherman at mrcc.com
 #ifndef QGSOGRPROVIDER_H
 #define QGSOGRPROVIDER_H
 
-#include "qgsvectordataprovider.h"
 #include "qgsogrproviderutils.h"
+#include "qgsvectordataprovider.h"
 
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 class QgsOgrLayer;
@@ -49,6 +50,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
+      QString &createdLayerUri,
       QString *errorMessage = nullptr,
       const QMap<QString, QVariant> *options = nullptr
     );
@@ -97,7 +99,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString subsetStringHelpUrl() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
     Qgis::WkbType wkbType() const override;
-    virtual size_t layerCount() const;
+    size_t layerCount() const;
     long long featureCount() const override;
     QgsFields fields() const override;
     QgsRectangle extent() const override;
@@ -106,6 +108,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QString defaultValueClause( int fieldIndex ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     void updateExtents() override;
+
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -117,7 +121,8 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool createAttributeIndex( int field ) override;
     Qgis::VectorProviderCapabilities capabilities() const override;
     Qgis::VectorDataProviderAttributeEditCapabilities attributeEditCapabilities() const override;
-    QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
+    QgsAttributeList pkAttributeIndexes() const override;
+    QString geometryColumnName() const override;
     void setEncoding( const QString &e ) override;
     bool enterUpdateMode() override { return _enterUpdateMode(); }
     bool leaveUpdateMode() override;
@@ -216,9 +221,16 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid = false;
-    mutable std::unique_ptr< OGREnvelope3D > mExtent2D;
+    mutable std::unique_ptr< OGREnvelope > mExtent2D;
     mutable std::unique_ptr< OGREnvelope3D > mExtent3D;
     bool mForceRecomputeExtent = false;
+
+    //! Flag set after a rollback to indicate that fields require reloading
+    bool mFieldsRequireReload = false;
+
+    //! Called after a transaction rollback
+    void afterRollback();
+    void afterRollbackToSavepoint( const QString &savePointName );
 
     QList<int> mPrimaryKeyAttrs;
 
@@ -294,6 +306,7 @@ class QgsOgrProvider final: public QgsVectorDataProvider
     bool mValid = false;
 
     OGRwkbGeometryType mOGRGeomType = wkbUnknown;
+    QgsCoordinateReferenceSystem mCrs;
 
     //! Whether the next call to featureCount() should refresh the feature count
     mutable bool mRefreshFeatureCount = true;

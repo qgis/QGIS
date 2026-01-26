@@ -18,18 +18,20 @@
 #ifndef QGSCURVEPOLYGON_H
 #define QGSCURVEPOLYGON_H
 
+#include <limits>
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgssurface.h"
 #include "qgscurve.h"
-#include <memory>
+#include "qgssurface.h"
 
 class QgsPolygon;
 
 /**
  * \ingroup core
  * \class QgsCurvePolygon
- * \brief Curve polygon geometry type
+ * \brief Curve polygon geometry type.
  */
 class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 {
@@ -140,12 +142,15 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     //surface interface
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0, bool removeRedundantPoints = false ) const override SIP_FACTORY;
     QgsCurvePolygon *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
     bool removeDuplicateNodes( double epsilon = 4 * std::numeric_limits<double>::epsilon(), bool useZValues = false ) override;
+
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
+    bool boundingBoxIntersects( const QgsRectangle &box ) const override SIP_HOLDGIL;
 
     /**
      * Returns the roundness of the curve polygon.
@@ -411,9 +416,11 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * Cast the \a geom to a QgsCurvePolygon.
      * Should be used by qgsgeometry_cast<QgsCurvePolygon *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
-    inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsCurvePolygon *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( !geom )
         return nullptr;
@@ -425,6 +432,27 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
         return static_cast<const QgsCurvePolygon *>( geom );
       return nullptr;
     }
+
+    /**
+     * Cast the \a geom to a QgsCurvePolygon.
+     * Should be used by qgsgeometry_cast<QgsCurvePolygon *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsCurvePolygon *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( !geom )
+        return nullptr;
+
+      const Qgis::WkbType flatType = QgsWkbTypes::flatType( geom->wkbType() );
+      if ( flatType == Qgis::WkbType::CurvePolygon
+           || flatType == Qgis::WkbType::Polygon
+           || flatType == Qgis::WkbType::Triangle )
+        return static_cast<QgsCurvePolygon *>( geom );
+      return nullptr;
+    }
 #endif
 
     QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
@@ -434,8 +462,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsCurvePolygon: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsCurvePolygon: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -16,18 +16,17 @@
 #ifndef QGSLIGHTSWIDGET_H
 #define QGSLIGHTSWIDGET_H
 
-#include <QWidget>
-
 #include "ui_qgslightswidget.h"
 
-#include "qgspointlightsettings.h"
 #include "qgsdirectionallightsettings.h"
+#include "qgspointlightsettings.h"
+
+#include <QWidget>
 
 class QgsLightsModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
-
     enum LightType
     {
       Point,
@@ -59,7 +58,6 @@ class QgsLightsModel : public QAbstractListModel
     QModelIndex addDirectionalLight( const QgsDirectionalLightSettings &light );
 
   private:
-
     QList<QgsPointLightSettings> mPointLights;
     QList<QgsDirectionalLightSettings> mDirectionalLights;
 };
@@ -81,6 +79,8 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     int directionalLightCount() const;
     int lightSourceCount() const;
 
+    void setPointLightCrs( const QgsCoordinateReferenceSystem &crs );
+
   signals:
     void directionalLightsCountChanged( int count );
     void lightsRemoved();
@@ -96,14 +96,14 @@ class QgsLightsWidget : public QWidget, private Ui::QgsLightsWidget
     void onAddDirectionalLight();
     void setAzimuthAltitude();
     void onDirectionChange();
-  private:
 
+  private:
     void showSettingsForPointLight( const QgsPointLightSettings &settings );
     void showSettingsForDirectionalLight( const QgsDirectionalLightSettings &settings );
 
   private:
     double mDirectionX = 0;
-    double mDirectionY = -1;
+    double mDirectionY = 0;
     double mDirectionZ = 0;
     QgsLightsModel *mLightsModel = nullptr;
 };

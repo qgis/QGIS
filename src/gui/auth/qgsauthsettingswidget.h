@@ -16,10 +16,10 @@
 #ifndef QGSAUTHSETTINGSWIDGET_H
 #define QGSAUTHSETTINGSWIDGET_H
 
+#include "ui_qgsauthsettingswidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
-#include "ui_qgsauthsettingswidget.h"
 
 #include <QWidget>
 
@@ -34,11 +34,9 @@
  */
 class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSettingsWidget
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * \brief The WarningType enum is used to determine the text
      * of the message shown to the user about the destination of
@@ -62,11 +60,14 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \param password
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                    const QString &configId = QString(),
-                                    const QString &username = QString(),
-                                    const QString &password = QString(),
-                                    const QString &dataprovider = QString() );
+    explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &configId = QString(), const QString &username = QString(), const QString &password = QString(), const QString &dataprovider = QString() );
+
+    /**
+     * Removes the basic authentication tab from the widget.
+     *
+     * \since QGIS 3.42
+     */
+    void removeBasicSettings();
 
     /**
      * \brief setWarningText set the text of the warning label
@@ -229,14 +230,12 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
     void passwordTextChanged( const QString &text );
 
   private:
-
     // Mainly for tests
     QString mDataprovider;
 
     void updateConvertBtnState();
 
     void updateSelectedTab();
-
 };
 
 #endif // QGSAUTHSETTINGSWIDGET_H

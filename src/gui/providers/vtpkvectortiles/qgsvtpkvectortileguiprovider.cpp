@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvtpkvectortileguiprovider.h"
+
 ///@cond PRIVATE
 
 #include <QList>
@@ -36,7 +37,6 @@
 
 QgsVtpkVectorTileSourceWidgetProvider::QgsVtpkVectorTileSourceWidgetProvider()
 {
-
 }
 
 QString QgsVtpkVectorTileSourceWidgetProvider::providerKey() const
@@ -50,9 +50,10 @@ bool QgsVtpkVectorTileSourceWidgetProvider::canHandleLayer( QgsMapLayer *layer )
     return false;
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-                              QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-                              layer->source() );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
+    layer->source()
+  );
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return false;
 
   return true;
@@ -64,11 +65,11 @@ QgsProviderSourceWidget *QgsVtpkVectorTileSourceWidgetProvider::createWidget( Qg
     return nullptr;
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-                              QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
-                              layer->source()
-                            );
+    QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY,
+    layer->source()
+  );
 
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return nullptr;
 
   return new QgsVtpkVectorTileSourceWidget( parent );
@@ -78,8 +79,8 @@ QgsProviderSourceWidget *QgsVtpkVectorTileSourceWidgetProvider::createWidget( Qg
 //
 // QgsVtpkVectorTileGuiProviderMetadata
 //
-QgsVtpkVectorTileGuiProviderMetadata::QgsVtpkVectorTileGuiProviderMetadata():
-  QgsProviderGuiMetadata( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY )
+QgsVtpkVectorTileGuiProviderMetadata::QgsVtpkVectorTileGuiProviderMetadata()
+  : QgsProviderGuiMetadata( QgsVtpkVectorTileDataProvider::DATA_PROVIDER_KEY )
 {
 }
 

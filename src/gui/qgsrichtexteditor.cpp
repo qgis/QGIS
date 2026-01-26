@@ -29,26 +29,29 @@
 ****************************************************************************/
 
 #include "qgsrichtexteditor.h"
-#include "qgsguiutils.h"
-#include "qgscolorbutton.h"
+
 #include "qgscodeeditor.h"
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorwidget.h"
+#include "qgscolorbutton.h"
+#include "qgsguiutils.h"
 
-#include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
-#include <QFontDatabase>
-#include <QInputDialog>
-#include <QTextList>
-#include <QtDebug>
-#include <QFileDialog>
-#include <QImageReader>
-#include <QSettings>
-#include <QUrl>
-#include <QMenu>
 #include <QComboBox>
+#include <QFileDialog>
+#include <QFontDatabase>
+#include <QImageReader>
+#include <QInputDialog>
+#include <QMenu>
+#include <QMimeData>
+#include <QSettings>
+#include <QTextList>
 #include <QToolButton>
+#include <QUrl>
+#include <QtDebug>
+
+#include "moc_qgsrichtexteditor.cpp"
 
 QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   : QWidget( parent )
@@ -102,13 +105,13 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
 #endif
 
   // link
-  mActionInsertLink->setShortcut( QKeySequence( QStringLiteral( "CTRL+L" ) ) );
+  mActionInsertLink->setShortcut( QKeySequence( u"CTRL+L"_s ) );
   connect( mActionInsertLink, &QAction::triggered, this, &QgsRichTextEditor::textLink );
 
   // bold, italic & underline
-  mActionBold->setShortcut( QKeySequence( QStringLiteral( "CTRL+B" ) ) );
-  mActionItalic->setShortcut( QKeySequence( QStringLiteral( "CTRL+I" ) ) );
-  mActionUnderline->setShortcut( QKeySequence( QStringLiteral( "CTRL+U" ) ) );
+  mActionBold->setShortcut( QKeySequence( u"CTRL+B"_s ) );
+  mActionItalic->setShortcut( QKeySequence( u"CTRL+I"_s ) );
+  mActionUnderline->setShortcut( QKeySequence( u"CTRL+U"_s ) );
 
   connect( mActionBold, &QAction::triggered, this, &QgsRichTextEditor::textBold );
   connect( mActionItalic, &QAction::triggered, this, &QgsRichTextEditor::textItalic );
@@ -116,14 +119,14 @@ QgsRichTextEditor::QgsRichTextEditor( QWidget *parent )
   connect( mActionStrikeOut, &QAction::triggered, this, &QgsRichTextEditor::textStrikeout );
 
   // lists
-  mActionBulletList->setShortcut( QKeySequence( QStringLiteral( "CTRL+-" ) ) );
-  mActionOrderedList->setShortcut( QKeySequence( QStringLiteral( "CTRL+=" ) ) );
+  mActionBulletList->setShortcut( QKeySequence( u"CTRL+-"_s ) );
+  mActionOrderedList->setShortcut( QKeySequence( u"CTRL+="_s ) );
   connect( mActionBulletList, &QAction::triggered, this, &QgsRichTextEditor::listBullet );
   connect( mActionOrderedList, &QAction::triggered, this, &QgsRichTextEditor::listOrdered );
 
   // indentation
-  mActionDecreaseIndent->setShortcut( QKeySequence( QStringLiteral( "CTRL+," ) ) );
-  mActionIncreaseIndent->setShortcut( QKeySequence( QStringLiteral( "CTRL+." ) ) );
+  mActionDecreaseIndent->setShortcut( QKeySequence( u"CTRL+,"_s ) );
+  mActionIncreaseIndent->setShortcut( QKeySequence( u"CTRL+."_s ) );
   connect( mActionIncreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::increaseIndentation );
   connect( mActionDecreaseIndent, &QAction::triggered, this, &QgsRichTextEditor::decreaseIndentation );
 
@@ -164,7 +167,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mParagraphStyleCombo->addItem( tr( "Heading 4" ), ParagraphHeading4 );
   mParagraphStyleCombo->addItem( tr( "Monospace" ), ParagraphMonospace );
 
-  connect( mParagraphStyleCombo, qOverload< int >( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
+  connect( mParagraphStyleCombo, qOverload<int>( &QComboBox::activated ), this, &QgsRichTextEditor::textStyle );
   if ( mode == Mode::QTextDocument )
   {
     mToolBar->addWidget( mParagraphStyleCombo );
@@ -180,7 +183,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mFontSizeCombo = new QComboBox();
   mFontSizeCombo->setEditable( true );
 
-  const QList< int > sizes = QFontDatabase::standardSizes();
+  const QList<int> sizes = QFontDatabase::standardSizes();
   for ( const int size : sizes )
     mFontSizeCombo->addItem( QString::number( size ), size );
 
@@ -206,7 +209,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mForeColorButton->setColor( palette().windowText().color() );
   mForeColorButton->setShowNoColor( false );
   mForeColorButton->setToolTip( tr( "Foreground color" ) );
-  mForeColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
+  mForeColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( u"x"_s ) * 10 );
   mForeColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
   connect( mForeColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textFgColor );
@@ -224,7 +227,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   mBackColorButton->setShowNull( true, tr( "No Background Color" ) );
   mBackColorButton->setToNull();
   mBackColorButton->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-  mBackColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( QStringLiteral( "x" ) ) * 10 );
+  mBackColorButton->setMinimumWidth( QFontMetrics( font() ).horizontalAdvance( u"x"_s ) * 10 );
   connect( mBackColorButton, &QgsColorButton::colorChanged, this, &QgsRichTextEditor::textBgColor );
 
   if ( mode == Mode::QTextDocument )
@@ -247,7 +250,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   if ( mode != Mode::PlainText )
   {
     QAction *removeFormat = new QAction( tr( "Remove Character Formatting" ), menu );
-    removeFormat->setShortcut( QKeySequence( QStringLiteral( "CTRL+M" ) ) );
+    removeFormat->setShortcut( QKeySequence( u"CTRL+M"_s ) );
     connect( removeFormat, &QAction::triggered, this, &QgsRichTextEditor::textRemoveFormat );
     mTextEdit->addAction( removeFormat );
 
@@ -268,7 +271,7 @@ void QgsRichTextEditor::setMode( Mode mode )
   menuButton->setMenu( menu );
   menuButton->setPopupMode( QToolButton::InstantPopup );
   menuButton->setToolTip( tr( "Advanced Options" ) );
-  menuButton->setText( QStringLiteral( "…" ) );
+  menuButton->setText( u"…"_s );
 
   QWidget *spacer = new QWidget();
   spacer->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -317,12 +320,12 @@ QString QgsRichTextEditor::toHtml() const
 
 void QgsRichTextEditor::editSource( bool enabled )
 {
-  if ( enabled )
+  if ( enabled && mStackedWidget->currentIndex() == 0 )
   {
     mSourceEdit->setText( mTextEdit->toHtml() );
     mStackedWidget->setCurrentIndex( 1 );
   }
-  else
+  else if ( !enabled && mStackedWidget->currentIndex() == 1 )
   {
     mTextEdit->setHtml( mSourceEdit->text() );
     mStackedWidget->setCurrentIndex( 0 );
@@ -439,10 +442,7 @@ void QgsRichTextEditor::textLink( bool checked )
   {
     const QString url = mTextEdit->currentCharFormat().anchorHref();
     bool ok;
-    const QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ),
-                           tr( "Link URL:" ), QLineEdit::Normal,
-                           url,
-                           &ok );
+    const QString newUrl = QInputDialog::getText( this, tr( "Create a Link" ), tr( "Link URL:" ), QLineEdit::Normal, url, &ok );
     if ( ok )
     {
       format.setAnchor( true );
@@ -468,7 +468,7 @@ void QgsRichTextEditor::textLink( bool checked )
   mergeFormatOnWordOrSelection( format );
 }
 
-void QgsRichTextEditor::textStyle( int )
+void QgsRichTextEditor::textStyle( int index )
 {
   QTextCursor cursor = mTextEdit->textCursor();
   cursor.beginEditBlock();
@@ -482,7 +482,7 @@ void QgsRichTextEditor::textStyle( int )
   cursor.setCharFormat( format );
   mTextEdit->setCurrentCharFormat( format );
 
-  const ParagraphItems style = static_cast< ParagraphItems >( mParagraphStyleCombo->currentData().toInt() );
+  const ParagraphItems style = static_cast<ParagraphItems>( mParagraphStyleCombo->itemData( index ).toInt() );
 
   switch ( style )
   {
@@ -606,8 +606,7 @@ void QgsRichTextEditor::mergeFormatOnWordOrSelection( const QTextCharFormat &for
 void QgsRichTextEditor::slotCursorPositionChanged()
 {
   QTextList *l = mTextEdit->textCursor().currentList();
-  if ( mLastBlockList && ( l == mLastBlockList || ( l && mLastBlockList
-                           && l->format().style() == mLastBlockList->format().style() ) ) )
+  if ( mLastBlockList && ( l == mLastBlockList || ( l && mLastBlockList && l->format().style() == mLastBlockList->format().style() ) ) )
   {
     return;
   }
@@ -645,19 +644,19 @@ void QgsRichTextEditor::fontChanged( const QFont &f )
   mActionItalic->setChecked( f.italic() );
   mActionUnderline->setChecked( f.underline() );
   mActionStrikeOut->setChecked( f.strikeOut() );
-  if ( f.pointSize() == mFontSizeH1 )
+  if ( f.bold() && f.pointSize() == mFontSizeH1 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading1 );
   }
-  else if ( f.pointSize() == mFontSizeH2 )
+  else if ( f.bold() && f.pointSize() == mFontSizeH2 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading2 );
   }
-  else if ( f.pointSize() == mFontSizeH3 )
+  else if ( f.bold() && f.pointSize() == mFontSizeH3 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading3 );
   }
-  else if ( f.pointSize() == mFontSizeH4 )
+  else if ( f.bold() && f.pointSize() == mFontSizeH4 )
   {
     mParagraphStyleCombo->setCurrentIndex( ParagraphHeading4 );
   }
@@ -755,27 +754,29 @@ void QgsRichTextEditor::setText( const QString &text )
 {
   if ( text.isEmpty() )
   {
-    setPlainText( text );
+    mTextEdit->setPlainText( text );
+    mSourceEdit->clear();
     return;
   }
-  if ( text[0] == '<' )
+
+  const thread_local QRegularExpression sIsHtmlRx( u"^\\s*<"_s );
+  if ( sIsHtmlRx.match( text ).hasMatch() )
   {
-    setHtml( text );
+    mTextEdit->setHtml( text );
+    mSourceEdit->setText( text );
   }
   else
   {
-    setPlainText( text );
+    mTextEdit->setPlainText( text );
+    mSourceEdit->setText( text );
   }
 }
 
 void QgsRichTextEditor::insertImage()
 {
   const QSettings s;
-  const QString attdir = s.value( QStringLiteral( "general/filedialog-path" ) ).toString();
-  const QString file = QFileDialog::getOpenFileName( this,
-                       tr( "Select an image" ),
-                       attdir,
-                       tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
+  const QString attdir = s.value( u"general/filedialog-path"_s ).toString();
+  const QString file = QFileDialog::getOpenFileName( this, tr( "Select an image" ), attdir, tr( "JPEG (*.jpg);; GIF (*.gif);; PNG (*.png);; BMP (*.bmp);; All (*)" ) );
   if ( file.isEmpty() )
     return;
 

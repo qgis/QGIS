@@ -7,9 +7,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'David Marteau'
-__date__ = '28/01/2022'
-__copyright__ = 'Copyright 2015, The QGIS Project'
+
+__author__ = "David Marteau"
+__date__ = "28/01/2022"
+__copyright__ = "Copyright 2015, The QGIS Project"
 
 import os
 from pathlib import Path
@@ -38,15 +39,15 @@ class TestQgsServerConfigCache(unittest.TestCase):
 
     def test_periodic_cache_strategy(self):
 
-        path = Path(unitTestDataPath('qgis_server_project')) / 'project.qgs'
+        path = Path(unitTestDataPath("qgis_server_project")) / "project.qgs"
         self.assertTrue(path.exists())
 
-        os.environ['QGIS_SERVER_PROJECT_CACHE_STRATEGY'] = 'periodic'
-        os.environ['QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL'] = '3000'
+        os.environ["QGIS_SERVER_PROJECT_CACHE_STRATEGY"] = "periodic"
+        os.environ["QGIS_SERVER_PROJECT_CACHE_CHECK_INTERVAL"] = "3000"
         settings = QgsServerSettings()
         settings.load()
 
-        self.assertEqual(settings.projectCacheStrategy(), 'periodic')
+        self.assertEqual(settings.projectCacheStrategy(), "periodic")
         self.assertEqual(settings.projectCacheCheckInterval(), 3000)
 
         cache = QgsConfigCache(settings)
@@ -64,7 +65,7 @@ class TestQgsServerConfigCache(unittest.TestCase):
         prj2 = cache.project(str(path))
         self.assertIsNotNone(prj2)
         # Ensure project is not reloaded
-        self.assertEqual(prj2.readEntry("TestConfigCache", "/"), ('foobar', True))
+        self.assertEqual(prj2.readEntry("TestConfigCache", "/"), ("foobar", True))
 
         # Change project modified time
         path.touch()
@@ -79,7 +80,7 @@ class TestQgsServerConfigCache(unittest.TestCase):
         prj3 = cache.project(str(path))
         self.assertIsNotNone(prj3)
         # Ensure project is not reloaded
-        self.assertEqual(prj3.readEntry("TestConfigCache", "/"), ('foobar', True))
+        self.assertEqual(prj3.readEntry("TestConfigCache", "/"), ("foobar", True))
 
         # Some delay
         st = time()
@@ -94,14 +95,14 @@ class TestQgsServerConfigCache(unittest.TestCase):
 
     def test_file_watcher_invalidation(self):
 
-        path = Path(unitTestDataPath('qgis_server_project')) / 'project.qgs'
+        path = Path(unitTestDataPath("qgis_server_project")) / "project.qgs"
         self.assertTrue(path.exists())
 
-        os.environ['QGIS_SERVER_PROJECT_CACHE_STRATEGY'] = 'filesystem'
+        os.environ["QGIS_SERVER_PROJECT_CACHE_STRATEGY"] = "filesystem"
         settings = QgsServerSettings()
         settings.load()
 
-        self.assertEqual(settings.projectCacheStrategy(), 'filesystem')
+        self.assertEqual(settings.projectCacheStrategy(), "filesystem")
 
         cache = QgsConfigCache(settings)
 
@@ -118,7 +119,7 @@ class TestQgsServerConfigCache(unittest.TestCase):
         prj2 = cache.project(str(path))
         self.assertIsNotNone(prj2)
         # Ensure project is not reloaded
-        self.assertEqual(prj2.readEntry("TestConfigCache", "/"), ('foobaz', True))
+        self.assertEqual(prj2.readEntry("TestConfigCache", "/"), ("foobaz", True))
 
         # Change project modified time
         path.touch()
@@ -137,14 +138,14 @@ class TestQgsServerConfigCache(unittest.TestCase):
 
     def test_null_invalidation(self):
 
-        path = Path(unitTestDataPath('qgis_server_project')) / 'project.qgs'
+        path = Path(unitTestDataPath("qgis_server_project")) / "project.qgs"
         self.assertTrue(path.exists())
 
-        os.environ['QGIS_SERVER_PROJECT_CACHE_STRATEGY'] = 'off'
+        os.environ["QGIS_SERVER_PROJECT_CACHE_STRATEGY"] = "off"
         settings = QgsServerSettings()
         settings.load()
 
-        self.assertEqual(settings.projectCacheStrategy(), 'off')
+        self.assertEqual(settings.projectCacheStrategy(), "off")
 
         cache = QgsConfigCache(settings)
 
@@ -161,7 +162,7 @@ class TestQgsServerConfigCache(unittest.TestCase):
         prj2 = cache.project(str(path))
         self.assertIsNotNone(prj2)
         # Ensure project is not reloaded
-        self.assertEqual(prj2.readEntry("TestConfigCache", "/"), ('barbaz', True))
+        self.assertEqual(prj2.readEntry("TestConfigCache", "/"), ("barbaz", True))
 
         # Change project modified time
         path.touch()
@@ -180,28 +181,28 @@ class TestQgsServerConfigCache(unittest.TestCase):
 
     def test_default_strategy_setting(self):
 
-        os.environ['QGIS_SERVER_PROJECT_CACHE_STRATEGY'] = ''
+        os.environ["QGIS_SERVER_PROJECT_CACHE_STRATEGY"] = ""
         settings = QgsServerSettings()
         settings.load()
 
-        self.assertEqual(settings.projectCacheStrategy(), 'filesystem')
+        self.assertEqual(settings.projectCacheStrategy(), "filesystem")
 
     def test_initialized_instance(self):
 
-        os.environ['QGIS_SERVER_PROJECT_CACHE_STRATEGY'] = 'off'
+        os.environ["QGIS_SERVER_PROJECT_CACHE_STRATEGY"] = "off"
         settings = QgsServerSettings()
         settings.load()
 
         QgsConfigCache.initialize(settings)
 
-        self.assertEqual(QgsConfigCache.instance().strategyName(), 'off')
+        self.assertEqual(QgsConfigCache.instance().strategyName(), "off")
 
     def test_list_projects(self):
         settings = QgsServerSettings()
         settings.load()
         cache = QgsConfigCache(settings)
 
-        path = Path(unitTestDataPath('qgis_server_project')) / 'project.qgs'
+        path = Path(unitTestDataPath("qgis_server_project")) / "project.qgs"
         prj1 = cache.project(str(path))
 
         projects = cache.projects()

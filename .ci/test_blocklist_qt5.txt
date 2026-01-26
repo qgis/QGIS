@@ -1,10 +1,7 @@
-# black list
-qgis_composerutils
-PyQgsAppStartup
+# block list
 test_gui_queryresultwidget
 
 # code layout tests are run on separate build
-qgis_spelling
 qgis_sipify
 qgis_sip_include
 qgis_sip_uptodate
@@ -18,8 +15,4 @@ test_core_openclutils
 
 # Relies on a broken/unreliable 3rd party service
 test_core_layerdefinition
-
-# MSSQL requires the MSSQL docker
-PyQgsProviderConnectionMssql
-PyQgsStyleStorageMssql
 

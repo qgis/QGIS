@@ -13,19 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsapplication.h"
 #include "qgscolorramplegendnode.h"
-#include "qgscolorrampimpl.h"
-#include "qgslegendsettings.h"
-#include "qgslayertreemodel.h"
-#include "qgslayertreelayer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgstextrenderer.h"
-#include "qgsnumericformat.h"
 
-#include <QPalette>
+#include "qgsapplication.h"
+#include "qgscolorrampimpl.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertreemodel.h"
+#include "qgslegendsettings.h"
+#include "qgsnumericformat.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
+
 #include <QBuffer>
+#include <QPalette>
+
+#include "moc_qgscolorramplegendnode.cpp"
 
 QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QString &minimumLabel, const QString &maximumLabel, QObject *parent, const QString &key, const QString &parentKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
@@ -119,7 +122,7 @@ QVariant QgsColorRampLegendNode::data( int role ) const
       const int minLabelWidth = minBoundingRect.width();
       const int maxLabelWidth = maxBoundingRect.width();
       const int maxTextWidth = std::max( minLabelWidth, maxLabelWidth );
-      const int labelGapFromRamp = fm.boundingRect( QStringLiteral( "x" ) ).width();
+      const int labelGapFromRamp = fm.boundingRect( u"x"_s ).width();
       const int extraAllowance = labelGapFromRamp * 0.4; // extra allowance to avoid text clipping on right
       QRect labelRect;
       QSize rampSize;
@@ -204,14 +207,14 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
-    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
 
     // setup a minimal expression context
@@ -221,7 +224,7 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
     context = tempRenderContext.get();
   }
 
-  const QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
+  const QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
   const QString minLabel = labelForMinimum();
   const QString maxLabel = labelForMaximum();
 
@@ -350,8 +353,8 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
       // NOTE -- while the below calculations use the flipped margins from the style, that's only done because
       // those are the only margins we expose and use for now! (and we expose them as generic margins, not side-specific
       // ones) TODO when/if we expose other margin settings, these should be reversed...
-      const double labelYMin = currentYCoord + rampHeight + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
-                               + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
+      const double labelYMin = currentYCoord + rampHeight + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                               + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
       const double labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ),
                                            QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) ) / dotsPerMM;
       switch ( settings.symbolAlignment() )
@@ -381,8 +384,8 @@ QSizeF QgsColorRampLegendNode::drawSymbol( const QgsLegendSettings &settings, It
       // we only need this when we are calculating the size of the node, not at render time
       labelHeight = std::max( QgsTextRenderer::textHeight( *context, format, QStringList() << minLabel ),
                               QgsTextRenderer::textHeight( *context, format, QStringList() << maxLabel ) ) / context->scaleFactor()
-                    + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
-                    + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
+                    + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                    + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
     }
   }
 
@@ -404,14 +407,14 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
     tempRenderContext->setFlag( Qgis::RenderContextFlag::Antialiasing, true );
     tempRenderContext->setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * tempRenderContext->scaleFactor() ) ) );
     Q_NOWARN_DEPRECATED_POP
-    tempRenderContext->setForceVectorOutput( true );
+    tempRenderContext->setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy::PreferVector );
     tempRenderContext->setPainter( ctx ? ctx->painter : nullptr );
 
     // setup a minimal expression context
@@ -421,7 +424,7 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
     context = tempRenderContext.get();
   }
 
-  const QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : settings.style( QgsLegendStyle::SymbolLabel ).textFormat();
+  const QgsTextFormat format = mSettings.textFormat().isValid() ? mSettings.textFormat() : settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
 
   const QString minLabel = labelForMinimum();
   const QString maxLabel = labelForMaximum();
@@ -451,8 +454,8 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
       case Qt::AlignLeft:
       default:
         labelXMin = ctx->columnLeft + std::max( rampWidth, ctx->maxSiblingSymbolWidth )
-                    + settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
-                    + settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
+                    + settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                    + settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
         labelXMax = ctx->columnRight;
         break;
 
@@ -462,16 +465,16 @@ QSizeF QgsColorRampLegendNode::drawSymbolText( const QgsLegendSettings &settings
         // those are the only margins we expose and use for now! (and we expose them as generic margins, not side-specific
         // ones) TODO when/if we expose other margin settings, these should be reversed...
         labelXMax = ctx->columnRight - std::max( rampWidth, ctx->maxSiblingSymbolWidth )
-                    - settings.style( QgsLegendStyle::Symbol ).margin( QgsLegendStyle::Right )
-                    - settings.style( QgsLegendStyle::SymbolLabel ).margin( QgsLegendStyle::Left );
+                    - settings.style( Qgis::LegendComponent::Symbol ).margin( QgsLegendStyle::Right )
+                    - settings.style( Qgis::LegendComponent::SymbolLabel ).margin( QgsLegendStyle::Left );
         break;
     }
 
     const QRectF textRect( labelXMin * dotsPerMM, currentYCoord * dotsPerMM, ( labelXMax - labelXMin ) * dotsPerMM, rampHeight * dotsPerMM );
-    QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( QgsLegendStyle::SymbolLabel ).alignment() ),
+    QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() ),
                                QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? maxLabel : minLabel ),
                                *context, format, true, Qgis::TextVerticalAlignment::Top );
-    QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( QgsLegendStyle::SymbolLabel ).alignment() ),
+    QgsTextRenderer::drawText( textRect, 0, QgsTextRenderer::convertQtHAlignment( settings.style( Qgis::LegendComponent::SymbolLabel ).alignment() ),
                                QStringList() << ( mSettings.direction() == QgsColorRampLegendNodeSettings::MinimumToMaximum ? minLabel : maxLabel ),
                                *context, format, true, Qgis::TextVerticalAlignment::Bottom );
   }
@@ -501,11 +504,11 @@ QJsonObject QgsColorRampLegendNode::exportSymbolToJson( const QgsLegendSettings 
     QBuffer buffer( &byteArray );
     image.save( &buffer, "PNG" );
     const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
-    json[ QStringLiteral( "icon" ) ] = base64;
+    json[ u"icon"_s ] = base64;
   }
 
-  json [ QStringLiteral( "min" ) ] = mMinimumValue;
-  json [ QStringLiteral( "max" ) ] = mMaximumValue;
+  json [ u"min"_s ] = mMinimumValue;
+  json [ u"max"_s ] = mMaximumValue;
 
   return json;
 }

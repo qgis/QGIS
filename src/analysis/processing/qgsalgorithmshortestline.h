@@ -33,7 +33,6 @@
  */
 class QgsShortestLineAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
     QgsShortestLineAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -43,6 +42,7 @@ class QgsShortestLineAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsShortestLineAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
@@ -50,13 +50,11 @@ class QgsShortestLineAlgorithm : public QgsProcessingAlgorithm
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::unique_ptr< QgsFeatureSource > mSource;
-    std::unique_ptr< QgsFeatureSource > mDestination;
+    std::unique_ptr<QgsFeatureSource> mSource;
+    std::unique_ptr<QgsFeatureSource> mDestination;
     int mMethod = 0;
     long long mKNeighbors = 1;
     double mMaxDistance = 0.0;
-
-
 };
 
 ///@endcond PRIVATE

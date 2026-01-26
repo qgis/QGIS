@@ -12,16 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QDialogButtonBox>
-#include <QPushButton>
-#include <QDialog>
-#include <QSettings>
-
-#include "qgslogger.h"
-
 #include "qgspanelwidgetstack.h"
 
+#include "qgslogger.h"
 #include "qgspanelwidget.h"
+
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QSettings>
+
+#include "moc_qgspanelwidgetstack.cpp"
 
 QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
   : QWidget( parent )
@@ -31,7 +32,7 @@ QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
 
   connect( mBackButton, &QAbstractButton::clicked, this, &QgsPanelWidgetStack::acceptCurrentPanel );
 
-  mMenuButton->setStyleSheet( QStringLiteral( "QToolButton::menu-indicator { image: none; }" ) );
+  mMenuButton->setStyleSheet( u"QToolButton::menu-indicator { image: none; }"_s );
 }
 
 void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
@@ -207,7 +208,7 @@ void QgsPanelWidgetStack::updateBreadcrumb()
   const auto constMTitles = mTitles;
   for ( const QString &title : constMTitles )
   {
-    breadcrumb += QStringLiteral( " %1 >" ).arg( title );
+    breadcrumb += u" %1 >"_s.arg( title );
   }
   // Remove the last
   breadcrumb.chop( 1 );

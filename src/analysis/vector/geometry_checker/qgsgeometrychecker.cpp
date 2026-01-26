@@ -14,21 +14,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtConcurrentMap>
-#include <QFutureWatcher>
-#include <QMutex>
-#include <QTimer>
-#include <QTextStream>
-
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
+
 #include "qgsfeaturepool.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheckerror.h"
 
+#include <QFutureWatcher>
+#include <QMutex>
+#include <QTextStream>
+#include <QTimer>
+#include <QtConcurrentMap>
 
+#include "moc_qgsgeometrychecker.cpp"
 
 QgsGeometryChecker::QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckContext *context, const QMap<QString, QgsFeaturePool *> &featurePools )
   : mChecks( checks )
@@ -247,16 +248,14 @@ bool QgsGeometryChecker::fixError( QgsGeometryCheckError *error, int method, boo
     }
 
     // If no match is found and the error is not fixed or obsolete, set it to obsolete if...
-    if ( err->status() < QgsGeometryCheckError::StatusFixed &&
-         (
+    if ( err->status() < QgsGeometryCheckError::StatusFixed && (
            // changes weren't handled
            !handled ||
            // or if it is a FeatureNodeCheck or FeatureCheck error whose feature was rechecked
            ( err->check()->checkType() <= QgsGeometryCheck::FeatureCheck && recheckFeatures[err->layerId()].contains( err->featureId() ) ) ||
            // or if it is a LayerCheck error within the rechecked area
            ( err->check()->checkType() == QgsGeometryCheck::LayerCheck && recheckArea.contains( err->affectedAreaBBox() ) )
-         )
-       )
+         ) )
     {
       err->setObsolete();
       emit errorUpdated( err, err->status() != oldStatus );

@@ -16,14 +16,13 @@
 #ifndef QGSRULEBASEDRENDERER_H
 #define QGSRULEBASEDRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfields.h"
 #include "qgsfeature.h"
-#include "qgis.h"
-
-#include "qgsrenderer.h"
+#include "qgsfields.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderer.h"
 
 class QgsExpression;
 
@@ -109,6 +108,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
       QgsRuleBasedRenderer::RenderLevel &operator=( const QgsRuleBasedRenderer::RenderLevel &rh )
       {
+        if ( &rh == this )
+          return *this;
+
         zIndex = rh.zIndex;
         qDeleteAll( jobs );
         jobs.clear();
@@ -138,7 +140,7 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /**
      * \ingroup core
-     * \brief  This class keeps data about a rules for rule-based renderer.
+     * \brief Represents an individual rule for a rule-based renderer.
      *
      * A rule consists of a symbol, filter expression and range of scales.
      * If filter is empty, it matches all features.
@@ -183,7 +185,9 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          */
         bool needsGeometry() const;
 
-        //! \note available in Python bindings as symbol2
+        /**
+         * Returns a list of the symbols used by this rule and all children of this rule.
+         */
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
@@ -309,8 +313,19 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
         //! clone this rule, return new instance
         QgsRuleBasedRenderer::Rule *clone() const SIP_FACTORY;
 
-        //! Saves the symbol layer as SLD
-        void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const;
+        /**
+         * Saves the symbol layer as SLD.
+         *
+         * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
+         */
+        Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, QVariantMap props ) const SIP_DEPRECATED;
+
+        /**
+         * Saves the rule to SLD.
+         *
+         * \since QGIS 3.44
+         */
+        bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
         /**
          * Create a rule from the SLD provided in element and for the specified geometry type.
@@ -385,10 +400,11 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
          * \param ruleElem  The XML rule element
          * \param symbolMap Symbol map
          * \param reuseId set to TRUE to create an exact copy of the original symbol or FALSE to create a new rule with the same parameters as the original but a new unique ruleKey(). (Since QGIS 3.30)
+         * \param context The rendering context (Since QGIS 4.0)
          *
          * \returns A new rule
          */
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true ) SIP_FACTORY;
+        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true, const QgsReadWriteContext &context = QgsReadWriteContext() ) SIP_FACTORY;
 
         /**
          * Returns all children rules of this rule
@@ -522,7 +538,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
 
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Creates a new rule based renderer from an SLD XML element.

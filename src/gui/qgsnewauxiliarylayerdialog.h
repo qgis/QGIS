@@ -19,23 +19,21 @@
 #define QGSNEWAUXILIARYLAYERDIALOG_H
 
 #include "ui_qgsnewauxiliarylayerdialogbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
 
 class QgsVectorLayer;
 
 /**
  * \ingroup gui
- *
- * \brief A dialog to create a new auxiliary layer
- *
+ * \brief A dialog to create a new auxiliary layer.
  */
-class GUI_EXPORT QgsNewAuxiliaryLayerDialog: public QDialog, private Ui::QgsNewAuxiliaryLayerDialogBase
+class GUI_EXPORT QgsNewAuxiliaryLayerDialog : public QDialog, private Ui::QgsNewAuxiliaryLayerDialogBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor.
      *

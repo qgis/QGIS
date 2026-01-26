@@ -18,17 +18,16 @@
 #ifndef QGSCIRCULARSTRING_H
 #define QGSCIRCULARSTRING_H
 
-#include <QVector>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscurve.h"
 
+#include <QVector>
 
 /**
  * \ingroup core
  * \class QgsCircularString
- * \brief Circular string geometry type
+ * \brief Circular string geometry type.
  */
 class CORE_EXPORT QgsCircularString: public QgsCurve
 {
@@ -274,9 +273,11 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * std::numeric_limits<double>::epsilon() ) const override;
     bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const override;
     void sumUpArea( double &sum SIP_OUT ) const override;
+    void sumUpArea3D( double &sum SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
     double vertexAngle( QgsVertexId vertex ) const override;
     double segmentLength( QgsVertexId startVertex ) const override;
+    double distanceBetweenVertices( QgsVertexId fromVertex, QgsVertexId toVertex ) const override;
     QgsCircularString *reversed() const override  SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;
     QgsCircularString *curveSubstring( double startDistance, double endDistance ) const override SIP_FACTORY;
@@ -302,12 +303,29 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
      * Cast the \a geom to a QgsCircularString.
      * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
-    inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom )
+    inline static const QgsCircularString *cast( const QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
     {
       if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString )
         return static_cast<const QgsCircularString *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsCircularString.
+     * Should be used by qgsgeometry_cast<QgsCircularString *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsCircularString *cast( QgsAbstractGeometry *geom ) // cppcheck-suppress duplInheritedMember
+    {
+      if ( geom && QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::CircularString )
+        return static_cast<QgsCircularString *>( geom );
       return nullptr;
     }
 #endif
@@ -319,8 +337,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     % MethodCode
     QString wkt = sipCpp->asWkt();
     if ( wkt.length() > 1000 )
-      wkt = wkt.left( 1000 ) + QStringLiteral( "..." );
-    QString str = QStringLiteral( "<QgsCircularString: %1>" ).arg( wkt );
+      wkt = wkt.left( 1000 ) + u"..."_s;
+    QString str = u"<QgsCircularString: %1>"_s.arg( wkt );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

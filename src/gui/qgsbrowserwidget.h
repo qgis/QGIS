@@ -16,9 +16,10 @@
 #define QGSBROWSERWIDGET_H
 
 #include "ui_qgsbrowserwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgsmimedatautils.h"
 #include "qgspanelwidget.h"
-#include "qgis_gui.h"
 
 class QgsBrowserGuiModel;
 class QgsDockBrowserTreeView;
@@ -26,6 +27,7 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserProxyModel;
 class QgsMessageBar;
+class QgsMapCanvas;
 class QgsDataItemGuiContext;
 
 class QModelIndex;
@@ -40,7 +42,6 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
 {
     Q_OBJECT
   public:
-
     /**
       * Constructor for QgsBrowserWidget
       * \param browserModel instance of the (shared) browser model
@@ -64,6 +65,24 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
      * \see setMessageBar()
      */
     QgsMessageBar *messageBar();
+
+    /**
+     * Sets a map \a canvas to use alongside the widget.
+     *
+     * Setting this allows items to utilize the canvas during GUI operations.
+     *
+     * \see mapCanvas()
+     * \since QGIS 3.44
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Returns the map canvas associated with the widget.
+     *
+     * \see setMapCanvas()
+     * \since QGIS 3.44
+     */
+    QgsMapCanvas *mapCanvas();
 
     /**
      * Sets the customization for data items based on item's data provider key
@@ -168,9 +187,11 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     QString mInitPath;
 
     QgsMessageBar *mMessageBar = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
     QStringList mDisabledDataItemsKeys;
 
     friend class QgsBrowserDockWidget;
+    friend class TestQgsCustomization;
 };
 
 #endif // QGSBROWSERWIDGET_H

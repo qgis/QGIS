@@ -23,8 +23,8 @@
 #include "qgis_sip.h"
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
-#include "qgsrasterprojector.h"
 #include "qgsrasteranalysisutils.h"
+#include "qgsrasterprojector.h"
 
 ///@cond PRIVATE
 
@@ -39,11 +39,11 @@ class QgsRasterStackPositionAlgorithmBase : public QgsProcessingAlgorithm
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    virtual int findPosition( std::vector< std::unique_ptr< QgsRasterBlock > > &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) = 0;
+    virtual int findPosition( std::vector<std::unique_ptr<QgsRasterBlock>> &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) = 0;
     double mNoDataValue = -9999;
 
   private:
-    std::vector< QgsRasterAnalysisUtils::RasterLogicInput > mInputs;
+    std::vector<QgsRasterAnalysisUtils::RasterLogicInput> mInputs;
     bool mIgnoreNoData = false;
     int mLayerWidth = 0;
     int mLayerHeight = 0;
@@ -61,10 +61,11 @@ class QgsRasterStackLowestPositionAlgorithm : public QgsRasterStackPositionAlgor
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterStackLowestPositionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    int findPosition( std::vector< std::unique_ptr< QgsRasterBlock > > &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) override;
+    int findPosition( std::vector<std::unique_ptr<QgsRasterBlock>> &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) override;
 };
 
 class QgsRasterStackHighestPositionAlgorithm : public QgsRasterStackPositionAlgorithmBase
@@ -75,10 +76,11 @@ class QgsRasterStackHighestPositionAlgorithm : public QgsRasterStackPositionAlgo
     QString displayName() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsRasterStackHighestPositionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    int findPosition( std::vector< std::unique_ptr< QgsRasterBlock > > &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) override;
+    int findPosition( std::vector<std::unique_ptr<QgsRasterBlock>> &rasterBlockStack, int &row, int &col, bool &noDataInRasterBlockStack ) override;
 };
 
 ///@endcond PRIVATE

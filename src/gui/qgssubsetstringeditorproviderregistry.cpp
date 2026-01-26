@@ -14,12 +14,13 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgssubsetstringeditorprovider.h"
 #include "qgssubsetstringeditorproviderregistry.h"
-#include "qgsproviderguiregistry.h"
-#include "qgsquerybuilder.h"
 
 #include <memory>
+
+#include "qgsproviderguiregistry.h"
+#include "qgsquerybuilder.h"
+#include "qgssubsetstringeditorprovider.h"
 
 QgsSubsetStringEditorProviderRegistry::QgsSubsetStringEditorProviderRegistry() = default;
 
@@ -70,7 +71,7 @@ void QgsSubsetStringEditorProviderRegistry::initializeFromProviderGuiRegistry( Q
 QgsSubsetStringEditorProvider *QgsSubsetStringEditorProviderRegistry::providerByName( const QString &name )
 {
   const QList<QgsSubsetStringEditorProvider *> providerList = providers();
-  for ( const auto provider :  providerList )
+  for ( const auto provider : providerList )
   {
     if ( provider->name() == name )
     {

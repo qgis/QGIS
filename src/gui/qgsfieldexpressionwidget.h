@@ -16,10 +16,6 @@
 #ifndef QGSFIELDEXPRESSIONWIDGET_H
 #define QGSFIELDEXPRESSIONWIDGET_H
 
-#include <QColor>
-#include <QComboBox>
-#include <QToolButton>
-#include <QWidget>
 #include <memory>
 
 #include "qgis_gui.h"
@@ -28,6 +24,10 @@
 #include "qgsexpressioncontext.h"
 #include "qgsfieldproxymodel.h"
 
+#include <QColor>
+#include <QComboBox>
+#include <QToolButton>
+#include <QWidget>
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -36,9 +36,11 @@ class QgsExpressionContextGenerator;
 
 /**
  * \ingroup gui
- * \brief The QgsFieldExpressionWidget class creates a widget to choose fields and edit expressions
+ * \brief A widget for selection of layer fields or expression creation.
+ *
  * It contains a combo box to display the fields and expression and a button to open the expression dialog.
  * The combo box is editable, allowing expressions to be edited inline.
+ *
  * The validity of the expression is checked live on key press, invalid expressions are displayed in red.
  * The expression will be added to the model (and the fieldChanged signals emitted)
  * only when editing in the line edit is finished (focus lost, enter key pressed).
@@ -53,7 +55,6 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     Q_PROPERTY( bool buttonVisible READ buttonVisible WRITE setButtonVisible NOTIFY buttonVisibleChanged )
 
   public:
-
     /**
      * \brief QgsFieldExpressionWidget creates a widget with a combo box to display the fields and expression and a button to open the expression dialog
      */
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     void appendScope( QgsExpressionContextScope *scope SIP_TRANSFER );
 
     //! Returns the title used for the expression dialog
-    const QString expressionDialogTitle() { return mExpressionDialogTitle; }
+    QString expressionDialogTitle() const { return mExpressionDialogTitle; }
 
     //! setFilters allows filtering according to the type of field
     void setFilters( QgsFieldProxyModel::Filters filters );
@@ -167,7 +168,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      *
      * \since QGIS 3.38
      */
-    void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, const std::function< QgsExpressionContext( const QVariant & ) > &previewContextGenerator );
+    void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator );
 #else
 
     /**
@@ -183,29 +184,28 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      *
      * \since QGIS 3.38
      */
-    void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, SIP_PYCALLABLE );
-    % MethodCode
+    void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, SIP_PYCALLABLE );
+    //%MethodCode
     Py_XINCREF( a2 );
     Py_BEGIN_ALLOW_THREADS
-    sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value )->QgsExpressionContext
-    {
-      QgsExpressionContext res;
-      SIP_BLOCK_THREADS
-      PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
-      int state;
-      int sipIsError = 0;
-      QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-      if ( sipIsError == 0 )
-      {
-        res = QgsExpressionContext( *t1 );
-      }
-      sipReleaseType( t1, sipType_QgsExpressionContext, state );
-      SIP_UNBLOCK_THREADS
-      return res;
-    } );
+      sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value ) -> QgsExpressionContext {
+        QgsExpressionContext res;
+        SIP_BLOCK_THREADS
+        PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
+        int state;
+        int sipIsError = 0;
+        QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+        if ( sipIsError == 0 )
+        {
+          res = QgsExpressionContext( *t1 );
+        }
+        sipReleaseType( t1, sipType_QgsExpressionContext, state );
+        SIP_UNBLOCK_THREADS
+        return res;
+      } );
 
     Py_END_ALLOW_THREADS
-    % End
+    //%End
 #endif
 
     /**
@@ -332,8 +332,8 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     bool mAllowEvalErrors = false;
 
     QString mCustomPreviewLabel;
-    QList< QPair< QString, QVariant > > mCustomChoices;
-    std::function< QgsExpressionContext( const QVariant & ) > mPreviewContextGenerator;
+    QList<QPair<QString, QVariant>> mCustomChoices;
+    std::function<QgsExpressionContext( const QVariant & )> mPreviewContextGenerator;
 
     friend class TestQgsFieldExpressionWidget;
 };

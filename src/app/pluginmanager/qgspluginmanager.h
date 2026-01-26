@@ -17,17 +17,20 @@
  ***************************************************************************/
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
-#include <vector>
-#include <QMap>
-#include <QString>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QHeaderView>
 #include "ui_qgspluginmanagerbase.h"
-#include "qgsoptionsdialogbase.h"
-#include "qgsguiutils.h"
+
+#include <vector>
+
 #include "qgis.h"
+#include "qgsguiutils.h"
+#include "qgsoptionsdialogbase.h"
 #include "qgssettingstree.h"
+
+#include <QHeaderView>
+#include <QMap>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QString>
 
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;
@@ -52,8 +55,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
-
-    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( QStringLiteral( "plugin-manager" ) );
+    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( u"plugin-manager"_s );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
     static const QgsSettingsEntryBool *settingsAllowExperimental;
@@ -61,7 +63,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     static const QgsSettingsEntryVariant *settingsCheckOnStartLastDate;
     static const QgsSettingsEntryStringList *settingsSeenPlugins;
 
-    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( QStringLiteral( "UI" ) );
+    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( u"UI"_s );
     static const QgsSettingsEntryString *settingsLastZipDirectory;
     static const QgsSettingsEntryBool *settingsShowInstallFromZipWarning;
 
@@ -198,10 +200,8 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! show the given message in the Plugin Manager internal message bar
     void pushMessage( const QString &text, Qgis::MessageLevel level, int duration = -1 );
 
-#ifndef WITH_QTWEBKIT
     //! vote button was clicked
     void submitVote();
-#endif
 
   protected:
     //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method
@@ -212,7 +212,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void initTabDescriptions();
 
     //! Returns true if given plugin is enabled in QgsSettings
-    bool isPluginEnabled( QString key );
+    bool isPluginEnabled( const QString &key );
 
     //! Returns true if there are plugins available for download in the metadata registry
     bool hasAvailablePlugins();
@@ -246,15 +246,13 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QMap<QString, QString> mTabDescriptions;
 
-    QMap< QString, QMap< QString, QString > > mPlugins;
+    QMap<QString, QMap<QString, QString>> mPlugins;
 
     QString mCurrentlyDisplayedPlugin;
 
     QgsMessageBar *msgBar = nullptr;
 
-#ifndef WITH_QTWEBKIT
     int mCurrentPluginId;
-#endif
 };
 
 #endif

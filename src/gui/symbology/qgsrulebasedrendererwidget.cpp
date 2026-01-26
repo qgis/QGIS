@@ -15,30 +15,32 @@
 
 #include "qgsrulebasedrendererwidget.h"
 
-#include "qgsrulebasedrenderer.h"
-#include "qgsfeatureiterator.h"
-#include "qgssymbollayerutils.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsexpression.h"
-#include "qgssymbolselectordialog.h"
-#include "qgslogger.h"
-#include "qgsreadwritecontext.h"
-#include "qgspanelwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
+#include "qgsfeatureiterator.h"
 #include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgspanelwidget.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrulebasedrenderer.h"
+#include "qgssettings.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgsvectorlayer.h"
 
+#include <QClipboard>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QMessageBox>
+#include <QPointer>
 #include <QProgressDialog>
+#include <QScreen>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
-#include <QMessageBox>
-#include <QClipboard>
-#include <QPointer>
-#include <QScreen>
+
+#include "moc_qgsrulebasedrendererwidget.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -68,7 +70,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
     // some default options
     QgsSymbol *symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
 
-    mRenderer = std::make_unique< QgsRuleBasedRenderer >( symbol );
+    mRenderer = std::make_unique<QgsRuleBasedRenderer>( symbol );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -90,25 +92,25 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   viewRules->addAction( mDeleteAction );
 
   mRefineMenu = new QMenu( tr( "Refine Current Rule" ), btnRefineRule );
-  mRefineMenu->addAction( tr( "Add Scales to Rule" ), this, SLOT( refineRuleScales() ) );
-  mRefineMenu->addAction( tr( "Add Categories to Rule" ), this, SLOT( refineRuleCategories() ) );
-  mRefineMenu->addAction( tr( "Add Ranges to Rule" ), this, SLOT( refineRuleRanges() ) );
+  mRefineMenu->addAction( tr( "Add Scales to Rule" ), this, &QgsRuleBasedRendererWidget::refineRuleScales );
+  mRefineMenu->addAction( tr( "Add Categories to Rule" ), this, &QgsRuleBasedRendererWidget::refineRuleCategories );
+  mRefineMenu->addAction( tr( "Add Ranges to Rule" ), this, &QgsRuleBasedRendererWidget::refineRuleRanges );
   btnRefineRule->setMenu( mRefineMenu );
 
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.svg" ) ) );
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.svg" ) ) );
   btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.svg" ) ) );
 
-  connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast < void ( QgsRuleBasedRendererWidget::* )( const QModelIndex &index ) > ( &QgsRuleBasedRendererWidget::editRule ) );
+  connect( viewRules, &QAbstractItemView::doubleClicked, this, static_cast<void ( QgsRuleBasedRendererWidget::* )( const QModelIndex &index )>( &QgsRuleBasedRendererWidget::editRule ) );
 
   // support for context menu (now handled generically)
-  connect( viewRules, &QWidget::customContextMenuRequested,  this, &QgsRuleBasedRendererWidget::showContextMenu );
+  connect( viewRules, &QWidget::customContextMenuRequested, this, &QgsRuleBasedRendererWidget::showContextMenu );
 
   connect( viewRules->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsRuleBasedRendererWidget::currentRuleChanged );
   connect( viewRules->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsRuleBasedRendererWidget::selectedRulesChanged );
 
   connect( btnAddRule, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::addRule );
-  connect( btnEditRule, &QAbstractButton::clicked, this, static_cast < void ( QgsRuleBasedRendererWidget::* )() > ( &QgsRuleBasedRendererWidget::editRule ) );
+  connect( btnEditRule, &QAbstractButton::clicked, this, static_cast<void ( QgsRuleBasedRendererWidget::* )()>( &QgsRuleBasedRendererWidget::editRule ) );
   connect( btnRemoveRule, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::removeRule );
   connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBasedRendererWidget::removeRule );
   connect( btnCountFeatures, &QAbstractButton::clicked, this, &QgsRuleBasedRendererWidget::countFeatures );
@@ -127,10 +129,9 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
 
   restoreSectionWidths();
 
-  connect( mContextMenu, &QMenu::aboutToShow, this, [ = ]
-  {
-    std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
-    mPasteSymbolAction->setEnabled( static_cast< bool >( tempSymbol ) );
+  connect( mContextMenu, &QMenu::aboutToShow, this, [this] {
+    std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+    mPasteSymbolAction->setEnabled( static_cast<bool>( tempSymbol ) );
   } );
 }
 
@@ -204,7 +205,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
 
   if ( panel && panel->dockMode() )
   {
-    QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );//panel?
+    QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext ); //panel?
     widget->setPanelTitle( tr( "Edit Rule" ) );
     connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
     connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
@@ -224,11 +225,11 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
 void QgsRuleBasedRendererWidget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
-  QgsDebugMsgLevel( QStringLiteral( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ), 2 );
+  QgsDebugMsgLevel( u"REMOVE RULES!!! ranges: %1"_s.arg( sel.count() ), 2 );
   const auto constSel = sel;
   for ( const QItemSelectionRange &range : constSel )
   {
-    QgsDebugMsgLevel( QStringLiteral( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ), 2 );
+    QgsDebugMsgLevel( u"RANGE: r %1 - %2"_s.arg( range.top() ).arg( range.bottom() ), 2 );
     if ( range.isValid() )
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
   }
@@ -323,9 +324,7 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
     }
   }
 
-  QString txt = QInputDialog::getText( this,
-                                       tr( "Scale Refinement" ),
-                                       tr( "Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):" ) );
+  QString txt = QInputDialog::getText( this, tr( "Scale Refinement" ), tr( "Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):" ) );
   if ( txt.isEmpty() )
     return;
 
@@ -456,8 +455,7 @@ void QgsRuleBasedRendererWidget::setRenderingOrder()
     QgsSymbolLevelsWidget *widget = new QgsSymbolLevelsWidget( mRenderer.get(), true, panel );
     widget->setForceOrderingEnabled( true );
     widget->setPanelTitle( tr( "Symbol Levels" ) );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]()
-    {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
       setSymbolLevels( widget->symbolLevels(), widget->usingLevels() );
     } );
     panel->openPanel( widget );
@@ -487,7 +485,7 @@ void QgsRuleBasedRendererWidget::saveSectionWidth( int section, int oldSize, int
 void QgsRuleBasedRendererWidget::restoreSectionWidths()
 {
   QgsSettings settings;
-  QString path = QStringLiteral( "/Windows/RuleBasedTree/sectionWidth/" );
+  QString path = u"/Windows/RuleBasedTree/sectionWidth/"_s;
   QHeaderView *head = viewRules->header();
   head->resizeSection( 0, settings.value( path + QString::number( 0 ), 150 ).toInt() );
   head->resizeSection( 1, settings.value( path + QString::number( 1 ), 150 ).toInt() );
@@ -512,6 +510,9 @@ void QgsRuleBasedRendererWidget::copy()
 void QgsRuleBasedRendererWidget::paste()
 {
   const QMimeData *mime = QApplication::clipboard()->mimeData();
+  if ( !mime )
+    return;
+
   QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
   QModelIndex index;
   if ( indexlist.isEmpty() )
@@ -523,7 +524,7 @@ void QgsRuleBasedRendererWidget::paste()
 
 void QgsRuleBasedRendererWidget::pasteSymbolToSelection()
 {
-  std::unique_ptr< QgsSymbol > tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
+  std::unique_ptr<QgsSymbol> tempSymbol( QgsSymbolLayerUtils::symbolFromMimeData( QApplication::clipboard()->mimeData() ) );
   if ( !tempSymbol )
     return;
 
@@ -599,7 +600,7 @@ void QgsRuleBasedRendererWidget::showContextMenu( QPoint )
   mContextMenu->addAction( mCopyAction );
   mContextMenu->addAction( mPasteAction );
 
-  const QList< QAction * > actions = contextMenu->actions();
+  const QList<QAction *> actions = contextMenu->actions();
   for ( QAction *act : actions )
   {
     mContextMenu->addAction( act );
@@ -671,7 +672,8 @@ void QgsRuleBasedRendererWidget::countFeatures()
       const auto constFeatureRuleList = featureRuleList;
       for ( QgsRuleBasedRenderer::Rule *duplicateRule : constFeatureRuleList )
       {
-        if ( duplicateRule == rule ) continue;
+        if ( duplicateRule == rule )
+          continue;
         countMap[rule].duplicateCountMap[duplicateRule] += 1;
       }
     }
@@ -682,7 +684,7 @@ void QgsRuleBasedRendererWidget::countFeatures()
       {
         p.setMaximum( 0 );
       }
-      p.setValue( static_cast< double >( featuresCounted ) / nFeatures * 100.0 );
+      p.setValue( static_cast<double>( featuresCounted ) / nFeatures * 100.0 );
       if ( p.wasCanceled() )
       {
         return;
@@ -697,7 +699,7 @@ void QgsRuleBasedRendererWidget::countFeatures()
   const auto constKeys = countMap.keys();
   for ( QgsRuleBasedRenderer::Rule *rule : constKeys )
   {
-    QgsDebugMsgLevel( QStringLiteral( "rule: %1 count %2" ).arg( rule->label() ).arg( countMap[rule].count ), 2 );
+    QgsDebugMsgLevel( u"rule: %1 count %2"_s.arg( rule->label() ).arg( countMap[rule].count ), 2 );
   }
 #endif
 
@@ -733,8 +735,7 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   if ( mRule->dependsOnScale() )
   {
     groupScale->setChecked( true );
-    mScaleRangeWidget->setScaleRange( std::max( rule->minimumScale(), 0.0 ),
-                                      std::max( rule->maximumScale(), 0.0 ) );
+    mScaleRangeWidget->setScaleRange( std::max( rule->minimumScale(), 0.0 ), std::max( rule->maximumScale(), 0.0 ) );
   }
   mScaleRangeWidget->setMapCanvas( mContext.mapCanvas() );
 
@@ -766,8 +767,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( groupSymbol, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( groupScale, &QGroupBox::toggled, this, &QgsPanelWidget::widgetChanged );
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
+  connect( mFilterRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [this]( bool toggled ) { if ( toggled ) editFilter->setText( u"ELSE"_s ); } );
 }
 
 #include "qgsvscrollarea.h"
@@ -775,7 +776,6 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, const QgsSymbolWidgetContext &context )
   : QDialog( parent )
 {
-
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
@@ -816,7 +816,7 @@ void QgsRendererRulePropsDialog::accept()
 
 void QgsRendererRulePropsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#rule-based-rendering" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#rule-based-rendering"_s );
 }
 
 
@@ -831,7 +831,7 @@ void QgsRendererRulePropsWidget::buildExpression()
     context.appendScope( new QgsExpressionContextScope( scope ) );
   }
 
-  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this, u"generic"_s, context );
 
   if ( dlg.exec() )
     editFilter->setText( dlg.expressionText() );
@@ -845,7 +845,7 @@ void QgsRendererRulePropsWidget::testFilter()
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Test Filter" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ), tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
     return;
   }
 
@@ -866,10 +866,7 @@ void QgsRendererRulePropsWidget::testFilter()
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QgsFeatureRequest req = QgsFeatureRequest().setNoAttributes()
-                          .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                          .setFilterExpression( editFilter->text() )
-                          .setExpressionContext( context );
+  QgsFeatureRequest req = QgsFeatureRequest().setNoAttributes().setFlags( Qgis::FeatureRequestFlag::NoGeometry ).setFilterExpression( editFilter->text() ).setExpressionContext( context );
 
   QgsFeatureIterator fit = mLayer->getFeatures( req );
 
@@ -887,7 +884,7 @@ void QgsRendererRulePropsWidget::testFilter()
 
 void QgsRendererRulePropsWidget::apply()
 {
-  QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
+  QString filter = mElseRadio->isChecked() ? u"ELSE"_s : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setLabel( editLabel->text() );
   mRule->setDescription( editDescription->text() );
@@ -931,9 +928,7 @@ Qt::ItemFlags QgsRuleBasedRendererModel::flags( const QModelIndex &index ) const
 
   Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
-         Qt::ItemIsEditable | checkable |
-         Qt::ItemIsDragEnabled | drop;
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | checkable | Qt::ItemIsDragEnabled | drop;
 }
 
 QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) const
@@ -979,14 +974,14 @@ QVariant QgsRuleBasedRendererModel::data( const QModelIndex &index, int role ) c
           {
             if ( mFeatureCountMap[rule].duplicateCount > 0 )
             {
-              QString tip = QStringLiteral( "<p style='margin:0px;'><ul>" );
+              QString tip = u"<p style='margin:0px;'><ul>"_s;
               const auto duplicateMap = mFeatureCountMap[rule].duplicateCountMap;
               for ( auto it = duplicateMap.constBegin(); it != duplicateMap.constEnd(); ++it )
               {
-                QString label = it.key()->label().replace( '&', QLatin1String( "&amp;" ) ).replace( '>', QLatin1String( "&gt;" ) ).replace( '<', QLatin1String( "&lt;" ) );
+                QString label = it.key()->label().replace( '&', "&amp;"_L1 ).replace( '>', "&gt;"_L1 ).replace( '<', "&lt;"_L1 );
                 tip += tr( "<li><nobr>%1 features also in rule %2</nobr></li>" ).arg( it.value() ).arg( label );
               }
-              tip += QLatin1String( "</ul>" );
+              tip += "</ul>"_L1;
               return tip;
             }
             else
@@ -1059,7 +1054,7 @@ QVariant QgsRuleBasedRendererModel::headerData( int section, Qt::Orientation ori
     {
       return tr( "Number of features in this rule." );
     }
-    else if ( section == 5 )  // Duplicate count
+    else if ( section == 5 ) // Duplicate count
     {
       return tr( "Number of features in this rule which are also present in other rule(s)." );
     }
@@ -1158,7 +1153,7 @@ Qt::DropActions QgsRuleBasedRendererModel::supportedDropActions() const
 QStringList QgsRuleBasedRendererModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/vnd.text.list" );
+  types << u"application/vnd.text.list"_s;
   return types;
 }
 
@@ -1182,11 +1177,11 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     QDomDocument doc;
     QgsSymbolMap symbols;
 
-    QDomElement rootElem = doc.createElement( QStringLiteral( "rule_mime" ) );
-    rootElem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "renderer" ) ); // for determining whether rules are from renderer or labeling
+    QDomElement rootElem = doc.createElement( u"rule_mime"_s );
+    rootElem.setAttribute( u"type"_s, u"renderer"_s ); // for determining whether rules are from renderer or labeling
     QDomElement rulesElem = rule->save( doc, symbols );
     rootElem.appendChild( rulesElem );
-    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, QStringLiteral( "symbols" ), doc, QgsReadWriteContext() );
+    QDomElement symbolsElem = QgsSymbolLayerUtils::saveSymbols( symbols, u"symbols"_s, doc, QgsReadWriteContext() );
     rootElem.appendChild( symbolsElem );
     doc.appendChild( rootElem );
 
@@ -1195,7 +1190,7 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
     stream << doc.toString( -1 );
   }
 
-  mimeData->setData( QStringLiteral( "application/vnd.text.list" ), encodedData );
+  mimeData->setData( u"application/vnd.text.list"_s, encodedData );
   return mimeData;
 }
 
@@ -1204,34 +1199,33 @@ QMimeData *QgsRuleBasedRendererModel::mimeData( const QModelIndexList &indexes )
 void _labeling2rendererRules( QDomElement &ruleElem )
 {
   // labeling rules recognize only "description"
-  if ( ruleElem.hasAttribute( QStringLiteral( "description" ) ) )
-    ruleElem.setAttribute( QStringLiteral( "label" ), ruleElem.attribute( QStringLiteral( "description" ) ) );
+  if ( ruleElem.hasAttribute( u"description"_s ) )
+    ruleElem.setAttribute( u"label"_s, ruleElem.attribute( u"description"_s ) );
 
   // run recursively
-  QDomElement childRuleElem = ruleElem.firstChildElement( QStringLiteral( "rule" ) );
+  QDomElement childRuleElem = ruleElem.firstChildElement( u"rule"_s );
   while ( !childRuleElem.isNull() )
   {
     _labeling2rendererRules( childRuleElem );
-    childRuleElem = childRuleElem.nextSiblingElement( QStringLiteral( "rule" ) );
+    childRuleElem = childRuleElem.nextSiblingElement( u"rule"_s );
   }
 }
 
 
-bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
-    Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
 
   if ( action == Qt::IgnoreAction )
     return true;
 
-  if ( !data->hasFormat( QStringLiteral( "application/vnd.text.list" ) ) )
+  if ( !data->hasFormat( u"application/vnd.text.list"_s ) )
     return false;
 
   if ( parent.column() > 0 )
     return false;
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/vnd.text.list" ) );
+  QByteArray encodedData = data->data( u"application/vnd.text.list"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   int rows = 0;
 
@@ -1250,16 +1244,16 @@ bool QgsRuleBasedRendererModel::dropMimeData( const QMimeData *data,
     if ( !doc.setContent( text ) )
       continue;
     QDomElement rootElem = doc.documentElement();
-    if ( rootElem.tagName() != QLatin1String( "rule_mime" ) )
+    if ( rootElem.tagName() != "rule_mime"_L1 )
       continue;
-    if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "labeling" ) )
-      rootElem.appendChild( doc.createElement( QStringLiteral( "symbols" ) ) );
-    QDomElement symbolsElem = rootElem.firstChildElement( QStringLiteral( "symbols" ) );
+    if ( rootElem.attribute( u"type"_s ) == "labeling"_L1 )
+      rootElem.appendChild( doc.createElement( u"symbols"_s ) );
+    QDomElement symbolsElem = rootElem.firstChildElement( u"symbols"_s );
     if ( symbolsElem.isNull() )
       continue;
     QgsSymbolMap symbolMap = QgsSymbolLayerUtils::loadSymbols( symbolsElem, QgsReadWriteContext() );
-    QDomElement ruleElem = rootElem.firstChildElement( QStringLiteral( "rule" ) );
-    if ( rootElem.attribute( QStringLiteral( "type" ) ) == QLatin1String( "labeling" ) )
+    QDomElement ruleElem = rootElem.firstChildElement( u"rule"_s );
+    if ( rootElem.attribute( u"type"_s ) == "labeling"_L1 )
       _labeling2rendererRules( ruleElem );
     QgsRuleBasedRenderer::Rule *rule = QgsRuleBasedRenderer::Rule::create( ruleElem, symbolMap, false );
 
@@ -1284,7 +1278,7 @@ bool QgsRuleBasedRendererModel::removeRows( int row, int count, const QModelInde
   if ( row < 0 || row >= parentRule->children().count() )
     return false;
 
-  QgsDebugMsgLevel( QStringLiteral( "Called: row %1 count %2 parent ~~%3~~" ).arg( row ).arg( count ).arg( parentRule->dump() ), 2 );
+  QgsDebugMsgLevel( u"Called: row %1 count %2 parent ~~%3~~"_s.arg( row ).arg( count ).arg( parentRule->dump() ), 2 );
 
   beginRemoveRows( parent, row, row + count - 1 );
 
@@ -1298,7 +1292,7 @@ bool QgsRuleBasedRendererModel::removeRows( int row, int count, const QModelInde
     }
     else
     {
-      QgsDebugError( QStringLiteral( "trying to remove invalid index - this should not happen!" ) );
+      QgsDebugError( u"trying to remove invalid index - this should not happen!"_s );
     }
   }
 
@@ -1312,7 +1306,7 @@ void QgsRuleBasedRendererModel::insertRule( const QModelIndex &parent, int befor
 {
   beginInsertRows( parent, before, before );
 
-  QgsDebugMsgLevel( QStringLiteral( "insert before %1 rule: %2" ).arg( before ).arg( newrule->dump() ), 2 );
+  QgsDebugMsgLevel( u"insert before %1 rule: %2"_s.arg( before ).arg( newrule->dump() ), 2 );
 
   QgsRuleBasedRenderer::Rule *parentRule = ruleForIndex( parent );
   parentRule->insertChild( before, newrule );
@@ -1322,14 +1316,12 @@ void QgsRuleBasedRendererModel::insertRule( const QModelIndex &parent, int befor
 
 void QgsRuleBasedRendererModel::updateRule( const QModelIndex &parent, int row )
 {
-  emit dataChanged( index( row, 0, parent ),
-                    index( row, columnCount( parent ), parent ) );
+  emit dataChanged( index( row, 0, parent ), index( row, columnCount( parent ), parent ) );
 }
 
 void QgsRuleBasedRendererModel::updateRule( const QModelIndex &idx )
 {
-  emit dataChanged( index( 0, 0, idx ),
-                    index( rowCount( idx ) - 1, columnCount( idx ) - 1, idx ) );
+  emit dataChanged( index( 0, 0, idx ), index( rowCount( idx ) - 1, columnCount( idx ) - 1, idx ) );
 
   for ( int i = 0; i < rowCount( idx ); i++ )
   {

@@ -15,12 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmapsettings.h"
 #include "qgsmapsettingsutils.h"
+
+#include "qgsabstractgeopdfexporter.h"
+#include "qgsmapsettings.h"
 #include "qgspallabeling.h"
 #include "qgstextformat.h"
 #include "qgsvectorlayer.h"
-#include "qgsabstractgeopdfexporter.h"
+#include "qgsvectorlayerlabeling.h"
 
 #include <QString>
 
@@ -61,9 +63,7 @@ QStringList QgsMapSettingsUtils::containsAdvancedEffects( const QgsMapSettings &
         // check label blend modes
         if ( QgsPalLabeling::staticWillUseLayer( currentVectorLayer ) )
         {
-          // Check all label blending properties
-          layerFormat.readFromLayer( currentVectorLayer );
-          if ( layerFormat.containsAdvancedEffects() )
+          if ( currentVectorLayer->labeling() && currentVectorLayer->labeling()->requiresAdvancedEffects() )
           {
             layers << layer->name();
           }

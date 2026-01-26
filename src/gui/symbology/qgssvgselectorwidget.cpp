@@ -17,27 +17,29 @@
 #include "qgssvgselectorwidget.h"
 
 #include "qgsapplication.h"
+#include "qgsfieldexpressionwidget.h"
+#include "qgsgui.h"
 #include "qgslogger.h"
 #include "qgspathresolver.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgssvgcache.h"
 #include "qgssymbollayerutils.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
-#include "qgsfieldexpressionwidget.h"
 #include "qgssymbollayerwidget.h"
 #include "qgsvectorlayer.h"
 
 #include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include <QCheckBox>
 #include <QDir>
 #include <QFileDialog>
+#include <QMenu>
 #include <QModelIndex>
 #include <QPixmapCache>
+#include <QSortFilterProxyModel>
 #include <QStyle>
 #include <QTime>
-#include <QMenu>
+
+#include "moc_qgssvgselectorwidget.cpp"
 
 // QgsSvgSelectorLoader
 
@@ -75,7 +77,9 @@ void QgsSvgSelectorLoader::run()
 void QgsSvgSelectorLoader::stop()
 {
   mCanceled = true;
-  while ( isRunning() ) {}
+  while ( isRunning() )
+  {
+  }
 }
 
 void QgsSvgSelectorLoader::loadPath( const QString &path )
@@ -83,7 +87,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
   if ( mCanceled )
     return;
 
-  QgsDebugMsgLevel( QStringLiteral( "loading path: %1" ).arg( path ), 2 );
+  QgsDebugMsgLevel( u"loading path: %1"_s.arg( path ), 2 );
 
   if ( path.isEmpty() )
   {
@@ -121,7 +125,7 @@ void QgsSvgSelectorLoader::loadPath( const QString &path )
 
       QString newPath = dir.path() + '/' + item;
       loadPath( newPath );
-      QgsDebugMsgLevel( QStringLiteral( "added path: %1" ).arg( newPath ), 2 );
+      QgsDebugMsgLevel( u"added path: %1"_s.arg( newPath ), 2 );
     }
   }
 }
@@ -137,7 +141,7 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 
     // TODO test if it is correct SVG
     QString svgPath = dir.path() + '/' + item;
-    // QgsDebugMsgLevel( QStringLiteral( "adding svg: %1" ).arg( svgPath ), 2 );
+    // QgsDebugMsgLevel( u"adding svg: %1"_s.arg( svgPath ), 2 );
 
     // add it to the list of queued SVGs
     mQueuedSvgs << svgPath;
@@ -167,7 +171,6 @@ void QgsSvgSelectorLoader::loadImages( const QString &path )
 QgsSvgGroupLoader::QgsSvgGroupLoader( QObject *parent )
   : QThread( parent )
 {
-
 }
 
 QgsSvgGroupLoader::~QgsSvgGroupLoader()
@@ -190,7 +193,9 @@ void QgsSvgGroupLoader::run()
 void QgsSvgGroupLoader::stop()
 {
   mCanceled = true;
-  while ( isRunning() ) {}
+  while ( isRunning() )
+  {
+  }
 }
 
 void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
@@ -216,8 +221,6 @@ void QgsSvgGroupLoader::loadGroup( const QString &parentPath )
 }
 
 ///@endcond
-
-
 
 
 QgsSvgSelectorFilterModel::QgsSvgSelectorFilterModel( QObject *parent, const QString &path, int iconSize )
@@ -261,11 +264,7 @@ QPixmap QgsSvgSelectorListModel::createPreview( const QString &entry ) const
   bool fillParam, fillOpacityParam, strokeParam, strokeWidthParam, strokeOpacityParam;
   bool hasDefaultFillColor = false, hasDefaultFillOpacity = false, hasDefaultStrokeColor = false,
        hasDefaultStrokeWidth = false, hasDefaultStrokeOpacity = false;
-  QgsApplication::svgCache()->containsParams( entry, fillParam, hasDefaultFillColor, fill,
-      fillOpacityParam, hasDefaultFillOpacity, fillOpacity,
-      strokeParam, hasDefaultStrokeColor, stroke,
-      strokeWidthParam, hasDefaultStrokeWidth, strokeWidth,
-      strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
+  QgsApplication::svgCache()->containsParams( entry, fillParam, hasDefaultFillColor, fill, fillOpacityParam, hasDefaultFillOpacity, fillOpacity, strokeParam, hasDefaultStrokeColor, stroke, strokeWidthParam, hasDefaultStrokeWidth, strokeWidth, strokeOpacityParam, hasDefaultStrokeOpacity, strokeOpacity );
 
   //if defaults not set in symbol, use these values
   if ( !hasDefaultFillColor )
@@ -316,9 +315,6 @@ void QgsSvgSelectorListModel::addSvgs( const QStringList &svgs )
 }
 
 
-
-
-
 //--- QgsSvgSelectorGroupsModel
 
 QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
@@ -350,12 +346,12 @@ QgsSvgSelectorGroupsModel::QgsSvgSelectorGroupsModel( QObject *parent )
     baseGroup->setData( QVariant( svgPaths.at( i ) ) );
     baseGroup->setEditable( false );
     baseGroup->setCheckable( false );
-    baseGroup->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
+    baseGroup->setIcon( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ) );
     baseGroup->setToolTip( dir.path() );
     parentItem->appendRow( baseGroup );
     parentPaths << svgPaths.at( i );
     mPathItemHash.insert( svgPaths.at( i ), baseGroup );
-    QgsDebugMsgLevel( QStringLiteral( "SVG base path %1: %2" ).arg( i ).arg( baseGroup->data().toString() ), 2 );
+    QgsDebugMsgLevel( u"SVG base path %1: %2"_s.arg( i ).arg( baseGroup->data().toString() ), 2 );
   }
   mLoader->setParentPaths( parentPaths );
   connect( mLoader, &QgsSvgGroupLoader::foundPath, this, &QgsSvgSelectorGroupsModel::addPath );
@@ -379,7 +375,7 @@ void QgsSvgSelectorGroupsModel::addPath( const QString &parentPath, const QStrin
   group->setEditable( false );
   group->setCheckable( false );
   group->setToolTip( fullPath );
-  group->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconFolder.svg" ) ) );
+  group->setIcon( QgsApplication::getThemeIcon( u"mIconFolder.svg"_s ) );
   parentGroup->appendRow( group );
   mPathItemHash.insert( fullPath, group );
 }
@@ -393,15 +389,14 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   // TODO: in-code gui setup with option to vertically or horizontally stack SVG groups/images widgets
   setupUi( this );
 
-  mIconSize = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
+  mIconSize = std::max( 30, static_cast<int>( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
   mImagesListView->setGridSize( QSize( mIconSize * 1.2, mIconSize * 1.2 ) );
   mImagesListView->setUniformItemSizes( false );
 
   mGroupsTreeView->setHeaderHidden( true );
   populateList();
 
-  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filterText )
-  {
+  connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [this]( const QString &filterText ) {
     if ( !mImagesListView->selectionModel()->selectedIndexes().isEmpty() )
     {
       disconnect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
@@ -427,8 +422,7 @@ QgsSvgSelectorWidget::QgsSvgSelectorWidget( QWidget *parent )
   connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
   connect( mGroupsTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::populateIcons );
   connect( mAddParameterButton, &QToolButton::clicked, mParametersModel, &QgsSvgParametersModel::addParameter );
-  connect( mRemoveParameterButton, &QToolButton::clicked, this, [ = ]()
-  {
+  connect( mRemoveParameterButton, &QToolButton::clicked, this, [this]() {
     const QModelIndexList selectedRows = mParametersTreeView->selectionModel()->selectedRows();
     if ( selectedRows.count() > 0 )
       mParametersModel->removeParameters( selectedRows );
@@ -522,8 +516,7 @@ void QgsSvgSelectorWidget::populateIcons( const QModelIndex &idx )
   connect( mSvgFilterLineEdit, &QgsFilterLineEdit::textChanged, m, &QSortFilterProxyModel::setFilterFixedString );
   delete oldModel; //explicitly delete old model to force any background threads to stop
 
-  connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged,
-           this, &QgsSvgSelectorWidget::svgSelectionChanged );
+  connect( mImagesListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsSvgSelectorWidget::svgSelectionChanged );
 }
 
 void QgsSvgSelectorWidget::svgSourceChanged( const QString &text )
@@ -554,9 +547,7 @@ void QgsSvgSelectorWidget::populateList()
 
 //-- QgsSvgSelectorDialog
 
-QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
-    QDialogButtonBox::StandardButtons buttons,
-    Qt::Orientation orientation )
+QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl, QDialogButtonBox::StandardButtons buttons, Qt::Orientation orientation )
   : QDialog( parent, fl )
 {
   // TODO: pass 'orientation' to QgsSvgSelectorWidget for customizing its layout, once implemented
@@ -585,9 +576,9 @@ QgsSvgSelectorDialog::QgsSvgSelectorDialog( QWidget *parent, Qt::WindowFlags fl,
 QgsSvgParametersModel::QgsSvgParametersModel( QObject *parent )
   : QAbstractTableModel( parent )
 {
-  connect( this, &QAbstractTableModel::rowsInserted, this, [ = ]() {emit parametersChanged( parameters() );} );
-  connect( this, &QAbstractTableModel::rowsRemoved, this, [ = ]() {emit parametersChanged( parameters() );} );
-  connect( this, &QAbstractTableModel::dataChanged, this, [ = ]() {emit parametersChanged( parameters() );} );
+  connect( this, &QAbstractTableModel::rowsInserted, this, [this]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::rowsRemoved, this, [this]() { emit parametersChanged( parameters() ); } );
+  connect( this, &QAbstractTableModel::dataChanged, this, [this]() { emit parametersChanged( parameters() ); } );
 }
 
 void QgsSvgParametersModel::setParameters( const QMap<QString, QgsProperty> &parameters )
@@ -618,7 +609,7 @@ void QgsSvgParametersModel::removeParameters( const QModelIndexList &indexList )
   if ( indexList.isEmpty() )
     return;
 
-  auto mm = std::minmax_element( indexList.constBegin(), indexList.constEnd(), []( const QModelIndex & i1, const QModelIndex & i2 ) {return i1.row() < i2.row();} );
+  auto mm = std::minmax_element( indexList.constBegin(), indexList.constEnd(), []( const QModelIndex &i1, const QModelIndex &i2 ) { return i1.row() < i2.row(); } );
 
   beginRemoveRows( QModelIndex(), ( *mm.first ).row(), ( *mm.second ).row() );
   for ( const QModelIndex &index : indexList )
@@ -722,10 +713,10 @@ void QgsSvgParametersModel::addParameter()
   beginInsertRows( QModelIndex(), c, c );
   int i = 1;
   QStringList currentNames;
-  std::transform( mParameters.begin(), mParameters.end(), std::back_inserter( currentNames ), []( const Parameter & parameter ) {return parameter.name;} );
-  while ( currentNames.contains( QStringLiteral( "param%1" ).arg( i ) ) )
+  std::transform( mParameters.begin(), mParameters.end(), std::back_inserter( currentNames ), []( const Parameter &parameter ) { return parameter.name; } );
+  while ( currentNames.contains( u"param%1"_s.arg( i ) ) )
     i++;
-  mParameters.append( Parameter( QStringLiteral( "param%1" ).arg( i ), QgsProperty() ) );
+  mParameters.append( Parameter( u"param%1"_s.arg( i ), QgsProperty() ) );
   endResetModel();
 }
 

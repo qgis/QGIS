@@ -16,14 +16,15 @@
  ***************************************************************************/
 
 #include "qgsannotationpictureitem.h"
+
 #include "qgsapplication.h"
-#include "qgsimagecache.h"
-#include "qgssvgcache.h"
-#include "qgsgeometry.h"
-#include "qgsrendercontext.h"
-#include "qgspainting.h"
-#include "qgssymbollayerutils.h"
 #include "qgscalloutsregistry.h"
+#include "qgsgeometry.h"
+#include "qgsimagecache.h"
+#include "qgspainting.h"
+#include "qgsrendercontext.h"
+#include "qgssvgcache.h"
+#include "qgssymbollayerutils.h"
 
 #include <QFileInfo>
 
@@ -37,7 +38,7 @@ QgsAnnotationPictureItem::~QgsAnnotationPictureItem() = default;
 
 QString QgsAnnotationPictureItem::type() const
 {
-  return QStringLiteral( "picture" );
+  return u"picture"_s;
 }
 
 void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const QRectF &painterBounds, QgsFeedback * )
@@ -60,7 +61,9 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
         }
       }
 
-      const QPicture picture = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(), context.forceVectorOutput(), aspectRatio );
+      const QPicture picture = QgsApplication::svgCache()->svgAsPicture( mPath, svgWidth, QColor(), QColor(), 1, context.scaleFactor(),
+                               context.rasterizedRenderingPolicy() != Qgis::RasterizedRenderingPolicy::Default,
+                               aspectRatio );
       const double pictureWidth = picture.boundingRect().width();
       const double pictureHeight = picture.boundingRect().height();
 
@@ -107,9 +110,9 @@ void QgsAnnotationPictureItem::renderInBounds( QgsRenderContext &context, const 
 
 bool QgsAnnotationPictureItem::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
-  element.setAttribute( QStringLiteral( "lockAspect" ), mLockAspectRatio ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
-  element.setAttribute( QStringLiteral( "path" ), mPath );
-  element.setAttribute( QStringLiteral( "format" ), qgsEnumValueToKey( mFormat ) );
+  element.setAttribute( u"lockAspect"_s, mLockAspectRatio ? u"1"_s : u"0"_s );
+  element.setAttribute( u"path"_s, mPath );
+  element.setAttribute( u"format"_s, qgsEnumValueToKey( mFormat ) );
   writeCommonProperties( element, document, context );
   return true;
 }
@@ -121,10 +124,10 @@ QgsAnnotationPictureItem *QgsAnnotationPictureItem::create()
 
 bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mLockAspectRatio = element.attribute( QStringLiteral( "lockAspect" ), QStringLiteral( "1" ) ).toInt();
+  mLockAspectRatio = element.attribute( u"lockAspect"_s, u"1"_s ).toInt();
 
-  const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( QStringLiteral( "format" ) ), Qgis::PictureFormat::Unknown );
-  setPath( format, element.attribute( QStringLiteral( "path" ) ) );
+  const Qgis::PictureFormat format = qgsEnumKeyToValue( element.attribute( u"format"_s ), Qgis::PictureFormat::Unknown );
+  setPath( format, element.attribute( u"path"_s ) );
 
   readCommonProperties( element, context );
   return true;
@@ -132,7 +135,7 @@ bool QgsAnnotationPictureItem::readXml( const QDomElement &element, const QgsRea
 
 QgsAnnotationPictureItem *QgsAnnotationPictureItem::clone() const
 {
-  std::unique_ptr< QgsAnnotationPictureItem > item = std::make_unique< QgsAnnotationPictureItem >( mFormat, mPath, bounds() );
+  auto item = std::make_unique< QgsAnnotationPictureItem >( mFormat, mPath, bounds() );
   item->setLockAspectRatio( mLockAspectRatio );
 
   item->copyCommonProperties( this );

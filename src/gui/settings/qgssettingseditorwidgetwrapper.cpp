@@ -22,6 +22,7 @@
 #include <QDialog>
 #include <QWidget>
 
+#include "moc_qgssettingseditorwidgetwrapper.cpp"
 
 QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetWrapper::fromWidget( const QWidget *widget )
 {
@@ -45,7 +46,7 @@ QWidget *QgsSettingsEditorWidgetWrapper::createEditor( const QgsSettingsEntryBas
   if ( configureEditor( editor, setting, dynamicKeyPartList ) )
     return editor;
   else
-    QgsDebugError( QStringLiteral( "editor could not be configured" ) );
+    QgsDebugError( u"editor could not be configured"_s );
   return nullptr;
 }
 
@@ -68,8 +69,7 @@ void QgsSettingsEditorWidgetWrapper::configureAutomaticUpdate( QDialog *dialog )
   setWidgetFromSetting();
   if ( dialog )
   {
-    QObject::connect( dialog, &QDialog::accepted, this, [ = ]()
-    {
+    QObject::connect( dialog, &QDialog::accepted, this, [this]() {
       setSettingFromWidget();
     } );
   }

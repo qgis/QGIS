@@ -17,9 +17,9 @@ from qgis.core import (
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
-__author__ = 'Alessandro Pasotti'
-__date__ = '14/11/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+__author__ = "Alessandro Pasotti"
+__date__ = "14/11/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 qgis_app = start_app()
 
@@ -28,18 +28,18 @@ qgis_app = start_app()
 TEST_URIS = {
     "http://mysite.com/geojson authcfg='%s'": "http://username:password@mysite.com/geojson",
     "PG:\"dbname='databasename' host='addr' port='5432' authcfg='%s'\"": "PG:\"dbname='databasename' host='addr' port='5432' user='username' password='password'",
-    'SDE:127.0.0.1,12345,dbname, authcfg=\'%s\'': 'SDE:127.0.0.1,12345,dbname,username,password',
-    'IDB:"server=demo_on user=informix dbname=frames authcfg=\'%s\'"': 'IDB:"server=demo_on user=informix dbname=frames user=username pass=password"',
-    '@driver=ingres,dbname=test,tables=usa/canada authcfg=\'%s\'': '@driver=ingres,dbname=test,tables=usa/canada,userid=username,password=password',
-    'MySQL:westholland,port=3306,tables=bedrijven authcfg=\'%s\'': 'MySQL:westholland,port=3306,tables=bedrijven,user=username,password=password',
-    'MSSQL:server=.\\MSSQLSERVER2008;database=dbname;trusted_connection=yes authcfg=\'%s\'': 'MSSQL:server=.\\MSSQLSERVER2008;database=dbname;uid=username;pwd=password',
-    'OCI:/@database_instance:table,table authcfg=\'%s\'': 'OCI:username/password@database_instance:table,table',
-    'ODBC:database_instance authcfg=\'%s\'': 'ODBC:username/password@database_instance',
-    'couchdb://myconnection authcfg=\'%s\'': 'couchdb://username:password@myconnection',
-    'http://www.myconnection.com/geojson authcfg=\'%s\'': 'http://username:password@www.myconnection.com/geojson',
-    'https://www.myconnection.com/geojson authcfg=\'%s\'': 'https://username:password@www.myconnection.com/geojson',
-    'ftp://www.myconnection.com/geojson authcfg=\'%s\'': 'ftp://username:password@www.myconnection.com/geojson',
-    'DODS://www.myconnection.com/geojson authcfg=\'%s\'': 'DODS://username:password@www.myconnection.com/geojson',
+    "SDE:127.0.0.1,12345,dbname, authcfg='%s'": "SDE:127.0.0.1,12345,dbname,username,password",
+    "IDB:\"server=demo_on user=informix dbname=frames authcfg='%s'\"": 'IDB:"server=demo_on user=informix dbname=frames user=username pass=password"',
+    "@driver=ingres,dbname=test,tables=usa/canada authcfg='%s'": "@driver=ingres,dbname=test,tables=usa/canada,userid=username,password=password",
+    "MySQL:westholland,port=3306,tables=bedrijven authcfg='%s'": "MySQL:westholland,port=3306,tables=bedrijven,user=username,password=password",
+    "MSSQL:server=.\\MSSQLSERVER2008;database=dbname;trusted_connection=yes authcfg='%s'": "MSSQL:server=.\\MSSQLSERVER2008;database=dbname;uid=username;pwd=password",
+    "OCI:/@database_instance:table,table authcfg='%s'": "OCI:username/password@database_instance:table,table",
+    "ODBC:database_instance authcfg='%s'": "ODBC:username/password@database_instance",
+    "couchdb://myconnection authcfg='%s'": "couchdb://username:password@myconnection",
+    "http://www.myconnection.com/geojson authcfg='%s'": "http://username:password@www.myconnection.com/geojson",
+    "https://www.myconnection.com/geojson authcfg='%s'": "https://username:password@www.myconnection.com/geojson",
+    "ftp://www.myconnection.com/geojson authcfg='%s'": "ftp://username:password@www.myconnection.com/geojson",
+    "DODS://www.myconnection.com/geojson authcfg='%s'": "DODS://username:password@www.myconnection.com/geojson",
 }
 
 
@@ -49,13 +49,13 @@ class TestAuthManager(QgisTestCase):
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
         authm = QgsApplication.authManager()
-        assert (authm.setMasterPassword('masterpassword', True))
+        assert authm.setMasterPassword("masterpassword", True)
         # Client side
         cls.auth_config = QgsAuthMethodConfig("Basic")
-        cls.auth_config.setConfig('username', cls.username)
-        cls.auth_config.setConfig('password', cls.password)
-        cls.auth_config.setName('test_basic_auth_config')
-        assert (authm.storeAuthenticationConfig(cls.auth_config)[0])
+        cls.auth_config.setConfig("username", cls.username)
+        cls.auth_config.setConfig("password", cls.password)
+        cls.auth_config.setName("test_basic_auth_config")
+        assert authm.storeAuthenticationConfig(cls.auth_config)[0]
         assert cls.auth_config.isValid()
         cls.authcfg = cls.auth_config.id()
 
@@ -64,10 +64,10 @@ class TestAuthManager(QgisTestCase):
         super().setUpClass()
         """Run before all tests:
         Creates an auth configuration"""
-        cls.username = 'username'
-        cls.password = 'password'
-        cls.dbname = 'test_basic'
-        cls.hostname = 'localhost'
+        cls.username = "username"
+        cls.password = "password"
+        cls.dbname = "test_basic"
+        cls.hostname = "localhost"
         cls.setUpAuth()
 
     def setUp(self):
@@ -82,15 +82,19 @@ class TestAuthManager(QgisTestCase):
         """
         Test credentials injection
         """
-        pr = QgsProviderRegistry.instance().createProvider('ogr', '')
+        pr = QgsProviderRegistry.instance().createProvider("ogr", "")
         for uri, expanded in TEST_URIS.items():
             pr.setDataSourceUri(uri % self.authcfg)
             self.assertIn(expanded, pr.dataSourceUri(True))
 
         # Test sublayers
         for uri, expanded in TEST_URIS.items():
-            pr.setDataSourceUri((uri + '|sublayer1') % self.authcfg)
-            self.assertEqual(pr.dataSourceUri(True).split('|')[1], "sublayer1", pr.dataSourceUri(True))
+            pr.setDataSourceUri((uri + "|sublayer1") % self.authcfg)
+            self.assertEqual(
+                pr.dataSourceUri(True).split("|")[1],
+                "sublayer1",
+                pr.dataSourceUri(True),
+            )
 
     def testQuotesAndComma(self):
         """
@@ -98,18 +102,20 @@ class TestAuthManager(QgisTestCase):
         """
         authm = QgsApplication.authManager()
         auth_config = QgsAuthMethodConfig("Basic")
-        auth_config.setConfig('username', 'qgis,\"rocks\"')
-        auth_config.setConfig('password', '\"quoted\"')
-        auth_config.setName('test_basic_auth_config_quoted')
+        auth_config.setConfig("username", 'qgis,"rocks"')
+        auth_config.setConfig("password", '"quoted"')
+        auth_config.setName("test_basic_auth_config_quoted")
         self.assertTrue(authm.storeAuthenticationConfig(auth_config)[0])
         self.assertTrue(auth_config.isValid())
         authcfg = auth_config.id()
-        pr = QgsProviderRegistry.instance().createProvider('ogr', '')
-        uri = 'MySQL:hostname authcfg=\'%s\''
+        pr = QgsProviderRegistry.instance().createProvider("ogr", "")
+        uri = "MySQL:hostname authcfg='%s'"
         pr.setDataSourceUri(uri % authcfg)
         expanded = pr.dataSourceUri(True)
-        self.assertEqual(expanded, r'MySQL:hostname,user="qgis,\"rocks\"",password="\"quoted\""')
+        self.assertEqual(
+            expanded, r'MySQL:hostname,user="qgis,\"rocks\"",password="\"quoted\""'
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

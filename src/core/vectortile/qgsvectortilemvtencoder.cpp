@@ -25,7 +25,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortilemvtutils.h"
 
-
 //! Helper class for writing of geometry commands
 struct MVTGeometryWriter
 {
@@ -75,7 +74,7 @@ struct MVTGeometryWriter
     cursor = pt;
   }
 
-  QPoint mapToTileCoordinates( double x, double y )
+  QPoint mapToTileCoordinates( double x, double y ) const
   {
     return QPoint( static_cast<int>( round( ( x - tileXMin ) * resolution / tileDX ) ),
                    static_cast<int>( round( ( tileYMax - y ) * resolution / tileDY ) ) );
@@ -203,14 +202,14 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
   }
 
   vector_tile::Tile_Layer *tileLayer = tile.add_layers();
-  tileLayer->set_name( layerName.toUtf8() );
+  tileLayer->set_name( layerName.toUtf8().constData() );
   tileLayer->set_version( 2 );  // 2 means MVT spec version 2.1
   tileLayer->set_extent( static_cast<::google::protobuf::uint32>( mResolution ) );
 
   const QgsFields fields = layer->fields();
   for ( int i = 0; i < fields.count(); ++i )
   {
-    tileLayer->add_keys( fields[i].name().toUtf8() );
+    tileLayer->add_keys( fields[i].name().toUtf8().constData() );
   }
 
   do
@@ -232,9 +231,16 @@ void QgsVectorTileMVTEncoder::addLayer( QgsVectorLayer *layer, QgsFeedback *feed
     }
 
     // clip
-    g = g.clipped( tileExtent );
-
-    f.setGeometry( g );
+    const QgsGeometry clippedToTile = g.clipped( tileExtent );
+    if ( clippedToTile.isEmpty() )
+    {
+      // this can often happen -- the transformation of the tile's bounding box to the layer's bounding box
+      // may have expanded the extent that we are using to filter features by, so we may have retrieved
+      // features that do NOT intersect with the tile extent after reprojection. In this case we must
+      // skip these features as empty geometries are not valid for vector tiles.
+      continue;
+    }
+    f.setGeometry( clippedToTile );
 
     addFeature( tileLayer, f );
   }
@@ -286,14 +292,37 @@ void QgsVectorTileMVTEncoder::addFeature( vector_tile::Tile_Layer *tileLayer, co
       valueIndex = tileLayer->values_size() - 1;
       mKnownValues[v] = valueIndex;
 
-      if ( v.userType() == QMetaType::Type::Double )
-        value->set_double_value( v.toDouble() );
-      else if ( v.userType() == QMetaType::Type::Int )
-        value->set_int_value( v.toInt() );
-      else if ( v.userType() == QMetaType::Type::Bool )
-        value->set_bool_value( v.toBool() );
-      else
-        value->set_string_value( v.toString().toUtf8().toStdString() );
+      switch ( v.userType() )
+      {
+        case QMetaType::Type::Double:
+          value->set_double_value( v.toDouble() );
+          break;
+
+        case QMetaType::Type::Float:
+          value->set_float_value( v.toFloat() );
+          break;
+
+        case QMetaType::Type::Int:
+        case QMetaType::Type::Long:
+        case QMetaType::Type::LongLong:
+          value->set_int_value( v.toLongLong() );
+          break;
+
+        case QMetaType::Type::UInt:
+        case QMetaType::Type::ULong:
+        case QMetaType::Type::ULongLong:
+          value->set_uint_value( v.toULongLong() );
+          break;
+
+        case QMetaType::Type::Bool:
+          value->set_bool_value( v.toBool() );
+          break;
+
+        default:
+          value->set_string_value( v.toString().toUtf8().toStdString() );
+          break;
+      }
+
     }
 
     feature->add_tags( static_cast<quint32>( i ) );

@@ -16,9 +16,10 @@
 #ifndef QGSCALLOUTSREGISTRY_H
 #define QGSCALLOUTSREGISTRY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsreadwritecontext.h"
+
 #include <QIcon>
 
 class QgsPathResolver;
@@ -122,12 +123,12 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
     {}
 
     //! \note not available in Python bindings
-    QgsCalloutCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsCalloutCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsCalloutWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsCalloutWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsCalloutWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsCalloutWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
 
     QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) override SIP_FACTORY;
     QgsCalloutWidget *createCalloutWidget( QgsMapLayer *vl ) override SIP_FACTORY;

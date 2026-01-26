@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '05/07/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "05/07/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 from qgis.PyQt.QtGui import QColor, QPen
 from qgis.PyQt.QtXml import QDomDocument
@@ -59,7 +60,9 @@ class TestQgsLayoutGridSettings(QgisTestCase):
         self.assertTrue(s.writeXml(elem, doc, QgsReadWriteContext()))
 
         s2 = QgsLayoutGridSettings(l)
-        self.assertTrue(s2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
+        self.assertTrue(
+            s2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext())
+        )
 
         self.assertEqual(s2.resolution().length(), 5.0)
         self.assertEqual(s2.resolution().units(), QgsUnitTypes.LayoutUnit.LayoutPoints)
@@ -116,5 +119,5 @@ class TestQgsLayoutGridSettings(QgisTestCase):
         self.assertEqual(g.resolution().units(), QgsUnitTypes.LayoutUnit.LayoutInches)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

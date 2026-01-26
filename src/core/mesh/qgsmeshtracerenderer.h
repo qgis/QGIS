@@ -19,16 +19,16 @@
 #define QGSMESHTRACERENDERER_H
 
 
-#include <QVector>
-#include <QSize>
-
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgstriangularmesh.h"
+#include "qgis_core.h"
+#include "qgsmaptopixel.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshvectorrenderer.h"
-#include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
+#include "qgstriangularmesh.h"
+
+#include <QSize>
+#include <QVector>
 
 class QgsMeshLayerInterpolator;
 class QgsMeshLayerRendererFeedback;
@@ -118,7 +118,7 @@ class QgsMeshVectorValueInterpolatorFromVertex: public QgsMeshVectorValueInterpo
     QgsMeshVectorValueInterpolatorFromVertex( const QgsMeshVectorValueInterpolatorFromVertex &other );
 
     //! Clone the instance
-    virtual QgsMeshVectorValueInterpolatorFromVertex *clone() override;
+    QgsMeshVectorValueInterpolatorFromVertex *clone() override;
 
     QgsMeshVectorValueInterpolatorFromVertex &operator=( const QgsMeshVectorValueInterpolatorFromVertex &other );
 
@@ -151,7 +151,7 @@ class QgsMeshVectorValueInterpolatorFromFace: public QgsMeshVectorValueInterpola
     QgsMeshVectorValueInterpolatorFromFace( const QgsMeshVectorValueInterpolatorFromFace &other );
 
     //! Clone the instance
-    virtual QgsMeshVectorValueInterpolatorFromFace *clone() override;
+    QgsMeshVectorValueInterpolatorFromFace *clone() override;
 
     QgsMeshVectorValueInterpolatorFromFace &operator=( const QgsMeshVectorValueInterpolatorFromFace &other );
 
@@ -339,27 +339,25 @@ class QgsMeshStreamlinesField: public QgsMeshStreamField
 {
   public:
     //! Constructor
-    Q_DECL_DEPRECATED QgsMeshStreamlinesField(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QgsRectangle &layerExtent,
-      double magMax,
-      bool dataIsOnVertices,
-      QgsRenderContext &rendererContext,
-      const QgsInterpolatedLineColor vectorColoring );
+    Q_DECL_DEPRECATED QgsMeshStreamlinesField( const QgsTriangularMesh &triangularMesh,
+        const QgsMeshDataBlock &datasetVectorValues,
+        const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+        const QgsRectangle &layerExtent,
+        double magMax,
+        bool dataIsOnVertices,
+        QgsRenderContext &rendererContext,
+        const QgsInterpolatedLineColor &vectorColoring );
 
-    QgsMeshStreamlinesField(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QVector<double> &datasetMagValues,
-      const QgsRectangle &layerExtent,
-      QgsMeshLayerRendererFeedback *feedBack,
-      double magMax,
-      bool dataIsOnVertices,
-      QgsRenderContext &rendererContext,
-      const QgsInterpolatedLineColor vectorColoring );
+    QgsMeshStreamlinesField( const QgsTriangularMesh &triangularMesh,
+                             const QgsMeshDataBlock &datasetVectorValues,
+                             const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+                             const QVector<double> &datasetMagValues,
+                             const QgsRectangle &layerExtent,
+                             QgsMeshLayerRendererFeedback *feedBack,
+                             double magMax,
+                             bool dataIsOnVertices,
+                             QgsRenderContext &rendererContext,
+                             const QgsInterpolatedLineColor &vectorColoring );
 
     void compose();
 
@@ -413,15 +411,14 @@ class QgsMeshParticleTracesField: public QgsMeshStreamField
 {
   public:
     //! Constructor
-    QgsMeshParticleTracesField(
-      const QgsTriangularMesh &triangularMesh,
-      const QgsMeshDataBlock &datasetVectorValues,
-      const QgsMeshDataBlock &scalarActiveFaceFlagValues,
-      const QgsRectangle &layerExtent,
-      double magMax,
-      bool dataIsOnVertices,
-      const QgsRenderContext &rendererContext,
-      const QgsInterpolatedLineColor vectorColoring );
+    QgsMeshParticleTracesField( const QgsTriangularMesh &triangularMesh,
+                                const QgsMeshDataBlock &datasetVectorValues,
+                                const QgsMeshDataBlock &scalarActiveFaceFlagValues,
+                                const QgsRectangle &layerExtent,
+                                double magMax,
+                                bool dataIsOnVertices,
+                                const QgsRenderContext &rendererContext,
+                                const QgsInterpolatedLineColor &vectorColoring );
 
     QgsMeshParticleTracesField( const QgsMeshParticleTracesField &other );
 
@@ -595,7 +592,9 @@ class QgsMeshVectorTraceRenderer: public QgsMeshVectorRenderer
 /**
  * \ingroup core
  *
- * \brief A wrapper for QgsMeshParticuleTracesField used to render the particles. Available for Python binding
+ * \brief A wrapper for QgsMeshParticuleTracesField used to render the particles.
+ *
+ * Available for Python binding
  *
  * \since QGIS 3.12
  */

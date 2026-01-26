@@ -15,99 +15,94 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
-#include "qgsunittypes.h"
+#include "qgis.h"
 #include "qgslayoutmeasurement.h"
+#include "qgslayoutmeasurementconverter.h"
 #include "qgslayoutpoint.h"
 #include "qgslayoutsize.h"
-#include "qgslayoutmeasurementconverter.h"
-#include "qgis.h"
+#include "qgstest.h"
+#include "qgsunittypes.h"
 
 class TestQgsLayoutUnits : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsLayoutUnits() : QgsTest( QStringLiteral( "Layout Units Tests" ) ) {}
+    TestQgsLayoutUnits()
+      : QgsTest( u"Layout Units Tests"_s ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     //QgsLayoutUnits
     void encodeDecode(); //test encoding and decoding layout units
 
     //QgsLayoutMeasurement
-    void create(); //test creating new measurement
-    void gettersSetters(); //test getting/setting properties
-    void copyConstructor(); //test copy constructor
-    void equality(); //test measurement equality
-    void assignment(); //test measurement assignment
-    void operators(); //test measurement operators
-    void unitTypes(); //test unit types
+    void create();                  //test creating new measurement
+    void gettersSetters();          //test getting/setting properties
+    void copyConstructor();         //test copy constructor
+    void equality();                //test measurement equality
+    void assignment();              //test measurement assignment
+    void operators();               //test measurement operators
+    void unitTypes();               //test unit types
     void measurementEncodeDecode(); //test encoding and decoding measurement
 
     //QgsLayoutSize
-    void createSize(); //test creating new layout size
-    void sizeGettersSetters(); //test getting/setting properties
+    void createSize();          //test creating new layout size
+    void sizeGettersSetters();  //test getting/setting properties
     void sizeCopyConstructor(); //test copy constructor
-    void sizeEquality(); //test size equality
-    void sizeAssignment(); //test size assignment
-    void sizeOperators(); //test size operators
-    void isEmpty(); //test isEmpty method
-    void toQSizeF(); //test conversion to QSizeF
-    void sizeEncodeDecode(); //test encoding and decoding size
+    void sizeEquality();        //test size equality
+    void sizeAssignment();      //test size assignment
+    void sizeOperators();       //test size operators
+    void isEmpty();             //test isEmpty method
+    void toQSizeF();            //test conversion to QSizeF
+    void sizeEncodeDecode();    //test encoding and decoding size
 
     //QgsLayoutPoint
-    void createPoint(); //test creating new layout point
-    void pointGettersSetters(); //test getting/setting properties
+    void createPoint();          //test creating new layout point
+    void pointGettersSetters();  //test getting/setting properties
     void pointCopyConstructor(); //test copy constructor
-    void pointEquality(); //test point equality
-    void pointAssignment(); //test point assignment
-    void pointOperators(); //test point operators
-    void isNull(); //test isEmpty method
-    void toQPointF(); //test conversion to QPointF
-    void pointEncodeDecode(); //test encoding and decoding point
+    void pointEquality();        //test point equality
+    void pointAssignment();      //test point assignment
+    void pointOperators();       //test point operators
+    void isNull();               //test isEmpty method
+    void toQPointF();            //test conversion to QPointF
+    void pointEncodeDecode();    //test encoding and decoding point
 
-    void converterCreate(); //test creating new converter
-    void converterCopy(); //test creating new converter using copy constructor
+    void converterCreate();         //test creating new converter
+    void converterCopy();           //test creating new converter using copy constructor
     void converterGettersSetters(); //test getting/setting converter properties
-    void conversionToMM(); //test conversion to mm
-    void conversionToCM(); //test conversion to cm
-    void conversionToM(); //test conversion to m
-    void conversionToInches(); //test conversion to inches
-    void conversionToFeet(); //test conversion to feet
-    void conversionToPoints(); //test conversion to points
-    void conversionToPicas(); //test conversion to picas
-    void conversionFromPixels(); //test conversion from pixels and handling of dpi
-    void conversionToPixels(); //test conversion to pixels and handling of dpi
-    void sizeConversion(); //test conversion of QgsLayoutSizes
-    void pointConversion(); //test conversion of QgsLayoutPoint
+    void conversionToMM();          //test conversion to mm
+    void conversionToCM();          //test conversion to cm
+    void conversionToM();           //test conversion to m
+    void conversionToInches();      //test conversion to inches
+    void conversionToFeet();        //test conversion to feet
+    void conversionToPoints();      //test conversion to points
+    void conversionToPicas();       //test conversion to picas
+    void conversionFromPixels();    //test conversion from pixels and handling of dpi
+    void conversionToPixels();      //test conversion to pixels and handling of dpi
+    void sizeConversion();          //test conversion of QgsLayoutSizes
+    void pointConversion();         //test conversion of QgsLayoutPoint
 
   private:
-
 };
 
 void TestQgsLayoutUnits::initTestCase()
 {
-
 }
 
 void TestQgsLayoutUnits::cleanupTestCase()
 {
-
 }
 
 void TestQgsLayoutUnits::init()
 {
-
 }
 
 void TestQgsLayoutUnits::cleanup()
 {
-
 }
 
 void TestQgsLayoutUnits::encodeDecode()
@@ -238,7 +233,7 @@ void TestQgsLayoutUnits::measurementEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutMeasurement::decodeMeasurement( QStringLiteral( "1" ) );
+  result = QgsLayoutMeasurement::decodeMeasurement( u"1"_s );
   QCOMPARE( result, QgsLayoutMeasurement( 0 ) );
 }
 
@@ -378,7 +373,13 @@ void TestQgsLayoutUnits::sizeEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutSize::decodeSize( QStringLiteral( "1,2" ) );
+  result = QgsLayoutSize::decodeSize( u"1,2"_s );
+  QCOMPARE( result, QgsLayoutSize() );
+
+  //test with nan values
+  result = QgsLayoutSize::decodeSize( u"nan,2,mm"_s );
+  QCOMPARE( result, QgsLayoutSize() );
+  result = QgsLayoutSize::decodeSize( u"2,nan,mm"_s );
   QCOMPARE( result, QgsLayoutSize() );
 }
 
@@ -518,7 +519,15 @@ void TestQgsLayoutUnits::pointEncodeDecode()
   QCOMPARE( original, result );
 
   //test with bad string
-  result = QgsLayoutPoint::decodePoint( QStringLiteral( "1,2" ) );
+  result = QgsLayoutPoint::decodePoint( u"1,2"_s );
+  QCOMPARE( result, QgsLayoutPoint() );
+
+  //test with nan values
+  result = QgsLayoutPoint::decodePoint( u"nan,2,mm"_s );
+  QCOMPARE( result, QgsLayoutPoint() );
+  result = QgsLayoutPoint::decodePoint( u"2,nan,mm"_s );
+  QCOMPARE( result, QgsLayoutPoint() );
+  result = QgsLayoutPoint::decodePoint( u"9.99999e+06,1e+07,mm"_s );
   QCOMPARE( result, QgsLayoutPoint() );
 }
 

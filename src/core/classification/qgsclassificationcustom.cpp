@@ -15,7 +15,7 @@
 
 #include "qgsclassificationcustom.h"
 
-const QString QgsClassificationCustom::METHOD_ID = QStringLiteral( "Custom" );
+const QString QgsClassificationCustom::METHOD_ID = u"Custom"_s;
 
 
 QgsClassificationCustom::QgsClassificationCustom()
@@ -25,10 +25,10 @@ QgsClassificationCustom::QgsClassificationCustom()
 }
 
 
-QgsClassificationMethod *QgsClassificationCustom::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationCustom::clone() const
 {
-  QgsClassificationCustom *c = new QgsClassificationCustom();
-  copyBase( c );
+  auto c = std::make_unique< QgsClassificationCustom >();
+  copyBase( c.get() );
   return c;
 }
 

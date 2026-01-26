@@ -14,11 +14,15 @@
 ***************************************************************************/
 
 #include "qgsdatabaseschemacombobox.h"
-#include "qgsdatabaseschemamodel.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
+#include "qgsdatabaseschemamodel.h"
+
 #include <QHBoxLayout>
 #include <QToolButton>
+
+#include "moc_qgsdatabaseschemacombobox.cpp"
 
 QgsDatabaseSchemaComboBox::QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent )
   : QWidget( parent )
@@ -72,13 +76,13 @@ void QgsDatabaseSchemaComboBox::init()
   QToolButton *refreshButton = new QToolButton();
   refreshButton->setAutoRaise( true );
   refreshButton->setToolTip( tr( "Refresh schemas" ) );
-  refreshButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRefresh.svg" ) ) );
+  refreshButton->setIcon( QgsApplication::getThemeIcon( u"mActionRefresh.svg"_s ) );
   l->addWidget( refreshButton );
   setLayout( l );
 
   connect( refreshButton, &QToolButton::clicked, this, &QgsDatabaseSchemaComboBox::refreshSchemas );
 
-  connect( mComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsDatabaseSchemaComboBox::indexChanged );
+  connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsDatabaseSchemaComboBox::indexChanged );
   connect( mSortModel, &QAbstractItemModel::rowsInserted, this, &QgsDatabaseSchemaComboBox::rowsChanged );
   connect( mSortModel, &QAbstractItemModel::rowsRemoved, this, &QgsDatabaseSchemaComboBox::rowsChanged );
 }
@@ -182,15 +186,14 @@ void QgsDatabaseSchemaComboBox::rowsChanged()
 QgsDatabaseSchemaComboBoxSortModel::QgsDatabaseSchemaComboBoxSortModel( QObject *parent )
   : QSortFilterProxyModel( parent )
 {
-
 }
 
 bool QgsDatabaseSchemaComboBoxSortModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
   // empty row is always first
-  if ( sourceModel()->data( left, static_cast< int >( QgsDatabaseSchemaModel::CustomRole::Empty ) ).toBool() )
+  if ( sourceModel()->data( left, static_cast<int>( QgsDatabaseSchemaModel::CustomRole::Empty ) ).toBool() )
     return true;
-  else if ( sourceModel()->data( right, static_cast< int >( QgsDatabaseSchemaModel::CustomRole::Empty ) ).toBool() )
+  else if ( sourceModel()->data( right, static_cast<int>( QgsDatabaseSchemaModel::CustomRole::Empty ) ).toBool() )
     return false;
 
   // default mode is alphabetical order

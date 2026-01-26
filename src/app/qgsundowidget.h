@@ -15,20 +15,20 @@
 #ifndef QGSUNDOWIDGET_H
 #define QGSUNDOWIDGET_H
 
-#include <QVariant>
+#include "qgis_app.h"
+#include "qgspanelwidget.h"
+
 #include <QAction>
 #include <QApplication>
 #include <QButtonGroup>
 #include <QGridLayout>
+#include <QPointer>
 #include <QPushButton>
 #include <QSpacerItem>
-#include <QWidget>
-#include <QUndoView>
 #include <QUndoStack>
-#include <QPointer>
-
-#include "qgspanelwidget.h"
-#include "qgis_app.h"
+#include <QUndoView>
+#include <QVariant>
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -40,7 +40,6 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 {
     Q_OBJECT
   public:
-
     QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas );
 
     /**
@@ -94,7 +93,7 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 
   private:
     QUndoView *mUndoView = nullptr;
-    QPointer< QUndoStack > mUndoStack;
+    QPointer<QUndoStack> mUndoStack;
     QgsMapCanvas *mMapCanvas = nullptr;
 
     int mPreviousIndex = 0;
@@ -108,4 +107,3 @@ class APP_EXPORT QgsUndoWidget : public QgsPanelWidget
 
 
 #endif // QGSUNDOWIDGET_H
-

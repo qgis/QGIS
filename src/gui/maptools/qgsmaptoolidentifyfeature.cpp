@@ -15,8 +15,11 @@
 
 
 #include "qgsmaptoolidentifyfeature.h"
+
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+
+#include "moc_qgsmaptoolidentifyfeature.cpp"
 
 QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl )
   : QgsMapToolIdentify( canvas )
@@ -30,7 +33,6 @@ QgsMapToolIdentifyFeature::QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsV
 
 void QgsMapToolIdentifyFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-
   const QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( e->x(), e->y() );
 
   QList<IdentifyResult> results;

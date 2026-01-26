@@ -15,10 +15,10 @@
 #ifndef QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H
 #define QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H
 
+#include "ui_qgsannotationcommonpropertieswidgetbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-
-#include "ui_qgsannotationcommonpropertieswidgetbase.h"
 #include "qgssymbolwidgetcontext.h"
 
 class QgsAnnotationItem;
@@ -27,17 +27,14 @@ class QgsCallout;
 /**
  * \class QgsAnnotationItemCommonPropertiesWidget
  * \ingroup gui
- *
- * \brief A widget for configuring common properties for QgsAnnotationItems
- *
+ * \brief A widget for configuring common properties for QgsAnnotationItems.
  * \since QGIS 3.22
 */
-class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget: public QWidget, private Ui::QgsAnnotationCommonPropertiesWidgetBase
+class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget : public QWidget, private Ui::QgsAnnotationCommonPropertiesWidgetBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsAnnotationItemCommonPropertiesWidget.
      */
@@ -78,13 +75,12 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget: public QWidget, privat
     void openCalloutProperties();
 
   private:
-
     bool mBlockChangedSignal = false;
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
 
-    std::unique_ptr< QgsCallout > mCallout;
+    std::unique_ptr<QgsCallout> mCallout;
 };
 
 #endif // QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H

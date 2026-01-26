@@ -19,12 +19,13 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspropertycollection.h"
-#include "qgsobjectcustomproperties.h"
 #include "qgsexpressioncontextgenerator.h"
-#include <QObject>
+#include "qgsobjectcustomproperties.h"
+#include "qgspropertycollection.h"
+
 #include <QDomNode>
 #include <QMap>
+#include <QObject>
 #include <QPointer>
 
 class QgsLayout;
@@ -37,22 +38,21 @@ class QgsReadWriteContext;
  */
 class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGenerator
 {
-#ifdef SIP_RUN
-#include <qgslayoutitem.h>
-#include "qgslayoutitemgroup.h"
-#include "qgslayoutitemmap.h"
-#include "qgslayoutitempicture.h"
-#include "qgslayoutitemlabel.h"
-#include "qgslayoutitemlegend.h"
-#include "qgslayoutitempolygon.h"
-#include "qgslayoutitempolyline.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutitemmarker.h"
-#include "qgslayoutitemelevationprofile.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemgroup.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmap.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempicture.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemlabel.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemlegend.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempolygon.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempolyline.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemscalebar.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutframe.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemshape.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitempage.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemmarker.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemelevationprofile.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgslayoutitemchart.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -119,6 +119,10 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
         case QGraphicsItem::UserType + 118:
           sipType = sipType_QgsLayoutItemElevationProfile;
           *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 119:
+          sipType = sipType_QgsLayoutItemChart;
+          *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
           break;
 
         // did you read that comment above? NO? Go read it now. You're about to break stuff.
@@ -197,6 +201,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       MapGridFrameDivisionsRight, //!< Map frame division display right
       MapGridFrameDivisionsTop, //!< Map frame division display top
       MapGridFrameDivisionsBottom, //!< Map frame division display bottom
+      MapGridDrawAnnotation, //!< Map annotation visibility (for individual annotations) \since QGIS 4.0
       MapCrs, //!< Map CRS
       StartDateTime, //!< Temporal range's start DateTime
       EndDateTime, //!< Temporal range's end DateTime
@@ -212,6 +217,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       //legend item
       LegendTitle, //!< Legend title
       LegendColumnCount, //!< Legend column count
+      LegendAutoWrapWidth, //!< Legend text automatic wrapping width \since QGIS 3.44
       //scalebar item
       ScalebarLeftSegments, //!< Number of segments on the left of 0 \since QGIS 3.26
       ScalebarRightSegments, //!< Number of segments on the right of 0 \since QGIS 3.26
@@ -299,7 +305,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
      * \see setDataDefinedProperties()
      * \see DataDefinedProperty
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
      * Sets the objects's property collection, used for data defined overrides.

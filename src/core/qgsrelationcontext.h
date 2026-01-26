@@ -25,7 +25,9 @@ class QgsProject;
 /**
  * \ingroup core
  * \class QgsRelationContext
- * \brief Context for relations. Used to resolve layers from projects.
+ * \brief Context for relations.
+ *
+ * Used to resolve layers from projects.
  * \since QGIS 3.11
  */
 class CORE_EXPORT QgsRelationContext
@@ -46,9 +48,6 @@ class CORE_EXPORT QgsRelationContext
     const QgsProject *project() const;
 
     ~QgsRelationContext();
-
-    QgsRelationContext( const QgsRelationContext &other );
-    QgsRelationContext &operator=( const QgsRelationContext &other );
 
   private:
     QgsProject *mProject = nullptr;

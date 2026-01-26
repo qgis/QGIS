@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 {
 %Docstring(signature="appended")
@@ -18,7 +19,6 @@ Layout view tool for adding items to a layout.
 #include "qgslayoutviewtooladditem.h"
 %End
   public:
-
     QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructs a QgsLayoutViewToolAddItem for the given layout ``view``.
@@ -35,8 +35,8 @@ Returns the item metadata id for items created by the tool.
 %Docstring
 Sets the item metadata ``metadataId`` for items created by the tool.
 
-The ``metadataId`` associates the current tool behavior with a metadata entry
-from :py:class:`QgsLayoutItemGuiRegistry`.
+The ``metadataId`` associates the current tool behavior with a metadata
+entry from :py:class:`QgsLayoutItemGuiRegistry`.
 
 .. seealso:: :py:func:`itemMetadataId`
 %End
@@ -65,8 +65,9 @@ Returns any custom properties set for the tool.
 %Docstring
 Sets custom ``properties`` for the tool.
 
-These properties are transient, and are cleared whenever the tool is activated. Callers must ensure
-that the properties are set only after the tool is activated.
+These properties are transient, and are cleared whenever the tool is
+activated. Callers must ensure that the properties are set only after
+the tool is activated.
 
 .. seealso:: :py:func:`customProperties`
 

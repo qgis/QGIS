@@ -13,7 +13,8 @@
 class QgsFeatureSource
 {
 %Docstring(signature="appended")
-An interface for objects which provide features via a getFeatures method.
+An interface for objects which provide features via a getFeatures
+method.
 %End
 
 %TypeHeaderCode
@@ -25,14 +26,15 @@ An interface for objects which provide features via a getFeatures method.
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
 %Docstring
-Returns an iterator for the features in the source.
-An optional ``request`` can be used to optimise the returned
-iterator, eg by restricting the returned attributes or geometry.
+Returns an iterator for the features in the source. An optional
+``request`` can be used to optimise the returned iterator, eg by
+restricting the returned attributes or geometry.
 %End
 
     virtual QString sourceName() const = 0;
 %Docstring
-Returns a friendly display name for the source. The returned value can be an empty string.
+Returns a friendly display name for the source. The returned value can
+be an empty string.
 %End
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const = 0;
@@ -53,8 +55,8 @@ Returns the geometry type for features returned by this source.
 
     int __len__() const;
 %Docstring
-Returns the number of features contained in the source, or -1
-if the feature count is unknown.
+Returns the number of features contained in the source, or -1 if the
+feature count is unknown.
 %End
 %MethodCode
     sipRes = sipCpp->featureCount();
@@ -68,8 +70,8 @@ if the feature count is unknown.
 
     virtual long long featureCount() const = 0;
 %Docstring
-Returns the number of features contained in the source, or -1
-if the feature count is unknown.
+Returns the number of features contained in the source, or -1 if the
+feature count is unknown.
 %End
 
     virtual Qgis::FeatureAvailability hasFeatures() const;
@@ -81,10 +83,11 @@ Determines if there are any features available in the source.
 
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
 %Docstring
-Returns the set of unique values contained within the specified ``fieldIndex`` from this source.
-If specified, the ``limit`` option can be used to limit the number of returned values.
-The base class implementation uses a non-optimised approach of looping through
-all features in the source.
+Returns the set of unique values contained within the specified
+``fieldIndex`` from this source. If specified, the ``limit`` option can
+be used to limit the number of returned values. The base class
+implementation uses a non-optimised approach of looping through all
+features in the source.
 
 .. seealso:: :py:func:`minimumValue`
 
@@ -93,9 +96,9 @@ all features in the source.
 
     virtual QVariant minimumValue( int fieldIndex ) const;
 %Docstring
-Returns the minimum value for an attribute column or an invalid variant in case of error.
-The base class implementation uses a non-optimised approach of looping through
-all features in the source.
+Returns the minimum value for an attribute column or an invalid variant
+in case of error. The base class implementation uses a non-optimised
+approach of looping through all features in the source.
 
 .. seealso:: :py:func:`maximumValue`
 
@@ -104,9 +107,9 @@ all features in the source.
 
     virtual QVariant maximumValue( int fieldIndex ) const;
 %Docstring
-Returns the maximum value for an attribute column or an invalid variant in case of error.
-The base class implementation uses a non-optimised approach of looping through
-all features in the source.
+Returns the maximum value for an attribute column or an invalid variant
+in case of error. The base class implementation uses a non-optimised
+approach of looping through all features in the source.
 
 .. seealso:: :py:func:`minimumValue`
 
@@ -115,16 +118,16 @@ all features in the source.
 
     virtual QgsRectangle sourceExtent() const;
 %Docstring
-Returns the extent of all geometries from the source.
-The base class implementation uses a non-optimised approach of looping through
-all features in the source.
+Returns the extent of all geometries from the source. The base class
+implementation uses a non-optimised approach of looping through all
+features in the source.
 %End
 
     virtual QgsBox3D sourceExtent3D() const;
 %Docstring
-Returns the 3D extent of all geometries from the source.
-The base class implementation uses a non-optimised approach of looping through
-all features in the source.
+Returns the 3D extent of all geometries from the source. The base class
+implementation uses a non-optimised approach of looping through all
+features in the source.
 
 .. versionadded:: 3.36
 %End
@@ -137,22 +140,26 @@ Returns a list of all feature IDs for features present in the source.
     QgsVectorLayer *materialize( const QgsFeatureRequest &request,
                                  QgsFeedback *feedback = 0 ) /Factory/;
 %Docstring
-Materializes a ``request`` (query) made against this feature source, by running
-it over the source and returning a new memory based vector layer containing
-the result. All settings from feature ``request`` will be honored.
+Materializes a ``request`` (query) made against this feature source, by
+running it over the source and returning a new memory based vector layer
+containing the result. All settings from feature ``request`` will be
+honored.
 
-If a subset of attributes has been set for the request, then only
-those selected fields will be present in the output layer.
+If a subset of attributes has been set for the request, then only those
+selected fields will be present in the output layer.
 
 The CRS for the output layer will match the input layer, unless
-:py:func:`QgsFeatureRequest.setDestinationCrs()` has been called with a valid :py:class:`QgsCoordinateReferenceSystem`.
-In this case the output layer will match the :py:func:`QgsFeatureRequest.destinationCrs()` CRS.
+:py:func:`QgsFeatureRequest.setDestinationCrs()` has been called with a
+valid :py:class:`QgsCoordinateReferenceSystem`. In this case the output
+layer will match the :py:func:`QgsFeatureRequest.destinationCrs()` CRS.
 
-The returned layer WKB type will match :py:func:`~QgsFeatureSource.wkbType`, unless the :py:class:`QgsFeatureRequest`.NoGeometry flag is set
-on the ``request``. In that case the returned layer will not be a spatial layer.
+The returned layer WKB type will match
+:py:func:`~QgsFeatureSource.wkbType`, unless the
+:py:class:`QgsFeatureRequest`.NoGeometry flag is set on the ``request``.
+In that case the returned layer will not be a spatial layer.
 
-An optional ``feedback`` argument can be used to cancel the materialization
-before it has fully completed.
+An optional ``feedback`` argument can be used to cancel the
+materialization before it has fully completed.
 
 The returned value is a new instance and the caller takes responsibility
 for its ownership.
@@ -160,11 +167,11 @@ for its ownership.
 
     virtual Qgis::SpatialIndexPresence hasSpatialIndex() const;
 %Docstring
-Returns an enum value representing the presence of a valid spatial index on the source,
-if it can be determined.
+Returns an enum value representing the presence of a valid spatial index
+on the source, if it can be determined.
 
-If QgsFeatureSource.SpatialIndexUnknown is returned then the presence of an index cannot
-be determined.
+If QgsFeatureSource.SpatialIndexUnknown is returned then the presence of
+an index cannot be determined.
 
 .. versionadded:: 3.10.1
 %End

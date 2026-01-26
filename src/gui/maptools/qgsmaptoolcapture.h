@@ -17,15 +17,15 @@
 #define QGSMAPTOOLCAPTURE_H
 
 
-#include "qgsmaptooladvanceddigitizing.h"
-#include "qgspointlocator.h"
+#include "qgis_gui.h"
 #include "qgscompoundcurve.h"
 #include "qgsgeometry.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgspointlocator.h"
 #include "qobjectuniqueptr.h"
 
-#include <QPoint>
 #include <QList>
-#include "qgis_gui.h"
+#include <QPoint>
 
 class QgsRubberBand;
 class QgsSnapIndicator;
@@ -40,7 +40,8 @@ class QgsMapToolShapeMetadata;
 
 /**
  * \ingroup gui
- * QgsMapToolCapture is a base class capable of capturing point, lines and polygons.
+ * Base class for map tools capable of capturing point, lines and polygons.
+ *
  * The tool supports different techniques: straight segments, curves, streaming and shapes
  * Once the the geometry is captured the virtual private handler geometryCaptured is called
  * as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptured)
@@ -50,21 +51,20 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     Q_OBJECT
 
   public:
-
     //! Different capture modes
     enum CaptureMode
     {
-      CaptureNone,    //!< Do not capture / determine mode from layer geometry type
-      CapturePoint,   //!< Capture points
-      CaptureLine,    //!< Capture lines
-      CapturePolygon  //!< Capture polygons
+      CaptureNone,   //!< Do not capture / determine mode from layer geometry type
+      CapturePoint,  //!< Capture points
+      CaptureLine,   //!< Capture lines
+      CapturePolygon //!< Capture polygons
     };
 
     //! Specific capabilities of the tool
     enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoCapabilities = 1 << 0, //!< No specific capabilities
-      SupportsCurves = 1 << 1, //!< Supports curved geometries input
+      NoCapabilities = 1 << 0,     //!< No specific capabilities
+      SupportsCurves = 1 << 1,     //!< Supports curved geometries input
       ValidateGeometries = 1 << 2, //!< Tool supports geometry validation \since QGIS 3.22
     };
 
@@ -123,7 +123,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Clear capture curve.
      *
      */
-    void clearCurve( );
+    void clearCurve();
 
     /**
      * Gets the capture curve
@@ -188,7 +188,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsPoint mapPoint( const QgsPointXY &point ) const;
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
   public slots:
 
@@ -212,8 +212,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void updateExtraSnapLayer();
 
   protected:
-
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Converts a map point to layer coordinates
@@ -226,7 +225,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Converts a point to map coordinates and layer coordinates
@@ -240,7 +239,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 
-    // TODO QGIS 4.0 returns an enum instead of a magic constant
+    // TODO QGIS 5.0 returns an enum instead of a magic constant
 
     /**
      * Fetches the original point from the source layer if it has the same
@@ -297,11 +296,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     /**
      * List of digitized points
      * \returns List of points
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant returns QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED QVector<QgsPointXY> points() const SIP_DEPRECATED;
 
-    // TODO QGIS 4.0 rename it to points()
+    // TODO QGIS 5.0 rename it to points()
 
     /**
      * List of digitized points
@@ -314,7 +313,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Set the points on which to work
      *
      * \param pointList A list of points
-     * \deprecated QGIS 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
+     * \deprecated QGIS 3.12. Will be removed in QGIS 5.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY.
      */
     Q_DECL_DEPRECATED void setPoints( const QVector<QgsPointXY> &pointList ) SIP_DEPRECATED;
 
@@ -331,6 +330,42 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void closePolygon();
 
+    /**
+     * Called when the geometry is captured.
+     *
+     * A more specific handler is also called afterwards (pointCaptured(), lineCaptured() or polygonCaptured()).
+     *
+     * \since QGIS 3.26
+     */
+    virtual void geometryCaptured( const QgsGeometry &geometry ) { Q_UNUSED( geometry ) }
+
+    /**
+     * Called when a point is captured.
+     *
+     * The generic geometryCaptured() method will be called immediately before this point-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void pointCaptured( const QgsPoint &point ) { Q_UNUSED( point ) }
+
+    /**
+     * Called when a line is captured
+     *
+     * The generic geometryCaptured() method will be called immediately before this line-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void lineCaptured( const QgsCurve *line ) { Q_UNUSED( line ) }
+
+    /**
+     * Called when a polygon is captured.
+     *
+     * The generic geometryCaptured() method will be called immediately before this polygon-specific method.
+     *
+     * \since QGIS 3.26
+     */
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) { Q_UNUSED( polygon ) }
+
   protected slots:
 
     /**
@@ -339,35 +374,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void stopCapturing();
 
   private:
-
-    /**
-     * Called when the geometry is captured
-     * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
-     * \since QGIS 3.26
-     */
-    virtual void geometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
-
-    /**
-     * Called when a point is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void pointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
-
-    /**
-     * Called when a line is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void lineCaptured( const QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
-
-    /**
-     * Called when a polygon is captured
-     * geometryCaptured is called just before
-     * \since QGIS 3.26
-     */
-    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
-
     //! whether tracing has been requested by the user
     bool tracingEnabled();
     //! first point that will be used as a start of the trace
@@ -382,6 +388,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! Reset the
     void resetRubberBand();
+
+    void setCurrentShapeMapToolIsActivated( bool activated );
 
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
@@ -408,8 +416,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     void validateGeometry();
     QgsGeometryValidator *mValidator = nullptr;
-    QList< QgsGeometry::Error > mGeomErrors;
-    QList< QgsVertexMarker * > mGeomErrorMarkers;
+    QList<QgsGeometry::Error> mGeomErrors;
+    QList<QgsVertexMarker *> mGeomErrorMarkers;
 
     //! A layer containing the current capture curve to provide additional snapping
     QgsVectorLayer *mExtraSnapLayer = nullptr;
@@ -433,7 +441,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     Qgis::CaptureTechnique mCurrentCaptureTechnique = Qgis::CaptureTechnique::StraightSegments;
 
-    QObjectUniquePtr< QgsMapToolShapeAbstract > mCurrentShapeMapTool;
+    QObjectUniquePtr<QgsMapToolShapeAbstract> mCurrentShapeMapTool;
 
     bool mAllowAddingStreamingPoints = false;
     int mStreamingToleranceInPixels = 1;
@@ -443,8 +451,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mIgnoreSubsequentAutoRepeatUndo = false;
 
     friend class TestQgsMapToolCapture;
-
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )

@@ -22,13 +22,12 @@
 
 #include "qgsserverrequest.h"
 
-
 /**
  * \ingroup server
  * \class QgsFcgiServerRequest
- * \brief Class defining fcgi request
+ * \brief Defines fcgi requests.
  */
-class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
+class SERVER_EXPORT QgsFcgiServerRequest : public QgsServerRequest
 {
   public:
     QgsFcgiServerRequest();
@@ -40,6 +39,7 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
      */
     bool hasError() const { return mHasError; }
 
+    using QgsServerRequest::header;
     /**
      * Returns the header value
      * \param name of the header
@@ -60,7 +60,7 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
     void fillUrl( QUrl &url ) const;
 
     QByteArray mData;
-    bool       mHasError = false;
+    bool mHasError = false;
 };
 
 #endif

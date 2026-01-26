@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsMapLayerServerPropertiesWidgetBase</class>
+ <widget class="QWidget" name="QgsMapLayerServerPropertiesWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>619</width>
+    <height>866</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Map Layer Server Properties</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mMetaDescriptionGrpBx">
+     <property name="title">
+      <string>Description</string>
+     </property>
+     <property name="syncGroup">
+      <string notr="true">vectormeta</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="6" column="1">
+       <widget class="QLineEdit" name="mLayerKeywordListLineEdit">
+        <property name="toolTip">
+         <string>List of keywords separated by comma to help catalog searching.</string>
+        </property>
+        <property name="placeholderText">
+         <string>List of keywords separated by comma to help catalog searching.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="mLayerAbstractLabel">
+        <property name="text">
+         <string>Abstract</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="mLayerDataUrlLabel">
+        <property name="text">
+         <string>Data URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QPlainTextEdit" name="mLayerAbstractTextEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>150</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>The abstract is a descriptive narrative providing more information about the layer.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mLayerShortNameLineEdit">
+        <property name="toolTip">
+         <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+        </property>
+        <property name="inputMask">
+         <string/>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mLayerTitleLineEdit">
+        <property name="toolTip">
+         <string>The title is for the benefit of humans to identify layer.</string>
+        </property>
+        <property name="placeholderText">
+         <string>The title is for the benefit of humans to identify layer.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLineEdit" name="mLayerDataUrlLineEdit">
+          <property name="toolTip">
+           <string>A URL of the data presentation.</string>
+          </property>
+          <property name="placeholderText">
+           <string>A URL of the data presentation.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="mLayerDataUrlFormatLabel">
+          <property name="text">
+           <string>Format</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="mLayerDataUrlFormatComboBox">
+          <item>
+           <property name="text">
+            <string notr="true">text/html</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string notr="true">text/plain</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string notr="true">application/pdf</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mLayerOptWfsTitleLabel">
+        <property name="text">
+         <string>WFS title</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mLayerTitleLabel">
+        <property name="text">
+         <string>Title</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="mLayerShortNameLabel">
+        <property name="text">
+         <string>Short name</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="mLayerOptWfsTitleLineEdit">
+        <property name="toolTip">
+         <string>The alternative title is for the benefit of humans to identify the WFS layer if the original title is only helpful with the WMS grouping.</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>Optional alternative title for the layer for use with WFS</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="mLayerKeywordListLabel">
+        <property name="text">
+         <string>Keyword list</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mMetaAttributionGrpBx">
+     <property name="title">
+      <string>Attribution</string>
+     </property>
+     <property name="syncGroup">
+      <string notr="true">vectormeta</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mLayerAttributionLabel">
+        <property name="text">
+         <string>Title</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mLayerAttributionLineEdit">
+        <property name="toolTip">
+         <string>Attribution's title indicates the provider of the layer.</string>
+        </property>
+        <property name="placeholderText">
+         <string>Attribution's title indicates the provider of the data layer.</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mLayerAttributionUrlLabel">
+        <property name="text">
+         <string>URL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="mLayerAttributionUrlLineEdit">
+        <property name="toolTip">
+         <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+        </property>
+        <property name="placeholderText">
+         <string>Attribution's url gives a link to the webpage of the provider of the data layer.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Metadata URL</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_34">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>566</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonAddMetadataUrl">
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonRemoveMetadataUrl">
+          <property name="text">
+           <string notr="true"/>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTableView" name="tableViewMetadataUrl"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mMetaLegendGrpBx">
+     <property name="title">
+      <string>Legend URL</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_10">
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QLabel" name="mLayerLegendUrlLabel">
+          <property name="text">
+           <string>URL</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="mLayerLegendUrlLineEdit">
+          <property name="toolTip">
+           <string>A URL of the legend image.</string>
+          </property>
+          <property name="placeholderText">
+           <string>A URL of the legend image.</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="mLayerLegendUrlFormatLabel">
+          <property name="text">
+           <string>Format</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="mLayerLegendUrlFormatComboBox">
+          <property name="minimumSize">
+           <size>
+            <width>137</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <item>
+           <property name="text">
+            <string notr="true">image/png</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string notr="true">image/jpeg</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

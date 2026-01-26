@@ -15,6 +15,7 @@
  *
  ***************************************************************************/
 #include "qgshanaprimarykeys.h"
+
 #include "qgshanautils.h"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
@@ -38,7 +39,7 @@ namespace
   {
     return x <= ( ( INT32PK_OFFSET ) / 2 ) ? x : -( INT32PK_OFFSET - x );
   }
-}
+} // namespace
 
 QgsFeatureId QgsHanaPrimaryKeyContext::lookupFid( const QVariantList &v )
 {
@@ -59,7 +60,7 @@ QVariantList QgsHanaPrimaryKeyContext::removeFid( QgsFeatureId fid )
 {
   const QMutexLocker locker( &mMutex );
 
-  QVariantList v = mFidToKey[ fid ];
+  QVariantList v = mFidToKey[fid];
   mFidToKey.remove( fid );
   mKeyToFid.remove( v );
   return v;
@@ -142,24 +143,23 @@ QgsHanaPrimaryKeyType QgsHanaPrimaryKeyUtils::getPrimaryKeyType( const QgsField 
   }
 }
 
-QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFields &fields, QgsHanaPrimaryKeyType pkType,
-    const QList<int> &pkAttrs )
+QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFields &fields, QgsHanaPrimaryKeyType pkType, const QList<int> &pkAttrs )
 {
   switch ( pkType )
   {
     case PktInt:
     case PktInt64:
     {
-      const QString columnName = fields.at( pkAttrs[0] ).name() ;
-      return QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( columnName ) );
+      const QString columnName = fields.at( pkAttrs[0] ).name();
+      return u"%1=?"_s.arg( QgsHanaUtils::quotedIdentifier( columnName ) );
     }
     case PktFidMap:
     {
       QList<QString> conditions;
       conditions.reserve( pkAttrs.size() );
       for ( const int idx : pkAttrs )
-        conditions << QStringLiteral( "%1=?" ).arg( QgsHanaUtils::quotedIdentifier( fields[idx].name() ) );
-      return conditions.join( QLatin1String( " AND " ) );
+        conditions << u"%1=?"_s.arg( QgsHanaUtils::quotedIdentifier( fields[idx].name() ) );
+      return conditions.join( " AND "_L1 );
     }
     case PktUnknown:
       return QString();
@@ -167,8 +167,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFields &fields, QgsHa
   return QString(); //avoid warning
 }
 
-QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const QgsFields &fields, QgsHanaPrimaryKeyType pkType,
-    const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx )
+QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const QgsFields &fields, QgsHanaPrimaryKeyType pkType, const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx )
 {
   switch ( pkType )
   {
@@ -176,7 +175,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
     {
       Q_ASSERT( pkAttrs.size() == 1 );
       const QString fieldName = fields[pkAttrs[0]].name();
-      return QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( fieldName ) ).arg( fidToInt( featureId ) );
+      return u"%1=%2"_s.arg( QgsHanaUtils::quotedIdentifier( fieldName ) ).arg( fidToInt( featureId ) );
     }
     case PktInt64:
     {
@@ -187,7 +186,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
         return QString();
 
       const QgsField &field = fields.at( pkAttrs[0] );
-      return QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ), QgsHanaUtils::toConstant( pkValues[0], field.type() ) );
+      return u"%1=%2"_s.arg( QgsHanaUtils::quotedIdentifier( field.name() ), QgsHanaUtils::toConstant( pkValues[0], field.type() ) );
     }
     case PktFidMap:
     {
@@ -199,10 +198,10 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
       QStringList conditions;
       for ( int i = 0; i < pkAttrs.size(); i++ )
       {
-        const QgsField &field  = fields.at( pkAttrs[i] );
-        conditions << QStringLiteral( "%1=%2" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ), QgsHanaUtils::toConstant( pkValues[i], field.type() ) );
+        const QgsField &field = fields.at( pkAttrs[i] );
+        conditions << u"%1=%2"_s.arg( QgsHanaUtils::quotedIdentifier( field.name() ), QgsHanaUtils::toConstant( pkValues[i], field.type() ) );
       }
-      return conditions.join( QLatin1String( " AND " ) );
+      return conditions.join( " AND "_L1 );
     }
     case PktUnknown:
       return QString();
@@ -211,8 +210,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( QgsFeatureId featureId, const 
   return QString(); // avoid warning
 }
 
-QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsHanaPrimaryKeyType pkType,
-    const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx )
+QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureIds, const QgsFields &fields, QgsHanaPrimaryKeyType pkType, const QList<int> &pkAttrs, QgsHanaPrimaryKeyContext &primaryKeyCntx )
 {
   if ( featureIds.isEmpty() )
     return QString();
@@ -236,8 +234,8 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureId
         }
       }
 
-      const QgsField &field  = fields.at( pkAttrs[0] );
-      return QStringLiteral( "%1 IN (%2)" ).arg( QgsHanaUtils::quotedIdentifier( field.name() ), fids.join( ',' ) );
+      const QgsField &field = fields.at( pkAttrs[0] );
+      return u"%1 IN (%2)"_s.arg( QgsHanaUtils::quotedIdentifier( field.name() ), fids.join( ',' ) );
     }
     case PktFidMap:
     {
@@ -249,7 +247,7 @@ QString QgsHanaPrimaryKeyUtils::buildWhereClause( const QgsFeatureIds &featureId
           return QString();
         whereClauses << fidWhereClause;
       }
-      return whereClauses.join( QLatin1String( " OR " ) ).prepend( '(' ).append( ')' );
+      return whereClauses.join( " OR "_L1 ).prepend( '(' ).append( ')' );
     }
     case PktUnknown:
       return QString();

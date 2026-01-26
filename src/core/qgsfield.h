@@ -16,13 +16,14 @@
 #ifndef QGSFIELD_H
 #define QGSFIELD_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QSharedDataPointer>
 #include <QString>
 #include <QVariant>
 #include <QVector>
-#include <QSharedDataPointer>
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgis.h"
 
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
@@ -545,10 +546,30 @@ class CORE_EXPORT QgsField
      */
     void setDuplicatePolicy( Qgis::FieldDuplicatePolicy policy ) SIP_HOLDGIL;
 
+    /**
+     * Returns the field's merge policy, which indicates how field values should
+     * be handled during a merge operation.
+     *
+     * \see setMergePolicy()
+     *
+     * \since QGIS 3.44
+     */
+    Qgis::FieldDomainMergePolicy mergePolicy() const SIP_HOLDGIL;
+
+    /**
+     * Sets the field's merge \a policy, which indicates how field values should
+     * be handled during a merge operation.
+     *
+     * \see mergePolicy()
+     *
+     * \since QGIS 3.44
+     */
+    void setMergePolicy( Qgis::FieldDomainMergePolicy policy ) SIP_HOLDGIL;
+
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsField: %1 (%2)>" ).arg( sipCpp->name() ).arg( sipCpp->typeName() );
+    QString str = u"<QgsField: %1 (%2)>"_s.arg( sipCpp->name() ).arg( sipCpp->typeName() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -18,15 +18,16 @@
 #ifndef QGSFILEUTILS_H
 #define QGSFILEUTILS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QString>
 
 /**
  * \ingroup core
  * \class QgsFileUtils
- * \brief Class for file utilities.
+ * \brief Contains utilities for working with files.
  */
 class CORE_EXPORT QgsFileUtils
 {

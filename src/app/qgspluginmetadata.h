@@ -18,8 +18,10 @@
 
 #ifndef QGSPLUGINMETADATA_H
 #define QGSPLUGINMETADATA_H
-#include <QString>
 #include "qgis_app.h"
+
+#include <QString>
+
 class QgisPlugin;
 
 /**
@@ -35,10 +37,10 @@ class APP_EXPORT QgsPluginMetadata
     QString name() const;
     QString library() const;
     QgisPlugin *plugin();
+
   private:
     QString m_name;
     QString libraryPath;
     QgisPlugin *m_plugin = nullptr;
 };
 #endif //QGSPLUGINMETADATA_H
-

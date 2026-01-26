@@ -15,12 +15,12 @@
 
 
 #include "qgsmaptoolcapturelayergeometry.h"
-#include "qgsproject.h"
-#include "qgscurvepolygon.h"
+
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsproject.h"
 
-
-
+#include "moc_qgsmaptoolcapturelayergeometry.cpp"
 
 void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geometry )
 {
@@ -43,7 +43,7 @@ void QgsMapToolCaptureLayerGeometry::geometryCaptured( const QgsGeometry &geomet
       if ( !datasetIsCurved || !providerSupportsCurvedSegments )
         g = QgsGeometry( g.constGet()->segmentize() );
 
-      QList<QgsVectorLayer *>  avoidIntersectionsLayers;
+      QList<QgsVectorLayer *> avoidIntersectionsLayers;
       switch ( QgsProject::instance()->avoidIntersectionsMode() )
       {
         case Qgis::AvoidIntersectionsMode::AvoidIntersectionsCurrentLayer:

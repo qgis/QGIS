@@ -21,7 +21,7 @@
 
 QString QgsConvexHullAlgorithm::name() const
 {
-  return QStringLiteral( "convexhull" );
+  return u"convexhull"_s;
 }
 
 QString QgsConvexHullAlgorithm::displayName() const
@@ -41,7 +41,7 @@ QString QgsConvexHullAlgorithm::group() const
 
 QString QgsConvexHullAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsConvexHullAlgorithm::outputName() const
@@ -51,9 +51,12 @@ QString QgsConvexHullAlgorithm::outputName() const
 
 QString QgsConvexHullAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer." ) +
-         QStringLiteral( "\n\n" ) +
-         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the convex hull for each feature in an input layer." ) + u"\n\n"_s + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a convex hull calculation which covers the whole layer or grouped subsets of features." );
+}
+
+QString QgsConvexHullAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Calculates the convex hull for each feature in an input layer." );
 }
 
 QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
@@ -63,10 +66,10 @@ QgsConvexHullAlgorithm *QgsConvexHullAlgorithm::createInstance() const
 
 QgsFields QgsConvexHullAlgorithm::outputFields( const QgsFields &inputFields ) const
 {
-  QgsFields fields = inputFields;
-  fields.append( QgsField( QStringLiteral( "area" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  fields.append( QgsField( QStringLiteral( "perimeter" ), QMetaType::Type::Double, QString(), 20, 6 ) );
-  return fields;
+  QgsFields newFields;
+  newFields.append( QgsField( u"area"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  newFields.append( QgsField( u"perimeter"_s, QMetaType::Type::Double, QString(), 20, 6 ) );
+  return QgsProcessingUtils::combineFields( inputFields, newFields );
 }
 
 QgsFeatureList QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
@@ -106,4 +109,3 @@ QgsFeatureList QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature
 }
 
 ///@endcond
-

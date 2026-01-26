@@ -14,15 +14,14 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
-
 #include "editorwidgets/core/qgseditorwidgetregistry.h"
+#include "editorwidgets/qgsvaluemapconfigdlg.h"
+#include "editorwidgets/qgsvaluemapwidgetwrapper.h"
 #include "qgsapplication.h"
 #include "qgseditorwidgetwrapper.h"
-#include "editorwidgets/qgsvaluemapwidgetwrapper.h"
-#include "qgsvaluemapfieldformatter.h"
-#include "editorwidgets/qgsvaluemapconfigdlg.h"
 #include "qgsgui.h"
+#include "qgstest.h"
+#include "qgsvaluemapfieldformatter.h"
 
 class TestQgsValueMapWidgetWrapper : public QObject
 {
@@ -31,12 +30,11 @@ class TestQgsValueMapWidgetWrapper : public QObject
     TestQgsValueMapWidgetWrapper() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void testPopulateComboBox();
-
 };
 
 void TestQgsValueMapWidgetWrapper::initTestCase()
@@ -68,16 +66,16 @@ void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
   nullValue.insert( QgsApplication::nullRepresentation(), QgsValueMapFieldFormatter::NULL_VALUE );
   valueList.append( nullValue );
   QVariantMap value1;
-  value1.insert( QStringLiteral( "desc 1" ), QStringLiteral( "val 1" ) );
+  value1.insert( u"desc 1"_s, u"val 1"_s );
   valueList.append( value1 );
   QVariantMap value2;
-  value2.insert( QStringLiteral( "desc 2" ), QStringLiteral( "val 2" ) );
+  value2.insert( u"desc 2"_s, u"val 2"_s );
   valueList.append( value2 );
 
-  config.insert( QStringLiteral( "map" ), valueList );
+  config.insert( u"map"_s, valueList );
 
 
-  std::unique_ptr< QComboBox > combo = std::make_unique< QComboBox >();
+  auto combo = std::make_unique<QComboBox>();
 
   // with nulls
   QgsValueMapConfigDlg::populateComboBox( combo.get(), config, false );
@@ -85,28 +83,28 @@ void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
   QCOMPARE( combo->count(), 3 );
   QCOMPARE( combo->itemText( 0 ), QgsApplication::nullRepresentation() );
   QCOMPARE( combo->itemData( 0 ).toString(), QgsValueMapFieldFormatter::NULL_VALUE );
-  QCOMPARE( combo->itemText( 1 ), QStringLiteral( "desc 1" ) );
-  QCOMPARE( combo->itemData( 1 ).toString(), QStringLiteral( "val 1" ) );
-  QCOMPARE( combo->itemText( 2 ), QStringLiteral( "desc 2" ) );
-  QCOMPARE( combo->itemData( 2 ).toString(), QStringLiteral( "val 2" ) );
+  QCOMPARE( combo->itemText( 1 ), u"desc 1"_s );
+  QCOMPARE( combo->itemData( 1 ).toString(), u"val 1"_s );
+  QCOMPARE( combo->itemText( 2 ), u"desc 2"_s );
+  QCOMPARE( combo->itemData( 2 ).toString(), u"val 2"_s );
 
   // no nulls
   combo->clear();
   QgsValueMapConfigDlg::populateComboBox( combo.get(), config, true );
 
   QCOMPARE( combo->count(), 2 );
-  QCOMPARE( combo->itemText( 0 ), QStringLiteral( "desc 1" ) );
-  QCOMPARE( combo->itemData( 0 ).toString(), QStringLiteral( "val 1" ) );
-  QCOMPARE( combo->itemText( 1 ), QStringLiteral( "desc 2" ) );
-  QCOMPARE( combo->itemData( 1 ).toString(), QStringLiteral( "val 2" ) );
+  QCOMPARE( combo->itemText( 0 ), u"desc 1"_s );
+  QCOMPARE( combo->itemData( 0 ).toString(), u"val 1"_s );
+  QCOMPARE( combo->itemText( 1 ), u"desc 2"_s );
+  QCOMPARE( combo->itemData( 1 ).toString(), u"val 2"_s );
 
   // old style config map (2.x)
   config.clear();
   QVariantMap mapValue;
   mapValue.insert( QgsApplication::nullRepresentation(), QgsValueMapFieldFormatter::NULL_VALUE );
-  mapValue.insert( QStringLiteral( "desc 1" ), QStringLiteral( "val 1" ) );
-  mapValue.insert( QStringLiteral( "desc 2" ), QStringLiteral( "val 2" ) );
-  config.insert( QStringLiteral( "map" ), mapValue );
+  mapValue.insert( u"desc 1"_s, u"val 1"_s );
+  mapValue.insert( u"desc 2"_s, u"val 2"_s );
+  config.insert( u"map"_s, mapValue );
 
   // with nulls
   combo->clear();
@@ -115,21 +113,20 @@ void TestQgsValueMapWidgetWrapper::testPopulateComboBox()
   QCOMPARE( combo->count(), 3 );
   QCOMPARE( combo->itemText( 0 ), QgsApplication::nullRepresentation() );
   QCOMPARE( combo->itemData( 0 ).toString(), QgsValueMapFieldFormatter::NULL_VALUE );
-  QCOMPARE( combo->itemText( 1 ), QStringLiteral( "desc 1" ) );
-  QCOMPARE( combo->itemData( 1 ).toString(), QStringLiteral( "val 1" ) );
-  QCOMPARE( combo->itemText( 2 ), QStringLiteral( "desc 2" ) );
-  QCOMPARE( combo->itemData( 2 ).toString(), QStringLiteral( "val 2" ) );
+  QCOMPARE( combo->itemText( 1 ), u"desc 1"_s );
+  QCOMPARE( combo->itemData( 1 ).toString(), u"val 1"_s );
+  QCOMPARE( combo->itemText( 2 ), u"desc 2"_s );
+  QCOMPARE( combo->itemData( 2 ).toString(), u"val 2"_s );
 
   // no nulls
   combo->clear();
   QgsValueMapConfigDlg::populateComboBox( combo.get(), config, true );
 
   QCOMPARE( combo->count(), 2 );
-  QCOMPARE( combo->itemText( 0 ), QStringLiteral( "desc 1" ) );
-  QCOMPARE( combo->itemData( 0 ).toString(), QStringLiteral( "val 1" ) );
-  QCOMPARE( combo->itemText( 1 ), QStringLiteral( "desc 2" ) );
-  QCOMPARE( combo->itemData( 1 ).toString(), QStringLiteral( "val 2" ) );
-
+  QCOMPARE( combo->itemText( 0 ), u"desc 1"_s );
+  QCOMPARE( combo->itemData( 0 ).toString(), u"val 1"_s );
+  QCOMPARE( combo->itemText( 1 ), u"desc 2"_s );
+  QCOMPARE( combo->itemData( 1 ).toString(), u"val 2"_s );
 }
 
 QGSTEST_MAIN( TestQgsValueMapWidgetWrapper )

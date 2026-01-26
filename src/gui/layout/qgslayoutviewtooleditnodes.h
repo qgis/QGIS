@@ -16,23 +16,21 @@
 #ifndef QGSLAYOUTVIEWTOOLEDITNODES_H
 #define QGSLAYOUTVIEWTOOLEDITNODES_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgslayoutviewtool.h"
 
 class QgsLayoutNodesItem;
 
 /**
  * \ingroup gui
- * \brief Layout view tool for edit node based items in the layout.
+ * \brief Layout view tool for editing node based items in the layout.
  */
 class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutViewToolEditNodes.
      */
@@ -50,13 +48,12 @@ class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
     void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
     void deactivate() override;
-    QList< QgsLayoutItem * > ignoredSnapItems() const override;
+    QList<QgsLayoutItem *> ignoredSnapItems() const override;
 
   private:
-
     const double mMoveContentSearchRadius = 25;
 
-    QPointer< QgsLayoutNodesItem > mNodesItem;
+    QPointer<QgsLayoutNodesItem> mNodesItem;
     int mNodesItemIndex = -1;
 
     //! Start position of content move
@@ -67,8 +64,6 @@ class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
     void displayNodes( bool display = true );
     void deselectNodes();
     void setSelectedNode( QgsLayoutNodesItem *shape, int index );
-
-
 };
 
 #endif // QGSLAYOUTVIEWTOOLEDITNODES_H

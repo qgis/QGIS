@@ -27,15 +27,16 @@ class QgsServiceRegistry;
 class QgsServiceNativeModuleEntry;
 class QgsServerInterface;
 
+#include <memory>
+
 #include "qgis_server.h"
 
 #include <QHash>
-#include <memory>
 
 /**
  * \ingroup server
  * \class QgsServiceNativeLoader
- * \brief Class defining the native service module loader for QGIS server services
+ * \brief Defines the native service module loader for QGIS server services.
  *
  * This class provides methods for loading and managing hook for native (C++) modules
  *
@@ -43,7 +44,6 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServiceNativeLoader
 {
   public:
-
     //! Constructor
     QgsServiceNativeLoader() = default;
 
@@ -53,8 +53,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
      * \param registrar QgsServiceRegistry instance for registering services
      * \param serverIface QgsServerInterface instarce
      */
-    void loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
-                      QgsServerInterface *serverIface = nullptr );
+    void loadModules( const QString &modulePath, QgsServiceRegistry &registrar, QgsServerInterface *serverIface = nullptr );
 
     /**
      * Unload all modules
@@ -71,7 +70,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
 
 
   private:
-    typedef QHash<QString, std::shared_ptr<QgsServiceNativeModuleEntry> > ModuleTable;
+    typedef QHash<QString, std::shared_ptr<QgsServiceNativeModuleEntry>> ModuleTable;
 
     /**
      * Finds module.
@@ -90,4 +89,3 @@ class SERVER_EXPORT QgsServiceNativeLoader
 };
 
 #endif
-

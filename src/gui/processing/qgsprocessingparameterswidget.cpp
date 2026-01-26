@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameterswidget.h"
+
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingparameters.h"
+
+#include "moc_qgsprocessingparameterswidget.cpp"
 
 ///@cond NOT_STABLE
 

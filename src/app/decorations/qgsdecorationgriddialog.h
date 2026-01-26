@@ -20,8 +20,10 @@
 #define QGSDECORATIONGRIDDIALOG_H
 
 #include "ui_qgsdecorationgriddialog.h"
-#include <QDialog>
+
 #include "qgis_app.h"
+
+#include <QDialog>
 
 class QgsDecorationGrid;
 class QgsLineSymbol;
@@ -49,7 +51,6 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
     void updateGuiElements();
     void updateDecoFromGui();
     void updateInterval( bool force = false );
-
 };
 
 #endif

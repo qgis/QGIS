@@ -18,25 +18,25 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgselevationshadingrenderer.h"
+#include "qgsexpressioncontext.h"
+#include "qgsgeometry.h"
+#include "qgslabelingenginesettings.h"
+#include "qgsmapclippingregion.h"
+#include "qgsmaplayer.h"
+#include "qgsmaptopixel.h"
+#include "qgsmaskrendersettings.h"
+#include "qgsrectangle.h"
+#include "qgsscalecalculator.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsvectorsimplifymethod.h"
+
 #include <QColor>
 #include <QImage>
 #include <QPointer>
 #include <QSize>
 #include <QStringList>
-
-#include "qgscoordinatereferencesystem.h"
-#include "qgslabelingenginesettings.h"
-#include "qgsmaptopixel.h"
-#include "qgsrectangle.h"
-#include "qgsscalecalculator.h"
-#include "qgsexpressioncontext.h"
-#include "qgsmaplayer.h"
-#include "qgsgeometry.h"
-#include "qgstemporalrangeobject.h"
-#include "qgsmapclippingregion.h"
-#include "qgsvectorsimplifymethod.h"
-#include "qgselevationshadingrenderer.h"
-#include "qgsmaskrendersettings.h"
 
 class QPainter;
 
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsLabelBlockingRegion
 
 /**
  * \ingroup core
- * \brief The QgsMapSettings class contains configuration for rendering of the map.
+ * \brief Contains configuration for rendering maps.
  *
  * The rendering itself is done by QgsMapRendererJob subclasses.
  *
@@ -360,6 +360,22 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      * Returns the units of the map's geographical coordinates - used for scale calculation.
      */
     Qgis::DistanceUnit mapUnits() const;
+
+    /**
+     * Returns the method to use for scale calculations for the map.
+     *
+     * \see setScaleMethod()
+     * \since QGIS 3.44
+     */
+    Qgis::ScaleCalculationMethod scaleMethod() const;
+
+    /**
+     * Sets the \a method to use for scale calculations for the map.
+     *
+     * \see scaleMethod()
+     * \since QGIS 3.44
+     */
+    void setScaleMethod( Qgis::ScaleCalculationMethod method );
 
     /**
      * Sets the \a ellipsoid by its acronym. Known ellipsoid acronyms can be
@@ -909,6 +925,22 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
      */
     void setElevationShadingRenderer( const QgsElevationShadingRenderer &renderer );
 
+    /**
+     * Returns the policy controlling when rasterisation of content during renders is permitted.
+     *
+     * \see setRasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+
+    /**
+     * Sets the \a policy controlling when rasterisation of content during renders is permitted.
+     *
+     * \see rasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+
   protected:
 
     double mDpi = 96.0;
@@ -925,6 +957,9 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
 
     //! list of layers to be rendered (stored as weak pointers)
     QgsWeakMapLayerPointerList mLayers;
+    QStringList mLayerIds;
+    bool mHasGroupLayers = false;
+
     QMap<QString, QString> mLayerStyleOverrides;
     QString mCustomRenderFlags;
     QVariantMap mCustomRenderingFlags;
@@ -938,7 +973,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     QColor mSelectionColor;
 
     Qgis::MapSettingsFlags mFlags;
-
+    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
     QImage::Format mImageFormat = QImage::Format_ARGB32_Premultiplied;
 
     double mSegmentationTolerance;
@@ -984,6 +1019,7 @@ class CORE_EXPORT QgsMapSettings : public QgsTemporalRangeObject
     void updateDerived();
 
   private:
+    void matchRasterizedRenderingPolicyToFlags();
 
     QList< QgsLabelBlockingRegion > mLabelBlockingRegions;
     QList< QgsMapClippingRegion > mClippingRegions;

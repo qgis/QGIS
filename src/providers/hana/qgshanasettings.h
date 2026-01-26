@@ -18,18 +18,19 @@
 #define QGSHANAPSETTINGS_H
 
 #include "qgsdatasourceuri.h"
+
 #include <QString>
 
 struct QgsHanaIdentifierType
 {
-  enum Value
-  {
-    InstanceNumber = 0,
-    PortNumber = 1
-  };
+    enum Value
+    {
+      InstanceNumber = 0,
+      PortNumber = 1
+    };
 
-  static bool isValid( uint ) noexcept;
-  static Value fromInt( uint );
+    static bool isValid( uint ) noexcept;
+    static Value fromInt( uint );
 };
 
 enum class QgsHanaConnectionType : uint
@@ -287,7 +288,7 @@ class QgsHanaSettings
     /**
      * Constructs an instance of QgsDataSourceUri with values of the current object.
      */
-    QgsDataSourceUri toDataSourceUri() const ;
+    QgsDataSourceUri toDataSourceUri() const;
 
     /**
      * Loads HANA connection settings from /HANA/connections/{connection_name}.
@@ -320,7 +321,7 @@ class QgsHanaSettings
     QString mDsn;
     QString mDriver;
     QString mHost;
-    uint mIdentifierType;
+    uint mIdentifierType = QgsHanaIdentifierType::InstanceNumber;
     QString mIdentifier;
     QString mDatabase;
     bool mMultitenant = false;

@@ -18,8 +18,9 @@
 #define QGSABOUT_H
 
 #include "ui_qgsabout.h"
-#include "qgsoptionsdialogbase.h"
+
 #include "qgis_app.h"
+#include "qgsoptionsdialogbase.h"
 
 class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
 {
@@ -30,19 +31,19 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
     void setVersion( const QString &v );
     static QString fileSystemSafe( const QString &string );
 
-  private:
-    void setWhatsNew();
-    void setLicence();
-    void setPluginInfo();
-    void setDevelopersMap();
-    void init();
-    QString mVersionString;
-
   private slots:
     void btnCopyToClipboard_clicked();
     void btnQgisUser_clicked();
     void btnQgisHome_clicked();
     void openUrl( const QUrl &url );
+
+  private:
+    void setWhatsNew();
+    void setLicence();
+    void setPluginInfo();
+    void init();
+
+    QString mVersionString;
 };
 
 #endif

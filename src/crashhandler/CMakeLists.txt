@@ -2,13 +2,7 @@ include_directories(SYSTEM
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if (BUILD_WITH_QT6)
-  QT6_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
-  QT6_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
-else()
-  QT5_WRAP_UI(CRASH_UIS_H qgscrashdialog.ui)
-  QT5_WRAP_CPP(CRASH_HDR_MOC qgscrashdialog.h)
-endif()
+qt_wrap_ui(CRASH_UIS_H qgscrashdialog.ui)
 
 set(IMAGE_RCCS ../../images/images.qrc)
 
@@ -18,18 +12,20 @@ if(WIN32 AND NOT MINGW)
   set_source_files_properties(qgsstacktrace.cpp PROPERTIES COMPILE_FLAGS -wd4091)
 endif()
 
+set (SRCS main.cpp)
+win32_icon(SRCS)
+win32_version_info("QGIS Crash Handler" "qgiscrashhandler" SRCS)
 add_executable(qgiscrashhandler WIN32
-  main.cpp
+  ${SRCS}
   ${CRASH_UIS_H}
   ${CRASH_HDR_MOC}
   ${IMAGE_RCCS}
   qgscrashdialog.cpp
   qgsstacktrace.cpp
   qgscrashreport.cpp
-  ${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc
 )
 
-target_compile_features(qgiscrashhandler PRIVATE cxx_std_17)
+target_compile_features(qgiscrashhandler PRIVATE cxx_std_20)
 
 target_link_libraries(qgiscrashhandler
   ${QT_VERSION_BASE}::Core

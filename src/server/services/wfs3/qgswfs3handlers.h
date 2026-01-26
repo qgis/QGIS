@@ -18,8 +18,8 @@
 #ifndef QGS_WFS3_HANDLERS_H
 #define QGS_WFS3_HANDLERS_H
 
-#include "qgsserverogcapihandler.h"
 #include "qgsfields.h"
+#include "qgsserverogcapihandler.h"
 
 class QgsFeatureRequest;
 class QgsServerOgcApi;
@@ -30,10 +30,9 @@ class QgsFeature;
  * functionality which is common to the handlers that
  * return or process items.
  */
-class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
+class QgsWfs3AbstractItemsHandler : public QgsServerOgcApiHandler
 {
   public:
-
     /**
      * Checks if the layer is published in WFS (and perform additional checks for access
      * control if plugins are enabled)
@@ -61,15 +60,23 @@ class QgsWfs3AbstractItemsHandler: public QgsServerOgcApiHandler
      */
     QgsFields publishedFields( const QgsVectorLayer *layer, const QgsServerApiContext &context ) const;
 
+    /**
+     * Returns the HTML template path for the handler in the given \a context
+     *
+     * The template path is calculated from QgsServerSettings's apiResourcesDirectory() as follow:
+     * apiResourcesDirectory() + "/ogc/templates/wfs3/" + operationId + ".html"
+     * e.g. for an handler with operationId "collectionItems", the path
+     * will be apiResourcesDirectory() + "/ogc/templates/wfs3/collectionItems.html"
+     */
+    const QString templatePath( const QgsServerApiContext &context ) const override;
 };
 
 /**
  * The APIHandler class Wfs3handles the API definition
  */
-class QgsWfs3APIHandler: public QgsWfs3AbstractItemsHandler
+class QgsWfs3APIHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
-
     QgsWfs3APIHandler( const QgsServerOgcApi *api );
 
     // QgsServerOgcApiHandler interface
@@ -79,31 +86,29 @@ class QgsWfs3APIHandler: public QgsWfs3AbstractItemsHandler
     std::string summary() const override { return "The API description"; }
     std::string description() const override { return "The formal documentation of this API according to the OpenAPI specification, version 3.0. I.e., this document."; }
     std::string linkTitle() const override { return "API description"; }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::service_desc; }
     json schema( const QgsServerApiContext &context ) const override;
 
   private:
     const QgsServerOgcApi *mApi = nullptr;
-
 };
 
 
 /**
  * The QgsWfs3LandingPageHandler is the landing page handler.
  */
-class QgsWfs3LandingPageHandler: public QgsServerOgcApiHandler
+class QgsWfs3LandingPageHandler : public QgsServerOgcApiHandler
 {
   public:
-
-    QgsWfs3LandingPageHandler( );
+    QgsWfs3LandingPageHandler();
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     // QgsServerOgcApiHandler interface
     QRegularExpression path() const override { return QRegularExpression( R"re((.html|.json)?$)re" ); }
     std::string operationId() const override { return "getLandingPage"; }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string summary() const override
     {
       return "WFS 3.0 Landing Page";
@@ -121,11 +126,10 @@ class QgsWfs3LandingPageHandler: public QgsServerOgcApiHandler
 /**
  * The QgsWfs3ConformanceHandler class shows the conformance links.
  */
-class QgsWfs3ConformanceHandler: public QgsServerOgcApiHandler
+class QgsWfs3ConformanceHandler : public QgsServerOgcApiHandler
 {
   public:
-
-    QgsWfs3ConformanceHandler( );
+    QgsWfs3ConformanceHandler();
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -138,7 +142,7 @@ class QgsWfs3ConformanceHandler: public QgsServerOgcApiHandler
       return "List all requirements classes specified in a standard (e.g., WFS 3.0 "
              "Part 1: Core) that the server conforms to.";
     }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string linkTitle() const override { return "WFS 3.0 conformance classes"; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::conformance; }
     json schema( const QgsServerApiContext &context ) const override;
@@ -149,11 +153,10 @@ class QgsWfs3ConformanceHandler: public QgsServerOgcApiHandler
  * The CollectionsHandler lists all available collections for the current project
  * Path: /collections
  */
-class QgsWfs3CollectionsHandler: public QgsWfs3AbstractItemsHandler
+class QgsWfs3CollectionsHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
-
-    QgsWfs3CollectionsHandler( );
+    QgsWfs3CollectionsHandler();
 
     void handleRequest( const QgsServerApiContext &context ) const override;
 
@@ -164,7 +167,7 @@ class QgsWfs3CollectionsHandler: public QgsWfs3AbstractItemsHandler
     {
       return "Metadata about the feature collections shared by this API.";
     }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     std::string description() const override
     {
       return "Describe the feature collections in the dataset "
@@ -179,10 +182,10 @@ class QgsWfs3CollectionsHandler: public QgsWfs3AbstractItemsHandler
  * The DescribeCollectionHandler describes a single collection
  * Path: /collections/{collectionId}
  */
-class QgsWfs3DescribeCollectionHandler: public QgsWfs3AbstractItemsHandler
+class QgsWfs3DescribeCollectionHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
-    QgsWfs3DescribeCollectionHandler( );
+    QgsWfs3DescribeCollectionHandler();
     void handleRequest( const QgsServerApiContext &context ) const override;
 
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+?)(\.json|\.html|/)?$)re" ); }
@@ -190,7 +193,7 @@ class QgsWfs3DescribeCollectionHandler: public QgsWfs3AbstractItemsHandler
     std::string summary() const override { return "Describe the feature collection with ID {collectionId}."; }
     std::string description() const override { return "Metadata about a feature collection."; }
     std::string linkTitle() const override { return "Feature collection"; }
-    QStringList tags() const override { return { QStringLiteral( "Capabilities" ) }; }
+    QStringList tags() const override { return { u"Capabilities"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
 };
@@ -199,10 +202,10 @@ class QgsWfs3DescribeCollectionHandler: public QgsWfs3AbstractItemsHandler
  * The CollectionsItemsHandler list all items in the collection
  * Path: /collections/{collectionId}
  */
-class QgsWfs3CollectionsItemsHandler: public QgsWfs3AbstractItemsHandler
+class QgsWfs3CollectionsItemsHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
-    QgsWfs3CollectionsItemsHandler( );
+    QgsWfs3CollectionsItemsHandler();
     void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items(\.geojson|\.json|\.html|/)?$)re" ); }
     std::string operationId() const override { return "getFeatures"; }
@@ -216,29 +219,28 @@ class QgsWfs3CollectionsItemsHandler: public QgsWfs3AbstractItemsHandler
              "or GeoJSON (.json).";
     }
     std::string linkTitle() const override { return "Retrieve the features of the collection"; }
-    QStringList tags() const override { return { QStringLiteral( "Features" ) }; }
+    QStringList tags() const override { return { u"Features"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     QList<QgsServerQueryStringParameter> parameters( const QgsServerApiContext &context ) const override;
     json schema( const QgsServerApiContext &context ) const override;
 
   private:
-
     // Retrieve the fields filter parameters
-    const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer,  const QgsServerApiContext &context ) const;
+    const QList<QgsServerQueryStringParameter> fieldParameters( const QgsVectorLayer *mapLayer, const QgsServerApiContext &context ) const;
 };
 
 
-class QgsWfs3CollectionsFeatureHandler: public QgsWfs3AbstractItemsHandler
+class QgsWfs3CollectionsFeatureHandler : public QgsWfs3AbstractItemsHandler
 {
   public:
-    QgsWfs3CollectionsFeatureHandler( );
+    QgsWfs3CollectionsFeatureHandler();
     void handleRequest( const QgsServerApiContext &context ) const override;
     QRegularExpression path() const override { return QRegularExpression( R"re(/collections/(?<collectionId>[^/]+)/items/(?<featureId>[^/]+?)(\.json|\.geojson|\.html|/)?$)re" ); }
     std::string operationId() const override { return "getFeature"; }
     std::string description() const override { return "Retrieve a feature with ID {featureId} from the collection with ID {collectionId}; use content negotiation or specify a file extension to request HTML (.html or GeoJSON (.json)."; }
     std::string summary() const override { return "Retrieve a single feature with ID {featureId} from the collection with ID {collectionId}."; }
     std::string linkTitle() const override { return "Retrieve a feature"; }
-    QStringList tags() const override { return { QStringLiteral( "Features" ) }; }
+    QStringList tags() const override { return { u"Features"_s }; }
     QgsServerOgcApi::Rel linkType() const override { return QgsServerOgcApi::Rel::data; }
     json schema( const QgsServerApiContext &context ) const override;
 };

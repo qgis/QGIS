@@ -30,9 +30,7 @@
  */
 class QgsPdalCreateCopcAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsPdalCreateCopcAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,12 +39,12 @@ class QgsPdalCreateCopcAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QStringList tags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsPdalCreateCopcAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     friend class TestQgsProcessingPdalAlgs;
 };

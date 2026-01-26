@@ -12,7 +12,12 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsgeorefdelegates.h"
+
+#include <cmath>
 #include <limits>
+
+#include "qgsgeorefvalidators.h"
 
 #include <QDoubleSpinBox>
 #include <QLineEdit>
@@ -20,9 +25,7 @@
 #include <QRegularExpressionMatch>
 #include <QRegularExpressionValidator>
 
-#include "qgsgeorefvalidators.h"
-#include "qgsgeorefdelegates.h"
-#include <cmath>
+#include "moc_qgsgeorefdelegates.cpp"
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
@@ -30,8 +33,7 @@ QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
 {
 }
 
-QWidget *QgsDmsAndDdDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &/*option*/,
-    const QModelIndex &/*index*/ ) const
+QWidget *QgsDmsAndDdDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
   QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( editor );
@@ -48,8 +50,7 @@ void QgsDmsAndDdDelegate::setEditorData( QWidget *editor, const QModelIndex &ind
   lineEdit->setText( value );
 }
 
-void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
-                                        const QModelIndex &index ) const
+void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
   const QString stringValue = lineEdit->text();
@@ -62,8 +63,7 @@ void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *mod
   model->setData( index, value, Qt::EditRole );
 }
 
-void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
-    const QModelIndex &/*index*/ ) const
+void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const
 {
   editor->setGeometry( option.rect );
 }
@@ -91,11 +91,10 @@ QgsCoordDelegate::QgsCoordDelegate( QWidget *parent )
 {
 }
 
-QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &/*option*/,
-    const QModelIndex &/*index*/ ) const
+QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & /*index*/ ) const
 {
   QLineEdit *editor = new QLineEdit( parent );
-  const thread_local QRegularExpression re( QStringLiteral( "-?\\d*(\\.\\d+)?" ) );
+  const thread_local QRegularExpression re( u"-?\\d*(\\.\\d+)?"_s );
   QRegularExpressionValidator *validator = new QRegularExpressionValidator( re, editor );
   editor->setValidator( validator );
 

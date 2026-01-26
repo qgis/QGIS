@@ -16,10 +16,15 @@
  ***************************************************************************/
 
 #include "qgsprocessingprovider.h"
+
 #include "qgsapplication.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsrasterfilewriter.h"
 #include "qgsmessagelog.h"
+#include "qgsrasterfilewriter.h"
+#include "qgsvectorfilewriter.h"
+
+#include <QRegularExpressionMatch>
+
+#include "moc_qgsprocessingprovider.cpp"
 
 QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
@@ -38,7 +43,7 @@ QIcon QgsProcessingProvider::icon() const
 
 QString QgsProcessingProvider::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
+  return QgsApplication::iconPath( u"processingAlgorithm.svg"_s );
 }
 
 Qgis::ProcessingProviderFlags QgsProcessingProvider::flags() const
@@ -63,7 +68,76 @@ QString QgsProcessingProvider::versionInfo() const
 
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
 {
-  return QgsRasterFileWriter::supportedFormatExtensions();
+  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  QSet< QString > extensions;
+  QStringList res;
+  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  {
+    if ( !extensions.contains( formatAndExt.second ) )
+    {
+      extensions.insert( formatAndExt.second );
+      res << formatAndExt.second;
+    }
+  }
+  return res;
+}
+
+QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensions() const
+{
+  return supportedOutputRasterLayerFormatAndExtensionsDefault();
+}
+
+QList<QPair<QString, QString>> QgsProcessingProvider::supportedOutputRasterLayerFormatAndExtensionsDefault()
+{
+  const auto formats = QgsRasterFileWriter::supportedFiltersAndFormats();
+  QList<QPair<QString, QString>> res;
+
+  const thread_local QRegularExpression rx( u"\\*\\.([a-zA-Z0-9]*)"_s );
+
+  for ( const QgsRasterFileWriter::FilterFormatDetails &format : formats )
+  {
+    const QString ext = format.filterString;
+    const QRegularExpressionMatch match = rx.match( ext );
+    if ( !match.hasMatch() )
+      continue;
+
+    const QString matched = match.captured( 1 );
+    res << QPair<QString, QString>( format.driverName, matched );
+  }
+
+  std::sort( res.begin(), res.end(), []( const QPair<QString, QString> &a, const QPair<QString, QString> &b ) -> bool
+  {
+    for ( const QString &tifExt : { u"tif"_s, u"tiff"_s } )
+    {
+      if ( a.second == tifExt )
+      {
+        if ( b.second == a.second )
+        {
+          if ( a.first == "GTiff"_L1 )
+            return true;
+          else if ( b.first == "GTiff"_L1 )
+            return false;
+          return a.first.toLower().localeAwareCompare( b.first.toLower() ) < 0;
+        }
+        return true;
+      }
+      else if ( b.second == tifExt )
+        return false;
+    }
+
+    if ( a.second == "gpkg"_L1 )
+    {
+      if ( b.second == a.second )
+        return a.first.toLower().localeAwareCompare( b.first.toLower() ) < 0;
+      return true;
+    }
+    else if ( b.second == "gpkg"_L1 )
+      return false;
+
+    return a.second.toLower().localeAwareCompare( b.second.toLower() ) < 0;
+  } );
+
+  return res;
 }
 
 QStringList QgsProcessingProvider::supportedOutputPointCloudLayerExtensions() const
@@ -148,7 +222,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
   if ( parameter->type() == QgsProcessingParameterVectorDestination::typeName()
        ||  parameter->type() == QgsProcessingParameterFeatureSink::typeName() )
   {
-    if ( outputPath.startsWith( QLatin1String( "memory:" ) ) )
+    if ( outputPath.startsWith( "memory:"_L1 ) )
     {
       if ( !supportsNonFileBasedOutput() )
       {
@@ -167,7 +241,7 @@ bool QgsProcessingProvider::isSupportedOutputValue( const QVariant &outputValue,
     QString extension;
     QgsProcessingUtils::parseDestinationString( outputPath, providerKey, uri, layerName, format, options, useWriter, extension );
 
-    if ( providerKey != QLatin1String( "ogr" ) )
+    if ( providerKey != "ogr"_L1 )
     {
       if ( !supportsNonFileBasedOutput() )
       {
@@ -241,29 +315,43 @@ QString QgsProcessingProvider::defaultVectorFileExtension( bool hasGeometry ) co
   {
     // who knows? provider says it has no file support at all...
     // let's say shp. even MapInfo supports shapefiles.
-    return hasGeometry ? QStringLiteral( "shp" ) : QStringLiteral( "dbf" );
+    return hasGeometry ? u"shp"_s : u"dbf"_s;
+  }
+}
+
+QString QgsProcessingProvider::defaultRasterFileFormat() const
+{
+  const QString userDefault = QgsProcessingUtils::defaultRasterFormat();
+
+  const QList<QPair<QString, QString>> formatAndExtensions = supportedOutputRasterLayerFormatAndExtensions();
+  for ( const QPair<QString, QString> &formatAndExt : std::as_const( formatAndExtensions ) )
+  {
+    if ( formatAndExt.first.compare( userDefault, Qt::CaseInsensitive ) == 0 )
+    {
+      // user set default is supported by provider, use that
+      return userDefault;
+    }
+  }
+
+  if ( !formatAndExtensions.empty() )
+  {
+    return formatAndExtensions.at( 0 ).first;
+  }
+  else
+  {
+    // who knows? provider says it has no file support at all...
+    return u"GTiff"_s;
   }
 }
 
 QString QgsProcessingProvider::defaultRasterFileExtension() const
 {
-  const QString userDefault = QgsProcessingUtils::defaultRasterExtension();
+  QString format = defaultRasterFileFormat();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( format );
+  if ( !extensions.isEmpty() )
+    return extensions[0];
 
-  const QStringList supportedExtensions = supportedOutputRasterLayerExtensions();
-  if ( supportedExtensions.contains( userDefault, Qt::CaseInsensitive ) )
-  {
-    // user set default is supported by provider, use that
-    return userDefault;
-  }
-  else if ( !supportedExtensions.empty() )
-  {
-    return supportedExtensions.at( 0 );
-  }
-  else
-  {
-    // who knows? provider says it has no file support at all...
-    return QStringLiteral( "tif" );
-  }
+  return u"tif"_s;
 }
 
 QString QgsProcessingProvider::defaultPointCloudFileExtension() const
@@ -283,7 +371,7 @@ QString QgsProcessingProvider::defaultPointCloudFileExtension() const
   else
   {
     // who knows? provider says it has no file support at all...
-    return QStringLiteral( "las" );
+    return u"las"_s;
   }
 }
 
@@ -304,7 +392,7 @@ QString QgsProcessingProvider::defaultVectorTileFileExtension() const
   else
   {
     // who knows? provider says it has no file support at all...
-    return QStringLiteral( "mbtiles" );
+    return u"mbtiles"_s;
   }
 }
 

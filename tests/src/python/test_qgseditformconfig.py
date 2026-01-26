@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '11/04/2017'
-__copyright__ = 'Copyright 2018, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "11/04/2017"
+__copyright__ = "Copyright 2018, The QGIS Project"
 
 import http.server
 import os
@@ -17,6 +18,7 @@ import threading
 from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsApplication,
     QgsAttributeEditorContainer,
     QgsAttributeEditorElement,
@@ -46,10 +48,10 @@ class TestQgsEditFormConfig(QgisTestCase):
         QgsSettings().clear()
 
         # Bring up a simple HTTP server
-        os.chdir(unitTestDataPath() + '')
+        os.chdir(unitTestDataPath() + "")
         handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
+        cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
@@ -57,8 +59,9 @@ class TestQgsEditFormConfig(QgisTestCase):
         cls.httpd_thread.start()
 
     def createLayer(self):
-        self.layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
-                                    "addfeat", "memory")
+        self.layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
+        )
         f = QgsFeature()
         pr = self.layer.dataProvider()
         assert pr.addFeatures([f])
@@ -72,11 +75,15 @@ class TestQgsEditFormConfig(QgisTestCase):
         config.setReadOnly(1, False)
         config.setLabelOnTop(0, False)
         config.setLabelOnTop(1, True)
-        config.setReuseLastValue(0, False)
-        config.setReuseLastValue(1, True)
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOff
+        )
+        config.setReuseLastValuePolicy(
+            1, Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
 
         doc = QDomDocument("testdoc")
-        elem = doc.createElement('edit')
+        elem = doc.createElement("edit")
         config.writeXml(elem, QgsReadWriteContext())
 
         layer2 = self.createLayer()
@@ -87,32 +94,51 @@ class TestQgsEditFormConfig(QgisTestCase):
         self.assertFalse(config2.readOnly(1))
         self.assertFalse(config2.labelOnTop(0))
         self.assertTrue(config2.labelOnTop(1))
-        self.assertFalse(config2.reuseLastValue(0))
-        self.assertTrue(config2.reuseLastValue(1))
+        self.assertEqual(
+            config2.reuseLastValuePolicy(0),
+            Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOff,
+        )
+        self.assertEqual(
+            config2.reuseLastValuePolicy(1),
+            Qgis.AttributeFormReuseLastValuePolicy.NotAllowed,
+        )
 
     def testFormUi(self):
         layer = self.createLayer()
         config = layer.editFormConfig()
 
         config.setLayout(QgsEditFormConfig.EditorLayout.GeneratedLayout)
-        self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.GeneratedLayout)
+        self.assertEqual(
+            config.layout(), QgsEditFormConfig.EditorLayout.GeneratedLayout
+        )
 
         uiLocal = os.path.join(
-            unitTestDataPath(), '/qgis_local_server/layer_attribute_form.ui')
+            unitTestDataPath(), "/qgis_local_server/layer_attribute_form.ui"
+        )
         config.setUiForm(uiLocal)
         self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.UiFileLayout)
 
         config.setLayout(QgsEditFormConfig.EditorLayout.GeneratedLayout)
-        self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.GeneratedLayout)
+        self.assertEqual(
+            config.layout(), QgsEditFormConfig.EditorLayout.GeneratedLayout
+        )
 
-        uiUrl = 'http://localhost:' + \
-            str(self.port) + '/qgis_local_server/layer_attribute_form.ui'
+        uiUrl = (
+            "http://localhost:"
+            + str(self.port)
+            + "/qgis_local_server/layer_attribute_form.ui"
+        )
         config.setUiForm(uiUrl)
         self.assertEqual(config.layout(), QgsEditFormConfig.EditorLayout.UiFileLayout)
-        content = QgsApplication.networkContentFetcherRegistry().fetch(uiUrl, QgsNetworkContentFetcherRegistry.FetchingMode.DownloadImmediately)
+        content = QgsApplication.networkContentFetcherRegistry().fetch(
+            uiUrl, QgsNetworkContentFetcherRegistry.FetchingMode.DownloadImmediately
+        )
         self.assertTrue(content is not None)
         while True:
-            if content.status() in (QgsFetchedContent.ContentStatus.Finished, QgsFetchedContent.ContentStatus.Failed):
+            if content.status() in (
+                QgsFetchedContent.ContentStatus.Finished,
+                QgsFetchedContent.ContentStatus.Failed,
+            ):
                 break
             app.processEvents()
         self.assertEqual(content.status(), QgsFetchedContent.ContentStatus.Finished)
@@ -191,36 +217,62 @@ class TestQgsEditFormConfig(QgisTestCase):
         self.assertFalse(config.labelOnTop(0))
         self.assertFalse(config.labelOnTop(1))
 
-    def testReuseLastValue(self):
+    def testReuseLastValuePolicy(self):
         layer = self.createLayer()
         config = layer.editFormConfig()
 
         # safety checks
-        config.setReuseLastValue(-1, True)
-        config.setReuseLastValue(100, True)
+        config.setReuseLastValuePolicy(
+            -1, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
+        config.setReuseLastValuePolicy(
+            100, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
 
         # real checks
-        config.setReuseLastValue(0, True)
-        config.setReuseLastValue(1, True)
-        self.assertTrue(config.reuseLastValue(0))
-        self.assertTrue(config.reuseLastValue(1))
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
+        config.setReuseLastValuePolicy(
+            1, Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn
+        )
+        self.assertEqual(
+            config.reuseLastValue(0),
+            Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn,
+        )
+        self.assertEqual(
+            config.reuseLastValue(1),
+            Qgis.AttributeFormReuseLastValuePolicy.AllowedDefaultOn,
+        )
 
-        config.setReuseLastValue(0, False)
-        config.setReuseLastValue(1, False)
-        self.assertFalse(config.reuseLastValue(0))
-        self.assertFalse(config.reuseLastValue(1))
+        config.setReuseLastValuePolicy(
+            0, Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
+        config.setReuseLastValuePolicy(
+            1, Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
+        self.assertEqual(
+            config.reuseLastValue(0), Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
+        self.assertEqual(
+            config.reuseLastValue(1), Qgis.AttributeFormReuseLastValuePolicy.NotAllowed
+        )
 
     def test_backgroundColorSerialize(self):
         """Test backgroundColor serialization"""
 
         layer = self.createLayer()
-        color_name = '#ff00ff'
-        container = QgsAttributeEditorContainer('container name', None, QColor('#ff00ff'))
+        color_name = "#ff00ff"
+        container = QgsAttributeEditorContainer(
+            "container name", None, QColor("#ff00ff")
+        )
         doc = QDomDocument()
         element = container.toDomElement(doc)
-        container2 = QgsAttributeEditorElement.create(element, self.layer.id(), layer.fields(), QgsReadWriteContext(), None)
+        container2 = QgsAttributeEditorElement.create(
+            element, self.layer.id(), layer.fields(), QgsReadWriteContext(), None
+        )
         self.assertEqual(container2.backgroundColor().name(), color_name)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

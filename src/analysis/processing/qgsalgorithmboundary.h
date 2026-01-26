@@ -30,9 +30,7 @@
  */
 class QgsBoundaryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsBoundaryAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -40,20 +38,18 @@ class QgsBoundaryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
     QgsBoundaryAlgorithm *createInstance() const override SIP_FACTORY;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
   protected:
-
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMBOUNDARY_H
-
-

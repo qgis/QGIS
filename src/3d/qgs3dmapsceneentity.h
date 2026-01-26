@@ -27,12 +27,12 @@
 // version without notice, or even be removed.
 //
 
-#include <Qt3DCore/QEntity>
-#include <QVector3D>
-#include <QMatrix4x4>
-
 #include "qgsrange.h"
 #include "qgssettings.h"
+
+#include <QMatrix4x4>
+#include <QVector3D>
+#include <Qt3DCore/QEntity>
 
 class Qgs3DMapSettings;
 
@@ -40,7 +40,7 @@ class Qgs3DMapSettings;
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Abstract entity that all entities rendered in a Qgs3DMapScene inherit
  * \since QGIS 3.32
  */
@@ -54,16 +54,16 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
       , mMapSettings( mapSettings )
     {
       const QgsSettings settings;
-      mGpuMemoryLimit = settings.value( QStringLiteral( "map3d/gpuMemoryLimit" ), 500.0, QgsSettings::App ).toDouble();
+      mGpuMemoryLimit = settings.value( u"map3d/gpuMemoryLimit"_s, 500.0, QgsSettings::App ).toDouble();
     }
 
     //! Records some bits about the scene (context for handleSceneUpdate() method)
     struct SceneContext
     {
-      QVector3D cameraPos;   //!< Camera position
-      float cameraFov;       //!< Field of view (in degrees)
-      int screenSizePx;      //!< Size of the viewport in pixels
-      QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
+        QVector3D cameraPos;             //!< Camera position
+        float cameraFov;                 //!< Field of view (in degrees)
+        int screenSizePx;                //!< Size of the viewport in pixels
+        QMatrix4x4 viewProjectionMatrix; //!< For frustum culling
     };
 
     //! Called when e.g. camera changes and entity may need updated
@@ -76,7 +76,11 @@ class Qgs3DMapSceneEntity : public Qt3DCore::QEntity
     virtual bool needsUpdate() const { return false; }
 
     //! Returns the near to far plane range for the entity using the specified \a viewMatrix
-    virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const { Q_UNUSED( viewMatrix ) return QgsRange<float>( 1e9, 0 ); }
+    virtual QgsRange<float> getNearFarPlaneRange( const QMatrix4x4 &viewMatrix ) const
+    {
+      Q_UNUSED( viewMatrix )
+      return QgsRange<float>( 1e9, 0 );
+    }
 
     /**
      * Returns the associated 3D mapSettings settings.

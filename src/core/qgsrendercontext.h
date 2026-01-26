@@ -18,26 +18,27 @@
 #ifndef QGSRENDERCONTEXT_H
 #define QGSRENDERCONTEXT_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include <QColor>
-#include <QPainter>
-#include <QPainterPath>
 #include <memory>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscoordinatetransform.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsdistancearea.h"
 #include "qgsexpressioncontext.h"
 #include "qgsfeaturefilterprovider.h"
 #include "qgslabelsink.h"
 #include "qgsmaptopixel.h"
 #include "qgsmapunitscale.h"
-#include "qgsrectangle.h"
-#include "qgsvectorsimplifymethod.h"
-#include "qgsdistancearea.h"
-#include "qgscoordinatetransformcontext.h"
-#include "qgspathresolver.h"
-#include "qgstemporalrangeobject.h"
 #include "qgsmaskrendersettings.h"
+#include "qgspathresolver.h"
+#include "qgsrectangle.h"
+#include "qgstemporalrangeobject.h"
+#include "qgsvectorsimplifymethod.h"
+
+#include <QColor>
+#include <QPainter>
+#include <QPainterPath>
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -65,7 +66,9 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     ~QgsRenderContext() override;
 
     QgsRenderContext( const QgsRenderContext &rh );
+    SIP_SKIP QgsRenderContext( QgsRenderContext &&rh );
     QgsRenderContext &operator=( const QgsRenderContext &rh );
+    QgsRenderContext &operator=( QgsRenderContext &&rh );
 
     /**
      * Set combination of flags that will be used for rendering.
@@ -162,7 +165,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      */
     QPainter *maskPainter( int id = 0 ) { return mMaskPainter.value( id, nullptr ); }
 
-    // TODO QGIS 4 : remove the V2 from method name
+    // TODO QGIS 5 : remove the V2 from method name
 
     /**
      * When rendering a map layer in a second pass (for selective masking),
@@ -363,22 +366,25 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * of any faster raster shortcuts.
      *
      * \see setForceVectorOutput()
+     * \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
      */
-    bool forceVectorOutput() const;
+    Q_DECL_DEPRECATED bool forceVectorOutput() const SIP_DEPRECATED;
 
     /**
      * Returns TRUE if advanced effects such as blend modes such be used
      *
      * \see setUseAdvancedEffects()
+     * \deprecated QGIS 3.44. Use rasterizedRenderingPolicy() instead.
      */
-    bool useAdvancedEffects() const;
+    Q_DECL_DEPRECATED bool useAdvancedEffects() const SIP_DEPRECATED;
 
     /**
      * Used to enable or disable advanced effects such as blend modes
      *
      * \see useAdvancedEffects()
+     * \deprecated QGIS 3.44. Use setRasterizedRenderingPolicy() instead.
      */
-    void setUseAdvancedEffects( bool enabled );
+    Q_DECL_DEPRECATED void setUseAdvancedEffects( bool enabled ) SIP_DEPRECATED;
 
     /**
      * Returns TRUE if edit markers should be drawn during the render operation.
@@ -416,14 +422,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets access to new labeling engine (may be NULLPTR).
      * \note Not available in Python bindings.
      */
-    QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
+    QgsLabelingEngine *labelingEngine() const SIP_SKIP { return mLabelingEngine; }
 
     /**
      * Returns the associated label sink, or NULLPTR if not set.
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
+    QgsLabelSink *labelSink() const SIP_SKIP { return mLabelSink; }
 
     /**
      * Returns the color to use when rendering selected features.
@@ -587,14 +593,15 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * of any faster raster shortcuts.
      *
      * \see forceVectorOutput()
+     * \deprecated QGIS 3.44. Use setRasterizedRenderingPolicy() instead.
      */
-    void setForceVectorOutput( bool force );
+    Q_DECL_DEPRECATED void setForceVectorOutput( bool force ) SIP_DEPRECATED;
 
     /**
      * Assigns the labeling engine
      * \note Not available in Python bindings.
      */
-    void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; } SIP_SKIP
+    void setLabelingEngine( QgsLabelingEngine *engine ) SIP_SKIP { mLabelingEngine = engine; }
 
     /**
      * Assigns the label sink which will take over responsibility for handling labels.
@@ -602,7 +609,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
+    void setLabelSink( QgsLabelSink *sink ) SIP_SKIP { mLabelSink = sink; }
 
     /**
      * Sets the \a color to use when rendering selected features.
@@ -686,7 +693,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setExpressionContext()
      * \note not available in Python bindings
      */
-    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
+    const QgsExpressionContext &expressionContext() const SIP_SKIP { return mExpressionContext; }
 
     //! Returns pointer to the unsegmentized geometry
     const QgsAbstractGeometry *geometry() const { return mGeometry; }
@@ -1130,6 +1137,22 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
     QImage::Format imageFormat() const { return mImageFormat; }
 
     /**
+     * Returns the policy controlling when rasterisation of content during renders is permitted.
+     *
+     * \see setRasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    Qgis::RasterizedRenderingPolicy rasterizedRenderingPolicy() const;
+
+    /**
+     * Sets the \a policy controlling when rasterisation of content during renders is permitted.
+     *
+     * \see rasterizedRenderingPolicy()
+     * \since QGIS 3.44
+     */
+    void setRasterizedRenderingPolicy( Qgis::RasterizedRenderingPolicy policy );
+
+    /**
     * Returns the renderer usage
     *
     * \see setRendererUsage()
@@ -1209,7 +1232,10 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
 
   private:
 
+    void matchRasterizedRenderingPolicyToFlags();
+
     Qgis::RenderContextFlags mFlags;
+    Qgis::RasterizedRenderingPolicy mRasterizedRenderingPolicy = Qgis::RasterizedRenderingPolicy::Default;
 
     //! Painter for rendering operations
     QPainter *mPainter = nullptr;

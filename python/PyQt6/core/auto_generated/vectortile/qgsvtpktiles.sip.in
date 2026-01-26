@@ -88,7 +88,8 @@ Returns the coordinate reference system of the tiles.
 
     QgsRectangle extent( const QgsCoordinateTransformContext &context ) const;
 %Docstring
-Returns bounding box from metadata, given in the tiles :py:func:`~QgsVtpkTiles.crs`.
+Returns bounding box from metadata, given in the tiles
+:py:func:`~QgsVtpkTiles.crs`.
 %End
 
     QByteArray tileData( int z, int x, int y );
@@ -97,8 +98,8 @@ Returns the raw tile data for the matching tile.
 
 Returns a null byte array if the requested tile does not exist.
 
-Will return an empty byte array (as opposed to a null byte array) if the tile
-exists but has a zero size.
+Will return an empty byte array (as opposed to a null byte array) if the
+tile exists but has a zero size.
 %End
 
   private:

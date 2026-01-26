@@ -14,20 +14,23 @@
  ***************************************************************************/
 
 #include "qgsannotationitempropertieswidget.h"
-#include "qgsapplication.h"
-#include "qgsmaplayer.h"
-#include "qgsannotationlayer.h"
-#include "qgsannotationitemwidget.h"
+
 #include "qgsannotationitem.h"
-#include "qgsgui.h"
 #include "qgsannotationitemguiregistry.h"
+#include "qgsannotationitemwidget.h"
+#include "qgsannotationlayer.h"
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsmaplayer.h"
 #include "qgspainteffect.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
-#include <QStackedWidget>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QStackedWidget>
+
+#include "moc_qgsannotationitempropertieswidget.cpp"
 
 QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -42,15 +45,15 @@ QgsAnnotationItemPropertiesWidget::QgsAnnotationItemPropertiesWidget( QgsAnnotat
   mPageNoItem->setSizePolicy( sizePolicy );
   QVBoxLayout *verticalLayout = new QVBoxLayout();
   verticalLayout->setContentsMargins( 0, 0, 0, 0 );
-  QLabel *label = new QLabel();
-  label->setText( tr( "No item selected." ) );
-  verticalLayout->addWidget( label );
+  mLabel = new QLabel();
+  mLabel->setText( tr( "No item selected." ) );
+  verticalLayout->addWidget( mLabel );
   mPageNoItem->setLayout( verticalLayout );
   mStack->addWidget( mPageNoItem );
   mStack->setCurrentWidget( mPageNoItem );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
-  connect( mBlendModeComboBox, qOverload< int >( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
+  connect( mBlendModeComboBox, qOverload<int>( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
   connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsAnnotationItemPropertiesWidget::onLayerPropertyChanged );
 
   setDockMode( true );
@@ -65,7 +68,7 @@ void QgsAnnotationItemPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   if ( layer == mLayer )
     return;
 
-  mLayer = qobject_cast< QgsAnnotationLayer * >( layer );
+  mLayer = qobject_cast<QgsAnnotationLayer *>( layer );
   if ( !mLayer )
     return;
 
@@ -137,7 +140,7 @@ void QgsAnnotationItemPropertiesWidget::onChanged()
 
   if ( QgsAnnotationItem *existingItem = mLayer->item( mMapLayerConfigWidgetContext.annotationId() ) )
   {
-    std::unique_ptr< QgsAnnotationItem > newItem( existingItem->clone() );
+    std::unique_ptr<QgsAnnotationItem> newItem( existingItem->clone() );
     mItemWidget->updateItem( newItem.get() );
 
     mLayer->replaceItem( mMapLayerConfigWidgetContext.annotationId(), newItem.release() );
@@ -199,6 +202,10 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
         mItemWidget->setItemId( itemId );
       }
     }
+    else
+    {
+      mItemWidget->setItemId( itemId );
+    }
   }
 
   if ( !setItem )
@@ -214,6 +221,14 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
   }
 }
 
+void QgsAnnotationItemPropertiesWidget::setLabelMessage( const QString &message )
+{
+  if ( mLabel )
+  {
+    mLabel->setText( message );
+  }
+}
+
 //
 // QgsAnnotationItemPropertiesWidgetFactory
 //
@@ -221,13 +236,13 @@ void QgsAnnotationItemPropertiesWidget::setItemId( const QString &itemId )
 QgsAnnotationItemPropertiesWidgetFactory::QgsAnnotationItemPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Annotation" ) );
 }
 
 QgsMapLayerConfigWidget *QgsAnnotationItemPropertiesWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
 {
-  return new QgsAnnotationItemPropertiesWidget( qobject_cast< QgsAnnotationLayer * >( layer ), canvas, parent );
+  return new QgsAnnotationItemPropertiesWidget( qobject_cast<QgsAnnotationLayer *>( layer ), canvas, parent );
 }
 
 bool QgsAnnotationItemPropertiesWidgetFactory::supportLayerPropertiesDialog() const
@@ -244,4 +259,3 @@ bool QgsAnnotationItemPropertiesWidgetFactory::supportsLayer( QgsMapLayer *layer
 {
   return layer->type() == Qgis::LayerType::Annotation;
 }
-

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsprofilerenderer.h
+                         qgsprofilerenderer.cpp
                          ---------------
     begin                : March 2022
     copyright            : (C) 2022 by Nyall Dawson
@@ -15,13 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofilerenderer.h"
-#include "qgsabstractprofilesource.h"
+
 #include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesource.h"
 #include "qgscurve.h"
+#include "qgslinesymbollayer.h"
 #include "qgsprofilesnapping.h"
 
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
+
+#include "moc_qgsprofilerenderer.cpp"
 
 QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
     const QgsProfileRequest &request )
@@ -74,7 +78,7 @@ void QgsProfilePlotRenderer::startGeneration()
   mJobs.reserve( mGenerators.size() );
   for ( const auto &it : mGenerators )
   {
-    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    auto job = std::make_unique< ProfileJob >();
     job->generator = it.get();
     job->context = mContext;
     mJobs.emplace_back( std::move( job ) );
@@ -98,7 +102,7 @@ void QgsProfilePlotRenderer::generateSynchronously()
 
   for ( const auto &it : mGenerators )
   {
-    std::unique_ptr< ProfileJob > job = std::make_unique< ProfileJob >();
+    auto job = std::make_unique< ProfileJob >();
     job->generator = it.get();
     job->context = mContext;
     it.get()->generateProfile( job->context );
@@ -315,9 +319,21 @@ QImage QgsProfilePlotRenderer::renderToImage( int width, int height, double dist
   context.setMapToPixel( QgsMapToPixel( mapUnitsPerPixel ) );
 
   render( context, width, height, distanceMin, distanceMax, zMin, zMax, sourceId );
+  QRectF plotArea( QPointF( 0, 0 ), QPointF( width, height ) );
+  renderSubsectionsIndicator( context, plotArea, distanceMin, distanceMax, zMin, zMax );
   p.end();
 
   return res;
+}
+
+QTransform QgsProfilePlotRenderer::computeRenderTransform( double width, double height, double distanceMin, double distanceMax, double zMin, double zMax )
+{
+  QTransform transform;
+  transform.translate( 0, height );
+  transform.scale( width / ( distanceMax - distanceMin ), -height / ( zMax - zMin ) );
+  transform.translate( -distanceMin, -zMin );
+
+  return transform;
 }
 
 void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, double height, double distanceMin, double distanceMax, double zMin, double zMax, const QString &sourceId )
@@ -327,12 +343,7 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
     return;
 
   QgsProfileRenderContext profileRenderContext( context );
-
-  QTransform transform;
-  transform.translate( 0, height );
-  transform.scale( width / ( distanceMax - distanceMin ), -height / ( zMax - zMin ) );
-  transform.translate( -distanceMin, -zMin );
-  profileRenderContext.setWorldTransform( transform );
+  profileRenderContext.setWorldTransform( computeRenderTransform( width, height, distanceMin, distanceMax, zMin, zMax ) );
 
   profileRenderContext.setDistanceRange( QgsDoubleRange( distanceMin, distanceMax ) );
   profileRenderContext.setElevationRange( QgsDoubleRange( zMin, zMax ) );
@@ -354,6 +365,49 @@ void QgsProfilePlotRenderer::render( QgsRenderContext &context, double width, do
       job->mutex.unlock();
     }
   }
+}
+
+std::unique_ptr<QgsLineSymbol> QgsProfilePlotRenderer::defaultSubSectionsSymbol()
+{
+  auto subSections = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 255, 0, 0, 255 ), 0.5 );
+  subSections->setPenCapStyle( Qt::FlatCap );
+  return std::make_unique<QgsLineSymbol>( QgsSymbolLayerList() << subSections.release() );
+}
+
+void QgsProfilePlotRenderer::setSubsectionsSymbol( QgsLineSymbol *symbol )
+{
+  mSubsectionsSymbol.reset( symbol );
+}
+
+QgsLineSymbol *QgsProfilePlotRenderer::subsectionsSymbol()
+{
+  return mSubsectionsSymbol.get();
+}
+
+void QgsProfilePlotRenderer::renderSubsectionsIndicator( QgsRenderContext &context, const QRectF &plotArea, double distanceMin, double distanceMax, double zMin, double zMax )
+{
+  QgsCurve *profileCurve = mRequest.profileCurve();
+  if ( !profileCurve || profileCurve->numPoints() < 3 || !mSubsectionsSymbol )
+    return;
+
+  QTransform transform = computeRenderTransform( plotArea.width(), plotArea.height(), distanceMin, distanceMax, zMin, zMax );
+
+  QgsPointSequence points;
+  profileCurve->points( points );
+  QgsPoint firstPoint = points.takeFirst();
+  points.removeLast();
+
+  mSubsectionsSymbol->startRender( context );
+  double accumulatedDistance = 0.;
+  for ( const QgsPoint &point : points )
+  {
+    accumulatedDistance += point.distance( firstPoint );
+    QPointF output = transform.map( QPointF( accumulatedDistance, 0. ) );
+    QPolygonF polyLine( QVector<QPointF> { QPointF( output.x() + plotArea.left(), plotArea.top() ), QPointF( output.x() + plotArea.left(), plotArea.bottom() ) } );
+    mSubsectionsSymbol->renderPolyline( polyLine, nullptr, context );
+    firstPoint = point;
+  }
+  mSubsectionsSymbol->stopRender( context );
 }
 
 QgsProfileSnapResult QgsProfilePlotRenderer::snapPoint( const QgsProfilePoint &point, const QgsProfileSnapContext &context )
@@ -464,4 +518,3 @@ void QgsProfilePlotRenderer::generateProfileStatic( std::unique_ptr< ProfileJob 
   job->invalidatedResults.reset();
   job->mutex.unlock();
 }
-

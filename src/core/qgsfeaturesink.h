@@ -81,6 +81,13 @@ class CORE_EXPORT QgsFeatureSink
     virtual ~QgsFeatureSink() = default;
 
     /**
+     * Finalizes the sink, flushing any buffered features to the destination.
+     *
+     * \since QGIS 3.42
+     */
+    virtual void finalize();
+
+    /**
      * Adds a single \a feature to the sink. Feature addition behavior is controlled by the specified \a flags.
      * \see addFeatures()
      * \returns TRUE in case of success and FALSE in case of failure

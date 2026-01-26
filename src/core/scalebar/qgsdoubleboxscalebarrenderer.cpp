@@ -15,17 +15,20 @@
  ***************************************************************************/
 
 #include "qgsdoubleboxscalebarrenderer.h"
+
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
 #include "qgsscalebarsettings.h"
 #include "qgssymbol.h"
 #include "qgstextrenderer.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
+
 #include <QList>
 #include <QPainter>
 
 QString QgsDoubleBoxScaleBarRenderer::id() const
 {
-  return QStringLiteral( "Double Box" );
+  return u"Double Box"_s;
 }
 
 QString QgsDoubleBoxScaleBarRenderer::visibleName() const
@@ -189,4 +192,30 @@ void QgsDoubleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
 
   //draw labels using the default method
   drawDefaultLabels( context, settings, scaleContext );
+}
+
+bool QgsDoubleBoxScaleBarRenderer::applyDefaultSettings( QgsScaleBarSettings &settings ) const
+{
+  QgsSimpleFillSymbolLayer *fill = dynamic_cast< QgsSimpleFillSymbolLayer * >( settings.fillSymbol()->symbolLayers().at( 0 ) );
+
+  // restore the fill symbols by default
+  if ( fill && fill->brushStyle() == Qt::NoBrush )
+  {
+    auto fillSymbol = std::make_unique< QgsFillSymbol >();
+    auto fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+    fillSymbolLayer->setColor( QColor( 0, 0, 0 ) );
+    fillSymbolLayer->setBrushStyle( Qt::SolidPattern );
+    fillSymbolLayer->setStrokeStyle( Qt::SolidLine );
+    fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+    settings.setFillSymbol( fillSymbol.release() );
+
+    fillSymbol = std::make_unique< QgsFillSymbol >();
+    fillSymbolLayer = std::make_unique< QgsSimpleFillSymbolLayer >();
+    fillSymbolLayer->setColor( QColor( 255, 255, 255 ) );
+    fillSymbolLayer->setStrokeStyle( Qt::NoPen );
+    fillSymbol->changeSymbolLayer( 0, fillSymbolLayer.release() );
+    settings.setAlternateFillSymbol( fillSymbol.release() );
+  }
+
+  return true;
 }

@@ -12,28 +12,31 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QWidget>
-#include <QIntValidator>
-#include <QFile>
-#include <QTextStream>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QRegularExpression>
-
-#include "qgssettings.h"
 #include "qgsrastertransparencywidget.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrastertransparency.h"
-#include "qgsmaptoolemitpoint.h"
-#include "qgsmapsettings.h"
-#include "qgsrectangle.h"
-#include "qgsmapcanvas.h"
-#include "qgsrasteridentifyresult.h"
+
 #include "qgsdoublevalidator.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapsettings.h"
+#include "qgsmaptoolemitpoint.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasteridentifyresult.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
+#include "qgsrastertransparency.h"
+#include "qgsrectangle.h"
+#include "qgssettings.h"
 #include "qgstemporalcontroller.h"
+
+#include <QFile>
+#include <QFileDialog>
+#include <QIntValidator>
+#include <QMessageBox>
+#include <QRegularExpression>
+#include <QTextStream>
+#include <QWidget>
+
+#include "moc_qgsrastertransparencywidget.cpp"
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -155,7 +158,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
   if ( provider )
   {
     const QgsRasterRangeList noDataRangeList = provider->userNoDataValues( 1 );
-    QgsDebugMsgLevel( QStringLiteral( "noDataRangeList.size = %1" ).arg( noDataRangeList.size() ), 2 );
+    QgsDebugMsgLevel( u"noDataRangeList.size = %1"_s.arg( noDataRangeList.size() ), 2 );
     if ( !noDataRangeList.isEmpty() )
     {
       const double v = QgsRasterBlock::printValue( noDataRangeList.value( 0 ).min() ).toDouble();
@@ -180,7 +183,7 @@ void QgsRasterTransparencyWidget::syncToLayer()
 void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &text )
 {
   Q_UNUSED( text )
-  QgsDebugMsgLevel( QStringLiteral( "text = %1" ).arg( text ), 2 );
+  QgsDebugMsgLevel( u"text = %1"_s.arg( text ), 2 );
 
   switch ( mCurrentMode )
   {
@@ -205,22 +208,22 @@ void QgsRasterTransparencyWidget::transparencyCellTextEdited( const QString &tex
         if ( row != -1 )
           break;
       }
-      QgsDebugMsgLevel( QStringLiteral( "row = %1 column =%2" ).arg( row ).arg( column ), 2 );
+      QgsDebugMsgLevel( u"row = %1 column =%2"_s.arg( row ).arg( column ), 2 );
 
-      if ( column == static_cast< int >( SingleBandTableColumns::From ) )
+      if ( column == static_cast<int>( SingleBandTableColumns::From ) )
       {
-        QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, static_cast< int >( SingleBandTableColumns::To ) ) );
+        QLineEdit *toLineEdit = dynamic_cast<QLineEdit *>( tableTransparency->cellWidget( row, static_cast<int>( SingleBandTableColumns::To ) ) );
         if ( !toLineEdit )
           return;
 
         const bool toChanged = mTransparencyToEdited.value( row );
-        QgsDebugMsgLevel( QStringLiteral( "toChanged = %1" ).arg( toChanged ), 2 );
+        QgsDebugMsgLevel( u"toChanged = %1"_s.arg( toChanged ), 2 );
         if ( !toChanged )
         {
           toLineEdit->setText( lineEdit->text() );
         }
       }
-      else if ( column == static_cast< int >( SingleBandTableColumns::To ) )
+      else if ( column == static_cast<int>( SingleBandTableColumns::To ) )
       {
         setTransparencyToEdited( row );
       }
@@ -272,11 +275,11 @@ void QgsRasterTransparencyWidget::pbnAddValuesManually_clicked()
   switch ( mCurrentMode )
   {
     case Mode::SingleBand:
-      setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( SingleBandTableColumns::Opacity ), 100 );
+      setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( SingleBandTableColumns::Opacity ), 100 );
       break;
 
     case Mode::RgbBands:
-      setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Opacity ), 100 );
+      setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Opacity ), 100 );
       break;
   }
 
@@ -298,17 +301,16 @@ void QgsRasterTransparencyWidget::pbnDefaultValues_clicked()
 
   //tableTransparency->resizeColumnsToContents(); // works only with values
   //tableTransparency->resizeRowsToContents();
-
 }
 
 void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
 {
   const QgsSettings myQSettings;
-  const QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
+  const QString myLastDir = myQSettings.value( u"lastRasterFileFilterDir"_s, QDir::homePath() ).toString();
   QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save Pixel Values as File" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
   {
-    if ( !myFileName.endsWith( QLatin1String( ".txt" ), Qt::CaseInsensitive ) )
+    if ( !myFileName.endsWith( ".txt"_L1, Qt::CaseInsensitive ) )
     {
       myFileName = myFileName + ".txt";
     }
@@ -325,10 +327,11 @@ void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
           myOutputStream << "#\n#\n# " << tr( "Red" ) << "\t" << tr( "Green" ) << "\t" << tr( "Blue" ) << "\t" << tr( "Percent Transparent" );
           for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
           {
-            myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, static_cast< int >( RgbBandTableColumns::Red ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast< int >( RgbBandTableColumns::Green ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast< int >( RgbBandTableColumns::Blue ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast< int >( RgbBandTableColumns::Opacity ) ) );
+            myOutputStream << '\n'
+                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Red ) ) ) << "\t"
+                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Green ) ) ) << "\t"
+                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Blue ) ) ) << "\t"
+                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( RgbBandTableColumns::Opacity ) ) );
           }
           break;
         }
@@ -338,9 +341,10 @@ void QgsRasterTransparencyWidget::pbnExportTransparentPixelValues_clicked()
 
           for ( int myTableRunner = 0; myTableRunner < tableTransparency->rowCount(); myTableRunner++ )
           {
-            myOutputStream << '\n' << QString::number( transparencyCellValue( myTableRunner, static_cast< int >( SingleBandTableColumns::From ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast< int >( SingleBandTableColumns::To ) ) ) << "\t"
-                           << QString::number( transparencyCellValue( myTableRunner, static_cast< int >( SingleBandTableColumns::Opacity ) ) );
+            myOutputStream << '\n'
+                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::From ) ) ) << "\t"
+                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::To ) ) ) << "\t"
+                           << QString::number( transparencyCellValue( myTableRunner, static_cast<int>( SingleBandTableColumns::Opacity ) ) );
           }
           break;
         }
@@ -359,7 +363,7 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
   bool myImportError = false;
   QString myBadLines;
   const QgsSettings myQSettings;
-  const QString myLastDir = myQSettings.value( QStringLiteral( "lastRasterFileFilterDir" ), QDir::homePath() ).toString();
+  const QString myLastDir = myQSettings.value( u"lastRasterFileFilterDir"_s, QDir::homePath() ).toString();
   const QString myFileName = QFileDialog::getOpenFileName( this, tr( "Load Pixel Values from File" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );
 
@@ -395,11 +399,11 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
               else
               {
                 tableTransparency->insertRow( tableTransparency->rowCount() );
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Red ), myTokens[0].toDouble() );
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Green ), myTokens[1].toDouble() );
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Blue ), myTokens[2].toDouble() );
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Tolerance ), 0 );
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Opacity ), myTokens[3].toDouble() );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Red ), myTokens[0].toDouble() );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Green ), myTokens[1].toDouble() );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Blue ), myTokens[2].toDouble() );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Tolerance ), 0 );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Opacity ), myTokens[3].toDouble() );
               }
             }
           }
@@ -435,9 +439,9 @@ void QgsRasterTransparencyWidget::pbnImportTransparentPixelValues_clicked()
                 }
                 tableTransparency->insertRow( tableTransparency->rowCount() );
 
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( SingleBandTableColumns::From ), myTokens[0].toDouble() );
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( SingleBandTableColumns::To ), myTokens[1].toDouble() );
-                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( SingleBandTableColumns::Opacity ), myTokens[2].toDouble() );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( SingleBandTableColumns::From ), myTokens[0].toDouble() );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( SingleBandTableColumns::To ), myTokens[1].toDouble() );
+                setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( SingleBandTableColumns::Opacity ), myTokens[2].toDouble() );
               }
             }
           }
@@ -517,16 +521,13 @@ void QgsRasterTransparencyWidget::applyToRasterRenderer( QgsRasterRenderer *rast
         myTransparentThreeValuePixelList.reserve( tableTransparency->rowCount() );
         for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
         {
-          const double red = transparencyCellValue( myListRunner, static_cast< int >( RgbBandTableColumns::Red ) );
-          const double green = transparencyCellValue( myListRunner, static_cast< int >( RgbBandTableColumns::Green ) );
-          const double blue = transparencyCellValue( myListRunner, static_cast< int >( RgbBandTableColumns::Blue ) );
-          const double opacity = 1.0 - transparencyCellValue( myListRunner, static_cast< int >( RgbBandTableColumns::Opacity ) ) / 100.0;
-          const double tolerance = transparencyCellValue( myListRunner, static_cast< int >( RgbBandTableColumns::Tolerance ) );
+          const double red = transparencyCellValue( myListRunner, static_cast<int>( RgbBandTableColumns::Red ) );
+          const double green = transparencyCellValue( myListRunner, static_cast<int>( RgbBandTableColumns::Green ) );
+          const double blue = transparencyCellValue( myListRunner, static_cast<int>( RgbBandTableColumns::Blue ) );
+          const double opacity = 1.0 - transparencyCellValue( myListRunner, static_cast<int>( RgbBandTableColumns::Opacity ) ) / 100.0;
+          const double tolerance = transparencyCellValue( myListRunner, static_cast<int>( RgbBandTableColumns::Tolerance ) );
           myTransparentThreeValuePixelList.append(
-            QgsRasterTransparency::TransparentThreeValuePixel( red, green, blue, opacity,
-                !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(),
-                !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(),
-                !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon() )
+            QgsRasterTransparency::TransparentThreeValuePixel( red, green, blue, opacity, !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(), !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon(), !qgsDoubleNear( tolerance, 0 ) ? tolerance : 4 * std::numeric_limits<double>::epsilon() )
           );
         }
         rasterTransparency->setTransparentThreeValuePixelList( myTransparentThreeValuePixelList );
@@ -538,9 +539,9 @@ void QgsRasterTransparencyWidget::applyToRasterRenderer( QgsRasterRenderer *rast
         myTransparentSingleValuePixelList.reserve( tableTransparency->rowCount() );
         for ( int myListRunner = 0; myListRunner < tableTransparency->rowCount(); myListRunner++ )
         {
-          const double min = transparencyCellValue( myListRunner, static_cast< int >( SingleBandTableColumns::From ) );
-          const double max = transparencyCellValue( myListRunner, static_cast< int >( SingleBandTableColumns::To ) );
-          const double opacity = 1.0 - transparencyCellValue( myListRunner, static_cast< int >( SingleBandTableColumns::Opacity ) ) / 100.0;
+          const double min = transparencyCellValue( myListRunner, static_cast<int>( SingleBandTableColumns::From ) );
+          const double max = transparencyCellValue( myListRunner, static_cast<int>( SingleBandTableColumns::To ) );
+          const double opacity = 1.0 - transparencyCellValue( myListRunner, static_cast<int>( SingleBandTableColumns::Opacity ) ) / 100.0;
 
           myTransparentSingleValuePixelList.append(
             QgsRasterTransparency::TransparentSingleValuePixel( min, max, opacity )
@@ -561,7 +562,7 @@ void QgsRasterTransparencyWidget::applyToRasterRenderer( QgsRasterRenderer *rast
 void QgsRasterTransparencyWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsRasterPipe::Property key )
 {
   button->blockSignals( true );
-  button->init( static_cast< int >( key ), mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
+  button->init( static_cast<int>( key ), mPropertyCollection, QgsRasterPipe::propertyDefinitions(), nullptr );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsRasterTransparencyWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );
@@ -569,7 +570,7 @@ void QgsRasterTransparencyWidget::initializeDataDefinedButton( QgsPropertyOverri
 
 void QgsRasterTransparencyWidget::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren< QgsPropertyOverrideButton * >() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );
@@ -584,14 +585,14 @@ void QgsRasterTransparencyWidget::updateDataDefinedButton( QgsPropertyOverrideBu
   if ( button->propertyKey() < 0 )
     return;
 
-  const QgsRasterPipe::Property key = static_cast< QgsRasterPipe::Property >( button->propertyKey() );
+  const QgsRasterPipe::Property key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
   whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
 }
 
 void QgsRasterTransparencyWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsRasterPipe::Property key = static_cast<  QgsRasterPipe::Property >( button->propertyKey() );
+  const QgsRasterPipe::Property key = static_cast<QgsRasterPipe::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
   emit widgetChanged();
 }
@@ -614,8 +615,8 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
 
     const QgsRectangle myExtent = ms.mapToLayerCoordinates( mRasterLayer, mMapCanvas->extent() );
     const double mapUnitsPerPixel = mMapCanvas->mapUnitsPerPixel();
-    const int myWidth = static_cast< int >( mMapCanvas->extent().width() / mapUnitsPerPixel );
-    const int myHeight = static_cast< int >( mMapCanvas->extent().height() / mapUnitsPerPixel );
+    const int myWidth = static_cast<int>( mMapCanvas->extent().width() / mapUnitsPerPixel );
+    const int myHeight = static_cast<int>( mMapCanvas->extent().height() / mapUnitsPerPixel );
 
     const QMap<int, QVariant> myPixelMap = mRasterLayer->dataProvider()->identify( myPoint, Qgis::RasterIdentifyFormat::Value, myExtent, myWidth, myHeight ).results();
 
@@ -632,7 +633,7 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
           return; // Don't add nodata, transparent anyway
         }
         const double value = myPixelMap.value( bandNo ).toDouble();
-        QgsDebugMsgLevel( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ), 2 );
+        QgsDebugMsgLevel( u"value = %1"_s.arg( value, 0, 'g', 17 ), 2 );
         values.append( value );
       }
     }
@@ -642,16 +643,16 @@ void QgsRasterTransparencyWidget::pixelSelected( const QgsPointXY &canvasPoint )
     switch ( mCurrentMode )
     {
       case Mode::SingleBand:
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( SingleBandTableColumns::From ), values.value( 0 ) );
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( SingleBandTableColumns::To ), values.value( 0 ) );
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( SingleBandTableColumns::Opacity ), 100 );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( SingleBandTableColumns::From ), values.value( 0 ) );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( SingleBandTableColumns::To ), values.value( 0 ) );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( SingleBandTableColumns::Opacity ), 100 );
         break;
       case Mode::RgbBands:
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Red ), values.value( 0 ) );
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Green ), values.value( 1 ) );
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Blue ), values.value( 2 ) );
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Tolerance ), 0 );
-        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast< int >( RgbBandTableColumns::Opacity ), 100 );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Red ), values.value( 0 ) );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Green ), values.value( 1 ) );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Blue ), values.value( 2 ) );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Tolerance ), 0 );
+        setTransparencyCell( tableTransparency->rowCount() - 1, static_cast<int>( RgbBandTableColumns::Opacity ), 100 );
         break;
     }
   }
@@ -689,9 +690,9 @@ void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *
       for ( int i = 0; i < pixelList.size(); ++i )
       {
         tableTransparency->insertRow( i );
-        setTransparencyCell( i, static_cast< int >( SingleBandTableColumns::From ), pixelList[i].min );
-        setTransparencyCell( i, static_cast< int >( SingleBandTableColumns::To ), pixelList[i].max );
-        setTransparencyCell( i, static_cast< int >( SingleBandTableColumns::Opacity ), 100 * ( 1 - pixelList[i].opacity ) );
+        setTransparencyCell( i, static_cast<int>( SingleBandTableColumns::From ), pixelList[i].min );
+        setTransparencyCell( i, static_cast<int>( SingleBandTableColumns::To ), pixelList[i].max );
+        setTransparencyCell( i, static_cast<int>( SingleBandTableColumns::Opacity ), 100 * ( 1 - pixelList[i].opacity ) );
         // break synchronization only if values differ
         if ( pixelList[i].min != pixelList[i].max )
         {
@@ -706,13 +707,13 @@ void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *
       for ( int i = 0; i < pixelList.size(); ++i )
       {
         tableTransparency->insertRow( i );
-        setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Red ), pixelList[i].red );
-        setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Green ), pixelList[i].green );
-        setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Blue ), pixelList[i].blue );
-        setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Opacity ), 100 * ( 1 - pixelList[i].opacity ) );
+        setTransparencyCell( i, static_cast<int>( RgbBandTableColumns::Red ), pixelList[i].red );
+        setTransparencyCell( i, static_cast<int>( RgbBandTableColumns::Green ), pixelList[i].green );
+        setTransparencyCell( i, static_cast<int>( RgbBandTableColumns::Blue ), pixelList[i].blue );
+        setTransparencyCell( i, static_cast<int>( RgbBandTableColumns::Opacity ), 100 * ( 1 - pixelList[i].opacity ) );
         // while the API supports different tolerances for red/green/blue channels, we only expose a single value here
         // If needed, we could expose the three separate tolerances in future... but be wary of UI bloat!
-        setTransparencyCell( i, static_cast< int >( RgbBandTableColumns::Tolerance ), !qgsDoubleNear( pixelList[i].fuzzyToleranceRed, 0 ) ? pixelList[i].fuzzyToleranceRed : 0 );
+        setTransparencyCell( i, static_cast<int>( RgbBandTableColumns::Tolerance ), !qgsDoubleNear( pixelList[i].fuzzyToleranceRed, 0 ) ? pixelList[i].fuzzyToleranceRed : 0 );
       }
       break;
     }
@@ -720,7 +721,6 @@ void QgsRasterTransparencyWidget::populateTransparencyTable( QgsRasterRenderer *
 
   tableTransparency->resizeColumnsToContents();
   tableTransparency->resizeRowsToContents();
-
 }
 
 void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
@@ -733,26 +733,26 @@ void QgsRasterTransparencyWidget::setupTransparencyTable( int nBands )
   if ( nBands == 3 )
   {
     mCurrentMode = Mode::RgbBands;
-    tableTransparency->setColumnCount( static_cast< int >( RgbBandTableColumns::ColumnCount ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( RgbBandTableColumns::Red ), new QTableWidgetItem( tr( "Red" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( RgbBandTableColumns::Green ), new QTableWidgetItem( tr( "Green" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( RgbBandTableColumns::Blue ), new QTableWidgetItem( tr( "Blue" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( RgbBandTableColumns::Tolerance ), new QTableWidgetItem( tr( "Tolerance" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( RgbBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Percent Transparent" ) ) );
+    tableTransparency->setColumnCount( static_cast<int>( RgbBandTableColumns::ColumnCount ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Red ), new QTableWidgetItem( tr( "Red" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Green ), new QTableWidgetItem( tr( "Green" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Blue ), new QTableWidgetItem( tr( "Blue" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Tolerance ), new QTableWidgetItem( tr( "Tolerance" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( RgbBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Percent Transparent" ) ) );
   }
   else //1 band
   {
     mCurrentMode = Mode::SingleBand;
-    tableTransparency->setColumnCount( static_cast< int >( SingleBandTableColumns::ColumnCount ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( SingleBandTableColumns::From ), new QTableWidgetItem( tr( "From" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( SingleBandTableColumns::To ), new QTableWidgetItem( tr( "To" ) ) );
-    tableTransparency->setHorizontalHeaderItem( static_cast< int >( SingleBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Percent Transparent" ) ) );
+    tableTransparency->setColumnCount( static_cast<int>( SingleBandTableColumns::ColumnCount ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( SingleBandTableColumns::From ), new QTableWidgetItem( tr( "From" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( SingleBandTableColumns::To ), new QTableWidgetItem( tr( "To" ) ) );
+    tableTransparency->setHorizontalHeaderItem( static_cast<int>( SingleBandTableColumns::Opacity ), new QTableWidgetItem( tr( "Percent Transparent" ) ) );
   }
 }
 
 void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, double value )
 {
-  QgsDebugMsgLevel( QStringLiteral( "value = %1" ).arg( value, 0, 'g', 17 ), 2 );
+  QgsDebugMsgLevel( u"value = %1"_s.arg( value, 0, 'g', 17 ), 2 );
   QgsRasterDataProvider *provider = mRasterLayer->dataProvider();
   if ( !provider )
     return;
@@ -799,7 +799,7 @@ void QgsRasterTransparencyWidget::setTransparencyCell( int row, int column, doub
   tableTransparency->setCellWidget( row, column, lineEdit );
   adjustTransparencyCellWidth( row, column );
 
-  if ( mCurrentMode == Mode::SingleBand && ( column == static_cast< int >( SingleBandTableColumns::From ) || column == static_cast< int >( SingleBandTableColumns::To ) ) )
+  if ( mCurrentMode == Mode::SingleBand && ( column == static_cast<int>( SingleBandTableColumns::From ) || column == static_cast<int>( SingleBandTableColumns::To ) ) )
   {
     connect( lineEdit, &QLineEdit::textEdited, this, &QgsRasterTransparencyWidget::transparencyCellTextEdited );
   }

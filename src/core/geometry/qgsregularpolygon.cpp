@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsregularpolygon.h"
-#include "qgsgeometryutils.h"
 
 #include <memory>
+
+#include "qgsgeometryutils.h"
 
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )
@@ -182,7 +183,7 @@ QgsPointSequence QgsRegularPolygon::points() const
 
 QgsPolygon *QgsRegularPolygon::toPolygon() const
 {
-  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+  auto polygon = std::make_unique<QgsPolygon>();
   if ( isEmpty() )
   {
     return polygon.release();
@@ -195,7 +196,7 @@ QgsPolygon *QgsRegularPolygon::toPolygon() const
 
 QgsLineString *QgsRegularPolygon::toLineString() const
 {
-  std::unique_ptr<QgsLineString> ext( new QgsLineString() );
+  auto ext = std::make_unique<QgsLineString>();
   if ( isEmpty() )
   {
     return ext.release();
@@ -261,9 +262,9 @@ QString QgsRegularPolygon::toString( int pointPrecision, int radiusPrecision, in
 {
   QString rep;
   if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "RegularPolygon (Center: %1, First Vertex: %2, Radius: %3, Azimuth: %4)" )
+    rep = u"RegularPolygon (Center: %1, First Vertex: %2, Radius: %3, Azimuth: %4)"_s
           .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
           .arg( mFirstVertex.asWkt( pointPrecision ), 0, 's' )
           .arg( qgsDoubleToString( mRadius, radiusPrecision ), 0, 'f' )

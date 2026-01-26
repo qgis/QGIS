@@ -15,19 +15,21 @@
 #ifndef QGSGMLSCHEMA_H
 #define QGSGMLSCHEMA_H
 
-#include "qgis_core.h"
 #include <expat.h>
-#include "qgis_sip.h"
-#include "qgserror.h"
-#include "qgsfields.h"
 #include <list>
 #include <set>
 #include <stack>
-#include <QPair>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgserror.h"
+#include "qgsfields.h"
+
 #include <QByteArray>
 #include <QDomElement>
-#include <QStringList>
+#include <QPair>
 #include <QStack>
+#include <QStringList>
 
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
@@ -35,7 +37,7 @@ class QgsFeature;
 
 /**
  * \ingroup core
- * \brief Description of feature class in GML
+ * \brief Description of feature class in GML.
 */
 class CORE_EXPORT QgsGmlFeatureClass
 {
@@ -79,6 +81,7 @@ class CORE_EXPORT QgsGmlFeatureClass
 /**
  * \ingroup core
  * \class QgsGmlSchema
+ * \brief Represents a GML schema.
  */
 class CORE_EXPORT QgsGmlSchema : public QObject
 {
@@ -166,7 +169,7 @@ class CORE_EXPORT QgsGmlSchema : public QObject
     QDomElement domElement( const QDomElement &element, const QString &path, const QString &attr, const QString &attrVal );
 
     //! Strip namespace from element name
-    QString stripNS( const QString &name );
+    static QString stripNS( const QString &name );
 
     /**
      * Find GML base type for complex type of given name

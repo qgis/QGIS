@@ -20,16 +20,16 @@
 
 #include "qgsconfig.h"
 
-#include <QCache>
-#include <QTimer>
-#include <QFileSystemWatcher>
-#include <QObject>
-#include <QDomDocument>
-
 #include "qgis_server.h"
 #include "qgis_sip.h"
 #include "qgsproject.h"
 #include "qgsserversettings.h"
+
+#include <QCache>
+#include <QDomDocument>
+#include <QFileSystemWatcher>
+#include <QObject>
+#include <QTimer>
 
 #ifndef SIP_RUN
 
@@ -64,7 +64,6 @@ class SERVER_EXPORT QgsAbstractCacheStrategy
     virtual void attach( QgsConfigCache *cache ) = 0;
 
     virtual ~QgsAbstractCacheStrategy() = default;
-
 };
 
 #endif // SIP_RUN
@@ -77,7 +76,6 @@ class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Initialize from settings.
      *
@@ -145,7 +143,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QDomDocument *xmlDocument( const QString &filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
-    QCache<QString, std::pair<QDateTime, std::unique_ptr<QgsProject> > > mProjectCache;
+    QCache<QString, std::pair<QDateTime, std::unique_ptr<QgsProject>>> mProjectCache;
 
     std::unique_ptr<QgsAbstractCacheStrategy> mStrategy;
 
@@ -178,7 +176,7 @@ class SERVER_EXPORT QgsFileSystemCacheStrategy : public QgsAbstractCacheStrategy
     QgsFileSystemCacheStrategy();
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "filesystem" ); };
+    QString name() const override { return u"filesystem"_s; };
 
     //! Attach cache to this strategy
     void attach( QgsConfigCache *cache ) override;
@@ -206,10 +204,9 @@ class SERVER_EXPORT QgsFileSystemCacheStrategy : public QgsAbstractCacheStrategy
  * \brief Periodic system cache strategy for server configuration
  * \since QGIS 3.26
  */
-class SERVER_EXPORT QgsPeriodicCacheStrategy: public QgsAbstractCacheStrategy
+class SERVER_EXPORT QgsPeriodicCacheStrategy : public QgsAbstractCacheStrategy
 {
   public:
-
     /**
      *  Creates a new periodic strategy
      *  \param interval The invalidation check interval in milliseconds
@@ -217,7 +214,7 @@ class SERVER_EXPORT QgsPeriodicCacheStrategy: public QgsAbstractCacheStrategy
     QgsPeriodicCacheStrategy( int interval = 3000 );
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "periodic" ); };
+    QString name() const override { return u"periodic"_s; };
 
     /**
      * Sets the invalidation check interval for PeriodicStrategy
@@ -260,14 +257,14 @@ class SERVER_EXPORT QgsPeriodicCacheStrategy: public QgsAbstractCacheStrategy
  * invalidation
  * \since QGIS 3.26
  */
-class SERVER_EXPORT QgsNullCacheStrategy: public QgsAbstractCacheStrategy
+class SERVER_EXPORT QgsNullCacheStrategy : public QgsAbstractCacheStrategy
 {
   public:
     //! Creates a new null strategy
     QgsNullCacheStrategy() = default;
 
     //! The name of the strategy
-    QString name() const override { return QStringLiteral( "off" ); };
+    QString name() const override { return u"off"_s; };
 
     //! Attaches cache to this strategy
     void attach( QgsConfigCache *owner ) override;
@@ -288,4 +285,3 @@ class SERVER_EXPORT QgsNullCacheStrategy: public QgsAbstractCacheStrategy
 #endif // SIP_RUN
 
 #endif // QGSCONFIGCACHE_H
-

@@ -15,12 +15,12 @@
 #ifndef QGSMIMEDATAUTILS_H
 #define QGSMIMEDATAUTILS_H
 
-#include <QMimeData>
-#include <QStringList>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgswkbtypes.h"
+
+#include <QMimeData>
+#include <QStringList>
 
 class QgsLayerItem;
 class QgsLayerTreeNode;
@@ -100,13 +100,19 @@ class CORE_EXPORT QgsMimeDataUtils
        * - "vector": vector layers
        * - "raster": raster layers
        * - "mesh": mesh layers
-       * - "pointcloud": point cloud layers
+       * - "point-cloud": point cloud layers (spelled with a dash since QGIS 3.42.0. In prior versions, there was no dash)
        * - "vector-tile": vector tile layers
        * - "tiled-scene": tiled scene layers
+       * - "annotation": annotation layers
+       * - "group": group layers
        * - "plugin": plugin layers
        * - "custom": custom types
        * - "project": QGS/QGZ project file
        * - "directory": directory path
+       *
+       * Note: use QgsMapLayerFactory::typeToString() to convert from a
+       * Qgis::LayerType to a string (except for "custom", "project" and
+       * "directory")
        *
        * Mime data from plugins may use additional custom layer types.
        */
@@ -157,7 +163,7 @@ class CORE_EXPORT QgsMimeDataUtils
 #ifdef SIP_RUN
       SIP_PYOBJECT __repr__();
       % MethodCode
-      QString str = QStringLiteral( "<QgsMimeDataUtils::Uri (%1): %2>" ).arg( sipCpp->providerKey, sipCpp->uri );
+      QString str = u"<QgsMimeDataUtils::Uri (%1): %2>"_s.arg( sipCpp->providerKey, sipCpp->uri );
       sipRes = PyUnicode_FromString( str.toUtf8().constData() );
       % End
 #endif

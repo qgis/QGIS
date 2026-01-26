@@ -15,22 +15,26 @@
  ***************************************************************************/
 #include "qgsnewmeshlayerdialog.h"
 
-#include <QPushButton>
-#include <QMessageBox>
+#include <memory>
 
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmeshdataprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsproject.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsmeshdataprovider.h"
-#include "qgsproject.h"
-#include "qgsmeshlayer.h"
-#include "qgsapplication.h"
-#include "qgshelp.h"
-#include "qgsgui.h"
 
+#include <QMessageBox>
+#include <QPushButton>
 
-QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl ) : QDialog( parent, fl )
+#include "moc_qgsnewmeshlayerdialog.cpp"
+
+QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
-  QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  QgsProviderMetadata *meta = QgsProviderRegistry::instance()->providerMetadata( u"mdal"_s );
 
   if ( !meta )
   {
@@ -51,26 +55,24 @@ QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags f
       const QString suffix = driverMeta.writeMeshFrameOnFileSuffix();
       mFormatComboBox->addItem( description, driverName );
       mDriverSuffixes.insert( driverMeta.name(), suffix );
-      mDriverFileFilters.insert( driverMeta.name(), tr( "%1" ).arg( description ) + QStringLiteral( " (*." ) + suffix + ')' );
+      mDriverFileFilters.insert( driverMeta.name(), tr( "%1" ).arg( description ) + u" (*."_s + suffix + ')' );
     }
 
   const QStringList filters = mDriverFileFilters.values();
   mFormatComboBox->setCurrentIndex( -1 );
   mFileWidget->setStorageMode( QgsFileWidget::SaveFile );
-  mFileWidget->setFilter( filters.join( QLatin1String( ";;" ) ) );
+  mFileWidget->setFilter( filters.join( ";;"_L1 ) );
   mMeshProjectComboBox->setFilters( Qgis::LayerFilter::MeshLayer );
 
-  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsNewMeshLayerDialog::onFormatChanged );
+  connect( mFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewMeshLayerDialog::onFormatChanged );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::onFilePathChanged );
   connect( mInitializeMeshGroupBox, &QGroupBox::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFileRadioButton, &QRadioButton::toggled, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshFromFileWidget, &QgsFileWidget::fileChanged, this, &QgsNewMeshLayerDialog::updateDialog );
   connect( mMeshProjectComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsNewMeshLayerDialog::updateDialog );
 
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
-  {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-mesh-layer" ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-a-new-mesh-layer"_s );
   } );
 
   updateDialog();
@@ -98,10 +100,7 @@ void QgsNewMeshLayerDialog::updateDialog()
 {
   updateSourceMeshframe();
 
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled(
-    ! mFileWidget->filePath().isEmpty() &&
-    mFormatComboBox->currentIndex() != -1 &&
-    mSourceMeshFrameReady );
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( !mFileWidget->filePath().isEmpty() && mFormatComboBox->currentIndex() != -1 && mSourceMeshFrameReady );
 }
 
 void QgsNewMeshLayerDialog::updateSourceMeshframe()
@@ -128,14 +127,14 @@ void QgsNewMeshLayerDialog::updateSourceMeshframe()
     {
       QgsApplication::setOverrideCursor( Qt::WaitCursor );
       if ( !mMeshFromFileWidget->filePath().isEmpty() )
-        mSourceMeshFromFile.reset( new QgsMeshLayer( mMeshFromFileWidget->filePath(), QString(), QStringLiteral( "mdal" ) ) );
+        mSourceMeshFromFile = std::make_unique<QgsMeshLayer>( mMeshFromFileWidget->filePath(), QString(), u"mdal"_s );
 
       if ( mSourceMeshFromFile && !mSourceMeshFromFile->isValid() )
         mSourceMeshFromFile.reset();
 
       mProjectionSelectionWidget->setEnabled( false );
 
-      mSourceMeshFrameReady = static_cast< bool >( mSourceMeshFromFile );
+      mSourceMeshFrameReady = static_cast<bool>( mSourceMeshFromFile );
 
       QgsApplication::restoreOverrideCursor();
     }
@@ -161,7 +160,7 @@ void QgsNewMeshLayerDialog::onFormatChanged()
   const QString currentSuffix = fileInfo.suffix();
 
   if ( !currentSuffix.isEmpty() )
-    currentFilePath =  currentFilePath.mid( 0, currentFilePath.lastIndexOf( '.' ) );
+    currentFilePath = currentFilePath.mid( 0, currentFilePath.lastIndexOf( '.' ) );
 
   if ( currentFilePath.right( 1 ) == QString( '.' ) )
     currentFilePath.remove( currentFilePath.count() - 1, 1 );
@@ -193,7 +192,7 @@ void QgsNewMeshLayerDialog::onFilePathChanged()
 void QgsNewMeshLayerDialog::updateSourceMeshInformation()
 {
   QString myStyle = QgsApplication::reportStyleSheet();
-  myStyle.append( QStringLiteral( "body { margin: 10px; }\n " ) );
+  myStyle.append( u"body { margin: 10px; }\n "_s );
 
   mInformationTextBrowser->clear();
   mInformationTextBrowser->document()->setDefaultStyleSheet( myStyle );
@@ -245,7 +244,7 @@ bool QgsNewMeshLayerDialog::apply()
     source->dataProvider()->populateMesh( &mesh );
   }
 
-  const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "mdal" ) );
+  const QgsProviderMetadata *providerMetadata = QgsProviderRegistry::instance()->providerMetadata( u"mdal"_s );
   if ( providerMetadata )
   {
     result = providerMetadata->createMeshData( mesh, fileName, format, crs );
@@ -258,7 +257,7 @@ bool QgsNewMeshLayerDialog::apply()
         QFileInfo fileInfo( fileName );
         layerName = fileInfo.completeBaseName();
       }
-      std::unique_ptr<QgsMeshLayer> newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, layerName, QStringLiteral( "mdal" ) );
+      auto newMeshLayer = std::make_unique<QgsMeshLayer>( fileName, layerName, u"mdal"_s );
 
       if ( newMeshLayer->crs() != crs )
         newMeshLayer->setCrs( crs );
@@ -280,4 +279,3 @@ QgsMeshLayer *QgsNewMeshLayerDialog::newLayer() const
 {
   return mNewLayer;
 }
-

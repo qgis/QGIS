@@ -16,24 +16,23 @@
 #ifndef QGSENUMERATIONWIDGETWRAPPER_H
 #define QGSENUMERATIONWIDGETWRAPPER_H
 
+#include "qgis_gui.h"
 #include "qgseditorwidgetwrapper.h"
 
 #include <QComboBox>
-#include "qgis_gui.h"
 
 SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsEnumerationWidgetWrapper
+ * \brief Widget wrapper for enumeration widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsEnumerationWidgetWrapper.
      *
@@ -57,7 +56,7 @@ class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   private:
-    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
     QComboBox *mComboBox = nullptr;
 };

@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
+#include <memory>
 
 #include "qgisapp.h"
 #include "qgsgeometry.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsvectorlayer.h"
-#include "qgsmaptoolsplitparts.h"
 #include "qgsgeometryutils.h"
-
+#include "qgsmapcanvas.h"
+#include "qgsmaptoolsplitparts.h"
+#include "qgssettings.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
 class TestQgsMapToolSplitParts : public QObject
@@ -58,14 +58,14 @@ void TestQgsMapToolSplitParts::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 
   // make testing layers
-  mMultiLineStringLayer = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=EPSG:3946" ), QStringLiteral( "layer multiline" ), QStringLiteral( "memory" ) );
+  mMultiLineStringLayer = new QgsVectorLayer( u"MultiLineString?crs=EPSG:3946"_s, u"layer multiline"_s, u"memory"_s );
   QVERIFY( mMultiLineStringLayer->isValid() );
   mMultiLineStringLayer->startEditing();
-  lineF1.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((0 0, 10 0))" ) ) );
-  lineF2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "MultiLineString ((0 5, 10 5),(10 5, 15 5))" ) ) );
+  lineF1.setGeometry( QgsGeometry::fromWkt( u"MultiLineString ((0 0, 10 0))"_s ) );
+  lineF2.setGeometry( QgsGeometry::fromWkt( u"MultiLineString ((0 5, 10 5),(10 5, 15 5))"_s ) );
   mMultiLineStringLayer->addFeature( lineF1 );
   mMultiLineStringLayer->addFeature( lineF2 );
 
@@ -91,7 +91,6 @@ void TestQgsMapToolSplitParts::cleanupTestCase()
 
 QPoint TestQgsMapToolSplitParts::mapToPoint( double x, double y )
 {
-
   const QgsPointXY mapPoint = mCanvas->mapSettings().mapToPixel().transform( x, y );
 
   return QPoint( std::round( mapPoint.x() ), std::round( mapPoint.y() ) );
@@ -99,38 +98,37 @@ QPoint TestQgsMapToolSplitParts::mapToPoint( double x, double y )
 
 void TestQgsMapToolSplitParts::testSplitMultiLineString()
 {
-
   mCanvas->setCurrentLayer( mMultiLineStringLayer );
-  QgsMapToolSplitParts *mapTool = new QgsMapToolSplitParts( mCanvas ) ;
+  QgsMapToolSplitParts *mapTool = new QgsMapToolSplitParts( mCanvas );
   mCanvas->setMapTool( mapTool );
 
-  std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        mCanvas,
-        QEvent::MouseButtonRelease,
-        mapToPoint( 4, 7 ),
-        Qt::LeftButton
-      ) );
+  std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
+    mCanvas,
+    QEvent::MouseButtonRelease,
+    mapToPoint( 4, 7 ),
+    Qt::LeftButton
+  ) );
   mapTool->cadCanvasReleaseEvent( event.get() );
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, -1 ),
-                 Qt::LeftButton
-               ) );
-  mapTool->cadCanvasReleaseEvent( event.get() );
-
-  event.reset( new QgsMapMouseEvent(
-                 mCanvas,
-                 QEvent::MouseButtonRelease,
-                 mapToPoint( 4, -1 ),
-                 Qt::RightButton
-               ) );
+  event = std::make_unique<QgsMapMouseEvent>(
+    mCanvas,
+    QEvent::MouseButtonRelease,
+    mapToPoint( 4, -1 ),
+    Qt::LeftButton
+  );
   mapTool->cadCanvasReleaseEvent( event.get() );
 
+  event = std::make_unique<QgsMapMouseEvent>(
+    mCanvas,
+    QEvent::MouseButtonRelease,
+    mapToPoint( 4, -1 ),
+    Qt::RightButton
+  );
+  mapTool->cadCanvasReleaseEvent( event.get() );
 
-  QCOMPARE( mMultiLineStringLayer->featureCount(), ( long )2 );
-  QCOMPARE( mMultiLineStringLayer->getFeature( lineF1.id() ).geometry().asWkt(), QStringLiteral( "MultiLineString ((0 0, 4 0),(4 0, 10 0))" ) );
-  QCOMPARE( mMultiLineStringLayer->getFeature( lineF2.id() ).geometry().asWkt(), QStringLiteral( "MultiLineString ((0 5, 4 5),(4 5, 10 5),(10 5, 15 5))" ) );
+
+  QCOMPARE( mMultiLineStringLayer->featureCount(), ( long ) 2 );
+  QCOMPARE( mMultiLineStringLayer->getFeature( lineF1.id() ).geometry().asWkt(), u"MultiLineString ((0 0, 4 0),(4 0, 10 0))"_s );
+  QCOMPARE( mMultiLineStringLayer->getFeature( lineF2.id() ).geometry().asWkt(), u"MultiLineString ((0 5, 4 5),(4 5, 10 5),(10 5, 15 5))"_s );
 
   mMultiLineStringLayer->rollBack();
 }

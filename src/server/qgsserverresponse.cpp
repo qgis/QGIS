@@ -18,9 +18,9 @@
  ***************************************************************************/
 
 #include "qgsserverresponse.h"
+
 #include "qgsmessagelog.h"
 #include "qgsserverexception.h"
-
 
 void QgsServerResponse::write( const QString &data )
 {
@@ -67,12 +67,10 @@ qint64 QgsServerResponse::write( const char *data )
 
 void QgsServerResponse::finish()
 {
-
 }
 
 void QgsServerResponse::flush()
 {
-
 }
 
 qint64 QgsServerResponse::write( const std::string data )
@@ -87,7 +85,7 @@ void QgsServerResponse::write( const QgsServerException &ex )
 
   if ( headersSent() )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "Error: Cannot write exception after header sent !" ) );
+    QgsMessageLog::logMessage( u"Error: Cannot write exception after header sent !"_s );
     return;
   }
 

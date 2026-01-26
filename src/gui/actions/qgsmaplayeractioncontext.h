@@ -16,11 +16,11 @@
 #ifndef QGSMAPLAYERACTIONCONTEXT_H
 #define QGSMAPLAYERACTIONCONTEXT_H
 
-#include "qgis_sip.h"
-#include <QPointer>
-
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QPointer>
 
 class QgsAttributeDialog;
 class QgsMessageBar;
@@ -33,7 +33,6 @@ class QgsMessageBar;
 class GUI_EXPORT QgsMapLayerActionContext
 {
   public:
-
     QgsMapLayerActionContext();
 
     /**
@@ -69,9 +68,8 @@ class GUI_EXPORT QgsMapLayerActionContext
     void setMessageBar( QgsMessageBar *bar );
 
   private:
-
-    QPointer< QgsAttributeDialog > mAttributeDialog;
-    QPointer< QgsMessageBar > mMessageBar;
+    QPointer<QgsAttributeDialog> mAttributeDialog;
+    QPointer<QgsMessageBar> mMessageBar;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayerActionContext )

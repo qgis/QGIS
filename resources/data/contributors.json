@@ -1235,7 +1235,7 @@
       "type": "Feature",
       "properties": {
         "Name": "Benoit De Mezzo",
-        "Committer": "No",
+        "Committer": "Yes",
         "First Commit Message": "fix percent encoding in server query parameter",
         "First Commit Date": "07-12-2021",
         "GIT Nickname": "benoitdm-oslandia"
@@ -1243,8 +1243,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          -1.01,
-          46.13
+          -1.010,
+          46.130
         ]
       }
     }

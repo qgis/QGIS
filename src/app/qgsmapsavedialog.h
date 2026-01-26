@@ -21,9 +21,9 @@
 #include "ui_qgsmapsavedialog.h"
 
 #include "qgisapp.h"
+#include "qgshelp.h"
 #include "qgsmapdecoration.h"
 #include "qgsrectangle.h"
-#include "qgshelp.h"
 
 #include <QDialog>
 #include <QSize>
@@ -35,12 +35,11 @@ class QgsMapCanvas;
  * \ingroup app
  * \brief a dialog for saving a map to an image.
 */
-class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
+class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
 {
     Q_OBJECT
 
   public:
-
     enum DialogType
     {
       Image = 1, // Image-specific dialog
@@ -50,10 +49,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     /**
      * Constructor for QgsMapSaveDialog
      */
-    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr,
-                      const QList< QgsMapDecoration * > &decorations = QList< QgsMapDecoration * >(),
-                      const QList<QgsAnnotation *> &annotations = QList< QgsAnnotation * >(),
-                      DialogType type = Image );
+    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QList<QgsMapDecoration *> &decorations = QList<QgsMapDecoration *>(), const QList<QgsAnnotation *> &annotations = QList<QgsAnnotation *>(), DialogType type = Image );
 
     //! returns extent rectangle
     QgsRectangle extent() const;
@@ -82,13 +78,15 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
     //! configure a map settings object
     void applyMapSettings( QgsMapSettings &mapSettings );
 
+    void accept() override;
+
   private slots:
     void onAccepted();
-
     void updatePdfExportWarning();
+    void lockScaleChanged( bool locked );
+    void showHelp();
 
   private:
-
     void lockChanged( bool locked );
     void copyToClipboard();
     void checkOutputSize();
@@ -102,8 +100,8 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
     DialogType mDialogType;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QList< QgsMapDecoration * > mDecorations;
-    QList< QgsAnnotation *> mAnnotations;
+    QList<QgsMapDecoration *> mDecorations;
+    QList<QgsAnnotation *> mAnnotations;
 
     QgsRectangle mExtent;
     int mDpi;
@@ -112,9 +110,7 @@ class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 
     QString mInfoDetails;
 
-  private slots:
-
-    void showHelp();
+    friend class TestQgsMapSaveDialog;
 };
 
 #endif // QGSMAPSAVEDIALOG_H

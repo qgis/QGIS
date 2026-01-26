@@ -16,15 +16,10 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerror.h"
+
 #include "qgsapplication.h"
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
-    const QString &layerId,
-    QgsFeatureId featureId,
-    const QgsGeometry &geometry,
-    const QgsPointXY &errorLocation,
-    QgsVertexId vidx,
-    const QVariant &value, ValueType valueType )
+QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QString &layerId, QgsFeatureId featureId, const QgsGeometry &geometry, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType )
   : mCheck( check )
   , mLayerId( layerId )
   , mFeatureId( featureId )
@@ -37,12 +32,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
 {
 }
 
-QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
-    const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-    const QgsPointXY &errorLocation,
-    QgsVertexId vidx,
-    const QVariant &value,
-    ValueType valueType )
+QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, QgsVertexId vidx, const QVariant &value, ValueType valueType )
   : mCheck( check )
   , mLayerId( layerFeature.layerId() )
   , mFeatureId( layerFeature.feature().id() )
@@ -71,7 +61,7 @@ QgsGeometryCheckError::QgsGeometryCheckError( const QgsGeometryCheck *check,
     }
     catch ( const QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Can not show error in current map coordinate reference system" ) );
+      QgsDebugError( u"Can not show error in current map coordinate reference system"_s );
     }
   }
 }
@@ -110,10 +100,7 @@ void QgsGeometryCheckError::setFixFailed( const QString &reason )
 
 bool QgsGeometryCheckError::isEqual( QgsGeometryCheckError *other ) const
 {
-  return other->check() == check() &&
-         other->layerId() == layerId() &&
-         other->featureId() == featureId() &&
-         other->vidx() == vidx();
+  return other->check() == check() && other->layerId() == layerId() && other->featureId() == featureId() && other->vidx() == vidx();
 }
 
 bool QgsGeometryCheckError::closeMatch( QgsGeometryCheckError * ) const
@@ -189,15 +176,15 @@ bool QgsGeometryCheckError::handleChanges( const QgsGeometryCheck::Changes &chan
 
 QMap<QString, QgsFeatureIds> QgsGeometryCheckError::involvedFeatures() const
 {
-  return QMap<QString, QSet<QgsFeatureId> >();
+  return QMap<QString, QSet<QgsFeatureId>>();
 }
 
 QIcon QgsGeometryCheckError::icon() const
 {
   if ( status() == QgsGeometryCheckError::StatusFixed )
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCheckGeometry.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmCheckGeometry.svg"_s );
   else
-    return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) );
+    return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmLineIntersections.svg"_s );
 }
 
 void QgsGeometryCheckError::update( const QgsGeometryCheckError *other )

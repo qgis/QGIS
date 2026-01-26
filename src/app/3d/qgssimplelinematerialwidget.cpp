@@ -15,8 +15,10 @@
 
 #include "qgssimplelinematerialwidget.h"
 
-#include "qgssimplelinematerialsettings.h"
 #include "qgis.h"
+#include "qgssimplelinematerialsettings.h"
+
+#include "moc_qgssimplelinematerialwidget.cpp"
 
 QgsSimpleLineMaterialWidget::QgsSimpleLineMaterialWidget( QWidget *parent )
   : QgsMaterialSettingsWidget( parent )
@@ -37,19 +39,19 @@ QgsMaterialSettingsWidget *QgsSimpleLineMaterialWidget::create()
 
 void QgsSimpleLineMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
-  const QgsSimpleLineMaterialSettings *lineMaterial = dynamic_cast< const QgsSimpleLineMaterialSettings * >( settings );
+  const QgsSimpleLineMaterialSettings *lineMaterial = dynamic_cast<const QgsSimpleLineMaterialSettings *>( settings );
   if ( !lineMaterial )
     return;
 
   btnAmbient->setColor( lineMaterial->ambient() );
 
   mPropertyCollection = settings->dataDefinedProperties();
-  mAmbientDataDefinedButton->init( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mAmbientDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Ambient ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
 }
 
 QgsAbstractMaterialSettings *QgsSimpleLineMaterialWidget::settings()
 {
-  std::unique_ptr< QgsSimpleLineMaterialSettings > m = std::make_unique< QgsSimpleLineMaterialSettings >();
+  auto m = std::make_unique<QgsSimpleLineMaterialSettings>();
   m->setAmbient( btnAmbient->color() );
 
   mPropertyCollection.setProperty( QgsAbstractMaterialSettings::Property::Ambient, mAmbientDataDefinedButton->toProperty() );

@@ -11,8 +11,8 @@
 class QgsNullSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring(signature="appended")
-Null symbol renderer, which draws no symbols for features by default, but allows for labeling
-and diagrams for the layer.
+Null symbol renderer, which draws no symbols for features by default,
+but allows for labeling and diagrams for the layer.
 
 Selected features will also be drawn with a default symbol.
 %End
@@ -30,7 +30,7 @@ Selected features will also be drawn with a default symbol.
     virtual QgsSymbol *originalSymbolForFeature( const QgsFeature &feature, QgsRenderContext &context ) const;
 
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void stopRender( QgsRenderContext &context );
 
@@ -65,7 +65,8 @@ Creates a QgsNullSymbolRenderer from an existing renderer.
 
 :param renderer: renderer to convert from
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
 };

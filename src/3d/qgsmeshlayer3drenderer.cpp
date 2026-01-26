@@ -15,17 +15,15 @@
 
 #include "qgsmeshlayer3drenderer.h"
 
-#include "qgsmeshlayer3drenderer.h"
+#include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
+#include "qgsmesh3dentity_p.h"
 #include "qgsmesh3dsymbol.h"
-
 #include "qgsmeshlayer.h"
 #include "qgsxmlutils.h"
-#include "qgsmesh3dentity_p.h"
-#include "qgs3drendercontext.h"
-#include "qgs3dmapsettings.h"
 
 QgsMeshLayer3DRendererMetadata::QgsMeshLayer3DRendererMetadata()
-  : Qgs3DRendererAbstractMetadata( QStringLiteral( "mesh" ) )
+  : Qgs3DRendererAbstractMetadata( u"mesh"_s )
 {
 }
 
@@ -46,7 +44,7 @@ QgsMeshLayer3DRenderer::QgsMeshLayer3DRenderer( QgsMesh3DSymbol *s )
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRenderer::clone() const
 {
-  QgsMeshLayer3DRenderer *r = new QgsMeshLayer3DRenderer( mSymbol ? ( QgsMesh3DSymbol * )mSymbol->clone() : nullptr );
+  QgsMeshLayer3DRenderer *r = new QgsMeshLayer3DRenderer( mSymbol ? ( QgsMesh3DSymbol * ) mSymbol->clone() : nullptr );
   r->mLayerRef = mLayerRef;
   return r;
 }
@@ -78,8 +76,7 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( Qgs3DMapSettings *map )
   if ( !meshLayer || !meshLayer->dataProvider() )
     return nullptr;
 
-  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) ||
-       !mSymbol->isEnabled() )
+  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) || !mSymbol->isEnabled() )
   {
     // 3D not implemented for 1D meshes
     return nullptr;
@@ -104,12 +101,12 @@ void QgsMeshLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 {
   QDomDocument doc = elem.ownerDocument();
 
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
+  elem.setAttribute( u"layer"_s, mLayerRef.layerId );
 
-  QDomElement elemSymbol = doc.createElement( QStringLiteral( "symbol" ) );
+  QDomElement elemSymbol = doc.createElement( u"symbol"_s );
   if ( mSymbol )
   {
-    elemSymbol.setAttribute( QStringLiteral( "type" ), mSymbol->type() );
+    elemSymbol.setAttribute( u"type"_s, mSymbol->type() );
     mSymbol->writeXml( elemSymbol, context );
   }
   elem.appendChild( elemSymbol );
@@ -117,9 +114,9 @@ void QgsMeshLayer3DRenderer::writeXml( QDomElement &elem, const QgsReadWriteCont
 
 void QgsMeshLayer3DRenderer::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
-  mLayerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  mLayerRef = QgsMapLayerRef( elem.attribute( u"layer"_s ) );
 
-  const QDomElement elemSymbol = elem.firstChildElement( QStringLiteral( "symbol" ) );
+  const QDomElement elemSymbol = elem.firstChildElement( u"symbol"_s );
   QgsMesh3DSymbol *symbol = new QgsMesh3DSymbol;
   symbol->readXml( elemSymbol, context );
   mSymbol.reset( symbol );

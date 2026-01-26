@@ -16,16 +16,18 @@
 #ifndef QGSPATHRESOLVER_H
 #define QGSPATHRESOLVER_H
 
-#include "qgis_core.h"
-
-#include <QString>
 #include <functional>
 #include <vector>
 
+#include "qgis_core.h"
+
+#include <QString>
+
 /**
  * \ingroup core
- * \brief Resolves relative paths into absolute paths and vice versa. Used for writing
+ * \brief Resolves relative paths into absolute paths and vice versa.
  *
+ * Used for writing and reading paths for projects.
  */
 class CORE_EXPORT QgsPathResolver
 {
@@ -167,7 +169,7 @@ class CORE_EXPORT QgsPathResolver
     % MethodCode
     if ( !QgsPathResolver::removePathPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -276,7 +278,7 @@ class CORE_EXPORT QgsPathResolver
     % MethodCode
     if ( !QgsPathResolver::removePathWriter( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No writer with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No writer with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End

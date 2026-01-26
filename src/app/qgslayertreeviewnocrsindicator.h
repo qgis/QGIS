@@ -26,7 +26,6 @@ class QgsLayerTreeViewNoCrsIndicatorProvider : public QgsLayerTreeViewIndicatorP
     explicit QgsLayerTreeViewNoCrsIndicatorProvider( QgsLayerTreeView *view );
 
   protected:
-
     void connectSignals( QgsMapLayer *layer ) override;
     void disconnectSignals( QgsMapLayer *layer ) override;
 

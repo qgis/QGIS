@@ -18,20 +18,21 @@
 #ifndef QGSCLIPBOARD_H
 #define QGSCLIPBOARD_H
 
+#include "qgis_app.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
+#include "qgsmaplayer.h"
+
 #include <QList>
 #include <QMap>
 #include <QObject>
 #include <QPointer>
 
-#include "qgsfields.h"
-#include "qgsfeature.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsmaplayer.h"
-#include "qgis_app.h"
-
 class QgsVectorLayer;
 class QgsVectorTileLayer;
 class QgsFeatureStore;
+class QgsMessageBar;
 
 /**
  * \brief QGIS internal clipboard for features.
@@ -50,14 +51,13 @@ class APP_EXPORT QgsClipboard : public QObject
 {
     Q_OBJECT
   public:
-
     //! Available formats for copying features as text
     enum CopyFormat
     {
-      AttributesOnly, //!< Tab delimited text, attributes only
+      AttributesOnly,    //!< Tab delimited text, attributes only
       AttributesWithWKT, //!< Tab delimited text, with geometry in WKT format
       AttributesWithWKB, //!< Tab delimited text, with geometry in WKB format
-      GeoJSON, //!< GeoJSON FeatureCollection format
+      GeoJSON,           //!< GeoJSON FeatureCollection format
     };
     Q_ENUM( CopyFormat )
 
@@ -144,6 +144,15 @@ class APP_EXPORT QgsClipboard : public QObject
 
     QgsMapLayer *layer() const;
 
+    /**
+     * Pastes clipboard features to a new memory layer.
+     *
+     * If no features are in clipboard an empty layer is returned.
+     *
+     * Returns a new memory layer or NULLPTR if the operation failed.
+     */
+    std::unique_ptr<QgsVectorLayer> pasteToNewMemoryVector( QgsMessageBar *messageBar );
+
   private slots:
 
     void systemClipboardChanged();
@@ -153,7 +162,6 @@ class APP_EXPORT QgsClipboard : public QObject
     void changed();
 
   private:
-
     /**
      * Set system clipboard from previously set features.
      */
@@ -197,7 +205,6 @@ class APP_EXPORT QgsClipboard : public QObject
     bool mUseSystemClipboard = false;
 
     friend class TestQgisAppClipboard;
-
 };
 
 #endif

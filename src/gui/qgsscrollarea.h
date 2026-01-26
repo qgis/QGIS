@@ -16,10 +16,12 @@
 #ifndef QGSSCROLLAREA_H
 #define QGSSCROLLAREA_H
 
-#include <QScrollArea>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-#include <QTimer>
+#include "qgis_sip.h"
+
+#include <QElapsedTimer>
+#include <QScrollArea>
+
 class ScrollAreaFilter;
 
 /**
@@ -42,7 +44,6 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsScrollArea.
      */
@@ -82,10 +83,10 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
-    QTimer mTimer;
+    bool mTimerActive = false;
+    QElapsedTimer mTimer;
     ScrollAreaFilter *mFilter = nullptr;
     bool mVerticalOnly = false;
-
 };
 
 #ifndef SIP_RUN
@@ -101,9 +102,7 @@ class ScrollAreaFilter : public QObject
 {
     Q_OBJECT
   public:
-
-    ScrollAreaFilter( QgsScrollArea *parent = nullptr,
-                      QWidget *viewPort = nullptr );
+    ScrollAreaFilter( QgsScrollArea *parent = nullptr, QWidget *viewPort = nullptr );
 
   protected:
     bool eventFilter( QObject *obj, QEvent *event ) override;
@@ -116,7 +115,6 @@ class ScrollAreaFilter : public QObject
 
     void addChild( QObject *child );
     void removeChild( QObject *child );
-
 };
 
 ///@endcond PRIVATE

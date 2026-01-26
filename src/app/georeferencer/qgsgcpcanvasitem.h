@@ -16,19 +16,20 @@
 #ifndef QGSGCPCANVASITEM_H
 #define QGSGCPCANVASITEM_H
 
+#include "qgsmapcanvasitem.h"
+
 #include <QBrush>
 #include <QPen>
-
-#include "qgsmapcanvasitem.h"
 
 class QgsMapCanvas;
 class QgsGeorefDataPoint;
 
-class QgsGCPCanvasItem final: public QgsMapCanvasItem
+class QgsGCPCanvasItem final : public QgsMapCanvasItem
 {
   public:
-    QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource/* = true*/ );
+    QgsGCPCanvasItem( QgsMapCanvas *mapCanvas, QgsGeorefDataPoint *dataPoint, bool isGCPSource /* = true*/ );
 
+    using QgsMapCanvasItem::paint;
     //! draws point information
     void paint( QPainter *p ) override;
 
@@ -47,7 +48,6 @@ class QgsGCPCanvasItem final: public QgsMapCanvasItem
     void setPointColor( const QColor &color );
 
   private:
-
     QgsGeorefDataPoint *mDataPoint = nullptr;
     QSizeF mTextBounds;
     QBrush mPointBrush;

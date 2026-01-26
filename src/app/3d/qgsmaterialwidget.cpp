@@ -14,25 +14,26 @@
  ***************************************************************************/
 
 #include "qgsmaterialwidget.h"
+
 #include "qgs3d.h"
-#include "qgsmaterialregistry.h"
 #include "qgsabstractmaterialsettings.h"
+#include "qgsmaterialregistry.h"
 #include "qgsmaterialsettingswidget.h"
-#include "qgsreadwritecontext.h"
 #include "qgsphongmaterialsettings.h"
+#include "qgsreadwritecontext.h"
+
+#include "moc_qgsmaterialwidget.cpp"
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QWidget( parent )
-  , mCurrentSettings( std::make_unique< QgsPhongMaterialSettings >() )
-  , mTechnique( QgsMaterialSettingsRenderingTechnique::Triangles )
+  , mCurrentSettings( std::make_unique<QgsPhongMaterialSettings>() )
 {
   setupUi( this );
 
   const QStringList materialTypes = Qgs3D::materialRegistry()->materialSettingsTypes();
   for ( const QString &type : materialTypes )
   {
-    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(),
-                                    Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(), Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
   connect( mMaterialTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsMaterialWidget::materialTypeChanged );
@@ -51,15 +52,14 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
     if ( !Qgs3D::materialRegistry()->materialSettingsMetadata( type )->supportsTechnique( technique ) )
       continue;
 
-    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(),
-                                    Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
+    mMaterialTypeComboBox->addItem( Qgs3D::materialRegistry()->materialSettingsMetadata( type )->icon(), Qgs3D::materialRegistry()->materialSettingsMetadata( type )->visibleName(), type );
   }
 
   const int prevIndex = mMaterialTypeComboBox->findData( prevType );
   if ( prevIndex == -1 )
   {
     // if phong material type is available, default to it (for now?)
-    const int phongIndex = mMaterialTypeComboBox->findData( QStringLiteral( "phong" ) );
+    const int phongIndex = mMaterialTypeComboBox->findData( u"phong"_s );
     if ( phongIndex >= 0 )
       mMaterialTypeComboBox->setCurrentIndex( phongIndex );
     else
@@ -68,7 +68,7 @@ void QgsMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique tech
   else
     mMaterialTypeComboBox->setCurrentIndex( prevIndex );
 
-  if ( QgsMaterialSettingsWidget *w = qobject_cast< QgsMaterialSettingsWidget * >( mStackedWidget->currentWidget() ) )
+  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
     w->setTechnique( technique );
 
   mMaterialTypeComboBox->blockSignals( false );
@@ -96,7 +96,7 @@ void QgsMaterialWidget::setType( const QString &type )
 
 void QgsMaterialWidget::materialTypeChanged()
 {
-  std::unique_ptr< QgsAbstractMaterialSettings > currentSettings( settings() );
+  std::unique_ptr<QgsAbstractMaterialSettings> currentSettings( settings() );
   const QString existingType = currentSettings ? currentSettings->type() : QString();
   const QString newType = mMaterialTypeComboBox->currentData().toString();
   if ( existingType == newType )
@@ -106,13 +106,13 @@ void QgsMaterialWidget::materialTypeChanged()
   {
     // change material to a new (with different type)
     // base new layer on existing materials's properties
-    std::unique_ptr< QgsAbstractMaterialSettings > newMaterial( am->create() );
+    std::unique_ptr<QgsAbstractMaterialSettings> newMaterial( am->create() );
     if ( newMaterial )
     {
       if ( currentSettings )
       {
         QDomDocument doc;
-        QDomElement tempElem = doc.createElement( QStringLiteral( "temp" ) );
+        QDomElement tempElem = doc.createElement( u"temp"_s );
         currentSettings->writeXml( tempElem, QgsReadWriteContext() );
         newMaterial->readXml( tempElem, QgsReadWriteContext() );
       }
@@ -126,7 +126,7 @@ void QgsMaterialWidget::materialTypeChanged()
 
 void QgsMaterialWidget::materialWidgetChanged()
 {
-  if ( QgsMaterialSettingsWidget *w = qobject_cast< QgsMaterialSettingsWidget * >( mStackedWidget->currentWidget() ) )
+  if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
   {
     mCurrentSettings.reset( w->settings() );
   }
@@ -138,7 +138,7 @@ void QgsMaterialWidget::updateMaterialWidget()
   if ( mStackedWidget->currentWidget() != mPageDummy )
   {
     // stop updating from the original widget
-    if ( QgsMaterialSettingsWidget *w = qobject_cast< QgsMaterialSettingsWidget * >( mStackedWidget->currentWidget() ) )
+    if ( QgsMaterialSettingsWidget *w = qobject_cast<QgsMaterialSettingsWidget *>( mStackedWidget->currentWidget() ) )
       disconnect( w, &QgsMaterialSettingsWidget::changed, this, &QgsMaterialWidget::materialWidgetChanged );
     mStackedWidget->removeWidget( mStackedWidget->currentWidget() );
   }
@@ -160,4 +160,3 @@ void QgsMaterialWidget::updateMaterialWidget()
   // When anything is not right
   mStackedWidget->setCurrentWidget( mPageDummy );
 }
-

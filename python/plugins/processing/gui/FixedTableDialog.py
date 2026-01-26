@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import warnings
@@ -25,15 +25,19 @@ import warnings
 from qgis.gui import QgsGui
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QDialog, QPushButton, QAbstractItemView, QDialogButtonBox
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QPushButton,
+    QAbstractItemView,
+    QDialogButtonBox,
+)
 from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, 'ui', 'DlgFixedTable.ui'))
+    WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ui", "DlgFixedTable.ui"))
 
 
 class FixedTableDialog(BASE, WIDGET):
@@ -50,22 +54,23 @@ class FixedTableDialog(BASE, WIDGET):
 
         QgsGui.instance().enableAutoGeometryRestore(self)
 
-        self.tblView.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tblView.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
         self.tblView.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
 
         self.param = param
         self.rettable = None
 
         # Additional buttons
-        self.btnAdd = QPushButton(self.tr('Add row'))
-        self.buttonBox.addButton(self.btnAdd,
-                                 QDialogButtonBox.ButtonRole.ActionRole)
-        self.btnRemove = QPushButton(self.tr('Remove row(s)'))
-        self.buttonBox.addButton(self.btnRemove,
-                                 QDialogButtonBox.ButtonRole.ActionRole)
-        self.btnRemoveAll = QPushButton(self.tr('Remove all'))
-        self.buttonBox.addButton(self.btnRemoveAll,
-                                 QDialogButtonBox.ButtonRole.ActionRole)
+        self.btnAdd = QPushButton(self.tr("Add row"))
+        self.buttonBox.addButton(self.btnAdd, QDialogButtonBox.ButtonRole.ActionRole)
+        self.btnRemove = QPushButton(self.tr("Remove row(s)"))
+        self.buttonBox.addButton(self.btnRemove, QDialogButtonBox.ButtonRole.ActionRole)
+        self.btnRemoveAll = QPushButton(self.tr("Remove all"))
+        self.buttonBox.addButton(
+            self.btnRemoveAll, QDialogButtonBox.ButtonRole.ActionRole
+        )
 
         self.btnAdd.clicked.connect(self.addRow)
         self.btnRemove.clicked.connect(lambda: self.removeRows())
@@ -118,5 +123,5 @@ class FixedTableDialog(BASE, WIDGET):
             self.tblView.setUpdatesEnabled(True)
 
     def addRow(self):
-        items = [QStandardItem('0') for i in range(self.tblView.model().columnCount())]
+        items = [QStandardItem("0") for i in range(self.tblView.model().columnCount())]
         self.tblView.model().appendRow(items)

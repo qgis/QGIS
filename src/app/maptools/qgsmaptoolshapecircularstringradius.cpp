@@ -14,20 +14,25 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircularstringradius.h"
+
+#include <cmath>
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgscircularstring.h"
-#include "qgsgeometryutils.h"
+#include "qgscompoundcurve.h"
+#include "qgsdoublespinbox.h"
 #include "qgsgeometryrubberband.h"
+#include "qgsgeometryutils.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
-#include "qgsstatusbar.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsdoublespinbox.h"
-#include <cmath>
-#include "qgsapplication.h"
+#include "qgspoint.h"
+#include "qgsstatusbar.h"
 
-const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = QStringLiteral( "circular-string-by-radius" );
+#include "moc_qgsmaptoolshapecircularstringradius.cpp"
+
+const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = u"circular-string-by-radius"_s;
 
 QString QgsMapToolShapeCircularStringRadiusMetadata::id() const
 {
@@ -41,7 +46,7 @@ QString QgsMapToolShapeCircularStringRadiusMetadata::name() const
 
 QIcon QgsMapToolShapeCircularStringRadiusMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircularStringRadius.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircularStringRadius.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircularStringRadiusMetadata::category() const
@@ -105,6 +110,9 @@ bool QgsMapToolShapeCircularStringRadius::cadCanvasReleaseEvent( QgsMapMouseEven
   }
   else if ( e->button() == Qt::RightButton )
   {
+    if ( mPoints.size() < 3 )
+      return false;
+
     if ( !( mPoints.size() % 2 ) )
       mPoints.removeLast();
     addCurveToParentTool();
@@ -147,8 +155,7 @@ void QgsMapToolShapeCircularStringRadius::recalculateTempRubberBand( const QgsPo
   {
     //recalculate midpoint on circle segment
     QgsPoint midPoint;
-    if ( !QgsGeometryUtils::segmentMidPoint( mPoints.at( mPoints.size() - 2 ), mTemporaryEndPoint, midPoint, mRadius,
-         QgsPoint( mousePosition ) ) )
+    if ( !QgsGeometryUtils::segmentMidPoint( mPoints.at( mPoints.size() - 2 ), mTemporaryEndPoint, midPoint, mRadius, QgsPoint( mousePosition ) ) )
     {
       return;
     }
@@ -162,13 +169,29 @@ void QgsMapToolShapeCircularStringRadius::recalculateTempRubberBand( const QgsPo
     rubberBandPoints.append( mPoints.last() );
     rubberBandPoints.append( mParentTool->mapPoint( mousePosition ) );
   }
+
   QgsCircularString *cString = new QgsCircularString();
   cString->setPoints( rubberBandPoints );
+
   delete mTempRubberBand;
   Qgis::GeometryType type = mCaptureMode == QgsMapToolCapture::CapturePolygon ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line;
   mTempRubberBand = mParentTool->createGeometryRubberBand( type, true );
+
   mTempRubberBand->setGeometry( cString );
   mTempRubberBand->show();
+
+  // construct transient geometry for signal, starting with the geometry already captured by the parent tool
+  std::unique_ptr<QgsCompoundCurve> fullCurve( mParentTool->captureCurve() ? mParentTool->captureCurve()->clone() : new QgsCompoundCurve() );
+  if ( mPoints.size() >= 3 )
+  {
+    auto confirmedString = std::make_unique< QgsCircularString >();
+    const int rubberBandSize = mPoints.size() - ( mPoints.size() + 1 ) % 2;
+    confirmedString->setPoints( mPoints.mid( 0, rubberBandSize ) );
+    fullCurve->addCurve( confirmedString.release() );
+  }
+  fullCurve->addCurve( cString->clone() );
+
+  setTransientGeometry( QgsGeometry( fullCurve.release() ) );
 }
 
 void QgsMapToolShapeCircularStringRadius::createRadiusSpinBox()
@@ -180,7 +203,7 @@ void QgsMapToolShapeCircularStringRadius::createRadiusSpinBox()
   mRadiusSpinBox->setPrefix( tr( "Radius: " ) );
   mRadiusSpinBox->setValue( mRadius );
   QgisApp::instance()->addUserInputWidget( mRadiusSpinBox );
-  connect( mRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolShapeCircularStringRadius::updateRadiusFromSpinBox );
+  connect( mRadiusSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolShapeCircularStringRadius::updateRadiusFromSpinBox );
   mRadiusSpinBox->setFocus( Qt::TabFocusReason );
 }
 

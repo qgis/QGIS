@@ -16,9 +16,10 @@
 #ifndef QGSLAYERTREEVIEW_H
 #define QGSLAYERTREEVIEW_H
 
-#include <QTreeView>
 #include "qgis.h"
 #include "qgis_gui.h"
+
+#include <QTreeView>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
@@ -38,17 +39,25 @@ class QgsLayerTreeFilterProxyModel;
 /**
  * \ingroup gui
  *
- * \brief The QgsLayerTreeProxyModel class is a proxy model for QgsLayerTreeModel, supports
+ * \brief A proxy model for QgsLayerTreeModel, supporting
  * private layers and text filtering.
  *
  * \since QGIS 3.18
  */
 class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
 {
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsLayerTreeProxyModel *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsLayerTreeProxyModel;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:
-
     /**
      * Constructs QgsLayerTreeProxyModel with source model \a treeModel and a \a parent
      */
@@ -86,103 +95,110 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     void setHideValidLayers( bool hideValid );
 
   protected:
-
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
+    /**
+     * Returns TRUE if the specified \a node should be shown.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool nodeShown( QgsLayerTreeNode *node ) const;
+
   private:
-
-    bool nodeShown( QgsLayerTreeNode *node ) const;
-
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QString mFilterText;
     bool mShowPrivateLayers = false;
     bool mHideValidLayers = false;
-
 };
 
 
 /**
  * \ingroup gui
- * \brief The QgsLayerTreeView class extends QTreeView and provides some additional functionality
- * when working with a layer tree.
+ * \brief Base class for QTreeView widgets which display a layer tree.
  *
  * The view updates expanded state of layer tree nodes and also listens to changes
  * to expanded states in the layer tree.
  *
- * The view keeps track of the current layer and emits a signal when the current layer has changed.
+ * \warning Subclasses must take care to call both setLayerTreeModel() and QTreeView::setModel()
+ * in order to have a fully functional tree view. This is by design, as it permits use of
+ * a custom proxy model in the view.
  *
- * Allows the client to specify a context menu provider with custom actions. Also it comes
- * with a set of default actions that can be used when building context menu.
- *
- * \see QgsLayerTreeModel
+ * \see QgsLayerTreeView
+ * \since QGIS 4.0
  */
-class GUI_EXPORT QgsLayerTreeView : public QTreeView
+class GUI_EXPORT QgsLayerTreeViewBase : public QTreeView
 {
-
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->inherits( "QgsLayerTreeView" ) )
-      sipType = sipType_QgsLayerTreeView;
-    else
-      sipType = 0;
-    SIP_END
-#endif
-
-
     Q_OBJECT
+
   public:
+    //! Constructor for QgsLayerTreeViewBase
+    explicit QgsLayerTreeViewBase( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsLayerTreeViewBase() override;
 
-    //! Constructor for QgsLayerTreeView
-    explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsLayerTreeView() override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
 
-    //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
-    void setModel( QAbstractItemModel *model ) override;
+    /**
+     * Associates a layer tree model with the view.
+     *
+     * \warning This does NOT explicitly set the view's model, and a subsequent call
+     * to QTreeView::setModel() must be made. This is by design, as it permits use of
+     * a custom proxy model in the view.
+     *
+     * \see layerTreeModel()
+     */
+    void setLayerTreeModel( QgsLayerTreeModel *model );
 
-    //! Gets access to the model casted to QgsLayerTreeModel
+    /**
+     * Returns the associated layer tree model.
+     * \see setLayerTreeModel()
+     */
     QgsLayerTreeModel *layerTreeModel() const;
 
     /**
-     * Returns the proxy model used by the view.
+     * Returns the layer tree node for given view \a index.
      *
-     * This can be used to set filters controlling which layers are shown in the view.
+     * Returns root node for an invalid index.
      *
-     * \since QGIS 3.18
-     */
-    QgsLayerTreeProxyModel *proxyModel() const;
-
-    /**
-     * Returns layer tree node for given proxy model tree \a index. Returns root node for invalid index.
-     * Returns NULLPTR if index does not refer to a layer tree node (e.g. it is a legend node)
+     * Returns NULLPTR if index does not refer to a layer tree node (e.g. it is a legend node).
      *
-     * Unlike QgsLayerTreeModel::index2Node(), calling this method correctly accounts
+     * Unlike QgsLayerTreeViewBase::index2Node(), calling this method correctly accounts
      * for mapping the view indexes through the view's proxy model to the source model.
      *
+     * \see node2index()
      * \since QGIS 3.18
      */
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
 
     /**
-     * Returns proxy model index for a given node. If the node does not belong to the layer tree, the result is undefined
+     * Returns the view model index for a given \a node.
+     *
+     * If the \a node does not belong to the layer tree, the result is undefined.
      *
      * Unlike QgsLayerTreeModel::node2index(), calling this method correctly accounts
      * for mapping the view indexes through the view's proxy model to the source model.
      *
+     * \see index2node()
      * \since QGIS 3.18
      */
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 
-
     /**
-     * Returns source model index for a given node. If the node does not belong to the layer tree, the result is undefined
+     * Returns the layer tree source model index for a given \a node.
      *
+     * If the \a node does not belong to the layer tree, the result is undefined.
+     *
+     * \warning The returned index belongs the underlying layer tree model, and care should be taken
+     * to correctly map to a proxy index if a proxy model is in use.
+     *
+     * \see node2index()
      * \since QGIS 3.18
      */
     QModelIndex node2sourceIndex( QgsLayerTreeNode *node ) const;
 
-
     /**
-     * Returns legend node for given proxy model tree \a index. Returns NULLPTR for invalid index
+     * Returns legend node for given view \a index.
+     *
+     * Returns NULLPTR for invalid index.
      *
      * Unlike QgsLayerTreeModel::index2legendNode(), calling this method correctly accounts
      * for mapping the view indexes through the view's proxy model to the source model.
@@ -192,65 +208,11 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index ) const;
 
     /**
-     * Returns proxy model index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
-     * If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
+     * Returns the current node.
      *
-     * Unlike QgsLayerTreeModel::legendNode2index(), calling this method correctly accounts
-     * for mapping the view indexes through the view's proxy model to the source model.
-     *
-     * \since QGIS 3.18
+     * May be NULLPTR.
      */
-    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
-
-    /**
-     * Returns index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
-     * If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
-     *
-     * \since QGIS 3.18
-     */
-    QModelIndex legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode );
-
-    //! Gets access to the default actions that may be used with the tree view
-    QgsLayerTreeViewDefaultActions *defaultActions();
-
-    //! Sets provider for context menu. Takes ownership of the instance
-    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
-    //! Returns pointer to the context menu provider. May be NULLPTR
-    QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
-
-    /**
-     * Returns the currently selected layer, or NULLPTR if no layers is selected.
-     *
-     * \see setCurrentLayer()
-     */
-    QgsMapLayer *currentLayer() const;
-
-    /**
-     * Convenience methods which sets the visible state of the specified map \a layer.
-     *
-     * \see QgsLayerTreeNode::setItemVisibilityChecked()
-     * \since QGIS 3.10
-     */
-    void setLayerVisible( QgsMapLayer *layer, bool visible );
-
-    /**
-     * Sets the currently selected \a layer.
-     *
-     * If \a layer is NULLPTR then all layers will be deselected.
-     *
-     * \see currentLayer()
-     */
-    void setCurrentLayer( QgsMapLayer *layer );
-
-    //! Gets current node. May be NULLPTR
     QgsLayerTreeNode *currentNode() const;
-    //! Gets current group node. If a layer is current node, the function will return parent group. May be NULLPTR.
-    QgsLayerTreeGroup *currentGroupNode() const;
-
-    /**
-     * Gets current legend node. May be NULLPTR if current node is not a legend node.
-     */
-    QgsLayerTreeModelLegendNode *currentLegendNode() const;
 
     /**
      * Returns the list of selected layer tree nodes.
@@ -262,6 +224,31 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \see selectedLayers()
      */
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
+
+    /**
+     * Returns the currently selected layer, or NULLPTR if no layers is selected.
+     *
+     * \see setCurrentLayer()
+     */
+    QgsMapLayer *currentLayer() const;
+
+    /**
+     * Returns the map layer corresponding to a view \a index.
+     *
+     * This method correctly accounts for proxy models set on the tree view.
+     *
+     * Returns NULLPTR if the index does not correspond to a map layer.
+     */
+    QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the current group node.
+     *
+     * If a layer is the current node, the function will return the layer's parent group.
+     *
+     * May be NULLPTR.
+     */
+    QgsLayerTreeGroup *currentGroupNode() const;
 
     /**
      * Returns the list of selected nodes filtered to just layer nodes (QgsLayerTreeLayer).
@@ -282,6 +269,60 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QList<QgsMapLayer *> selectedLayers() const;
 
     /**
+     * Returns the view index for a given legend node.
+     *
+     * If the legend node does not belong to the layer tree, the result is undefined.
+     *
+     * If the legend node belongs to the tree but it is filtered out, an invalid model index is returned.
+     *
+     * Unlike QgsLayerTreeModel::legendNode2index(), calling this method correctly accounts
+     * for mapping the view indexes through the view's proxy model to the source model.
+     *
+     * \since QGIS 3.18
+     */
+    QModelIndex legendNode2index( QgsLayerTreeModelLegendNode *legendNode );
+
+    /**
+     * Returns the layer tree source model index for a given legend node.
+     *
+     * If the legend node does not belong to the layer tree, the result is undefined.
+     *
+     * If the legend node belongs to the tree but it is filtered out, an invalid model index is returned.
+     *
+     * \warning The returned index belongs the underlying layer tree model, and care should be taken
+     * to correctly map to a proxy index if a proxy model is in use.
+     *
+     * \see legendNode2index()
+     *
+     * \since QGIS 3.18
+     */
+    QModelIndex legendNode2sourceIndex( QgsLayerTreeModelLegendNode *legendNode );
+
+    /**
+     * Sets the currently selected \a node.
+     *
+     * If \a node is NULLPTR then all nodes will be deselected.
+     *
+     * \see currentNode()
+     * \since QGIS 3.40
+     */
+    void setCurrentNode( QgsLayerTreeNode *node );
+
+    /**
+     * Sets the currently selected \a layer.
+     *
+     * If \a layer is NULLPTR then all layers will be deselected.
+     *
+     * \see currentLayer()
+     */
+    void setCurrentLayer( QgsMapLayer *layer );
+
+    /**
+     * Gets current legend node. May be NULLPTR if current node is not a legend node.
+     */
+    QgsLayerTreeModelLegendNode *currentLegendNode() const;
+
+    /**
      * Returns the list of selected legend nodes.
      *
      * \see selectedNodes()
@@ -298,6 +339,145 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * \since QGIS 3.4
      */
     QList<QgsMapLayer *> selectedLayersRecursive() const;
+
+    //! Gets access to the default actions that may be used with the tree view
+    QgsLayerTreeViewDefaultActions *defaultActions();
+
+  public slots:
+
+    /**
+     * Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
+     */
+    void expandAllNodes();
+
+    /**
+     * Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
+     */
+    void collapseAllNodes();
+
+  protected:
+    /**
+     * Updates the expanded state from a \a node.
+     */
+    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
+
+    /**
+     * Returns the view index corresponding with a layer tree model \a index.
+     *
+     * This method correctly accounts for proxy models set on the tree view.
+     *
+     * \see layerTreeModelIndexToViewIndex()
+     */
+    QModelIndex viewIndexToLayerTreeModelIndex( const QModelIndex &index ) const;
+
+    /**
+     * Returns the layer tree model index corresponding with a view \a index.
+     *
+     * This method correctly accounts for proxy models set on the tree view.
+     *
+     * \see viewIndexToLayerTreeModelIndex()
+     */
+    QModelIndex layerTreeModelIndexToViewIndex( const QModelIndex &index ) const;
+
+    //! helper class with default actions. Lazily initialized.
+    QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
+
+  protected slots:
+
+    /**
+     * Stores the expanded state to a node with matching \a index.
+     */
+    void updateExpandedStateToNode( const QModelIndex &index );
+
+    /**
+     * Called when the expanded state changes for a node.
+     */
+    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
+
+    /**
+     * Called when the model is reset.
+     */
+    void onModelReset();
+
+  private slots:
+
+    void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
+
+  private:
+    QgsLayerTreeModel *mLayerTreeModel = nullptr;
+    QTimer *mBlockDoubleClickTimer = nullptr;
+};
+
+
+/**
+ * \ingroup gui
+ * \brief Extends QTreeView and provides additional functionality when working with a layer tree.
+ *
+ * The view updates expanded state of layer tree nodes and also listens to changes
+ * to expanded states in the layer tree.
+ *
+ * The view keeps track of the current layer and emits a signal when the current layer has changed.
+ *
+ * Allows the client to specify a context menu provider with custom actions. Also it comes
+ * with a set of default actions that can be used when building context menu.
+ *
+ * \see QgsLayerTreeModel
+ */
+class GUI_EXPORT QgsLayerTreeView : public QgsLayerTreeViewBase
+{
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( sipCpp->inherits( "QgsLayerTreeView" ) )
+      sipType = sipType_QgsLayerTreeView;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
+
+    Q_OBJECT
+  public:
+    //! Constructor for QgsLayerTreeView
+    explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsLayerTreeView() override;
+
+    /**
+     * Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
+     *
+     * \note This method automatically creates a QgsLayerTreeProxyModel to use as a proxy.
+     */
+    void setModel( QAbstractItemModel *model ) override;
+
+    /**
+     * Sets the \a model and \a proxyModel for the view.
+     *
+     * Use this method when a custom proxy model is required.
+     *
+     * \since QGIS 4.0
+     */
+    void setModel( QgsLayerTreeModel *model, QgsLayerTreeProxyModel *proxyModel );
+
+    /**
+     * Returns the proxy model used by the view.
+     *
+     * This can be used to set filters controlling which layers are shown in the view.
+     *
+     * \since QGIS 3.18
+     */
+    QgsLayerTreeProxyModel *proxyModel() const;
+
+    //! Sets provider for context menu. Takes ownership of the instance
+    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider SIP_TRANSFER );
+    //! Returns pointer to the context menu provider. May be NULLPTR
+    QgsLayerTreeViewMenuProvider *menuProvider() const { return mMenuProvider; }
+
+    /**
+     * Convenience methods which sets the visible state of the specified map \a layer.
+     *
+     * \see QgsLayerTreeNode::setItemVisibilityChecked()
+     * \since QGIS 3.10
+     */
+    void setLayerVisible( QgsMapLayer *layer, bool visible );
 
     /**
      * Adds an indicator to the given layer tree node. Indicators are icons shown next to layer/group names
@@ -334,7 +514,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     int layerMarkWidth() const { return mLayerMarkWidth; }
 
-///@cond PRIVATE
+    ///@cond PRIVATE
 
     /**
      * Returns a list of custom property keys which are considered as related to view operations
@@ -347,7 +527,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     static QStringList viewOnlyCustomProperties() SIP_SKIP;
 
-///@endcond
+    ///@endcond
 
     /**
      * Returns the show private layers status
@@ -366,16 +546,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString &layerId );
-
-    /**
-     * Enhancement of QTreeView::expandAll() that also records expanded state in layer tree nodes
-     */
-    void expandAllNodes();
-
-    /**
-     * Enhancement of QTreeView::collapseAll() that also records expanded state in layer tree nodes
-     */
-    void collapseAllNodes();
 
     /**
      * Set width of contextual menu mark, at right of layer node items.
@@ -423,11 +593,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
   protected:
     void contextMenuEvent( QContextMenuEvent *event ) override;
 
-    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
-
-    QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
-
-    void mouseDoubleClickEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
 
@@ -442,11 +607,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
-    void updateExpandedStateToNode( const QModelIndex &index );
-
     void onCurrentChanged();
-    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
-    void onModelReset();
 
   private slots:
     void onCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
@@ -456,14 +617,12 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     void onDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles );
 
   protected:
-    //! helper class with default actions. Lazily initialized.
-    QgsLayerTreeViewDefaultActions *mDefaultActions = nullptr;
     //! Context menu provider. Owned by the view.
     QgsLayerTreeViewMenuProvider *mMenuProvider = nullptr;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
     //! Storage of indicators used with the tree view
-    QHash< QgsLayerTreeNode *, QList<QgsLayerTreeViewIndicator *> > mIndicators;
+    QHash<QgsLayerTreeNode *, QList<QgsLayerTreeViewIndicator *>> mIndicators;
     //! Used by the item delegate for identification of which indicator has been clicked
     QPoint mLastReleaseMousePos;
 
@@ -478,7 +637,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     bool mShowPrivateLayers = false;
     bool mHideValidLayers = false;
 
-    QTimer *mBlockDoubleClickTimer = nullptr;
     // For model  debugging
     // void checkModel( );
 

@@ -18,17 +18,17 @@
 #ifndef QGSMAPTOOLMOVELABEL_H
 #define QGSMAPTOOLMOVELABEL_H
 
-#include "qgsmaptoollabel.h"
 #include "qgis_app.h"
+#include "qgsmaptoollabel.h"
 
 //! A map tool for dragging label positions
-class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
+class APP_EXPORT QgsMapToolMoveLabel : public QgsMapToolLabel
 {
     Q_OBJECT
 
   public:
     QgsMapToolMoveLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
-    ~QgsMapToolMoveLabel();
+    ~QgsMapToolMoveLabel() override;
 
     void deleteRubberBands() override;
 
@@ -40,7 +40,6 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
     void keyReleaseEvent( QKeyEvent *e ) override;
 
   protected:
-
     bool canModifyCallout( const QgsCalloutPosition &position, bool isOrigin, int &xCol, int &yCol ) override;
 
     bool mCurrentCalloutMoveOrigin = false;
@@ -60,7 +59,6 @@ class APP_EXPORT QgsMapToolMoveLabel: public QgsMapToolLabel
 
     bool mAnchorDetached = false;
     double mLabelTearFromLineThreshold = 0;
-
 };
 
 #endif // QGSMAPTOOLMOVELABEL_H

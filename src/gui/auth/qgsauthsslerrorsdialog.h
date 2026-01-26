@@ -18,24 +18,25 @@
 #ifndef QGSAUTHSSLERRORSDIALOG_H
 #define QGSAUTHSSLERRORSDIALOG_H
 
-#include <QDialog>
-#include <QSslError>
 #include "ui_qgsauthsslerrorsdialog.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDialog>
+#include <QSslError>
 
 class QNetworkReply;
 class QPushButton;
 
 /**
  * \ingroup gui
- * \brief Widget for reporting SSL errors and offering an option to store an SSL server exception into the authentication database
+ * \brief Widget for reporting SSL errors and offering an option to store an SSL server exception into the authentication database.
  */
 class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSslErrorsDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Construct a dialog to handle SSL errors and saving SSL server certificate exceptions
      * \param reply Network reply that hand error(s)
@@ -44,11 +45,7 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
      * \param digest SHA digest of server certificate
      * \param hostport Unique host:port to associate with the server certificate
      */
-    QgsAuthSslErrorsDialog( QNetworkReply *reply,
-                            const QList<QSslError> &sslErrors,
-                            QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                            const QString &digest = QString(),
-                            const QString &hostport = QString() );
+    QgsAuthSslErrorsDialog( QNetworkReply *reply, const QList<QSslError> &sslErrors, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &digest = QString(), const QString &hostport = QString() );
 
   private slots:
     void loadUnloadCertificate( bool load );

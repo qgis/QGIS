@@ -21,13 +21,13 @@
 
 #include <map>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsdataprovider.h"
+
 #include <QDir>
 #include <QLibrary>
 #include <QString>
-
-#include "qgsdataprovider.h"
-#include "qgis_core.h"
-#include "qgis_sip.h"
 
 class QgsProviderMetadata;
 class QgsVectorLayer;
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsProviderRegistry
 
   public:
 
-    // TODO QGIS 4 - either move to QgsAbstractDataSourceWidget or remove altogether
+    // TODO QGIS 5 - either move to QgsAbstractDataSourceWidget or remove altogether
 
     /**
      * Different ways a source select dialog can be used
@@ -158,7 +158,9 @@ class CORE_EXPORT QgsProviderRegistry
      * \note not available in Python bindings
      * \since QGIS 3.10
      */
-    SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options );
+    SIP_SKIP Qgis::VectorExportResult createEmptyLayer( const QString &providerKey, const QString &uri, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, QMap<int, int> &oldToNewAttrIdxMap, QString &errorMessage, const QMap<QString, QVariant> *options, QString &createdLayerName );
+
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Creates new instance of raster data provider
@@ -248,7 +250,7 @@ class CORE_EXPORT QgsProviderRegistry
 
     /**
      * Lists stored layer styles in the provider defined by \a providerKey and \a uri
-     * \returns -1 if not implemented by provider, otherwise number of styles stored
+     * \returns ``-1`` if not implemented by provider, otherwise number of styles stored
      * \since QGIS 3.10
      */
     int listStyles( const QString &providerKey,
@@ -414,7 +416,7 @@ class CORE_EXPORT QgsProviderRegistry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.ProviderCandidateDetails: %1>" ).arg( sipCpp->metadata()->key() );
+        QString str = u"<QgsProviderRegistry.ProviderCandidateDetails: %1>"_s.arg( sipCpp->metadata()->key() );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -495,7 +497,7 @@ class CORE_EXPORT QgsProviderRegistry
 #ifdef SIP_RUN
         SIP_PYOBJECT __repr__();
         % MethodCode
-        QString str = QStringLiteral( "<QgsProviderRegistry.UnusableUriDetails: %1>" ).arg( sipCpp->warning );
+        QString str = u"<QgsProviderRegistry.UnusableUriDetails: %1>"_s.arg( sipCpp->warning );
         sipRes = PyUnicode_FromString( str.toUtf8().constData() );
         % End
 #endif
@@ -596,7 +598,7 @@ class CORE_EXPORT QgsProviderRegistry
      * for URIs which are known to be sidecar files only, such as ".aux.xml" files or ".shp.xml" files,
      * or the "ept-build.json" files which sit alongside Entwine "ept.json" point cloud sources.
      *
-     * This method tests whether any of the registered providers return TRUE for the their
+     * This method tests whether any of the registered providers return TRUE for their
      * QgsProviderMetadata::uriIsBlocklisted() implementation for the specified URI.
      *
      * \since QGIS 3.18

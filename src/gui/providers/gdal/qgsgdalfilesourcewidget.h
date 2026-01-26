@@ -18,6 +18,7 @@
 #define QGGDALFILESOURCEWIDGET_H
 
 #include "qgsprovidersourcewidget.h"
+
 #include <QVariantMap>
 
 class QgsFileWidget;

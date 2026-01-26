@@ -15,34 +15,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgswfsconstants.h"
 #include "qgswfssourceselect.h"
-#include "qgswfsconnection.h"
-#include "qgswfscapabilities.h"
-#include "qgswfsprovider.h"
-#include "qgswfsdatasourceuri.h"
-#include "qgswfsutils.h"
-#include "qgswfsnewconnection.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsproject.h"
+
+#include <memory>
+
 #include "qgscoordinatereferencesystem.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 #include "qgslogger.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsoapifprovider.h"
-#include "qgssqlstatement.h"
-#include "qgssettings.h"
-#include "qgsgui.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsquerybuilder.h"
+#include "qgssettings.h"
+#include "qgssqlstatement.h"
+#include "qgswfscapabilities.h"
+#include "qgswfsconnection.h"
+#include "qgswfsconstants.h"
+#include "qgswfsdatasourceuri.h"
 #include "qgswfsguiutils.h"
+#include "qgswfsnewconnection.h"
+#include "qgswfsprovider.h"
 #include "qgswfssubsetstringeditor.h"
-#include "qgsguiutils.h"
+#include "qgswfsutils.h"
 
 #include <QDomDocument>
+#include <QFileDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
-#include <QFileDialog>
 #include <QPainter>
 #include <QRegularExpression>
+
+#include "moc_qgswfssourceselect.cpp"
 
 enum
 {
@@ -93,10 +99,9 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   treeView->setItemDelegate( mItemDelegate );
 
   QgsSettings settings;
-  QgsDebugMsgLevel( QStringLiteral( "restoring settings" ), 3 );
-  cbxUseTitleLayerName->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), false ).toBool() );
-  cbxFeatureCurrentViewExtent->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  QgsDebugMsgLevel( u"restoring settings"_s, 3 );
+  cbxFeatureCurrentViewExtent->setChecked( settings.value( u"Windows/WFSSourceSelect/FeatureCurrentViewExtent"_s, true ).toBool() );
+  mHoldDialogOpen->setChecked( settings.value( u"Windows/WFSSourceSelect/HoldDialogOpen"_s, false ).toBool() );
 
   mModel = new QStandardItemModel();
   mModel->setHorizontalHeaderItem( MODEL_IDX_TITLE, new QStandardItem( tr( "Title" ) ) );
@@ -120,10 +125,9 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
   QApplication::restoreOverrideCursor();
 
   QgsSettings settings;
-  QgsDebugMsgLevel( QStringLiteral( "saving settings" ), 3 );
-  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/UseTitleLayerName" ), cbxUseTitleLayerName->isChecked() );
-  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), cbxFeatureCurrentViewExtent->isChecked() );
-  settings.setValue( QStringLiteral( "Windows/WFSSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  QgsDebugMsgLevel( u"saving settings"_s, 3 );
+  settings.setValue( u"Windows/WFSSourceSelect/FeatureCurrentViewExtent"_s, cbxFeatureCurrentViewExtent->isChecked() );
+  settings.setValue( u"Windows/WFSSourceSelect/HoldDialogOpen"_s, mHoldDialogOpen->isChecked() );
 
   delete mItemDelegate;
   delete mProjectionSelector;
@@ -244,11 +248,11 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     QStandardItem *titleItem = new QStandardItem( featureType.title );
     QStandardItem *nameItem = new QStandardItem( featureType.name );
     QStandardItem *abstractItem = new QStandardItem( featureType.abstract );
-    abstractItem->setToolTip( "<font color=black>" + featureType.abstract  + "</font>" );
+    abstractItem->setToolTip( "<font color=black>" + featureType.abstract + "</font>" );
     abstractItem->setTextAlignment( Qt::AlignLeft | Qt::AlignTop );
     QStandardItem *filterItem = new QStandardItem();
 
-    typedef QList< QStandardItem * > StandardItemList;
+    typedef QList<QStandardItem *> StandardItemList;
     mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << filterItem );
 
     // insert the available CRS into mAvailableCRS
@@ -292,7 +296,7 @@ void QgsWFSSourceSelect::resizeTreeViewAfterModelFill()
 void QgsWFSSourceSelect::startOapifLandingPageRequest()
 {
   QgsWfsConnection connection( cmbConnections->currentText() );
-  mOAPIFLandingPage.reset( new QgsOapifLandingPageRequest( connection.uri() ) );
+  mOAPIFLandingPage = std::make_unique<QgsOapifLandingPageRequest>( connection.uri() );
   connect( mOAPIFLandingPage.get(), &QgsOapifLandingPageRequest::gotResponse, this, &QgsWFSSourceSelect::oapifLandingPageReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;
@@ -336,8 +340,8 @@ void QgsWFSSourceSelect::oapifLandingPageReplyFinished()
 
   // Add back any extra query parameters, see issue GH #46535
   const QgsWfsConnection connection( cmbConnections->currentText() );
-  const QUrl connectionUrl( connection.uri().param( QStringLiteral( "url" ) ) );
-  if ( ! connectionUrl.query().isEmpty() )
+  const QUrl connectionUrl( connection.uri().param( u"url"_s ) );
+  if ( !connectionUrl.query().isEmpty() )
   {
     url.append( '?' );
     url.append( connectionUrl.query() );
@@ -350,7 +354,7 @@ void QgsWFSSourceSelect::oapifLandingPageReplyFinished()
 void QgsWFSSourceSelect::startOapifCollectionsRequest( const QString &url )
 {
   QgsWfsConnection connection( cmbConnections->currentText() );
-  mOAPIFCollections.reset( new QgsOapifCollectionsRequest( connection.uri(), url ) );
+  mOAPIFCollections = std::make_unique<QgsOapifCollectionsRequest>( connection.uri(), url );
   connect( mOAPIFCollections.get(), &QgsOapifCollectionsRequest::gotResponse, this, &QgsWFSSourceSelect::oapifCollectionsReplyFinished );
   const bool synchronous = false;
   const bool forceRefresh = true;
@@ -386,11 +390,11 @@ void QgsWFSSourceSelect::oapifCollectionsReplyFinished()
     QStandardItem *titleItem = new QStandardItem( collection.mTitle );
     QStandardItem *nameItem = new QStandardItem( collection.mId );
     QStandardItem *abstractItem = new QStandardItem( collection.mDescription );
-    abstractItem->setToolTip( "<font color=black>" + collection.mDescription  + "</font>" );
+    abstractItem->setToolTip( "<font color=black>" + collection.mDescription + "</font>" );
     abstractItem->setTextAlignment( Qt::AlignLeft | Qt::AlignTop );
     QStandardItem *filterItem = new QStandardItem();
 
-    typedef QList< QStandardItem * > StandardItemList;
+    typedef QList<QStandardItem *> StandardItemList;
     mModel->appendRow( StandardItemList() << titleItem << nameItem << abstractItem << filterItem );
 
     // insert the available CRS into mAvailableCRS
@@ -405,7 +409,7 @@ void QgsWFSSourceSelect::oapifCollectionsReplyFinished()
     return;
   }
 
-  mVersion = QStringLiteral( "OGC_API_FEATURES" );
+  mVersion = u"OGC_API_FEATURES"_s;
 
   resizeTreeViewAfterModelFill();
 }
@@ -439,7 +443,7 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 void QgsWFSSourceSelect::deleteEntryOfServerList()
 {
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
+                  .arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
@@ -478,14 +482,14 @@ void QgsWFSSourceSelect::connectToServer()
 
   const QString uri = connection.uri().uri( false );
   mVersion = QgsWFSDataSourceURI( uri ).version();
-  if ( mVersion == QLatin1String( "OGC_API_FEATURES" ) )
+  if ( mVersion == "OGC_API_FEATURES"_L1 )
   {
     startOapifLandingPageRequest();
   }
   else
   {
-    mCapabilities.reset( new QgsWfsCapabilities( uri ) );
-    connect( mCapabilities.get(), &QgsWfsCapabilities::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
+    mCapabilities = std::make_unique<QgsWfsGetCapabilitiesRequest>( uri );
+    connect( mCapabilities.get(), &QgsWfsGetCapabilitiesRequest::gotCapabilities, this, &QgsWFSSourceSelect::capabilitiesReplyFinished );
     const bool synchronous = false;
     const bool forceRefresh = true;
     if ( mVersion == QgsWFSConstants::VERSION_AUTO )
@@ -517,6 +521,14 @@ void QgsWFSSourceSelect::addButtonClicked()
   if ( gbCRS->isEnabled() )
     pCrsString = labelCoordRefSys->text();
 
+  const QStringList detailsParameters = { u"wfs"_s, cmbConnections->currentText() };
+  QString featureFormat = QgsOwsConnection::settingsDefaultFeatureFormat->value( detailsParameters );
+  if ( featureFormat.isEmpty() )
+  {
+    // Read from global default setting
+    featureFormat = QgsSettings().value( u"qgis/lastFeatureFormatEncoding"_s, QString() ).toString();
+  }
+
   //create layers that user selected from this WFS source
   QModelIndexList list = treeView->selectionModel()->selectedRows();
   for ( int i = 0; i < list.size(); i++ )
@@ -529,20 +541,11 @@ void QgsWFSSourceSelect::addButtonClicked()
     }
     int row = idx.row();
     QString typeName = mModel->item( row, MODEL_IDX_NAME )->text(); //WFS repository's name for layer
-    QString titleName = mModel->item( row, MODEL_IDX_TITLE )->text(); //WFS type name title for layer name (if option is set)
-    QString sql = mModel->item( row, MODEL_IDX_SQL )->text(); //optional SqL specified by user
+    QString sql = mModel->item( row, MODEL_IDX_SQL )->text();       //optional SqL specified by user
     QString layerName = typeName;
-    if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
-    {
-      layerName = titleName;
-    }
     QgsDebugMsgLevel( "Layer " + typeName + " SQL is " + sql, 3 );
 
-    mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName,
-                                       pCrsString,
-                                       isOapif() ? QString() : sql,
-                                       isOapif() ? sql : QString(),
-                                       cbxFeatureCurrentViewExtent->isChecked() );
+    mUri = QgsWFSDataSourceURI::build( connection.uri().uri( false ), typeName, pCrsString, isOapif() ? QString() : sql, isOapif() ? sql : QString(), cbxFeatureCurrentViewExtent->isChecked(), featureFormat );
 
     Q_NOWARN_DEPRECATED_PUSH
     emit addVectorLayer( mUri, layerName, isOapif() ? QgsOapifProvider::OAPIF_PROVIDER_KEY : QgsWFSProvider::WFS_PROVIDER_KEY );
@@ -550,7 +553,7 @@ void QgsWFSSourceSelect::addButtonClicked()
     emit addLayer( Qgis::LayerType::Vector, mUri, layerName, isOapif() ? QgsOapifProvider::OAPIF_PROVIDER_KEY : QgsWFSProvider::WFS_PROVIDER_KEY );
   }
 
-  if ( ! mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
+  if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
   {
     accept();
   }
@@ -598,21 +601,19 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     {
       auto provider = dynamic_cast<QgsOapifProvider *>( vlayer.dataProvider() );
       Q_ASSERT( provider );
-      if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::FULLY_CLIENT )
+      if ( provider->filterTranslatedState() == QgsOapifFilterTranslationState::FULLY_CLIENT )
       {
         QMessageBox::information( nullptr, tr( "Filter" ), tr( "Whole filter will be evaluated on client side." ) );
       }
-      else if ( provider->filterTranslatedState() == QgsOapifProvider::FilterTranslationState::PARTIAL )
+      else if ( provider->filterTranslatedState() == QgsOapifFilterTranslationState::PARTIAL )
       {
         if ( provider->clientSideFilterExpression().isEmpty() )
         {
-          QMessageBox::information( nullptr, tr( "Filter" ),
-                                    tr( "The filter will partially evaluated on client side." ) );
+          QMessageBox::information( nullptr, tr( "Filter" ), tr( "The filter will partially evaluated on client side." ) );
         }
         else
         {
-          QMessageBox::information( nullptr, tr( "Filter" ),
-                                    tr( "The following part of the filter will be evaluated on client side : %1" ).arg( provider->clientSideFilterExpression() ) );
+          QMessageBox::information( nullptr, tr( "Filter" ), tr( "The following part of the filter will be evaluated on client side : %1" ).arg( provider->clientSideFilterExpression() ) );
         }
       }
       mModelProxy->setData( filterIndex, QVariant( gb.sql() ) );
@@ -627,7 +628,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
     QMessageBox *box = new QMessageBox( QMessageBox::Critical, tr( "Server exception" ), tr( "DescribeFeatureType failed" ), QMessageBox::Ok, this );
     box->setAttribute( Qt::WA_DeleteOnClose );
     box->setModal( true );
-    box->setObjectName( QStringLiteral( "WFSFeatureTypeErrorBox" ) );
+    box->setObjectName( u"WFSFeatureTypeErrorBox"_s );
     if ( !property( "hideDialogs" ).toBool() )
       box->open();
 
@@ -671,7 +672,7 @@ void QgsWFSSourceSelect::buildQuery( const QModelIndex &index )
 
 void QgsWFSSourceSelect::updateSql()
 {
-  QgsDebugMsgLevel( QStringLiteral( "updateSql called" ), 2 );
+  QgsDebugMsgLevel( u"updateSql called"_s, 2 );
   Q_ASSERT( mSQLComposerDialog );
 
   const QString typeName = mSQLIndex.sibling( mSQLIndex.row(), MODEL_IDX_NAME ).data().toString();
@@ -701,15 +702,15 @@ void QgsWFSSourceSelect::changeCRS()
 
 void QgsWFSSourceSelect::changeCRSFilter()
 {
-  QgsDebugMsgLevel( QStringLiteral( "changeCRSFilter called" ), 2 );
+  QgsDebugMsgLevel( u"changeCRSFilter called"_s, 2 );
   //evaluate currently selected typename and set the CRS filter in mProjectionSelector
   QModelIndex currentIndex = treeView->selectionModel()->currentIndex();
   if ( currentIndex.isValid() )
   {
     QString currentTypename = currentIndex.sibling( currentIndex.row(), MODEL_IDX_NAME ).data().toString();
-    QgsDebugMsgLevel( QStringLiteral( "the current typename is: %1" ).arg( currentTypename ), 2 );
+    QgsDebugMsgLevel( u"the current typename is: %1"_s.arg( currentTypename ), 2 );
 
-    QMap<QString, QStringList >::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
+    QMap<QString, QStringList>::const_iterator crsIterator = mAvailableCRS.constFind( currentTypename );
     if ( crsIterator != mAvailableCRS.constEnd() )
     {
       QSet<QString> crsNames( qgis::listToSet( *crsIterator ) );
@@ -728,7 +729,6 @@ void QgsWFSSourceSelect::changeCRSFilter()
 
         labelCoordRefSys->setText( preferredCRS );
       }
-
     }
   }
 }
@@ -754,8 +754,7 @@ void QgsWFSSourceSelect::btnSave_clicked()
 
 void QgsWFSSourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -769,14 +768,14 @@ void QgsWFSSourceSelect::btnLoad_clicked()
 
 void QgsWFSSourceSelect::treeWidgetItemDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsgLevel( QStringLiteral( "double-click called" ), 2 );
+  QgsDebugMsgLevel( u"double-click called"_s, 2 );
   buildQuery( index );
 }
 
 void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous )
-  QgsDebugMsgLevel( QStringLiteral( "treeWidget_currentRowChanged called" ), 2 );
+  QgsDebugMsgLevel( u"treeWidget_currentRowChanged called"_s, 2 );
   changeCRSFilter();
   mBuildQueryButton->setEnabled( current.isValid() );
   emit enableButtons( current.isValid() );
@@ -784,7 +783,7 @@ void QgsWFSSourceSelect::treeWidgetCurrentRowChanged( const QModelIndex &current
 
 void QgsWFSSourceSelect::buildQueryButtonClicked()
 {
-  QgsDebugMsgLevel( QStringLiteral( "mBuildQueryButton click called" ), 2 );
+  QgsDebugMsgLevel( u"mBuildQueryButton click called"_s, 2 );
   buildQuery( treeView->selectionModel()->currentIndex() );
 }
 
@@ -812,5 +811,5 @@ QSize QgsWFSItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QM
 
 void QgsWFSSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/ogc_client_support.html" ) );
+  QgsHelp::openHelp( u"working_with_ogc/ogc_client_support.html"_s );
 }

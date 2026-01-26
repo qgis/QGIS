@@ -19,47 +19,20 @@
 
 #define SIP_NO_FILE
 
-#include <QWidget>
-
-#ifdef WITH_QTWEBKIT
-#include <QWebView>
-#include <QDesktopWidget>
-
-#include "qgis_core.h"
-
-
-/**
- * \ingroup core
- */
-class CORE_EXPORT QgsWebView : public QWebView
-{
-    Q_OBJECT
-
-  public:
-    explicit QgsWebView( QWidget *parent = nullptr )
-      : QWebView( parent )
-    {
-      const QDesktopWidget desktop;
-      // Apply zoom factor for HiDPI screens
-      if ( desktop.logicalDpiX() > 96 )
-      {
-        setZoomFactor( desktop.logicalDpiX() / 96 );
-      }
-    }
-};
-#else
 #include "qgswebpage.h"
+
 #include <QTextBrowser>
+#include <QWidget>
 
 class QPrinter;
 
 /**
  * \ingroup core
- * \brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
+ * \brief A collection of stubs to mimic the API of QWebView on systems where the real
  * library is not available. It should be used instead of QWebView inside QGIS.
  *
- * If QGIS is compiled WITH_QTWEBKIT This will simply be a subclass of QWebView. If it is compiled with
- * WITH_QTWEBKIT=OFF then this will be an empty QWidget. If you miss methods in here that you would like to use,
+ * QgsWebview used to be based on QtWebKit and is now a simple subclass of QTextBrowser.
+ * Without WebKit this will be an empty QWidget. If you miss methods in here that you would like to use,
  * please add additional stubs.
  */
 class CORE_EXPORT QgsWebView : public QTextBrowser
@@ -77,7 +50,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       connect( this, &QgsWebView::pageLoadFinished, mPage, &QWebPage::loadFinished );
     }
 
-    ~QgsWebView()
+    ~QgsWebView() override
     {
       delete mSettings;
       delete mPage;
@@ -91,6 +64,11 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
     void load( const QUrl &url )
     {
       setSource( url );
+    }
+
+    QUrl url() const
+    {
+      return source();
     }
 
     QWebPage *page() const
@@ -148,6 +126,5 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
 
 /// @endcond
 };
-#endif
 
 #endif // QGSWEBVIEW_H

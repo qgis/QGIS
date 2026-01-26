@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgsalgorithmpolygonstolines.h"
-#include "qgsgeometrycollection.h"
-#include "qgscurvepolygon.h"
+
 #include "qgscurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
 #include "qgsmultilinestring.h"
 
 ///@cond PRIVATE
 
 QString QgsPolygonsToLinesAlgorithm::name() const
 {
-  return QStringLiteral( "polygonstolines" );
+  return u"polygonstolines"_s;
 }
 
 QString QgsPolygonsToLinesAlgorithm::displayName() const
@@ -45,7 +46,7 @@ QString QgsPolygonsToLinesAlgorithm::group() const
 
 QString QgsPolygonsToLinesAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsPolygonsToLinesAlgorithm::outputName() const
@@ -77,7 +78,7 @@ Qgis::WkbType QgsPolygonsToLinesAlgorithm::outputWkbType( Qgis::WkbType inputWkb
 
 QString QgsPolygonsToLinesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Converts polygons to lines" );
+  return QObject::tr( "This algorithm converts polygons to lines." );
 }
 
 QString QgsPolygonsToLinesAlgorithm::shortDescription() const
@@ -92,7 +93,7 @@ QgsPolygonsToLinesAlgorithm *QgsPolygonsToLinesAlgorithm::createInstance() const
 
 QList<int> QgsPolygonsToLinesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsFeatureList QgsPolygonsToLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback * )
@@ -132,13 +133,13 @@ QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGe
 {
   QList<QgsCurve *> rings;
 
-  if ( QgsGeometryCollection *collection = qgsgeometry_cast<QgsGeometryCollection *>( geom ) )
+  if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geom ) )
   {
-    QgsGeometryPartIterator parts = collection->parts();
+    QgsGeometryConstPartIterator parts = collection->parts();
     while ( parts.hasNext() )
       rings.append( extractRings( parts.next() ) );
   }
-  else if ( QgsCurvePolygon *polygon = qgsgeometry_cast<QgsCurvePolygon *>( geom ) )
+  else if ( const QgsCurvePolygon *polygon = qgsgeometry_cast<const QgsCurvePolygon *>( geom ) )
   {
     if ( auto exteriorRing = polygon->exteriorRing() )
       rings.append( exteriorRing->clone() );
@@ -152,7 +153,4 @@ QList<QgsCurve *> QgsPolygonsToLinesAlgorithm::extractRings( const QgsAbstractGe
 }
 
 
-
 ///@endcond
-
-

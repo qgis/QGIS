@@ -15,24 +15,24 @@
 
 #include "qgsmeshrendereractivedatasetwidget.h"
 
-#include <QDateTime>
-#include <QIcon>
-
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsmeshlayer.h"
-#include "qgsmessagelog.h"
 #include "qgsmeshrenderersettings.h"
+#include "qgsmessagelog.h"
+
+#include <QDateTime>
+#include <QIcon>
+
+#include "moc_qgsmeshrendereractivedatasetwidget.cpp"
 
 QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget *parent )
   : QWidget( parent )
 {
   setupUi( this );
 
-  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeScalarGroupChanged,
-           this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
-  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeVectorGroupChanged,
-           this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeScalarGroupChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeVectorGroupChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
 }
 
 QgsMeshRendererActiveDatasetWidget::~QgsMeshRendererActiveDatasetWidget() = default;
@@ -42,19 +42,15 @@ void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
 {
   if ( mMeshLayer )
   {
-    disconnect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
-                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
-    disconnect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
-                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
+    disconnect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+    disconnect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
   }
 
   mMeshLayer = layer;
 
   mDatasetGroupTreeView->setLayer( layer );
-  connect( layer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
-           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
-  connect( layer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
-           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
+  connect( layer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+  connect( layer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
 }
 
 int QgsMeshRendererActiveDatasetWidget::activeScalarDatasetGroup() const
@@ -94,8 +90,7 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 {
   QString msg;
 
-  if ( !mMeshLayer ||
-       !mMeshLayer->dataProvider() )
+  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
   {
     msg += tr( "Invalid mesh layer selected" );
   }
@@ -111,11 +106,11 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
         }
         else
         {
-          msg += QStringLiteral( "<p> <h3> %1 </h3> " ).arg( tr( "Scalar dataset" ) );
+          msg += u"<p> <h3> %1 </h3> "_s.arg( tr( "Scalar dataset" ) );
           msg += metadata( mActiveScalarDatasetGroup );
-          msg += QStringLiteral( "</p> <p> <h3> %1 </h3>" ).arg( tr( "Vector dataset" ) );
+          msg += u"</p> <p> <h3> %1 </h3>"_s.arg( tr( "Vector dataset" ) );
           msg += metadata( mActiveVectorDatasetGroup );
-          msg += QLatin1String( "</p>" );
+          msg += "</p>"_L1;
         }
       }
       else
@@ -142,9 +137,8 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
 {
-
   QString msg;
-  msg += QLatin1String( "<table>" );
+  msg += "<table>"_L1;
 
   QString definedOnMesh;
   if ( mMeshLayer->contains( QgsMesh::ElementType::Face ) )
@@ -166,9 +160,9 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
   {
     definedOnMesh = tr( "invalid mesh" );
   }
-  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Mesh type" ) )
-         .arg( definedOnMesh );
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
+           .arg( tr( "Mesh type" ) )
+           .arg( definedOnMesh );
 
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->datasetGroupMetadata( datasetIndex );
   QString definedOn;
@@ -187,26 +181,26 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
       definedOn = tr( "edges" );
       break;
   }
-  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Data type" ) )
-         .arg( definedOn );
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
+           .arg( tr( "Data type" ) )
+           .arg( definedOn );
 
-  msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-         .arg( tr( "Is vector" ) )
-         .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
+  msg += u"<tr><td>%1</td><td>%2</td></tr>"_s
+           .arg( tr( "Is vector" ) )
+           .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
 
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )
   {
-    if ( it.key() == QLatin1String( "classification" ) )
+    if ( it.key() == "classification"_L1 )
     {
-      msg += QStringLiteral( "<tr><td>%1</td></tr>" ).arg( tr( "Classified values" ) );
+      msg += u"<tr><td>%1</td></tr>"_s.arg( tr( "Classified values" ) );
       continue;
     }
-    msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key() ).arg( it.value() );
+    msg += u"<tr><td>%1</td><td>%2</td></tr>"_s.arg( it.key() ).arg( it.value() );
   }
 
-  msg += QLatin1String( "</table>" );
+  msg += "</table>"_L1;
 
   return msg;
 }

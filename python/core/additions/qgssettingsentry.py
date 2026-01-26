@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     qgssettingsentry.py
@@ -18,7 +16,13 @@
 """
 
 from .metaenum import metaEnumFromValue
-from qgis.core import QgsSettings, QgsSettingsTree, QgsSettingsEntryBase, QgsLogger, Qgis
+from qgis.core import (
+    QgsSettings,
+    QgsSettingsTree,
+    QgsSettingsEntryBase,
+    QgsLogger,
+    Qgis,
+)
 import qgis  # required to get base class of enums
 
 
@@ -29,7 +33,14 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
     since QGIS 3.20
     """
 
-    def __init__(self, key, pluginName, defaultValue, description=str(), options=Qgis.SettingsOptions()):
+    def __init__(
+        self,
+        key,
+        pluginName,
+        defaultValue,
+        description="",
+        options=Qgis.SettingsOptions(),
+    ):
         """
         Constructor for PyQgsSettingsEntryEnumFlag.
 
@@ -39,13 +50,15 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param description: argument specifies a description for the settings entry.
         """
 
-        # TODO QGIS 4: rename pluginName arg to parent and key to name
+        # TODO QGIS 5: rename pluginName arg to parent and key to name
 
         self.options = options
-        defaultValueStr = str()
+        defaultValueStr = ""
         self.__metaEnum = metaEnumFromValue(defaultValue)
         if self.__metaEnum is None or not self.__metaEnum.isValid():
-            QgsLogger.debug("Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{0}'".format(self.key()))
+            QgsLogger.debug(
+                f"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{self.key()}'"
+            )
         else:
             if self.__metaEnum.isFlag():
                 defaultValueStr = self.__metaEnum.valueToKeys(defaultValue)
@@ -59,6 +72,15 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             parent = pluginName
         super().__init__(key, parent, defaultValueStr, description, options)
 
+    def metaEnum(self):
+        return self.__metaEnum
+
+    def typeId(self):
+        """
+        Defines a custom id since this class has not the same API as the cpp implementation
+        """
+        return "py-enumflag"
+
     def value(self, dynamicKeyPart=None):
         """
         Get settings value.
@@ -66,9 +88,13 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
         if self.__metaEnum.isFlag():
-            return QgsSettings().flagValue(self.key(dynamicKeyPart), self.defaultValue())
+            return QgsSettings().flagValue(
+                self.key(dynamicKeyPart), self.defaultValue()
+            )
         else:
-            return QgsSettings().enumValue(self.key(dynamicKeyPart), self.defaultValue())
+            return QgsSettings().enumValue(
+                self.key(dynamicKeyPart), self.defaultValue()
+            )
 
     def valueWithDefaultOverride(self, defaultValueOverride, dynamicKeyPart=None):
         """
@@ -78,9 +104,13 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         :param dynamicKeyPart: argument specifies the dynamic part of the settings key.
         """
         if self.__metaEnum.isFlag():
-            return QgsSettings().flagValue(self.key(dynamicKeyPart), defaultValueOverride)
+            return QgsSettings().flagValue(
+                self.key(dynamicKeyPart), defaultValueOverride
+            )
         else:
-            return QgsSettings().enumValue(self.key(dynamicKeyPart), defaultValueOverride)
+            return QgsSettings().enumValue(
+                self.key(dynamicKeyPart), defaultValueOverride
+            )
 
     def defaultValue(self):
         """
@@ -88,7 +118,9 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         """
 
         if self.__metaEnum is None or not self.__metaEnum.isValid():
-            QgsLogger.debug("Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{0}'".format(self.key()))
+            QgsLogger.debug(
+                f"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{self.key()}'"
+            )
             return -1
 
         defaultValueString = self.defaultValueAsVariant()
@@ -97,7 +129,9 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         else:
             (defaultValue, ok) = self.__metaEnum.keyToValue(defaultValueString)
         if not ok:
-            QgsLogger.debug("Invalid enum/flag key/s '{0}'.".format(self.defaultValueAsVariant()))
+            QgsLogger.debug(
+                f"Invalid enum/flag key/s '{self.defaultValueAsVariant()}'."
+            )
             return -1
 
         # cast to the enum class
@@ -113,7 +147,9 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         """
 
         if self.__metaEnum is None or not self.__metaEnum.isValid():
-            QgsLogger.debug("Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{0}'".format(self.key()))
+            QgsLogger.debug(
+                f"Invalid metaenum. Enum/Flag probably misses Q_ENUM/Q_FLAG declaration. Settings key: '{self.key()}'"
+            )
             return False
 
         if self.options & Qgis.SettingsOption.SaveEnumFlagAsInt:
@@ -124,7 +160,7 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
             else:
                 enum_flag_key = self.__metaEnum.valueToKey(value)
             if not enum_flag_key:
-                QgsLogger.debug("Invalid enum/flag value '{0}'.".format(value))
+                QgsLogger.debug(f"Invalid enum/flag value '{value}'.")
                 return False
 
         if type(dynamicKeyPart) is str:
@@ -138,5 +174,4 @@ class PyQgsSettingsEntryEnumFlag(QgsSettingsEntryBase):
         """
         Get the settings entry type.
         """
-
         return self.SettingsType.EnumFlag

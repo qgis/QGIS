@@ -11,6 +11,7 @@
 
 
 
+
 class QgsOrientedBox3D
 {
 %Docstring(signature="appended")
@@ -35,12 +36,22 @@ Constructor for a null oriented box.
 
     QgsOrientedBox3D( const QList<double> &center, const QList< double > &halfAxes );
 %Docstring
-Constructor for a oriented box, with a specified center and half axes matrix.
+Constructor for a oriented box, with a specified center and half axes
+matrix.
 %End
 
     QgsOrientedBox3D( const QgsVector3D &center, const QList< QgsVector3D > &halfAxes );
 %Docstring
-Constructor for a oriented box, with a specified center and half axes matrix.
+Constructor for a oriented box, with a specified center and half axes
+matrix.
+%End
+
+    QgsOrientedBox3D( const QgsVector3D &center, const QgsVector3D &halfSizes, const QQuaternion &quaternion );
+%Docstring
+Constructor for a oriented box, with a specified center, half sizes in
+each dimension and rotation.
+
+.. versionadded:: 4.0
 %End
 
     static QgsOrientedBox3D fromBox3D( const QgsBox3D &box );
@@ -110,7 +121,14 @@ Returns an array of all corners as 3D vectors.
 Returns size of sides of the box.
 %End
 
-    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const throw( QgsCsException ) /HoldGIL/;
+    double longestSide() const /HoldGIL/;
+%Docstring
+Returns size of the longest side of the box.
+
+.. versionadded:: 4.0
+%End
+
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const  /HoldGIL/;
 %Docstring
 Reprojects corners of this box using the given coordinate ``transform``
 and returns axis-aligned box containing reprojected corners.

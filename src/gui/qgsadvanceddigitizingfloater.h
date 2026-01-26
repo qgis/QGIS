@@ -16,24 +16,26 @@
 #ifndef QGSADVANCEDDIGITIZINGFLOATER
 #define QGSADVANCEDDIGITIZINGFLOATER
 
-#include <QWidget>
-#include <QString>
-
 #include "ui_qgsadvanceddigitizingfloaterbase.h"
-#include "qgsadvanceddigitizingdockwidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsadvanceddigitizingdockwidget.h"
 
 #include <QPointer>
+#include <QString>
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;
 
 /**
 * \ingroup gui
-* \brief The QgsAdvancedDigitizingFloater class is widget that floats
-* next to the mouse pointer, and allow interaction with the AdvancedDigitizing
-* feature. It proxies display and actions to QgsMapToolAdvancedDigitizingDockWidget.
+* \brief A widget that floats next to the mouse pointer, and allows interaction with the AdvancedDigitizing
+* feature.
+*
+* It proxies display and actions to QgsMapToolAdvancedDigitizingDockWidget.
+*
 * \note This class is a technology preview and unstable API.
 * \since QGIS 3.8
 */
@@ -42,7 +44,6 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     Q_OBJECT
 
   public:
-
     //! Available floater items
     enum class FloaterItem : int SIP_ENUM_BASETYPE( IntFlag )
     {
@@ -140,12 +141,11 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     void enabledChangedBearing( bool enabled );
 
   private:
-
     //! pointer to map canvas
     QgsMapCanvas *mMapCanvas = nullptr;
 
     //! pointer to map cad docker widget
-    QPointer< QgsAdvancedDigitizingDockWidget > mCadDockWidget;
+    QPointer<QgsAdvancedDigitizingDockWidget> mCadDockWidget;
 
     /**
     * event filter to track mouse position

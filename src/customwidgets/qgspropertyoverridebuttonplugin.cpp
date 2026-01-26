@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgspropertyoverridebuttonplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgspropertyoverridebutton.h"
 
+#include "moc_qgspropertyoverridebuttonplugin.cpp"
 
 QgsPropertyOverrideButtonPlugin::QgsPropertyOverrideButtonPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsPropertyOverrideButtonPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

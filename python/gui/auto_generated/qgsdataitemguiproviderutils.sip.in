@@ -9,10 +9,11 @@
 
 
 
+
+
 class QgsDataItemGuiProviderUtils
 {
 %Docstring(signature="appended")
-
 Utility functions for :py:class:`QgsDataItemGuiProviders`.
 
 .. versionadded:: 3.38
@@ -22,7 +23,6 @@ Utility functions for :py:class:`QgsDataItemGuiProviders`.
 #include "qgsdataitemguiproviderutils.h"
 %End
   public:
-
 
 };
 

@@ -21,12 +21,12 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
+#include "qgsproviderguimetadata.h"
+
 #include <QList>
 #include <QMainWindow>
 
-#include "qgsproviderguimetadata.h"
-
-class QgsCopcProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsCopcProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsCopcProviderGuiMetadata();

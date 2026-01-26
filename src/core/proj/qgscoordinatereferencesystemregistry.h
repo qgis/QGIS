@@ -18,10 +18,11 @@
 #ifndef QGSCOORDINATEREFERENCESYSTEMREGISTRY_H
 #define QGSCOORDINATEREFERENCESYSTEMREGISTRY_H
 
-#include <QObject>
-#include <QMap>
-#include <QSet>
 #include "qgscoordinatereferencesystem.h"
+
+#include <QMap>
+#include <QObject>
+#include <QSet>
 
 class QgsCelestialBody;
 class QgsProjOperation;
@@ -71,7 +72,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
      */
     explicit QgsCoordinateReferenceSystemRegistry( QObject *parent = nullptr );
 
-    ~QgsCoordinateReferenceSystemRegistry();
+    ~QgsCoordinateReferenceSystemRegistry() override;
 
     /**
      * \brief Contains details of a custom (user defined) CRS.
@@ -161,10 +162,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystemRegistry : public QObject
 
     /**
      * Returns a list of all known celestial bodies.
-     *
-     * \warning This method requires PROJ 8.1 or later
-     *
-     * \throws QgsNotSupportedException on QGIS builds based on PROJ 8.0 or earlier.
      *
      * \since QGIS 3.20
      */

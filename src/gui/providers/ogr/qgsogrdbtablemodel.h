@@ -16,12 +16,11 @@
 #ifndef QGSOGRDBTABLEMODEL_H
 #define QGSOGRDBTABLEMODEL_H
 
-#include "qgis.h"
-
 #include <type_traits>
+
+#include "qgis.h"
 #include "qgis_sip.h"
 #include "qgsabstractdbtablemodel.h"
-
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -31,7 +30,6 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     Q_OBJECT
 
   public:
-
     QgsOgrDbTableModel( QObject *parent = nullptr );
 
     QStringList columns() const override;

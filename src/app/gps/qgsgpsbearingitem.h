@@ -16,8 +16,8 @@
 #ifndef QGSGPSBEARINGITEM_H
 #define QGSGPSBEARINGITEM_H
 
-#include "qgspointmarkeritem.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgspointmarkeritem.h"
 #include "qgspointxy.h"
 
 class QPainter;
@@ -43,7 +43,6 @@ class QgsGpsBearingItem : public QObject, public QgsMapCanvasLineSymbolItem
     void updatePosition() override;
 
   protected:
-
     //! coordinates of the point in the center (map units)
     QgsPointXY mCenter;
 
@@ -55,7 +54,6 @@ class QgsGpsBearingItem : public QObject, public QgsMapCanvasLineSymbolItem
 
     QgsCoordinateReferenceSystem mWgs84CRS;
     double mBearing = 0;
-
 };
 
 #endif // QGSGPSBEARINGITEM_H

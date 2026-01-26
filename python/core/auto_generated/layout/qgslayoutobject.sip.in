@@ -9,6 +9,7 @@
 
 
 
+
 class QgsLayoutObject: QObject, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")
@@ -17,7 +18,7 @@ A base class for objects which belong to a layout.
 
 %TypeHeaderCode
 #include "qgslayoutobject.h"
-#include <qgslayoutitem.h>
+#include "qgslayoutitem.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"
@@ -31,6 +32,7 @@ A base class for objects which belong to a layout.
 #include "qgslayoutitempage.h"
 #include "qgslayoutitemmarker.h"
 #include "qgslayoutitemelevationprofile.h"
+#include "qgslayoutitemchart.h"
 %End
 %ConvertToSubClassCode
     if ( QgsLayoutItem *item = qobject_cast< QgsLayoutItem * >( sipCpp ) )
@@ -96,6 +98,10 @@ A base class for objects which belong to a layout.
         case QGraphicsItem::UserType + 118:
           sipType = sipType_QgsLayoutItemElevationProfile;
           *sipCppRet = static_cast<QgsLayoutItemElevationProfile *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 119:
+          sipType = sipType_QgsLayoutItemChart;
+          *sipCppRet = static_cast<QgsLayoutItemChart *>( sipCpp );
           break;
 
         // did you read that comment above? NO? Go read it now. You're about to break stuff.
@@ -167,6 +173,7 @@ A base class for objects which belong to a layout.
       MapGridFrameDivisionsRight,
       MapGridFrameDivisionsTop,
       MapGridFrameDivisionsBottom,
+      MapGridDrawAnnotation,
       MapCrs,
       StartDateTime,
       EndDateTime,
@@ -182,6 +189,7 @@ A base class for objects which belong to a layout.
       //legend item
       LegendTitle,
       LegendColumnCount,
+      LegendAutoWrapWidth,
       //scalebar item
       ScalebarLeftSegments,
       ScalebarRightSegments,
@@ -224,12 +232,17 @@ Returns the layout object property definitions.
 
     static bool propertyAssociatesWithParentMultiframe( DataDefinedProperty property );
 %Docstring
-Returns ``True`` if the specified ``property`` key is normally associated with the parent
-:py:class:`QgsLayoutMultiFrame` object instead of a child :py:class:`QgsLayoutFrame` object.
+Returns ``True`` if the specified ``property`` key is normally
+associated with the parent :py:class:`QgsLayoutMultiFrame` object
+instead of a child :py:class:`QgsLayoutFrame` object.
 
-While some properties like QgsLayoutObject.DataDefinedProperty.PositionX and QgsLayoutObject.DataDefinedProperty.ItemWidth
-are typically associated with a direct :py:class:`QgsLayoutItem` subclass (including :py:class:`QgsLayoutFrame` objects), other properties
-are instead associated with a :py:class:`QgsLayoutMultiFrame` object (such as :py:class:`QgsLayoutObject`.DataDefinedProperty.SourceUrl or :py:class:`QgsLayoutObject`.DataDefinedProperty.AttributeTableSourceLayer).
+While some properties like QgsLayoutObject.DataDefinedProperty.PositionX
+and QgsLayoutObject.DataDefinedProperty.ItemWidth are typically
+associated with a direct :py:class:`QgsLayoutItem` subclass (including
+:py:class:`QgsLayoutFrame` objects), other properties are instead
+associated with a :py:class:`QgsLayoutMultiFrame` object (such as
+:py:class:`QgsLayoutObject`.DataDefinedProperty.SourceUrl or
+:py:class:`QgsLayoutObject`.DataDefinedProperty.AttributeTableSourceLayer).
 
 .. versionadded:: 3.18.1
 %End
@@ -253,7 +266,8 @@ Returns the layout the object is attached to.
 
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
-Returns a reference to the object's property collection, used for data defined overrides.
+Returns a reference to the object's property collection, used for data
+defined overrides.
 
 .. seealso:: :py:func:`setDataDefinedProperties`
 %End
@@ -263,7 +277,8 @@ Returns a reference to the object's property collection, used for data defined o
 %Docstring
 Sets the objects's property collection, used for data defined overrides.
 
-:param collection: property collection. Existing properties will be replaced.
+:param collection: property collection. Existing properties will be
+                   replaced.
 
 .. seealso:: :py:func:`dataDefinedProperties`
 
@@ -275,7 +290,8 @@ Sets the objects's property collection, used for data defined overrides.
 %Docstring
 Set a custom property for the object.
 
-:param key: property key. If a property with the same key already exists it will be overwritten.
+:param key: property key. If a property with the same key already exists
+            it will be overwritten.
 :param value: property value
 
 .. seealso:: :py:func:`customProperty`
@@ -290,7 +306,8 @@ Set a custom property for the object.
 Read a custom property from the object.
 
 :param key: property key
-:param defaultValue: default value to return if property with matching key does not exist
+:param defaultValue: default value to return if property with matching
+                     key does not exist
 
 :return: value of matching property
 
@@ -328,8 +345,8 @@ Returns list of keys stored in custom properties for the object.
     virtual QgsExpressionContext createExpressionContext() const;
 
 %Docstring
-Creates an expression context relating to the objects' current state. The context includes
-scopes for global, project and layout properties.
+Creates an expression context relating to the objects' current state.
+The context includes scopes for global, project and layout properties.
 %End
 
   public slots:
@@ -352,7 +369,8 @@ Emitted when the object's properties change.
 %Docstring
 Stores object properties within an XML DOM element.
 
-:param parentElement: is the parent DOM element to store the object's properties in
+:param parentElement: is the parent DOM element to store the object's
+                      properties in
 :param document: DOM document
 :param context: read write context
 

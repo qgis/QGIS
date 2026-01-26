@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+
 #include <QStringList>
 
 class QgsCelestialBody;
@@ -41,9 +42,9 @@ class CORE_EXPORT QgsEllipsoidUtils
       //! Whether ellipsoid parameters are valid
       bool valid{ true };
 
-      //! Semi-major axis
+      //! Semi-major axis, in meters
       double semiMajor{ -1.0 };
-      //! Semi-minor axis
+      //! Semi-minor axis, in meters
       double semiMinor{ -1.0 };
 
       //! Whether custom parameters alone should be used (semiMajor/semiMinor only)

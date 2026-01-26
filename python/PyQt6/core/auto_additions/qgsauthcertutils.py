@@ -56,5 +56,5 @@ try:
     QgsAuthCertUtils.validateCertChain = staticmethod(QgsAuthCertUtils.validateCertChain)
     QgsAuthCertUtils.validatePKIBundle = staticmethod(QgsAuthCertUtils.validatePKIBundle)
     QgsAuthCertUtils.__group__ = ['auth']
-except NameError:
+except (NameError, AttributeError):
     pass

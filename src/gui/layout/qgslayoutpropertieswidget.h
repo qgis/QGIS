@@ -20,8 +20,9 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgspanelwidget.h"
 
 class QgsLayout;
@@ -34,7 +35,7 @@ class QgsMasterLayoutInterface;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWidgetBase
+class GUI_EXPORT QgsLayoutPropertiesWidget : public QgsPanelWidget, private Ui::QgsLayoutWidgetBase
 {
     Q_OBJECT
   public:
@@ -68,13 +69,11 @@ class GUI_EXPORT QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::Q
     void updateVariables();
 
   private:
-
     QgsLayout *mLayout = nullptr;
 
     void updateSnappingElements();
     void blockSignals( bool block );
     bool mBlockVariableUpdates = false;
-
 };
 
 #endif // QGSLAYOUTPROPERTIESWIDGET_H

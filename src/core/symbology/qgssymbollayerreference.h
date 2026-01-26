@@ -17,18 +17,19 @@
 #define QGSSYMBOLLAYERREFERENCE_H
 
 #include "qgis.h"
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QList>
 #include <QVariant>
 #include <QVector>
 
 class QgsVectorLayer;
 
-// TODO QGIS 4 : Remove class QgsSymbolLayerId
+// TODO QGIS 5 : Remove class QgsSymbolLayerId
 
 /**
- * We may need stable references to symbol layers, when pointers to symbol layers is not usable
+ * We may need stable references to symbol layers, when pointers to symbol layers are not usable
  * (when a symbol or a feature renderer is cloned for example).
  *
  * A symbol layer identifier consists of:
@@ -110,7 +111,7 @@ class CORE_EXPORT QgsSymbolLayerId
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerId: %1 (%2)>" ).arg( sipCpp->symbolKey(), pathString.join( ',' ) );
+    QString str = u"<QgsSymbolLayerId: %1 (%2)>"_s.arg( sipCpp->symbolKey(), pathString.join( ',' ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -163,7 +164,7 @@ class CORE_EXPORT QgsSymbolLayerReference
 
     /**
      * The symbol layer's id
-     * \deprecated QGIS 3.30. Use symbolLayerIdV2 instead.
+     * \deprecated QGIS 3.30. Use symbolLayerIdV2() instead.
      */
     Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const SIP_DEPRECATED { return mDeprecatedSymbolLayerId; }
 
@@ -189,7 +190,7 @@ class CORE_EXPORT QgsSymbolLayerReference
     {
       pathString.append( QString::number( path ) );
     }
-    QString str = QStringLiteral( "<QgsSymbolLayerReference: %1 - %2>" ).arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
+    QString str = u"<QgsSymbolLayerReference: %1 - %2>"_s.arg( sipCpp->layerId(), sipCpp->symbolLayerIdV2() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -197,7 +198,7 @@ class CORE_EXPORT QgsSymbolLayerReference
   private:
     QString mLayerId;
 
-    // TODO QGIS 4 : remove mDeprecatedSymbolLayerId
+    // TODO QGIS 5 : remove mDeprecatedSymbolLayerId
     QgsSymbolLayerId mDeprecatedSymbolLayerId;
 
     QString mSymbolLayerId;
@@ -216,14 +217,14 @@ inline uint qHash( const QgsSymbolLayerReference &r )
 typedef QList<QgsSymbolLayerReference> QgsSymbolLayerReferenceList;
 
 /**
- * Utilitary function to turn a QgsSymbolLayerReferenceList into a string
+ * Utility function to turn a QgsSymbolLayerReferenceList into a string
  * \see stringToSymbolLayerReferenceList
  * \since QGIS 3.12
  */
 CORE_EXPORT QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList & );
 
 /**
- * Utilitary function to parse a string originated from symbolLayerReferenceListToString
+ * Utility function to parse a string originated from symbolLayerReferenceListToString
  * into a QgsSymbolLayerReferenceList
  * \see symbolLayerReferenceListToString
  * \since QGIS 3.12

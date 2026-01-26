@@ -21,7 +21,7 @@
 
 QString QgsApplyLayerStyleAlgorithm::name() const
 {
-  return QStringLiteral( "setlayerstyle" );
+  return u"setlayerstyle"_s;
 }
 
 QString QgsApplyLayerStyleAlgorithm::displayName() const
@@ -41,12 +41,17 @@ QString QgsApplyLayerStyleAlgorithm::group() const
 
 QString QgsApplyLayerStyleAlgorithm::groupId() const
 {
-  return QStringLiteral( "cartography" );
+  return u"cartography"_s;
 }
 
 QString QgsApplyLayerStyleAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Applies the style to a layer. The style must be defined as QML file." );
+  return QObject::tr( "This algorithm applies the style to a layer. The style must be defined as QML file." );
+}
+
+QString QgsApplyLayerStyleAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Applies the style from a QML file to a layer." );
 }
 
 QgsApplyLayerStyleAlgorithm *QgsApplyLayerStyleAlgorithm::createInstance() const
@@ -56,15 +61,15 @@ QgsApplyLayerStyleAlgorithm *QgsApplyLayerStyleAlgorithm::createInstance() const
 
 void QgsApplyLayerStyleAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "STYLE" ), QObject::tr( "Style file" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "qml" ) ) );
-  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Styled" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( u"INPUT"_s, QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterFile( u"STYLE"_s, QObject::tr( "Style file" ), Qgis::ProcessingFileParameterBehavior::File, u"qml"_s ) );
+  addOutput( new QgsProcessingOutputMapLayer( u"OUTPUT"_s, QObject::tr( "Styled" ) ) );
 }
 
 bool QgsApplyLayerStyleAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
-  const QString style = parameterAsFile( parameters, QStringLiteral( "STYLE" ), context );
+  QgsMapLayer *layer = parameterAsLayer( parameters, u"INPUT"_s, context );
+  const QString style = parameterAsFile( parameters, u"STYLE"_s, context );
 
   if ( !layer )
     throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
@@ -88,7 +93,7 @@ QVariantMap QgsApplyLayerStyleAlgorithm::processAlgorithm( const QVariantMap &pa
   Q_UNUSED( context );
 
   QVariantMap results;
-  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  results.insert( u"OUTPUT"_s, mLayerId );
   return results;
 }
 

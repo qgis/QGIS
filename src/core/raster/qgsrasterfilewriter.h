@@ -18,6 +18,7 @@
 #include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QString>
@@ -122,7 +123,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see outputFormat()
      */
-    void setOutputFormat( const QString &format ) { mOutputFormat = format; }
+    void setOutputFormat( const QString &format );
 
     /**
      * Returns the output format.
@@ -196,7 +197,7 @@ class CORE_EXPORT QgsRasterFileWriter
      *
      * \see buildPyramidsFlag()
      */
-    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption f ) { mBuildPyramidsFlag = f; }
+    void setBuildPyramidsFlag( Qgis::RasterBuildPyramidOption flag );
 
     /**
      * Returns the list of pyramids which will be created for the output file.
@@ -247,21 +248,45 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     int maxTileHeight() const { return mMaxTileHeight; }
 
+    // TODO QGIS 5.0: rename list to options to have more semantic argument name
+
     /**
      * Sets a list of data source creation options to use when
      * creating the output raster file.
      *
      * \see createOptions()
+     * \deprecated QGIS 3.44. Use setCreationOptions() instead.
      */
-    void setCreateOptions( const QStringList &list ) { mCreateOptions = list; }
+    Q_DECL_DEPRECATED void setCreateOptions( const QStringList &list ) SIP_DEPRECATED { setCreationOptions( list ); }
 
     /**
      * Returns the list of data source creation options which will be used when
      * creating the output raster file.
      *
      * \see setCreateOptions()
+     * \deprecated QGIS 3.44. Use creationOptions() instead.
      */
-    QStringList createOptions() const { return mCreateOptions; }
+    Q_DECL_DEPRECATED QStringList createOptions() const SIP_DEPRECATED { return creationOptions(); }
+
+    /**
+     * Returns the list of data source creation options which will be used when
+     * creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
+
+    /**
+     * Sets a list of data source creation options to use when
+     * creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 3.44
+     */
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
+
+    // TODO QGIS 5.0: rename list to options to have more semantic argument name
 
     /**
      * Sets a \a list of configuration options to use when
@@ -353,7 +378,8 @@ class CORE_EXPORT QgsRasterFileWriter
         Qgis::DataType destDataType,
         const QList<bool> &destHasNoDataValueList,
         const QList<double> &destNoDataValueList,
-        QgsRasterDataProvider *destProvider,
+        // This method can nullify the passed destProvider
+        std::unique_ptr<QgsRasterDataProvider> &destProvider,
         QgsRasterBlockFeedback *feedback = nullptr );
 
     Qgis::RasterFileWriterResult writeImageRaster( QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,
@@ -375,7 +401,7 @@ class CORE_EXPORT QgsRasterFileWriter
     bool writeVRT( const QString &file );
     //add file entry to vrt
     void addToVRT( const QString &filename, int band, int xSize, int ySize, int xOffset, int yOffset );
-    void buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn = nullptr );
+    bool buildPyramids( const QString &filename, QgsRasterDataProvider *destProviderIn = nullptr );
 
     //! Create provider and datasource for a part image (vrt mode)
     QgsRasterDataProvider *createPartProvider( const QgsRectangle &extent, int nCols, int iterCols, int iterRows,
@@ -407,9 +433,9 @@ class CORE_EXPORT QgsRasterFileWriter
 
     Qgis::RasterExportType mMode = Qgis::RasterExportType::Raw;
     QString mOutputUrl;
-    QString mOutputProviderKey = QStringLiteral( "gdal" );
-    QString mOutputFormat = QStringLiteral( "GTiff" );
-    QStringList mCreateOptions;
+    QString mOutputProviderKey = u"gdal"_s;
+    QString mOutputFormat = u"GTiff"_s;
+    QStringList mCreationOptions;
     QgsCoordinateReferenceSystem mOutputCRS;
 
     //! False: Write one file, TRUE: create a directory and add the files numbered
@@ -418,7 +444,8 @@ class CORE_EXPORT QgsRasterFileWriter
     int mMaxTileHeight = 500;
 
     QList< int > mPyramidsList;
-    QString mPyramidsResampling = QStringLiteral( "AVERAGE" );
+    QString mPyramidsResampling = u"AVERAGE"_s;
+    bool mBuildPyramidsFlagSet = false;
     Qgis::RasterBuildPyramidOption mBuildPyramidsFlag = Qgis::RasterBuildPyramidOption::No;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     QStringList mPyramidsConfigOptions;

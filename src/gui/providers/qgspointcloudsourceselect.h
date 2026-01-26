@@ -19,6 +19,7 @@
 
 ///@cond PRIVATE
 #include "qgis_sip.h"
+
 #define SIP_NO_FILE
 
 #include "ui_qgspointcloudsourceselectbase.h"
@@ -36,9 +37,7 @@ class QgsPointCloudSourceSelect : public QgsAbstractDataSourceWidget, private Ui
 
   public:
     //! Constructor
-    QgsPointCloudSourceSelect( QWidget *parent = nullptr,
-                               Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-                               QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
+    QgsPointCloudSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog

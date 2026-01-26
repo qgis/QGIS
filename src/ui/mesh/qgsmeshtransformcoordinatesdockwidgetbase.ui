@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>297</width>
-    <height>182</height>
+    <height>211</height>
    </rect>
   </property>
   <property name="floating">
@@ -18,9 +18,6 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="1">
-     <widget class="QgsExpressionLineEdit" name="mExpressionEditZ" native="true"/>
-    </item>
     <item row="1" column="0">
      <widget class="QCheckBox" name="mCheckBoxX">
       <property name="text">
@@ -28,14 +25,27 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QCheckBox" name="mCheckBoxY">
+    <item row="2" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditY" native="true"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditZ" native="true"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QCheckBox" name="mCheckBoxZ">
       <property name="text">
-       <string>Y coordinate</string>
+       <string>Z value</string>
       </property>
      </widget>
     </item>
-    <item row="4" column="0" colspan="2">
+    <item row="4" column="0">
+     <widget class="QCheckBox" name="mCheckBoxZFromProjectTerrain">
+      <property name="text">
+       <string>Get the Z value from the project terrain</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="0" colspan="2">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <property name="sizeConstraint">
        <enum>QLayout::SetDefaultConstraint</enum>
@@ -56,16 +66,10 @@
       </item>
      </layout>
     </item>
-    <item row="1" column="1">
-     <widget class="QgsExpressionLineEdit" name="mExpressionEditX" native="true"/>
-    </item>
-    <item row="2" column="1">
-     <widget class="QgsExpressionLineEdit" name="mExpressionEditY" native="true"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="mCheckBoxZ">
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="mCheckBoxY">
       <property name="text">
-       <string>Z value</string>
+       <string>Y coordinate</string>
       </property>
      </widget>
     </item>
@@ -137,7 +141,7 @@
       </item>
      </layout>
     </item>
-    <item row="5" column="0">
+    <item row="6" column="0">
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -149,6 +153,9 @@
        </size>
       </property>
      </spacer>
+    </item>
+    <item row="1" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditX" native="true"/>
     </item>
    </layout>
   </widget>

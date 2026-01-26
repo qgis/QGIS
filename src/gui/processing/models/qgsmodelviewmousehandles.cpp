@@ -16,17 +16,22 @@
  ***************************************************************************/
 
 #include "qgsmodelviewmousehandles.h"
+
+#include <limits>
+
 #include "qgis.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsmodelgraphicsscene.h"
 #include "qgsmodelcomponentgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
 #include "qgsmodelviewtool.h"
+#include "qgsproject.h"
+
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
 #include <QWidget>
-#include <limits>
+
+#include "moc_qgsmodelviewmousehandles.cpp"
 
 ///@cond PRIVATE
 
@@ -42,13 +47,12 @@ QgsModelViewMouseHandles::QgsModelViewMouseHandles( QgsModelGraphicsView *view )
 
 QgsModelGraphicsScene *QgsModelViewMouseHandles::modelScene() const
 {
-  return qobject_cast< QgsModelGraphicsScene * >( mView->scene() );
+  return qobject_cast<QgsModelGraphicsScene *>( mView->scene() );
 }
 
 void QgsModelViewMouseHandles::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-  paintInternal( painter, !( modelScene()->flags() & QgsModelGraphicsScene::FlagHideControls ),
-                 true, false, option, widget );
+  paintInternal( painter, !( modelScene()->flags() & QgsModelGraphicsScene::FlagHideControls ), true, false, option, widget );
 }
 
 void QgsModelViewMouseHandles::selectionChanged()
@@ -80,7 +84,7 @@ void QgsModelViewMouseHandles::setViewportCursor( Qt::CursorShape cursor )
   //workaround qt bug #3732 by setting cursor for QGraphicsView viewport,
   //rather then setting it directly here
 
-  if ( qobject_cast< QgsModelViewTool *>( mView->tool() ) )
+  if ( qobject_cast<QgsModelViewTool *>( mView->tool() ) )
   {
     mView->viewport()->setCursor( cursor );
   }

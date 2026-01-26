@@ -24,17 +24,10 @@ target_link_libraries(provider_delimitedtext_a
   qgis_core
 )
 
-# require c++17
-target_compile_features(provider_delimitedtext_a PRIVATE cxx_std_17)
-
 target_compile_definitions(provider_delimitedtext_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(DTEXT_UIS_H ${DTEXT_UIS})
-  else()
-    QT5_WRAP_UI(DTEXT_UIS_H ${DTEXT_UIS})
-  endif()
+  qt_wrap_ui(DTEXT_UIS_H ${DTEXT_UIS})
 
   add_library(provider_delimitedtext_gui_a STATIC ${DTEXT_GUI_SRCS} ${DTEXT_UIS_H})
 
@@ -45,9 +38,6 @@ if (WITH_GUI)
   target_link_libraries(provider_delimitedtext_gui_a
     qgis_gui
   )
-
-  # require c++17
-  target_compile_features(provider_delimitedtext_gui_a PRIVATE cxx_std_17)
 
   target_compile_definitions(provider_delimitedtext_gui_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -62,9 +52,6 @@ if (FORCE_STATIC_LIBS)
   endif()
 else()
   add_library(provider_delimitedtext MODULE ${DTEXT_SRCS} ${DTEXT_GUI_SRCS})
-  
-  # require c++17
-  target_compile_features(provider_delimitedtext PRIVATE cxx_std_17)
   
   target_link_libraries(provider_delimitedtext
     qgis_core

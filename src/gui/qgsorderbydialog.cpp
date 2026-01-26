@@ -20,8 +20,10 @@
 #include "qgsfieldexpressionwidget.h"
 #include "qgsvectorlayer.h"
 
-#include <QTableWidget>
 #include <QKeyEvent>
+#include <QTableWidget>
+
+#include "moc_qgsorderbydialog.cpp"
 
 QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )
@@ -64,7 +66,7 @@ QgsFeatureRequest::OrderBy QgsOrderByDialog::orderBy()
     QString expressionText = static_cast<QgsFieldExpressionWidget *>( mOrderByTableWidget->cellWidget( i, 0 ) )->currentText();
     const bool isExpression = static_cast<QgsFieldExpressionWidget *>( mOrderByTableWidget->cellWidget( i, 0 ) )->isExpression();
 
-    if ( ! expressionText.isEmpty() )
+    if ( !expressionText.isEmpty() )
     {
       bool asc = true;
       const int ascIndex = static_cast<QComboBox *>( mOrderByTableWidget->cellWidget( i, 1 ) )->currentIndex();
@@ -116,7 +118,7 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause &
   QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget();
   fieldExpression->setLayer( mLayer );
   fieldExpression->setField( orderByClause.expression().expression() );
-  connect( fieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsOrderByDialog::onExpressionChanged );
+  connect( fieldExpression, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsOrderByDialog::onExpressionChanged );
 
   QComboBox *ascComboBox = new QComboBox();
   ascComboBox->addItem( tr( "Ascending" ) );
@@ -155,5 +157,5 @@ bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
 
 void QgsOrderByDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#layer-rendering" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#layer-rendering"_s );
 }

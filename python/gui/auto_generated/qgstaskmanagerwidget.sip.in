@@ -9,10 +9,12 @@
 
 
 
+
 class QgsTaskManagerWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget which displays tasks from a :py:class:`QgsTaskManager` and allows for interaction with the manager.
+A widget which displays tasks from a :py:class:`QgsTaskManager` and
+allows for interaction with the manager.
 
 .. seealso:: :py:class:`QgsTaskManager`
 %End
@@ -21,7 +23,6 @@ A widget which displays tasks from a :py:class:`QgsTaskManager` and allows for i
 #include "qgstaskmanagerwidget.h"
 %End
   public:
-
     QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTaskManagerWidget

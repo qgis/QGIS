@@ -9,14 +9,18 @@
 
 
 
+
+
 class QgsSlider : QSlider
 {
+%Docstring(signature="appended")
+A custom QSlider with additional refinements.
+%End
 
 %TypeHeaderCode
 #include "qgsslider.h"
 %End
   public:
-
     QgsSlider( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSlider
@@ -41,6 +45,7 @@ Constructor for QgsSlider
 
 
 };
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

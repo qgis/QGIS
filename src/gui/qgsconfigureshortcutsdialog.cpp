@@ -15,29 +15,31 @@
 
 #include "qgsconfigureshortcutsdialog.h"
 
-#include "qgsshortcutsmanager.h"
 #include "qgsapplication.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
 #include "qgsgui.h"
+#include "qgslogger.h"
 #include "qgsprojectversion.h"
+#include "qgssettings.h"
+#include "qgsshortcutsmanager.h"
 
-#include <QKeyEvent>
-#include <QKeySequence>
-#include <QMessageBox>
-#include <QShortcut>
+#include <QAction>
 #include <QDomDocument>
 #include <QFileDialog>
-#include <QTextStream>
+#include <QKeyEvent>
+#include <QKeySequence>
 #include <QMenu>
-#include <QAction>
+#include <QMessageBox>
 #include <QPdfWriter>
-#include <QTextDocument>
-#include <QTextCursor>
-#include <QTextTable>
-#include <QTextTableFormat>
-#include <QTextTableCellFormat>
+#include <QShortcut>
 #include <QTextCharFormat>
+#include <QTextCursor>
+#include <QTextDocument>
+#include <QTextStream>
+#include <QTextTable>
+#include <QTextTableCellFormat>
+#include <QTextTableFormat>
+
+#include "moc_qgsconfigureshortcutsdialog.cpp"
 
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )
@@ -72,8 +74,7 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   connect( btnSetNoShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::setNoShortcut );
   connect( btnLoadShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::loadShortcuts );
 
-  connect( treeActions, &QTreeWidget::currentItemChanged,
-           this, &QgsConfigureShortcutsDialog::actionChanged );
+  connect( treeActions, &QTreeWidget::currentItemChanged, this, &QgsConfigureShortcutsDialog::actionChanged );
 
   populateActions();
 }
@@ -92,14 +93,14 @@ void QgsConfigureShortcutsDialog::populateActions()
     QIcon icon;
     const QString settingKey = mManager->objectSettingKey( obj );
 
-    if ( QAction *action = qobject_cast< QAction * >( obj ) )
+    if ( QAction *action = qobject_cast<QAction *>( obj ) )
     {
       actionText = action->text();
       actionText.remove( '&' ); // remove the accelerator
       sequence = action->shortcut().toString( QKeySequence::NativeText );
       icon = action->icon();
     }
-    else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( obj ) )
+    else if ( QShortcut *shortcut = qobject_cast<QShortcut *>( obj ) )
     {
       actionText = shortcut->whatsThis();
       sequence = shortcut->key().toString( QKeySequence::NativeText );
@@ -135,8 +136,7 @@ void QgsConfigureShortcutsDialog::populateActions()
 
 void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Shortcuts" ), QDir::homePath(),
-                     tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Shortcuts" ), QDir::homePath(), tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -145,27 +145,24 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
     return;
 
   // ensure the user never omitted the extension from the file name
-  if ( !fileName.endsWith( QLatin1String( ".xml" ), Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( ".xml"_L1, Qt::CaseInsensitive ) )
   {
-    fileName += QLatin1String( ".xml" );
+    fileName += ".xml"_L1;
   }
 
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    QMessageBox::warning( this, tr( "Saving Shortcuts" ),
-                          tr( "Cannot write file %1:\n%2." )
-                          .arg( fileName,
-                                file.errorString() ) );
+    QMessageBox::warning( this, tr( "Saving Shortcuts" ), tr( "Cannot write file %1:\n%2." ).arg( fileName, file.errorString() ) );
     return;
   }
 
   QgsSettings settings;
 
-  QDomDocument doc( QStringLiteral( "shortcuts" ) );
-  QDomElement root = doc.createElement( QStringLiteral( "qgsshortcuts" ) );
-  root.setAttribute( QStringLiteral( "version" ), QStringLiteral( "1.1" ) );
-  root.setAttribute( QStringLiteral( "locale" ), settings.value( QgsApplication::settingsLocaleUserLocale->key(), "en_US" ).toString() );
+  QDomDocument doc( u"shortcuts"_s );
+  QDomElement root = doc.createElement( u"qgsshortcuts"_s );
+  root.setAttribute( u"version"_s, u"1.1"_s );
+  root.setAttribute( u"locale"_s, settings.value( QgsApplication::settingsLocaleUserLocale->key(), "en_US" ).toString() );
   doc.appendChild( root );
 
   const QList<QObject *> objects = mManager->listAll();
@@ -176,13 +173,13 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
     QString actionSettingKey;
     QKeySequence sequence;
 
-    if ( QAction *action = qobject_cast< QAction * >( obj ) )
+    if ( QAction *action = qobject_cast<QAction *>( obj ) )
     {
       actionText = action->text().remove( '&' );
       actionShortcut = action->shortcut().toString( QKeySequence::NativeText );
       sequence = mManager->defaultKeySequence( action );
     }
-    else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( obj ) )
+    else if ( QShortcut *shortcut = qobject_cast<QShortcut *>( obj ) )
     {
       actionText = shortcut->whatsThis();
       actionShortcut = shortcut->key().toString( QKeySequence::NativeText );
@@ -206,10 +203,10 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
       continue;
     }
 
-    QDomElement el = doc.createElement( QStringLiteral( "action" ) );
-    el.setAttribute( QStringLiteral( "name" ), actionText );
-    el.setAttribute( QStringLiteral( "shortcut" ), actionShortcut );
-    el.setAttribute( QStringLiteral( "setting" ), actionSettingKey );
+    QDomElement el = doc.createElement( u"action"_s );
+    el.setAttribute( u"name"_s, actionText );
+    el.setAttribute( u"shortcut"_s, actionShortcut );
+    el.setAttribute( u"setting"_s, actionSettingKey );
     root.appendChild( el );
   }
 
@@ -219,8 +216,7 @@ void QgsConfigureShortcutsDialog::saveShortcuts( bool saveAll )
 
 void QgsConfigureShortcutsDialog::loadShortcuts()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Shortcuts" ), QDir::homePath(),
-                           tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Shortcuts" ), QDir::homePath(), tr( "XML file" ) + " (*.xml);;" + tr( "All files" ) + " (*)" );
 
   if ( fileName.isEmpty() )
   {
@@ -230,10 +226,7 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    QMessageBox::warning( this, tr( "Loading Shortcuts" ),
-                          tr( "Cannot read file %1:\n%2." )
-                          .arg( fileName,
-                                file.errorString() ) );
+    QMessageBox::warning( this, tr( "Loading Shortcuts" ), tr( "Cannot read file %1:\n%2." ).arg( fileName, file.errorString() ) );
     return;
   }
 
@@ -244,19 +237,14 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
 
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
-    QMessageBox::information( this, tr( "Loading Shortcuts" ),
-                              tr( "Parse error at line %1, column %2:\n%3" )
-                              .arg( errorLine )
-                              .arg( errorColumn )
-                              .arg( errorStr ) );
+    QMessageBox::information( this, tr( "Loading Shortcuts" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
     return;
   }
 
   const QDomElement root = doc.documentElement();
-  if ( root.tagName() != QLatin1String( "qgsshortcuts" ) )
+  if ( root.tagName() != "qgsshortcuts"_L1 )
   {
-    QMessageBox::information( this, tr( "Loading Shortcuts" ),
-                              tr( "The file is not an shortcuts exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Shortcuts" ), tr( "The file is not an shortcuts exchange file." ) );
     return;
   }
 
@@ -272,21 +260,19 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
     currentLocale = QLocale().name();
   }
 
-  const QString versionStr = root.attribute( QStringLiteral( "version" ) );
+  const QString versionStr = root.attribute( u"version"_s );
   const QgsProjectVersion version( versionStr );
 
-  if ( root.attribute( QStringLiteral( "locale" ) ) != currentLocale )
+  if ( root.attribute( u"locale"_s ) != currentLocale )
   {
-    if ( version < QgsProjectVersion( QStringLiteral( "1.1" ) ) )
+    if ( version < QgsProjectVersion( u"1.1"_s ) )
     {
-      QMessageBox::information( this, tr( "Loading Shortcuts" ),
-                                tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
+      QMessageBox::information( this, tr( "Loading Shortcuts" ), tr( "The file contains shortcuts created with different locale, so you can't use it." ) );
       return;
     }
     else // From version 1.1, if objectName is not empty, it is used as key.
     {
-      QMessageBox::information( this, tr( "Loading Shortcuts" ),
-                                tr( "The file contains shortcuts created with different locale, so some shortcuts may not work." ) );
+      QMessageBox::information( this, tr( "Loading Shortcuts" ), tr( "The file contains shortcuts created with different locale, so some shortcuts may not work." ) );
     }
   }
 
@@ -295,21 +281,121 @@ void QgsConfigureShortcutsDialog::loadShortcuts()
   QString actionSettingKey;
 
   QDomElement child = root.firstChildElement();
+  ActionOnExisting actionOnExisting = ActionOnExisting::Ask;
   while ( !child.isNull() )
   {
-    actionShortcut = child.attribute( QStringLiteral( "shortcut" ) );
-    if ( version < QgsProjectVersion( QStringLiteral( "1.1" ) ) )
+    actionShortcut = child.attribute( u"shortcut"_s );
+    QKeySequence actionShortcutSequence( actionShortcut );
+    QString previousText;
+
+    if ( version < QgsProjectVersion( u"1.1"_s ) )
     {
-      actionName = child.attribute( QStringLiteral( "name" ) );
+      actionName = child.attribute( u"name"_s );
+      QShortcut *previousShortcut = mManager->shortcutForSequence( actionShortcutSequence );
+      QAction *previousAction = mManager->actionForSequence( actionShortcutSequence );
+      if ( previousShortcut && previousShortcut->objectName() != actionName )
+      {
+        previousText = previousShortcut->whatsThis();
+      }
+      else if ( previousAction && previousAction->objectName() != actionName )
+      {
+        previousText = previousAction->text().remove( '&' );
+      }
+      if ( !previousText.isEmpty() )
+      {
+        QString text;
+        if ( QAction *action = mManager->actionByName( actionName ) )
+        {
+          text = action->text().remove( '&' );
+        }
+        else if ( QShortcut *shortcut = mManager->shortcutByName( actionName ) )
+        {
+          text = shortcut->whatsThis();
+        }
+
+        if ( actionOnExisting == ActionOnExisting::Ask )
+        {
+          const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+          if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
+          {
+            if ( res == QMessageBox::NoToAll )
+            {
+              actionOnExisting = ActionOnExisting::SkipAll;
+            }
+            child = child.nextSiblingElement();
+            continue;
+          }
+          if ( res == QMessageBox::YesToAll )
+          {
+            actionOnExisting = ActionOnExisting::ReassignAll;
+          }
+        }
+        else if ( actionOnExisting == ActionOnExisting::SkipAll )
+        {
+          child = child.nextSiblingElement();
+          continue;
+        }
+        mManager->setObjectKeySequence( previousAction ? qobject_cast<QObject *>( previousAction ) : qobject_cast<QObject *>( previousShortcut ), QString() );
+      }
       mManager->setKeySequence( actionName, actionShortcut );
     }
     else
     {
-      actionSettingKey = child.attribute( QStringLiteral( "setting" ) );
+      actionSettingKey = child.attribute( u"setting"_s );
       QObject *obj = mManager->objectForSettingKey( actionSettingKey );
       if ( obj )
-        mManager->setObjectKeySequence( obj, actionShortcut );
+      {
+        QObject *previousObj = mManager->objectForSequence( actionShortcutSequence );
+        if ( previousObj && previousObj != obj )
+        {
+          if ( QAction *previousAction = qobject_cast<QAction *>( previousObj ) )
+          {
+            previousText = previousAction->text().remove( '&' );
+          }
+          else if ( QShortcut *previousShortcut = qobject_cast<QShortcut *>( previousObj ) )
+          {
+            previousText = previousShortcut->whatsThis();
+          }
+        }
 
+        if ( !previousText.isEmpty() )
+        {
+          QString text;
+          if ( QAction *action = qobject_cast<QAction *>( obj ) )
+          {
+            text = action->text().remove( '&' );
+          }
+          else if ( QShortcut *shortcut = qobject_cast<QShortcut *>( obj ) )
+          {
+            text = shortcut->whatsThis();
+          }
+
+          if ( actionOnExisting == ActionOnExisting::Ask )
+          {
+            const int res = QMessageBox::question( this, tr( "Load Shortcut" ), tr( "Shortcut %1 is already assigned to action %2. Reassign to %3?" ).arg( actionShortcut, previousText, text ), QMessageBox::YesToAll | QMessageBox::Yes | QMessageBox::No | QMessageBox::NoToAll );
+            if ( res == QMessageBox::No || res == QMessageBox::NoToAll )
+            {
+              if ( res == QMessageBox::NoToAll )
+              {
+                actionOnExisting = ActionOnExisting::SkipAll;
+              }
+              child = child.nextSiblingElement();
+              continue;
+            }
+            if ( res == QMessageBox::YesToAll )
+            {
+              actionOnExisting = ActionOnExisting::ReassignAll;
+            }
+          }
+          else if ( actionOnExisting == ActionOnExisting::SkipAll )
+          {
+            child = child.nextSiblingElement();
+            continue;
+          }
+          mManager->setObjectKeySequence( previousObj, QString() );
+        }
+        mManager->setObjectKeySequence( obj, actionShortcut );
+      }
     }
 
     child = child.nextSiblingElement();
@@ -510,19 +596,17 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &
   if ( otherObject )
   {
     QString otherText;
-    if ( QAction *otherAction = qobject_cast< QAction * >( otherObject ) )
+    if ( QAction *otherAction = qobject_cast<QAction *>( otherObject ) )
     {
       otherText = otherAction->text();
       otherText.remove( '&' ); // remove the accelerator
     }
-    else if ( QShortcut *otherShortcut = qobject_cast< QShortcut * >( otherObject ) )
+    else if ( QShortcut *otherShortcut = qobject_cast<QShortcut *>( otherObject ) )
     {
       otherText = otherShortcut->whatsThis();
     }
 
-    const int res = QMessageBox::question( this, tr( "Change Shortcut" ),
-                                           tr( "This shortcut is already assigned to action %1. Reassign?" ).arg( otherText ),
-                                           QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::question( this, tr( "Change Shortcut" ), tr( "This shortcut is already assigned to action %1. Reassign?" ).arg( otherText ), QMessageBox::Yes | QMessageBox::No );
 
     if ( res != QMessageBox::Yes )
       return;
@@ -561,13 +645,12 @@ void QgsConfigureShortcutsDialog::mLeFilter_textChanged( const QString &text )
 
 void QgsConfigureShortcutsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#shortcuts" ) );
+  QgsHelp::openHelp( u"introduction/qgis_configuration.html#shortcuts"_s );
 }
 
 void QgsConfigureShortcutsDialog::saveShortcutsPdf()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Shortcuts" ), QDir::homePath(),
-                     tr( "PDF file" ) + " (*.pdf);;" + tr( "All files" ) + " (*)" );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Shortcuts" ), QDir::homePath(), tr( "PDF file" ) + " (*.pdf);;" + tr( "All files" ) + " (*)" );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -575,9 +658,9 @@ void QgsConfigureShortcutsDialog::saveShortcutsPdf()
   if ( fileName.isEmpty() )
     return;
 
-  if ( !fileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
+  if ( !fileName.endsWith( ".pdf"_L1, Qt::CaseInsensitive ) )
   {
-    fileName += QLatin1String( ".pdf" );
+    fileName += ".pdf"_L1;
   }
 
   QTextDocument *document = new QTextDocument;
@@ -623,13 +706,13 @@ void QgsConfigureShortcutsDialog::saveShortcutsPdf()
     QString sequence;
     QIcon icon;
 
-    if ( QAction *action = qobject_cast< QAction * >( obj ) )
+    if ( QAction *action = qobject_cast<QAction *>( obj ) )
     {
       actionText = action->text().remove( '&' );
       sequence = action->shortcut().toString( QKeySequence::NativeText );
       icon = action->icon();
     }
-    else if ( QShortcut *shortcut = qobject_cast< QShortcut * >( obj ) )
+    else if ( QShortcut *shortcut = qobject_cast<QShortcut *>( obj ) )
     {
       actionText = shortcut->whatsThis();
       sequence = shortcut->key().toString( QKeySequence::NativeText );

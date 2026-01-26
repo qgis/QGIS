@@ -15,6 +15,8 @@
 
 #include "qgsattributeeditorcontext.h"
 
+#include "moc_qgsattributeeditorcontext.cpp"
+
 void QgsAttributeEditorContext::setCadDockWidget( QgsAdvancedDigitizingDockWidget *cadDockWidget )
 {
   mCadDockWidget = cadDockWidget;

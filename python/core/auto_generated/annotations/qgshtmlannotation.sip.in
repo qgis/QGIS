@@ -11,7 +11,6 @@
 
 
 
-
 class QgsHtmlAnnotation: QgsAnnotation
 {
 %Docstring(signature="appended")
@@ -52,7 +51,7 @@ Returns the file path for the source HTML file.
 %Docstring
 Sets the html source directly (not coming from a file)
 
-:param htmlSource:
+:param htmlSource: 
 %End
 
     QString htmlSource() const;

@@ -17,6 +17,7 @@
 
 #include "qgis_core.h"
 #include "qgsreferencedgeometry.h"
+
 #include <QObject>
 #include <QVector>
 
@@ -103,6 +104,20 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
      * \since QGIS 3.18
      */
     void setPresetFullExtent( const QgsReferencedRectangle &extent );
+
+    /**
+     * Sets whether the project's preset full extent should be restored when the project is loaded.
+     *
+     * \since QGIS 4.0
+     */
+    void setRestoreProjectExtentOnProjectLoad( bool state );
+
+    /**
+     * Returns whether the project's preset full extent should be restored when the project is loaded.
+     *
+     * \since QGIS 4.0
+     */
+    bool restoreProjectExtentOnProjectLoad();
 
     /**
      * Returns the full extent of the project, which represents the maximal limits of the project.
@@ -228,6 +243,7 @@ class CORE_EXPORT QgsProjectViewSettings : public QObject
     bool mUseProjectScales = false;
     QgsReferencedRectangle mDefaultViewExtent;
     QgsReferencedRectangle mPresetFullExtent;
+    bool mRestoreProjectExtentOnProjectLoad = false;
     double mDefaultRotation = 0;
 };
 

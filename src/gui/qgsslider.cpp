@@ -16,20 +16,26 @@
  ***************************************************************************/
 
 #include "qgsslider.h"
+
+#include <cmath>
+
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
 
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
-#include <cmath>
 
-QgsSlider::QgsSlider( QWidget *parent ) : QSlider( parent )
+#include "moc_qgsslider.cpp"
+
+QgsSlider::QgsSlider( QWidget *parent )
+  : QSlider( parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
 
-QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget *parent ) : QSlider( orientation, parent )
+QgsSlider::QgsSlider( Qt::Orientation orientation, QWidget *parent )
+  : QSlider( orientation, parent )
 {
   setMinimumSize( QSize( 100, 40 ) );
 }
@@ -40,8 +46,7 @@ void QgsSlider::paintEvent( QPaintEvent *event )
   QPainter painter( this );
   const QRect rect = geometry();
   painter.setPen( QPen( palette().color( QPalette::WindowText ) ) );
-  painter.drawText( QRectF( 0, rect.height() * 0.5, rect.width(), rect.height() ),
-                    Qt::AlignHCenter, variantValue().toString(), nullptr );
+  painter.drawText( QRectF( 0, rect.height() * 0.5, rect.width(), rect.height() ), Qt::AlignHCenter, variantValue().toString(), nullptr );
   painter.end();
 }
 
@@ -77,10 +82,7 @@ void QgsSlider::update()
   if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
-  if ( mMin.userType() == QMetaType::Type::Int &&
-       mMax.userType() == QMetaType::Type::Int &&
-       mStep.userType() == QMetaType::Type::Int &&
-       mValue.userType() == QMetaType::Type::Int )
+  if ( mMin.userType() == QMetaType::Type::Int && mMax.userType() == QMetaType::Type::Int && mStep.userType() == QMetaType::Type::Int && mValue.userType() == QMetaType::Type::Int )
   {
     QSlider::setMinimum( mMin.toInt() );
     QSlider::setMaximum( mMax.toInt() );
@@ -116,10 +118,7 @@ void QgsSlider::onValueChanged( int value )
   {
     mValue = QVariant();
   }
-  else if ( mMin.userType() == QMetaType::Type::Int &&
-            mMax.userType() == QMetaType::Type::Int &&
-            mStep.userType() == QMetaType::Type::Int &&
-            mValue.userType() == QMetaType::Type::Int )
+  else if ( mMin.userType() == QMetaType::Type::Int && mMax.userType() == QMetaType::Type::Int && mStep.userType() == QMetaType::Type::Int && mValue.userType() == QMetaType::Type::Int )
   {
     mValue = value;
   }

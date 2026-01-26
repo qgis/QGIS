@@ -17,15 +17,15 @@
 #ifndef QGSFEATUREACTION_H
 #define QGSFEATUREACTION_H
 
+#include "qgis_app.h"
 #include "qgsfeature.h"
+#include "qgshighlight.h"
 
+#include <QAction>
 #include <QList>
 #include <QPair>
-#include <QAction>
-#include <QUuid>
 #include <QPointer>
-#include "qgis_app.h"
-#include "qgshighlight.h"
+#include <QUuid>
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
@@ -61,11 +61,7 @@ class APP_EXPORT QgsFeatureAction : public QAction
      *
      * \returns result if feature was added if showModal is true. If showModal is FALSE, returns Pending in every case
      */
-    AddFeatureResult addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(),
-                                 bool showModal = true,
-                                 std::unique_ptr<QgsExpressionContextScope >scope = std::unique_ptr< QgsExpressionContextScope >(),
-                                 bool hideParent = false,
-                                 std::unique_ptr<QgsHighlight> highlight = std::unique_ptr<QgsHighlight>() );
+    AddFeatureResult addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, std::unique_ptr<QgsExpressionContextScope> scope = std::unique_ptr<QgsExpressionContextScope>(), bool hideParent = false, std::unique_ptr<QgsHighlight> highlight = std::unique_ptr<QgsHighlight>() );
 
   public slots:
     void execute();
@@ -108,10 +104,9 @@ class APP_EXPORT QgsFeatureAction : public QAction
     QUuid mActionId;
     int mIdx;
 
-    bool mFeatureSaved;
+    bool mFeatureSaved = false;
 
     bool mForceSuppressFormPopup = false;
-
 };
 
 #endif

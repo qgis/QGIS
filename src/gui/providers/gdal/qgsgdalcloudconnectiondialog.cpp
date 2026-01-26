@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 #include "qgsgdalcloudconnectiondialog.h"
+
+#include "qgsgdalcloudconnection.h"
+#include "qgsgdalcredentialoptionswidget.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsgdalcredentialoptionswidget.h"
-#include "qgsgdalcloudconnection.h"
 
-#include <QPushButton>
 #include <QMessageBox>
+#include <QPushButton>
+
+#include "moc_qgsgdalcloudconnectiondialog.cpp"
 
 ///@cond PRIVATE
 
@@ -36,9 +39,8 @@ QgsGdalCloudConnectionDialog::QgsGdalCloudConnectionDialog( QWidget *parent )
   mCredentialsGroupBox->setLayout( hlayout );
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
-  {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html" ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"managing_data_source/opening_data.html"_s );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );
   connect( mBucket, &QLineEdit::textChanged, this, &QgsGdalCloudConnectionDialog::updateOkButtonState );

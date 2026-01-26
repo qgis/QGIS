@@ -16,16 +16,16 @@
 #ifndef QGSANIMATEDICON_H
 #define QGSANIMATEDICON_H
 
-#include <QObject>
-#include <QMovie>
+#include "qgis_core.h"
+
 #include <QIcon>
 #include <QMetaMethod>
-
-#include "qgis_core.h"
+#include <QMovie>
+#include <QObject>
 
 /**
  * \ingroup core
- * \brief Animated icon is keeping an animation running if there are listeners connected to frameChanged
+ * \brief Animated icon is keeping an animation running if there are listeners connected to frameChanged.
 */
 class CORE_EXPORT QgsAnimatedIcon : public QObject
 {

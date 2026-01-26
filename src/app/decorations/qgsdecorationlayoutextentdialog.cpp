@@ -17,19 +17,20 @@
 
 #include "qgsdecorationlayoutextentdialog.h"
 
+#include "qgisapp.h"
 #include "qgsdecorationlayoutextent.h"
-
-#include "qgslogger.h"
+#include "qgsfillsymbol.h"
+#include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsstyle.h"
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
-#include "qgisapp.h"
-#include "qgsguiutils.h"
-#include "qgssettings.h"
 #include "qgstextformatwidget.h"
-#include "qgsgui.h"
-#include "qgsfillsymbol.h"
+
+#include "moc_qgsdecorationlayoutextentdialog.cpp"
 
 QgsDecorationLayoutExtentDialog::QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &deco, QWidget *parent )
   : QDialog( parent )
@@ -63,7 +64,7 @@ void QgsDecorationLayoutExtentDialog::updateGuiElements()
 void QgsDecorationLayoutExtentDialog::updateDecoFromGui()
 {
   mDeco.setEnabled( grpEnable->isChecked() );
-  mDeco.setSymbol( mSymbolButton->clonedSymbol< QgsFillSymbol >() );
+  mDeco.setSymbol( mSymbolButton->clonedSymbol<QgsFillSymbol>() );
   mDeco.setTextFormat( mButtonFontStyle->textFormat() );
   mDeco.setLabelExtents( mCheckBoxLabelExtents->isChecked() );
 }
@@ -87,5 +88,5 @@ void QgsDecorationLayoutExtentDialog::buttonBox_rejected()
 
 void QgsDecorationLayoutExtentDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#layoutextents-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#layoutextents-decoration"_s );
 }

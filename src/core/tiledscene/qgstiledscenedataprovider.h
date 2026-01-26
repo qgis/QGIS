@@ -19,16 +19,16 @@
 #ifndef QGSTILEDSCENEDATAPROVIDER_H
 #define QGSTILEDSCENEDATAPROVIDER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgsdataprovider.h"
-#include "qgis.h"
 
 class QgsTiledSceneBoundingVolume;
 class QgsTiledSceneIndex;
 
 /**
  * \ingroup core
- * \brief Base class for data providers for QgsTiledSceneLayer
+ * \brief Base class for data providers for QgsTiledSceneLayer.
  *
  * \since QGIS 3.34
  */

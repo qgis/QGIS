@@ -30,9 +30,7 @@
  */
 class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsMinimumEnclosingCircleAlgorithm() = default;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -40,6 +38,7 @@ class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgor
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
+    QString shortDescription() const override;
     QString shortHelpString() const override;
     QgsMinimumEnclosingCircleAlgorithm *createInstance() const override SIP_FACTORY;
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
@@ -49,16 +48,12 @@ class QgsMinimumEnclosingCircleAlgorithm : public QgsProcessingFeatureBasedAlgor
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     int mSegments = 72;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMMINIMUMENCLOSINGCIRCLE_H
-
-

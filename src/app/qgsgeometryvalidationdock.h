@@ -17,8 +17,9 @@ email                : matthias@opengis.ch
 #define QGSGEOMETRYVALIDATIONPANEL_H
 
 #include "ui_qgsgeometryvalidationdockbase.h"
-#include "qgsdockwidget.h"
+
 #include "qgscoordinatetransform.h"
+#include "qgsdockwidget.h"
 
 class QgsMapCanvas;
 class QgsGeometryValidationModel;
@@ -60,7 +61,6 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     void showErrorContextMenu( const QPoint &pos );
 
   private:
-
     enum ZoomToAction
     {
       ZoomToFeature,
@@ -74,7 +74,6 @@ class QgsGeometryValidationDock : public QgsDockWidget, public Ui_QgsGeometryVal
     ZoomToAction mLastZoomToAction = ZoomToFeature;
     QgsGeometryValidationModel *mGeometryValidationModel = nullptr;
     QgsGeometryValidationService *mGeometryValidationService = nullptr;
-    QButtonGroup *mZoomToButtonGroup = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgisApp *mQgisApp = nullptr;
     QModelIndex currentIndex() const;

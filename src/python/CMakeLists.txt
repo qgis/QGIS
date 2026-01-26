@@ -2,19 +2,9 @@ set(QGISPYTHON_SRCS qgispython.cpp qgspythonutilsimpl.cpp)
 
 add_library (qgispython SHARED ${QGISPYTHON_SRCS})
 
-# require c++17
-target_compile_features(qgispython PRIVATE cxx_std_17)
-
 target_include_directories(qgispython PUBLIC
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/python
-)
-target_include_directories(qgispython SYSTEM PRIVATE
-  ${Python_INCLUDE_DIRS}
-)
-
-set_target_properties(qgispython PROPERTIES
-  CLEAN_DIRECT_OUTPUT 1
 )
 
 #generate unversioned libs for android
@@ -27,7 +17,7 @@ endif()
 
 target_link_libraries(qgispython
   qgis_core
-  ${Python_LIBRARIES}
+  Python::Python
   ${OPENPTY_LIBRARY}
 )
 
@@ -37,8 +27,11 @@ GENERATE_EXPORT_HEADER(
    EXPORT_FILE_NAME qgis_python.h
  )
 
-if (APPLE)
-  set_target_properties(qgispython PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
+if (QGISPOSTFIX)
+  set_target_properties(qgispython PROPERTIES
+    RUNTIME_OUTPUT_NAME qgispython${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgispython${QGISPOSTFIX}
+  )
 endif()
 
 install(TARGETS qgispython

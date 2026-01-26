@@ -8,14 +8,17 @@
 
 
 
-class QgsEllipseSymbolLayerWidget: QgsSymbolLayerWidget
+
+class QgsEllipseSymbolLayerWidget : QgsSymbolLayerWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsEllipseSymbolLayer`.
+%End
 
 %TypeHeaderCode
 #include "qgsellipsesymbollayerwidget.h"
 %End
   public:
-
     QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsEllipseSymbolLayerWidget.

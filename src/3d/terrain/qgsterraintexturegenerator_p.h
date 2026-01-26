@@ -34,16 +34,16 @@ class QgsMapSettings;
 class QgsProject;
 class QgsRasterLayer;
 
-#include <QObject>
-#include <QSize>
-
 #include "qgschunknode.h"
 #include "qgsrectangle.h"
+
+#include <QObject>
+#include <QSize>
 
 class Qgs3DMapSettings;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Class responsible for rendering map images in background for the purposes of their use
  * as textures for terrain's tiles.
  *
@@ -90,15 +90,15 @@ class QgsTerrainTextureGenerator : public QObject
 
     struct JobData
     {
-      int jobId;
-      QgsChunkNodeId tileId;
-      QgsMapRendererSequentialJob *job = nullptr;
-      QgsRectangle extent;
-      QString debugText;
+        int jobId;
+        QgsChunkNodeId tileId;
+        QgsMapRendererSequentialJob *job = nullptr;
+        QgsRectangle extent;
+        QString debugText;
     };
 
     QHash<QgsMapRendererSequentialJob *, JobData> mJobs;
-    int mLastJobId;
+    int mLastJobId = 0;
     QSize mTextureSize;
 };
 

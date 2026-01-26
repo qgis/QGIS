@@ -27,10 +27,11 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader.h"
-#include "qgschunkedentity.h"
-#include "qgsrulebased3drenderer.h"
 #include "qgs3drendercontext.h"
+#include "qgschunkedentity.h"
+#include "qgschunkloader.h"
+#include "qgsrulebased3drenderer.h"
+
 #include <QFutureWatcher>
 
 #define SIP_NO_FILE
@@ -47,7 +48,7 @@ namespace Qt3DCore
 }
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief This loader factory is responsible for creation of loaders for individual tiles
  * of QgsRuleBasedChunkedEntity whenever a new tile is requested by the entity.
  *
@@ -59,21 +60,25 @@ class QgsRuleBasedChunkLoaderFactory : public QgsQuadtreeChunkLoaderFactory
 
   public:
     //! Constructs the factory (vl and rootRule must not be null)
-    QgsRuleBasedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, int leafLevel, double zMin, double zMax );
+    QgsRuleBasedChunkLoaderFactory( const Qgs3DRenderContext &context, QgsVectorLayer *vl, QgsRuleBased3DRenderer::Rule *rootRule, double zMin, double zMax, int maxFeatures );
     ~QgsRuleBasedChunkLoaderFactory() override;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    bool canCreateChildren( QgsChunkNode *node ) override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
     Qgs3DRenderContext mRenderContext;
     QgsVectorLayer *mLayer;
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
-    int mLeafLevel;
+    //! Contains loaded nodes and whether they are leaf nodes or not
+    mutable QHash< QString, bool > mNodesAreLeafs;
+    int mMaxFeatures;
 };
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief This loader class is responsible for async loading of data for a single tile
  * of QgsRuleBasedChunkedEntity and creation of final 3D entity from the data
  * previously prepared in a worker thread.
@@ -89,8 +94,9 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
     QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderFactory *factory, QgsChunkNode *node );
     ~QgsRuleBasedChunkLoader() override;
 
-    virtual void cancel() override;
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    void start() override;
+    void cancel() override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsRuleBasedChunkLoaderFactory *mFactory;
@@ -100,11 +106,12 @@ class QgsRuleBasedChunkLoader : public QgsChunkLoader
     bool mCanceled = false;
     QFutureWatcher<void> *mFutureWatcher = nullptr;
     std::unique_ptr<QgsRuleBased3DRenderer::Rule> mRootRule;
+    bool mNodeIsLeaf = false;
 };
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief 3D entity used for rendering of vector layers using a hierarchy of rules (just like
  * in case of 2D rule-based rendering or labeling).
  *
@@ -121,11 +128,12 @@ class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
     //! Constructs the entity. The argument maxLevel determines how deep the tree of tiles will be
     explicit QgsRuleBasedChunkedEntity( Qgs3DMapSettings *map, QgsVectorLayer *vl, double zMin, double zMax, const QgsVectorLayer3DTilingSettings &tilingSettings, QgsRuleBased3DRenderer::Rule *rootRule );
 
-    QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context ) const override;
+    QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
-    ~QgsRuleBasedChunkedEntity();
+    ~QgsRuleBasedChunkedEntity() override;
   private slots:
-    void onTerrainElevationOffsetChanged( float newOffset );
+    void onTerrainElevationOffsetChanged();
+
   private:
     Qt3DCore::QTransform *mTransform = nullptr;
 

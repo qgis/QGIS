@@ -15,15 +15,19 @@
 ***************************************************************************
 """
 
-__author__ = 'Nicolas Godet'
-__date__ = 'June 2021'
-__copyright__ = '(C) 2021, Nicolas Godet'
+__author__ = "Nicolas Godet"
+__date__ = "June 2021"
+__copyright__ = "(C) 2021, Nicolas Godet"
+
+from qgis.PyQt.QtCore import QCoreApplication
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    """ Verify if we have the right parameters """
+    """Verify if we have the right parameters"""
     # Verifiy that neighborhood size is odd
-    if (alg.parameterAsInt(parameters, 'size', context) % 2) == 0:
-        return False, alg.tr("The neighborhood size must be odd!")
+    if (alg.parameterAsInt(parameters, "size", context) % 2) == 0:
+        return False, QCoreApplication.translate(
+            "GrassAlgorithmExt", "The neighborhood size must be odd!"
+        )
 
     return True, None

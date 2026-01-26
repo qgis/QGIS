@@ -16,11 +16,10 @@
 
 #include "qgsfeature3dhandler_p.h"
 
-#include "qgsfeaturerequest.h"
-#include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
 
-#include "qgs3dmapsettings.h"
-#include "qgs3dutils.h"
+#include <QVector>
+#include <QVector3D>
 
 /// @cond PRIVATE
 
@@ -28,11 +27,23 @@ void QgsFeature3DHandler::updateZRangeFromPositions( const QVector<QVector3D> &p
 {
   for ( const QVector3D &pos : positions )
   {
-    if ( pos.y() < mZMin )
-      mZMin = pos.y();
-    if ( pos.y() > mZMax )
-      mZMax = pos.y();
+    if ( pos.z() < mZMin )
+      mZMin = pos.z();
+    if ( pos.z() > mZMax )
+      mZMax = pos.z();
   }
+}
+
+bool QgsFeature3DHandler::clipGeometryIfTooLarge( QgsGeometry &geom ) const
+{
+  // let's clip gigantic geometries to the chunk's extents
+  const QgsRectangle bbox = geom.boundingBox();
+  if ( bbox.width() > MAX_GEOM_BBOX_SIZE || bbox.height() > MAX_GEOM_BBOX_SIZE )
+  {
+    geom = geom.clipped( mChunkExtent.toRectangle() );
+    return true;
+  }
+  return false;
 }
 
 /// @endcond

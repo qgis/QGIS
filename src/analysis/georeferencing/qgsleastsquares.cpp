@@ -13,23 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsleastsquares.h"
 #include "qgsconfig.h"
-#include "qgsexception.h"
-
-#include <QObject>
+#include "qgsleastsquares.h"
 
 #include <cmath>
 #include <stdexcept>
+
+#include "qgsexception.h"
+
+#include <QObject>
 
 #ifdef HAVE_GSL
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
 #endif
 
-void QgsLeastSquares::linear( const QVector<QgsPointXY> &sourceCoordinates,
-                              const QVector<QgsPointXY> &destinationCoordinates,
-                              QgsPointXY &origin, double &pixelXSize, double &pixelYSize )
+void QgsLeastSquares::linear( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, QgsPointXY &origin, double &pixelXSize, double &pixelYSize )
 {
   const int n = destinationCoordinates.size();
   if ( n < 2 )
@@ -66,17 +65,14 @@ void QgsLeastSquares::linear( const QVector<QgsPointXY> &sourceCoordinates,
 }
 
 
-void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
-                               const QVector<QgsPointXY> &destinationCoordinates,
-                               QgsPointXY &origin, double &pixelSize,
-                               double &rotation )
+void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, QgsPointXY &origin, double &pixelSize, double &rotation )
 {
 #ifndef HAVE_GSL
-  ( void )sourceCoordinates;
-  ( void )destinationCoordinates;
-  ( void )origin;
-  ( void )pixelSize;
-  ( void )rotation;
+  ( void ) sourceCoordinates;
+  ( void ) destinationCoordinates;
+  ( void ) origin;
+  ( void ) pixelSize;
+  ( void ) rotation;
   throw QgsNotSupportedException( QObject::tr( "Calculating a helmert transformation requires a QGIS build based GSL" ) );
 #else
   const int n = destinationCoordinates.size();
@@ -114,13 +110,9 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
      that this is correct but I derived it myself late at night. Look at
      helmert.jpg if you suspect bugs. */
 
-  double MData[] = { A,   -B, ( double ) n,    0.,
-                     B,    A,    0., ( double ) n,
-                     G + H,  0.,    A,    B,
-                     0.,    G + H, -B,    A
-                   };
+  double MData[] = { A, -B, ( double ) n, 0., B, A, 0., ( double ) n, G + H, 0., A, B, 0., G + H, -B, A };
 
-  double bData[] = { C,    D,    E + F,  J - I };
+  double bData[] = { C, D, E + F, J - I };
 
   // we want to solve the equation M*x = b, where x = [a b x0 y0]
   gsl_matrix_view M = gsl_matrix_view_array( MData, 4, 4 );
@@ -134,8 +126,7 @@ void QgsLeastSquares::helmert( const QVector<QgsPointXY> &sourceCoordinates,
 
   origin.setX( gsl_vector_get( x, 2 ) );
   origin.setY( gsl_vector_get( x, 3 ) );
-  pixelSize = std::sqrt( std::pow( gsl_vector_get( x, 0 ), 2 ) +
-                         std::pow( gsl_vector_get( x, 1 ), 2 ) );
+  pixelSize = std::sqrt( std::pow( gsl_vector_get( x, 0 ), 2 ) + std::pow( gsl_vector_get( x, 1 ), 2 ) );
   rotation = std::atan2( gsl_vector_get( x, 1 ), gsl_vector_get( x, 0 ) );
 
   gsl_vector_free( x );
@@ -202,8 +193,7 @@ void QgsLeastSquares::affine( QVector<QgsPointXY> mapCoords,
  *
  * Also returns 3x3 homogeneous matrices which can be used to normalize and de-normalize coordinates.
  */
-void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY> &normalizedCoords,
-                           double normalizeMatrix[9], double denormalizeMatrix[9] )
+void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY> &normalizedCoords, double normalizeMatrix[9], double denormalizeMatrix[9] )
 {
   // Calculate center of gravity
   double cogX = 0.0, cogY = 0.0;
@@ -226,7 +216,7 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
   meanDist *= 1.0 / coords.size();
 
   const double OOD = meanDist * M_SQRT1_2;
-  const double D   = 1.0 / OOD;
+  const double D = 1.0 / OOD;
   normalizedCoords.resize( coords.size() );
   for ( int i = 0; i < coords.size(); i++ )
   {
@@ -256,14 +246,12 @@ void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY
 
 // Fits a homography to the given corresponding points, and
 // return it in H (row-major format).
-void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
-                                  const QVector<QgsPointXY> &destinationCoordinates,
-                                  double H[9] )
+void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates, double H[9] )
 {
 #ifndef HAVE_GSL
-  ( void )sourceCoordinates;
-  ( void )destinationCoordinates;
-  ( void )H;
+  ( void ) sourceCoordinates;
+  ( void ) destinationCoordinates;
+  ( void ) H;
   throw QgsNotSupportedException( QObject::tr( "Calculating a projective transformation requires a QGIS build based GSL" ) );
 #else
   Q_ASSERT( sourceCoordinates.size() == destinationCoordinates.size() );
@@ -283,7 +271,7 @@ void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  const uint m = std::max( 9u, ( uint )destinationCoordinatesNormalized.size() * 2u );
+  const uint m = std::max( 9u, ( uint ) destinationCoordinatesNormalized.size() * 2u );
   const uint n = 9;
   gsl_matrix *S = gsl_matrix_alloc( m, n );
 
@@ -297,8 +285,8 @@ void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
     gsl_matrix_set( S, i * 2, 4, 0.0 );
     gsl_matrix_set( S, i * 2, 5, 0.0 );
 
-    gsl_matrix_set( S, i * 2, 6, -destinationCoordinatesNormalized[i].x()*sourceCoordinatesNormalized[i].x() );
-    gsl_matrix_set( S, i * 2, 7, -destinationCoordinatesNormalized[i].x()*sourceCoordinatesNormalized[i].y() );
+    gsl_matrix_set( S, i * 2, 6, -destinationCoordinatesNormalized[i].x() * sourceCoordinatesNormalized[i].x() );
+    gsl_matrix_set( S, i * 2, 7, -destinationCoordinatesNormalized[i].x() * sourceCoordinatesNormalized[i].y() );
     gsl_matrix_set( S, i * 2, 8, -destinationCoordinatesNormalized[i].x() * 1.0 );
 
     gsl_matrix_set( S, i * 2 + 1, 0, 0.0 );
@@ -309,8 +297,8 @@ void QgsLeastSquares::projective( const QVector<QgsPointXY> &sourceCoordinates,
     gsl_matrix_set( S, i * 2 + 1, 4, sourceCoordinatesNormalized[i].y() );
     gsl_matrix_set( S, i * 2 + 1, 5, 1.0 );
 
-    gsl_matrix_set( S, i * 2 + 1, 6, -destinationCoordinatesNormalized[i].y()*sourceCoordinatesNormalized[i].x() );
-    gsl_matrix_set( S, i * 2 + 1, 7, -destinationCoordinatesNormalized[i].y()*sourceCoordinatesNormalized[i].y() );
+    gsl_matrix_set( S, i * 2 + 1, 6, -destinationCoordinatesNormalized[i].y() * sourceCoordinatesNormalized[i].x() );
+    gsl_matrix_set( S, i * 2 + 1, 7, -destinationCoordinatesNormalized[i].y() * sourceCoordinatesNormalized[i].y() );
     gsl_matrix_set( S, i * 2 + 1, 8, -destinationCoordinatesNormalized[i].y() * 1.0 );
   }
 

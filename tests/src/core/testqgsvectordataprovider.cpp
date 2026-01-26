@@ -12,16 +12,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturerequest.h"
+#include "qgsgeometry.h"
 #include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QObject>
 #include <QString>
-
-#include <qgsapplication.h>
-#include <qgsgeometry.h>
-#include <qgsfeaturerequest.h>
-#include "qgsfeatureiterator.h"
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
 
 Q_DECLARE_METATYPE( QgsFeatureRequest )
 
@@ -33,8 +33,8 @@ class TestQgsVectorDataProvider : public QObject
 
   private slots:
 
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     // test whether QgsFeature content is set up correctly
     void select_checkContents_data();
@@ -49,7 +49,6 @@ class TestQgsVectorDataProvider : public QObject
     void sourceExtent();
 
   private:
-
     QgsVectorLayer *vlayerPoints = nullptr;
     QgsVectorLayer *vlayerLines = nullptr;
     QgsVectorLayer *vlayerPoints3D = nullptr;
@@ -74,19 +73,19 @@ void TestQgsVectorDataProvider::initTestCase()
 
   // load layers
   const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
-  vlayerPoints = new QgsVectorLayer( layerPointsUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerPoints = new QgsVectorLayer( layerPointsUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerPoints );
   QVERIFY( vlayerPoints->isValid() );
 
-  vlayerLines = new QgsVectorLayer( layerLinesUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerLines = new QgsVectorLayer( layerLinesUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerLines );
   QVERIFY( vlayerLines->isValid() );
 
-  vlayerPoints3D = new QgsVectorLayer( layerPoints3DUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerPoints3D = new QgsVectorLayer( layerPoints3DUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerPoints3D );
   QVERIFY( vlayerPoints3D->isValid() );
 
-  vlayerLines3D = new QgsVectorLayer( layerLines3DUrl, QStringLiteral( "testlayer" ), QStringLiteral( "ogr" ), options );
+  vlayerLines3D = new QgsVectorLayer( layerLines3DUrl, u"testlayer"_s, u"ogr"_s, options );
   QVERIFY( vlayerLines3D );
   QVERIFY( vlayerLines3D->isValid() );
 }
@@ -112,7 +111,7 @@ static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyO
 {
   const QgsAttributes &attrs = f.attributes();
 
-  QCOMPARE( f.id(), ( QgsFeatureId )4 );
+  QCOMPARE( f.id(), ( QgsFeatureId ) 4 );
 
   QCOMPARE( f.attributes().count(), 6 );
   if ( hasAttrs )
@@ -133,7 +132,7 @@ static void checkFid4( QgsFeature &f, bool hasGeometry, bool hasAttrs, int onlyO
     QVERIFY( f.hasGeometry() );
     QVERIFY( f.geometry().wkbType() == Qgis::WkbType::Point );
     QCOMPARE( keep6digits( f.geometry().asPoint().x() ), -88.302277 );
-    QCOMPARE( keep6digits( f.geometry().asPoint().y() ),  33.731884 );
+    QCOMPARE( keep6digits( f.geometry().asPoint().y() ), 33.731884 );
   }
   else
   {

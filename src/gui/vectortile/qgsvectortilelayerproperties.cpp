@@ -14,31 +14,34 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayerproperties.h"
+
+#include "qgsapplication.h"
+#include "qgsdatumtransformdialog.h"
+#include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsmaplayerstylemanager.h"
+#include "qgsjsonutils.h"
+#include "qgsmapboxglstyleconverter.h"
+#include "qgsmaplayerloadstyledialog.h"
 #include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsmetadatawidget.h"
+#include "qgsprovidersourcewidget.h"
 #include "qgsprovidersourcewidgetproviderregistry.h"
-#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsvectortilebasiclabelingwidget.h"
+#include "qgsvectortilebasicrendererwidget.h"
 #include "qgsvectortilelayer.h"
 #include "qgsvectortileutils.h"
-#include "qgsgui.h"
-#include "qgsapplication.h"
-#include "qgsjsonutils.h"
-#include "qgsmetadatawidget.h"
-#include "qgsmaplayerloadstyledialog.h"
-#include "qgsmapboxglstyleconverter.h"
-#include "qgsprovidersourcewidget.h"
-#include "qgsdatumtransformdialog.h"
 
+#include <QDesktopServices>
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
-#include <QDesktopServices>
 #include <QTextStream>
 
+#include "moc_qgsvectortilelayerproperties.cpp"
+
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
-  : QgsLayerPropertiesDialog( lyr, canvas, QStringLiteral( "VectorTileLayerProperties" ), parent, flags )
+  : QgsLayerPropertiesDialog( lyr, canvas, u"VectorTileLayerProperties"_s, parent, flags )
   , mLayer( lyr )
 {
   setupUi( this );
@@ -68,22 +71,6 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
   mSourceGroupBox->hide();
 
-#ifdef WITH_QTWEBKIT
-  // Setup information tab
-
-  const int horizontalDpi = logicalDpiX();
-
-  // Adjust zoom: text is ok, but HTML seems rather big at least on Linux/KDE
-  if ( horizontalDpi > 96 )
-  {
-    mMetadataViewer->setZoomFactor( mMetadataViewer->zoomFactor() * 0.9 );
-  }
-  mMetadataViewer->page()->setLinkDelegationPolicy( QWebPage::LinkDelegationPolicy::DelegateAllLinks );
-  connect( mMetadataViewer->page(), &QWebPage::linkClicked, this, &QgsVectorTileLayerProperties::openUrl );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::DeveloperExtrasEnabled, true );
-  mMetadataViewer->page()->settings()->setAttribute( QWebSettings::JavascriptEnabled, true );
-
-#endif
   mOptsPage_Information->setContentsMargins( 0, 0, 0, 0 );
 
   QVBoxLayout *layout = new QVBoxLayout( metadataFrame );
@@ -98,16 +85,17 @@ QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *
 
   setMetadataWidget( mMetadataWidget, mOptsPage_Metadata );
 
+  mMapLayerServerPropertiesWidget->setHasWfsTitle( false );
+
   // update based on lyr's current state
   syncToLayer();
 
   QgsSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often
   // this will be read by restoreOptionsBaseUi()
-  if ( !settings.contains( QStringLiteral( "/Windows/VectorTileLayerProperties/tab" ) ) )
+  if ( !settings.contains( u"/Windows/VectorTileLayerProperties/tab"_s ) )
   {
-    settings.setValue( QStringLiteral( "Windows/VectorTileLayerProperties/tab" ),
-                       mOptStackedWidget->indexOf( mOptsPage_Style ) );
+    settings.setValue( u"Windows/VectorTileLayerProperties/tab"_s, mOptStackedWidget->indexOf( mOptsPage_Style ) );
   }
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
@@ -154,31 +142,20 @@ void QgsVectorTileLayerProperties::apply()
   mLayer->setMinimumScale( mScaleRangeWidget->minimumScale() );
   mLayer->setMaximumScale( mScaleRangeWidget->maximumScale() );
 
-  //layer title and abstract
-  mLayer->serverProperties()->setShortName( mLayerShortNameLineEdit->text() );
-  mLayer->serverProperties()->setTitle( mLayerTitleLineEdit->text() );
-  mLayer->serverProperties()->setAbstract( mLayerAbstractTextEdit->toPlainText() );
-  mLayer->serverProperties()->setKeywordList( mLayerKeywordListLineEdit->text() );
-  mLayer->serverProperties()->setDataUrl( mLayerDataUrlLineEdit->text() );
-  mLayer->serverProperties()->setDataUrlFormat( mLayerDataUrlFormatComboBox->currentText() );
-
-  //layer attribution
-  mLayer->serverProperties()->setAttribution( mLayerAttributionLineEdit->text() );
-  mLayer->serverProperties()->setAttributionUrl( mLayerAttributionUrlLineEdit->text() );
-
-  // LegendURL
-  mLayer->setLegendUrl( mLayerLegendUrlLineEdit->text() );
-  mLayer->setLegendUrlFormat( mLayerLegendUrlFormatComboBox->currentText() );
+  mMapLayerServerPropertiesWidget->save();
 }
 
 void QgsVectorTileLayerProperties::syncToLayer()
 {
+  if ( !mLayer )
+    return;
+
   /*
    * Information Tab
    */
   const QString myStyle = QgsApplication::reportStyleSheet( QgsApplication::StyleSheetType::WebBrowser );
   // Inject the stylesheet
-  const QString html { mLayer->htmlMetadata().replace( QLatin1String( "<head>" ), QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
+  const QString html { mLayer->htmlMetadata().replace( "<head>"_L1, QStringLiteral( R"raw(<head><style type="text/css">%1</style>)raw" ) ).arg( myStyle ) };
   mMetadataViewer->setHtml( html );
 
   /*
@@ -200,8 +177,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
         mSourceGroupBox->setTitle( mSourceWidget->groupTitle() );
       mSourceGroupBox->show();
 
-      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [ = ]( bool isValid )
-      {
+      connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, [this]( bool isValid ) {
         buttonBox->button( QDialogButtonBox::Apply )->setEnabled( isValid );
         buttonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
       } );
@@ -230,31 +206,7 @@ void QgsVectorTileLayerProperties::syncToLayer()
   chkUseScaleDependentRendering->setChecked( mLayer->hasScaleBasedVisibility() );
   mScaleRangeWidget->setScaleRange( mLayer->minimumScale(), mLayer->maximumScale() );
 
-  /*
-   * Server
-   */
-  //layer title and abstract
-  mLayerShortNameLineEdit->setText( mLayer->serverProperties()->shortName() );
-  mLayerTitleLineEdit->setText( mLayer->serverProperties()->title() );
-  mLayerAbstractTextEdit->setPlainText( mLayer->serverProperties()->abstract() );
-  mLayerKeywordListLineEdit->setText( mLayer->serverProperties()->keywordList() );
-  mLayerDataUrlLineEdit->setText( mLayer->serverProperties()->dataUrl() );
-  mLayerDataUrlFormatComboBox->setCurrentIndex(
-    mLayerDataUrlFormatComboBox->findText(
-      mLayer->serverProperties()->dataUrlFormat()
-    )
-  );
-  //layer attribution
-  mLayerAttributionLineEdit->setText( mLayer->serverProperties()->attribution() );
-  mLayerAttributionUrlLineEdit->setText( mLayer->serverProperties()->attributionUrl() );
-
-  // layer legend url
-  mLayerLegendUrlLineEdit->setText( mLayer->legendUrl() );
-  mLayerLegendUrlFormatComboBox->setCurrentIndex(
-    mLayerLegendUrlFormatComboBox->findText(
-      mLayer->legendUrlFormat()
-    )
-  );
+  mMapLayerServerPropertiesWidget->setServerProperties( mLayer->serverProperties() );
 }
 
 void QgsVectorTileLayerProperties::saveDefaultStyle()
@@ -264,7 +216,7 @@ void QgsVectorTileLayerProperties::saveDefaultStyle()
 
 void QgsVectorTileLayerProperties::loadStyle()
 {
-  const QgsSettings settings;  // where we keep last used filter in persistent state
+  const QgsSettings settings; // where we keep last used filter in persistent state
 
   QgsMapLayerLoadStyleDialog dlg( mLayer );
 
@@ -273,7 +225,7 @@ void QgsVectorTileLayerProperties::loadStyle()
     mOldStyle = mLayer->styleManager()->style( mLayer->styleManager()->currentStyle() );
     const QgsMapLayer::StyleCategories categories = dlg.styleCategories();
     const QString type = dlg.fileExtension();
-    if ( type.compare( QLatin1String( "qml" ), Qt::CaseInsensitive ) == 0 )
+    if ( type.compare( "qml"_L1, Qt::CaseInsensitive ) == 0 )
     {
       QString message;
       bool defaultLoadedFlag = false;
@@ -291,7 +243,7 @@ void QgsVectorTileLayerProperties::loadStyle()
         QMessageBox::warning( this, tr( "Load Style" ), message );
       }
     }
-    else if ( type.compare( QLatin1String( "json" ), Qt::CaseInsensitive ) == 0 )
+    else if ( type.compare( "json"_L1, Qt::CaseInsensitive ) == 0 )
     {
       QFile file( dlg.filePath() );
       if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
@@ -301,9 +253,6 @@ void QgsVectorTileLayerProperties::loadStyle()
       else
       {
         QTextStream in( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-        in.setCodec( "UTF-8" );
-#endif
         const QString content = in.readAll();
 
         QgsMapBoxGlStyleConversionContext context;
@@ -317,7 +266,7 @@ void QgsVectorTileLayerProperties::loadStyle()
         QVariantMap styleDefinition = QgsJsonUtils::parseJson( content ).toMap();
 
         QFileInfo fi( dlg.filePath() );
-        QgsVectorTileUtils::loadSprites( styleDefinition, context, QStringLiteral( "file://" ) + fi.absolutePath() );
+        QgsVectorTileUtils::loadSprites( styleDefinition, context, u"file://"_s + fi.absolutePath() );
 
         QgsMapBoxGlStyleConverter converter;
 
@@ -368,7 +317,7 @@ void QgsVectorTileLayerProperties::showHelp()
   }
   else
   {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector_tiles/vector_tiles_properties.html" ) );
+    QgsHelp::openHelp( u"working_with_vector_tiles/vector_tiles_properties.html"_s );
   }
 }
 
@@ -378,4 +327,3 @@ void QgsVectorTileLayerProperties::crsChanged( const QgsCoordinateReferenceSyste
   mLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
-

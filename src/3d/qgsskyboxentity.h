@@ -16,19 +16,19 @@
 #ifndef QGSSKYBOXENTITY_H
 #define QGSSKYBOXENTITY_H
 
-#include <Qt3DCore/QEntity>
-#include <QVector3D>
-#include <Qt3DRender/QTexture>
-#include <Qt3DExtras/QCuboidMesh>
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QFilterKey>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DExtras/QPlaneMesh>
-#include <Qt3DRender/QParameter>
-
 #include "qgis_3d.h"
+
+#include <QVector3D>
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QFilterKey>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTexture>
 
 class QgsImageTexture;
 
@@ -38,7 +38,7 @@ class QgsImageTexture;
  * \brief Base class for all skybox types.
  *
  * It holds the common member data between different skybox entity types
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
@@ -51,6 +51,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
       PanoramicSkybox,
       DistinctTexturesSkybox
     };
+
   public:
     //! Constructor
     QgsSkyboxEntity( QNode *parent = nullptr );
@@ -72,7 +73,7 @@ class _3D_EXPORT QgsSkyboxEntity : public Qt3DCore::QEntity
 /**
  * \brief A skybox constructed from a panoramic image.
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
@@ -90,6 +91,7 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 
   private:
     void reloadTexture();
+
   private:
     QString mTexturePath;
     Qt3DRender::QTextureLoader *mLoadedTexture = nullptr;
@@ -97,9 +99,9 @@ class _3D_EXPORT QgsPanoramicSkyboxEntity : public QgsSkyboxEntity
 };
 
 /**
- * \brief A skybox constructed from a 6 cube faces.
+ * \brief A skybox constructed from 6 cube faces.
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
@@ -116,6 +118,7 @@ class _3D_EXPORT QgsCubeFacesSkyboxEntity : public QgsSkyboxEntity
   private:
     void init();
     void reloadTexture();
+
   private:
     QMap<Qt3DRender::QTextureCubeMap::CubeMapFace, QString> mCubeFacesPaths;
     Qt3DRender::QShaderProgram *mGlShader = nullptr;

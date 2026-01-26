@@ -10,7 +10,7 @@ class DependentPlugin1:
         self.iface = iface
 
     def initGui(self):
-        self.action = QAction('Go!', self.iface.mainWindow())
+        self.action = QAction("Go!", self.iface.mainWindow())
         self.action.triggered.connect(self.run)
         self.iface.addToolBarIcon(self.action)
 

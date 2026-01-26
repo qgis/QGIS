@@ -25,7 +25,7 @@ class QgsFeedback;
 /**
  * \ingroup analysis
  *
- * \brief Makes sure that any two vertices of the vector layer are at least at distance given by the threshold value.
+ * \brief Ensures that any two vertices of the vector layer are at least at a distance given by the threshold value.
  *
  * The algorithm moves nearby vertices to one location and adds vertices to segments that are passing around other
  * vertices within the threshold. It does not remove any vertices. Also, it does not modify geometries unless
@@ -44,7 +44,6 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGeometrySnapperSingleSource
 {
   public:
-
     /**
      * Run the algorithm on given source and output results to the sink, using threshold value in the source's map units.
      * Returns number of modified geometries.

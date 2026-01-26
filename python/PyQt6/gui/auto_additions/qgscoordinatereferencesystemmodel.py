@@ -33,6 +33,12 @@ QgsCoordinateReferenceSystemModel.RoleProj = QgsCoordinateReferenceSystemModel.C
 QgsCoordinateReferenceSystemModel.Roles.RoleProj = QgsCoordinateReferenceSystemModel.CustomRole.Proj
 QgsCoordinateReferenceSystemModel.RoleProj.is_monkey_patched = True
 QgsCoordinateReferenceSystemModel.RoleProj.__doc__ = "The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database)."
+QgsCoordinateReferenceSystemModel.Group = QgsCoordinateReferenceSystemModel.CustomRole.Group
+QgsCoordinateReferenceSystemModel.Group.is_monkey_patched = True
+QgsCoordinateReferenceSystemModel.Group.__doc__ = "Group name. \n.. versionadded:: 3.42"
+QgsCoordinateReferenceSystemModel.Projection = QgsCoordinateReferenceSystemModel.CustomRole.Projection
+QgsCoordinateReferenceSystemModel.Projection.is_monkey_patched = True
+QgsCoordinateReferenceSystemModel.Projection.__doc__ = "Projection name. \n.. versionadded:: 3.42"
 QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = """Custom model roles.
 
 .. note::
@@ -73,6 +79,14 @@ QgsCoordinateReferenceSystemModel.CustomRole.__doc__ = """Custom model roles.
 
   Available as ``QgsCoordinateReferenceSystemModel.RoleProj`` in older QGIS releases.
 
+* ``Group``: Group name.
+
+  .. versionadded:: 3.42
+
+* ``Projection``: Projection name.
+
+  .. versionadded:: 3.42
+
 
 """
 # --
@@ -94,10 +108,12 @@ QgsCoordinateReferenceSystemProxyModel.Filter.__eq__ = lambda flag1, flag2: _for
 QgsCoordinateReferenceSystemProxyModel.Filter.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsCoordinateReferenceSystemProxyModel.Filter.__or__ = lambda flag1, flag2: QgsCoordinateReferenceSystemProxyModel.Filter(_force_int(flag1) | _force_int(flag2))
 try:
+    QgsCoordinateReferenceSystemModel.__overridden_methods__ = ['flags', 'data', 'headerData', 'rowCount', 'columnCount', 'index', 'parent']
     QgsCoordinateReferenceSystemModel.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsCoordinateReferenceSystemProxyModel.__overridden_methods__ = ['filterAcceptsRow', 'lessThan']
     QgsCoordinateReferenceSystemProxyModel.__group__ = ['proj']
-except NameError:
+except (NameError, AttributeError):
     pass

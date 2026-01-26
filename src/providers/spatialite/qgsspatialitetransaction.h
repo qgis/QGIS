@@ -16,9 +16,9 @@
 #ifndef QGSSPATIALITETRANSACTION_H
 #define QGSSPATIALITETRANSACTION_H
 
-#include "qgstransaction.h"
-#include "qgsspatialiteconnection.h"
 #include "qgis_sip.h"
+#include "qgsspatialiteconnection.h"
+#include "qgstransaction.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -46,7 +46,6 @@ class QgsSpatiaLiteTransaction : public QgsTransaction
     sqlite3 *sqliteHandle() const;
 
   private:
-
     QgsSqliteHandle *mSharedHandle = nullptr;
     int mSavepointId;
 

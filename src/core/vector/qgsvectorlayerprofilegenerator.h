@@ -17,18 +17,18 @@
 #ifndef QGSVECTORLAYERPROFILEGENERATOR_H
 #define QGSVECTORLAYERPROFILEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmarkersymbol.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsfeatureid.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
-#include "qgsfeatureid.h"
-
-#include <memory>
+#include "qgsmarkersymbol.h"
 
 class QgsProfileRequest;
 class QgsCurve;
@@ -88,9 +88,9 @@ class CORE_EXPORT QgsVectorLayerProfileResults : public QgsAbstractProfileSurfac
     QgsProfileSnapResult snapPointToIndividualFeatures( const QgsProfilePoint &point, const QgsProfileSnapContext &context );
 
     void visitFeaturesAtPoint( const QgsProfilePoint &point, double maximumPointDistanceDelta, double maximumPointElevationDelta, double maximumSurfaceElevationDelta,
-                               const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin );
+                               const std::function< void( QgsFeatureId, double delta, double distance, double elevation ) > &visitor, bool visitWithin ) const;
     void visitFeaturesInRange( const QgsDoubleRange &distanceRange, const QgsDoubleRange &elevationRange,
-                               const std::function<void ( QgsFeatureId )> &visitor );
+                               const std::function<void ( QgsFeatureId )> &visitor ) const;
 };
 
 
@@ -120,6 +120,10 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
   private:
 
+    // We may need to split mProfileCurve into multiple parts, this will be
+    // called for each part.
+    bool generateProfileInner( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() );
+
     bool generateProfileForPoints();
     bool generateProfileForLines();
     bool generateProfileForPolygons();
@@ -132,11 +136,13 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     void processTriangleIntersectForLine( const QgsPolygon *triangle, const QgsLineString *intersect, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts );
     void processTriangleIntersectForPolygon( const QgsPolygon *triangle, const QgsPolygon *intersectionPolygon, QVector< QgsGeometry > &transformedParts, QVector< QgsGeometry > &crossSectionParts );
 
-    double terrainHeight( double x, double y );
-    double featureZToHeight( double x, double y, double z, double offset );
+    double tolerance() const;
 
-    void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset );
-    bool clampAltitudes( QgsPolygon *polygon, double offset );
+    double terrainHeight( double x, double y ) const;
+    double featureZToHeight( double x, double y, double z, double offset ) const;
+
+    void clampAltitudes( QgsLineString *lineString, const QgsPoint &centroid, double offset ) const;
+    bool clampAltitudes( QgsPolygon *polygon, double offset ) const;
 
     QString mId;
     std::unique_ptr<QgsFeedback> mFeedback = nullptr;
@@ -167,6 +173,8 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     Qgis::AltitudeBinding mBinding = Qgis::AltitudeBinding::Centroid;
     bool mExtrusionEnabled = false;
     double mExtrusionHeight = 0;
+    bool mCustomToleranceEnabled = false;
+    double mCustomTolerance = 0;
 
     QgsExpressionContext mExpressionContext;
     QgsFields mFields;

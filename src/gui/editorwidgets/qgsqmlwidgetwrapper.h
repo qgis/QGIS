@@ -16,15 +16,15 @@
 #ifndef QGSQMLWIDGETWRAPPER_H
 #define QGSQMLWIDGETWRAPPER_H
 
-#include "qgswidgetwrapper.h"
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgswidgetwrapper.h"
 
 #include <QQuickWidget>
 
 /**
  * \ingroup gui
- * \brief Wraps a QQuickWidget to display QML code
+ * \brief Wraps a QQuickWidget to display QML code.
  * \since QGIS 3.4
  */
 class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
@@ -32,7 +32,6 @@ class GUI_EXPORT QgsQmlWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Create a qml widget wrapper
      *

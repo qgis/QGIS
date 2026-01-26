@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmdropgeometry.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsDropGeometryAlgorithm::name() const
 {
-  return QStringLiteral( "dropgeometries" );
+  return u"dropgeometries"_s;
 }
 
 QString QgsDropGeometryAlgorithm::displayName() const
@@ -42,7 +43,7 @@ QString QgsDropGeometryAlgorithm::group() const
 
 QString QgsDropGeometryAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsDropGeometryAlgorithm::outputName() const
@@ -53,6 +54,11 @@ QString QgsDropGeometryAlgorithm::outputName() const
 QString QgsDropGeometryAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm removes any geometries from an input layer and returns a layer containing only the feature attributes." );
+}
+
+QString QgsDropGeometryAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Removes any geometries from an input layer and returns a layer containing only the feature attributes." );
 }
 
 QgsDropGeometryAlgorithm *QgsDropGeometryAlgorithm::createInstance() const
@@ -67,7 +73,7 @@ QgsCoordinateReferenceSystem QgsDropGeometryAlgorithm::outputCrs( const QgsCoord
 
 bool QgsDropGeometryAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  return qobject_cast< const QgsVectorLayer * >( l );
+  return qobject_cast<const QgsVectorLayer *>( l );
 }
 
 Qgis::WkbType QgsDropGeometryAlgorithm::outputWkbType( Qgis::WkbType ) const

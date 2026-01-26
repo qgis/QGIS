@@ -11,14 +11,13 @@
 class QgsBufferServerRequest : QgsServerRequest
 {
 %Docstring(signature="appended")
-Class defining request with data
+Defines a request with data.
 %End
 
 %TypeHeaderCode
 #include "qgsbufferserverrequest.h"
 %End
   public:
-
     QgsBufferServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), QByteArray *data = 0 );
 %Docstring
 Constructor

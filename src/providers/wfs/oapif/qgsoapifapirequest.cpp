@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifapirequest.h"
+#include "moc_qgsoapifapirequest.cpp"
 
 #include <QTextCodec>
 
-QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ),
-  mUrl( url )
+QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const QString &url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -34,7 +35,7 @@ QgsOapifApiRequest::QgsOapifApiRequest( const QgsDataSourceUri &baseUri, const Q
 
 bool QgsOapifApiRequest::request( bool synchronous, bool forceRefresh )
 {
-  if ( !sendGET( QUrl( mUrl ), QStringLiteral( "application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json" ), synchronous, forceRefresh ) )
+  if ( !sendGET( QUrl( mUrl ), u"application/vnd.oai.openapi+json;version=3.0, application/openapi+json;version=3.0, application/json"_s, synchronous, forceRefresh ) )
   {
     emit gotResponse();
     return false;
@@ -53,7 +54,7 @@ static const json *resolveRef( const json &j, const std::string &ref )
 {
   if ( ref.compare( 0, 2, "#/" ) != 0 )
     return nullptr;
-  const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( QLatin1Char( '/' ) );
+  const auto subPaths = QString::fromStdString( ref.substr( 2 ) ).split( '/'_L1 );
   const json *ret = &j;
   for ( const auto &subPath : subPaths )
   {
@@ -83,7 +84,7 @@ void QgsOapifApiRequest::processReply()
     return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "parsing API response: " ) + buffer, 4 );
+  QgsDebugMsgLevel( u"parsing API response: "_s + buffer, 4 );
 
   QTextCodec::ConverterState state;
   QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
@@ -144,16 +145,15 @@ void QgsOapifApiRequest::processReply()
       const auto &paths = j["paths"];
       if ( paths.is_object() )
       {
-        for ( const auto& [key, val] : paths.items() )
+        for ( const auto &[key, val] : paths.items() )
         {
           const char *prefix = "/collections/";
           const char *suffix = "/items";
-          if ( key.size() > strlen( prefix ) + strlen( suffix ) &&
-               key.compare( 0, strlen( prefix ), prefix ) == 0 &&
-               key.compare( key.size() - strlen( suffix ), std::string::npos, suffix ) == 0 )
+          if ( key.size() > strlen( prefix ) + strlen( suffix ) && key.compare( 0, strlen( prefix ), prefix ) == 0 && key.compare( key.size() - strlen( suffix ), std::string::npos, suffix ) == 0 )
           {
             const std::string collection = key.substr(
-                                             strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix ) );
+              strlen( prefix ), key.size() - strlen( prefix ) - strlen( suffix )
+            );
             if ( val.is_object() && val.contains( "get" ) )
             {
               const auto &get = val["get"];
@@ -177,37 +177,21 @@ void QgsOapifApiRequest::processReply()
                           parameterResolved = resolveRef( j, refStr );
                         }
                       }
-                      if ( parameterResolved &&
-                           parameterResolved->is_object() &&
-                           parameterResolved->contains( "name" ) &&
-                           parameterResolved->contains( "in" ) &&
-                           parameterResolved->contains( "style" ) &&
-                           parameterResolved->contains( "explode" ) &&
-                           parameterResolved->contains( "schema" ) )
+                      if ( parameterResolved && parameterResolved->is_object() && parameterResolved->contains( "name" ) && parameterResolved->contains( "in" ) && parameterResolved->contains( "style" ) && parameterResolved->contains( "explode" ) && parameterResolved->contains( "schema" ) )
                       {
                         const auto &jName = ( *parameterResolved )["name"];
                         const auto &jIn = ( *parameterResolved )["in"];
                         const auto &jStyle = ( *parameterResolved )["style"];
                         const auto &jExplode = ( *parameterResolved )["explode"];
                         const auto &jSchema = ( *parameterResolved )["schema"];
-                        if ( jName.is_string() && jIn.is_string() &&
-                             jStyle.is_string() && jExplode.is_boolean() &&
-                             jSchema.is_object() && jSchema.contains( "type" ) )
+                        if ( jName.is_string() && jIn.is_string() && jStyle.is_string() && jExplode.is_boolean() && jSchema.is_object() && jSchema.contains( "type" ) )
                         {
                           const auto name = jName.get<std::string>();
                           const auto in = jIn.get<std::string>();
                           const auto style = jStyle.get<std::string>();
                           const bool explode = jExplode.get<bool>();
                           const auto jSchemaType = jSchema["type"];
-                          if ( in == "query" &&
-                               style == "form" &&
-                               !explode &&
-                               jSchemaType.is_string() &&
-                               name != "crs" &&
-                               name != "bbox" && name != "bbox-crs" &&
-                               name != "filter" && name != "filter-lang" &&
-                               name != "filter-crs" && name != "datetime" &&
-                               name != "limit" )
+                          if ( in == "query" && style == "form" && !explode && jSchemaType.is_string() && name != "crs" && name != "bbox" && name != "bbox-crs" && name != "filter" && name != "filter-lang" && name != "filter-crs" && name != "datetime" && name != "limit" )
                           {
                             SimpleQueryable queryable;
                             queryable.mType = QString::fromStdString( jSchemaType.get<std::string>() );

@@ -14,31 +14,32 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperectangleabstract.h"
+
+#include "qgisapp.h"
 #include "qgscompoundcurve.h"
 #include "qgscurvepolygon.h"
-#include "qgslinestring.h"
-#include "qgspolygon.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
-#include "qgisapp.h"
+#include "qgslinestring.h"
 #include "qgsmaptoolcapture.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
 
+#include "moc_qgsmaptoolshaperectangleabstract.cpp"
 
-void QgsMapToolShapeRectangleAbstract::addRectangleToParentTool( )
+void QgsMapToolShapeRectangleAbstract::addRectangleToParentTool()
 {
   if ( !mParentTool || !mRectangle.isValid() )
   {
     return;
   }
 
-  mParentTool->clearCurve( );
+  mParentTool->clearCurve();
 
   // keep z value from the first snapped point
   std::unique_ptr<QgsLineString> lineString( mRectangle.toLineString() );
   for ( const QgsPoint &point : std::as_const( mPoints ) )
   {
-    if ( QgsWkbTypes::hasZ( point.wkbType() ) &&
-         point.z() != mParentTool->defaultZValue() )
+    if ( QgsWkbTypes::hasZ( point.wkbType() ) && point.z() != mParentTool->defaultZValue() )
     {
       lineString->dropZValue();
       lineString->addZValue( point.z() );

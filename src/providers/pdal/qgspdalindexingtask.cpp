@@ -15,21 +15,24 @@
 
 #include "qgspdalindexingtask.h"
 
-#include <vector>
 #include <string>
-#include <QDebug>
-#include <QThread>
-#include <QFileInfo>
-#include <QDir>
-#include <QProcessEnvironment>
+#include <vector>
 
-#include "qgsapplication.h"
 #include "QgisUntwine.hpp"
-#include "qgsmessagelog.h"
 #include "qgis.h"
+#include "qgsapplication.h"
+
+#include <QDebug>
+#include <QDir>
+#include <QFileInfo>
+#include <QProcessEnvironment>
+#include <QTemporaryDir>
+#include <QThread>
+
+#include "moc_qgspdalindexingtask.cpp"
 
 QgsPdalIndexingTask::QgsPdalIndexingTask( const QString &file, const QString &outputPath, const QString &name )
-  : QgsTask( tr( "Indexing Point Cloud (%1)" ).arg( name ) )
+  : QgsTask( tr( "Creating indexed COPC (%1)" ).arg( name ) )
   , mOutputPath( outputPath )
   , mFile( file )
 {
@@ -41,26 +44,16 @@ bool QgsPdalIndexingTask::run()
   if ( isCanceled() || !prepareOutputPath() )
     return false;
 
-  if ( isCanceled() || !runUntwine() )
-    return false;
+  const bool result = runUntwine();
 
-  if ( isCanceled() )
-    return false;
+  cleanup();
 
-  cleanTemp();
-
-  return true;
+  return result;
 }
 
-void QgsPdalIndexingTask::cleanTemp()
+void QgsPdalIndexingTask::cleanup()
 {
-  QDir tmpDir( mOutputPath + QStringLiteral( "_tmp" ) );
-
-  if ( tmpDir.exists() )
-  {
-    QgsDebugMsgLevel( QStringLiteral( "Removing temporary files in %1" ).arg( tmpDir.dirName() ), 2 );
-    tmpDir.removeRecursively();
-  }
+  QFile::remove( u"%1-indexing"_s.arg( mFile ) );
 }
 
 bool QgsPdalIndexingTask::runUntwine()
@@ -68,12 +61,12 @@ bool QgsPdalIndexingTask::runUntwine()
   const QFileInfo executable( mUntwineExecutableBinary );
   if ( !executable.isExecutable() )
   {
-    QgsMessageLog::logMessage( tr( "Untwine executable not found %1" ).arg( mUntwineExecutableBinary ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Critical );
+    mErrorMessage = tr( "Untwine executable not found %1" ).arg( mUntwineExecutableBinary );
     return false;
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Using executable %1" ).arg( mUntwineExecutableBinary ), 2 );
+    QgsDebugMsgLevel( u"Using executable %1"_s.arg( mUntwineExecutableBinary ), 2 );
   }
 
   untwine::QgisUntwine untwineProcess( mUntwineExecutableBinary.toStdString() );
@@ -82,12 +75,11 @@ bool QgsPdalIndexingTask::runUntwine()
   // By default Untwine does not calculate stats for attributes, but they are very useful for us:
   // we can use them to set automatically set valid range for the data without having to scan the points again.
   options.push_back( { "stats", std::string() } );
-  // By default Untwine will generate an ept dataset, we use single_file flag to generate COPC files
-  options.push_back( { "single_file", std::string() } );
+  options.push_back( { "temp_dir", mTempDir->path().toStdString() } );
 
-  const std::vector<std::string> files = {mFile.toStdString()};
+  const std::vector<std::string> files = { mFile.toStdString() };
   untwineProcess.start( files, mOutputPath.toStdString(), options );
-  const int lastPercent = 0;
+  int lastPercent = 0;
   while ( true )
   {
     QThread::msleep( 100 );
@@ -102,6 +94,7 @@ bool QgsPdalIndexingTask::runUntwine()
       }
 #endif
       setProgress( percent );
+      lastPercent = percent;
     }
 
     if ( isCanceled() )
@@ -116,8 +109,7 @@ bool QgsPdalIndexingTask::runUntwine()
 
       if ( !untwineProcess.errorMessage().empty() )
       {
-        // TODO: propagate the error message to GUI
-        mErrorMessage = QStringLiteral( "Untwine error: %1" ).arg( QString::fromStdString( untwineProcess.errorMessage() ) );
+        mErrorMessage = tr( "COPC creation failed: %1" ).arg( QString::fromStdString( untwineProcess.errorMessage() ) );
         QgsDebugError( mErrorMessage );
         return false;
       }
@@ -139,10 +131,10 @@ void QgsPdalIndexingTask::setUntwineExecutableBinary( const QString &untwineExec
 
 QString QgsPdalIndexingTask::guessUntwineExecutableBinary() const
 {
-  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_UNTWINE_EXECUTABLE" ) );
+  QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( u"QGIS_UNTWINE_EXECUTABLE"_s );
   if ( untwineExecutable.isEmpty() )
   {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
     untwineExecutable = QgsApplication::libexecPath() + "untwine.exe";
 #else
     untwineExecutable = QgsApplication::libexecPath() + "untwine";
@@ -161,15 +153,30 @@ bool QgsPdalIndexingTask::prepareOutputPath()
   const QFileInfo fi( mOutputPath );
   if ( fi.exists() )
   {
-    QgsMessageLog::logMessage( tr( "File %1 is already indexed" ).arg( mFile ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Info );
-    return true;
-  }
-  QString tmpDir = mOutputPath + QStringLiteral( "_tmp" );
-  if ( QDir( tmpDir ).exists() )
-  {
-    QgsMessageLog::logMessage( tr( "Another indexing process is running (or finished with crash) in directory %1" ).arg( mOutputPath ), QObject::tr( "Point clouds" ), Qgis::MessageLevel::Warning );
+    mErrorMessage = tr( "File %1 is already indexed" ).arg( mFile );
     return false;
   }
+
+  mTempDir = std::make_unique< QTemporaryDir >();
+  if ( !mTempDir->isValid() )
+  {
+    mErrorMessage = tr( "Directory is not writable: %1" ).arg( mTempDir->path() );
+    return false;
+  }
+
+  QFile marker( u"%1-indexing"_s.arg( mFile ) );
+  if ( marker.exists() )
+  {
+    mErrorMessage = tr( "Another indexing process is running (or finished with crash) for file %1" ).arg( mFile );
+    return false;
+  }
+
+  // this check is last so we only create the marker file if no error occurred
+  if ( !marker.open( QIODevice::WriteOnly ) )
+  {
+    mErrorMessage = tr( "Directory is not writable: %1" ).arg( fi.canonicalPath() );
+    return false;
+  }
+
   return true;
 }
-

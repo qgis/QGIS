@@ -16,24 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspluginregistry.h"
+
+#include "qgis.h"
+#include "qgisapp.h"
+#include "qgisinterface.h"
+#include "qgisplugin.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
+#include "qgsmessagelog.h"
+#include "qgspluginmetadata.h"
+#include "qgsruntimeprofiler.h"
+#include "qgssettings.h"
+
 #include <QDir>
 #include <QFileInfo>
 #include <QLibrary>
 #include <QMessageBox>
-
-#include "qgssettings.h"
-#include "qgis.h"
-#include "qgsapplication.h"
-#include "qgisinterface.h"
-#include "qgspluginregistry.h"
-#include "qgspluginmetadata.h"
-#include "qgisplugin.h"
-#include "qgisapp.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsmessagebar.h"
-#include "qgsmessagebaritem.h"
-#include "qgsruntimeprofiler.h"
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"
@@ -132,21 +133,18 @@ void QgsPluginRegistry::addPlugin( const QString &key, const QgsPluginMetadata &
 
 void QgsPluginRegistry::dump()
 {
-  QgsDebugMsgLevel( QStringLiteral( "PLUGINS IN REGISTRY: key -> (name, library)" ), 1 );
+  QgsDebugMsgLevel( u"PLUGINS IN REGISTRY: key -> (name, library)"_s, 1 );
   for ( QMap<QString, QgsPluginMetadata>::const_iterator it = mPlugins.constBegin();
         it != mPlugins.constEnd();
         ++it )
   {
-    QgsDebugMsgLevel( QStringLiteral( "PLUGIN: %1 -> (%2, %3)" )
-                      .arg( it.key(),
-                            it->name(),
-                            it->library() ), 1 );
+    QgsDebugMsgLevel( u"PLUGIN: %1 -> (%2, %3)"_s.arg( it.key(), it->name(), it->library() ), 1 );
   }
 
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "PYTHON PLUGINS IN REGISTRY:" ), 1 );
+    QgsDebugMsgLevel( u"PYTHON PLUGINS IN REGISTRY:"_s, 1 );
     const auto constListActivePlugins = mPythonUtils->listActivePlugins();
     for ( const QString &pluginName : constListActivePlugins )
     {
@@ -223,7 +221,7 @@ bool QgsPluginRegistry::checkQgisVersion( const QString &minVersion, const QStri
 
   // Parse qgisMaxVersion. Must be in form x.y.z or just x.y
   int maxVerMajor, maxVerMinor, maxVerBugfix = 99;
-  if ( maxVersion.isEmpty() || maxVersion == QLatin1String( "__error__" ) )
+  if ( maxVersion.isEmpty() || maxVersion == "__error__"_L1 )
   {
     maxVerMajor = minVerMajor;
     maxVerMinor = 99;
@@ -261,21 +259,15 @@ bool QgsPluginRegistry::checkQgisVersion( const QString &minVersion, const QStri
   if ( qgisMinor == 99 )
   {
     // we want the API version, so for x.99 bump it up to the next major release: e.g. 2.99 to 3.0.0
-    qgisMajor ++;
+    qgisMajor++;
     qgisMinor = 0;
     qgisBugfix = 0;
   };
 
   // build XxYyZz strings with trailing zeroes if needed
-  const QString minVer = QStringLiteral( "%1%2%3" ).arg( minVerMajor, 2, 10, QChar( '0' ) )
-                         .arg( minVerMinor, 2, 10, QChar( '0' ) )
-                         .arg( minVerBugfix, 2, 10, QChar( '0' ) );
-  const QString maxVer = QStringLiteral( "%1%2%3" ).arg( maxVerMajor, 2, 10, QChar( '0' ) )
-                         .arg( maxVerMinor, 2, 10, QChar( '0' ) )
-                         .arg( maxVerBugfix, 2, 10, QChar( '0' ) );
-  const QString curVer = QStringLiteral( "%1%2%3" ).arg( qgisMajor, 2, 10, QChar( '0' ) )
-                         .arg( qgisMinor, 2, 10, QChar( '0' ) )
-                         .arg( qgisBugfix, 2, 10, QChar( '0' ) );
+  const QString minVer = u"%1%2%3"_s.arg( minVerMajor, 2, 10, QChar( '0' ) ).arg( minVerMinor, 2, 10, QChar( '0' ) ).arg( minVerBugfix, 2, 10, QChar( '0' ) );
+  const QString maxVer = u"%1%2%3"_s.arg( maxVerMajor, 2, 10, QChar( '0' ) ).arg( maxVerMinor, 2, 10, QChar( '0' ) ).arg( maxVerBugfix, 2, 10, QChar( '0' ) );
+  const QString curVer = u"%1%2%3"_s.arg( qgisMajor, 2, 10, QChar( '0' ) ).arg( qgisMinor, 2, 10, QChar( '0' ) ).arg( qgisBugfix, 2, 10, QChar( '0' ) );
 
   // compare
   return ( minVer <= curVer && maxVer >= curVer );
@@ -294,13 +286,12 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
   QgsSettings settings;
 
   // is loaded already?
-  if ( ! isLoaded( packageName ) )
+  if ( !isLoaded( packageName ) )
   {
     // if plugin is not compatible, disable it
-    if ( ! isPythonPluginCompatible( packageName ) )
+    if ( !isPythonPluginCompatible( packageName ) )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Plugin \"%1\" is not compatible with this version of QGIS.\nIt will be disabled." ).arg( packageName ),
-                                 QObject::tr( "Plugins" ) );
+      QgsMessageLog::logMessage( QObject::tr( "Plugin \"%1\" is not compatible with this version of QGIS.\nIt will be disabled." ).arg( packageName ), QObject::tr( "Plugins" ) );
       settings.setValue( "/PythonPlugins/" + packageName, false );
       return;
     }
@@ -311,13 +302,13 @@ void QgsPluginRegistry::loadPythonPlugin( const QString &packageName )
 
     // TODO: test success
 
-    const QString pluginName = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "name" ) );
+    const QString pluginName = mPythonUtils->getPluginMetadata( packageName, u"name"_s );
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
     QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName, packageName ), QObject::tr( "Plugins" ), Qgis::MessageLevel::Info );
 
-    settings.remove( "/PythonPlugins/watchDog/" + packageName );
+    settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
   }
 #else
   Q_UNUSED( packageName )
@@ -380,37 +371,36 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
           {
-            QgsDebugMsgLevel( QStringLiteral( "plugin object name: %1" ).arg( o->objectName() ), 2 );
+            QgsDebugMsgLevel( u"plugin object name: %1"_s.arg( o->objectName() ), 2 );
             if ( o->objectName().isEmpty() )
             {
 #ifndef Q_OS_WIN
               baseName = baseName.mid( 3 );
 #endif
-              QgsDebugMsgLevel( QStringLiteral( "object name to %1" ).arg( baseName ), 2 );
-              o->setObjectName( QStringLiteral( "qgis_plugin_%1" ).arg( baseName ) );
-              QgsDebugMsgLevel( QStringLiteral( "plugin object name now: %1" ).arg( o->objectName() ), 2 );
+              QgsDebugMsgLevel( u"object name to %1"_s.arg( baseName ), 2 );
+              o->setObjectName( u"qgis_plugin_%1"_s.arg( baseName ) );
+              QgsDebugMsgLevel( u"plugin object name now: %1"_s.arg( o->objectName() ), 2 );
             }
 
             if ( !o->parent() )
             {
-              QgsDebugMsgLevel( QStringLiteral( "setting plugin parent" ), 2 );
+              QgsDebugMsgLevel( u"setting plugin parent"_s, 2 );
               o->setParent( QgisApp::instance() );
             }
             else
             {
-              QgsDebugMsgLevel( QStringLiteral( "plugin parent already set" ), 2 );
+              QgsDebugMsgLevel( u"plugin parent already set"_s, 2 );
             }
           }
 
-          settings.remove( "/Plugins/watchDog/" + baseName );
+          settings.remove( "/Plugins/watchDogTimestamp/" + baseName );
         }
         else
         {
           // something went wrong
-          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Loading Plugins" ),
-                                QObject::tr( "There was an error loading a plugin. "
-                                             "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
-                                .arg( myError ) );
+          QMessageBox::warning( mQgisInterface->mainWindow(), QObject::tr( "Loading Plugins" ), QObject::tr( "There was an error loading a plugin. "
+                                                                                                             "The following diagnostic information may help the QGIS developers resolve the issue:\n%1." )
+                                                                                                  .arg( myError ) );
           //disable it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, false );
         }
@@ -419,7 +409,6 @@ void QgsPluginRegistry::loadCppPlugin( const QString &fullPathName )
       {
         QgsMessageLog::logMessage( QObject::tr( "Unable to find the class factory for %1." ).arg( fullPathName ), QObject::tr( "Plugins" ) );
       }
-
     }
     break;
     default:
@@ -489,12 +478,12 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
 
   const QgsScopedRuntimeProfile profile( QObject::tr( "Load plugins" ) );
 
-#if defined(Q_OS_WIN) || defined(__CYGWIN__)
+#if defined( Q_OS_WIN ) || defined( __CYGWIN__ )
   QString pluginExt = "*.dll";
 #elif ANDROID
   QString pluginExt = "*plugin.so";
 #else
-  const QString pluginExt = QStringLiteral( "*.so" );
+  const QString pluginExt = u"*.so"_s;
 #endif
 
   // check all libs in the current plugin directory and get name and descriptions
@@ -505,14 +494,26 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
     const QString myFullPath = pluginDirString + '/' + myPluginDir[i];
     if ( checkCppPlugin( myFullPath ) )
     {
-      // check if the plugin was active on last session
+      // check if there is a watchdog timestamp left after last session
 
+      bool pluginCrashedPreviously = false;
       const QString baseName = QFileInfo( myFullPath ).baseName();
-      if ( mySettings.value( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ) ).isValid() )
+      const QVariant lastRun = mySettings.value( u"Plugins/watchDogTimestamp/%1"_s.arg( baseName ) );
+      if ( lastRun.isValid() )
+      {
+        if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
+        {
+          // The timestamp is left unremoved and is older than 5 seconds, so it's not coming
+          // from a parallelly running instance.
+          pluginCrashedPreviously = true;
+        }
+      }
+
+      if ( pluginCrashedPreviously )
       {
         QToolButton *btnEnablePlugin = new QToolButton();
-        btnEnablePlugin ->setText( QObject::tr( "Enable Plugin" ) );
-        btnEnablePlugin ->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
+        btnEnablePlugin->setText( QObject::tr( "Enable Plugin" ) );
+        btnEnablePlugin->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
 
         QToolButton *btnIgnore = new QToolButton();
         btnIgnore->setText( QObject::tr( "Ignore" ) );
@@ -524,22 +525,21 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           btnEnablePlugin,
           Qgis::MessageLevel::Warning,
           0,
-          mQgisInterface->messageBar() );
+          mQgisInterface->messageBar()
+        );
         watchdogMsg->layout()->addWidget( btnIgnore );
 
-        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
-        {
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [this, baseName, myFullPath, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, true );
           loadCppPlugin( myFullPath );
-          settings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
+          settings.remove( u"/Plugins/watchDogTimestamp/%1"_s.arg( baseName ) );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
-        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
-        {
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [this, baseName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/Plugins/" + baseName, false );
-          settings.remove( "/Plugins/watchDog/" + baseName );
+          settings.remove( "/Plugins/watchDogTimestamp/" + baseName );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
 
@@ -548,9 +548,9 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
       if ( mySettings.value( "/Plugins/" + baseName ).toBool() )
       {
-        mySettings.setValue( QStringLiteral( "Plugins/watchDog/%1" ).arg( baseName ), true );
+        mySettings.setValue( u"Plugins/watchDogTimestamp/%1"_s.arg( baseName ), QDateTime::currentDateTime().toSecsSinceEpoch() );
         loadCppPlugin( myFullPath );
-        mySettings.remove( QStringLiteral( "/Plugins/watchDog/%1" ).arg( baseName ) );
+        mySettings.remove( u"/Plugins/watchDogTimestamp/%1"_s.arg( baseName ) );
       }
     }
   }
@@ -560,14 +560,14 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
   {
     // check for python plugins system-wide
     const QStringList pluginList = mPythonUtils->pluginList();
-    QgsDebugMsgLevel( QStringLiteral( "Loading python plugins" ), 2 );
-    QgsDebugMsgLevel( QStringLiteral( "Python plugins will be loaded in the following order: " ) + pluginList.join( "," ), 2 );
+    QgsDebugMsgLevel( u"Loading python plugins"_s, 2 );
+    QgsDebugMsgLevel( u"Python plugins will be loaded in the following order: "_s + pluginList.join( "," ), 2 );
 
     QStringList corePlugins = QStringList();
-    corePlugins << QStringLiteral( "db_manager" );
-    corePlugins << QStringLiteral( "processing" );
-    corePlugins << QStringLiteral( "MetaSearch" );
-    corePlugins << QStringLiteral( "grassprovider" );
+    corePlugins << u"db_manager"_s;
+    corePlugins << u"processing"_s;
+    corePlugins << u"MetaSearch"_s;
+    corePlugins << u"grassprovider"_s;
 
     // make the required core plugins enabled by default:
     const auto constCorePlugins = corePlugins;
@@ -597,8 +597,19 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       }
       // end - temporary fix for issue #5879, more below
 
+      bool pluginCrashedPreviously = false;
+      const QVariant lastRun = mySettings.value( u"/PythonPlugins/watchDogTimestamp/%1"_s.arg( packageName ) );
+      if ( lastRun.isValid() )
+      {
+        if ( QDateTime::currentDateTime().toSecsSinceEpoch() - lastRun.toLongLong() > 5 )
+        {
+          // The timestamp is left unremoved and is older than 5 seconds, so it's not coming
+          // from a parallelly running instance.
+          pluginCrashedPreviously = true;
+        }
+      }
 
-      if ( mySettings.value( "/PythonPlugins/watchDog/" + packageName ).isValid() )
+      if ( pluginCrashedPreviously )
       {
         QToolButton *btnEnablePlugin = new QToolButton();
         btnEnablePlugin->setText( QObject::tr( "Enable Plugin" ) );
@@ -614,27 +625,26 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
           btnEnablePlugin,
           Qgis::MessageLevel::Warning,
           0,
-          mQgisInterface->messageBar() );
+          mQgisInterface->messageBar()
+        );
         watchdogMsg->layout()->addWidget( btnIgnore );
 
-        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
-        {
+        QObject::connect( btnEnablePlugin, &QToolButton::clicked, mQgisInterface->messageBar(), [this, packageName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/PythonPlugins/" + packageName, true );
           if ( checkPythonPlugin( packageName ) )
           {
             loadPythonPlugin( packageName );
           }
-          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+          settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
 
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
 
-        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [ = ]()
-        {
+        QObject::connect( btnIgnore, &QToolButton::clicked, mQgisInterface->messageBar(), [this, packageName, watchdogMsg]() {
           QgsSettings settings;
           settings.setValue( "/PythonPlugins/" + packageName, false );
-          settings.remove( "/PythonPlugins/watchDog/" + packageName );
+          settings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
           mQgisInterface->messageBar()->popWidget( watchdogMsg );
         } );
 
@@ -645,25 +655,24 @@ void QgsPluginRegistry::restoreSessionPlugins( const QString &pluginDirString )
       // check if the plugin was active on last session
       if ( mySettings.value( "/PythonPlugins/" + packageName ).toBool() )
       {
-        mySettings.setValue( "/PythonPlugins/watchDog/" + packageName, true );
+        mySettings.setValue( "/PythonPlugins/watchDogTimestamp/" + packageName, QDateTime::currentDateTime().toSecsSinceEpoch() );
         if ( checkPythonPlugin( packageName ) )
         {
           loadPythonPlugin( packageName );
         }
-        mySettings.remove( "/PythonPlugins/watchDog/" + packageName );
-
+        mySettings.remove( "/PythonPlugins/watchDogTimestamp/" + packageName );
       }
     }
     // start - temporary fix for issue #5879, more above
     if ( QgsApplication::isRunningFromBuildDir() )
     {
-      QgsApplication::setPkgDataPath( QgsApplication::buildOutputPath() + QStringLiteral( "/data" ) );
+      QgsApplication::setPkgDataPath( QgsApplication::buildOutputPath() + u"/data"_s );
     }
     // end - temporary fix for issue #5879
   }
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "Plugin loading completed" ), 2 );
+  QgsDebugMsgLevel( u"Plugin loading completed"_s, 2 );
 }
 
 
@@ -671,18 +680,18 @@ bool QgsPluginRegistry::checkCppPlugin( const QString &pluginFullPath )
 {
   QLibrary myLib( pluginFullPath );
   const bool loaded = myLib.load();
-  if ( ! loaded )
+  if ( !loaded )
   {
     QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName(), myLib.errorString() ), QObject::tr( "Plugins" ) );
     return false;
   }
 
   name_t *myName = ( name_t * ) cast_to_fptr( myLib.resolve( "name" ) );
-  description_t   *myDescription = ( description_t * )  cast_to_fptr( myLib.resolve( "description" ) );
-  category_t   *myCategory = ( category_t * )  cast_to_fptr( myLib.resolve( "category" ) );
-  version_t   *myVersion = ( version_t * ) cast_to_fptr( myLib.resolve( "version" ) );
+  description_t *myDescription = ( description_t * ) cast_to_fptr( myLib.resolve( "description" ) );
+  category_t *myCategory = ( category_t * ) cast_to_fptr( myLib.resolve( "category" ) );
+  version_t *myVersion = ( version_t * ) cast_to_fptr( myLib.resolve( "version" ) );
 
-  if ( myName && myDescription && myVersion  && myCategory )
+  if ( myName && myDescription && myVersion && myCategory )
     return true;
 
   QgsDebugMsgLevel( "Failed to get name, description, category or type for " + myLib.fileName(), 2 );
@@ -697,16 +706,15 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 
   // get information from the plugin
   // if there are some problems, don't continue with metadata retrieval
-  pluginName  = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "name" ) );
-  description = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "description" ) );
-  version     = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "version" ) );
+  pluginName = mPythonUtils->getPluginMetadata( packageName, u"name"_s );
+  description = mPythonUtils->getPluginMetadata( packageName, u"description"_s );
+  version = mPythonUtils->getPluginMetadata( packageName, u"version"_s );
   // for Python plugins category still optional, by default used "Plugins" category
   //category = mPythonUtils->getPluginMetadata( packageName, "category" );
 
-  if ( pluginName == QLatin1String( "__error__" ) || description == QLatin1String( "__error__" ) || version == QLatin1String( "__error__" ) )
+  if ( pluginName == "__error__"_L1 || description == "__error__"_L1 || version == "__error__"_L1 )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error when reading metadata of plugin %1" ).arg( packageName ),
-                               QObject::tr( "Plugins" ) );
+    QgsMessageLog::logMessage( QObject::tr( "Error when reading metadata of plugin %1" ).arg( packageName ), QObject::tr( "Plugins" ) );
     return false;
   }
 
@@ -720,20 +728,24 @@ bool QgsPluginRegistry::checkPythonPlugin( const QString &packageName )
 bool QgsPluginRegistry::isPythonPluginCompatible( const QString &packageName ) const
 {
 #ifdef WITH_BINDINGS
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-  const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "supportsQt6" ) ).trimmed();
-  if ( supportsQt6.compare( QLatin1String( "YES" ), Qt::CaseInsensitive ) != 0 && supportsQt6.compare( QLatin1String( "TRUE" ), Qt::CaseInsensitive ) != 0 )
+  bool supportsQgis4 = true;
+  const QString supportsQt6 = mPythonUtils->getPluginMetadata( packageName, u"supportsQt6"_s ).trimmed();
+  if ( supportsQt6.compare( "YES"_L1, Qt::CaseInsensitive ) != 0 && supportsQt6.compare( "TRUE"_L1, Qt::CaseInsensitive ) != 0 )
   {
     if ( !getenv( "QGIS_DISABLE_SUPPORTS_QT6_CHECK" ) )
     {
       return false;
     }
+    supportsQgis4 = false;
   }
-#endif
-  const QString minVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMinimumVersion" ) );
+  const QString minVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMinimumVersion"_s );
   // try to read qgisMaximumVersion. Note checkQgisVersion can cope with "__error__" value.
-  const QString maxVersion = mPythonUtils->getPluginMetadata( packageName, QStringLiteral( "qgisMaximumVersion" ) );
-  return minVersion != QLatin1String( "__error__" ) && checkQgisVersion( minVersion, maxVersion );
+  QString maxVersion = mPythonUtils->getPluginMetadata( packageName, u"qgisMaximumVersion"_s );
+  if ( maxVersion == "__error__"_L1 && minVersion.startsWith( "3."_L1 ) && supportsQgis4 )
+  {
+    maxVersion = "4.99.0"_L1;
+  }
+  return minVersion != "__error__"_L1 && checkQgisVersion( minVersion, maxVersion );
 #else
   Q_UNUSED( packageName )
   return false;

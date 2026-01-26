@@ -22,10 +22,10 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingprovider.h"
 #include "qgsprocessingutils.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
 
 ///@cond PRIVATE
 
@@ -34,9 +34,7 @@
  */
 class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsMergeLinesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -44,6 +42,7 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QList<int> inputLayerTypes() const override;
     QgsMergeLinesAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -51,12 +50,9 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMMERGELINES_H
-
-

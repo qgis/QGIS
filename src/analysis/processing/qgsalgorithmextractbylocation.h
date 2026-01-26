@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 
 ///@cond PRIVATE
 
@@ -32,9 +32,7 @@
  */
 class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
 {
-
   protected:
-
     enum Predicate
     {
       Intersects,
@@ -50,19 +48,16 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
     void addPredicateParameter();
     Predicate reversePredicate( Predicate predicate ) const;
     QStringList predicateOptionsList() const;
-    void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds = QgsFeatureIds() );
+    void process( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds = QgsFeatureIds() );
 
   protected:
-
     QgsCoordinateReferenceSystem mTargetCrs;
     long long mTargetFeatureCount = 0;
     long long mIntersectFeatureCount = 0;
 
   private:
-
-    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
-    void processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function< void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
-
+    void processByIteratingOverTargetSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
+    void processByIteratingOverIntersectSource( const QgsProcessingContext &context, QgsFeatureSource *targetSource, QgsFeatureSource *intersectSource, const QList<int> &selectedPredicates, const std::function<void( const QgsFeature & )> &handleFeatureFunction, bool onlyRequireTargetIds, QgsProcessingFeedback *feedback, const QgsFeatureIds &skipTargetFeatureIds );
 };
 
 
@@ -71,13 +66,11 @@ class QgsLocationBasedAlgorithm : public QgsProcessingAlgorithm
  */
 class QgsSelectByLocationAlgorithm : public QgsLocationBasedAlgorithm
 {
-
   public:
-
     QgsSelectByLocationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSelectLocation.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSelectLocation.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSelectLocation.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSelectLocation.svg"_s ); }
     QString name() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString displayName() const override;
@@ -85,12 +78,11 @@ class QgsSelectByLocationAlgorithm : public QgsLocationBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSelectByLocationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 /**
@@ -98,9 +90,7 @@ class QgsSelectByLocationAlgorithm : public QgsLocationBasedAlgorithm
  */
 class QgsExtractByLocationAlgorithm : public QgsLocationBasedAlgorithm
 {
-
   public:
-
     QgsExtractByLocationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -109,19 +99,14 @@ class QgsExtractByLocationAlgorithm : public QgsLocationBasedAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsExtractByLocationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXTRACTBYLOCATION_H
-
-

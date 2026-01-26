@@ -17,9 +17,9 @@
 #ifndef QGSMAPTOOLSHAPEREGULARPOLYGONCENTERCORNER_H
 #define QGSMAPTOOLSHAPEREGULARPOLYGONCENTERCORNER_H
 
-#include "qgsmaptoolshaperegularpolygonabstract.h"
 #include "qgis_app.h"
 #include "qgsmaptoolshaperegistry.h"
+#include "qgsmaptoolshaperegularpolygonabstract.h"
 
 class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCornerMetadata : public QgsMapToolShapeMetadata
 {
@@ -37,7 +37,7 @@ class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCornerMetadata : public QgsM
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCorner: public QgsMapToolShapeRegularPolygonAbstract
+class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCorner : public QgsMapToolShapeRegularPolygonAbstract
 {
     Q_OBJECT
 

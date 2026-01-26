@@ -22,9 +22,9 @@ email                : tim@linfiniti.com
 // includes
 
 #include "qgsdecorationcopyright.h"
-#include "qgsdecorationcopyrightdialog.h"
 
 #include "qgisapp.h"
+#include "qgsdecorationcopyrightdialog.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgslogger.h"
@@ -33,11 +33,13 @@ email                : tim@linfiniti.com
 #include "qgssymbollayerutils.h"
 #include "qgstextrenderer.h"
 
-#include <QPainter>
-#include <QMenu>
 #include <QDate>
 #include <QDomDocument>
 #include <QFile>
+#include <QMenu>
+#include <QPainter>
+
+#include "moc_qgsdecorationcopyright.cpp"
 
 //non qt includes
 #include <cmath>
@@ -50,7 +52,7 @@ QgsDecorationCopyright::QgsDecorationCopyright( QObject *parent )
   mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Copyright Label" ) );
-  mConfigurationName = QStringLiteral( "CopyrightLabel" );
+  mConfigurationName = u"CopyrightLabel"_s;
 
   projectRead();
 }
@@ -59,13 +61,13 @@ void QgsDecorationCopyright::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  mLabelText = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Label" ), QString() );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
+  mLabelText = QgsProject::instance()->readEntry( mConfigurationName, u"/Label"_s, QString() );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginH"_s, 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginV"_s, 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  const QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+  const QString textXml = QgsProject::instance()->readEntry( mConfigurationName, u"/Font"_s );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
@@ -76,27 +78,27 @@ void QgsDecorationCopyright::projectRead()
   }
 
   // Migration for pre QGIS 3.2 settings
-  const QColor oldColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ) ) );
+  const QColor oldColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mConfigurationName, u"/Color"_s ) );
   if ( oldColor.isValid() )
   {
     mTextFormat.setColor( oldColor );
-    QgsProject::instance()->removeEntry( mConfigurationName, QStringLiteral( "/Color" ) );
+    QgsProject::instance()->removeEntry( mConfigurationName, u"/Color"_s );
   }
 }
 
 void QgsDecorationCopyright::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Label" ), mLabelText );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Label"_s, mLabelText );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginH"_s, mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginV"_s, mMarginVertical );
 
   QDomDocument textDoc;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   const QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Font"_s, textDoc.toString() );
 }
 
 // Slot called when the buffer menu item is activated
@@ -192,10 +194,9 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     default:
-      QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugError( u"Unsupported placement index of %1"_s.arg( static_cast<int>( mPlacement ) ) );
   }
 
   //Paint label to canvas
   QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
 }
-

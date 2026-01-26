@@ -16,22 +16,23 @@
 #define QGSELLIPSESYMBOLLAYERWIDGET_H
 
 #include "ui_widget_ellipse.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgssymbollayerwidget.h"
-#include "qgis_gui.h"
 
 class QgsEllipseSymbolLayer;
 
 /**
  * \ingroup gui
  * \class QgsEllipseSymbolLayerWidget
+ * \brief A widget for configuring a QgsEllipseSymbolLayer.
  */
-class GUI_EXPORT QgsEllipseSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetEllipseBase
+class GUI_EXPORT QgsEllipseSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetEllipseBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsEllipseSymbolLayerWidget.
      * \param vl associated vector layer

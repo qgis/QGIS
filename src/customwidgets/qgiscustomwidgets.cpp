@@ -13,9 +13,8 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qplugin.h"
-
 #include "qgiscustomwidgets.h"
+
 #include "qgsauthconfigselectplugin.h"
 #include "qgscheckablecomboboxplugin.h"
 #include "qgscollapsiblegroupboxplugin.h"
@@ -43,6 +42,11 @@
 #include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
 #include "qgsscalewidgetplugin.h"
+
+#include <qplugin.h>
+
+#include "moc_qgiscustomwidgets.cpp"
+
 //#include "qgsscrollareawidgetplugin.h"
 #include "qgsspinboxplugin.h"
 #include "qgssymbolbuttonplugin.h"
@@ -77,7 +81,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsRelationReferenceWidgetPlugin( this ) );
   mWidgets.append( new QgsScaleRangeWidgetPlugin( this ) );
   mWidgets.append( new QgsScaleWidgetPlugin( this ) );
-//  mWidgets.append( new QgsScrollAreaWidgetPlugin( this ) ); // this is causing troubles at the moment
+  //  mWidgets.append( new QgsScrollAreaWidgetPlugin( this ) ); // this is causing troubles at the moment
   mWidgets.append( new QgsSpinBoxPlugin( this ) );
   mWidgets.append( new QgsSymbolButtonPlugin( this ) );
 }

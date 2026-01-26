@@ -16,21 +16,24 @@
  ***************************************************************************/
 
 #include "qgsalgorithmfiledownloader.h"
-#include "qgsprocessingparameters.h"
+
 #include "qgis.h"
 #include "qgsfiledownloader.h"
 #include "qgsfileutils.h"
+#include "qgsprocessingparameters.h"
 
 #include <QEventLoop>
 #include <QFileInfo>
 #include <QTimer>
 #include <QUrl>
 
+#include "moc_qgsalgorithmfiledownloader.cpp"
+
 ///@cond PRIVATE
 
 QString QgsFileDownloaderAlgorithm::name() const
 {
-  return QStringLiteral( "filedownloader" );
+  return u"filedownloader"_s;
 }
 
 QString QgsFileDownloaderAlgorithm::displayName() const
@@ -40,7 +43,7 @@ QString QgsFileDownloaderAlgorithm::displayName() const
 
 QString QgsFileDownloaderAlgorithm::shortDescription() const
 {
-  return tr( "Downloads a URL to the file system with an HTTP(S) GET or POST request" );
+  return tr( "Downloads a URL to the file system with an HTTP(S) GET or POST request." );
 }
 
 QStringList QgsFileDownloaderAlgorithm::tags() const
@@ -55,7 +58,7 @@ QString QgsFileDownloaderAlgorithm::group() const
 
 QString QgsFileDownloaderAlgorithm::groupId() const
 {
-  return QStringLiteral( "filetools" );
+  return u"filetools"_s;
 }
 
 QString QgsFileDownloaderAlgorithm::shortHelpString() const
@@ -70,48 +73,48 @@ QgsFileDownloaderAlgorithm *QgsFileDownloaderAlgorithm::createInstance() const
 
 void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL" ), QVariant(), false, false ) );
+  addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "URL" ), QVariant(), false, false ) );
 
-  std::unique_ptr< QgsProcessingParameterEnum > methodParam = std::make_unique < QgsProcessingParameterEnum > (
-        QStringLiteral( "METHOD" ),
-        QObject::tr( "Method" ),
-        QStringList()
-        << QObject::tr( "GET" )
-        << QObject::tr( "POST" ),
-        false,
-        0
-      );
+  auto methodParam = std::make_unique<QgsProcessingParameterEnum>(
+    u"METHOD"_s,
+    QObject::tr( "Method" ),
+    QStringList()
+      << QObject::tr( "GET" )
+      << QObject::tr( "POST" ),
+    false,
+    0
+  );
   methodParam->setHelp( QObject::tr( "The HTTP method to use for the request" ) );
   methodParam->setFlags( methodParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( methodParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterString > dataParam = std::make_unique < QgsProcessingParameterString >(
-        QStringLiteral( "DATA" ), tr( "Data" ), QVariant(), false, true );
+  auto dataParam = std::make_unique<QgsProcessingParameterString>(
+    u"DATA"_s, tr( "Data" ), QVariant(), false, true
+  );
   dataParam->setHelp( QObject::tr( "The data to add in the body if the request is a POST" ) );
   dataParam->setFlags( dataParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dataParam.release() );
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ),
-                tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), false ) );
+  addParameter( new QgsProcessingParameterFileDestination( u"OUTPUT"_s, tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), false ) );
 }
 
 QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   mFeedback = feedback;
-  QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
+  QString url = parameterAsString( parameters, u"URL"_s, context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL specified" ) );
 
-  QString data = parameterAsString( parameters, QStringLiteral( "DATA" ), context );
-  QString outputFile = parameterAsFileOutput( parameters, QStringLiteral( "OUTPUT" ), context );
+  QString data = parameterAsString( parameters, u"DATA"_s, context );
+  QString outputFile = parameterAsFileOutput( parameters, u"OUTPUT"_s, context );
 
   QEventLoop loop;
   QTimer timer;
   QUrl downloadedUrl;
   QStringList errors;
 
-  Qgis::HttpMethod httpMethod = static_cast< Qgis::HttpMethod>( parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context ) );
+  Qgis::HttpMethod httpMethod = static_cast<Qgis::HttpMethod>( parameterAsEnum( parameters, u"METHOD"_s, context ) );
 
-  if ( httpMethod == Qgis::HttpMethod::Get && ! data.isEmpty() )
+  if ( httpMethod == Qgis::HttpMethod::Get && !data.isEmpty() )
   {
     feedback->pushWarning( tr( "DATA parameter is not used when it's a GET request." ) );
     data = QString();
@@ -119,7 +122,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
 
   QgsFileDownloader *downloader = new QgsFileDownloader( QUrl( url ), outputFile, QString(), true, httpMethod, data.toUtf8() );
   connect( mFeedback, &QgsFeedback::canceled, downloader, &QgsFileDownloader::cancelDownload );
-  connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList & e ) { errors = e; loop.exit(); } );
+  connect( downloader, &QgsFileDownloader::downloadError, this, [&errors, &loop]( const QStringList &e ) { errors = e; loop.exit(); } );
   connect( downloader, &QgsFileDownloader::downloadProgress, this, &QgsFileDownloaderAlgorithm::receiveProgressFromDownloader );
   connect( downloader, &QgsFileDownloader::downloadCompleted, this, [&downloadedUrl]( const QUrl url ) { downloadedUrl = url; } );
   connect( downloader, &QgsFileDownloader::downloadExited, this, [&loop]() { loop.exit(); } );
@@ -140,7 +143,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   url = downloadedUrl.toDisplayString();
   feedback->pushInfo( QObject::tr( "Successfully downloaded %1" ).arg( url ) );
 
-  if ( outputFile.startsWith( QgsProcessingUtils::tempFolder( &context ) ) )
+  if ( parameters.value( u"OUTPUT"_s ) == QgsProcessing::TEMPORARY_OUTPUT )
   {
     // the output is temporary and its file name automatically generated, try to add a file extension
     const int length = url.size();
@@ -155,7 +158,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   }
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), exists ? outputFile : QString() );
+  outputs.insert( u"OUTPUT"_s, exists ? outputFile : QString() );
   return outputs;
 }
 

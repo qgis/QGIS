@@ -17,11 +17,13 @@
 
 #include "qgis_gui.h"
 #include "qgsfeatureid.h"
+
 #include <QModelIndex>
 
 /**
  * \ingroup gui
  * \class QgsFeatureModel
+ * \brief Base class for feature models.
  */
 class GUI_EXPORT QgsFeatureModel
 {

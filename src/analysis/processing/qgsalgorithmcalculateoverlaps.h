@@ -21,8 +21,8 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
 ///@cond PRIVATE
@@ -32,9 +32,7 @@
  */
 class QgsCalculateVectorOverlapsAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsCalculateVectorOverlapsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override;
@@ -45,29 +43,25 @@ class QgsCalculateVectorOverlapsAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
+    Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     QgsCalculateVectorOverlapsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsProcessingFeatureSource > mSource;
+    std::unique_ptr<QgsProcessingFeatureSource> mSource;
     QStringList mLayerNames;
-    std::vector< std::unique_ptr< QgsVectorLayerFeatureSource > > mOverlayerSources;
+    std::vector<std::unique_ptr<QgsVectorLayerFeatureSource>> mOverlayerSources;
     QgsFields mOutputFields;
     Qgis::WkbType mOutputType = Qgis::WkbType::Unknown;
     QgsCoordinateReferenceSystem mCrs;
     QgsFeatureIterator mInputFeatures;
     long mInputCount = 0;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCALCULATEOVERLAPS_H
-
-

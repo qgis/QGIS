@@ -16,13 +16,15 @@
 #ifndef QGSPENSTYLECOMBOBOX_H
 #define QGSPENSTYLECOMBOBOX_H
 
-#include <QComboBox>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QComboBox>
 
 /**
  * \ingroup gui
  * \class QgsPenStyleComboBox
+ * \brief A combobox widget for selection of Qt::PenStyle.
  */
 class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 {
@@ -37,12 +39,12 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 
   protected:
     QIcon iconForPen( Qt::PenStyle style );
-
 };
 
 /**
  * \ingroup gui
  * \class QgsPenJoinStyleComboBox
+ * \brief A combobox widget for selection of Qt::PenJoinStyle.
  */
 class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
 {
@@ -59,6 +61,7 @@ class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
 /**
  * \ingroup gui
  * \class QgsPenCapStyleComboBox
+ * \brief A combobox widget for selection of Qt::PenCapStyle.
  */
 class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox
 {

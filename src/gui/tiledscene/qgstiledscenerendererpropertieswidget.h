@@ -16,10 +16,10 @@
 #ifndef QGSTILEDSCENERENDERERPROPERTIESWIDGET_H
 #define QGSTILEDSCENERENDERERPROPERTIESWIDGET_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-
 #include "ui_qgstiledscenerendererpropsdialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsmaplayerconfigwidget.h"
 
 class QgsTiledSceneLayer;
@@ -40,7 +40,6 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTiledSceneRendererPropertiesWidget, associated with the specified \a layer and \a style database.
      */
@@ -65,7 +64,6 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
     void emitWidgetChanged();
 
   private:
-
     static void initRendererWidgetFunctions();
 
     QgsTiledSceneLayer *mLayer = nullptr;
@@ -77,7 +75,6 @@ class GUI_EXPORT QgsTiledSceneRendererPropertiesWidget : public QgsMapLayerConfi
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mBlockChangedSignal = false;
-
 };
 
 

@@ -17,13 +17,19 @@ email                : marco.hugentobler at sourcepole dot com
 #define QGSGEOMETRYENGINE_H
 
 #include "qgis_core.h"
-#include "qgslinestring.h"
 #include "qgsgeometry.h"
+#include "qgslinestring.h"
 #include "qgslogger.h"
 
 #include <QVector>
 
 class QgsAbstractGeometry;
+
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include <qgsgeos.h>
+% End
+#endif
 
 /**
  * \ingroup core
@@ -66,6 +72,16 @@ class QgsAbstractGeometry;
  */
 class CORE_EXPORT QgsGeometryEngine
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsGeos * >( sipCpp ) != NULL )
+      sipType = sipType_QgsGeos;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     /**
@@ -353,7 +369,7 @@ class CORE_EXPORT QgsGeometryEngine
     {
       if ( mLogErrors )
       {
-        QgsDebugError( QStringLiteral( "%1 notice: %2" ).arg( engineName, message ) );
+        QgsDebugError( u"%1 notice: %2"_s.arg( engineName, message ) );
         qWarning( "%s exception: %s", engineName.toLocal8Bit().constData(), message.toLocal8Bit().constData() );
       }
     }

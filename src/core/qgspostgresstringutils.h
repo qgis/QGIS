@@ -16,9 +16,10 @@
 #ifndef QGSPOSTGRESSTRINGUTILS_H
 #define QGSPOSTGRESSTRINGUTILS_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qlist.h"
+#include "qgis_core.h"
+
+#include <qlist.h>
 
 #ifdef SIP_RUN
 % ModuleHeaderCode
@@ -28,7 +29,7 @@
 
 /**
  * \ingroup core
- * \brief The QgsPostgresStringUtils provides functions to handle postgres array like formatted lists in strings.
+ * \brief Provides functions to handle postgres array-like formatted lists in strings.
  * \since QGIS 3.8
  */
 class CORE_EXPORT QgsPostgresStringUtils

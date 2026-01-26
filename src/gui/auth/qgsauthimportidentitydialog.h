@@ -17,19 +17,19 @@
 #ifndef QGSAUTHIMPORTIDENTITYDIALOG_H
 #define QGSAUTHIMPORTIDENTITYDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
 #include "ui_qgsauthimportidentitydialog.h"
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthconfig.h"
+
+#include <QDialog>
 #include <QSslCertificate>
 #include <QSslKey>
 
-#include "qgsauthconfig.h"
-#include "qgis_gui.h"
-
 /**
  * \ingroup gui
- * \brief Widget for importing an identity certificate/key bundle into the authentication database
+ * \brief Widget for importing an identity certificate/key bundle into the authentication database.
  */
 class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAuthImportIdentityDialog
 {
@@ -62,11 +62,10 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
      * \param identitytype Type of the identity to import
      * \param parent Parent widget
      */
-    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Gets identity type
-    QgsAuthImportIdentityDialog::IdentityType identityType();
+    QgsAuthImportIdentityDialog::IdentityType identityType() const;
 
     /**
      * Gets certificate/key bundle to be imported.
@@ -75,7 +74,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     const QPair<QSslCertificate, QSslKey> certBundleToImport() SIP_SKIP;
 
     //! Gets certificate/key bundle to be imported as a PKI bundle object
-    const QgsPkiBundle pkiBundleToImport() { return mPkiBundle; }
+    const QgsPkiBundle pkiBundleToImport() const { return mPkiBundle; }
 
   private slots:
     void populateIdentityType();
@@ -83,11 +82,8 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     void validateIdentity();
 
 
-
     void clearValidation();
-    void writeValidation( const QString &msg,
-                          QgsAuthImportIdentityDialog::Validity valid,
-                          bool append = false );
+    void writeValidation( const QString &msg, QgsAuthImportIdentityDialog::Validity valid, bool append = false );
 
     // Cert Identity - PkiPaths
     void lePkiPathsKeyPass_textChanged( const QString &pass );
@@ -112,11 +108,11 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
 
     QPushButton *okButton();
 
-    QgsAuthImportIdentityDialog::IdentityType  mIdentityType;
+    QgsAuthImportIdentityDialog::IdentityType mIdentityType = CertIdentity;
     QPair<QSslCertificate, QSslKey> mCertBundle;
     QgsPkiBundle mPkiBundle;
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };

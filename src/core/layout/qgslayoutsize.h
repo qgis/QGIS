@@ -18,16 +18,20 @@
 #ifndef QGSLAYOUTSIZE_H
 #define QGSLAYOUTSIZE_H
 
-#include "qgis_core.h"
-#include "qgis.h"
-#include <QSizeF>
+#include "qgsconfig.h"
 
+#include "qgis.h"
+#include "qgis_core.h"
+
+#include <QSizeF>
 
 /**
  * \ingroup core
  * \class QgsLayoutSize
- * \brief This class provides a method of storing sizes, consisting of a width and height,
- * for use in QGIS layouts. Measurement units are stored alongside the size.
+ * \brief Provides a method of storing sizes, consisting of a width and height,
+ * for use in QGIS layouts.
+ *
+ * Measurement units are stored alongside the size.
  *
  * \see QgsLayoutMeasurementConverter
  * \note This class does not inherit from QSizeF since QSizeF includes methods which should not apply to sizes
@@ -65,7 +69,14 @@ class CORE_EXPORT QgsLayoutSize
      * \see setHeight()
      * \see setUnits()
     */
-    void setSize( const double width, const double height ) { mWidth = width; mHeight = height; }
+    void setSize( const double width, const double height )
+    {
+      mWidth = width;
+      mHeight = height;
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( width ) && !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
+#endif
+    }
 
     /**
      * Returns the width of the size.
@@ -79,7 +90,13 @@ class CORE_EXPORT QgsLayoutSize
      * \see width()
      * \see setHeight()
     */
-    void setWidth( const double width ) { mWidth = width; }
+    void setWidth( const double width )
+    {
+      mWidth = width;
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( width ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
+#endif
+    }
 
     /**
      * Returns the height of the size.
@@ -93,7 +110,13 @@ class CORE_EXPORT QgsLayoutSize
      * \see height()
      * \see setWidth()
     */
-    void setHeight( const double height ) { mHeight = height; }
+    void setHeight( const double height )
+    {
+      mHeight = height;
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( height ), "QgsLayoutSize", "Layout size with NaN dimensions created" );
+#endif
+    }
 
     /**
      * Returns the units for the size.
@@ -160,7 +183,7 @@ class CORE_EXPORT QgsLayoutSize
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayoutSize: %1 x %2 %3 >" ).arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    QString str = u"<QgsLayoutSize: %1 x %2 %3 >"_s.arg( sipCpp->width() ).arg( sipCpp->height() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

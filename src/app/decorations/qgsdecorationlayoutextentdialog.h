@@ -19,11 +19,14 @@
 #define QGSDECORATIONLAYOUTEXTENTDIALOG_H
 
 #include "ui_qgsdecorationlayoutextentdialog.h"
-#include <QDialog>
-#include "qgis_app.h"
-#include "qgstextformat.h"
-#include "qgshelp.h"
+
 #include <memory>
+
+#include "qgis_app.h"
+#include "qgshelp.h"
+#include "qgstextformat.h"
+
+#include <QDialog>
 
 class QgsDecorationLayoutExtent;
 class QgsFillSymbol;
@@ -47,7 +50,6 @@ class APP_EXPORT QgsDecorationLayoutExtentDialog : public QDialog, private Ui::Q
 
     void updateGuiElements();
     void updateDecoFromGui();
-
 };
 
 #endif // QGSDECORATIONLAYOUTEXTENTDIALOG_H

@@ -14,22 +14,29 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoolselect.h"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsmodelgraphicsscene.h"
+
+#include <memory>
+
 #include "qgsmodelcomponentgraphicitem.h"
-#include "qgsmodelviewmousehandles.h"
 #include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewmousehandles.h"
+#include "qgsprocessingmodelalgorithm.h"
+
+#include "moc_qgsmodelviewtoolselect.cpp"
 
 QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Select" ) )
 {
   setCursor( Qt::ArrowCursor );
 
-  mRubberBand.reset( new QgsModelViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsModelViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 224, 178, 76, 63 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
+
+  mLinkTool = std::make_unique<QgsModelViewToolLink>( view );
 }
 
 QgsModelViewToolSelect::~QgsModelViewToolSelect()
@@ -54,11 +61,11 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
   if ( mMouseHandles->isVisible() )
   {
     //selection handles are being shown, get mouse action for current cursor position
-    QgsGraphicsViewMouseHandles::MouseAction mouseAction = mMouseHandles->mouseActionForScenePos( event->modelPoint() );
+    Qgis::MouseHandlesAction mouseAction = mMouseHandles->mouseActionForScenePos( event->modelPoint() );
 
-    if ( mouseAction != QgsGraphicsViewMouseHandles::MoveItem
-         && mouseAction != QgsGraphicsViewMouseHandles::NoAction
-         && mouseAction != QgsGraphicsViewMouseHandles::SelectItem )
+    if ( mouseAction != Qgis::MouseHandlesAction::MoveItem
+         && mouseAction != Qgis::MouseHandlesAction::NoAction
+         && mouseAction != Qgis::MouseHandlesAction::SelectItem )
     {
       //mouse is over a resize handle, so propagate event onward
       event->ignore();
@@ -105,7 +112,7 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
   }
   else
   {
-    if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
+    if ( ( !selectedItem->isSelected() ) &&            //keep selection if an already selected item pressed
          !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
     {
       scene()->setSelectedItem( selectedItem ); // clears existing selection
@@ -121,10 +128,16 @@ void QgsModelViewToolSelect::modelPressEvent( QgsModelViewMouseEvent *event )
     {
       // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
       // to multiple items
-      QList< QGraphicsItem * > items = scene()->items( event->modelPoint() );
+      const QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
       for ( QGraphicsItem *item : items )
       {
-        if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast< QgsModelDesignerFlatButtonGraphicItem * >( item ) )
+        if ( QgsModelDesignerSocketGraphicItem *socket = dynamic_cast<QgsModelDesignerSocketGraphicItem *>( item ) )
+        {
+          // Start link tool
+          mLinkTool->setFromSocket( socket );
+          view()->setTool( mLinkTool.get() );
+        }
+        else if ( QgsModelDesignerFlatButtonGraphicItem *button = dynamic_cast<QgsModelDesignerFlatButtonGraphicItem *>( item ) )
         {
           // arghhh - if the event happens outside the mouse handles bounding rect, then it's ALREADY passed on!
           if ( mMouseHandles->sceneBoundingRect().contains( event->modelPoint() ) )
@@ -151,12 +164,12 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
   {
     // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
     // to multiple items
-    QList< QGraphicsItem * > items = scene()->items( event->modelPoint() );
+    QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
     for ( QGraphicsItem *item : items )
     {
       if ( mHoverEnteredItems.contains( item ) )
       {
-        if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+        if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
         {
           component->modelHoverMoveEvent( event );
         }
@@ -164,7 +177,7 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
       else
       {
         mHoverEnteredItems.append( item );
-        if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+        if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
         {
           component->modelHoverEnterEvent( event );
         }
@@ -176,13 +189,13 @@ void QgsModelViewToolSelect::modelMoveEvent( QgsModelViewMouseEvent *event )
         }
       }
     }
-    const QList< QGraphicsItem * > prevHovered = mHoverEnteredItems;
+    const QList<QGraphicsItem *> prevHovered = mHoverEnteredItems;
     for ( QGraphicsItem *item : prevHovered )
     {
-      if ( ! items.contains( item ) )
+      if ( !items.contains( item ) )
       {
         mHoverEnteredItems.removeAll( item );
-        if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+        if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
         {
           component->modelHoverLeaveEvent( event );
         }
@@ -205,10 +218,10 @@ void QgsModelViewToolSelect::modelDoubleClickEvent( QgsModelViewMouseEvent *even
   {
     // we need to manually pass this event down to items we want it to go to -- QGraphicsScene doesn't propagate events
     // to multiple items
-    QList< QGraphicsItem * > items = scene()->items( event->modelPoint() );
+    QList<QGraphicsItem *> items = scene()->items( event->modelPoint() );
     for ( QGraphicsItem *item : items )
     {
-      if ( QgsModelComponentGraphicItem *component = dynamic_cast< QgsModelComponentGraphicItem * >( item ) )
+      if ( QgsModelComponentGraphicItem *component = dynamic_cast<QgsModelComponentGraphicItem *>( item ) )
       {
         scene()->setSelectedItem( component ); // clears existing selection
         component->modelDoubleClickEvent( event );

@@ -16,19 +16,19 @@
 #ifndef QGSPOINTCLOUDATTRIBUTECOMBOBOX_H
 #define QGSPOINTCLOUDATTRIBUTECOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgspointcloudattributemodel.h"
 #include "qgis_gui.h"
-
 #include "qgis_sip.h"
+#include "qgspointcloudattributemodel.h"
+
+#include <QComboBox>
 
 class QgsMapLayer;
 class QgsPointCloudLayer;
 
 /**
  * \ingroup gui
- * \brief The QgsPointCloudAttributeComboBox is a combo box which displays the list of attributes of a given point cloud layer.
+ * \brief A combobox which displays the list of attributes of a given point cloud layer.
+ *
  * It might be combined with a QgsMapLayerComboBox to automatically update attributes according to a chosen layer.
  * \since QGIS 3.18
  */
@@ -39,7 +39,6 @@ class GUI_EXPORT QgsPointCloudAttributeComboBox : public QComboBox
     Q_PROPERTY( bool allowEmptyAttributeName READ allowEmptyAttributeName WRITE setAllowEmptyAttributeName )
 
   public:
-
     /**
      * \brief QgsPointCloudAttributeComboBox creates a combo box to display the fields of a layer.
      * The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox::layerChanged to the slot setLayer.

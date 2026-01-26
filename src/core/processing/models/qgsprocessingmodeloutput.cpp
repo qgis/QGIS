@@ -32,35 +32,35 @@ QgsProcessingModelOutput *QgsProcessingModelOutput::clone() const
 QVariant QgsProcessingModelOutput::toVariant() const
 {
   QVariantMap map;
-  map.insert( QStringLiteral( "name" ), mName );
+  map.insert( u"name"_s, mName );
 
   if ( mDefaultValue.userType() == qMetaTypeId<QgsProcessingOutputLayerDefinition>() )
   {
     QVariantMap defaultMap = mDefaultValue.value<QgsProcessingOutputLayerDefinition>().toVariant().toMap();
-    defaultMap.insert( QStringLiteral( "class" ), QStringLiteral( "QgsProcessingOutputLayerDefinition" ) );
-    map.insert( QStringLiteral( "default_value" ), defaultMap );
+    defaultMap.insert( u"class"_s, u"QgsProcessingOutputLayerDefinition"_s );
+    map.insert( u"default_value"_s, defaultMap );
   }
   else
   {
-    map.insert( QStringLiteral( "default_value" ), mDefaultValue );
+    map.insert( u"default_value"_s, mDefaultValue );
   }
 
-  map.insert( QStringLiteral( "child_id" ), mChildId );
-  map.insert( QStringLiteral( "output_name" ), mOutputName );
-  map.insert( QStringLiteral( "mandatory" ), mMandatory );
+  map.insert( u"child_id"_s, mChildId );
+  map.insert( u"output_name"_s, mOutputName );
+  map.insert( u"mandatory"_s, mMandatory );
   saveCommonProperties( map );
   return map;
 }
 
 bool QgsProcessingModelOutput::loadVariant( const QVariantMap &map )
 {
-  mName = map.value( QStringLiteral( "name" ) ).toString();
+  mName = map.value( u"name"_s ).toString();
 
-  const QVariant defaultValue = map.value( QStringLiteral( "default_value" ) );
+  const QVariant defaultValue = map.value( u"default_value"_s );
   if ( defaultValue.userType() == QMetaType::Type::QVariantMap )
   {
     QVariantMap defaultMap = defaultValue.toMap();
-    if ( defaultMap["class"] == QLatin1String( "QgsProcessingOutputLayerDefinition" ) )
+    if ( defaultMap["class"] == "QgsProcessingOutputLayerDefinition"_L1 )
     {
       QgsProcessingOutputLayerDefinition value;
       value.loadVariant( defaultMap );
@@ -73,12 +73,12 @@ bool QgsProcessingModelOutput::loadVariant( const QVariantMap &map )
   }
   else
   {
-    mDefaultValue = map.value( QStringLiteral( "default_value" ) );
+    mDefaultValue = map.value( u"default_value"_s );
   }
 
-  mChildId = map.value( QStringLiteral( "child_id" ) ).toString();
-  mOutputName = map.value( QStringLiteral( "output_name" ) ).toString();
-  mMandatory = map.value( QStringLiteral( "mandatory" ), false ).toBool();
+  mChildId = map.value( u"child_id"_s ).toString();
+  mOutputName = map.value( u"output_name"_s ).toString();
+  mMandatory = map.value( u"mandatory"_s, false ).toBool();
   restoreCommonProperties( map );
   return true;
 }

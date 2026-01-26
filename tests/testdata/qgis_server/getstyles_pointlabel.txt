@@ -44,8 +44,7 @@ Content-Type: text/xml; charset=utf-8
     </se:Rule>
     <se:Rule>
      <se:TextSymbolizer>
-      <se:Label>
-       <!--SE Export for 'Level is\n' + to_string(attribute(get_feature('geo_1a4e7b82_a552_467a_b681_c1155fb76f54', 'fid', gid + 1), 'val')) + ' m' + '\nat ' + format_date(attribute(get_feature('geo_1a4e7b82_a552_467a_b681_c1155fb76f54', 'fid', gid + 1), 'data'), 'hh:mm dd.MM.yyyy') not implemented yet-->Placeholder</se:Label>
+      <se:Label>Placeholder</se:Label>
       <se:Font>
        <se:SvgParameter name="font-family">QGIS Vera Sans</se:SvgParameter>
        <se:SvgParameter name="font-size">18</se:SvgParameter>

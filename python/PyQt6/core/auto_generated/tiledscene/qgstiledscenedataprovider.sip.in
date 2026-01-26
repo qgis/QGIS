@@ -13,7 +13,7 @@
 class QgsTiledSceneDataProvider: QgsDataProvider
 {
 %Docstring(signature="appended")
-Base class for data providers for :py:class:`QgsTiledSceneLayer`
+Base class for data providers for :py:class:`QgsTiledSceneLayer`.
 
 .. versionadded:: 3.34
 %End
@@ -37,7 +37,8 @@ Constructor for QgsTiledSceneDataProvider
 
     virtual Qgis::TiledSceneProviderCapabilities capabilities() const;
 %Docstring
-Returns flags containing the supported capabilities for the data provider.
+Returns flags containing the supported capabilities for the data
+provider.
 %End
 
     virtual QgsTiledSceneDataProvider *clone() const = 0 /Factory/;
@@ -47,10 +48,11 @@ Returns a clone of the data provider.
 
     virtual const QgsCoordinateReferenceSystem sceneCrs() const = 0;
 %Docstring
-Returns the original coordinate reference system for the tiled scene data.
+Returns the original coordinate reference system for the tiled scene
+data.
 
-This may differ from the :py:func:`QgsDataProvider.crs()`, which is the best CRS representation
-for the data provider for 2D use.
+This may differ from the :py:func:`QgsDataProvider.crs()`, which is the
+best CRS representation for the data provider for 2D use.
 
 .. warning::
 
@@ -73,16 +75,17 @@ This corresponds to the root node bounding volume.
 %Docstring
 Returns the provider's tile index.
 
-This is a shallow copy, implicitly shared container for an underlying :py:class:`QgsAbstractTiledSceneIndex`
-implementation.
+This is a shallow copy, implicitly shared container for an underlying
+:py:class:`QgsAbstractTiledSceneIndex` implementation.
 
-The index is thread safe and can be used safely across multiple threads or transferred between
-threads.
+The index is thread safe and can be used safely across multiple threads
+or transferred between threads.
 %End
 
     virtual QgsDoubleRange zRange() const;
 %Docstring
-Returns the provider's z range, or an infinite range if this is not known.
+Returns the provider's z range, or an infinite range if this is not
+known.
 %End
 
 };

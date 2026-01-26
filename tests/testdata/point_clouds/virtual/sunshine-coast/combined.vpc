@@ -1,0 +1,853 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "0-0",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              152.9805245779768,
+              -26.66206747620571,
+              74.68
+            ],
+            [
+              152.9805245825292,
+              -26.662040659997626,
+              74.68
+            ],
+            [
+              152.98055452924817,
+              -26.662040664098438,
+              75.16
+            ],
+            [
+              152.9805545247028,
+              -26.662067480306522,
+              75.16
+            ],
+            [
+              152.9805245779768,
+              -26.66206747620571,
+              74.68
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        152.9805245779768,
+        -26.662067480306522,
+        74.68,
+        152.98055452924817,
+        -26.662040659997626,
+        75.16
+      ],
+      "properties": {
+        "datetime": "2024-10-18T00:00:00Z",
+        "pc:count": 91,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Synthetic",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "KeyPoint",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Withheld",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Overlap",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "ScanChannel",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          498062.0,
+          7050992.85,
+          74.68,
+          498064.98,
+          7050995.82,
+          75.16
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                498062.0,
+                7050992.85,
+                74.68
+              ],
+              [
+                498062.0,
+                7050995.82,
+                74.68
+              ],
+              [
+                498064.98,
+                7050995.82,
+                75.16
+              ],
+              [
+                498064.98,
+                7050992.85,
+                75.16
+              ],
+              [
+                498062.0,
+                7050992.85,
+                74.68
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./0-0.copc.laz",
+          "roles": [
+            "data"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "0-1",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              152.9805249845292,
+              -26.662040479472196,
+              74.64
+            ],
+            [
+              152.9805249863532,
+              -26.66202973493088,
+              74.64
+            ],
+            [
+              152.9805538276536,
+              -26.662029738880342,
+              79.0
+            ],
+            [
+              152.98055382583235,
+              -26.66204048342166,
+              79.0
+            ],
+            [
+              152.9805249845292,
+              -26.662040479472196,
+              74.64
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        152.9805249845292,
+        -26.66204048342166,
+        74.64,
+        152.9805538276536,
+        -26.66202973493088,
+        79.0
+      ],
+      "properties": {
+        "datetime": "2024-10-18T00:00:00Z",
+        "pc:count": 47,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Synthetic",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "KeyPoint",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Withheld",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Overlap",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "ScanChannel",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          498062.04,
+          7050995.84,
+          74.64,
+          498064.91,
+          7050997.03,
+          79.0
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                498062.04,
+                7050995.84,
+                74.64
+              ],
+              [
+                498062.04,
+                7050997.03,
+                74.64
+              ],
+              [
+                498064.91,
+                7050997.03,
+                79.0
+              ],
+              [
+                498064.91,
+                7050995.84,
+                79.0
+              ],
+              [
+                498062.04,
+                7050995.84,
+                74.64
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./0-1.copc.laz",
+          "roles": [
+            "data"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "1-0",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              152.98055472567222,
+              -26.66206757062428,
+              74.46
+            ],
+            [
+              152.98055473024814,
+              -26.66204057383568,
+              74.46
+            ],
+            [
+              152.9805787479187,
+              -26.662040577119992,
+              74.91
+            ],
+            [
+              152.98057874334847,
+              -26.662067573908597,
+              74.91
+            ],
+            [
+              152.98055472567222,
+              -26.66206757062428,
+              74.46
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        152.98055472567222,
+        -26.662067573908597,
+        74.46,
+        152.9805787479187,
+        -26.66204057383568,
+        74.91
+      ],
+      "properties": {
+        "datetime": "2024-10-18T00:00:00Z",
+        "pc:count": 77,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Synthetic",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "KeyPoint",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Withheld",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Overlap",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "ScanChannel",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          498065.0,
+          7050992.84,
+          74.46,
+          498067.39,
+          7050995.83,
+          74.91
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                498065.0,
+                7050992.84,
+                74.46
+              ],
+              [
+                498065.0,
+                7050995.83,
+                74.46
+              ],
+              [
+                498067.39,
+                7050995.83,
+                74.91
+              ],
+              [
+                498067.39,
+                7050992.84,
+                74.91
+              ],
+              [
+                498065.0,
+                7050992.84,
+                74.46
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./1-0.copc.laz",
+          "roles": [
+            "data"
+          ]
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "stac_version": "1.0.0",
+      "stac_extensions": [
+        "https://stac-extensions.github.io/pointcloud/v1.0.0/schema.json",
+        "https://stac-extensions.github.io/projection/v1.1.0/schema.json"
+      ],
+      "id": "1-1",
+      "geometry": {
+        "coordinates": [
+          [
+            [
+              152.98055483084764,
+              -26.662039941817586,
+              74.34
+            ],
+            [
+              152.98055483259228,
+              -26.662029648727586,
+              74.34
+            ],
+            [
+              152.98057804632188,
+              -26.66202965190201,
+              80.02
+            ],
+            [
+              152.98057804457932,
+              -26.662039944992003,
+              80.02
+            ],
+            [
+              152.98055483084764,
+              -26.662039941817586,
+              74.34
+            ]
+          ]
+        ],
+        "type": "Polygon"
+      },
+      "bbox": [
+        152.98055483084764,
+        -26.662039944992003,
+        74.34,
+        152.98057804632188,
+        -26.662029648727586,
+        80.02
+      ],
+      "properties": {
+        "datetime": "2024-10-18T00:00:00Z",
+        "pc:count": 38,
+        "pc:encoding": "?",
+        "pc:schemas": [
+          {
+            "name": "X",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Y",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Z",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "Intensity",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "ReturnNumber",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "NumberOfReturns",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanDirectionFlag",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "EdgeOfFlightLine",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Classification",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Synthetic",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "KeyPoint",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Withheld",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Overlap",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "ScanAngleRank",
+            "size": 4,
+            "type": "floating"
+          },
+          {
+            "name": "UserData",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "PointSourceId",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "GpsTime",
+            "size": 8,
+            "type": "floating"
+          },
+          {
+            "name": "ScanChannel",
+            "size": 1,
+            "type": "unsigned"
+          },
+          {
+            "name": "Red",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Green",
+            "size": 2,
+            "type": "unsigned"
+          },
+          {
+            "name": "Blue",
+            "size": 2,
+            "type": "unsigned"
+          }
+        ],
+        "pc:type": "lidar",
+        "proj:bbox": [
+          498065.01,
+          7050995.9,
+          74.34,
+          498067.32,
+          7050997.04,
+          80.02
+        ],
+        "proj:geometry": {
+          "coordinates": [
+            [
+              [
+                498065.01,
+                7050995.9,
+                74.34
+              ],
+              [
+                498065.01,
+                7050997.04,
+                74.34
+              ],
+              [
+                498067.32,
+                7050997.04,
+                80.02
+              ],
+              [
+                498067.32,
+                7050995.9,
+                80.02
+              ],
+              [
+                498065.01,
+                7050995.9,
+                74.34
+              ]
+            ]
+          ],
+          "type": "Polygon"
+        },
+        "proj:wkt2": "PROJCS[\"GDA94 / MGA zone 56\",GEOGCS[\"GDA94\",DATUM[\"Geocentric_Datum_of_Australia_1994\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],AUTHORITY[\"EPSG\",\"6283\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4283\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",153],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",10000000],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"28356\"]]"
+      },
+      "links": [],
+      "assets": {
+        "data": {
+          "href": "./1-1.copc.laz",
+          "roles": [
+            "data"
+          ]
+        }
+      }
+    }
+  ]
+}

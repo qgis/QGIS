@@ -16,23 +16,25 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgspointcloudlayersaveasdialog.h"
+
+#include "qgsdatums.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayerutils.h"
+#include "qgspointcloudlayer.h"
+#include "qgsproviderregistry.h"
+#include "qgsprovidersublayerdetails.h"
+#include "qgsvectorlayer.h"
+
 #include <QMessageBox>
 #include <QRegularExpression>
 
-#include "qgspointcloudlayersaveasdialog.h"
-#include "qgsgui.h"
-#include "qgsmapcanvas.h"
-#include "qgsdatums.h"
-#include "qgsproviderregistry.h"
-#include "qgsprovidersublayerdetails.h"
-#include "qgspointcloudlayer.h"
-#include "qgsmaplayerutils.h"
-#include "qgsvectorlayer.h"
+#include "moc_qgspointcloudlayersaveasdialog.cpp"
 
 QgsPointCloudLayerSaveAsDialog::QgsPointCloudLayerSaveAsDialog( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
-  , mActionOnExistingFile( QgsVectorFileWriter::CreateOrOverwriteFile )
 {
   if ( layer )
   {
@@ -53,8 +55,8 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   connect( mDeselectAllAttributes, &QPushButton::clicked, this, &QgsPointCloudLayerSaveAsDialog::mDeselectAllAttributes_clicked );
   connect( mFilterGeometryLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsPointCloudLayerSaveAsDialog::mFilterGeometryLayerChanged );
   connect( mFilterGeometryGroupBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled );
-  connect( mMinimumZSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudLayerSaveAsDialog::mMinimumZSpinBoxValueChanged );
-  connect( mMaximumZSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudLayerSaveAsDialog::mMaximumZSpinBoxValueChanged );
+  connect( mMinimumZSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudLayerSaveAsDialog::mMinimumZSpinBoxValueChanged );
+  connect( mMaximumZSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudLayerSaveAsDialog::mMaximumZSpinBoxValueChanged );
 
 #ifdef Q_OS_WIN
   mHelpButtonBox->setVisible( false );
@@ -67,12 +69,12 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsPointCloudLayerSaveAsDialog::reject );
 
   mFormatComboBox->blockSignals( true );
-  const QList< QgsPointCloudLayerExporter::ExportFormat > supportedFormats = QgsPointCloudLayerExporter::supportedFormats();
+  const QList<QgsPointCloudLayerExporter::ExportFormat> supportedFormats = QgsPointCloudLayerExporter::supportedFormats();
   for ( const auto &format : supportedFormats )
-    mFormatComboBox->addItem( getTranslatedNameForFormat( format ), static_cast< int >( format ) );
+    mFormatComboBox->addItem( getTranslatedNameForFormat( format ), static_cast<int>( format ) );
 
   QgsSettings settings;
-  const int defaultFormat = settings.value( QStringLiteral( "UI/lastPointCloudFormat" ), 0 ).toInt();
+  const int defaultFormat = settings.value( u"UI/lastPointCloudFormat"_s, 0 ).toInt();
   mFormatComboBox->setCurrentIndex( mFormatComboBox->findData( defaultFormat ) );
   mFormatComboBox->blockSignals( false );
   mFormatComboBox_currentIndexChanged( 0 );
@@ -91,9 +93,7 @@ void QgsPointCloudLayerSaveAsDialog::setup()
     for ( int i = 0; i < attributes.count(); ++i )
     {
       const QString attribute = attributes.at( i ).name();
-      if ( attribute.compare( QLatin1String( "X" ), Qt::CaseInsensitive ) &&
-           attribute.compare( QLatin1String( "Y" ), Qt::CaseInsensitive ) &&
-           attribute.compare( QLatin1String( "Z" ), Qt::CaseInsensitive ) )
+      if ( attribute.compare( 'X'_L1, Qt::CaseInsensitive ) && attribute.compare( 'Y'_L1, Qt::CaseInsensitive ) && attribute.compare( 'Z'_L1, Qt::CaseInsensitive ) )
       {
         availableAttributes.append( attribute );
       }
@@ -130,9 +130,9 @@ void QgsPointCloudLayerSaveAsDialog::setup()
   mMaximumZSpinBox->setRange( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max() );
   if ( mLayer )
   {
-    mMinimumZSpinBox->setValue( mLayer->statistics().minimum( QStringLiteral( "Z" ) ) );
+    mMinimumZSpinBox->setValue( mLayer->statistics().minimum( u"Z"_s ) );
     mMinimumZSpinBox->setClearValue( mMinimumZSpinBox->value() );
-    mMaximumZSpinBox->setValue( mLayer->statistics().maximum( QStringLiteral( "Z" ) ) );
+    mMaximumZSpinBox->setValue( mLayer->statistics().maximum( u"Z"_s ) );
     mMaximumZSpinBox->setClearValue( mMaximumZSpinBox->value() );
   }
 
@@ -144,16 +144,15 @@ void QgsPointCloudLayerSaveAsDialog::setup()
 
   mFilename->setStorageMode( QgsFileWidget::SaveFile );
   mFilename->setDialogTitle( tr( "Save Layer As" ) );
-  mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QDir::homePath() ).toString() );
+  mFilename->setDefaultRoot( settings.value( u"UI/lastPointCloudFileFilterDir"_s, QDir::homePath() ).toString() );
   mFilename->setConfirmOverwrite( false );
-  connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
-  {
+  connect( mFilename, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     if ( !filePath.isEmpty() )
       mLastUsedFilename = filePath;
 
     const QFileInfo fileInfo( filePath );
-    settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), fileInfo.absolutePath() );
+    settings.setValue( u"UI/lastPointCloudFileFilterDir"_s, fileInfo.absolutePath() );
     const QString suggestedLayerName = QgsMapLayerUtils::launderLayerName( fileInfo.completeBaseName() );
     if ( mDefaultOutputLayerNameFromInputLayerName.isEmpty() )
     {
@@ -193,18 +192,15 @@ void QgsPointCloudLayerSaveAsDialog::setup()
       leLayername->setText( mDefaultOutputLayerNameFromInputLayerName );
   }
 
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( exportFormat() == QgsPointCloudLayerExporter::ExportFormat::Memory ||
-      !mFilename->filePath().isEmpty() );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( exportFormat() == QgsPointCloudLayerExporter::ExportFormat::Memory || !mFilename->filePath().isEmpty() );
 }
 
 void QgsPointCloudLayerSaveAsDialog::accept()
 {
   if ( QFile::exists( filename() ) )
   {
-    QgsVectorFileWriter::EditionCapabilities caps =
-      QgsVectorFileWriter::editionCapabilities( filename() );
-    bool layerExists = QgsVectorFileWriter::targetLayerExists( filename(),
-                       layername() );
+    QgsVectorFileWriter::EditionCapabilities caps = QgsVectorFileWriter::editionCapabilities( filename() );
+    bool layerExists = QgsVectorFileWriter::targetLayerExists( filename(), layername() );
     QMessageBox msgBox;
     msgBox.setIcon( QMessageBox::Question );
     msgBox.setWindowTitle( tr( "Save Point Cloud Layer As" ) );
@@ -218,9 +214,7 @@ void QgsPointCloudLayerSaveAsDialog::accept()
     appendToLayerButton->hide();
     if ( layerExists )
     {
-      if ( !( caps & QgsVectorFileWriter::CanAppendToExistingLayer ) &&
-           ( caps & QgsVectorFileWriter::CanDeleteLayer ) &&
-           ( caps & QgsVectorFileWriter::CanAddNewLayer ) )
+      if ( !( caps & QgsVectorFileWriter::CanAppendToExistingLayer ) && ( caps & QgsVectorFileWriter::CanDeleteLayer ) && ( caps & QgsVectorFileWriter::CanAddNewLayer ) )
       {
         msgBox.setText( tr( "The layer already exists. Do you want to overwrite the whole file or overwrite the layer?" ) );
         overwriteFileButton->setVisible( true );
@@ -231,8 +225,7 @@ void QgsPointCloudLayerSaveAsDialog::accept()
         msgBox.setText( tr( "The file already exists. Do you want to overwrite it?" ) );
         overwriteFileButton->setVisible( true );
       }
-      else if ( ( caps & QgsVectorFileWriter::CanDeleteLayer ) &&
-                ( caps & QgsVectorFileWriter::CanAddNewLayer ) )
+      else if ( ( caps & QgsVectorFileWriter::CanDeleteLayer ) && ( caps & QgsVectorFileWriter::CanAddNewLayer ) )
       {
         msgBox.setText( tr( "The layer already exists. Do you want to overwrite the whole file, overwrite the layer or append features to the layer?" ) );
         appendToLayerButton->setVisible( true );
@@ -265,9 +258,7 @@ void QgsPointCloudLayerSaveAsDialog::accept()
       else
       {
         // should not reach here, layer does not exist and cannot add new layer
-        if ( QMessageBox::question( this,
-                                    tr( "Save Point Cloud Layer As" ),
-                                    tr( "The file already exists. Do you want to overwrite it?" ) ) == QMessageBox::NoButton )
+        if ( QMessageBox::question( this, tr( "Save Point Cloud Layer As" ), tr( "The file already exists. Do you want to overwrite it?" ) ) == QMessageBox::NoButton )
         {
           return;
         }
@@ -299,8 +290,8 @@ void QgsPointCloudLayerSaveAsDialog::accept()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "UI/lastPointCloudFileFilterDir" ), QFileInfo( filename() ).absolutePath() );
-  settings.setValue( QStringLiteral( "UI/lastPointCloudFormat" ), static_cast< int >( exportFormat() ) );
+  settings.setValue( u"UI/lastPointCloudFileFilterDir"_s, QFileInfo( filename() ).absolutePath() );
+  settings.setValue( u"UI/lastPointCloudFormat"_s, static_cast<int>( exportFormat() ) );
   QDialog::accept();
 }
 
@@ -331,7 +322,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
       leLayername->setEnabled( true );
       break;
-      \
+
     case QgsPointCloudLayerExporter::ExportFormat::Shp:
     case QgsPointCloudLayerExporter::ExportFormat::Las:
     case QgsPointCloudLayerExporter::ExportFormat::Dxf:
@@ -378,7 +369,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
       if ( !ext.isEmpty() )
       {
         QFileInfo fi( mLastUsedFilename );
-        mFilename->setFilePath( QStringLiteral( "%1/%2.%3" ).arg( fi.path(), fi.baseName(), ext ) );
+        mFilename->setFilePath( u"%1/%2.%3"_s.arg( fi.path(), fi.baseName(), ext ) );
       }
     }
   }
@@ -405,8 +396,7 @@ void QgsPointCloudLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int id
     leLayername->setText( layerName );
   }
 
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( format == QgsPointCloudLayerExporter::ExportFormat::Memory ||
-      !mFilename->filePath().isEmpty() );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( format == QgsPointCloudLayerExporter::ExportFormat::Memory || !mFilename->filePath().isEmpty() );
 }
 
 void QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled( bool checked )
@@ -417,7 +407,7 @@ void QgsPointCloudLayerSaveAsDialog::mFilterGeometryGroupBoxCheckToggled( bool c
 
 void QgsPointCloudLayerSaveAsDialog::mFilterGeometryLayerChanged( QgsMapLayer *layer )
 {
-  QgsVectorLayer *vlayer = dynamic_cast< QgsVectorLayer * >( layer );
+  QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
   mSelectedFeaturesCheckBox->setChecked( false );
   mSelectedFeaturesCheckBox->setEnabled( hasFilterLayer() && vlayer && vlayer->selectedFeatureCount() );
 }
@@ -450,7 +440,7 @@ QString QgsPointCloudLayerSaveAsDialog::layername() const
 
 QgsPointCloudLayerExporter::ExportFormat QgsPointCloudLayerSaveAsDialog::exportFormat() const
 {
-  return static_cast< QgsPointCloudLayerExporter::ExportFormat >( mFormatComboBox->currentData().toInt() );
+  return static_cast<QgsPointCloudLayerExporter::ExportFormat>( mFormatComboBox->currentData().toInt() );
 }
 
 QgsCoordinateReferenceSystem QgsPointCloudLayerSaveAsDialog::crsObject() const
@@ -564,7 +554,7 @@ void QgsPointCloudLayerSaveAsDialog::mDeselectAllAttributes_clicked()
 
 void QgsPointCloudLayerSaveAsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/create_layers.html#creating-new-layers-from-an-existing-layer"_s );
 }
 
 QString QgsPointCloudLayerSaveAsDialog::getFilterForFormat( QgsPointCloudLayerExporter::ExportFormat format )
@@ -572,15 +562,15 @@ QString QgsPointCloudLayerSaveAsDialog::getFilterForFormat( QgsPointCloudLayerEx
   switch ( format )
   {
     case QgsPointCloudLayerExporter::ExportFormat::Las:
-      return QStringLiteral( "LAZ point cloud (*.laz *.LAZ);;LAS point cloud (*.las *.LAS)" );
+      return u"LAZ point cloud (*.laz *.LAZ);;LAS point cloud (*.las *.LAS)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Gpkg:
-      return QStringLiteral( "GeoPackage (*.gpkg *.GPKG)" );
+      return u"GeoPackage (*.gpkg *.GPKG)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Dxf:
-      return QStringLiteral( "AutoCAD DXF (*.dxf *.dxf)" );
+      return u"AutoCAD DXF (*.dxf *.dxf)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Shp:
-      return QStringLiteral( "ESRI Shapefile (*.shp *.SHP)" );
+      return u"ESRI Shapefile (*.shp *.SHP)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Csv:
-      return QStringLiteral( "Comma separated values (*.csv *.CSV)" );
+      return u"Comma separated values (*.csv *.CSV)"_s;
     case QgsPointCloudLayerExporter::ExportFormat::Memory:
       break;
   }

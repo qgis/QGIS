@@ -23,17 +23,15 @@ class TestQgsInternalGeometryEngine : public QObject
     Q_OBJECT
 
   public:
-
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void ray();
     void testLineSegmentDistanceComparer_data();
     void testLineSegmentDistanceComparer();
     void clockwiseAngleComparer();
-
 };
 
 void TestQgsInternalGeometryEngine::initTestCase()
@@ -159,16 +157,11 @@ void TestQgsInternalGeometryEngine::testLineSegmentDistanceComparer()
 
   const QgsLineSegmentDistanceComparer comp( QgsPointXY( 3, 5 ) );
 
-  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ),
-                  QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
-  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ),
-                 QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ) ) );
-  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ),
-                  QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 13, 14 ) ) ) );
-  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 13, 14 ) ),
-                  QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
-  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 4 ), QgsPointXY( 8, 9 ) ),
-                 QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 15, 16 ) ) ) );
+  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ), QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ), QgsLineSegment2D( QgsPointXY( 1, 2 ), QgsPointXY( 3, 4 ) ) ) );
+  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ), QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 13, 14 ) ) ) );
+  QVERIFY( !comp( QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 13, 14 ) ), QgsLineSegment2D( QgsPointXY( 5, 6 ), QgsPointXY( 8, 9 ) ) ) );
+  QVERIFY( comp( QgsLineSegment2D( QgsPointXY( 1, 4 ), QgsPointXY( 8, 9 ) ), QgsLineSegment2D( QgsPointXY( 8, 9 ), QgsPointXY( 15, 16 ) ) ) );
 }
 
 void TestQgsInternalGeometryEngine::clockwiseAngleComparer()

@@ -16,11 +16,11 @@
 #ifndef QGSSKYBOXSETTINGS_H
 #define QGSSKYBOXSETTINGS_H
 
-#include <QString>
-#include <QMap>
-
 #include "qgis_3d.h"
 #include "qgsskyboxentity.h"
+
+#include <QMap>
+#include <QString>
 
 class QgsReadWriteContext;
 class QDomElement;
@@ -30,13 +30,12 @@ class QDomElement;
 /**
  * \brief Contains the configuration of a skybox entity.
  *
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \since QGIS 3.16
  */
 class _3D_EXPORT QgsSkyboxSettings
 {
   public:
-
     QgsSkyboxSettings() = default;
     QgsSkyboxSettings( const QgsSkyboxSettings &other );
     QgsSkyboxSettings &operator=( QgsSkyboxSettings const &rhs );

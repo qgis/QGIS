@@ -18,6 +18,7 @@
 
 #include "qgis_sip.h"
 #include "qgslayoutview.h"
+
 #include <QObject>
 
 class QgsLayoutDesignerDialog;
@@ -30,15 +31,12 @@ class QgsLayoutAppMenuProvider : public QObject, public QgsLayoutViewMenuProvide
     Q_OBJECT
 
   public:
-
     QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer );
 
     QMenu *createContextMenu( QWidget *parent, QgsLayout *layout, QPointF layoutPoint ) const override;
 
   private:
-
     QgsLayoutDesignerDialog *mDesigner = nullptr;
-
 };
 
 #endif // QGSLAYOUTAPPMENUPROVIDER_H

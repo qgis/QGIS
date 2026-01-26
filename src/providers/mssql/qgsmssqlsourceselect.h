@@ -17,17 +17,16 @@
 #ifndef QGSMSSQLSOURCESELECT_H
 #define QGSMSSQLSOURCESELECT_H
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsproviderregistry.h"
-#include "qgsabstractdbsourceselect.h"
 #include "qgsmssqltablemodel.h"
+#include "qgsproviderregistry.h"
 
-
-#include <QMap>
-#include <QPair>
 #include <QIcon>
 #include <QItemDelegate>
+#include <QMap>
+#include <QPair>
 
 class QPushButton;
 class QgsMssqlGeomColumnTypeThread;
@@ -47,8 +46,6 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
 };
 
 
-
-
 /**
  * \class QgsMssqlSourceSelect
  * \brief Dialog to create connections and add tables from MSSQL.
@@ -62,7 +59,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     Q_OBJECT
 
   public:
-
     //! static function to delete a connection
     static void deleteConnection( const QString &key );
 
@@ -73,11 +69,13 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables();
+    QStringList selectedTables() const;
     //! Connection info (database, host, user, password)
-    QString connectionInfo();
+    QString connectionInfo() const;
 
     void reset() override;
+
+    QString settingPath() const override;
 
   signals:
     void addGeometryColumn( const QgsMssqlLayerProperty & );
@@ -110,8 +108,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     void cmbConnections_activated( int );
     void setLayerType( const QgsMssqlLayerProperty &layerProperty );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    //!Sets a new regular expression to the model
-    void setSearchExpression( const QString &regexp );
 
     void columnThreadFinished();
 
@@ -124,7 +120,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     typedef QList<geomPair> geomCol;
 
     // queue another query for the thread
-    void addSearchGeometryColumn( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata );
+    void addSearchGeometryColumn( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, const QgsMssqlLayerProperty &layerProperty, bool estimateMetadata, bool disableInvalidGeometryHandling );
 
     // Set the position of the database connection list to the last
     // used one.
@@ -140,7 +136,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata = false;
     // Storage for the range of layer type icons
-    QMap<QString, QPair<QString, QIcon> > mLayerIcons;
+    QMap<QString, QPair<QString, QIcon>> mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsMssqlTableModel *mTableModel = nullptr;
@@ -148,7 +144,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     void finishList();
 
     void showHelp();
-
 };
 
 #endif // QGSMSSQLSOURCESELECT_H

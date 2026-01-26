@@ -12,9 +12,12 @@
 class QgsVectorFileWriterTask : QgsTask
 {
 %Docstring(signature="appended")
-:py:class:`QgsTask` task which performs a :py:class:`QgsVectorFileWriter` layer saving operation as a background
-task. This can be used to save a vector layer out to a file without blocking the
-QGIS interface.
+:py:class:`QgsTask` task which performs a
+:py:class:`QgsVectorFileWriter` layer saving operation as a background
+task.
+
+This can be used to save a vector layer out to a file without blocking
+the QGIS interface.
 
 .. seealso:: :py:class:`QgsVectorLayerExporterTask`
 
@@ -31,8 +34,8 @@ QGIS interface.
                              const QgsVectorFileWriter::SaveVectorOptions &options,
                              QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags() );
 %Docstring
-Constructor for QgsVectorFileWriterTask. Takes a source ``layer``, destination ``fileName``
-and save ``options``.
+Constructor for QgsVectorFileWriterTask. Takes a source ``layer``,
+destination ``fileName`` and save ``options``.
 
 Since QGIS 3.40 the ``sinkFlags`` can be specified.
 %End
@@ -44,8 +47,8 @@ Since QGIS 3.40 the ``sinkFlags`` can be specified.
 
     void writeComplete( const QString &newFilename );
 %Docstring
-Emitted when writing the layer is successfully completed. The ``newFilename``
-parameter indicates the file path for the written file.
+Emitted when writing the layer is successfully completed. The
+``newFilename`` parameter indicates the file path for the written file.
 
 .. note::
 
@@ -55,8 +58,9 @@ parameter indicates the file path for the written file.
 
     void errorOccurred( int error, const QString &errorMessage );
 %Docstring
-Emitted when an error occurs which prevented the file being written (or if
-the task is canceled). The writing ``error`` and ``errorMessage`` will be reported.
+Emitted when an error occurs which prevented the file being written (or
+if the task is canceled). The writing ``error`` and ``errorMessage``
+will be reported.
 %End
 
   protected:

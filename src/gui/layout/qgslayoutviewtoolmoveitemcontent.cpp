@@ -14,12 +14,15 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolmoveitemcontent.h"
-#include "qgslayoutviewmouseevent.h"
-#include "qgslayoutview.h"
+
 #include "qgslayout.h"
 #include "qgslayoutitemnodeitem.h"
-#include "qgssettings.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutview.h"
+#include "qgslayoutviewmouseevent.h"
+#include "qgssettings.h"
+
+#include "moc_qgslayoutviewtoolmoveitemcontent.cpp"
 
 QgsLayoutViewToolMoveItemContent::QgsLayoutViewToolMoveItemContent( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Select" ) )
@@ -64,8 +67,7 @@ void QgsLayoutViewToolMoveItemContent::layoutMoveEvent( QgsLayoutViewMouseEvent 
   }
 
   //update item preview
-  mMoveContentItem->setMoveContentPreviewOffset( event->layoutPoint().x() - mMoveContentStartPos.x(),
-      event->layoutPoint().y() - mMoveContentStartPos.y() );
+  mMoveContentItem->setMoveContentPreviewOffset( event->layoutPoint().x() - mMoveContentStartPos.x(), event->layoutPoint().y() - mMoveContentStartPos.y() );
   mMoveContentItem->update();
 }
 
@@ -102,8 +104,8 @@ void QgsLayoutViewToolMoveItemContent::wheelEvent( QWheelEvent *event )
     return;
 
   const QgsSettings settings;
-  double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2.0 ).toDouble();
-  bool reverseZoom = settings.value( QStringLiteral( "qgis/reverse_wheel_zoom" ), false ).toBool();
+  double zoomFactor = settings.value( u"qgis/zoom_factor"_s, 2.0 ).toDouble();
+  bool reverseZoom = settings.value( u"qgis/reverse_wheel_zoom"_s, false ).toBool();
   bool zoomIn = reverseZoom ? event->angleDelta().y() < 0 : event->angleDelta().y() > 0;
 
   // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps

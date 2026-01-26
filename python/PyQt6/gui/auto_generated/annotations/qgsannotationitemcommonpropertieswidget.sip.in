@@ -9,11 +9,11 @@
 
 
 
-class QgsAnnotationItemCommonPropertiesWidget: QWidget
+class QgsAnnotationItemCommonPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
-
-A widget for configuring common properties for :py:class:`QgsAnnotationItems`
+A widget for configuring common properties for
+:py:class:`QgsAnnotationItems`.
 
 .. versionadded:: 3.22
 %End
@@ -22,7 +22,6 @@ A widget for configuring common properties for :py:class:`QgsAnnotationItems`
 #include "qgsannotationitemcommonpropertieswidget.h"
 %End
   public:
-
     QgsAnnotationItemCommonPropertiesWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsAnnotationItemCommonPropertiesWidget.
@@ -41,14 +40,16 @@ Updates an ``item``, setting the properties defined in the widget.
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the ``context`` in which the widget is shown, e.g., the associated map canvas and expression contexts.
+Sets the ``context`` in which the widget is shown, e.g., the associated
+map canvas and expression contexts.
 
 .. seealso:: :py:func:`context`
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
-Returns the context in which the widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the widget is shown, e.g., the associated
+map canvas and expression contexts.
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -57,7 +58,8 @@ Returns the context in which the widget is shown, e.g., the associated map canva
 
     void itemChanged();
 %Docstring
-Emitted when the annotation item definition in the widget is changed by the user.
+Emitted when the annotation item definition in the widget is changed by
+the user.
 %End
 
 };

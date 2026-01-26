@@ -17,17 +17,15 @@
 #define QGSONLINETERRAINGENERATOR_H
 
 #include "qgis_3d.h"
-
-#include "qgsterraingenerator.h"
-
 #include "qgscoordinatetransformcontext.h"
+#include "qgsterraingenerator.h"
 
 class QgsDemHeightMapGenerator;
 
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Implementation of terrain generator that uses online resources to download heightmaps.
  *
  * \note Not available in Python bindings
@@ -38,16 +36,23 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+    /**
+     * Creates a new instance of a QgsOnlineTerrainGenerator object.
+     */
+    static QgsTerrainGenerator *create() SIP_FACTORY;
+
     QgsOnlineTerrainGenerator();
     ~QgsOnlineTerrainGenerator() override;
 
-    //! Sets CRS of the terrain
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
-    //! Returns CRS of the terrain
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
     //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
-    void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }
+    void setResolution( int resolution )
+    {
+      mResolution = resolution;
+      updateGenerator();
+    }
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
@@ -64,14 +69,10 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
-    //void resolveReferences( const QgsProject &project ) override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
   private:
-
     void updateGenerator();
 
     QgsCoordinateReferenceSystem mCrs;

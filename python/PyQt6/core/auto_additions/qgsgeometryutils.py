@@ -14,6 +14,7 @@ try:
     QgsGeometryUtils.projectPointOnSegment = staticmethod(QgsGeometryUtils.projectPointOnSegment)
     QgsGeometryUtils.leftOfLine = staticmethod(QgsGeometryUtils.leftOfLine)
     QgsGeometryUtils.interpolatePointOnArc = staticmethod(QgsGeometryUtils.interpolatePointOnArc)
+    QgsGeometryUtils.interpolatePointOnCubicBezier = staticmethod(QgsGeometryUtils.interpolatePointOnCubicBezier)
     QgsGeometryUtils.segmentMidPoint = staticmethod(QgsGeometryUtils.segmentMidPoint)
     QgsGeometryUtils.segmentMidPointFromCenter = staticmethod(QgsGeometryUtils.segmentMidPointFromCenter)
     QgsGeometryUtils.circleTangentDirection = staticmethod(QgsGeometryUtils.circleTangentDirection)
@@ -62,6 +63,16 @@ try:
     QgsGeometryUtils.circleCenterRadius = staticmethod(QgsGeometryUtils.circleCenterRadius)
     QgsGeometryUtils.lineIntersection = staticmethod(QgsGeometryUtils.lineIntersection)
     QgsGeometryUtils.segmentIntersection = staticmethod(QgsGeometryUtils.segmentIntersection)
+    QgsGeometryUtils.createPointWithMatchingDimensions = staticmethod(QgsGeometryUtils.createPointWithMatchingDimensions)
+    QgsGeometryUtils.interpolatePointOnSegment = staticmethod(QgsGeometryUtils.interpolatePointOnSegment)
+    QgsGeometryUtils.createChamfer = staticmethod(QgsGeometryUtils.createChamfer)
+    QgsGeometryUtils.createFillet = staticmethod(QgsGeometryUtils.createFillet)
+    QgsGeometryUtils.createChamferGeometry = staticmethod(QgsGeometryUtils.createChamferGeometry)
+    QgsGeometryUtils.createFilletGeometry = staticmethod(QgsGeometryUtils.createFilletGeometry)
+    QgsGeometryUtils.maxFilletRadius = staticmethod(QgsGeometryUtils.maxFilletRadius)
+    QgsGeometryUtils.chamferVertex = staticmethod(QgsGeometryUtils.chamferVertex)
+    QgsGeometryUtils.filletVertex = staticmethod(QgsGeometryUtils.filletVertex)
+    QgsGeometryUtils.checkWeaklyFor3DPlane = staticmethod(QgsGeometryUtils.checkWeaklyFor3DPlane)
     QgsGeometryUtils.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

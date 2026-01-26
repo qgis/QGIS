@@ -16,14 +16,13 @@
 #ifndef QGSOPTIONSDIALOGHIGHLIGHTWIDGETSIMPL_H
 #define QGSOPTIONSDIALOGHIGHLIGHTWIDGETSIMPL_H
 
-#include <QObject>
-#include <QMap>
-#include <QBrush>
-
-
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsoptionsdialoghighlightwidget.h"
+
+#include <QBrush>
+#include <QMap>
+#include <QObject>
 
 class QLabel;
 class QCheckBox;
@@ -38,6 +37,7 @@ class QTableView;
  * \ingroup gui
  * \class QgsOptionsDialogHighlightLabel
  * \brief A highlight widget for labels.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlightWidget
@@ -45,6 +45,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlig
   public:
     //! constructs a highlight widget for a label
     QgsOptionsDialogHighlightLabel( QLabel *label );
+
   protected:
     bool searchText( const QString &text ) override;
     bool highlightText( const QString &text ) override;
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightLabel : public QgsOptionsDialogHighlig
  * \ingroup gui
  * \class QgsOptionsDialogHighlightCheckBox
  * \brief A highlight widget for checkboxes.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHighlightWidget
@@ -64,6 +66,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHigh
   public:
     //! constructs a highlight widget for a checkbox
     QgsOptionsDialogHighlightCheckBox( QCheckBox *checkBox );
+
   protected:
     bool searchText( const QString &text ) override;
     bool highlightText( const QString &text ) override;
@@ -76,6 +79,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightCheckBox : public QgsOptionsDialogHigh
  * \ingroup gui
  * \class QgsOptionsDialogHighlightButton
  * \brief A highlight widget for buttons.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighlightWidget
@@ -83,6 +87,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighli
   public:
     //! constructs a highlight widget for a button.
     QgsOptionsDialogHighlightButton( QAbstractButton *button );
+
   protected:
     bool searchText( const QString &text ) override;
     bool highlightText( const QString &text ) override;
@@ -95,6 +100,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightButton : public QgsOptionsDialogHighli
  * \ingroup gui
  * \class QgsOptionsDialogHighlightGroupBox
  * \brief A highlight widget for group boxes.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  */
 class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHighlightWidget
@@ -102,6 +108,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHigh
   public:
     //! constructs a highlight widget for a group box.
     QgsOptionsDialogHighlightGroupBox( QGroupBox *groupBox );
+
   protected:
     bool searchText( const QString &text ) override;
     bool highlightText( const QString &text ) override;
@@ -114,6 +121,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightGroupBox : public QgsOptionsDialogHigh
  * \ingroup gui
  * \class QgsOptionsDialogHighlightTree
  * \brief A highlight widget for trees.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * Highlighting is only available for tree widgets only while searching can be performed
  * in any tree view or inherited class.
@@ -123,6 +131,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightTree : public QgsOptionsDialogHighligh
   public:
     //! constructs a highlight widget for a tree view or widget.
     QgsOptionsDialogHighlightTree( QTreeView *treeView );
+
   protected:
     bool searchText( const QString &text ) override;
     bool highlightText( const QString &text ) override;
@@ -137,6 +146,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightTree : public QgsOptionsDialogHighligh
  * \ingroup gui
  * \class QgsOptionsDialogHighlightTable
  * \brief A highlight widget for table widgets.
+ *
  * This is used to search and highlight text in QgsOptionsDialogBase implementations.
  * \since QGIS 3.22
  */
@@ -145,6 +155,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightTable : public QgsOptionsDialogHighlig
   public:
     //! constructs a highlight widget for a table view or widget.
     QgsOptionsDialogHighlightTable( QTableView *tableView );
+
   protected:
     bool searchText( const QString &text ) override;
     bool highlightText( const QString &text ) override;

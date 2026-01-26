@@ -15,12 +15,15 @@
  ***************************************************************************/
 
 #include "qgslayoutpolygonwidget.h"
+
+#include "qgsfillsymbol.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayoutundostack.h"
 #include "qgsvectorlayer.h"
-#include "qgsfillsymbol.h"
-#include "qgslayoutreportcontext.h"
+
+#include "moc_qgslayoutpolygonwidget.cpp"
 
 QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   : QgsLayoutItemBaseWidget( nullptr, polygon )
@@ -71,7 +74,7 @@ bool QgsLayoutPolygonWidget::setNewItem( QgsLayoutItem *item )
     disconnect( mPolygon, &QgsLayoutObject::changed, this, &QgsLayoutPolygonWidget::setGuiElementValues );
   }
 
-  mPolygon = qobject_cast< QgsLayoutItemPolygon * >( item );
+  mPolygon = qobject_cast<QgsLayoutItemPolygon *>( item );
   mItemPropertiesWidget->setItem( mPolygon );
 
   if ( mPolygon )

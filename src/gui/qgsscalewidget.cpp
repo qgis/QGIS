@@ -13,17 +13,19 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QHBoxLayout>
+#include "qgsscalewidget.h"
 
 #include "qgsapplication.h"
-#include "qgsscalewidget.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgslayoutmanager.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutmanager.h"
+#include "qgsmapcanvas.h"
 #include "qgsprintlayout.h"
+#include "qgsproject.h"
 
+#include <QHBoxLayout>
 #include <QMenu>
+
+#include "moc_qgsscalewidget.cpp"
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   : QWidget( parent )
@@ -37,7 +39,7 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
 
   mCurrentScaleButton = new QToolButton( this );
   mCurrentScaleButton->setToolTip( tr( "Set to current canvas scale" ) );
-  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  mCurrentScaleButton->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
 
   mMenu = new QMenu( this );
   mCurrentScaleButton->setMenu( mMenu );
@@ -106,8 +108,7 @@ void QgsScaleWidget::menuAboutToShow()
   mMenu->clear();
 
   double scale = mCanvas->scale();
-  QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ),
-      tr( "Use Current Map Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
+  QAction *canvasScaleAction = new QAction( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ), tr( "Use Current Map Canvas Scale (1:%1)" ).arg( qgsDoubleToString( scale, 0 ) ), mMenu );
   connect( canvasScaleAction, &QAction::triggered, this, [this, scale] { setScale( scale ); } );
   mMenu->addAction( canvasScaleAction );
 
@@ -117,7 +118,7 @@ void QgsScaleWidget::menuAboutToShow()
     const QList<QgsPrintLayout *> layouts = manager->printLayouts();
     for ( const QgsPrintLayout *layout : layouts )
     {
-      QList< QgsLayoutItemMap * > maps;
+      QList<QgsLayoutItemMap *> maps;
       layout->layoutItems( maps );
       if ( maps.empty() )
         continue;

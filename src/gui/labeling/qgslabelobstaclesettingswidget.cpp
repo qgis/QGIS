@@ -15,7 +15,10 @@
 
 
 #include "qgslabelobstaclesettingswidget.h"
+
 #include "qgsexpressioncontextutils.h"
+
+#include "moc_qgslabelobstaclesettingswidget.cpp"
 
 QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent, QgsVectorLayer *vl )
   : QgsLabelSettingsWidgetBase( parent, vl )
@@ -25,15 +28,13 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
   setPanelTitle( tr( "Obstacle Settings" ) );
 
   mObstacleTypeComboBox->addItem( tr( "Over the Feature's Interior" ), static_cast<int>( QgsLabelObstacleSettings::ObstacleType::PolygonInterior ) );
-  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), static_cast< int >( QgsLabelObstacleSettings::ObstacleType::PolygonBoundary ) );
+  mObstacleTypeComboBox->addItem( tr( "Over the Feature's Boundary" ), static_cast<int>( QgsLabelObstacleSettings::ObstacleType::PolygonBoundary ) );
 
-  connect( mObstacleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
+  connect( mObstacleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
     if ( !mBlockSignals )
       emit changed();
   } );
-  connect( mObstacleFactorSlider, &QSlider::valueChanged, this, [ = ]
-  {
+  connect( mObstacleFactorSlider, &QSlider::valueChanged, this, [this] {
     if ( !mBlockSignals )
       emit changed();
   } );
@@ -44,8 +45,8 @@ QgsLabelObstacleSettingsWidget::QgsLabelObstacleSettingsWidget( QWidget *parent,
 void QgsLabelObstacleSettingsWidget::setSettings( const QgsLabelObstacleSettings &settings )
 {
   mBlockSignals = true;
-  mObstacleFactorSlider->setValue( static_cast< int >( std::round( settings.factor() * 5 ) ) );
-  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( static_cast< int >( settings.type() ) ) );
+  mObstacleFactorSlider->setValue( static_cast<int>( std::round( settings.factor() * 5 ) ) );
+  mObstacleTypeComboBox->setCurrentIndex( mObstacleTypeComboBox->findData( static_cast<int>( settings.type() ) ) );
   mBlockSignals = false;
 }
 
@@ -53,7 +54,7 @@ QgsLabelObstacleSettings QgsLabelObstacleSettingsWidget::settings() const
 {
   QgsLabelObstacleSettings settings;
   settings.setFactor( mObstacleFactorSlider->value() / 5.0 );
-  settings.setType( static_cast< QgsLabelObstacleSettings::ObstacleType >( mObstacleTypeComboBox->currentData().toInt() ) );
+  settings.setType( static_cast<QgsLabelObstacleSettings::ObstacleType>( mObstacleTypeComboBox->currentData().toInt() ) );
   return settings;
 }
 

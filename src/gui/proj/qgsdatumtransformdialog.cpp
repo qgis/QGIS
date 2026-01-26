@@ -16,20 +16,23 @@
  ***************************************************************************/
 
 #include "qgsdatumtransformdialog.h"
+
+#include <proj.h>
+
 #include "qgscoordinatetransform.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsguiutils.h"
 #include "qgsgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
+#include "qgslogger.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "qgsprojutils.h"
+#include "qgssettings.h"
 
 #include <QDir>
 #include <QPushButton>
 
-#include "qgsprojutils.h"
-#include <proj.h>
+#include "moc_qgsdatumtransformdialog.cpp"
 
 bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent, QgsMapCanvas *mapCanvas, const QString &windowTitle )
 {
@@ -71,13 +74,9 @@ bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs
   }
 }
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sCrs,
-    const QgsCoordinateReferenceSystem &dCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice,
-    QPair<int, int> selectedDatumTransforms,
-    QWidget *parent,
-    Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas, bool allowFallback )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sCrs, const QgsCoordinateReferenceSystem &dCrs, const bool allowCrsChanges, const bool showMakeDefault, const bool forceChoice, QPair<int, int> selectedDatumTransforms, QWidget *parent, Qt::WindowFlags f, const QString &selectedProj, QgsMapCanvas *mapCanvas, bool allowFallback )
   : QDialog( parent, f )
-  , mPreviousCursorOverride( std::make_unique< QgsTemporaryCursorRestoreOverride >() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
+  , mPreviousCursorOverride( std::make_unique<QgsTemporaryCursorRestoreOverride>() ) // this dialog is often shown while cursor overrides are in place, so temporarily remove them
 {
   setupUi( this );
 
@@ -99,11 +98,11 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   if ( !sourceCrs.isValid() )
     sourceCrs = QgsProject::instance()->crs();
   if ( !sourceCrs.isValid() )
-    sourceCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    sourceCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   if ( !destinationCrs.isValid() )
     destinationCrs = QgsProject::instance()->crs();
   if ( !destinationCrs.isValid() )
-    destinationCrs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+    destinationCrs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
 
   mSourceProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
   mDestinationProjectionSelectionWidget->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, false );
@@ -127,9 +126,8 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   mCoordinateOperationsWidget->setSourceCrs( sourceCrs );
   mCoordinateOperationsWidget->setDestinationCrs( destinationCrs );
 
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
-  {
-    QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( u"working_with_projections/working_with_projections.html"_s );
   } );
 
   connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationChanged, this, &QgsDatumTransformDialog::operationChanged );
@@ -140,8 +138,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   deets.allowFallback = allowFallback;
   mCoordinateOperationsWidget->setSelectedOperation( deets );
 
-  connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationDoubleClicked, this, [ = ]
-  {
+  connect( mCoordinateOperationsWidget, &QgsCoordinateOperationWidget::operationDoubleClicked, this, [this] {
     if ( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid()
          && mCoordinateOperationsWidget->selectedOperation().isAvailable )
       accept();
@@ -150,8 +147,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 
 void QgsDatumTransformDialog::setOKButtonEnabled()
 {
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid()
-      && mCoordinateOperationsWidget->selectedOperation().isAvailable );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mCoordinateOperationsWidget->sourceCrs().isValid() && mCoordinateOperationsWidget->destinationCrs().isValid() && mCoordinateOperationsWidget->selectedOperation().isAvailable );
 }
 
 void QgsDatumTransformDialog::accept()
@@ -159,7 +155,7 @@ void QgsDatumTransformDialog::accept()
   if ( mCoordinateOperationsWidget->makeDefaultSelected() && mCoordinateOperationsWidget->hasSelection() )
   {
     QgsSettings settings;
-    settings.beginGroup( QStringLiteral( "/Projections" ) );
+    settings.beginGroup( u"/Projections"_s );
 
     const TransformInfo dt = selectedDatumTransform();
 
@@ -175,10 +171,10 @@ void QgsDatumTransformDialog::accept()
     if ( destinationDatumTransform >= 0 )
       destinationDatumProj = QgsDatumTransform::datumTransformToProj( destinationDatumTransform );
     Q_NOWARN_DEPRECATED_POP
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_srcTransform" ), sourceDatumProj );
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_destTransform" ), destinationDatumProj );
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_coordinateOp" ), dt.proj );
-    settings.setValue( srcAuthId + QStringLiteral( "//" ) + destAuthId + QStringLiteral( "_allowFallback" ), dt.allowFallback );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_srcTransform"_s, sourceDatumProj );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_destTransform"_s, destinationDatumProj );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_coordinateOp"_s, dt.proj );
+    settings.setValue( srcAuthId + u"//"_s + destAuthId + u"_allowFallback"_s, dt.allowFallback );
   }
   QDialog::accept();
 }
@@ -195,7 +191,7 @@ bool QgsDatumTransformDialog::shouldAskUserForSelection() const
 {
   if ( mCoordinateOperationsWidget->availableOperations().count() > 1 )
   {
-    return QgsSettings().value( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), false, QgsSettings::App ).toBool();
+    return QgsSettings().value( u"/projections/promptWhenMultipleTransformsExist"_s, false, QgsSettings::App ).toBool();
   }
   // TODO: show if transform grids are required, but missing
   return false;
@@ -244,7 +240,7 @@ QgsDatumTransformDialog::TransformInfo QgsDatumTransformDialog::selectedDatumTra
 
 bool QgsDatumTransformDialog::gridShiftTransformation( const QString &itemText ) const
 {
-  return !itemText.isEmpty() && !itemText.contains( QLatin1String( "towgs84" ), Qt::CaseInsensitive );
+  return !itemText.isEmpty() && !itemText.contains( "towgs84"_L1, Qt::CaseInsensitive );
 }
 
 void QgsDatumTransformDialog::operationChanged()

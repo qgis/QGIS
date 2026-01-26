@@ -16,8 +16,8 @@
 #ifndef QGSSYMBOLLAYERREGISTRY_H
 #define QGSSYMBOLLAYERREGISTRY_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 class QgsPathResolver;
 class QgsVectorLayer;
@@ -126,16 +126,16 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     {}
 
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
+    QgsSymbolLayerCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
+    QgsSymbolLayerWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
+    QgsSymbolLayerCreateFromSldFunc createFromSldFunction() const SIP_SKIP { return mCreateFromSldFunc; }
     //! \note not available in Python bindings
-    QgsSymbolLayerPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; } SIP_SKIP
+    QgsSymbolLayerPathResolverFunc pathResolverFunction() const SIP_SKIP { return mPathResolverFunc; }
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
+    void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
 
     QgsSymbolLayer *createSymbolLayer( const QVariantMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
     QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
@@ -202,10 +202,10 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     bool removeSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata );
 
     //! create a new instance of symbol layer given symbol layer name and properties
-    QgsSymbolLayer *createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const SIP_FACTORY;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayer( const QString &name, const QVariantMap &properties = QVariantMap() ) const;
 
     //! create a new instance of symbol layer given symbol layer name and SLD
-    QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const SIP_FACTORY;
+    std::unique_ptr< QgsSymbolLayer > createSymbolLayerFromSld( const QString &name, QDomElement &element ) const;
 
     /**
      * Resolve paths in properties of a particular symbol layer.
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsSymbolLayerRegistry
     QStringList symbolLayersForType( Qgis::SymbolType type );
 
     //! create a new instance of symbol layer for specified symbol type with default settings
-    static QgsSymbolLayer *defaultSymbolLayer( Qgis::SymbolType type ) SIP_FACTORY;
+    static std::unique_ptr< QgsSymbolLayer > defaultSymbolLayer( Qgis::SymbolType type );
 
   private:
 #ifdef SIP_RUN

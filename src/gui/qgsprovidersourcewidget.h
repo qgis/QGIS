@@ -17,9 +17,10 @@
 #ifndef QGSPROVIDERSOURCEWIDGET_H
 #define QGSPROVIDERSOURCEWIDGET_H
 
-#include <QWidget>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QWidget>
 
 class QgsMapCanvas;
 
@@ -34,7 +35,6 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsProviderSourceWidget with the specified \a parent widget.
      */
@@ -75,7 +75,7 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
      *
      * \since QGIS 3.26
      */
-    virtual QgsMapCanvas *mapCanvas() {return mMapCanvas; }
+    virtual QgsMapCanvas *mapCanvas() { return mMapCanvas; }
 
   signals:
 
@@ -96,6 +96,5 @@ class GUI_EXPORT QgsProviderSourceWidget : public QWidget
 
   private:
     QgsMapCanvas *mMapCanvas = nullptr;
-
 };
 #endif //QGSPROVIDERSOURCEWIDGET_H

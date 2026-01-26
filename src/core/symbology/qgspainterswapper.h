@@ -27,7 +27,7 @@ class QPainter;
 /**
  * \ingroup core
  * \class QgsPainterSwapper
- * \brief A class to manage painter saving and restoring required for drawing on a different painter (mask painter for example)
+ * \brief Manages painter saving and restoring required for drawing on a different painter (mask painter for example).
  *
  * \since QGIS 3.12
  */

@@ -13,17 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsprojectionselectionwidget.h"
+
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystemregistry.h"
+#include "qgsdatums.h"
+#include "qgshighlightablecombobox.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
+#include "qgsrecentcoordinatereferencesystemsmodel.h"
+#include "qgssettings.h"
+
 #include <QHBoxLayout>
 
-#include "qgsprojectionselectionwidget.h"
-#include "qgsapplication.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsproject.h"
-#include "qgssettings.h"
-#include "qgshighlightablecombobox.h"
-#include "qgscoordinatereferencesystemregistry.h"
-#include "qgsrecentcoordinatereferencesystemsmodel.h"
-#include "qgsdatums.h"
+#include "moc_qgsprojectionselectionwidget.cpp"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -40,14 +43,17 @@ StandardCoordinateReferenceSystemsModel::StandardCoordinateReferenceSystemsModel
 #endif
 
   const QgsSettings settings;
-  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( QStringLiteral( "/projections/defaultProjectCrs" ), geoEpsgCrsAuthId(), QgsSettings::App ).toString() );
+  mDefaultCrs = QgsCoordinateReferenceSystem( settings.value( u"/projections/defaultProjectCrs"_s, Qgis::geographicCrsAuthId(), QgsSettings::App ).toString() );
 
-  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [ = ]
-  {
+  connect( QgsApplication::coordinateReferenceSystemRegistry(), &QgsCoordinateReferenceSystemRegistry::userCrsChanged, this, [this] {
     mCurrentCrs.updateDefinition();
     mLayerCrs.updateDefinition();
     mProjectCrs.updateDefinition();
     mDefaultCrs.updateDefinition();
+  } );
+
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, [this] {
+    mProjectCrs = QgsProject::instance()->crs();
   } );
 }
 
@@ -75,11 +81,11 @@ QVariant StandardCoordinateReferenceSystemsModel::data( const QModelIndex &index
       switch ( option )
       {
         case QgsProjectionSelectionWidget::ProjectCrs:
-          return tr( "Project CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Project CRS: %1" ).arg( mProjectCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::DefaultCrs:
-          return tr( "Default CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Default CRS: %1" ).arg( mDefaultCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::LayerCrs:
-          return tr( "Layer CRS: %1" ).arg( crs.userFriendlyIdentifier() );
+          return tr( "Layer CRS: %1" ).arg( mLayerCrs.userFriendlyIdentifier() );
         case QgsProjectionSelectionWidget::CrsNotSet:
           return mNotSetText;
         case QgsProjectionSelectionWidget::CurrentCrs:
@@ -94,7 +100,7 @@ QVariant StandardCoordinateReferenceSystemsModel::data( const QModelIndex &index
       return crs;
 
     case RoleOption:
-      return static_cast< int >( option );
+      return static_cast<int>( option );
 
     default:
       break;
@@ -274,7 +280,7 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
 {
   const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
 
-  const QgsCoordinateReferenceSystem crs = mModel->data( sourceIndex, StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
+  const QgsCoordinateReferenceSystem crs = mModel->data( sourceIndex, StandardCoordinateReferenceSystemsModel::RoleCrs ).value<QgsCoordinateReferenceSystem>();
   if ( !mFilteredCrs.isEmpty() && !mFilteredCrs.contains( crs ) )
     return false;
 
@@ -313,7 +319,7 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
   {
     if ( optionInt.toInt() > 0 )
     {
-      const QgsProjectionSelectionWidget::CrsOption option = static_cast< QgsProjectionSelectionWidget::CrsOption >( optionInt.toInt() );
+      const QgsProjectionSelectionWidget::CrsOption option = static_cast<QgsProjectionSelectionWidget::CrsOption>( optionInt.toInt() );
       if ( !mVisibleOptions.testFlag( option ) )
         return false;
 
@@ -353,11 +359,11 @@ bool CombinedCoordinateReferenceSystemsProxyModel::filterAcceptsRow( int sourceR
             QgsProjectionSelectionWidget::CrsOption::ProjectCrs
           } )
     {
-      const QModelIndexList standardItemIndex = mModel->match( mModel->index( 0, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption, static_cast< int >( standardOption ) );
+      const QModelIndexList standardItemIndex = mModel->match( mModel->index( 0, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption, static_cast<int>( standardOption ) );
       if ( standardItemIndex.empty() )
         continue;
 
-      const QgsCoordinateReferenceSystem standardItemCrs = mModel->data( standardItemIndex.at( 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
+      const QgsCoordinateReferenceSystem standardItemCrs = mModel->data( standardItemIndex.at( 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value<QgsCoordinateReferenceSystem>();
       if ( standardItemCrs == crs && filterAcceptsRow( standardItemIndex.at( 0 ).row(), QModelIndex() ) )
         return false;
     }
@@ -404,8 +410,7 @@ void CombinedCoordinateReferenceSystemsProxyModel::setOption( QgsProjectionSelec
 ///@endcond PRIVATE
 
 
-QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent,
-    QgsCoordinateReferenceSystemProxyModel::Filters filters )
+QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent, QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QWidget( parent )
   , mDialogTitle( tr( "Coordinate Reference System Selector" ) )
 {
@@ -416,7 +421,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent,
   mModel->setFilters( filters );
   mCrsComboBox->setModel( mModel );
 
-  const int labelMargin = static_cast< int >( std::round( mCrsComboBox->fontMetrics().horizontalAdvance( 'X' ) ) );
+  const int labelMargin = static_cast<int>( std::round( mCrsComboBox->fontMetrics().horizontalAdvance( 'X' ) ) );
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
@@ -431,8 +436,8 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent,
   QHBoxLayout *warningLayout = new QHBoxLayout();
   warningLayout->setContentsMargins( 0, 0, 0, 0 );
   mWarningLabel = new QLabel();
-  const QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "mIconWarning.svg" ) );
-  const int size = static_cast< int >( std::max( 24.0, mCrsComboBox->minimumSize().height() * 0.5 ) );
+  const QIcon icon = QgsApplication::getThemeIcon( u"mIconWarning.svg"_s );
+  const int size = static_cast<int>( std::max( 24.0, mCrsComboBox->minimumSize().height() * 0.5 ) );
   mWarningLabel->setPixmap( icon.pixmap( icon.actualSize( QSize( size, size ) ) ) );
   warningLayout->insertSpacing( 0, labelMargin / 2 );
   warningLayout->insertWidget( 1, mWarningLabel );
@@ -443,7 +448,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent,
   layout->addSpacing( labelMargin / 2 );
 
   mButton = new QToolButton( this );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionSetProjection.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"mActionSetProjection.svg"_s ) );
   mButton->setToolTip( tr( "Select CRS" ) );
   layout->addWidget( mButton );
 
@@ -459,7 +464,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
 {
   const int idx = mCrsComboBox->currentIndex();
   if ( idx >= 0 && idx < mModel->rowCount() )
-    return mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
+    return mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value<QgsCoordinateReferenceSystem>();
   else
     return QgsCoordinateReferenceSystem();
 }
@@ -514,17 +519,17 @@ void QgsProjectionSelectionWidget::setMessage( const QString &text )
 
 bool QgsProjectionSelectionWidget::optionVisible( QgsProjectionSelectionWidget::CrsOption option ) const
 {
-  const QModelIndexList matches = mModel->match( mModel->index( 0, 0 ), StandardCoordinateReferenceSystemsModel::Role::RoleOption, static_cast< int >( option ) );
+  const QModelIndexList matches = mModel->match( mModel->index( 0, 0 ), StandardCoordinateReferenceSystemsModel::Role::RoleOption, static_cast<int>( option ) );
   return !matches.empty();
 }
 
 void QgsProjectionSelectionWidget::selectCrs()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  const QList< QgsCoordinateReferenceSystem > filteredCrses = mModel->filteredCrs();
+  const QList<QgsCoordinateReferenceSystem> filteredCrses = mModel->filteredCrs();
 
-  QSet< QString > ogcFilter;
-  ogcFilter.reserve( filteredCrses.size( ) );
+  QSet<QString> ogcFilter;
+  ogcFilter.reserve( filteredCrses.size() );
   for ( const QgsCoordinateReferenceSystem &crs : std::as_const( filteredCrses ) )
   {
     ogcFilter << crs.authid();
@@ -549,8 +554,7 @@ void QgsProjectionSelectionWidget::selectCrs()
       mActivePanel->setShowNoCrs( true );
     }
 
-    connect( mActivePanel, &QgsCrsSelectionWidget::crsChanged, this, [ this ]
-    {
+    connect( mActivePanel, &QgsCrsSelectionWidget::crsChanged, this, [this] {
       if ( mIgnorePanelSignals )
         return;
 
@@ -726,9 +730,9 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
 {
   if ( idx >= 0 && idx < mModel->rowCount() )
   {
-    const QgsCoordinateReferenceSystem crs = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value< QgsCoordinateReferenceSystem >();
+    const QgsCoordinateReferenceSystem crs = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleCrs ).value<QgsCoordinateReferenceSystem>();
     const QVariant optionData = mModel->data( mModel->index( idx, 0 ), StandardCoordinateReferenceSystemsModel::RoleOption );
-    if ( !optionData.isValid() || static_cast< CrsOption >( optionData.toInt() ) != QgsProjectionSelectionWidget::CrsNotSet )
+    if ( !optionData.isValid() || static_cast<CrsOption>( optionData.toInt() ) != QgsProjectionSelectionWidget::CrsNotSet )
     {
       // RoleOption is only available for items from the standard coordinate reference system model, but we
       // are using a combined model which also has items from QgsRecentCoordinateReferenceSystemsModel
@@ -755,7 +759,7 @@ void QgsProjectionSelectionWidget::updateWarning()
 
   try
   {
-    const double crsAccuracyWarningThreshold = QgsSettings().value( QStringLiteral( "/projections/crsAccuracyWarningThreshold" ), 0.0, QgsSettings::App ).toDouble();
+    const double crsAccuracyWarningThreshold = QgsSettings().value( u"/projections/crsAccuracyWarningThreshold"_s, 0.0, QgsSettings::App ).toDouble();
 
     const QgsDatumEnsemble ensemble = crs().datumEnsemble();
     if ( !ensemble.isValid() || ensemble.name() == mSourceEnsemble || ( ensemble.accuracy() > 0 && ensemble.accuracy() < crsAccuracyWarningThreshold ) )
@@ -766,13 +770,13 @@ void QgsProjectionSelectionWidget::updateWarning()
     {
       mWarningLabelContainer->show();
 
-      QString warning = QStringLiteral( "<p>" );
+      QString warning = u"<p>"_s;
 
       QString id;
       if ( !ensemble.code().isEmpty() )
-        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+        id = u"<i>%1</i> (%2:%3)"_s.arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+        id = u"<i>%1</i>”"_s.arg( ensemble.name() );
 
       if ( ensemble.accuracy() > 0 )
       {
@@ -782,23 +786,23 @@ void QgsProjectionSelectionWidget::updateWarning()
       {
         warning = tr( "The selected CRS is based on %1, which has a limited accuracy." ).arg( id );
       }
-      warning += QStringLiteral( "</p><p>" ) + tr( "Use an alternative CRS if accurate positioning is required." ) + QStringLiteral( "</p>" );
+      warning += u"</p><p>"_s + tr( "Use an alternative CRS if accurate positioning is required." ) + u"</p>"_s;
 
-      const QList< QgsDatumEnsembleMember > members = ensemble.members();
+      const QList<QgsDatumEnsembleMember> members = ensemble.members();
       if ( !members.isEmpty() )
       {
-        warning += QStringLiteral( "<p>" ) + tr( "%1 consists of the datums:" ).arg( ensemble.name() ) + QStringLiteral( "</p><ul>" );
+        warning += u"<p>"_s + tr( "%1 consists of the datums:" ).arg( ensemble.name() ) + u"</p><ul>"_s;
 
         for ( const QgsDatumEnsembleMember &member : members )
         {
           if ( !member.code().isEmpty() )
-            id = QStringLiteral( "%1 (%2:%3)" ).arg( member.name(), member.authority(), member.code() );
+            id = u"%1 (%2:%3)"_s.arg( member.name(), member.authority(), member.code() );
           else
             id = member.name();
-          warning += QStringLiteral( "<li>%1</li>" ).arg( id );
+          warning += u"<li>%1</li>"_s.arg( id );
         }
 
-        warning += QLatin1String( "</ul>" );
+        warning += "</ul>"_L1;
       }
 
       mWarningLabel->setToolTip( warning );

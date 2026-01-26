@@ -12,18 +12,19 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+#include "qgsrasterinterface.h"
+#include "qgstest.h"
+#include "qgswmscapabilities.h"
+
 #include <QFile>
 #include <QObject>
-#include <qgsrasterinterface.h>
-#include "qgstest.h"
-#include <qgswmscapabilities.h>
-#include <qgsapplication.h>
 
 /**
  * \ingroup UnitTests
  * This is a unit test for the WMS capabilities parser.
  */
-class TestQgsWmsCapabilities: public QObject
+class TestQgsWmsCapabilities : public QObject
 {
     Q_OBJECT
   private slots:
@@ -72,14 +73,12 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( capabilities.supportedLayers()[0].style.size(), 2 );
       QCOMPARE( capabilities.supportedLayers()[0].style[0].name, QString( "yt_style" ) );
       QCOMPARE( capabilities.supportedLayers()[0].style[0].legendUrl.size(), 1 );
-      QCOMPARE( capabilities.supportedLayers()[0].style[0].legendUrl[0].onlineResource.xlinkHref,
-                QString( "http://www.example.com/yt.png" ) );
+      QCOMPARE( capabilities.supportedLayers()[0].style[0].legendUrl[0].onlineResource.xlinkHref, QString( "http://www.example.com/yt.png" ) );
       QCOMPARE( capabilities.supportedLayers()[0].style[1].name, QString( "fb_style" ) );
       QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl.size(), 1 );
-      QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl[0].onlineResource.xlinkHref,
-                QString( "http://www.example.com/fb.png" ) );
+      QCOMPARE( capabilities.supportedLayers()[0].style[1].legendUrl[0].onlineResource.xlinkHref, QString( "http://www.example.com/fb.png" ) );
 
-      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << QStringLiteral( "EPSG:2056" ) );
+      QCOMPARE( capabilities.supportedLayers()[0].crs, QStringList() << u"EPSG:2056"_s );
     }
 
     void guessCrs()
@@ -95,17 +94,14 @@ class TestQgsWmsCapabilities: public QObject
       QVERIFY( capabilities.parseResponse( content, config ) );
       QCOMPARE( capabilities.supportedLayers().size(), 5 );
 
-      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), QStringLiteral( "EPSG:3857" ) );
-
+      QCOMPARE( capabilities.supportedLayers().at( 0 ).preferredAvailableCrs(), u"EPSG:3857"_s );
     }
 
     void wmstSettings()
     {
       QgsWmsSettings settings = QgsWmsSettings();
 
-      QMap<QString, QString> map = { { "2020-02-13T12:00:00Z", "yyyy-MM-ddThh:mm:ssZ" },
-        { "2020-02-13", "yyyy-MM-dd" }
-      };
+      QMap<QString, QString> map = { { "2020-02-13T12:00:00Z", "yyyy-MM-ddThh:mm:ssZ" }, { "2020-02-13", "yyyy-MM-dd" }, { "2020", "yyyy" } };
       QMapIterator<QString, QString> iterator( map );
 
       while ( iterator.hasNext() )
@@ -115,8 +111,7 @@ class TestQgsWmsCapabilities: public QObject
         QCOMPARE( date.toString( iterator.value() ), iterator.key() );
       }
 
-      QList<QString> resolutionList =
-      {
+      QList<QString> resolutionList = {
         "P1D", "P1Y", "PT5M", "P1DT1H",
         "P1Y1DT3S", "P1MT1M", "PT23H3M", "P26DT23H3M", "PT30S"
       };
@@ -127,7 +122,7 @@ class TestQgsWmsCapabilities: public QObject
         QCOMPARE( resolution.toString(), resolutionText );
       }
 
-      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D" ) );
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( u"2020-01-02T00:00:00.000Z/2020-01-09T00:00:00.000Z/P1D"_s );
       settings.setTimeDimensionExtent( extent );
 
       QDateTime start = QDateTime( QDate( 2020, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC );
@@ -152,7 +147,7 @@ class TestQgsWmsCapabilities: public QObject
 
       QCOMPARE( secondClosest, secondExpected );
 
-      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( QStringLiteral( "2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H" ) );
+      QgsWmstDimensionExtent secondExtent = settings.parseTemporalExtent( u"2020-01-02T00:00:00.000Z/2020-01-04T00:00:00.000Z/PT4H"_s );
       settings.setTimeDimensionExtent( secondExtent );
 
       QDateTime thirdClosest = settings.findLeastClosestDateTime( QDateTime( QDate( 2020, 1, 2 ), QTime( 5, 0, 0 ), Qt::UTC ) );
@@ -196,12 +191,12 @@ class TestQgsWmsCapabilities: public QObject
       QgsWmsLayerProperty prop;
       cap.parseLayer( doc.documentElement(), prop );
 
-      QCOMPARE( prop.name, QStringLiteral( "danger_index" ) );
+      QCOMPARE( prop.name, u"danger_index"_s );
       QCOMPARE( prop.dimensions.size(), 1 );
-      QCOMPARE( prop.dimensions.at( 0 ).name, QStringLiteral( "time" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, QStringLiteral( "2019-01-01" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).extent, QStringLiteral( "2018-01-01/2019-12-31" ) );
-      QCOMPARE( prop.dimensions.at( 0 ).units, QStringLiteral( "ISO8601" ) );
+      QCOMPARE( prop.dimensions.at( 0 ).name, u"time"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).defaultValue, u"2019-01-01"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).extent, u"2018-01-01/2019-12-31"_s );
+      QCOMPARE( prop.dimensions.at( 0 ).units, u"ISO8601"_s );
     }
 
     void wmstListOfTimeExtents()
@@ -209,7 +204,7 @@ class TestQgsWmsCapabilities: public QObject
       // test parsing a fixed list of time extents
       QgsWmsSettings settings;
 
-      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( QStringLiteral( "1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z" ) );
+      QgsWmstDimensionExtent extent = settings.parseTemporalExtent( u"1932-01-01T00:00:00Z, 1947-01-01T00:00:00Z, 1950-01-01T00:00:00Z, 1959-01-01T00:00:00Z, 1960-01-01T00:00:00Z, 1967-01-01T00:00:00Z, 1972-01-01T00:00:00Z, 1974-01-01T00:00:00Z"_s );
       settings.setTimeDimensionExtent( extent );
 
       QCOMPARE( extent.datesResolutionList.size(), 8 );
@@ -230,18 +225,18 @@ class TestQgsWmsCapabilities: public QObject
       QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.size(), 1 );
       QCOMPARE( extent.datesResolutionList.at( 7 ).dates.dateTimes.at( 0 ), QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
 
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1933, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1949, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1973, 12, 31 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1972, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
-      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 2000, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ),  QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1930, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1932, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1933, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1932, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1949, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1947, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1950, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1950, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1973, 12, 31 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1972, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 1974, 1, 2 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
+      QCOMPARE( settings.findLeastClosestDateTime( QDateTime( QDate( 2000, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) ), QDateTime( QDate( 1974, 1, 1 ), QTime( 0, 0, 0 ), Qt::UTC ) );
     }
 
     void wmsTemporalDimension_data()
@@ -259,10 +254,10 @@ class TestQgsWmsCapabilities: public QObject
                                      </Dimension>)"""
                                   << "2020-01-01/2020-12-31/P1M";
 
-      QTest::newRow( "list" )     << R"""(<Dimension name="time" units="ISO8601">
+      QTest::newRow( "list" ) << R"""(<Dimension name="time" units="ISO8601">
                                      2020-01-01,2020-06-31,2020-12-31
                                      </Dimension>)"""
-                                  << "2020-01-01,2020-06-31,2020-12-31";
+                              << "2020-01-01,2020-06-31,2020-12-31";
 
       QTest::newRow( "continuous" ) << R"""(<Dimension name="time" units="ISO8601">
                                      2020-01-01/2020-06-31
@@ -270,11 +265,11 @@ class TestQgsWmsCapabilities: public QObject
                                     << "2020-01-01/2020-06-31";
 
       QTest::newRow( "interval with internal newline characters" )
-          << R"""(<Dimension name="time" units="ISO8601">
+        << R"""(<Dimension name="time" units="ISO8601">
              2020-01-01/2020-06-31/P1M,
              2020-07-01/2020-12-31/P1D
              </Dimension>)"""
-          << "2020-01-01/2020-06-31/P1M, 2020-07-01/2020-12-31/P1D";
+        << "2020-01-01/2020-06-31/P1M, 2020-07-01/2020-12-31/P1D";
     }
 
     void wmsTemporalDimension()
@@ -412,7 +407,7 @@ class TestQgsWmsCapabilities: public QObject
                                                        2020-01-01
                                                        </Dimension>
                                                        </Layer>)"""
-          << R"""(<Layer queryable="0" opaque="0" cascaded="0">
+                                                    << R"""(<Layer queryable="0" opaque="0" cascaded="0">
                                                        <Name>Test</Name>
                                                        <Title>Test</Title>
                                                        <Abstract>Test</Abstract>
@@ -424,7 +419,7 @@ class TestQgsWmsCapabilities: public QObject
                                                        2020-01-01/2020-12-31/P1M
                                                        </Dimension>
                                                        </Layer>)"""
-          << false;
+                                                    << false;
     }
 
     void wmsLayerProperty()
@@ -447,7 +442,6 @@ class TestQgsWmsCapabilities: public QObject
       cap.parseLayer( doc2.documentElement(), secondLayerProp );
 
       QCOMPARE( firstLayerProp.equal( secondLayerProp ), result );
-
     }
 
     void wmsIdentifyFormat_data()
@@ -564,20 +558,19 @@ class TestQgsWmsCapabilities: public QObject
 
       QCOMPARE( capabilities.supportedTileLayers().size(), 1 );
       const QgsWmtsTileLayer tileLayer = capabilities.supportedTileLayers().at( 0 );
-      QCOMPARE( tileLayer.title, QStringLiteral( "ETa Scaled" ) );
-      QCOMPARE( tileLayer.timeDimensionIdentifier, QStringLiteral( "time" ) );
+      QCOMPARE( tileLayer.title, u"ETa Scaled"_s );
+      QCOMPARE( tileLayer.timeDimensionIdentifier, u"time"_s );
 
-      QCOMPARE( tileLayer.allTimeRanges, QList< QgsDateTimeRange >(
-      {
-        QgsDateTimeRange( QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ) ),
-        QgsDateTimeRange( QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ),
-        QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ) ),
-        QgsDateTimeRange( QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ) ),
-      } ) );
+      QCOMPARE( tileLayer.allTimeRanges, QList<QgsDateTimeRange>( {
+                                           QgsDateTimeRange( QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 8, 1 ), QTime( 0, 0, 0 ) ) ),
+                                           QgsDateTimeRange( QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ),
+                                           QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ) ),
+                                           QgsDateTimeRange( QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2009, 2, 1 ), QTime( 0, 0, 0 ) ) ),
+                                         } ) );
       QCOMPARE( tileLayer.temporalExtent, QgsDateTimeRange( QDateTime( QDate( 2005, 7, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2016, 3, 1 ), QTime( 0, 0, 0 ) ) ) );
       QCOMPARE( tileLayer.temporalInterval, QgsInterval( 1, Qgis::TemporalUnit::IrregularStep ) );
       QCOMPARE( tileLayer.temporalCapabilityFlags, Qgis::RasterTemporalCapabilityFlag::RequestedTimesMustExactlyMatchAllAvailableTemporalRanges );
-      QCOMPARE( tileLayer.defaultTimeDimensionValue, QStringLiteral( "current" ) );
+      QCOMPARE( tileLayer.defaultTimeDimensionValue, u"current"_s );
     }
 
     void wmtsTimeDimensionValue_data()
@@ -586,10 +579,10 @@ class TestQgsWmsCapabilities: public QObject
       QTest::addColumn<QgsDateTimeRange>( "range" );
       QTest::addColumn<int>( "format" );
 
-      QTest::newRow( "YYYYMMDD" ) << QString( "20210103" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
-      QTest::newRow( "YYYY-MM-DD" ) << QString( "2021-01-03" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
-      QTest::newRow( "YYYY" ) << QString( "2021" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 12, 31 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
-      QTest::newRow( "YYYY-MM-DDTHH:mm:ss.SSSZ" ) << QString( "2018-03-01T16:23:44Z" ) << QgsDateTimeRange( QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ), QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ) ) << static_cast< int >( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ );
+      QTest::newRow( "YYYYMMDD" ) << QString( "20210103" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd );
+      QTest::newRow( "YYYY-MM-DD" ) << QString( "2021-01-03" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 3 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 1, 3 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd );
+      QTest::newRow( "YYYY" ) << QString( "2021" ) << QgsDateTimeRange( QDateTime( QDate( 2021, 1, 1 ), QTime( 0, 0, 0 ) ), QDateTime( QDate( 2021, 12, 31 ), QTime( 23, 59, 59, 999 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyy );
+      QTest::newRow( "YYYY-MM-DDTHH:mm:ss.SSSZ" ) << QString( "2018-03-01T16:23:44Z" ) << QgsDateTimeRange( QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ), QDateTime( QDate( 2018, 3, 1 ), QTime( 16, 23, 44 ) ) ) << static_cast<int>( QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMddThhmmssZ );
     }
 
     void wmtsTimeDimensionValue()
@@ -602,9 +595,46 @@ class TestQgsWmsCapabilities: public QObject
       QgsDateTimeRange res = QgsWmsSettings::parseWmtsTimeValue( value, resFormat );
       QCOMPARE( res.begin(), range.begin() );
       QCOMPARE( res.end(), range.end() );
-      QCOMPARE( static_cast< int >( resFormat ), format );
+      QCOMPARE( static_cast<int>( resFormat ), format );
     }
 
+    void wmtsWithRedundantSpaces()
+    {
+      QgsWmsCapabilities capabilities;
+      const QgsWmsParserSettings config;
+
+      // Note: Redundant spaces in the coordinate tuples
+      const QByteArray configData( R"""(<Capabilities>
+      <Contents>
+          <Layer>
+            <ows:Identifier>Layer1</ows:Identifier>
+            <ows:WGS84BoundingBox>
+              <ows:LowerCorner>109.999000 -45.081000</ows:LowerCorner>
+              <ows:UpperCorner>155.005000 -9.978000</ows:UpperCorner>
+            </ows:WGS84BoundingBox>
+          </Layer>
+          <TileMatrixSet>
+            <ows:Identifier>WholeWorld_CRS_84</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:OGC:1.3:CRS84</ows:SupportedCRS>
+            <WellKnownScaleSet>urn:ogc:def:wkss:OGC:1.0:GlobalCRS84Pixel</WellKnownScaleSet>
+            <TileMatrix>
+              <ows:Identifier>1g</ows:Identifier>
+              <ScaleDenominator>397569609.975977</ScaleDenominator>
+              <TopLeftCorner>-180  90</TopLeftCorner>
+              <TileWidth>320</TileWidth>
+              <TileHeight>200</TileHeight>
+              <MatrixWidth>2</MatrixWidth>
+              <MatrixHeight>1</MatrixHeight>
+            </TileMatrix>
+          </TileMatrixSet>
+      </Contents>
+</Capabilities>)""" );
+
+      QVERIFY( capabilities.parseResponse( configData, config ) );
+      QCOMPARE( capabilities.supportedTileMatrixSets().size(), 1 );
+      QgsWmtsTileLayer layer = capabilities.supportedTileLayers().at( 0 );
+      QCOMPARE( layer.boundingBoxes.first().box, QgsRectangle( 109.999, -45.081, 155.005, -9.978 ) );
+    }
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

@@ -15,7 +15,8 @@ class QgsProjectStorageRegistry
 %Docstring(signature="appended")
 Registry of storage backends that :py:class:`QgsProject` may use.
 
-This is a singleton that should be accessed through :py:func:`QgsApplication.projectStorageRegistry()`.
+This is a singleton that should be accessed through
+:py:func:`QgsApplication.projectStorageRegistry()`.
 
 .. versionadded:: 3.2
 %End
@@ -28,12 +29,14 @@ This is a singleton that should be accessed through :py:func:`QgsApplication.pro
 
     QgsProjectStorage *projectStorageFromType( const QString &type );
 %Docstring
-Returns storage implementation if the storage type matches one. Returns ``None`` otherwise (it is a normal file)
+Returns storage implementation if the storage type matches one. Returns
+``None`` otherwise (it is a normal file)
 %End
 
     QgsProjectStorage *projectStorageFromUri( const QString &uri );
 %Docstring
-Returns storage implementation if the URI matches one. Returns ``None`` otherwise (it is a normal file)
+Returns storage implementation if the URI matches one. Returns ``None``
+otherwise (it is a normal file)
 %End
 
     QList<QgsProjectStorage *> projectStorages() const;

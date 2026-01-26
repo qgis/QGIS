@@ -11,15 +11,20 @@
 class QgsProcessingParameterTinInputLayers: QgsProcessingParameterDefinition
 {
 %Docstring(signature="appended")
-A parameter for processing algorithms that need a list of input vector layers to construct a TIN.
+A parameter for processing algorithms that need a list of input vector
+layers to construct a TIN.
 
-A valid value for this parameter is a list (QVariantList), where each item is a map (QVariantMap) in this form:
-{
-'source':  string that represents identification of the vector layer,
-'type': how the vector layer is used : as vertices, structure lines or break lines
-'attributeIndex' : the index of the attribute of the vector layer used to defined the Z value of vertices,
-if -1, the Z coordinates of features are used
-}
+A valid value for this parameter is a list (QVariantList), where each
+item is a map (QVariantMap) in this form:
+
+.. code-block:: python
+
+     {
+       'source':  string that represents identification of the vector layer,
+       'type': how the vector layer is used : as vertices, structure lines or break lines
+       'attributeIndex' : the index of the attribute of the vector layer used to defined the Z value of vertices,
+        if -1, the Z coordinates of features are used
+     }
 
 .. versionadded:: 3.16
 %End

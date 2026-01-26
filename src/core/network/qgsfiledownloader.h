@@ -16,13 +16,13 @@
 #ifndef QGSFILEDOWNLOADER_H
 #define QGSFILEDOWNLOADER_H
 
-#include <QObject>
-#include <QFile>
-#include <QNetworkReply>
-#include <QUrl>
-
 #include "qgis.h"
 #include "qgis_core.h"
+
+#include <QFile>
+#include <QNetworkReply>
+#include <QObject>
+#include <QUrl>
 
 #ifndef QT_NO_SSL
 #include <QSslError>
@@ -30,7 +30,7 @@
 
 /**
  * \ingroup core
- * \brief QgsFileDownloader is a utility class for downloading files.
+ * \brief A utility class for downloading files.
  *
  * To use this class, it is necessary to pass the URL and an output file name as
  * arguments to the constructor, the download will start immediately.
@@ -124,7 +124,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
     QUrl mUrl;
     QNetworkReply *mReply = nullptr;
     QFile mFile;
-    bool mDownloadCanceled;
+    bool mDownloadCanceled = false;
     Qgis::HttpMethod mHttpMethod = Qgis::HttpMethod::Get;
     QByteArray mData;
     QStringList mErrors;

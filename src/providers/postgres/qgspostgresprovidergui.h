@@ -16,13 +16,14 @@
 #ifndef QGSPOSTGRESPROVIDERGUI_H
 #define QGSPOSTGRESPROVIDERGUI_H
 
-#include <QList>
-#include <QMainWindow>
 #include <memory>
 
 #include "qgsproviderguimetadata.h"
 
-class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
+#include <QList>
+#include <QMainWindow>
+
+class QgsPostgresProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsPostgresProviderGuiMetadata();
@@ -33,9 +34,7 @@ class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
     QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories() override;
 
   private:
-
-    std::unique_ptr< QgsMapLayerConfigWidgetFactory > mRasterTemporalWidgetFactory;
-
+    std::unique_ptr<QgsMapLayerConfigWidgetFactory> mRasterTemporalWidgetFactory;
 };
 
 #endif // QGSPOSTGRESPROVIDERGUI_H

@@ -14,13 +14,24 @@
  ***************************************************************************/
 
 #include "qgsmodelgraphicitem.h"
+
 #include "qgsapplication.h"
+#include "qgsmodelcomponentgraphicitem.h"
 #include "qgsmodelgraphicsscene.h"
 #include "qgsmodelgraphicsview.h"
-#include "qgsmodelviewtool.h"
 #include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewtool.h"
+#include "qgsprocessingalgorithm.h"
+#include "qgsprocessingmodelchildalgorithm.h"
+#include "qgsprocessingmodelcomponent.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
+
+#include <QGraphicsSceneMouseEvent>
 #include <QPainter>
 #include <QSvgRenderer>
+
+#include "moc_qgsmodelgraphicitem.cpp"
 
 ///@cond NOT_STABLE
 
@@ -37,7 +48,7 @@ QgsModelDesignerFlatButtonGraphicItem::QgsModelDesignerFlatButtonGraphicItem( QG
 
 void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
 {
-  if ( QgsModelGraphicsScene *modelScene = qobject_cast< QgsModelGraphicsScene * >( scene() ) )
+  if ( QgsModelGraphicsScene *modelScene = qobject_cast<QgsModelGraphicsScene *>( scene() ) )
   {
     if ( modelScene->flags() & QgsModelGraphicsScene::FlagHideControls )
       return;
@@ -46,14 +57,12 @@ void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QSty
   if ( mHoverState )
   {
     painter->setPen( QPen( Qt::transparent, 1.0 ) );
-    painter->setBrush( QBrush( QColor( 55, 55, 55, 33 ),
-                               Qt::SolidPattern ) );
+    painter->setBrush( QBrush( QColor( 55, 55, 55, 33 ), Qt::SolidPattern ) );
   }
   else
   {
     painter->setPen( QPen( Qt::transparent, 1.0 ) );
-    painter->setBrush( QBrush( Qt::transparent,
-                               Qt::SolidPattern ) );
+    painter->setBrush( QBrush( Qt::transparent, Qt::SolidPattern ) );
   }
   const QPointF topLeft = mPosition - QPointF( std::floor( mSize.width() / 2 ), std::floor( mSize.height() / 2 ) );
   const QRectF rect = QRectF( topLeft.x(), topLeft.y(), mSize.width(), mSize.height() );
@@ -63,10 +72,7 @@ void QgsModelDesignerFlatButtonGraphicItem::paint( QPainter *painter, const QSty
 
 QRectF QgsModelDesignerFlatButtonGraphicItem::boundingRect() const
 {
-  return QRectF( mPosition.x() - std::floor( mSize.width() / 2 ),
-                 mPosition.y() - std::floor( mSize.height() / 2 ),
-                 mSize.width(),
-                 mSize.height() );
+  return QRectF( mPosition.x() - std::floor( mSize.width() / 2 ), mPosition.y() - std::floor( mSize.height() / 2 ), mSize.width(), mSize.height() );
 }
 
 void QgsModelDesignerFlatButtonGraphicItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
@@ -124,7 +130,7 @@ void QgsModelDesignerFlatButtonGraphicItem::setPosition( const QPointF &position
 
 QgsModelGraphicsView *QgsModelDesignerFlatButtonGraphicItem::view()
 {
-  return qobject_cast< QgsModelGraphicsView * >( scene()->views().first() );
+  return qobject_cast<QgsModelGraphicsView *>( scene()->views().first() );
 }
 
 void QgsModelDesignerFlatButtonGraphicItem::setPicture( const QPicture &picture )
@@ -141,12 +147,12 @@ QgsModelDesignerFoldButtonGraphicItem::QgsModelDesignerFoldButtonGraphicItem( QG
   : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
   , mFolded( folded )
 {
-  QSvgRenderer svg( QgsApplication::iconPath( QStringLiteral( "mIconModelerExpand.svg" ) ) );
+  QSvgRenderer svg( QgsApplication::iconPath( u"mIconModelerExpand.svg"_s ) );
   QPainter painter( &mPlusPicture );
   svg.render( &painter );
   painter.end();
 
-  QSvgRenderer svg2( QgsApplication::iconPath( QStringLiteral( "mIconModelerCollapse.svg" ) ) );
+  QSvgRenderer svg2( QgsApplication::iconPath( u"mIconModelerCollapse.svg"_s ) );
   painter.begin( &mMinusPicture );
   svg2.render( &painter );
   painter.end();
@@ -170,5 +176,163 @@ void QgsModelDesignerFoldButtonGraphicItem::modelPressEvent( QgsModelViewMouseEv
   QgsModelDesignerFlatButtonGraphicItem::modelPressEvent( event );
 }
 
-///@endcond
 
+QgsModelDesignerSocketGraphicItem::QgsModelDesignerSocketGraphicItem( QgsModelComponentGraphicItem *parent, QgsProcessingModelComponent *component, int index, const QPointF &position, Qt::Edge edge, const QSizeF &size )
+  : QgsModelDesignerFlatButtonGraphicItem( parent, QPicture(), position, size )
+  , mComponentItem( parent )
+  , mComponent( component )
+  , mIndex( index )
+  , mEdge( edge )
+{
+}
+
+void QgsModelDesignerSocketGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *, QWidget * )
+{
+  QColor outlineColor = socketColor();
+  QColor fillColor = QColor( outlineColor );
+
+  if ( isInput() )
+  {
+    fillColor.setAlpha( isDefaultParameterValue() ? 30 : 255 );
+  }
+  else
+  {
+    // outputs are always filled sockets
+    fillColor.setAlpha( 255 );
+  }
+
+  // Outline style
+  painter->setPen( QPen( outlineColor, mHoverState ? mSocketOutlineWidth * 2 : mSocketOutlineWidth ) );
+
+  // Fill style
+  painter->setBrush( QBrush( fillColor, Qt::SolidPattern ) );
+
+  painter->setRenderHint( QPainter::Antialiasing );
+
+  // Radius of the socket circle
+  constexpr float DISPLAY_SIZE = 4;
+
+  // Offset of the socket to separate from the label
+  constexpr float ELLIPSE_OFFSET = 0.4;
+  QPointF ellipsePosition = QPointF( position().x() + ELLIPSE_OFFSET, position().y() + ELLIPSE_OFFSET );
+  painter->drawEllipse( ellipsePosition, DISPLAY_SIZE, DISPLAY_SIZE );
+
+  /* Uncomment to display bounding box */
+#if 0
+  painter->save();
+  painter->setPen( QPen() );
+  painter->setBrush( QBrush() );
+  painter->drawRect( boundingRect() );
+  painter->restore();
+#endif
+}
+
+
+QColor QgsModelDesignerSocketGraphicItem::socketColor() const
+{
+  return mComponentItem->linkColor( mEdge, mIndex );
+}
+
+
+bool QgsModelDesignerSocketGraphicItem::isDefaultParameterValue() const
+{
+  if ( !mComponent )
+  {
+    return false;
+  }
+
+  const QgsProcessingModelChildAlgorithm *child = dynamic_cast<const QgsProcessingModelChildAlgorithm *>( mComponent );
+
+  if ( !child )
+  {
+    return false;
+  }
+
+  bool isDefaultValue = true;
+
+  // We can only know if the socket should be filled if the algorithm is non null
+  if ( child->algorithm() )
+  {
+    switch ( mEdge )
+    {
+      // Input params
+      case Qt::TopEdge:
+      {
+        const QgsProcessingParameterDefinitions params = child->algorithm()->parameterDefinitions();
+        const QgsProcessingParameterDefinition *param = params.value( mIndex );
+        if ( !param )
+          break;
+
+        const QString name = param->name();
+
+        QgsProcessingModelChildParameterSources paramSources = child->parameterSources().value( name );
+        if ( paramSources.empty() )
+        {
+          break;
+        }
+
+        // The default value can only happen in the case of the parameter uses a static value
+        if ( paramSources[0].source() != Qgis::ProcessingModelChildParameterSource::StaticValue )
+        {
+          isDefaultValue = false;
+          break;
+        }
+
+        isDefaultValue = paramSources[0].staticValue() == param->defaultValue();
+        break;
+      }
+
+      // Outputs
+      case Qt::BottomEdge:
+      case Qt::LeftEdge:
+      case Qt::RightEdge:
+        break;
+    }
+  }
+
+  return isDefaultValue;
+}
+
+
+QgsModelDesignerFeatureCountGraphicItem::QgsModelDesignerFeatureCountGraphicItem( QgsModelArrowItem *link, const QString &text )
+  : QGraphicsTextItem( text )
+  , mLink( link )
+{
+  connect( link, &QgsModelArrowItem::painterPathUpdated, this, &QgsModelDesignerFeatureCountGraphicItem::setPosition );
+
+  QFont font = this->font();
+  font.setPointSize( FONT_SIZE );
+  setFont( font );
+
+  setZValue( QgsModelGraphicsScene::ZValues::ArrowDecoration );
+  setPosition();
+}
+
+void QgsModelDesignerFeatureCountGraphicItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *widget )
+{
+  const bool isDarkTheme = QApplication::palette().color( QPalette::Window ).lightness() < 128;
+  QPalette::ColorRole bgPalette = isDarkTheme ? QPalette::Dark : QPalette::Light;
+
+  // First draw a rounded rectangle as background
+  QColor backgroundColor = QApplication::palette().color( bgPalette );
+  backgroundColor.setAlpha( 220 ); // Add some transparency so we still see the arrow underneath
+  painter->setBrush( QBrush( backgroundColor ) );
+  painter->setPen( Qt::PenStyle::NoPen );
+  constexpr double RADIUS = 5;
+  painter->drawRoundedRect( boundingRect(), RADIUS, RADIUS );
+
+  // And finally draw the text on top
+  setDefaultTextColor( QApplication::palette().color( QPalette::Text ) );
+  QGraphicsTextItem::paint( painter, itemStyle, widget );
+}
+
+void QgsModelDesignerFeatureCountGraphicItem::setPosition()
+{
+  QPointF middlePos = mLink->path().pointAtPercent( 0.5 );
+  QRectF rect = boundingRect();
+  QPointF offset = rect.center();
+  setPos( middlePos - offset );
+  update();
+}
+
+///@endcond

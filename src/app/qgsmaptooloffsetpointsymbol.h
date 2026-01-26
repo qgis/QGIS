@@ -16,9 +16,9 @@
 #ifndef QGSMAPTOOLOFFSETPOINTSYMBOL_H
 #define QGSMAPTOOLOFFSETPOINTSYMBOL_H
 
+#include "qgis_app.h"
 #include "qgsmaptoolpointsymbol.h"
 #include "qgsunittypes.h"
-#include "qgis_app.h"
 
 class QgsMarkerSymbol;
 class QgsMapCanvasMarkerSymbolItem;
@@ -29,7 +29,7 @@ class QgsMapCanvasMarkerSymbolItem;
  * \brief A class that allows interactive manipulation of the offset field(s) for point layers.
  */
 
-class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
+class APP_EXPORT QgsMapToolOffsetPointSymbol : public QgsMapToolPointSymbol
 {
     Q_OBJECT
 
@@ -48,21 +48,19 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     static bool layerIsOffsetable( QgsMapLayer *ml );
 
   protected:
-
     void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) override;
     bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
     void noCompatibleSymbols() override;
 
   private:
-
     //! True when user is dragging to offset a point
-    bool mOffsetting;
+    bool mOffsetting = false;
 
     //! Item that previews the offset during mouse move
     QgsMapCanvasMarkerSymbolItem *mOffsetItem = nullptr;
 
     //! Clone of first found marker symbol for feature with offset attribute set
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
 
     //! Feature which was clicked on
     QgsFeature mClickedFeature;
@@ -71,7 +69,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
     QgsPointXY mClickedPoint;
 
     //! Stores the symbol rotation so that offset can be adjusted to account for rotation
-    double mSymbolRotation;
+    double mSymbolRotation = 0.0;
 
     //! Create item with the point symbol for a specific feature. This will be used to show the offset to the user.
     void createPreviewItem( QgsMarkerSymbol *markerSymbol );
@@ -80,7 +78,7 @@ class APP_EXPORT QgsMapToolOffsetPointSymbol: public QgsMapToolPointSymbol
      * Calculates the new values for offset attributes, respecting the symbol's offset units
      * \note start and end point are in map units
      */
-    QMap< int, QVariant > calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const;
+    QMap<int, QVariant> calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const;
 
     /**
      * Updates the preview item to reflect a new offset.

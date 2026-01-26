@@ -14,14 +14,14 @@
 class QgsOrganizeTableColumnsDialog : QDialog
 {
 %Docstring(signature="appended")
-Dialog for organising (hiding and reordering) columns in the attributes table.
+Dialog for organising (hiding and reordering) columns in the attributes
+table.
 %End
 
 %TypeHeaderCode
 #include "qgsorganizetablecolumnsdialog.h"
 %End
   public:
-
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::Window );
 %Docstring
 Constructor
@@ -51,7 +51,7 @@ Gets the updated configuration
 
     void showAll();
 %Docstring
-showAll checks all the  fields to show them all in the attribute table
+showAll checks all the fields to show them all in the attribute table
 %End
 
     void hideAll();
@@ -61,7 +61,8 @@ hideAll unchecks all the fields to hide them all in the attribute table
 
     void toggleSelection();
 %Docstring
-Toggle the check state of selected fields to hide or show them in the attribute table
+Toggle the check state of selected fields to hide or show them in the
+attribute table
 
 .. versionadded:: 3.36
 %End

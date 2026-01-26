@@ -1,4 +1,4 @@
-set (QGIS_PYQT_DIR ${Python_SITEARCH}/qgis/PyQt)
+set (QGIS_PYQT_DIR ${QGIS_PYTHON_INSTALL_DIR}/qgis/PyQt)
 
 set(PYQT_COMPAT_FILES
   __init__.py
@@ -13,8 +13,10 @@ set(PYQT_COMPAT_FILES
   QtWebEngineCore.py
   QtWebEngineQuick.py
   QtWebEngineWidgets.py
+  QtMultimedia.py
   QtNetwork.py
   QtXml.py
+  QtQuickWidgets.py
   QtSql.py
   QtTest.py
   QtSvg.py

@@ -15,10 +15,10 @@
 
 #include "qgsoverlayutils.h"
 
-#include "qgsgeometryengine.h"
 #include "qgsfeature.h"
 #include "qgsfeaturerequest.h"
 #include "qgsfeaturesource.h"
+#include "qgsgeometryengine.h"
 #include "qgsprocessingcontext.h"
 #include "qgsspatialindex.h"
 
@@ -29,7 +29,7 @@ bool QgsOverlayUtils::sanitizeIntersectionResult( QgsGeometry &geom, Qgis::Geome
   if ( geom.isNull() )
   {
     // TODO: not sure if this ever happens - if it does, that means GEOS failed badly - would be good to have a test for such situation
-    throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: intersection failed." ), geom.lastError() ) );
+    throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: intersection failed." ), geom.lastError() ) );
   }
 
   // Intersection of geometries may give use also geometries we do not want in our results.
@@ -67,7 +67,7 @@ static bool sanitizeDifferenceResult( QgsGeometry &geom, Qgis::GeometryType geom
   if ( geom.isNull() )
   {
     // TODO: not sure if this ever happens - if it does, that means GEOS failed badly - would be good to have a test for such situation
-    throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: difference failed." ), geom.lastError() ) );
+    throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: difference failed." ), geom.lastError() ) );
   }
 
   //fix geometry collections
@@ -107,18 +107,17 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   if ( outputAttrs != OutputBA )
     requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
-  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast< double >( sourceB.featureCount() ) : 1;
+  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast<double>( sourceB.featureCount() ) : 1;
   long long i = 0;
   QgsFeatureIterator fi = sourceB.getFeatures( requestB );
 
   feedback->setProgressText( QObject::tr( "Creating spatial index" ) );
-  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & )->bool
-  {
+  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & ) -> bool {
     i++;
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( static_cast< double >( i ) * step );
+    feedback->setProgress( static_cast<double>( i ) * step );
 
     return true;
   } );
@@ -132,7 +131,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   attrs.resize( outputAttrs == OutputA ? fieldsCountA : ( fieldsCountA + fieldsCountB ) );
 
   if ( totalCount == 0 )
-    totalCount = 1;  // avoid division by zero
+    totalCount = 1; // avoid division by zero
 
   feedback->setProgressText( QObject::tr( "Calculating difference" ) );
 
@@ -158,13 +157,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
       if ( outputAttrs != OutputBA )
         request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
-      std::unique_ptr< QgsGeometryEngine > engine;
-      if ( !intersects.isEmpty() )
-      {
-        // use prepared geometries for faster intersection tests
-        engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
-        engine->prepareGeometry();
-      }
+      std::unique_ptr<QgsGeometryEngine> engine;
 
       QVector<QgsGeometry> geometriesB;
       QgsFeature featB;
@@ -174,6 +167,12 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
         if ( feedback->isCanceled() )
           break;
 
+        if ( !engine )
+        {
+          // use prepared geometries for faster intersection tests
+          engine.reset( QgsGeometry::createGeometryEngine( geom.constGet() ) );
+          engine->prepareGeometry();
+        }
         if ( engine->intersects( featB.geometry().constGet() ) )
           geometriesB << featB.geometry();
       }
@@ -188,7 +187,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
           // It is possible to get rid of this issue in two steps:
           // 1. snap geometries with a small tolerance (e.g. 1cm) using QgsGeometrySnapperSingleSource
           // 2. fix geometries (removes polygons collapsed to lines etc.) using MakeValid
-          throw QgsProcessingException( QStringLiteral( "%1\n\n%2" ).arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
+          throw QgsProcessingException( u"%1\n\n%2"_s.arg( QObject::tr( "GEOS geoprocessing error: unary union failed." ), geomB.lastError() ) );
         }
         geom = geom.difference( geomB, parameters );
       }
@@ -226,7 +225,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
     }
 
     ++count;
-    feedback->setProgress( count / static_cast< double >( totalCount ) * 100. );
+    feedback->setProgress( count / static_cast<double>( totalCount ) * 100. );
   }
 }
 
@@ -242,17 +241,16 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
 
   QgsFeature outFeat;
 
-  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast< double >( sourceB.featureCount() ) : 1;
+  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast<double>( sourceB.featureCount() ) : 1;
   long long i = 0;
   QgsFeatureIterator fi = sourceB.getFeatures( request );
   feedback->setProgressText( QObject::tr( "Creating spatial index" ) );
-  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & )->bool
-  {
+  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & ) -> bool {
     i++;
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( static_cast< double >( i ) * step );
+    feedback->setProgress( static_cast<double>( i ) * step );
 
     return true;
   } );
@@ -261,7 +259,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     return;
 
   if ( totalCount == 0 )
-    totalCount = 1;  // avoid division by zero
+    totalCount = 1; // avoid division by zero
 
   feedback->setProgressText( QObject::tr( "Calculating intersection" ) );
 
@@ -283,7 +281,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
     request.setSubsetOfAttributes( fieldIndicesB );
 
-    std::unique_ptr< QgsGeometryEngine > engine;
+    std::unique_ptr<QgsGeometryEngine> engine;
     if ( !intersects.isEmpty() )
     {
       // use prepared geometries for faster intersection tests
@@ -322,7 +320,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     }
 
     ++count;
-    feedback->setProgress( count / static_cast<double >( totalCount ) * 100. );
+    feedback->setProgress( count / static_cast<double>( totalCount ) * 100. );
   }
 }
 
@@ -331,7 +329,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
   long count = 0;
   const long totalCount = source.featureCount();
   if ( totalCount == 0 )
-    return;  // nothing to do here
+    return; // nothing to do here
 
   QgsFeatureId newFid = -1;
 
@@ -361,7 +359,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
   QHash<QgsFeatureId, QgsGeometry> geometries;
   QgsSpatialIndex index;
-  QHash<QgsFeatureId, QList<QgsFeatureId> > intersectingIds;  // which features overlap a particular area
+  QHash<QgsFeatureId, QList<QgsFeatureId>> intersectingIds; // which features overlap a particular area
 
   // resolve intersections
 
@@ -373,7 +371,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
     const QgsFeatureId fid1 = f.id();
     QgsGeometry g1 = f.geometry();
-    std::unique_ptr< QgsGeometryEngine > g1engine;
+    std::unique_ptr<QgsGeometryEngine> g1engine;
 
     geometries.insert( fid1, g1 );
     index.addFeature( f );
@@ -473,7 +471,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
     }
 
     ++count;
-    feedback->setProgress( count / static_cast< double >( totalCount ) * 100. );
+    feedback->setProgress( count / static_cast<double>( totalCount ) * 100. );
   }
   if ( feedback->isCanceled() )
     return;

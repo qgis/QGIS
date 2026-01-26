@@ -16,8 +16,8 @@
 #ifndef QGSMAPTOOLSELECT_H
 #define QGSMAPTOOLSELECT_H
 
-#include "qgsmaptool.h"
 #include "qgis_app.h"
+#include "qgsmaptool.h"
 #include "qgsmaptoolselectionhandler.h"
 
 class QgsMapCanvas;
@@ -29,7 +29,6 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
 {
     Q_OBJECT
   public:
-
     enum Mode
     {
       GeometryIntersectsSetSelection,

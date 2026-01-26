@@ -18,10 +18,11 @@
 
 #include "ui_widget_symbolslist.h"
 
-#include "qgssymbolwidgetcontext.h"
-#include "qgsstylemodel.h"
-#include <QWidget>
 #include "qgis_gui.h"
+#include "qgsstylemodel.h"
+#include "qgssymbolwidgetcontext.h"
+
+#include <QWidget>
 
 class QgsSymbol;
 class QgsStyle;
@@ -31,13 +32,13 @@ class QMenu;
 /**
  * \ingroup gui
  * \class QgsSymbolsListWidget
+ * \brief A widget which presents symbol-level properties (such as size), and allows selection of symbols from stored styles.
  */
 class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListWidget, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSymbolsListWidget.
      * \param symbol the symbol
@@ -98,24 +99,24 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void createSymbolAuxiliaryField();
     void forceRHRToggled( bool checked );
     void showAnimationSettings();
+    void showExtentBufferSettings();
     void showBufferSettings();
     void saveSymbol();
     void updateSymbolDataDefinedProperty();
 
   private:
-
     void registerSymbolDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbol::Property key );
 
     QgsSymbol *mSymbol = nullptr;
-    std::shared_ptr< QgsSymbol > mAssistantSymbol;
+    std::shared_ptr<QgsSymbol> mAssistantSymbol;
     QgsStyle *mStyle = nullptr;
     QMenu *mAdvancedMenu = nullptr;
     QAction *mClipFeaturesAction = nullptr;
     QAction *mStandardizeRingsAction = nullptr;
     QAction *mBufferSettingsAction = nullptr;
     QAction *mAnimationSettingsAction = nullptr;
+    QAction *mExtentBufferAction = nullptr;
     QgsVectorLayer *mLayer = nullptr;
-    QgsMapCanvas *mMapCanvas = nullptr;
 
     QgsColorButton *mSymbolColorButton = nullptr;
     QgsOpacityWidget *mSymbolOpacityWidget = nullptr;
@@ -130,6 +131,3 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 };
 
 #endif //QGSSYMBOLSLISTWIDGET_H
-
-
-

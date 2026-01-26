@@ -21,7 +21,7 @@
 
 /**
  * \ingroup core
- * \brief Implementation of a logarithmic scale method
+ * \brief Implementation of a logarithmic scale method for classification.
  *
  * \since QGIS 3.10
  */
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsClassificationLogarithmic : public QgsClassificationMethod
     };
 
     QgsClassificationLogarithmic();
-    QgsClassificationMethod *clone() const override;
+    std::unique_ptr< QgsClassificationMethod > clone() const override;
     QString name() const override;
     QString id() const override;
     QIcon icon() const override;

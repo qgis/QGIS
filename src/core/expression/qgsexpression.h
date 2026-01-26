@@ -16,21 +16,21 @@
 #ifndef QGSEXPRESSION_H
 #define QGSEXPRESSION_H
 
-#include "qgis_core.h"
-#include <QMetaType>
-#include <QStringList>
-#include <QVariant>
-#include <QList>
-#include <QDomDocument>
-#include <QCoreApplication>
-#include <QSet>
-#include <QRecursiveMutex>
-
 #include <functional>
 
 #include "qgis.h"
-#include "qgsinterval.h"
+#include "qgis_core.h"
 #include "qgsexpressionnode.h"
+#include "qgsinterval.h"
+
+#include <QCoreApplication>
+#include <QDomDocument>
+#include <QList>
+#include <QMetaType>
+#include <QRecursiveMutex>
+#include <QSet>
+#include <QStringList>
+#include <QVariant>
 
 class QgsFeature;
 class QgsGeometry;
@@ -132,7 +132,8 @@ typedef QHash<QString, Help> HelpTextHash;
 
 /**
  * \ingroup core
- * \brief Class for parsing and evaluation of expressions (formerly called "search strings").
+ * \brief Handles parsing and evaluation of expressions (formerly called "search strings").
+ *
  * The expressions try to follow both syntax and semantics of SQL expressions.
  *
  * Usage:
@@ -207,7 +208,7 @@ class CORE_EXPORT QgsExpression
       /**
        * The type of parser error that was found.
        */
-      ParserErrorType errorType = ParserErrorType::Unknown;
+      QgsExpression::ParserError::ParserErrorType errorType = QgsExpression::ParserError::ParserErrorType::Unknown;
 
       /**
        * The message for the error at this location.
@@ -331,7 +332,7 @@ class CORE_EXPORT QgsExpression
 
     /**
      * Returns a list of all variables which are used in this expression.
-     * If the list contains a NULL QString, there is a variable name used
+     * If the list contains an empty QString, there is a variable name used
      * which is determined at runtime.
      *
      * \note In contrast to the referencedColumns() function this method
@@ -797,7 +798,7 @@ class CORE_EXPORT QgsExpression
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
+    QString str = u"<QgsExpression: '%1'>"_s.arg( sipCpp->expression() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -820,7 +821,11 @@ class CORE_EXPORT QgsExpression
     //! \note not available in Python bindings
     static void initFunctionHelp() SIP_SKIP;
     //! \note not available in Python bindings
+    static void buildFunctionHelp() SIP_SKIP;
+    //! \note not available in Python bindings
     static void initVariableHelp() SIP_SKIP;
+    //! \note not available in Python bindings
+    static void buildVariableHelp() SIP_SKIP;
 
     friend class QgsExpressionNodeFunction;
     static QRecursiveMutex sFunctionsMutex;

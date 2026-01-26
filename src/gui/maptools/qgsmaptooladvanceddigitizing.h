@@ -17,18 +17,21 @@
 #ifndef QGSMAPTOOLADVANCEDDIGITIZE_H
 #define QGSMAPTOOLADVANCEDDIGITIZE_H
 
-#include "qgsmaptooledit.h"
-#include "qgis_gui.h"
 #include <memory>
 
-class QgsMapMouseEvent;
+#include "qgis_gui.h"
+#include "qgsmapmouseevent.h"
+#include "qgsmaptooledit.h"
+#include "qgsreferencedgeometry.h"
+
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnapToGridCanvasItem;
 class QgsSnapIndicator;
 
 /**
  * \ingroup gui
- * \brief The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
+ * \brief A QgsMapTool which gives events directly in map coordinates and allows filtering of events.
+ *
  * Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  * Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
  * An event filter can be set on the map tool to filter and modify the events in map coordinates (\see QgsMapToolMapEventFilter).
@@ -39,7 +42,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-
     /**
      * Creates an advanced digitizing maptool
      * \param canvas         The map canvas on which the tool works
@@ -116,7 +118,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     bool useSnappingIndicator() const;
 
   protected:
-
     /**
      * Sets whether functionality of advanced digitizing dock widget is currently allowed.
      * This method is protected because it should be a decision of the map tool and not from elsewhere.
@@ -151,7 +152,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     QgsAdvancedDigitizingDockWidget *mCadDockWidget = nullptr;
 
   public:
-
     /**
      * Override this method when subclassing this class.
      * This will receive adapted events from the cad system whenever a
@@ -200,6 +200,23 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
 
+  signals:
+
+    //NOTE -- we use QgsReferencedGeometry here, as we'd like to defer the transformation of geometry to a particular
+    //desired destination CRS (eg layer CRS or map canvas CRS) as the caller's responsibility. That's because we don't want
+    //to waste cycles doing that transformation with every mouse move, when potentially NOTHING is even connected to this signal!
+    //By using QgsReferencedGeometry we allows the emitters to just use the geometries they've already calculated for the rubber
+    //bands, regardless of what CRS they are in
+    /**
+     * Emitted whenever the \a geometry associated with the tool is changed, including transient (i.e. non-finalized, hover state) changes.
+     *
+     * Connections to this signal should take care to check the CRS of \a geometry, as it may be either in the
+     * canvas CRS or an associated layer's CRS.
+     *
+     * \since QGIS 4.0
+     */
+    void transientGeometryChanged( const QgsReferencedGeometry &geometry );
+
   private slots:
 
     /**
@@ -215,7 +232,6 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     void onCurrentLayerChanged();
 
   private:
-
     //! Whether to allow use of advanced digitizing dock at this point
     bool mAdvancedDigitizingAllowed = true;
     //! Whether to snap mouse cursor to map before passing coordinates to cadCanvas*Event()

@@ -8,20 +8,23 @@
 
 
 
+
 class QgsHeatmapRendererWidget : QgsRendererWidget
 {
+%Docstring(signature="appended")
+A widget for configuring a :py:class:`QgsHeatmapRenderer`.
+%End
 
 %TypeHeaderCode
 #include "qgsheatmaprendererwidget.h"
 %End
   public:
-
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method
 
 :param layer: the layer where this renderer is applied
-:param style:
+:param style: 
 :param renderer: the mask renderer (will not take ownership)
 %End
 
@@ -30,7 +33,7 @@ Static creation method
 Constructor
 
 :param layer: the layer where this renderer is applied
-:param style:
+:param style: 
 :param renderer: the mask renderer (will not take ownership)
 %End
     ~QgsHeatmapRendererWidget();

@@ -10,6 +10,9 @@
 
 class QgsSingleSymbolRenderer : QgsFeatureRenderer
 {
+%Docstring(signature="appended")
+A feature renderer which renders all features with the same symbol.
+%End
 
 %TypeHeaderCode
 #include "qgssinglesymbolrenderer.h"
@@ -20,8 +23,8 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 %Docstring
 Constructor for QgsSingleSymbolRenderer.
 
-The same ``symbol`` will be used to render every feature. Ownership
-of ``symbol`` is transferred to the renderer.
+The same ``symbol`` will be used to render every feature. Ownership of
+``symbol`` is transferred to the renderer.
 %End
     ~QgsSingleSymbolRenderer();
 
@@ -49,8 +52,8 @@ Returns the symbol which will be rendered for every feature.
 
     void setSymbol( QgsSymbol *s /Transfer/ );
 %Docstring
-Sets the symbol which will be rendered for every feature. Ownership
-of the symbol is transferred to the renderer.
+Sets the symbol which will be rendered for every feature. Ownership of
+the symbol is transferred to the renderer.
 
 .. seealso:: :py:func:`symbol`
 %End
@@ -60,15 +63,17 @@ of the symbol is transferred to the renderer.
 
     virtual QgsSingleSymbolRenderer *clone() const /Factory/;
 
+ virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const /Deprecated/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, Qgis::GeometryType geomType ) /Factory/;
 %Docstring
 Creates a new single symbol renderer from an SLD ``element``.
 
-The geometry type for features to be rendered must be specified via the ``geomType`` argument.
+The geometry type for features to be rendered must be specified via the
+``geomType`` argument.
 
 The caller takes ownership of the returned renderer.
 %End
@@ -79,7 +84,8 @@ The caller takes ownership of the returned renderer.
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
-Creates a new single symbol renderer from an XML ``element``, using the supplied read/write ``context``.
+Creates a new single symbol renderer from an XML ``element``, using the
+supplied read/write ``context``.
 
 The caller takes ownership of the returned renderer.
 %End
@@ -99,24 +105,29 @@ The caller takes ownership of the returned renderer.
 %Docstring
 Creates a new single symbol renderer from an existing ``renderer``.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
-Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
-This allows configuring which values (symbol sizes) should be shown in the legend, whether to display
-different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+Configures appearance of legend when renderer is configured to use
+data-defined size for marker symbols. This allows configuring which
+values (symbol sizes) should be shown in the legend, whether to display
+different symbol sizes collapsed in one legend node or separated across
+multiple legend nodes etc.
 
-When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
-Takes ownership of the passed settings objects. ``None`` is a valid input that disables data-defined
+When renderer does not use data-defined size or does not use marker
+symbols, these settings will be ignored. Takes ownership of the passed
+settings objects. ``None`` is a valid input that disables data-defined
 size legend.
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
-Returns configuration of appearance of legend when using data-defined size for marker symbols.
-Will return ``None`` if the functionality is disabled.
+Returns configuration of appearance of legend when using data-defined
+size for marker symbols. Will return ``None`` if the functionality is
+disabled.
 %End
 
   protected:

@@ -19,43 +19,44 @@
 #define QGSDATUMTRANSFORMDIALOG_H
 
 #include "ui_qgsdatumtransformdialogbase.h"
+
+#include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsguiutils.h"
-#include "qgis_gui.h"
 
 #define SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsDatumTransformDialog
+ * \brief A dialog for configuring transform operations between coordinate reference systems.
  * \note not available in Python bindings
  */
 class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumTransformDialogBase
 {
     Q_OBJECT
   public:
-
     //! Dialog transformation entry info
     struct TransformInfo
     {
-      //! Source coordinate reference system
-      QgsCoordinateReferenceSystem sourceCrs;
+        //! Source coordinate reference system
+        QgsCoordinateReferenceSystem sourceCrs;
 
-      //! Source transform ID
-      int sourceTransformId = -1;
+        //! Source transform ID
+        int sourceTransformId = -1;
 
-      //! Destination coordinate reference system
-      QgsCoordinateReferenceSystem destinationCrs;
+        //! Destination coordinate reference system
+        QgsCoordinateReferenceSystem destinationCrs;
 
-      //! Destination transform ID
-      int destinationTransformId = -1;
+        //! Destination transform ID
+        int destinationTransformId = -1;
 
-      //! Proj coordinate operation description, for Proj >= 6.0 builds only
-      QString proj;
+        //! Proj coordinate operation description, for Proj >= 6.0 builds only
+        QString proj;
 
-      //! TRUE if fallback transforms can be used
-      bool allowFallback = true;
+        //! TRUE if fallback transforms can be used
+        bool allowFallback = true;
     };
 
     /**
@@ -72,28 +73,14 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      *
      * \since QGIS 3.8
      */
-    static bool run( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
-                     const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
-                     QWidget *parent = nullptr,
-                     QgsMapCanvas *mapCanvas = nullptr,
-                     const QString &windowTitle = QString() );
+    static bool run( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(), const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(), QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QString &windowTitle = QString() );
 
-    // TODO QGIS 4.0 - remove selectedDatumTransform, forceChoice
+    // TODO QGIS 5.0 - remove selectedDatumTransform, forceChoice
 
     /**
      * Constructor for QgsDatumTransformDialog.
      */
-    QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
-                             const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
-                             bool allowCrsChanges = false,
-                             bool showMakeDefault = true,
-                             bool forceChoice = true,
-                             QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
-                             QWidget *parent = nullptr,
-                             Qt::WindowFlags f = Qt::WindowFlags(),
-                             const QString &selectedProj = QString(),
-                             QgsMapCanvas *mapCanvas = nullptr,
-                             bool allowFallback = true );
+    QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(), const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(), bool allowCrsChanges = false, bool showMakeDefault = true, bool forceChoice = true, QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ), QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags(), const QString &selectedProj = QString(), QgsMapCanvas *mapCanvas = nullptr, bool allowFallback = true );
 
     void accept() override;
     void reject() override;
@@ -110,7 +97,6 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
-
     enum Roles
     {
       TransformIdRole = Qt::UserRole + 1,
@@ -144,7 +130,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     void applyDefaultTransform();
 
-    std::unique_ptr< QgsTemporaryCursorRestoreOverride > mPreviousCursorOverride;
+    std::unique_ptr<QgsTemporaryCursorRestoreOverride> mPreviousCursorOverride;
 
     friend class TestQgsDatumTransformDialog;
 };

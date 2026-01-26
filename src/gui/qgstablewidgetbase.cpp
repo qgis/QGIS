@@ -15,6 +15,8 @@
 
 #include "qgstablewidgetbase.h"
 
+#include "moc_qgstablewidgetbase.cpp"
+
 QgsTableWidgetBase::QgsTableWidgetBase( QWidget *parent )
   : QWidget( parent )
 {

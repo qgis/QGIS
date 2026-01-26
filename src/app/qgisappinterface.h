@@ -20,6 +20,7 @@
 
 #include "qgis_app.h"
 #include "qgisinterface.h"
+#include "qgsappgpstools.h"
 #include "qgsapppluginmanagerinterface.h"
 
 class QTimer;
@@ -41,7 +42,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     Q_OBJECT
 
   public:
-
     /**
      * Constructor.
      * \param qgis Pointer to the QgisApp object
@@ -55,8 +55,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     QgsLayerTreeView *layerTreeView() override;
 
-    void addCustomActionForLayerType( QAction *action, QString menu,
-                                      Qgis::LayerType type, bool allLayers ) override;
+    QgsGpsToolsInterface *gpsTools() override;
+
+    void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) override;
     void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) override;
     bool removeCustomActionForLayerType( QAction *action ) override;
 
@@ -75,7 +76,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsTiledSceneLayer *addTiledSceneLayer( const QString &url, const QString &baseName, const QString &providerKey ) override;
     bool addProject( const QString &projectName ) override;
     bool newProject( bool promptToSaveFlag = false ) override;
-    void reloadConnections( ) override;
+    void reloadConnections() override;
     QgsMapLayer *activeLayer() override;
     bool setActiveLayer( QgsMapLayer *layer ) override;
     void copySelectionToClipboard( QgsMapLayer *layer ) override;
@@ -104,17 +105,17 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void openURL( const QString &url, bool useQgisDocDirectory = true ) override;
 
     QgsMapCanvas *mapCanvas() override;
-    QList< QgsMapCanvas * > mapCanvases() override;
+    QList<QgsMapCanvas *> mapCanvases() override;
     QgsMapCanvas *createNewMapCanvas( const QString &name ) override;
     void closeMapCanvas( const QString &name ) override;
-    QList< Qgs3DMapCanvas * > mapCanvases3D() override;
-    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name ) override;
+    QList<Qgs3DMapCanvas *> mapCanvases3D() override;
+    Qgs3DMapCanvas *createNewMapCanvas3D( const QString &name, Qgis::SceneMode sceneMode = Qgis::SceneMode::Local ) override;
     void closeMapCanvas3D( const QString &name ) override;
     QSize iconSize( bool dockedToolbar = false ) const override;
     QgsLayerTreeMapCanvasBridge *layerTreeCanvasBridge() override;
     QWidget *mainWindow() override;
     QgsMessageBar *messageBar() override;
-    void openMessageLog() override;
+    void openMessageLog( const QString &tabName = QString() ) override;
     void addUserInputWidget( QWidget *widget ) override;
     void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
@@ -157,6 +158,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void unregisterProjectPropertiesWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
     void registerDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
     void unregisterDevToolWidgetFactory( QgsDevToolWidgetFactory *factory ) override;
+    void showApiDocumentation( Qgis::DocumentationApi api, Qgis::DocumentationBrowser browser, const QString &object, const QString &module ) override;
     void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) override;
     void registerMapToolHandler( QgsAbstractMapToolHandler *handler ) override;
@@ -170,9 +172,11 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QMenu *projectMenu() override;
     QMenu *projectImportExportMenu() override;
     void addProjectImportAction( QAction *action ) override;
-    void removeProjectImportAction( QAction *action )override;
+    void removeProjectImportAction( QAction *action ) override;
     void addProjectExportAction( QAction *action ) override;
     void removeProjectExportAction( QAction *action ) override;
+    QMenu *projectModelsMenu() override;
+    QMenu *createProjectModelSubMenu( const QString &title ) override;
     QMenu *editMenu() override;
     QMenu *viewMenu() override;
     QMenu *layerMenu() override;
@@ -327,12 +331,14 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     void cacheloadForm( const QString &uifile = QString() );
 
   private:
-
     //! Pointer to the QgisApp object
     QgisApp *qgis = nullptr;
 
     //! Pointer to the PluginManagerInterface object
     QgsAppPluginManagerInterface pluginManagerIface;
+
+    //! Pointer to the GpsToolsInterface object
+    QgsAppGpsTools mGpsToolsIface;
 };
 Q_NOWARN_DEPRECATED_POP
 

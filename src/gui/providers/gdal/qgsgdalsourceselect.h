@@ -18,9 +18,10 @@
 #define QGGDALSOURCESELECT_H
 
 #include "ui_qgsgdalsourceselectbase.h"
-#include "qgsabstractdatasourcewidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsabstractdatasourcewidget.h"
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -57,7 +58,6 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     void credentialOptionsChanged();
 
   private:
-
     void computeDataSources();
     void clearOpenOptions();
     void fillOpenOptions();
@@ -69,7 +69,6 @@ class QgsGdalSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsG
     QStringList mDataSources;
     bool mIsOgcApi = false;
     QVariantMap mCredentialOptions;
-
 };
 
 ///@endcond

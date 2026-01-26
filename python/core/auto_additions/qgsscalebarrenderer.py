@@ -39,15 +39,18 @@ QgsScaleBarRenderer.Flag.__doc__ = """Flags which control scalebar renderer beha
 # --
 try:
     QgsScaleBarRenderer.ScaleBarContext.__attribute_docs__ = {'segmentWidth': 'The width, in millimeters, of each individual segment drawn.\n\n.. note::\n\n   The number of map units per segment needs to be set via :py:class:`QgsScaleBarSettings`.setUnitsPerSegment.', 'size': 'Destination size for scalebar. This is used for scalebars which\nalter their appearance or alignment based on the desired scalebar\nsize (e.g. correctly aligning text in a numeric scale bar).', 'scale': 'Scale denominator', 'flags': 'Scalebar renderer flags'}
+    QgsScaleBarRenderer.ScaleBarContext.__annotations__ = {'segmentWidth': float, 'size': 'QSizeF', 'scale': float, 'flags': 'QgsScaleBarRenderer.Flags'}
     QgsScaleBarRenderer.ScaleBarContext.__doc__ = """Contains parameters regarding scalebar calculations.
 
 .. note::
 
    The need to attribute the parameters vary depending on the targeted scalebar."""
     QgsScaleBarRenderer.ScaleBarContext.__group__ = ['scalebar']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
+    QgsScaleBarRenderer.__virtual_methods__ = ['flags', 'sortKey', 'draw', 'calculateBoxSize', 'applyDefaultSettings']
+    QgsScaleBarRenderer.__abstract_methods__ = ['id', 'visibleName', 'clone', 'draw']
     QgsScaleBarRenderer.__group__ = ['scalebar']
-except NameError:
+except (NameError, AttributeError):
     pass

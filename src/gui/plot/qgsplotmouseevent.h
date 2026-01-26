@@ -17,17 +17,17 @@
 #ifndef QGSPLOTMOUSEEVENT_H
 #define QGSPLOTMOUSEEVENT_H
 
-#include <QMouseEvent>
-
-#include "qgspointxy.h"
-#include "qgspointlocator.h"
 #include "qgis_gui.h"
+#include "qgspointlocator.h"
+#include "qgspointxy.h"
+
+#include <QMouseEvent>
 
 class QgsPlotCanvas;
 
 /**
  * \ingroup gui
- * \brief A QgsPlotMouseEvent is the result of a user interaction with the mouse on a QgsPlotCanvas.
+ * \brief A mouse event which is the result of a user interaction with a QgsPlotCanvas.
  *
  * The event is sent whenever the user moves, clicks, releases or double clicks the mouse.
  *
@@ -38,7 +38,6 @@ class QgsPlotCanvas;
  */
 class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsPlotMouseEvent *>( sipCpp ) )
@@ -49,7 +48,6 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Creates a new QgsPlotMouseEvent.
      *
@@ -68,8 +66,7 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
      * \param buttons Further buttons that are pressed
      * \param modifiers Keyboard modifiers
      */
-    QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
-                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     /**
      * Returns the point in map coordinates corresponding to the event.
@@ -91,7 +88,6 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
     bool isSnapped();
 
   private:
-
     //! The canvas on which the event was triggered.
     QgsPlotCanvas *mCanvas = nullptr;
 
@@ -103,7 +99,6 @@ class GUI_EXPORT QgsPlotMouseEvent : public QMouseEvent
     bool mIsSnapped = false;
 
     void snapPoint();
-
 };
 
 #endif // QGSPLOTMOUSEEVENT_H

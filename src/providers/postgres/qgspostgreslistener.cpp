@@ -16,10 +16,13 @@
  ***************************************************************************/
 
 #include "qgspostgreslistener.h"
-#include "qgsdatasourceuri.h"
+
 #include "qgscredentials.h"
+#include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgspostgresconn.h"
+
+#include "moc_qgspostgreslistener.cpp"
 
 #ifdef Q_OS_WIN
 #include <winsock.h>
@@ -32,10 +35,10 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-std::unique_ptr< QgsPostgresListener > QgsPostgresListener::create( const QString &connString )
+std::unique_ptr<QgsPostgresListener> QgsPostgresListener::create( const QString &connString )
 {
-  std::unique_ptr< QgsPostgresListener > res( new QgsPostgresListener( connString ) );
-  QgsDebugMsgLevel( QStringLiteral( "starting notification listener" ), 2 );
+  auto res = std::make_unique<QgsPostgresListener>( connString );
+  QgsDebugMsgLevel( u"starting notification listener"_s, 2 );
 
   res->start();
   return res;
@@ -48,10 +51,10 @@ QgsPostgresListener::QgsPostgresListener( const QString &connString )
   {
     mConn->moveToThread( this );
 
-    QgsPostgresResult result( mConn->LoggedPQexec( "QgsPostgresListener", QStringLiteral( "LISTEN qgis" ) ) );
+    QgsPostgresResult result( mConn->LoggedPQexec( "QgsPostgresListener", u"LISTEN qgis"_s ) );
     if ( result.PQresultStatus() != PGRES_COMMAND_OK )
     {
-      QgsDebugError( QStringLiteral( "error in listen" ) );
+      QgsDebugError( u"error in listen"_s );
 
       mConn->unref();
       mConn = nullptr;
@@ -62,9 +65,9 @@ QgsPostgresListener::QgsPostgresListener( const QString &connString )
 QgsPostgresListener::~QgsPostgresListener()
 {
   mStop = true;
-  QgsDebugMsgLevel( QStringLiteral( "stopping the loop" ), 2 );
+  QgsDebugMsgLevel( u"stopping the loop"_s, 2 );
   wait();
-  QgsDebugMsgLevel( QStringLiteral( "notification listener stopped" ), 2 );
+  QgsDebugMsgLevel( u"notification listener stopped"_s, 2 );
 
   if ( mConn )
     mConn->unref();
@@ -74,14 +77,14 @@ void QgsPostgresListener::run()
 {
   if ( !mConn )
   {
-    QgsDebugError( QStringLiteral( "error in listen" ) );
+    QgsDebugError( u"error in listen"_s );
     return;
   }
 
   const int sock = PQsocket( mConn->pgConnection() );
   if ( sock < 0 )
   {
-    QgsDebugError( QStringLiteral( "error in socket" ) );
+    QgsDebugError( u"error in socket"_s );
     return;
   }
 
@@ -98,7 +101,7 @@ void QgsPostgresListener::run()
 
     if ( select( sock + 1, &input_mask, nullptr, nullptr, &timeout ) < 0 )
     {
-      QgsDebugError( QStringLiteral( "error in select" ) );
+      QgsDebugError( u"error in select"_s );
       break;
     }
 
@@ -114,7 +117,7 @@ void QgsPostgresListener::run()
 
     if ( mStop )
     {
-      QgsDebugMsgLevel( QStringLiteral( "stop from main thread" ), 2 );
+      QgsDebugMsgLevel( u"stop from main thread"_s, 2 );
       break;
     }
   }

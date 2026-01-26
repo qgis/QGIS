@@ -33,10 +33,10 @@ class QgsScopedDevToolWidgetFactory
     QgsScopedDevToolWidgetFactory();
     ~QgsScopedDevToolWidgetFactory();
 
-    void reset( std::unique_ptr< QgsDevToolWidgetFactory > factory = nullptr );
+    void reset( std::unique_ptr<QgsDevToolWidgetFactory> factory = nullptr );
 
   private:
-    std::unique_ptr< QgsDevToolWidgetFactory > mFactory;
+    std::unique_ptr<QgsDevToolWidgetFactory> mFactory;
 };
 
 

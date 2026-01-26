@@ -15,9 +15,12 @@
  ***************************************************************************/
 
 #include "qgslayoutreportcontext.h"
+
 #include "qgsfeature.h"
 #include "qgslayout.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgslayoutreportcontext.cpp"
 
 QgsLayoutReportContext::QgsLayoutReportContext( QgsLayout *layout )
   : QObject( layout )

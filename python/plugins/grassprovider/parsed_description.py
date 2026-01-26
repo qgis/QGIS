@@ -10,16 +10,9 @@
 """
 
 import re
-from dataclasses import (
-    dataclass,
-    field
-)
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import (
-    Optional,
-    List,
-    Dict
-)
+from typing import Optional, List, Dict
 
 
 @dataclass
@@ -28,7 +21,7 @@ class ParsedDescription:
     Results of parsing a description file
     """
 
-    GROUP_ID_REGEX = re.compile(r'^[^\s(]+')
+    GROUP_ID_REGEX = re.compile(r"^[^\s(]+")
 
     grass_command: Optional[str] = None
     short_description: Optional[str] = None
@@ -39,28 +32,28 @@ class ParsedDescription:
 
     ext_path: Optional[str] = None
 
-    hardcoded_strings: List[str] = field(default_factory=list)
-    param_strings: List[str] = field(default_factory=list)
+    hardcoded_strings: list[str] = field(default_factory=list)
+    param_strings: list[str] = field(default_factory=list)
 
-    def as_dict(self) -> Dict:
+    def as_dict(self) -> dict:
         """
         Returns a JSON serializable dictionary representing the parsed
         description
         """
         return {
-            'name': self.name,
-            'display_name': self.display_name,
-            'command': self.grass_command,
-            'short_description': self.short_description,
-            'group': self.group,
-            'group_id': self.group_id,
-            'ext_path': self.ext_path,
-            'hardcoded_strings': self.hardcoded_strings,
-            'parameters': self.param_strings
+            "name": self.name,
+            "display_name": self.display_name,
+            "command": self.grass_command,
+            "short_description": self.short_description,
+            "group": self.group,
+            "group_id": self.group_id,
+            "ext_path": self.ext_path,
+            "hardcoded_strings": self.hardcoded_strings,
+            "parameters": self.param_strings,
         }
 
     @staticmethod
-    def from_dict(description: Dict) -> 'ParsedDescription':
+    def from_dict(description: dict) -> "ParsedDescription":
         """
         Parses a dictionary as a description and returns the result
         """
@@ -68,26 +61,26 @@ class ParsedDescription:
         from qgis.PyQt.QtCore import QCoreApplication
 
         result = ParsedDescription()
-        result.name = description.get('name')
-        result.display_name = description.get('display_name')
-        result.grass_command = description.get('command')
+        result.name = description.get("name")
+        result.display_name = description.get("display_name")
+        result.grass_command = description.get("command")
         result.short_description = QCoreApplication.translate(
-            "GrassAlgorithm",
-            description.get('short_description')
+            "GrassAlgorithm", description.get("short_description")
         )
-        result.group = QCoreApplication.translate("GrassAlgorithm",
-                                                  description.get('group'))
-        result.group_id = description.get('group_id')
-        result.ext_path = description.get('ext_path')
-        result.hardcoded_strings = description.get('hardcoded_strings', [])
-        result.param_strings = description.get('parameters', [])
+        result.group = QCoreApplication.translate(
+            "GrassAlgorithm", description.get("group")
+        )
+        result.group_id = description.get("group_id")
+        result.ext_path = description.get("ext_path")
+        result.hardcoded_strings = description.get("hardcoded_strings", [])
+        result.param_strings = description.get("parameters", [])
 
         return result
 
     @staticmethod
     def parse_description_file(
-            description_file: Path,
-            translate: bool = True) -> 'ParsedDescription':
+        description_file: Path, translate: bool = True
+    ) -> "ParsedDescription":
         """
         Parses a description file and returns the result
         """
@@ -96,42 +89,44 @@ class ParsedDescription:
 
         with description_file.open() as lines:
             # First line of the file is the Grass algorithm name
-            line = lines.readline().strip('\n').strip()
+            line = lines.readline().strip("\n").strip()
             result.grass_command = line
             # Second line if the algorithm name in Processing
-            line = lines.readline().strip('\n').strip()
+            line = lines.readline().strip("\n").strip()
             result.short_description = line
             if " - " not in line:
                 result.name = result.grass_command
             else:
-                result.name = line[:line.find(' ')].lower()
+                result.name = line[: line.find(" ")].lower()
             if translate:
                 from qgis.PyQt.QtCore import QCoreApplication
+
                 result.short_description = QCoreApplication.translate(
-                    "GrassAlgorithm", line)
+                    "GrassAlgorithm", line
+                )
             else:
                 result.short_description = line
 
             result.display_name = result.name
             # Read the grass group
-            line = lines.readline().strip('\n').strip()
+            line = lines.readline().strip("\n").strip()
             if translate:
                 from qgis.PyQt.QtCore import QCoreApplication
-                result.group = QCoreApplication.translate("GrassAlgorithm",
-                                                          line)
+
+                result.group = QCoreApplication.translate("GrassAlgorithm", line)
             else:
                 result.group = line
 
-            result.group_id = ParsedDescription.GROUP_ID_REGEX.search(
-                line).group(0).lower()
+            result.group_id = (
+                ParsedDescription.GROUP_ID_REGEX.search(line).group(0).lower()
+            )
 
             # Then you have parameters/output definition
-            line = lines.readline().strip('\n').strip()
-            while line != '':
-                line = line.strip('\n').strip()
-                if line.startswith('Hardcoded'):
-                    result.hardcoded_strings.append(
-                        line[len('Hardcoded|'):])
+            line = lines.readline().strip("\n").strip()
+            while line != "":
+                line = line.strip("\n").strip()
+                if line.startswith("Hardcoded"):
+                    result.hardcoded_strings.append(line[len("Hardcoded|") :])
                 result.param_strings.append(line)
-                line = lines.readline().strip('\n').strip()
+                line = lines.readline().strip("\n").strip()
         return result

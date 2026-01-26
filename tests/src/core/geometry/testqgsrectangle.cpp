@@ -13,14 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
 #include <QObject>
 #include <QString>
+
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgspoint.h>
 #include "qgsreferencedgeometry.h"
 
-class TestQgsRectangle: public QObject
+class TestQgsRectangle : public QObject
 {
     Q_OBJECT
   private slots:
@@ -43,12 +45,14 @@ class TestQgsRectangle: public QObject
     void include();
     void buffered();
     void isFinite();
+    void maximal();
     void combine();
     void dataStream();
     void scale();
     void snappedToGrid();
     void distanceToPoint();
     void center();
+    void isValid();
 };
 
 void TestQgsRectangle::isEmpty()
@@ -71,8 +75,7 @@ void TestQgsRectangle::isEmpty()
 void TestQgsRectangle::isNull()
 {
   QVERIFY( QgsRectangle().isNull() );
-  QVERIFY( QgsRectangle( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(),
-                         std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() ).isNull() );
+  QVERIFY( QgsRectangle( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() ).isNull() );
   QVERIFY( !QgsRectangle( 0.0, 0.0, 0.0, 0.0 ).isNull() );
   QVERIFY( !QgsRectangle( 1.0, 1.0, 1.0, 1.0 ).isNull() );
   QVERIFY( !QgsRectangle( std::numeric_limits<double>::max(), -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), -std::numeric_limits<double>::max() ).isNull() );
@@ -82,8 +85,8 @@ void TestQgsRectangle::isNull()
 
 void TestQgsRectangle::fromWkt()
 {
-  QgsRectangle rect = QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 0))" ) );
-  QVERIFY( ! rect.isNull() );
+  QgsRectangle rect = QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1,0 0))"_s );
+  QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
@@ -91,8 +94,8 @@ void TestQgsRectangle::fromWkt()
 
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
-  rect = QgsRectangle::fromWkt( QStringLiteral( "POLYGONZ((0 0 2,1 0 2,1 1 2,0 1 2,0 0 2))" ) );
-  QVERIFY( ! rect.isNull() );
+  rect = QgsRectangle::fromWkt( u"POLYGONZ((0 0 2,1 0 2,1 1 2,0 1 2,0 0 2))"_s );
+  QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
@@ -101,8 +104,8 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
   // this is ok, a single rectangular polygon in a multipolygon object
-  rect = QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))" ) );
-  QVERIFY( ! rect.isNull() );
+  rect = QgsRectangle::fromWkt( u"MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0)))"_s );
+  QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
@@ -110,23 +113,23 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
   // this is ok, a single rectangular polygon in a collection
-  rect = QgsRectangle::fromWkt( QStringLiteral( "GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0))))" ) );
-  QVERIFY( ! rect.isNull() );
+  rect = QgsRectangle::fromWkt( u"GEOMETRYCOLLECTION(MULTIPOLYGON(((0 0,1 0,1 1,0 1,0 0))))"_s );
+  QVERIFY( !rect.isNull() );
   QCOMPARE( rect.xMinimum(), 0.0 );
   QCOMPARE( rect.yMinimum(), 0.0 );
   QCOMPARE( rect.xMaximum(), 1.0 );
   QCOMPARE( rect.yMaximum(), 1.0 );
   QVERIFY( rect == QgsRectangle::fromWkt( rect.asWktPolygon() ) );
 
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "xxx" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING ()" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON()" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "LINESTRING (0 0,1 0,1 1,0 1,0 0)" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0)),((1 1, 1 2, 2 2, 2 1)))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0), (10 10,13 10,13 13,10 13,10 10)))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isNull() );
-  QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1))" ) ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"xxx"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"LINESTRING ()"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"MULTIPOLYGON()"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"LINESTRING (0 0,1 0,1 1,0 1,0 0)"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0)),((1 1, 1 2, 2 2, 2 1)))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"MULTIPOLYGON(((0 0,3 0,3 3,0 3,0 0), (10 10,13 10,13 13,10 13,10 10)))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1,0 1))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1,0 1))"_s ).isNull() );
+  QVERIFY( QgsRectangle::fromWkt( u"POLYGON((0 0,1 0,1 1,0 1))"_s ).isNull() );
 }
 
 void TestQgsRectangle::constructor()
@@ -214,7 +217,7 @@ void TestQgsRectangle::setXY()
 void TestQgsRectangle::fromCenter()
 {
   QgsRectangle rect = QgsRectangle::fromCenterAndSize( QgsPointXY( 12, 21 ), 20, 40 );
-  QVERIFY( ! rect.isEmpty() );
+  QVERIFY( !rect.isEmpty() );
   QCOMPARE( rect.xMinimum(), 2.0 );
   QCOMPARE( rect.yMinimum(), 1.0 );
   QCOMPARE( rect.xMaximum(), 22.0 );
@@ -251,7 +254,7 @@ void TestQgsRectangle::intersects()
   QVERIFY( !rect2.intersects( rect1 ) );
 
   // rect2 is still null - rects do not intersect
-  rect2.set( std::numeric_limits<double>::quiet_NaN(),  std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
+  rect2.set( std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN(), std::numeric_limits<double>::quiet_NaN() );
   QVERIFY( !rect1.isNull() );
   QVERIFY( rect2.isNull() );
   QVERIFY( !rect1.intersects( rect2 ) );
@@ -281,7 +284,7 @@ void TestQgsRectangle::manipulate()
   // And check that the result is contained in both
   QVERIFY( rect1.contains( rect3 ) );
   QVERIFY( rect2.contains( rect3 ) );
-  QVERIFY( ! rect2.contains( rect1 ) );
+  QVERIFY( !rect2.contains( rect1 ) );
 
   // Create the union
   rect3.combineExtentWith( rect1 );
@@ -361,12 +364,13 @@ void TestQgsRectangle::asVariant()
   const QgsRectangle rect1 = QgsRectangle( 10.0, 20.0, 110.0, 220.0 );
 
   //convert to and from a QVariant
-  const QVariant var = QVariant::fromValue( rect1 );
+  QVariant var = QVariant::fromValue( rect1 );
   QVERIFY( var.isValid() );
   QCOMPARE( var.userType(), qMetaTypeId<QgsRectangle>() );
-  QVERIFY( !var.canConvert< QgsReferencedRectangle >() );
-
   const QgsRectangle rect2 = qvariant_cast<QgsRectangle>( var );
+
+  QVERIFY( !var.convert( QMetaType::fromType<QgsReferencedRectangle>() ) );
+
   QCOMPARE( rect2.xMinimum(), rect1.xMinimum() );
   QCOMPARE( rect2.yMinimum(), rect1.yMinimum() );
   QCOMPARE( rect2.height(), rect1.height() );
@@ -375,10 +379,10 @@ void TestQgsRectangle::asVariant()
 
 void TestQgsRectangle::referenced()
 {
-  QgsReferencedRectangle rect1 = QgsReferencedRectangle( QgsRectangle( 10.0, 20.0, 110.0, 220.0 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) );
-  QCOMPARE( rect1.crs().authid(), QStringLiteral( "EPSG:3111" ) );
-  rect1.setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
-  QCOMPARE( rect1.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QgsReferencedRectangle rect1 = QgsReferencedRectangle( QgsRectangle( 10.0, 20.0, 110.0, 220.0 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) );
+  QCOMPARE( rect1.crs().authid(), u"EPSG:3111"_s );
+  rect1.setCrs( QgsCoordinateReferenceSystem( u"EPSG:28356"_s ) );
+  QCOMPARE( rect1.crs().authid(), u"EPSG:28356"_s );
 
   //convert to and from a QVariant
   const QVariant var = QVariant::fromValue( rect1 );
@@ -394,7 +398,7 @@ void TestQgsRectangle::referenced()
   QCOMPARE( rect2.yMinimum(), rect1.yMinimum() );
   QCOMPARE( rect2.height(), rect1.height() );
   QCOMPARE( rect2.width(), rect1.width() );
-  QCOMPARE( rect2.crs().authid(), QStringLiteral( "EPSG:28356" ) );
+  QCOMPARE( rect2.crs().authid(), u"EPSG:28356"_s );
 }
 
 void TestQgsRectangle::setNull()
@@ -527,6 +531,21 @@ void TestQgsRectangle::isFinite()
   QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::quiet_NaN() ).isFinite() );
 }
 
+void TestQgsRectangle::maximal()
+{
+  QVERIFY( !QgsRectangle( 1, 2, 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( std::numeric_limits<double>::infinity(), 2, 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::infinity(), 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::infinity(), 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::infinity() ).isMaximal() );
+  QVERIFY( QgsRectangle( std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity(), std::numeric_limits<double>::infinity() ).isMaximal() );
+  QVERIFY( !QgsRectangle( std::numeric_limits<double>::lowest(), 2, 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::lowest(), 3, 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::max(), 4 ).isMaximal() );
+  QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::max() ).isMaximal() );
+  QVERIFY( QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() ).isMaximal() );
+}
+
 void TestQgsRectangle::combine()
 {
   QgsRectangle rect;
@@ -629,6 +648,42 @@ void TestQgsRectangle::center()
   rect = QgsRectangle( std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max() );
   QCOMPARE( rect.center().x(), 0.0 );
   QCOMPARE( rect.center().y(), 0.0 );
+}
+
+void TestQgsRectangle::isValid()
+{
+  // a default rectangle is not valid
+  QgsRectangle rect;
+  QVERIFY( !rect.isValid() );
+  QVERIFY( rect.isNull() );
+
+  // all the values are valid, xMin < xMax, yMin, yMax
+  QgsRectangle rect2( 10, 12, 15, 25 );
+  QVERIFY( rect2.isValid() );
+  QVERIFY( !rect2.isNull() );
+
+  // xMax < xMin
+  // not valid
+  rect2.setXMaximum( 9 );
+  QVERIFY( !rect2.isValid() );
+  QVERIFY( !rect2.isNull() );
+
+  // One of the coordinates is NaN
+  // not valid
+  QgsRectangle rect3( -3, 5, 2500, 4200 );
+  QVERIFY( rect3.isValid() );
+  rect3.setYMinimum( std::numeric_limits<double>::quiet_NaN() );
+  QVERIFY( !rect3.isValid() );
+  QVERIFY( !rect3.isNull() );
+
+  // One of the coordinates is infinity
+  // not valid
+  QgsRectangle rect4( 22, 15, 33, 55 );
+  QVERIFY( rect4.isValid() );
+  QVERIFY( !rect4.isNull() );
+  rect4.setXMaximum( std::numeric_limits<double>::infinity() );
+  QVERIFY( !rect4.isValid() );
+  QVERIFY( !rect4.isNull() );
 }
 
 QGSTEST_MAIN( TestQgsRectangle )

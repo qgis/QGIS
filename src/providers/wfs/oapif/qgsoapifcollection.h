@@ -16,43 +16,60 @@
 #ifndef QGSOAPIFCOLLECTION_H
 #define QGSOAPIFCOLLECTION_H
 
+#include <nlohmann/json.hpp>
+
+#include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+#include "qgslayermetadata.h"
+#include "qgsrectangle.h"
+
 #include <QObject>
 
-#include "qgsdatasourceuri.h"
-#include "qgsbasenetworkrequest.h"
-#include "qgsrectangle.h"
-#include "qgslayermetadata.h"
-
-#include <nlohmann/json.hpp>
 using namespace nlohmann;
 #include <vector>
 
 //! Describes a collection
 struct QgsOapifCollection
 {
-  //! Identifier
-  QString mId;
+    //! Identifier
+    QString mId;
 
-  //! Title
-  QString mTitle;
+    //! Title
+    QString mTitle;
 
-  //! Description
-  QString mDescription;
+    //! Description
+    QString mDescription;
 
-  //! Bounding box
-  QgsRectangle mBbox;
+    //! Bounding box
+    QgsRectangle mBbox;
 
-  //! Bounding box Crs
-  QgsCoordinateReferenceSystem mBboxCrs;
+    //! Bounding box Crs
+    QgsCoordinateReferenceSystem mBboxCrs;
 
-  //! List of available CRS
-  QList<QString> mCrsList;
+    //! List of available CRS
+    QList<QString> mCrsList;
 
-  //! Layer metadata
-  QgsLayerMetadata mLayerMetadata;
+    //! Layer metadata
+    QgsLayerMetadata mLayerMetadata;
 
-  //! Fills a collection from its JSON serialization
-  bool deserialize( const json &j, const json &jCollections );
+    //! Feature count when advertised (currently only through ldproxy's itemCount)
+    int64_t mFeatureCount = -1;
+
+    //! Set of media type for feature formats
+    QSet<QString> mFeatureFormats;
+
+    //! Map of media type to /items url
+    QMap<QString, QString> mMapFeatureFormatToUrl;
+
+    //! Map of media type to url for rel=enclosure
+    // Cf https://geonovum.github.io/ogc-api-features-guideline
+    QMap<QString, QString> mMapFeatureFormatToBulkDownloadUrl;
+
+    //! URL to XML Schema describing the items (optional)
+    QString mXmlSchemaUrl;
+
+    //! Fills a collection from its JSON serialization
+    bool deserialize( const json &j, const json &jCollections );
 };
 
 //! Manages the /collections request
@@ -82,6 +99,9 @@ class QgsOapifCollectionsRequest : public QgsBaseNetworkRequest
     //! Return the url of the next page (extension to the spec)
     const QString &nextUrl() const { return mNextUrl; }
 
+    //! Return the set of media type for feature formats
+    const QSet<QString> &featureFormats() const { return mFeatureFormats; }
+
   signals:
     //! emitted when the capabilities have been fully parsed, or an error occurred
     void gotResponse();
@@ -101,6 +121,8 @@ class QgsOapifCollectionsRequest : public QgsBaseNetworkRequest
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
 
+    //! Set of media type for feature formats
+    QSet<QString> mFeatureFormats;
 };
 
 //! Manages the /collection/{collectionId} request
@@ -143,7 +165,6 @@ class QgsOapifCollectionRequest : public QgsBaseNetworkRequest
     QgsOapifCollection mCollection;
 
     ApplicationLevelError mAppLevelError = ApplicationLevelError::NoError;
-
 };
 
 #endif // QGSOAPIFCOLLECTION_H

@@ -18,10 +18,9 @@
 #ifndef QGSMAPTOOLSHOWHIDELABELS_H
 #define QGSMAPTOOLSHOWHIDELABELS_H
 
-#include "qgsmaptoollabel.h"
-#include "qgsfeatureid.h"
 #include "qgis_app.h"
-
+#include "qgsfeatureid.h"
+#include "qgsmaptoollabel.h"
 
 //! A map tool for showing or hiding a feature's label
 class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
@@ -42,9 +41,8 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
-
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
 
     //! Stores actual select rect
     QRect mSelectRect;
@@ -57,12 +55,10 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     void showHideLabels( QMouseEvent *e );
 
     //! Returns the features intersecting rubberband
-    bool selectedFeatures( QgsVectorLayer *vlayer,
-                           QgsFeatureIds &selectedFeatIds );
+    bool selectedFeatures( QgsVectorLayer *vlayer, QgsFeatureIds &selectedFeatIds );
 
     //! Returns the label features intersecting rubberband
-    bool selectedLabelFeatures( QgsVectorLayer *vlayer,
-                                QList<QgsLabelPosition> &listPos );
+    bool selectedLabelFeatures( QgsVectorLayer *vlayer, QList<QgsLabelPosition> &listPos );
 
     bool showHide( const QgsLabelPosition &pos, bool show );
 };

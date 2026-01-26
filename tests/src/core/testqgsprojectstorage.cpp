@@ -13,25 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgsauxiliarystorage.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsproject.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageregistry.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-
 
 class TestQgsProjectStorage : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void testMemoryStorage();
     void testSupportedUri();
@@ -51,9 +49,9 @@ void TestQgsProjectStorage::initTestCase()
   // Runs once before any tests are run
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -73,7 +71,7 @@ class MemoryStorage : public QgsProjectStorage
   public:
     QString type() override
     {
-      return QStringLiteral( "memory" );
+      return u"memory"_s;
     }
 
     QStringList listProjects( const QString &uri ) override
@@ -154,7 +152,7 @@ void TestQgsProjectStorage::testMemoryStorage()
 {
   const QString dataDir( TEST_DATA_DIR ); // defined in CmakeLists.txt
   const QString layerPath = dataDir + "/points.shp";
-  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer1 = new QgsVectorLayer( layerPath, u"points"_s, u"ogr"_s );
   QVERIFY( layer1->isValid() );
 
   MemoryStorage *memStorage = new MemoryStorage;
@@ -244,13 +242,13 @@ void TestQgsProjectStorage::testMemoryStorage()
 
 void TestQgsProjectStorage::testSupportedUri()
 {
-  QgsProjectStorage *gpkgStorage = QgsApplication::projectStorageRegistry()->projectStorageFromType( QStringLiteral( "geopackage" ) );
+  QgsProjectStorage *gpkgStorage = QgsApplication::projectStorageRegistry()->projectStorageFromType( u"geopackage"_s );
   QVERIFY( gpkgStorage );
 
-  QVERIFY( gpkgStorage->isSupportedUri( QStringLiteral( "%1/mixed_layers.gpkg" ).arg( TEST_DATA_DIR ) ) );
-  QVERIFY( !gpkgStorage->isSupportedUri( QStringLiteral( "%1/mixed_types.TAB" ).arg( TEST_DATA_DIR ) ) );
+  QVERIFY( gpkgStorage->isSupportedUri( u"%1/mixed_layers.gpkg"_s.arg( TEST_DATA_DIR ) ) );
+  QVERIFY( !gpkgStorage->isSupportedUri( u"%1/mixed_types.TAB"_s.arg( TEST_DATA_DIR ) ) );
 
-  QCOMPARE( QgsApplication::projectStorageRegistry()->projectStorageFromUri( QStringLiteral( "%1/mixed_layers.gpkg" ).arg( TEST_DATA_DIR ) )->type(), QStringLiteral( "geopackage" ) );
+  QCOMPARE( QgsApplication::projectStorageRegistry()->projectStorageFromUri( u"%1/mixed_layers.gpkg"_s.arg( TEST_DATA_DIR ) )->type(), u"geopackage"_s );
 }
 
 

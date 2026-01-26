@@ -14,56 +14,76 @@
  ***************************************************************************/
 
 #include "qgschunkloader.h"
+
 #include "qgschunknode.h"
 
 #include <QVector>
+
+#include "moc_qgschunkloader.cpp"
+
 ///@cond PRIVATE
 
 QgsQuadtreeChunkLoaderFactory::QgsQuadtreeChunkLoaderFactory() = default;
 
 QgsQuadtreeChunkLoaderFactory::~QgsQuadtreeChunkLoaderFactory() = default;
 
-void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel, const QgsAABB &clippingBbox )
+void QgsQuadtreeChunkLoaderFactory::setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D )
 {
-  mRootBbox = rootBbox;
+  mRootBox3D = rootBox3D;
   mRootError = rootError;
   mMaxLevel = maxLevel;
-  mClippingBbox = clippingBbox;
+  mClippingBox3D = clippingBox3D;
 }
 
 QgsChunkNode *QgsQuadtreeChunkLoaderFactory::createRootNode() const
 {
-  return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0 ), mRootBbox, mRootError );
+  return new QgsChunkNode( QgsChunkNodeId( 0, 0, 0 ), mRootBox3D, mRootError );
 }
 
 QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
 
-  if ( node->level() >= mMaxLevel )
+  // If there is a max level set, we should respect that
+  if ( mMaxLevel != -1 && node->level() >= mMaxLevel )
+    return children;
+
+  const QgsBox3D box3D = node->box3D();
+
+  // Nodes without extent cannot have children
+  if ( box3D.isNull() )
     return children;
 
   const QgsChunkNodeId nodeId = node->tileId();
   const float childError = node->error() / 2;
-  const QgsAABB bbox = node->bbox();
-  float xc = bbox.xCenter(), zc = bbox.zCenter();
+  QgsVector3D center = box3D.center();
 
+  // if box is very wide (or very thin) we will only split it in one direction so the children
+  // are not as wide/thin and are closer to squares
+  const bool skipDx = box3D.height() > box3D.width() * 2;
+  const bool skipDy = box3D.width() > box3D.height() * 2;
   for ( int i = 0; i < 4; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 );
-    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + ( dy ? 0 : 1 ) );  // TODO: inverse dy?
-    // the Y and Z coordinates below are intentionally flipped, because
-    // in chunk node IDs the X,Y axes define horizontal plane,
-    // while in our 3D scene the X,Z axes define the horizontal plane
-    const float chXMin = dx ? xc : bbox.xMin;
-    const float chXMax = dx ? bbox.xMax : xc;
-    const float chZMin = dy ? zc : bbox.zMin;
-    const float chZMax = dy ? bbox.zMax : zc;
-    const float chYMin = bbox.yMin;
-    const float chYMax = bbox.yMax;
-    const QgsAABB childBbox = QgsAABB( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax );
-    if ( mClippingBbox.isEmpty() || childBbox.intersects( mClippingBbox ) )
-      children << new QgsChunkNode( childId, childBbox, childError, node );
+
+    if ( dx && skipDx )
+      continue;
+    if ( dy && skipDy )
+      continue;
+
+    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + dy );
+
+    const double chXMin = dx ? center.x() : box3D.xMinimum();
+    const double chXMax = dx || skipDx ? box3D.xMaximum() : center.x();
+    const double chYMin = dy ? center.y() : box3D.yMinimum();
+    const double chYMax = dy || skipDy ? box3D.yMaximum() : center.y();
+    const double chZMin = box3D.zMinimum();
+    const double chZMax = box3D.zMaximum();
+    const QgsBox3D childBox3D( chXMin, chYMin, chZMin, chXMax, chYMax, chZMax );
+
+    // When there's a clipping box defined, only keep intersecting children. Note that a QgsBox3D.isEmpty() == true when is2d() == true
+    if ( mClippingBox3D.isNull() || childBox3D.intersects( mClippingBox3D ) )
+      children << new QgsChunkNode( childId, childBox3D, childError, node );
   }
   return children;
 }

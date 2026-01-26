@@ -10,18 +10,17 @@
 
 
 
-
 class QgsRasterTransparencyWidget : QgsMapLayerConfigWidget
 {
 %Docstring(signature="appended")
-Widget to control a layers transparency and related options
+A widget for controlling a raster layer's transparency and related
+options.
 %End
 
 %TypeHeaderCode
 #include "qgsrastertransparencywidget.h"
 %End
   public:
-
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 Widget to control a layers transparency and related options
@@ -29,7 +28,8 @@ Widget to control a layers transparency and related options
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
-Sets the ``context`` in which the dialog is shown, e.g., the associated map canvas and expression contexts.
+Sets the ``context`` in which the dialog is shown, e.g., the associated
+map canvas and expression contexts.
 
 .. versionadded:: 3.22
 %End
@@ -61,7 +61,6 @@ Apply any changes on the widget to the set layer.
 %End
 
   protected:
-
 
 };
 /************************************************************************

@@ -16,10 +16,12 @@
 #ifndef QGSRASTERATTRIBUTETABLEADDCOLUMNDIALOG_H
 #define QGSRASTERATTRIBUTETABLEADDCOLUMNDIALOG_H
 
-#include <QDialog>
-#include "qgis_gui.h"
-#include "qgis.h"
 #include "ui_qgsrasterattributetableaddcolumndialogbase.h"
+
+#include "qgis.h"
+#include "qgis_gui.h"
+
+#include <QDialog>
 
 #define SIP_NO_FILE
 
@@ -27,7 +29,7 @@ class QgsRasterAttributeTable;
 
 /**
  * \ingroup gui
- * \brief The QgsRasterAttributeTableAddColumnDialog class collects options to add a new column to a raster attribute table.
+ * \brief A dialog which collects options to add a new column to a raster attribute table.
  *
  * \note Not available in Python bindings
  * \since QGIS 3.30
@@ -36,7 +38,6 @@ class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, privat
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a new QgsRasterAttributeTableAddColumnDialog
      * \param attributeTable the raster attribute table
@@ -52,31 +53,30 @@ class GUI_EXPORT QgsRasterAttributeTableAddColumnDialog : public QDialog, privat
     /**
      * Returns TRUE if the add color column option was checked.
      */
-    bool isColor( ) const;
+    bool isColor() const;
 
     /**
      * Returns TRUE if the add color ramp column option was checked.
      */
-    bool isRamp( ) const;
+    bool isRamp() const;
 
     /**
      * Returns the new column name.
      */
-    QString name( ) const;
+    QString name() const;
 
     /**
      * Returns the new column name.
      */
-    Qgis::RasterAttributeTableFieldUsage usage( ) const;
+    Qgis::RasterAttributeTableFieldUsage usage() const;
 
     /**
      * Returns the new column type.
      */
-    QMetaType::Type type( ) const;
+    QMetaType::Type type() const;
 
 
   private:
-
     QgsRasterAttributeTable *mAttributeTable;
 
     void updateDialog();

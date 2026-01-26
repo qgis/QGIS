@@ -17,15 +17,15 @@
 #ifndef QGSHANAPROVIDER_H
 #define QGSHANAPROVIDER_H
 
+#include <odbc/Forwards.h>
+
 #include "qgsfields.h"
-#include "qgsprovidermetadata.h"
 #include "qgshanaconnection.h"
 #include "qgshanaprimarykeys.h"
+#include "qgsprovidermetadata.h"
 #include "qgsvectordataprovider.h"
 
 #include <QVersionNumber>
-
-#include "odbc/Forwards.h"
 
 class QgsFeature;
 class QgsField;
@@ -46,8 +46,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     static const QString HANA_KEY;
     static const QString HANA_DESCRIPTION;
 
-    QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
-                     Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
+    QgsHanaProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /* Functions inherited from QgsVectorDataProvider */
 
@@ -59,15 +58,17 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QString dataComment() const override;
     long long featureCount() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
+    QString geometryColumnName() const override;
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
+    QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     QString subsetString() const override;
     bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
     bool supportsSubsetString() const override;
     QString subsetStringDialect() const override;
     QString subsetStringHelpUrl() const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
@@ -77,7 +78,8 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeFeatures(
       const QgsChangedAttributesMap &attrMap,
-      const QgsGeometryMap &geometryMap ) override;
+      const QgsGeometryMap &geometryMap
+    ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
 
     Qgis::VectorProviderCapabilities capabilities() const override;
@@ -100,6 +102,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
       const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
+      QString &createdLayerUri,
       QString *errorMessage = nullptr,
       const QMap<QString, QVariant> *options = nullptr
     );
@@ -192,7 +195,9 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
       bool overwrite,
       QMap<int, int> &oldToNewAttrIdxMap,
       QString &errorMessage,
-      const QMap<QString, QVariant> *options ) override;
+      const QMap<QString, QVariant> *options,
+      QString &createdLayerUri
+    ) override;
 
     QList<QgsDataItemProvider *> dataItemProviders() const override;
 
@@ -206,7 +211,7 @@ class QgsHanaProviderMetadata : public QgsProviderMetadata
     // Data source URI API
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
-    QList< Qgis::LayerType > supportedLayerTypes() const override;
+    QList<Qgis::LayerType> supportedLayerTypes() const override;
 };
 
 #endif // QGSHANAPROVIDER_H

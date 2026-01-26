@@ -18,20 +18,20 @@
 #ifndef QGSLAYERMETADATAFORMATTER_H
 #define QGSLAYERMETADATAFORMATTER_H
 
-#include <QCoreApplication>
-
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgslayermetadata.h"
+
+#include <QCoreApplication>
 
 /**
  * \ingroup core
  * \class QgsLayerMetadataFormatter
- * \brief Class for metadata formatter.
+ * \brief Formats layer metadata into HTML.
  */
 class CORE_EXPORT QgsLayerMetadataFormatter
 {
-    Q_DECLARE_TR_FUNCTIONS( "QgsLayerMetadataFormatter" )
+    Q_DECLARE_TR_FUNCTIONS( QgsLayerMetadataFormatter )
 
   public:
 

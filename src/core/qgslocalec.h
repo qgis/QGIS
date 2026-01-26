@@ -20,12 +20,13 @@
 
 #define SIP_NO_FILE
 
-#include <QMutex>
-
 #include "qgis_core.h"
+
+#include <QMutex>
 
 /**
  * \ingroup core
+ * \brief Sets the current locale to the c locale for the lifetime of the object.
  */
 class CORE_EXPORT QgsLocaleNumC
 {

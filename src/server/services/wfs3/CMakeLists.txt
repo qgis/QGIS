@@ -2,7 +2,7 @@
 # Files
 
 set (WFS3_SRCS
-  ${CMAKE_SOURCE_DIR}/external/inja/inja.hpp
+  ${CMAKE_SOURCE_DIR}/external/inja/inja/inja.hpp
   qgswfs3.cpp
   qgswfs3handlers.cpp
 )
@@ -11,13 +11,6 @@ set (WFS3_SRCS
 # Build
 
 add_library (wfs3 MODULE ${WFS3_SRCS})
-
-# require c++17
-target_compile_features(wfs3 PRIVATE cxx_std_17)
-
-include_directories(SYSTEM
-  ${POSTGRES_INCLUDE_DIR}
-)
 
 include_directories(
 
@@ -32,12 +25,10 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-
 target_link_libraries(wfs3
   qgis_core
   qgis_server
 )
-
 
 ########################################################
 # Install

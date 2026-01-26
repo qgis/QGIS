@@ -20,9 +20,9 @@
 
 #include <memory>
 
+#include <QMutex>
 #include <QThread>
 #include <QWaitCondition>
-#include <QMutex>
 
 class QgsPostgresConn;
 
@@ -38,13 +38,13 @@ class QgsPostgresListener : public QThread
     Q_OBJECT
 
   public:
-
     /**
      * create an instance if possible and starts the associated thread
      * /returns NULLPTR on error
      */
-    static std::unique_ptr< QgsPostgresListener > create( const QString &connString );
+    static std::unique_ptr<QgsPostgresListener> create( const QString &connString );
 
+    QgsPostgresListener( const QString &connString );
     ~QgsPostgresListener() override;
 
     void run() override;
@@ -57,10 +57,7 @@ class QgsPostgresListener : public QThread
 
     QgsPostgresConn *mConn = nullptr;
 
-    QgsPostgresListener( const QString &connString );
-
     Q_DISABLE_COPY( QgsPostgresListener )
-
 };
 
 #endif // QGSPOSTGRESLISTENER_H

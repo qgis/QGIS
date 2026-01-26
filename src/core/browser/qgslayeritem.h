@@ -17,15 +17,15 @@
 #ifndef QGSLAYERITEM_H
 #define QGSLAYERITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdataitem.h"
 #include "qgslayermetadata.h"
 
 /**
  * \ingroup core
- * \brief Item that represents a layer that can be opened with one of the providers
+ * \brief A browser item that represents a layer that can be opened with one of the providers.
 */
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsLayerItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -69,9 +69,6 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     //! Returns layer uri or empty string if layer cannot be created
     QString uri() const { return mUri; }
-
-    //! Returns provider key
-    QString providerKey() const { return mProviderKey; }
 
     /**
      * Returns the supported CRS
@@ -138,7 +135,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static QIcon iconVectorTile();
     //! Returns icon for point cloud layer
     static QIcon iconPointCloud();
-    //! \returns the layer name
+    //! Returns the layer name
     virtual QString layerName() const { return name(); }
     QgsAbstractDatabaseProviderConnection *databaseConnection() const override;
 

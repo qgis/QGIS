@@ -18,16 +18,16 @@
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsoptionsbase.h"
-#include "qgsguiutils.h"
-#include "qgisapp.h"
-#include "qgshelp.h"
 
+#include "qgis_app.h"
+#include "qgisapp.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsoptionsdialogbase.h"
 
 #include <QList>
-#include "qgis_app.h"
 
 class QgsExpressionContext;
 class QgsOptionsPageWidget;
@@ -45,17 +45,16 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 {
     Q_OBJECT
   public:
-
     /**
      * Behavior to use when encountering a layer with an unknown CRS
      * \since QGIS 3.10
      */
     enum UnknownLayerCrsBehavior
     {
-      NoAction = 0, //!< Take no action and leave as unknown CRS
+      NoAction = 0,         //!< Take no action and leave as unknown CRS
       PromptUserForCrs = 1, //!< User is prompted for a CRS choice
-      UseProjectCrs = 2, //!< Copy the current project's CRS
-      UseDefaultCrs = 3, //!< Use the default layer CRS set via QGIS options
+      UseProjectCrs = 2,    //!< Copy the current project's CRS
+      UseDefaultCrs = 3,    //!< Use the default layer CRS set via QGIS options
     };
     Q_ENUM( UnknownLayerCrsBehavior )
 
@@ -67,8 +66,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      * \param modal TRUE for modal dialog
      * \param optionsFactories factories for additional option pages
      */
-    QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-                const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
+    QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
     ~QgsOptions() override;
 
@@ -253,6 +251,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void moveLocalizedDataPathUp();
     void moveLocalizedDataPathDown();
     void alwaysUseDecimalPointChanged( bool checked );
+    void addTrustedProject();
+    void removeTrustedProject();
+    void addUntrustedProject();
+    void removeUntrustedProject();
 
   private:
     QgsSettings *mSettings = nullptr;
@@ -285,12 +287,11 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     static const int PALETTE_LABEL_ROLE = Qt::UserRole + 2;
 
   private:
-
-    QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
+    QList<QgsOptionsPageWidget *> mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
 
-    std::unique_ptr< QgsBearingNumericFormat > mBearingFormat;
-    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mCoordinateFormat;
+    std::unique_ptr<QgsBearingNumericFormat> mBearingFormat;
+    std::unique_ptr<QgsGeographicCoordinateNumericFormat> mCoordinateFormat;
 
     QStandardItemModel *mTreeModel = nullptr;
 

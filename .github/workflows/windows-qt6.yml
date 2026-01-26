@@ -23,23 +23,28 @@ jobs:
 
     steps:
       - name: 🐣 Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 2
 
+      - name: 🔨 Uninstall system cmake
+        shell: bash
+        run: |
+          choco uninstall cmake.install
+
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@latest
+        uses: lukka/get-cmake@9e07ecdcee1b12e5037e42f410b67f03e2f626e1
         with:
-          cmakeVersion: 3.29.6
+          cmakeVersion: 3.31.6
 
       - name: 🧽 Developer Command Prompt for Microsoft Visual C++
-        uses: ilammy/msvc-dev-cmd@v1
+        uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 #v1
 
       - name: 🎡 Setup vcpkg
         uses: ./.github/actions/setup-vcpkg
 
       - name: 🦬 Setup flex/bison
-        uses: robinraju/release-downloader@v1.10
+        uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 #v1.12
         with:
           repository: 'lexxmark/winflexbison'
           fileName: '*.zip'
@@ -47,12 +52,22 @@ jobs:
           extract: true
 
       - name: 🛍️ Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@63069e3931dedbf3b63792097479563182fe70d1 #v1.2
         with:
           max-size: 1G
+          key: build-ccache-win64-qt6-${{ github.event.pull_request.base.ref || github.ref_name }}
+          save: ${{ github.event_name == 'push' }}
+
+      - name: 🛍️ Tune ccache configuration
+        shell: bash
+        run: |
+          # To make ccache work properly with precompiled headers
+          ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
 
       - name: 🌱 Install dependencies and generate project files
         shell: bash
+        env:
+          X_VCPKG_ASSET_SOURCES: x-azurl,https://assetcache.open-vcpkg.org/assetcache,,read
         run: |
           BUILD_DIR=$( cygpath "${{ github.workspace }}/build" )
           SOURCE_DIR=$( cygpath "${{ github.workspace }}" )
@@ -68,17 +83,15 @@ jobs:
                 -D WITH_DESKTOP=ON \
                 -D WITH_3D=ON \
                 -D WITH_BINDINGS=ON \
+                -D WITH_GEOGRAPHICLIB=OFF \
+                -D WITH_SFCGAL=ON \
                 -D ENABLE_TESTS=OFF \
-                -D BUILD_WITH_QT6=ON \
                 -D USE_CCACHE=ON \
+                -D ENABLE_UNITY_BUILDS=ON \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
-                -D SIP_BUILD_EXECUTABLE="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\Scripts\sip-build.exe" \
-                -D PYUIC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyuic5.bat" \
-                -D PYRCC_PROGRAM="${BUILD_DIR}\vcpkg_installed\x64-windows-release\tools\python3\pyrcc5.bat" \
-                -D CMAKE_C_COMPILER_LAUNCHER=ccache \
-                -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
-                -D WITH_QTWEBKIT=OFF \
+                -D USE_CCACHE=ON \
+                -D WITH_QTWEBENGINE=OFF \
                 -D VCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:/src" \
                 -D NUGET_USERNAME=${{ github.actor }} \
                 -D NUGET_TOKEN=${{ secrets.GITHUB_TOKEN }}
@@ -103,14 +116,14 @@ jobs:
 
       - name: 📤 Upload sdk
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: qgis-sdk-x64-windows
           path: |
             sdk/vcpkg-export-*.zip
 
       - name: 📑 Upload dep build logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: build-logs-x64-windows
@@ -118,7 +131,7 @@ jobs:
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         id: artifact-win64-qt6
         with:
           name: qgis-windows-qt6
@@ -128,6 +141,7 @@ jobs:
 
       - name: Schedule download comment
         uses: ./.github/actions/post_sticky_comment
+        if: github.event_name == 'pull_request'
         with:
           marker: mingw64-qt6
           body: |

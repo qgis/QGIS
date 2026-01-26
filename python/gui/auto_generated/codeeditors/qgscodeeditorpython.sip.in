@@ -11,11 +11,13 @@
 
 
 
+
 class QgsCodeEditorPython : QgsCodeEditor
 {
 %Docstring(signature="appended")
-A Python editor based on QScintilla2. Adds syntax highlighting and
-code autocompletion.
+A Python editor based on QScintilla2.
+
+Adds syntax highlighting and code autocompletion.
 
 .. note::
 
@@ -27,9 +29,7 @@ code autocompletion.
 %End
   public:
 
-
-    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(),
-                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
+    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
 %Docstring
 Construct a new Python editor.
 
@@ -58,21 +58,24 @@ Loads a ``script`` file.
 
     bool isCursorInsideStringLiteralOrComment() const;
 %Docstring
-Check whether the current cursor position is inside a string literal or a comment
+Check whether the current cursor position is inside a string literal or
+a comment
 
 .. versionadded:: 3.30
 %End
 
     QString characterBeforeCursor() const;
 %Docstring
-Returns the character before the cursor, or an empty string if cursor is set at start
+Returns the character before the cursor, or an empty string if cursor is
+set at start
 
 .. versionadded:: 3.30
 %End
 
     QString characterAfterCursor() const;
 %Docstring
-Returns the character after the cursor, or an empty string if the cursor is set at end
+Returns the character after the cursor, or an empty string if the cursor
+is set at end
 
 .. versionadded:: 3.30
 %End
@@ -96,6 +99,14 @@ Searches the selected text in the official PyQGIS online documentation.
 .. versionadded:: 3.16
 %End
 
+    virtual void showApiDocumentation( const QString &item );
+%Docstring
+Displays the given text in the official APIs (PyQGIS, C++ QGIS or Qt)
+documentation.
+
+.. versionadded:: 3.42
+%End
+
     virtual void toggleComment();
 
 %Docstring
@@ -105,10 +116,10 @@ Toggle comment for the selected text.
 %End
 
   protected:
-
     virtual void initializeLexer();
 
     virtual void keyPressEvent( QKeyEvent *event );
+
     virtual QString reformatCodeString( const QString &string );
 
     virtual void populateContextMenu( QMenu *menu );

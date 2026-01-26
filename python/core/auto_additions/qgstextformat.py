@@ -4,5 +4,9 @@ try:
     QgsTextFormat.fromMimeData = staticmethod(QgsTextFormat.fromMimeData)
     QgsTextFormat.textFormatPreviewPixmap = staticmethod(QgsTextFormat.textFormatPreviewPixmap)
     QgsTextFormat.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
+    pass
+try:
+    QgsTextFormat.Tab.__group__ = ['textrenderer']
+except (NameError, AttributeError):
     pass

@@ -16,8 +16,8 @@
 #ifndef QGSFILLSYMBOL_H
 #define QGSFILLSYMBOL_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbol.h"
 
 /**
@@ -34,7 +34,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
      * Create a fill symbol with one symbol layer: SimpleFill with specified properties.
      * This is a convenience method for easier creation of fill symbols.
      */
-    static QgsFillSymbol *createSimple( const QVariantMap &properties ) SIP_FACTORY;
+    static std::unique_ptr< QgsFillSymbol > createSimple( const QVariantMap &properties );
 
     /**
      * Constructor for QgsFillSymbol, with the specified list of initial symbol \a layers.

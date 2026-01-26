@@ -1,19 +1,24 @@
-#    Copyright (C) 2022-2023 Jakub Melka
+# MIT License
 #
-#    This file is part of PDF4QT.
+# Copyright (c) 2018-2025 Jakub Melka and Contributors
 #
-#    PDF4QT is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Lesser General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    with the written consent of the copyright owner, any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-#    PDF4QT is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Lesser General Public License for more details.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-#    You should have received a copy of the GNU Lesser General Public License
-#    along with PDF4QT.  If not, see <https://www.gnu.org/licenses/>.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 add_library(Pdf4QtLibCore SHARED
     sources/pdfglobal.h
@@ -144,8 +149,17 @@ add_library(Pdf4QtLibCore SHARED
     sources/pdfwidgetsnapshot.cpp
     sources/pdfwidgetsnapshot.h
     cmaps.qrc
+    aatl.qrc
     sources/pdfcertificatestore.h
     sources/pdfcertificatestore.cpp
+    sources/pdfblpainter.h
+    sources/pdfblpainter.cpp
+    sources/pdfpagecontenteditorprocessor.h
+    sources/pdfpagecontenteditorprocessor.cpp
+    sources/pdfpagecontenteditorcontentstreambuilder.h
+    sources/pdfpagecontenteditorcontentstreambuilder.cpp
+    sources/pdfapplicationtranslator.h
+    sources/pdfapplicationtranslator.cpp
 )
 
 include(GenerateExportHeader)
@@ -155,7 +169,7 @@ GENERATE_EXPORT_HEADER(Pdf4QtLibCore
                        PDF4QTLIBCORESHARED_EXPORT
                        EXPORT_FILE_NAME "${CMAKE_BINARY_DIR}/${INSTALL_INCLUDEDIR}/pdf4qtlibcore_export.h")
 
-target_link_libraries(Pdf4QtLibCore PRIVATE ${QT_VERSION_BASE}::Core ${QT_VERSION_BASE}::Gui ${QT_VERSION_BASE}::Xml ${QT_VERSION_BASE}::Svg)
+target_link_libraries(Pdf4QtLibCore PRIVATE Qt6::Core Qt6::Gui Qt6::Xml Qt6::Svg)
 target_link_libraries(Pdf4QtLibCore PRIVATE ${LCMS2_LIBRARIES})
 target_link_libraries(Pdf4QtLibCore PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 target_link_libraries(Pdf4QtLibCore PRIVATE ZLIB::ZLIB)
@@ -168,13 +182,21 @@ target_include_directories(Pdf4QtLibCore PRIVATE SYSTEM
                            ${FREETYPE_INCLUDE_DIRS}
                            ${Fontconfig_INCLUDE_DIRS})
 
-if(PDF4QT_ENABLE_OPENGL)
-    target_link_libraries(Pdf4QtLibCore PRIVATE Qt6::OpenGL)
+if(LINUX_GCC)
+   # target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
 endif()
 
-if(LINUX_GCC)
-    #target_link_libraries(Pdf4QtLibCore PUBLIC TBB::tbb)
+set(PDF4QT_COMPILE_OPTIONS)
+if(HAVE_WFLAG_SUGGEST_OVERRIDE)
+  list(APPEND PDF4QT_COMPILE_OPTIONS "-Wno-suggest-override")
 endif()
+if(HAVE_WFLAG_SUGGEST_DESTRUCTOR_OVERRIDE)
+  list(APPEND PDF4QT_COMPILE_OPTIONS "-Wno-suggest-destructor-override")
+endif()
+if (PDF4QT_COMPILE_OPTIONS)
+  target_compile_options(Pdf4QtLibCore PRIVATE "${PDF4QT_COMPILE_OPTIONS}")
+endif()
+
 
 if(MINGW)
     target_link_libraries(Pdf4QtLibCore PRIVATE Secur32 Mscms Gdi32 User32 crypt32)
@@ -182,6 +204,10 @@ endif()
 
 target_include_directories(Pdf4QtLibCore INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/sources)
 target_include_directories(Pdf4QtLibCore PUBLIC ${CMAKE_BINARY_DIR}/${INSTALL_INCLUDEDIR})
+
+find_library(blend2d blend2d REQUIRED)
+target_include_directories(Pdf4QtLibCore PRIVATE ${blend2d_INCLUDES})
+target_link_libraries(Pdf4QtLibCore PRIVATE blend2d)
 
 set_target_properties(Pdf4QtLibCore PROPERTIES
                       VERSION ${PDF4QT_VERSION}

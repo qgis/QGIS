@@ -13,23 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgsadvanceddigitizingtools.h"
 #include "qgsadvanceddigitizingtoolsregistry.h"
+#include "qgstest.h"
+
 #include <QSignalSpy>
 
-class TestQgsAdvancedDigitizingToolsRegistry: public QObject
+class TestQgsAdvancedDigitizingToolsRegistry : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void guiRegistry();
 
   private:
-
 };
 
 void TestQgsAdvancedDigitizingToolsRegistry::initTestCase()
@@ -66,22 +66,21 @@ void TestQgsAdvancedDigitizingToolsRegistry::guiRegistry()
   QVERIFY( !registry.toolMetadata( QString( "empty" ) ) );
   QVERIFY( registry.toolMetadataNames().isEmpty() );
 
-  auto createTool = []( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )->QgsAdvancedDigitizingTool *
-  {
+  auto createTool = []( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * ) -> QgsAdvancedDigitizingTool * {
     return new DummyAdvancedDigitizingTool();
   };
 
-  QgsAdvancedDigitizingToolMetadata *metadata = new QgsAdvancedDigitizingToolMetadata( QStringLiteral( "dummy" ), QStringLiteral( "My Dummy Tool" ), QIcon(), createTool );
+  QgsAdvancedDigitizingToolMetadata *metadata = new QgsAdvancedDigitizingToolMetadata( u"dummy"_s, u"My Dummy Tool"_s, QIcon(), createTool );
   QVERIFY( registry.addTool( metadata ) );
   const QString name = registry.toolMetadataNames().value( 0 );
-  QCOMPARE( name, QStringLiteral( "dummy" ) );
+  QCOMPARE( name, u"dummy"_s );
 
   // duplicate name not allowed
-  metadata = new QgsAdvancedDigitizingToolMetadata( QStringLiteral( "dummy" ), QStringLiteral( "My Dummy Tool" ), QIcon(), createTool );
+  metadata = new QgsAdvancedDigitizingToolMetadata( u"dummy"_s, u"My Dummy Tool"_s, QIcon(), createTool );
   QVERIFY( !registry.addTool( metadata ) );
 
   QVERIFY( registry.toolMetadata( name ) );
-  QCOMPARE( registry.toolMetadata( name )->visibleName(), QStringLiteral( "My Dummy Tool" ) );
+  QCOMPARE( registry.toolMetadata( name )->visibleName(), u"My Dummy Tool"_s );
 
   QgsAdvancedDigitizingTool *tool = registry.toolMetadata( name )->createTool( nullptr, nullptr );
   QVERIFY( tool );

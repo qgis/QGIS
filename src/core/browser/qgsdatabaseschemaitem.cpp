@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsdatabaseschemaitem.h"
+
+#include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsapplication.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdatabaseproviderconnection.h"
+
+#include "moc_qgsdatabaseschemaitem.cpp"
 
 QgsDatabaseSchemaItem::QgsDatabaseSchemaItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &providerKey )
   : QgsDataCollectionItem( parent, name, path, providerKey )
@@ -31,11 +34,6 @@ QgsDatabaseSchemaItem::QgsDatabaseSchemaItem( QgsDataItem *parent, const QString
 QgsDatabaseSchemaItem::~QgsDatabaseSchemaItem()
 {
 
-}
-
-QIcon QgsDatabaseSchemaItem::iconDataCollection()
-{
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconDbSchema.svg" ) );
 }
 
 QgsAbstractDatabaseProviderConnection *QgsDatabaseSchemaItem::databaseConnection() const

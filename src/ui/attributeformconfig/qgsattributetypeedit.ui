@@ -31,14 +31,14 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="laComment">
         <property name="text">
          <string>Comment</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2" colspan="3">
-       <widget class="QLabel" name="laComment">
+       <widget class="QLabel" name="laCommentContent">
         <property name="text">
          <string/>
         </property>
@@ -61,19 +61,6 @@
        <widget class="QgsPropertyOverrideButton" name="mAliasExpressionButton">
         <property name="text">
          <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QCheckBox" name="reuseLastValuesCheckBox">
-        <property name="toolTip">
-         <string>If checked, then the most recent value entered for this field will be remembered and reused when creating a new feature.</string>
-        </property>
-        <property name="text">
-         <string>Reuse last entered value</string>
-        </property>
-        <property name="checked">
-         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -284,27 +271,37 @@
       <string>Policies</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="1" colspan="3">
-       <widget class="QComboBox" name="mSplitPolicyComboBox"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="mDuplicatePolicyLabel">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mReuseLastValuePolicyLabel">
         <property name="text">
-         <string>When duplicating features</string>
+         <string>When adding features</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1" colspan="3">
-       <widget class="QComboBox" name="mDuplicatePolicyComboBox"/>
+      <item row="0" column="1" colspan="3">
+       <widget class="QComboBox" name="mReuseLastValuePolicyComboBox"/>
       </item>
-      <item row="0" column="0">
+      <item row="1" column="0" colspan="4">
+       <widget class="QLabel" name="mReuseLastValuePolicyDescriptionLabel">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="mSplitPolicyLabel">
         <property name="text">
          <string>When splitting features</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="4">
+      <item row="6" column="1" colspan="3">
+       <widget class="QComboBox" name="mDuplicatePolicyComboBox"/>
+      </item>
+      <item row="7" column="0" colspan="4">
        <widget class="QLabel" name="mDuplicatePolicyDescriptionLabel">
         <property name="text">
          <string>TextLabel</string>
@@ -314,13 +311,40 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="4">
+      <item row="8" column="1" colspan="3">
+       <widget class="QComboBox" name="mMergePolicyComboBox"/>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="mMergePolicyLabel">
+        <property name="text">
+         <string>When merging features</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="mDuplicatePolicyLabel">
+        <property name="text">
+         <string>When duplicating features</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="3">
+       <widget class="QComboBox" name="mSplitPolicyComboBox"/>
+      </item>
+      <item row="3" column="0" colspan="4">
        <widget class="QLabel" name="mSplitPolicyDescriptionLabel">
         <property name="text">
          <string>TextLabel</string>
         </property>
         <property name="wordWrap">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0" colspan="4">
+       <widget class="QLabel" name="mMergePolicyDescriptionLabel">
+        <property name="text">
+         <string>TextLabel</string>
         </property>
        </widget>
       </item>
@@ -371,7 +395,7 @@
   <tabstop>mAlias</tabstop>
   <tabstop>mAliasExpressionButton</tabstop>
   <tabstop>isFieldEditableCheckBox</tabstop>
-  <tabstop>reuseLastValuesCheckBox</tabstop>
+  <tabstop>mEditableExpressionButton</tabstop>
   <tabstop>labelOnTopCheckBox</tabstop>
   <tabstop>mWidgetTypeComboBox</tabstop>
   <tabstop>notNullCheckBox</tabstop>
@@ -383,6 +407,10 @@
   <tabstop>mCheckBoxEnforceExpression</tabstop>
   <tabstop>mExpressionWidget</tabstop>
   <tabstop>mApplyDefaultValueOnUpdateCheckBox</tabstop>
+  <tabstop>mReuseLastValuePolicyComboBox</tabstop>
+  <tabstop>mSplitPolicyComboBox</tabstop>
+  <tabstop>mDuplicatePolicyComboBox</tabstop>
+  <tabstop>mMergePolicyComboBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../../images/images.qrc"/>

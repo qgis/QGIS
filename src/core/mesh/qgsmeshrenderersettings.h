@@ -18,20 +18,19 @@
 #ifndef QGSMESHRENDERERSETTINGS_H
 #define QGSMESHRENDERERSETTINGS_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgscolorrampshader.h"
+#include "qgsinterpolatedlinerenderer.h"
+#include "qgsmesh3daveraging.h"
+
 #include <QColor>
 #include <QDomElement>
-#include <limits>
-
-#include "qgis_core.h"
-#include "qgis.h"
-#include "qgscolorrampshader.h"
-#include "qgsmesh3daveraging.h"
-#include "qgsinterpolatedlinerenderer.h"
 
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for mesh object
+ * \brief Represents a mesh renderer settings for mesh objects.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -76,7 +75,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 
   private:
     bool mEnabled = false;
-    double mLineWidth = DEFAULT_LINE_WIDTH;
+    double mLineWidth = Qgis::DEFAULT_LINE_WIDTH;
     Qgis::RenderUnit mLineWidthUnit = Qgis::RenderUnit::Millimeters;
     QColor mColor = Qt::black;
 };
@@ -84,7 +83,7 @@ class CORE_EXPORT QgsMeshRendererMeshSettings
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for scalar datasets
+ * \brief Represents a mesh renderer settings for scalar datasets.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -176,12 +175,42 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      */
     void setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit );
 
+    /**
+     * Sets the range limits type for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    void setLimits( Qgis::MeshRangeLimit limits ) { mRangeLimit = limits; }
+
+    /**
+     * Returns the range limits type for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    Qgis::MeshRangeLimit limits() const { return mRangeLimit; }
+
+    /**
+     * Sets the mesh extent for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    void setExtent( Qgis::MeshRangeExtent extent ) { mRangeExtent = extent; }
+
+    /**
+     * Returns the mesh extent for minimum maximum calculation
+     *
+     * \since QGIS 3.42
+     */
+    Qgis::MeshRangeExtent extent() const { return mRangeExtent; }
+
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
   private:
+    void updateShader();
+
     QgsColorRampShader mColorRampShader;
     DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::NoResampling;
     double mClassificationMinimum = 0;
@@ -190,12 +219,15 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
     QgsInterpolatedLineWidth mEdgeStrokeWidth;
     Qgis::RenderUnit mEdgeStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
+
+    Qgis::MeshRangeExtent mRangeExtent = Qgis::MeshRangeExtent::WholeMesh;
+    Qgis::MeshRangeLimit mRangeLimit = Qgis::MeshRangeLimit::NotSet;
 };
 
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for vector datasets displayed with arrows
+ * \brief Represents a mesh renderer settings for vector datasets displayed with arrows.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -314,7 +346,7 @@ class CORE_EXPORT QgsMeshRendererVectorArrowSettings
 /**
  * \ingroup core
  *
- * \brief Represents a streamline renderer settings for vector datasets displayed by streamlines
+ * \brief Represents a streamline renderer settings for vector datasets displayed by streamlines.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -360,7 +392,7 @@ class CORE_EXPORT QgsMeshRendererVectorStreamlineSettings
 /**
  * \ingroup core
  *
- * \brief Represents a trace renderer settings for vector datasets displayed by particle traces
+ * \brief Represents a trace renderer settings for vector datasets displayed by particle traces.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -398,7 +430,7 @@ class CORE_EXPORT QgsMeshRendererVectorTracesSettings
 /**
  * \ingroup core
  *
- * \brief Represents a mesh renderer settings for vector datasets displayed with wind barbs
+ * \brief Represents a mesh renderer settings for vector datasets displayed with wind barbs.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -440,12 +472,16 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
     void setShaftLength( double shaftLength );
 
     /**
-     * Sets the units for the shaft length
+     * Returns the units for the shaft length.
+     *
+     * \see setShaftLengthUnits()
      */
-    Qgis::RenderUnit shaftLengthUnits();
+    Qgis::RenderUnit shaftLengthUnits() const;
 
     /**
-     * Returns the units for the shaft length
+     * Sets the units for the shaft length.
+     *
+     * \see shaftLengthUnits()
      */
     void setShaftLengthUnits( Qgis::RenderUnit shaftLengthUnit );
 
@@ -474,7 +510,7 @@ class CORE_EXPORT QgsMeshRendererVectorWindBarbSettings
 /**
  * \ingroup core
  *
- * \brief Represents a renderer settings for vector datasets
+ * \brief Represents a renderer settings for vector datasets.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -650,7 +686,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 
     Symbology mDisplayingMethod = Arrows;
 
-    double mLineWidth = DEFAULT_LINE_WIDTH; //in millimeters
+    double mLineWidth = Qgis::DEFAULT_LINE_WIDTH; //in millimeters
     QgsColorRampShader mColorRampShader;
     QColor mColor = Qt::black;
     QgsInterpolatedLineColor::ColoringMethod mColoringMethod = QgsInterpolatedLineColor::SingleColor;
@@ -669,7 +705,7 @@ class CORE_EXPORT QgsMeshRendererVectorSettings
 /**
  * \ingroup core
  *
- * \brief Represents all mesh renderer settings
+ * \brief Represents all mesh renderer settings.
  *
  * \note The API is considered EXPERIMENTAL and can be changed without a notice
  *
@@ -683,6 +719,12 @@ class CORE_EXPORT QgsMeshRendererSettings
      * Constructs renderer with default single layer averaging method
      */
     QgsMeshRendererSettings();
+    QgsMeshRendererSettings( const QgsMeshRendererSettings &other );
+    SIP_SKIP QgsMeshRendererSettings( QgsMeshRendererSettings &&other );
+
+    QgsMeshRendererSettings &operator=( const QgsMeshRendererSettings &other );
+    QgsMeshRendererSettings &operator=( QgsMeshRendererSettings &&other );
+
     ~QgsMeshRendererSettings();
 
     //! Returns native mesh renderer settings

@@ -15,12 +15,15 @@
 
 #include "qgslayertreeembeddedwidgetsimpl.h"
 
+#include "qgsmaplayer.h"
+
 #include <QFontMetrics>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
 #include <QTimer>
-#include "qgsmaplayer.h"
+
+#include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
 
 ///@cond PRIVATE
 
@@ -31,7 +34,7 @@ QgsLayerTreeOpacityWidget::QgsLayerTreeOpacityWidget( QgsMapLayer *layer )
   QLabel *l = new QLabel( tr( "Opacity" ), this );
   mSlider = new QSlider( Qt::Horizontal, this );
   mSlider->setRange( 0, 1000 );
-  const int sliderW = static_cast< int >( QFontMetricsF( font() ).horizontalAdvance( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
+  const int sliderW = static_cast<int>( QFontMetricsF( font() ).horizontalAdvance( 'X' ) * 16 * Qgis::UI_SCALE_FACTOR );
   mSlider->setMinimumWidth( sliderW / 2 );
   mSlider->setMaximumWidth( sliderW );
   QHBoxLayout *lay = new QHBoxLayout();
@@ -91,7 +94,7 @@ void QgsLayerTreeOpacityWidget::layerTrChanged()
 
 QString QgsLayerTreeOpacityWidget::Provider::id() const
 {
-  return QStringLiteral( "transparency" );
+  return u"transparency"_s;
 }
 
 QString QgsLayerTreeOpacityWidget::Provider::name() const

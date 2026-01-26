@@ -17,8 +17,8 @@
 #define QGSTEXTUREMATERIAL_H
 
 #include "qgis_3d.h"
+#include "qgsmaterial.h"
 
-#include <Qt3DRender/QMaterial>
 #include <QObject>
 
 #define SIP_NO_FILE
@@ -39,17 +39,16 @@ namespace Qt3DRender
 ///@cond PRIVATE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief A unlit texture material
  * \since QGIS 3.40
  */
-class _3D_EXPORT QgsTextureMaterial : public Qt3DRender::QMaterial
+class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
 {
     Q_OBJECT
     Q_PROPERTY( Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged )
 
   public:
-
     /**
      * Constructor for QgsTextureMaterial, with the specified \a parent node.
      */
@@ -58,7 +57,7 @@ class _3D_EXPORT QgsTextureMaterial : public Qt3DRender::QMaterial
 
     Qt3DRender::QAbstractTexture *texture() const;
 
-  public Q_SLOTS:
+  public slots:
 
     /**
      * Sets the diffuse component of the material.
@@ -66,7 +65,7 @@ class _3D_EXPORT QgsTextureMaterial : public Qt3DRender::QMaterial
      */
     void setTexture( Qt3DRender::QAbstractTexture *texture );
 
-  Q_SIGNALS:
+  signals:
     void textureChanged( Qt3DRender::QAbstractTexture *texture );
 
   private:
@@ -79,7 +78,6 @@ class _3D_EXPORT QgsTextureMaterial : public Qt3DRender::QMaterial
     Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
     Qt3DRender::QShaderProgram *mGL3Shader = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
-
 };
 
 ///@endcond PRIVATE

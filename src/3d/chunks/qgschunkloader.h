@@ -27,12 +27,14 @@
 // version without notice, or even be removed.
 //
 
+#include "qgis_3d.h"
+#include "qgsbox3d.h"
 #include "qgschunkqueuejob.h"
 
 #define SIP_NO_FILE
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for jobs that load chunks
  *
  * \note Not available in Python bindings
@@ -43,7 +45,8 @@ class QgsChunkLoader : public QgsChunkQueueJob
     Q_OBJECT
   public:
     //! Construct chunk loader for a node
-    QgsChunkLoader( QgsChunkNode *node ) : QgsChunkQueueJob( node ) { }
+    QgsChunkLoader( QgsChunkNode *node )
+      : QgsChunkQueueJob( node ) {}
 
     /**
      * Run in main thread to use loaded data.
@@ -54,14 +57,14 @@ class QgsChunkLoader : public QgsChunkQueueJob
 
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Factory for chunk loaders for a particular type of entity
  */
-class QgsChunkLoaderFactory  : public QObject
+class QgsChunkLoaderFactory : public QObject
 {
     Q_OBJECT
   public:
-    virtual ~QgsChunkLoaderFactory() = default;
+    ~QgsChunkLoaderFactory() override = default;
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const = 0;
@@ -89,12 +92,16 @@ class QgsChunkLoaderFactory  : public QObject
      * \see prepareChildren()
      * \see createChildren()
      */
-    virtual bool canCreateChildren( QgsChunkNode *node ) { Q_UNUSED( node ); return true; }
+    virtual bool canCreateChildren( QgsChunkNode *node )
+    {
+      Q_UNUSED( node );
+      return true;
+    }
 
     /**
      * Requests that node has enough hierarchy information to create children in createChildren().
      * This function must not block, only start any requests in background. When the hierarchy
-     * information is ready, the signal childrenPrepared() must be emitted.
+     * information is ready, the signal childrenPrepared() may be emitted so that the entity gets updated.
      *
      * The default implementation does nothing. This only needs to be implemented when the factory
      * would otherwise need to do blocking network requests in createChildren() to avoid GUI freeze.
@@ -109,10 +116,8 @@ class QgsChunkLoaderFactory  : public QObject
 };
 
 
-#include "qgsaabb.h"
-
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Base class for factories where the hierarchy is a quadtree where all leaves
  * are in the same depth.
  *
@@ -123,21 +128,45 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     Q_OBJECT
   public:
     QgsQuadtreeChunkLoaderFactory();
-    virtual ~QgsQuadtreeChunkLoaderFactory();
+    ~QgsQuadtreeChunkLoaderFactory() override;
 
     //! Initializes the root node setup (bounding box and error) and tree depth
-    void setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel, const QgsAABB &clippingBbox = QgsAABB() );
+    void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel = -1, const QgsBox3D &clippingBox3D = QgsBox3D() );
 
-    virtual QgsChunkNode *createRootNode() const override;
-    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
   protected:
-    QgsAABB mRootBbox;
-    QgsAABB mClippingBbox;
+    QgsBox3D mRootBox3D;
+    QgsBox3D mClippingBox3D;
     float mRootError = 0;
-    //! maximum allowed depth of quad tree
-    int mMaxLevel = 0;
+    //! maximum allowed depth of quad tree. -1 for no max depth.
+    int mMaxLevel = -1;
+};
 
+/**
+ * \ingroup qgis_3d
+ * Factory that uses a chunk loader factory for in-place updates
+ * of loaded nodes. Use it with QgsChunkedEntity::updateNodes()
+ * to rebuild entity of an existing node.
+ *
+ * \since QGIS 3.42
+ */
+class QgsChunkUpdaterFactory : public QgsChunkQueueJobFactory
+{
+  public:
+    QgsChunkUpdaterFactory( QgsChunkLoaderFactory *loaderFactory )
+      : mChunkLoaderFactory( loaderFactory )
+    {
+    }
+
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
+    {
+      return mChunkLoaderFactory->createChunkLoader( chunk );
+    }
+
+  private:
+    QgsChunkLoaderFactory *mChunkLoaderFactory;
 };
 
 /// @endcond

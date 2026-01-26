@@ -19,10 +19,11 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsarcgisservicesourceselectbase.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatereferencesystem.h"
+
 #include "qgsabstractdatasourcewidget.h"
 #include "qgsbrowserproxymodel.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrectangle.h"
 
 #include <QItemDelegate>
 
@@ -40,14 +41,12 @@ class QgsArcGisRestBrowserProxyModel : public QgsBrowserProxyModel
     Q_OBJECT
 
   public:
-
     explicit QgsArcGisRestBrowserProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     void setConnectionName( const QString &name );
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
-
     QString mConnectionName;
 };
 
@@ -59,7 +58,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     Q_OBJECT
 
   public:
-
     //! Constructor
     QgsArcGisRestSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
@@ -67,7 +65,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     ~QgsArcGisRestSourceSelect() override;
 
   protected:
-
     QgsBrowserGuiModel *mBrowserModel = nullptr;
     QgsArcGisRestBrowserProxyModel *mProxyModel = nullptr;
 
@@ -109,7 +106,6 @@ class QgsArcGisRestSourceSelect : public QgsAbstractDataSourceWidget, protected 
     void refreshModel( const QModelIndex &index );
 
   private:
-
     QgsDataItem *indexToItem( const QModelIndex &proxyIndex );
     QgsCoordinateReferenceSystem indexToCrs( const QModelIndex &proxyIndex );
 

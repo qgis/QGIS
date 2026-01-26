@@ -5,5 +5,5 @@ QgsTextShadowSettings.ShadowBuffer = QgsTextShadowSettings.ShadowPlacement.Shado
 QgsTextShadowSettings.ShadowShape = QgsTextShadowSettings.ShadowPlacement.ShadowShape
 try:
     QgsTextShadowSettings.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
     pass

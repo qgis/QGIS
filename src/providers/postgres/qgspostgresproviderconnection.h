@@ -18,7 +18,7 @@
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgspostgresconnpool.h"
 
-struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
+struct QgsPostgresProviderResultIterator : public QgsAbstractDatabaseProviderConnection::QueryResult::QueryResultIterator
 {
     QgsPostgresProviderResultIterator( bool resolveTypes )
       : mResolveTypes( resolveTypes )
@@ -28,7 +28,6 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
     std::unique_ptr<QgsPostgresResult> result;
 
   private:
-
     QVariantList nextRowPrivate() override;
     bool hasNextRowPrivate() const override;
     long long rowCountPrivate() const override;
@@ -40,21 +39,14 @@ struct QgsPostgresProviderResultIterator: public QgsAbstractDatabaseProviderConn
 class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnection
 {
   public:
-
     QgsPostgresProviderConnection( const QString &name );
     QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration );
 
     // QgsAbstractProviderConnection interface
 
   public:
-
-    void createVectorTable( const QString &schema,
-                            const QString &name,
-                            const QgsFields &fields,
-                            Qgis::WkbType wkbType,
-                            const QgsCoordinateReferenceSystem &srs, bool overwrite,
-                            const QMap<QString, QVariant> *options ) const override;
-
+    void createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const override;
+    QString createVectorLayerExporterDestinationUri( const VectorLayerExporterOptions &options, QVariantMap &providerOptions ) const override;
     QString tableUri( const QString &schema, const QString &name ) const override;
     QgsFields fields( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
     void dropVectorTable( const QString &schema, const QString &name ) const override;
@@ -70,10 +62,10 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     bool spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void deleteSpatialIndex( const QString &schema, const QString &name, const QString &geometryColumn ) const override;
     void setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const override;
-    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema,
-        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
+    void setTableComment( const QString &schema, const QString &tableName, const QString &comment ) const override;
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tables( const QString &schema, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const override;
     QgsAbstractDatabaseProviderConnection::TableProperty table( const QString &schema, const QString &table, QgsFeedback *feedback = nullptr ) const override;
-    QStringList schemas( ) const override;
+    QStringList schemas() const override;
     void store( const QString &name ) const override;
     void remove( const QString &name ) const override;
     QIcon icon() const override;
@@ -82,20 +74,22 @@ class QgsPostgresProviderConnection : public QgsAbstractDatabaseProviderConnecti
     QMultiMap<Qgis::SqlKeywordCategory, QStringList> sqlDictionary() override;
     SqlVectorLayerOptions sqlOptions( const QString &layerSource ) override;
     QList<QgsLayerMetadataProviderResult> searchLayerMetadata( const QgsMetadataSearchContext &searchContext, const QString &searchString, const QgsRectangle &geographicExtent, QgsFeedback *feedback ) const override;
+    Qgis::DatabaseProviderTableImportCapabilities tableImportCapabilities() const override;
+    QString defaultPrimaryKeyColumnName() const override;
+    void moveTableToSchema( const QString &sourceSchema, const QString &tableName, const QString &targetSchema ) const override;
+    void renameField( const QString &schema, const QString &tableName, const QString &name, const QString &newName ) const override;
+
 
     static const QStringList CONFIGURATION_PARAMETERS;
     static const QString SETTINGS_BASE_KEY;
 
   private:
-
-    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
-    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr< class QgsPoolPostgresConn > pgconn = nullptr ) const;
+    QList<QVariantList> executeSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr<class QgsPoolPostgresConn> pgconn = nullptr ) const;
+    QgsAbstractDatabaseProviderConnection::QueryResult execSqlPrivate( const QString &sql, bool resolveTypes = true, QgsFeedback *feedback = nullptr, std::shared_ptr<class QgsPoolPostgresConn> pgconn = nullptr ) const;
     void setDefaultCapabilities();
     void dropTablePrivate( const QString &schema, const QString &name ) const;
     void renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const;
-    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesPrivate( const QString &schema, const QString &table,
-        const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const;
-
+    QList<QgsAbstractDatabaseProviderConnection::TableProperty> tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags = TableFlags(), QgsFeedback *feedback = nullptr ) const;
 };
 
 

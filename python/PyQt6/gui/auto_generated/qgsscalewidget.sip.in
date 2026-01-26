@@ -10,28 +10,27 @@
 
 
 
-
 class QgsScaleWidget : QWidget
 {
 %Docstring(signature="appended")
-A combobox which lets the user select map scale from predefined list
-and highlights nearest to current scale value
+A combobox which lets the user select map scale from predefined list and
+highlights nearest to current scale value.
 %End
 
 %TypeHeaderCode
 #include "qgsscalewidget.h"
 %End
   public:
-
     explicit QgsScaleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-QgsScaleWidget creates a combobox which lets the user select map scale from predefined list
-and highlights nearest to current scale value
+QgsScaleWidget creates a combobox which lets the user select map scale
+from predefined list and highlights nearest to current scale value
 %End
 
     void setShowCurrentScaleButton( bool showCurrentScaleButton );
 %Docstring
-Sets whether to show a button to set the scale to the current scale of the map canvas next to the combobox.
+Sets whether to show a button to set the scale to the current scale of
+the map canvas next to the combobox.
 
 .. note::
 
@@ -42,9 +41,10 @@ Sets whether to show a button to set the scale to the current scale of the map c
 .. seealso:: :py:func:`setMapCanvas`
 %End
 
-    bool showCurrentScaleButton();
+    bool showCurrentScaleButton() const;
 %Docstring
-Returns whether a button to set the scale from map canvas is shown or not.
+Returns whether a button to set the scale from map canvas is shown or
+not.
 
 .. seealso:: :py:func:`setShowCurrentScaleButton`
 %End
@@ -70,8 +70,8 @@ Set the selected scale from a ``string``, e.g. "1:150".
 
     double scale() const;
 %Docstring
-Returns the selected scale as a double.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the selected scale as a double. The scale value indicates the
+scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`setScale`
 %End
@@ -89,16 +89,17 @@ Returns ``True`` if the widget is currently set to a "null" value.
 
     double minScale() const;
 %Docstring
-Returns the minimum scale, or 0 if no minimum scale set.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-Any scale lower than the minimum scale will automatically be converted to the minimum scale.
-Except for 0 which is always allowed.
+Returns the minimum scale, or 0 if no minimum scale set. The ``scale``
+value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map. Any
+scale lower than the minimum scale will automatically be converted to
+the minimum scale. Except for 0 which is always allowed.
 %End
 
     static QString toString( double scale );
 %Docstring
-Helper function to convert a ``scale`` double to scale string.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Helper function to convert a ``scale`` double to scale string. The
+``scale`` value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map.
 
 The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 
@@ -107,9 +108,10 @@ The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 
     static double toDouble( const QString &scaleString, bool *ok = 0 );
 %Docstring
-Helper function to convert a scale ``string`` to double.
-The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-If specified, ``ok`` will be set to ``True`` if the string was successfully interpreted as a scale.
+Helper function to convert a scale ``string`` to double. The returned
+value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map. If
+specified, ``ok`` will be set to ``True`` if the string was successfully
+interpreted as a scale.
 
 .. seealso:: :py:func:`toString`
 %End
@@ -140,12 +142,14 @@ Returns ``True`` if the widget can be set to a NULL value.
 .. versionadded:: 3.8
 %End
 
-    void setPredefinedScales( const QVector< double > &scales );
+    void setPredefinedScales( const QVector<double> &scales );
 %Docstring
-Sets the list of predefined ``scales`` to show in the widget. List elements
-are expected to be scale denominators, e.g. 1000.0 for a 1:1000 map.
+Sets the list of predefined ``scales`` to show in the widget. List
+elements are expected to be scale denominators, e.g. 1000.0 for a 1:1000
+map.
 
-If ``scales`` is empty then the default user scale options will be used instead.
+If ``scales`` is empty then the default user scale options will be used
+instead.
 
 .. versionadded:: 3.38
 %End
@@ -154,16 +158,16 @@ If ``scales`` is empty then the default user scale options will be used instead.
 
     void setScale( double scale );
 %Docstring
-Set the selected scale from a double.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Set the selected scale from a double. The ``scale`` value indicates the
+scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. seealso:: :py:func:`scale`
 %End
 
     void updateScales( const QStringList &scales = QStringList() );
 %Docstring
-Sets the list of predefined ``scales`` to show in the widget. List elements
-are expected to be valid scale strings, such as "1:1000000".
+Sets the list of predefined ``scales`` to show in the widget. List
+elements are expected to be valid scale strings, such as "1:1000000".
 %End
 
     void setScaleFromCanvas();
@@ -175,17 +179,19 @@ Assigns the current scale from the map canvas, if set.
 
     void setMinScale( double scale );
 %Docstring
-Set the minimum allowed ``scale``. Set to 0 to disable the minimum scale.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-Any scale lower than the minimum scale will automatically be converted to the minimum scale.
-Except for 0 which is always allowed.
+Set the minimum allowed ``scale``. Set to 0 to disable the minimum
+scale. The ``scale`` value indicates the scale denominator, e.g. 1000.0
+for a 1:1000 map. Any scale lower than the minimum scale will
+automatically be converted to the minimum scale. Except for 0 which is
+always allowed.
 %End
 
     void setNull();
 %Docstring
 Sets the widget to the null value.
 
-This only has an effect if :py:func:`~QgsScaleWidget.allowNull` is ``True``.
+This only has an effect if :py:func:`~QgsScaleWidget.allowNull` is
+``True``.
 
 .. seealso:: :py:func:`allowNull`
 
@@ -198,8 +204,9 @@ This only has an effect if :py:func:`~QgsScaleWidget.allowNull` is ``True``.
 
     void scaleChanged( double scale );
 %Docstring
-Emitted when *user* has finished editing/selecting a new scale.
-The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Emitted when *user* has finished editing/selecting a new scale. The
+``scale`` value indicates the scale denominator, e.g. 1000.0 for a
+1:1000 map.
 %End
 
 };

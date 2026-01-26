@@ -15,7 +15,7 @@ class O0_EXPORT O2Reply: public QTimer {
     Q_OBJECT
 
 public:
-    O2Reply(QNetworkReply *reply, int timeOut = 60 * 1000, QObject *parent = 0);
+    explicit O2Reply(QNetworkReply *reply, int timeOut = 60 * 1000, QObject *parent = nullptr);
 
 Q_SIGNALS:
     void error(QNetworkReply::NetworkError);
@@ -29,7 +29,7 @@ public:
 };
 
 /// List of O2Replies.
-class O2ReplyList {
+class O0_EXPORT O2ReplyList {
 public:
     O2ReplyList() { ignoreSslErrors_ = false; }
 
@@ -48,9 +48,9 @@ public:
 
     /// Find an O2Reply in the list, corresponding to a QNetworkReply.
     /// @return Matching O2Reply or NULL.
-    O2Reply *find(QNetworkReply *reply);
+    O2Reply *find(const QNetworkReply* reply);
 
-    bool ignoreSslErrors();
+    bool ignoreSslErrors() const;
     void setIgnoreSslErrors(bool ignoreSslErrors);
 
 protected:

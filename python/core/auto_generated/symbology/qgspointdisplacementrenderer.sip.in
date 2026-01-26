@@ -12,7 +12,8 @@
 class QgsPointDisplacementRenderer: QgsPointDistanceRenderer
 {
 %Docstring(signature="appended")
-A renderer that automatically displaces points with the same geographic location.
+A renderer that automatically displaces points with the same geographic
+location.
 %End
 
 %TypeHeaderCode
@@ -148,7 +149,8 @@ Sets the placement method used for dispersing the points.
 
     QgsMarkerSymbol *centerSymbol();
 %Docstring
-Returns the symbol for the center of a displacement group (but not ownership of the symbol).
+Returns the symbol for the center of a displacement group (but not
+ownership of the symbol).
 
 .. seealso:: :py:func:`setCenterSymbol`
 %End
@@ -157,7 +159,8 @@ Returns the symbol for the center of a displacement group (but not ownership of 
 %Docstring
 Sets the center symbol for a displacement group.
 
-:param symbol: new center symbol. Ownership is transferred to the renderer.
+:param symbol: new center symbol. Ownership is transferred to the
+               renderer.
 
 .. seealso:: :py:func:`centerSymbol`
 %End
@@ -166,7 +169,8 @@ Sets the center symbol for a displacement group.
 %Docstring
 Creates a QgsPointDisplacementRenderer from an existing renderer.
 
-:return: a new renderer if the conversion was possible, otherwise ``None``.
+:return: a new renderer if the conversion was possible, otherwise
+         ``None``.
 %End
 
   private:

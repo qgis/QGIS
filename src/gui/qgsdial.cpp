@@ -16,15 +16,20 @@
  ***************************************************************************/
 
 #include "qgsdial.h"
+
+#include <cmath>
+
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
 
 #include <QPaintEvent>
 #include <QPainter>
 #include <QRect>
-#include <cmath>
 
-QgsDial::QgsDial( QWidget *parent ) : QDial( parent )
+#include "moc_qgsdial.cpp"
+
+QgsDial::QgsDial( QWidget *parent )
+  : QDial( parent )
 {
   setMinimumSize( QSize( 50, 50 ) );
 }
@@ -35,8 +40,7 @@ void QgsDial::paintEvent( QPaintEvent *event )
   QPainter painter( this );
   const QRect rect = geometry();
   painter.setPen( QPen( palette().color( QPalette::WindowText ) ) );
-  painter.drawText( QRectF( 0, rect.height() * 0.65, rect.width(), rect.height() ),
-                    Qt::AlignHCenter, variantValue().toString(), nullptr );
+  painter.drawText( QRectF( 0, rect.height() * 0.65, rect.width(), rect.height() ), Qt::AlignHCenter, variantValue().toString(), nullptr );
   painter.end();
 }
 
@@ -72,10 +76,7 @@ void QgsDial::update()
   if ( QgsVariantUtils::isNull( mValue ) )
     mValue = mMin;
 
-  if ( mMin.userType() == QMetaType::Type::Int &&
-       mMax.userType() == QMetaType::Type::Int &&
-       mStep.userType() == QMetaType::Type::Int &&
-       mValue.userType() == QMetaType::Type::Int )
+  if ( mMin.userType() == QMetaType::Type::Int && mMax.userType() == QMetaType::Type::Int && mStep.userType() == QMetaType::Type::Int && mValue.userType() == QMetaType::Type::Int )
   {
     QDial::setMinimum( mMin.toInt() );
     QDial::setMaximum( mMax.toInt() );
@@ -83,10 +84,7 @@ void QgsDial::update()
     QDial::setValue( mValue.toInt() );
   }
 
-  if ( mMin.userType() == QMetaType::Type::Double &&
-       mMax.userType() == QMetaType::Type::Double &&
-       mStep.userType() == QMetaType::Type::Double &&
-       mValue.userType() == QMetaType::Type::Double )
+  if ( mMin.userType() == QMetaType::Type::Double && mMax.userType() == QMetaType::Type::Double && mStep.userType() == QMetaType::Type::Double && mValue.userType() == QMetaType::Type::Double )
   {
     if ( minimum() != 0 )
       QDial::setMinimum( 0 );
@@ -101,7 +99,7 @@ void QgsDial::update()
     QDial::setValue( std::ceil( ( mValue.toDouble() - mMin.toDouble() ) / mStep.toDouble() ) );
   }
 
-  connect( this, static_cast < void ( QDial::* )( int ) > ( &QDial::valueChanged ), this, &QgsDial::onValueChanged );
+  connect( this, static_cast<void ( QDial::* )( int )>( &QDial::valueChanged ), this, &QgsDial::onValueChanged );
 }
 
 QVariant QgsDial::variantValue() const
@@ -115,17 +113,11 @@ void QgsDial::onValueChanged( int value )
   {
     mValue = QVariant();
   }
-  else if ( mMin.userType() == QMetaType::Type::Int &&
-            mMax.userType() == QMetaType::Type::Int &&
-            mStep.userType() == QMetaType::Type::Int &&
-            mValue.userType() == QMetaType::Type::Int )
+  else if ( mMin.userType() == QMetaType::Type::Int && mMax.userType() == QMetaType::Type::Int && mStep.userType() == QMetaType::Type::Int && mValue.userType() == QMetaType::Type::Int )
   {
     mValue = value;
   }
-  else if ( mMin.userType() == QMetaType::Type::Double &&
-            mMax.userType() == QMetaType::Type::Double &&
-            mStep.userType() == QMetaType::Type::Double &&
-            mValue.userType() == QMetaType::Type::Double )
+  else if ( mMin.userType() == QMetaType::Type::Double && mMax.userType() == QMetaType::Type::Double && mStep.userType() == QMetaType::Type::Double && mValue.userType() == QMetaType::Type::Double )
   {
     mValue = QVariant( mMin.toDouble() + value * mStep.toDouble() );
   }

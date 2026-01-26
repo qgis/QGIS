@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 
-#include <QItemSelection>
-
 #include "qgslocatormodelbridge.h"
+
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
 
+#include <QItemSelection>
+
+#include "moc_qgslocatormodelbridge.cpp"
 
 QgsLocatorModelBridge::QgsLocatorModelBridge( QObject *parent )
   : QObject( parent )

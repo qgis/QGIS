@@ -12,8 +12,7 @@
 class QgsSubsetStringEditorProvider
 {
 %Docstring(signature="appended")
-This is the interface for those who want to provide a dialog to edit a
-subset string.
+An interface for widgets which edit a subset string.
 
 .. versionadded:: 3.18
 %End
@@ -31,11 +30,12 @@ Provider key
 
     virtual QString name() const;
 %Docstring
-Subset string editor provider name, this is useful to retrieve
-a particular subset string editor in case the provider has more
-than one, it should be unique among all providers.
+Subset string editor provider name, this is useful to retrieve a
+particular subset string editor in case the provider has more than one,
+it should be unique among all providers.
 
-The default implementation returns the :py:func:`~QgsSubsetStringEditorProvider.providerKey`
+The default implementation returns the
+:py:func:`~QgsSubsetStringEditorProvider.providerKey`
 %End
 
     virtual bool canHandleLayer( QgsVectorLayer *layer ) const = 0;
@@ -47,7 +47,8 @@ Returns true if the provider can handle the layer
 %Docstring
 Returns true if the provider can handle specifically the
 layer->:py:func:`~QgsSubsetStringEditorProvider.provider`->:py:func:`~QgsSubsetStringEditorProvider.storageType`
-This method will only be called if :py:func:`~QgsSubsetStringEditorProvider.canHandleLayer` returned true.
+This method will only be called if
+:py:func:`~QgsSubsetStringEditorProvider.canHandleLayer` returned true.
 Typically a generic SQL provider for the OGR provider will return false,
 whereas a dedicated plugin with a specific behavior for a OGR driver
 will return true.
@@ -55,11 +56,12 @@ will return true.
 
     virtual QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags ) = 0 /Factory/;
 %Docstring
-Creates a new dialog to edit the subset string of the provided ``layer``.
-It may return None if it cannot handle the layer.
-The returned object must be destroyed by the caller.
-On successful :py:func:`~QgsSubsetStringEditorProvider.accept`, the :py:class:`QgsSubsetStringEditorInterface` implementation
-is responsible for setting the updated string on layer.
+Creates a new dialog to edit the subset string of the provided
+``layer``. It may return None if it cannot handle the layer. The
+returned object must be destroyed by the caller. On successful
+:py:func:`~QgsSubsetStringEditorProvider.accept`, the
+:py:class:`QgsSubsetStringEditorInterface` implementation is responsible
+for setting the updated string on layer.
 %End
 };
 

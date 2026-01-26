@@ -36,12 +36,12 @@
     },
     {
       "arg": "min_inscribed_circle_radius",
-      "description": "defines an optional exclusion filter (for polygons only): minimum radius in current feature units for the maximum inscribed circle of the intersection. If the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value.<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.<br>This argument requires GEOS >= 3.9.",
+      "description": "defines an optional exclusion filter (for polygons only): minimum radius in current feature units for the maximum inscribed circle of the intersection. If the intersection results in multiple polygons the intersection will be returned if at least one of the polygons has a radius for the maximum inscribed circle greater or equal to the value.<br>Read more on the underlying GEOS predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_MaximumInscribedCircle.html'>ST_MaximumInscribedCircle</a> function.",
       "optional": true
     },
     {
       "arg": "return_details",
-      "description": "Set this to true to return a list of maps containing (key names in quotes) the feature 'id', the expression 'result' and the 'overlap' value. The 'radius' of the maximum inscribed circle is also returned when the target layer is a polygon. Only valid when used with the expression parameter",
+      "description": "Set this to true to return a list of maps containing (key names in quotes) the feature 'id', the expression 'result' and the 'overlap' value (of the largest element in case of multipart). The 'radius' of the maximum inscribed circle is also returned when the target layer is a polygon. Only valid when used with the expression parameter",
       "optional": true
     },
     {

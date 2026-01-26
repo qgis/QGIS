@@ -19,8 +19,10 @@
 #define QGSELEVATIONPROFILELAYERTREEVIEW_H
 
 #include "qgsconfig.h"
-#include "qgslayertreemodel.h"
+
 #include "qgis_gui.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertreeview.h"
 
 #include <QSortFilterProxyModel>
 #include <QTreeView>
@@ -44,11 +46,9 @@ class QgsMapLayer;
  */
 class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Construct a new tree model with given layer tree (root node must not be NULLPTR).
      * The root node is not transferred by the model.
@@ -57,11 +57,24 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-
-    bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
-                          int row, int column, const QModelIndex &parent ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+
+    /**
+     * Sets whether modifications like renaming, reordering nodes are supported.
+     *
+     * \since QGIS 4.0
+     */
+    void setAllowModifications( bool allow );
+
+    /**
+     * Returns TRUE if modifications like renaming, reordering nodes are supported.
+     *
+     * \since QGIS 4.0
+     */
+    bool allowModifications() const { return mAllowModifications; }
 
   signals:
 
@@ -70,13 +83,14 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
      *
      * \since QGIS 3.32
      */
-    void addLayers( const QList< QgsMapLayer * > &layers );
+    void addLayers( const QList<QgsMapLayer *> &layers );
 
   private:
-
 #ifdef SIP_RUN
     QgsElevationProfileLayerTreeModel( const QgsElevationProfileLayerTreeModel &other );
 #endif
+
+    bool mAllowModifications = true;
 };
 
 /**
@@ -89,24 +103,19 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
  */
 class GUI_EXPORT QgsElevationProfileLayerTreeProxyModel : public QSortFilterProxyModel
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsElevationProfileLayerTreeProxyModel.
      */
     explicit QgsElevationProfileLayerTreeProxyModel( QgsElevationProfileLayerTreeModel *model, QObject *parent = nullptr );
 
   protected:
-
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
-
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
-
 };
 
 /**
@@ -117,28 +126,30 @@ class GUI_EXPORT QgsElevationProfileLayerTreeProxyModel : public QSortFilterProx
  *
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
+class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
 {
-
     Q_OBJECT
 
   public:
+    static const QString CUSTOM_NODE_ELEVATION_PROFILE_SOURCE;
 
     /**
      * Construct a new tree view with given layer tree (root node must not be NULLPTR).
-     * The root node is not transferred by the view.
+     * The root node is not transferred to the view.
      */
     explicit QgsElevationProfileLayerTreeView( QgsLayerTree *rootNode, QWidget *parent = nullptr );
 
     /**
-     * Converts a view \a index to a map layer.
+     * Sets a new layer tree root node to use for the view.
+     *
+     * The root node is not transferred to the view.
      */
-    QgsMapLayer *indexToLayer( const QModelIndex &index );
+    void setLayerTree( QgsLayerTree *rootNode );
 
     /**
-     * Initially populates the tree view using layers from a \a project.
+     * Initially populates the tree view using layers from a \a project, as well as sources from the source registry.
      */
-    void populateInitialLayers( QgsProject *project );
+    void populateInitialSources( QgsProject *project );
 
     /**
      * Returns the view's proxy model.
@@ -147,6 +158,37 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      */
     QgsElevationProfileLayerTreeProxyModel *proxyModel();
 
+  public slots:
+
+    /**
+     * Adds a custom node in the layer tree corresponding to a registered profile source.
+     *
+     * The created node can be accessed via the source id.
+     * If the source already has a corresponding node in the layer tree, a second node won't be created.
+     *
+     * \param sourceId    Unique identifier of the registered profile source.
+     * \param sourceName  Name of the registered profile source.
+     *
+     * \since QGIS 4.0
+     */
+    void addNodeForRegisteredSource( const QString &sourceId, const QString &sourceName );
+
+    /**
+     * Removes a custom node from the layer tree corresponding to an unregistered profile source.
+     *
+     * \param sourceId  Unique identifier of the unregistered profile source.
+     *
+     * \since QGIS 4.0
+     */
+    void removeNodeForUnregisteredSource( const QString &sourceId );
+
+    /**
+     * Adds any layers from a \a project which currently aren't within the profile's layer tree.
+     *
+     * \since QGIS 4.0
+     */
+    void populateMissingLayers( QgsProject *project );
+
   signals:
 
     /**
@@ -154,18 +196,15 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      *
      * \since QGIS 3.32
      */
-    void addLayers( const QList< QgsMapLayer * > &layers );
+    void addLayers( const QList<QgsMapLayer *> &layers );
 
   protected:
-
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
-
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
     QgsElevationProfileLayerTreeProxyModel *mProxyModel = nullptr;
     QgsLayerTree *mLayerTree = nullptr;
-
 };
 
 

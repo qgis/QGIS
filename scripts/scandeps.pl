@@ -20,7 +20,7 @@ use warnings;
 my @dists;
 open I, "debian/rules";
 while(<I>) {
-	if( /ifneq \(\$\(DISTRIBUTION\),\$\(findstring \$\(DISTRIBUTION\),"(.*)"\)\)/ ) {
+	if( /ifeq \(,\$\(filter \$\(DISTRIBUTION\),(.*)\)\)/ ) {
 		for my $d (split / /, $1) {
 			next if $d =~ /oracle/;
 			push @dists, $d;
@@ -44,8 +44,9 @@ print O "|Distribution|Install command for packages|\n";
 print O "|------------|----------------------------|\n";
 
 for my $dist (@dists) {
+	warn "Updating for $dist";
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
-	system("make -f debian/rules DISTRIBUTION=$dist cleantemplates templates" )==0 or die "make failed: $!";
+	system("make -f debian/rules DISTRIBUTION=$dist refreshtemplates" )==0 or die "make failed: $!";
 
 	open F, "debian/control";
 	while(<F>) {
@@ -86,7 +87,6 @@ for my $dist (@dists) {
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
 
 	$deps .= ",cmake-curses-gui,ccache,expect,libyaml-tiny-perl,flip,python3-autopep8,pandoc,build-essential";
-	$deps .= ",qt5-default" if $dist =~ /^(buster|bionic|focal|groovy)$/;
 
 	my @deps;
 	my %deps;

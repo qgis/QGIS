@@ -18,15 +18,17 @@
 #ifndef QGSRASTERCALCULATOR_H
 #define QGSRASTERCALCULATOR_H
 
-#include "qgsrectangle.h"
+#include <gdal.h>
+
+#include "qgis_analysis.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
-#include <QString>
-#include <QVector>
-#include "gdal.h"
-#include "qgis_analysis.h"
 #include "qgsogrutils.h"
 #include "qgsrastercalcnode.h"
+#include "qgsrectangle.h"
+
+#include <QString>
+#include <QVector>
 
 class QgsRasterLayer;
 class QgsFeedback;
@@ -38,9 +40,7 @@ class QgsFeedback;
 */
 class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 {
-
   public:
-
     /**
      * Creates a list of raster entries from the current project.
      *
@@ -76,20 +76,34 @@ class ANALYSIS_EXPORT QgsRasterCalculatorEntry
 class ANALYSIS_EXPORT QgsRasterCalculator
 {
   public:
-
     //! Result of the calculation
-    enum Result
+    enum class Result SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterCalculator, Result ) : int
     {
-      Success = 0, //!< Calculation successful
+      Success = 0,           //!< Calculation successful
       CreateOutputError = 1, //!< Error creating output data file
-      InputLayerError = 2, //!< Error reading input layer
-      Canceled = 3, //!< User canceled calculation
-      ParserError = 4, //!< Error parsing formula
-      MemoryError = 5, //!< Error allocating memory for result
-      BandError = 6, //!< Invalid band number for input
-      CalculationError = 7, //!< Error occurred while performing calculation
+      InputLayerError = 2,   //!< Error reading input layer
+      Canceled = 3,          //!< User canceled calculation
+      ParserError = 4,       //!< Error parsing formula
+      MemoryError = 5,       //!< Error allocating memory for result
+      BandError = 6,         //!< Invalid band number for input
+      CalculationError = 7,  //!< Error occurred while performing calculation
     };
 
+
+    /**
+     * QgsRasterCalculator constructor.
+     * \param formulaString formula for raster calculation
+     * \param outputFile output file path
+     * \param outputFormat output file format
+     * \param outputExtent output extent, CRS is specified by outputCrs parameter
+     * \param outputCrs destination CRS for output raster
+     * \param nOutputColumns number of columns in output raster
+     * \param nOutputRows number of rows in output raster
+     * \param rasterEntries list of referenced raster layers
+     * \param transformContext coordinate transformation context
+     * \since QGIS 3.8
+     */
+    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext );
 
     /**
      * QgsRasterCalculator constructor.
@@ -103,44 +117,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \param transformContext coordinate transformation context
      * \since QGIS 3.8
      */
-    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                         const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows,
-                         const QVector<QgsRasterCalculatorEntry> &rasterEntries,
-                         const QgsCoordinateTransformContext &transformContext );
-
-    /**
-     * QgsRasterCalculator constructor.
-     * \param formulaString formula for raster calculation
-     * \param outputFile output file path
-     * \param outputFormat output file format
-     * \param outputExtent output extent, CRS is specified by outputCrs parameter
-     * \param outputCrs destination CRS for output raster
-     * \param nOutputColumns number of columns in output raster
-     * \param nOutputRows number of rows in output raster
-     * \param rasterEntries list of referenced raster layers
-     * \param transformContext coordinate transformation context
-     * \since QGIS 3.8
-     */
-    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                         const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs,
-                         int nOutputColumns, int nOutputRows,
-                         const QVector<QgsRasterCalculatorEntry> &rasterEntries,
-                         const QgsCoordinateTransformContext &transformContext );
-
-
-    /**
-    * QgsRasterCalculator constructor.
-    * \param formulaString formula for raster calculation
-    * \param outputFile output file path
-    * \param outputFormat output file format
-    * \param outputExtent output extent. CRS for output is taken from first entry in rasterEntries.
-    * \param nOutputColumns number of columns in output raster
-    * \param nOutputRows number of rows in output raster
-    * \param rasterEntries list of referenced raster layers
-    * \deprecated QGIS 3.8. Use the version with transformContext instead.
-    */
-    Q_DECL_DEPRECATED QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                                           const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) SIP_DEPRECATED;
+    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext );
 
     /**
      * QgsRasterCalculator constructor.
@@ -154,15 +131,27 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \param rasterEntries list of referenced raster layers
      * \deprecated QGIS 3.8. Use the version with transformContext instead.
      */
-    Q_DECL_DEPRECATED QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                                           const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) SIP_DEPRECATED;
+    Q_DECL_DEPRECATED QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) SIP_DEPRECATED;
+
+    /**
+    * QgsRasterCalculator constructor.
+    * \param formulaString formula for raster calculation
+    * \param outputFile output file path
+    * \param outputFormat output file format
+    * \param outputExtent output extent. CRS for output is taken from first entry in rasterEntries.
+    * \param nOutputColumns number of columns in output raster
+    * \param nOutputRows number of rows in output raster
+    * \param rasterEntries list of referenced raster layers
+    * \deprecated QGIS 3.8. Use the version with transformContext instead.
+    */
+    Q_DECL_DEPRECATED QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) SIP_DEPRECATED;
 
     /**
      * Starts the calculation and writes a new raster.
      *
      * The optional \a feedback argument can be used for progress reporting and cancellation support.
      *
-     * \returns QgsRasterCalculator::Success in case of success. If an error is encountered then
+     * \returns QgsRasterCalculator::Result::Success in case of success. If an error is encountered then
      * a description of the error can be obtained by calling lastError().
     */
     Result processCalculation( QgsFeedback *feedback = nullptr );
@@ -172,6 +161,38 @@ class ANALYSIS_EXPORT QgsRasterCalculator
      * \since QGIS 3.4
      */
     QString lastError() const;
+
+    /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 3.44
+     */
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
+
+    /**
+     * Set no data value for output file.
+     *
+     * \see noDataValue()
+     * \since QGIS 3.44
+     */
+    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
+
+    /**
+     * Returns no data value used for output file.
+     *
+     * \see setNoDataValue()
+     * \since QGIS 3.44
+     */
+    double noDataValue() const { return mNoDataValue; }
 
   private:
     //default constructor forbidden. We need formula, output file, output format and output raster resolution obligatory
@@ -196,7 +217,7 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     void outputGeoTransform( double *transform ) const;
 
     //! Execute calculations on GPU
-    Result processCalculationGPU( std::unique_ptr< QgsRasterCalcNode > calcNode, QgsFeedback *feedback = nullptr );
+    Result processCalculationGPU( std::unique_ptr<QgsRasterCalcNode> calcNode, QgsFeedback *feedback = nullptr );
 
     QString mFormulaString;
     QString mOutputFile;
@@ -212,6 +233,8 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     int mNumOutputRows = 0;
 
     QString mLastError;
+    QStringList mCreationOptions;
+    double mNoDataValue = -FLT_MAX;
 
     /***/
     QVector<QgsRasterCalculatorEntry> mRasterEntries;

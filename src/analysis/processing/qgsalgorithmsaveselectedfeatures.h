@@ -30,9 +30,7 @@
  */
 class QgsSaveSelectedFeatures : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsSaveSelectedFeatures() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,20 +39,17 @@ class QgsSaveSelectedFeatures : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsSaveSelectedFeatures *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QgsFeatureIds mSelection;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSAVESELECTEDFEATURES_H
-
-

@@ -4,5 +4,5 @@ try:
     QgsScaleUtils.loadScaleList = staticmethod(QgsScaleUtils.loadScaleList)
     QgsScaleUtils.equalToOrGreaterThanMinimumScale = staticmethod(QgsScaleUtils.equalToOrGreaterThanMinimumScale)
     QgsScaleUtils.lessThanMaximumScale = staticmethod(QgsScaleUtils.lessThanMaximumScale)
-except NameError:
+except (NameError, AttributeError):
     pass

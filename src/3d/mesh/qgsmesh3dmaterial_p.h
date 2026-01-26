@@ -19,13 +19,14 @@
 #define QGSMESH3DMATERIAL_H
 
 
-#include <Qt3DRender/QMaterial>
+#include "qgsmaterial.h"
+#include "qgsmesh3dsymbol.h"
+#include "qgsrange.h"
+#include "qgsvector3d.h"
+
+#include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QRenderPassFilter>
 #include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QAbstractTextureImage>
-
-#include "qgsmesh3dsymbol.h"
-#include "qgsvector3d.h"
 
 ///@cond PRIVATE
 
@@ -43,11 +44,11 @@
 class QgsMeshLayer;
 
 /**
- * \ingroup 3d
+ * \ingroup qgis_3d
  * \brief Implementation of material used to render the mesh layer
  * \since QGIS 3.12
  */
-class QgsMesh3DMaterial : public Qt3DRender::QMaterial
+class QgsMesh3DMaterial : public QgsMaterial
 {
     Q_OBJECT
 
@@ -70,14 +71,10 @@ class QgsMesh3DMaterial : public Qt3DRender::QMaterial
     };
 
     //! Constructor
-    QgsMesh3DMaterial( QgsMeshLayer *layer,
-                       const QgsDateTimeRange &timeRange,
-                       const QgsVector3D &origin,
-                       const QgsMesh3DSymbol *symbol,
-                       MagnitudeType magnitudeType = ZValue );
+    QgsMesh3DMaterial( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange, const QgsVector3D &origin, const QgsMesh3DSymbol *symbol, MagnitudeType magnitudeType = ZValue );
 
   private:
-    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
     Qt3DRender::QTechnique *mTechnique;
     MagnitudeType mMagnitudeType = ZValue;
     QgsVector3D mOrigin;
@@ -87,7 +84,7 @@ class QgsMesh3DMaterial : public Qt3DRender::QMaterial
 };
 
 
-class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
+class ArrowsGridTexture : public Qt3DRender::QAbstractTextureImage
 {
     Q_OBJECT
 

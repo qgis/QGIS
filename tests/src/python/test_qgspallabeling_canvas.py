@@ -10,9 +10,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = 'Larry Shaffer'
-__date__ = '07/09/2013'
-__copyright__ = 'Copyright 2013, The QGIS Project'
+__author__ = "Larry Shaffer"
+__date__ = "07/09/2013"
+__copyright__ = "Copyright 2013, The QGIS Project"
 
 import sys
 
@@ -59,7 +59,7 @@ class TestCanvasBase(TestQgsPalLabeling):
                 self._Test,
                 color_tolerance=0,
                 allowed_mismatch=0,
-                control_path_prefix='expected_' + self._TestGroupPrefix
+                control_path_prefix="expected_" + self._TestGroupPrefix,
             )
         )
 
@@ -69,7 +69,7 @@ class TestCanvasBasePoint(TestCanvasBase):
     @classmethod
     def setUpClass(cls):
         TestCanvasBase.setUpClass()
-        cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer("point")
 
 
 class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
@@ -77,7 +77,7 @@ class TestCanvasPoint(TestCanvasBasePoint, TestPointBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self.configTest('pal_canvas', 'sp')
+        self.configTest("pal_canvas", "sp")
 
 
 class TestCanvasBaseLine(TestCanvasBase):
@@ -85,7 +85,7 @@ class TestCanvasBaseLine(TestCanvasBase):
     @classmethod
     def setUpClass(cls):
         TestCanvasBase.setUpClass()
-        cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
+        cls.layer = TestQgsPalLabeling.loadFeatureLayer("line")
 
 
 class TestCanvasLine(TestCanvasBaseLine, TestLineBase):
@@ -93,14 +93,12 @@ class TestCanvasLine(TestCanvasBaseLine, TestLineBase):
     def setUp(self):
         """Run before each test."""
         super().setUp()
-        self.configTest('pal_canvas_line', 'sp')
+        self.configTest("pal_canvas_line", "sp")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
-    suite = (
-        ['TestCanvasPoint.' + t for t in suiteTests()['sp_suite']]
-    )
+    suite = ["TestCanvasPoint." + t for t in suiteTests()["sp_suite"]]
     res = runSuite(sys.modules[__name__], suite)
     sys.exit(not res.wasSuccessful())

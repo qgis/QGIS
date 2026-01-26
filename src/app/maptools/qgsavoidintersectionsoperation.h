@@ -16,12 +16,12 @@
 #ifndef QGSAVOIDINTERSECTIONSOPERATION_H
 #define QGSAVOIDINTERSECTIONSOPERATION_H
 
-#include <QObject>
-
 #include "qgis.h"
 #include "qgis_app.h"
 #include "qgsfeatureid.h"
 #include "qgspoint.h"
+
+#include <QObject>
 
 class QgsVectorLayer;
 class QgsGeometry;
@@ -37,7 +37,6 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */
@@ -45,19 +44,17 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
 
     struct Result
     {
-      Result()
-        : operationResult( Qgis::GeometryOperationResult::NothingHappened ),
-          geometryHasChanged( false ) {}
+        Result() = default;
 
-      /**
+        /**
        * The result of an avoid intersection operation
        */
-      Qgis::GeometryOperationResult operationResult;
+        Qgis::GeometryOperationResult operationResult = Qgis::GeometryOperationResult::NothingHappened;
 
-      /**
+        /**
        * True if the geometry has changed during the avoid intersection operation
        */
-      bool geometryHasChanged;
+        bool geometryHasChanged = false;
     };
 
     /**
@@ -67,8 +64,7 @@ class APP_EXPORT QgsAvoidIntersectionsOperation : public QObject
      * \returns the operation result
      * \since QGIS 3.34
      */
-    Result apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom,
-                  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId> >() ) );
+    Result apply( QgsVectorLayer *layer, QgsFeatureId fid, QgsGeometry &geom, const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> &ignoreFeatures = ( QHash<QgsVectorLayer *, QSet<QgsFeatureId>>() ) );
 
   signals:
 

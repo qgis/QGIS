@@ -16,19 +16,21 @@
 #ifndef QGSEDITORCONFIGWIDGET_H
 #define QGSEDITORCONFIGWIDGET_H
 
-#include <QWidget>
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-
+#include "qgis_sip.h"
 #include "qgseditorwidgetwrapper.h"
 #include "qgsexpressioncontextgenerator.h"
+
+#include <QWidget>
 
 class QgsVectorLayer;
 class QgsPropertyOverrideButton;
 
 /**
  * \ingroup gui
- * \brief This class should be subclassed for every configurable editor widget type.
+ * \brief Base class for widgets which configure editor widget types.
+ *
+ * This class should be subclassed for every configurable editor widget type.
  *
  * It implements the GUI configuration widget and transforms this to/from a configuration.
  *
@@ -39,7 +41,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
 {
     Q_OBJECT
   public:
-
     /**
      * Create a new configuration widget
      *
@@ -87,7 +88,6 @@ class GUI_EXPORT QgsEditorConfigWidget : public QWidget, public QgsExpressionCon
     void changed();
 
   protected:
-
     /**
      * Registers a property override button, setting up its initial value, connections and description.
      * \param button button to register

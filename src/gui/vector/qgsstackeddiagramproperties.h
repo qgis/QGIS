@@ -21,13 +21,15 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
-#include "qgsdiagramrenderer.h"
 #include "ui_qgsstackeddiagrampropertiesbase.h"
 
-#include <QWidget>
+#include "qgis_gui.h"
+#include "qgsdiagramrenderer.h"
+#include "qgsproxystyle.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QWidget>
 
 class QgsVectorLayer;
 class QgsMapCanvas;
@@ -50,10 +52,11 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     //! constructor
     QgsStackedDiagramPropertiesModel( QObject *parent = nullptr );
 
+    ~QgsStackedDiagramPropertiesModel() override;
+
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    QVariant headerData( int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex & = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
 
@@ -61,37 +64,65 @@ class GUI_EXPORT QgsStackedDiagramPropertiesModel : public QAbstractTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
-    // new methods
+    // drag'n'drop support
+    Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    //! Returns the diagram renderer at the specified index
+    // new methods
+    //! Returns the diagram renderer at the specified index. Does not transfer ownership.
     QgsDiagramRenderer *subDiagramForIndex( const QModelIndex &index ) const;
 
-    //! Inserts a new diagram at the specified position
+    //! Inserts a new diagram at the specified position. Takes ownership.
     void insertSubDiagram( const int index, QgsDiagramRenderer *newSubDiagram );
-    //! Replaces the diagram located at \a index by \a dr
+    //! Replaces the diagram located at \a index by \a dr. Takes ownership.
     void updateSubDiagram( const QModelIndex &index, QgsDiagramRenderer *dr );
 
-    //! Returns the list of diagram renderers from the model
-    QList< QgsDiagramRenderer *> subRenderers() const;
+    //! Returns the list of diagram renderers from the model. Does not transfer ownership.
+    QList<QgsDiagramRenderer *> subRenderers() const;
 
     //! Returns the diagram layer settings from the model
     QgsDiagramLayerSettings diagramLayerSettings() const;
 
     /**
      * Sets the diagram layer settings for the model.
-     * @param dls DiagramLayerSettings to be set.
      */
     void updateDiagramLayerSettings( QgsDiagramLayerSettings dls );
 
+  signals:
+    //! Informs views that subdiagrams were moved in the model.
+    void subDiagramsMoved();
+
   protected:
-    QList< QgsDiagramRenderer *> mRenderers;
+    QList<QgsDiagramRenderer *> mRenderers;
     QgsDiagramLayerSettings mDiagramLayerSettings;
 };
 
+/**
+ * \ingroup gui
+ * \brief View style which shows a drop indicator line between items
+ *
+ * \since QGIS 3.40.6
+ */
+class QgsStackedDiagramsViewStyle : public QgsProxyStyle
+{
+    Q_OBJECT
+
+  public:
+    /**
+    * Constructor for QgsStackedDiagramsViewStyle
+    * \param parent parent object
+    */
+    explicit QgsStackedDiagramsViewStyle( QWidget *parent );
+
+    void drawPrimitive( PrimitiveElement element, const QStyleOption *option, QPainter *painter, const QWidget *widget = nullptr ) const override;
+};
 
 /**
  * \ingroup gui
  * \class QgsStackedDiagramProperties
+ * \brief A widget for editing sub diagrams.
  *
  * \since QGIS 3.40
  */
@@ -113,34 +144,40 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
   public slots:
     void apply();
 
+    /**
+     * Clears current item from the view.
+     *
+     * \since QGIS 3.40.6
+     */
+    void clearCurrentIndex();
+
   private slots:
 
     /**
-     * Adds a diagram to the current QgsStackedDiagramProperties.
+     * Adds a sub diagram renderer to the current QgsStackedDiagramProperties.
      */
-    void addSubDiagram();
+    void addSubDiagramRenderer();
 
     /**
-     * Appends a diagram to the current QgsStackedDiagramProperties.
-     * @param dr Diagram renderer to be appended.
+     * Appends a sub diagram renderer to the current QgsStackedDiagramProperties.
+     * Takes ownership.
      */
-    void appendSubDiagram( QgsDiagramRenderer *dr );
+    void appendSubDiagramRenderer( QgsDiagramRenderer *dr );
 
     /**
-     * Edits the properties of the current diagram.
+     * Edits the properties of the current diagram renderer.
      */
-    void editSubDiagram();
+    void editSubDiagramRenderer();
 
     /**
-     * Edits the properties of a diagram located at a given \a index.
-     * @param index Model index where the diagram is located.
+     * Edits the properties of a diagram renderer located at a given \a index.
      */
-    void editSubDiagram( const QModelIndex &index );
+    void editSubDiagramRenderer( const QModelIndex &index );
 
     /**
      * Removes a diagram from the current QgsStackedDiagramProperties.
      */
-    void removeSubDiagram();
+    void removeSubDiagramRenderer();
 
   private:
     QgsVectorLayer *mLayer = nullptr;
@@ -153,7 +190,6 @@ class GUI_EXPORT QgsStackedDiagramProperties : public QgsPanelWidget, private Ui
      * the first sub diagram in the stacked diagram. This includes the
      * first enabled sub diagram, as well as disabled sub diagrams that,
      * after being edited, can become the first enabled one.
-     * @param index Model index where the sub diagram is located.
      */
     bool couldBeFirstSubDiagram( const QModelIndex &index ) const;
 
@@ -175,7 +211,6 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsStackedDiagramPropertiesDialog
      * \param layer source vector layer
@@ -186,18 +221,17 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
 
     /**
      * Delegates to the diagram properties widget to sync with the given renderer.
-     * @param dr Diagram Renderer to be used for the sync.
      */
     void syncToRenderer( const QgsDiagramRenderer *dr ) const;
 
     /**
      * Delegates to the diagram properties widget to sync with the given diagram layer settings.
-     * @param dls Diagram Layer Settings to be used for the sync.
      */
     void syncToSettings( const QgsDiagramLayerSettings *dls ) const;
 
     /**
      * Gets a renderer object built from the diagram properties widget.
+     * Transfers ownership.
      */
     QgsDiagramRenderer *renderer();
 
@@ -209,7 +243,8 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
     /**
      * Delegates to the main widget to set whether the widget should show
      * diagram layer settings to be edited.
-     * @param allowed Whether the main widget should be allowed to edit diagram layer settings.
+     *
+     * \param allowed Whether the main widget should be allowed to edit diagram layer settings.
     */
     void setAllowedToEditDiagramLayerSettings( bool allowed ) const;
 
@@ -230,7 +265,7 @@ class GUI_EXPORT QgsStackedDiagramPropertiesDialog : public QDialog
 
   private:
     QgsDiagramProperties *mPropsWidget = nullptr;
-    std::unique_ptr< QgsDiagramRenderer > mRenderer;
+    std::unique_ptr<QgsDiagramRenderer> mRenderer;
     QgsDiagramLayerSettings mDiagramLayerSettings;
     QDialogButtonBox *buttonBox = nullptr;
 };

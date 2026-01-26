@@ -18,10 +18,11 @@
 #ifndef QGSGRIDFILEWRITER_H
 #define QGSGRIDFILEWRITER_H
 
+#include "qgis_analysis.h"
 #include "qgsrectangle.h"
+
 #include <QString>
 #include <QTextStream>
-#include "qgis_analysis.h"
 
 class QgsInterpolator;
 class QgsFeedback;
@@ -30,20 +31,21 @@ class QgsFeedback;
 
 /**
  * \ingroup analysis
- * \brief A class that does interpolation to a grid and writes the results to an ascii grid.
+ * \brief Handles interpolation to a grid and writes the results to a raster grid file.
 */
 class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
-
     /**
      * Constructor for QgsGridFileWriter, for the specified \a interpolator.
      *
      * The \a outputPath argument is used to set the output file path.
      *
      * The \a extent and \a nCols, \a nRows arguments dictate the extent and size of the output raster.
+     *
+     * The \a outputFormat (available since QGIS 4.0), if not explicitly set, is inferred from the \a outputPath extension.
      */
-    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
+    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, const QString &outputFormat = QString() );
 
     /**
      * Writes the grid file.
@@ -54,11 +56,40 @@ class ANALYSIS_EXPORT QgsGridFileWriter
     */
     int writeFile( QgsFeedback *feedback = nullptr );
 
+    /**
+     * Sets a list of data source creation options to use when creating the output raster file.
+     *
+     * \see creationOptions()
+     * \since QGIS 3.44t
+     */
+    void setCreationOptions( const QStringList &options ) { mCreationOptions = options; }
+
+    /**
+     * Returns the list of data source creation options which will be used when creating the output raster file.
+     *
+     * \see setCreationOptions()
+     * \since QGIS 3.44
+     */
+    QStringList creationOptions() const { return mCreationOptions; }
+
+    /**
+     * Set no data value for output file.
+     *
+     * \see noDataValue()
+     * \since QGIS 3.44
+     */
+    void setNoDataValue( double noDataValue ) { mNoDataValue = noDataValue; }
+
+    /**
+     * Returns no data value used for output file.
+     *
+     * \see setNoDataValue()
+     * \since QGIS 3.44
+     */
+    double noDataValue() const { return mNoDataValue; }
+
   private:
-
     QgsGridFileWriter() = delete;
-
-    int writeHeader( QTextStream &outStream );
 
     QgsInterpolator *mInterpolator = nullptr;
     QString mOutputFilePath;
@@ -68,6 +99,11 @@ class ANALYSIS_EXPORT QgsGridFileWriter
 
     double mCellSizeX = 0;
     double mCellSizeY = 0;
+
+    QString mOutputFormat;
+
+    QStringList mCreationOptions;
+    double mNoDataValue = -9999.0;
 };
 
 #endif

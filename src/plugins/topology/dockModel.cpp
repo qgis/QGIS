@@ -16,15 +16,18 @@
  ***************************************************************************/
 
 #include "dockModel.h"
-#include "topolError.h"
+
 #include "qgsvectorlayer.h"
+#include "topolError.h"
+
 #include <qlogging.h>
+
+#include "moc_dockModel.cpp"
 
 DockModel::DockModel( QObject *parent )
 {
   Q_UNUSED( parent )
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
-
 }
 
 void DockModel::setErrors( const ErrorList &errorList )
@@ -69,10 +72,10 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 
   const int row = index.row();
-//  if(!row)
-//    {
-//      return QVariant();
-//    }
+  //  if(!row)
+  //    {
+  //      return QVariant();
+  //    }
   const int column = index.column();
 
   if ( role == Qt::TextAlignmentRole )
@@ -91,7 +94,7 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
       break;
     case 1:
       if ( !mErrorlist[row]->featurePairs().first().layer )
-        val = QStringLiteral( "Unknown" );
+        val = u"Unknown"_s;
       else
         val = mErrorlist[row]->featurePairs().first().layer->name();
       break;

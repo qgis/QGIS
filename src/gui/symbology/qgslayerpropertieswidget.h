@@ -17,9 +17,10 @@
 #define QGSLAYERPROPERTIESWIDGET_H
 
 #include "ui_widget_layerproperties.h"
+
 #include "qgsexpressioncontext.h"
-#include "qgssymbolwidgetcontext.h"
 #include "qgssymbollayer.h"
+#include "qgssymbolwidgetcontext.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -45,7 +46,6 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayerPropertiesWidget.
      * \param layer the symbol layer
@@ -116,9 +116,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     void updateProperty();
 
   private:
-
     QgsSymbolWidgetContext mContext;
-
 };
 
 #endif //QGSLAYERPROPERTIESWIDGET_H

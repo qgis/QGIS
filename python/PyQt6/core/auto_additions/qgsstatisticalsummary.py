@@ -2,5 +2,5 @@
 try:
     QgsStatisticalSummary.displayName = staticmethod(QgsStatisticalSummary.displayName)
     QgsStatisticalSummary.shortName = staticmethod(QgsStatisticalSummary.shortName)
-except NameError:
+except (NameError, AttributeError):
     pass

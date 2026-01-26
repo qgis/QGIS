@@ -16,19 +16,19 @@
 #ifndef QGSSTYLE_H
 #define QGSSTYLE_H
 
-#include "qgis_core.h"
+#include <sqlite3.h>
+
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgslegendpatchshape.h"
+#include "qgspallabeling.h"
+#include "qgssqliteutils.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextformat.h"
+
 #include <QMap>
 #include <QMultiMap>
 #include <QString>
-
-#include <sqlite3.h>
-
-#include "qgssqliteutils.h"
-#include "qgssymbollayerutils.h" // QgsStringMap
-#include "qgstextformat.h"
-#include "qgspallabeling.h"
-#include "qgslegendpatchshape.h"
 
 class QgsSymbol;
 class QgsSymbolLayer;
@@ -57,6 +57,7 @@ typedef QMap<QString, QgsPalLayerSettings > QgsLabelSettingsMap;
  * Constants used to describe copy-paste MIME types
  */
 #define QGSCLIPBOARD_STYLE_MIME "application/qgis.style"
+#define QGSCLIPBOARD_STYLES_MIME "application/qgis.styles"
 
 /**
  * \ingroup core
@@ -82,6 +83,7 @@ typedef QMultiMap<QString, QString> QgsSmartConditionMap;
 /**
  * \ingroup core
  * \class QgsStyle
+ * \brief A database of saved style entities, including symbols, color ramps, text formats and others.
  */
 class CORE_EXPORT QgsStyle : public QObject
 {
@@ -683,7 +685,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param tags is a list of tags that are associated with the symbol as a QStringList.
      *  \returns returns the success state of the save operation
      */
-    bool saveSymbol( const QString &name, QgsSymbol *symbol, bool favorite, const QStringList &tags );
+    bool saveSymbol( const QString &name, const QgsSymbol *symbol, bool favorite, const QStringList &tags );
 
     /**
      * Adds the colorramp to the database.
@@ -694,7 +696,7 @@ class CORE_EXPORT QgsStyle : public QObject
      *  \param tags is a list of tags that are associated with the color ramp as a QStringList.
      *  \returns returns the success state of the save operation
      */
-    bool saveColorRamp( const QString &name, QgsColorRamp *ramp, bool favorite, const QStringList &tags );
+    bool saveColorRamp( const QString &name, const QgsColorRamp *ramp, bool favorite, const QStringList &tags );
 
     //! Removes color ramp from style (and delete it)
     bool removeColorRamp( const QString &name );
@@ -1053,7 +1055,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * \see rampAdded()
      * \see symbolChanged()
      */
-    void symbolSaved( const QString &name, QgsSymbol *symbol );
+    void symbolSaved( const QString &name, const QgsSymbol *symbol );
 
     /**
      * Emitted whenever a symbol's definition is changed. This does not include

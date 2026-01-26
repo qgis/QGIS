@@ -17,16 +17,16 @@
 #ifndef QGSSPATIALITESOURCESELECT_H
 #define QGSSPATIALITESOURCESELECT_H
 
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgsproviderregistry.h"
-#include "qgsabstractdbsourceselect.h"
 
-#include <QThread>
-#include <QMap>
-#include <QList>
-#include <QPair>
-#include <QIcon>
 #include <QFileDialog>
+#include <QIcon>
+#include <QList>
+#include <QMap>
+#include <QPair>
+#include <QThread>
 
 class QgsSpatiaLiteTableModel;
 class QTableWidgetItem;
@@ -40,12 +40,11 @@ class QPushButton;
  * for SpatiaLite/SQLite databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
+class QgsSpatiaLiteSourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
   public:
-
     /* Open file selector to add new connection */
     static bool newConnection( QWidget *parent );
 
@@ -56,11 +55,13 @@ class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables
-    QStringList selectedTables();
+    QStringList selectedTables() const;
     //! Connection info (DB-path)
     QString connectionInfo();
     // Store the selected database
     void dbChanged();
+
+    QString settingPath() const override;
 
   public slots:
 
@@ -82,8 +83,6 @@ class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
     void cmbConnections_activated( int );
     void setLayerType( const QString &table, const QString &column, const QString &type );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    //!Sets a new regular expression to the model
-    void setSearchExpression( const QString &regexp );
     void showHelp();
     bool configureFromUri( const QString &uri ) override;
 
@@ -100,8 +99,8 @@ class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
       DbssColumns,
     };
 
-    typedef QPair< QString, QString > geomPair;
-    typedef QList< geomPair > geomCol;
+    typedef QPair<QString, QString> geomPair;
+    typedef QList<geomPair> geomCol;
 
     // Set the position of the database connection list to the last
     // used one.
@@ -114,13 +113,12 @@ class QgsSpatiaLiteSourceSelect:  public QgsAbstractDbSourceSelect
     QString mSqlitePath;
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
-    QMap < QString, QPair < QString, QIcon > >mLayerIcons;
+    QMap<QString, QPair<QString, QIcon>> mLayerIcons;
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel *mTableModel;
 
     QString layerURI( const QModelIndex &index );
     QPushButton *mStatsButton = nullptr;
-
 };
 
 #endif // QGSSPATIALITESOURCESELECT_H

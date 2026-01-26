@@ -15,17 +15,17 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "February 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 
 def processInputs(alg, parameters, context, feedback):
-    if 'input' in alg.exportedLayers:
+    if "input" in alg.exportedLayers:
         return
 
     # We need to import the vector with v.in.ogr
     # and we can use r.external for the raster
-    alg.loadVectorLayerFromParameter('input', parameters, context, feedback, False)
-    alg.loadRasterLayerFromParameter('raster', parameters, context, True)
+    alg.loadVectorLayerFromParameter("input", parameters, context, feedback, False)
+    alg.loadRasterLayerFromParameter("raster", parameters, context, True)
     alg.postInputs(context)

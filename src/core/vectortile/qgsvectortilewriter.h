@@ -16,11 +16,12 @@
 #ifndef QGSVECTORTILEWRITER_H
 #define QGSVECTORTILEWRITER_H
 
-#include <QCoreApplication>
-#include "qgstiles.h"
-#include "qgsrectangle.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsrectangle.h"
+#include "qgstiles.h"
+
+#include <QCoreApplication>
 
 class QgsFeedback;
 class QgsTileMatrix;
@@ -82,7 +83,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
     /**
      * \ingroup core
-     * \brief Configuration of a single input vector layer to be included in the output
+     * \brief Configuration of a single input vector layer to be included in the output.
      * \since QGIS 3.14
      */
     class Layer
@@ -190,7 +191,7 @@ class CORE_EXPORT QgsVectorTileWriter
 
   private:
     bool writeTileFileXYZ( const QString &sourcePath, QgsTileXYZ tileID, const QgsTileMatrix &tileMatrix, const QByteArray &tileData );
-    QString mbtilesJsonSchema();
+    QString mbtilesJsonSchema() const;
 
   private:
     QgsTileMatrix mRootTileMatrix;

@@ -17,11 +17,11 @@
 #define QGSMAPTOOLIDENTIFYACTION_H
 
 #include "qgis.h"
+#include "qgis_app.h"
 #include "qgsmaptoolidentify.h"
 
 #include <QObject>
 #include <QPointer>
-#include "qgis_app.h"
 
 class QgisInterface;
 class QgsIdentifyResultsDialog;
@@ -58,8 +58,12 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     void deactivate() override;
 
-    //! Triggers map identification of at the given location and outputs results in GUI
-    void identifyAndShowResults( const QgsGeometry &geom, double searchRadiusMapUnits );
+    /**
+     * Triggers map identification at the given location and outputs results in GUI
+     * \param geom The geometry to use for identification
+     * \param properties Sets overridden properties for this identification, like search radius
+     */
+    void identifyAndShowResults( const QgsGeometry &geom, IdentifyProperties properties );
     //! Clears any previous results from the GUI
     void clearResults();
     //! Looks up feature by its ID and outputs the result in GUI
@@ -70,6 +74,13 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
      * \since QGIS 3.18
      */
     void showIdentifyResults( const QList<IdentifyResult> &identifyResults );
+
+    /**
+     * Returns a pointer to the identify results dialog for name/value pairs
+     * \since QGIS 3.42
+     */
+    QgsIdentifyResultsDialog *resultsDialog();
+
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
@@ -90,7 +101,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     QgsMapToolSelectionHandler *mSelectionHandler = nullptr;
     bool mShowExtendedMenu = false;
 
-    QgsIdentifyResultsDialog *resultsDialog();
 
     Qgis::DistanceUnit displayDistanceUnits() const override;
     Qgis::AreaUnit displayAreaUnits() const override;

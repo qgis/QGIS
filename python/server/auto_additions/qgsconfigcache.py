@@ -4,5 +4,5 @@ try:
     QgsConfigCache.initialize = staticmethod(QgsConfigCache.initialize)
     QgsConfigCache.instance = staticmethod(QgsConfigCache.instance)
     QgsConfigCache.__signal_arguments__ = {'projectRemovedFromCache': ['path: str']}
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -15,8 +15,8 @@
 #ifndef QGSSINGLESYMBOLRENDERER_H
 #define QGSSINGLESYMBOLRENDERER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsrenderer.h"
 
 class QgsDataDefinedSizeLegend;
@@ -25,6 +25,7 @@ class QgsSymbol;
 /**
  * \ingroup core
  * \class QgsSingleSymbolRenderer
+ * \brief A feature renderer which renders all features with the same symbol.
  */
 class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 {
@@ -63,8 +64,8 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
     QString dump() const override;
 
     QgsSingleSymbolRenderer *clone() const override SIP_FACTORY;
-
-    void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override;
+    Q_DECL_DEPRECATED void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const override SIP_DEPRECATED;
+    bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const override;
 
     /**
      * Creates a new single symbol renderer from an SLD \a element.

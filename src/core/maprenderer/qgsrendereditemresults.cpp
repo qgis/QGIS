@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include "qgsrendereditemresults.h"
-#include "qgsrendereditemdetails.h"
-#include "qgsrendercontext.h"
-#include "qgslogger.h"
-#include "qgsrenderedannotationitemdetails.h"
-#include "RTree.h"
 
+#include "RTree.h"
+#include "qgslogger.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderedannotationitemdetails.h"
+#include "qgsrendereditemdetails.h"
 
 ///@cond PRIVATE
 class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDetails *, float, 2, float>
@@ -38,14 +38,18 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     void insert( const QgsRenderedItemDetails *details, const QgsRectangle &bounds )
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Insert(
+      const float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      const float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      details );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Insert(
+        aMin,
+        aMax,
+        details );
     }
 
     /**
@@ -56,14 +60,18 @@ class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDet
     bool intersects( const QgsRectangle &bounds, const std::function< bool( const QgsRenderedItemDetails *details )> &callback ) const
     {
       std::array< float, 4 > scaledBounds = scaleBounds( bounds );
-      this->Search(
+      const float aMin[2]
       {
         scaledBounds[0], scaledBounds[ 1]
-      },
+      };
+      const float aMax[2]
       {
-        scaledBounds[2], scaledBounds[3]
-      },
-      callback );
+        scaledBounds[2], scaledBounds[ 3]
+      };
+      this->Search(
+        aMin,
+        aMax,
+        callback );
       return true;
     }
 
@@ -144,7 +152,7 @@ void QgsRenderedItemResults::appendResults( const QList<QgsRenderedItemDetails *
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform rendered item's bounds to map CRS" ) );
+      QgsDebugError( u"Could not transform rendered item's bounds to map CRS"_s );
     }
 
     if ( QgsRenderedAnnotationItemDetails *annotationDetails = dynamic_cast< QgsRenderedAnnotationItemDetails * >( details ) )

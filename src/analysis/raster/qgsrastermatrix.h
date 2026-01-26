@@ -29,7 +29,6 @@
 class ANALYSIS_EXPORT QgsRasterMatrix
 {
   public:
-
     enum TwoArgOperator
     {
       opPLUS,
@@ -37,12 +36,12 @@ class ANALYSIS_EXPORT QgsRasterMatrix
       opMUL,
       opDIV,
       opPOW,
-      opEQ,         // =
-      opNE,         // != resp. <>
-      opGT,         // >
-      opLT,         // <
-      opGE,         // >=
-      opLE,         // <=
+      opEQ, // =
+      opNE, // != resp. <>
+      opGT, // >
+      opLT, // <
+      opGE, // >=
+      opLE, // <=
       opAND,
       opOR,
       opMIN,
@@ -82,7 +81,7 @@ class ANALYSIS_EXPORT QgsRasterMatrix
      * Returns data array (but not ownership)
      * \note not available in Python bindings
      */
-    double *data() { return mData; } SIP_SKIP
+    double *data() SIP_SKIP { return mData; }
 
     /**
      * Returns data and ownership. Sets data and nrows, ncols of this matrix to 0

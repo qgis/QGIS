@@ -18,11 +18,12 @@
 
 #include "qgsratiolockbutton.h"
 
-#include <QToolButton>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
 #include <QPointer>
+#include <QToolButton>
+
 class QDoubleSpinBox;
 
 /**
@@ -36,7 +37,6 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
     Q_PROPERTY( bool locked READ locked WRITE setLocked )
 
   public:
-
     /**
      * Construct a new ratio lock button.
      * Use \a parent to attach a parent QWidget to the button.
@@ -95,20 +95,18 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
     void lockChanged( bool locked );
 
   protected:
-
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
-
     void drawButton();
 
     bool mLocked = false;
 
-    QPointer< QDoubleSpinBox > mWidthSpinBox;
+    QPointer<QDoubleSpinBox> mWidthSpinBox;
     double mPrevWidth = 0;
-    QPointer< QDoubleSpinBox > mHeightSpinBox;
+    QPointer<QDoubleSpinBox> mHeightSpinBox;
     double mPrevHeight = 0;
     bool mUpdatingRatio = false;
 
@@ -118,7 +116,6 @@ class GUI_EXPORT QgsRatioLockButton : public QToolButton
 
     void widthSpinBoxChanged( double value );
     void heightSpinBoxChanged( double value );
-
 };
 
 #endif

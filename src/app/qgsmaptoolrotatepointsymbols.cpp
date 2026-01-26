@@ -14,23 +14,21 @@
  ***************************************************************************/
 
 #include "qgsmaptoolrotatepointsymbols.h"
+
 #include "qgsmapcanvas.h"
-#include "qgspointrotationitem.h"
-#include "qgssymbol.h"
-#include "qgsvectorlayer.h"
-#include "qgsproperty.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmarkersymbol.h"
+#include "qgspointrotationitem.h"
+#include "qgsproperty.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
 #include <QGraphicsPixmapItem>
 
+#include "moc_qgsmaptoolrotatepointsymbols.cpp"
 
 QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas )
   : QgsMapToolPointSymbol( canvas )
-  , mCurrentMouseAzimut( 0.0 )
-  , mCurrentRotationFeature( 0.0 )
-  , mRotating( false )
-  , mCtrlPressed( false )
 {}
 
 QgsMapToolRotatePointSymbols::~QgsMapToolRotatePointSymbols()
@@ -132,7 +130,7 @@ void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, co
     mRotationItem->setPointLocation( snappedPoint );
   }
   mCurrentMouseAzimut = calculateAzimut( e->pos() );
-  setPixmapItemRotation( ( int )( mCurrentMouseAzimut ) );
+  setPixmapItemRotation( ( int ) ( mCurrentMouseAzimut ) );
   mRotating = true;
 }
 
@@ -196,7 +194,7 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QgsMapMouseEvent *e )
   }
   else
   {
-    displayValue = ( int )( mCurrentRotationFeature );
+    displayValue = ( int ) ( mCurrentRotationFeature );
     mCtrlPressed = false;
   }
   setPixmapItemRotation( displayValue );
@@ -235,7 +233,7 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymb
 
   if ( markerSymbol )
   {
-    const std::unique_ptr< QgsSymbol > clone( markerSymbol->clone() );
+    const std::unique_ptr<QgsSymbol> clone( markerSymbol->clone() );
     QgsMarkerSymbol *markerClone = static_cast<QgsMarkerSymbol *>( clone.get() );
     markerClone->setDataDefinedAngle( QgsProperty() );
     pointImage = markerClone->bigSymbolPreviewImage( nullptr, Qgis::SymbolPreviewFlags() );
@@ -256,7 +254,6 @@ void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )
 
 int QgsMapToolRotatePointSymbols::roundTo15Degrees( double n )
 {
-  const int m = ( int )( n / 15.0 + 0.5 );
+  const int m = ( int ) ( n / 15.0 + 0.5 );
   return ( m * 15 );
 }
-

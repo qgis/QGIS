@@ -5,11 +5,12 @@
 #ifndef O2_O2GOOGLE_H
 #define O2_O2GOOGLE_H
 
+#include "o2.h"
 
 class O2Google : public O2 {
     Q_OBJECT
 public:
-    explicit O2Google(QObject *parent = 0);
+    explicit O2Google(QObject *parent = nullptr);
 };
 
 

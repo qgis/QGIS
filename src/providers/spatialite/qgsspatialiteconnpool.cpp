@@ -13,21 +13,23 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsspatialiteconnpool.h"
+
 #include <QMutex>
 #include <QMutexLocker>
 
-#include "qgsspatialiteconnpool.h"
+#include "moc_qgsspatialiteconnpool.cpp"
 
 QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::sInstance = nullptr;
 
 QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::instance()
 {
-  if ( ! sInstance )
+  if ( !sInstance )
   {
     static QMutex sMutex;
     QMutexLocker locker( &sMutex );
     // cppcheck-suppress identicalInnerCondition
-    if ( ! sInstance )
+    if ( !sInstance )
     {
       sInstance = new QgsSpatiaLiteConnPool();
     }

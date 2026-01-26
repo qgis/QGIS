@@ -20,10 +20,11 @@
 
 #include "qgis_core.h"
 #include "qgslocatorfilter.h"
+
 #include <QAbstractListModel>
-#include <QTimer>
 #include <QSet>
 #include <QSortFilterProxyModel>
+#include <QTimer>
 
 class QgsLocator;
 class QgsLocatorModel;
@@ -141,7 +142,7 @@ class CORE_EXPORT QgsLocatorModel : public QAbstractTableModel
 /**
  * \class QgsLocatorAutomaticModel
  * \ingroup core
- * \brief A QgsLocatorModel which has is associated directly with a
+ * \brief A QgsLocatorModel which is associated directly with a
  * QgsLocator, and is automatically populated with results
  * from locator searches.
  *

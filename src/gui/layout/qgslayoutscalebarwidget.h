@@ -20,8 +20,9 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include "qgis_gui.h"
 #include "ui_qgslayoutscalebarwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitemwidget.h"
 
 #include <QButtonGroup>
@@ -35,7 +36,7 @@ class QgsLayoutItemScaleBar;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
+class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
 {
     Q_OBJECT
 
@@ -89,7 +90,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     };
     static DistanceLabelPlacement distanceLabelPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement horizontalPlacement, Qgis::ScaleBarDistanceLabelVerticalPlacement verticalPlacement );
 
-    QPointer< QgsLayoutItemScaleBar > mScalebar;
+    QPointer<QgsLayoutItemScaleBar> mScalebar;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     QButtonGroup mSegmentSizeRadioGroup;
@@ -104,6 +105,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public
     void disconnectUpdateSignal();
     void populateDataDefinedButtons();
 
+    static QString linkedMapUnitsString( QgsLayoutItemScaleBar *scalebar );
 };
 
 #endif //QGSLAYOUTSCALEBARWIDGET_H

@@ -16,6 +16,9 @@
  ***************************************************************************/
 
 #include "qgsmbtilesvectortilesourcewidget.h"
+
+#include "moc_qgsmbtilesvectortilesourcewidget.cpp"
+
 ///@cond PRIVATE
 
 #include "qgsproviderregistry.h"
@@ -33,7 +36,7 @@ QgsMbtilesVectorTileSourceWidget::QgsMbtilesVectorTileSourceWidget( QWidget *par
 
   mFileWidget = new QgsFileWidget();
   mFileWidget->setDialogTitle( tr( "Select Mbtiles Dataset" ) );
-  mFileWidget->setFilter( tr( "Mbtiles Files" ) + QStringLiteral( " (*.mbtiles *.MBTILES)" ) );
+  mFileWidget->setFilter( tr( "Mbtiles Files" ) + u" (*.mbtiles *.MBTILES)"_s );
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setOptions( QFileDialog::HideNameFilterDetails );
   layout->addWidget( mFileWidget );
@@ -46,22 +49,22 @@ QgsMbtilesVectorTileSourceWidget::QgsMbtilesVectorTileSourceWidget( QWidget *par
 void QgsMbtilesVectorTileSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri(
-                   QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-                   uri
-                 );
+    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
+    uri
+  );
 
-  mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
+  mFileWidget->setFilePath( mSourceParts.value( u"path"_s ).toString() );
   mIsValid = true;
 }
 
 QString QgsMbtilesVectorTileSourceWidget::sourceUri() const
 {
   QVariantMap parts = mSourceParts;
-  parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
+  parts.insert( u"path"_s, mFileWidget->filePath() );
   return QgsProviderRegistry::instance()->encodeUri(
-           QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-           parts
-         );
+    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
+    parts
+  );
 }
 
 void QgsMbtilesVectorTileSourceWidget::validate()

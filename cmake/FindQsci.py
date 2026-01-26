@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 #   Copyright (c) 2012, Larry Shaffer <larry@dakotacarto.com>
 #    All rights reserved.
@@ -25,14 +24,14 @@
 #    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-"""Find QScintilla2 PyQt4/PyQt5 module version.
+"""Find QScintilla2 PyQt4/PyQt5/PyQt6 module version.
 
 .. note:: Redistribution and use is allowed according to the terms of the BSD
 license. For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 """
-__author__ = 'Larry Shaffer (larry@dakotacarto.com)'
-__date__ = '22/10/2012'
-__copyright__ = 'Copyright 2012, The QGIS Project'
+__author__ = "Larry Shaffer (larry@dakotacarto.com)"
+__date__ = "22/10/2012"
+__copyright__ = "Copyright 2012, The QGIS Project"
 
 import sys
 
@@ -40,24 +39,30 @@ VER = ""
 if len(sys.argv) > 0:
     if sys.argv[1] == "4":
         from PyQt4.Qsci import QSCINTILLA_VERSION_STR
+
         VER = QSCINTILLA_VERSION_STR
     if sys.argv[1] == "5":
         from PyQt5.Qsci import QSCINTILLA_VERSION_STR
+
         VER = QSCINTILLA_VERSION_STR
     else:
         from PyQt6.Qsci import QSCINTILLA_VERSION_STR
+
         VER = QSCINTILLA_VERSION_STR
 else:
     try:
         from PyQt4.Qsci import QSCINTILLA_VERSION_STR
+
         VER = QSCINTILLA_VERSION_STR
     except ImportError:
         try:
             from PyQt5.Qsci import QSCINTILLA_VERSION_STR
+
             VER = QSCINTILLA_VERSION_STR
         except ImportError:
             try:
                 from PyQt6.Qsci import QSCINTILLA_VERSION_STR
+
                 VER = QSCINTILLA_VERSION_STR
             except ImportError:
                 pass

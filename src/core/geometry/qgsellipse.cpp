@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsunittypes.h"
-#include "qgslinestring.h"
 #include "qgsellipse.h"
-#include "qgsgeometryutils.h"
 
-#include <memory>
 #include <limits>
+#include <memory>
+
+#include "qgsgeometryutils.h"
+#include "qgslinestring.h"
+#include "qgsunittypes.h"
 
 void QgsEllipse::normalizeAxis()
 {
@@ -244,12 +245,12 @@ void QgsEllipse::pointsInternal( unsigned int segments, QVector<double> &x, QVec
   const double sinAzimuth = std::sin( azimuth );
   for ( double it : t )
   {
-    *xOut++ = centerX +
-              mSemiMajorAxis * std::cos( it ) * cosAzimuth -
-              mSemiMinorAxis * std::sin( it ) * sinAzimuth;
-    *yOut++ = centerY +
-              mSemiMajorAxis * std::cos( it ) * sinAzimuth +
-              mSemiMinorAxis * std::sin( it ) * cosAzimuth;
+    const double cosT{ std::cos( it ) };
+    const double sinT{ std::sin( it ) };
+    *xOut++ = centerX + mSemiMajorAxis * cosT * cosAzimuth -
+              mSemiMinorAxis * sinT * sinAzimuth;
+    *yOut++ = centerY + mSemiMajorAxis * cosT * sinAzimuth +
+              mSemiMinorAxis * sinT * cosAzimuth;
     if ( zOut )
       *zOut++ = centerZ;
     if ( mOut )
@@ -259,7 +260,7 @@ void QgsEllipse::pointsInternal( unsigned int segments, QVector<double> &x, QVec
 
 QgsPolygon *QgsEllipse::toPolygon( unsigned int segments ) const
 {
-  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+  auto polygon = std::make_unique<QgsPolygon>();
   if ( segments < 3 )
   {
     return polygon.release();
@@ -324,9 +325,9 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
 {
   QString rep;
   if ( isEmpty() )
-    rep = QStringLiteral( "Empty" );
+    rep = u"Empty"_s;
   else
-    rep = QStringLiteral( "Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)" )
+    rep = u"Ellipse (Center: %1, Semi-Major Axis: %2, Semi-Minor Axis: %3, Azimuth: %4)"_s
           .arg( mCenter.asWkt( pointPrecision ), 0, 's' )
           .arg( qgsDoubleToString( mSemiMajorAxis, axisPrecision ), 0, 'f' )
           .arg( qgsDoubleToString( mSemiMinorAxis, axisPrecision ), 0, 'f' )
@@ -337,7 +338,7 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
 
 QgsPolygon *QgsEllipse::orientedBoundingBox() const
 {
-  std::unique_ptr<QgsPolygon> ombb( new QgsPolygon() );
+  auto ombb = std::make_unique<QgsPolygon>();
   if ( isEmpty() )
   {
     return ombb.release();

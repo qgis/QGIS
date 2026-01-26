@@ -14,9 +14,7 @@
 class QgsPointCloudAttribute
 {
 %Docstring(signature="appended")
-
-Attribute for point cloud data
-pair of name and size in bytes
+Attribute for point cloud data pair of name and size in bytes.
 
 .. versionadded:: 3.18
 %End
@@ -64,7 +62,8 @@ Returns the data type
 
     QMetaType::Type variantType() const;
 %Docstring
-Returns the most suitable equivalent QVariant data type to this attribute type.
+Returns the most suitable equivalent QVariant data type to this
+attribute type.
 
 .. seealso:: :py:func:`type`
 %End
@@ -73,7 +72,8 @@ Returns the most suitable equivalent QVariant data type to this attribute type.
 %Docstring
 Returns the type to use when displaying this field.
 
-This will be used when the full datatype with details has to displayed to the user.
+This will be used when the full datatype with details has to displayed
+to the user.
 
 .. seealso:: :py:func:`type`
 %End
@@ -97,8 +97,7 @@ Returns ``True`` if the specified data ``type`` is numeric.
 class QgsPointCloudAttributeCollection
 {
 %Docstring(signature="appended")
-
-Collection of point cloud attributes
+A collection of point cloud attributes.
 
 .. versionadded:: 3.18
 %End
@@ -120,9 +119,11 @@ Adds extra attribute
 
     void extend( const QgsPointCloudAttributeCollection &otherCollection, const QSet<QString> &matchingNames );
 %Docstring
-Adds specific missing attributes from another QgsPointCloudAttributeCollection
+Adds specific missing attributes from another
+QgsPointCloudAttributeCollection
 
-:param otherCollection: a QgsPointCloudAttributeCollection with more attributes
+:param otherCollection: a QgsPointCloudAttributeCollection with more
+                        attributes
 :param matchingNames: the names of the attributes to be added
 
 .. versionadded:: 3.26
@@ -164,7 +165,8 @@ Returns total size of record
 
     QgsFields toFields() const;
 %Docstring
-Converts the attribute collection to an equivalent :py:class:`QgsFields` collection.
+Converts the attribute collection to an equivalent :py:class:`QgsFields`
+collection.
 %End
 
 };

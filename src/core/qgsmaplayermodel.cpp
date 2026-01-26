@@ -13,18 +13,21 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QIcon>
-
 #include "qgsmaplayermodel.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsiconutils.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+
+#include <QIcon>
 #include <QMimeData>
+
+#include "moc_qgsmaplayermodel.cpp"
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )
-  , mProject( project ? project : QgsProject::instance() )
+  , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
 {
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
@@ -32,7 +35,7 @@ QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject 
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )
-  , mProject( project ? project : QgsProject::instance() )
+  , mProject( project ? project : QgsProject::instance() ) // skip-keyword-check
 {
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
@@ -41,6 +44,8 @@ QgsMapLayerModel::QgsMapLayerModel( QObject *parent, QgsProject *project )
 
 void QgsMapLayerModel::setProject( QgsProject *project )
 {
+  if ( mProject == ( project ? project : QgsProject::instance() ) ) // skip-keyword-check
+    return;
 
   // remove layers from previous project
   if ( mProject )
@@ -50,7 +55,7 @@ void QgsMapLayerModel::setProject( QgsProject *project )
     disconnect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   }
 
-  mProject = project ? project : QgsProject::instance();
+  mProject = project ? project : QgsProject::instance(); // skip-keyword-check
 
   connect( mProject, &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
   connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
@@ -376,7 +381,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           QString layerCrs = layer->crs().authid();
           if ( !std::isnan( layer->crs().coordinateEpoch() ) )
           {
-            layerCrs += QStringLiteral( " @ %1" ).arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
+            layerCrs += u" @ %1"_s.arg( qgsDoubleToString( layer->crs().coordinateEpoch(), 3 ) );
           }
           if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
             title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layerCrs );
@@ -387,9 +392,9 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
 
         QString abstract = !layer->metadata().abstract().isEmpty() ? layer->metadata().abstract() : layer->serverProperties()->abstract();
         if ( !abstract.isEmpty() )
-          parts << "<br/>" + abstract.replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
+          parts << "<br/>" + abstract.replace( "\n"_L1, "<br/>"_L1 );
         parts << "<i>" + layer->publicSource() + "</i>";
-        return parts.join( QLatin1String( "<br/>" ) );
+        return parts.join( "<br/>"_L1 );
       }
       return QVariant();
     }
@@ -499,20 +504,20 @@ bool QgsMapLayerModel::removeRows( int row, int count, const QModelIndex &parent
 QStringList QgsMapLayerModel::mimeTypes() const
 {
   QStringList types;
-  types << QStringLiteral( "application/qgis.layermodeldata" );
+  types << u"application/qgis.layermodeldata"_s;
   return types;
 }
 
 bool QgsMapLayerModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex & ) const
 {
-  if ( !mCanReorder || action != Qt::MoveAction || !data->hasFormat( QStringLiteral( "application/qgis.layermodeldata" ) ) )
+  if ( !mCanReorder || action != Qt::MoveAction || !data->hasFormat( u"application/qgis.layermodeldata"_s ) )
     return false;
   return true;
 }
 
 QMimeData *QgsMapLayerModel::mimeData( const QModelIndexList &indexes ) const
 {
-  std::unique_ptr< QMimeData > mimeData = std::make_unique< QMimeData >();
+  auto mimeData = std::make_unique< QMimeData >();
 
   QByteArray encodedData;
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
@@ -530,7 +535,7 @@ QMimeData *QgsMapLayerModel::mimeData( const QModelIndexList &indexes ) const
       }
     }
   }
-  mimeData->setData( QStringLiteral( "application/qgis.layermodeldata" ), encodedData );
+  mimeData->setData( u"application/qgis.layermodeldata"_s, encodedData );
   return mimeData.release();
 }
 
@@ -544,7 +549,7 @@ bool QgsMapLayerModel::dropMimeData( const QMimeData *data, Qt::DropAction actio
   else if ( action != Qt::MoveAction )
     return false;
 
-  QByteArray encodedData = data->data( QStringLiteral( "application/qgis.layermodeldata" ) );
+  QByteArray encodedData = data->data( u"application/qgis.layermodeldata"_s );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   QStringList newItems;
   int rows = 0;

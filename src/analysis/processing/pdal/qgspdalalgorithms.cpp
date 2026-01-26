@@ -16,12 +16,11 @@
  ***************************************************************************/
 
 #include "qgspdalalgorithms.h"
-#include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
 
 #include "qgsalgorithmpdalassignprojection.h"
 #include "qgsalgorithmpdalboundary.h"
 #include "qgsalgorithmpdalbuildvpc.h"
+#include "qgsalgorithmpdalclassifyground.h"
 #include "qgsalgorithmpdalclip.h"
 #include "qgsalgorithmpdalconvertformat.h"
 #include "qgsalgorithmpdalcreatecopc.h"
@@ -30,12 +29,21 @@
 #include "qgsalgorithmpdalexportrastertin.h"
 #include "qgsalgorithmpdalexportvector.h"
 #include "qgsalgorithmpdalfilter.h"
+#include "qgsalgorithmpdalfilternoiseradius.h"
+#include "qgsalgorithmpdalfilternoisestatistical.h"
+#include "qgsalgorithmpdalheightabovegroundnearestneighbour.h"
+#include "qgsalgorithmpdalheightabovegroundtriangulation.h"
 #include "qgsalgorithmpdalinformation.h"
 #include "qgsalgorithmpdalmerge.h"
 #include "qgsalgorithmpdalreproject.h"
 #include "qgsalgorithmpdalthinbydecimate.h"
 #include "qgsalgorithmpdalthinbyradius.h"
 #include "qgsalgorithmpdaltile.h"
+#include "qgsalgorithmpdaltransform.h"
+#include "qgsapplication.h"
+#include "qgsruntimeprofiler.h"
+
+#include "moc_qgspdalalgorithms.cpp"
 
 ///@cond PRIVATE
 
@@ -45,22 +53,22 @@ QgsPdalAlgorithms::QgsPdalAlgorithms( QObject *parent )
 
 QIcon QgsPdalAlgorithms::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/providerQgis.svg" ) );
+  return QgsApplication::getThemeIcon( u"/providerQgis.svg"_s );
 }
 
 QString QgsPdalAlgorithms::svgIconPath() const
 {
-  return QgsApplication::iconPath( QStringLiteral( "providerQgis.svg" ) );
+  return QgsApplication::iconPath( u"providerQgis.svg"_s );
 }
 
 QString QgsPdalAlgorithms::id() const
 {
-  return QStringLiteral( "pdal" );
+  return u"pdal"_s;
 }
 
 QString QgsPdalAlgorithms::helpId() const
 {
-  return QStringLiteral( "qgis" );
+  return u"qgis"_s;
 }
 
 QString QgsPdalAlgorithms::name() const
@@ -75,17 +83,17 @@ bool QgsPdalAlgorithms::supportsNonFileBasedOutput() const
 
 QStringList QgsPdalAlgorithms::supportedOutputVectorLayerExtensions() const
 {
-  return QStringList() << QStringLiteral( "gpkg" );
+  return QStringList() << u"gpkg"_s;
 }
 
-QStringList QgsPdalAlgorithms::supportedOutputRasterLayerExtensions() const
+QList<QPair<QString, QString>> QgsPdalAlgorithms::supportedOutputRasterLayerFormatAndExtensions() const
 {
-  return QStringList() << QStringLiteral( "tif" );
+  return QList<QPair<QString, QString>>() << QPair<QString, QString>( QString(), u"tif"_s );
 }
 
 QStringList QgsPdalAlgorithms::supportedOutputPointCloudLayerExtensions() const
 {
-  return QStringList() << QStringLiteral( "las" ) << QStringLiteral( "laz" ) << QStringLiteral( "copc.laz" ) << QStringLiteral( "vpc" );
+  return QStringList() << u"las"_s << u"laz"_s << u"copc.laz"_s << u"vpc"_s;
 }
 
 void QgsPdalAlgorithms::loadAlgorithms()
@@ -109,6 +117,12 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalThinByDecimateAlgorithm() );
   addAlgorithm( new QgsPdalThinByRadiusAlgorithm() );
   addAlgorithm( new QgsPdalTileAlgorithm() );
+  addAlgorithm( new QgsPdalHeightAboveGroundNearestNeighbourAlgorithm() );
+  addAlgorithm( new QgsPdalHeightAboveGroundTriangulationAlgorithm() );
+  addAlgorithm( new QgsPdalFilterNoiseStatisticalAlgorithm() );
+  addAlgorithm( new QgsPdalFilterNoiseRadiusAlgorithm() );
+  addAlgorithm( new QgsPdalClassifyGroundAlgorithm() );
+  addAlgorithm( new QgsPdalTransformAlgorithm() );
 }
 
 ///@endcond

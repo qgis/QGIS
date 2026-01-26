@@ -7,8 +7,12 @@
  ************************************************************************/
 
 
+
 class QgsFeatureModel
 {
+%Docstring(signature="appended")
+Base class for feature models.
+%End
 
 %TypeHeaderCode
 #include "qgsfeaturemodel.h"

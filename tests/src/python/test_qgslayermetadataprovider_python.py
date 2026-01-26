@@ -7,9 +7,9 @@
 
 """
 
-__author__ = 'elpaso@itopen.it'
-__date__ = '2022-08-19'
-__copyright__ = 'Copyright 2022, ItOpen'
+__author__ = "elpaso@itopen.it"
+__date__ = "2022-08-19"
+__copyright__ = "Copyright 2022, ItOpen"
 
 import os
 import shutil
@@ -52,9 +52,9 @@ class PythonLayerMetadataProvider(QgsAbstractLayerMetadataProvider):
         super().__init__()
 
     def id(self):
-        return 'python'
+        return "python"
 
-    def search(self, searchString='', geographicExtent=QgsRectangle(), feedback=None):
+    def search(self, searchString="", geographicExtent=QgsRectangle(), feedback=None):
 
         xml_md = """
         <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
@@ -94,22 +94,22 @@ class PythonLayerMetadataProvider(QgsAbstractLayerMetadataProvider):
         assert metadata.readMetadataXml(doc.documentElement())
 
         result = QgsLayerMetadataProviderResult(metadata)
-        result.setStandardUri('http://mrcc.com/qgis.dtd')
+        result.setStandardUri("http://mrcc.com/qgis.dtd")
         result.setLayerType(QgsMapLayerType.VectorLayer)
-        result.setUri(os.path.join(temp_path, 'geopackage.gpkg'))
-        result.setAuthid('EPSG:4326')
-        result.setDataProviderName('ogr')
+        result.setUri(os.path.join(temp_path, "geopackage.gpkg"))
+        result.setAuthid("EPSG:4326")
+        result.setDataProviderName("ogr")
         result.setGeometryType(QgsWkbTypes.GeometryType.PointGeometry)
 
         poly = QgsPolygon()
         poly.fromWkt(QgsRectangle(0, 0, 1, 1).asWktPolygon())
         result.setGeographicExtent(poly)
 
-        assert result.identifier() == 'MD012345'
+        assert result.identifier() == "MD012345"
 
         results = QgsLayerMetadataSearchResults()
         results.addMetadata(result)
-        results.addError('Bad news from PythonLayerMetadataProvider :(')
+        results.addError("Bad news from PythonLayerMetadataProvider :(")
 
         return results
 
@@ -122,22 +122,24 @@ class TestPythonLayerMetadataProvider(QgisTestCase):
     def setUp(self):
 
         super().setUp()
-        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
-        self.conn = os.path.join(temp_path, 'geopackage.gpkg')
+        srcpath = os.path.join(TEST_DATA_DIR, "provider")
+        self.conn = os.path.join(temp_path, "geopackage.gpkg")
         # Create a truncated file so that we get an exception later
-        open(self.conn, "wb").write(open(os.path.join(srcpath, 'geopackage.gpkg'), "rb").read(8192))
+        open(self.conn, "wb").write(
+            open(os.path.join(srcpath, "geopackage.gpkg"), "rb").read(8192)
+        )
 
-        shutil.copy(os.path.join(srcpath, 'spatialite.db'), temp_path)
-        self.conn_sl = os.path.join(temp_path, 'spatialite.db')
+        shutil.copy(os.path.join(srcpath, "spatialite.db"), temp_path)
+        self.conn_sl = os.path.join(temp_path, "spatialite.db")
 
     def test_metadataRegistryApi(self):
 
         reg = QGIS_APP.layerMetadataProviderRegistry()
-        self.assertIsNone(reg.layerMetadataProviderFromId('python'))
+        self.assertIsNone(reg.layerMetadataProviderFromId("python"))
         reg.registerLayerMetadataProvider(PythonLayerMetadataProvider())
-        self.assertIsNotNone(reg.layerMetadataProviderFromId('python'))
+        self.assertIsNotNone(reg.layerMetadataProviderFromId("python"))
 
-        md_provider = reg.layerMetadataProviderFromId('python')
+        md_provider = reg.layerMetadataProviderFromId("python")
         results = md_provider.search(QgsMetadataSearchContext())
 
         self.assertEqual(len(results.metadata()), 1)
@@ -145,29 +147,29 @@ class TestPythonLayerMetadataProvider(QgisTestCase):
 
         result = results.metadata()[0]
 
-        self.assertEqual(result.abstract(), 'QGIS Some Data')
-        self.assertEqual(result.identifier(), 'MD012345')
-        self.assertEqual(result.title(), 'QGIS Test Title')
+        self.assertEqual(result.abstract(), "QGIS Some Data")
+        self.assertEqual(result.identifier(), "MD012345")
+        self.assertEqual(result.title(), "QGIS Test Title")
         self.assertEqual(result.layerType(), QgsMapLayerType.VectorLayer)
-        self.assertEqual(result.authid(), 'EPSG:4326')
+        self.assertEqual(result.authid(), "EPSG:4326")
         self.assertEqual(result.geometryType(), QgsWkbTypes.GeometryType.PointGeometry)
-        self.assertEqual(result.dataProviderName(), 'ogr')
-        self.assertEqual(result.standardUri(), 'http://mrcc.com/qgis.dtd')
+        self.assertEqual(result.dataProviderName(), "ogr")
+        self.assertEqual(result.standardUri(), "http://mrcc.com/qgis.dtd")
 
         reg.unregisterLayerMetadataProvider(md_provider)
-        self.assertIsNone(reg.layerMetadataProviderFromId('python'))
+        self.assertIsNone(reg.layerMetadataProviderFromId("python"))
 
     def testExceptions(self):
 
         def _spatialite(path):
 
-            md = QgsProviderRegistry.instance().providerMetadata('spatialite')
+            md = QgsProviderRegistry.instance().providerMetadata("spatialite")
             conn = md.createConnection(path, {})
             conn.searchLayerMetadata(QgsMetadataSearchContext())
 
         def _ogr(path):
 
-            md = QgsProviderRegistry.instance().providerMetadata('ogr')
+            md = QgsProviderRegistry.instance().providerMetadata("ogr")
             conn = md.createConnection(path, {})
             os.chmod(path, S_IREAD | S_IRGRP | S_IROTH)
             conn.searchLayerMetadata(QgsMetadataSearchContext())
@@ -179,5 +181,5 @@ class TestPythonLayerMetadataProvider(QgisTestCase):
         os.chmod(self.conn_sl, S_IWUSR | S_IREAD)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

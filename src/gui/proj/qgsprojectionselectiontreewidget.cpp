@@ -10,6 +10,8 @@
  ***************************************************************************/
 #include "qgsprojectionselectiontreewidget.h"
 
+#include "moc_qgsprojectionselectiontreewidget.cpp"
+
 //standard includes
 #include <sqlite3.h>
 
@@ -80,15 +82,15 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( lstRecent, &QTreeView::clicked, this, &QgsProjectionSelectionTreeWidget::lstRecentClicked );
   connect( lstCoordinateSystems->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged );
   connect( lstRecent->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged );
-  connect( cbxHideDeprecated, &QCheckBox::toggled, this, [ = ]( bool selected )
-  {
+  connect( cbxHideDeprecated, &QCheckBox::toggled, this, [this]( bool selected ) {
     mCrsModel->setFilterDeprecated( selected );
     mRecentCrsModel->setFilterDeprecated( selected );
   } );
-  connect( leSearch, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & filter )
-  {
+  connect( leSearch, &QgsFilterLineEdit::textChanged, this, [this]( const QString &filter ) {
     mCrsModel->setFilterString( filter );
     mRecentCrsModel->setFilterString( filter );
+    if ( filter.length() >= 3 )
+      lstCoordinateSystems->expandAll();
   } );
 
   mAreaCanvas->setVisible( mShowMap );
@@ -103,8 +105,7 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   // Clear recent crs context menu
   lstRecent->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( lstRecent, &QTreeView::customContextMenuRequested, this, [this]( const QPoint & pos )
-  {
+  connect( lstRecent, &QTreeView::customContextMenuRequested, this, [this]( const QPoint &pos ) {
     // If list is empty, do nothing
     if ( lstRecent->model()->rowCount() == 0 )
       return;
@@ -113,8 +114,8 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
     const QModelIndex currentIndex = lstRecent->indexAt( pos );
     if ( currentIndex.isValid() )
     {
-      QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ),  tr( "Remove Selected CRS from Recently Used CRS" ) );
-      connect( clearSelected, &QAction::triggered, this, [this, currentIndex ] { removeRecentCrsItem( currentIndex ); } );
+      QAction *clearSelected = menu.addAction( QgsApplication::getThemeIcon( "/mIconClearItem.svg" ), tr( "Remove Selected CRS from Recently Used CRS" ) );
+      connect( clearSelected, &QAction::triggered, this, [this, currentIndex] { removeRecentCrsItem( currentIndex ); } );
       menu.addSeparator();
     }
     // Clear all
@@ -128,16 +129,14 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
 
   mCheckBoxNoProjection->setHidden( true );
   mCheckBoxNoProjection->setEnabled( false );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]
-  {
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [this] {
     if ( !mBlockSignals )
     {
       emit crsSelected();
       emit hasValidSelectionChanged( hasValidSelection() );
     }
   } );
-  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [ = ]( bool checked )
-  {
+  connect( mCheckBoxNoProjection, &QCheckBox::toggled, this, [this]( bool checked ) {
     if ( mCheckBoxNoProjection->isEnabled() )
     {
       mFrameProjections->setDisabled( checked );
@@ -145,13 +144,13 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   } );
 
   QgsSettings settings;
-  mSplitter->restoreState( settings.value( QStringLiteral( "Windows/ProjectionSelector/splitterState" ) ).toByteArray() );
+  mSplitter->restoreState( settings.value( u"Windows/ProjectionSelector/splitterState"_s ).toByteArray() );
 }
 
 QgsProjectionSelectionTreeWidget::~QgsProjectionSelectionTreeWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ProjectionSelector/splitterState" ), mSplitter->saveState() );
+  settings.setValue( u"Windows/ProjectionSelector/splitterState"_s, mSplitter->saveState() );
 
   // Push current projection to front, only if set
   const QgsCoordinateReferenceSystem selectedCrs = crs();
@@ -268,7 +267,7 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
     return QgsCoordinateReferenceSystem();
 
   const QModelIndex currentIndex = lstCoordinateSystems->selectionModel()->selectedRows( 0 ).value( 0 );
-  const QString authid = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
+  const QString authid = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
   if ( !authid.isEmpty() )
   {
     return QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid );
@@ -276,8 +275,8 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionTreeWidget::crs() const
   else
   {
     // custom CRS
-    const QString wkt = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Wkt ) ).toString();
-    const QString proj = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Proj ) ).toString();
+    const QString wkt = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Wkt ) ).toString();
+    const QString proj = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Proj ) ).toString();
 
     if ( !wkt.isEmpty() )
       return QgsCoordinateReferenceSystem::fromWkt( wkt );
@@ -328,9 +327,9 @@ bool QgsProjectionSelectionTreeWidget::hasValidSelection() const
   else
   {
     const QModelIndex currentIndex = lstCoordinateSystems->selectionModel()->selectedRows( 0 ).value( 0 );
-    const QString authid = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
-    const QString wkt = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Wkt ) ).toString();
-    const QString proj = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Proj ) ).toString();
+    const QString authid = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
+    const QString wkt = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Wkt ) ).toString();
+    const QString proj = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Proj ) ).toString();
     return !authid.isEmpty() || !wkt.isEmpty() || !proj.isEmpty();
   }
 }
@@ -343,7 +342,7 @@ void QgsProjectionSelectionTreeWidget::setOgcWmsCrsFilter( const QSet<QString> &
 void QgsProjectionSelectionTreeWidget::loadUnknownCrs( const QgsCoordinateReferenceSystem &crs )
 {
   const QModelIndex sourceIndex = mCrsModel->coordinateReferenceSystemModel()->addCustomCrs( crs );
-  lstCoordinateSystems->selectionModel()->select( mCrsModel->mapFromSource( sourceIndex ), QItemSelectionModel::ClearAndSelect  | QItemSelectionModel::Rows );
+  lstCoordinateSystems->selectionModel()->select( mCrsModel->mapFromSource( sourceIndex ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
   lstCoordinateSystems->scrollTo( mCrsModel->mapFromSource( sourceIndex ) );
 }
 
@@ -352,7 +351,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged( con
 {
   if ( selected.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -376,22 +375,20 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsSelectionChanged( con
 
     updateBoundsPreview();
 
-    const QString crsAuthId = mCrsModel->coordinateReferenceSystemModel()->data( sourceIndex, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
+    const QString crsAuthId = mCrsModel->coordinateReferenceSystemModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
     if ( !crsAuthId.isEmpty() )
     {
-      const QModelIndexList recentMatches = mRecentCrsModel->match( mRecentCrsModel->index( 0, 0 ),
-                                            static_cast< int >( QgsRecentCoordinateReferenceSystemsModel::CustomRole::AuthId ),
-                                            crsAuthId );
+      const QModelIndexList recentMatches = mRecentCrsModel->match( mRecentCrsModel->index( 0, 0 ), static_cast<int>( QgsRecentCoordinateReferenceSystemsModel::CustomRole::AuthId ), crsAuthId );
       if ( !recentMatches.isEmpty() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "found srs %1 in recent" ).arg( crsAuthId ), 4 );
+        QgsDebugMsgLevel( u"found srs %1 in recent"_s.arg( crsAuthId ), 4 );
 
         lstRecent->selectionModel()->select( recentMatches.at( 0 ), QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows );
         lstRecent->scrollTo( recentMatches.at( 0 ) );
       }
       else
       {
-        QgsDebugMsgLevel( QStringLiteral( "srs %1 not recent" ).arg( crsAuthId ), 4 );
+        QgsDebugMsgLevel( u"srs %1 not recent"_s.arg( crsAuthId ), 4 );
         lstRecent->clearSelection();
         lstCoordinateSystems->setFocus( Qt::OtherFocusReason );
       }
@@ -415,7 +412,7 @@ void QgsProjectionSelectionTreeWidget::lstCoordinateSystemsDoubleClicked( const 
 {
   if ( !index.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -429,7 +426,7 @@ void QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged( const QItemSel
 {
   if ( selected.isEmpty() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -454,10 +451,10 @@ void QgsProjectionSelectionTreeWidget::lstRecentSelectionChanged( const QItemSel
 
 void QgsProjectionSelectionTreeWidget::lstRecentDoubleClicked( const QModelIndex &index )
 {
-  QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
+  QgsDebugMsgLevel( u"Entered."_s, 4 );
   if ( !index.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "no current item" ), 4 );
+    QgsDebugMsgLevel( u"no current item"_s, 4 );
     return;
   }
 
@@ -485,13 +482,13 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   QgsRectangle rect = currentCrs.bounds();
   QString extentString = tr( "Extent not known" );
   mAreaCanvas->setPreviewRect( rect );
-  if ( !qgsDoubleNear( rect.area(), 0.0 ) )
+  if ( !rect.isNull() && !rect.isEmpty() )
   {
-    extentString = QStringLiteral( "%1, %2, %3, %4" )
-                   .arg( rect.xMinimum(), 0, 'f', 2 )
-                   .arg( rect.yMinimum(), 0, 'f', 2 )
-                   .arg( rect.xMaximum(), 0, 'f', 2 )
-                   .arg( rect.yMaximum(), 0, 'f', 2 );
+    extentString = u"%1, %2, %3, %4"_s
+                     .arg( rect.xMinimum(), 0, 'f', 2 )
+                     .arg( rect.yMinimum(), 0, 'f', 2 )
+                     .arg( rect.xMaximum(), 0, 'f', 2 )
+                     .arg( rect.yMaximum(), 0, 'f', 2 );
   }
 
   QStringList properties;
@@ -513,7 +510,6 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   }
   catch ( QgsNotSupportedException & )
   {
-
   }
 
   try
@@ -523,9 +519,9 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
     {
       QString id;
       if ( !ensemble.code().isEmpty() )
-        id = QStringLiteral( "<i>%1</i> (%2:%3)" ).arg( ensemble.name(), ensemble.authority(), ensemble.code() );
+        id = u"<i>%1</i> (%2:%3)"_s.arg( ensemble.name(), ensemble.authority(), ensemble.code() );
       else
-        id = QStringLiteral( "<i>%</i>”" ).arg( ensemble.name() );
+        id = u"<i>%1</i>”"_s.arg( ensemble.name() );
       if ( ensemble.accuracy() > 0 )
       {
         properties << tr( "Based on %1, which has a limited accuracy of <b>at best %2 meters</b>." ).arg( id ).arg( ensemble.accuracy() );
@@ -538,18 +534,16 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   }
   catch ( QgsNotSupportedException & )
   {
-
   }
 
   const QgsProjOperation operation = currentCrs.operation();
   properties << tr( "Method: %1" ).arg( operation.description() );
 
-  const QString propertiesString = QStringLiteral( "<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>" ).arg( tr( "Properties" ),
-                                   properties.join( QLatin1String( "</li><li>" ) ) );
+  const QString propertiesString = u"<dt><b>%1</b></dt><dd><ul><li>%2</li></ul></dd>"_s.arg( tr( "Properties" ), properties.join( "</li><li>"_L1 ) );
 
-  const QString extentHtml = QStringLiteral( "<dt><b>%1</b></dt><dd>%2</dd>" ).arg( tr( "Extent" ), extentString );
-  const QString wktString = QStringLiteral( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "WKT" ), currentCrs.toWkt( Qgis::CrsWktVariant::Preferred, true ).replace( '\n', QLatin1String( "<br>" ) ).replace( ' ', QLatin1String( "&nbsp;" ) ) );
-  const QString proj4String = QStringLiteral( "<dt><b>%1</b></dt><dd><code>%2</code></dd>" ).arg( tr( "Proj4" ), currentCrs.toProj() );
+  const QString extentHtml = u"<dt><b>%1</b></dt><dd>%2</dd>"_s.arg( tr( "Extent" ), extentString );
+  const QString wktString = u"<dt><b>%1</b></dt><dd><code>%2</code></dd>"_s.arg( tr( "WKT" ), currentCrs.toWkt( Qgis::CrsWktVariant::Preferred, true ).replace( '\n', "<br>"_L1 ).replace( ' ', "&nbsp;"_L1 ) );
+  const QString proj4String = u"<dt><b>%1</b></dt><dd><code>%2</code></dd>"_s.arg( tr( "Proj4" ), currentCrs.toProj() );
 
 #ifdef Q_OS_WIN
   const int smallerPointSize = std::max( font().pointSize() - 1, 8 ); // bit less on windows, due to poor rendering of small point sizes
@@ -561,9 +555,9 @@ void QgsProjectionSelectionTreeWidget::updateBoundsPreview()
   QString selectedName;
   if ( currentIndex.isValid() )
   {
-    selectedName = currentIndex.data( static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
+    selectedName = currentIndex.data( static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
   }
-  teProjection->setText( QStringLiteral( "<div style=\"font-size: %1pt\"><h3>%2</h3><dl>" ).arg( smallerPointSize ).arg( selectedName ) + propertiesString + wktString + proj4String + extentHtml + QStringLiteral( "</dl></div>" ) );
+  teProjection->setText( u"<div style=\"font-size: %1pt\"><h3>%2</h3><dl>"_s.arg( smallerPointSize ).arg( selectedName ) + propertiesString + wktString + proj4String + extentHtml + u"</dl></div>"_s );
 }
 
 void QgsProjectionSelectionTreeWidget::clearRecentCrs()
@@ -575,9 +569,7 @@ void QgsProjectionSelectionTreeWidget::clearRecentCrs()
   }
 
   // Ask for confirmation
-  if ( QMessageBox::question( this, tr( "Clear Recent CRS" ),
-                              tr( "Are you sure you want to clear the list of recently used coordinate reference system?" ),
-                              QMessageBox::Yes | QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( this, tr( "Clear Recent CRS" ), tr( "Are you sure you want to clear the list of recently used coordinate reference system?" ), QMessageBox::Yes | QMessageBox::No ) != QMessageBox::Yes )
   {
     return;
   }
@@ -677,7 +669,6 @@ QVariant QgsRecentCoordinateReferenceSystemTableModel::data( const QModelIndex &
 RemoveRecentCrsDelegate::RemoveRecentCrsDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
-
 }
 
 bool RemoveRecentCrsDelegate::eventFilter( QObject *obj, QEvent *event )
@@ -695,7 +686,7 @@ bool RemoveRecentCrsDelegate::eventFilter( QObject *obj, QEvent *event )
   else if ( event->type() == QEvent::HoverLeave )
   {
     setHoveredIndex( QModelIndex() );
-    qobject_cast< QWidget * >( obj )->update();
+    qobject_cast<QWidget *>( obj )->update();
   }
   return QStyledItemDelegate::eventFilter( obj, event );
 }
@@ -714,9 +705,7 @@ void RemoveRecentCrsDelegate::paint( QPainter *painter, const QStyleOptionViewIt
   }
 
   const QIcon icon = QgsApplication::getThemeIcon( "/mIconClearItem.svg" );
-  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2,
-                        option.rect.top() + ( option.rect.height() - 16 ) / 2,
-                        16, 16 );
+  const QRect iconRect( option.rect.left() + ( option.rect.width() - 16 ) / 2, option.rect.top() + ( option.rect.height() - 16 ) / 2, 16, 16 );
 
   icon.paint( painter, iconRect );
 }

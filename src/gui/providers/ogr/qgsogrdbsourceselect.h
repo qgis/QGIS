@@ -18,11 +18,11 @@
 #ifndef QGSGOGRDBSOURCESELECT_H
 #define QGSGOGRDBSOURCESELECT_H
 
+#include "qgis_sip.h"
+#include "qgsabstractdbsourceselect.h"
 #include "qgsguiutils.h"
 #include "qgshelp.h"
-#include "qgsabstractdbsourceselect.h"
 #include "qgsproviderregistry.h"
-#include "qgis_sip.h"
 
 class QPushButton;
 class QgsOgrDbTableModel;
@@ -35,12 +35,11 @@ class QgsOgrDbTableModel;
  * source selects.
  *
  */
-class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
+class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
   public:
-
     /**
      * Construct a DB Source Select with \a theOgrDriverName specified (i.e. "GPKG", "SQLite" etc.)
      * and \a theName as string for describing the layers managed by the source select (e.g. : "GeoPackage" etc.)
@@ -59,17 +58,18 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     void dbChanged();
 
     //! Returns the QSettings key name
-    const QString ogrDriverName( ) { return mOgrDriverName; }
+    QString ogrDriverName() const { return mOgrDriverName; }
 
     //! Returns the name of the managed layers, needs to be translatable
-    const QString name( ) { return mName; }
+    QString name() const { return mName; }
 
     //! Returns the extensions of the managed layers, needs to be translatable
-    const QString extension() { return mExtension; }
+    QString extension() const { return mExtension; }
 
     //! Open file selector to add new connection
     static bool newConnection( QWidget *parent );
 
+    QString settingPath() const override;
 
   public slots:
 
@@ -89,8 +89,6 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     void cbxAllowGeometrylessTables_stateChanged( int );
     void cmbConnections_activated( int );
     void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
-    //!Sets a new regular expression to the model
-    void setSearchExpression( const QString &regexp );
     void showHelp();
     bool configureFromUri( const QString &uri ) override;
     void setSql( const QModelIndex &index ) override;
@@ -107,7 +105,6 @@ class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
     QString mOgrDriverName;
     QString mName;
     QString mExtension;
-
 };
 
 ///@endcond

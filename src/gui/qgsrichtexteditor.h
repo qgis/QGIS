@@ -31,9 +31,11 @@
 #ifndef QGSRICHTEXTEDITOR_H
 #define QGSRICHTEXTEDITOR_H
 
+#include "ui_qgsrichtexteditorbase.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "ui_qgsrichtexteditorbase.h"
+
 #include <QPointer>
 
 class QImage;
@@ -55,11 +57,10 @@ class QgsCodeEditorHTML;
  *
  * \since QGIS 3.20
  */
-class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEditorBase
+class GUI_EXPORT QgsRichTextEditor : public QWidget, private Ui::QgsRichTextEditorBase
 {
     Q_OBJECT
   public:
-
     /**
      * Widget modes.
      *
@@ -67,9 +68,9 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     */
     enum class Mode
     {
-      QTextDocument, //!< Default mode, exposes the Qt supported HTML/CSS subset
+      QTextDocument,   //!< Default mode, exposes the Qt supported HTML/CSS subset
       QgsTextRenderer, //!< QGIS text renderer mode, exposes the HTML/CSS subset supported by the QgsTextRenderer class
-      PlainText, //!< Plain text mode
+      PlainText,       //!< Plain text mode
     };
     Q_ENUM( Mode )
 
@@ -163,8 +164,6 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     void focusInEvent( QFocusEvent *event ) override;
 
   private slots:
-    void setPlainText( const QString &text ) { mTextEdit->setPlainText( text ); }
-    void setHtml( const QString &text ) { mTextEdit->setHtml( text ); }
     void textRemoveFormat();
     void textRemoveAllFormat();
     void textBold();
@@ -221,7 +220,6 @@ class GUI_EXPORT QgsRichTextEditor : public QWidget, protected Ui::QgsRichTextEd
     QPointer<QTextList> mLastBlockList;
     QString mMonospaceFontFamily;
 };
-
 
 
 #endif // QGSRICHTEXTEDITOR_H

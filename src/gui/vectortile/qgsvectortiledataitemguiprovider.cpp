@@ -15,43 +15,46 @@
 
 #include "qgsvectortiledataitemguiprovider.h"
 
-#include "qgsvectortiledataitems.h"
-#include "qgsvectortileconnectiondialog.h"
+#include "qgsapplication.h"
 #include "qgsarcgisvectortileconnectiondialog.h"
-#include "qgsvectortileconnection.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgsdataitemguiproviderutils.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsvectortileconnection.h"
+#include "qgsvectortileconnectiondialog.h"
+#include "qgsvectortiledataitems.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+
+#include "moc_qgsvectortiledataitemguiprovider.cpp"
 
 ///@cond PRIVATE
 
 void QgsVectorTileDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsVectorTileLayerItem *layerItem = qobject_cast< QgsVectorTileLayerItem * >( item ) )
+  if ( QgsVectorTileLayerItem *layerItem = qobject_cast<QgsVectorTileLayerItem *>( item ) )
   {
-    QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
-    menu->addAction( actionEdit );
+    const QList<QgsVectorTileLayerItem *> vtConnectionItems = QgsDataItem::filteredItems<QgsVectorTileLayerItem>( selection );
 
-    QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
-    connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
-    menu->addAction( actionDuplicate );
-
-    const QList< QgsVectorTileLayerItem * > vtConnectionItems = QgsDataItem::filteredItems<QgsVectorTileLayerItem>( selection );
-    QAction *actionDelete = new QAction( vtConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [vtConnectionItems, context]
+    if ( vtConnectionItems.size() == 1 )
     {
-      QgsDataItemGuiProviderUtils::deleteConnections( vtConnectionItems, []( const QString & connectionName )
-      {
-        QgsVectorTileProviderConnection::deleteConnection( connectionName );
-      }, context );
+      QAction *actionEdit = new QAction( tr( "Edit Connection…" ), menu );
+      connect( actionEdit, &QAction::triggered, this, [layerItem] { editConnection( layerItem ); } );
+      menu->addAction( actionEdit );
+
+      QAction *actionDuplicate = new QAction( tr( "Duplicate Connection" ), menu );
+      connect( actionDuplicate, &QAction::triggered, this, [layerItem] { duplicateConnection( layerItem ); } );
+      menu->addAction( actionDuplicate );
+    }
+
+    QAction *actionDelete = new QAction( vtConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
+    connect( actionDelete, &QAction::triggered, this, [vtConnectionItems, context] {
+      QgsDataItemGuiProviderUtils::deleteConnections( vtConnectionItems, []( const QString &connectionName ) { QgsVectorTileProviderConnection::deleteConnection( connectionName ); }, context );
     } );
     menu->addAction( actionDelete );
   }
 
-  if ( QgsVectorTileRootItem *rootItem = qobject_cast< QgsVectorTileRootItem * >( item ) )
+  if ( QgsVectorTileRootItem *rootItem = qobject_cast<QgsVectorTileRootItem *>( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Generic Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -126,7 +129,7 @@ void QgsVectorTileDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 
 void QgsVectorTileDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsVectorTileConnectionDialog dlg;
+  QgsVectorTileConnectionDialog dlg( QgsApplication::instance()->activeWindow() );
   if ( !dlg.exec() )
     return;
 
@@ -156,8 +159,7 @@ void QgsVectorTileDataItemGuiProvider::saveXyzTilesServers()
 
 void QgsVectorTileDataItemGuiProvider::loadXyzTilesServers( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

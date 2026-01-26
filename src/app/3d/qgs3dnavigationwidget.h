@@ -21,7 +21,7 @@ class QStandardItemModel;
 class Qgs3DMapCanvas;
 class QwtCompass;
 
-#include <ui_3dnavigationwidget.h>
+#include "ui_3dnavigationwidget.h"
 
 class Qgs3DNavigationWidget : public QWidget, private Ui::Q3DNavigationWidget
 {
@@ -29,16 +29,8 @@ class Qgs3DNavigationWidget : public QWidget, private Ui::Q3DNavigationWidget
   public:
     Qgs3DNavigationWidget( Qgs3DMapCanvas *canvas, QWidget *parent = nullptr );
 
-  public slots:
-
-    /**
-     * Update the state of navigation widget from camera's state
-     */
-    void updateFromCamera();
-
   private:
     Qgs3DMapCanvas *m3DMapCanvas = nullptr;
-    QStandardItemModel *mCameraInfoItemModel = nullptr;
 };
 
 #endif // QGS3DNAVIGATIONWIDGET_H

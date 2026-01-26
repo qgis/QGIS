@@ -17,22 +17,22 @@
 
 #include "qgsproviderguiregistry.h"
 
-#include <QString>
+#include "qgsgdalguiprovider.h"
+#include "qgslogger.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+#include "qgsmbtilesvectortileguiprovider.h"
+#include "qgsogrguiprovider.h"
+#include "qgspointcloudproviderguimetadata.h"
+#include "qgssensorthingsguiprovider.h"
+#include "qgstiledsceneproviderguimetadata.h"
+#include "qgsvectortileproviderguimetadata.h"
+#include "qgsvtpkvectortileguiprovider.h"
+
 #include <QDir>
 #include <QLibrary>
 #include <QRegularExpression>
+#include <QString>
 
-#include "qgslogger.h"
-#include "qgsgdalguiprovider.h"
-#include "qgsogrguiprovider.h"
-#include "qgsvectortileproviderguimetadata.h"
-#include "qgspointcloudproviderguimetadata.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
-
-#include "qgstiledsceneproviderguimetadata.h"
-#include "qgsmbtilesvectortileguiprovider.h"
-#include "qgsvtpkvectortileguiprovider.h"
-#include "qgssensorthingsguiprovider.h"
 #ifdef HAVE_EPT
 #include "qgseptproviderguimetadata.h"
 #endif
@@ -64,9 +64,7 @@
  * very reason.  So there needs to be a convenient way to find a data provider
  * without accidentally adding a null meta data item to the metadata map.
 */
-static
-QgsProviderGuiMetadata *findMetadata_( QgsProviderGuiRegistry::GuiProviders const &metaData,
-                                       QString const &providerKey )
+static QgsProviderGuiMetadata *findMetadata_( QgsProviderGuiRegistry::GuiProviders const &metaData, QString const &providerKey )
 {
   const QgsProviderGuiRegistry::GuiProviders::const_iterator i = metaData.find( providerKey );
   if ( i != metaData.end() )
@@ -83,67 +81,67 @@ QgsProviderGuiRegistry::QgsProviderGuiRegistry( const QString &pluginPath )
   loadDynamicProviders( pluginPath );
 }
 
-void QgsProviderGuiRegistry::loadStaticProviders( )
+void QgsProviderGuiRegistry::loadStaticProviders()
 {
   // Register static providers
   QgsProviderGuiMetadata *gdal = new QgsGdalGuiProviderMetadata();
-  mProviders[ gdal->key() ] = gdal;
+  mProviders[gdal->key()] = gdal;
 
   QgsProviderGuiMetadata *ogr = new QgsOgrGuiProviderMetadata();
-  mProviders[ ogr->key() ] = ogr;
+  mProviders[ogr->key()] = ogr;
 
   QgsProviderGuiMetadata *vt = new QgsVectorTileProviderGuiMetadata();
-  mProviders[ vt->key() ] = vt;
+  mProviders[vt->key()] = vt;
 
   QgsProviderGuiMetadata *mbtilesVectorTiles = new QgsMbtilesVectorTileGuiProviderMetadata();
-  mProviders[ mbtilesVectorTiles->key() ] = mbtilesVectorTiles;
+  mProviders[mbtilesVectorTiles->key()] = mbtilesVectorTiles;
 
   QgsProviderGuiMetadata *vtpkVectorTiles = new QgsVtpkVectorTileGuiProviderMetadata();
-  mProviders[ vtpkVectorTiles->key() ] = vtpkVectorTiles;
+  mProviders[vtpkVectorTiles->key()] = vtpkVectorTiles;
 
 #ifdef HAVE_EPT
   QgsProviderGuiMetadata *ept = new QgsEptProviderGuiMetadata();
-  mProviders[ ept->key() ] = ept;
+  mProviders[ept->key()] = ept;
 #endif
 
 #ifdef HAVE_COPC
   QgsProviderGuiMetadata *copc = new QgsCopcProviderGuiMetadata();
-  mProviders[ copc->key() ] = copc;
+  mProviders[copc->key()] = copc;
 #endif
 
   // only show point cloud option if we have at least one point cloud provider available!
   if ( !QgsProviderRegistry::instance()->filePointCloudFilters().isEmpty() )
   {
     QgsProviderGuiMetadata *pointcloud = new QgsPointCloudProviderGuiMetadata();
-    mProviders[ pointcloud->key() ] = pointcloud;
+    mProviders[pointcloud->key()] = pointcloud;
   }
 
   QgsProviderGuiMetadata *tiledScene = new QgsTiledSceneProviderGuiMetadata();
-  mProviders[ tiledScene->key() ] = tiledScene;
+  mProviders[tiledScene->key()] = tiledScene;
 
   QgsProviderGuiMetadata *sensorThings = new QgsSensorThingsProviderGuiMetadata();
-  mProviders[ sensorThings->key() ] = sensorThings;
+  mProviders[sensorThings->key()] = sensorThings;
 
 #ifdef HAVE_STATIC_PROVIDERS
   QgsProviderGuiMetadata *wms = new QgsWmsProviderGuiMetadata();
-  mProviders[ wms->key() ] = wms;
+  mProviders[wms->key()] = wms;
   QgsProviderGuiMetadata *wcs = new QgsWcsProviderGuiMetadata();
-  mProviders[ wcs->key() ] = wcs;
+  mProviders[wcs->key()] = wcs;
   QgsProviderGuiMetadata *delimitedtext = new QgsDelimitedTextProviderGuiMetadata();
-  mProviders[ delimitedtext->key() ] = delimitedtext;
+  mProviders[delimitedtext->key()] = delimitedtext;
   QgsProviderGuiMetadata *arc = new QgsArcGisRestProviderGuiMetadata();
-  mProviders[ arc->key() ] = arc;
+  mProviders[arc->key()] = arc;
 #ifdef HAVE_SPATIALITE
   QgsProviderGuiMetadata *spatialite = new QgsSpatiaLiteProviderGuiMetadata();
-  mProviders[ spatialite->key() ] = spatialite;
+  mProviders[spatialite->key()] = spatialite;
   QgsProviderGuiMetadata *wfs = new QgsWfsProviderGuiMetadata();
-  mProviders[ wfs->key() ] = wfs;
+  mProviders[wfs->key()] = wfs;
   QgsProviderGuiMetadata *virtuallayer = new QgsVirtualLayerProviderGuiMetadata();
-  mProviders[ virtuallayer->key() ] = virtuallayer;
+  mProviders[virtuallayer->key()] = virtuallayer;
 #endif
 #ifdef HAVE_POSTGRESQL
   QgsProviderGuiMetadata *postgres = new QgsPostgresProviderGuiMetadata();
-  mProviders[ postgres->key() ] = postgres;
+  mProviders[postgres->key()] = postgres;
 #endif
 #endif
 }
@@ -152,28 +150,28 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
 {
 #ifdef HAVE_STATIC_PROVIDERS
   Q_UNUSED( pluginPath )
-  QgsDebugMsgLevel( QStringLiteral( "Forced only static GUI providers" ), 2 );
+  QgsDebugMsgLevel( u"Forced only static GUI providers"_s, 2 );
 #else
-  typedef QgsProviderGuiMetadata *factory_function( );
+  typedef QgsProviderGuiMetadata *factory_function();
 
   // add dynamic providers
   QDir mLibraryDirectory( pluginPath );
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
 
-#if defined(Q_OS_WIN) || defined(__CYGWIN__)
+#if defined( Q_OS_WIN ) || defined( __CYGWIN__ )
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
-#elif defined(ANDROID)
+#elif defined( ANDROID )
   mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
 #else
-  mLibraryDirectory.setNameFilters( QStringList( QStringLiteral( "*.so" ) ) );
+  mLibraryDirectory.setNameFilters( QStringList( u"*.so"_s ) );
 #endif
 
-  QgsDebugMsgLevel( QStringLiteral( "Checking %1 for GUI provider plugins" ).arg( mLibraryDirectory.path() ), 2 );
+  QgsDebugMsgLevel( u"Checking %1 for GUI provider plugins"_s.arg( mLibraryDirectory.path() ), 2 );
 
   if ( mLibraryDirectory.count() == 0 )
   {
-    QgsDebugError( QStringLiteral( "No dynamic QGIS GUI provider plugins found in:\n%1\n" ).arg( mLibraryDirectory.path() ) );
+    QgsDebugError( u"No dynamic QGIS GUI provider plugins found in:\n%1\n"_s.arg( mLibraryDirectory.path() ) );
   }
 
   // provider file regex pattern, only files matching the pattern are loaded if the variable is defined
@@ -200,12 +198,12 @@ void QgsProviderGuiRegistry::loadDynamicProviders( const QString &pluginPath )
     QLibrary myLib( fi.filePath() );
     if ( myLib.load() )
     {
-      QFunctionPointer func = myLib.resolve( QStringLiteral( "providerGuiMetadataFactory" ).toLatin1().data() );
-      factory_function *function = reinterpret_cast< factory_function * >( cast_to_fptr( func ) );
+      QFunctionPointer func = myLib.resolve( u"providerGuiMetadataFactory"_s.toLatin1().data() );
+      factory_function *function = reinterpret_cast<factory_function *>( cast_to_fptr( func ) );
       if ( !function )
         continue;
 
-      QgsProviderGuiMetadata *meta = function( );
+      QgsProviderGuiMetadata *meta = function();
 
       if ( !meta )
         continue;
@@ -254,7 +252,7 @@ QList<QgsSourceSelectProvider *> QgsProviderGuiRegistry::sourceSelectProviders( 
   QgsProviderGuiMetadata *meta = findMetadata_( mProviders, providerKey );
   if ( meta )
     return meta->sourceSelectProviders();
-  return QList<QgsSourceSelectProvider *> ();
+  return QList<QgsSourceSelectProvider *>();
 }
 
 QList<QgsProjectStorageGuiProvider *> QgsProviderGuiRegistry::projectStorageGuiProviders( const QString &providerKey )

@@ -17,6 +17,7 @@
 #ifndef QGSPGNEWCONNECTION_H
 #define QGSPGNEWCONNECTION_H
 #include "ui_qgspgnewconnectionbase.h"
+
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 
@@ -41,10 +42,10 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
   private slots:
     //! Updates state of the OK button depending of the filled fields
     void updateOkButtonState();
+
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
-
 };
 
 #endif //  QGSPGNEWCONNECTIONBASE_H

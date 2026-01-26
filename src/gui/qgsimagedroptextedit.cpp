@@ -29,15 +29,18 @@
 ****************************************************************************/
 
 #include "qgsimagedroptextedit.h"
+
 #include "qgsguiutils.h"
 
-#include <QMimeData>
+#include <QApplication>
 #include <QBuffer>
+#include <QDesktopServices>
 #include <QFileInfo>
 #include <QImageReader>
+#include <QMimeData>
 #include <QMouseEvent>
-#include <QApplication>
-#include <QDesktopServices>
+
+#include "moc_qgsimagedroptextedit.cpp"
 
 ///@cond PRIVATE
 QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )
@@ -93,59 +96,59 @@ void QgsImageDropTextEdit::insertFromMimeData( const QMimeData *source )
     QString format;
     for ( const QString &string : formats )
     {
-      if ( string == QLatin1String( "image/bmp" ) )
+      if ( string == "image/bmp"_L1 )
       {
-        format = QStringLiteral( "BMP" );
+        format = u"BMP"_s;
         break;
       }
-      if ( string == QLatin1String( "image/jpeg" ) )
+      if ( string == "image/jpeg"_L1 )
       {
-        format = QStringLiteral( "JPG" );
+        format = u"JPG"_s;
         break;
       }
-      if ( string == QLatin1String( "image/jpg" ) )
+      if ( string == "image/jpg"_L1 )
       {
-        format = QStringLiteral( "JPG" );
+        format = u"JPG"_s;
         break;
       }
-      if ( string == QLatin1String( "image/gif" ) )
+      if ( string == "image/gif"_L1 )
       {
-        format = QStringLiteral( "GIF" );
+        format = u"GIF"_s;
         break;
       }
-      if ( string == QLatin1String( "image/png" ) )
+      if ( string == "image/png"_L1 )
       {
-        format = QStringLiteral( "PNG" );
+        format = u"PNG"_s;
         break;
       }
-      if ( string == QLatin1String( "image/pbm" ) )
+      if ( string == "image/pbm"_L1 )
       {
-        format = QStringLiteral( "PBM" );
+        format = u"PBM"_s;
         break;
       }
-      if ( string == QLatin1String( "image/pgm" ) )
+      if ( string == "image/pgm"_L1 )
       {
-        format = QStringLiteral( "PGM" );
+        format = u"PGM"_s;
         break;
       }
-      if ( string == QLatin1String( "image/ppm" ) )
+      if ( string == "image/ppm"_L1 )
       {
-        format = QStringLiteral( "PPM" );
+        format = u"PPM"_s;
         break;
       }
-      if ( string == QLatin1String( "image/tiff" ) )
+      if ( string == "image/tiff"_L1 )
       {
-        format = QStringLiteral( "TIFF" );
+        format = u"TIFF"_s;
         break;
       }
-      if ( string == QLatin1String( "image/xbm" ) )
+      if ( string == "image/xbm"_L1 )
       {
-        format = QStringLiteral( "XBM" );
+        format = u"XBM"_s;
         break;
       }
-      if ( string == QLatin1String( "image/xpm" ) )
+      if ( string == "image/xpm"_L1 )
       {
-        format = QStringLiteral( "XPM" );
+        format = u"XPM"_s;
         break;
       }
     }
@@ -210,7 +213,7 @@ void QgsImageDropTextEdit::mouseMoveEvent( QMouseEvent *e )
   QTextEdit::mouseMoveEvent( e );
   mActiveAnchor = anchorAt( e->pos() );
   if ( !mActiveAnchor.isEmpty() && !mCursorOverride )
-    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::PointingHandCursor );
+    mCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::PointingHandCursor );
   else if ( mActiveAnchor.isEmpty() && mCursorOverride )
     mCursorOverride.reset();
 }
@@ -252,17 +255,16 @@ void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format
   QTextImageFormat imageFormat;
   imageFormat.setWidth( image.width() );
   imageFormat.setHeight( image.height() );
-  imageFormat.setName( QStringLiteral( "data:image/%1;base64,%2" )
-                       .arg( QStringLiteral( "%1.%2" ).arg( rand() ).arg( format ),
-                             base64l.data() )
-                     );
+  imageFormat.setName( u"data:image/%1;base64,%2"_s
+                         .arg( u"%1.%2"_s.arg( rand() ).arg( format ), base64l.data() )
+  );
   cursor.insertImage( imageFormat );
 }
 
 void QgsImageDropTextEdit::dropLink( const QUrl &url )
 {
   QTextCursor cursor = textCursor();
-  cursor.insertHtml( QStringLiteral( "<a href=\"%1\">%1</a>" ).arg( url.toString() ) );
+  cursor.insertHtml( u"<a href=\"%1\">%1</a>"_s.arg( url.toString() ) );
 }
 
 ///@endcond

@@ -5,16 +5,13 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Germán Carrillo'
-__date__ = '03/05/2024'
-__copyright__ = 'Copyright 2024, The QGIS Project'
+
+__author__ = "Germán Carrillo"
+__date__ = "03/05/2024"
+__copyright__ = "Copyright 2024, The QGIS Project"
 
 
-from qgis.PyQt.QtCore import (
-    QRectF,
-    Qt,
-    QPointF
-)
+from qgis.PyQt.QtCore import QRectF, Qt, QPointF
 from qgis.PyQt.QtGui import QColor, QPainterPath, QPolygonF
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
@@ -39,7 +36,7 @@ from qgis.core import (
     QgsProfileGenerationContext,
     QgsProfileRequest,
     QgsProject,
-    QgsTextFormat
+    QgsTextFormat,
 )
 from qgis.gui import QgsElevationProfileCanvas
 
@@ -63,8 +60,8 @@ class MyProfileResults(QgsAbstractProfileResults):
         self.max_z = -100
 
         self.marker_symbol = QgsMarkerSymbol.createSimple(
-            {'name': 'square', 'size': 2, 'color': '#00ff00',
-             'outline_style': 'no'})
+            {"name": "square", "size": 2, "color": "#00ff00", "outline_style": "no"}
+        )
 
     def asFeatures(self, type, feedback):
         result = []
@@ -116,7 +113,9 @@ class MyProfileResults(QgsAbstractProfileResults):
         minZ = context.elevationRange().lower()
         maxZ = context.elevationRange().upper()
 
-        visibleRegion = QRectF(minDistance, minZ, maxDistance - minDistance, maxZ - minZ)
+        visibleRegion = QRectF(
+            minDistance, minZ, maxDistance - minDistance, maxZ - minZ
+        )
         clipPath = QPainterPath()
         clipPath.addPolygon(context.worldTransform().map(QPolygonF(visibleRegion)))
         painter.setClipPath(clipPath, Qt.ClipOperation.IntersectClip)
@@ -130,7 +129,7 @@ class MyProfileResults(QgsAbstractProfileResults):
             self.marker_symbol.renderPoint(
                 context.worldTransform().map(QPointF(k, v)),
                 None,
-                context.renderContext()
+                context.renderContext(),
             )
 
         self.marker_symbol.stopRender(context.renderContext())
@@ -140,7 +139,9 @@ class MyProfileGenerator(QgsAbstractProfileGenerator):
     def __init__(self, request):
         QgsAbstractProfileGenerator.__init__(self)
         self.__request = request
-        self.__profile_curve = request.profileCurve().clone() if request.profileCurve() else None
+        self.__profile_curve = (
+            request.profileCurve().clone() if request.profileCurve() else None
+        )
         self.__results = None
         self.__feedback = QgsFeedback()
 
@@ -161,7 +162,8 @@ class MyProfileGenerator(QgsAbstractProfileGenerator):
             {"z": 429.3, "d": 2199.9, "x": 2582027.691, "y": 1217250.279},
             {"z": 702.5, "d": 4399.9, "x": 2579969.567, "y": 1218027.326},
             {"z": 857.9, "d": 6430.1, "x": 2578394.472, "y": 1219308.404},
-            {"z": 1282.7, "d": 8460.4, "x": 2576819.377, "y": 1220589.481}]
+            {"z": 1282.7, "d": 8460.4, "x": 2576819.377, "y": 1220589.481},
+        ]
 
         for point in result:
             if self.__feedback.isCanceled():
@@ -186,7 +188,7 @@ class MyProfileGenerator(QgsAbstractProfileGenerator):
         return self.__results
 
 
-class MyProfileSource(QgsAbstractProfileSource):
+class MyProfileSourceLegacy(QgsAbstractProfileSource):
     def __init__(self):
         QgsAbstractProfileSource.__init__(self)
 
@@ -194,29 +196,96 @@ class MyProfileSource(QgsAbstractProfileSource):
         return MyProfileGenerator(request)
 
 
+class MyProfileSource(QgsAbstractProfileSource):
+    def __init__(self):
+        QgsAbstractProfileSource.__init__(self)
+
+    def createProfileGenerator(self, request):
+        return MyProfileGenerator(request)
+
+    def profileSourceName(self):
+        return "My Profile"
+
+    def profileSourceId(self):
+        return "my-profile"
+
+
 class TestQgsProfileSourceRegistry(QgisTestCase):
+
+    def test_register_unregister_legacy_source(self):
+        initial_sources = QgsApplication.profileSourceRegistry().profileSources()
+
+        # Test registering a legacy source
+        source = MyProfileSourceLegacy()
+        res = QgsApplication.profileSourceRegistry().registerProfileSource(source)
+        self.assertTrue(res)
+        self.assertEqual(
+            len(QgsApplication.profileSourceRegistry().profileSources()),
+            len(initial_sources) + 1,
+        )
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources()[-1], source
+        )
+
+        # Test unregistering a legacy source
+        # TODO: QGIS 5.0 Remove (deprecated method)
+        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources(), initial_sources
+        )
 
     def test_register_unregister_source(self):
         initial_sources = QgsApplication.profileSourceRegistry().profileSources()
 
+        # Test registering a source
         source = MyProfileSource()
-        QgsApplication.profileSourceRegistry().registerProfileSource(source)
+        res = QgsApplication.profileSourceRegistry().registerProfileSource(source)
+        self.assertTrue(res)
         self.assertEqual(
             len(QgsApplication.profileSourceRegistry().profileSources()),
-            len(initial_sources) + 1
+            len(initial_sources) + 1,
         )
-        self.assertEqual(QgsApplication.profileSourceRegistry().profileSources()[-1], source)
-        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
         self.assertEqual(
-            QgsApplication.profileSourceRegistry().profileSources(),
-            initial_sources
+            QgsApplication.profileSourceRegistry().profileSources()[-1], source
+        )
+
+        # Test that a second source cannot be registered with the same id
+        source2 = MyProfileSource()
+        res = QgsApplication.profileSourceRegistry().registerProfileSource(source2)
+        self.assertFalse(res)
+        self.assertEqual(
+            len(QgsApplication.profileSourceRegistry().profileSources()),
+            len(initial_sources) + 1,
+        )
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources()[-1], source
+        )
+
+        # Test unregistering a source by id
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(
+            "non-existent"
+        )
+        self.assertFalse(res)
+        self.assertEqual(
+            len(QgsApplication.profileSourceRegistry().profileSources()),
+            len(initial_sources) + 1,
+        )
+
+        res = QgsApplication.profileSourceRegistry().unregisterProfileSource(
+            "my-profile"
+        )
+        self.assertTrue(res)
+        self.assertEqual(
+            QgsApplication.profileSourceRegistry().profileSources(), initial_sources
         )
 
     def test_generate_profile_from_custom_source(self):
         curve = QgsLineString()
-        curve.fromWkt("LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)")
+        curve.fromWkt(
+            "LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)"
+        )
         req = QgsProfileRequest(curve)
-        req.setCrs(QgsCoordinateReferenceSystem('EPSG:2056'))
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
 
         source = MyProfileSource()
         generator = source.createProfileGenerator(req)
@@ -226,30 +295,38 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
         self.assertEqual(results.zRange(), QgsDoubleRange(429.3, 1282.7))
 
         self.assertTrue(len(results.asGeometries()), 5)
-        expected_geoms = [QgsGeometry(QgsPoint(2584085.816, 1216473.232, 454.8)),
-                          QgsGeometry(QgsPoint(2582027.691, 1217250.279, 429.3)),
-                          QgsGeometry(QgsPoint(2579969.567, 1218027.326, 702.5)),
-                          QgsGeometry(QgsPoint(2578394.472, 1219308.404, 857.9)),
-                          QgsGeometry(QgsPoint(2576819.377, 1220589.481, 1282.7))]
+        expected_geoms = [
+            QgsGeometry(QgsPoint(2584085.816, 1216473.232, 454.8)),
+            QgsGeometry(QgsPoint(2582027.691, 1217250.279, 429.3)),
+            QgsGeometry(QgsPoint(2579969.567, 1218027.326, 702.5)),
+            QgsGeometry(QgsPoint(2578394.472, 1219308.404, 857.9)),
+            QgsGeometry(QgsPoint(2576819.377, 1220589.481, 1282.7)),
+        ]
 
         for i, geom in enumerate(results.asGeometries()):
             self.checkGeometriesEqual(geom, expected_geoms[i], 0, 0)
 
-        features = results.asFeatures(Qgis.ProfileExportType.DistanceVsElevationTable, QgsFeedback())
+        features = results.asFeatures(
+            Qgis.ProfileExportType.DistanceVsElevationTable, QgsFeedback()
+        )
         self.assertEqual(len(features), len(results.distance_to_height))
         for feature in features:
             self.assertEqual(feature.geometry.wkbType(), Qgis.WkbType.PointZ)
             self.assertTrue(not feature.geometry.isEmpty())
             d = feature.attributes["distance"]
             self.assertIn(d, results.distance_to_height)
-            self.assertEqual(feature.attributes["elevation"], results.distance_to_height[d])
+            self.assertEqual(
+                feature.attributes["elevation"], results.distance_to_height[d]
+            )
 
     def test_export_3d_from_custom_source(self):
         source = MyProfileSource()
         curve = QgsLineString()
-        curve.fromWkt("LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)")
+        curve.fromWkt(
+            "LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)"
+        )
         req = QgsProfileRequest(curve)
-        req.setCrs(QgsCoordinateReferenceSystem('EPSG:2056'))
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
 
         exporter = QgsProfileExporter([source], req, Qgis.ProfileExportType.Features3D)
         exporter.run(QgsFeedback())
@@ -268,9 +345,11 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
     def test_export_2d_from_custom_source(self):
         source = MyProfileSource()
         curve = QgsLineString()
-        curve.fromWkt("LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)")
+        curve.fromWkt(
+            "LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)"
+        )
         req = QgsProfileRequest(curve)
-        req.setCrs(QgsCoordinateReferenceSystem('EPSG:2056'))
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
 
         exporter = QgsProfileExporter([source], req, Qgis.ProfileExportType.Profile2D)
         exporter.run(QgsFeedback())
@@ -285,7 +364,7 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
             2199.9: 429.3,
             4399.9: 702.5,
             6430.1: 857.9,
-            8460.4: 1282.7
+            8460.4: 1282.7,
         }
         for i, feature in enumerate(layer.getFeatures()):
             geom = feature.geometry().constGet()
@@ -296,11 +375,15 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
     def test_export_distance_elevation_from_custom_source(self):
         source = MyProfileSource()
         curve = QgsLineString()
-        curve.fromWkt("LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)")
+        curve.fromWkt(
+            "LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)"
+        )
         req = QgsProfileRequest(curve)
-        req.setCrs(QgsCoordinateReferenceSystem('EPSG:2056'))
+        req.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
 
-        exporter = QgsProfileExporter([source], req, Qgis.ProfileExportType.DistanceVsElevationTable)
+        exporter = QgsProfileExporter(
+            [source], req, Qgis.ProfileExportType.DistanceVsElevationTable
+        )
         exporter.run(QgsFeedback())
         layers = exporter.toLayers()
         self.assertEqual(len(layers), 1)
@@ -314,7 +397,7 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
             2199.9: 429.3,
             4399.9: 702.5,
             6430.1: 857.9,
-            8460.4: 1282.7
+            8460.4: 1282.7,
         }
         expected_z = list(expected_values.values())
         for i, feature in enumerate(layer.getFeatures()):
@@ -329,29 +412,45 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
         canvas.setProject(QgsProject.instance())
         canvas.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
         curve = QgsLineString()
-        curve.fromWkt("LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)")
+        curve.fromWkt(
+            "LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)"
+        )
         canvas.setProfileCurve(curve.clone())
         spy = QSignalSpy(canvas.activeJobCountChanged)
         self.assertTrue(spy.isValid())
 
         source = MyProfileSource()
         QgsApplication.profileSourceRegistry().registerProfileSource(source)
+
         canvas.refresh()
         spy.wait()
 
         distance_range = canvas.visibleDistanceRange()
-        self.assertTrue(distance_range.contains(0), f"Distance 0 (min) not included in range ({distance_range})")
-        self.assertTrue(distance_range.contains(8460.4), f"Distance 8460.4 (max) not included in range ({distance_range})")
+        self.assertTrue(
+            distance_range.contains(0),
+            f"Distance 0 (min) not included in range ({distance_range})",
+        )
+        self.assertTrue(
+            distance_range.contains(8460.4),
+            f"Distance 8460.4 (max) not included in range ({distance_range})",
+        )
 
         elevation_range = canvas.visibleElevationRange()
-        self.assertTrue(elevation_range.contains(429.3), f"Elevation 429.3 (min) not included in range ({elevation_range})")
-        self.assertTrue(elevation_range.contains(1282.7), f"Elevation 1282.7 (max) not included in range ({elevation_range})")
-        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+        self.assertTrue(
+            elevation_range.contains(429.3),
+            f"Elevation 429.3 (min) not included in range ({elevation_range})",
+        )
+        self.assertTrue(
+            elevation_range.contains(1282.7),
+            f"Elevation 1282.7 (max) not included in range ({elevation_range})",
+        )
+        QgsApplication.profileSourceRegistry().unregisterProfileSource("my-profile")
 
     def test_layout_item_profile_custom_source(self):
         """
         Test getting a custom profile in a layout item
         """
+        # We'll test that out profile_item picks sources registered before item creation
         source = MyProfileSource()
         QgsApplication.profileSourceRegistry().registerProfileSource(source)
 
@@ -364,7 +463,8 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
 
         curve = QgsLineString()
         curve.fromWkt(
-            "LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)")
+            "LINESTRING (2584085.816 1216473.232, 2579969.567 1218027.326, 2576819.377 1220589.481)"
+        )
 
         profile_item.setProfileCurve(curve)
         profile_item.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
@@ -375,9 +475,12 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
 
         profile_item.plot().xAxis().setGridIntervalMajor(1000)
         profile_item.plot().xAxis().setGridIntervalMinor(500)
-        profile_item.plot().xAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffaaff', 'width': 2}))
+        profile_item.plot().xAxis().setGridMajorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffaaff", "width": 2})
+        )
         profile_item.plot().xAxis().setGridMinorSymbol(
-            QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+            QgsLineSymbol.createSimple({"color": "#ffffaa", "width": 2})
+        )
 
         format = QgsTextFormat()
         format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
@@ -389,21 +492,94 @@ class TestQgsProfileSourceRegistry(QgisTestCase):
 
         profile_item.plot().yAxis().setGridIntervalMajor(1000)
         profile_item.plot().yAxis().setGridIntervalMinor(500)
-        profile_item.plot().yAxis().setGridMajorSymbol(QgsLineSymbol.createSimple({'color': '#ffffaa', 'width': 2}))
+        profile_item.plot().yAxis().setGridMajorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffffaa", "width": 2})
+        )
         profile_item.plot().yAxis().setGridMinorSymbol(
-            QgsLineSymbol.createSimple({'color': '#aaffaa', 'width': 2}))
+            QgsLineSymbol.createSimple({"color": "#aaffaa", "width": 2})
+        )
 
         profile_item.plot().yAxis().setTextFormat(format)
         profile_item.plot().yAxis().setLabelInterval(500)
 
         profile_item.plot().setChartBorderSymbol(
-            QgsFillSymbol.createSimple({'style': 'no', 'color': '#aaffaa', 'width_border': 2}))
-
-        self.assertTrue(
-            self.render_layout_check('custom_profile', layout)
+            QgsFillSymbol.createSimple(
+                {"style": "no", "color": "#aaffaa", "width_border": 2}
+            )
         )
-        QgsApplication.profileSourceRegistry().unregisterProfileSource(source)
+
+        self.assertTrue(self.render_layout_check("custom_profile", layout))
+        QgsApplication.profileSourceRegistry().unregisterProfileSource("my-profile")
+
+    def test_layout_item_profile_custom_source_with_subsections(self):
+        """
+        Test getting a custom profile in a layout item
+        """
+        source = MyProfileSource()
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+
+        profile_item = QgsLayoutItemElevationProfile(layout)
+        layout.addLayoutItem(profile_item)
+        profile_item.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+
+        # We'll test that out profile_item picks newly registered sources
+        QgsApplication.profileSourceRegistry().registerProfileSource(source)
+
+        curve = QgsLineString()
+        curve.fromWkt(
+            "LINESTRING (2584085.816 1216473.232, 2577540.6 1219433.6, 2581425.1 1219439.0, 2583062.0 1216570.2)"
+        )
+
+        profile_item.setProfileCurve(curve)
+        profile_item.setCrs(QgsCoordinateReferenceSystem("EPSG:2056"))
+
+        profile_item.plot().setXMinimum(-100)
+        profile_item.plot().setXMaximum(curve.length() + 100)
+        profile_item.plot().setYMaximum(1300)
+
+        profile_item.plot().xAxis().setGridIntervalMajor(1000)
+        profile_item.plot().xAxis().setGridIntervalMinor(500)
+        profile_item.plot().xAxis().setGridMajorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffaaff", "width": 2})
+        )
+        profile_item.plot().xAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffffaa", "width": 2})
+        )
+
+        format = QgsTextFormat()
+        format.setFont(QgsFontUtils.getStandardTestFont("Bold"))
+        format.setSize(20)
+        format.setNamedStyle("Bold")
+        format.setColor(QColor(0, 0, 0))
+        profile_item.plot().xAxis().setTextFormat(format)
+        profile_item.plot().xAxis().setLabelInterval(4000)
+
+        profile_item.plot().yAxis().setGridIntervalMajor(1000)
+        profile_item.plot().yAxis().setGridIntervalMinor(500)
+        profile_item.plot().yAxis().setGridMajorSymbol(
+            QgsLineSymbol.createSimple({"color": "#ffffaa", "width": 2})
+        )
+        profile_item.plot().yAxis().setGridMinorSymbol(
+            QgsLineSymbol.createSimple({"color": "#aaffaa", "width": 2})
+        )
+
+        profile_item.plot().yAxis().setTextFormat(format)
+        profile_item.plot().yAxis().setLabelInterval(500)
+
+        profile_item.plot().setChartBorderSymbol(
+            QgsFillSymbol.createSimple(
+                {"style": "no", "color": "#aaffaa", "width_border": 2}
+            )
+        )
+
+        profile_item.setSubsectionsSymbol(
+            QgsLineSymbol.createSimple({"color": "#ff0000", "width": 1})
+        )
+
+        self.assertTrue(self.render_layout_check("custom_profile_subsections", layout))
+        QgsApplication.profileSourceRegistry().unregisterProfileSource("my-profile")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

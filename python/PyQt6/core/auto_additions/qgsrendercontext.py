@@ -2,5 +2,5 @@
 try:
     QgsRenderContext.fromMapSettings = staticmethod(QgsRenderContext.fromMapSettings)
     QgsRenderContext.fromQPainter = staticmethod(QgsRenderContext.fromQPainter)
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -15,22 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDial>
-#include <QVariant>
+#ifndef QGSDIAL_H
+#define QGSDIAL_H
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QDial>
+#include <QVariant>
 
 class QPaintEvent;
 
 /**
  * \ingroup gui
  * \class QgsDial
+ * \brief A QDial subclass with additional refinements.
  */
 class GUI_EXPORT QgsDial : public QDial
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDial
      * \param parent parent object
@@ -57,3 +61,5 @@ class GUI_EXPORT QgsDial : public QDial
 
     QVariant mMin, mMax, mStep, mValue;
 };
+
+#endif // QGSDIAL_H

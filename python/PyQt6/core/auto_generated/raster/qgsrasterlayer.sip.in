@@ -15,14 +15,14 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 class QgsRasterLayer : QgsMapLayer, QgsAbstractProfileSource
 {
 %Docstring(signature="appended")
-
 Represents a raster layer.
 
-A :py:class:`QgsRasterLayer` is instantiated by specifying the name of a data provider,
-such as "gdal" or "wms", and a url defining the specific data set to connect to.
-The raster layer constructor in turn instantiates a :py:class:`QgsRasterDataProvider` subclass
-corresponding to the provider type, and passes it the url. The data provider
-connects to the data source.
+A :py:class:`QgsRasterLayer` is instantiated by specifying the name of a
+data provider, such as "gdal" or "wms", and a url defining the specific
+data set to connect to. The raster layer constructor in turn
+instantiates a :py:class:`QgsRasterDataProvider` subclass corresponding
+to the provider type, and passes it the url. The data provider connects
+to the data source.
 
 Sample usage of the :py:class:`QgsRasterLayer` class:
 
@@ -45,11 +45,11 @@ Sample usage of the :py:class:`QgsRasterLayer` class:
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
 
-    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit SINGLE_BAND_MIN_MAX_LIMITS;
 
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
 
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
 
     QgsRasterLayer();
 %Docstring
@@ -100,11 +100,15 @@ The main tasks carried out by the constructor are:
     virtual QgsRasterLayer *clone() const /Factory/;
 
 %Docstring
-Returns a new instance equivalent to this one. A new provider is
-created for the same data source and renderer is cloned too.
+Returns a new instance equivalent to this one. A new provider is created
+for the same data source and renderer is cloned too.
 
 :return: a new layer instance
 %End
+
+    virtual QgsAbstractProfileSource *profileSource();
+    virtual QString profileSourceId() const;
+    virtual QString profileSourceName() const;
 
     virtual QgsAbstractProfileGenerator *createProfileGenerator( const QgsProfileRequest &request ) /Factory/;
 
@@ -112,9 +116,9 @@ created for the same data source and renderer is cloned too.
     static bool isValidRasterFileName( const QString &fileNameQString, QString &retError );
 %Docstring
 This helper checks to see whether the file name appears to be a valid
-raster file name.  If the file name looks like it could be valid,
-but some sort of error occurs in processing the file, the error is
-returned in ``retError``.
+raster file name. If the file name looks like it could be valid, but
+some sort of error occurs in processing the file, the error is returned
+in ``retError``.
 %End
 
     static bool isValidRasterFileName( const QString &fileNameQString );
@@ -124,7 +128,7 @@ returned in ``retError``.
 Returns time stamp for given file name
 %End
 
- void setDataProvider( const QString &provider ) /Deprecated/;
+ void setDataProvider( const QString &provider ) /Deprecated="Since 3.40. Use the version with ProviderOptions instead."/;
 %Docstring
 Set the data provider.
 
@@ -137,7 +141,9 @@ Set the data provider.
 %Docstring
 Set the data provider.
 
-:param provider: provider key string, must match a valid :py:class:`QgsRasterDataProvider` key. E.g. "gdal", "wms", etc.
+:param provider: provider key string, must match a valid
+                 :py:class:`QgsRasterDataProvider` key. E.g. "gdal",
+                 "wms", etc.
 :param options: provider options
 :param flags: provider flags since QGIS 3.16
 
@@ -239,21 +245,26 @@ Returns the name of a band given its number.
 
     QgsRasterAttributeTable *attributeTable( int bandNumber ) const;
 %Docstring
-Returns the (possibly NULL) raster attribute table for the given band ``bandNumber``.
+Returns the (possibly NULL) raster attribute table for the given band
+``bandNumber``.
 
 .. versionadded:: 3.30
 %End
 
     int attributeTableCount( ) const;
 %Docstring
-Returns the number of attribute tables for the raster by counting the number of bands that have an associated attribute table.
+Returns the number of attribute tables for the raster by counting the
+number of bands that have an associated attribute table.
 
 .. versionadded:: 3.30
 %End
 
     bool canCreateRasterAttributeTable( );
 %Docstring
-Returns ``True`` if the raster renderer is suitable for creation of a raster attribute table. The supported renderers are :py:class:`QgsPalettedRasterRenderer` and :py:class:`QgsSingleBandPseudoColorRenderer`.
+Returns ``True`` if the raster renderer is suitable for creation of a
+raster attribute table. The supported renderers are
+:py:class:`QgsPalettedRasterRenderer` and
+:py:class:`QgsSingleBandPseudoColorRenderer`.
 
 .. versionadded:: 3.30
 %End
@@ -283,10 +294,12 @@ This will be ``None`` if the layer is invalid.
                QgsRasterViewPort *myRasterViewPort,
                const QgsMapToPixel *qgsMapToPixel = 0 );
 %Docstring
-This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function that is called by both :py:func:`~QgsRasterLayer.draw` and thumbnailAsPixmap
+This is an overloaded version of the :py:func:`~QgsRasterLayer.draw`
+function that is called by both :py:func:`~QgsRasterLayer.draw` and
+thumbnailAsPixmap
 %End
 
- QgsLegendColorList legendSymbologyItems() const /Deprecated/;
+ QgsLegendColorList legendSymbologyItems() const /Deprecated="Since 3.40. Use QgsRasterRenderer.createLegendNodes() instead."/;
 %Docstring
 Returns a list with classification items (Text and color).
 
@@ -304,22 +317,24 @@ Returns a list with classification items (Text and color).
 
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 %Docstring
-Returns a 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
+Returns a 100x100 pixmap of the color palette. If the layer has no
+palette a white pixmap will be returned
 
-:param bandNumber: the number of the band to use for generating a pixmap of the associated palette
-%End
-
-    QString providerType() const;
-%Docstring
-[ data provider interface ] Which provider is being used for this Raster Layer?
+:param bandNumber: the number of the band to use for generating a pixmap
+                   of the associated palette
 %End
 
     double rasterUnitsPerPixelX() const;
 %Docstring
 Returns the number of raster units per each raster pixel in X axis.
 
-In a world file, this is normally the first row (without the sign). (E.g.
-the value reported by the GDAL geotransform[1]).
+In a world file, this is normally the first row (without the sign).
+(E.g. the value reported by the GDAL geotransform[1]).
+
+.. note::
+
+   If the :py:func:`~QgsRasterLayer.dataProvider` does not have native size/resolution then 1 will be returned. :py:func:`QgsRasterDataProvider.capabilities()` can be
+   used to test for the :py:class:`Qgis`.RasterInterfaceCapability.Size capability in order to determine whether the data provider has a native size/resolution.
 
 .. seealso:: :py:func:`rasterUnitsPerPixelY`
 %End
@@ -330,16 +345,19 @@ Returns the number of raster units per each raster pixel in Y axis.
 
 In a world file, this is normally the first row (without the sign).
 
+.. note::
+
+   If the :py:func:`~QgsRasterLayer.dataProvider` does not have native size/resolution then 1 will be returned. :py:func:`QgsRasterDataProvider.capabilities()` can be
+   used to test for the :py:class:`Qgis`.RasterInterfaceCapability.Size capability in order to determine whether the data provider has a native size/resolution.
+
 .. seealso:: :py:func:`rasterUnitsPerPixelX`
 %End
 
-    virtual void setOpacity( double opacity ) ${SIP_FINAL};
-
-    virtual double opacity() const ${SIP_FINAL};
-
+    void setOpacity( double opacity ) final;
+    double opacity() const final;
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
                                  const QgsRectangle &extent = QgsRectangle(),
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
@@ -348,18 +366,20 @@ Set contrast enhancement algorithm
 
 :param algorithm: Contrast enhancement algorithm
 :param limits: Limits
-:param extent: Extent used to calculate limits, if empty, use full layer extent
-:param sampleSize: Size of data sample to calculate limits, if 0, use full resolution
+:param extent: Extent used to calculate limits, if empty, use full layer
+               extent
+:param sampleSize: Size of data sample to calculate limits, if 0, use
+                   full resolution
 :param generateLookupTableFlag: Generate lookup table.
 %End
-
 
 
     virtual QString subsetString() const;
 %Docstring
 Returns the string (typically sql) used to define a subset of the layer.
 
-:return: The subset string or null QString if not implemented by the provider
+:return: The subset string or an empty string if not implemented by the
+         provider
 
 .. versionadded:: 3.12
 %End
@@ -368,11 +388,12 @@ Returns the string (typically sql) used to define a subset of the layer.
 %Docstring
 Sets the string (typically sql) used to define a subset of the layer
 
-:param subset: The subset string. This may be the where clause of a sql statement
-               or other definition string specific to the underlying dataprovider
-               and data store.
+:param subset: The subset string. This may be the where clause of a sql
+               statement or other definition string specific to the
+               underlying dataprovider and data store.
 
-:return: ``True``, when setting the subset string was successful, ``False`` otherwise
+:return: ``True``, when setting the subset string was successful,
+         ``False`` otherwise
 
 .. versionadded:: 3.12
 %End
@@ -398,29 +419,106 @@ Draws a preview of the rasterlayer into a QImage
 
     virtual QDateTime timestamp() const;
 
+
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
-    bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
+    bool labelsEnabled() const;
 %Docstring
-Writes the symbology of the layer into the document provided in SLD 1.0.0 format
+Returns whether the layer contains labels which are enabled and should
+be drawn.
+
+:return: ``True`` if layer contains enabled labels
+
+.. seealso:: :py:func:`setLabelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
+    void setLabelsEnabled( bool enabled );
+%Docstring
+Sets whether labels should be ``enabled`` for the layer.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsRasterLayer.labelsEnabled` is ``True`` and a labeling
+   object is returned by :py:func:`~QgsRasterLayer.labeling`.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
+
+    QgsAbstractRasterLayerLabeling *labeling();
+%Docstring
+Access to labeling configuration. May be ``None`` if labeling is not
+used.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsRasterLayer.labelsEnabled` returns ``True``.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`setLabeling`
+
+.. versionadded:: 3.42
+%End
+
+    void setLabeling( QgsAbstractRasterLayerLabeling *labeling /Transfer/ );
+%Docstring
+Sets labeling configuration. Takes ownership of the object.
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
+ bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const /Deprecated="Since 3.44. Use the version with QgsSldExportContext instead."/;
+%Docstring
+Writes the symbology of the layer into the document provided in SLD
+1.0.0 format
 
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
-:param errorMessage: reference to string that will be updated with any error messages
-:param props: a open ended set of properties that can drive/inform the SLD encoding
+:param errorMessage: reference to string that will be updated with any
+                     error messages
+:param props: a open ended set of properties that can drive/inform the
+              SLD encoding
 
 :return: ``True`` in case of success
 
-.. versionadded:: 3.6
+.. deprecated:: 3.44
+
+   Use the version with :py:class:`QgsSldExportContext` instead.
+%End
+
+    bool writeSld( QDomNode &node, QDomDocument &doc, QgsSldExportContext &context ) const;
+%Docstring
+Writes the symbology of the layer into the document provided in SLD 1.1
+format
+
+:param node: the node that will have the style element added to it.
+:param doc: the document that will have the QDomNode added.
+:param context: export context. Errors and warnings may be retrieved
+                from this context.
+
+:return: ``True`` in case of success
+
+.. versionadded:: 3.44
 %End
 
     bool ignoreExtents() const;
 %Docstring
 If the ignoreExtent flag is set, the layer will also render outside the
-bounding box reported by the data provider.
-To be used for example for WMS layers with labels or symbology that happens
-to be drawn outside the data extent.
+bounding box reported by the data provider. To be used for example for
+WMS layers with labels or symbology that happens to be drawn outside the
+data extent.
 
 .. versionadded:: 3.10
 %End
@@ -430,10 +528,12 @@ to be drawn outside the data extent.
     virtual QgsMapLayerElevationProperties *elevationProperties();
 
 
+
   public slots:
     void showStatusMessage( const QString &message );
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );
+
 %Docstring
 Sets the coordinate transform context to ``transformContext``
 

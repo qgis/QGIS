@@ -42,7 +42,7 @@ namespace Qgs3DSymbolImpl
 
   //! convenience function to create a complete entity from QgsPolygon3DSymbol (will run getFeatures() on the layer)
   Qt3DCore::QEntity *entityForPoint3DSymbol( const Qgs3DRenderContext &context, QgsVectorLayer *layer, const QgsPoint3DSymbol &symbol );
-}
+} // namespace Qgs3DSymbolImpl
 
 /// @endcond
 

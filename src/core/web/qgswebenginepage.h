@@ -18,13 +18,15 @@
 #ifndef QGSWEBENGINEPAGE_H
 #define QGSWEBENGINEPAGE_H
 
-#include "qgis_sip.h"
+#include <memory>
+
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QObject>
-#include <QUrl>
 #include <QPageLayout>
 #include <QSize>
-#include <memory>
+#include <QUrl>
 
 SIP_IF_MODULE( HAVE_WEBENGINE_SIP )
 

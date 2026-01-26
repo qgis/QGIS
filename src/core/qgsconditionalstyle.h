@@ -15,17 +15,18 @@
 #ifndef QGSCONDITIONALSTYLE_H
 #define QGSCONDITIONALSTYLE_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgsfield.h"
 
-#include <QObject>
-#include <QFont>
 #include <QColor>
-#include <QPixmap>
-#include <QDomNode>
 #include <QDomDocument>
+#include <QDomNode>
+#include <QFont>
 #include <QHash>
-#include <memory>
+#include <QObject>
+#include <QPixmap>
 
 class QgsConditionalStyle;
 class QgsReadWriteContext;
@@ -36,8 +37,10 @@ typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 /**
  * \ingroup core
- * \brief The QgsConditionalLayerStyles class holds conditional style information
- * for a layer. This includes field styles and full row styles.
+ * \brief Holds conditional style information
+ * for a layer.
+ *
+ * This includes field styles and full row styles.
  */
 class CORE_EXPORT QgsConditionalLayerStyles : public QObject
 {
@@ -133,10 +136,12 @@ class CORE_EXPORT QgsConditionalStyle
   public:
     QgsConditionalStyle();
     QgsConditionalStyle( const QgsConditionalStyle &other );
+    SIP_SKIP QgsConditionalStyle( QgsConditionalStyle &&other );
     QgsConditionalStyle( const QString &rule );
     ~QgsConditionalStyle();
 
     QgsConditionalStyle &operator=( const QgsConditionalStyle &other );
+    QgsConditionalStyle &operator=( QgsConditionalStyle &&other );
 
     /**
      * \brief Check if the rule matches using the given value and feature
@@ -306,9 +311,9 @@ class CORE_EXPORT QgsConditionalStyle
     % MethodCode
     QString str;
     if ( !sipCpp->name().isEmpty() )
-      str = QStringLiteral( "<QgsConditionalStyle: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->rule() );
+      str = u"<QgsConditionalStyle: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->rule() );
     else
-      str = QStringLiteral( "<QgsConditionalStyle: %2>" ).arg( sipCpp->rule() );
+      str = u"<QgsConditionalStyle: %2>"_s.arg( sipCpp->rule() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

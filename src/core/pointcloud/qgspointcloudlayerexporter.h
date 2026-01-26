@@ -19,10 +19,10 @@
 #define QGSPOINTCLOUDLAYEREXPORTER_H
 
 #include "qgis_core.h"
-#include "qgsvectorlayer.h"
 #include "qgspointcloudlayer.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/PointView.hpp>
@@ -256,7 +256,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     const QgsPointCloudAttributeCollection mLayerAttributeCollection;
 
-    QgsPointCloudIndex *mIndex = nullptr;
+    QgsPointCloudIndex mIndex = QgsPointCloudIndex( nullptr );
     QString mName = QObject::tr( "Exported" );
     ExportFormat mFormat = ExportFormat::Memory;
     QString mFilename;
@@ -346,7 +346,9 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
  * \class QgsPointCloudLayerExporterTask
  * \ingroup core
  * \brief QgsTask task which performs a QgsPointCloudLayerExporter layer export operation as a background
- * task. This can be used to export a point cloud layer out to a provider without blocking the
+ * task.
+ *
+ * This can be used to export a point cloud layer out to a provider without blocking the
  * QGIS interface.
  * \since QGIS 3.28
  */

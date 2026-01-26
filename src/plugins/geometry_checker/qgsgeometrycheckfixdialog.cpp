@@ -14,26 +14,28 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometrycheckfixdialog.h"
+
+#include "qgisinterface.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrychecker.h"
+#include "qgsgeometrycheckerresulttab.h"
+#include "qgsgeometrycheckerror.h"
+#include "qgsmapcanvas.h"
+#include "qgssettings.h"
+
 #include <QButtonGroup>
 #include <QDialogButtonBox>
+#include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
-#include <QGridLayout>
 
-#include "qgsgeometrycheckfixdialog.h"
-#include "qgsgeometrycheckerresulttab.h"
-#include "qgisinterface.h"
-#include "qgsmapcanvas.h"
-#include "qgssettings.h"
-#include "qgsgeometrycheckerror.h"
-#include "qgsgeometrychecker.h"
-#include "qgsgeometrycheck.h"
+#include "moc_qgsgeometrycheckfixdialog.cpp"
 
-QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker,
-    const QList<QgsGeometryCheckError *> &errors, QWidget *parent )
+QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *checker, const QList<QgsGeometryCheckError *> &errors, QWidget *parent )
   : QDialog( parent )
   , mChecker( checker )
   , mErrors( errors )
@@ -73,7 +75,6 @@ QgsGeometryCheckerFixDialog::QgsGeometryCheckerFixDialog( QgsGeometryChecker *ch
   connect( mNextBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::setupNextError );
   connect( mFixBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::fixError );
   connect( mSkipBtn, &QAbstractButton::clicked, this, &QgsGeometryCheckerFixDialog::skipError );
-
 }
 
 void QgsGeometryCheckerFixDialog::showEvent( QShowEvent * )

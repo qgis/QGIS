@@ -13,13 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsinputcontrollermanager.h"
+
 #include "qgs2dmapcontroller.h"
 #include "qgs3dmapcontroller.h"
-#include "qgsconfig.h"
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+
+#include "moc_qgsinputcontrollermanager.cpp"
 
 #ifdef HAVE_QTGAMEPAD
 #include "qgs2dgamepadcontroller.h"
@@ -34,7 +37,6 @@
 QgsInputControllerManager::QgsInputControllerManager( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 QgsInputControllerManager::~QgsInputControllerManager()
@@ -78,10 +80,10 @@ QStringList QgsInputControllerManager::available2DMapControllers() const
   QStringList devices = m2DMapControllers.keys();
 
 #ifdef HAVE_QTGAMEPAD
-  const QList< int > gamepadIds = QGamepadManager::instance()->connectedGamepads();
+  const QList<int> gamepadIds = QGamepadManager::instance()->connectedGamepads();
   for ( int id : gamepadIds )
   {
-    devices.append( QStringLiteral( "gamepad2d:%1" ).arg( id ) );
+    devices.append( u"gamepad2d:%1"_s.arg( id ) );
   }
 #endif
 
@@ -91,7 +93,7 @@ QStringList QgsInputControllerManager::available2DMapControllers() const
 QgsAbstract2DMapController *QgsInputControllerManager::create2DMapController( const QString &deviceId ) const
 {
 #ifdef HAVE_QTGAMEPAD
-  const thread_local QRegularExpression gamepadRx( QStringLiteral( "^gamepad2d:(\\d+)$" ) );
+  const thread_local QRegularExpression gamepadRx( u"^gamepad2d:(\\d+)$"_s );
   const QRegularExpressionMatch gamepadMatch = gamepadRx.match( deviceId );
   if ( gamepadMatch.hasMatch() )
   {
@@ -104,7 +106,7 @@ QgsAbstract2DMapController *QgsInputControllerManager::create2DMapController( co
   if ( it == m2DMapControllers.constEnd() )
     return nullptr;
 
-  return qgis::down_cast< QgsAbstract2DMapController *>( it.value()->clone() );
+  return qgis::down_cast<QgsAbstract2DMapController *>( it.value()->clone() );
 }
 
 QStringList QgsInputControllerManager::available3DMapControllers() const
@@ -112,10 +114,10 @@ QStringList QgsInputControllerManager::available3DMapControllers() const
   QStringList devices = m3DMapControllers.keys();
 
 #ifdef HAVE_QTGAMEPAD
-  const QList< int > gamepadIds = QGamepadManager::instance()->connectedGamepads();
+  const QList<int> gamepadIds = QGamepadManager::instance()->connectedGamepads();
   for ( int id : gamepadIds )
   {
-    devices.append( QStringLiteral( "gamepad3d:%1" ).arg( id ) );
+    devices.append( u"gamepad3d:%1"_s.arg( id ) );
   }
 #endif
 
@@ -125,7 +127,7 @@ QStringList QgsInputControllerManager::available3DMapControllers() const
 QgsAbstract3DMapController *QgsInputControllerManager::create3DMapController( const QString &deviceId ) const
 {
 #ifdef HAVE_QTGAMEPAD
-  const thread_local QRegularExpression gamepadRx( QStringLiteral( "^gamepad3d:(\\d+)$" ) );
+  const thread_local QRegularExpression gamepadRx( u"^gamepad3d:(\\d+)$"_s );
   const QRegularExpressionMatch gamepadMatch = gamepadRx.match( deviceId );
   if ( gamepadMatch.hasMatch() )
   {
@@ -138,6 +140,5 @@ QgsAbstract3DMapController *QgsInputControllerManager::create3DMapController( co
   if ( it == m3DMapControllers.constEnd() )
     return nullptr;
 
-  return qgis::down_cast< QgsAbstract3DMapController *>( it.value()->clone() );
+  return qgis::down_cast<QgsAbstract3DMapController *>( it.value()->clone() );
 }
-

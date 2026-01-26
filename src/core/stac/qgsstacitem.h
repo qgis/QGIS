@@ -16,22 +16,20 @@
 #ifndef QGSSTACITEM_H
 #define QGSSTACITEM_H
 
-#define SIP_NO_FILE
-
+#include "qgis.h"
 #include "qgis_core.h"
-#include "qgsrange.h"
-#include "qgsstacobject.h"
-#include "qgsstacasset.h"
-#include "qgsgeometry.h"
 #include "qgsbox3d.h"
+#include "qgsgeometry.h"
+#include "qgsmimedatautils.h"
+#include "qgsrange.h"
+#include "qgsstacasset.h"
+#include "qgsstacobject.h"
 
 /**
  * \ingroup core
- * \brief Class for storing a STAC Item's data
+ * \brief Class for storing a STAC Item's data.
  *
- * \note Not available in python bindings
- *
- * \since QGIS 3.40
+ * \since QGIS 3.44
  */
 class CORE_EXPORT QgsStacItem : public QgsStacObject
 {
@@ -57,7 +55,7 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
                  const QMap< QString, QgsStacAsset > &assets,
                  const QgsBox3D &bbox );
 
-    QgsStacObject::Type type() const override;
+    Qgis::StacObjectType type() const override;
     QString toHtml() const override;
 
     //! Returns the full footprint of the asset represented by this item, in WGS84
@@ -78,10 +76,10 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
     //! Sets the item's additional metadata to \a properties
     void setProperties( const QVariantMap &properties );
 
-    //! Returns a dictionary of asset objects that can be downloaded, each with a unique key.
+    //! Returns a dictionary of asset objects, each with a unique key.
     QMap< QString, QgsStacAsset > assets() const;
 
-    //! Sets the \a asset objects that can be downloaded, each with a unique key.
+    //! Sets the \a asset objects, each with a unique key.
     void setAssets( const QMap< QString, QgsStacAsset > &assets );
 
     //! Returns the id of the STAC Collection this Item references to
@@ -91,28 +89,50 @@ class CORE_EXPORT QgsStacItem : public QgsStacObject
     void setCollection( const QString &collection );
 
     /**
-     *  Returns the single nominal date/time for the item, stored in the item's \a properties().
-     *  If a temporal interval is more appropriate for this item then a null QDateTime is returned
-     *  and the interval may be retrieved with dateTimeRange()
-     *  \see hasDateTimeRange()
-     *  \see dateTimeRange()
+     * Returns the single nominal date/time for the item, stored in the item's properties().
+     *
+     * If a temporal interval is more appropriate for this item then a null QDateTime is returned
+     * and the interval may be retrieved with dateTimeRange().
+     *
+     * \see hasDateTimeRange()
+     * \see dateTimeRange()
      */
     QDateTime dateTime() const;
 
     /**
-     *  Returns TRUE if a temporal interval is available for this item, FALSE if a single QDateTime is available.
-     *  \see hasDateTimeRange()
-     *  \see dateTime()
+     * Returns TRUE if a temporal interval is available for this item, FALSE if a single QDateTime is available.
+     *
+     * \see hasDateTimeRange()
+     * \see dateTime()
      */
     bool hasDateTimeRange() const;
 
     /**
-     *  Returns the temporal interval stored in the item's \a properties()
-     *  \see hasDateTimeRange()
-     *  \see dateTime()
+     * Returns the temporal interval stored in the item's properties().
+     *
+     * \see hasDateTimeRange()
+     * \see dateTime()
      */
     QgsDateTimeRange dateTimeRange() const;
 
+    /**
+     * Returns an optional human readable title describing the Item.
+     * \since QGIS 3.42
+     */
+    QString title() const;
+
+    /**
+     * Returns a Detailed multi-line description to fully explain the Item.
+     * CommonMark 0.29 syntax may be used for rich text representation.
+     * \since QGIS 3.42
+     */
+    QString description() const;
+
+    /**
+     * Returns a list of uris of all assets that have a cloud optimized format like COG or COPC
+     * \since QGIS 3.42
+     */
+    QgsMimeDataUtils::UriList uris() const;
 
   private:
     QgsGeometry mGeometry;

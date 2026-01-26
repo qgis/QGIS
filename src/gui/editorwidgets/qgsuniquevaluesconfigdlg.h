@@ -18,17 +18,17 @@
 
 #include "ui_qgsuniquevaluesconfigdlgbase.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsUniqueValuesConfigDlg
+ * \brief Configuration widget for unique value widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget, private Ui::QgsUniqueValuesConfigDlgBase
 {
     Q_OBJECT

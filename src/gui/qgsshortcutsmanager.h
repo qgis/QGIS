@@ -16,11 +16,12 @@
 #ifndef QGSSHORTCUTSMANAGER_H
 #define QGSSHORTCUTSMANAGER_H
 
-#include <QHash>
-#include <QList>
-#include <QAction>
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
+#include <QAction>
+#include <QHash>
+#include <QList>
 
 class QShortcut;
 
@@ -38,6 +39,18 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     Q_OBJECT
 
   public:
+    /**
+     * Contains common actions which are used across a variety of classes.
+     * \since QGIS 4.0
+     */
+    enum class CommonAction
+    {
+      CodeToggleComment, //!< Toggle code comments
+      CodeReformat,      //!< Reformat code
+      CodeRunScript,     //!< Run script
+      CodeRunSelection,  //!< Run selection from script
+    };
+    Q_ENUM( CommonAction )
 
     /**
      * Constructor for QgsShortcutsManager.
@@ -47,6 +60,8 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * taken to not register actions which conflict with the built in QGIS actions.
      */
     QgsShortcutsManager( QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &settingsRoot = "/shortcuts/" );
+
+    ~QgsShortcutsManager() override;
 
     /**
      * Automatically registers all QActions and QShortcuts which are children of the
@@ -93,6 +108,16 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
      * \see registerAllChildActions()
      */
     bool registerAction( QAction *action, const QString &defaultShortcut = QString(), const QString &section = QString() );
+
+    /**
+     * Initializes an \a action as a common action.
+     *
+     * This automatically configures the \a action to use the properties for the common action, such
+     * as setting the action's tooltip and shortcut.
+     *
+     * \since QGIS 4.0
+     */
+    void initializeCommonAction( QAction *action, CommonAction commonAction );
 
     /**
      * Registers a QShortcut with the manager so the shortcut can be configured in GUI.
@@ -230,6 +255,12 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 
     /**
+     * Returns the key sequence which is associated with a common \a action, or an empty sequence if no shortcut is assigned to that action.
+     * \since QGIS 4.0
+     */
+    QKeySequence sequenceForCommonAction( CommonAction action ) const;
+
+    /**
      * Returns an action by its name, or NULLPTR if nothing found.
      * \param name action name. Must match QAction's text.
      * \see shortcutByName()
@@ -274,6 +305,10 @@ class GUI_EXPORT QgsShortcutsManager : public QObject
     ActionsHash mActions;
     ShortcutsHash mShortcuts;
     QString mSettingsPath;
+    QHash< int, QAction * > mCommonActions;
+    QHash< QAction *, CommonAction > mLinkedCommonActions;
+
+    static QString formatActionToolTip( const QString &toolTip );
 
     /**
      * Updates the action to include the shortcut keys. Shortcut keys are

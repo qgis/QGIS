@@ -15,16 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "drw_interface.h"
-
-#include <QCoreApplication>
-#include <QString>
-#include <QElapsedTimer>
+#ifndef QGSDWGIMPORTER_H
+#define QGSDWGIMPORTER_H
 
 #include <ogr_api.h>
 
+#include "drw_interface.h"
 #include "qgsabstractgeometry.h"
 #include "qgsogrutils.h"
+
+#include <QCoreApplication>
+#include <QElapsedTimer>
+#include <QString>
 
 class QgsCompoundCurve;
 class QgsLineString;
@@ -207,12 +209,12 @@ class QgsDwgImporter : public DRW_Interface
 
     gdal::ogr_datasource_unique_ptr mDs;
     QString mDatabase;
-    bool mInTransaction;
-    int mSplineSegs;
-    int mBlockHandle;
+    bool mInTransaction = false;
+    int mSplineSegs = 8;
+    int mBlockHandle = -1;
     int mCrs;
     OGRSpatialReferenceH mCrsH = nullptr;
-    bool mUseCurves;
+    bool mUseCurves = true;
 
     QHash<QString, QString> mLayerColor;
     QHash<QString, double> mLayerLinewidth;
@@ -226,3 +228,5 @@ class QgsDwgImporter : public DRW_Interface
     QTextCodec *mCodec = nullptr;
     QElapsedTimer mTime;
 };
+
+#endif // QGSDWGIMPORTER_H

@@ -28,10 +28,10 @@ def load(db, mainwindow):
     for name in os.listdir(current_dir):
         if not os.path.isdir(os.path.join(current_dir, name)):
             continue
-        if name in ('__pycache__'):
+        if name in ("__pycache__"):
             continue
         try:
-            plugin_module = import_module('.'.join((__package__, name)))
+            plugin_module = import_module(".".join((__package__, name)))
         except ImportError:
             continue
         plugin_module.load(db, mainwindow)

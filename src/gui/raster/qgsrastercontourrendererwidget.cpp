@@ -15,9 +15,11 @@
 
 #include "qgsrastercontourrendererwidget.h"
 
+#include "qgslinesymbol.h"
 #include "qgsrastercontourrenderer.h"
 #include "qgsrasterlayer.h"
-#include "qgslinesymbol.h"
+
+#include "moc_qgsrastercontourrendererwidget.cpp"
 
 QgsRasterContourRendererWidget::QgsRasterContourRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
@@ -53,9 +55,9 @@ QgsRasterContourRendererWidget::QgsRasterContourRendererWidget( QgsRasterLayer *
   }
 
   connect( mInputBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsRasterRendererWidget::widgetChanged );
-  connect( mContourIntervalSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
-  connect( mIndexContourIntervalSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
-  connect( mDownscaleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
+  connect( mContourIntervalSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
+  connect( mIndexContourIntervalSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
+  connect( mDownscaleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterRendererWidget::widgetChanged );
   connect( mContourSymbolButton, &QgsSymbolButton::changed, this, &QgsRasterRendererWidget::widgetChanged );
   connect( mIndexContourSymbolButton, &QgsSymbolButton::changed, this, &QgsRasterRendererWidget::widgetChanged );
 }

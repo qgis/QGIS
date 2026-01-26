@@ -17,15 +17,15 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QVariant>
-#include <QHash>
-#include <QString>
-#include <QStringList>
-#include <QSet>
-#include <QPointer>
-
 #include "qgsexpressionfunction.h"
 #include "qgsfeature.h"
+
+#include <QHash>
+#include <QPointer>
+#include <QSet>
+#include <QString>
+#include <QStringList>
+#include <QVariant>
 
 class QgsReadWriteContext;
 class QgsMapLayerStore;
@@ -34,8 +34,9 @@ class LoadLayerFunction;
 /**
  * \ingroup core
  * \class QgsScopedExpressionFunction
- * \brief Expression function for use within a QgsExpressionContextScope. This differs from a
- * standard QgsExpression::Function in that it requires an implemented
+ * \brief Expression function for use within a QgsExpressionContextScope.
+ *
+ * This differs from a standard QgsExpression::Function in that it requires an implemented
  * clone() method.
  */
 
@@ -160,8 +161,10 @@ class CORE_EXPORT QgsExpressionContextScope
     QgsExpressionContextScope( const QString &name = QString() );
 
     QgsExpressionContextScope( const QgsExpressionContextScope &other );
+    SIP_SKIP QgsExpressionContextScope( QgsExpressionContextScope &&other );
 
     QgsExpressionContextScope &operator=( const QgsExpressionContextScope &other );
+    QgsExpressionContextScope &operator=( QgsExpressionContextScope &&other );
 
     ~QgsExpressionContextScope();
 
@@ -480,6 +483,7 @@ class CORE_EXPORT QgsExpressionContext
     explicit QgsExpressionContext( const QList<QgsExpressionContextScope *> &scopes SIP_TRANSFER );
 
     QgsExpressionContext( const QgsExpressionContext &other );
+    SIP_SKIP QgsExpressionContext( QgsExpressionContext &&other );
 
     QgsExpressionContext &operator=( const QgsExpressionContext &other ) SIP_SKIP;
 
@@ -875,6 +879,18 @@ class CORE_EXPORT QgsExpressionContext
      * \since QGIS 3.20
      */
     QgsFeedback *feedback() const;
+
+    /**
+     * Returns a unique hash representing the current state of the context.
+     *
+     * \param ok will be set to TRUE if the hash could be generated, or false if e.g. a variable value is of a type which cannot be hashed
+     * \param variables optional names of a subset of variables to include in the hash. If not specified, all variables will be considered.
+     *
+     * \returns calculated hash
+     *
+     * \since QGIS 3.40
+     */
+    QString uniqueHash( bool &ok SIP_OUT, const QSet<QString> &variables = QSet<QString>() ) const;
 
     //! Inbuilt variable name for fields storage
     static const QString EXPR_FIELDS;

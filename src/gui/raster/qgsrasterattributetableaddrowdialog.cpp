@@ -14,14 +14,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetableaddrowdialog.h"
+
 #include "qgsgui.h"
+
+#include "moc_qgsrasterattributetableaddrowdialog.cpp"
 
 QgsRasterAttributeTableAddRowDialog::QgsRasterAttributeTableAddRowDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
-
 }
 
 bool QgsRasterAttributeTableAddRowDialog::insertAfter() const

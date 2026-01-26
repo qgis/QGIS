@@ -16,12 +16,13 @@
 #ifndef QGSMAPTHEMES_H
 #define QGSMAPTHEMES_H
 
+#include "qgis_app.h"
 #include "qgsmapthemecollection.h"
+
 #include <QMap>
 #include <QObject>
 #include <QSet>
 #include <QStringList>
-#include "qgis_app.h"
 
 class QAction;
 class QDomDocument;
@@ -37,7 +38,6 @@ class APP_EXPORT QgsMapThemes : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Returns the instance QgsVisibilityPresets.
      */

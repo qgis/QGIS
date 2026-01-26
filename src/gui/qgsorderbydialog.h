@@ -17,28 +17,26 @@
 #ifndef QGSORDERBYDIALOG_H
 #define QGSORDERBYDIALOG_H
 
-#include <QDialog>
-#include "qgis_sip.h"
-
 #include "ui_qgsorderbydialogbase.h"
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsfeaturerequest.h"
 #include "qgshelp.h"
-#include "qgis_gui.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 
 /**
  * \ingroup gui
- * \brief This is a dialog to build and manage a list of order by clauses.
- *
+ * \brief A dialog to build and manage a list of order by clauses.
  */
-
 class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
@@ -58,7 +56,6 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     QgsFeatureRequest::OrderBy orderBy();
 
   protected:
-
     bool eventFilter( QObject *obj, QEvent *e ) override;
 
   private slots:
@@ -66,14 +63,12 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     void showHelp();
 
   private:
-
     /**
      * Initialize a row with the given information
      */
     void setRow( int row, const QgsFeatureRequest::OrderByClause &orderByClause );
 
     QgsVectorLayer *mLayer = nullptr;
-
 };
 
 #endif // QGSORDERBYDIALOG_H

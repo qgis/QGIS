@@ -14,22 +14,22 @@
  ***************************************************************************/
 
 
+#include "qgsdockwidget.h"
 #include "qgstest.h"
 
-#include "qgsdockwidget.h"
+#include <QAction>
 #include <QApplication>
 #include <QMainWindow>
-#include <QAction>
 #include <QSignalSpy>
 
-class TestQgsDockWidget: public QObject
+class TestQgsDockWidget : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void testSignals();
     void testUserVisible();
@@ -38,7 +38,6 @@ class TestQgsDockWidget: public QObject
     void testAction();
 
   private:
-
 };
 
 void TestQgsDockWidget::initTestCase()
@@ -63,12 +62,24 @@ void TestQgsDockWidget::testSignals()
   QApplication::setActiveWindow( w ); //required for focus events
   QgsDockWidget *d = new QgsDockWidget( w );
 
+  // Since Qt 6.8, the `showEvent` is now correctly propagated to the dock
+  // when `w->show()` is called. Therefore, it needs to be called before
+  // the QSignalSpy are created
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 8, 0 )
+  w->show();
+
+  QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
+  const QSignalSpy spyClosed( d, SIGNAL( closed() ) );
+  QSignalSpy spyOpenedStateChanged( d, SIGNAL( openedStateChanged( bool ) ) );
+  const QSignalSpy spyOpened( d, SIGNAL( opened() ) );
+#else
   QSignalSpy spyClosedStateChanged( d, SIGNAL( closedStateChanged( bool ) ) );
   const QSignalSpy spyClosed( d, SIGNAL( closed() ) );
   QSignalSpy spyOpenedStateChanged( d, SIGNAL( openedStateChanged( bool ) ) );
   const QSignalSpy spyOpened( d, SIGNAL( opened() ) );
 
   w->show();
+#endif
 
   d->show();
   QCOMPARE( spyClosedStateChanged.count(), 1 );
@@ -177,7 +188,6 @@ void TestQgsDockWidget::testSetUserVisible()
   QVERIFY( !d1->isVisible() );
 
   delete w;
-
 }
 
 void TestQgsDockWidget::testToggleUserVisible()
@@ -220,7 +230,6 @@ void TestQgsDockWidget::testToggleUserVisible()
   QVERIFY( !d1->isVisible() );
 
   delete w;
-
 }
 
 void TestQgsDockWidget::testAction()
@@ -237,7 +246,7 @@ void TestQgsDockWidget::testAction()
   QAction *a1 = new QAction( w );
   QAction *a2 = new QAction( w );
 
-  QVERIFY( ! d1->toggleVisibilityAction() );
+  QVERIFY( !d1->toggleVisibilityAction() );
   d1->setToggleVisibilityAction( a1 );
   d2->setToggleVisibilityAction( a2 );
   QVERIFY( a1->isCheckable() );

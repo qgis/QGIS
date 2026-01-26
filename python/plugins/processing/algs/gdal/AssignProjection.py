@@ -15,19 +15,21 @@
 ***************************************************************************
 """
 
-__author__ = 'Alexander Bruy'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Alexander Bruy'
+__author__ = "Alexander Bruy"
+__date__ = "January 2016"
+__copyright__ = "(C) 2016, Alexander Bruy"
 
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (QgsProcessingException,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterCrs,
-                       QgsProcessingOutputRasterLayer,
-                       QgsProcessingContext)
+from qgis.core import (
+    QgsProcessingException,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterCrs,
+    QgsProcessingOutputRasterLayer,
+    QgsProcessingContext,
+)
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -37,49 +39,56 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class AssignProjection(GdalAlgorithm):
-    INPUT = 'INPUT'
-    CRS = 'CRS'
-    OUTPUT = 'OUTPUT'
+    INPUT = "INPUT"
+    CRS = "CRS"
+    OUTPUT = "OUTPUT"
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
-                                                            self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterCrs(self.CRS,
-                                                    self.tr('Desired CRS')))
+        self.addParameter(
+            QgsProcessingParameterRasterLayer(self.INPUT, self.tr("Input layer"))
+        )
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, self.tr("Desired CRS")))
 
-        self.addOutput(QgsProcessingOutputRasterLayer(self.OUTPUT,
-                                                      self.tr('Layer with projection')))
+        self.addOutput(
+            QgsProcessingOutputRasterLayer(
+                self.OUTPUT, self.tr("Layer with projection")
+            )
+        )
 
     def name(self):
-        return 'assignprojection'
+        return "assignprojection"
 
     def displayName(self):
-        return self.tr('Assign projection')
+        return self.tr("Assign projection")
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-add.png'))
+        return QIcon(
+            os.path.join(pluginPath, "images", "gdaltools", "projection-add.png")
+        )
 
     def tags(self):
-        tags = self.tr('assign,set,transform,reproject,crs,srs').split(',')
+        tags = self.tr("assign,set,transform,reproject,crs,srs").split(",")
         tags.extend(super().tags())
         return tags
 
     def group(self):
-        return self.tr('Raster projections')
+        return self.tr("Raster projections")
 
     def groupId(self):
-        return 'rasterprojections'
+        return "rasterprojections"
 
     def commandName(self):
-        return 'gdal_edit'
+        return "gdal_edit"
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         if inLayer is None:
-            raise QgsProcessingException(self.invalidRasterError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidRasterError(parameters, self.INPUT)
+            )
 
         input_details = GdalUtils.gdal_connection_details_from_layer(inLayer)
         fileName = inLayer.source()
@@ -87,9 +96,9 @@ class AssignProjection(GdalAlgorithm):
         crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         arguments = [
-            '-a_srs',
+            "-a_srs",
             GdalUtils.gdal_crs_string(crs),
-            input_details.connection_string
+            input_details.connection_string,
         ]
 
         if input_details.open_options:
@@ -100,7 +109,10 @@ class AssignProjection(GdalAlgorithm):
 
         self.setOutputValue(self.OUTPUT, fileName)
 
-        return [self.commandName() + ('.bat' if isWindows() else '.py'), GdalUtils.escapeAndJoin(arguments)]
+        return [
+            self.commandName() + (".bat" if isWindows() else ".py"),
+            GdalUtils.escapeAndJoin(arguments),
+        ]
 
     def postProcessAlgorithm(self, context, feedback):
         # get output value

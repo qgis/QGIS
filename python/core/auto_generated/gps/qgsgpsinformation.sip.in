@@ -10,7 +10,6 @@
 
 
 
-
 class QgsGpsInformation
 {
 %Docstring(signature="appended")
@@ -70,6 +69,7 @@ Returns a map of GNSS constellation to fix status.
 Returns the best fix status and corresponding constellation.
 
 
+
 :return: - best current fix status
          - constellation: the constellation with best fix status
 
@@ -113,7 +113,7 @@ Returns whether the connection information is valid
 .. versionadded:: 3.10
 %End
 
- Qgis::GpsFixStatus fixStatus() const /Deprecated/;
+ Qgis::GpsFixStatus fixStatus() const /Deprecated="Since 3.40. Use constellationFixStatus() or bestFixStatus() instead."/;
 %Docstring
 Returns the fix status
 

@@ -21,15 +21,16 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <qgsmaplayerconfigwidget.h>
 #include "ui_qgsdiagramwidget.h"
+
+#include "qgsmaplayerconfigwidget.h"
 
 #include <QWidget>
 
 /**
  * \ingroup gui
  * \class QgsDiagramWidget
- *
+ * \brief A widget for configuring layer diagrams.
  * \since QGIS 3.40
  */
 class GUI_EXPORT QgsDiagramWidget : public QgsMapLayerConfigWidget, private Ui::QgsDiagramWidget
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsDiagramWidget : public QgsMapLayerConfigWidget, private Ui::
     void syncToOwnLayer();
 
   public slots:
-    //! Saves the labeling configuration and immediately updates the map canvas to reflect the changes
+    //! Saves the diagram configuration and immediately updates the map canvas to reflect the changes
     void apply() override;
 
   signals:
@@ -58,7 +59,6 @@ class GUI_EXPORT QgsDiagramWidget : public QgsMapLayerConfigWidget, private Ui::
     void showEngineConfigDialog();
 
   private:
-
     enum Mode
     {
       ModeNone,

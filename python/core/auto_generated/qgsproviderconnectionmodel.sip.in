@@ -13,7 +13,8 @@
 class QgsProviderConnectionModel : QAbstractItemModel
 {
 %Docstring(signature="appended")
-A model containing registered connection names for a specific data provider.
+A model containing registered connection names for a specific data
+provider.
 
 .. warning::
 
@@ -39,7 +40,8 @@ A model containing registered connection names for a specific data provider.
 
     explicit QgsProviderConnectionModel( const QString &provider, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsProviderConnectionModel, for the specified ``provider``.
+Constructor for QgsProviderConnectionModel, for the specified
+``provider``.
 
 .. warning::
 
@@ -49,14 +51,16 @@ Constructor for QgsProviderConnectionModel, for the specified ``provider``.
 
     void setAllowEmptyConnection( bool allowEmpty );
 %Docstring
-Sets whether an optional empty connection ("not set") option is present in the model.
+Sets whether an optional empty connection ("not set") option is present
+in the model.
 
 .. seealso:: :py:func:`allowEmptyConnection`
 %End
 
     bool allowEmptyConnection() const;
 %Docstring
-Returns ``True`` if the model allows the empty connection ("not set") choice.
+Returns ``True`` if the model allows the empty connection ("not set")
+choice.
 
 .. seealso:: :py:func:`setAllowEmptyConnection`
 %End

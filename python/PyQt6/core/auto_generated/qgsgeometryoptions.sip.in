@@ -14,9 +14,8 @@
 class QgsGeometryOptions : QObject
 {
 %Docstring(signature="appended")
-
-The :py:class:`QgsGeometryOptions` class contains options to automatically adjust geometries to
-constraints on a layer.
+Contains options to automatically adjust geometries to constraints on a
+layer.
 
 .. versionadded:: 3.4
 %End
@@ -33,14 +32,16 @@ Create a new QgsGeometryOptions object.
 
     bool removeDuplicateNodes() const;
 %Docstring
-Automatically remove duplicate nodes on all geometries which are edited on this layer.
+Automatically remove duplicate nodes on all geometries which are edited
+on this layer.
 
 .. versionadded:: 3.4
 %End
 
     void setRemoveDuplicateNodes( bool value );
 %Docstring
-Automatically remove duplicate nodes on all geometries which are edited on this layer.
+Automatically remove duplicate nodes on all geometries which are edited
+on this layer.
 
 .. versionadded:: 3.4
 %End
@@ -48,8 +49,8 @@ Automatically remove duplicate nodes on all geometries which are edited on this 
     double geometryPrecision() const;
 %Docstring
 The precision in which geometries on this layer should be saved.
-Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
-Set to 0.0 to disable.
+Geometries which are edited on this layer will be rounded to multiples
+of this value (snap to grid). Set to 0.0 to disable.
 
 .. versionadded:: 3.4
 %End
@@ -57,8 +58,8 @@ Set to 0.0 to disable.
     void setGeometryPrecision( double value );
 %Docstring
 The precision in which geometries on this layer should be saved.
-Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
-Set to 0.0 to disable.
+Geometries which are edited on this layer will be rounded to multiples
+of this value (snap to grid). Set to 0.0 to disable.
 
 .. versionadded:: 3.4
 %End
@@ -138,7 +139,8 @@ A list of activated geometry checks.
 
     void removeDuplicateNodesChanged();
 %Docstring
-Automatically remove duplicate nodes on all geometries which are edited on this layer.
+Automatically remove duplicate nodes on all geometries which are edited
+on this layer.
 
 .. versionadded:: 3.4
 %End
@@ -146,8 +148,8 @@ Automatically remove duplicate nodes on all geometries which are edited on this 
     void geometryPrecisionChanged();
 %Docstring
 The precision in which geometries on this layer should be saved.
-Geometries which are edited on this layer will be rounded to multiples of this value (snap to grid).
-Set to 0.0 to disable.
+Geometries which are edited on this layer will be rounded to multiples
+of this value (snap to grid). Set to 0.0 to disable.
 
 .. versionadded:: 3.4
 %End

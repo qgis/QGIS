@@ -84,12 +84,31 @@ if (WITH_SERVER_PLUGINS)
   )
 endif()
 
-add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
+if(NOT LIBRARY_TYPE EQUAL STATIC)
+  win32_version_info("QGIS Server Core" "qgis_server" QGIS_SERVER_SRCS)
+endif()
 
-# require c++17
-target_compile_features(qgis_server PRIVATE cxx_std_17)
+add_library(qgis_server SHARED ${QGIS_SERVER_SRCS} ${QGIS_SERVER_HDRS})
+if(QGISPOSTFIX)
+  set_target_properties(qgis_server PROPERTIES
+    RUNTIME_OUTPUT_NAME qgis_server${QGISPOSTFIX}
+    LIBRARY_OUTPUT_NAME qgis_server${QGISPOSTFIX}
+  )
+endif()
+
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_server PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+# fcgi's stdio hacks fail in unity builds on msvc (see https://cdash.orfeo-toolbox.org/viewBuildError.php?buildid=37453)
+# Example:
+# …\include\__msvc_filebuf.hpp(86): error C2664: 'wint_t fgetwc(FILE *)': cannot convert argument 1 from 'FCGI_FILE *' to 'FILE *'
+if(NOT MSVC)
+  set_target_properties(qgis_server PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+endif(NOT MSVC)
 
 target_include_directories(qgis_server SYSTEM PUBLIC
+  ${CMAKE_SOURCE_DIR}/external/inja
   ${FCGI_INCLUDE_DIR}
 )
 
@@ -114,7 +133,6 @@ endif()
 target_link_libraries(qgis_server
   qgis_core
   ${FCGI_LIBRARY}
-  ${POSTGRES_LIBRARY}
   ${QCA_LIBRARY}
 )
 
@@ -146,12 +164,20 @@ install(TARGETS qgis_server
 # add test resources, e.g. standard test font
 set(QGIS_SERVER_TESTRCCS ../../tests/testdata/testdata.qrc)
 
-add_executable(qgis_mapserv.fcgi qgis_map_serv.cpp ${QGIS_SERVER_TESTRCCS})
-add_executable(qgis_mapserver qgis_mapserver.cpp ${QGIS_SERVER_TESTRCCS})
+SET(QGIS_SERVER_EX_SRCS qgis_map_serv.cpp)
+win32_icon(QGIS_SERVER_EX_SRCS)
+win32_version_info("QGIS Server" "qgis_mapserv.fcgi" QGIS_SERVER_EX_SRCS)
+add_executable(qgis_mapserv.fcgi ${QGIS_SERVER_EX_SRCS} ${QGIS_SERVER_TESTRCCS})
 
-# require c++17
-target_compile_features(qgis_mapserv.fcgi PRIVATE cxx_std_17)
-target_compile_features(qgis_mapserver PRIVATE cxx_std_17)
+SET(QGIS_SERVER_EX_SRCS qgis_mapserver.cpp)
+win32_icon(QGIS_SERVER_EX_SRCS)
+win32_version_info("QGIS Server (Development Server)" "qgis_mapserver" QGIS_SERVER_EX_SRCS)
+add_executable(qgis_mapserver ${QGIS_SERVER_EX_SRCS} ${QGIS_SERVER_TESTRCCS})
+
+if (QGISPOSTFIX)
+  set_target_properties(qgis_mapserv.fcgi PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserv${QGISPOSTFIX}.fcgi)
+  set_target_properties(qgis_mapserver PROPERTIES RUNTIME_OUTPUT_NAME qgis_mapserver${QGISPOSTFIX})
+endif()
 
 target_link_libraries(qgis_mapserv.fcgi qgis_server)
 target_link_libraries(qgis_mapserver qgis_server)

@@ -15,18 +15,20 @@
 
 #include "qgsterraingenerator.h"
 
-#include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgscoordinatetransform.h"
 
-QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
+#include "moc_qgsterraingenerator.cpp"
+
+QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = Qgs3DUtils::tryReprojectExtent2D( rootChunkExtent(), crs(), map.crs(), map.transformContext() );
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return Qgs3DUtils::mapToWorldExtent( te, hMin * map.terrainVerticalScale(), hMax * map.terrainVerticalScale(), map.origin() );
+  return QgsBox3D( te.xMinimum(), te.yMinimum(), hMin * map.terrainSettings()->verticalScale(), te.xMaximum(), te.yMaximum(), hMax * map.terrainSettings()->verticalScale() );
 }
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
@@ -34,14 +36,14 @@ float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
   QgsRectangle te = Qgs3DUtils::tryReprojectExtent2D( rootChunkExtent(), crs(), map.crs(), map.transformContext() );
 
   // use texel size as the error
-  return te.width() / map.mapTileResolution();
+  return te.width() / map.terrainSettings()->mapTileResolution();
 }
 
 void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
 {
   // TODO: makes sense to have kind of default implementation?
   hMin = 0;
-  hMax = 400;
+  hMax = 8848;
 }
 
 float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext &context ) const
@@ -57,17 +59,21 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
   switch ( type )
   {
     case QgsTerrainGenerator::Flat:
-      return QStringLiteral( "flat" );
+      return u"flat"_s;
     case QgsTerrainGenerator::Dem:
-      return QStringLiteral( "dem" );
+      return u"dem"_s;
     case QgsTerrainGenerator::Online:
-      return QStringLiteral( "online" );
+      return u"online"_s;
     case QgsTerrainGenerator::Mesh:
-      return QStringLiteral( "mesh" );
+      return u"mesh"_s;
     case QgsTerrainGenerator::QuantizedMesh:
-      return QStringLiteral( "quantizedmesh" );
+      return u"quantizedmesh"_s;
   }
   return QString();
+}
+
+void QgsTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &, const QgsCoordinateTransformContext & )
+{
 }
 
 bool QgsTerrainGenerator::isValid() const

@@ -10,10 +10,11 @@
 
 
 
+
 class QgsVectorTileLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")
-Vectortile layer properties dialog
+Layer properties dialog for vector tile layers.
 
 .. versionadded:: 3.28
 %End
@@ -27,7 +28,7 @@ Vectortile layer properties dialog
 Constructor
 %End
 
- void saveDefaultStyle() /Deprecated/;
+ void saveDefaultStyle() /Deprecated="Since 3.40. Use saveStyleAsDefault() instead."/;
 %Docstring
 Saves the default style when appropriate button is pressed
 
@@ -43,7 +44,7 @@ Loads a saved style when appropriate button is pressed
 .. versionadded:: 3.30
 %End
 
- void saveStyleAs() /Deprecated/;
+ void saveStyleAs() /Deprecated="Since 3.40. Use saveStyleToFile() instead."/;
 %Docstring
 Saves a style when appriate button is pressed
 

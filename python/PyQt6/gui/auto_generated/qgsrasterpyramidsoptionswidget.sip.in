@@ -10,17 +10,17 @@
 
 
 
-class QgsRasterPyramidsOptionsWidget: QWidget
+
+class QgsRasterPyramidsOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
-A widget to select format-specific raster saving options
+A widget to select format-specific raster saving options.
 %End
 
 %TypeHeaderCode
 #include "qgsrasterpyramidsoptionswidget.h"
 %End
   public:
-
     QgsRasterPyramidsOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &provider = "gdal" );
 %Docstring
 Constructor for QgsRasterPyramidsOptionsWidget
@@ -38,6 +38,13 @@ Returns the selected pyramid format.
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer );
     void setRasterFileName( const QString &file );
+
+    void tuneForFormat( const QString &driverName );
+%Docstring
+Tune settings of the widget for the given format (in particular for COG)
+
+.. versionadded:: 4.0
+%End
 
   public slots:
 

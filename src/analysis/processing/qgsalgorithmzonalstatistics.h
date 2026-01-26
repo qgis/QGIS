@@ -30,9 +30,7 @@
  */
 class QgsZonalStatisticsAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsZonalStatisticsAlgorithm() = default;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString name() const override;
@@ -47,11 +45,10 @@ class QgsZonalStatisticsAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::unique_ptr< QgsRasterInterface > mInterface;
+    std::unique_ptr<QgsRasterInterface> mInterface;
     int mBand = 1;
     QString mPrefix;
     Qgis::ZonalStatistics mStats = Qgis::ZonalStatistic::All;

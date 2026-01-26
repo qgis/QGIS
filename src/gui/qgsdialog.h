@@ -18,29 +18,26 @@
 #ifndef QGSDIALOG_H
 #define QGSDIALOG_H
 
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLayout>
-#include "qgis_gui.h"
-#include "qgis_sip.h"
 
 /**
  * \ingroup gui
- * \brief A generic dialog with layout and button box
+ * \brief A generic dialog with layout and button box.
  */
 class GUI_EXPORT QgsDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDialog.
      */
-    QgsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
-               Qt::Orientation orientation = Qt::Horizontal );
+    QgsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close, Qt::Orientation orientation = Qt::Horizontal );
 
     //! Returns the central layout. Widgets added to it must have this dialog as parent.
     QVBoxLayout *layout() { return mLayout; }

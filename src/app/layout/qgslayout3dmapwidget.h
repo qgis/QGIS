@@ -16,10 +16,11 @@
 #ifndef QGSLAYOUT3DMAPWIDGET_H
 #define QGSLAYOUT3DMAPWIDGET_H
 
-#include "qgis_gui.h"
-#include "qgslayoutitemwidget.h"
 #include "ui_qgslayout3dmapwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgslayoutitem3dmap.h"
+#include "qgslayoutitemwidget.h"
 
 class QgsLayoutItem3DMap;
 class Qgs3DMapCanvasWidget;
@@ -44,7 +45,7 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void updateCameraPose();
 
   private:
-    QPointer< QgsLayoutItem3DMap > mMap3D;
+    QPointer<QgsLayoutItem3DMap> mMap3D;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QMenu *mMenu3DCanvases = nullptr;
     QMenu *mMenu3DCanvasesPose = nullptr;

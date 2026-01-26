@@ -15,26 +15,38 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import re
 
-from qgis.core import (QgsMapLayer,
-                       QgsSettings,
-                       QgsProcessingParameterFolderDestination,
-                       QgsProcessingParameterRasterLayer,
-                       QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterVectorLayer,
-                       QgsProcessingParameterMultipleLayers,
-                       QgsProcessingParameterMapLayer,
-                       QgsProcessingParameterBoolean,
-                       QgsProcessingParameterEnum,
-                       QgsProject,
-                       QgsProcessingParameterMatrix)
-from qgis.PyQt.QtWidgets import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
+from qgis.core import (
+    QgsMapLayer,
+    QgsSettings,
+    QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterRasterLayer,
+    QgsProcessingParameterFeatureSource,
+    QgsProcessingParameterVectorLayer,
+    QgsProcessingParameterMultipleLayers,
+    QgsProcessingParameterMapLayer,
+    QgsProcessingParameterBoolean,
+    QgsProcessingParameterEnum,
+    QgsProject,
+    QgsProcessingParameterMatrix,
+    QgsApplication,
+)
+from qgis.PyQt.QtWidgets import (
+    QWidget,
+    QPushButton,
+    QLineEdit,
+    QHBoxLayout,
+    QSizePolicy,
+    QFileDialog,
+    QMenu,
+)
+from qgis.PyQt.QtGui import QAction
 
 from processing.gui.AutofillDialog import AutofillDialog
 
@@ -53,16 +65,40 @@ class BatchOutputSelectionPanel(QWidget):
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
         self.text = QLineEdit()
-        self.text.setText('')
+        self.text.setText("")
         self.text.setMinimumWidth(300)
-        self.text.setSizePolicy(QSizePolicy.Policy.Expanding,
-                                QSizePolicy.Policy.Expanding)
+        self.text.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         self.horizontalLayout.addWidget(self.text)
         self.pushButton = QPushButton()
-        self.pushButton.setText('…')
-        self.pushButton.clicked.connect(self.showSelectionDialog)
+        self.pushButton.setText("…")
+
+        self.actionTemporaryOutput = QAction(
+            self.tr("Create Temporary Layer"),
+            self,
+        )
+        self.actionTemporaryOutput.setCheckable(True)
+        self.actionTemporaryOutput.changed.connect(self.onTemporaryOutputChanged)
+
+        if isinstance(self.output, QgsProcessingParameterFolderDestination):
+            self.pushButton.clicked.connect(self.showSelectionDialog)
+        else:
+            self.menu = QMenu(self.pushButton)
+            self.menu.addAction(
+                self.tr("Select File/Folder…"), self.showSelectionDialog
+            )
+            self.menu.addAction(self.actionTemporaryOutput)
+            self.pushButton.setMenu(self.menu)
+
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
+
+        self.actionTemporaryOutputIcon = QAction(
+            QgsApplication.getThemeIcon("/mActionCreateMemory.svg"),
+            self.tr("Temporary Output"),
+            self,
+        )
 
     def showSelectionDialog(self):
         if isinstance(self.output, QgsProcessingParameterFolderDestination):
@@ -71,48 +107,75 @@ class BatchOutputSelectionPanel(QWidget):
 
         filefilter = self.output.createFileFilter()
         settings = QgsSettings()
-        if settings.contains('/Processing/LastBatchOutputPath'):
-            path = str(settings.value('/Processing/LastBatchOutputPath'))
+        if settings.contains("/Processing/LastBatchOutputPath"):
+            path = str(settings.value("/Processing/LastBatchOutputPath"))
         else:
-            path = ''
-        filename, selectedFileFilter = QFileDialog.getSaveFileName(self,
-                                                                   self.tr('Save File'), path, filefilter)
+            path = ""
+        filename, selectedFileFilter = QFileDialog.getSaveFileName(
+            self, self.tr("Save File"), path, filefilter
+        )
         if filename:
+            self.actionTemporaryOutput.setChecked(False)
+
             if not filename.lower().endswith(
-                    tuple(re.findall("\\*(\\.[a-z]{1,10})", filefilter))):
+                tuple(re.findall("\\*(\\.[a-z]{1,10})", filefilter))
+            ):
                 ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
                 if ext:
                     filename += ext.group(1)
-            settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
+            settings.setValue(
+                "/Processing/LastBatchOutputPath", os.path.dirname(filename)
+            )
             dlg = AutofillDialog(self.alg)
             dlg.exec()
             if dlg.mode is not None:
                 if dlg.mode == AutofillDialog.DO_NOT_AUTOFILL:
-                    self.table.cellWidget(self.row,
-                                          self.col).setValue(filename)
+                    self.table.cellWidget(self.row, self.col).setValue(filename)
                 elif dlg.mode == AutofillDialog.FILL_WITH_NUMBERS:
                     n = self.table.rowCount() - self.row
                     for i in range(n):
-                        name = filename[:filename.rfind('.')] \
-                            + str(i + 1) + filename[filename.rfind('.'):]
-                        self.table.cellWidget(i + self.row,
-                                              self.col).setValue(name)
+                        name = (
+                            filename[: filename.rfind(".")]
+                            + str(i + 1)
+                            + filename[filename.rfind(".") :]
+                        )
+                        self.table.cellWidget(i + self.row, self.col).setValue(name)
+                        self.table.cellWidget(
+                            i + self.row, self.col
+                        ).setTemporaryOutput(False)
                 elif dlg.mode == AutofillDialog.FILL_WITH_PARAMETER:
                     for row in range(self.row, self.table.rowCount()):
                         v = self.panel.valueForParameter(row - 1, dlg.param_name)
                         param = self.alg.parameterDefinition(dlg.param_name)
-                        if isinstance(param, (QgsProcessingParameterRasterLayer,
-                                              QgsProcessingParameterFeatureSource,
-                                              QgsProcessingParameterVectorLayer,
-                                              QgsProcessingParameterMultipleLayers,
-                                              QgsProcessingParameterMapLayer)):
+                        if isinstance(
+                            param,
+                            (
+                                QgsProcessingParameterRasterLayer,
+                                QgsProcessingParameterFeatureSource,
+                                QgsProcessingParameterVectorLayer,
+                                QgsProcessingParameterMultipleLayers,
+                                QgsProcessingParameterMapLayer,
+                            ),
+                        ):
                             if isinstance(v, QgsMapLayer):
                                 s = v.name()
                             else:
                                 if v in QgsProject.instance().mapLayers():
                                     layer = QgsProject.instance().mapLayer(v)
                                     # value is a layer ID, but we'd prefer to show a layer name if it's unique in the project
-                                    if len([l for _, l in QgsProject.instance().mapLayers().items() if l.name().lower() == layer.name().lower()]) == 1:
+                                    if (
+                                        len(
+                                            [
+                                                l
+                                                for _, l in QgsProject.instance()
+                                                .mapLayers()
+                                                .items()
+                                                if l.name().lower()
+                                                == layer.name().lower()
+                                            ]
+                                        )
+                                        == 1
+                                    ):
                                         s = layer.name()
                                     else:
                                         # otherwise fall back to layer id
@@ -123,33 +186,55 @@ class BatchOutputSelectionPanel(QWidget):
                                     s = os.path.basename(v)
                                     s = os.path.splitext(s)[0]
                         elif isinstance(param, QgsProcessingParameterBoolean):
-                            s = 'true' if v else 'false'
+                            s = "true" if v else "false"
                         elif isinstance(param, QgsProcessingParameterEnum):
                             s = param.options()[v]
                         else:
                             s = str(v)
-                        name = filename[:filename.rfind('.')] + s \
-                            + filename[filename.rfind('.'):]
-                        self.table.cellWidget(row,
-                                              self.col).setValue(name)
+                        name = (
+                            filename[: filename.rfind(".")]
+                            + s
+                            + filename[filename.rfind(".") :]
+                        )
+                        self.table.cellWidget(row, self.col).setValue(name)
+                        self.table.cellWidget(row, self.col).setTemporaryOutput(False)
 
     def selectDirectory(self):
 
         settings = QgsSettings()
-        if settings.contains('/Processing/LastBatchOutputPath'):
-            lastDir = str(settings.value('/Processing/LastBatchOutputPath'))
+        if settings.contains("/Processing/LastBatchOutputPath"):
+            lastDir = str(settings.value("/Processing/LastBatchOutputPath"))
         else:
-            lastDir = ''
+            lastDir = ""
 
-        dirName = QFileDialog.getExistingDirectory(self,
-                                                   self.tr('Output Directory'), lastDir, QFileDialog.Option.ShowDirsOnly)
+        dirName = QFileDialog.getExistingDirectory(
+            self, self.tr("Output Directory"), lastDir, QFileDialog.Option.ShowDirsOnly
+        )
 
         if dirName:
             self.table.cellWidget(self.row, self.col).setValue(dirName)
-            settings.setValue('/Processing/LastBatchOutputPath', dirName)
+            settings.setValue("/Processing/LastBatchOutputPath", dirName)
 
     def setValue(self, text):
         return self.text.setText(text)
 
     def getValue(self):
         return str(self.text.text())
+
+    def outputName(self) -> str:
+        return self.text.text()
+
+    def isTemporaryOutput(self) -> bool:
+        return self.actionTemporaryOutput.isChecked()
+
+    def onTemporaryOutputChanged(self) -> None:
+        if self.actionTemporaryOutput.isChecked():
+            self.text.addAction(
+                self.actionTemporaryOutputIcon, QLineEdit.ActionPosition.LeadingPosition
+            )
+        else:
+            self.text.removeAction(self.actionTemporaryOutputIcon)
+        self.text.repaint()
+
+    def setTemporaryOutput(self, temporary: bool) -> None:
+        self.actionTemporaryOutput.setChecked(temporary)

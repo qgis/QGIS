@@ -18,17 +18,16 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "qgswmsutils.h"
-#include "qgswmsrequest.h"
 #include "qgswmsgetprint.h"
+
 #include "qgswmsrenderer.h"
+#include "qgswmsrequest.h"
 #include "qgswmsserviceexception.h"
+#include "qgswmsutils.h"
 
 namespace QgsWms
 {
-  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
-                      const QgsWmsRequest &request,
-                      QgsServerResponse &response )
+  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
   {
     const QgsWmsParameters parameters = request.wmsParameters();
 
@@ -38,20 +37,19 @@ namespace QgsWms
     switch ( format )
     {
       case QgsWmsParameters::PNG:
-        contentType = QStringLiteral( "image/png" );
+        contentType = u"image/png"_s;
         break;
       case QgsWmsParameters::JPG:
-        contentType = QStringLiteral( "image/jpeg" );
+        contentType = u"image/jpeg"_s;
         break;
       case QgsWmsParameters::SVG:
-        contentType = QStringLiteral( "image/svg+xml" );
+        contentType = u"image/svg+xml"_s;
         break;
       case QgsWmsParameters::PDF:
-        contentType = QStringLiteral( "application/pdf" );
+        contentType = u"application/pdf"_s;
         break;
       default:
-        throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
-                                      parameters[QgsWmsParameter::FORMAT] );
+        throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat, parameters[QgsWmsParameter::FORMAT] );
         break;
     }
 
@@ -70,7 +68,7 @@ namespace QgsWms
 
     // rendering
     QgsRenderer renderer( context );
-    response.setHeader( QStringLiteral( "Content-Type" ), contentType );
+    response.setHeader( u"Content-Type"_s, contentType );
     response.write( renderer.getPrint() );
   }
 } // namespace QgsWms

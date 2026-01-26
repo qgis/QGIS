@@ -16,19 +16,21 @@
 #ifndef QGSLAYOUTEXPORTER_H
 #define QGSLAYOUTEXPORTER_H
 
-#include "qgis_core.h"
 #include "qgsconfig.h"
-#include "qgsmargins.h"
+
+#include <functional>
+
+#include "qgis_core.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"
-#include "qgslayoutitem.h"
+#include "qgsmargins.h"
 
 #include <QPdfWriter>
 #include <QPointer>
-#include <QSize>
 #include <QRectF>
+#include <QSize>
 #include <QVector>
-#include <functional>
 
 #if defined( HAVE_QTPRINTER )
 #include <QPrinter>
@@ -41,6 +43,7 @@ class QgsAbstractLayoutIterator;
 class QgsFeedback;
 class QgsLabelingResults;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
 
 /**
  * \ingroup core
@@ -60,6 +63,9 @@ class CORE_EXPORT QgsLayoutExporter
 
     //! Settings entry - Whether to automatically open svgs after exporting them \since QGIS 3.34
     static const QgsSettingsEntryBool *settingOpenAfterExportingSvg SIP_SKIP;
+
+    //! Settings entry - Image quality for lossy formats \since QGIS 3.42
+    static const QgsSettingsEntryInteger *settingImageQuality SIP_SKIP;
 
     //! Contains details of a page being exported by the class
     struct PageExportDetails
@@ -163,7 +169,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct ImageExportSettings
     {
       ImageExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -218,11 +224,10 @@ class CORE_EXPORT QgsLayoutExporter
        */
       bool exportMetadata = true;
 
-
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * A list of predefined scales to use with the layout. This is used
@@ -230,6 +235,13 @@ class CORE_EXPORT QgsLayoutExporter
        * \since QGIS 3.10
        */
       QVector<qreal> predefinedMapScales;
+
+      /**
+       * Image quality, typically used for JPEG compression (whose quality ranges from 1 to 100)
+       * if quality is set to -1, the default quality will be used.
+       * \since QGIS 3.42
+       */
+      int quality = -1;
 
     };
 
@@ -265,7 +277,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct PdfExportSettings
     {
       PdfExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -305,7 +317,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * Text rendering format, which controls how text should be rendered in the export (e.g.
@@ -349,7 +361,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 3.14
        */
-      bool exportLayersAsSeperateFiles = false; // TODO QGIS 4 fix typo  //#spellok
+      bool exportLayersAsSeperateFiles = false; // TODO QGIS 5 fix typo  //#spellok
 
       /**
        * TRUE if ISO3200 extension format georeferencing should be used.
@@ -369,6 +381,8 @@ class CORE_EXPORT QgsLayoutExporter
        * format is a mess!).
        *
        * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       *
+       * \deprecated QGIS 3.42. This parameter has no longer any effect. Only ISO 32000 georeferencing is handled.
       */
       bool useOgcBestPracticeFormatGeoreferencing = false;
 
@@ -441,7 +455,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct PrintExportSettings
     {
       PrintExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -457,7 +471,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * A list of predefined scales to use with the layout. This is used
@@ -497,7 +511,7 @@ class CORE_EXPORT QgsLayoutExporter
     struct SvgExportSettings
     {
       SvgExportSettings()
-        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+        : flags( Qgis::LayoutRenderFlag::Antialiasing | Qgis::LayoutRenderFlag::UseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -552,7 +566,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutRenderContext::Flags flags = QgsLayoutRenderContext::Flags();
+      Qgis::LayoutRenderFlags flags;
 
       /**
        * Text rendering format, which controls how text should be rendered in the export (e.g.
@@ -719,7 +733,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Saves an image to a file, possibly using format specific options (e.g. LZW compression for tiff)
     */
-    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata );
+    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata, int quality = -1 );
 
     /**
      * Computes a GDAL style geotransform for georeferencing a layout.

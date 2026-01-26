@@ -9,6 +9,7 @@
 
 
 
+
 %ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgshighlight.h>
@@ -17,10 +18,10 @@
 class QgsHighlight : QgsMapCanvasItem
 {
 %Docstring(signature="appended")
-A class for highlight features on the map.
+Highlights features on the map.
 
-The :py:class:`QgsHighlight` class provides a transparent overlay canvas item
-for highlighting features or geometries on a map canvas.
+The :py:class:`QgsHighlight` class provides a transparent overlay canvas
+item for highlighting features or geometries on a map canvas.
 
 .. code-block:: python
 
@@ -49,7 +50,6 @@ for highlighting features or geometries on a map canvas.
 %End
   public:
 
-
     QgsHighlight( QgsMapCanvas *mapCanvas /TransferThis/, const QgsGeometry &geom, QgsMapLayer *layer );
 %Docstring
 Constructor for QgsHighlight
@@ -61,16 +61,16 @@ Constructor for QgsHighlight
 
     QgsHighlight( QgsMapCanvas *mapCanvas /TransferThis/, const QgsFeature &feature, QgsVectorLayer *layer );
 %Docstring
-Constructor for highlighting ``True`` feature shape using feature attributes
-and renderer.
+Constructor for highlighting ``True`` feature shape using feature
+attributes and renderer.
 
 :param mapCanvas: map canvas
-:param feature:
+:param feature: 
 :param layer: vector layer
 %End
     ~QgsHighlight();
 
-    QColor color( ) const;
+    QColor color() const;
 %Docstring
 Returns the line/stroke color
 
@@ -79,11 +79,12 @@ Returns the line/stroke color
 
     void setColor( const QColor &color );
 %Docstring
-Set line/stroke to color, polygon fill to color with alpha = 63.
-This is legacy function, use :py:func:`~QgsHighlight.setFillColor` after :py:func:`~QgsHighlight.setColor` if different fill color is required.
+Set line/stroke to color, polygon fill to color with alpha = 63. This is
+legacy function, use :py:func:`~QgsHighlight.setFillColor` after
+:py:func:`~QgsHighlight.setColor` if different fill color is required.
 %End
 
-    QColor fillColor( ) const;
+    QColor fillColor() const;
 %Docstring
 Returns the fill color
 
@@ -92,11 +93,10 @@ Returns the fill color
 
     void setFillColor( const QColor &fillColor );
 %Docstring
-Fill color for the highlight.
-Will be used for polygons and points.
+Fill color for the highlight. Will be used for polygons and points.
 %End
 
-    int width( ) const;
+    int width() const;
 %Docstring
 Returns the stroke width
 
@@ -112,21 +112,25 @@ Set stroke width.
    Ignored in feature mode.
 %End
 
-    double buffer( ) const;
+    double buffer() const;
 %Docstring
-Returns the buffer
+Returns the line/stroke buffer size (in millimeters)
+
+.. seealso:: :py:func:`setBuffer`
 
 .. versionadded:: 3.4
 %End
 
     void setBuffer( double buffer );
 %Docstring
-Set line / stroke buffer in millimeters.
+Sets the line/stroke buffer size (in millimeters).
+
+.. seealso:: :py:func:`buffer`
 %End
 
     void setMinWidth( double width );
 %Docstring
-Set minimum line / stroke width in millimeters.
+Sets the minimum line/stroke width (in millimeters).
 %End
 
     QgsMapLayer *layer() const;

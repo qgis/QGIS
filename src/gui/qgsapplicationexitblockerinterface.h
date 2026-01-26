@@ -17,8 +17,9 @@
 #define QGSAPPLICATIONEXITBLOCKERINTERFACE_H
 
 #include "qgis_gui.h"
-#include <QStringList>
+
 #include <QObject>
+#include <QStringList>
 
 /**
  * \ingroup gui
@@ -54,9 +55,7 @@
  */
 class GUI_EXPORT QgsApplicationExitBlockerInterface
 {
-
   public:
-
     virtual ~QgsApplicationExitBlockerInterface();
 
     /**

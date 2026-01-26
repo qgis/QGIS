@@ -30,7 +30,7 @@ class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryChec
   public:
     QgsGeometrySelfContactCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsSingleGeometryCheck( context, configuration ) {}
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() {return {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
@@ -38,12 +38,15 @@ class ANALYSIS_EXPORT QgsGeometrySelfContactCheck : public QgsSingleGeometryChec
     Q_DECL_DEPRECATED QStringList resolutionMethods() const override;
     static QString factoryDescription() { return tr( "Self contact" ); }
     QString description() const override { return factoryDescription(); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometrySelfContactCheck" ); }
+    static QString factoryId() { return u"QgsGeometrySelfContactCheck"_s; }
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
-    enum ResolutionMethod { NoChange };
+    enum ResolutionMethod
+    {
+      NoChange
+    };
 };
 
 #endif // QGS_GEOMETRY_SELFCONTACT_CHECK_H

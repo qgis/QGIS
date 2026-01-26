@@ -17,13 +17,13 @@
 #ifndef QGSSETTINGS_H
 #define QGSSETTINGS_H
 
-#include <QSettings>
-#include <QMetaEnum>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgslogger.h"
 #include "qgssettingstreenode.h"
+
+#include <QMetaEnum>
+#include <QSettings>
 
 class QgsSettingsProxy;
 
@@ -31,7 +31,9 @@ class QgsSettingsProxy;
  * \ingroup core
  * \class QgsSettings
  *
- * \brief This class is a composition of two QSettings instances:
+ * \brief Stores settings for use within QGIS.
+ *
+ * This class is a composition of two QSettings instances:
  *
  * - the main QSettings instance is the standard User Settings and
  * - the second one (Global Settings) is meant to provide read-only
@@ -45,8 +47,7 @@ class QgsSettingsProxy;
  * - Default Value
  *
  * The path to the Global Settings storage can be set before constructing the QgsSettings
- * objects, with a static call to:
- * static bool setGlobalSettingsPath( QString path );
+ * objects, with a static call to setGlobalSettingsPath().
  *
  * QgsSettings provides some shortcuts to get/set namespaced settings from/to a specific section:
  *
@@ -267,7 +268,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v;
@@ -323,7 +324,7 @@ class CORE_EXPORT QgsSettings : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 
@@ -345,7 +346,7 @@ class CORE_EXPORT QgsSettings : public QObject
       Q_ASSERT( metaEnum.isValid() );
       if ( !metaEnum.isValid() )
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
 
       T v = defaultValue;
@@ -413,7 +414,7 @@ class CORE_EXPORT QgsSettings : public QObject
       }
       else
       {
-        QgsDebugError( QStringLiteral( "Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration." ) );
+        QgsDebugError( u"Invalid metaenum. Enum probably misses Q_ENUM or Q_FLAG declaration."_s );
       }
     }
 #endif
@@ -494,8 +495,8 @@ class CORE_EXPORT QgsSettings : public QObject
   private:
     void init();
     QString sanitizeKey( const QString &key ) const;
-    QSettings *mUserSettings = nullptr;
-    QSettings *mGlobalSettings = nullptr;
+    std::unique_ptr<QSettings> mUserSettings;
+    std::unique_ptr<QSettings> mGlobalSettings;
     bool mUsingGlobalArray = false;
     Q_DISABLE_COPY( QgsSettings )
 

@@ -14,3 +14,8 @@ QgsFeatureSink.Flag.__bool__ = lambda flag: bool(_force_int(flag))
 QgsFeatureSink.Flag.__eq__ = lambda flag1, flag2: _force_int(flag1) == _force_int(flag2)
 QgsFeatureSink.Flag.__and__ = lambda flag1, flag2: _force_int(flag1) & _force_int(flag2)
 QgsFeatureSink.Flag.__or__ = lambda flag1, flag2: QgsFeatureSink.Flag(_force_int(flag1) | _force_int(flag2))
+try:
+    QgsFeatureSink.__virtual_methods__ = ['finalize', 'addFeature', 'flushBuffer', 'lastError']
+    QgsFeatureSink.__abstract_methods__ = ['addFeatures']
+except (NameError, AttributeError):
+    pass

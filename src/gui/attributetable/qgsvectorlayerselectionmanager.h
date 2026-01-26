@@ -16,9 +16,8 @@
 #ifndef QGSVECTORLAYERSELECTIONMANAGER_H
 #define QGSVECTORLAYERSELECTIONMANAGER_H
 
-#include "qgsifeatureselectionmanager.h"
 #include "qgis_gui.h"
-
+#include "qgsifeatureselectionmanager.h"
 
 SIP_NO_FILE
 
@@ -27,6 +26,7 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsVectorLayerSelectionManager
+ * \brief Manages vector layer selections.
  * \note not available in Python bindings
  */
 class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionManager

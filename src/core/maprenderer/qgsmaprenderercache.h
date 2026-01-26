@@ -17,18 +17,17 @@
 #define QGSMAPRENDERERCACHE_H
 
 #include "qgis_core.h"
-#include <QMap>
-#include <QImage>
-#include <QMutex>
-
-#include "qgsrectangle.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
+#include "qgsrectangle.h"
 
+#include <QImage>
+#include <QMap>
+#include <QMutex>
 
 /**
  * \ingroup core
- * \brief This class is responsible for keeping cache of rendered images resulting from
+ * \brief Responsible for keeping a cache of rendered images resulting from
  * a map rendering job.
  *
  * Once a job has a rendered image stored in the cache (using setCacheImage(...)),
@@ -61,7 +60,7 @@ class CORE_EXPORT QgsMapRendererCache : public QObject
      * parameters have changed since last initialization.
      *
      * \returns flag whether the parameters are the same as last time
-     * \deprecated QGIS 3.18. Will be removed in QGIS 4.0. Use the updateParameters() and clear().
+     * \deprecated QGIS 3.18. Will be removed in QGIS 5.0. Use the updateParameters() and clear().
      */
     Q_DECL_DEPRECATED bool init( const QgsRectangle &extent, double scale ) SIP_DEPRECATED;
 

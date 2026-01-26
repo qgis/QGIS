@@ -15,18 +15,15 @@
 
 #include "qgscodeeditorjs.h"
 
-#include <QWidget>
-#include <QString>
 #include <QFont>
+#include <QString>
+#include <QWidget>
 #include <Qsci/qscilexerjavascript.h>
 
+#include "moc_qgscodeeditorjs.cpp"
 
 QgsCodeEditorJavascript::QgsCodeEditorJavascript( QWidget *parent )
-  : QgsCodeEditor( parent,
-                   QString(),
-                   false,
-                   false,
-                   QgsCodeEditor::Flag::CodeFolding )
+  : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {

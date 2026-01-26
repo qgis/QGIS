@@ -17,9 +17,10 @@
 #define QGSFIELDCALCULATOR_H
 
 #include "ui_qgsfieldcalculatorbase.h"
-#include "qgshelp.h"
-#include "qgsfields.h"
+
 #include "qgis_gui.h"
+#include "qgsfields.h"
+#include "qgshelp.h"
 
 class QgsVectorLayer;
 class QgsMessageBar;
@@ -28,7 +29,7 @@ class QgsMessageBar;
  * \ingroup gui
  * \class QgsFieldCalculator
  *
- * \brief A dialog class that provides calculation of new fields using existing fields, values and a set of operators
+ * \brief A dialog that provides calculation of new fields using existing fields, values and a set of operators.
  *
  * Sample usage of the QgsFieldCalculator class:
  *
@@ -40,7 +41,7 @@ class QgsMessageBar;
  *     dialog.exec()
  * \endcode
  */
-class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
+class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalculatorBase
 {
     Q_OBJECT
   public:
@@ -62,13 +63,14 @@ class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     void mCreateVirtualFieldCheckbox_stateChanged( int state );
     void mOutputFieldNameLineEdit_textChanged( const QString &text );
     void mOutputFieldTypeComboBox_activated( int index );
+    void mExistingFieldComboBox_currentIndexChanged( const int index );
 
     //! Sets the dialog buttons (Ok and Apply) enabled / disabled
     void setDialogButtonState();
     void setPrecisionMinMax();
     void showHelp();
     void calculate();
-    //! show the given message in the Plugin Manager internal message bar
+    //! show the given message in the dialog internal message bar
     void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 );
 
   private:

@@ -18,9 +18,10 @@
 #ifndef QGSRASTERRESAMPLER_H
 #define QGSRASTERRESAMPLER_H
 
-#include <QString>
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QString>
 
 class QString;
 class QImage;
@@ -28,14 +29,12 @@ class QSize;
 
 /**
  * \ingroup core
-  * \brief Interface for resampling rasters (e.g. to have a smoother appearance)
+  * \brief Interface for resampling rasters (e.g. to have a smoother appearance).
   */
 class CORE_EXPORT QgsRasterResampler
 {
-#ifdef SIP_RUN
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgsbilinearrasterresampler.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgscubicrasterresampler.h" );
 
 
 #ifdef SIP_RUN

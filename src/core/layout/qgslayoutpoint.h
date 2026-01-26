@@ -18,15 +18,20 @@
 #ifndef QGSLAYOUTPOINT_H
 #define QGSLAYOUTPOINT_H
 
-#include "qgis_core.h"
+#include "qgsconfig.h"
+
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QPointF>
 
 /**
  * \ingroup core
  * \class QgsLayoutPoint
- * \brief This class provides a method of storing points, consisting of an x and y coordinate,
- * for use in QGIS layouts. Measurement units are stored alongside the position.
+ * \brief Provides a method of storing points, consisting of an x and y coordinate,
+ * for use in QGIS layouts.
+ *
+ * Measurement units are stored alongside the position.
  *
  * \see QgsLayoutMeasurementConverter
  * \note This class does not inherit from QPointF since QPointF includes methods which should not apply
@@ -75,7 +80,13 @@ class CORE_EXPORT QgsLayoutPoint
      * \see x()
      * \see setY()
     */
-    void setX( const double x ) { mX = x; }
+    void setX( const double x )
+    {
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( x ), "QgsLayoutPoint", "Layout point with NaN coordinates created" );
+#endif
+      mX = x;
+    }
 
     /**
      * Returns y coordinate of point.
@@ -89,7 +100,13 @@ class CORE_EXPORT QgsLayoutPoint
      * \see y()
      * \see setX()
     */
-    void setY( const double y ) { mY = y; }
+    void setY( const double y )
+    {
+#ifdef QGISDEBUG
+      Q_ASSERT_X( !std::isnan( y ), "QgsLayoutPoint", "Layout point with NaN coordinates created" );
+#endif
+      mY = y;
+    }
 
     /**
      * Returns the units for the point.
@@ -156,7 +173,7 @@ class CORE_EXPORT QgsLayoutPoint
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayoutPoint: %1, %2 %3 >" ).arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
+    QString str = u"<QgsLayoutPoint: %1, %2 %3 >"_s.arg( sipCpp->x() ).arg( sipCpp->y() ).arg( QgsUnitTypes::toAbbreviatedString( sipCpp->units() ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

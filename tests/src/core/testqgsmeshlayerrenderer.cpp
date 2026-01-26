@@ -16,15 +16,16 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include <QObject>
-#include <QString>
-#include <QLabel>
-#include <QStringList>
+
 #include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QSignalSpy>
 #include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QLabel>
+#include <QObject>
+#include <QSignalSpy>
+#include <QString>
+#include <QStringList>
 
 //qgis includes...
 #include "qgsmaplayer.h"
@@ -44,7 +45,8 @@ class TestQgsMeshRenderer : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsMeshRenderer() : QgsTest( QStringLiteral( "Mesh Layer Rendering Tests" ), QStringLiteral( "mesh" ) ) {}
+    TestQgsMeshRenderer()
+      : QgsTest( u"Mesh Layer Rendering Tests"_s, u"mesh"_s ) {}
 
   private:
     QString mDataDir;
@@ -55,9 +57,9 @@ class TestQgsMeshRenderer : public QgsTest
     QgsMapSettings *mMapSettings = nullptr;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
     QString readFile( const QString &fname ) const;
 
     void test_native_mesh_rendering();
@@ -88,6 +90,7 @@ class TestQgsMeshRenderer : public QgsTest
     void test_stacked_3d_mesh_single_level_averaging();
     void test_simplified_triangular_mesh_rendering();
     void test_classified_values();
+    void test_color_scale_based_on_canvas_extent();
 
     void test_signals();
 };
@@ -174,9 +177,11 @@ void TestQgsMeshRenderer::initTestCase()
 
   // Add layers
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer );
+    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer
+  );
   mMapSettings->setLayers(
-    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer );
+    QList<QgsMapLayer *>() << mMemory1DLayer << mMemoryLayer << mMdalLayer << mMdal3DLayer
+  );
 
   // here we check that datasets automatically get our default color ramp applied ("Plasma")
   QgsMeshDatasetIndex ds( 0, 0 );
@@ -184,8 +189,8 @@ void TestQgsMeshRenderer::initTestCase()
   QgsColorRampShader shader = scalarSettings.colorRampShader();
   QList<QgsColorRampShader::ColorRampItem> lst = shader.colorRampItemList();
   QCOMPARE( lst.count(), 52 );
-  QCOMPARE( lst.at( 0 ).value, 1. );  // min group value
-  QCOMPARE( lst.at( lst.count() - 1 ).value, 4. );  // max group value
+  QCOMPARE( lst.at( 0 ).value, 1. );               // min group value
+  QCOMPARE( lst.at( lst.count() - 1 ).value, 4. ); // max group value
 
   ds = QgsMeshDatasetIndex( 1, 0 );
   const QgsMeshRendererVectorSettings vectorSettings = mMemoryLayer->rendererSettings().vectorSettings( ds.group() );
@@ -193,7 +198,7 @@ void TestQgsMeshRenderer::initTestCase()
   lst = shader.colorRampItemList();
   QCOMPARE( lst.count(), 52 );
   QVERIFY( fabs( lst.at( 0 ).value - 1.41421356237 ) < 0.000001 ); // min group value
-  QCOMPARE( lst.at( lst.count() - 1 ).value, 5. ); // max group value
+  QCOMPARE( lst.at( lst.count() - 1 ).value, 5. );                 // max group value
 }
 
 void TestQgsMeshRenderer::cleanupTestCase()
@@ -251,7 +256,7 @@ void TestQgsMeshRenderer::test_native_mesh_renderingWithClipping()
   mMapSettings->setOutputDpi( 96 );
   mMapSettings->setRotation( 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "painterclip_region", "painterclip_region", *mMapSettings, 0, 15 );
-  mMapSettings->setClippingRegions( QList< QgsMapClippingRegion >() );
+  mMapSettings->setClippingRegions( QList<QgsMapClippingRegion>() );
 }
 
 void TestQgsMeshRenderer::test_triangular_mesh_rendering()
@@ -540,7 +545,7 @@ void TestQgsMeshRenderer::test_vertex_vector_on_user_grid_wind_barbs()
 {
   const QgsMeshDatasetIndex ds( 2, 0 );
   const QgsMeshDatasetGroupMetadata metadata = mMdalLayer->dataProvider()->datasetGroupMetadata( ds );
-  QCOMPARE( metadata.name(), QStringLiteral( "VertexVectorDataset2" ) );
+  QCOMPARE( metadata.name(), u"VertexVectorDataset2"_s );
 
   QgsMeshRendererSettings rendererSettings = mMdalLayer->rendererSettings();
   QgsMeshRendererVectorSettings settings = rendererSettings.vectorSettings( ds.group() );
@@ -865,6 +870,125 @@ void TestQgsMeshRenderer::test_classified_values()
   mMapSettings->setOutputDpi( 96 );
   mMapSettings->setRotation( 0 );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_values", "classified_values", *mMapSettings, 0, 15 );
+}
+
+void TestQgsMeshRenderer::test_color_scale_based_on_canvas_extent()
+{
+  // layer with several separated parts
+  QgsMeshLayer layer(
+    testDataPath( "mesh/several_parts.2dm" ),
+    u"mesh"_s,
+    u"mdal"_s
+  );
+
+  QVERIFY( layer.isValid() );
+
+  layer.updateTriangularMesh();
+  layer.temporalProperties()->setIsActive( false );
+
+  int groupIndex = 0;
+  QgsMeshDatasetIndex meshDatasetIndex = QgsMeshDatasetIndex( groupIndex, 0 );
+  layer.setStaticScalarDatasetIndex( meshDatasetIndex );
+
+  double min, max;
+  bool found;
+
+  QgsProject::instance()->addMapLayer( &layer );
+  mMapSettings->setLayers( QList<QgsMapLayer *>() << &layer );
+  mMapSettings->setDestinationCrs( layer.crs() );
+  mMapSettings->setOutputDpi( 96 );
+  mMapSettings->setRotation( 0 );
+
+  QgsMeshRendererSettings defaultRendererSettings = layer.rendererSettings();
+
+  // min max from current canvas settings for group
+  QgsMeshRendererSettings rendererSettings = layer.rendererSettings();
+  QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::UpdatedCanvas );
+
+  QgsRectangle extent = layer.extent();
+  extent.grow( 0.1 );
+
+  found = layer.minimumMaximumActiveScalarDataset( extent, meshDatasetIndex, min, max );
+  QVERIFY( found );
+  scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_1", "scale_interactive_from_canvas_1", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 0, 8, 2, 10 );
+  extent.grow( 0.1 );
+
+  found = layer.minimumMaximumActiveScalarDataset( extent, meshDatasetIndex, min, max );
+  QVERIFY( found );
+  scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_2", "scale_interactive_from_canvas_2", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 8, 8, 10, 10 );
+  extent.grow( 0.1 );
+
+  found = layer.minimumMaximumActiveScalarDataset( extent, meshDatasetIndex, min, max );
+  QVERIFY( found );
+  scalarRendererSettings.setClassificationMinimumMaximum( min, max );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_from_canvas_3", "scale_interactive_from_canvas_3", *mMapSettings, 0, 5 );
+
+  // min max from whole mesh settings for group
+  rendererSettings = defaultRendererSettings;
+  scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::MinimumMaximum );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::WholeMesh );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  extent = layer.extent();
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_whole_mesh_1", "scale_interactive_whole_mesh_1", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 0, 8, 2, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_whole_mesh_2", "scale_interactive_whole_mesh_2", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 8, 8, 10, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_interactive_whole_mesh_3", "scale_interactive_whole_mesh_3", *mMapSettings, 0, 5 );
+
+  // user defined
+  rendererSettings = layer.rendererSettings();
+  scalarRendererSettings = rendererSettings.scalarSettings( groupIndex );
+  scalarRendererSettings.setLimits( Qgis::MeshRangeLimit::NotSet );
+  scalarRendererSettings.setExtent( Qgis::MeshRangeExtent::WholeMesh );
+  scalarRendererSettings.setClassificationMinimumMaximum( 7.0, 38.0 );
+  rendererSettings.setScalarSettings( groupIndex, scalarRendererSettings );
+  layer.setRendererSettings( rendererSettings );
+
+  extent = layer.extent();
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_user_defined_1", "scale_user_defined_1", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 0, 8, 2, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_user_defined_2", "scale_user_defined_2", *mMapSettings, 0, 5 );
+
+  extent = QgsRectangle( 8, 8, 10, 10 );
+  extent.grow( 0.1 );
+  mMapSettings->setExtent( extent );
+  QGSRENDERMAPSETTINGSCHECK( "scale_user_defined_3", "scale_user_defined_3", *mMapSettings, 0, 5 );
 }
 
 QGSTEST_MAIN( TestQgsMeshRenderer )

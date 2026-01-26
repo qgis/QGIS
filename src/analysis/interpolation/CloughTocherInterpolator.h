@@ -18,8 +18,8 @@
 #define CLOUGHTOCHERINTERPOLATOR_H
 
 #include "TriangleInterpolator.h"
-#include "qgspoint.h"
 #include "qgis_analysis.h"
+#include "qgspoint.h"
 
 class NormVecDecorator;
 
@@ -27,7 +27,7 @@ class NormVecDecorator;
 
 /**
  * \ingroup analysis
- * \brief This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation.
+ * \brief An implementation of a Clough-Tocher interpolator based on a triangular tessellation.
  *
  * The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.
  * \note Not available in Python bindings
@@ -101,7 +101,6 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     double calcBernsteinPoly( int n, int i, int j, int k, double u, double v, double w );
 
   public:
-
     CloughTocherInterpolator() = default;
 
     //! Constructor with a pointer to the triangulation as argument
@@ -114,6 +113,3 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 };
 
 #endif
-
-
-

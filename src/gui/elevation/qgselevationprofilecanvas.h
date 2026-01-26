@@ -19,11 +19,13 @@
 #define QGSELEVATIONPROFILECANVAS_H
 
 #include "qgsconfig.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
-#include "qgsplotcanvas.h"
-#include "qgsmaplayer.h"
+#include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgslinesymbol.h"
+#include "qgsmaplayer.h"
+#include "qgsplotcanvas.h"
 #include "qgsprofilepoint.h"
 
 class QgsElevationProfilePlotItem;
@@ -31,7 +33,7 @@ class QgsElevationProfileCrossHairsItem;
 class QgsAbstractProfileResults;
 class QgsProfilePlotRenderer;
 class QgsCurve;
-class Qgs2DPlot;
+class Qgs2DXyPlot;
 class QgsProfileSnapContext;
 class QgsProfileIdentifyContext;
 class QgsProfileIdentifyResults;
@@ -45,11 +47,9 @@ class QgsScreenHelper;
  */
 class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsElevationProfileCanvas, with the specified \a parent widget.
      */
@@ -106,14 +106,30 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \see layers()
      */
-    void setLayers( const QList< QgsMapLayer * > &layers );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 
     /**
      * Returns the list of layers included in the profile.
      *
      * \see setLayers()
      */
-    QList< QgsMapLayer * > layers() const;
+    QList<QgsMapLayer *> layers() const;
+
+    /**
+     * Sets the list of \a sources to include in the profile.
+     *
+     * \see sources()
+     */
+    void setSources( const QList<QgsAbstractProfileSource *> &sources );
+
+    /**
+     * Returns the list of sources included in the profile.
+     *
+     * It includes both layer profile sources and custom sources from the profile source registry.
+     *
+     * \see setSources()
+     */
+    QList<QgsAbstractProfileSource *> sources() const;
 
     /**
      * Sets the \a crs associated with the canvas' map coordinates.
@@ -193,12 +209,12 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      *
      * \note Not available in Python bindings
      */
-    const Qgs2DPlot &plot() const SIP_SKIP;
+    const Qgs2DXyPlot &plot() const SIP_SKIP;
 
     /**
      * Renders a portion of the profile using the specified render \a context.
      */
-    void render( QgsRenderContext &context, double width, double height, const Qgs2DPlot &plotSettings );
+    void render( QgsRenderContext &context, double width, double height, const Qgs2DXyPlot &plotSettings );
 
     /**
      * Identify results visible at the specified plot point.
@@ -241,6 +257,29 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void setLockAxisScales( bool lock );
 
     /**
+     * Returns the current ratio of horizontal (distance) to vertical (elevation) scale
+     * for the plot.
+     *
+     * \see setAxisScaleRatio()
+     * \since QGIS 4.0
+     */
+    double axisScaleRatio() const;
+
+    /**
+     * Sets the ratio of horizontal (distance) to vertical (elevation) scale for the plot.
+     *
+     * E.g. a \a scale of 3 indicates a ratio of 3:1 for distance vs elevation, whereas a scale
+     * of 0.3333 indicates a ratio of 1:3 for distance vs elevation.
+     *
+     * This will immediately update the visible plot area to match the specified scale.
+     *
+     * \see axisScaleRatio()
+     * \see setLockAxisScales()
+     * \since QGIS 4.0
+     */
+    void setAxisScaleRatio( double scale );
+
+    /**
      * Returns the distance unit used by the canvas.
      *
      * \see setDistanceUnit()
@@ -266,6 +305,26 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      */
     void setBackgroundColor( const QColor &color );
 
+    /**
+     * Returns the symbol used to draw the subsections.
+     *
+     * \see setSubsectionsSymbol()
+     * \since QGIS 3.44
+     */
+    QgsLineSymbol *subsectionsSymbol()
+    {
+      return mSubsectionsSymbol.get();
+    }
+
+    /**
+     * Sets the \a symbol used to draw the subsections. If \a symbol is NULLPTR, the subsections are not drawn.
+     * Ownership of \a symbol is transferred.
+     *
+     * \see subsectionsSymbol()
+     * \since QGIS 3.44
+     */
+    void setSubsectionsSymbol( QgsLineSymbol *symbol SIP_TRANSFER );
+
   signals:
 
     /**
@@ -279,6 +338,13 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
      * The \a profilePoint argument gives the hovered profile point, which may be snapped.
      */
     void canvasPointHovered( const QgsPointXY &point, const QgsProfilePoint &profilePoint );
+
+    /**
+     * Emitted when the plot scale is changed.
+     *
+     * \since QGIS 4.0
+     */
+    void scaleChanged();
 
   public slots:
 
@@ -308,9 +374,9 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     void startDeferredRegeneration();
     void startDeferredRedraw();
     void refineResults();
+    void setSourcesPrivate();
 
   private:
-
     void updateChartFromPalette();
     QgsProfileSnapContext snapContext() const;
     QgsProfileIdentifyContext identifyContext() const;
@@ -322,12 +388,14 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QgsScreenHelper *mScreenHelper = nullptr;
 
     bool mLockAxisScales = false;
+    double mLockedAxisScale = 1;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsProject *mProject = nullptr;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     QgsWeakMapLayerPointerList mLayers;
+    QList< QgsAbstractProfileSource * > mSources;
 
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;
@@ -338,7 +406,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     QTimer *mDeferredRedrawTimer = nullptr;
     bool mDeferredRedrawScheduled = false;
 
-    std::unique_ptr< QgsCurve > mProfileCurve;
+    std::unique_ptr<QgsCurve> mProfileCurve;
     double mTolerance = 0;
 
     bool mFirstDrawOccurred = false;
@@ -350,6 +418,8 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     bool mForceRegenerationAfterCurrentJobCompletes = false;
 
     static constexpr double MAX_ERROR_PIXELS = 2;
+
+    std::unique_ptr<QgsLineSymbol> mSubsectionsSymbol;
 };
 
 #endif // QGSELEVATIONPROFILECANVAS_H

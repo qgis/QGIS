@@ -19,34 +19,31 @@
 #define QGSRASTERFORMATSAVEOPTIONSWIDGET_H
 
 #include "ui_qgsrasterformatsaveoptionswidgetbase.h"
-#include "qgsraster.h"
+
 #include "qgis_gui.h"
+#include "qgsraster.h"
 
 class QgsRasterLayer;
 
 /**
  * \ingroup gui
- * \brief A widget to select format-specific raster saving options
+ * \brief A widget to select format-specific raster saving options.
  */
-class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
+class GUI_EXPORT QgsRasterFormatSaveOptionsWidget : public QWidget, private Ui::QgsRasterFormatSaveOptionsWidgetBase
 {
     Q_OBJECT
 
   public:
-
     enum Type
     {
-      Default, // everything except profile buttons (save as dlg)
-      Full, // everything (options dlg)
-      Table, // just table
-      LineEdit, // just the line edit
+      Default,        // everything except profile buttons (save as dlg)
+      Full,           // everything (options dlg)
+      Table,          // just table
+      LineEdit,       // just the line edit
       ProfileLineEdit // Profile + LineEdit
     };
 
-    QgsRasterFormatSaveOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                      const QString &format = "GTiff",
-                                      QgsRasterFormatSaveOptionsWidget::Type type = Default,
-                                      const QString &provider = "gdal" );
+    QgsRasterFormatSaveOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &format = "GTiff", QgsRasterFormatSaveOptionsWidget::Type type = Default, const QString &provider = "gdal" );
 
     /**
      * Set output raster format, it is used to determine list
@@ -63,12 +60,20 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     /**
      * Set output raster layer
      */
-    void setRasterLayer( QgsRasterLayer *rasterLayer ) { mRasterLayer = rasterLayer; mRasterFileName = QString(); }
+    void setRasterLayer( QgsRasterLayer *rasterLayer )
+    {
+      mRasterLayer = rasterLayer;
+      mRasterFileName = QString();
+    }
 
     /**
      * Set output raster file name
      */
-    void setRasterFileName( const QString &file ) { mRasterLayer = nullptr; mRasterFileName = file; }
+    void setRasterFileName( const QString &file )
+    {
+      mRasterLayer = nullptr;
+      mRasterFileName = file;
+    }
 
     /**
      * Returns list of selected options
@@ -142,28 +147,26 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     void optionsChanged();
 
   private:
-
     QString mFormat;
     QString mProvider;
     QgsRasterLayer *mRasterLayer = nullptr;
     QString mRasterFileName;
-    QMap< QString, QString> mOptionsMap;
-    static QMap< QString, QStringList > sBuiltinProfiles;
+    QMap<QString, QString> mOptionsMap;
+    static QMap<QString, QStringList> sBuiltinProfiles;
     bool mPyramids = false;
     Qgis::RasterPyramidFormat mPyramidsFormat = Qgis::RasterPyramidFormat::GeoTiff;
     int mBlockOptionUpdates = 0;
 
     QString settingsKey( QString profile ) const SIP_FORCE;
     QString currentProfileKey() const SIP_FORCE;
-    QString createOptions( const QString &profile ) const SIP_FORCE;
-    void deleteCreateOptions( const QString &profile ) SIP_FORCE;
-    void setCreateOptions() SIP_FORCE;
-    void setCreateOptions( const QString &profile, const QString &options ) SIP_FORCE;
-    void setCreateOptions( const QString &profile, const QStringList &list ) SIP_FORCE;
+    QString creationOptions( const QString &profile ) const SIP_FORCE;
+    void deleteCreationOptions( const QString &profile ) SIP_FORCE;
+    void setCreationOptions() SIP_FORCE;
+    void setCreationOptions( const QString &profile, const QString &options ) SIP_FORCE;
+    void setCreationOptions( const QString &profile, const QStringList &options ) SIP_FORCE;
     QStringList profiles() const SIP_FORCE;
     bool eventFilter( QObject *obj, QEvent *event ) override SIP_FORCE;
     QString pseudoFormat() const SIP_FORCE;
-
 };
 
 // clazy:excludeall=qstring-allocations

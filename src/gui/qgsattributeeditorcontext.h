@@ -16,15 +16,15 @@
 #ifndef QGSATTRIBUTEEDITORCONTEXT_H
 #define QGSATTRIBUTEEDITORCONTEXT_H
 
-#include <QMap>
-#include <QWidget>
-#include <QMetaEnum>
-
-#include "qgsdistancearea.h"
-#include "qgsvectorlayertools.h"
-#include "qgsvectorlayer.h"
 #include "qgis_gui.h"
+#include "qgsdistancearea.h"
 #include "qgsproject.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertools.h"
+
+#include <QMap>
+#include <QMetaEnum>
+#include <QWidget>
 
 class QgsMapCanvas;
 class QgsAdvancedDigitizingDockWidget;
@@ -32,7 +32,8 @@ class QgsMessageBar;
 
 /**
  * \ingroup gui
- * \brief This class contains context information for attribute editor widgets.
+ * \brief Contains context information for attribute editor widgets.
+ *
  * It will be passed to embedded widgets whenever this occurs (e.g. when
  * showing an embedded form due to relations)
  */
@@ -42,18 +43,18 @@ class GUI_EXPORT QgsAttributeEditorContext
     Q_GADGET
 
   public:
-
     //! modes
     enum Mode
     {
-      SingleEditMode, //!< Single edit mode, for editing a single feature
-      AddFeatureMode, /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
+      SingleEditMode,      //!< Single edit mode, for editing a single feature
+      AddFeatureMode,      /*!< Add feature mode, for setting attributes for a new feature. In this mode the dialog will be editable even with an invalid feature and
       will add a new feature when the form is accepted. */
-      FixAttributeMode, //!< Fix feature mode, for modifying the feature attributes without saving. The updated feature is available via `feature()` after `save()`
-      MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
-      SearchMode, //!< Form values are used for searching/filtering the layer
+      FixAttributeMode,    //!< Fix feature mode, for modifying the feature attributes without saving. The updated feature is available via `feature()` after `save()`
+      MultiEditMode,       //!< Multi edit mode, for editing fields of multiple features at once
+      SearchMode,          //!< Form values are used for searching/filtering the layer
       AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode
-      IdentifyMode //!< Identify the feature
+      IdentifyMode,        //!< Identify the feature
+      PreviewMode          //!< Preview mode, for previewing attribute configurations \since QGIS 4.0
     };
     Q_ENUM( Mode )
 
@@ -62,9 +63,9 @@ class GUI_EXPORT QgsAttributeEditorContext
      */
     enum RelationMode
     {
-      Undefined,  //!< This context is not defined by a relation
-      Multiple,   //!< When showing a list of features (e.g. houses as an embedded form in a district form)
-      Single      //!< When showing a single feature (e.g. district information when looking at the form of a house)
+      Undefined, //!< This context is not defined by a relation
+      Multiple,  //!< When showing a list of features (e.g. houses as an embedded form in a district form)
+      Single     //!< When showing a single feature (e.g. district information when looking at the form of a house)
     };
 
     enum FormMode
@@ -158,7 +159,7 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \see vectorLayerTools()
      */
     inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
-    // TODO QGIS 4.0 - rename vlTools to tools
+    // TODO QGIS 5.0 - rename vlTools to tools
 
     /**
      * Returns the associated vector layer tools.
@@ -173,7 +174,11 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \see relation()
      * \see relationMode()
      */
-    inline void setRelation( const QgsRelation &relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
+    inline void setRelation( const QgsRelation &relation, RelationMode mode )
+    {
+      mRelation = relation;
+      mRelationMode = mode;
+    }
 
     /**
      * Returns the attribute relation.
@@ -230,7 +235,7 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \see formFeature()
      * \since QGIS 3.2
      */
-    void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature ; }
+    void setFormFeature( const QgsFeature &feature ) { mFormFeature = feature; }
 
     /**
      * Returns the feature of the currently edited parent form in its actual state
@@ -244,7 +249,7 @@ class GUI_EXPORT QgsAttributeEditorContext
      * \see parentFormFeature()
      * \since QGIS 3.14
      */
-    void setParentFormFeature( const QgsFeature &feature ) { mParentFormFeature = feature ; }
+    void setParentFormFeature( const QgsFeature &feature ) { mParentFormFeature = feature; }
 
     /**
      * Returns current attributeFormMode

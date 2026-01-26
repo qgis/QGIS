@@ -16,10 +16,9 @@
 #ifndef QGSMAPLAYERACTIONCONTEXTGENERATOR_H
 #define QGSMAPLAYERACTIONCONTEXTGENERATOR_H
 
-#include "qgis_sip.h"
-
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsMapLayerActionContext;
 
@@ -31,7 +30,6 @@ class QgsMapLayerActionContext;
 class GUI_EXPORT QgsMapLayerActionContextGenerator
 {
   public:
-
     virtual ~QgsMapLayerActionContextGenerator();
 
     /**

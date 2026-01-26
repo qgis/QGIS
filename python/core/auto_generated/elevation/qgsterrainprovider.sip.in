@@ -13,7 +13,7 @@
 class QgsAbstractTerrainProvider
 {
 %Docstring(signature="appended")
-Abstract base class for terrain providers
+Abstract base class for terrain providers.
 
 .. versionadded:: 3.26
 %End
@@ -51,7 +51,8 @@ Returns ``True`` if the provider is equal to ``other``.
 
     virtual void resolveReferences( const QgsProject *project );
 %Docstring
-Resolves reference to layers from stored layer ID (if it has not been resolved already)
+Resolves reference to layers from stored layer ID (if it has not been
+resolved already)
 %End
 
     virtual bool readXml( const QDomElement &element, const QgsReadWriteContext &context ) = 0;
@@ -82,10 +83,11 @@ Ownership is transferred to the caller.
 
     virtual void prepare() = 0 /Factory/;
 %Docstring
-Called on the main thread prior to accessing the provider from a background thread.
+Called on the main thread prior to accessing the provider from a
+background thread.
 
-Subclasses must implement suitable logic in order to prepare for thread-safe calculation of
-terrain heights on background threads.
+Subclasses must implement suitable logic in order to prepare for
+thread-safe calculation of terrain heights on background threads.
 %End
 
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -95,14 +97,16 @@ Returns the native coordinate reference system of the terrain provider.
 
     virtual double heightAt( double x, double y ) const = 0;
 %Docstring
-Returns the height at the point (x,y) in the terrain provider's native :py:func:`~QgsAbstractTerrainProvider.crs`.
+Returns the height at the point (x,y) in the terrain provider's native
+:py:func:`~QgsAbstractTerrainProvider.crs`.
 
 Returns NaN if the height could not be obtained at the specified point.
 %End
 
     double scale() const;
 %Docstring
-Returns the vertical scale factor, which can be used to exaggerate vertical heights.
+Returns the vertical scale factor, which can be used to exaggerate
+vertical heights.
 
 .. seealso:: :py:func:`setScale`
 
@@ -111,7 +115,8 @@ Returns the vertical scale factor, which can be used to exaggerate vertical heig
 
     void setScale( double scale );
 %Docstring
-Sets the vertical ``scale`` factor, which can be used to exaggerate vertical heights.
+Sets the vertical ``scale`` factor, which can be used to exaggerate
+vertical heights.
 
 .. seealso:: :py:func:`scale`
 
@@ -120,7 +125,8 @@ Sets the vertical ``scale`` factor, which can be used to exaggerate vertical hei
 
     double offset() const;
 %Docstring
-Returns the vertical offset value, used for adjusting the heights from the terrain provider.
+Returns the vertical offset value, used for adjusting the heights from
+the terrain provider.
 
 .. seealso:: :py:func:`setOffset`
 
@@ -129,7 +135,8 @@ Returns the vertical offset value, used for adjusting the heights from the terra
 
     void setOffset( double offset );
 %Docstring
-Returns the vertical ``offset`` value, used for adjusting the heights from the terrain provider
+Returns the vertical ``offset`` value, used for adjusting the heights
+from the terrain provider
 
 .. seealso:: :py:func:`offset`
 
@@ -228,14 +235,16 @@ A terrain provider where the terrain source is a raster DEM layer.
 
     void setLayer( QgsRasterLayer *layer );
 %Docstring
-Sets the raster ``layer`` with elevation model to be used as the terrain source.
+Sets the raster ``layer`` with elevation model to be used as the terrain
+source.
 
 .. seealso:: :py:func:`layer`
 %End
 
     QgsRasterLayer *layer() const;
 %Docstring
-Returns the raster layer with elevation model to be used as the terrain source.
+Returns the raster layer with elevation model to be used as the terrain
+source.
 
 .. seealso:: :py:func:`layer`
 %End
@@ -247,7 +256,8 @@ Returns the raster layer with elevation model to be used as the terrain source.
 class QgsMeshTerrainProvider : QgsAbstractTerrainProvider
 {
 %Docstring(signature="appended")
-A terrain provider that uses the Z values of a mesh layer to build a terrain surface.
+A terrain provider that uses the Z values of a mesh layer to build a
+terrain surface.
 
 .. versionadded:: 3.26
 %End

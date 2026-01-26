@@ -12,10 +12,12 @@ QgsModelDesignerDialog.SaveAction.__doc__ = """Save action.
 """
 # --
 try:
+    QgsModelDesignerDialog.__abstract_methods__ = ['repaintModel', 'addAlgorithm', 'addInput', 'exportAsScriptAlgorithm', 'saveModel', 'createExecutionDialog']
+    QgsModelDesignerDialog.__overridden_methods__ = ['closeEvent']
     QgsModelDesignerDialog.__group__ = ['processing', 'models']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsModelChildDependenciesWidget.__group__ = ['processing', 'models']
-except NameError:
+except (NameError, AttributeError):
     pass

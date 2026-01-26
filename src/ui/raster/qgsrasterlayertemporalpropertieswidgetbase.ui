@@ -103,8 +103,52 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
           <item row="1" column="0" colspan="2">
            <widget class="QgsStackedWidget" name="mStackedWidget">
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
+            <widget class="QWidget" name="mPageFixedDateTime">
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="2" column="0">
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>219</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QgsDateTimeEdit" name="mFixedDateTimeEdit">
+                <property name="displayFormat">
+                 <string>M/d/yyyy h:mm AP</string>
+                </property>
+                <property name="timeSpec">
+                 <enum>Qt::UTC</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;The layer will be rendered whenever the map's temporal range overlaps the date time defined below.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>Date</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
             <widget class="QWidget" name="mPageFixedRange">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -220,16 +264,6 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
               </sizepolicy>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
-              <item row="1" column="0">
-               <widget class="QTableView" name="mBandRangesTable">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="0">
                <widget class="QLabel" name="mFixedRangePerBandLabel">
                 <property name="sizePolicy">
@@ -246,55 +280,76 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                 </property>
                </widget>
               </item>
-              <item row="2" column="0">
-               <layout class="QHBoxLayout" name="horizontalLayout">
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <spacer name="horizontalSpacer">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QToolButton" name="mCalculateFixedRangePerBandButton">
-                  <property name="text">
-                   <string>...</string>
-                  </property>
-                  <property name="icon">
-                   <iconset resource="../../../images/images.qrc">
-                    <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
-                  </property>
-                  <property name="popupMode">
-                   <enum>QToolButton::MenuButtonPopup</enum>
-                  </property>
-                  <property name="autoRaise">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item row="3" column="0">
-               <spacer name="verticalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
+              <item row="1" column="0">
+               <widget class="QWidget" name="mWidgetFixedRangePerBand" native="true">
+                <property name="minimumSize">
                  <size>
-                  <width>40</width>
-                  <height>20</height>
+                  <width>0</width>
+                  <height>33</height>
                  </size>
                 </property>
-               </spacer>
+                <layout class="QGridLayout" name="gridLayout_7">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QTableView" name="mBandRangesTable">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <layout class="QHBoxLayout" name="horizontalLayout">
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <spacer name="horizontalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QToolButton" name="mCalculateFixedRangePerBandButton">
+                     <property name="text">
+                      <string>...</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../../../images/images.qrc">
+                       <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+                     </property>
+                     <property name="popupMode">
+                      <enum>QToolButton::MenuButtonPopup</enum>
+                     </property>
+                     <property name="autoRaise">
+                      <bool>false</bool>
+                     </property>
+                    </widget>
+                   </item>
+                  </layout>
+                 </item>
+                </layout>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -365,7 +420,7 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                    <string/>
                   </property>
                  </widget>
-                </item>               
+                </item>
                </layout>
               </item>
               <item row="0" column="0" colspan="2">
@@ -384,6 +439,16 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                 </property>
                </widget>
               </item>
+              <item row="3" column="0" colspan="2">
+               <widget class="QCheckBox" name="mAccumulateCheckBox">
+                <property name="toolTip">
+                 <string>If checked, pixels will be shown whenever their defined temporal value falls within or before the map's temporal range</string>
+                </property>
+                <property name="text">
+                 <string>Accumulate pixels over time</string>
+                </property>
+               </widget>
+              </item>
               <item row="2" column="1">
                <widget class="QgsDateTimeEdit" name="mOffsetDateTimeEdit">
                 <property name="displayFormat">
@@ -394,17 +459,17 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="4" column="1">
                <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
               </item>
-              <item row="3" column="0">
+              <item row="4" column="0">
                <widget class="QLabel" name="label_7">
                 <property name="text">
                  <string>Band</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="2">
+              <item row="5" column="0" colspan="2">
                <spacer name="verticalSpacer_1">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -432,15 +497,25 @@ background: white;QgsCollapsibleGroupBoxBasic::title, QgsCollapsibleGroupBox::ti
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsrasterbandcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDateTimeEdit</class>
-   <extends>QDateTimeEdit</extends>
-   <header>qgsdatetimeedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsStackedWidget</class>

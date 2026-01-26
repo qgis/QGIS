@@ -13,6 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgssearchquerybuilder.h"
+
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
+#include "qgshelp.h"
+#include "qgsquerybuilder.h"
+#include "qgsvectorlayer.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFileDialog>
@@ -23,19 +34,9 @@
 #include <QStandardItem>
 #include <QTextStream>
 
-#include "qgsfeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfields.h"
-#include "qgssearchquerybuilder.h"
-#include "qgsexpression.h"
-#include "qgsvectorlayer.h"
-#include "qgshelp.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsquerybuilder.h"
+#include "moc_qgssearchquerybuilder.cpp"
 
-
-QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
-    QWidget *parent, Qt::WindowFlags fl )
+QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
 {
@@ -131,7 +132,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // determine the field type
   const QString fieldName = mModelFields->data( lstFields->currentIndex() ).toString();
   const int fieldIndex = mFieldMap[fieldName];
-  const QgsField field = mLayer->fields().at( fieldIndex );//provider->fields().at( fieldIndex );
+  const QgsField field = mLayer->fields().at( fieldIndex ); //provider->fields().at( fieldIndex );
   const bool numeric = ( field.type() == QMetaType::Type::Int || field.type() == QMetaType::Type::Double );
 
   QgsFeature feat;
@@ -150,15 +151,14 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   // MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems
   QSet<QString> insertedValues;
 
-  while ( fit.nextFeature( feat ) &&
-          ( limit == 0 || mModelValues->rowCount() != limit ) )
+  while ( fit.nextFeature( feat ) && ( limit == 0 || mModelValues->rowCount() != limit ) )
   {
     value = feat.attribute( fieldIndex ).toString();
 
     if ( !numeric )
     {
       // put string in single quotes and escape single quotes in the string
-      value = '\'' + value.replace( '\'', QLatin1String( "''" ) ) + '\'';
+      value = '\'' + value.replace( '\'', "''"_L1 ) + '\'';
     }
 
     // add item only if it's not there already
@@ -278,42 +278,41 @@ void QgsSearchQueryBuilder::btnOk_clicked()
   {
     accept();
   }
-
 }
 
 void QgsSearchQueryBuilder::btnEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " = " ) );
+  mTxtSql->insertText( u" = "_s );
 }
 
 void QgsSearchQueryBuilder::btnLessThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " < " ) );
+  mTxtSql->insertText( u" < "_s );
 }
 
 void QgsSearchQueryBuilder::btnGreaterThan_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " > " ) );
+  mTxtSql->insertText( u" > "_s );
 }
 
 void QgsSearchQueryBuilder::btnPct_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( "%" ) );
+  mTxtSql->insertText( u"%"_s );
 }
 
 void QgsSearchQueryBuilder::btnIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " IN " ) );
+  mTxtSql->insertText( u" IN "_s );
 }
 
 void QgsSearchQueryBuilder::btnNotIn_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " NOT IN " ) );
+  mTxtSql->insertText( u" NOT IN "_s );
 }
 
 void QgsSearchQueryBuilder::btnLike_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " LIKE " ) );
+  mTxtSql->insertText( u" LIKE "_s );
 }
 
 QString QgsSearchQueryBuilder::searchString()
@@ -338,32 +337,32 @@ void QgsSearchQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 
 void QgsSearchQueryBuilder::btnLessEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " <= " ) );
+  mTxtSql->insertText( u" <= "_s );
 }
 
 void QgsSearchQueryBuilder::btnGreaterEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " >= " ) );
+  mTxtSql->insertText( u" >= "_s );
 }
 
 void QgsSearchQueryBuilder::btnNotEqual_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " != " ) );
+  mTxtSql->insertText( u" != "_s );
 }
 
 void QgsSearchQueryBuilder::btnAnd_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " AND " ) );
+  mTxtSql->insertText( u" AND "_s );
 }
 
 void QgsSearchQueryBuilder::btnNot_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " NOT " ) );
+  mTxtSql->insertText( u" NOT "_s );
 }
 
 void QgsSearchQueryBuilder::btnOr_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " OR " ) );
+  mTxtSql->insertText( u" OR "_s );
 }
 
 void QgsSearchQueryBuilder::btnClear_clicked()
@@ -373,7 +372,7 @@ void QgsSearchQueryBuilder::btnClear_clicked()
 
 void QgsSearchQueryBuilder::btnILike_clicked()
 {
-  mTxtSql->insertText( QStringLiteral( " ILIKE " ) );
+  mTxtSql->insertText( u" ILIKE "_s );
 }
 
 void QgsSearchQueryBuilder::saveQuery()
@@ -393,5 +392,5 @@ void QgsSearchQueryBuilder::loadQuery()
 
 void QgsSearchQueryBuilder::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#query-builder"_s );
 }

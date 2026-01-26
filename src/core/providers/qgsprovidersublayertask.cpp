@@ -16,11 +16,14 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayertask.h"
+
 #include "qgsfeedback.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
 #include "qgsreadwritelocker.h"
+
+#include "moc_qgsprovidersublayertask.cpp"
 
 QgsProviderSublayerTask::QgsProviderSublayerTask( const QString &uri, bool includeSystemTables )
   : QgsTask( tr( "Retrieving layers" ), QgsTask::CanCancel | QgsTask::CancelWithoutPrompt | QgsTask::Silent )
@@ -49,7 +52,7 @@ bool QgsProviderSublayerTask::run()
 {
   mFeedback = std::make_unique< QgsFeedback >();
 
-  Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures;
+  Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlag::ResolveGeometryType | Qgis::SublayerQueryFlag::CountFeatures | Qgis::SublayerQueryFlag::OpenLayersToResolveDescriptions;
   if ( mIncludeSystemTables )
     flags |= Qgis::SublayerQueryFlag::IncludeSystemTables;
 

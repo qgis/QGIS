@@ -17,17 +17,19 @@
 #ifndef QGSSTYLEV2GROUPSELECTIONDIALOG_H
 #define QGSSTYLEV2GROUPSELECTIONDIALOG_H
 
-#include <QDialog>
-#include <QStandardItem>
 #include "ui_qgsstylegroupselectiondialogbase.h"
+
 #include "qgis_gui.h"
 
+#include <QDialog>
+#include <QStandardItem>
 
 class QgsStyle;
 
 /**
  * \ingroup gui
  * \class QgsStyleGroupSelectionDialog
+ * \brief A dialog which presents available groups from a QgsStyle.
  */
 class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::SymbolsGroupSelectionDialogBase
 {
@@ -68,14 +70,12 @@ class GUI_EXPORT QgsStyleGroupSelectionDialog : public QDialog, private Ui::Symb
     void groupTreeSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   private:
-
     /**
      * \brief build group tree
      * \param parent
      */
     void buildTagTree( QStandardItem *&parent );
     QgsStyle *mStyle = nullptr;
-
 };
 
 #endif // QGSSTYLEV2GROUPSELECTIONDIALOG_H

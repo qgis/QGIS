@@ -87,83 +87,91 @@ bool VirtualPointCloud::read(std::string filename)
 
     std::set<std::string> vpcCrsWkt;
 
-    for (auto& f : data["features"])
+    try
     {
-        if (!f.contains("type") || f["type"] != "Feature" ||
-            !f.contains("stac_version") ||
-            !f.contains("assets") || !f["assets"].is_object() ||
-            !f.contains("properties") || !f["properties"].is_object())
+        for (auto& f : data["features"])
         {
-            std::cerr << "Malformed STAC item: " << f << std::endl;
-            continue;
-        }
+            if (!f.contains("type") || f["type"] != "Feature" ||
+                !f.contains("stac_version") ||
+                !f.contains("assets") || !f["assets"].is_object() ||
+                !f.contains("properties") || !f["properties"].is_object())
+            {
+                std::cerr << "Malformed STAC item: " << f << std::endl;
+                continue;
+            }
 
-        if (f["stac_version"] != "1.0.0")
-        {
-            std::cerr << "Unsupported STAC version: " << f["stac_version"] << std::endl;
-            continue;
-        }
+            if (f["stac_version"] != "1.0.0")
+            {
+                std::cerr << "Unsupported STAC version: " << f["stac_version"] << std::endl;
+                continue;
+            }
 
-        nlohmann::json firstAsset = *f["assets"].begin();
+            nlohmann::json firstAsset = *f["assets"].begin();
 
-        File vpcf;
-        vpcf.filename = firstAsset["href"];
-        vpcf.count = f["properties"]["pc:count"];
-        vpcf.crsWkt = f["properties"]["proj:wkt2"];
-        vpcCrsWkt.insert(vpcf.crsWkt);
+            File vpcf;
+            vpcf.filename = firstAsset["href"];
+            vpcf.count = f["properties"]["pc:count"];
+            vpcf.crsWkt = f["properties"]["proj:wkt2"];
+            vpcCrsWkt.insert(vpcf.crsWkt);
 
-        // read boundary geometry
-        nlohmann::json nativeGeometry = f["properties"]["proj:geometry"];
-        std::stringstream sstream;
-        sstream << std::setw(2) << nativeGeometry << std::endl;
-        std::string wkt = sstream.str();
-        pdal::Geometry nativeGeom(sstream.str());
-        vpcf.boundaryWkt = nativeGeom.wkt();
+            // read boundary geometry
+            nlohmann::json nativeGeometry = f["properties"]["proj:geometry"];
+            std::stringstream sstream;
+            sstream << std::setw(2) << nativeGeometry << std::endl;
+            std::string wkt = sstream.str();
+            pdal::Geometry nativeGeom(sstream.str());
+            vpcf.boundaryWkt = nativeGeom.wkt();
 
-        nlohmann::json nativeBbox = f["properties"]["proj:bbox"];
-        vpcf.bbox = BOX3D(
-            nativeBbox[0].get<double>(), nativeBbox[1].get<double>(), nativeBbox[2].get<double>(),
-            nativeBbox[3].get<double>(), nativeBbox[4].get<double>(), nativeBbox[5].get<double>() );
+            nlohmann::json nativeBbox = f["properties"]["proj:bbox"];
+            vpcf.bbox = BOX3D(
+                nativeBbox[0].get<double>(), nativeBbox[1].get<double>(), nativeBbox[2].get<double>(),
+                nativeBbox[3].get<double>(), nativeBbox[4].get<double>(), nativeBbox[5].get<double>() );
 
-        if (vpcf.filename.substr(0, 2) == "./")
-        {
-            // resolve relative path
-            vpcf.filename = fs::weakly_canonical(filenameParent / vpcf.filename).string();
-        }
-
-        for (auto &schemaItem : f["properties"]["pc:schemas"])
-        {
-            vpcf.schema.push_back(VirtualPointCloud::SchemaItem(schemaItem["name"], schemaItem["type"], schemaItem["size"].get<int>()));
-        }
-
-        // read stats
-        for (auto &statsItem : f["properties"]["pc:statistics"])
-        {
-            vpcf.stats.push_back(VirtualPointCloud::StatsItem(
-                                    statsItem["name"],
-                                    statsItem["position"],
-                                    statsItem["average"],
-                                    statsItem["count"],
-                                    statsItem["maximum"],
-                                    statsItem["minimum"],
-                                    statsItem["stddev"],
-                                    statsItem["variance"]));
-        }
-
-        // read overview file (if any, expecting at most one)
-        // this logic is very basic, we should be probably checking roles of assets
-        if (f["assets"].contains("overview"))
-        {
-            vpcf.overviewFilename = f["assets"]["overview"]["href"];
-
-            if (vpcf.overviewFilename.substr(0, 2) == "./")
+            if (vpcf.filename.substr(0, 2) == "./")
             {
                 // resolve relative path
-                vpcf.overviewFilename = fs::weakly_canonical(filenameParent / vpcf.overviewFilename).string();
+                vpcf.filename = fs::weakly_canonical(filenameParent / vpcf.filename).string();
             }
-        }
 
-        files.push_back(vpcf);
+            for (auto &schemaItem : f["properties"]["pc:schemas"])
+            {
+                vpcf.schema.push_back(VirtualPointCloud::SchemaItem(schemaItem["name"], schemaItem["type"], schemaItem["size"].get<int>()));
+            }
+
+            // read stats
+            for (auto &statsItem : f["properties"]["pc:statistics"])
+            {
+                vpcf.stats.push_back(VirtualPointCloud::StatsItem(
+                                        statsItem["name"],
+                                        statsItem["position"],
+                                        statsItem["average"],
+                                        statsItem["count"],
+                                        statsItem["maximum"],
+                                        statsItem["minimum"],
+                                        statsItem["stddev"],
+                                        statsItem["variance"]));
+            }
+
+            // read overview file (if any, expecting at most one)
+            // this logic is very basic, we should be probably checking roles of assets
+            if (f["assets"].contains("overview"))
+            {
+                vpcf.overviewFilename = f["assets"]["overview"]["href"];
+
+                if (vpcf.overviewFilename.substr(0, 2) == "./")
+                {
+                    // resolve relative path
+                    vpcf.overviewFilename = fs::weakly_canonical(filenameParent / vpcf.overviewFilename).string();
+                }
+            }
+
+            files.push_back(vpcf);
+        }
+    }
+    catch ( nlohmann::detail::invalid_iterator& e )
+    {
+        std::cerr << "Invalid 'features' value in a VPC file: " << e.what() << std::endl;
+        return false;
     }
 
     if (vpcCrsWkt.size() == 1)
@@ -496,7 +504,17 @@ void buildVpc(std::vector<std::string> args)
         }
 
         MetadataNode layout;
-        MetadataNode n = getReaderMetadata(inputFileAbsolute, &layout);
+        MetadataNode n;
+        try
+        {
+            n = getReaderMetadata(inputFileAbsolute, &layout);
+        }
+        catch (std::exception &e)
+        {
+            std::cerr << e.what() << std::endl;
+            return;
+        }
+
         point_count_t cnt = n.findChild("count").value<point_count_t>();
         BOX3D bbox(
                 n.findChild("minx").value<double>(),
@@ -553,7 +571,7 @@ void buildVpc(std::vector<std::string> args)
         {
             std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-            Stage* last = &manager->makeReader(f.filename, "");
+            Stage* last = &makeReader(manager.get(), f.filename);
             if (boundaries)
             {
                 pdal::Options hexbin_opts;
@@ -580,9 +598,7 @@ void buildVpc(std::vector<std::string> args)
                 std::string overviewOutput = overviewFilenameBase + "-overview-tmp-" + std::to_string(++overviewCounter) + ".las";
                 overviewTempFiles.push_back(overviewOutput);
 
-                pdal::Options writer_opts;
-                writer_opts.add(pdal::Option("forward", "all"));  // TODO: maybe we could use lower scale than the original
-                manager->makeWriter(overviewOutput, "", *last, writer_opts);
+                makeWriter(manager.get(), overviewOutput, last);
               }
 
             pipelines.push_back(std::move(manager));
@@ -613,7 +629,7 @@ void buildVpc(std::vector<std::string> args)
 
             for (const std::string &overviewTempFile : overviewTempFiles)
             {
-                Stage& reader = manager->makeReader(overviewTempFile, "");
+                Stage& reader = makeReader(manager.get(), overviewTempFile);
                 merge.setInput(reader);
             }
 

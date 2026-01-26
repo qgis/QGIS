@@ -18,8 +18,8 @@
 
 #include "ui_qgsvaluemapconfigdlgbase.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 class QComboBox;
 
@@ -28,9 +28,9 @@ SIP_NO_FILE
 /**
  * \ingroup gui
  * \class QgsValueMapConfigDlg
+ * \brief Configuration widget for value map widgets.
  * \note not available in Python bindings
  */
-
 class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui::QgsValueMapWidget
 {
     Q_OBJECT
@@ -93,6 +93,8 @@ class GUI_EXPORT QgsValueMapConfigDlg : public QgsEditorConfigWidget, private Ui
     void removeSelectedButtonPushed();
     void loadFromLayerButtonPushed();
     void loadFromCSVButtonPushed();
+
+    friend class TestQgsValueMapConfigDlg;
 };
 
 #endif // QGSVALUEMAPCONFIGDLG_H

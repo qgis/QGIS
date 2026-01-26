@@ -18,15 +18,15 @@
 #ifndef QGSMAPUNITSCALE_H
 #define QGSMAPUNITSCALE_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
 class QgsRenderContext;
 
 /**
  * \ingroup core
  * \class QgsMapUnitScale
- * \brief Struct for storing maximum and minimum scales for measurements in map units
+ * \brief Struct for storing maximum and minimum scales for measurements in map units.
  *
  * For measurements in map units, a minimum and a maximum scale can be defined.
  * Outside this range, the measurements aren't scaled anymore proportionally to
@@ -47,6 +47,13 @@ class CORE_EXPORT QgsMapUnitScale
       : minScale( minScale )
       , maxScale( maxScale )
     {}
+
+    /**
+     * Returns TRUE if the scale is null, i.e. it is a default constructed QgsMapUnitScale.
+     *
+     * \since QGIS 3.44
+     */
+    bool isNull() const;
 
     /**
      * The minimum scale, or 0.0 if unset.

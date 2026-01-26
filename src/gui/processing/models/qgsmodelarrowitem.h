@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+
 #include <QGraphicsPathItem>
 #include <QObject>
 
@@ -36,11 +37,11 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
 {
     Q_OBJECT
   public:
-
     enum Marker
     {
       Circle,
       ArrowHead,
+      NoMarker
     };
 
     /**
@@ -49,8 +50,7 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining the specified \a startEdge and \a startIndex
      * to \a endEdge and \a endIndex.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -58,8 +58,7 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining the specified \a startEdge and \a startIndex
      * to an automatic point on \a endItem.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
@@ -67,16 +66,14 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * The arrow will link \a startItem to \a endItem, joining an automatic point on \a startItem to the specified
      * \a endEdge and \a endIndex.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
 
     /**
      * Constructor for QgsModelArrowItem, with the specified \a parent item.
      *
      * The arrow will link \a startItem to \a endItem, joining an automatic points on both items.
      */
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
@@ -84,6 +81,15 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
      * Sets the pen \a style to use for rendering the arrow line.
      */
     void setPenStyle( Qt::PenStyle style );
+
+  signals:
+
+    /**
+     * Emitted when the path is updated.
+     *
+     * \since QGIS 4.0
+     */
+    void painterPathUpdated();
 
   public slots:
 
@@ -93,7 +99,6 @@ class GUI_EXPORT QgsModelArrowItem : public QObject, public QGraphicsPathItem
     void updatePath();
 
   private:
-
     QPointF bezierPointForCurve( const QPointF &point, Qt::Edge edge, bool incoming, bool hasSpecificDirectionalFlow ) const;
 
     void drawArrowHead( QPainter *painter, const QPointF &point, const QPointF &vector );

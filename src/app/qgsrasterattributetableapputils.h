@@ -25,30 +25,28 @@ class QgsMessageBar;
  */
 struct QgsRasterAttributeTableAppUtils
 {
-
-  /**
+    /**
    * Open the Raster Attribute Table for the raster layer.
 
    * Only works on raster layers.
    */
-  static void openRasterAttributeTable( QgsLayerTreeView *treeView );
+    static void openRasterAttributeTable( QgsLayerTreeView *treeView );
 
-  /**
+    /**
    * Creates a new Raster Attribute Table from the raster layer renderer if the
    * renderer supports it.
    *
    * Only works on raster layers.
    */
-  static void createRasterAttributeTable( QgsLayerTreeView *treeView, QgsMessageBar *messageBar );
+    static void createRasterAttributeTable( QgsLayerTreeView *treeView, QgsMessageBar *messageBar );
 
-  /**
+    /**
    * Loads a Raster Attribute Table from a VAT.DBF file.
    *
    * Only works on raster layers.
    *
    */
-  static void loadRasterAttributeTableFromFile( QgsLayerTreeView *treeView, QgsMessageBar *messageBar );
-
+    static void loadRasterAttributeTableFromFile( QgsLayerTreeView *treeView, QgsMessageBar *messageBar );
 };
 
 #endif // QGSRASTERATTRIBUTETABLEAPPUTILS_H

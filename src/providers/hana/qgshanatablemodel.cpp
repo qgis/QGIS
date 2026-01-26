@@ -14,12 +14,15 @@
  * (at your option) any later version.
  *
  ***************************************************************************/
+#include "qgshanatablemodel.h"
+
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
 #include "qgshanaprimarykeys.h"
-#include "qgshanatablemodel.h"
 #include "qgshanasettings.h"
 #include "qgslogger.h"
+
+#include "moc_qgshanatablemodel.cpp"
 
 QgsHanaTableModel::QgsHanaTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )
@@ -89,10 +92,9 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   }
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ),
-      wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::displayString( wkbType ) );
+  QStandardItem *typeItem = new QStandardItem( iconForWkbType( wkbType ), wkbType == Qgis::WkbType::Unknown ? tr( "Select…" ) : QgsWkbTypes::displayString( wkbType ) );
   typeItem->setData( wkbType == Qgis::WkbType::Unknown, Qt::UserRole + 1 );
-  typeItem->setData( static_cast< quint32>( wkbType ), Qt::UserRole + 2 );
+  typeItem->setData( static_cast<quint32>( wkbType ), Qt::UserRole + 2 );
   if ( wkbType == Qgis::WkbType::Unknown )
     typeItem->setFlags( typeItem->flags() | Qt::ItemIsEditable );
 
@@ -136,7 +138,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   if ( !pkColumns.isEmpty() )
     pkItem->setText( pkColumns.join( ',' ) );
 
-  QStandardItem *selItem = new QStandardItem( QString( ) );
+  QStandardItem *selItem = new QStandardItem( QString() );
   selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping "
@@ -156,7 +158,7 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
   childItemList << selItem;
   childItemList << sqlItem;
 
-  for ( QStandardItem *item :  std::as_const( childItemList ) )
+  for ( QStandardItem *item : std::as_const( childItemList ) )
   {
     if ( tip.isEmpty() || withTipButSelectable )
       item->setFlags( item->flags() | Qt::ItemIsSelectable );
@@ -165,12 +167,12 @@ void QgsHanaTableModel::addTableEntry( const QString &connName, const QgsHanaLay
 
     if ( tip.isEmpty() )
     {
-      item->setToolTip( QString( ) );
+      item->setToolTip( QString() );
     }
     else
     {
       if ( item == schemaNameItem )
-        item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
+        item->setData( QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s ), Qt::DecorationRole );
 
       if ( item == schemaNameItem || item == tableItem || item == geomItem )
         item->setToolTip( tip );
@@ -253,17 +255,17 @@ QIcon QgsHanaTableModel::iconForWkbType( Qgis::WkbType type )
   switch ( QgsWkbTypes::geometryType( type ) )
   {
     case Qgis::GeometryType::Point:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconPointLayer.svg"_s );
     case Qgis::GeometryType::Line:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconLineLayer.svg"_s );
     case Qgis::GeometryType::Polygon:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconPolygonLayer.svg"_s );
     case Qgis::GeometryType::Null:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconTableLayer.svg"_s );
     case Qgis::GeometryType::Unknown:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
+      return QgsApplication::getThemeIcon( u"/mIconLayer.png"_s );
   }
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
+  return QgsApplication::getThemeIcon( u"/mIconLayer.png"_s );
 }
 
 bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
@@ -309,14 +311,14 @@ bool QgsHanaTableModel::setData( const QModelIndex &idx, const QVariant &value, 
         }
 
         item->setFlags( item->flags() | Qt::ItemIsSelectable );
-        item->setToolTip( QString( ) );
+        item->setToolTip( QString() );
       }
       else
       {
         item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
 
         if ( i == DbtmSchema )
-          item->setData( QgsApplication::getThemeIcon( QStringLiteral( "/mIconWarning.svg" ) ), Qt::DecorationRole );
+          item->setData( QgsApplication::getThemeIcon( u"/mIconWarning.svg"_s ), Qt::DecorationRole );
 
         if ( i == DbtmSchema || i == DbtmTable || i == DbtmGeomCol )
         {
@@ -345,7 +347,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   const QSet<QString> pkColumnsSelected( qgis::listToSet( pkItem->data( Qt::UserRole + 2 ).toStringList() ) );
   if ( !pkColumnsAll.isEmpty() && !pkColumnsAll.intersects( pkColumnsSelected ) )
   {
-    QgsDebugError( QStringLiteral( "no pk candidate selected" ) );
+    QgsDebugError( u"no pk candidate selected"_s );
     return QString();
   }
 
@@ -366,7 +368,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
 
     srid = index.sibling( index.row(), DbtmSrid ).data( Qt::DisplayRole ).toString();
     bool ok;
-    ( void )srid.toInt( &ok );
+    ( void ) srid.toInt( &ok );
     if ( !ok )
       return QString();
   }
@@ -375,7 +377,7 @@ QString QgsHanaTableModel::layerURI( const QModelIndex &index, const QString &co
   QString sql = index.sibling( index.row(), DbtmSql ).data( Qt::DisplayRole ).toString();
 
   QgsDataSourceUri uri( connInfo );
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql,  QgsHanaPrimaryKeyUtils::buildUriKey( pkColumns ) );
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql, QgsHanaPrimaryKeyUtils::buildUriKey( pkColumns ) );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );

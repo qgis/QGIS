@@ -18,16 +18,16 @@
 #ifndef QGSLEGENDSTYLE_H
 #define QGSLEGENDSTYLE_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsreadwritecontext.h"
+#include "qgstextformat.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 #include <QFont>
 #include <QMap>
 #include <QString>
-#include <QDomElement>
-#include <QDomDocument>
-
-#include "qgis_core.h"
-#include "qgis_sip.h"
-#include "qgstextformat.h"
-#include "qgsreadwritecontext.h"
 
 /**
  * \ingroup core
@@ -37,19 +37,7 @@ class CORE_EXPORT QgsLegendStyle
 {
   public:
 
-    //! Component of legends which can be styled
-    enum Style
-    {
-      Undefined, //!< Should not happen, only if corrupted project file
-      Hidden, //!< Special style, item is hidden including margins around
-      Title, //!< Legend title
-      Group, //!< Legend group title
-      Subgroup, //!< Legend subgroup title
-      Symbol, //!< Symbol icon (excluding label)
-      SymbolLabel, //!< Symbol label (excluding icon)
-    };
-
-    // TODO QGIS 4.0 - use Qt enum instead
+    // TODO QGIS 5.0 - use Qt enum instead
 
     //! Margin sides
     enum Side
@@ -104,7 +92,7 @@ class CORE_EXPORT QgsLegendStyle
      *
      * \see setMargin()
      */
-    double margin( Side side ) { return mMarginMap.value( side ); }
+    double margin( Side side ) const { return mMarginMap.value( side ); }
 
     /**
      * Sets the \a margin (in mm) for the specified \a side of the component.
@@ -166,6 +154,14 @@ class CORE_EXPORT QgsLegendStyle
     void readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
+     * Updates any data-defined properties in the style, using the specified
+     * render \a context.
+     *
+     * \since QGIS 3.42
+     */
+    void updateDataDefinedProperties( QgsRenderContext &context );
+
+    /**
      * Returns the name for a style component as a string.
      *
      * This is a non-localised version, for internal use.
@@ -173,19 +169,19 @@ class CORE_EXPORT QgsLegendStyle
      * \see styleFromName()
      * \see styleLabel()
      */
-    static QString styleName( Style s );
+    static QString styleName( Qgis::LegendComponent s );
 
     /**
      * Returns the style from name string.
      * \see styleName()
      */
-    static Style styleFromName( const QString &styleName );
+    static Qgis::LegendComponent styleFromName( const QString &styleName );
 
     /**
      * Returns a translated string representing a style component, for use in UI.
      * \see styleName()
      */
-    static QString styleLabel( Style s );
+    static QString styleLabel( Qgis::LegendComponent s );
 
   private:
     QgsTextFormat mTextFormat;

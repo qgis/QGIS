@@ -18,20 +18,24 @@
 #ifndef TOPOLTEST_H
 #define TOPOLTEST_H
 
-#include <QObject>
-
 #include "qgsgeometry.h"
 #include "qgsspatialindex.h"
-
 #include "topolError.h"
+
+#include <QObject>
 
 class topolTest;
 class QgisInterface;
 class WKTReader;
 
-enum ValidateType { ValidateAll, ValidateExtent, ValidateSelected };
+enum ValidateType
+{
+  ValidateAll,
+  ValidateExtent,
+  ValidateSelected
+};
 
-typedef ErrorList( topolTest::*testFunction )( QgsVectorLayer *, QgsVectorLayer *, bool );
+typedef ErrorList ( topolTest::*testFunction )( QgsVectorLayer *, QgsVectorLayer *, bool );
 
 class TopologyRule
 {
@@ -42,12 +46,12 @@ class TopologyRule
     QList<Qgis::GeometryType> layer1SupportedTypes;
     QList<Qgis::GeometryType> layer2SupportedTypes;
 
-    bool layer1AcceptsType( Qgis::GeometryType type )
+    bool layer1AcceptsType( Qgis::GeometryType type ) const
     {
       return layer1SupportedTypes.contains( type );
     }
 
-    bool layer2AcceptsType( Qgis::GeometryType type )
+    bool layer2AcceptsType( Qgis::GeometryType type ) const
     {
       return layer2SupportedTypes.contains( type );
     }
@@ -57,12 +61,7 @@ class TopologyRule
      * Constructor
      * initializes the test to use both layers
      */
-    explicit TopologyRule( testFunction f0 = nullptr,
-                           bool useSecondLayer0 = true,
-                           bool useSpatialIndex0 = false,
-                           const QList<Qgis::GeometryType> &layer1SupportedTypes0 = QList<Qgis::GeometryType>(),
-                           const QList<Qgis::GeometryType> &layer2SupportedTypes0 = QList<Qgis::GeometryType>()
-                         )
+    explicit TopologyRule( testFunction f0 = nullptr, bool useSecondLayer0 = true, bool useSpatialIndex0 = false, const QList<Qgis::GeometryType> &layer1SupportedTypes0 = QList<Qgis::GeometryType>(), const QList<Qgis::GeometryType> &layer2SupportedTypes0 = QList<Qgis::GeometryType>() )
       : f( f0 )
       , useSecondLayer( useSecondLayer0 )
       , useSpatialIndex( useSpatialIndex0 )
@@ -77,7 +76,7 @@ class TopologyRule
 class PointComparer
 {
   public:
-    bool operator()( const QgsPointXY &p1, const QgsPointXY &p2 )const
+    bool operator()( const QgsPointXY &p1, const QgsPointXY &p2 ) const
     {
       if ( p1.x() < p2.x() )
       {
@@ -94,7 +93,7 @@ class PointComparer
 };
 
 
-class topolTest: public QObject
+class topolTest : public QObject
 {
     Q_OBJECT
 
@@ -105,7 +104,7 @@ class topolTest: public QObject
     /**
      * Returns copy of the test map
      */
-    QMap<QString, TopologyRule> testMap() { return mTopologyRuleMap; }
+    QMap<QString, TopologyRule> testMap() const { return mTopologyRuleMap; }
 
     /**
      * Runs the test and returns all found errors

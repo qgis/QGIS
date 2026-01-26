@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """
 ***************************************************************************
     mocked
@@ -17,16 +15,16 @@
 ***************************************************************************
 """
 
-__author__ = 'Matthias Kuhn'
-__date__ = 'January 2016'
-__copyright__ = '(C) 2016, Matthias Kuhn'
+__author__ = "Matthias Kuhn"
+__date__ = "January 2016"
+__copyright__ = "(C) 2016, Matthias Kuhn"
 
 import os
 import sys
-import mock
+from unittest import mock
 
-from qgis.gui import QgisInterface, QgsMapCanvas
-from qgis.core import QgsApplication
+from qgis.gui import QgisInterface, QgsMapCanvas, QgsLayerTreeView
+from qgis.core import QgsApplication, QgsProject, QgsLayerTreeModel
 
 from qgis.PyQt.QtWidgets import QMainWindow
 from qgis.PyQt.QtCore import QSize
@@ -58,5 +56,12 @@ def get_iface():
     canvas = QgsMapCanvas(my_iface.mainWindow())
     canvas.resize(QSize(400, 400))
     my_iface.mapCanvas.return_value = canvas
+
+    layer_tree_view = QgsLayerTreeView(my_iface.mainWindow())
+    layer_tree_model = QgsLayerTreeModel(
+        QgsProject.instance().layerTreeRoot(), layer_tree_view
+    )
+    layer_tree_view.setModel(layer_tree_model)
+    my_iface.layerTreeView.return_value = layer_tree_view
 
     return my_iface

@@ -22,11 +22,11 @@
 #ifndef QGSWFSDESCRIBEFEATURETYPEGML_H
 #define QGSWFSDESCRIBEFEATURETYPEGML_H
 
-#include <QDomDocument>
-#include <QDomElement>
-
 #include "qgsserverinterface.h"
 #include "qgswfsparameters.h"
+
+#include <QDomDocument>
+#include <QDomElement>
 
 /**
  * \ingroup server
@@ -38,7 +38,6 @@
 class QgsWfsDescribeFeatureTypeGml
 {
   private:
-
     /**
       * Returns the GML geometry type.
       */
@@ -49,13 +48,11 @@ class QgsWfsDescribeFeatureTypeGml
     /**
      * Create get capabilities document
      */
-    QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-        const QgsServerRequest &request ) const;
+    QDomDocument createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request ) const;
 
     const QgsWfs::QgsWfsParameters wfsParameters;
 
   public:
-
     /**
      * Constructor
      *
@@ -72,8 +69,7 @@ class QgsWfsDescribeFeatureTypeGml
      * \param request Input request handler
      * \param response Output response handler
      */
-    void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                                   const QgsServerRequest &request, QgsServerResponse &response ) const;
+    void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response ) const;
 };
 
 

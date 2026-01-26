@@ -18,23 +18,26 @@
 #ifndef QGSBILINEARRASTERRESAMPLER_H
 #define QGSBILINEARRASTERRESAMPLER_H
 
-#include "qgsrasterresampler.h"
-#include "qgis_sip.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsrasterresampler.h"
 
 #include <QColor>
 
-#include "qgis_core.h"
-
 /**
  * \ingroup core
- * \brief Bilinear Raster Resampler
+ * \brief Bilinear raster resampler.
  */
 class CORE_EXPORT QgsBilinearRasterResampler: public QgsRasterResamplerV2
 {
   public:
 
     QgsBilinearRasterResampler() = default;
+
+    /**
+     * \deprecated QGIS 3.12. Use resampleV2() instead.
+     */
     Q_DECL_DEPRECATED void resample( const QImage &srcImage, QImage &dstImage ) override SIP_DEPRECATED;
 
     QImage resampleV2( const QImage &source, const QSize &size ) override;

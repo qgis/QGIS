@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgsrasterminmaxorigin.h"
+
+#include <cmath>
+
 #include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QDomElement>
-#include <cmath>
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
@@ -28,9 +30,9 @@ QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
   , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {
   const QgsSettings mySettings;
-  mCumulativeCutLower = mySettings.value( QStringLiteral( "Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
-  mCumulativeCutUpper = mySettings.value( QStringLiteral( "Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
-  mStdDevFactor = mySettings.value( QStringLiteral( "Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
+  mCumulativeCutLower = mySettings.value( u"Raster/cumulativeCutLower"_s, CUMULATIVE_CUT_LOWER ).toDouble();
+  mCumulativeCutUpper = mySettings.value( u"Raster/cumulativeCutUpper"_s, CUMULATIVE_CUT_UPPER ).toDouble();
+  mStdDevFactor = mySettings.value( u"Raster/defaultStandardDeviation"_s, DEFAULT_STDDEV_FACTOR ).toDouble();
 }
 
 bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) const
@@ -43,121 +45,126 @@ bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) co
          std::fabs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
 }
 
-QString QgsRasterMinMaxOrigin::limitsString( Limits limits )
+QString QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit limits )
 {
   switch ( limits )
   {
-    case MinMax:
-      return QStringLiteral( "MinMax" );
-    case StdDev:
-      return QStringLiteral( "StdDev" );
-    case CumulativeCut:
-      return QStringLiteral( "CumulativeCut" );
+    case Qgis::RasterRangeLimit::MinimumMaximum:
+      return u"MinMax"_s;
+    case Qgis::RasterRangeLimit::StdDev:
+      return u"StdDev"_s;
+    case Qgis::RasterRangeLimit::CumulativeCut:
+      return u"CumulativeCut"_s;
     default:
       break;
   }
-  return QStringLiteral( "None" );
+  return u"None"_s;
 }
 
-QgsRasterMinMaxOrigin::Limits QgsRasterMinMaxOrigin::limitsFromString( const QString &limits )
+Qgis::RasterRangeLimit QgsRasterMinMaxOrigin::limitsFromString( const QString &limits )
 {
-  if ( limits == QLatin1String( "MinMax" ) )
+  if ( limits == "MinMax"_L1 )
   {
-    return MinMax;
+    return Qgis::RasterRangeLimit::MinimumMaximum;
   }
-  else if ( limits == QLatin1String( "StdDev" ) )
+  else if ( limits == "StdDev"_L1 )
   {
-    return StdDev;
+    return Qgis::RasterRangeLimit::StdDev;
   }
-  else if ( limits == QLatin1String( "CumulativeCut" ) )
+  else if ( limits == "CumulativeCut"_L1 )
   {
-    return CumulativeCut;
+    return Qgis::RasterRangeLimit::CumulativeCut;
   }
-  return None;
+  return Qgis::RasterRangeLimit::NotSet;
 }
 
-QString QgsRasterMinMaxOrigin::extentString( Extent minMaxExtent )
+QString QgsRasterMinMaxOrigin::extentString( Qgis::RasterRangeExtent minMaxExtent )
 {
   switch ( minMaxExtent )
   {
-    case WholeRaster:
-      return QStringLiteral( "WholeRaster" );
-    case CurrentCanvas:
-      return QStringLiteral( "CurrentCanvas" );
-    case UpdatedCanvas:
-      return QStringLiteral( "UpdatedCanvas" );
+    case Qgis::RasterRangeExtent::WholeRaster:
+      return u"WholeRaster"_s;
+    case Qgis::RasterRangeExtent::FixedCanvas:
+      return u"CurrentCanvas"_s;
+    case Qgis::RasterRangeExtent::UpdatedCanvas:
+      return u"UpdatedCanvas"_s;
   }
-  return QStringLiteral( "WholeRaster" );
+  return u"WholeRaster"_s;
 }
 
-QgsRasterMinMaxOrigin::Extent QgsRasterMinMaxOrigin::extentFromString( const QString &extent )
+Qgis::RasterRangeExtent QgsRasterMinMaxOrigin::extentFromString( const QString &extent )
 {
-  if ( extent == QLatin1String( "WholeRaster" ) )
+  if ( extent == "WholeRaster"_L1 )
   {
-    return WholeRaster;
+    return Qgis::RasterRangeExtent::WholeRaster;
   }
-  else if ( extent == QLatin1String( "CurrentCanvas" ) )
+  else if ( extent == "CurrentCanvas"_L1 )
   {
-    return CurrentCanvas;
+    return Qgis::RasterRangeExtent::FixedCanvas;
   }
-  else if ( extent == QLatin1String( "UpdatedCanvas" ) )
+  else if ( extent == "UpdatedCanvas"_L1 )
   {
-    return UpdatedCanvas;
+    return Qgis::RasterRangeExtent::UpdatedCanvas;
   }
   else
   {
-    return WholeRaster;
+    return Qgis::RasterRangeExtent::WholeRaster;
   }
 }
 
-QString QgsRasterMinMaxOrigin::statAccuracyString( StatAccuracy accuracy )
+QString QgsRasterMinMaxOrigin::statAccuracyString( Qgis::RasterRangeAccuracy accuracy )
 {
-  if ( accuracy == Exact )
-    return QStringLiteral( "Exact" );
-  return QStringLiteral( "Estimated" );
+  switch ( accuracy )
+  {
+    case Qgis::RasterRangeAccuracy::Exact:
+      return u"Exact"_s;
+    case Qgis::RasterRangeAccuracy::Estimated:
+      return u"Estimated"_s;
+  }
+  BUILTIN_UNREACHABLE
 }
 
-QgsRasterMinMaxOrigin::StatAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString &accuracy )
+Qgis::RasterRangeAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString &accuracy )
 {
-  if ( accuracy == QLatin1String( "Exact" ) )
-    return Exact;
-  return Estimated;
+  if ( accuracy == "Exact"_L1 )
+    return Qgis::RasterRangeAccuracy::Exact;
+  return Qgis::RasterRangeAccuracy::Estimated;
 }
 
 void QgsRasterMinMaxOrigin::writeXml( QDomDocument &doc, QDomElement &parentElem ) const
 {
   // limits
-  QDomElement limitsElem = doc.createElement( QStringLiteral( "limits" ) );
+  QDomElement limitsElem = doc.createElement( u"limits"_s );
   const QDomText limitsText = doc.createTextNode( limitsString( mLimits ) );
   limitsElem.appendChild( limitsText );
   parentElem.appendChild( limitsElem );
 
   // extent
-  QDomElement extentElem = doc.createElement( QStringLiteral( "extent" ) );
+  QDomElement extentElem = doc.createElement( u"extent"_s );
   const QDomText extentText = doc.createTextNode( extentString( mExtent ) );
   extentElem.appendChild( extentText );
   parentElem.appendChild( extentElem );
 
   // statAccuracy
-  QDomElement statAccuracyElem = doc.createElement( QStringLiteral( "statAccuracy" ) );
+  QDomElement statAccuracyElem = doc.createElement( u"statAccuracy"_s );
   const QDomText statAccuracyText = doc.createTextNode( statAccuracyString( mAccuracy ) );
   statAccuracyElem.appendChild( statAccuracyText );
   parentElem.appendChild( statAccuracyElem );
 
   // mCumulativeCutLower
-  QDomElement cumulativeCutLowerElem = doc.createElement( QStringLiteral( "cumulativeCutLower" ) );
+  QDomElement cumulativeCutLowerElem = doc.createElement( u"cumulativeCutLower"_s );
   const QDomText cumulativeCutLowerText = doc.createTextNode( QString::number( mCumulativeCutLower ) );
   cumulativeCutLowerElem.appendChild( cumulativeCutLowerText );
   parentElem.appendChild( cumulativeCutLowerElem );
 
   // mCumulativeCutUpper
-  QDomElement cumulativeCutUpperElem = doc.createElement( QStringLiteral( "cumulativeCutUpper" ) );
+  QDomElement cumulativeCutUpperElem = doc.createElement( u"cumulativeCutUpper"_s );
   const QDomText cumulativeCutUpperText = doc.createTextNode( QString::number( mCumulativeCutUpper ) );
   cumulativeCutUpperElem.appendChild( cumulativeCutUpperText );
   parentElem.appendChild( cumulativeCutUpperElem );
 
   // mCumulativeCutUpper
-  QDomElement stdDevFactorElem = doc.createElement( QStringLiteral( "stdDevFactor" ) );
+  QDomElement stdDevFactorElem = doc.createElement( u"stdDevFactor"_s );
   const QDomText stdDevFactorText = doc.createTextNode( QString::number( mStdDevFactor ) );
   stdDevFactorElem.appendChild( stdDevFactorText );
   parentElem.appendChild( stdDevFactorElem );
@@ -165,37 +172,37 @@ void QgsRasterMinMaxOrigin::writeXml( QDomDocument &doc, QDomElement &parentElem
 
 void QgsRasterMinMaxOrigin::readXml( const QDomElement &elem )
 {
-  const QDomElement limitsElem = elem.firstChildElement( QStringLiteral( "limits" ) );
+  const QDomElement limitsElem = elem.firstChildElement( u"limits"_s );
   if ( !limitsElem.isNull() )
   {
     mLimits = limitsFromString( limitsElem.text() );
   }
 
-  const QDomElement extentElem = elem.firstChildElement( QStringLiteral( "extent" ) );
+  const QDomElement extentElem = elem.firstChildElement( u"extent"_s );
   if ( !extentElem.isNull() )
   {
     mExtent = extentFromString( extentElem.text() );
   }
 
-  const QDomElement statAccuracyElem = elem.firstChildElement( QStringLiteral( "statAccuracy" ) );
+  const QDomElement statAccuracyElem = elem.firstChildElement( u"statAccuracy"_s );
   if ( !statAccuracyElem.isNull() )
   {
     mAccuracy = statAccuracyFromString( statAccuracyElem.text() );
   }
 
-  const QDomElement cumulativeCutLowerElem = elem.firstChildElement( QStringLiteral( "cumulativeCutLower" ) );
+  const QDomElement cumulativeCutLowerElem = elem.firstChildElement( u"cumulativeCutLower"_s );
   if ( !cumulativeCutLowerElem.isNull() )
   {
     mCumulativeCutLower = cumulativeCutLowerElem.text().toDouble();
   }
 
-  const QDomElement cumulativeCutUpperElem = elem.firstChildElement( QStringLiteral( "cumulativeCutUpper" ) );
+  const QDomElement cumulativeCutUpperElem = elem.firstChildElement( u"cumulativeCutUpper"_s );
   if ( !cumulativeCutUpperElem.isNull() )
   {
     mCumulativeCutUpper = cumulativeCutUpperElem.text().toDouble();
   }
 
-  const QDomElement stdDevFactorElem = elem.firstChildElement( QStringLiteral( "stdDevFactor" ) );
+  const QDomElement stdDevFactorElem = elem.firstChildElement( u"stdDevFactor"_s );
   if ( !stdDevFactorElem.isNull() )
   {
     mStdDevFactor = stdDevFactorElem.text().toDouble();

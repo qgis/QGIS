@@ -34,9 +34,11 @@ Base class for temporal property.
 
     QgsTemporalProperty( QObject *parent /TransferThis/ = 0, bool enabled = false );
 %Docstring
-Constructor for QgsTemporalProperty, with the specified ``parent`` object.
+Constructor for QgsTemporalProperty, with the specified ``parent``
+object.
 
-The ``active`` argument specifies whether the property is initially active (see :py:func:`~QgsTemporalProperty.isActive`).
+The ``active`` argument specifies whether the property is initially
+active (see :py:func:`~QgsTemporalProperty.isActive`).
 %End
 
     void setIsActive( bool active );

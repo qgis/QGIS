@@ -16,10 +16,12 @@
  ***************************************************************************/
 
 #include "qgseffectstack.h"
-#include "qgspainteffectregistry.h"
-#include "qgsrendercontext.h"
+
 #include "qgsapplication.h"
+#include "qgspainteffectregistry.h"
 #include "qgspainting.h"
+#include "qgsrendercontext.h"
+
 #include <QPicture>
 
 QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
@@ -48,6 +50,19 @@ QgsEffectStack::~QgsEffectStack()
   clearStack();
 }
 
+Qgis::PaintEffectFlags QgsEffectStack::flags() const
+{
+  Qgis::PaintEffectFlags res;
+  for ( const QgsPaintEffect *effect : mEffectList )
+  {
+    if ( effect->flags().testFlag( Qgis::PaintEffectFlag::RequiresRasterization ) )
+    {
+      res.setFlag( Qgis::PaintEffectFlag::RequiresRasterization );
+    }
+  }
+  return res;
+}
+
 QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 {
   if ( &rhs == this )
@@ -65,6 +80,9 @@ QgsEffectStack &QgsEffectStack::operator=( const QgsEffectStack &rhs )
 
 QgsEffectStack &QgsEffectStack::operator=( QgsEffectStack &&other )
 {
+  if ( &other == this )
+    return *this;
+
   std::swap( mEffectList, other.mEffectList );
   mEnabled = other.enabled();
   return *this;
@@ -81,12 +99,34 @@ void QgsEffectStack::draw( QgsRenderContext &context )
 {
   QPainter *destPainter = context.painter();
 
+  if ( context.rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector )
+  {
+    // can we render this stack if we're forcing vectors?
+    bool requiresRasterization = false;
+    for ( const QgsPaintEffect *effect : std::as_const( mEffectList ) )
+    {
+      if ( effect->enabled() && effect->flags().testFlag( Qgis::PaintEffectFlag::RequiresRasterization ) )
+      {
+        requiresRasterization = true;
+        break;
+      }
+    }
+
+    if ( requiresRasterization )
+    {
+      //just draw unmodified source, we can't render this effect stack when forcing vectors
+      drawSource( *context.painter() );
+    }
+    return;
+  }
+
   //first, we build up a list of rendered effects
   //we do this moving backwards through the stack, so that each effect's results
   //becomes the source of the previous effect
-  QPicture *sourcePic = new QPicture( *source() );
-  QPicture *currentPic = sourcePic;
-  QList< QPicture * > results;
+  const QPicture sourcePic = source();
+  const QPicture *currentPic = &sourcePic;
+  std::vector< QPicture > results;
+  results.reserve( mEffectList.count() );
   for ( int i = mEffectList.count() - 1; i >= 0; --i )
   {
     QgsPaintEffect *effect = mEffectList.at( i );
@@ -95,19 +135,19 @@ void QgsEffectStack::draw( QgsRenderContext &context )
       continue;
     }
 
-    QPicture *pic = nullptr;
-    if ( effect->type() == QLatin1String( "drawSource" ) )
+    const QPicture *pic = nullptr;
+    if ( effect->type() == "drawSource"_L1 )
     {
       //draw source is always the original source, regardless of previous effect results
-      pic = sourcePic;
+      pic = &sourcePic;
     }
     else
     {
       pic = currentPic;
     }
 
-    QPicture *resultPic = new QPicture();
-    QPainter p( resultPic );
+    QPicture resultPic;
+    QPainter p( &resultPic );
     context.setPainter( &p );
     //effect stack has it's own handling of the QPicture DPI issue, so
     //we disable QgsPaintEffect's internal workaround
@@ -116,14 +156,12 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     effect->requiresQPainterDpiFix = true;
     p.end();
 
-    results << resultPic;
+    results.emplace_back( std::move( resultPic ) );
     if ( mEffectList.at( i )->drawMode() != QgsPaintEffect::Render )
     {
-      currentPic = resultPic;
+      currentPic = &results.back();
     }
   }
-  delete sourcePic;
-  sourcePic = nullptr;
 
   context.setPainter( destPainter );
   //then, we render all the results in the opposite order
@@ -134,12 +172,11 @@ void QgsEffectStack::draw( QgsRenderContext &context )
       continue;
     }
 
-    QPicture *pic = results.takeLast();
     if ( mEffectList.at( i )->drawMode() != QgsPaintEffect::Modifier )
     {
-      QgsPainting::drawPicture( context.painter(), QPointF( 0, 0 ), *pic );
+      QgsPainting::drawPicture( context.painter(), QPointF( 0, 0 ), results.back() );
     }
-    delete pic;
+    results.pop_back();
   }
 }
 
@@ -156,9 +193,9 @@ bool QgsEffectStack::saveProperties( QDomDocument &doc, QDomElement &element ) c
     return false;
   }
 
-  QDomElement effectElement = doc.createElement( QStringLiteral( "effect" ) );
-  effectElement.setAttribute( QStringLiteral( "type" ), type() );
-  effectElement.setAttribute( QStringLiteral( "enabled" ), mEnabled );
+  QDomElement effectElement = doc.createElement( u"effect"_s );
+  effectElement.setAttribute( u"type"_s, type() );
+  effectElement.setAttribute( u"enabled"_s, mEnabled );
 
   bool ok = true;
   for ( QgsPaintEffect *effect : mEffectList )
@@ -178,7 +215,7 @@ bool QgsEffectStack::readProperties( const QDomElement &element )
     return false;
   }
 
-  mEnabled = ( element.attribute( QStringLiteral( "enabled" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
+  mEnabled = ( element.attribute( u"enabled"_s, u"0"_s ) != "0"_L1 );
 
   clearStack();
 

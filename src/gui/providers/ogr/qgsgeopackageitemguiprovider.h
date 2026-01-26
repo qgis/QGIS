@@ -18,9 +18,10 @@
 #ifndef QGSGEOPACKAGEITEMGUIPROVIDER_H
 #define QGSGEOPACKAGEITEMGUIPROVIDER_H
 
-#include <QObject>
 #include "qgsdataitemguiprovider.h"
-#include "qgis_sip.h"
+#include "qgsmimedatautils.h"
+
+#include <QObject>
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -33,32 +34,30 @@ class QgsGeoPackageItemGuiProvider : public QObject, public QgsDataItemGuiProvid
     Q_OBJECT
 
   public:
-
     QgsGeoPackageItemGuiProvider() = default;
 
-    QString name() override { return QStringLiteral( "geopackage_items" ); }
+    QString name() override { return u"geopackage_items"_s; }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                              const QList<QgsDataItem *> &selectedItems,
-                              QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
     bool rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context ) override;
     bool deleteLayer( QgsLayerItem *layerItem, QgsDataItemGuiContext context ) override;
 
     bool acceptDrop( QgsDataItem *item, QgsDataItemGuiContext context ) override;
-    bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context,
-                     const QMimeData *data,
-                     Qt::DropAction action ) override;
+    bool handleDrop( QgsDataItem *item, QgsDataItemGuiContext context, const QMimeData *data, Qt::DropAction action ) override;
+
   private:
     bool handleDropGeopackage( QgsGeoPackageCollectionItem *item, const QMimeData *data, QgsDataItemGuiContext context );
+    bool handleDropUri( QgsGeoPackageCollectionItem *item, const QgsMimeDataUtils::Uri &sourceUri, QgsDataItemGuiContext context );
+    void handleImportVector( QgsGeoPackageCollectionItem *item, QgsDataItemGuiContext context );
+
     //! Compacts (VACUUM) a geopackage database
     void vacuumGeoPackageDbAction( const QString &path, const QString &name, QgsDataItemGuiContext context );
-    void createDatabase( const QPointer< QgsGeoPackageRootItem > &item );
-    void createDatabaseAndLayer( const QPointer< QgsGeoPackageRootItem > &item );
+    void createDatabase( const QPointer<QgsGeoPackageRootItem> &item );
+    void createDatabaseAndLayer( const QPointer<QgsGeoPackageRootItem> &item );
 
   protected slots:
-    void renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames,
-                            const QPointer< QgsDataItem > &item, QgsDataItemGuiContext context );
+    void renameVectorLayer( const QString &uri, const QString &key, const QStringList &tableNames, const QPointer<QgsDataItem> &item, QgsDataItemGuiContext context );
 };
 
 ///@endcond

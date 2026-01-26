@@ -4,5 +4,5 @@ QgsSimplifyMethod.OptimizeForRendering = QgsSimplifyMethod.MethodType.OptimizeFo
 QgsSimplifyMethod.PreserveTopology = QgsSimplifyMethod.MethodType.PreserveTopology
 try:
     QgsSimplifyMethod.createGeometrySimplifier = staticmethod(QgsSimplifyMethod.createGeometrySimplifier)
-except NameError:
+except (NameError, AttributeError):
     pass

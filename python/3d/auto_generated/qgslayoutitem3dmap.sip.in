@@ -8,7 +8,6 @@
 
 
 
-
 // this is needed for the "convert to subclass" code below to compile
 %ModuleHeaderCode
 #include "qgslayoutitem3dmap.h"
@@ -19,8 +18,7 @@
 class QgsLayoutItem3DMap : QgsLayoutItem, QgsTemporalRangeObject
 {
 %Docstring(signature="appended")
-
-Implements support of 3D map views in print layouts
+Implements support of 3D map views in print layouts.
 
 .. versionadded:: 3.4
 %End
@@ -43,10 +41,10 @@ Implements support of 3D map views in print layouts
     }
 %End
   public:
-
     QgsLayoutItem3DMap( QgsLayout *layout /TransferThis/ );
 %Docstring
-Constructor for QgsLayoutItem3DMap, with the specified parent ``layout``.
+Constructor for QgsLayoutItem3DMap, with the specified parent
+``layout``.
 
 Ownership is transferred to the layout.
 %End
@@ -61,6 +59,7 @@ The caller takes responsibility for deleting the returned object.
 %End
 
     virtual int type() const;
+
     virtual QIcon icon() const;
 
 
@@ -86,7 +85,9 @@ Returns map scene. May be ``None`` if not yet configured.
 
     void assignFreeId();
 %Docstring
-Sets the map :py:func:`~QgsLayoutItem3DMap.id` to a number not yet used in the layout. The existing :py:func:`~QgsLayoutItem3DMap.id` is kept if it is not in use.
+Sets the map :py:func:`~QgsLayoutItem3DMap.id` to a number not yet used
+in the layout. The existing :py:func:`~QgsLayoutItem3DMap.id` is kept if
+it is not in use.
 %End
 
     virtual QString displayName() const;

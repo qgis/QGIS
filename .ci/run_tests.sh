@@ -12,7 +12,13 @@ test -n "${DOCKER}" || {
 
 DOCKER_COMPOSE=$(command -v podman-compose docker-compose | head -1)
 test -n "${DOCKER_COMPOSE}" || {
-  DOCKER_COMPOSE="${DOCKER} compose" # TODO: check if supported
+  DOCKER_COMPOSE="${DOCKER} compose"
+  # check if supported
+  ${DOCKER_COMPOSE} > /dev/null || {
+    echo "Cannot find podman-compose or docker-compose, and '${DOCKER_COMPOSE}' fails" >&2
+    echo "HINT: try installing podman-compose" >&2
+    exit 1
+  }
 }
 
 IMAGE_BUILD_DEPS=docker.io/qgis/qgis3-build-deps:latest
@@ -98,8 +104,6 @@ else
     ${VOLUMES} \
     --env-file .docker/docker-variables.env \
     --env PUSH_TO_CDASH=false \
-    --env WITH_QT5=true \
-    --env BUILD_WITH_QT6=false \
     --env WITH_QUICK=false \
     --env WITH_3D=false \
     --env PATCH_QT_3D=false \

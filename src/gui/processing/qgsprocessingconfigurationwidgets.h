@@ -21,8 +21,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingalgorithmconfigurationwidget.h"
 #include "qgis_gui.h"
+#include "qgsprocessingalgorithmconfigurationwidget.h"
 
 class QTableWidget;
 
@@ -53,7 +53,6 @@ class QgsFilterAlgorithmConfigurationWidgetFactory : public QgsProcessingAlgorit
     QgsProcessingAlgorithmConfigurationWidget *create( const QgsProcessingAlgorithm *algorithm ) const override;
     bool canCreateFor( const QgsProcessingAlgorithm *algorithm ) const override;
 };
-
 
 
 class QgsConditionalBranchAlgorithmConfigurationWidget : public QgsProcessingAlgorithmConfigurationWidget

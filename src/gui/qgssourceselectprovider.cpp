@@ -15,6 +15,6 @@
  ***************************************************************************/
 #include "qgssourceselectprovider.h"
 
+#include "moc_qgssourceselectprovider.cpp"
 
 // no implementation currently
-

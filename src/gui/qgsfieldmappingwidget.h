@@ -16,23 +16,23 @@
 #ifndef QGSFIELDMAPPINGWIDGET_H
 #define QGSFIELDMAPPINGWIDGET_H
 
-#include <QWidget>
-#include <QAbstractTableModel>
-#include <QStyledItemDelegate>
-#include <QPointer>
-
 #include "qgis_gui.h"
 #include "qgsfieldmappingmodel.h"
 #include "qgspanelwidget.h"
 
+#include <QAbstractTableModel>
+#include <QPointer>
+#include <QStyledItemDelegate>
+#include <QWidget>
+
 class QTableView;
 class QItemSelectionModel;
 class QgsVectorLayer;
+class QgsFieldMappingTypeDelegate;
 
 /**
  * \ingroup gui
- * \brief The QgsFieldMappingWidget class creates a mapping from one set of QgsFields to another,
- * for each set of "destination" fields an expression defines how to obtain the values of the
+ * \brief Creates a mapping from one set of QgsFields to another, for each set of "destination" fields an expression defines how to obtain the values of the
  * "destination" fields.
  * \since QGIS 3.14
  */
@@ -41,18 +41,25 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a QgsFieldMappingWidget from a set of \a sourceFields
      * and \a destinationFields, initial values for the expressions can be
      * optionally specified through \a expressions which is a map from the original
      * field name to the corresponding expression. A \a parent object
      * can also be specified.
+     *
+     * Since QGIS 3.44, the \a nativeTypes argument can be used to specify the list of
+     * field types natively supported by a data provider. If this list is non-empty, then
+     * the destination field types will be populated accordingly. If the list is empty,
+     * then a set of default native types will be used instead.
      */
-    explicit QgsFieldMappingWidget( QWidget *parent = nullptr,
-                                    const QgsFields &sourceFields = QgsFields(),
-                                    const QgsFields &destinationFields = QgsFields(),
-                                    const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    explicit QgsFieldMappingWidget(
+      QWidget *parent = nullptr,
+      const QgsFields &sourceFields = QgsFields(),
+      const QgsFields &destinationFields = QgsFields(),
+      const QMap<QString, QString> &expressions = QMap<QString, QString>(),
+      const QList< QgsVectorDataProvider::NativeType > &nativeTypes = QList< QgsVectorDataProvider::NativeType >()
+    );
 
     //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
@@ -72,14 +79,14 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      *
      * \see setFieldPropertyMap()
      */
-    QMap< QString, QgsProperty > fieldPropertyMap() const;
+    QMap<QString, QgsProperty> fieldPropertyMap() const;
 
     /**
      * Sets a map of destination field name to QgsProperty definition for field value.
      *
      * \see fieldPropertyMap()
      */
-    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+    void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 
     //! Returns the selection model
     QItemSelectionModel *selectionModel();
@@ -109,8 +116,18 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      * \a expressions which is a map from the original field name to the
      * corresponding expression.
      */
-    void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+
+    /**
+     * Sets the list of \a nativeTypes supported by a data provider.
+     *
+     * If this list is non-empty, then the destination field types will be populated
+     * accordingly. If the list is empty, then a set of default native types will be
+     * used instead.
+     *
+     * \since QGIS 3.44
+     */
+    void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
 
     /**
      * Scroll the fields view to \a index
@@ -136,45 +153,44 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     void appendField( const QgsField &field, const QString &expression = QString() );
 
     //! Removes the currently selected field from the model
-    bool removeSelectedFields( );
+    bool removeSelectedFields();
 
     //! Moves up currently selected field
-    bool moveSelectedFieldsUp( );
+    bool moveSelectedFieldsUp();
 
     //! Moves down the currently selected field
-    bool moveSelectedFieldsDown( );
+    bool moveSelectedFieldsDown();
 
     /**
      * Invert the field selection state.
      *
      * \since QGIS 3.32
      */
-    void invertSelection( );
+    void invertSelection();
 
   private:
-
     QTableView *mTableView = nullptr;
-    QAbstractTableModel *mModel = nullptr;
+    QgsFieldMappingModel *mModel = nullptr;
 
-    QPointer< QgsVectorLayer > mSourceLayer;
+    QgsFieldMappingTypeDelegate *mTypeDelegate = nullptr;
+
+    QPointer<QgsVectorLayer> mSourceLayer;
     void updateColumns();
     //! Returns selected row indexes in ascending order
-    std::list<int> selectedRows( );
+    std::list<int> selectedRows();
 
     friend class QgsAggregateMappingWidget;
-
 };
 
 /// @cond PRIVATE
 
 #ifndef SIP_RUN
 
-class QgsFieldMappingExpressionDelegate: public QStyledItemDelegate
+class QgsFieldMappingExpressionDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
-
     QgsFieldMappingExpressionDelegate( QObject *parent = nullptr );
 
     // QAbstractItemDelegate interface
@@ -183,18 +199,31 @@ class QgsFieldMappingExpressionDelegate: public QStyledItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 
-class QgsFieldMappingTypeDelegate: public QStyledItemDelegate
+class QgsFieldMappingTypeDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
-
-    QgsFieldMappingTypeDelegate( QObject *parent = nullptr );
+    QgsFieldMappingTypeDelegate( const QList< QgsVectorDataProvider::NativeType > &nativeTypes, QObject *parent = nullptr );
 
     // QAbstractItemDelegate interface
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
+    /**
+     * Sets the list of \a nativeTypes supported by a data provider.
+     *
+     * If this list is non-empty, then the destination field types will be populated
+     * accordingly. If the list is empty, then a set of default native types will be
+     * used instead.
+     *
+     * \since QGIS 3.44
+     */
+    void setNativeTypes( const QList< QgsVectorDataProvider::NativeType > &nativeTypes );
+
+  private:
+    QList< QgsVectorDataProvider::NativeType > mNativeTypes;
 };
 
 #endif

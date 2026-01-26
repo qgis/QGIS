@@ -18,10 +18,11 @@
 #define QGSNEWMEMORYLAYERDIALOG_H
 
 #include "ui_qgsnewmemorylayerdialogbase.h"
-#include "qgsguiutils.h"
-#include "qgswkbtypes.h"
-#include "qgshelp.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgswkbtypes.h"
 
 class QgsFields;
 class QgsVectorLayer;
@@ -29,13 +30,13 @@ class QgsVectorLayer;
 /**
  * \ingroup gui
  * \class QgsNewMemoryLayerDialog
+ * \brief A dialog for configuring the properties of a new memory (scratch) layer.
  */
-class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
+class GUI_EXPORT QgsNewMemoryLayerDialog : public QDialog, private Ui::QgsNewMemoryLayerDialogBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Runs the dialog and creates a new memory layer
      * \param parent parent widget
@@ -76,7 +77,6 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     void accept() override;
 
   private:
-
     QString mCrsId;
     QPushButton *mOkButton = nullptr;
 

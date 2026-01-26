@@ -18,30 +18,28 @@
 #include "qgsannotationitem.h"
 #include "qgsannotationitemregistry.h"
 #include "qgsmultirenderchecker.h"
-#include "qgstest.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
+#include "qgstest.h"
 
+#include <QImage>
 #include <QObject>
 #include <QPainter>
-#include <QImage>
 #include <QtTest/QSignalSpy>
-
 
 //simple item for testing, since some methods in QgsAnnotationItem are pure virtual
 class TestItem : public QgsAnnotationItem
 {
-
   public:
-
-    TestItem() : QgsAnnotationItem()
+    TestItem()
+      : QgsAnnotationItem()
     {
     }
 
     static QgsAnnotationItem *create() { return new TestItem(); }
 
     //implement pure virtual methods
-    QString type() const override { return QStringLiteral( "test_item" ); }
+    QString type() const override { return u"test_item"_s; }
 
     void render( QgsRenderContext &, QgsFeedback * ) override
     {
@@ -62,19 +60,20 @@ class TestItem : public QgsAnnotationItem
       return true;
     }
 
+    using QgsAnnotationItem::boundingBox;
     QgsRectangle boundingBox() const override { return QgsRectangle(); }
 };
 
 
-class TestQgsAnnotationItemRegistry: public QObject
+class TestQgsAnnotationItemRegistry : public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
     void metadata();
     void createInstance();
     void instanceHasItems();
@@ -95,24 +94,20 @@ void TestQgsAnnotationItemRegistry::cleanupTestCase()
 
 void TestQgsAnnotationItemRegistry::init()
 {
-
 }
 
 void TestQgsAnnotationItemRegistry::cleanup()
 {
-
 }
 
 void TestQgsAnnotationItemRegistry::metadata()
 {
-  QgsAnnotationItemMetadata metadata = QgsAnnotationItemMetadata( QStringLiteral( "name" ), QStringLiteral( "display name" ),
-                                       QStringLiteral( "display names" ),
-                                       TestItem::create );
+  QgsAnnotationItemMetadata metadata = QgsAnnotationItemMetadata( u"name"_s, u"display name"_s, u"display names"_s, TestItem::create );
   QCOMPARE( metadata.type(), QString( "name" ) );
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating item from metadata
-  const std::unique_ptr< QgsAnnotationItem > item( metadata.createItem() );
+  const std::unique_ptr<QgsAnnotationItem> item( metadata.createItem() );
   QVERIFY( item );
   TestItem *dummyItem = dynamic_cast<TestItem *>( item.get() );
   QVERIFY( dummyItem );
@@ -143,16 +138,12 @@ void TestQgsAnnotationItemRegistry::addItem()
 
   const QSignalSpy spyTypeAdded( registry, &QgsAnnotationItemRegistry::typeAdded );
 
-  registry->addItemType( new QgsAnnotationItemMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "display name" ),
-                         QStringLiteral( "display names" ),
-                         TestItem::create ) );
+  registry->addItemType( new QgsAnnotationItemMetadata( u"Dummy"_s, u"display name"_s, u"display names"_s, TestItem::create ) );
   QCOMPARE( registry->itemTypes().size(), previousCount + 1 );
   QCOMPARE( spyTypeAdded.count(), 1 );
   //try adding again, should have no effect
-  QgsAnnotationItemMetadata *dupe = new QgsAnnotationItemMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "display name" ),
-      QStringLiteral( "display names" ),
-      TestItem::create );
-  QVERIFY( ! registry->addItemType( dupe ) );
+  QgsAnnotationItemMetadata *dupe = new QgsAnnotationItemMetadata( u"Dummy"_s, u"display name"_s, u"display names"_s, TestItem::create );
+  QVERIFY( !registry->addItemType( dupe ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( registry->itemTypes().size(), previousCount + 1 );
   delete dupe;
@@ -170,25 +161,25 @@ void TestQgsAnnotationItemRegistry::fetchTypes()
 
   QVERIFY( types.contains( "Dummy" ) );
 
-  QgsAnnotationItemAbstractMetadata *metadata = registry->itemMetadata( QStringLiteral( "Dummy" ) );
+  QgsAnnotationItemAbstractMetadata *metadata = registry->itemMetadata( u"Dummy"_s );
   QCOMPARE( metadata->type(), QString( "Dummy" ) );
 
   //metadata for bad item
-  metadata = registry->itemMetadata( QStringLiteral( "bad item" ) );
+  metadata = registry->itemMetadata( u"bad item"_s );
   QVERIFY( !metadata );
 }
 
 void TestQgsAnnotationItemRegistry::createItem()
 {
   QgsAnnotationItemRegistry *registry = QgsApplication::annotationItemRegistry();
-  std::unique_ptr< QgsAnnotationItem > item( registry->createItem( QStringLiteral( "Dummy" ) ) );
+  std::unique_ptr<QgsAnnotationItem> item( registry->createItem( u"Dummy"_s ) );
 
   QVERIFY( item.get() );
   TestItem *dummyItem = dynamic_cast<TestItem *>( item.get() );
   QVERIFY( dummyItem );
 
   //try creating a bad symbol
-  item.reset( registry->createItem( QStringLiteral( "bad item" ) ) );
+  item.reset( registry->createItem( u"bad item"_s ) );
   QVERIFY( !item.get() );
 }
 

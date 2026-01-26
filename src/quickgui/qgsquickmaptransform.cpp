@@ -15,6 +15,8 @@
 
 #include "qgsquickmaptransform.h"
 
+#include "moc_qgsquickmaptransform.cpp"
+
 void QgsQuickMapTransform::applyTo( QMatrix4x4 *matrix ) const
 {
   *matrix *= mMatrix;
@@ -50,8 +52,7 @@ void QgsQuickMapTransform::updateMatrix()
   float scaleFactor = static_cast<float>( ( 1.0 / mMapSettings->mapUnitsPerPixel() ) / mMapSettings->devicePixelRatio() );
 
   matrix.scale( scaleFactor, -scaleFactor );
-  matrix.translate( static_cast<float>( -mMapSettings->visibleExtent().xMinimum( ) ),
-                    static_cast<float>( -mMapSettings->visibleExtent().yMaximum() ) );
+  matrix.translate( static_cast<float>( -mMapSettings->visibleExtent().xMinimum() ), static_cast<float>( -mMapSettings->visibleExtent().yMaximum() ) );
 
   mMatrix = matrix;
   update();

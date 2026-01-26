@@ -14,18 +14,20 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdpart.h"
+
+#include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurvepolygon.h"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgslogger.h"
-#include "qgisapp.h"
-#include "qgsmapmouseevent.h"
 
+#include "moc_qgsmaptooladdpart.cpp"
 
 QgsMapToolAddPart::QgsMapToolAddPart( QgsMapCanvas *canvas )
   : QgsMapToolCaptureLayerGeometry( canvas, QgisApp::instance()->cadDockWidget(), CaptureNone )
@@ -209,11 +211,13 @@ QgsVectorLayer *QgsMapToolAddPart::getLayerAndCheckSelection()
   {
     // Only one selected feature
     // For single-type layers only allow features without geometry
+    // Exception: TIN and PolyhedralSurface can hold multiple patches even though they are "single" types
     QgsFeatureIterator selectedFeatures = layer->getSelectedFeatures();
     QgsFeature selectedFeature;
     selectedFeatures.nextFeature( selectedFeature );
-    if ( QgsWkbTypes::isSingleType( layer->wkbType() ) &&
-         selectedFeature.geometry().constGet() )
+    const Qgis::WkbType layerFlatType = QgsWkbTypes::flatType( layer->wkbType() );
+    const bool isSurfaceWithPatches = ( layerFlatType == Qgis::WkbType::TIN || layerFlatType == Qgis::WkbType::PolyhedralSurface );
+    if ( QgsWkbTypes::isSingleType( layer->wkbType() ) && !isSurfaceWithPatches && selectedFeature.geometry().constGet() )
     {
       selectionErrorMsg = tr( "This layer does not support multipart geometries." );
     }

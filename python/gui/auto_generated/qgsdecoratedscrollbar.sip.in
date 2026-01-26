@@ -14,7 +14,8 @@
 class QgsScrollBarHighlight
 {
 %Docstring(signature="appended")
-Encapsulates the details of a highlight in a scrollbar, used alongside :py:class:`QgsScrollBarHighlightController`.
+Encapsulates the details of a highlight in a scrollbar, used alongside
+:py:class:`QgsScrollBarHighlightController`.
 
 .. versionadded:: 3.38
 %End
@@ -23,7 +24,6 @@ Encapsulates the details of a highlight in a scrollbar, used alongside :py:class
 #include "qgsdecoratedscrollbar.h"
 %End
   public:
-
     enum class Priority
     {
       Invalid,
@@ -61,7 +61,6 @@ Adds highlights (colored markers) to a scrollbar.
 #include "qgsdecoratedscrollbar.h"
 %End
   public:
-
     QgsScrollBarHighlightController();
     ~QgsScrollBarHighlightController();
 
@@ -100,7 +99,8 @@ Sets the line ``height`` for text associated with the scroll area.
 
     double visibleRange() const;
 %Docstring
-Returns the visible range of the scroll area (i.e. the viewport's height).
+Returns the visible range of the scroll area (i.e. the viewport's
+height).
 
 .. seealso:: :py:func:`setVisibleRange`
 %End

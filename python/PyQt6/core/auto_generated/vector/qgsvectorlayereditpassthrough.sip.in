@@ -14,6 +14,10 @@
 
 class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 {
+%Docstring(signature="appended")
+An edit buffer which directly passes commands through, used when a layer
+is within a transaction.
+%End
 
 %TypeHeaderCode
 #include "qgsvectorlayereditpassthrough.h"
@@ -68,7 +72,8 @@ Update underlying data with a SQL query embedded in a transaction.
 :param sql: The SQL query updating data
 :param name: The name of the undo/redo command
 
-:return: ``True`` if the undo/redo command is well added to the stack, ``False`` otherwise
+:return: ``True`` if the undo/redo command is well added to the stack,
+         ``False`` otherwise
 %End
 
 };

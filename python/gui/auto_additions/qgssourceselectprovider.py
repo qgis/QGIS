@@ -14,3 +14,8 @@ QgsSourceSelectProvider.Capability.__doc__ = """The Capability enum describes th
 QgsSourceSelectProvider.Capability.baseClass = QgsSourceSelectProvider
 QgsSourceSelectProvider.Capabilities.baseClass = QgsSourceSelectProvider
 Capabilities = QgsSourceSelectProvider  # dirty hack since SIP seems to introduce the flags in module
+try:
+    QgsSourceSelectProvider.__virtual_methods__ = ['name', 'toolTip', 'ordering', 'capabilities']
+    QgsSourceSelectProvider.__abstract_methods__ = ['providerKey', 'text', 'icon', 'createDataSourceWidget']
+except (NameError, AttributeError):
+    pass

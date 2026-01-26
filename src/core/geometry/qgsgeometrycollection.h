@@ -16,14 +16,13 @@ email                : marco.hugentobler at sourcepole dot com
 #ifndef QGSGEOMETRYCOLLECTION_H
 #define QGSGEOMETRYCOLLECTION_H
 
-#include <QVector>
-
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
-#include "qgsrectangle.h"
 #include "qgsbox3d.h"
+#include "qgsrectangle.h"
+
+#include <QVector>
 
 class QgsPoint;
 
@@ -31,7 +30,7 @@ class QgsPoint;
 /**
  * \ingroup core
  * \class QgsGeometryCollection
- * \brief Geometry collection
+ * \brief Geometry collection.
  */
 class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 {
@@ -189,6 +188,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;
+
+    using QgsAbstractGeometry::boundingBoxIntersects;
     bool boundingBoxIntersects( const QgsBox3D &box3d ) const override SIP_HOLDGIL;
 
     /**
@@ -292,6 +293,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     double length() const override SIP_HOLDGIL;
     double area() const override SIP_HOLDGIL;
+    double area3D() const override SIP_HOLDGIL;
     double perimeter() const override SIP_HOLDGIL;
 
     bool hasCurvedSegments() const override SIP_HOLDGIL;
@@ -318,7 +320,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     void swapXy() override;
     QgsGeometryCollection *toCurveType() const override SIP_FACTORY;
     const QgsAbstractGeometry *simplifiedTypeRef() const override SIP_HOLDGIL;
-    virtual QgsGeometryCollection *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
+    QgsGeometryCollection *simplifyByDistance( double tolerance ) const override SIP_FACTORY;
 
     bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = nullptr ) override;
 
@@ -330,12 +332,29 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * Cast the \a geom to a QgsGeometryCollection.
      * Should be used by qgsgeometry_cast<QgsGeometryCollection *>( geometry ).
      *
-     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
      */
     inline static const QgsGeometryCollection *cast( const QgsAbstractGeometry *geom )
     {
       if ( geom && QgsWkbTypes::isMultiType( geom->wkbType() ) )
         return static_cast<const QgsGeometryCollection *>( geom );
+      return nullptr;
+    }
+
+    /**
+     * Cast the \a geom to a QgsGeometryCollection.
+     * Should be used by qgsgeometry_cast<QgsGeometryCollection *>( geometry ).
+     *
+     * Objects will be automatically converted to the appropriate target type.
+     *
+     * \note Not available in Python.
+     */
+    inline static QgsGeometryCollection *cast( QgsAbstractGeometry *geom )
+    {
+      if ( geom && QgsWkbTypes::isMultiType( geom->wkbType() ) )
+        return static_cast<QgsGeometryCollection *>( geom );
       return nullptr;
     }
 #endif
@@ -439,7 +458,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+    SIP_SKIP bool fromCollectionWkt( const QString &wkt, const QVector<Qgis::WkbType> &subtypes, const QString &defaultChildWkbType = QString() );
 
     QgsBox3D calculateBoundingBox3D() const override;
     void clearCache() const override;

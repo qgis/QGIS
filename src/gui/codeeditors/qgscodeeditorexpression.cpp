@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscodeeditorexpressoin.cpp - An expression editor based on QScintilla
+    qgscodeeditorexpression.cpp - An expression editor based on QScintilla
      --------------------------------------
     Date                 : 8.9.2018
     Copyright            : (C) 2018 by Matthias Kuhn
@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgscodeeditorexpression.h"
+
 #include "qgsexpression.h"
 
-#include <QString>
 #include <QFont>
+#include <QString>
+
+#include "moc_qgscodeeditorexpression.cpp"
 
 QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   : QgsCodeEditor( parent )
@@ -35,6 +38,16 @@ Qgis::ScriptLanguage QgsCodeEditorExpression::language() const
   return Qgis::ScriptLanguage::QgisExpression;
 }
 
+Qgis::ScriptLanguageCapabilities QgsCodeEditorExpression::languageCapabilities() const
+{
+  return Qgis::ScriptLanguageCapability::ToggleComment;
+}
+
+void QgsCodeEditorExpression::toggleComment()
+{
+  toggleLineComments( u"--"_s );
+}
+
 void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &context )
 {
   mVariables.clear();
@@ -47,9 +60,9 @@ void QgsCodeEditorExpression::setExpressionContext( const QgsExpressionContext &
 
   // always show feature variables in autocomplete -- they may not be available in the context
   // at time of showing an expression builder, but they'll generally be available at evaluation time.
-  mVariables << QStringLiteral( "@feature" );
-  mVariables << QStringLiteral( "@id" );
-  mVariables << QStringLiteral( "@geometry" );
+  mVariables << u"@feature"_s;
+  mVariables << u"@id"_s;
+  mVariables << u"@geometry"_s;
 
   mContextFunctions = context.functionNames();
 
@@ -196,7 +209,6 @@ const char *QgsLexerExpression::wordCharacters() const
 QgsSciApisExpression::QgsSciApisExpression( QsciLexer *lexer )
   : QsciAPIs( lexer )
 {
-
 }
 
 QStringList QgsSciApisExpression::callTips( const QStringList &context, int commas, QsciScintilla::CallTipsStyle style, QList<int> &shifts )

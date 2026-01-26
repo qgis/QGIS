@@ -18,14 +18,15 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+
 #include <QtGlobal>
 
 /**
  * \ingroup core
- * \brief A class to represent a vector.
- * Currently no Z axis / 2.5D support is implemented.
+ * \brief Represent a 2-dimensional vector.
+ *
+ * No Z axis / 2.5D support is implemented. See QgsVector3D for a 3D equivalent.
  */
-
 class CORE_EXPORT QgsVector
 {
 
@@ -230,7 +231,7 @@ class CORE_EXPORT QgsVector
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVector: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsVector: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -14,14 +14,13 @@
 class QgsServerLogger : QgsMessageLogConsole
 {
 %Docstring(signature="appended")
-Writes message log into server logfile
+Writes message log into server log files.
 %End
 
 %TypeHeaderCode
 #include "qgsserverlogger.h"
 %End
   public:
-
     static QgsServerLogger *instance();
 %Docstring
 Gets the singleton instance

@@ -16,13 +16,13 @@
 #ifndef QGSLABELSETTINGSWIDGETBASE_H
 #define QGSLABELSETTINGSWIDGETBASE_H
 
-#include "qgssymbolwidgetcontext.h"
-#include "qgspallabeling.h"
-#include "qgspropertycollection.h"
-#include "qgspanelwidget.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsexpressioncontextgenerator.h"
+#include "qgspallabeling.h"
+#include "qgspanelwidget.h"
+#include "qgspropertycollection.h"
+#include "qgssymbolwidgetcontext.h"
 
 #include <QDialog>
 
@@ -35,18 +35,17 @@ class QgsPropertyOverrideButton;
  * \brief Base class for widgets which allow customization of label engine properties, such as label placement settings.
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLabelSettingsWidgetBase.
      * \param parent parent widget
-     * \param vl associated vector layer
+     * \param vl associated map layer
      */
-    QgsLabelSettingsWidgetBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsVectorLayer *vl = nullptr );
+    QgsLabelSettingsWidgetBase( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsMapLayer *vl = nullptr );
 
     /**
      * Sets the \a context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
@@ -102,7 +101,6 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     void auxiliaryFieldCreated();
 
   protected:
-
     QgsExpressionContext createExpressionContext() const override;
 
     /**
@@ -123,14 +121,9 @@ class GUI_EXPORT QgsLabelSettingsWidgetBase : public QgsPanelWidget, protected Q
     void updateDataDefinedProperty();
 
   private:
-
-    QgsVectorLayer *mVectorLayer = nullptr;
-
-    bool mBlockSignals = false;
+    QPointer< QgsMapLayer > mLayer = nullptr;
 
     QgsSymbolWidgetContext mContext;
-
-
 };
 
 /**
@@ -144,8 +137,6 @@ class GUI_EXPORT QgsLabelSettingsWidgetDialog : public QDialog
     Q_OBJECT
 
   public:
-
-
     /**
      * Constructor for QgsLabelSettingsWidgetDialog.
      * \param widget label settings widget to embed in the dialog. Ownership is transferred to the dialog.
@@ -162,9 +153,7 @@ class GUI_EXPORT QgsLabelSettingsWidgetDialog : public QDialog
     QDialogButtonBox *buttonBox();
 
   private:
-
     QDialogButtonBox *mButtonBox = nullptr;
-
 };
 
 #endif // QGSLABELSETTINGSWIDGETBASE_H

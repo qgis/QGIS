@@ -14,11 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthcrypto.h"
 #include "qgsauthmanager.h"
 #include "qgstest.h"
-#include "qgsapplication.h"
-#include "qgsauthcrypto.h"
-#include "qgsauthcertutils.h"
 
 #include <QObject>
 #include <QSslKey>
@@ -29,7 +29,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsAuthCertUtils static functions
  */
-class TestQgsAuthCertUtils: public QObject
+class TestQgsAuthCertUtils : public QObject
 {
     Q_OBJECT
 

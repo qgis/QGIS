@@ -16,12 +16,12 @@
 #ifndef QGSINPUTCONTROLLER_H
 #define QGSINPUTCONTROLLER_H
 
+#include "qgis.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
-#include <QObject>
 #include <QMap>
+#include <QObject>
 
 class QgsAbstract2DMapController;
 class QgsAbstract3DMapController;
@@ -41,7 +41,6 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsInputControllerManager, with the specified \a parent object.
      *
@@ -144,10 +143,8 @@ class GUI_EXPORT QgsInputControllerManager : public QObject
     bool register3DMapController( QgsAbstract3DMapController *controller SIP_TRANSFER );
 
   private:
-
-    QMap< QString, QgsAbstract2DMapController * > m2DMapControllers;
-    QMap< QString, QgsAbstract3DMapController * > m3DMapControllers;
-
+    QMap<QString, QgsAbstract2DMapController *> m2DMapControllers;
+    QMap<QString, QgsAbstract3DMapController *> m3DMapControllers;
 };
 
 #endif // QGSINPUTCONTROLLER_H

@@ -31,12 +31,10 @@
 class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
-
     /**
      * Builds a command line string to run required pdal_wrench tool.
      */
-    virtual QStringList createArgumentLists( const QVariantMap &parameters,
-        QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    virtual QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
   protected:
     void setOutputValue( const QString &name, const QVariant &value );
@@ -86,8 +84,23 @@ class QgsPdalAlgorithmBase : public QgsProcessingAlgorithm
      */
     QString wrenchExecutableBinary() const;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    /**
+     * Returns name of index copc file for given \a filename of point cloud.
+     *
+     * \param filename name of the original dataset
+     *
+     * \since QGIS 3.44
+     */
+    static QString copcIndexFile( const QString &filename );
+
+    /**
+     * Override that prefers copc.laz index file as datasource for faster processing (if the index file exists) otherwise uses original layer.
+     *
+     * \since QGIS 3.44
+     */
+    QgsPointCloudLayer *parameterAsPointCloudLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, QgsProcessing::LayerOptionsFlags flags ) const;
 
   private:
     QMap<QString, QVariant> mOutputValues;

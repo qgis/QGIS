@@ -18,16 +18,16 @@
 #ifndef QGSDBFILTERPROXYMODEL_H
 #define QGSDBFILTERPROXYMODEL_H
 
-#include <QSortFilterProxyModel>
+#include "qgis_core.h"
 #include "qgis_sip.h"
 
-#include "qgis_core.h"
+#include <QSortFilterProxyModel>
 
 /**
  * \class QgsDatabaseFilterProxyModel
  * \ingroup core
- * \brief A class that implements a custom filter and can be used
- * as a proxy for QgsDbTableModel
+ * \brief Implements a custom filter and can be used
+ * as a proxy for QgsDbTableModel.
  * \deprecated QGIS 3.24
 */
 class CORE_DEPRECATED_EXPORT QgsDatabaseFilterProxyModel : public QSortFilterProxyModel SIP_DEPRECATED

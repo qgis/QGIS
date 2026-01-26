@@ -10,7 +10,6 @@
 
 
 
-
 class QgsBusyIndicatorDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -21,11 +20,9 @@ A simple dialog to show an indeterminate busy progress indicator.
 #include "qgsbusyindicatordialog.h"
 %End
   public:
-
     QgsBusyIndicatorDialog( const QString &message = QString(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
-Constructor
-Modal busy indicator dialog with no buttons.
+Constructor Modal busy indicator dialog with no buttons.
 
 :param message: Text to show above busy progress indicator.
 :param parent: parent object (owner)

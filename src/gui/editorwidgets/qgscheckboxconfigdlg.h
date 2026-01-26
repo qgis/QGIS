@@ -18,14 +18,15 @@
 
 #include "ui_qgscheckboxconfigdlgbase.h"
 
-#include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 
 /**
  * \ingroup gui
  * \class QgsCheckBoxConfigDlg
+ * \brief Configuration widget for checkbox widgets.
  * \note not available in Python bindings
  */
 class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget, private Ui::QgsCheckBoxConfigDlgBase

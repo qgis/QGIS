@@ -16,9 +16,10 @@
 #define QGSHEATMAPRENDERERWIDGET_H
 
 #include "ui_qgsheatmaprendererwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgis_sip.h"
 #include "qgsrendererwidget.h"
-#include "qgis_gui.h"
 
 class QMenu;
 class QgsHeatmapRenderer;
@@ -26,13 +27,13 @@ class QgsHeatmapRenderer;
 /**
  * \ingroup gui
  * \class QgsHeatmapRendererWidget
+ * \brief A widget for configuring a QgsHeatmapRenderer.
  */
 class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui::QgsHeatmapRendererWidgetBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied
@@ -55,7 +56,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    std::unique_ptr< QgsHeatmapRenderer > mRenderer;
+    std::unique_ptr<QgsHeatmapRenderer> mRenderer;
 
   private slots:
 
@@ -66,7 +67,6 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     void mMaxSpinBox_valueChanged( double d );
     void mQualitySlider_valueChanged( int v );
     void weightExpressionChanged( const QString &expression );
-
 };
 
 

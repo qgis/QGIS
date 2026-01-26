@@ -14,9 +14,15 @@
  ***************************************************************************/
 
 #include "qgsquantizedmeshterraingenerator.h"
+
+#include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsapplication.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgeotransform.h"
+#include "qgsgltf3dutils.h"
 #include "qgslogger.h"
 #include "qgsmesh3dentity_p.h"
 #include "qgsmeshlayerutils.h"
@@ -25,6 +31,7 @@
 #include "qgsquantizedmeshdataprovider.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsrectangle.h"
+#include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
 #include "qgsterraintileloader.h"
 #include "qgstiledsceneindex.h"
@@ -32,19 +39,17 @@
 #include "qgstiledscenetile.h"
 #include "qgstiles.h"
 #include "qgstriangularmesh.h"
-#include "qgsgltf3dutils.h"
-#include "qgsterrainentity.h"
-#include "qgs3dmapsettings.h"
 #include "qgsvector3d.h"
-#include "qgsapplication.h"
-#include <qcomponent.h>
-#include <qdiffusespecularmaterial.h>
-#include <qentity.h>
-#include <qglobal.h>
-#include <qnamespace.h>
-#include <qphongmaterial.h>
-#include <qtconcurrentrun.h>
-#include <qtexturematerial.h>
+
+#include <QComponent>
+#include <QDiffuseSpecularMaterial>
+#include <QEntity>
+#include <QPhongMaterial>
+#include <QTextureMaterial>
+#include <QtConcurrentRun>
+#include <QtGlobal>
+
+#include "moc_qgsquantizedmeshterraingenerator.cpp"
 
 ///@cond PRIVATE
 
@@ -53,67 +58,76 @@ class QgsQuantizedMeshTerrainChunkLoader : public QgsTerrainTileLoader
     Q_OBJECT
   public:
     QgsQuantizedMeshTerrainChunkLoader(
-      QgsTerrainEntity *terrain, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs );
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+      QgsTerrainEntity *terrain, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs
+    );
+    void start() override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   protected:
-    virtual void onTextureLoaded() override;
+    void onTextureLoaded() override;
 
   private:
     QgsTerrainTileEntity *mEntity = nullptr;
     bool mMeshLoaded = false;
     bool mTextureLoaded = false;
     std::mutex mFinishedMutex;
+    long long mTileId;
+    QgsTiledSceneIndex mIndex;
+    QgsCoordinateTransform mTileCrsToMapCrs;
 };
 
 QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerrainEntity *terrain_, QgsChunkNode *node, long long tileId, QgsTiledSceneIndex index, const QgsCoordinateTransform &tileCrsToMapCrs )
   : QgsTerrainTileLoader( terrain_, node )
+  , mTileId( tileId )
+  , mIndex( std::move( index ) )
+  , mTileCrsToMapCrs( tileCrsToMapCrs )
 {
+}
+
+void QgsQuantizedMeshTerrainChunkLoader::start()
+{
+  QgsChunkNode *node = chunk();
+
   loadTexture(); // Start loading texture
 
   // Access terrain only on the original thread.
   Qgs3DMapSettings *map = terrain()->mapSettings();
-  double vertScale = map->terrainVerticalScale();
-  QgsVector3D mapOrigin = map->origin();
+  double vertScale = map->terrainSettings()->verticalScale();
   bool shadingEnabled = map->isTerrainShadingEnabled();
+  QgsVector3D chunkOrigin = node->box3D().center();
 
-  QThreadPool::globalInstance()->start( [ this, node, tileId, index, tileCrsToMapCrs, vertScale, mapOrigin, shadingEnabled ]()
-  {
-    if ( tileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
+  QThreadPool::globalInstance()->start( [this, node, vertScale, chunkOrigin, shadingEnabled]() {
+    if ( mTileId == QgsQuantizedMeshIndex::ROOT_TILE_ID )
     {
       // Nothing to load for imaginary root tile
       emit finished();
       return;
     }
 
-    // We need to copy index, since capture makes it const. It's just a wrapped smart pointer anyway.
-    QgsTiledSceneIndex index2 = index;
-    QgsTiledSceneTile tile = index2.getTile( tileId );
+    QgsTiledSceneTile tile = mIndex.getTile( mTileId );
 
-    QString uri = tile.resources().value( QStringLiteral( "content" ) ).toString();
+    QString uri = tile.resources().value( u"content"_s ).toString();
     Q_ASSERT( !uri.isEmpty() );
 
     uri = tile.baseUrl().resolved( uri ).toString();
-    QByteArray content = index2.retrieveContent( uri );
+    QByteArray content = mIndex.retrieveContent( uri );
 
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-    entityTransform.sceneOriginTargetCrs = mapOrigin;
-    entityTransform.ecefToTargetCrs = &tileCrsToMapCrs;
-    entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
+    entityTransform.chunkOriginTargetCrs = chunkOrigin;
+    entityTransform.ecefToTargetCrs = &mTileCrsToMapCrs;
+    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( u"gltfUpAxis"_s, static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     try
     {
-      QgsAABB bbox = node->bbox();
+      QgsBox3D box3D = node->box3D();
       QgsQuantizedMeshTile qmTile( content );
       qmTile.removeDegenerateTriangles();
 
       // We now know the exact height range of the tile, set it to the node.
-      node->setExactBbox(
-        QgsAABB(
-          // Note that in the 3D view, Y is up!
-          bbox.xMin, qmTile.mHeader.MinimumHeight * vertScale, bbox.zMin,
-          bbox.xMax, qmTile.mHeader.MaximumHeight * vertScale, bbox.zMax ) );
+      box3D.setZMinimum( qmTile.mHeader.MinimumHeight * vertScale );
+      box3D.setZMaximum( qmTile.mHeader.MaximumHeight * vertScale );
+      node->setExactBox3D( box3D );
 
       if ( shadingEnabled && qmTile.mNormalCoords.size() == 0 )
       {
@@ -135,12 +149,17 @@ QgsQuantizedMeshTerrainChunkLoader::QgsQuantizedMeshTerrainChunkLoader( QgsTerra
       // We count on only having one mesh.
       Q_ASSERT( gltfEntity->children().size() == 1 );
       gltfEntity->children()[0]->setParent( terrainEntity );
+
+      QgsGeoTransform *transform = new QgsGeoTransform;
+      transform->setGeoTranslation( chunkOrigin );
+      terrainEntity->addComponent( transform );
+
       terrainEntity->moveToThread( QgsApplication::instance()->thread() );
       mEntity = terrainEntity;
     }
     catch ( QgsQuantizedMeshParsingException &ex )
     {
-      QgsDebugError( QStringLiteral( "Failed to parse tile from '%1'" ).arg( uri ) );
+      QgsDebugError( u"Failed to parse tile from '%1'"_s.arg( uri ) );
       emit finished();
       return;
     }
@@ -201,14 +220,19 @@ void QgsQuantizedMeshTerrainChunkLoader::onTextureLoaded()
 
 ///@endcond
 
+QgsTerrainGenerator *QgsQuantizedMeshTerrainGenerator::create()
+{
+  return new QgsQuantizedMeshTerrainGenerator();
+}
+
 void QgsQuantizedMeshTerrainGenerator::setTerrain( QgsTerrainEntity *t )
 {
   mTerrain = t;
-  mTileCrsToMapCrs =
-    QgsCoordinateTransform(
-      mMetadata->mCrs,
-      mTerrain->mapSettings()->crs(),
-      mTerrain->mapSettings()->transformContext() );
+  mTileCrsToMapCrs = QgsCoordinateTransform(
+    mMetadata->mCrs,
+    mTerrain->mapSettings()->crs(),
+    mTerrain->mapSettings()->transformContext()
+  );
 }
 
 QgsTerrainGenerator *QgsQuantizedMeshTerrainGenerator::clone() const
@@ -217,7 +241,7 @@ QgsTerrainGenerator *QgsQuantizedMeshTerrainGenerator::clone() const
   if ( mIsValid )
     clone->setLayer( layer() );
   else
-    clone->mLayerRef = mLayerRef; // Copy just the reference
+    clone->mLayer = mLayer; // Copy just the reference
   return clone;
 }
 
@@ -258,13 +282,13 @@ float QgsQuantizedMeshTerrainGenerator::heightAt( double x, double y, const Qgs3
   {
     // This doesn't deal with a possible dataset where the whole extent doesn't
     // have full coverage at maxZoom, but has coverage at a lower zoom level.
-    QgsDebugError( QStringLiteral( "Quantized Mesh layer doesn't contain max-zoom tile for %1, %2" ).arg( x ).arg( y ) );
+    QgsDebugError( u"Quantized Mesh layer doesn't contain max-zoom tile for %1, %2"_s.arg( x ).arg( y ) );
     return 0;
   }
   // TODO: Make heightAt asynchronous?
   QgsTiledSceneIndex index = mIndex; // Copy to get rid of const
   QgsTiledSceneTile sceneTile = index.getTile( QgsQuantizedMeshIndex::encodeTileId( tileXyz ) );
-  QString uri = sceneTile.resources().value( QStringLiteral( "content" ) ).toString();
+  QString uri = sceneTile.resources().value( u"content"_s ).toString();
   Q_ASSERT( !uri.isEmpty() );
 
   uri = sceneTile.baseUrl().resolved( uri ).toString();
@@ -278,26 +302,6 @@ float QgsQuantizedMeshTerrainGenerator::heightAt( double x, double y, const Qgs3
   return QgsMeshLayerUtils::interpolateZForPoint( triMesh, point.x(), point.y() );
 }
 
-void QgsQuantizedMeshTerrainGenerator::writeXml( QDomElement &elem ) const
-{
-  QDomDocument doc = elem.ownerDocument();
-
-  elem.setAttribute( QStringLiteral( "layer" ), mLayerRef.layerId );
-}
-
-void QgsQuantizedMeshTerrainGenerator::readXml( const QDomElement &elem )
-{
-  QgsMapLayerRef layerRef = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
-  // We can't call setLayer yet, the reference is not resolved
-  mLayerRef = layerRef;
-}
-
-void QgsQuantizedMeshTerrainGenerator::resolveReferences( const QgsProject &project )
-{
-  mLayerRef.resolve( &project );
-  setLayer( layer() );
-}
-
 QgsChunkLoader *QgsQuantizedMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
   long long tileId = QgsQuantizedMeshIndex::encodeTileId( nodeIdToTile( node->tileId() ) );
@@ -307,16 +311,17 @@ QgsChunkLoader *QgsQuantizedMeshTerrainGenerator::createChunkLoader( QgsChunkNod
 QgsChunkNode *QgsQuantizedMeshTerrainGenerator::createRootNode() const
 {
   return new QgsChunkNode(
-  {0, 0, 0},
-  mRootBbox, // Given to us by setupQuadtree()
-  mMetadata->geometricErrorAtZoom( -1 ) );
+    { 0, 0, 0 },
+    mRootBox3D, // Given to us by setupQuadtree()
+    mMetadata->geometricErrorAtZoom( -1 )
+  );
 }
 
 QVector<QgsChunkNode *> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChunkNode *node ) const
 {
   QVector<QgsChunkNode *> children;
 
-  for ( auto offset : std::vector<std::pair<int, int>> {{0, 0}, {0, 1}, {1, 0}, {1, 1}} )
+  for ( auto offset : std::vector<std::pair<int, int>> { { 0, 0 }, { 0, 1 }, { 1, 0 }, { 1, 1 } } )
   {
     QgsChunkNodeId childId(
       node->tileId().d + 1,
@@ -333,18 +338,16 @@ QVector<QgsChunkNode *> QgsQuantizedMeshTerrainGenerator::createChildren( QgsChu
       continue; // Don't render terrain inside layer extent, but outside map extent
     Q_ASSERT( mTerrain );
     QgsRectangle mapExtent2d = mTileCrsToMapCrs.transform( extent2d );
-    QgsVector3D corner1 = mTerrain->mapSettings()->mapToWorldCoordinates(
-    {mapExtent2d.xMinimum(), mapExtent2d.yMinimum(), mMetadata->dummyZRange.lower()} );
-    QgsVector3D corner2 = mTerrain->mapSettings()->mapToWorldCoordinates(
-    {mapExtent2d.xMaximum(), mapExtent2d.yMaximum(), mMetadata->dummyZRange.upper()} );
+    QgsVector3D corner1( mapExtent2d.xMinimum(), mapExtent2d.yMinimum(), mMetadata->dummyZRange.lower() );
+    QgsVector3D corner2( mapExtent2d.xMaximum(), mapExtent2d.yMaximum(), mMetadata->dummyZRange.upper() );
     children.push_back(
       new QgsChunkNode(
         childId,
-        QgsAABB(
-          corner1.x(), corner1.y(), corner1.z(),
-          corner2.x(), corner2.y(), corner2.z() ),
+        QgsBox3D( corner1, corner2 ),
         mMetadata->geometricErrorAtZoom( tile.zoomLevel() ),
-        node ) );
+        node
+      )
+    );
   }
 
   return children;
@@ -358,7 +361,7 @@ bool QgsQuantizedMeshTerrainGenerator::setLayer( QgsTiledSceneLayer *layer )
     return false;
   }
 
-  mLayerRef = layer;
+  mLayer = layer;
   const QgsQuantizedMeshDataProvider *provider = qobject_cast<const QgsQuantizedMeshDataProvider *>( layer->dataProvider() );
   if ( !provider )
   {
@@ -376,13 +379,7 @@ bool QgsQuantizedMeshTerrainGenerator::setLayer( QgsTiledSceneLayer *layer )
 
 QgsTiledSceneLayer *QgsQuantizedMeshTerrainGenerator::layer() const
 {
-  return qobject_cast<QgsTiledSceneLayer *>( mLayerRef.get() );
-}
-
-QgsQuantizedMeshTerrainGenerator::QgsQuantizedMeshTerrainGenerator( QgsMapLayerRef layerRef, const QgsQuantizedMeshMetadata &metadata )
-  : mLayerRef( layerRef )
-  , mMetadata( metadata )
-{
+  return mLayer;
 }
 
 QgsTileXYZ QgsQuantizedMeshTerrainGenerator::nodeIdToTile( QgsChunkNodeId nodeId ) const
@@ -390,13 +387,13 @@ QgsTileXYZ QgsQuantizedMeshTerrainGenerator::nodeIdToTile( QgsChunkNodeId nodeId
   // nodeId zoom=0 is tile zoom=-1 to get unique root tile
   if ( nodeId.d == 0 )
     return { 0, 0, -1 };
-  return
-  {
+  return {
     nodeId.x,
-    mMetadata->mTileScheme == QStringLiteral( "tms" )
-    ? ( 1 << ( nodeId.d - 1 ) ) - nodeId.y - 1
-    : nodeId.y,
-    nodeId.d - 1 };
+    mMetadata->mTileScheme == u"tms"_s
+      ? ( 1 << ( nodeId.d - 1 ) ) - nodeId.y - 1
+      : nodeId.y,
+    nodeId.d - 1
+  };
 }
 
 #include "qgsquantizedmeshterraingenerator.moc"

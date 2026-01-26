@@ -15,17 +15,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QCoreApplication>
-#include <QTimer>
-#include <QTest>
-#include <QAbstractNetworkCache>
 #include <iostream>
 #include <memory>
-#include <QSignalSpy>
 
 #include "qgsapplication.h"
-#include "qgstiledownloadmanager.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgstiledownloadmanager.h"
+
+#include <QAbstractNetworkCache>
+#include <QCoreApplication>
+#include <QSignalSpy>
+#include <QTest>
+#include <QTimer>
 
 const QString url_1 = "https://www.qwant.com/maps/tiles/ozbasemap/0/0/0.pbf";
 const QString url_2 = "https://www.qwant.com/maps/tiles/ozbasemap/1/0/0.pbf";
@@ -37,8 +38,8 @@ class TestQgsTileDownloadManager : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testOneRequest();
     void testOneRequestEarlyDelete();
@@ -48,15 +49,14 @@ class TestQgsTileDownloadManager : public QObject
     void testTwoRequests();
     void testShutdownWithPendingRequest();
     void testIdleThread();
-
 };
 
 
 void TestQgsTileDownloadManager::initTestCase()
 {
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -113,7 +113,7 @@ void TestQgsTileDownloadManager::testOneRequestEarlyDelete()
 
   QVERIFY( manager.hasPendingRequests() );
 
-  QThread::usleep( 1000 );  // sleep 1ms - enough time to start request but not enough to finish it
+  QThread::usleep( 1000 ); // sleep 1ms - enough time to start request but not enough to finish it
 
   r.reset();
 
@@ -190,7 +190,7 @@ void TestQgsTileDownloadManager::testOneRequestTwiceAndEarlyDelete()
   QVERIFY( manager.hasPendingRequests() );
   QSignalSpy spy( r2.get(), &QgsTileDownloadManagerReply::finished );
 
-  QThread::usleep( 1000 );  // sleep 1ms - enough time to start request but not enough to finish it
+  QThread::usleep( 1000 ); // sleep 1ms - enough time to start request but not enough to finish it
 
   r1.reset();
 
@@ -259,7 +259,7 @@ void TestQgsTileDownloadManager::testTwoRequests()
   QVERIFY( spy1.wait() );
   if ( spy2.isEmpty() )
   {
-    QVERIFY( spy2.wait() );  // r1 it may have finished earlier...
+    QVERIFY( spy2.wait() ); // r1 it may have finished earlier...
   }
   QCOMPARE( spy1.count(), 1 );
   QCOMPARE( spy2.count(), 1 );
@@ -295,7 +295,7 @@ void TestQgsTileDownloadManager::testShutdownWithPendingRequest()
 
   QVERIFY( manager.hasPendingRequests() );
 
-  QThread::usleep( 1000 );  // sleep 1ms - enough time to start request but not enough to finish it
+  QThread::usleep( 1000 ); // sleep 1ms - enough time to start request but not enough to finish it
 
   manager.shutdown();
 
@@ -315,7 +315,7 @@ void TestQgsTileDownloadManager::testIdleThread()
   // check that the worker thread gets killed after some time when it is idle
 
   QgsTileDownloadManager manager;
-  manager.setIdleThreadTimeout( 1000 );  // shorter timeout so that we don't need to wait for too long
+  manager.setIdleThreadTimeout( 1000 ); // shorter timeout so that we don't need to wait for too long
 
   QVERIFY( !manager.hasWorkerThreadRunning() );
 
@@ -327,7 +327,7 @@ void TestQgsTileDownloadManager::testIdleThread()
 
   QVERIFY( manager.hasWorkerThreadRunning() );
 
-  QThread::usleep( 1500000 );  // sleep 1.5s - enough time to get the thread killed due to being idle
+  QThread::usleep( 1500000 ); // sleep 1.5s - enough time to get the thread killed due to being idle
 
   QVERIFY( !manager.hasWorkerThreadRunning() );
 

@@ -25,5 +25,5 @@ try:
     QgsWkbTypes.dropM = staticmethod(QgsWkbTypes.dropM)
     QgsWkbTypes.to25D = staticmethod(QgsWkbTypes.to25D)
     QgsWkbTypes.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

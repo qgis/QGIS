@@ -18,11 +18,13 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_core.h"
 #include <gdal.h>
 
+#include "qgis_core.h"
+#include "qgsfeedback.h"
 #include "qgsogrutils.h"
-#include "qgsrasterdataprovider.h"
+
+class QgsRasterBlock;
 
 /**
  * \ingroup core
@@ -170,7 +172,7 @@ class CORE_EXPORT QgsGdalUtils
      * Validates creation options for a given format, regardless of layer.
      * \since QGIS 3.10
      */
-    static QString validateCreationOptionsFormat( const QStringList &createOptions, const QString &format );
+    static QString validateCreationOptionsFormat( const QStringList &creationOptions, const QString &format );
 
     /**
      * Helper function
@@ -217,7 +219,7 @@ class CORE_EXPORT QgsGdalUtils
 
     /**
      * This is a copy of GDALAutoCreateWarpedVRT optimized for imagery using RPC georeferencing
-     * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF.
+     * that also sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_DEFAULT (and fallbacks to HEIGHT_OFF).
      * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
      * the image would not be shown in the correct location.
      *
@@ -233,7 +235,7 @@ class CORE_EXPORT QgsGdalUtils
 
     /**
      * This is a wrapper around GDALCreateGenImgProjTransformer2() that takes into account RPC
-     * georeferencing (it sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_OFF).
+     * georeferencing. It sets RPC_HEIGHT in GDALCreateGenImgProjTransformer2 based on HEIGHT_DEFAULT (and fallbacks to HEIGHT_OFF).
      * By default GDAL would assume that the imagery has zero elevation - if that is not the case,
      * the image would not be shown in the correct location.
      *
@@ -253,7 +255,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.30
      */
-    static GDALResampleAlg gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method );
+    static GDALResampleAlg gdalResamplingAlgorithm( Qgis::RasterResamplingMethod method );
 
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables
@@ -376,6 +378,43 @@ class CORE_EXPORT QgsGdalUtils
     static QString gdalDocumentationUrlForDriver( GDALDriverH hDriver );
 
     friend class TestQgsGdalUtils;
+};
+
+/**
+ * \ingroup core
+ * \class QgsGdalProgressAdapter
+ * \brief Utility class to map from GDALProgressFunc to QgsFeedback
+ *
+ * Typically used like the following snippet:
+ * \code{.cpp}
+ * QgsGdalProgressAdapter progress(feedback);
+ * GDALSomeCall( ... , QgsGdalProgressAdapter::progressCallback, &sProgress );
+ * \endcode
+ *
+ * \note not available in Python bindings
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsGdalProgressAdapter
+{
+  public:
+
+    /**
+     * Constructor from \a feedback (which may be NULL).
+     *
+     * The \a startPercentage and \a endPercentage passed to the feedback may be
+     * specified.
+     */
+    explicit QgsGdalProgressAdapter( QgsFeedback *feedback, double startPercentage = 0.0, double endPercentage = 100.0 );
+
+    /**
+     * GDAL progress callback
+     */
+    static int CPL_STDCALL progressCallback( double dfComplete, const char *pszMessage, void *pProgressArg );
+
+  private:
+    QgsFeedback *mFeedback = nullptr;
+    double mStartPercentage;
+    double mEndPercentage;
 };
 
 #endif // QGSGDALUTILS_H

@@ -15,14 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractprofilesurfacegenerator.h"
-#include "qgsprofilesnapping.h"
+
+#include <optional>
+
 #include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgslinestring.h"
+#include "qgslinesymbol.h"
 #include "qgsprofilerequest.h"
+#include "qgsprofilesnapping.h"
 
 #include <QPainterPath>
-#include <optional>
 
 //
 // QgsAbstractProfileSurfaceResults
@@ -151,8 +153,8 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
         f.layerIdentifier = mId;
         f.attributes =
         {
-          { QStringLiteral( "distance" ),  pointIt.key() },
-          { QStringLiteral( "elevation" ),  pointIt.value() }
+          { u"distance"_s,  pointIt.key() },
+          { u"elevation"_s,  pointIt.value() }
         };
         std::unique_ptr< QgsPoint>  point( mProfileCurve->interpolatePoint( pointIt.key() ) );
         if ( point->is3D() )
@@ -221,8 +223,8 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( c
       {
         QVariantMap(
         {
-          {QStringLiteral( "distance" ),  point.distance() },
-          {QStringLiteral( "elevation" ), snappedZ }
+          {u"distance"_s,  point.distance() },
+          {u"elevation"_s, snappedZ }
         } )
       } );
       break;
@@ -232,7 +234,7 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( c
     prevElevation = it.value();
   }
   if ( result.has_value() )
-    return {result.value()};
+    return {*result};
   else
     return {};
 }

@@ -16,13 +16,14 @@
  ***************************************************************************/
 
 #include "qgsalgorithmaddxyfields.h"
+
 #include "qgsvectorlayer.h"
 
 ///@cond PRIVATE
 
 QString QgsAddXYFieldsAlgorithm::name() const
 {
-  return QStringLiteral( "addxyfields" );
+  return u"addxyfields"_s;
 }
 
 QString QgsAddXYFieldsAlgorithm::displayName() const
@@ -32,7 +33,7 @@ QString QgsAddXYFieldsAlgorithm::displayName() const
 
 QString QgsAddXYFieldsAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Adds X and Y (or latitude/longitude) fields to a point layer. The X/Y fields can be calculated in a different CRS to the layer (e.g. creating latitude/longitude fields for a layer in a project CRS)." );
+  return QObject::tr( "This algorithm adds X and Y (or latitude/longitude) fields to a point layer. The X/Y fields can be calculated in a different CRS to the layer (e.g. creating latitude/longitude fields for a layer in a project CRS)." );
 }
 
 QString QgsAddXYFieldsAlgorithm::shortDescription() const
@@ -52,7 +53,7 @@ QString QgsAddXYFieldsAlgorithm::group() const
 
 QString QgsAddXYFieldsAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectortable" );
+  return u"vectortable"_s;
 }
 
 QString QgsAddXYFieldsAlgorithm::outputName() const
@@ -62,7 +63,7 @@ QString QgsAddXYFieldsAlgorithm::outputName() const
 
 QList<int> QgsAddXYFieldsAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint );
 }
 
 QgsAddXYFieldsAlgorithm *QgsAddXYFieldsAlgorithm::createInstance() const
@@ -77,16 +78,16 @@ Qgis::ProcessingFeatureSourceFlags QgsAddXYFieldsAlgorithm::sourceFlags() const
 
 void QgsAddXYFieldsAlgorithm::initParameters( const QVariantMap &configuration )
 {
-  mIsInPlace = configuration.value( QStringLiteral( "IN_PLACE" ) ).toBool();
+  mIsInPlace = configuration.value( u"IN_PLACE"_s ).toBool();
 
-  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Coordinate system" ), QStringLiteral( "EPSG:4326" ) ) );
+  addParameter( new QgsProcessingParameterCrs( u"CRS"_s, QObject::tr( "Coordinate system" ), u"EPSG:4326"_s ) );
 
   if ( !mIsInPlace )
-    addParameter( new QgsProcessingParameterString( QStringLiteral( "PREFIX" ), QObject::tr( "Field prefix" ), QVariant(), false, true ) );
+    addParameter( new QgsProcessingParameterString( u"PREFIX"_s, QObject::tr( "Field prefix" ), QVariant(), false, true ) );
   else
   {
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_X" ), QObject::tr( "X field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
-    addParameter( new QgsProcessingParameterField( QStringLiteral( "FIELD_Y" ), QObject::tr( "Y field" ), QVariant(), QStringLiteral( "INPUT" ) ) );
+    addParameter( new QgsProcessingParameterField( u"FIELD_X"_s, QObject::tr( "X field" ), QVariant(), u"INPUT"_s ) );
+    addParameter( new QgsProcessingParameterField( u"FIELD_Y"_s, QObject::tr( "Y field" ), QVariant(), u"INPUT"_s ) );
   }
 }
 
@@ -103,10 +104,10 @@ QgsFields QgsAddXYFieldsAlgorithm::outputFields( const QgsFields &inputFields ) 
     const QString xFieldName = mPrefix + 'x';
     const QString yFieldName = mPrefix + 'y';
 
-    QgsFields outFields = inputFields;
-    outFields.append( QgsField( xFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
-    outFields.append( QgsField( yFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
-    return outFields;
+    QgsFields newFields;
+    newFields.append( QgsField( xFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
+    newFields.append( QgsField( yFieldName, QMetaType::Type::Double, QString(), 20, 10 ) );
+    return QgsProcessingUtils::combineFields( inputFields, newFields );
   }
 }
 
@@ -119,14 +120,14 @@ QgsCoordinateReferenceSystem QgsAddXYFieldsAlgorithm::outputCrs( const QgsCoordi
 bool QgsAddXYFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   if ( !mIsInPlace )
-    mPrefix = parameterAsString( parameters, QStringLiteral( "PREFIX" ), context );
+    mPrefix = parameterAsString( parameters, u"PREFIX"_s, context );
   else
   {
-    mInPlaceXField = parameterAsString( parameters, QStringLiteral( "FIELD_X" ), context );
-    mInPlaceYField = parameterAsString( parameters, QStringLiteral( "FIELD_Y" ), context );
+    mInPlaceXField = parameterAsString( parameters, u"FIELD_X"_s, context );
+    mInPlaceYField = parameterAsString( parameters, u"FIELD_Y"_s, context );
   }
 
-  mCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+  mCrs = parameterAsCrs( parameters, u"CRS"_s, context );
   return true;
 }
 
@@ -161,7 +162,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
       feedback->reportError( QObject::tr( "Could not transform point to destination CRS" ) );
     }
   }
-  QgsFeature f =  feature;
+  QgsFeature f = feature;
   QgsAttributes attributes = f.attributes();
   if ( !mIsInPlace )
   {
@@ -169,8 +170,8 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
   }
   else
   {
-    attributes[mInPlaceXFieldIndex] = x;
-    attributes[mInPlaceYFieldIndex] = y;
+    attributes[mInPlaceXFieldIndex] = std::move( x );
+    attributes[mInPlaceYFieldIndex] = std::move( y );
   }
   f.setAttributes( attributes );
   return QgsFeatureList() << f;
@@ -178,7 +179,7 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
 
 bool QgsAddXYFieldsAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) const
 {
-  if ( const QgsVectorLayer *vl = qobject_cast< const QgsVectorLayer * >( layer ) )
+  if ( const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer ) )
   {
     return vl->geometryType() == Qgis::GeometryType::Point;
   }

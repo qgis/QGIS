@@ -14,12 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#pragma once
+#ifndef QGSQUANTIZEDMESHTILED_H
+#define QGSQUANTIZEDMESHTILED_H
 
 #include "qgis_core.h"
 #include "qgsexception.h"
 #include "qgsmeshdataprovider.h"
 #include "qgsrectangle.h"
+
 #include <qbytearray.h>
 
 #define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
@@ -65,7 +67,7 @@ struct QgsQuantizedMeshHeader
 
 /**
  * \ingroup core
- * \brief Exception thrown on failure to parse Quantized Mesh tile (malformed data)
+ * \brief Exception thrown on failure to parse Quantized Mesh tile (malformed data).
  * \since QGIS 3.35
  */
 class CORE_EXPORT QgsQuantizedMeshParsingException : public QgsException
@@ -97,3 +99,5 @@ struct CORE_EXPORT QgsQuantizedMeshTile
   // Make sure to call removeDegenerateTriangles() beforehand!
   QgsMesh toMesh( QgsRectangle tileBounds );
 };
+
+#endif // QGSQUANTIZEDMESHTILED_H

@@ -20,8 +20,8 @@
 
 #define SIP_NO_FILE
 
-#include "qgis_sip.h"
 #include "qgis_analysis.h"
+#include "qgis_sip.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsstyle.h"
 
@@ -32,9 +32,7 @@
  */
 class QgsCombineStylesAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsCombineStylesAlgorithm();
     ~QgsCombineStylesAlgorithm() override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -48,14 +46,9 @@ class QgsCombineStylesAlgorithm : public QgsProcessingAlgorithm
     QgsCombineStylesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSSTYLESALGORITHMS_H
-
-

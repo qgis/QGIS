@@ -17,9 +17,9 @@ from qgis.core import (
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
-__author__ = 'Damiano Lombardi'
-__date__ = '18/04/2021'
-__copyright__ = 'Copyright 2021, The QGIS Project'
+__author__ = "Damiano Lombardi"
+__date__ = "18/04/2021"
+__copyright__ = "Copyright 2021, The QGIS Project"
 
 
 start_app()
@@ -39,13 +39,20 @@ class PyQgsSettingsRegistry(QgisTestCase):
         settingsRegistry.addSettingsEntry(settingsEntry)
 
         # check get settings entry
-        self.assertEqual(settingsRegistry.settingsEntry(settingsEntry.key(), False), settingsEntry)
+        self.assertEqual(
+            settingsRegistry.settingsEntry(settingsEntry.key(), False), settingsEntry
+        )
 
         # add registry to core registry
         QgsApplication.settingsRegistryCore().addSubRegistry(settingsRegistry)
 
-        self.assertEqual(QgsApplication.settingsRegistryCore().settingsEntry(settingsEntry.key(), True), settingsEntry)
+        self.assertEqual(
+            QgsApplication.settingsRegistryCore().settingsEntry(
+                settingsEntry.key(), True
+            ),
+            settingsEntry,
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

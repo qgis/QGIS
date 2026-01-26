@@ -18,14 +18,14 @@
 #ifndef QGSMAPTOOLPINLABELS_H
 #define QGSMAPTOOLPINLABELS_H
 
-#include "qgsmaptoollabel.h"
 #include "qgis_app.h"
+#include "qgsmaptoollabel.h"
 
 class QgsRubberBand;
 class QgsLabelPosition;
 
 //! A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation
-class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
+class APP_EXPORT QgsMapToolPinLabels : public QgsMapToolLabel
 {
     Q_OBJECT
 
@@ -60,14 +60,13 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     void highlightPinnedLabels();
 
   protected:
-
     //! Mapping of feature ids of layers that have been highlighted
     QMap<QString, QgsRubberBand *> mHighlights;
 
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
     //! Flag to indicate whether to draw the highlight for pinned labels
-    bool mShowPinned;
+    bool mShowPinned = false;
 
     //! Stores actual select rect
     QRect mSelectRect;
@@ -76,16 +75,11 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     QgsRubberBand *mRubberBand = nullptr;
 
   private:
-
     //! Highlights a given label relative to whether its pinned and editable
-    void highlightLabel( const QgsLabelPosition &labelpos,
-                         const QString &id,
-                         const QColor &color );
+    void highlightLabel( const QgsLabelPosition &labelpos, const QString &id, const QColor &color );
 
     //! Highlights a given callout relative to whether its pinned and editable
-    void highlightCallout( bool isOrigin, const QgsCalloutPosition &labelpos,
-                           const QString &id,
-                           const QColor &color );
+    void highlightCallout( bool isOrigin, const QgsCalloutPosition &labelpos, const QString &id, const QColor &color );
 
     //! Select valid labels to pin or unpin
     void pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *e );

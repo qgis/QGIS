@@ -16,22 +16,23 @@
 #ifndef QGSRENDERER_H
 #define QGSRENDERER_H
 
+#include "qgsconfig.h"
+
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgsrectangle.h"
-#include "qgsfields.h"
 #include "qgsfeaturerequest.h"
-#include "qgsconfig.h"
+#include "qgsfields.h"
 #include "qgspropertycollection.h"
+#include "qgsrectangle.h"
 
-#include <QList>
-#include <QString>
-#include <QVariant>
-#include <QPair>
-#include <QPixmap>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QList>
+#include <QPair>
+#include <QPixmap>
+#include <QString>
+#include <QVariant>
 
 class QgsFeature;
 class QgsVectorLayer;
@@ -41,6 +42,7 @@ class QgsStyleEntityVisitorInterface;
 class QgsRenderContext;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeLayer;
+class QgsSldExportContext;
 
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
@@ -58,6 +60,7 @@ typedef QMap<QString, QgsSymbol * > QgsSymbolMap SIP_SKIP;
 /**
  * \ingroup core
  * \class QgsSymbolLevelItem
+ * \brief Represents a symbol level during vector rendering operations.
  */
 class CORE_EXPORT QgsSymbolLevelItem
 {
@@ -77,7 +80,7 @@ class CORE_EXPORT QgsSymbolLevelItem
      */
     int layer() const;
 
-    // TODO QGIS 4.0 -> make private
+    // TODO QGIS 5.0 -> make private
   protected:
     QgsSymbol *mSymbol = nullptr;
     int mLayer;
@@ -110,27 +113,27 @@ class CORE_EXPORT QgsFeatureRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "singleSymbol" ) )
+    if ( type == "singleSymbol"_L1 )
       sipType = sipType_QgsSingleSymbolRenderer;
-    else if ( type == QLatin1String( "categorizedSymbol" ) )
+    else if ( type == "categorizedSymbol"_L1 )
       sipType = sipType_QgsCategorizedSymbolRenderer;
-    else if ( type == QLatin1String( "graduatedSymbol" ) )
+    else if ( type == "graduatedSymbol"_L1 )
       sipType = sipType_QgsGraduatedSymbolRenderer;
-    else if ( type == QLatin1String( "RuleRenderer" ) )
+    else if ( type == "RuleRenderer"_L1 )
       sipType = sipType_QgsRuleBasedRenderer;
-    else if ( type == QLatin1String( "heatmapRenderer" ) )
+    else if ( type == "heatmapRenderer"_L1 )
       sipType = sipType_QgsHeatmapRenderer;
-    else if ( type == QLatin1String( "invertedPolygonRenderer" ) )
+    else if ( type == "invertedPolygonRenderer"_L1 )
       sipType = sipType_QgsInvertedPolygonRenderer;
-    else if ( type == QLatin1String( "pointCluster" ) )
+    else if ( type == "pointCluster"_L1 )
       sipType = sipType_QgsPointClusterRenderer;
-    else if ( type == QLatin1String( "pointDisplacement" ) )
+    else if ( type == "pointDisplacement"_L1 )
       sipType = sipType_QgsPointDisplacementRenderer;
-    else if ( type == QLatin1String( "25dRenderer" ) )
+    else if ( type == "25dRenderer"_L1 )
       sipType = sipType_Qgs25DRenderer;
-    else if ( type == QLatin1String( "nullSymbol" ) )
+    else if ( type == "nullSymbol"_L1 )
       sipType = sipType_QgsNullSymbolRenderer;
-    else if ( type == QLatin1String( "embeddedSymbol" ) )
+    else if ( type == "embeddedSymbol"_L1 )
       sipType = sipType_QgsEmbeddedSymbolRenderer;
     else
       sipType = 0;
@@ -356,12 +359,21 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     static QgsFeatureRenderer *loadSld( const QDomNode &node, Qgis::GeometryType geomType, QString &errorMessage ) SIP_FACTORY;
 
-    //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const
-    {
-      element.appendChild( doc.createComment( QStringLiteral( "FeatureRenderer %1 not implemented yet" ).arg( type() ) ) );
-      ( void ) props; // warning avoidance
-    }
+    /**
+     * Used from subclasses to create SLD Rule elements following SLD v1.1 specs
+     *
+     * \deprecated QGIS 3.44. Use the version with QgsSldExportContext instead.
+     */
+    Q_DECL_DEPRECATED virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const SIP_DEPRECATED;
+
+    /**
+     * Exports the renderer to SLD Rule elements following the SLD v1.1 specs.
+     *
+     * Returns TRUE if the renderer was exported to SLD successfully.
+     *
+     * \since QGIS 3.44
+     */
+    virtual bool toSld( QDomDocument &doc, QDomElement &element, QgsSldExportContext &context ) const;
 
     /**
      * Returns the set of all legend keys used by the renderer.
@@ -536,7 +548,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \since QGIS 3.38
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
     * Sets the renderer's property collection, used for data defined overrides.
@@ -653,6 +665,14 @@ class CORE_EXPORT QgsFeatureRenderer
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
 
+    /**
+     * Returns the maximum extent buffer found in this renderer's symbols.
+     *
+     * \note Returns 0 if the renderer doesn't have any symbols.
+     * \since QGIS 3.42
+     */
+    double maximumExtentBuffer( QgsRenderContext &context ) const;
+
   protected:
     QgsFeatureRenderer( const QString &type );
 
@@ -697,21 +717,19 @@ class CORE_EXPORT QgsFeatureRenderer
     //! The current size of editing marker
     double mCurrentVertexMarkerSize = 2;
 
-    QgsPaintEffect *mPaintEffect = nullptr;
+    std::unique_ptr<QgsPaintEffect> mPaintEffect;
 
     bool mForceRaster = false;
 
     double mReferenceScale = -1.0;
 
     /**
-     * \note this function is used to convert old sizeScale expressions to symbol
-     * level DataDefined size
+     * Converts old sizeScale expressions to symbol level data defined sizes.
      */
     static void convertSymbolSizeScale( QgsSymbol *symbol, Qgis::ScaleMethod method, const QString &field );
 
     /**
-     * \note this function is used to convert old rotations expressions to symbol
-     * level DataDefined angle
+     * Converts old rotation expressions to symbol level data defined angles.
      */
     static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );
 

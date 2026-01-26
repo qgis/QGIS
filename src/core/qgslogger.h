@@ -18,30 +18,68 @@
 #ifndef QGSLOGGER_H
 #define QGSLOGGER_H
 
+#include "qgsconfig.h"
+
 #include <iostream>
-#include "qgis_sip.h"
 #include <sstream>
+
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QString>
 #include <QTime>
 
-#include "qgis_core.h"
-#include "qgsconfig.h"
+using namespace Qt::StringLiterals;
 
 class QFile;
 
+#ifndef SIP_RUN
+
 #ifdef QGISDEBUG
-#define QgsDebugError(str) QgsLogger::debug(QString(str), 0, __FILE__, __FUNCTION__, __LINE__)
-#define QgsDebugMsgLevel(str, level) if ( level <= QgsLogger::debugLevel() ) { QgsLogger::debug(QString(str), (level), __FILE__, __FUNCTION__, __LINE__); }(void)(0)
-#define QgsDebugCall QgsScopeLogger _qgsScopeLogger(__FILE__, __FUNCTION__, __LINE__)
+#define QgsDebugError( str ) QgsLogger::debug( QString( str ), 0, __FILE__, __FUNCTION__, __LINE__ )
+#define QgsDebugMsgLevel( str, level )                                               \
+  if ( ( level ) <= QgsLogger::debugLevel() )                                        \
+  {                                                                                  \
+    QgsLogger::debug( QString( str ), ( level ), __FILE__, __FUNCTION__, __LINE__ ); \
+  }                                                                                  \
+  ( void ) ( 0 )
+#define QgsDebugErrorLoc( str, file, func, line ) QgsLogger::debug( QString( str ), 0, ( file ), ( func ), ( line ) )
+#define QgsDebugMsgLevelLoc( str, level, file, func, line )                      \
+  if ( ( level ) <= QgsLogger::debugLevel() )                                    \
+  {                                                                              \
+    QgsLogger::debug( QString( str ), ( level ), ( file ), ( func ), ( line ) ); \
+  }                                                                              \
+  ( void ) ( 0 )
+#define QgsDebugCall QgsScopeLogger _qgsScopeLogger( __FILE__, __FUNCTION__, __LINE__ )
 #else
-#define QgsDebugCall do {} while(false)
-#define QgsDebugError(str) do {} while(false)
-#define QgsDebugMsgLevel(str, level) do {} while(false)
+#define QgsDebugCall \
+  do                 \
+  {                  \
+  } while ( false )
+#define QgsDebugError( str ) \
+  do                         \
+  {                          \
+  } while ( false )
+#define QgsDebugMsgLevel( str, level ) \
+  do                                   \
+  {                                    \
+  } while ( false )
+#define QgsDebugErrorLoc( str, file, func, line ) \
+  do                                              \
+  {                                               \
+  } while ( false )
+#define QgsDebugMsgLevelLoc( str, level, file, func, line ) \
+  do                                                        \
+  {                                                         \
+  } while ( false )
 #endif
+
+#endif
+
 
 /**
  * \ingroup core
- * \brief QgsLogger is a class to print debug/warning/error messages to the console.
+ * \brief Responsible for printing debug/warning/error messages to the console.
  *
  * The advantage of this class over iostream & co. is that the
  * output can be controlled with environment variables:
@@ -131,6 +169,7 @@ class CORE_EXPORT QgsLogger
 
 /**
  * \ingroup core
+ * \brief Logs the location of the call.
  */
 class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
 {
@@ -140,11 +179,11 @@ class CORE_EXPORT QgsScopeLogger // clazy:exclude=rule-of-three
       , _func( func )
       , _line( line )
     {
-      QgsLogger::debug( QStringLiteral( "Entering." ), 2, _file, _func, _line );
+      QgsLogger::debug( u"Entering."_s, 2, _file, _func, _line );
     }
     ~QgsScopeLogger()
     {
-      QgsLogger::debug( QStringLiteral( "Leaving." ), 2, _file, _func, _line );
+      QgsLogger::debug( u"Leaving."_s, 2, _file, _func, _line );
     }
   private:
     const char *_file = nullptr;

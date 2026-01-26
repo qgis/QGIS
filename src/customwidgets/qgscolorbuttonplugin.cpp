@@ -13,10 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "qgiscustomwidgets.h"
 #include "qgscolorbuttonplugin.h"
+
+#include "qgiscustomwidgets.h"
 #include "qgscolorbutton.h"
 
+#include "moc_qgscolorbuttonplugin.cpp"
 
 QgsColorButtonPlugin::QgsColorButtonPlugin( QObject *parent )
   : QObject( parent )
@@ -93,5 +95,5 @@ QString QgsColorButtonPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-         .arg( name() );
+    .arg( name() );
 }

@@ -14,19 +14,23 @@
  ***************************************************************************/
 
 #include "qgsattributeformeditorwidget.h"
-#include "qgsattributeform.h"
-#include "qgsmultiedittoolbutton.h"
-#include "qgseditorwidgetwrapper.h"
-#include "qgssearchwidgetwrapper.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgseditorwidgetregistry.h"
+
 #include "qgsaggregatetoolbutton.h"
+#include "qgsapplication.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsattributeform.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
 #include "qgsgui.h"
+#include "qgsmultiedittoolbutton.h"
+#include "qgssearchwidgetwrapper.h"
 #include "qgsvectorlayerutils.h"
 
-#include <QLayout>
 #include <QLabel>
+#include <QLayout>
 #include <QStackedWidget>
+
+#include "moc_qgsattributeformeditorwidget.cpp"
 
 QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form )
   : QgsAttributeFormWidget( editorWidget, form )
@@ -34,15 +38,28 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
   , mEditorWidget( editorWidget )
   , mForm( form )
   , mMultiEditButton( new QgsMultiEditToolButton() )
-  , mBlockValueUpdate( false )
-  , mIsMixed( false )
-  , mIsChanged( false )
 {
-  mConstraintResultLabel = new QLabel( this );
-  mConstraintResultLabel->setObjectName( QStringLiteral( "ConstraintStatus" ) );
-  mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
+  mRememberLastValueButton = new QToolButton();
+  mRememberLastValueButton->setAutoRaise( true );
+  mRememberLastValueButton->setCheckable( true );
+  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( u"/mIconRememberDisabled.svg"_s ) );
+  mRememberLastValueButton->setToolTip( tr( "When enabled, the entered value will be remembered and reused for the next feature additions" ) );
+  updateRememberWidget();
 
-  mMultiEditButton->setField( mEditorWidget->field() );
+  connect( mRememberLastValueButton, &QAbstractButton::toggled, this, [this]( bool checked ) {
+    mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( checked ? u"/mIconRememberEnabled.svg"_s : u"/mIconRememberDisabled.svg"_s ) );
+    emit rememberLastValueChanged( mEditorWidget->fieldIdx(), checked );
+  } );
+  connect( mForm, &QgsAttributeForm::modeChanged, this, [this]( QgsAttributeEditorContext::Mode ) {
+    updateRememberWidget();
+  } );
+
+  mConstraintResultLabel = new QLabel();
+  mConstraintResultLabel->setObjectName( u"ConstraintStatus"_s );
+  mConstraintResultLabel->setSizePolicy( QSizePolicy::Fixed, mConstraintResultLabel->sizePolicy().verticalPolicy() );
+  mConstraintResultLabel->setAlignment( Qt::AlignCenter );
+  mConstraintResultLabel->setFixedWidth( 24 );
+
   mAggregateButton = new QgsAggregateToolButton();
   mAggregateButton->setType( mEditorWidget->field().type() );
   connect( mAggregateButton, &QgsAggregateToolButton::aggregateChanged, this, &QgsAttributeFormEditorWidget::onAggregateChanged );
@@ -54,10 +71,9 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
 
   connect( mEditorWidget, &QgsEditorWidgetWrapper::valuesChanged, this, &QgsAttributeFormEditorWidget::editorWidgetValuesChanged );
 
+  mMultiEditButton->setField( mEditorWidget->field() );
   connect( mMultiEditButton, &QgsMultiEditToolButton::resetFieldValueTriggered, this, &QgsAttributeFormEditorWidget::resetValue );
   connect( mMultiEditButton, &QgsMultiEditToolButton::setFieldValueTriggered, this, &QgsAttributeFormEditorWidget::setFieldTriggered );
-
-  mMultiEditButton->setField( mEditorWidget->field() );
 
   updateWidgets();
 }
@@ -66,6 +82,8 @@ QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
 {
   //there's a chance these widgets are not currently added to the layout, so have no parent set
   delete mMultiEditButton;
+  delete mRememberLastValueButton;
+  delete mConstraintResultLabel;
 }
 
 void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
@@ -74,16 +92,13 @@ void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttribut
   const QVariantMap config = mEditorWidget->config();
   const int fieldIdx = mEditorWidget->fieldIdx();
 
-  QgsSearchWidgetWrapper *sww = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config,
-                                searchWidgetFrame(), context );
+  QgsSearchWidgetWrapper *sww = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config, searchWidgetFrame(), context );
   setSearchWidgetWrapper( sww );
   searchWidgetFrame()->layout()->addWidget( mAggregateButton );
-  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between ||
-       sww->supportedFlags() & QgsSearchWidgetWrapper::IsNotBetween )
+  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between || sww->supportedFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
     // create secondary widget for between type searches
-    QgsSearchWidgetWrapper *sww2 = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config,
-                                   searchWidgetFrame(), context );
+    QgsSearchWidgetWrapper *sww2 = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config, searchWidgetFrame(), context );
     addAdditionalSearchWidgetWrapper( sww2 );
   }
 }
@@ -93,17 +108,17 @@ void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constrain
   switch ( result )
   {
     case QgsEditorWidgetWrapper::ConstraintResultFailHard:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FF9800\">%1</font>" ).arg( QChar( 0x2718 ) ) );
-      mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
+      mConstraintResultLabel->setText( u"<font color=\"#FF9800\">%1</font>"_s.arg( QChar( 0x2718 ) ) );
+      mConstraintResultLabel->setToolTip( description.isEmpty() ? u"<b>%1</b>: %2"_s.arg( constraint, err ) : description );
       break;
 
     case QgsEditorWidgetWrapper::ConstraintResultFailSoft:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#FFC107\">%1</font>" ).arg( QChar( 0x2718 ) ) );
-      mConstraintResultLabel->setToolTip( description.isEmpty() ? QStringLiteral( "<b>%1</b>: %2" ).arg( constraint, err ) : description );
+      mConstraintResultLabel->setText( u"<font color=\"#FFC107\">%1</font>"_s.arg( QChar( 0x2718 ) ) );
+      mConstraintResultLabel->setToolTip( description.isEmpty() ? u"<b>%1</b>: %2"_s.arg( constraint, err ) : description );
       break;
 
     case QgsEditorWidgetWrapper::ConstraintResultPass:
-      mConstraintResultLabel->setText( QStringLiteral( "<font color=\"#259B24\">%1</font>" ).arg( QChar( 0x2714 ) ) );
+      mConstraintResultLabel->setText( u"<font color=\"#259B24\">%1</font>"_s.arg( QChar( 0x2714 ) ) );
       mConstraintResultLabel->setToolTip( description );
       break;
   }
@@ -111,7 +126,31 @@ void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constrain
 
 void QgsAttributeFormEditorWidget::setConstraintResultVisible( bool editable )
 {
-  mConstraintResultLabel->setHidden( !editable );
+  mIsConstraintResultVisible = editable;
+
+  switch ( mode() )
+  {
+    case SearchMode:
+    case AggregateSearchMode:
+      return;
+    case DefaultMode:
+    case MultiEditMode:
+      break;
+  }
+
+  if ( !layer() || QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) )
+  {
+    const bool hasConstraintResultLabel = ( editPage()->layout()->indexOf( mConstraintResultLabel ) >= 0 );
+    if ( editable && !hasConstraintResultLabel )
+    {
+      editPage()->layout()->addWidget( mConstraintResultLabel );
+    }
+    else if ( !editable && hasConstraintResultLabel )
+    {
+      editPage()->layout()->removeWidget( mConstraintResultLabel );
+      mConstraintResultLabel->setParent( nullptr );
+    }
+  }
 }
 
 QgsEditorWidgetWrapper *QgsAttributeFormEditorWidget::editorWidget() const
@@ -127,6 +166,12 @@ void QgsAttributeFormEditorWidget::setIsMixed( bool mixed )
   mIsMixed = mixed;
 }
 
+void QgsAttributeFormEditorWidget::setRememberLastValue( bool remember )
+{
+  mRememberLastValueButton->setChecked( remember );
+  mRememberLastValueButton->setIcon( QgsApplication::getThemeIcon( remember ? u"/mIconRememberEnabled.svg"_s : u"/mIconRememberDisabled.svg"_s ) );
+}
+
 void QgsAttributeFormEditorWidget::changesCommitted()
 {
   if ( mEditorWidget )
@@ -139,7 +184,6 @@ void QgsAttributeFormEditorWidget::changesCommitted()
   mMultiEditButton->changesCommitted();
   mIsChanged = false;
 }
-
 
 
 void QgsAttributeFormEditorWidget::initialize( const QVariant &initialValue, bool mixedValues, const QVariantList &additionalFieldValues )
@@ -162,7 +206,6 @@ QVariant QgsAttributeFormEditorWidget::currentValue() const
 {
   return mEditorWidget->value();
 }
-
 
 
 void QgsAttributeFormEditorWidget::editorWidgetValuesChanged( const QVariant &value, const QVariantList &additionalFieldValues )
@@ -224,6 +267,24 @@ void QgsAttributeFormEditorWidget::onAggregateChanged()
     searchWidget->setAggregate( mAggregateButton->aggregate() );
 }
 
+void QgsAttributeFormEditorWidget::updateRememberWidget()
+{
+  const bool hasRememberButton = ( editPage()->layout()->indexOf( mRememberLastValueButton ) >= 0 );
+  const int idx = mEditorWidget->fieldIdx();
+  if ( !hasRememberButton && form() && form()->mode() == QgsAttributeEditorContext::AddFeatureMode )
+  {
+    if ( layer() && layer()->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+    {
+      editPage()->layout()->addWidget( mRememberLastValueButton );
+    }
+  }
+  else if ( hasRememberButton )
+  {
+    editPage()->layout()->removeWidget( mRememberLastValueButton );
+    mRememberLastValueButton->setParent( nullptr );
+  }
+}
+
 void QgsAttributeFormEditorWidget::updateWidgets()
 {
   //first update the tool buttons
@@ -245,27 +306,30 @@ void QgsAttributeFormEditorWidget::updateWidgets()
       // for this field.
       // if the field is always read only regardless of the feature, no need to dig further. But otherwise
       // we may need to test editability for the actual selected features...
-      const int fieldIndex = mEditorWidget->fieldIdx();
-      shouldShowMultiEditButton = !QgsVectorLayerUtils::fieldIsReadOnly( layer(), fieldIndex );
-      if ( shouldShowMultiEditButton )
+      if ( mEditorWidget )
       {
-        // depending on the field type, the editability of the field may vary feature by feature (e.g. for joined
-        // fields coming from joins without the upsert on edit capabilities).
-        // But this feature-by-feature check is EXPENSIVE!!! (see https://github.com/qgis/QGIS/issues/41366), so
-        // avoid it whenever we can...
-        const bool fieldEditabilityDependsOnFeature = QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( layer(), fieldIndex );
-        if ( fieldEditabilityDependsOnFeature )
+        const int fieldIndex = mEditorWidget->fieldIdx();
+        shouldShowMultiEditButton = !QgsVectorLayerUtils::fieldIsReadOnly( layer(), fieldIndex );
+        if ( shouldShowMultiEditButton )
         {
-          QgsFeature feature;
-          QgsFeatureIterator it = layer()->getSelectedFeatures();
-          while ( it.nextFeature( feature ) )
+          // depending on the field type, the editability of the field may vary feature by feature (e.g. for joined
+          // fields coming from joins without the upsert on edit capabilities).
+          // But this feature-by-feature check is EXPENSIVE!!! (see https://github.com/qgis/QGIS/issues/41366), so
+          // avoid it whenever we can...
+          const bool fieldEditabilityDependsOnFeature = QgsVectorLayerUtils::fieldEditabilityDependsOnFeature( layer(), fieldIndex );
+          if ( fieldEditabilityDependsOnFeature )
           {
-            const bool isEditable = QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
-            if ( !isEditable )
+            QgsFeature feature;
+            QgsFeatureIterator it = layer()->getSelectedFeatures();
+            while ( it.nextFeature( feature ) )
             {
-              // as soon as we find one read-only feature for the field, we can break early...
-              shouldShowMultiEditButton = false;
-              break;
+              const bool isEditable = QgsVectorLayerUtils::fieldIsEditable( layer(), fieldIndex, feature );
+              if ( !isEditable )
+              {
+                // as soon as we find one read-only feature for the field, we can break early...
+                shouldShowMultiEditButton = false;
+                break;
+              }
             }
           }
         }
@@ -291,7 +355,13 @@ void QgsAttributeFormEditorWidget::updateWidgets()
     case DefaultMode:
     case MultiEditMode:
     {
-      editPage()->layout()->addWidget( mConstraintResultLabel );
+      if ( mIsConstraintResultVisible && editPage()->layout()->indexOf( mConstraintResultLabel ) == -1 )
+      {
+        if ( !layer() || ( mEditorWidget && QgsVectorLayerUtils::attributeHasConstraints( layer(), mEditorWidget->fieldIdx() ) ) )
+        {
+          editPage()->layout()->addWidget( mConstraintResultLabel );
+        }
+      }
       break;
     }
 

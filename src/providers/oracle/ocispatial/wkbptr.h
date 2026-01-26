@@ -22,19 +22,19 @@
 
 union wkbPtr
 {
-  void *vPtr = nullptr;
-  double *dPtr;
-  int *iPtr;
-  unsigned char *ucPtr;
-  char *cPtr;
+    void *vPtr = nullptr;
+    double *dPtr;
+    int *iPtr;
+    unsigned char *ucPtr;
+    char *cPtr;
 };
 
 const int SDO_ARRAY_SIZE = 1024;
 
-#define SDO_GTYPE_D(g)  (g/1000%10)
-#define SDO_GTYPE_L(g)  (g/100%10)
-#define SDO_GTYPE_TT(g) (g%100)
-#define SDO_GTYPE(g,tt) (g*1000+tt)
+#define SDO_GTYPE_D( g ) ( g / 1000 % 10 )
+#define SDO_GTYPE_L( g ) ( g / 100 % 10 )
+#define SDO_GTYPE_TT( g ) ( g % 100 )
+#define SDO_GTYPE( g, tt ) ( g * 1000 + tt )
 
 enum SDO_GTYPE_TT
 {

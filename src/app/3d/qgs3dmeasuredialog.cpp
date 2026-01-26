@@ -13,15 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QCloseEvent>
-#include <QPushButton>
-
 #include "qgs3dmeasuredialog.h"
-#include "qgs3dmaptoolmeasureline.h"
+
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3dmaptoolmeasureline.h"
 #include "qgshelp.h"
+
+#include <QCloseEvent>
+#include <QPushButton>
+
+#include "moc_qgs3dmeasuredialog.cpp"
 
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
   : QDialog( nullptr, f )
@@ -65,7 +68,7 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::Windo
 void Qgs3DMeasureDialog::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/3DMeasure/geometry" ), saveGeometry() );
+  settings.setValue( u"Windows/3DMeasure/geometry"_s, saveGeometry() );
   const QString &key = "/Windows/3DMeasure/h";
   settings.setValue( key, height() );
 }
@@ -73,8 +76,8 @@ void Qgs3DMeasureDialog::saveWindowLocation()
 void Qgs3DMeasureDialog::restorePosition()
 {
   const QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/3DMeasure/geometry" ) ).toByteArray() );
-  const int wh = settings.value( QStringLiteral( "Windows/3DMeasure/h" ), 200 ).toInt();
+  restoreGeometry( settings.value( u"Windows/3DMeasure/geometry"_s ).toByteArray() );
+  const int wh = settings.value( u"Windows/3DMeasure/h"_s, 200 ).toInt();
   resize( width(), wh );
 }
 
@@ -121,17 +124,17 @@ double Qgs3DMeasureDialog::lastHorizontalDistance()
 
 void Qgs3DMeasureDialog::repopulateComboBoxUnits()
 {
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), static_cast< int >( Qgis::DistanceUnit::Meters ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Kilometers ), static_cast< int >( Qgis::DistanceUnit::Kilometers ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Feet ), static_cast< int >( Qgis::DistanceUnit::Feet ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Yards ), static_cast< int >( Qgis::DistanceUnit::Yards ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Miles ), static_cast< int >( Qgis::DistanceUnit::Miles ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::NauticalMiles ), static_cast< int >( Qgis::DistanceUnit::NauticalMiles ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Centimeters ), static_cast< int >( Qgis::DistanceUnit::Centimeters ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Millimeters ), static_cast< int >( Qgis::DistanceUnit::Millimeters ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Inches ), static_cast< int >( Qgis::DistanceUnit::Inches ) );
-  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Degrees ), static_cast< int >( Qgis::DistanceUnit::Degrees ) );
-  mUnitsCombo->addItem( tr( "map units" ), static_cast< int >( Qgis::DistanceUnit::Unknown ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Meters ), static_cast<int>( Qgis::DistanceUnit::Meters ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Kilometers ), static_cast<int>( Qgis::DistanceUnit::Kilometers ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Feet ), static_cast<int>( Qgis::DistanceUnit::Feet ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Yards ), static_cast<int>( Qgis::DistanceUnit::Yards ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Miles ), static_cast<int>( Qgis::DistanceUnit::Miles ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::NauticalMiles ), static_cast<int>( Qgis::DistanceUnit::NauticalMiles ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Centimeters ), static_cast<int>( Qgis::DistanceUnit::Centimeters ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Millimeters ), static_cast<int>( Qgis::DistanceUnit::Millimeters ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Inches ), static_cast<int>( Qgis::DistanceUnit::Inches ) );
+  mUnitsCombo->addItem( QgsUnitTypes::toString( Qgis::DistanceUnit::Degrees ), static_cast<int>( Qgis::DistanceUnit::Degrees ) );
+  mUnitsCombo->addItem( tr( "map units" ), static_cast<int>( Qgis::DistanceUnit::Unknown ) );
 }
 
 void Qgs3DMeasureDialog::removeLastPoint()
@@ -172,18 +175,18 @@ void Qgs3DMeasureDialog::updateSettings()
 {
   const QgsSettings settings;
 
-  mDecimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
+  mDecimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, "3" ).toInt();
   mMapDistanceUnit = mTool->canvas()->mapSettings()->crs().mapUnits();
   mDisplayedDistanceUnit = QgsUnitTypes::decodeDistanceUnit(
-                             settings.value( QStringLiteral( "qgis/measure/displayunits" ),
-                                 QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString() );
+    settings.value( u"qgis/measure/displayunits"_s, QgsUnitTypes::encodeUnit( Qgis::DistanceUnit::Unknown ) ).toString()
+  );
   setupTableHeader();
-  mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast< int >( mDisplayedDistanceUnit ) ) );
+  mUnitsCombo->setCurrentIndex( mUnitsCombo->findData( static_cast<int>( mDisplayedDistanceUnit ) ) );
 }
 
 void Qgs3DMeasureDialog::unitsChanged( int index )
 {
-  mDisplayedDistanceUnit = static_cast< Qgis::DistanceUnit >( mUnitsCombo->itemData( index ).toInt() );
+  mDisplayedDistanceUnit = static_cast<Qgis::DistanceUnit>( mUnitsCombo->itemData( index ).toInt() );
   updateTable();
   updateTotal();
 }
@@ -197,18 +200,18 @@ double Qgs3DMeasureDialog::convertLength( double length, Qgis::DistanceUnit toUn
 QString Qgs3DMeasureDialog::formatDistance( double distance ) const
 {
   const QgsSettings settings;
-  const bool baseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
+  const bool baseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
   return QgsUnitTypes::formatDistance( distance, mDecimalPlaces, mDisplayedDistanceUnit, baseUnit );
 }
 
 void Qgs3DMeasureDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#measuring" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#measuring"_s );
 }
 
 void Qgs3DMeasureDialog::openConfigTab()
 {
-  QgisApp::instance()->showOptionsDialog( this, QStringLiteral( "mOptionsPageMapTools" ) );
+  QgisApp::instance()->showOptionsDialog( this, u"mOptionsPageMapTools"_s );
 }
 
 void Qgs3DMeasureDialog::setupTableHeader()
@@ -264,7 +267,7 @@ void Qgs3DMeasureDialog::updateTable()
   QVector<QgsPoint>::const_iterator it;
   bool isFirstPoint = true; // first point
   QgsPoint p1, p2;
-  const QVector< QgsPoint > tmpPoints = mTool->points();
+  const QVector<QgsPoint> tmpPoints = mTool->points();
   for ( it = tmpPoints.constBegin(); it != tmpPoints.constEnd(); ++it )
   {
     p2 = *it;

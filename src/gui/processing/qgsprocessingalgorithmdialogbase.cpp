@@ -14,30 +14,34 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithmdialogbase.h"
-#include "qgssettings.h"
-#include "qgshelp.h"
-#include "qgsmessagebar.h"
-#include "qgsgui.h"
-#include "processing/qgsprocessingalgorithm.h"
-#include "processing/qgsprocessingprovider.h"
-#include "qgstaskmanager.h"
-#include "processing/qgsprocessingalgrunnertask.h"
-#include "qgsstringutils.h"
-#include "qgsapplication.h"
-#include "qgspanelwidget.h"
-#include "qgsjsonutils.h"
-#include "qgsunittypes.h"
-#include "qgsnative.h"
-#include <QToolButton>
-#include <QDesktopServices>
-#include <QScrollBar>
-#include <QApplication>
-#include <QClipboard>
-#include <QFileDialog>
-#include <QMimeData>
-#include <QMenu>
+
 #include <nlohmann/json.hpp>
 
+#include "processing/qgsprocessingalgorithm.h"
+#include "processing/qgsprocessingalgrunnertask.h"
+#include "processing/qgsprocessingprovider.h"
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsjsonutils.h"
+#include "qgsmessagebar.h"
+#include "qgsnative.h"
+#include "qgspanelwidget.h"
+#include "qgssettings.h"
+#include "qgsstringutils.h"
+#include "qgstaskmanager.h"
+#include "qgsunittypes.h"
+
+#include <QApplication>
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QMenu>
+#include <QMimeData>
+#include <QScrollBar>
+#include <QToolButton>
+
+#include "moc_qgsprocessingalgorithmdialogbase.cpp"
 
 ///@cond NOT_STABLE
 
@@ -124,7 +128,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::urlClicked );
 
   const QgsSettings settings;
-  splitter->restoreState( settings.value( QStringLiteral( "/Processing/dialogBaseSplitter" ), QByteArray() ).toByteArray() );
+  splitter->restoreState( settings.value( u"/Processing/dialogBaseSplitter"_s, QByteArray() ).toByteArray() );
   mSplitterState = splitter->saveState();
   splitterChanged( 0, 0 );
 
@@ -148,11 +152,10 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       mAdvancedButton->setMenu( mAdvancedMenu );
 
       mContextSettingsAction = new QAction( tr( "Algorithm Settings…" ), mAdvancedMenu );
-      mContextSettingsAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/settings.svg" ) ) );
+      mContextSettingsAction->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/settings.svg"_s ) );
       mAdvancedMenu->addAction( mContextSettingsAction );
 
-      connect( mContextSettingsAction, &QAction::triggered, this, [this]
-      {
+      connect( mContextSettingsAction, &QAction::triggered, this, [this] {
         if ( QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( mMainWidget ) )
         {
           mTabWidget->setCurrentIndex( 0 );
@@ -164,8 +167,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
             mContextOptionsWidget->setLogLevel( mLogLevel );
             panel->openPanel( mContextOptionsWidget );
 
-            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [ = ]
-            {
+            connect( mContextOptionsWidget, &QgsPanelWidget::widgetChanged, this, [this] {
               mOverrideDefaultContextSettings = true;
               mGeometryCheck = mContextOptionsWidget->invalidGeometryCheck();
               mDistanceUnits = mContextOptionsWidget->distanceUnit();
@@ -180,11 +182,10 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       mAdvancedMenu->addSeparator();
 
       QAction *copyAsPythonCommand = new QAction( tr( "Copy as Python Command" ), mAdvancedMenu );
-      copyAsPythonCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mIconPythonFile.svg" ) ) );
+      copyAsPythonCommand->setIcon( QgsApplication::getThemeIcon( u"mIconPythonFile.svg"_s ) );
 
       mAdvancedMenu->addAction( copyAsPythonCommand );
-      connect( copyAsPythonCommand, &QAction::triggered, this, [this]
-      {
+      connect( copyAsPythonCommand, &QAction::triggered, this, [this] {
         if ( const QgsProcessingAlgorithm *alg = algorithm() )
         {
           QgsProcessingContext *context = processingContext();
@@ -204,11 +205,10 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       } );
 
       mCopyAsQgisProcessCommand = new QAction( tr( "Copy as qgis_process Command" ), mAdvancedMenu );
-      mCopyAsQgisProcessCommand->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionTerminal.svg" ) ) );
+      mCopyAsQgisProcessCommand->setIcon( QgsApplication::getThemeIcon( u"mActionTerminal.svg"_s ) );
       mAdvancedMenu->addAction( mCopyAsQgisProcessCommand );
 
-      connect( mCopyAsQgisProcessCommand, &QAction::triggered, this, [this]
-      {
+      connect( mCopyAsQgisProcessCommand, &QAction::triggered, this, [this] {
         if ( const QgsProcessingAlgorithm *alg = algorithm() )
         {
           QgsProcessingContext *context = processingContext();
@@ -217,7 +217,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
           bool ok = false;
           const QString command = alg->asQgisProcessCommand( createProcessingParameters(), *context, ok );
-          if ( ! ok )
+          if ( !ok )
           {
             mMessageBar->pushMessage( tr( "Current settings cannot be specified as arguments to qgis_process (Pipe parameters as JSON to qgis_process instead)" ), Qgis::MessageLevel::Warning );
           }
@@ -238,11 +238,10 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       mAdvancedMenu->addSeparator();
 
       QAction *copyAsJson = new QAction( tr( "Copy as JSON" ), mAdvancedMenu );
-      copyAsJson->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
+      copyAsJson->setIcon( QgsApplication::getThemeIcon( u"mActionEditCopy.svg"_s ) );
 
       mAdvancedMenu->addAction( copyAsJson );
-      connect( copyAsJson, &QAction::triggered, this, [this]
-      {
+      connect( copyAsJson, &QAction::triggered, this, [this] {
         if ( const QgsProcessingAlgorithm *alg = algorithm() )
         {
           QgsProcessingContext *context = processingContext();
@@ -264,16 +263,15 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
       } );
 
       mPasteJsonAction = new QAction( tr( "Paste Settings" ), mAdvancedMenu );
-      mPasteJsonAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditPaste.svg" ) ) );
+      mPasteJsonAction->setIcon( QgsApplication::getThemeIcon( u"mActionEditPaste.svg"_s ) );
 
       mAdvancedMenu->addAction( mPasteJsonAction );
-      connect( mPasteJsonAction, &QAction::triggered, this, [this]
-      {
+      connect( mPasteJsonAction, &QAction::triggered, this, [this] {
         const QString text = QApplication::clipboard()->text();
         if ( text.isEmpty() )
           return;
 
-        const QVariantMap parameterValues = QgsJsonUtils::parseJson( text ).toMap().value( QStringLiteral( "inputs" ) ).toMap();
+        const QVariantMap parameterValues = QgsJsonUtils::parseJson( text ).toMap().value( u"inputs"_s ).toMap();
         if ( parameterValues.isEmpty() )
           return;
 
@@ -294,10 +292,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   if ( mAdvancedMenu )
   {
-    connect( mAdvancedMenu, &QMenu::aboutToShow, this, [ = ]
-    {
-      mCopyAsQgisProcessCommand->setEnabled( algorithm()
-                                             && !( algorithm()->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool ) );
+    connect( mAdvancedMenu, &QMenu::aboutToShow, this, [this] {
+      mCopyAsQgisProcessCommand->setEnabled( algorithm() && !( algorithm()->flags() & Qgis::ProcessingAlgorithmFlag::NotAvailableInStandaloneTool ) );
       mPasteJsonAction->setEnabled( !QApplication::clipboard()->text().isEmpty() );
     } );
   }
@@ -317,7 +313,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
-  verticalLayout->insertWidget( 0,  mMessageBar );
+  verticalLayout->insertWidget( 0, mMessageBar );
 
   connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmDialogBase::taskTriggered );
 }
@@ -334,14 +330,14 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   if ( ( QgsGui::higFlags() & QgsGui::HigDialogTitleIsTitleCase ) && !( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::DisplayNameIsLiteral ) )
   {
     title = mAlgorithm->group().isEmpty()
-            ? QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase )
-            : QStringLiteral( "%1 - %2" ).arg( QgsStringUtils::capitalize( mAlgorithm->group(), Qgis::Capitalization::TitleCase ), QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase ) );
+              ? QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase )
+              : u"%1 - %2"_s.arg( QgsStringUtils::capitalize( mAlgorithm->group(), Qgis::Capitalization::TitleCase ), QgsStringUtils::capitalize( mAlgorithm->displayName(), Qgis::Capitalization::TitleCase ) );
   }
   else
   {
     title = mAlgorithm->group().isEmpty()
-            ? mAlgorithm->displayName()
-            : QStringLiteral( "%1 - %2" ).arg( mAlgorithm->group(), mAlgorithm->displayName() );
+              ? mAlgorithm->displayName()
+              : u"%1 - %2"_s.arg( mAlgorithm->group(), mAlgorithm->displayName() );
   }
 
   setWindowTitle( title );
@@ -352,11 +348,11 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
   else
   {
     textShortHelp->document()->setDefaultStyleSheet( QStringLiteral( ".summary { margin-left: 10px; margin-right: 10px; }\n"
-        "h2 { color: #555555; padding-bottom: 15px; }\n"
-        "a { text - decoration: none; color: #3498db; font-weight: bold; }\n"
-        "p, ul, li { color: #666666; }\n"
-        "b { color: #333333; }\n"
-        "dl dd { margin - bottom: 5px; }" ) );
+                                                                     "h2 { color: #555555; padding-bottom: 15px; }\n"
+                                                                     "a { text - decoration: none; color: #3498db; font-weight: bold; }\n"
+                                                                     "p, ul, li { color: #666666; }\n"
+                                                                     "b { color: #333333; }\n"
+                                                                     "dl dd { margin - bottom: 5px; }" ) );
     textShortHelp->setHtml( algHelp );
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
     textShortHelp->show();
@@ -421,7 +417,7 @@ void QgsProcessingAlgorithmDialogBase::saveLogToFile( const QString &path, const
 
 QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
 {
-  auto feedback = std::make_unique< QgsProcessingAlgorithmDialogFeedback >();
+  auto feedback = std::make_unique<QgsProcessingAlgorithmDialogFeedback>();
   connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmDialogBase::setPercentage );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushCommandInfo );
   connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushConsoleInfo );
@@ -492,7 +488,6 @@ void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
 
 void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
-
 }
 
 void QgsProcessingAlgorithmDialogBase::openHelp()
@@ -500,7 +495,7 @@ void QgsProcessingAlgorithmDialogBase::openHelp()
   QUrl algHelp = mAlgorithm->helpUrl();
   if ( algHelp.isEmpty() && mAlgorithm->provider() )
   {
-    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), QStringLiteral( "%1%2" ).arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name() ) ) );
+    algHelp = QgsHelp::helpUrl( u"processing_algs/%1/%2.html#%3"_s.arg( mAlgorithm->provider()->helpId(), mAlgorithm->groupId(), u"%1%2"_s.arg( mAlgorithm->provider()->helpId() ).arg( mAlgorithm->name().replace( "_", "-" ) ) ) );
   }
 
   if ( !algHelp.isEmpty() )
@@ -641,21 +636,21 @@ void QgsProcessingAlgorithmDialogBase::pushFormattedMessage( const QString &html
 
 void QgsProcessingAlgorithmDialogBase::pushCommandInfo( const QString &command )
 {
-  txtLog->append( QStringLiteral( "<code>%1<code>" ).arg( formatStringForLog( command.toHtmlEscaped() ) ) );
+  txtLog->append( u"<code>%1<code>"_s.arg( formatStringForLog( command.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushDebugInfo( const QString &message )
 {
-  txtLog->append( QStringLiteral( "<span style=\"color:#777\">%1</span>" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
+  txtLog->append( u"<span style=\"color:#777\">%1</span>"_s.arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushConsoleInfo( const QString &info )
 {
-  txtLog->append( QStringLiteral( "<code style=\"color:#777\">%1</code>" ).arg( formatStringForLog( info.toHtmlEscaped() ) ) );
+  txtLog->append( u"<code style=\"color:#777\">%1</code>"_s.arg( formatStringForLog( info.toHtmlEscaped() ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
@@ -669,8 +664,7 @@ QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
   connect( progressBar, &QProgressBar::valueChanged, dialog->progressBar(), &QProgressBar::setValue );
   connect( dialog->cancelButton(), &QPushButton::clicked, buttonCancel, &QPushButton::click );
   dialog->logTextEdit()->setHtml( txtLog->toHtml() );
-  connect( txtLog, &QTextEdit::textChanged, dialog, [this, dialog]()
-  {
+  connect( txtLog, &QTextEdit::textChanged, dialog, [this, dialog]() {
     dialog->logTextEdit()->setHtml( txtLog->toHtml() );
     QScrollBar *sb = dialog->logTextEdit()->verticalScrollBar();
     sb->setValue( sb->maximum() );
@@ -686,11 +680,11 @@ void QgsProcessingAlgorithmDialogBase::clearLog()
 void QgsProcessingAlgorithmDialogBase::saveLog()
 {
   QgsSettings settings;
-  const QString lastUsedDir = settings.value( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QDir::homePath() ).toString();
+  const QString lastUsedDir = settings.value( u"/Processing/lastUsedLogDirectory"_s, QDir::homePath() ).toString();
 
   QString filter;
-  const QString txtExt = tr( "Text files" ) + QStringLiteral( " (*.txt *.TXT)" );
-  const QString htmlExt = tr( "HTML files" ) + QStringLiteral( " (*.html *.HTML)" );
+  const QString txtExt = tr( "Text files" ) + u" (*.txt *.TXT)"_s;
+  const QString htmlExt = tr( "HTML files" ) + u" (*.html *.HTML)"_s;
 
   const QString path = QFileDialog::getSaveFileName( this, tr( "Save Log to File" ), lastUsedDir, txtExt + ";;" + htmlExt, &filter );
   // return dialog focus on Mac
@@ -701,7 +695,7 @@ void QgsProcessingAlgorithmDialogBase::saveLog()
     return;
   }
 
-  settings.setValue( QStringLiteral( "/Processing/lastUsedLogDirectory" ), QFileInfo( path ).path() );
+  settings.setValue( u"/Processing/lastUsedLogDirectory"_s, QFileInfo( path ).path() );
 
   LogFormat format = FormatPlainText;
   if ( filter == htmlExt )
@@ -729,7 +723,7 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
   if ( !mHelpCollapsed )
   {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "/Processing/dialogBaseSplitter" ), splitter->saveState() );
+    settings.setValue( u"/Processing/dialogBaseSplitter"_s, splitter->saveState() );
   }
 
   QDialog::closeEvent( e );
@@ -745,7 +739,6 @@ void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
 
 void QgsProcessingAlgorithmDialogBase::runAlgorithm()
 {
-
 }
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
@@ -775,38 +768,34 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
     QString help;
     for ( const QString &paragraph : paragraphs )
     {
-      help += QStringLiteral( "<p>%1</p>" ).arg( paragraph );
+      help += u"<p>%1</p>"_s.arg( paragraph );
     }
-    result = QStringLiteral( "<h2>%1</h2>%2" ).arg( algorithm->displayName(), help );
+    result = u"<h2>%1</h2>%2"_s.arg( algorithm->displayName(), help );
   }
   else if ( !algorithm->shortDescription().isEmpty() )
   {
-    result = QStringLiteral( "<h2>%1</h2><p>%2</p>" ).arg( algorithm->displayName(), algorithm->shortDescription() );
+    result = u"<h2>%1</h2><p>%2</p>"_s.arg( algorithm->displayName(), algorithm->shortDescription() );
   }
 
   if ( algorithm->documentationFlags() != Qgis::ProcessingAlgorithmDocumentationFlags() )
   {
     QStringList flags;
-    for ( Qgis::ProcessingAlgorithmDocumentationFlag flag : qgsEnumList< Qgis::ProcessingAlgorithmDocumentationFlag>() )
+    for ( Qgis::ProcessingAlgorithmDocumentationFlag flag : qgsEnumList<Qgis::ProcessingAlgorithmDocumentationFlag>() )
     {
       if ( algorithm->documentationFlags() & flag )
       {
         flags << QgsProcessing::documentationFlagToString( flag );
       }
     }
-    result += QStringLiteral( "<ul><li><i>%1</i></li></ul>" ).arg( flags.join( QLatin1String( "</i></li><li><i>" ) ) );
+    result += u"<ul><li><i>%1</i></li></ul>"_s.arg( flags.join( "</i></li><li><i>"_L1 ) );
   }
   if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::SecurityRisk )
   {
-    result += QStringLiteral( "<p><b>%1</b></p>" ).arg(
-                tr( "Warning: This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks." )
-              );
+    result += u"<p><b>%1</b></p>"_s.arg( tr( "Warning: This algorithm is a potential security risk if executed with unchecked inputs, and may result in system damage or data leaks." ) );
   }
   if ( algorithm->flags() & Qgis::ProcessingAlgorithmFlag::KnownIssues )
   {
-    result += QStringLiteral( "<p><b>%1</b></p>" ).arg(
-                tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." )
-              );
+    result += u"<p><b>%1</b></p>"_s.arg( tr( "Warning: This algorithm has known issues. The results must be carefully validated by the user." ) );
   }
 
   return result;
@@ -871,7 +860,6 @@ void QgsProcessingAlgorithmDialogBase::updateRunButtonVisibility()
 
 void QgsProcessingAlgorithmDialogBase::resetAdditionalGui()
 {
-
 }
 
 void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
@@ -887,7 +875,6 @@ void QgsProcessingAlgorithmDialogBase::blockControlsWhileRunning()
 
 void QgsProcessingAlgorithmDialogBase::blockAdditionalControlsWhileRunning()
 {
-
 }
 
 QgsMessageBar *QgsProcessingAlgorithmDialogBase::messageBar()
@@ -910,7 +897,7 @@ void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTas
 QString QgsProcessingAlgorithmDialogBase::formatStringForLog( const QString &string )
 {
   QString s = string;
-  s.replace( '\n', QLatin1String( "<br>" ) );
+  s.replace( '\n', "<br>"_L1 );
   return s;
 }
 
@@ -947,13 +934,13 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
   // note -- we have to wrap the message in a span block, or QTextEdit::append sometimes gets confused
   // and varies between treating it as a HTML string or a plain text string! (see https://github.com/qgis/QGIS/issues/37934)
   if ( mMessageLoggedCount == MESSAGE_COUNT_LIMIT )
-    txtLog->append( QStringLiteral( "<span style=\"color:red\">%1</span>" ).arg( tr( "Message log truncated" ) ) );
+    txtLog->append( u"<span style=\"color:red\">%1</span>"_s.arg( tr( "Message log truncated" ) ) );
   else if ( isError || isWarning )
-    txtLog->append( QStringLiteral( "<span style=\"color:%1\">%2</span>" ).arg( isError ? QStringLiteral( "red" ) : QStringLiteral( "#b85a20" ), escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
+    txtLog->append( u"<span style=\"color:%1\">%2</span>"_s.arg( isError ? u"red"_s : u"#b85a20"_s, escapeHtml ? formatStringForLog( message.toHtmlEscaped() ) : formatStringForLog( message ) ) );
   else if ( escapeHtml )
-    txtLog->append( QStringLiteral( "<span>%1</span" ).arg( formatStringForLog( message.toHtmlEscaped() ) ) );
+    txtLog->append( u"<span>%1</span"_s.arg( formatStringForLog( message.toHtmlEscaped() ) ) );
   else
-    txtLog->append( QStringLiteral( "<span>%1</span>" ).arg( formatStringForLog( message ) ) );
+    txtLog->append( u"<span>%1</span>"_s.arg( formatStringForLog( message ) ) );
   scrollToBottomOfLog();
   processEvents();
 }
@@ -994,7 +981,6 @@ QTextEdit *QgsProcessingAlgorithmProgressDialog::logTextEdit()
 
 void QgsProcessingAlgorithmProgressDialog::reject()
 {
-
 }
 
 
@@ -1016,9 +1002,9 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
   mTemporaryFolderWidget->setStorageMode( QgsFileWidget::GetDirectory );
   mTemporaryFolderWidget->lineEdit()->setPlaceholderText( tr( "Default" ) );
 
-  mLogLevelComboBox->addItem( tr( "Default" ), static_cast< int >( Qgis::ProcessingLogLevel::DefaultLevel ) );
-  mLogLevelComboBox->addItem( tr( "Verbose" ), static_cast< int >( Qgis::ProcessingLogLevel::Verbose ) );
-  mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), static_cast< int >( Qgis::ProcessingLogLevel::ModelDebug ) );
+  mLogLevelComboBox->addItem( tr( "Default" ), static_cast<int>( Qgis::ProcessingLogLevel::DefaultLevel ) );
+  mLogLevelComboBox->addItem( tr( "Verbose" ), static_cast<int>( Qgis::ProcessingLogLevel::Verbose ) );
+  mLogLevelComboBox->addItem( tr( "Verbose (Model Debugging)" ), static_cast<int>( Qgis::ProcessingLogLevel::ModelDebug ) );
 
   mDistanceUnitsCombo->addItem( tr( "Default" ), QVariant::fromValue( Qgis::DistanceUnit::Unknown ) );
   for ( Qgis::DistanceUnit unit :
@@ -1080,12 +1066,12 @@ QgsProcessingContextOptionsWidget::QgsProcessingContextOptionsWidget( QWidget *p
 
   mThreadsSpinBox->setRange( 1, QThread::idealThreadCount() );
 
-  connect( mLogLevelComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mComboInvalidFeatureFiltering, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mDistanceUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
-  connect( mAreaUnitsCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mLogLevelComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mComboInvalidFeatureFiltering, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mDistanceUnitsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mAreaUnitsCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPanelWidget::widgetChanged );
   connect( mTemporaryFolderWidget, &QgsFileWidget::fileChanged, this, &QgsPanelWidget::widgetChanged );
-  connect( mThreadsSpinBox, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
+  connect( mThreadsSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingContext *context )
@@ -1095,22 +1081,22 @@ void QgsProcessingContextOptionsWidget::setFromContext( const QgsProcessingConte
   whileBlocking( mAreaUnitsCombo )->setCurrentIndex( mAreaUnitsCombo->findData( QVariant::fromValue( context->areaUnit() ) ) );
   whileBlocking( mTemporaryFolderWidget )->setFilePath( context->temporaryFolder() );
   whileBlocking( mThreadsSpinBox )->setValue( context->maximumThreads() );
-  whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( context->logLevel() ) ) );
+  whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast<int>( context->logLevel() ) ) );
 }
 
 Qgis::InvalidGeometryCheck QgsProcessingContextOptionsWidget::invalidGeometryCheck() const
 {
-  return mComboInvalidFeatureFiltering->currentData().value< Qgis::InvalidGeometryCheck >();
+  return mComboInvalidFeatureFiltering->currentData().value<Qgis::InvalidGeometryCheck>();
 }
 
 Qgis::DistanceUnit QgsProcessingContextOptionsWidget::distanceUnit() const
 {
-  return mDistanceUnitsCombo->currentData().value< Qgis::DistanceUnit >();
+  return mDistanceUnitsCombo->currentData().value<Qgis::DistanceUnit>();
 }
 
 Qgis::AreaUnit QgsProcessingContextOptionsWidget::areaUnit() const
 {
-  return mAreaUnitsCombo->currentData().value< Qgis::AreaUnit >();
+  return mAreaUnitsCombo->currentData().value<Qgis::AreaUnit>();
 }
 
 QString QgsProcessingContextOptionsWidget::temporaryFolder()
@@ -1125,12 +1111,12 @@ int QgsProcessingContextOptionsWidget::maximumThreads() const
 
 void QgsProcessingContextOptionsWidget::setLogLevel( Qgis::ProcessingLogLevel level )
 {
-  whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast< int >( level ) ) );
+  whileBlocking( mLogLevelComboBox )->setCurrentIndex( mLogLevelComboBox->findData( static_cast<int>( level ) ) );
 }
 
 Qgis::ProcessingLogLevel QgsProcessingContextOptionsWidget::logLevel() const
 {
-  return static_cast< Qgis::ProcessingLogLevel >( mLogLevelComboBox->currentData().toInt() );
+  return static_cast<Qgis::ProcessingLogLevel>( mLogLevelComboBox->currentData().toInt() );
 }
 
 ///@endcond

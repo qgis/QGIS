@@ -13,20 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-#include <QToolButton>
-
 #include "qgsguivectorlayertools.h"
 
-#include "qgsavoidintersectionsoperation.h"
 #include "qgisapp.h"
+#include "qgsavoidintersectionsoperation.h"
 #include "qgsfeatureaction.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
-#include "qgsvectorlayerutils.h"
 #include "qgsvectorlayertoolscontext.h"
+#include "qgsvectorlayerutils.h"
+
+#include <QMessageBox>
+#include <QToolButton>
+
+#include "moc_qgsguivectorlayertools.cpp"
 
 bool QgsGuiVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
 {
@@ -69,9 +71,7 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer *layer ) const
   {
     if ( !layer->supportsEditing() )
     {
-      QgisApp::instance()->messageBar()->pushMessage( tr( "Start editing failed" ),
-          tr( "Provider cannot be opened for editing" ),
-          Qgis::MessageLevel::Info );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ), Qgis::MessageLevel::Info );
       return false;
     }
 
@@ -114,10 +114,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
     if ( allowCancel )
       buttons |= QMessageBox::Cancel;
 
-    switch ( QMessageBox::question( nullptr,
-                                    tr( "Stop Editing" ),
-                                    tr( "Do you want to save the changes to layer %1?" ).arg( layer->name() ),
-                                    buttons ) )
+    switch ( QMessageBox::question( nullptr, tr( "Stop Editing" ), tr( "Do you want to save the changes to layer %1?" ).arg( layer->name() ), buttons ) )
     {
       case QMessageBox::Cancel:
         res = false;
@@ -140,9 +137,7 @@ bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer *layer, bool allowCance
         QgisApp::instance()->freezeCanvases();
         if ( !layer->rollBack() )
         {
-          QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ),
-              tr( "Problems during roll back" ),
-              Qgis::MessageLevel::Critical );
+          QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Problems during roll back" ), Qgis::MessageLevel::Critical );
           res = false;
         }
         QgisApp::instance()->freezeCanvases( false );
@@ -185,7 +180,7 @@ bool QgsGuiVectorLayerTools::avoidIntersection( QgsVectorLayer *layer, QgsFeatur
   QgsFeatureIterator fi = layer->getFeatures( request );
   QgsFeature f;
 
-  const QHash<QgsVectorLayer *, QSet<QgsFeatureId> > ignoreFeatures {{ layer, request.filterFids() }};
+  const QHash<QgsVectorLayer *, QSet<QgsFeatureId>> ignoreFeatures { { layer, request.filterFids() } };
 
   while ( fi.nextFeature( f ) )
   {
@@ -198,9 +193,7 @@ bool QgsGuiVectorLayerTools::avoidIntersection( QgsVectorLayer *layer, QgsFeatur
     {
       if ( errorMsg )
       {
-        *errorMsg = ( geom.isEmpty() ) ?
-                    tr( "The feature cannot be moved because 1 or more resulting geometries would be empty" ) :
-                    tr( "An error was reported during intersection removal" );
+        *errorMsg = ( geom.isEmpty() ) ? tr( "The feature cannot be moved because 1 or more resulting geometries would be empty" ) : tr( "An error was reported during intersection removal" );
       }
 
       return false;
@@ -215,17 +208,14 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
 {
   QgsMessageViewer *mv = new QgsMessageViewer();
   mv->setWindowTitle( tr( "Commit Errors" ) );
-  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() )
-                             + "\n\n"
-                             + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( QLatin1String( "\n  " ) ) )
-                           );
+  mv->setMessageAsPlainText( tr( "Could not commit changes to layer %1" ).arg( vlayer->name() ) + "\n\n" + tr( "Errors: %1\n" ).arg( vlayer->commitErrors().join( "\n  "_L1 ) ) );
 
   QToolButton *showMore = new QToolButton();
   // store pointer to vlayer in data of QAction
   QAction *act = new QAction( showMore );
   act->setData( QVariant::fromValue( vlayer ) );
   act->setText( tr( "Show more" ) );
-  showMore->setStyleSheet( QStringLiteral( "background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;" ) );
+  showMore->setStyleSheet( u"background-color: rgba(255, 255, 255, 0); color: black; text-decoration: underline;"_s );
   showMore->setCursor( Qt::PointingHandCursor );
   showMore->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   showMore->addAction( act );
@@ -240,7 +230,7 @@ void QgsGuiVectorLayerTools::commitError( QgsVectorLayer *vlayer ) const
     showMore,
     Qgis::MessageLevel::Warning,
     0,
-    QgisApp::instance()->messageBar() );
+    QgisApp::instance()->messageBar()
+  );
   QgisApp::instance()->messageBar()->pushItem( errorMsg );
-
 }

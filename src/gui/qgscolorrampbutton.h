@@ -15,11 +15,12 @@
 #ifndef QGSCOLORRAMPBUTTON_H
 #define QGSCOLORRAMPBUTTON_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
 #include <QToolButton>
-#include <memory>
 
 class QgsPanelWidget;
 class QgsColorRamp;
@@ -28,7 +29,10 @@ class QgsStyle;
 /**
  * \ingroup gui
  * \class QgsColorRampButton
- * \brief A cross platform button subclass for selecting color ramps. Will open color ramp dialogs when clicked.
+ * \brief A cross platform button subclass for selecting color ramps.
+ *
+ * Will open color ramp dialogs when clicked.
+ *
  * Offers live updates to button from color ramp dialog. An attached drop-down menu allows for access to
  * saved color ramps, as well as option to invert the current color ramp and create new ramps.
  */
@@ -42,7 +46,6 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
-
     /**
      * Construct a new color ramp button.
      * Use \a parent to attach a parent QWidget to the dialog.
@@ -273,7 +276,6 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void rampWidgetUpdated();
 
   protected:
-
     bool event( QEvent *e ) override;
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
@@ -285,14 +287,13 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void mousePressEvent( QMouseEvent *e ) override;
 
   private:
-
     QString mColorRampDialogTitle;
     bool mShowGradientOnly = false;
-    std::unique_ptr< QgsColorRamp > mColorRamp;
+    std::unique_ptr<QgsColorRamp> mColorRamp;
     QString mColorRampName;
     QgsStyle *mStyle = nullptr;
 
-    std::unique_ptr< QgsColorRamp > mDefaultColorRamp;
+    std::unique_ptr<QgsColorRamp> mDefaultColorRamp;
     QString mContext;
     bool mAcceptLiveUpdates = true;
     bool mShowRandomColorRamp = false;

@@ -30,9 +30,7 @@
  */
 class QgsTransferAnnotationsFromMainAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsTransferAnnotationsFromMainAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -42,12 +40,11 @@ class QgsTransferAnnotationsFromMainAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString shortHelpString() const override;
+    QString shortDescription() const override;
     QgsTransferAnnotationsFromMainAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

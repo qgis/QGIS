@@ -15,11 +15,11 @@
 #ifndef QGSTEXTPREVIEW_H
 #define QGSTEXTPREVIEW_H
 
-#include "qgstextformat.h"
+#include "qgis_gui.h"
 #include "qgsrendercontext.h"
+#include "qgstextformat.h"
 
 #include <QLabel>
-#include "qgis_gui.h"
 
 class QgsScreenHelper;
 
@@ -46,7 +46,6 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     Q_PROPERTY( Qgis::DistanceUnit mapUnits READ mapUnits WRITE setMapUnits )
 
   public:
-
     /**
      * Constructor for QgsTextPreview
      * \param parent parent widget
@@ -100,7 +99,6 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     Qgis::DistanceUnit mapUnits() const { return mMapUnits; }
 
   private:
-
     QgsScreenHelper *mScreenHelper = nullptr;
 
     QgsTextFormat mFormat;

@@ -17,6 +17,7 @@
 #define QGSPAINTEFFECTPROPERTIESWIDGET_H
 
 #include "ui_qgseffectpropertieswidget.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
 
@@ -26,16 +27,13 @@ class QgsPaintEffect;
 /**
  * \ingroup gui
  * \class QgsPaintEffectPropertiesWidget
- * \brief A widget which modifies the properties of a QgsPaintEffect
- *
+ * \brief A widget which modifies the properties of a QgsPaintEffect.
  */
-
 class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::EffectPropertiesWidget
 {
     Q_OBJECT
 
   public:
-
     /**
      * QgsPaintEffectPropertiesWidget constructor
      * \param effect QgsPaintEffect to modify in the widget
@@ -68,12 +66,10 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
     void changeEffect( QgsPaintEffect *effect );
 
   private:
-
     QgsPaintEffect *mEffect = nullptr;
 
     void populateEffectTypes();
     void updateEffectWidget( QgsPaintEffect *effect );
-
 };
 
 #endif //QGSPAINTEFFECTPROPERTIESWIDGET_H

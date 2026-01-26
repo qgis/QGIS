@@ -14,9 +14,13 @@
  ***************************************************************************/
 
 #include "qgscodeeditorhistorydialog.h"
+
 #include "qgscodeeditor.h"
-#include <QStandardItemModel>
+
 #include <QShortcut>
+#include <QStandardItemModel>
+
+#include "moc_qgscodeeditorhistorydialog.cpp"
 
 QgsCodeEditorHistoryDialog::QgsCodeEditorHistoryDialog( QgsCodeEditor *editor, QWidget *parent )
   : QDialog( parent )
@@ -39,8 +43,8 @@ QgsCodeEditorHistoryDialog::QgsCodeEditorHistoryDialog( QgsCodeEditor *editor, Q
   QShortcut *deleteShortcut = new QShortcut( QKeySequence( Qt::Key_Delete ), this );
   connect( deleteShortcut, &QShortcut::activated, this, &QgsCodeEditorHistoryDialog::deleteItem );
   connect( listView, &QListView::doubleClicked, this, &QgsCodeEditorHistoryDialog::runCommand );
-  connect( mButtonReloadHistory, &QPushButton::clicked, this, & QgsCodeEditorHistoryDialog::reloadHistory );
-  connect( mButtonSaveHistory, &QPushButton::clicked, this, & QgsCodeEditorHistoryDialog::saveHistory );
+  connect( mButtonReloadHistory, &QPushButton::clicked, this, &QgsCodeEditorHistoryDialog::reloadHistory );
+  connect( mButtonSaveHistory, &QPushButton::clicked, this, &QgsCodeEditorHistoryDialog::saveHistory );
   connect( mButtonRunHistory, &QPushButton::clicked, this, &QgsCodeEditorHistoryDialog::executeSelectedHistory );
 }
 
@@ -90,11 +94,11 @@ void QgsCodeEditorHistoryDialog::deleteItem()
   if ( selection.empty() )
     return;
 
-  QList< int > selectedRows;
+  QList<int> selectedRows;
   selectedRows.reserve( selection.size() );
   for ( const QModelIndex &index : selection )
     selectedRows << index.row();
-  std::sort( selectedRows.begin(), selectedRows.end(), std::greater< int >() );
+  std::sort( selectedRows.begin(), selectedRows.end(), std::greater<int>() );
 
   for ( int row : std::as_const( selectedRows ) )
   {

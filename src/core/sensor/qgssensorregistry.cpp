@@ -15,11 +15,13 @@
  ***************************************************************************/
 
 #include "qgsconfig.h"
-
 #include "qgssensorregistry.h"
+
 #include "qgsiodevicesensor.h"
 #include "qgsproject.h"
 #include "qgssensormanager.h"
+
+#include "moc_qgssensorregistry.cpp"
 
 QgsSensorRegistry::QgsSensorRegistry( QObject *parent )
   : QObject( parent )
@@ -36,10 +38,10 @@ bool QgsSensorRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
-  addSensorType( new QgsSensorMetadata( QLatin1String( "tcp_socket" ), QObject::tr( "TCP socket sensor" ), QgsTcpSocketSensor::create ) );
-  addSensorType( new QgsSensorMetadata( QLatin1String( "udp_socket" ), QObject::tr( "UDP socket sensor" ), QgsUdpSocketSensor::create ) );
+  addSensorType( new QgsSensorMetadata( "tcp_socket"_L1, QObject::tr( "TCP socket sensor" ), QgsTcpSocketSensor::create ) );
+  addSensorType( new QgsSensorMetadata( "udp_socket"_L1, QObject::tr( "UDP socket sensor" ), QgsUdpSocketSensor::create ) );
 #if defined( HAVE_QTSERIALPORT )
-  addSensorType( new QgsSensorMetadata( QLatin1String( "serial_port" ), QObject::tr( "Serial port sensor" ), QgsSerialPortSensor::create ) );
+  addSensorType( new QgsSensorMetadata( "serial_port"_L1, QObject::tr( "Serial port sensor" ), QgsSerialPortSensor::create ) );
 #endif
 
   return true;
@@ -66,12 +68,12 @@ bool QgsSensorRegistry::removeSensorType( const QString &type )
     return false;
 
   // remove any sensor of this type in the project sensor manager
-  const QList<QgsAbstractSensor *> sensors = QgsProject::instance()->sensorManager()->sensors();
+  const QList<QgsAbstractSensor *> sensors = QgsProject::instance()->sensorManager()->sensors(); // skip-keyword-check
   for ( QgsAbstractSensor *sensor : sensors )
   {
     if ( sensor->type() == type )
     {
-      QgsProject::instance()->sensorManager()->removeSensor( sensor->id() );
+      QgsProject::instance()->sensorManager()->removeSensor( sensor->id() ); // skip-keyword-check
     }
   }
 

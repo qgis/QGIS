@@ -32,9 +32,7 @@ class QgsCategorizedSymbolRenderer;
  */
 class QgsCategorizeUsingStyleAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsCategorizeUsingStyleAlgorithm();
     ~QgsCategorizeUsingStyleAlgorithm() override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -49,13 +47,10 @@ class QgsCategorizeUsingStyleAlgorithm : public QgsProcessingAlgorithm
     QgsCategorizeUsingStyleAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QString mField;
     QString mLayerId;
     QString mLayerName;
@@ -70,5 +65,3 @@ class QgsCategorizeUsingStyleAlgorithm : public QgsProcessingAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCATEGORIZEUSINGSTYLE_H
-
-

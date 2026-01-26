@@ -14,24 +14,15 @@
  ***************************************************************************/
 
 #include "qgsgradientstopeditor.h"
+
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
 
-#include <QPainter>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QStyleOptionFrameV3>
-#else
-#include <QStyleOptionFrame>
-#endif
 #include <QMouseEvent>
+#include <QPainter>
+#include <QStyleOptionFrame>
 
-#define MARKER_WIDTH 11
-#define MARKER_HEIGHT 14
-#define MARKER_GAP 1.5
-#define MARGIN_BOTTOM ( MARKER_HEIGHT + 2 )
-#define MARGIN_X ( MARKER_WIDTH / 2 )
-#define FRAME_MARGIN 2
-#define CLICK_THRESHOLD ( MARKER_WIDTH / 2 + 3 )
+#include "moc_qgsgradientstopeditor.cpp"
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )
@@ -81,9 +72,7 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
   Q_UNUSED( event )
   QPainter painter( this );
 
-  QRect frameRect( rect().x() + MARGIN_X, rect().y(),
-                   rect().width() - 2 * MARGIN_X,
-                   rect().height() - MARGIN_BOTTOM );
+  QRect frameRect( rect().x() + MARGIN_X, rect().y(), rect().width() - 2 * MARGIN_X, rect().height() - MARGIN_BOTTOM );
 
   //draw frame
   QStyleOptionFrame option;
@@ -107,16 +96,14 @@ void QgsGradientStopEditor::paintEvent( QPaintEvent *event )
   painter.setBrush( checkBrush );
   painter.setPen( Qt::NoPen );
 
-  QRect box( frameRect.x() + FRAME_MARGIN, frameRect.y() + FRAME_MARGIN,
-             frameRect.width() - 2 * FRAME_MARGIN,
-             frameRect.height() - 2 * FRAME_MARGIN );
+  QRect box( frameRect.x() + FRAME_MARGIN_PX, frameRect.y() + FRAME_MARGIN_PX, frameRect.width() - 2 * FRAME_MARGIN_PX, frameRect.height() - 2 * FRAME_MARGIN_PX );
 
   painter.drawRect( box );
 
   // draw gradient preview on top of checkerboard
   for ( int i = 0; i < box.width() + 1; ++i )
   {
-    QPen pen( mGradient.color( static_cast< double >( i ) / box.width() ) );
+    QPen pen( mGradient.color( static_cast<double>( i ) / box.width() ) );
     painter.setPen( pen );
     painter.drawLine( box.left() + i, box.top(), box.left() + i, box.height() + 1 );
   }
@@ -183,7 +170,7 @@ void QgsGradientStopEditor::setSelectedStopColor( const QColor &color )
 {
   if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
   {
-    mStops[ mSelectedStop - 1 ].color = color;
+    mStops[mSelectedStop - 1].color = color;
     mGradient.setStops( mStops );
   }
   else if ( mSelectedStop == 0 )
@@ -202,7 +189,7 @@ void QgsGradientStopEditor::setSelectedStopOffset( double offset )
 {
   if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
   {
-    mStops[ mSelectedStop - 1 ].offset = offset;
+    mStops[mSelectedStop - 1].offset = offset;
     mGradient.setStops( mStops );
     update();
     emit changed();
@@ -213,7 +200,7 @@ void QgsGradientStopEditor::setSelectedStopColorSpec( QColor::Spec spec )
 {
   if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
   {
-    mStops[ mSelectedStop - 1 ].setColorSpec( spec );
+    mStops[mSelectedStop - 1].setColorSpec( spec );
     mGradient.setStops( mStops );
     update();
     emit changed();
@@ -230,7 +217,7 @@ void QgsGradientStopEditor::setSelectedStopDirection( Qgis::AngularDirection dir
 {
   if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
   {
-    mStops[ mSelectedStop - 1 ].setDirection( direction );
+    mStops[mSelectedStop - 1].setDirection( direction );
     mGradient.setStops( mStops );
     update();
     emit changed();
@@ -247,8 +234,8 @@ void QgsGradientStopEditor::setSelectedStopDetails( const QColor &color, double 
 {
   if ( mSelectedStop > 0 && mSelectedStop < mGradient.count() - 1 )
   {
-    mStops[ mSelectedStop - 1 ].color = color;
-    mStops[ mSelectedStop - 1 ].offset = offset;
+    mStops[mSelectedStop - 1].color = color;
+    mStops[mSelectedStop - 1].offset = offset;
     mGradient.setStops( mStops );
   }
   else if ( mSelectedStop == 0 )
@@ -305,7 +292,7 @@ void QgsGradientStopEditor::mouseMoveEvent( QMouseEvent *e )
 
       // have to edit the temporary stop list, as setting stops on the gradient will reorder them
       // and change which stop corresponds to the selected one;
-      mStops[ mSelectedStop - 1 ].offset = offset;
+      mStops[mSelectedStop - 1].offset = offset;
 
       mGradient.setStops( mStops );
       update();
@@ -393,12 +380,12 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
     e->accept();
     return;
   }
-  else if ( e->key() == Qt::Key_Left ||  e->key() == Qt::Key_Right )
+  else if ( e->key() == Qt::Key_Left || e->key() == Qt::Key_Right )
   {
     if ( selectedStopIsMovable() )
     {
       // calculate offset corresponding to 1 px
-      double offsetDiff = pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN + 2 ) - pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN + 1 );
+      double offsetDiff = pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN_PX + 2 ) - pointToRelativePosition( rect().x() + MARGIN_X + FRAME_MARGIN_PX + 1 );
 
       if ( e->modifiers() & Qt::ShiftModifier )
         offsetDiff *= 10.0;
@@ -406,7 +393,7 @@ void QgsGradientStopEditor::keyPressEvent( QKeyEvent *e )
       if ( e->key() == Qt::Key_Left )
         offsetDiff *= -1;
 
-      mStops[ mSelectedStop - 1 ].offset = std::clamp( mStops[ mSelectedStop - 1 ].offset + offsetDiff, 0.0, 1.0 );
+      mStops[mSelectedStop - 1].offset = std::clamp( mStops[mSelectedStop - 1].offset + offsetDiff, 0.0, 1.0 );
       mGradient.setStops( mStops );
       update();
       e->accept();
@@ -423,7 +410,7 @@ QPixmap QgsGradientStopEditor::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }
@@ -432,7 +419,7 @@ void QgsGradientStopEditor::drawStopMarker( QPainter &painter, QPoint topMiddle,
 {
   QgsScopedQPainterState painterState( &painter );
   painter.setRenderHint( QPainter::Antialiasing );
-  painter.setBrush( selected ?  QColor( 150, 150, 150 ) : Qt::white );
+  painter.setBrush( selected ? QColor( 150, 150, 150 ) : Qt::white );
   painter.setPen( selected ? Qt::black : QColor( 150, 150, 150 ) );
   // 0.5 offsets to make edges pixel grid aligned
   painter.translate( std::round( topMiddle.x() - MARKER_WIDTH / 2.0 ) + 0.5, topMiddle.y() + 0.5 );
@@ -450,21 +437,21 @@ void QgsGradientStopEditor::drawStopMarker( QPainter &painter, QPoint topMiddle,
 
 double QgsGradientStopEditor::pointToRelativePosition( int x ) const
 {
-  int left = rect().x() + MARGIN_X + FRAME_MARGIN;
-  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN;
+  int left = rect().x() + MARGIN_X + FRAME_MARGIN_PX;
+  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN_PX;
 
   if ( x <= left )
     return 0;
   else if ( x >= right )
     return 1.0;
 
-  return static_cast< double >( x - left ) / ( right - left );
+  return static_cast<double>( x - left ) / ( right - left );
 }
 
 int QgsGradientStopEditor::relativePositionToPoint( double position ) const
 {
-  int left = rect().x() + MARGIN_X + FRAME_MARGIN;
-  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN;
+  int left = rect().x() + MARGIN_X + FRAME_MARGIN_PX;
+  int right = left + rect().width() - 2 * MARGIN_X - 2 * FRAME_MARGIN_PX;
 
   if ( position <= 0 )
     return left;
@@ -516,5 +503,3 @@ void QgsGradientStopEditor::dropEvent( QDropEvent *e )
 
   //could not get color from mime data
 }
-
-

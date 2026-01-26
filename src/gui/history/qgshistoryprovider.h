@@ -18,6 +18,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+
 #include <QString>
 #include <QVariantMap>
 
@@ -38,7 +39,6 @@ class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
     Q_OBJECT
 
   public:
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
@@ -48,7 +48,7 @@ class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
     SIP_END
 #endif
 
-    virtual ~QgsAbstractHistoryProvider();
+    ~QgsAbstractHistoryProvider() override;
 
     /**
      * Returns the provider's unique id, which is used to associate existing history entries with the provider.
@@ -68,10 +68,6 @@ class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
      * \since QGIS 3.32
      */
     virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context );
-
 };
 
 #endif //QGSHISTORYPROVIDER_H
-
-
-

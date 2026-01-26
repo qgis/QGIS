@@ -19,11 +19,13 @@
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-#include "qgsstacitem.h"
 #include "ui_qgsstacdownloadassetsdialog.h"
+
+#include "qgsstacitem.h"
 
 #include <QDialog>
 
+class QgsMessageBar;
 
 class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadAssetsDialog
 {
@@ -32,14 +34,25 @@ class QgsStacDownloadAssetsDialog : public QDialog, private Ui::QgsStacDownloadA
   public:
     explicit QgsStacDownloadAssetsDialog( QWidget *parent = nullptr );
 
+    void accept() override;
+
+    void setAuthCfg( const QString &authCfg );
+    void setMessageBar( QgsMessageBar *bar );
     void setStacItem( QgsStacItem *stacItem );
+    void addStacAsset( const QString &assetId, const QgsStacAsset *stacAsset );
     QString selectedFolder();
     QStringList selectedUrls();
+
+  private slots:
+    void showContextMenu( QPoint p );
 
   private:
     void selectAll();
     void deselectAll();
 
+    QMenu *mContextMenu = nullptr;
+    QString mAuthCfg;
+    QgsMessageBar *mMessageBar = nullptr;
 };
 
 ///@endcond

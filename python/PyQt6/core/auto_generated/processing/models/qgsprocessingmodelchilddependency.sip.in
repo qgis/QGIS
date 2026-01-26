@@ -10,7 +10,6 @@
 
 
 
-
 class QgsProcessingModelChildDependency
 {
 %Docstring(signature="appended")
@@ -26,7 +25,8 @@ Contains details of a child algorithm dependency.
 
     QgsProcessingModelChildDependency( const QString &childId = QString(), const QString &conditionalBranch = QString() );
 %Docstring
-Constructor for QgsProcessingModelChildDependency, with the specified ``childId``.
+Constructor for QgsProcessingModelChildDependency, with the specified
+``childId``.
 %End
 
     QString childId;

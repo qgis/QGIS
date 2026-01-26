@@ -16,10 +16,11 @@
 #ifndef QGSLAYERTREEVIEWOFFLINEINDICATOR_H
 #define QGSLAYERTREEVIEWOFFLINEINDICATOR_H
 
+#include <memory>
+
 #include "qgslayertreeviewindicatorprovider.h"
 
 #include <QSet>
-#include <memory>
 
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
@@ -34,9 +35,6 @@ class QgsLayerTreeViewOfflineIndicatorProvider : public QgsLayerTreeViewIndicato
   protected:
     void connectSignals( QgsMapLayer *layer ) override;
     void disconnectSignals( QgsMapLayer *layer ) override;
-
-  protected slots:
-    void onLayerChanged();
 
   private:
     bool acceptLayer( QgsMapLayer *layer ) override;

@@ -9,17 +9,19 @@
 
 
 
+
+
 class QgsPresetColorRampWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
-A widget which allows users to modify the properties of a :py:class:`QgsPresetSchemeColorRamp`.
+A widget which allows users to modify the properties of a
+:py:class:`QgsPresetSchemeColorRamp`.
 %End
 
 %TypeHeaderCode
 #include "qgspresetcolorrampdialog.h"
 %End
   public:
-
     QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPresetColorRampWidget.
@@ -56,14 +58,14 @@ Emitted when the dialog settings change
 class QgsPresetColorRampDialog : QDialog
 {
 %Docstring(signature="appended")
-A dialog which allows users to modify the properties of a :py:class:`QgsPresetSchemeColorRamp`.
+A dialog which allows users to modify the properties of a
+:py:class:`QgsPresetSchemeColorRamp`.
 %End
 
 %TypeHeaderCode
 #include "qgspresetcolorrampdialog.h"
 %End
   public:
-
     QgsPresetColorRampDialog( const QgsPresetSchemeColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPresetColorRampDialog.

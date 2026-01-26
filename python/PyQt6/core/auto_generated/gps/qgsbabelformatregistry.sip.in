@@ -14,7 +14,8 @@ class QgsBabelFormatRegistry
 %Docstring(signature="appended")
 A registry for :py:class:`QgsAbstractBabelFormat` GPSBabel formats.
 
-:py:class:`QgsBabelFormatRegistry` is not usually directly created, but rather accessed through
+:py:class:`QgsBabelFormatRegistry` is not usually directly created, but
+rather accessed through
 :py:func:`QgsApplication.gpsBabelFormatRegistry()`.
 
 .. versionadded:: 3.22
@@ -30,8 +31,8 @@ A registry for :py:class:`QgsAbstractBabelFormat` GPSBabel formats.
 %Docstring
 Constructor for QgsBabelFormatRegistry.
 
-The registry will automatically be populated with standard formats, and with
-devices previously configured and stored in QSettings.
+The registry will automatically be populated with standard formats, and
+with devices previously configured and stored in QSettings.
 %End
     ~QgsBabelFormatRegistry();
 

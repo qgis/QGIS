@@ -17,14 +17,14 @@
 #ifndef QGSZIPITEM_H
 #define QGSZIPITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsdatacollectionitem.h"
 
 /**
  * \ingroup core
- * \brief A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
+ * \brief A browser item for zip (archive) files.
 */
 class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 {
@@ -45,7 +45,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsZipItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsZipItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QStringList sProviderNames;
 
     /**
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED static QString vsiPrefix( const QString &uri ) SIP_DEPRECATED;
 

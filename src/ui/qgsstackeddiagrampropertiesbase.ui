@@ -26,7 +26,7 @@
    <item>
     <widget class="QTreeView" name="mSubDiagramsView">
      <property name="selectionMode">
-      <enum>QAbstractItemView::SelectionMode::SingleSelection</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <property name="itemsExpandable">
       <bool>false</bool>
@@ -34,11 +34,23 @@
      <property name="expandsOnDoubleClick">
       <bool>false</bool>
      </property>
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::InternalMove</enum>
+     </property>
+     <property name="allColumnsShowFocus">
+      <bool>true</bool>
+     </property>
      <attribute name="headerMinimumSectionSize">
-      <number>57</number>
+      <number>100</number>
      </attribute>
      <attribute name="headerDefaultSectionSize">
-      <number>110</number>
+      <number>150</number>
      </attribute>
     </widget>
    </item>

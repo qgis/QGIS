@@ -14,22 +14,24 @@
  ***************************************************************************/
 
 #include "qgsdecorationtitle.h"
-#include "qgsdecorationtitledialog.h"
 
 #include "qgisapp.h"
+#include "qgscolorutils.h"
+#include "qgsdecorationtitledialog.h"
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgscolorutils.h"
 #include "qgstextrenderer.h"
 
-#include <QPainter>
-#include <QMenu>
 #include <QDate>
 #include <QDomDocument>
 #include <QFile>
+#include <QMenu>
+#include <QPainter>
+
+#include "moc_qgsdecorationtitle.cpp"
 
 //non qt includes
 #include <cmath>
@@ -42,7 +44,7 @@ QgsDecorationTitle::QgsDecorationTitle( QObject *parent )
   mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Title Label" ) );
-  mConfigurationName = QStringLiteral( "TitleLabel" );
+  mConfigurationName = u"TitleLabel"_s;
 
   projectRead();
 }
@@ -51,15 +53,15 @@ void QgsDecorationTitle::projectRead()
 {
   QgsDecorationItem::projectRead();
 
-  mLabelText = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Label" ), QString() );
-  mBackgroundColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QStringLiteral( "0,0,0,99" ) ) );
+  mLabelText = QgsProject::instance()->readEntry( mConfigurationName, u"/Label"_s, QString() );
+  mBackgroundColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/BackgroundColor"_s, u"0,0,0,99"_s ) );
 
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginH"_s, 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginV"_s, 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  const QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+  const QString textXml = QgsProject::instance()->readEntry( mConfigurationName, u"/Font"_s );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
@@ -74,18 +76,18 @@ void QgsDecorationTitle::saveToProject()
 {
   QgsDecorationItem::saveToProject();
 
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Label" ), mLabelText );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/BackgroundColor" ), QgsColorUtils::colorToString( mBackgroundColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Label"_s, mLabelText );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/BackgroundColor"_s, QgsColorUtils::colorToString( mBackgroundColor ) );
 
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginH"_s, mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginV"_s, mMarginVertical );
 
   QDomDocument textDoc;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   const QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Font"_s, textDoc.toString() );
 }
 
 // Slot called when the buffer menu item is activated
@@ -207,7 +209,7 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
       horizontalAlignment = Qgis::TextHorizontalAlignment::Center;
       break;
     default:
-      QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugError( u"Unsupported placement index of %1"_s.arg( static_cast<int>( mPlacement ) ) );
   }
 
   // Draw background bar
@@ -218,4 +220,3 @@ void QgsDecorationTitle::render( const QgsMapSettings &mapSettings, QgsRenderCon
   // Paint label to canvas
   QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
 }
-

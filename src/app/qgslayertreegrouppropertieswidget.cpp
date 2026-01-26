@@ -14,17 +14,20 @@
  ***************************************************************************/
 
 #include "qgslayertreegrouppropertieswidget.h"
+
 #include "qgsapplication.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgspainteffect.h"
-#include "qgsmapcanvas.h"
 #include "qgspainteffectregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
-#include <QStackedWidget>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QStackedWidget>
+
+#include "moc_qgslayertreegrouppropertieswidget.cpp"
 
 QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( nullptr, canvas, parent )
@@ -36,7 +39,7 @@ QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanv
   mEffectWidget->setPaintEffect( mPaintEffect.get() );
 
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
-  connect( mBlendModeComboBox, qOverload< int >( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
+  connect( mBlendModeComboBox, qOverload<int>( &QgsBlendModeComboBox::currentIndexChanged ), this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
   connect( mEffectWidget, &QgsEffectStackCompactWidget::changed, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
   connect( mRenderAsGroupCheckBox, &QGroupBox::toggled, this, &QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged );
 
@@ -130,7 +133,7 @@ void QgsLayerTreeGroupPropertiesWidget::onLayerPropertyChanged()
 QgsLayerTreeGroupPropertiesWidgetFactory::QgsLayerTreeGroupPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/symbology.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/symbology.svg"_s ) );
   setTitle( tr( "Symbology" ) );
 }
 
@@ -158,4 +161,3 @@ bool QgsLayerTreeGroupPropertiesWidgetFactory::supportsLayerTreeGroup( QgsLayerT
 {
   return true;
 }
-

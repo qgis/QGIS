@@ -19,10 +19,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
-#include <QRecursiveMutex>
+
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QObject>
+#include <QRecursiveMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -38,22 +39,21 @@
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <qt6keychain/keychain.h>
-#else
-#include <qt5keychain/keychain.h>
-#endif
 
 #ifndef SIP_RUN
+#ifdef HAVE_AUTH
 namespace QCA
 {
   class Initializer;
 }
 #endif
+#endif
 class QgsAuthMethod;
 class QgsAuthMethodEdit;
 class QgsAuthProvider;
 class QgsAuthMethodMetadata;
+class QgsSettingsEntryBool;
 class QTimer;
 class QgsAuthConfigurationStorage;
 class QgsAuthConfigurationStorageDb;
@@ -61,8 +61,8 @@ class QgsAuthConfigurationStorageRegistry;
 
 /**
  * \ingroup core
- * \brief Singleton offering an interface to manage the authentication configuration database
- * and to utilize configurations through various authentication method plugins
+ * \brief Singleton which offers an interface to manage the authentication configuration database
+ * and to utilize configurations through various authentication method plugins.
  *
  * QgsAuthManager should not usually be directly created, but rather accessed through
  * QgsApplication::authManager().
@@ -72,6 +72,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     Q_OBJECT
 
   public:
+
+    static const QgsSettingsEntryBool *settingsGenerateRandomPasswordForPasswordHelper SIP_SKIP;
+    static const QgsSettingsEntryBool *settingsUsingGeneratedRandomPassword SIP_SKIP;
 
     //! Message log level (mirrors that of QgsMessageLog, so it can also output there)
     enum MessageLevel
@@ -187,6 +190,15 @@ class CORE_EXPORT QgsAuthManager : public QObject
     const QString authenticationDatabaseUriStripped() const;
 
     /**
+     * Creates a new securely seeded random password and stores it in the
+     * system keychain as the new master password.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool createAndStoreRandomMasterPasswordInKeyChain() SIP_SKIP;
+
+    /**
      * Main call to initially set or continually check master password is set
      * \note If it is not set, the user is asked for its input
      * \param verify Whether password's hash was saved in authentication database
@@ -227,20 +239,36 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool masterPasswordSame( const QString &password ) const;
 
     /**
-     * Reset the master password to a new one, then re-encrypt all previous
-     * configs in a new database file, optionally backup current database
+     * Reset the master password to a new one, then re-encrypts all previous
+     * configs with the new password.
+     *
      * \param newpass New master password to replace existing
      * \param oldpass Current master password to replace existing
-     * \param keepbackup Whether to keep the generated backup of current database
+     * \param keepbackup Whether to keep the generated backup of current database (if using file-based storage)
      * \param backuppath Where the backup is located, if kept
      */
     bool resetMasterPassword( const QString &newpass, const QString &oldpass, bool keepbackup, QString *backuppath SIP_INOUT = nullptr );
 
     /**
+     * Reset the master password to a new one, hen re-encrypts all previous
+     * configs with the new password.
+     *
+     * The old password will automatically be retrieved from the password helper.
+     *
+     * \param newPassword New master password to replace existing
+     * \param keepBackup Whether to keep the generated backup of current database (if using file-based storage)
+     * \param backupPath Where the backup is located, if kept
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool resetMasterPasswordUsingStoredPasswordHelper( const QString &newPassword, bool keepBackup, QString *backupPath = nullptr ) SIP_SKIP;
+
+    /**
      * Whether there is a scheduled opitonal erase of authentication database.
      * \note not available in Python bindings
      */
-    bool scheduledAuthDatabaseErase() { return mScheduledDbErase; } SIP_SKIP
+    bool scheduledAuthDatabaseErase() SIP_SKIP { return mScheduledDbErase; }
 
     /**
      * Schedule an optional erase of authentication database, starting when mutex is lockable.
@@ -468,15 +496,26 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     ////////////////// Generic settings ///////////////////////
 
-    //! Store an authentication setting (stored as string via QVariant( value ).toString() )
+    /**
+     * Stores an authentication setting.
+     *
+     * The \a value will be stored as a string, using QVariant::toString().
+     *
+     * \see authSetting()
+     */
     bool storeAuthSetting( const QString &key, const QVariant &value, bool encrypt = false );
 
     /**
-     * \brief authSetting get an authentication setting (retrieved as string and returned as QVariant( QString ))
+     * Returns a previously set authentication setting.
+     *
+     * The value will be retrieved as a string, regardless of the value type used when calling storeAuthSetting().
+     *
      * \param key setting key
      * \param defaultValue
      * \param decrypt if the value needs decrypted
-     * \return QVariant( QString ) authentication setting
+     * \returns authentication setting string
+     *
+     * \see storeAuthSetting()
      */
     QVariant authSetting( const QString &key, const QVariant &defaultValue = QVariant(), bool decrypt = false );
 
@@ -573,7 +612,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * \return hash keyed with cert/connection's sha:host:port.
      * \note not available in Python bindings
      */
-    QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
+    QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() SIP_SKIP { return mIgnoredSslErrorsCache; }
 
     //! Utility function to dump the cache for debug purposes
     void dumpIgnoredSslErrorsCache_();
@@ -718,7 +757,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      * Error message getter
      * \note not available in Python bindings
      */
-    const QString passwordHelperErrorMessage() { return mPasswordHelperErrorMessage; } SIP_SKIP
+    const QString passwordHelperErrorMessage() SIP_SKIP { return mPasswordHelperErrorMessage; }
 
     /**
      * Delete master password from wallet
@@ -756,12 +795,42 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool passwordHelperSync();
 
-    //! The display name of the password helper (platform dependent)
+    /**
+     * Verify the password stored in the password helper.
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
+    bool verifyStoredPasswordHelperPassword() SIP_SKIP;
+
+    // TODO QGIS 5.0 -- remove
+
+    /**
+     * The display name of the password helper (platform dependent).
+     *
+     * This is deprecated, use passwordHelperDisplayName() instead.
+     */
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
+
+    /**
+     * Returns a translated display name of the password helper (platform dependent).
+     *
+     * If \a titleCase is TRUE then a title case version of the string will be returned. Otherwise
+     * a mid-sentence case version will be returned.
+     *
+     * \since QGIS 3.42
+     */
+    static QString passwordHelperDisplayName( bool titleCase = false );
 
     //! The display name of the Authentication Manager
     static const QString AUTH_MAN_TAG;
 
+    /**
+     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
+     *
+     * \note Not available in Python bindings
+     */
+    QString sqliteDatabasePath() const SIP_SKIP;
 
   signals:
 
@@ -869,6 +938,11 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
   private:
 
+    /**
+     * Generates a random, securely seeded password.
+     */
+    static QString generatePassword();
+
     bool initPrivate( const QString &pluginPath );
 
     //////////////////////////////////////////////////////////////////////////////
@@ -881,7 +955,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     void passwordHelperLog( const QString &msg ) const;
 
     //! Read Master password from the wallet
-    QString passwordHelperRead();
+    QString passwordHelperRead( bool &ok );
 
     //! Store Master password in the wallet
     bool passwordHelperWrite( const QString &password );
@@ -900,7 +974,13 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     bool masterPasswordInput();
 
-    bool masterPasswordRowsInDb( int *rows ) const;
+    /**
+     * Calculate the total number of master password rows in all storages.
+     *
+     * Returns TRUE if the calculation was successful for at least one storage,
+     * or FALSE if no storages could be queried.
+     */
+    bool masterPasswordRowsInDb( int &rows ) const;
 
     bool masterPasswordCheckAgainstDb( const QString &compare = QString() ) const;
 
@@ -933,11 +1013,6 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     QgsAuthConfigurationStorage *firstStorageWithCapability( Qgis::AuthConfigurationStorageCapability capability ) const;
 
-    /**
-     * Returns the path to the authentication database file or an empty string if the database is not SQLite.
-     */
-    const QString sqliteDatabasePath() const;
-
     static QgsAuthManager *sInstance;
     static const QString AUTH_CONFIG_TABLE;
     static const QString AUTH_SERVERS_TABLE;
@@ -950,8 +1025,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit = false;
 
     mutable std::unique_ptr<QgsAuthConfigurationStorageRegistry> mAuthConfigurationStorageRegistry;
-
+#ifdef HAVE_AUTH
     std::unique_ptr<QCA::Initializer> mQcaInitializer;
+#endif
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod *> mAuthMethods;
@@ -960,7 +1036,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
     int mPassTries = 0;
     bool mAuthDisabled = false;
     QString mAuthDisabledMessage;
-    QTimer *mScheduledDbEraseTimer = nullptr;
+    std::unique_ptr<QTimer> mScheduledDbEraseTimer;
     bool mScheduledDbErase = false;
     int mScheduledDbEraseRequestWait = 3 ; // in seconds
     bool mScheduledDbEraseRequestEmitted = false;

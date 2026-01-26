@@ -14,21 +14,24 @@
  ***************************************************************************/
 
 #include "qgsvectorelevationpropertieswidget.h"
+
 #include "qgsapplication.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
+#include "qgsmarkersymbol.h"
+#include "qgsprojectionselectionwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsprojectionselectionwidget.h"
+
+#include "moc_qgsvectorelevationpropertieswidget.cpp"
 
 QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+  setObjectName( u"mOptsPage_Elevation"_s );
 
   mVerticalCrsStackedWidget->setSizeMode( QgsStackedWidget::SizeMode::CurrentPageOnly );
 
@@ -44,6 +47,7 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
   mExtrusionSpinBox->setClearValue( 0 );
+  mToleranceSpinBox->setClearValue( 0 );
 
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
@@ -53,37 +57,37 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   mSurfaceMarkerStyleButton->setSymbolType( Qgis::SymbolType::Marker );
   mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "Not set" ) );
 
-  mComboClamping->addItem( tr( "Clamped to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Terrain ) );
-  mComboClamping->addItem( tr( "Relative to Terrain" ), static_cast< int >( Qgis::AltitudeClamping::Relative ) );
-  mComboClamping->addItem( tr( "Absolute" ), static_cast< int >( Qgis::AltitudeClamping::Absolute ) );
+  mComboClamping->addItem( tr( "Clamped to Terrain" ), static_cast<int>( Qgis::AltitudeClamping::Terrain ) );
+  mComboClamping->addItem( tr( "Relative to Terrain" ), static_cast<int>( Qgis::AltitudeClamping::Relative ) );
+  mComboClamping->addItem( tr( "Absolute" ), static_cast<int>( Qgis::AltitudeClamping::Absolute ) );
 
-  mComboBinding->addItem( tr( "Vertex" ), static_cast< int >( Qgis::AltitudeBinding::Vertex ) );
-  mComboBinding->addItem( tr( "Centroid" ), static_cast< int >( Qgis::AltitudeBinding::Centroid ) );
+  mComboBinding->addItem( tr( "Vertex" ), static_cast<int>( Qgis::AltitudeBinding::Vertex ) );
+  mComboBinding->addItem( tr( "Centroid" ), static_cast<int>( Qgis::AltitudeBinding::Centroid ) );
 
-  mTypeComboBox->addItem( tr( "Individual Features" ), static_cast< int >( Qgis::VectorProfileType::IndividualFeatures ) );
-  mTypeComboBox->addItem( tr( "Continuous Surface (e.g. Contours)" ), static_cast< int >( Qgis::VectorProfileType::ContinuousSurface ) );
+  mTypeComboBox->addItem( tr( "Individual Features" ), static_cast<int>( Qgis::VectorProfileType::IndividualFeatures ) );
+  mTypeComboBox->addItem( tr( "Continuous Surface (e.g. Contours)" ), static_cast<int>( Qgis::VectorProfileType::ContinuousSurface ) );
 
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::Line ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillBelow ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast< int >( Qgis::ProfileSurfaceSymbology::FillAbove ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationLine.svg"_s ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillBelow.svg"_s ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillAbove.svg"_s ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
 
   initializeDataDefinedButton( mOffsetDDBtn, QgsMapLayerElevationProperties::Property::ZOffset );
   initializeDataDefinedButton( mExtrusionDDBtn, QgsMapLayerElevationProperties::Property::ExtrusionHeight );
 
   syncToLayer( layer );
 
-  connect( mOffsetZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
-  connect( mScaleZSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
-  connect( mElevationLimitSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
-  connect( mExtrusionSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mOffsetZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mScaleZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mElevationLimitSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mExtrusionSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mExtrusionGroupBox, &QGroupBox::toggled, this, &QgsVectorElevationPropertiesWidget::onChanged );
+  connect( mToleranceSpinBox, qOverload<double >( &QDoubleSpinBox::valueChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::onChanged );
   connect( mComboClamping, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::clampingChanged );
   connect( mComboBinding, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorElevationPropertiesWidget::bindingChanged );
-  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
-  {
-    switch ( static_cast< Qgis::VectorProfileType >( mTypeComboBox->currentData().toInt() ) )
+  connect( mTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
+    switch ( static_cast<Qgis::VectorProfileType>( mTypeComboBox->currentData().toInt() ) )
     {
       case Qgis::VectorProfileType::IndividualFeatures:
         mInterpretationStackedWidget->setCurrentWidget( mPageIndividualFeatures );
@@ -95,9 +99,8 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
     onChanged();
   } );
 
-  connect( mStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]
-  {
-    switch ( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) )
+  connect( mStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
+    switch ( static_cast<Qgis::ProfileSurfaceSymbology>( mStyleComboBox->currentData().toInt() ) )
     {
       case Qgis::ProfileSurfaceSymbology::Line:
         mSymbologyStackedWidget->setCurrentWidget( mPageLine );
@@ -124,30 +127,30 @@ QgsVectorElevationPropertiesWidget::QgsVectorElevationPropertiesWidget( QgsVecto
   connect( mLayer, &QgsMapLayer::crsChanged, this, &QgsVectorElevationPropertiesWidget::updateVerticalCrsOptions );
 
 
-  setProperty( "helpPage", QStringLiteral( "working_with_vector/vector_properties.html#elevation-properties" ) );
+  setProperty( "helpPage", u"working_with_vector/vector_properties.html#elevation-properties"_s );
 }
 
 void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = qobject_cast< QgsVectorLayer * >( layer );
+  mLayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !mLayer )
     return;
 
   if ( !QgsWkbTypes::hasZ( mLayer->wkbType() ) )
   {
-    const int clampingIndex = mComboClamping->findData( static_cast< int >( Qgis::AltitudeClamping::Relative ) );
+    const int clampingIndex = mComboClamping->findData( static_cast<int>( Qgis::AltitudeClamping::Relative ) );
     if ( clampingIndex >= 0 )
       mComboClamping->removeItem( clampingIndex );
   }
 
   mBlockUpdates = true;
-  const QgsVectorLayerElevationProperties *props = qgis::down_cast< const QgsVectorLayerElevationProperties * >( mLayer->elevationProperties() );
+  const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( mLayer->elevationProperties() );
 
-  mComboClamping->setCurrentIndex( mComboClamping->findData( static_cast< int >( props->clamping() ) ) );
+  mComboClamping->setCurrentIndex( mComboClamping->findData( static_cast<int>( props->clamping() ) ) );
   if ( mComboClamping->currentIndex() == -1 )
     mComboClamping->setCurrentIndex( 0 );
 
-  mComboBinding->setCurrentIndex( mComboBinding->findData( static_cast< int >( props->binding() ) ) );
+  mComboBinding->setCurrentIndex( mComboBinding->findData( static_cast<int>( props->binding() ) ) );
   mOffsetZSpinBox->setValue( props->zOffset() );
   mScaleZSpinBox->setValue( props->zScale() );
   if ( std::isnan( props->elevationLimit() ) )
@@ -156,7 +159,9 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mElevationLimitSpinBox->setValue( props->elevationLimit() );
   mExtrusionGroupBox->setChecked( props->extrusionEnabled() );
   mExtrusionSpinBox->setValue( props->extrusionHeight() );
-  mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( static_cast< int >( props->type() ) ) );
+  mToleranceGroupBox->setChecked( props->customToleranceEnabled() );
+  mToleranceSpinBox->setValue( props->customTolerance() );
+  mTypeComboBox->setCurrentIndex( mTypeComboBox->findData( static_cast<int>( props->type() ) ) );
   switch ( props->type() )
   {
     case Qgis::VectorProfileType::IndividualFeatures:
@@ -166,7 +171,7 @@ void QgsVectorElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
       mInterpretationStackedWidget->setCurrentWidget( mPageContinuousSurface );
       break;
   }
-  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast <int >( props->profileSymbology() ) ) );
+  mStyleComboBox->setCurrentIndex( mStyleComboBox->findData( static_cast<int>( props->profileSymbology() ) ) );
   switch ( props->profileSymbology() )
   {
     case Qgis::ProfileSurfaceSymbology::Line:
@@ -226,35 +231,37 @@ void QgsVectorElevationPropertiesWidget::apply()
   if ( !mLayer )
     return;
 
-  QgsVectorLayerElevationProperties *props = qgis::down_cast< QgsVectorLayerElevationProperties * >( mLayer->elevationProperties() );
+  QgsVectorLayerElevationProperties *props = qgis::down_cast<QgsVectorLayerElevationProperties *>( mLayer->elevationProperties() );
 
   props->setZOffset( mOffsetZSpinBox->value() );
   props->setZScale( mScaleZSpinBox->value() );
-  props->setType( static_cast< Qgis::VectorProfileType >( mTypeComboBox->currentData().toInt() ) );
-  props->setClamping( static_cast< Qgis::AltitudeClamping >( mComboClamping->currentData().toInt() ) );
-  props->setBinding( static_cast< Qgis::AltitudeBinding >( mComboBinding->currentData().toInt() ) );
+  props->setType( static_cast<Qgis::VectorProfileType>( mTypeComboBox->currentData().toInt() ) );
+  props->setClamping( static_cast<Qgis::AltitudeClamping>( mComboClamping->currentData().toInt() ) );
+  props->setBinding( static_cast<Qgis::AltitudeBinding>( mComboBinding->currentData().toInt() ) );
   props->setExtrusionEnabled( mExtrusionGroupBox->isChecked() );
   props->setExtrusionHeight( mExtrusionSpinBox->value() );
+  props->setCustomToleranceEnabled( mToleranceGroupBox->isChecked() );
+  props->setCustomTolerance( mToleranceSpinBox->value() );
   if ( mElevationLimitSpinBox->value() != mElevationLimitSpinBox->clearValue() )
     props->setElevationLimit( mElevationLimitSpinBox->value() );
   else
-    props->setElevationLimit( std::numeric_limits< double >::quiet_NaN() );
+    props->setElevationLimit( std::numeric_limits<double>::quiet_NaN() );
 
   props->setRespectLayerSymbology( mCheckRespectLayerSymbology->isChecked() );
   props->setShowMarkerSymbolInSurfacePlots( mCheckBoxShowMarkersAtSampledPoints->isChecked() );
 
-  props->setProfileSymbology( static_cast< Qgis::ProfileSurfaceSymbology >( mStyleComboBox->currentData().toInt() ) );
+  props->setProfileSymbology( static_cast<Qgis::ProfileSurfaceSymbology>( mStyleComboBox->currentData().toInt() ) );
   switch ( props->type() )
   {
     case Qgis::VectorProfileType::IndividualFeatures:
-      props->setProfileLineSymbol( mLineStyleButton->clonedSymbol< QgsLineSymbol >() );
-      props->setProfileFillSymbol( mFillStyleButton->clonedSymbol< QgsFillSymbol >() );
-      props->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
+      props->setProfileLineSymbol( mLineStyleButton->clonedSymbol<QgsLineSymbol>() );
+      props->setProfileFillSymbol( mFillStyleButton->clonedSymbol<QgsFillSymbol>() );
+      props->setProfileMarkerSymbol( mMarkerStyleButton->clonedSymbol<QgsMarkerSymbol>() );
       break;
     case Qgis::VectorProfileType::ContinuousSurface:
-      props->setProfileLineSymbol( mSurfaceLineStyleButton->clonedSymbol< QgsLineSymbol >() );
-      props->setProfileFillSymbol( mSurfaceFillStyleButton->clonedSymbol< QgsFillSymbol >() );
-      props->setProfileMarkerSymbol( mSurfaceMarkerStyleButton->clonedSymbol< QgsMarkerSymbol >() );
+      props->setProfileLineSymbol( mSurfaceLineStyleButton->clonedSymbol<QgsLineSymbol>() );
+      props->setProfileFillSymbol( mSurfaceFillStyleButton->clonedSymbol<QgsFillSymbol>() );
+      props->setProfileMarkerSymbol( mSurfaceMarkerStyleButton->clonedSymbol<QgsMarkerSymbol>() );
       break;
   }
 
@@ -274,17 +281,15 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
 {
   bool enableScale = true;
   bool enableBinding = !mLayer || mLayer->geometryType() != Qgis::GeometryType::Point;
-  switch ( static_cast< Qgis::AltitudeClamping >( mComboClamping->currentData().toInt() ) )
+  switch ( static_cast<Qgis::AltitudeClamping>( mComboClamping->currentData().toInt() ) )
   {
     case Qgis::AltitudeClamping::Absolute:
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
-          tr( "Elevation will be taken directly from features." ),
-          tr( "Z values from the features will be used for elevation, and the terrain height will be ignored." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Elevation will be taken directly from features." ), tr( "Z values from the features will be used for elevation, and the terrain height will be ignored." ) )
       );
       enableBinding = false; // not used in absolute mode
 
-      if ( QgsWkbTypes::hasZ( mLayer->wkbType() ) )
+      if ( mLayer && QgsWkbTypes::hasZ( mLayer->wkbType() ) )
       {
         mOffsetLabel->setText( tr( "Offset" ) );
       }
@@ -296,17 +301,13 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
     case Qgis::AltitudeClamping::Relative:
       mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
-          tr( "Elevation is relative to terrain height." ),
-          tr( "Any z values present in the features will be added to the terrain height." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Elevation is relative to terrain height." ), tr( "Any z values present in the features will be added to the terrain height." ) )
       );
       break;
     case Qgis::AltitudeClamping::Terrain:
       mOffsetLabel->setText( tr( "Offset" ) );
       mLabelClampingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
-          tr( "Feature elevation will be taken directly from the terrain height." ),
-          tr( "Any existing z values present in the features will be ignored." ) )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation will be taken directly from the terrain height." ), tr( "Any existing z values present in the features will be ignored." ) )
       );
       enableScale = false; // not used in terrain mode
       break;
@@ -319,25 +320,18 @@ void QgsVectorElevationPropertiesWidget::clampingChanged()
 
 void QgsVectorElevationPropertiesWidget::bindingChanged()
 {
-  switch ( static_cast< Qgis::AltitudeBinding >( mComboBinding->currentData().toInt() ) )
+  switch ( static_cast<Qgis::AltitudeBinding>( mComboBinding->currentData().toInt() ) )
   {
     case Qgis::AltitudeBinding::Vertex:
       mLabelBindingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
-          tr( "Feature elevation is relative to the terrain height at every vertex." ),
-          tr( "The terrain will be sampled at every individual vertex before being added to the vertex's z value." )
-        )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation is relative to the terrain height at every vertex." ), tr( "The terrain will be sampled at every individual vertex before being added to the vertex's z value." ) )
       );
       break;
     case Qgis::AltitudeBinding::Centroid:
       mLabelBindingExplanation->setText(
-        QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
-          tr( "Feature elevation is relative to the terrain height at feature's centroid only." ),
-          tr( "The terrain will be sampled once at the feature's centroid, with the centroid height being added to each vertex's z value." )
-        )
+        u"<p><b>%1</b></p><p>%2</p>"_s.arg( tr( "Feature elevation is relative to the terrain height at feature's centroid only." ), tr( "The terrain will be sampled once at the feature's centroid, with the centroid height being added to each vertex's z value." ) )
       );
       break;
-
   }
 }
 
@@ -377,7 +371,7 @@ void QgsVectorElevationPropertiesWidget::toggleSymbolWidgets()
 void QgsVectorElevationPropertiesWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  QgsMapLayerElevationProperties::Property key = static_cast<  QgsMapLayerElevationProperties::Property >( button->propertyKey() );
+  QgsMapLayerElevationProperties::Property key = static_cast<QgsMapLayerElevationProperties::Property>( button->propertyKey() );
   mPropertyCollection.setProperty( key, button->toProperty() );
 }
 
@@ -387,33 +381,24 @@ void QgsVectorElevationPropertiesWidget::updateVerticalCrsOptions()
   {
     case Qgis::CrsType::Compound:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." ).arg(
-                                    mLayer->crs().userFriendlyIdentifier(),
-                                    mLayer->verticalCrs().userFriendlyIdentifier()
-                                  ) );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a compound CRS (%1), so the layer's vertical CRS is the vertical component of this CRS (%2)." ).arg( mLayer->crs().userFriendlyIdentifier(), mLayer->verticalCrs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Geographic3d:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
-                                    mLayer->crs().userFriendlyIdentifier()
-                                  ) );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geographic 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Geocentric:
       mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
-                                    mLayer->crs().userFriendlyIdentifier()
-                                  ) );
+      mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a geocentric CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
       break;
 
     case Qgis::CrsType::Projected:
       if ( mLayer->crs().hasVerticalAxis() )
       {
         mVerticalCrsStackedWidget->setCurrentWidget( mCrsPageDisabled );
-        mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg(
-                                      mLayer->crs().userFriendlyIdentifier()
-                                    ) );
+        mCrsDisabledLabel->setText( tr( "Layer coordinate reference system is set to a projected 3D CRS (%1), so the vertical CRS cannot be manually specified." ).arg( mLayer->crs().userFriendlyIdentifier() ) );
         break;
       }
       [[fallthrough]];
@@ -436,7 +421,7 @@ void QgsVectorElevationPropertiesWidget::updateVerticalCrsOptions()
 void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsMapLayerElevationProperties::Property key )
 {
   button->blockSignals( true );
-  button->init( static_cast< int >( key ), mPropertyCollection, QgsMapLayerElevationProperties::propertyDefinitions(), nullptr );
+  button->init( static_cast<int>( key ), mPropertyCollection, QgsMapLayerElevationProperties::propertyDefinitions(), nullptr );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsVectorElevationPropertiesWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
   button->blockSignals( false );
@@ -444,7 +429,7 @@ void QgsVectorElevationPropertiesWidget::initializeDataDefinedButton( QgsPropert
 
 void QgsVectorElevationPropertiesWidget::updateDataDefinedButtons()
 {
-  const auto propertyOverrideButtons { findChildren< QgsPropertyOverrideButton * >() };
+  const QList<QgsPropertyOverrideButton *> propertyOverrideButtons { findChildren<QgsPropertyOverrideButton *>() };
   for ( QgsPropertyOverrideButton *button : propertyOverrideButtons )
   {
     updateDataDefinedButton( button );
@@ -459,7 +444,7 @@ void QgsVectorElevationPropertiesWidget::updateDataDefinedButton( QgsPropertyOve
   if ( button->propertyKey() < 0 )
     return;
 
-  QgsMapLayerElevationProperties::Property key = static_cast< QgsMapLayerElevationProperties::Property >( button->propertyKey() );
+  QgsMapLayerElevationProperties::Property key = static_cast<QgsMapLayerElevationProperties::Property>( button->propertyKey() );
   whileBlocking( button )->setToProperty( mPropertyCollection.property( key ) );
   whileBlocking( button )->setVectorLayer( mLayer );
 }
@@ -472,13 +457,13 @@ void QgsVectorElevationPropertiesWidget::updateDataDefinedButton( QgsPropertyOve
 QgsVectorElevationPropertiesWidgetFactory::QgsVectorElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s ) );
   setTitle( tr( "Elevation" ) );
 }
 
 QgsMapLayerConfigWidget *QgsVectorElevationPropertiesWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool, QWidget *parent ) const
 {
-  return new QgsVectorElevationPropertiesWidget( qobject_cast< QgsVectorLayer * >( layer ), canvas, parent );
+  return new QgsVectorElevationPropertiesWidget( qobject_cast<QgsVectorLayer *>( layer ), canvas, parent );
 }
 
 bool QgsVectorElevationPropertiesWidgetFactory::supportLayerPropertiesDialog() const
@@ -498,6 +483,5 @@ bool QgsVectorElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsVectorElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return u"mOptsPage_Metadata"_s;
 }
-

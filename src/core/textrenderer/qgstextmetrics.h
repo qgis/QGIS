@@ -16,18 +16,19 @@
 #ifndef QGSTEXTMETRICS_H
 #define QGSTEXTMETRICS_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgstextcharacterformat.h"
-#include <QVector>
+
 #include <QStringList>
+#include <QVector>
 
 #define SIP_NO_FILE
 
 /**
  * \class QgsPrecalculatedTextMetrics
   * \ingroup core
-  * \brief Contains precalculated properties regarding text metrics for text to be renderered at a later stage.
+  * \brief Contains precalculated properties regarding text metrics for text to be rendered at a later stage.
   * \note Not available in Python bindings
   * \since QGIS 3.20
  */
@@ -69,21 +70,36 @@ class CORE_EXPORT QgsPrecalculatedTextMetrics
     /**
      * Returns the width of the character at the specified position.
      */
-    double characterWidth( int position ) const { return mCharacterWidths[position]; }
+    double characterWidth( int position ) const
+    {
+      // caller's responsibility to check!
+      // cppcheck-suppress negativeContainerIndex
+      return mCharacterWidths[position];
+    }
 
     /**
      * Returns the character height of the character at the specified position (actually font metrics height, not individual character height).
      *
      * \since QGIS 3.28
      */
-    double characterHeight( int position ) const { return mCharacterHeights[position]; }
+    double characterHeight( int position ) const
+    {
+      // caller's responsibility to check!
+      // cppcheck-suppress negativeContainerIndex
+      return mCharacterHeights[position];
+    }
 
     /**
      * Returns the descent of the character at the specified position.
      *
      * \since QGIS 3.28
      */
-    double characterDescent( int position ) const { return mCharacterDescents[position]; }
+    double characterDescent( int position ) const
+    {
+      // caller's responsibility to check!
+      // cppcheck-suppress negativeContainerIndex
+      return mCharacterDescents[position];
+    }
 
     /**
      * Returns the maximum height of any character found in the text.

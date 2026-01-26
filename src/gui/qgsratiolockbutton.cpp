@@ -14,16 +14,19 @@
  ***************************************************************************/
 
 #include "qgsratiolockbutton.h"
+
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgssvgcache.h"
-#include "qgis.h"
 
 #include <QApplication>
+#include <QDoubleSpinBox>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
 #include <QWidget>
-#include <QDoubleSpinBox>
+
+#include "moc_qgsratiolockbutton.cpp"
 
 QgsRatioLockButton::QgsRatioLockButton( QWidget *parent )
   : QToolButton( parent )
@@ -137,18 +140,13 @@ void QgsRatioLockButton::drawButton()
   painter.drawLine( QPointF( currentIconSize.width() / 2, currentIconSize.height() / 2 + 13 ), QPointF( currentIconSize.width() / 2, currentIconSize.height() - 2 ) );
   painter.drawLine( QPointF( currentIconSize.width() / 2, currentIconSize.height() - 2 ), QPointF( 1, currentIconSize.height() - 2 ) );
 
-  const QString imageSource = mLocked ? QStringLiteral( ":/images/themes/default/lockedGray.svg" ) : QStringLiteral( ":/images/themes/default/unlockedGray.svg" );
+  const QString imageSource = mLocked ? u":/images/themes/default/lockedGray.svg"_s : u":/images/themes/default/unlockedGray.svg"_s;
   bool fitsInCache = false;
   QImage image = QgsApplication::svgCache()->svgAsImage(
-                   imageSource, 16 * pixelRatio, QColor(), QColor(), 0, 1, fitsInCache
-                 );
+    imageSource, 16 * pixelRatio, QColor(), QColor(), 0, 1, fitsInCache
+  );
   image.setDevicePixelRatio( pixelRatio );
-  painter.drawImage( QRectF(
-                       currentIconSize.width() / 2 - 8,
-                       currentIconSize.height() / 2 - 8,
-                       16,
-                       16 ),
-                     image );
+  painter.drawImage( QRectF( currentIconSize.width() / 2 - 8, currentIconSize.height() / 2 - 8, 16, 16 ), image );
 
   painter.end();
 

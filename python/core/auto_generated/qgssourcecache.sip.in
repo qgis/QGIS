@@ -14,10 +14,11 @@
 class QgsSourceCache : QgsAbstractContentCacheBase
 {
 %Docstring(signature="appended")
-A cache for source strings that returns a local file path containing the source content.
+A cache for source strings that returns a local file path containing the
+source content.
 
-:py:class:`QgsSourceCache` is not usually directly created, but rather accessed through
-:py:func:`QgsApplication.sourceCache()`.
+:py:class:`QgsSourceCache` is not usually directly created, but rather
+accessed through :py:func:`QgsApplication.sourceCache()`.
 
 .. versionadded:: 3.16
 %End
@@ -34,16 +35,19 @@ Constructor for QgsSourceCache, with the specified ``parent`` object.
 
     QString localFilePath( const QString &path, bool blocking = false );
 %Docstring
-Returns a local file path reflecting the content of a specified source ``path``
+Returns a local file path reflecting the content of a specified source
+``path``
 
-``path`` may be a local file, remote (HTTP) url, or a base 64 encoded string (with a "base64:" prefix).
+``path`` may be a local file, remote (HTTP) url, or a base 64 encoded
+string (with a "base64:" prefix).
 %End
 
   signals:
 
     void remoteSourceFetched( const QString &url );
 %Docstring
-Emitted when the cache has finished retrieving a 3D model from a remote ``url``.
+Emitted when the cache has finished retrieving a 3D model from a remote
+``url``.
 %End
 
 };

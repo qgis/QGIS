@@ -11,6 +11,7 @@
 
 
 
+
 class QgsModelArrowItem : QObject, QGraphicsPathItem
 {
 %Docstring(signature="appended")
@@ -27,46 +28,43 @@ A link arrow item for use in the model designer.
 #include "qgsmodelarrowitem.h"
 %End
   public:
-
     enum Marker
     {
       Circle,
       ArrowHead,
+      NoMarker
     };
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
-The arrow will link ``startItem`` to ``endItem``, joining the specified ``startEdge`` and ``startIndex``
-to ``endEdge`` and ``endIndex``.
+The arrow will link ``startItem`` to ``endItem``, joining the specified
+``startEdge`` and ``startIndex`` to ``endEdge`` and ``endIndex``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
-The arrow will link ``startItem`` to ``endItem``, joining the specified ``startEdge`` and ``startIndex``
-to an automatic point on ``endItem``.
+The arrow will link ``startItem`` to ``endItem``, joining the specified
+``startEdge`` and ``startIndex`` to an automatic point on ``endItem``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
-The arrow will link ``startItem`` to ``endItem``, joining an automatic point on ``startItem`` to the specified
-``endEdge`` and ``endIndex``.
+The arrow will link ``startItem`` to ``endItem``, joining an automatic
+point on ``startItem`` to the specified ``endEdge`` and ``endIndex``.
 %End
 
-    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker,
-                       QgsModelComponentGraphicItem *endItem, Marker endMarker );
+    QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker );
 %Docstring
 Constructor for QgsModelArrowItem, with the specified ``parent`` item.
 
-The arrow will link ``startItem`` to ``endItem``, joining an automatic points on both items.
+The arrow will link ``startItem`` to ``endItem``, joining an automatic
+points on both items.
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
@@ -75,6 +73,15 @@ The arrow will link ``startItem`` to ``endItem``, joining an automatic points on
     void setPenStyle( Qt::PenStyle style );
 %Docstring
 Sets the pen ``style`` to use for rendering the arrow line.
+%End
+
+  signals:
+
+    void painterPathUpdated();
+%Docstring
+Emitted when the path is updated.
+
+.. versionadded:: 4.0
 %End
 
   public slots:

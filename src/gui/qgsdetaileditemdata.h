@@ -18,20 +18,20 @@
 #define QGSDETAILEDITEMDATA_H
 
 
-#include <QMetaType>
-#include <QString>
-#include <QPixmap>
 #include "qgis_gui.h"
+
+#include <QMetaType>
+#include <QPixmap>
+#include <QString>
 
 /**
  * \ingroup gui
- * \brief This class is the data only representation of a
+ * \brief The data only representation of a
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
 class GUI_EXPORT QgsDetailedItemData
 {
   public:
-
     QgsDetailedItemData() = default;
 
     /**

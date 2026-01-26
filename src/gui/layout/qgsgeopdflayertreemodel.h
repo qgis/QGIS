@@ -18,11 +18,11 @@
 // We don't want to expose this in the public API
 #define SIP_NO_FILE
 
-#include <QSortFilterProxyModel>
-#include <QItemDelegate>
-
 #include "qgis_gui.h"
 #include "qgsmaplayermodel.h"
+
+#include <QItemDelegate>
+#include <QSortFilterProxyModel>
 
 class QgsMapCanvas;
 class QgsProject;
@@ -41,18 +41,17 @@ class GUI_EXPORT QgsGeospatialPdfLayerTreeModel : public QgsMapLayerModel
     Q_OBJECT
 
   public:
-
     //! Model columns
     enum Columns
     {
-      LayerColumn = 0, //!< Layer name
-      GroupColumn, //!< PDF group
-      InitiallyVisible, //!< Initial visibility state
+      LayerColumn = 0,        //!< Layer name
+      GroupColumn,            //!< PDF group
+      InitiallyVisible,       //!< Initial visibility state
       IncludeVectorAttributes //!< Vector attribute
     };
 
     //! constructor
-    QgsGeospatialPdfLayerTreeModel( const QList< QgsMapLayer * > &layers, QObject *parent = nullptr );
+    QgsGeospatialPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
@@ -66,7 +65,6 @@ class GUI_EXPORT QgsGeospatialPdfLayerTreeModel : public QgsMapLayerModel
     void checkAll( bool checked, const QModelIndex &parent = QModelIndex(), int column = IncludeVectorAttributes );
 
   private:
-
     QgsMapLayer *mapLayer( const QModelIndex &idx ) const;
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 };
@@ -77,7 +75,6 @@ class GUI_EXPORT QgsGeospatialPdfLayerFilteredTreeModel : public QSortFilterProx
 {
     Q_OBJECT
   public:
-
     QgsGeospatialPdfLayerFilteredTreeModel( QgsGeospatialPdfLayerTreeModel *sourceModel, QObject *parent = nullptr );
 
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;

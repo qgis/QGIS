@@ -33,17 +33,18 @@
 #define SIP_NO_FILE
 
 
+#include <ctime>
+#include <iostream>
+#include <unordered_map>
+
 #include "qgis_core.h"
 #include "qgsgeometry.h"
 #include "qgsgeos.h"
 #include "qgssettingstree.h"
 
 #include <QList>
-#include <iostream>
-#include <ctime>
 #include <QMutex>
 #include <QStringList>
-#include <unordered_map>
 
 class QgsSettingsEntryInteger;
 
@@ -57,7 +58,6 @@ namespace pal
 {
   class Layer;
   class LabelPosition;
-  class PalStat;
   class Problem;
   class PointSet;
 
@@ -87,7 +87,7 @@ namespace pal
       friend class Layer;
 
     public:
-      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( QStringLiteral( "pal" ) );
+      static inline QgsSettingsTreeNode *sTreePal = QgsSettingsTree::sTreeRendering->createChildNode( u"pal"_s );
 
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitPoints;
       static const QgsSettingsEntryInteger *settingsRenderingLabelCandidatesLimitLines;
@@ -120,6 +120,7 @@ namespace pal
        */
       void removeLayer( Layer *layer );
 
+      //! Cancellation check callback function
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
@@ -271,7 +272,7 @@ namespace pal
       void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
 
       /**
-       * Returns the rules which the labeling solution must satisify.
+       * Returns the rules which the labeling solution must satisfy.
        *
        * \see setRules()
        * \since QGIS 3.40
@@ -280,7 +281,7 @@ namespace pal
 
     private:
 
-      std::unordered_map< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > mLayers;
+      std::vector< std::pair< QgsAbstractLabelProvider *, std::unique_ptr< Layer > > > mLayers;
 
       QList< QgsAbstractLabelingEngineRule * > mRules;
 

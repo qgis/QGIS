@@ -15,20 +15,21 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'March 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "March 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 from .i import verifyRasterNum, orderedInput
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    return verifyRasterNum(alg, parameters, context, 'rasters', 5, 12)
+    return verifyRasterNum(alg, parameters, context, "rasters", 5, 12)
 
 
 def processInputs(alg, parameters, context, feedback):
-    orderedInput(alg, parameters, context, 'rasters', 'input',
-                 [1, 2, 3, 4, 5, 61, 62, 7, 8])
+    orderedInput(
+        alg, parameters, context, "rasters", "input", [1, 2, 3, 4, 5, 61, 62, 7, 8]
+    )
 
 
 def processCommand(alg, parameters, context, feedback):

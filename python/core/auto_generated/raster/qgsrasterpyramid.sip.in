@@ -24,8 +24,8 @@ This struct is used to store pyramid info for the raster layer.
 %Docstring
 Returns the pyramid level.
 
-Pyramid levels are as defined by GDAL, eg
-level 2 is half the original raster size.
+Pyramid levels are as defined by GDAL, eg level 2 is half the original
+raster size.
 
 .. versionadded:: 3.20
 %End
@@ -34,8 +34,8 @@ level 2 is half the original raster size.
 %Docstring
 Sets the pyramid ``level``.
 
-Pyramid levels are as defined by GDAL, eg
-level 2 is half the original raster size.
+Pyramid levels are as defined by GDAL, eg level 2 is half the original
+raster size.
 
 .. versionadded:: 3.20
 %End
@@ -94,8 +94,8 @@ Sets whether the pyramid layer currently exists.
 %Docstring
 Returns ``True`` if the pyramid layer will be built.
 
-When used with :py:func:`QgsRasterDataProvider.buildPyramids()` this flag controls
-whether pyramids will be built for the layer.
+When used with :py:func:`QgsRasterDataProvider.buildPyramids()` this
+flag controls whether pyramids will be built for the layer.
 
 .. versionadded:: 3.20
 %End
@@ -104,9 +104,9 @@ whether pyramids will be built for the layer.
 %Docstring
 Sets whether the pyramid layer will be built.
 
-When used with :py:func:`QgsRasterDataProvider.buildPyramids()` this flag controls
-whether pyramids will be built for the layer. Set to ``True`` to build
-the pyramids.
+When used with :py:func:`QgsRasterDataProvider.buildPyramids()` this
+flag controls whether pyramids will be built for the layer. Set to
+``True`` to build the pyramids.
 
 .. versionadded:: 3.20
 %End

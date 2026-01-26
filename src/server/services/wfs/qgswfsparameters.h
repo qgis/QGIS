@@ -18,12 +18,12 @@
 #ifndef QGSWFSPARAMETERS_H
 #define QGSWFSPARAMETERS_H
 
+#include "qgsprojectversion.h"
+#include "qgsrectangle.h"
+#include "qgsserverparameters.h"
+
 #include <QMap>
 #include <QMetaEnum>
-
-#include "qgsrectangle.h"
-#include "qgsprojectversion.h"
-#include "qgsserverparameters.h"
 
 namespace QgsWfs
 {
@@ -65,11 +65,9 @@ namespace QgsWfs
       * \param type Type of the parameter
       * \param defaultValue Default value of the parameter
        */
-      QgsWfsParameter( const QgsWfsParameter::Name name = QgsWfsParameter::UNKNOWN,
-                       const QMetaType::Type type = QMetaType::Type::QString,
-                       const QVariant defaultValue = QVariant( "" ) );
+      QgsWfsParameter( const QgsWfsParameter::Name name = QgsWfsParameter::UNKNOWN, const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
 
-      virtual ~QgsWfsParameter() = default;
+      ~QgsWfsParameter() override = default;
 
       /**
        * Converts the parameter into an integer.
@@ -123,7 +121,6 @@ namespace QgsWfs
       Q_GADGET
 
     public:
-
       //! Output format for the response
       enum Format
       {
@@ -151,7 +148,7 @@ namespace QgsWfs
        */
       QgsWfsParameters();
 
-      virtual ~QgsWfsParameters() = default;
+      ~QgsWfsParameters() override = default;
 
       /**
        * Dumps parameters.
@@ -286,11 +283,11 @@ namespace QgsWfs
       bool loadParameter( const QString &key, const QString &value ) override;
       void save( const QgsWfsParameter &parameter );
 
-      void log( const QString &msg ) const;
+      void log( const QString &msg, const char *file = __builtin_FILE(), const char *function = __builtin_FUNCTION(), int line = __builtin_LINE() ) const;
 
       QList<QgsProjectVersion> mVersions;
       QMap<QgsWfsParameter::Name, QgsWfsParameter> mWfsParameters;
   };
-}
+} // namespace QgsWfs
 
 #endif

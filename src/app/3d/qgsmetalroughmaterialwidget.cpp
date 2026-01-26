@@ -15,8 +15,10 @@
 
 #include "qgsmetalroughmaterialwidget.h"
 
-#include "qgsmetalroughmaterialsettings.h"
 #include "qgis.h"
+#include "qgsmetalroughmaterialsettings.h"
+
+#include "moc_qgsmetalroughmaterialwidget.cpp"
 
 QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool )
   : QgsMaterialSettingsWidget( parent )
@@ -29,13 +31,11 @@ QgsMetalRoughMaterialWidget::QgsMetalRoughMaterialWidget( QWidget *parent, bool 
   setSettings( &defaultMaterial, nullptr );
 
   connect( mButtonBaseColor, &QgsColorButton::colorChanged, this, &QgsMetalRoughMaterialWidget::changed );
-  connect( mSpinMetalness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [ = ]
-  {
+  connect( mSpinMetalness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
     emit changed();
   } );
-  connect( mSpinRoughness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [ = ]
-  {
+  connect( mSpinRoughness, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [this] {
     updateWidgetState();
     emit changed();
   } );
@@ -48,12 +48,11 @@ QgsMaterialSettingsWidget *QgsMetalRoughMaterialWidget::create()
 
 void QgsMetalRoughMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
 {
-
 }
 
 void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer * )
 {
-  const QgsMetalRoughMaterialSettings *material = dynamic_cast< const QgsMetalRoughMaterialSettings * >( settings );
+  const QgsMetalRoughMaterialSettings *material = dynamic_cast<const QgsMetalRoughMaterialSettings *>( settings );
   if ( !material )
     return;
   mButtonBaseColor->setColor( material->baseColor() );
@@ -67,7 +66,7 @@ void QgsMetalRoughMaterialWidget::setSettings( const QgsAbstractMaterialSettings
 
 QgsAbstractMaterialSettings *QgsMetalRoughMaterialWidget::settings()
 {
-  std::unique_ptr< QgsMetalRoughMaterialSettings > m = std::make_unique< QgsMetalRoughMaterialSettings >();
+  auto m = std::make_unique<QgsMetalRoughMaterialSettings>();
   m->setBaseColor( mButtonBaseColor->color() );
   m->setMetalness( static_cast<float>( mSpinMetalness->value() ) );
   m->setRoughness( static_cast<float>( mSpinRoughness->value() ) );

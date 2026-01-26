@@ -23,25 +23,25 @@
 #ifndef QGSRASTERDATAPROVIDER_H
 #define QGSRASTERDATAPROVIDER_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include <cmath>
 
-#include <QDateTime>
-#include <QVariant>
-#include <QImage>
-
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgscolorrampshader.h"
 #include "qgsdataprovider.h"
-#include "qgsrasterattributetable.h"
 #include "qgsfields.h"
+#include "qgsrasterattributetable.h"
+#include "qgsrasterdataproviderelevationproperties.h"
+#include "qgsrasterdataprovidertemporalcapabilities.h"
 #include "qgsrasterinterface.h"
+#include "qgsrasteriterator.h"
 #include "qgsrasterpyramid.h"
 #include "qgsrasterrange.h"
 #include "qgsrectangle.h"
-#include "qgsrasteriterator.h"
-#include "qgsrasterdataprovidertemporalcapabilities.h"
-#include "qgsrasterdataproviderelevationproperties.h"
+
+#include <QDateTime>
+#include <QImage>
+#include <QVariant>
 
 class QImage;
 class QByteArray;
@@ -51,7 +51,7 @@ class QgsRasterIdentifyResult;
 class QgsMapSettings;
 
 /**
- * \brief Handles asynchronous download of images
+ * \brief Handles asynchronous download of images.
  * \ingroup core
  */
 class CORE_EXPORT QgsImageFetcher : public QObject
@@ -107,6 +107,31 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProvider *clone() const override = 0;
 
+
+    /**
+     * Returns whether closeWithProgress() will actually report closing progress.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool hasReportsDuringClose() const SIP_SKIP;
+
+    /**
+     * Close the provider with feedback.
+     *
+     * Only implemented at time of writing for GDAL COG driver in GDAL >= 3.13.
+     * For other providers/drivers, this method does nothing.
+     *
+     * Use with great caution. After that method has been called, the only valid
+     * action on the provider is to destroy it. Other method calls will likely
+     * result in a crash.
+     *
+     * \param feedback Feedback object on which to report the progress, or nullptr.
+     * \returns true if the closing was successful.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool closeWithProgress( QgsFeedback *feedback ) SIP_SKIP;
+
     /**
      * Returns flags containing the supported capabilities of the data provider.
      */
@@ -156,6 +181,15 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Read band offset for raster value
      */
     virtual double bandOffset( int bandNo ) const { Q_UNUSED( bandNo ) return 0.0; }
+
+    /**
+     * Returns the maximum tile size in pixels for the data provider.
+     * By default, the maximum tile size is set to QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH x
+     * QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT but can be overridden in subclasses (e.g. WMS
+     * can retrieve that information from the GetCapabilities document).
+     * \since QGIS 3.40
+     */
+    virtual QSize maximumTileSize() const { return QSize( QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH, QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT ); }
 
     // TODO: remove or make protected all readBlock working with void*
 
@@ -263,7 +297,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( format )
       Q_UNUSED( configOptions )
       Q_UNUSED( feedback )
-      return QStringLiteral( "FAILED_NOT_SUPPORTED" );
+      return u"FAILED_NOT_SUPPORTED"_s;
     }
 
     /**
@@ -430,6 +464,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
+
     //! Creates a new dataset with mDataSourceURI
     static QgsRasterDataProvider *create( const QString &providerKey,
                                           const QString &uri,
@@ -496,6 +532,8 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \note since QGIS 3.22
      */
     static QString encodeVirtualRasterProviderUri( const VirtualRasterParameters &parts );
+
+    // TODO QGIS 5.0: rename createOptions to creationOptions for consistency with GDAL
 
     /**
      * Validates creation options for a specific dataset and destination format.
@@ -615,34 +653,18 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool isProviderResamplingEnabled() const { return mProviderResamplingEnabled; }
 
     /**
-     * Resampling method for provider-level resampling.
-     * \since QGIS 3.16
-     */
-    enum class ResamplingMethod
-    {
-      Nearest, //!< Nearest-neighbour resampling
-      Bilinear, //!< Bilinear (2x2 kernel) resampling
-      Cubic,//!< Cubic Convolution Approximation (4x4 kernel) resampling
-      CubicSpline, //!< Cubic B-Spline Approximation (4x4 kernel)
-      Lanczos, //!< Lanczos windowed sinc interpolation (6x6 kernel)
-      Average, //!< Average resampling
-      Mode, //!< Mode (selects the value which appears most often of all the sampled points)
-      Gauss //!< Gauss blurring
-    };
-
-    /**
      * Set resampling method to apply for zoomed-in operations.
      *
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool setZoomedInResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
+    virtual bool setZoomedInResamplingMethod( Qgis::RasterResamplingMethod method ) { Q_UNUSED( method ); return false; }
 
     /**
      * Returns resampling method for zoomed-in operations.
      * \since QGIS 3.16
      */
-    ResamplingMethod zoomedInResamplingMethod() const { return mZoomedInResamplingMethod; }
+    Qgis::RasterResamplingMethod zoomedInResamplingMethod() const { return mZoomedInResamplingMethod; }
 
     /**
      * Set resampling method to apply for zoomed-out operations.
@@ -650,13 +672,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \return TRUE if success
      * \since QGIS 3.16
      */
-    virtual bool setZoomedOutResamplingMethod( ResamplingMethod method ) { Q_UNUSED( method ); return false; }
+    virtual bool setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod  method ) { Q_UNUSED( method ); return false; }
 
     /**
      * Returns resampling method for zoomed-out operations.
      * \since QGIS 3.16
      */
-    ResamplingMethod zoomedOutResamplingMethod() const { return mZoomedOutResamplingMethod; }
+    Qgis::RasterResamplingMethod  zoomedOutResamplingMethod() const { return mZoomedOutResamplingMethod; }
 
     /**
      * Sets maximum oversampling factor for zoomed-out operations.
@@ -818,10 +840,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     bool mProviderResamplingEnabled = false;
 
     //! Resampling method for zoomed in pixel extraction
-    ResamplingMethod mZoomedInResamplingMethod = ResamplingMethod::Nearest;
+    Qgis::RasterResamplingMethod mZoomedInResamplingMethod = Qgis::RasterResamplingMethod::Nearest;
 
     //! Resampling method for zoomed out pixel extraction
-    ResamplingMethod mZoomedOutResamplingMethod = ResamplingMethod::Nearest;
+    Qgis::RasterResamplingMethod mZoomedOutResamplingMethod = Qgis::RasterResamplingMethod::Nearest;
 
     //! Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0
     double mMaxOversampling = 2.0;

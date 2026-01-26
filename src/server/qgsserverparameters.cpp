@@ -15,22 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsblockingnetworkrequest.h"
 #include "qgsserverparameters.h"
-#include "qgsserverexception.h"
+
+#include "qgsblockingnetworkrequest.h"
 #include "qgsmessagelog.h"
+#include "qgsserverexception.h"
 #include "qgsvariantutils.h"
-#include <QObject>
-#include <QUrl>
+
+#include <QEventLoop>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QEventLoop>
+#include <QObject>
+#include <QUrl>
+
+#include "moc_qgsserverparameters.cpp"
 
 //
 // QgsServerParameterDefinition
 //
-QgsServerParameterDefinition::QgsServerParameterDefinition( const QMetaType::Type type,
-    const QVariant defaultValue )
+QgsServerParameterDefinition::QgsServerParameterDefinition( const QMetaType::Type type, const QVariant defaultValue )
   : mType( type )
   , mDefaultValue( defaultValue )
 {
@@ -43,7 +46,7 @@ QgsServerParameterDefinition::QgsServerParameterDefinition( const QVariant::Type
 
 QString QgsServerParameterDefinition::typeName() const
 {
-  return  QVariant::typeToName( mType );
+  return QVariant::typeToName( mType );
 }
 
 QColor QgsServerParameterDefinition::toColor( bool &ok ) const
@@ -55,9 +58,9 @@ QColor QgsServerParameterDefinition::toColor( bool &ok ) const
   if ( !cStr.isEmpty() )
   {
     // support hexadecimal notation to define colors
-    if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
+    if ( cStr.startsWith( "0x"_L1, Qt::CaseInsensitive ) )
     {
-      cStr.replace( 0, 2, QStringLiteral( "#" ) );
+      cStr.replace( 0, 2, u"#"_s );
     }
 
     color = QColor( cStr );
@@ -95,12 +98,12 @@ QStringList QgsServerParameterDefinition::toStringList( const char delimiter, co
   }
 }
 
-QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const char delimiter ) const
+QList<QgsGeometry> QgsServerParameterDefinition::toGeomList( bool &ok, const char delimiter, const bool skipEmptyParts ) const
 {
   ok = true;
   QList<QgsGeometry> geoms;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &wkt : constStringList )
   {
     const QgsGeometry g( QgsGeometry::fromWkt( wkt ) );
@@ -144,7 +147,7 @@ QStringList QgsServerParameterDefinition::toOgcFilterList() const
       filters.append( "" );
       pos += 2;
     }
-    else if ( filter[pos] == '<' && pos + 7 < filter.size() && filter.mid( pos + 1, 6 ).compare( QLatin1String( "Filter" ) ) == 0 )
+    else if ( filter[pos] == '<' && pos + 7 < filter.size() && filter.mid( pos + 1, 6 ).compare( "Filter"_L1 ) == 0 )
     {
       // Single OGC filter
       filters.append( filter.mid( pos ) );
@@ -165,9 +168,8 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
   QStringList filters;
   const QString filter = toString();
 
-  auto isOgcFilter = [filter]()
-  {
-    return filter.contains( QStringLiteral( "<Filter>" ) ) || filter.contains( QStringLiteral( "()" ) );
+  auto isOgcFilter = [filter]() {
+    return filter.contains( u"<Filter>"_s ) || filter.contains( u"()"_s );
   };
 
   while ( pos < filter.size() )
@@ -176,13 +178,13 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
 
     if ( posEnd == pos + 1 )
     {
-      if ( ! isOgcFilter() )
+      if ( !isOgcFilter() )
         filters.append( QString() );
       pos = posEnd;
       continue;
     }
 
-    if ( ! isOgcFilter() )
+    if ( !isOgcFilter() )
       filters.append( filter.mid( pos, posEnd - pos ) );
 
     if ( posEnd < 0 )
@@ -195,7 +197,7 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
     }
   }
 
-  if ( ! filter.isEmpty() && filter.back() == ';' )
+  if ( !filter.isEmpty() && filter.back() == ';' )
   {
     filters.append( QString() );
   }
@@ -203,21 +205,21 @@ QStringList QgsServerParameterDefinition::toExpressionList() const
   return filters;
 }
 
-QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char delimiter ) const
+QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char delimiter, bool skipEmptyParts ) const
 {
   ok = true;
   QList<QColor> colors;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &part : constStringList )
   {
     QString cStr( part );
     if ( !cStr.isEmpty() )
     {
       // support hexadecimal notation to define colors
-      if ( cStr.startsWith( QLatin1String( "0x" ), Qt::CaseInsensitive ) )
+      if ( cStr.startsWith( "0x"_L1, Qt::CaseInsensitive ) )
       {
-        cStr.replace( 0, 2, QStringLiteral( "#" ) );
+        cStr.replace( 0, 2, u"#"_s );
       }
 
       const QColor color = QColor( cStr );
@@ -235,12 +237,12 @@ QList<QColor> QgsServerParameterDefinition::toColorList( bool &ok, const char de
   return colors;
 }
 
-QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimiter ) const
+QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimiter, bool skipEmptyParts ) const
 {
   ok = true;
   QList<int> ints;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &part : constStringList )
   {
     const int val = part.toInt( &ok );
@@ -256,12 +258,12 @@ QList<int> QgsServerParameterDefinition::toIntList( bool &ok, const char delimit
   return ints;
 }
 
-QList<double> QgsServerParameterDefinition::toDoubleList( bool &ok, const char delimiter ) const
+QList<double> QgsServerParameterDefinition::toDoubleList( bool &ok, const char delimiter, bool skipEmptyParts ) const
 {
   ok = true;
   QList<double> vals;
 
-  const auto constStringList( toStringList( delimiter ) );
+  const auto constStringList( toStringList( delimiter, skipEmptyParts ) );
   for ( const auto &part : constStringList )
   {
     const double val = part.toDouble( &ok );
@@ -342,7 +344,8 @@ QString QgsServerParameterDefinition::loadUrl( bool &ok ) const
     ok = false;
     QgsMessageLog::logMessage(
       QObject::tr( "Request failed [error: %1 - url: %2]" ).arg( newReq.errorMessage(), url.toString() ),
-      QStringLiteral( "Server" ) );
+      u"Server"_s
+    );
     return QString();
   }
 
@@ -411,22 +414,19 @@ bool QgsServerParameterDefinition::isValid() const
 
 void QgsServerParameterDefinition::raiseError( const QString &msg )
 {
-  throw QgsBadRequestException( QStringLiteral( "Invalid Parameter" ), msg );
+  throw QgsBadRequestException( u"Invalid Parameter"_s, msg );
 }
 
 //
 // QgsServerParameter
 //
-QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
-                                        const QMetaType::Type type, const QVariant defaultValue )
+QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name, const QMetaType::Type type, const QVariant defaultValue )
   : QgsServerParameterDefinition( type, defaultValue )
   , mName( name )
 {
 }
 
-QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name,
-                                        const QVariant::Type type,
-                                        const QVariant defaultValue )
+QgsServerParameter::QgsServerParameter( const QgsServerParameter::Name name, const QVariant::Type type, const QVariant defaultValue )
   : QgsServerParameter( name, QgsVariantUtils::variantTypeToMetaType( type ), defaultValue )
 {
 }
@@ -435,7 +435,7 @@ QString QgsServerParameter::name( const QgsServerParameter::Name name )
 {
   if ( name == QgsServerParameter::VERSION_SERVICE )
   {
-    return QStringLiteral( "VERSION" );
+    return u"VERSION"_s;
   }
   else
   {
@@ -446,7 +446,7 @@ QString QgsServerParameter::name( const QgsServerParameter::Name name )
 
 QgsServerParameter::Name QgsServerParameter::name( const QString &name )
 {
-  if ( name.compare( QLatin1String( "VERSION" ) ) == 0 )
+  if ( name.compare( "VERSION"_L1 ) == 0 )
   {
     return QgsServerParameter::VERSION_SERVICE;
   }
@@ -484,7 +484,7 @@ QgsServerParameters::QgsServerParameters( const QUrlQuery &query )
 
 void QgsServerParameters::save( const QgsServerParameter &parameter )
 {
-  mParameters[ parameter.mName ] = parameter;
+  mParameters[parameter.mName] = parameter;
 }
 
 void QgsServerParameters::add( const QString &key, const QString &value )
@@ -556,8 +556,8 @@ QString QgsServerParameters::service() const
   if ( serviceValue.isEmpty() )
   {
     // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
-    if ( request() == QLatin1String( "GetMap" ) \
-         || request() == QLatin1String( "GetFeatureInfo" ) )
+    if ( request() == "GetMap"_L1
+         || request() == "GetFeatureInfo"_L1 )
     {
       serviceValue = "WMS";
     }
@@ -596,7 +596,7 @@ QString QgsServerParameters::request() const
 
 QString QgsServerParameters::value( const QString &key ) const
 {
-  if ( ! mParameters.contains( QgsServerParameter::name( key ) ) )
+  if ( !mParameters.contains( QgsServerParameter::name( key ) ) )
   {
     return mUnmanagedParameters[key];
   }
@@ -615,7 +615,7 @@ void QgsServerParameters::load( const QUrlQuery &query )
 {
   // clean query string first
   QUrlQuery cleanQuery( query );
-  cleanQuery.setQuery( query.query().replace( '+', QLatin1String( "%20" ) ) );
+  cleanQuery.setQuery( query.query().replace( '+', "%20"_L1 ) );
 
   // load parameters
   const auto constQueryItems( cleanQuery.queryItems( QUrl::FullyDecoded ) );
@@ -625,21 +625,21 @@ void QgsServerParameters::load( const QUrlQuery &query )
     if ( name >= 0 )
     {
       mParameters[name].mValue = item.second;
-      if ( ! mParameters[name].isValid() )
+      if ( !mParameters[name].isValid() )
       {
         mParameters[name].raiseError();
       }
     }
-    else if ( item.first.compare( QLatin1String( "VERSION" ),  Qt::CaseInsensitive ) == 0 )
+    else if ( item.first.compare( "VERSION"_L1, Qt::CaseInsensitive ) == 0 )
     {
       const QgsServerParameter::Name name = QgsServerParameter::VERSION_SERVICE;
       mParameters[name].mValue = item.second;
-      if ( ! mParameters[name].isValid() )
+      if ( !mParameters[name].isValid() )
       {
         mParameters[name].raiseError();
       }
     }
-    else if ( ! loadParameter( item.first, item.second ) )
+    else if ( !loadParameter( item.first, item.second ) )
     {
       mUnmanagedParameters[item.first.toUpper()] = item.second;
     }

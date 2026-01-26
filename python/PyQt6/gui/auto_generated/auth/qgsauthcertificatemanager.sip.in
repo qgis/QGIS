@@ -13,14 +13,13 @@
 class QgsAuthCertEditors : QWidget
 {
 %Docstring(signature="appended")
-Wrapper widget to manage available certificate editors
+Wrapper widget to manage available certificate editors.
 %End
 
 %TypeHeaderCode
 #include "qgsauthcertificatemanager.h"
 %End
   public:
-
     explicit QgsAuthCertEditors( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a widget to contain various certificate editors
@@ -28,8 +27,7 @@ Construct a widget to contain various certificate editors
 :param parent: Parent widget
 %End
 
-    ~QgsAuthCertEditors( );
-
+    ~QgsAuthCertEditors();
 };
 
 
@@ -37,17 +35,17 @@ Construct a widget to contain various certificate editors
 class QgsAuthCertManager : QDialog
 {
 %Docstring(signature="appended")
-Dialog wrapper for widget to manage available certificate editors
+Dialog wrapper for widget to manage available certificate editors.
 %End
 
 %TypeHeaderCode
 #include "qgsauthcertificatemanager.h"
 %End
   public:
-
     explicit QgsAuthCertManager( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Construct a dialog wrapper for widget to manage available certificate editors
+Construct a dialog wrapper for widget to manage available certificate
+editors
 
 :param parent: Parent widget
 %End

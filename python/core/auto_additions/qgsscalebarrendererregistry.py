@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/core/scalebar/qgsscalebarrendererregistry.h
 try:
     QgsScaleBarRendererRegistry.__group__ = ['scalebar']
-except NameError:
+except (NameError, AttributeError):
     pass

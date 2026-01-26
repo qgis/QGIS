@@ -17,13 +17,14 @@
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 
-#include <QSqlTableModel>
-#include <QSortFilterProxyModel>
-#include <QStyledItemDelegate>
-
 #include "ui_qgsbookmarksbase.h"
-#include "qgsdockwidget.h"
+
 #include "qgis_app.h"
+#include "qgsdockwidget.h"
+
+#include <QSortFilterProxyModel>
+#include <QSqlTableModel>
+#include <QStyledItemDelegate>
 
 class QgsBookmark;
 class QgsBookmarkManager;
@@ -37,19 +38,15 @@ class QgsDoubleSpinBoxBookmarksDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-
     explicit QgsDoubleSpinBoxBookmarksDelegate( QObject *parent = nullptr, int decimals = -1 );
 
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
-    QWidget *createEditor( QWidget *parent,
-                           const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const override;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
   private:
-
-    static const int  DEFAULT_DECIMAL_PLACES;
+    static const int DEFAULT_DECIMAL_PLACES;
     int mDecimals;
-
 };
 
 
@@ -79,7 +76,6 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
 
     void saveWindowLocation();
-
 };
 
 

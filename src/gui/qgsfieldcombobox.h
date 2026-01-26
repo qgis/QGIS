@@ -16,12 +16,11 @@
 #ifndef QGSFIELDCOMBOBOX_H
 #define QGSFIELDCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgsfieldproxymodel.h"
 #include "qgis_gui.h"
-
 #include "qgis_sip.h"
+#include "qgsfieldproxymodel.h"
+
+#include <QComboBox>
 
 class QgsMapLayer;
 class QgsVectorLayer;
@@ -29,7 +28,8 @@ class QgsFields;
 
 /**
  * \ingroup gui
- * \brief The QgsFieldComboBox is a combo box which displays the list of fields of a given layer.
+ * \brief A combobox which displays the list of fields of a given layer.
+ *
  * It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  * If expression must be used, QgsFieldExpressionWidget shall be used instead.
  * \see QgsMapLayerComboBox
@@ -41,7 +41,6 @@ class GUI_EXPORT QgsFieldComboBox : public QComboBox
     Q_PROPERTY( bool allowEmptyFieldName READ allowEmptyFieldName WRITE setAllowEmptyFieldName )
 
   public:
-
     /**
      * \brief QgsFieldComboBox creates a combo box to display the fields of a layer.
      * The layer can be either manually given or dynamically set by connecting the signal QgsMapLayerComboBox::layerChanged to the slot setLayer.

@@ -53,7 +53,7 @@ static std::unique_ptr<PipelineManager> pipeline(ParallelJobInfo *tile, const st
 {
     std::unique_ptr<PipelineManager> manager( new PipelineManager );
 
-    Stage& r = manager->makeReader( tile->inputFilenames[0], "");
+    Stage& r = makeReader(manager.get(), tile->inputFilenames[0]);
 
     Stage *last = &r;
 
@@ -112,7 +112,7 @@ void ToVector::preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& p
 
             // for input file /x/y/z.las that goes to /tmp/hello.vpc,
             // individual output file will be called /tmp/hello/z.las
-            fs::path inputBasename = fs::path(f.filename).stem();
+            fs::path inputBasename = fileStem(f.filename);
             tile.outputFilename = (outputSubdir / inputBasename).string() + ".gpkg";
 
             tileOutputFiles.push_back(tile.outputFilename);
@@ -134,5 +134,86 @@ void ToVector::finalize(std::vector<std::unique_ptr<PipelineManager>>&)
     if (tileOutputFiles.empty())
         return;
 
-    // TODO: create Vector VRT and GDALVectorTranslate()
+    if (ends_with(inputFile, ".vpc"))
+    {
+        // for /tmp/hello.vpc we will use /tmp/hello dir for all results
+        fs::path outputParentDir = fs::path(outputFile).parent_path();
+        fs::path outputSubdir = outputParentDir / fs::path(outputFile).stem();
+        fs::path vrtFile = outputSubdir / "all.vrt";
+        
+        // remove vrt if it exist
+        if (fs::exists(vrtFile))
+        {
+            fs::remove(vrtFile);
+        }
+
+        std::ofstream outputStreamFile(vrtFile);
+        
+        // check if file opened successfully and write VRT content to it
+        if (outputStreamFile.is_open()) {
+            
+            outputStreamFile << "<OGRVRTDataSource>" << std::endl;
+            outputStreamFile << "<OGRVRTUnionLayer name=\"points\">" << std::endl;
+
+            for (const std::string& f : tileOutputFiles)
+            {   
+                outputStreamFile << "<OGRVRTLayer name=\"" << fs::path(f).stem().string() << "\">" << std::endl;
+                outputStreamFile << "<SrcDataSource>" << f <<  "</SrcDataSource>" << std::endl;
+                outputStreamFile << "<SrcLayer>points</SrcLayer>" << std::endl;
+                outputStreamFile << "</OGRVRTLayer>" << std::endl;
+            }
+
+            outputStreamFile << "</OGRVRTUnionLayer>" << std::endl;
+            outputStreamFile << "</OGRVRTDataSource>" << std::endl;
+
+            // close file
+            outputStreamFile.close();
+        }
+        else 
+        {
+            std::cerr << "Failed to open VRT file for writing: " << vrtFile.string() << std::endl;
+            return;
+        }
+
+        // options for translate - empty
+        GDALVectorTranslateOptions *options = GDALVectorTranslateOptionsNew(nullptr, NULL);
+
+        // open VRT file and check it
+        GDALDatasetH vrtDs = GDALOpenEx(vrtFile.string().c_str(), GDAL_OF_VECTOR | GDAL_OF_READONLY, NULL, NULL, NULL);
+        if (!vrtDs)
+        {
+            std::cerr << "Failed to open composite VRT file" << std::endl;
+            fs::remove(vrtFile);
+            return;
+        }
+
+        // translate to resulting file and check it
+        GDALDatasetH resultDS = GDALVectorTranslate(outputFile.c_str(), nullptr, 1, (GDALDatasetH *)&vrtDs, options, nullptr);
+        if (!resultDS)
+        {
+            std::cerr << "Failed to create output file" << std::endl;
+            GDALClose(vrtDs);
+            fs::remove(vrtFile);
+            return;
+        }
+        
+        // close datasets
+        GDALClose(vrtDs);
+        GDALClose(resultDS);
+
+        // delete temporary files 
+        for (const std::string& f : tileOutputFiles)
+        {
+            fs::remove(f);
+        }
+
+        // delete vrt file
+        fs::remove(vrtFile);
+
+        // delete dir if empty
+        if (fs::is_empty(outputSubdir))
+        {
+            fs::remove(outputSubdir);
+        }
+    }
 }

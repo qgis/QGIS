@@ -14,13 +14,15 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslistfieldformatter.h"
+
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
+
 #include <QSettings>
 
 QString QgsListFieldFormatter::id() const
 {
-  return QStringLiteral( "List" );
+  return u"List"_s;
 }
 
 QString QgsListFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const

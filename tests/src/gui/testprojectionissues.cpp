@@ -17,12 +17,13 @@
 
 #include "qgsapplication.h"
 #include "qgsmapcanvas.h"
-#include "qgsproject.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgsproject.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
-#include <QObject>
 #include "qgstest.h"
+
+#include <QObject>
 
 class TestProjectionIssues : public QObject
 {
@@ -31,15 +32,15 @@ class TestProjectionIssues : public QObject
     TestProjectionIssues() = default;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
-    void issue5895();// test for #5895
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
+    void issue5895();       // test for #5895
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
-    QgsMapCanvas   *mMapCanvas = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 };
 
 void TestProjectionIssues::initTestCase()
@@ -48,11 +49,10 @@ void TestProjectionIssues::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayer from testdata and add to layer registry
-  const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "checker360by180.asc" );
-  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
-                                     rasterFileInfo.completeBaseName() );
+  const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' + "checker360by180.asc" );
+  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
   // Set to WGS84
-  const QgsCoordinateReferenceSystem sourceCRS( QStringLiteral( "EPSG:4326" ) );
+  const QgsCoordinateReferenceSystem sourceCRS( u"EPSG:4326"_s );
   mRasterLayer->setCrs( sourceCRS, false );
 
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
@@ -74,9 +74,8 @@ void TestProjectionIssues::initTestCase()
   mMapCanvas->setLayers( canvasLayers );
 
   //reproject to SWEDREF 99 TM
-  const QgsCoordinateReferenceSystem destCRS( QStringLiteral( "EPSG:3006" ) );
+  const QgsCoordinateReferenceSystem destCRS( u"EPSG:3006"_s );
   mMapCanvas->setDestinationCrs( destCRS );
-
 }
 
 void TestProjectionIssues::cleanupTestCase()
@@ -88,12 +87,10 @@ void TestProjectionIssues::cleanupTestCase()
 
 void TestProjectionIssues::init()
 {
-
 }
 
 void TestProjectionIssues::cleanup()
 {
-
 }
 
 void TestProjectionIssues::issue5895()

@@ -9,7 +9,7 @@
 
 
 
-class Qgs3DAlgorithms: QgsProcessingProvider
+class Qgs3DAlgorithms : QgsProcessingProvider
 {
 %Docstring(signature="appended")
 QGIS 3D processing algorithm provider.
@@ -19,7 +19,6 @@ QGIS 3D processing algorithm provider.
 #include "qgs3dalgorithms.h"
 %End
   public:
-
     Qgs3DAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for Qgs3DAlgorithms.
@@ -39,13 +38,9 @@ Constructor for Qgs3DAlgorithms.
 
 
   protected:
-
     virtual void loadAlgorithms();
 
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -17,12 +17,14 @@
 #ifndef QGSSENSORTHINGSSUBSETEDITOR_H
 #define QGSSENSORTHINGSSUBSETEDITOR_H
 
-#include "qgis.h"
 #include "ui_qgssensorthingssubseteditorbase.h"
-#include "qgssubsetstringeditorinterface.h"
+
+#include "qgis.h"
 #include "qgsfields.h"
-#include <QVariantMap>
+#include "qgssubsetstringeditorinterface.h"
+
 #include <QPointer>
+#include <QVariantMap>
 
 class QgsVectorLayer;
 class QgsCodeEditor;
@@ -31,15 +33,12 @@ class QgsFieldProxyModel;
 ///@cond PRIVATE
 #define SIP_NO_FILE
 
-class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, protected Ui::QgsSensorThingsSubsetEditorBase
+class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, private Ui::QgsSensorThingsSubsetEditorBase
 {
     Q_OBJECT
 
   public:
-    QgsSensorThingsSubsetEditor( QgsVectorLayer *layer = nullptr,
-                                 const QgsFields &fields = QgsFields(),
-                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                 Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSensorThingsSubsetEditor( QgsVectorLayer *layer = nullptr, const QgsFields &fields = QgsFields(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     QString subsetString() const override;
     void setSubsetString( const QString &subsetString ) override;
 
@@ -47,11 +46,11 @@ class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, prote
     void accept() override;
     void reset();
     void lstFieldsDoubleClicked( const QModelIndex &index );
-  private:
 
+  private:
     QgsCodeEditor *mSubsetEditor = nullptr;
 
-    QPointer< QgsVectorLayer > mLayer;
+    QPointer<QgsVectorLayer> mLayer;
     QgsFields mFields;
 
     QgsFieldProxyModel *mModelFields = nullptr;

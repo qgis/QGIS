@@ -35,7 +35,7 @@ namespace Qt3DCore
 
 /**
  * \ingroup core
- * \brief Base class for all renderers that may to participate in 3D view.
+ * \brief Base class for all renderers that participate in 3D views.
  *
  * 3D renderers implement the method createEntity() that returns a new 3D entity - that entity
  * will be added to the 3D scene to represent data in renderer's display style.

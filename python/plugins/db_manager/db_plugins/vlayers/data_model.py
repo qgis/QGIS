@@ -17,21 +17,25 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from ..data_model import (TableDataModel,
-                          BaseTableModel,
-                          SqlResultModelAsync,
-                          SqlResultModelTask)
+from ..data_model import (
+    TableDataModel,
+    BaseTableModel,
+    SqlResultModelAsync,
+    SqlResultModelTask,
+)
 
 from .connector import VLayerRegistry, getQueryGeometryName
 from .plugin import LVectorTable
 from ..plugin import DbError, BaseError
 
 from qgis.PyQt.QtCore import QElapsedTimer, QTemporaryFile
-from qgis.core import (QgsVectorLayer,
-                       QgsWkbTypes,
-                       QgsVirtualLayerDefinition,
-                       QgsVirtualLayerTask,
-                       QgsTask)
+from qgis.core import (
+    QgsVectorLayer,
+    QgsWkbTypes,
+    QgsVirtualLayerDefinition,
+    QgsVirtualLayerTask,
+    QgsTask,
+)
 
 
 class LTableDataModel(TableDataModel):
@@ -56,7 +60,7 @@ class LTableDataModel(TableDataModel):
             if f.hasGeometry():
                 a.append(QgsWkbTypes.displayString(f.geometry().wkbType()))
             else:
-                a.append('None')
+                a.append("None")
             self.resdata.append(a)
 
         self.fetchedFrom = 0
@@ -83,7 +87,9 @@ class LSqlResultModelTask(SqlResultModelTask):
         df.setQuery(sql)
 
         self.subtask = QgsVirtualLayerTask(df)
-        self.addSubTask(self.subtask, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask)
+        self.addSubTask(
+            self.subtask, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask
+        )
 
     def run(self):
         try:

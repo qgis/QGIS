@@ -15,15 +15,14 @@
 #ifndef QGSRENDERERRASTERPROPERTIESDIALOG_H
 #define QGSRENDERERRASTERPROPERTIESDIALOG_H
 
-#include <QObject>
-#include <QDialog>
-
 #include "ui_qgsrendererrasterpropswidgetbase.h"
 
+#include "qgis_gui.h"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsresamplingutils.h"
-#include "qgis_gui.h"
 
+#include <QDialog>
+#include <QObject>
 
 class QgsRasterLayer;
 class QgsMapCanvas;
@@ -32,13 +31,13 @@ class QgsRasterRendererWidget;
 /**
  * \ingroup gui
  * \class QgsRendererRasterPropertiesWidget
+ * \brief A widget for configuring properties of a raster layer renderer.
  */
 class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererRasterPropsWidgetBase
 {
     Q_OBJECT
 
   public:
-
     /**
      * A widget to hold the renderer properties for a raster layer.
      * \param layer The raster layer to style
@@ -67,9 +66,9 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void apply() override;
 
 
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Woverloaded-virtual"
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Woverloaded-virtual"
 #endif
 
     /**
@@ -77,8 +76,8 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
      * \param layer The layer to use for the widget
      */
     void syncToLayer( QgsRasterLayer *layer );
-#ifdef __clang__
-#pragma clang diagnostic pop
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
 #endif
 
   private slots:

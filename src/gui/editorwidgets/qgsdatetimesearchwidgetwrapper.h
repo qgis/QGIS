@@ -16,13 +16,13 @@
 #ifndef QGSDATETIMESEARCHWIDGETWRAPPER_H
 #define QGSDATETIMESEARCHWIDGETWRAPPER_H
 
-#include "qgssearchwidgetwrapper.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgssearchwidgetwrapper.h"
 
 #include <QComboBox>
-#include <QListWidget>
 #include <QLineEdit>
-#include "qgis_gui.h"
+#include <QListWidget>
 
 class QgsDateTimeEditFactory;
 class QgsDateTimeEdit;
@@ -38,7 +38,6 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsDateTimeSearchWidgetWrapper.
      * \param vl associated vector layer
@@ -77,7 +76,6 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   private:
     QgsDateTimeEdit *mDateTimeEdit = nullptr;
-    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsDateTimeEditFactory;
 };

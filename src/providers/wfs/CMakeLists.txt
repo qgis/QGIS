@@ -7,7 +7,9 @@ set(WFS_SRCS
   qgswfsprovidermetadata.cpp
   qgswfscapabilities.cpp
   qgswfsdataitems.cpp
-  qgswfsfeatureiterator.cpp
+  qgswfsfeaturehitsasyncrequest.cpp
+  qgswfsfeaturedownloaderimpl.cpp
+  qgswfsgetcapabilities.cpp
   qgswfsgetfeature.cpp
   qgswfsrequest.cpp
   qgswfsconnection.cpp
@@ -18,9 +20,15 @@ set(WFS_SRCS
   qgswfstransactionrequest.cpp
   qgswfsutils.cpp
   qgsbackgroundcachedfeatureiterator.cpp
+  qgsbackgroundcachedfeaturesource.cpp
   qgsbackgroundcachedshareddata.cpp
   qgscachedirectorymanager.cpp
   qgsbasenetworkrequest.cpp
+  qgsfeaturedownloader.cpp
+  qgsfeaturedownloaderimpl.cpp
+  qgsfeaturedownloaderprogresstask.cpp
+  qgsthreadedfeaturedownloader.cpp
+  qgsxmlschemaanalyzer.cpp
 
   oapif/qgsoapiflandingpagerequest.cpp
   oapif/qgsoapifapirequest.cpp
@@ -29,12 +37,15 @@ set(WFS_SRCS
   oapif/qgsoapifcreatefeaturerequest.cpp
   oapif/qgsoapifcql2textexpressioncompiler.cpp
   oapif/qgsoapifdeletefeaturerequest.cpp
+  oapif/qgsoapiffeaturedownloaderimpl.cpp
   oapif/qgsoapifpatchfeaturerequest.cpp
   oapif/qgsoapifputfeaturerequest.cpp
   oapif/qgsoapifitemsrequest.cpp
   oapif/qgsoapifoptionsrequest.cpp
   oapif/qgsoapifprovider.cpp
   oapif/qgsoapifqueryablesrequest.cpp
+  oapif/qgsoapifschemarequest.cpp
+  oapif/qgsoapifshareddata.cpp
   oapif/qgsoapifsingleitemrequest.cpp
   oapif/qgsoapifutils.cpp
 )
@@ -56,6 +67,8 @@ endif()
 # Static
 add_library(provider_wfs_a STATIC ${WFS_SRCS})
 
+set_target_properties(provider_wfs_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 target_include_directories(provider_wfs_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/wfs
   ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
@@ -66,22 +79,16 @@ target_link_libraries(provider_wfs_a
   GDAL::GDAL
 )
 
-# require c++17
-target_compile_features(provider_wfs_a PRIVATE cxx_std_17)
-
-
 # We use private headers from core that need this
 target_compile_definitions(provider_wfs_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(WFS_UIS_H ${WFS_UIS})
-  else()
-    QT5_WRAP_UI(WFS_UIS_H ${WFS_UIS})
-  endif()
+  qt_wrap_ui(WFS_UIS_H ${WFS_UIS})
 
   add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
+
+  set_target_properties(provider_wfs_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   target_include_directories(provider_wfs_gui_a PUBLIC
     ${CMAKE_SOURCE_DIR}/src/providers/wfs
@@ -94,9 +101,6 @@ if (WITH_GUI)
   target_link_libraries(provider_wfs_gui_a
     qgis_gui
   )
-
-  # require c++17
-  target_compile_features(provider_wfs_gui_a PRIVATE cxx_std_17)
 
   target_compile_definitions(provider_wfs_gui_a PRIVATE "-DQT_NO_FOREACH")
 
@@ -117,8 +121,7 @@ if (FORCE_STATIC_LIBS)
 else()
   add_library(provider_wfs MODULE ${WFS_SRCS} ${WFS_GUI_SRCS})
 
-  # require c++17
-  target_compile_features(provider_wfs PRIVATE cxx_std_17)
+  set_target_properties(provider_wfs PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   # We use private headers from core that need this
   target_compile_definitions(provider_wfs PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"")

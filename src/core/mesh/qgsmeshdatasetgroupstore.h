@@ -28,7 +28,9 @@ class QgsMeshLayer;
 /**
  * \ingroup core
  *
- * \brief Class that can be used to store and access extra dataset group, like memory dataset (temporary)
+ * \brief Stores and accesses extra dataset groups for meshes.
+ *
+ * This class can be used to store and access extra dataset group, like memory dataset (temporary)
  * Derived from QgsMeshDatasetSourceInterface, this class has same methods as QgsMeshDataProvider to access to the datasets.
  *
  * \since QGIS 3.16
@@ -38,7 +40,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
   public:
 
     //! Adds a dataset group, returns the index of the added dataset group
-    int addDatasetGroup( QgsMeshDatasetGroup *datasetGroup );
+    int addDatasetGroup( std::unique_ptr< QgsMeshDatasetGroup > datasetGroup );
 
     //! Removes the dataset group with the local \a index
     void removeDatasetGroup( int index );
@@ -71,6 +73,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
     //! Not implemented, always returns empty list
     QStringList extraDatasets() const override;
 
+    using QgsMeshDatasetSourceInterface::persistDatasetGroup;
     //! Not implemented, always returns true
     bool persistDatasetGroup( const QString &outputFilePath,
                               const QString &outputDriver,
@@ -98,7 +101,7 @@ class QgsMeshExtraDatasetStore: public QgsMeshDatasetSourceInterface
 /**
  * \ingroup core
  *
- * \brief Class used to register and access all the dataset groups related to a mesh layer
+ * \brief Registers and accesses all the dataset groups related to a mesh layer.
  *
  * The registered dataset group are :
  *
@@ -134,10 +137,11 @@ class QgsMeshDatasetGroupStore: public QObject
     bool addPersistentDatasets( const QString &path );
 
     /**
-     * Adds a extra dataset \a group, take ownership, returns True if the group is effectivly added.
-     * If returns False, the ownership is not taken
+     * Adds a extra dataset \a group, take ownership, returns True if the group is effectively added.
+     *
+     * If returns False, the object will be immediately deleted.
      */
-    bool addDatasetGroup( QgsMeshDatasetGroup *group );
+    bool addDatasetGroup( std::unique_ptr< QgsMeshDatasetGroup > group );
 
     //! Saves on a file with \a filePath the dataset groups index with \a groupIndex with the specified \a driver
     bool saveDatasetGroup( QString filePath, int groupIndex, QString driver );
@@ -241,6 +245,13 @@ class QgsMeshDatasetGroupStore: public QObject
      */
     QString groupName( int groupIndex ) const;
 
+    /**
+     * Removes dataset group with global index \a groupIndex
+     *
+     * \since QGIS 3.42
+     */
+    void removeDatasetGroup( int groupIndex );
+
   signals:
     //! Emitted after dataset groups are added
     void datasetGroupsAdded( QList<int> indexes );
@@ -258,6 +269,9 @@ class QgsMeshDatasetGroupStore: public QObject
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
 
     void removePersistentProvider();
+
+    //! reindex dataset group stores variables from provider and extra datasets, to keep data in sync after removal of dataset group
+    void reindexDatasetGroups();
 
     DatasetGroup datasetGroup( int index ) const;
 

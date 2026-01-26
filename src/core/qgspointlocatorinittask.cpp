@@ -14,8 +14,11 @@
  ***************************************************************************/
 
 #include "qgspointlocatorinittask.h"
+
 #include "qgspointlocator.h"
 #include "qgsvectorlayer.h"
+
+#include "moc_qgspointlocatorinittask.cpp"
 
 /// @cond PRIVATE
 

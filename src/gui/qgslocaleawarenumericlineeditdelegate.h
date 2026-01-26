@@ -16,9 +16,9 @@
 #ifndef QGSLOCALEAWARENUMERICLINEEDITDELEGATE_H
 #define QGSLOCALEAWARENUMERICLINEEDITDELEGATE_H
 
-#include <QStyledItemDelegate>
-
 #include "qgis.h"
+
+#include <QStyledItemDelegate>
 
 #define SIP_NO_FILE
 
@@ -33,13 +33,11 @@
  * This delegate assumes that the value stored in the DisplayRole is numeric (can be converted to double).
  *
  */
-class QgsLocaleAwareNumericLineEditDelegate: public QStyledItemDelegate
+class QgsLocaleAwareNumericLineEditDelegate : public QStyledItemDelegate
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * QgsLocaleAwareNumericLineEditDelegate
      * \param dataType raster band data type
@@ -61,9 +59,7 @@ class QgsLocaleAwareNumericLineEditDelegate: public QStyledItemDelegate
     void setDataType( const Qgis::DataType &dataType );
 
   private:
-
     Qgis::DataType mDataType;
-
 };
 
 ///@endcond

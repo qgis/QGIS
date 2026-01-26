@@ -16,23 +16,23 @@
  ***************************************************************************/
 
 #include "qgslayout.h"
-#include "qgstest.h"
-#include "qgsproject.h"
 #include "qgslayoutexporter.h"
 #include "qgslayoutitemlabel.h"
-#include "qgslayoutitemshape.h"
-#include "qgslayoutitemscalebar.h"
-#include "qgslayoutitemmap.h"
-#include "qgsvectorlayer.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemshape.h"
+#include "qgsproject.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
 
-class TestQgsLayoutExporter: public QgsTest
+class TestQgsLayoutExporter : public QgsTest
 {
     Q_OBJECT
 
   public:
     TestQgsLayoutExporter()
-      : QgsTest( QStringLiteral( "Layout Exporter Tests" ) ) {}
+      : QgsTest( u"Layout Exporter Tests"_s ) {}
 
   private slots:
     void initTestCase();
@@ -41,7 +41,6 @@ class TestQgsLayoutExporter: public QgsTest
     void cleanup();
     void testHandleLayeredExport();
     void testHandleLayeredExportCustomGroups();
-
 };
 
 void TestQgsLayoutExporter::initTestCase()
@@ -57,12 +56,10 @@ void TestQgsLayoutExporter::cleanupTestCase()
 
 void TestQgsLayoutExporter::init()
 {
-
 }
 
 void TestQgsLayoutExporter::cleanup()
 {
-
 }
 
 void TestQgsLayoutExporter::testHandleLayeredExport()
@@ -71,12 +68,11 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   QgsLayout l( &p );
   QgsLayoutExporter exporter( &l );
 
-  QList< unsigned int > layerIds;
+  QList<unsigned int> layerIds;
   QStringList layerNames;
   QStringList mapLayerIds;
   QgsLayout *layout = &l;
-  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
-  {
+  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
     layerIds << layerId;
     layerNames << layerDetail.name;
     mapLayerIds << layerDetail.mapLayerId;
@@ -88,12 +84,11 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
     return QgsLayoutExporter::Success;
   };
 
-  auto getExportGroupNameFunc = []( QgsLayoutItem * )->QString
-  {
+  auto getExportGroupNameFunc = []( QgsLayoutItem * ) -> QString {
     return QString();
   };
 
-  QList< QGraphicsItem * > items;
+  QList<QGraphicsItem *> items;
   QgsLayoutExporter::ExportResult res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
   QVERIFY( layerIds.isEmpty() );
@@ -105,8 +100,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << page1;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 );
+  QCOMPARE( layerNames, QStringList() << u"Page"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -116,8 +111,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << page2;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -127,8 +122,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << label;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -138,8 +133,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << shape;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -149,8 +144,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << label2;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -161,8 +156,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << scaleBar;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -172,8 +167,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << label3;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s << u"Label"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -186,16 +181,15 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << scaleBar3;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebars" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s << u"Label"_s << u"Scalebars"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
   mapLayerIds.clear();
 
   // with an item which has sublayers
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + u"/lines.shp"_s, u"lines"_s, u"ogr"_s );
   QVERIFY( linesLayer->isValid() );
 
   p.addMapLayer( linesLayer );
@@ -211,8 +205,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << map;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebars" ) << QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s << u"Label"_s << u"Scalebars"_s << u"Map 1: lines"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() );
   layerIds.clear();
   layerNames.clear();
@@ -222,8 +216,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   map->setBackgroundEnabled( true );
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebars" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s << u"Label"_s << u"Scalebars"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -231,14 +225,14 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
 
   // add two legends -- legends are complex and must be placed in an isolated layer
   QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &l );
-  legend->setId( QStringLiteral( "my legend" ) );
+  legend->setId( u"my legend"_s );
   QgsLayoutItemLegend *legend2 = new QgsLayoutItemLegend( &l );
-  legend2->setId( QStringLiteral( "my legend 2" ) );
+  legend2->setId( u"my legend 2"_s );
   items << legend << legend2;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebars" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s << u"Label"_s << u"Scalebars"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s << u"my legend"_s << u"my legend 2"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -248,8 +242,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << label4;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebars" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s << u"Label"_s << u"Scalebars"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s << u"my legend"_s << u"my legend 2"_s << u"Label"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -259,8 +253,8 @@ void TestQgsLayoutExporter::testHandleLayeredExport()
   items << label5;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Labels, Shape" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebars" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) << QStringLiteral( "Labels" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Labels, Shape"_s << u"Scalebar"_s << u"Label"_s << u"Scalebars"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s << u"my legend"_s << u"my legend 2"_s << u"Labels"_s );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() << QString() );
   layerIds.clear();
   layerNames.clear();
@@ -276,13 +270,12 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   QgsLayout l( &p );
   QgsLayoutExporter exporter( &l );
 
-  QList< unsigned int > layerIds;
+  QList<unsigned int> layerIds;
   QStringList layerNames;
   QStringList mapLayerIds;
   QStringList groupNames;
   QgsLayout *layout = &l;
-  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds, &groupNames, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail & layerDetail )->QgsLayoutExporter::ExportResult
-  {
+  auto exportFunc = [&layerIds, &layerNames, &mapLayerIds, &groupNames, layout]( unsigned int layerId, const QgsLayoutItem::ExportLayerDetail &layerDetail ) -> QgsLayoutExporter::ExportResult {
     layerIds << layerId;
     layerNames << layerDetail.name;
     mapLayerIds << layerDetail.mapLayerId;
@@ -294,12 +287,11 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
 
     return QgsLayoutExporter::Success;
   };
-  auto getExportGroupNameFunc = []( QgsLayoutItem * item )->QString
-  {
-    return item->customProperty( QStringLiteral( "pdfExportGroup" ) ).toString();
+  auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString {
+    return item->customProperty( u"pdfExportGroup"_s ).toString();
   };
 
-  QList< QGraphicsItem * > items;
+  QList<QGraphicsItem *> items;
   QStringList expectedGroupNames;
   QgsLayoutExporter::ExportResult res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
@@ -314,8 +306,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   expectedGroupNames << QString();
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Page" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 );
+  QCOMPARE( layerNames, QStringList() << u"Page"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() );
   layerIds.clear();
@@ -327,8 +319,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   items << page2;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() );
   layerIds.clear();
@@ -341,8 +333,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   expectedGroupNames << QString();
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() );
   layerIds.clear();
@@ -354,8 +346,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   items << shape;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() );
   layerIds.clear();
@@ -364,13 +356,13 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   mapLayerIds.clear();
 
   QgsLayoutItemLabel *label2 = new QgsLayoutItemLabel( &l );
-  label2->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "first group" ) );
-  expectedGroupNames << QStringLiteral( "first group" );
+  label2->setCustomProperty( u"pdfExportGroup"_s, u"first group"_s );
+  expectedGroupNames << u"first group"_s;
   items << label2;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   layerIds.clear();
   layerNames.clear();
@@ -379,13 +371,13 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
 
   // add an item which can only be used with other similar items, should break the next label into a different layer
   QgsLayoutItemScaleBar *scaleBar = new QgsLayoutItemScaleBar( &l );
-  scaleBar->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "first group" ) );
-  expectedGroupNames << QStringLiteral( "first group" );
+  scaleBar->setCustomProperty( u"pdfExportGroup"_s, u"first group"_s );
+  expectedGroupNames << u"first group"_s;
   items << scaleBar;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() );
   layerIds.clear();
@@ -398,8 +390,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   expectedGroupNames << QString();
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() );
   layerIds.clear();
@@ -408,17 +400,17 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   mapLayerIds.clear();
 
   QgsLayoutItemScaleBar *scaleBar2 = new QgsLayoutItemScaleBar( &l );
-  scaleBar2->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "scales" ) );
+  scaleBar2->setCustomProperty( u"pdfExportGroup"_s, u"scales"_s );
   items << scaleBar2;
-  expectedGroupNames << QStringLiteral( "scales" );
+  expectedGroupNames << u"scales"_s;
   QgsLayoutItemScaleBar *scaleBar3 = new QgsLayoutItemScaleBar( &l );
-  scaleBar3->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "scales" ) );
+  scaleBar3->setCustomProperty( u"pdfExportGroup"_s, u"scales"_s );
   items << scaleBar3;
-  expectedGroupNames << QStringLiteral( "scales" );
+  expectedGroupNames << u"scales"_s;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Scalebar" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s << u"Scalebar"_s << u"Scalebar"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << QString() );
   layerIds.clear();
@@ -427,8 +419,7 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   mapLayerIds.clear();
 
   // with an item which has sublayers
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
-      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + u"/lines.shp"_s, u"lines"_s, u"ogr"_s );
   QVERIFY( linesLayer->isValid() );
 
   p.addMapLayer( linesLayer );
@@ -445,8 +436,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   expectedGroupNames << QString();
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Map 1: lines" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s << u"Scalebar"_s << u"Scalebar"_s << u"Map 1: lines"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() );
   layerIds.clear();
@@ -459,8 +450,8 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   expectedGroupNames << QString() << QString();
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s << u"Scalebar"_s << u"Scalebar"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() );
   layerIds.clear();
@@ -470,17 +461,17 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
 
   // add two legends -- legends are complex and must be placed in an isolated layer
   QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &l );
-  legend->setId( QStringLiteral( "my legend" ) );
-  legend->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "second group" ) );
+  legend->setId( u"my legend"_s );
+  legend->setCustomProperty( u"pdfExportGroup"_s, u"second group"_s );
   QgsLayoutItemLegend *legend2 = new QgsLayoutItemLegend( &l );
-  legend2->setId( QStringLiteral( "my legend 2" ) );
-  legend2->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "second group" ) );
+  legend2->setId( u"my legend 2"_s );
+  legend2->setCustomProperty( u"pdfExportGroup"_s, u"second group"_s );
   items << legend << legend2;
-  expectedGroupNames << QStringLiteral( "second group" ) << QStringLiteral( "second group" );
+  expectedGroupNames << u"second group"_s << u"second group"_s;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s << u"Scalebar"_s << u"Scalebar"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s << u"my legend"_s << u"my legend 2"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() );
   layerIds.clear();
@@ -490,12 +481,12 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
 
   QgsLayoutItemLabel *label4 = new QgsLayoutItemLabel( &l );
   items << label4;
-  label4->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "more labels" ) );
-  expectedGroupNames << QStringLiteral( "more labels" );
+  label4->setCustomProperty( u"pdfExportGroup"_s, u"more labels"_s );
+  expectedGroupNames << u"more labels"_s;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 << 13 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 << 13 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s << u"Scalebar"_s << u"Scalebar"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s << u"my legend"_s << u"my legend 2"_s << u"Label"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() << QString() );
   layerIds.clear();
@@ -505,12 +496,12 @@ void TestQgsLayoutExporter::testHandleLayeredExportCustomGroups()
 
   QgsLayoutItemLabel *label5 = new QgsLayoutItemLabel( &l );
   items << label5;
-  label5->setCustomProperty( QStringLiteral( "pdfExportGroup" ), QStringLiteral( "more labels 2" ) );
-  expectedGroupNames << QStringLiteral( "more labels 2" );
+  label5->setCustomProperty( u"pdfExportGroup"_s, u"more labels 2"_s );
+  expectedGroupNames << u"more labels 2"_s;
   res = exporter.handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
   QCOMPARE( res, QgsLayoutExporter::Success );
-  QCOMPARE( layerIds, QList< unsigned int >() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 << 13 << 14 );
-  QCOMPARE( layerNames, QStringList() << QStringLiteral( "Pages" ) << QStringLiteral( "Label, Shape" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Label" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Scalebar" ) << QStringLiteral( "Map 1: Background" ) << QStringLiteral( "Map 1: lines" ) << QStringLiteral( "Map 1: Frame" ) << QStringLiteral( "my legend" ) << QStringLiteral( "my legend 2" ) << QStringLiteral( "Label" ) << QStringLiteral( "Label" ) );
+  QCOMPARE( layerIds, QList<unsigned int>() << 1 << 2 << 3 << 4 << 5 << 6 << 7 << 8 << 9 << 10 << 11 << 12 << 13 << 14 );
+  QCOMPARE( layerNames, QStringList() << u"Pages"_s << u"Label, Shape"_s << u"Label"_s << u"Scalebar"_s << u"Label"_s << u"Scalebar"_s << u"Scalebar"_s << u"Map 1: Background"_s << u"Map 1: lines"_s << u"Map 1: Frame"_s << u"my legend"_s << u"my legend 2"_s << u"Label"_s << u"Label"_s );
   QCOMPARE( groupNames, expectedGroupNames );
   QCOMPARE( mapLayerIds, QStringList() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << QString() << linesLayer->id() << QString() << QString() << QString() << QString() << QString() );
   layerIds.clear();

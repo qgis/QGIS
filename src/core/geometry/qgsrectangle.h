@@ -18,16 +18,18 @@
 #ifndef QGSRECTANGLE_H
 #define QGSRECTANGLE_H
 
-#include "qgis_core.h"
-#include "qgis.h"
 #include <iosfwd>
+
+#include "qgis.h"
+#include "qgis_core.h"
+#include "qgspointxy.h"
+
 #include <QDomDocument>
 #include <QRectF>
 
 class QString;
 class QRectF;
 class QgsBox3D;
-#include "qgspointxy.h"
 
 
 /**
@@ -40,6 +42,21 @@ class QgsBox3D;
  */
 class CORE_EXPORT QgsRectangle
 {
+    Q_GADGET
+
+    Q_PROPERTY( double xMinimum READ xMinimum WRITE setXMinimum )
+    Q_PROPERTY( double xMaximum READ xMaximum WRITE setXMaximum )
+    Q_PROPERTY( double yMinimum READ yMinimum WRITE setYMinimum )
+    Q_PROPERTY( double yMaximum READ yMaximum WRITE setYMaximum )
+    Q_PROPERTY( double width READ width )
+    Q_PROPERTY( double height READ height )
+    Q_PROPERTY( double area READ area )
+    Q_PROPERTY( double perimeter READ perimeter )
+    Q_PROPERTY( QgsPointXY center READ center )
+    Q_PROPERTY( bool isEmpty READ isEmpty )
+    Q_PROPERTY( bool isNull READ isNull )
+    Q_PROPERTY( bool isValid READ isValid )
+
   public:
 
     //! Constructor for a null rectangle
@@ -182,7 +199,7 @@ class CORE_EXPORT QgsRectangle
      * Set a rectangle so that min corner is at max
      * and max corner is at min. It is NOT normalized.
      *
-     * \deprecated QGIS 3.34. Will be removed in QGIS 4.0. Use setNull().
+     * \deprecated QGIS 3.34. Will be removed in QGIS 5.0. Use setNull().
      */
     Q_DECL_DEPRECATED void setMinimal() SIP_DEPRECATED
     {
@@ -501,7 +518,9 @@ class CORE_EXPORT QgsRectangle
     /**
      * Test if the rectangle is null (holding no spatial information).
      *
-     * A null rectangle is also an empty rectangle.
+     * A rectangle is considered null if all its coordinates are NaN,
+     * if it has not been defined yet, or if it has been explicitly initialized as null.
+     * A null rectangle is also an empty rectangle and an invalid rectangle.
      *
      * \see setNull()
      *
@@ -516,14 +535,52 @@ class CORE_EXPORT QgsRectangle
     }
 
     /**
+     * Test if the rectangle is valid
+     *
+     * A rectangle is considered invalid if at least one of its coordinates is NaN or infinite,
+     * or if a maximum coordinate is less than or equal to the corresponding minimum coordinate.
+     *
+     * \see isNull()
+     * \since QGIS 4.0
+     */
+    bool isValid() const
+    {
+      if ( ( !isFinite() ) || ( mXmax <= mXmin ) || ( mYmax <= mYmin ) )
+      {
+        return false;
+      }
+      return true;
+    }
+
+    /**
+     * Test if the rectangle is the maximal possible rectangle.
+     *
+     * A rectangle is considered maximal if all boundaries
+     * are either at their maximum possible values or are infinite values.
+     *
+     * \see isFinite()
+     * \see isNull()
+     * \see isEmpty()
+     *
+     * \since QGIS 3.44
+     */
+    bool isMaximal() const
+    {
+      return ( std::isinf( mXmin ) || mXmin == std::numeric_limits<double>::lowest() )
+             && ( std::isinf( mYmin ) || mYmin == std::numeric_limits<double>::lowest() )
+             && ( std::isinf( mXmax ) || mXmax == std::numeric_limits<double>::max() )
+             && ( std::isinf( mYmax ) || mYmax == std::numeric_limits<double>::max() );
+    }
+
+    /**
      * Returns a string representation of the rectangle in WKT format.
      */
-    QString asWktCoordinates() const;
+    Q_INVOKABLE QString asWktCoordinates() const;
 
     /**
      * Returns a string representation of the rectangle as a WKT Polygon.
      */
-    QString asWktPolygon() const;
+    Q_INVOKABLE QString asWktPolygon() const;
 
     /**
      * Returns a QRectF with same coordinates as the rectangle.
@@ -538,7 +595,7 @@ class CORE_EXPORT QgsRectangle
      * Coordinates will be truncated to the specified precision.
      * If the specified precision is less than 0, a suitable minimum precision is used.
      */
-    QString toString( int precision = 16 ) const;
+    Q_INVOKABLE QString toString( int precision = 16 ) const;
 
     /**
      * Returns the rectangle as a polygon.
@@ -576,6 +633,10 @@ class CORE_EXPORT QgsRectangle
     /**
      * Returns TRUE if the rectangle has finite boundaries. Will
      * return FALSE if any of the rectangle boundaries are NaN or Inf.
+     *
+     * \see isMaximal()
+     * \see isNull()
+     * \see isEmpty()
      */
     bool isFinite() const
     {
@@ -624,9 +685,9 @@ class CORE_EXPORT QgsRectangle
     % MethodCode
     QString str;
     if ( sipCpp->isNull() )
-      str = QStringLiteral( "<QgsRectangle()>" );
+      str = u"<QgsRectangle()>"_s;
     else
-      str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
+      str = u"<QgsRectangle: %1>"_s.arg( sipCpp->asWktCoordinates() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -18,6 +18,7 @@
 #ifndef QGSWMTSDIMENSIONS_H
 #define QGSWMTSDIMENSIONS_H
 #include "ui_qgswmtsdimensionsbase.h"
+
 #include "qgsguiutils.h"
 #include "qgswmsprovider.h"
 
@@ -39,7 +40,6 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
     QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
 
     QHash<QString, QString> selectedDimensions() const;
-
 };
 
 

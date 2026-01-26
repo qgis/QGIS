@@ -17,17 +17,16 @@
 #ifndef QGSCADUTILS_H
 #define QGSCADUTILS_H
 
-#include <QQueue>
-
 #include "qgis_core.h"
 #include "qgspointlocator.h"
 
+#include <QQueue>
 
 class QgsSnappingUtils;
 
 /**
  * \ingroup core
- * \brief The QgsCadUtils class provides routines for CAD editing.
+ * \brief Provides routines for CAD editing.
  *
  */
 class CORE_EXPORT QgsCadUtils
@@ -35,7 +34,7 @@ class CORE_EXPORT QgsCadUtils
   public:
 
     /**
-     * \brief Structure with details of one constraint
+     * \brief Structure with details of one constraint.
      * \ingroup core
      */
     class AlignMapPointConstraint
@@ -60,7 +59,7 @@ class CORE_EXPORT QgsCadUtils
     };
 
     /**
-     * \brief Structure returned from alignMapPoint() method
+     * \brief Structure returned from alignMapPoint() method.
      * \ingroup core
      */
     class AlignMapPointOutput
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsCadUtils
 
         /**
          * Snapped segment - only valid if actually used for something
-         * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - use snapMatch instead.
+         * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 - use snapMatch() instead.
          */
         QgsPointLocator::Match edgeMatch;
 
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsCadUtils
         //! Snapping utils that will be used to snap point to map. Must not be NULLPTR.
         QgsSnappingUtils *snappingUtils = nullptr;
         //! Map units/pixel ratio from map canvas.
-        double mapUnitsPerPixel;
+        double mapUnitsPerPixel = 1;
 
         //! Constraint for X coordinate
         QgsCadUtils::AlignMapPointConstraint xConstraint;

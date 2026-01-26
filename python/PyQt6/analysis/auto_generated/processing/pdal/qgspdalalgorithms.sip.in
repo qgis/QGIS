@@ -10,8 +10,7 @@
 
 
 
-
-class QgsPdalAlgorithms: QgsProcessingProvider
+class QgsPdalAlgorithms : QgsProcessingProvider
 {
 %Docstring(signature="appended")
 PDAL Processing algorithm provider.
@@ -23,7 +22,6 @@ PDAL Processing algorithm provider.
 #include "qgspdalalgorithms.h"
 %End
   public:
-
     QgsPdalAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for QgsPdalAlgorithms.
@@ -44,15 +42,13 @@ Constructor for QgsPdalAlgorithms.
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 
-    virtual QStringList supportedOutputRasterLayerExtensions() const;
+    virtual QList<QPair<QString, QString>> supportedOutputRasterLayerFormatAndExtensions() const;
 
     virtual QStringList supportedOutputPointCloudLayerExtensions() const;
 
 
   protected:
-
     virtual void loadAlgorithms();
-
 
 };
 

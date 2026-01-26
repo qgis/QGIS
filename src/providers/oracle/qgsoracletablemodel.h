@@ -18,9 +18,8 @@
 #define QGSORACLETABLEMODEL_H
 
 #include "qgis.h"
-#include "qgsoracleconn.h"
 #include "qgsabstractdbtablemodel.h"
-
+#include "qgsoracleconn.h"
 
 class QIcon;
 
@@ -69,7 +68,6 @@ class QgsOracleTableModel : public QgsAbstractDbTableModel
     //! Number of tables in the model
     int mTableCount = 0;
     QStringList mColumns;
-
 };
 
 #endif // QGSORACLETABLEMODEL_H

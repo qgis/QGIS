@@ -16,16 +16,16 @@
  ***************************************************************************/
 #include "qgsmeshlayerlabeling.h"
 
-#include "qgspallabeling.h"
-#include "qgsmeshlayer.h"
 #include "qgis.h"
-#include "qgsstyleentityvisitor.h"
+#include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabelprovider.h"
+#include "qgspallabeling.h"
+#include "qgsstyleentityvisitor.h"
 
 QgsAbstractMeshLayerLabeling *QgsAbstractMeshLayerLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  const QString type = element.attribute( QStringLiteral( "type" ) );
-  if ( type == QLatin1String( "simple" ) )
+  const QString type = element.attribute( u"type"_s );
+  if ( type == "simple"_L1 )
   {
     return QgsMeshLayerSimpleLabeling::create( element, context );
   }
@@ -59,7 +59,7 @@ QgsMeshLayerSimpleLabeling::QgsMeshLayerSimpleLabeling( const QgsPalLayerSetting
 
 QString QgsMeshLayerSimpleLabeling::type() const
 {
-  return QStringLiteral( "simple" );
+  return u"simple"_s;
 }
 
 QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::clone() const
@@ -74,9 +74,9 @@ QgsMeshLayerLabelProvider *QgsMeshLayerSimpleLabeling::provider( QgsMeshLayer *l
 
 QDomElement QgsMeshLayerSimpleLabeling::save( QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-  QDomElement elem = doc.createElement( QStringLiteral( "labeling" ) );
-  elem.setAttribute( QStringLiteral( "type" ), QStringLiteral( "simple" ) );
-  elem.setAttribute( QStringLiteral( "labelFaces" ), mLabelFaces ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  QDomElement elem = doc.createElement( u"labeling"_s );
+  elem.setAttribute( u"type"_s, u"simple"_s );
+  elem.setAttribute( u"labelFaces"_s, mLabelFaces ? u"1"_s : u"0"_s );
   elem.appendChild( mSettings->writeXml( doc, context ) );
   return elem;
 }
@@ -103,14 +103,23 @@ bool QgsMeshLayerSimpleLabeling::requiresAdvancedEffects() const
   return mSettings->containsAdvancedEffects();
 }
 
-QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context )
+bool QgsMeshLayerSimpleLabeling::hasNonDefaultCompositionMode() const
 {
-  const QDomElement settingsElem = element.firstChildElement( QStringLiteral( "settings" ) );
+  return mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::FontBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShapeBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::BufferBlendMode )
+         || mSettings->dataDefinedProperties().isActive( QgsPalLayerSettings::Property::ShadowBlendMode )
+         || mSettings->format().hasNonDefaultCompositionMode();
+}
+
+QgsMeshLayerSimpleLabeling *QgsMeshLayerSimpleLabeling::create( const QDomElement &element, const QgsReadWriteContext &context ) // cppcheck-suppress duplInheritedMember
+{
+  const QDomElement settingsElem = element.firstChildElement( u"settings"_s );
   if ( !settingsElem.isNull() )
   {
     QgsPalLayerSettings settings;
     settings.readXml( settingsElem, context );
-    const bool labelFaces = element.attribute( QStringLiteral( "labelFaces" ), QStringLiteral( "0" ) ).toInt();
+    const bool labelFaces = element.attribute( u"labelFaces"_s, u"0"_s ).toInt();
     return new QgsMeshLayerSimpleLabeling( settings, labelFaces );
   }
 

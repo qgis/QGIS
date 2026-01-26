@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsiconutils.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
+#include "qgspluginlayer.h"
 #include "qgsvectorlayer.h"
 
 #include <QIcon>
@@ -48,57 +50,57 @@ QIcon QgsIconUtils::iconForGeometryType( Qgis::GeometryType typeGroup )
 
 QIcon QgsIconUtils::iconPoint()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconPointLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconLine()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconLineLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconPolygon()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconPolygonLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconGeometryCollection()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconGeometryCollectionLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconGeometryCollectionLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconTable()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconTableLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconRaster()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconRaster.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconRaster.svg"_s );
 }
 
 QIcon QgsIconUtils::iconMesh()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconMeshLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconMeshLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconVectorTile()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconVectorTileLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconVectorTileLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconPointCloud()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointCloudLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconPointCloudLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconTiledScene()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconTiledSceneLayer.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mIconTiledSceneLayer.svg"_s );
 }
 
 QIcon QgsIconUtils::iconDefaultLayer()
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconLayer.png" ) );
+  return QgsApplication::getThemeIcon( u"/mIconLayer.png"_s );
 }
 
 QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
@@ -111,14 +113,23 @@ QIcon QgsIconUtils::iconForLayer( const QgsMapLayer *layer )
       case Qgis::LayerType::Mesh:
       case Qgis::LayerType::VectorTile:
       case Qgis::LayerType::PointCloud:
-      case Qgis::LayerType::Plugin:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Group:
       case Qgis::LayerType::TiledScene:
       {
         return QgsIconUtils::iconForLayerType( layer->type() );
       }
-
+      case Qgis::LayerType::Plugin:
+      {
+        if ( const QgsPluginLayer *pl = qobject_cast<const QgsPluginLayer *>( layer ) )
+        {
+          const QIcon icon = pl->icon();
+          if ( !icon.isNull() )
+            return icon;
+        }
+        // fallback to default icon if layer did not provide a specific icon
+        return QgsIconUtils::iconForLayerType( layer->type() );
+      }
       case Qgis::LayerType::Vector:
       {
         const QgsVectorLayer *vl = qobject_cast<const QgsVectorLayer *>( layer );
@@ -179,7 +190,7 @@ QIcon QgsIconUtils::iconForLayerType( Qgis::LayerType type )
       return QgsIconUtils::iconGeometryCollection();
 
     case Qgis::LayerType::Annotation:
-      return QgsApplication::getThemeIcon( QStringLiteral( "/mIconAnnotationLayer.svg" ) );
+      return QgsApplication::getThemeIcon( u"/mIconAnnotationLayer.svg"_s );
 
     case Qgis::LayerType::Plugin:
     case Qgis::LayerType::Group:
