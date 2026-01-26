@@ -23,7 +23,7 @@
 #include "qgis_core.h"
 #include "qgshttpheaders.h"
 #include "qgstaskmanager.h"
-#include "qgis_core.h"
+
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
