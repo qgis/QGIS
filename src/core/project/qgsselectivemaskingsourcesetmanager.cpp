@@ -138,8 +138,6 @@ bool QgsSelectiveMaskingSourceSetManager::readXml( const QDomElement &element, c
     if ( setsNodes.at( i ).nodeName() != "selectiveMaskingSourceSet"_L1 )
       continue;
 
-    const QString setName = setsNodes.at( i ).toElement().attribute( u"name"_s );
-
     QgsSelectiveMaskingSourceSet set;
     if ( !set.readXml( setsNodes.at( i ).toElement(), doc, context ) )
     {
