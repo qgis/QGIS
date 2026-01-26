@@ -17,6 +17,7 @@
 #include "moc_qgsrasterattributetableaddcolumndialog.cpp"
 #include "qgsrasterattributetable.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QPushButton>
 
@@ -34,6 +35,9 @@ QgsRasterAttributeTableAddColumnDialog::QgsRasterAttributeTableAddColumnDialog( 
   connect( mStandardColumn, &QRadioButton::toggled, this, [=]( bool ) { updateDialog(); } );
   connect( mColor, &QRadioButton::toggled, this, [=]( bool ) { updateDialog(); } );
   connect( mUsage, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { updateDialog(); } );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html#raster-attribute-tables" ) );
+  } );
 
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::QString ), tr( "String" ), static_cast<int>( QMetaType::Type::QString ) );
   mDataType->addItem( QgsFields::iconForFieldType( QMetaType::Type::Int ), tr( "Integer" ), static_cast<int>( QMetaType::Type::Int ) );

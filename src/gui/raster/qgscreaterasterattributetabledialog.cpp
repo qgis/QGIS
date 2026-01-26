@@ -18,6 +18,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsmessagebar.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 #include <QMessageBox>
 
 QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
@@ -86,6 +87,9 @@ QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRas
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
+    QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html#raster-attribute-tables" ) );
+  } );
 
   updateButtons();
 
