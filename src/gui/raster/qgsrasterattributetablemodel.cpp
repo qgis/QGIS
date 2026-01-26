@@ -20,11 +20,32 @@
 
 #include "moc_qgsrasterattributetablemodel.cpp"
 
-QgsRasterAttributeTableModel::QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent )
+static long long computePixelCount( QgsRasterAttributeTable *rat, QgsRasterLayer *layer, double value )
+{
+    if ( !rat || !layer || !layer->dataProvider() )
+        return 0;
+
+    QgsRasterHistogram h;
+    h.minimum = value;
+    h.maximum = value;
+    h.bins = 1;
+    h.band = 1;
+    if ( layer->dataProvider()->histogram( h, QgsRasterHistogram::Histogram ) )
+        return ( h.histogramVector.isEmpty() ? 0 : h.histogramVector.at( 0 ) );
+
+    return 0;
+}
+
+QgsRasterAttributeTableModel::QgsRasterAttributeTableModel(
+    QgsRasterAttributeTable *rat,
+    QgsRasterLayer *layer,
+    QObject *parent )
   : QAbstractTableModel( parent )
   , mRat( rat )
+  , mLayer( layer )
 {
 }
+
 
 bool QgsRasterAttributeTableModel::editable() const
 {
@@ -397,8 +418,22 @@ QVariant QgsRasterAttributeTableModel::data( const QModelIndex &index, int role 
     }
     else if ( role == Qt::ItemDataRole::DisplayRole || role == Qt::ItemDataRole::EditRole )
     {
-      return mRat->data().at( index.row() ).at( index.column() );
+        if ( field.usage == Qgis::RasterAttributeTableFieldUsage::PixelCount )
+        {
+            const QList<Qgis::RasterAttributeTableFieldUsage> usages = mRat->usages();
+            int valueCol = usages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax );
+            if ( valueCol < 0 )
+                valueCol = usages.indexOf( Qgis::RasterAttributeTableFieldUsage::Min );
+            if ( valueCol >= 0 )
+            {
+                double classValue = mRat->value( index.row(), valueCol ).toDouble();
+                return computePixelCount( mRat, mLayer, classValue );
+            }
+            return 0;
+        }
+        return mRat->data().at( index.row() ).at( index.column() );
     }
+
     else if ( role == Qt::ItemDataRole::FontRole && ( isColorOrRamp ) )
     {
       QFont font;
