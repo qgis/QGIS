@@ -1,5 +1,5 @@
 /***************************************************************************
-  testqgscogtilereader.cpp - Test QgsCOGTileReader performance
+  testqgsrastertilereader.cpp - Test QgsRasterTileReader performance
   --------------------------------------
   Date                 : January 2026
  ***************************************************************************
@@ -12,7 +12,7 @@
  ***************************************************************************/
 
 #include "qgstest.h"
-#include "qgscogtilereader.h"
+#include "qgsrastertilereader.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgsapplication.h"
@@ -20,12 +20,12 @@
 #include <QElapsedTimer>
 #include <gdal.h>
 
-class TestQgsCOGTileReader : public QgsTest
+class TestQgsRasterTileReader : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsCOGTileReader() : QgsTest( QStringLiteral( "COG Tile Reader Tests" ) ) {}
+    TestQgsRasterTileReader() : QgsTest( QStringLiteral( "COG Tile Reader Tests" ) ) {}
 
   private slots:
     void initTestCase();
@@ -41,7 +41,7 @@ class TestQgsCOGTileReader : public QgsTest
     QString mCogFile;
 };
 
-void TestQgsCOGTileReader::initTestCase()
+void TestQgsRasterTileReader::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -65,12 +65,12 @@ void TestQgsCOGTileReader::initTestCase()
   }
 }
 
-void TestQgsCOGTileReader::cleanupTestCase()
+void TestQgsRasterTileReader::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgsCOGTileReader::testInitialization()
+void TestQgsRasterTileReader::testInitialization()
 {
   if ( !QFile::exists( mCogFile ) )
   {
@@ -80,7 +80,7 @@ void TestQgsCOGTileReader::testInitialization()
   GDALDatasetH dataset = GDALOpen( mCogFile.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( dataset != nullptr );
 
-  QgsCOGTileReader reader( dataset );
+  QgsRasterTileReader reader( dataset );
   QVERIFY( reader.isValid() );
 
   QVERIFY( reader.width() > 0 );
@@ -100,7 +100,7 @@ void TestQgsCOGTileReader::testInitialization()
   GDALClose( dataset );
 }
 
-void TestQgsCOGTileReader::testTileReading()
+void TestQgsRasterTileReader::testTileReading()
 {
   if ( !QFile::exists( mCogFile ) )
   {
@@ -110,7 +110,7 @@ void TestQgsCOGTileReader::testTileReading()
   GDALDatasetH dataset = GDALOpen( mCogFile.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( dataset != nullptr );
 
-  QgsCOGTileReader reader( dataset );
+  QgsRasterTileReader reader( dataset );
   QVERIFY( reader.isValid() );
 
   const auto tileInfo = reader.tileInfo( 0 );
@@ -130,7 +130,7 @@ void TestQgsCOGTileReader::testTileReading()
   GDALClose( dataset );
 }
 
-void TestQgsCOGTileReader::testOverviewSelection()
+void TestQgsRasterTileReader::testOverviewSelection()
 {
   if ( !QFile::exists( mCogFile ) )
   {
@@ -140,7 +140,7 @@ void TestQgsCOGTileReader::testOverviewSelection()
   GDALDatasetH dataset = GDALOpen( mCogFile.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( dataset != nullptr );
 
-  QgsCOGTileReader reader( dataset );
+  QgsRasterTileReader reader( dataset );
   QVERIFY( reader.isValid() );
 
   if ( reader.overviewCount() == 0 )
@@ -166,7 +166,7 @@ void TestQgsCOGTileReader::testOverviewSelection()
   GDALClose( dataset );
 }
 
-void TestQgsCOGTileReader::benchmarkTileReading()
+void TestQgsRasterTileReader::benchmarkTileReading()
 {
   if ( !QFile::exists( mCogFile ) )
   {
@@ -176,7 +176,7 @@ void TestQgsCOGTileReader::benchmarkTileReading()
   GDALDatasetH dataset = GDALOpen( mCogFile.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( dataset != nullptr );
 
-  QgsCOGTileReader reader( dataset );
+  QgsRasterTileReader reader( dataset );
   QVERIFY( reader.isValid() );
 
   const auto tileInfo = reader.tileInfo( 0 );
@@ -201,7 +201,7 @@ void TestQgsCOGTileReader::benchmarkTileReading()
   const qint64 elapsed = timer.elapsed();
   const double avgTime = elapsed / static_cast<double>( tilesToRead );
 
-  qDebug() << "QgsCOGTileReader benchmark:";
+  qDebug() << "QgsRasterTileReader benchmark:";
   qDebug() << "  Tiles read:" << successCount << "/" << tilesToRead;
   qDebug() << "  Total time:" << elapsed << "ms";
   qDebug() << "  Average per tile:" << avgTime << "ms";
@@ -212,7 +212,7 @@ void TestQgsCOGTileReader::benchmarkTileReading()
   GDALClose( dataset );
 }
 
-void TestQgsCOGTileReader::benchmarkVsRasterBlock()
+void TestQgsRasterTileReader::benchmarkVsRasterBlock()
 {
   if ( !QFile::exists( mCogFile ) )
   {
@@ -230,13 +230,13 @@ void TestQgsCOGTileReader::benchmarkVsRasterBlock()
   GDALDatasetH dataset = GDALOpen( mCogFile.toUtf8().constData(), GA_ReadOnly );
   QVERIFY( dataset != nullptr );
 
-  QgsCOGTileReader reader( dataset );
+  QgsRasterTileReader reader( dataset );
   QVERIFY( reader.isValid() );
 
   const auto tileInfo = reader.tileInfo( 0 );
   const int tilesToRead = std::min( 50, tileInfo.tilesX * tileInfo.tilesY );
 
-  // Benchmark QgsCOGTileReader
+  // Benchmark QgsRasterTileReader
   QElapsedTimer timerCOG;
   timerCOG.start();
 
@@ -282,7 +282,7 @@ void TestQgsCOGTileReader::benchmarkVsRasterBlock()
 
   qDebug() << "\n=== Benchmark Results ===";
   qDebug() << "Tiles read:" << tilesToRead;
-  qDebug() << "QgsCOGTileReader:  " << cogTime << "ms (" << (cogTime / static_cast<double>(tilesToRead)) << "ms/tile)";
+  qDebug() << "QgsRasterTileReader:  " << cogTime << "ms (" << (cogTime / static_cast<double>(tilesToRead)) << "ms/tile)";
   qDebug() << "QgsRasterBlock:    " << blockTime << "ms (" << (blockTime / static_cast<double>(tilesToRead)) << "ms/tile)";
   qDebug() << "Speedup:           " << speedup << "x";
   qDebug() << "========================\n";
@@ -290,5 +290,5 @@ void TestQgsCOGTileReader::benchmarkVsRasterBlock()
   GDALClose( dataset );
 }
 
-QGSTEST_MAIN( TestQgsCOGTileReader )
-#include "testqgscogtilereader.moc"
+QGSTEST_MAIN( TestQgsRasterTileReader )
+#include "testqgsrastertilereader.moc"

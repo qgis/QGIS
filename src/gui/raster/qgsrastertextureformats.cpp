@@ -12,6 +12,7 @@
  ***************************************************************************/
 
 #include "qgsrastertextureformats.h"
+
 #include "qgslogger.h"
 
 #include <QOpenGLContext>
@@ -27,18 +28,18 @@ void QgsRasterTextureFormat::initializeFormats()
   // Single-channel formats (grayscale/DEM/etc.)
 
   // Byte (8-bit unsigned)
-  sFormatTable[{Qgis::DataType::Byte, 1}] = {
-    GL_R8,                // internal format
-    GL_RED,               // format
-    GL_UNSIGNED_BYTE,     // type
-    1,                    // bytes per pixel
-    1,                    // channel count
-    QStringLiteral( "u8" ),  // shader type
-    true                  // supported
+  sFormatTable[{ Qgis::DataType::Byte, 1 }] = {
+    GL_R8,                  // internal format
+    GL_RED,                 // format
+    GL_UNSIGNED_BYTE,       // type
+    1,                      // bytes per pixel
+    1,                      // channel count
+    QStringLiteral( "u8" ), // shader type
+    true                    // supported
   };
 
   // UInt16 (16-bit unsigned)
-  sFormatTable[{Qgis::DataType::UInt16, 1}] = {
+  sFormatTable[{ Qgis::DataType::UInt16, 1 }] = {
     GL_R16,
     GL_RED,
     GL_UNSIGNED_SHORT,
@@ -49,7 +50,7 @@ void QgsRasterTextureFormat::initializeFormats()
   };
 
   // Int16 (16-bit signed)
-  sFormatTable[{Qgis::DataType::Int16, 1}] = {
+  sFormatTable[{ Qgis::DataType::Int16, 1 }] = {
     GL_R16_SNORM,
     GL_RED,
     GL_SHORT,
@@ -60,7 +61,7 @@ void QgsRasterTextureFormat::initializeFormats()
   };
 
   // Float32 (32-bit float)
-  sFormatTable[{Qgis::DataType::Float32, 1}] = {
+  sFormatTable[{ Qgis::DataType::Float32, 1 }] = {
     GL_R32F,
     GL_RED,
     GL_FLOAT,
@@ -71,11 +72,11 @@ void QgsRasterTextureFormat::initializeFormats()
   };
 
   // Float64 → Float32 (downcast to 32-bit for GPU)
-  sFormatTable[{Qgis::DataType::Float64, 1}] = {
+  sFormatTable[{ Qgis::DataType::Float64, 1 }] = {
     GL_R32F,
     GL_RED,
     GL_FLOAT,
-    4,  // Note: CPU data is 8 bytes, but we convert to 4 for GPU
+    4, // Note: CPU data is 8 bytes, but we convert to 4 for GPU
     1,
     QStringLiteral( "f32" ),
     true
@@ -84,7 +85,7 @@ void QgsRasterTextureFormat::initializeFormats()
   // Multi-channel formats (RGB/RGBA)
 
   // RGB Byte (3-channel, 8-bit)
-  sFormatTable[{Qgis::DataType::Byte, 3}] = {
+  sFormatTable[{ Qgis::DataType::Byte, 3 }] = {
     GL_RGB8,
     GL_RGB,
     GL_UNSIGNED_BYTE,
@@ -95,7 +96,7 @@ void QgsRasterTextureFormat::initializeFormats()
   };
 
   // RGBA Byte (4-channel, 8-bit)
-  sFormatTable[{Qgis::DataType::Byte, 4}] = {
+  sFormatTable[{ Qgis::DataType::Byte, 4 }] = {
     GL_RGBA8,
     GL_RGBA,
     GL_UNSIGNED_BYTE,
@@ -106,7 +107,7 @@ void QgsRasterTextureFormat::initializeFormats()
   };
 
   // RGBA UInt16 (4-channel, 16-bit)
-  sFormatTable[{Qgis::DataType::UInt16, 4}] = {
+  sFormatTable[{ Qgis::DataType::UInt16, 4 }] = {
     GL_RGBA16,
     GL_RGBA,
     GL_UNSIGNED_SHORT,
@@ -117,7 +118,7 @@ void QgsRasterTextureFormat::initializeFormats()
   };
 
   // RGBA Float32 (4-channel, 32-bit float)
-  sFormatTable[{Qgis::DataType::Float32, 4}] = {
+  sFormatTable[{ Qgis::DataType::Float32, 4 }] = {
     GL_RGBA32F,
     GL_RGBA,
     GL_FLOAT,
@@ -156,8 +157,8 @@ QgsRasterTextureFormat::FormatInfo QgsRasterTextureFormat::getFormat( Qgis::Data
 
   // Default fallback: R8
   QgsDebugError( QStringLiteral( "No texture format for dataType=%1, channels=%2, using R8 fallback" )
-                 .arg( static_cast<int>( dataType ) )
-                 .arg( channelCount ) );
+                   .arg( static_cast<int>( dataType ) )
+                   .arg( channelCount ) );
 
   FormatInfo fallback;
   fallback.internalFormat = GL_R8;
@@ -166,7 +167,7 @@ QgsRasterTextureFormat::FormatInfo QgsRasterTextureFormat::getFormat( Qgis::Data
   fallback.bytesPerPixel = 1;
   fallback.channelCount = 1;
   fallback.shaderType = QStringLiteral( "u8" );
-  fallback.isSupported = false;  // Mark as unsupported to warn user
+  fallback.isSupported = false; // Mark as unsupported to warn user
 
   return fallback;
 }
@@ -183,7 +184,7 @@ bool QgsRasterTextureFormat::isFormatSupported( GLenum format )
     case GL_R32F:
     case GL_RGB8:
     case GL_RGBA8:
-      return true;  // Widely supported
+      return true; // Widely supported
 
     case GL_R16_SNORM:
     case GL_RGBA16:

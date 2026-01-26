@@ -3,7 +3,7 @@
   -----------------------
   Date                 : January 2026
   Copyright            : (C) 2026 by Wietze Suijker
-  Email                : wietze at gmail dot com
+  Email                : wietzesuijker at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsrastergpufactory.h"
-#include "qgsrasterlayerrenderer.h"
+
+#include <gdal.h>
+
+#include "qgslogger.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrastergpurenderer.h"
 #include "qgsrastergputileuploader.h"
-#include "qgscogtilereader.h"
-#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayerrenderer.h"
 #include "qgsrasterpipe.h"
+#include "qgsrastertilereader.h"
 #include "qgsrendercontext.h"
-#include "qgslogger.h"
 
 #include <QOpenGLContext>
-#include <gdal.h>
 
 namespace
 {
@@ -39,7 +41,8 @@ namespace
     QgsRenderContext &context,
     QgsRasterViewPort *viewport,
     QgsRasterPipe *pipe,
-    QgsFeedback *feedback )
+    QgsFeedback *feedback
+  )
   {
     // Check for OpenGL context
     if ( !QOpenGLContext::currentContext() )
@@ -66,7 +69,7 @@ namespace
     }
 
     // Create COG tile reader (it will take ownership of the dataset)
-    std::unique_ptr<QgsCOGTileReader> reader = std::make_unique<QgsCOGTileReader>( gdalDataset );
+    std::unique_ptr<QgsRasterTileReader> reader = std::make_unique<QgsRasterTileReader>( gdalDataset );
 
     if ( !reader->isValid() )
     {
@@ -74,12 +77,27 @@ namespace
       return false;
     }
 
-    // Check if dataset is tiled (COG)
+    // Check if dataset is tiled (COG, Zarr, or other tiled format)
     const auto tileInfo = reader->tileInfo( 0 );
-    if ( !tileInfo.isTiled )
+
+    // Zarr datasets are inherently chunked/tiled even if isTiled heuristic fails
+    bool isZarrDataset = false;
+    GDALDriverH driver = GDALGetDatasetDriver( gdalDataset );
+    if ( driver )
+    {
+      const char *driverName = GDALGetDriverShortName( driver );
+      isZarrDataset = driverName && ( strcmp( driverName, "Zarr" ) == 0 );
+    }
+
+    if ( !tileInfo.isTiled && !isZarrDataset )
     {
       QgsDebugMsgLevel( QStringLiteral( "GPU rendering skipped: dataset is not tiled" ), 4 );
       return false;
+    }
+
+    if ( isZarrDataset )
+    {
+      QgsDebugMsgLevel( QStringLiteral( "GPU rendering: Zarr dataset detected, using chunked access" ), 3 );
     }
 
     // Create GPU tile uploader
@@ -106,7 +124,7 @@ namespace
       return false;
     }
   }
-}
+} //namespace
 
 void QgsRasterGPUFactory::initialize()
 {

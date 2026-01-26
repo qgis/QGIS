@@ -3,7 +3,7 @@
   ----------------------
   Date                 : January 2026
   Copyright            : (C) 2026 by Wietze Suijker
-  Email                : wietze at gmail dot com
+  Email                : wietzesuijker at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,11 +16,13 @@
 #ifndef QGSRASTERGPURENDERER_H
 #define QGSRASTERGPURENDERER_H
 
+#include <memory>
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
-#include <QOpenGLFunctions>
+
 #include <QOpenGLFramebufferObject>
-#include <memory>
+#include <QOpenGLFunctions>
 
 class QgsRasterGPUTileUploader;
 class QgsRasterGPUShaders;
@@ -39,11 +41,11 @@ class QgsCoordinateReferenceSystem;
  *
  * Renders COG raster tiles directly on GPU, bypassing the traditional
  * CPU-based QPainter rendering path. Uses:
- * - QgsCOGTileReader for fast tile access
+ *
+ * - QgsRasterTileReader for fast tile access
  * - QgsRasterGPUTileUploader for zero-copy texture uploads
  * - QgsRasterGPUShaders for GLSL-based color rendering
- *
- * **Performance**: 2-5x faster than CPU path for COG files
+ * - *Performance**: 2-5x faster than CPU path for COG files
  *
  * Rendering pipeline:
  * 1. Calculate visible tiles from viewport
@@ -74,9 +76,7 @@ class GUI_EXPORT QgsRasterGPURenderer : protected QOpenGLFunctions
      * \param feedback optional feedback object for cancellation
      * \returns true on success
      */
-    bool render( QgsRenderContext &renderContext,
-                 QgsRasterViewPort *rasterViewPort,
-                 QgsFeedback *feedback = nullptr );
+    bool render( QgsRenderContext &renderContext, QgsRasterViewPort *rasterViewPort, QgsFeedback *feedback = nullptr );
 
     /**
      * Set opacity for rendering (0.0 - 1.0)
@@ -91,9 +91,9 @@ class GUI_EXPORT QgsRasterGPURenderer : protected QOpenGLFunctions
   private:
     struct TileCoord
     {
-      int level;
-      int x;
-      int y;
+        int level;
+        int x;
+        int y;
     };
 
     /**
@@ -102,7 +102,8 @@ class GUI_EXPORT QgsRasterGPURenderer : protected QOpenGLFunctions
     QVector<TileCoord> calculateVisibleTiles(
       const QgsRasterViewPort *viewport,
       int overviewLevel,
-      const QgsCoordinateTransform &transform );
+      const QgsCoordinateTransform &transform
+    );
 
     /**
      * Select best overview level based on map scale
@@ -112,9 +113,7 @@ class GUI_EXPORT QgsRasterGPURenderer : protected QOpenGLFunctions
     /**
      * Render a single tile quad with texture
      */
-    void renderTileQuad( GLuint textureId,
-                         const QgsRectangle &tileExtent,
-                         const QgsRenderContext &context );
+    void renderTileQuad( GLuint textureId, const QgsRectangle &tileExtent, const QgsRenderContext &context );
 
     /**
      * Create shader program for current data type

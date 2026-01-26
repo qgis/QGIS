@@ -15,23 +15,24 @@
 #define QGSRASTERGPUTILEUPLOADER_H
 
 #include "qgis_gui.h"
-#include "qgscogtilereader.h"
 #include "qgsrastertextureformats.h"
+#include "qgsrastertilereader.h"
 
-#include <QOpenGLFunctions>
-#include <QHash>
 #include <QByteArray>
+#include <QHash>
+#include <QOpenGLFunctions>
 
 /**
  * \ingroup gui
  * \class QgsRasterGPUTileUploader
- * \brief High-performance GPU tile uploader using QgsCOGTileReader.
+ * \brief High-performance GPU tile uploader using QgsRasterTileReader.
  *
- * This class combines fast COG tile reading (via QgsCOGTileReader) with
+ * This class combines fast COG tile reading (via QgsRasterTileReader) with
  * efficient GPU texture uploads, providing the complete fast path for
  * GPU-accelerated raster rendering.
  *
  * Key features:
+ *
  * - Zero-copy texture uploads (raw data → GPU)
  * - Format-aware texture creation
  * - Tile cache management
@@ -42,24 +43,23 @@
 class GUI_EXPORT QgsRasterGPUTileUploader : protected QOpenGLFunctions
 {
   public:
-
     /**
      * \brief GPU tile structure
      */
     struct GPUTile
     {
-      GLuint textureId = 0;          //!< OpenGL texture ID
-      int width = 0;                 //!< Tile width in pixels
-      int height = 0;                //!< Tile height in pixels
-      quint64 lastUsedFrame = 0;     //!< Frame number when last used
-      bool isValid = false;          //!< Whether texture is valid
+        GLuint textureId = 0;      //!< OpenGL texture ID
+        int width = 0;             //!< Tile width in pixels
+        int height = 0;            //!< Tile height in pixels
+        quint64 lastUsedFrame = 0; //!< Frame number when last used
+        bool isValid = false;      //!< Whether texture is valid
     };
 
     /**
      * \brief Constructor
      * \param reader COG tile reader (ownership NOT transferred)
      */
-    explicit QgsRasterGPUTileUploader( QgsCOGTileReader *reader );
+    explicit QgsRasterGPUTileUploader( QgsRasterTileReader *reader );
 
     //! Destructor - releases GPU resources
     ~QgsRasterGPUTileUploader();
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsRasterGPUTileUploader : protected QOpenGLFunctions
     /**
      * \brief Get tile info for overview level (delegates to reader)
      */
-    QgsCOGTileReader::TileInfo tileInfo( int overviewLevel = 0 ) const;
+    QgsRasterTileReader::TileInfo tileInfo( int overviewLevel = 0 ) const;
 
     /**
      * \brief Get raster extent (delegates to reader)
@@ -129,14 +129,13 @@ class GUI_EXPORT QgsRasterGPUTileUploader : protected QOpenGLFunctions
     QgsRectangle tileExtent( int overviewLevel, int tileX, int tileY ) const;
 
   private:
-
     /**
      * \brief Create tile cache key
      */
     static quint64 makeTileKey( int overview, int tileX, int tileY, int band );
 
     //! COG tile reader
-    QgsCOGTileReader *mReader = nullptr;
+    QgsRasterTileReader *mReader = nullptr;
 
     //! Texture format info
     QgsRasterTextureFormat::FormatInfo mTextureFormat;

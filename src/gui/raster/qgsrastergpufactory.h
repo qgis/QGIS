@@ -3,7 +3,7 @@
   ---------------------
   Date                 : January 2026
   Copyright            : (C) 2026 by Wietze Suijker
-  Email                : wietze at gmail dot com
+  Email                : wietzesuijker at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -33,7 +33,6 @@
 class GUI_EXPORT QgsRasterGPUFactory
 {
   public:
-
     /**
      * \brief Initialize GPU rendering support
      *
@@ -41,6 +40,7 @@ class GUI_EXPORT QgsRasterGPUFactory
      * Must be called during application initialization (GUI thread).
      *
      * GPU rendering will be automatically used for:
+     *
      * - GDAL raster layers (COG format recommended)
      * - Layers without reprojection (same CRS)
      * - When OpenGL context is available

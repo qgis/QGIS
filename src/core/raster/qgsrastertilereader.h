@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgscogtilereader.h - Fast tile reader for Cloud Optimized GeoTIFFs
+  qgsrastertilereader.h - Fast tile reader for tiled raster datasets
   --------------------------------------
   Date                 : January 2026
   Copyright            : (C) 2026 by Wietze Suijker
@@ -12,27 +12,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOGTILEREADER_H
-#define QGSCOGTILEREADER_H
+#ifndef QGSRASTERTILEREADER_H
+#define QGSRASTERTILEREADER_H
+
+#include <gdal.h>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsrectangle.h"
 
-#include <QSize>
 #include <QByteArray>
-#include <gdal.h>
+#include <QSize>
 
 /**
  * \ingroup core
- * \class QgsCOGTileReader
- * \brief Fast, direct tile reader for Cloud Optimized GeoTIFFs (COGs).
+ * \class QgsRasterTileReader
+ * \brief Fast, direct tile reader for tiled raster datasets (COG, Zarr, tiled GeoTIFF).
  *
  * This class provides high-performance tile reading by bypassing QgsRasterBlock
- * overhead and using GDAL's native tile reading APIs (ReadBlock) when possible.
+ * overhead and using GDAL's native tile reading APIs (GDALReadBlock) when possible.
  *
  * Key features:
- * - Direct tile access via GDALReadBlock for optimal COG performance
+ *
+ * - Direct tile access via GDALReadBlock for optimal performance
  * - Overview level support for multi-resolution rendering
  * - Metadata caching to minimize GDAL calls
  * - Pre-allocated buffers to avoid memory allocation overhead
@@ -40,7 +42,7 @@
  *
  * Usage:
  * \code{.cpp}
- * QgsCOGTileReader reader(gdalDataset);
+ * QgsRasterTileReader reader(gdalDataset);
  * if (reader.isValid()) {
  *   QByteArray tileData;
  *   if (reader.readTile(0, 5, 10, tileData)) {
@@ -49,12 +51,12 @@
  * }
  * \endcode
  *
- * \note This class is optimized for COG files. For non-tiled or non-COG rasters,
- * performance may not differ significantly from standard QgsRasterBlock.
+ * \note For non-tiled rasters, this falls back to GDALRasterIO and performance
+ * may not differ significantly from standard QgsRasterBlock.
  *
  * \since QGIS 3.40
  */
-class CORE_EXPORT QgsCOGTileReader
+class CORE_EXPORT QgsRasterTileReader
 {
   public:
 
@@ -77,10 +79,10 @@ class CORE_EXPORT QgsCOGTileReader
      * \brief Constructor from GDAL dataset handle
      * \param dataset GDAL dataset handle (ownership is NOT transferred)
      */
-    explicit QgsCOGTileReader( GDALDatasetH dataset );
+    explicit QgsRasterTileReader( GDALDatasetH dataset );
 
     //! Default destructor
-    ~QgsCOGTileReader() = default;
+    ~QgsRasterTileReader() = default;
 
     /**
      * \brief Returns TRUE if the reader was successfully initialized
@@ -192,4 +194,4 @@ class CORE_EXPORT QgsCOGTileReader
     double mBaseResolutionY = 0.0;
 };
 
-#endif // QGSCOGTILEREADER_H
+#endif // QGSRASTERTILEREADER_H

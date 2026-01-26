@@ -2,8 +2,8 @@
   qgsrastergpushaders.h
   ---------------------
   Date                 : January 2025
-  Copyright            : (C) 2025 by Wietze Suijker
-  Email                : wietze at gmail dot com
+  Copyright            : (C) 2026 by Wietze Suijker
+  Email                : wietzesuijker at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -52,11 +52,11 @@ class GUI_EXPORT QgsRasterGPUShaders
      */
     enum class ShaderType
     {
-      Byte,          //!< 8-bit unsigned integer (R8)
-      UInt16,        //!< 16-bit unsigned integer (R16)
-      Float32,       //!< 32-bit float (R32F)
-      RGBA8,         //!< 8-bit RGBA (RGBA8)
-      BytePaletted,  //!< 8-bit with color table lookup
+      Byte,         //!< 8-bit unsigned integer (R8)
+      UInt16,       //!< 16-bit unsigned integer (R16)
+      Float32,      //!< 32-bit float (R32F)
+      RGBA8,        //!< 8-bit RGBA (RGBA8)
+      BytePaletted, //!< 8-bit with color table lookup
     };
 
     /**
@@ -64,8 +64,8 @@ class GUI_EXPORT QgsRasterGPUShaders
      */
     struct ColorStop
     {
-      float value;     //!< Data value (normalized 0-1)
-      QColor color;    //!< Color at this stop
+        float value;  //!< Data value (normalized 0-1)
+        QColor color; //!< Color at this stop
     };
 
     /**
@@ -73,13 +73,13 @@ class GUI_EXPORT QgsRasterGPUShaders
      */
     struct ShaderConfig
     {
-      ShaderType type = ShaderType::Byte;
-      QVector<ColorStop> colorRamp;
-      float minValue = 0.0f;
-      float maxValue = 255.0f;
-      float noDataValue = -9999.0f;
-      bool useNoData = false;
-      float opacity = 1.0f;
+        ShaderType type = ShaderType::Byte;
+        QVector<ColorStop> colorRamp;
+        float minValue = 0.0f;
+        float maxValue = 255.0f;
+        float noDataValue = -9999.0f;
+        bool useNoData = false;
+        float opacity = 1.0f;
     };
 
     QgsRasterGPUShaders() = default;
@@ -112,6 +112,7 @@ class GUI_EXPORT QgsRasterGPUShaders
 
   private:
     static QString commonFunctions();
+    static QString singleChannelShader( float scale );
 };
 
 #endif // QGSRASTERGPUSHADERS_H

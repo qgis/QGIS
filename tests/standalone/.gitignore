@@ -1,7 +1,4 @@
-# Standalone test build artifacts
-test_cog_reader
+# Build artifacts
+benchmark_gpu_upload
 *.o
 *.dSYM/
-
-# Local Makefile (copied from build.mk)
-Makefile

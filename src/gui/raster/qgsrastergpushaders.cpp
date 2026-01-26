@@ -2,8 +2,8 @@
   qgsrastergpushaders.cpp
   -----------------------
   Date                 : January 2025
-  Copyright            : (C) 2025 by Wietze Suijker
-  Email                : wietze at gmail dot com
+  Copyright            : (C) 2026 by Wietze Suijker
+  Email                : wietzesuijker at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrastergpushaders.h"
+
 #include <QOpenGLShader>
 
 QString QgsRasterGPUShaders::vertexShaderSource()
@@ -73,128 +74,53 @@ QString QgsRasterGPUShaders::commonFunctions()
   )SHADER";
 }
 
+QString QgsRasterGPUShaders::singleChannelShader( float scale )
+{
+  return QString( commonFunctions() + R"SHADER(
+    #version 330 core
+
+    in vec2 vTexCoord;
+    out vec4 fragColor;
+
+    uniform sampler2D uTileTexture;
+    uniform float uColorStops[64];
+    uniform vec4 uColors[32];
+    uniform int uNumStops;
+    uniform float uMinValue;
+    uniform float uMaxValue;
+    uniform float uNoDataValue;
+    uniform bool uUseNoData;
+    uniform float uOpacity;
+
+    void main() {
+      float value = texture(uTileTexture, vTexCoord).r * %1;
+
+      if (uUseNoData && abs(value - uNoDataValue) < 0.5) {
+        discard;
+      }
+
+      float normalized = normalizeValue(value, uMinValue, uMaxValue);
+      vec4 color = applyColorRamp(normalized, uColorStops, uColors, uNumStops);
+      fragColor = vec4(color.rgb, color.a * uOpacity);
+    }
+  )SHADER" )
+    .arg( scale );
+}
+
 QString QgsRasterGPUShaders::fragmentShaderSource( ShaderType type )
 {
-  QString commonFuncs = commonFunctions();
-
   switch ( type )
   {
     case ShaderType::Byte:
-    {
-      return commonFuncs + R"SHADER(
-        #version 330 core
-
-        in vec2 vTexCoord;
-        out vec4 fragColor;
-
-        uniform sampler2D uTileTexture;
-        uniform float uColorStops[64];
-        uniform vec4 uColors[32];
-        uniform int uNumStops;
-        uniform float uMinValue;
-        uniform float uMaxValue;
-        uniform float uNoDataValue;
-        uniform bool uUseNoData;
-        uniform float uOpacity;
-
-        void main() {
-          // Sample byte texture (R8)
-          float value = texture(uTileTexture, vTexCoord).r * 255.0;
-
-          // Check for no-data
-          if (uUseNoData && abs(value - uNoDataValue) < 0.5) {
-            discard;
-          }
-
-          // Normalize to 0-1
-          float normalized = normalizeValue(value, uMinValue, uMaxValue);
-
-          // Apply color ramp
-          vec4 color = applyColorRamp(normalized, uColorStops, uColors, uNumStops);
-
-          fragColor = vec4(color.rgb, color.a * uOpacity);
-        }
-      )SHADER";
-    }
+      return singleChannelShader( 255.0 );
 
     case ShaderType::UInt16:
-    {
-      return commonFuncs + R"SHADER(
-        #version 330 core
-
-        in vec2 vTexCoord;
-        out vec4 fragColor;
-
-        uniform sampler2D uTileTexture;
-        uniform float uColorStops[64];
-        uniform vec4 uColors[32];
-        uniform int uNumStops;
-        uniform float uMinValue;
-        uniform float uMaxValue;
-        uniform float uNoDataValue;
-        uniform bool uUseNoData;
-        uniform float uOpacity;
-
-        void main() {
-          // Sample uint16 texture (R16)
-          float value = texture(uTileTexture, vTexCoord).r * 65535.0;
-
-          // Check for no-data
-          if (uUseNoData && abs(value - uNoDataValue) < 0.5) {
-            discard;
-          }
-
-          // Normalize to 0-1
-          float normalized = normalizeValue(value, uMinValue, uMaxValue);
-
-          // Apply color ramp
-          vec4 color = applyColorRamp(normalized, uColorStops, uColors, uNumStops);
-
-          fragColor = vec4(color.rgb, color.a * uOpacity);
-        }
-      )SHADER";
-    }
+      return singleChannelShader( 65535.0 );
 
     case ShaderType::Float32:
-    {
-      return commonFuncs + R"SHADER(
-        #version 330 core
-
-        in vec2 vTexCoord;
-        out vec4 fragColor;
-
-        uniform sampler2D uTileTexture;
-        uniform float uColorStops[64];
-        uniform vec4 uColors[32];
-        uniform int uNumStops;
-        uniform float uMinValue;
-        uniform float uMaxValue;
-        uniform float uNoDataValue;
-        uniform bool uUseNoData;
-        uniform float uOpacity;
-
-        void main() {
-          // Sample float32 texture (R32F)
-          float value = texture(uTileTexture, vTexCoord).r;
-
-          // Check for no-data
-          if (uUseNoData && abs(value - uNoDataValue) < 1e-6) {
-            discard;
-          }
-
-          // Normalize to 0-1
-          float normalized = normalizeValue(value, uMinValue, uMaxValue);
-
-          // Apply color ramp
-          vec4 color = applyColorRamp(normalized, uColorStops, uColors, uNumStops);
-
-          fragColor = vec4(color.rgb, color.a * uOpacity);
-        }
-      )SHADER";
-    }
+      return singleChannelShader( 1.0 );
 
     case ShaderType::RGBA8:
-    {
       return R"SHADER(
         #version 330 core
 
@@ -205,15 +131,12 @@ QString QgsRasterGPUShaders::fragmentShaderSource( ShaderType type )
         uniform float uOpacity;
 
         void main() {
-          // Sample RGBA8 texture directly
           vec4 color = texture(uTileTexture, vTexCoord);
           fragColor = vec4(color.rgb, color.a * uOpacity);
         }
       )SHADER";
-    }
 
     case ShaderType::BytePaletted:
-    {
       return R"SHADER(
         #version 330 core
 
@@ -226,19 +149,12 @@ QString QgsRasterGPUShaders::fragmentShaderSource( ShaderType type )
         uniform int uPaletteSize;
 
         void main() {
-          // Sample byte value (index into palette)
           float index = texture(uTileTexture, vTexCoord).r * 255.0;
-
-          // Normalize index to 0-1 for palette lookup
           float t = index / float(uPaletteSize - 1);
-
-          // Sample color from 1D palette texture
           vec4 color = texture(uPaletteTexture, t);
-
           fragColor = vec4(color.rgb, color.a * uOpacity);
         }
       )SHADER";
-    }
   }
 
   return QString();
@@ -308,7 +224,7 @@ void QgsRasterGPUShaders::uploadColorRamp( QOpenGLShaderProgram *program, const 
   const int numStops = std::min( static_cast<int>( colorRamp.size() ), 32 );
 
   // Prepare arrays
-  float stops[64];  // Max 32 stops * 2 (for alignment)
+  float stops[64];   // Max 32 stops * 2 (for alignment)
   float colors[128]; // Max 32 stops * 4 components (RGBA)
 
   for ( int i = 0; i < numStops; ++i )

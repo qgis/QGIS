@@ -15,7 +15,8 @@
 #include "qgsapplication.h"
 #include "qgsrastergpushaders.h"
 #include "qgsrastertextureformats.h"
-#include "qgscogtilereader.h"
+#include "qgsrastergputileuploader.h"
+#include "qgsrastertilereader.h"
 
 #include <QOpenGLContext>
 #include <QOffscreenSurface>
@@ -278,7 +279,7 @@ void TestQgsRasterGPU::testTileUploader()
   QVERIFY( dataset != nullptr );
 
   // Create COG reader
-  QgsCOGTileReader reader( dataset );
+  QgsRasterTileReader reader( dataset );
   QVERIFY( reader.isValid() );
 
   // Create tile uploader

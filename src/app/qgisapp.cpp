@@ -131,6 +131,7 @@
 #include "qgsbrowserdockwidget_p.h"
 
 #include "raster/qgsrasterelevationpropertieswidget.h"
+#include "raster/qgsrastergpufactory.h"
 #include "qgsrasterattributetableapputils.h"
 #include "vector/qgsvectorelevationpropertieswidget.h"
 #include "mesh/qgsmeshelevationpropertieswidget.h"
@@ -1104,6 +1105,12 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   // set project linked to main canvas
   mMapCanvas->setProject( QgsProject::instance() );
+  endProfile();
+
+  // Initialize GPU-accelerated raster rendering
+  startProfile( tr( "Initializing GPU rendering" ) );
+  QgsRasterGPUFactory::initialize();
+  QgsDebugMsgLevel( u"GPU raster rendering initialized"_s, 2 );
   endProfile();
 
   // what type of project to auto-open
@@ -2099,6 +2106,9 @@ QgisApp::QgisApp()
 
 QgisApp::~QgisApp()
 {
+  // Cleanup GPU rendering
+  QgsRasterGPUFactory::cleanup();
+
   // shouldn't be needed, but from this stage on, we don't want/need ANY map canvas refreshes to take place
   mFreezeCount = 1000000;
 

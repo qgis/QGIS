@@ -12,11 +12,12 @@
  ***************************************************************************/
 
 #include "qgsrastergputileuploader.h"
+
 #include "qgslogger.h"
 
 #include <QOpenGLContext>
 
-QgsRasterGPUTileUploader::QgsRasterGPUTileUploader( QgsCOGTileReader *reader )
+QgsRasterGPUTileUploader::QgsRasterGPUTileUploader( QgsRasterTileReader *reader )
   : mReader( reader )
 {
   if ( QOpenGLContext::currentContext() )
@@ -30,9 +31,9 @@ QgsRasterGPUTileUploader::QgsRasterGPUTileUploader( QgsCOGTileReader *reader )
     const auto tileInfo = mReader->tileInfo( 0 );
     // Get format for the raster's data type
     mTextureFormat = QgsRasterTextureFormat::getFormat(
-                       static_cast<Qgis::DataType>( tileInfo.dataType ),
-                       tileInfo.bandCount
-                     );
+      static_cast<Qgis::DataType>( tileInfo.dataType ),
+      tileInfo.bandCount
+    );
   }
 }
 
@@ -44,14 +45,12 @@ QgsRasterGPUTileUploader::~QgsRasterGPUTileUploader()
 quint64 QgsRasterGPUTileUploader::makeTileKey( int overview, int tileX, int tileY, int band )
 {
   // Pack into 64-bit key: [16-bit overview][16-bit band][16-bit Y][16-bit X]
-  return ( static_cast<quint64>( overview & 0xFFFF ) << 48 ) |
-         ( static_cast<quint64>( band & 0xFFFF ) << 32 ) |
-         ( static_cast<quint64>( tileY & 0xFFFF ) << 16 ) |
-         ( static_cast<quint64>( tileX & 0xFFFF ) );
+  return ( static_cast<quint64>( overview & 0xFFFF ) << 48 ) | ( static_cast<quint64>( band & 0xFFFF ) << 32 ) | ( static_cast<quint64>( tileY & 0xFFFF ) << 16 ) | ( static_cast<quint64>( tileX & 0xFFFF ) );
 }
 
 QgsRasterGPUTileUploader::GPUTile QgsRasterGPUTileUploader::uploadTile(
-  int overviewLevel, int tileX, int tileY, int bandNumber )
+  int overviewLevel, int tileX, int tileY, int bandNumber
+)
 {
   GPUTile result;
 
@@ -65,7 +64,9 @@ QgsRasterGPUTileUploader::GPUTile QgsRasterGPUTileUploader::uploadTile(
   if ( !mReader->readTile( overviewLevel, tileX, tileY, bandNumber, mTileBuffer ) )
   {
     QgsDebugError( QStringLiteral( "Failed to read tile %1,%2 overview %3" )
-                   .arg( tileX ).arg( tileY ).arg( overviewLevel ) );
+                     .arg( tileX )
+                     .arg( tileY )
+                     .arg( overviewLevel ) );
     return result;
   }
 
@@ -85,11 +86,11 @@ QgsRasterGPUTileUploader::GPUTile QgsRasterGPUTileUploader::uploadTile(
   // Upload data directly to GPU (zero-copy!)
   glTexImage2D(
     GL_TEXTURE_2D,
-    0,  // mip level
+    0, // mip level
     mTextureFormat.internalFormat,
     tileInfo.width,
     tileInfo.height,
-    0,  // border (must be 0)
+    0, // border (must be 0)
     mTextureFormat.format,
     mTextureFormat.type,
     mTileBuffer.constData()
@@ -117,7 +118,8 @@ QgsRasterGPUTileUploader::GPUTile QgsRasterGPUTileUploader::uploadTile(
 }
 
 QgsRasterGPUTileUploader::GPUTile QgsRasterGPUTileUploader::getTile(
-  int overviewLevel, int tileX, int tileY, int bandNumber, quint64 frameNumber )
+  int overviewLevel, int tileX, int tileY, int bandNumber, quint64 frameNumber
+)
 {
   const quint64 key = makeTileKey( overviewLevel, tileX, tileY, bandNumber );
 
@@ -207,13 +209,13 @@ void QgsRasterGPUTileUploader::getCacheStats( int &cachedCount, qint64 &memoryBy
   }
 }
 
-QgsCOGTileReader::TileInfo QgsRasterGPUTileUploader::tileInfo( int overviewLevel ) const
+QgsRasterTileReader::TileInfo QgsRasterGPUTileUploader::tileInfo( int overviewLevel ) const
 {
   if ( mReader && mReader->isValid() )
   {
     return mReader->tileInfo( overviewLevel );
   }
-  return QgsCOGTileReader::TileInfo();
+  return QgsRasterTileReader::TileInfo();
 }
 
 QgsRectangle QgsRasterGPUTileUploader::rasterExtent() const

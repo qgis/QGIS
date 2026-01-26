@@ -3,7 +3,7 @@
   ------------------------
   Date                 : January 2026
   Copyright            : (C) 2026 by Wietze Suijker
-  Email                : wietze at gmail dot com
+  Email                : wietzesuijker at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsrastergpurenderer.h"
-#include "qgsrastergputileuploader.h"
-#include "qgsrastergpushaders.h"
-#include "qgsrendercontext.h"
-#include "qgsrasterviewport.h"
-#include "qgsfeedback.h"
-#include "qgsrectangle.h"
+
+#include <cmath>
+
 #include "qgscoordinatetransform.h"
+#include "qgsfeedback.h"
 #include "qgslogger.h"
+#include "qgsrastergpushaders.h"
+#include "qgsrastergputileuploader.h"
+#include "qgsrasterviewport.h"
+#include "qgsrectangle.h"
+#include "qgsrendercontext.h"
+
+#include <QMatrix4x4>
 #include <QOpenGLShaderProgram>
 #include <QPainter>
-#include <QMatrix4x4>
-#include <cmath>
 
 QgsRasterGPURenderer::QgsRasterGPURenderer( QgsRasterGPUTileUploader *tileUploader )
   : mTileUploader( tileUploader )
@@ -47,9 +50,7 @@ QgsRasterGPURenderer::~QgsRasterGPURenderer()
   delete mShaderProgram;
 }
 
-bool QgsRasterGPURenderer::render( QgsRenderContext &renderContext,
-                                   QgsRasterViewPort *rasterViewPort,
-                                   QgsFeedback *feedback )
+bool QgsRasterGPURenderer::render( QgsRenderContext &renderContext, QgsRasterViewPort *rasterViewPort, QgsFeedback *feedback )
 {
   if ( !mTileUploader || !rasterViewPort )
   {
@@ -134,7 +135,8 @@ bool QgsRasterGPURenderer::render( QgsRenderContext &renderContext,
 QVector<QgsRasterGPURenderer::TileCoord> QgsRasterGPURenderer::calculateVisibleTiles(
   const QgsRasterViewPort *viewport,
   int overviewLevel,
-  const QgsCoordinateTransform &transform )
+  const QgsCoordinateTransform &transform
+)
 {
   QVector<TileCoord> tiles;
 
@@ -185,7 +187,7 @@ QVector<QgsRasterGPURenderer::TileCoord> QgsRasterGPURenderer::calculateVisibleT
   {
     for ( int tileX = minTileX; tileX <= maxTileX; ++tileX )
     {
-      tiles.append( TileCoord{overviewLevel, tileX, tileY} );
+      tiles.append( TileCoord { overviewLevel, tileX, tileY } );
     }
   }
 
@@ -204,9 +206,7 @@ int QgsRasterGPURenderer::selectOverviewLevel( const QgsRasterViewPort *viewport
   return mTileUploader->selectBestOverview( mapMupp );
 }
 
-void QgsRasterGPURenderer::renderTileQuad( GLuint textureId,
-    const QgsRectangle &tileExtent,
-    const QgsRenderContext &context )
+void QgsRasterGPURenderer::renderTileQuad( GLuint textureId, const QgsRectangle &tileExtent, const QgsRenderContext &context )
 {
   // Bind texture
   glActiveTexture( GL_TEXTURE0 );
@@ -241,14 +241,14 @@ void QgsRasterGPURenderer::renderTileQuad( GLuint textureId,
   // Vertex data: position (x, y) + texcoord (u, v)
   const float vertices[] = {
     // Triangle 1
-    x0, y0,  0.0f, 1.0f,  // bottom-left
-    x1, y0,  1.0f, 1.0f,  // bottom-right
-    x1, y1,  1.0f, 0.0f,  // top-right
+    x0, y0, 0.0f, 1.0f, // bottom-left
+    x1, y0, 1.0f, 1.0f, // bottom-right
+    x1, y1, 1.0f, 0.0f, // top-right
 
     // Triangle 2
-    x0, y0,  0.0f, 1.0f,  // bottom-left
-    x1, y1,  1.0f, 0.0f,  // top-right
-    x0, y1,  0.0f, 0.0f,  // top-left
+    x0, y0, 0.0f, 1.0f, // bottom-left
+    x1, y1, 1.0f, 0.0f, // top-right
+    x0, y1, 0.0f, 0.0f, // top-left
   };
 
   // Upload vertex data
@@ -261,10 +261,10 @@ void QgsRasterGPURenderer::renderTileQuad( GLuint textureId,
   glBufferData( GL_ARRAY_BUFFER, sizeof( vertices ), vertices, GL_DYNAMIC_DRAW );
 
   // Setup vertex attributes
-  glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof( float ), ( void * )0 );
+  glVertexAttribPointer( 0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof( float ), ( void * ) 0 );
   glEnableVertexAttribArray( 0 );
 
-  glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof( float ), ( void * )( 2 * sizeof( float ) ) );
+  glVertexAttribPointer( 1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof( float ), ( void * ) ( 2 * sizeof( float ) ) );
   glEnableVertexAttribArray( 1 );
 
   // Draw tile quad
@@ -287,8 +287,8 @@ bool QgsRasterGPURenderer::createShaderProgram()
 
   // Default grayscale color ramp (black → white)
   config.colorRamp = {
-    {0.0f, QColor( 0, 0, 0 )},
-    {1.0f, QColor( 255, 255, 255 )}
+    { 0.0f, QColor( 0, 0, 0 ) },
+    { 1.0f, QColor( 255, 255, 255 ) }
   };
 
   config.minValue = 0.0f;

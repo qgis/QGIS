@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgscogtilereader.cpp - Fast tile reader for Cloud Optimized GeoTIFFs
+  qgsrastertilereader.cpp - Fast tile reader for tiled raster datasets
   --------------------------------------
   Date                 : January 2026
   Copyright            : (C) 2026 by Wietze Suijker
@@ -12,7 +12,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgscogtilereader.h"
+#include "qgsrastertilereader.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
 
@@ -20,17 +20,17 @@
 #include <cpl_conv.h>
 #include <algorithm>
 
-QgsCOGTileReader::QgsCOGTileReader( GDALDatasetH dataset )
+QgsRasterTileReader::QgsRasterTileReader( GDALDatasetH dataset )
   : mDataset( dataset )
 {
   mValid = initialize( dataset );
 }
 
-bool QgsCOGTileReader::initialize( GDALDatasetH dataset )
+bool QgsRasterTileReader::initialize( GDALDatasetH dataset )
 {
   if ( !dataset )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: NULL dataset" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: NULL dataset" ) );
     return false;
   }
 
@@ -39,14 +39,14 @@ bool QgsCOGTileReader::initialize( GDALDatasetH dataset )
 
   if ( mWidth <= 0 || mHeight <= 0 )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Invalid dataset dimensions" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Invalid dataset dimensions" ) );
     return false;
   }
 
   // Get geotransform for extent calculation
   if ( GDALGetGeoTransform( dataset, mGeoTransform ) != CE_None )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Failed to get geotransform" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Failed to get geotransform" ) );
     // Set identity transform as fallback
     mGeoTransform[0] = 0.0;  // top left x
     mGeoTransform[1] = 1.0;  // w-e pixel resolution
@@ -71,14 +71,14 @@ bool QgsCOGTileReader::initialize( GDALDatasetH dataset )
   GDALRasterBandH band = GDALGetRasterBand( dataset, 1 );
   if ( !band )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: No bands in dataset" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: No bands in dataset" ) );
     return false;
   }
 
   // Cache base level tile info
   if ( !cacheTileInfo( band, 0 ) )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Failed to cache base tile info" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Failed to cache base tile info" ) );
     return false;
   }
 
@@ -89,11 +89,11 @@ bool QgsCOGTileReader::initialize( GDALDatasetH dataset )
     GDALRasterBandH overview = GDALGetOverview( band, i );
     if ( overview && !cacheTileInfo( overview, i + 1 ) )
     {
-      QgsDebugMsgLevel( QStringLiteral( "QgsCOGTileReader: Failed to cache overview %1 tile info" ).arg( i ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "QgsRasterTileReader: Failed to cache overview %1 tile info" ).arg( i ), 2 );
     }
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "QgsCOGTileReader: Initialized with %1 overviews, base tile size %2x%3" )
+  QgsDebugMsgLevel( QStringLiteral( "QgsRasterTileReader: Initialized with %1 overviews, base tile size %2x%3" )
                     .arg( mOverviewCount )
                     .arg( mTileInfoCache[0].width )
                     .arg( mTileInfoCache[0].height ), 2 );
@@ -101,7 +101,7 @@ bool QgsCOGTileReader::initialize( GDALDatasetH dataset )
   return true;
 }
 
-bool QgsCOGTileReader::cacheTileInfo( GDALRasterBandH band, int overviewIndex )
+bool QgsRasterTileReader::cacheTileInfo( GDALRasterBandH band, int overviewIndex )
 {
   if ( !band )
     return false;
@@ -128,9 +128,9 @@ bool QgsCOGTileReader::cacheTileInfo( GDALRasterBandH band, int overviewIndex )
   info.tilesX = ( rasterXSize + blockXSize - 1 ) / blockXSize;
   info.tilesY = ( rasterYSize + blockYSize - 1 ) / blockYSize;
 
-  // Check if dataset is tiled (block size matches tile size)
-  // For COGs, tile size typically equals block size (256x256 or 512x512)
-  // For strip-based TIFFs, block size is usually width x 1
+  // Check if dataset is tiled (block size indicates tiling)
+  // Tiled datasets have block sizes smaller than raster and height > 1
+  // Strip-based formats have block size = width x 1
   info.isTiled = ( blockXSize < rasterXSize ) && ( blockYSize > 1 );
 
   // Ensure cache has enough space
@@ -144,28 +144,28 @@ bool QgsCOGTileReader::cacheTileInfo( GDALRasterBandH band, int overviewIndex )
   return true;
 }
 
-QgsCOGTileReader::TileInfo QgsCOGTileReader::tileInfo( int overviewLevel ) const
+QgsRasterTileReader::TileInfo QgsRasterTileReader::tileInfo( int overviewLevel ) const
 {
   if ( overviewLevel < 0 || overviewLevel >= mTileInfoCache.size() )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Invalid overview level %1" ).arg( overviewLevel ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Invalid overview level %1" ).arg( overviewLevel ) );
     return TileInfo();
   }
 
   return mTileInfoCache[overviewLevel];
 }
 
-bool QgsCOGTileReader::readTile( int overviewLevel, int tileX, int tileY, int bandNumber, QByteArray &outBuffer )
+bool QgsRasterTileReader::readTile( int overviewLevel, int tileX, int tileY, int bandNumber, QByteArray &outBuffer )
 {
   if ( !mValid || !mDataset )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Reader not valid" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Reader not valid" ) );
     return false;
   }
 
   if ( overviewLevel < 0 || overviewLevel >= mTileInfoCache.size() )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Invalid overview level %1" ).arg( overviewLevel ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Invalid overview level %1" ).arg( overviewLevel ) );
     return false;
   }
 
@@ -173,7 +173,7 @@ bool QgsCOGTileReader::readTile( int overviewLevel, int tileX, int tileY, int ba
 
   if ( tileX < 0 || tileX >= info.tilesX || tileY < 0 || tileY >= info.tilesY )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Tile indices out of range: %1,%2 (max %3,%4)" )
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Tile indices out of range: %1,%2 (max %3,%4)" )
                    .arg( tileX ).arg( tileY ).arg( info.tilesX ).arg( info.tilesY ) );
     return false;
   }
@@ -182,7 +182,7 @@ bool QgsCOGTileReader::readTile( int overviewLevel, int tileX, int tileY, int ba
   GDALRasterBandH band = GDALGetRasterBand( mDataset, bandNumber );
   if ( !band )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Invalid band number %1" ).arg( bandNumber ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Invalid band number %1" ).arg( bandNumber ) );
     return false;
   }
 
@@ -192,7 +192,7 @@ bool QgsCOGTileReader::readTile( int overviewLevel, int tileX, int tileY, int ba
     band = GDALGetOverview( band, overviewLevel - 1 );
     if ( !band )
     {
-      QgsDebugError( QStringLiteral( "QgsCOGTileReader: Failed to get overview %1" ).arg( overviewLevel - 1 ) );
+      QgsDebugError( QStringLiteral( "QgsRasterTileReader: Failed to get overview %1" ).arg( overviewLevel - 1 ) );
       return false;
     }
   }
@@ -201,14 +201,13 @@ bool QgsCOGTileReader::readTile( int overviewLevel, int tileX, int tileY, int ba
   const int bufferSize = info.width * info.height * info.bytesPerPixel;
   outBuffer.resize( bufferSize );
 
-  // Use GDALReadBlock for optimal tile reading
-  // This is MUCH faster than RasterIO for tiled datasets like COGs
+  // Use GDALReadBlock for optimal tile reading on tiled datasets
   if ( info.isTiled )
   {
     const CPLErr err = GDALReadBlock( band, tileX, tileY, outBuffer.data() );
     if ( err != CE_None )
     {
-      QgsDebugError( QStringLiteral( "QgsCOGTileReader: GDALReadBlock failed for tile %1,%2 overview %3" )
+      QgsDebugError( QStringLiteral( "QgsRasterTileReader: GDALReadBlock failed for tile %1,%2 overview %3" )
                      .arg( tileX ).arg( tileY ).arg( overviewLevel ) );
       return false;
     }
@@ -234,7 +233,7 @@ bool QgsCOGTileReader::readTile( int overviewLevel, int tileX, int tileY, int ba
 
     if ( err != CE_None )
     {
-      QgsDebugError( QStringLiteral( "QgsCOGTileReader: GDALRasterIO failed for tile %1,%2 overview %3" )
+      QgsDebugError( QStringLiteral( "QgsRasterTileReader: GDALRasterIO failed for tile %1,%2 overview %3" )
                      .arg( tileX ).arg( tileY ).arg( overviewLevel ) );
       return false;
     }
@@ -243,23 +242,23 @@ bool QgsCOGTileReader::readTile( int overviewLevel, int tileX, int tileY, int ba
   return true;
 }
 
-bool QgsCOGTileReader::readTileMultiBand( int overviewLevel, int tileX, int tileY, const QList<int> &bandNumbers, QByteArray &outBuffer )
+bool QgsRasterTileReader::readTileMultiBand( int overviewLevel, int tileX, int tileY, const QList<int> &bandNumbers, QByteArray &outBuffer )
 {
   if ( bandNumbers.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: No band numbers provided" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: No band numbers provided" ) );
     return false;
   }
 
   if ( !mValid || !mDataset )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Reader not valid" ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Reader not valid" ) );
     return false;
   }
 
   if ( overviewLevel < 0 || overviewLevel >= mTileInfoCache.size() )
   {
-    QgsDebugError( QStringLiteral( "QgsCOGTileReader: Invalid overview level %1" ).arg( overviewLevel ) );
+    QgsDebugError( QStringLiteral( "QgsRasterTileReader: Invalid overview level %1" ).arg( overviewLevel ) );
     return false;
   }
 
@@ -273,7 +272,7 @@ bool QgsCOGTileReader::readTileMultiBand( int overviewLevel, int tileX, int tile
   {
     if ( !readTile( overviewLevel, tileX, tileY, bandNumbers[i], bandBuffers[i] ) )
     {
-      QgsDebugError( QStringLiteral( "QgsCOGTileReader: Failed to read band %1" ).arg( bandNumbers[i] ) );
+      QgsDebugError( QStringLiteral( "QgsRasterTileReader: Failed to read band %1" ).arg( bandNumbers[i] ) );
       return false;
     }
   }
@@ -302,7 +301,7 @@ bool QgsCOGTileReader::readTileMultiBand( int overviewLevel, int tileX, int tile
   return true;
 }
 
-int QgsCOGTileReader::selectBestOverview( double targetMupp ) const
+int QgsRasterTileReader::selectBestOverview( double targetMupp ) const
 {
   if ( !mValid || mTileInfoCache.isEmpty() )
     return 0;

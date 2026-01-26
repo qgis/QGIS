@@ -14,8 +14,8 @@
 #ifndef QGSRASTERTEXTUREFORMATS_H
 #define QGSRASTERTEXTUREFORMATS_H
 
-#include "qgis_gui.h"
 #include "qgis.h"
+#include "qgis_gui.h"
 
 #include <QOpenGLFunctions>
 #include <QString>
@@ -34,19 +34,18 @@
 class GUI_EXPORT QgsRasterTextureFormat
 {
   public:
-
     /**
      * \brief GPU texture format information
      */
     struct FormatInfo
     {
-      GLenum internalFormat = GL_R8;     //!< OpenGL internal format (storage)
-      GLenum format = GL_RED;            //!< Pixel data format
-      GLenum type = GL_UNSIGNED_BYTE;    //!< Pixel data type
-      int bytesPerPixel = 1;             //!< Bytes per pixel
-      int channelCount = 1;              //!< Number of channels (1, 2, 3, or 4)
-      QString shaderType;                //!< Shader type identifier ("u8", "u16", "f32", etc.)
-      bool isSupported = true;           //!< Whether format is supported on this hardware
+        GLenum internalFormat = GL_R8;  //!< OpenGL internal format (storage)
+        GLenum format = GL_RED;         //!< Pixel data format
+        GLenum type = GL_UNSIGNED_BYTE; //!< Pixel data type
+        int bytesPerPixel = 1;          //!< Bytes per pixel
+        int channelCount = 1;           //!< Number of channels (1, 2, 3, or 4)
+        QString shaderType;             //!< Shader type identifier ("u8", "u16", "f32", etc.)
+        bool isSupported = true;        //!< Whether format is supported on this hardware
     };
 
     /**
