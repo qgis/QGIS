@@ -28,7 +28,6 @@
 #include <QMap>
 #include <QMutex>
 #include <QNetworkReply>
-#include <QFile>
 #include <QTemporaryFile>
 #include <QPointer>
 
