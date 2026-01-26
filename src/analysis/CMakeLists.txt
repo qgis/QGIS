@@ -158,6 +158,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
+  processing/qgsalgorithmforceccw.cpp
+  processing/qgsalgorithmforcecw.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgenerateelevationprofile.cpp
