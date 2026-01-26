@@ -95,7 +95,7 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSet
     void setSources( const QVector< QgsSelectiveMaskSource > &sources );
 
     /**
-     * Appends a \source to the set.
+     * Appends a \a source to the set.
      */
     void append( const QgsSelectiveMaskSource &source );
 

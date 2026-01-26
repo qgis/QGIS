@@ -85,7 +85,7 @@ Sets the list of selective mask ``sources`` for this set.
 
     void append( const QgsSelectiveMaskSource &source );
 %Docstring
-Appends a \source to the set.
+Appends a ``source`` to the set.
 %End
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;

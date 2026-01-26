@@ -16,8 +16,11 @@
 #ifndef QGSSELECTIVEMASKINGSOURCE_H
 #define QGSSELECTIVEMASKINGSOURCE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QString>
 
 /**
  * \ingroup core
