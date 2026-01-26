@@ -124,6 +124,54 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
 };
 
 
+class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractProfileGenerator
+{
+  public:
+    /**
+     * Constructor for QgsPointCloudLayerProfileGenerator.
+     */
+    QgsPointCloudLayerProfileGeneratorBase( QgsPointCloudLayer *layer, const QgsProfileRequest &request );
+    virtual ~QgsPointCloudLayerProfileGeneratorBase();
+
+  protected:
+    bool collectData( QgsGeos &curve, const double &mapUnitsPerPixel, const double &maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCrs );
+    void gatherPoints( QgsPointCloudIndex &pc, QgsPointCloudRequest &request, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent );
+    QVector<QgsPointCloudNodeId> traverseTree( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent );
+    int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    virtual void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
+
+    QPointer< QgsPointCloudLayer > mLayer;
+    QgsPointCloudIndex mIndex;
+    const QVector< QgsPointCloudSubIndex > mSubIndexes;
+    QgsPointCloudAttributeCollection mLayerAttributes;
+    std::unique_ptr< QgsPointCloudRenderer > mRenderer;
+
+    double mMaximumScreenError = 0.3;
+    Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
+
+    QString mId;
+
+    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
+
+    double mTolerance = 0;
+
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateReferenceSystem mTargetCrs;
+    QgsCoordinateTransformContext mTransformContext;
+
+    double mStepDistance = std::numeric_limits<double>::quiet_NaN();
+
+    double mZOffset = 0;
+    double mZScale = 1.0;
+
+    QgsCoordinateTransform mLayerToTargetTransform;
+    std::unique_ptr< QgsCurve > mProfileCurve;
+
+    std::unique_ptr< QgsPreparedPointCloudRendererData > mPreparedRendererData;
+    std::unique_ptr< QgsGeos > mSearchGeometryInLayerCrsGeometryEngine;
+};
+
 /**
  * \brief Implementation of QgsAbstractProfileGenerator for point cloud layers.
  *
@@ -131,7 +179,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
  * \ingroup core
  * \since QGIS 3.26
  */
-class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfileGenerator
+class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsPointCloudLayerProfileGeneratorBase
 {
 
   public:
@@ -151,18 +199,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QString type() const override;
 
   private:
-    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange );
-    int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
-    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
-    void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
-
-    QPointer< QgsPointCloudLayer > mLayer;
-    QgsPointCloudIndex mIndex;
-    const QVector< QgsPointCloudSubIndex > mSubIndexes;
-    QgsPointCloudAttributeCollection mLayerAttributes;
-    std::unique_ptr< QgsPointCloudRenderer > mRenderer;
-    double mMaximumScreenError = 0.3;
-    Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
+    void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange ) override;
 
     double mPointSize = 1;
     Qgis::RenderUnit mPointSizeUnit = Qgis::RenderUnit::Millimeters;
@@ -170,35 +207,13 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QColor mPointColor;
     bool mOpacityByDistanceEffect = false;
 
-    QString mId;
-    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
-
-    std::unique_ptr< QgsCurve > mProfileCurve;
-
-    double mTolerance = 0;
-
-    QgsCoordinateReferenceSystem mSourceCrs;
-    QgsCoordinateReferenceSystem mTargetCrs;
-    QgsCoordinateTransformContext mTransformContext;
-
-    double mZOffset = 0;
-    double mZScale = 1.0;
-
-    double mStepDistance = std::numeric_limits<double>::quiet_NaN();
-
-    QgsCoordinateTransform mLayerToTargetTransform;
-
     std::unique_ptr< QgsAbstractGeometry > mSearchGeometryInLayerCrs;
-    std::unique_ptr< QgsGeos > mSearchGeometryInLayerCrsGeometryEngine;
-    QgsRectangle mMaxSearchExtentInLayerCrs;
-
-    std::unique_ptr< QgsPreparedPointCloudRendererData > mPreparedRendererData;
-
     std::unique_ptr< QgsPointCloudLayerProfileResults > mResults;
     QVector< QgsPointCloudLayerProfileResults::PointResult > mGatheredPoints;
 
-    friend class QgsPointCloudLayerProfileResults;
+    std::unique_ptr< QgsCurve > mProfileCurve;
 
+    friend class QgsPointCloudLayerProfileResults;
 };
 
 /**
@@ -228,9 +243,6 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileResults : public QgsAbstr
     double mZOffset = 0.0;
     double mZScale = 1.0;
 
-    bool mShowMarkerSymbolInSurfacePlots = false;
-
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
     friend class QgsTriangulatedPointCloudLayerProfileGenerator;
 };
 
@@ -242,7 +254,7 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileResults : public QgsAbstr
  * \ingroup core
  * \since QGIS 4.0
  */
-class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileGenerator : public QgsAbstractProfileSurfaceGenerator
+class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileGenerator : public QgsPointCloudLayerProfileGeneratorBase
 {
 
   public:
@@ -255,56 +267,47 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileGenerator : public QgsAbs
     ~QgsTriangulatedPointCloudLayerProfileGenerator() override;
 
     QString sourceId() const override;
-    Qgis::ProfileGeneratorFlags flags() const override;
     bool generateProfile( const QgsProfileGenerationContext &context ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
     QString type() const override;
 
+    Qgis::ProfileSurfaceSymbology symbology() const
+    {
+      return mSymbology;
+    }
+
+    QgsLineSymbol *lineSymbol() const
+    {
+      return mLineSymbol.get();
+    }
+
+    QgsFillSymbol *fillSymbol() const
+    {
+      return mFillSymbol.get();
+    }
+
+    double elevationLimit() const
+    {
+      return mElevationLimit;
+    }
+
   private:
     QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange );
     int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
     int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
-    void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
-
-    QPointer< QgsPointCloudLayer > mLayer;
-
-    double mStepDistance = std::numeric_limits<double>::quiet_NaN();
-
-    QgsCoordinateTransform mLayerToTargetTransform;
+    void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange ) override;
 
     std::unique_ptr< QgsTriangulatedPointCloudLayerProfileResults > mResults;
-
-    QgsPointCloudIndex mIndex;
-    const QVector< QgsPointCloudSubIndex > mSubIndexes;
-    QgsPointCloudAttributeCollection mLayerAttributes;
-    std::unique_ptr< QgsPointCloudRenderer > mRenderer;
-
-    double mMaximumScreenError = 0.3;
-    Qgis::RenderUnit mMaximumScreenErrorUnit = Qgis::RenderUnit::Millimeters;
-
-    QString mId;
-    std::unique_ptr<QgsFeedback> mFeedback = nullptr;
-    std::unique_ptr< QgsCurve > mProfileCurve;
-
-    double mTolerance = 0;
-
-    QgsCoordinateReferenceSystem mSourceCrs;
-    QgsCoordinateReferenceSystem mTargetCrs;
-    QgsCoordinateTransformContext mTransformContext;
-
-    double mZOffset = 0;
-    double mZScale = 1.0;
-
     std::unique_ptr< QgsAbstractGeometry > mSearchGeometryInLayerCrs;
-    std::unique_ptr< QgsGeos > mSearchGeometryInLayerCrsGeometryEngine;
-    QgsRectangle mMaxSearchExtentInLayerCrs;
-
-    std::unique_ptr< QgsPreparedPointCloudRendererData > mPreparedRendererData;
-
     QVector< QgsPoint > mGatheredPoints;
-    std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;
-    bool mShowMarkerSymbolInSurfacePlots = false;
+
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
+    std::unique_ptr< QgsLineSymbol > mLineSymbol;
+    std::unique_ptr< QgsFillSymbol > mFillSymbol;
+    double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
+
+    std::unique_ptr< QgsCurve > mProfileCurve;
 
     friend class QgsTriangulatedPointCloudLayerProfileResults;
 };
