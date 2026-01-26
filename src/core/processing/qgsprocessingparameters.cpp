@@ -7317,7 +7317,7 @@ QString QgsProcessingParameterFileDestination::valueAsPythonString( const QVaria
   return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
-QgsProcessingOutputDefinition * QgsProcessingParameterFileDestination::toOutputDefinition() const
+QgsProcessingOutputDefinition *QgsProcessingParameterFileDestination::toOutputDefinition() const
 {
   if ( !mFileFilter.isEmpty() && mFileFilter.contains( u"htm"_s, Qt::CaseInsensitive ) )
   {
@@ -7396,7 +7396,7 @@ bool QgsProcessingParameterFileDestination::fromVariantMap( const QVariantMap &m
 
 }
 
-QgsProcessingParameterFileDestination * QgsProcessingParameterFileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterFileDestination *QgsProcessingParameterFileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterFileDestination( name, description, QString(), definition.isEmpty() ? QVariant() : definition, isOptional );
 }
@@ -7405,7 +7405,7 @@ QgsProcessingParameterFolderDestination::QgsProcessingParameterFolderDestination
   : QgsProcessingDestinationParameter( name, description, defaultValue, optional, createByDefault )
 {}
 
-QgsProcessingParameterDefinition * QgsProcessingParameterFolderDestination::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterFolderDestination::clone() const
 {
   return new QgsProcessingParameterFolderDestination( *this );
 }
@@ -7443,7 +7443,7 @@ bool QgsProcessingParameterFolderDestination::checkValueIsAcceptable( const QVar
   return true;
 }
 
-QgsProcessingOutputDefinition * QgsProcessingParameterFolderDestination::toOutputDefinition() const
+QgsProcessingOutputDefinition *QgsProcessingParameterFolderDestination::toOutputDefinition() const
 {
   return new QgsProcessingOutputFolder( name(), description() );
 }
@@ -7453,7 +7453,7 @@ QString QgsProcessingParameterFolderDestination::defaultFileExtension() const
   return QString();
 }
 
-QgsProcessingParameterFolderDestination * QgsProcessingParameterFolderDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterFolderDestination *QgsProcessingParameterFolderDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterFolderDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
@@ -7558,7 +7558,7 @@ QgsProcessingParameterVectorDestination::QgsProcessingParameterVectorDestination
 
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterVectorDestination::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorDestination::clone() const
 {
   return new QgsProcessingParameterVectorDestination( *this );
 }
@@ -7655,7 +7655,7 @@ QString QgsProcessingParameterVectorDestination::asScriptCode() const
   return code.trimmed();
 }
 
-QgsProcessingOutputDefinition * QgsProcessingParameterVectorDestination::toOutputDefinition() const
+QgsProcessingOutputDefinition *QgsProcessingParameterVectorDestination::toOutputDefinition() const
 {
   return new QgsProcessingOutputVectorLayer( name(), description(), mDataType );
 }
@@ -7788,7 +7788,7 @@ bool QgsProcessingParameterVectorDestination::fromVariantMap( const QVariantMap 
   return true;
 }
 
-QgsProcessingParameterVectorDestination * QgsProcessingParameterVectorDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterVectorDestination *QgsProcessingParameterVectorDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   Qgis::ProcessingSourceType type = Qgis::ProcessingSourceType::VectorAnyGeometry;
   QString def = definition;
@@ -7819,7 +7819,7 @@ QgsProcessingParameterBand::QgsProcessingParameterBand( const QString &name, con
 
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterBand::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterBand::clone() const
 {
   return new QgsProcessingParameterBand( *this );
 }
@@ -7973,7 +7973,7 @@ bool QgsProcessingParameterBand::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterBand * QgsProcessingParameterBand::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterBand *QgsProcessingParameterBand::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   QString def = definition;
@@ -8012,7 +8012,7 @@ QgsProcessingParameterDistance::QgsProcessingParameterDistance( const QString &n
 
 }
 
-QgsProcessingParameterDistance * QgsProcessingParameterDistance::clone() const
+QgsProcessingParameterDistance *QgsProcessingParameterDistance::clone() const
 {
   return new QgsProcessingParameterDistance( *this );
 }
@@ -8102,7 +8102,7 @@ QgsProcessingParameterArea::QgsProcessingParameterArea( const QString &name, con
 
 }
 
-QgsProcessingParameterArea * QgsProcessingParameterArea::clone() const
+QgsProcessingParameterArea *QgsProcessingParameterArea::clone() const
 {
   return new QgsProcessingParameterArea( *this );
 }
@@ -8192,7 +8192,7 @@ QgsProcessingParameterVolume::QgsProcessingParameterVolume( const QString &name,
 
 }
 
-QgsProcessingParameterVolume * QgsProcessingParameterVolume::clone() const
+QgsProcessingParameterVolume *QgsProcessingParameterVolume::clone() const
 {
   return new QgsProcessingParameterVolume( *this );
 }
@@ -8278,7 +8278,7 @@ QgsProcessingParameterDuration::QgsProcessingParameterDuration( const QString &n
 {
 }
 
-QgsProcessingParameterDuration * QgsProcessingParameterDuration::clone() const
+QgsProcessingParameterDuration *QgsProcessingParameterDuration::clone() const
 {
   return new QgsProcessingParameterDuration( *this );
 }
@@ -8344,7 +8344,7 @@ QgsProcessingParameterScale::QgsProcessingParameterScale( const QString &name, c
 
 }
 
-QgsProcessingParameterScale * QgsProcessingParameterScale::clone() const
+QgsProcessingParameterScale *QgsProcessingParameterScale::clone() const
 {
   return new QgsProcessingParameterScale( *this );
 }
@@ -8372,7 +8372,7 @@ QString QgsProcessingParameterScale::asPythonString( const QgsProcessing::Python
   return QString();
 }
 
-QgsProcessingParameterScale * QgsProcessingParameterScale::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) // cppcheck-suppress duplInheritedMember
+QgsProcessingParameterScale *QgsProcessingParameterScale::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) // cppcheck-suppress duplInheritedMember
 {
   return new QgsProcessingParameterScale( name, description, definition.isEmpty() ? QVariant()
                                           : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
@@ -8387,7 +8387,7 @@ QgsProcessingParameterLayout::QgsProcessingParameterLayout( const QString &name,
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}
 
-QgsProcessingParameterDefinition * QgsProcessingParameterLayout::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterLayout::clone() const
 {
   return new QgsProcessingParameterLayout( *this );
 }
@@ -8433,7 +8433,7 @@ QString QgsProcessingParameterLayout::asPythonString( const QgsProcessing::Pytho
   return QString();
 }
 
-QgsProcessingParameterLayout * QgsProcessingParameterLayout::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterLayout *QgsProcessingParameterLayout::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
 
@@ -8462,7 +8462,7 @@ QgsProcessingParameterLayoutItem::QgsProcessingParameterLayoutItem( const QStrin
 
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterLayoutItem::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterLayoutItem::clone() const
 {
   return new QgsProcessingParameterLayoutItem( *this );
 }
@@ -8542,7 +8542,7 @@ QStringList QgsProcessingParameterLayoutItem::dependsOnOtherParameters() const
   return depends;
 }
 
-QgsProcessingParameterLayoutItem * QgsProcessingParameterLayoutItem::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterLayoutItem *QgsProcessingParameterLayoutItem::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   QString def = definition;
@@ -8595,7 +8595,7 @@ QgsProcessingParameterColor::QgsProcessingParameterColor( const QString &name, c
 
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterColor::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterColor::clone() const
 {
   return new QgsProcessingParameterColor( *this );
 }
@@ -8707,7 +8707,7 @@ void QgsProcessingParameterColor::setOpacityEnabled( bool enabled )
   mAllowOpacity = enabled;
 }
 
-QgsProcessingParameterColor * QgsProcessingParameterColor::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterColor *QgsProcessingParameterColor::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
 
@@ -8743,7 +8743,7 @@ QgsProcessingParameterCoordinateOperation::QgsProcessingParameterCoordinateOpera
 
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterCoordinateOperation::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterCoordinateOperation::clone() const
 {
   return new QgsProcessingParameterCoordinateOperation( * this );
 }
@@ -8851,7 +8851,7 @@ bool QgsProcessingParameterCoordinateOperation::fromVariantMap( const QVariantMa
   return true;
 }
 
-QgsProcessingParameterCoordinateOperation * QgsProcessingParameterCoordinateOperation::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterCoordinateOperation *QgsProcessingParameterCoordinateOperation::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
 
@@ -8887,7 +8887,7 @@ QgsProcessingParameterMapTheme::QgsProcessingParameterMapTheme( const QString &n
 }
 
 
-QgsProcessingParameterDefinition * QgsProcessingParameterMapTheme::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterMapTheme::clone() const
 {
   return new QgsProcessingParameterMapTheme( *this );
 }
@@ -8958,7 +8958,7 @@ bool QgsProcessingParameterMapTheme::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterMapTheme * QgsProcessingParameterMapTheme::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterMapTheme *QgsProcessingParameterMapTheme::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
   if ( def.startsWith( '"' ) || def.startsWith( '\'' ) )
@@ -8991,7 +8991,7 @@ QgsProcessingParameterDateTime::QgsProcessingParameterDateTime( const QString &n
   }
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterDateTime::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterDateTime::clone() const
 {
   return new QgsProcessingParameterDateTime( *this );
 }
@@ -9183,7 +9183,7 @@ bool QgsProcessingParameterDateTime::fromVariantMap( const QVariantMap &map )
   return true;
 }
 
-QgsProcessingParameterDateTime * QgsProcessingParameterDateTime::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterDateTime *QgsProcessingParameterDateTime::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterDateTime( name, description, Qgis::ProcessingDateTimeParameterDataType::DateTime, definition.isEmpty() ? QVariant()
          : ( definition.toLower().trimmed() == "none"_L1 ? QVariant() : definition ), isOptional );
@@ -9237,7 +9237,7 @@ QgsProcessingParameterProviderConnection::QgsProcessingParameterProviderConnecti
 }
 
 
-QgsProcessingParameterDefinition * QgsProcessingParameterProviderConnection::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterProviderConnection::clone() const
 {
   return new QgsProcessingParameterProviderConnection( *this );
 }
@@ -9311,7 +9311,7 @@ bool QgsProcessingParameterProviderConnection::fromVariantMap( const QVariantMap
   return true;
 }
 
-QgsProcessingParameterProviderConnection * QgsProcessingParameterProviderConnection::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterProviderConnection *QgsProcessingParameterProviderConnection::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString def = definition;
   QString provider;
@@ -9352,7 +9352,7 @@ QgsProcessingParameterDatabaseSchema::QgsProcessingParameterDatabaseSchema( cons
 }
 
 
-QgsProcessingParameterDefinition * QgsProcessingParameterDatabaseSchema::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterDatabaseSchema::clone() const
 {
   return new QgsProcessingParameterDatabaseSchema( *this );
 }
@@ -9448,7 +9448,7 @@ bool QgsProcessingParameterDatabaseSchema::fromVariantMap( const QVariantMap &ma
   return true;
 }
 
-QgsProcessingParameterDatabaseSchema * QgsProcessingParameterDatabaseSchema::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterDatabaseSchema *QgsProcessingParameterDatabaseSchema::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   QString def = definition;
@@ -9486,7 +9486,7 @@ QgsProcessingParameterDatabaseTable::QgsProcessingParameterDatabaseTable( const 
 }
 
 
-QgsProcessingParameterDefinition * QgsProcessingParameterDatabaseTable::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterDatabaseTable::clone() const
 {
   return new QgsProcessingParameterDatabaseTable( *this );
 }
@@ -9603,7 +9603,7 @@ bool QgsProcessingParameterDatabaseTable::fromVariantMap( const QVariantMap &map
   return true;
 }
 
-QgsProcessingParameterDatabaseTable * QgsProcessingParameterDatabaseTable::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterDatabaseTable *QgsProcessingParameterDatabaseTable::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString connection;
   QString schema;
@@ -9645,7 +9645,7 @@ QgsProcessingParameterPointCloudLayer::QgsProcessingParameterPointCloudLayer( co
 {
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterPointCloudLayer::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudLayer::clone() const
 {
   return new QgsProcessingParameterPointCloudLayer( *this );
 }
@@ -9724,7 +9724,7 @@ QString QgsProcessingParameterPointCloudLayer::createFileFilter() const
   return QgsProviderRegistry::instance()->filePointCloudFilters() + u";;"_s + QObject::tr( "All files (*.*)" );
 }
 
-QgsProcessingParameterPointCloudLayer * QgsProcessingParameterPointCloudLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterPointCloudLayer *QgsProcessingParameterPointCloudLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterPointCloudLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
@@ -9739,7 +9739,7 @@ QgsProcessingParameterAnnotationLayer::QgsProcessingParameterAnnotationLayer( co
 {
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterAnnotationLayer::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterAnnotationLayer::clone() const
 {
   return new QgsProcessingParameterAnnotationLayer( *this );
 }
@@ -9812,7 +9812,7 @@ QVariant QgsProcessingParameterAnnotationLayer::valueAsJsonObject( const QVarian
   return valueAsJsonObjectPrivate( value, context, ValueAsStringFlag::AllowMapLayerValues );
 }
 
-QgsProcessingParameterAnnotationLayer * QgsProcessingParameterAnnotationLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterAnnotationLayer *QgsProcessingParameterAnnotationLayer::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterAnnotationLayer( name, description,  definition.isEmpty() ? QVariant() : definition, isOptional );
 }
@@ -9822,7 +9822,7 @@ QgsProcessingParameterPointCloudDestination::QgsProcessingParameterPointCloudDes
 {
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterPointCloudDestination::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudDestination::clone() const
 {
   return new QgsProcessingParameterPointCloudDestination( *this );
 }
@@ -9890,7 +9890,7 @@ QString QgsProcessingParameterPointCloudDestination::valueAsPythonString( const 
   return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
-QgsProcessingOutputDefinition * QgsProcessingParameterPointCloudDestination::toOutputDefinition() const
+QgsProcessingOutputDefinition *QgsProcessingParameterPointCloudDestination::toOutputDefinition() const
 {
   return new QgsProcessingOutputPointCloudLayer( name(), description() );
 }
@@ -9939,7 +9939,7 @@ QStringList QgsProcessingParameterPointCloudDestination::supportedOutputPointClo
   }
 }
 
-QgsProcessingParameterPointCloudDestination * QgsProcessingParameterPointCloudDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterPointCloudDestination *QgsProcessingParameterPointCloudDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterPointCloudDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
@@ -9956,7 +9956,7 @@ QgsProcessingParameterPointCloudAttribute::QgsProcessingParameterPointCloudAttri
 {
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterPointCloudAttribute::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterPointCloudAttribute::clone() const
 {
   return new QgsProcessingParameterPointCloudAttribute( *this );
 }
@@ -10136,7 +10136,7 @@ bool QgsProcessingParameterPointCloudAttribute::fromVariantMap( const QVariantMa
   return true;
 }
 
-QgsProcessingParameterPointCloudAttribute * QgsProcessingParameterPointCloudAttribute::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterPointCloudAttribute *QgsProcessingParameterPointCloudAttribute::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   QString parent;
   bool allowMultiple = false;
@@ -10180,7 +10180,7 @@ QgsProcessingParameterVectorTileDestination::QgsProcessingParameterVectorTileDes
 {
 }
 
-QgsProcessingParameterDefinition * QgsProcessingParameterVectorTileDestination::clone() const
+QgsProcessingParameterDefinition *QgsProcessingParameterVectorTileDestination::clone() const
 {
   return new QgsProcessingParameterVectorTileDestination( *this );
 }
@@ -10248,7 +10248,7 @@ QString QgsProcessingParameterVectorTileDestination::valueAsPythonString( const 
   return QgsProcessingUtils::stringToPythonLiteral( value.toString() );
 }
 
-QgsProcessingOutputDefinition * QgsProcessingParameterVectorTileDestination::toOutputDefinition() const
+QgsProcessingOutputDefinition *QgsProcessingParameterVectorTileDestination::toOutputDefinition() const
 {
   return new QgsProcessingOutputVectorTileLayer( name(), description() );
 }
@@ -10275,7 +10275,7 @@ QStringList QgsProcessingParameterVectorTileDestination::supportedOutputVectorTi
   return QStringList() << ext;
 }
 
-QgsProcessingParameterVectorTileDestination * QgsProcessingParameterVectorTileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
+QgsProcessingParameterVectorTileDestination *QgsProcessingParameterVectorTileDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
 {
   return new QgsProcessingParameterVectorTileDestination( name, description, definition.isEmpty() ? QVariant() : definition, isOptional );
 }
