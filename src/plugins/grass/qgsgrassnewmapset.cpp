@@ -35,7 +35,6 @@
 #include <QCloseEvent>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QRegExp>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QTextStream>

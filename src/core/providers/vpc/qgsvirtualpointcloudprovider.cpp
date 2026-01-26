@@ -31,6 +31,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudrgbrenderer.h"
 #include "qgspointcloudsubindex.h"
 #include "qgsproviderregistry.h"
 #include "qgsprovidersublayerdetails.h"
@@ -406,6 +407,21 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
     }
 
+    if ( f["properties"].contains( "pc:statistics" ) )
+    {
+      nlohmann::json pcStats = f["properties"]["pc:statistics"];
+
+      for ( auto pcStat : pcStats )
+      {
+        if ( pcStat["name"] == "Red" )
+          mRedMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+        if ( pcStat["name"] == "Green" )
+          mGreenMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+        if ( pcStat["name"] == "Blue" )
+          mBlueMax = std::max( mRedMax, pcStat[ "maximum" ].get<double>() );
+      }
+    }
+
     if ( transform.isValid() && !transform.isShortCircuited() )
     {
       try
@@ -566,6 +582,35 @@ bool QgsVirtualPointCloudProvider::setSubsetString( const QString &subset, bool 
 QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVariantMap &configuration ) const
 {
   Q_UNUSED( configuration )
+
+  if ( mRedMax != std::numeric_limits<double>::lowest() && mGreenMax != std::numeric_limits<double>::lowest() && mBlueMax != std::numeric_limits<double>::lowest() )
+  {
+    auto renderer = std::make_unique< QgsPointCloudRgbRenderer >();
+    const int maxValue = std::max( mBlueMax, std::max( mRedMax, mGreenMax ) );
+
+    if ( maxValue == 0 )
+    {
+      renderer.reset();
+    }
+    else
+    {
+      const int rangeGuess = maxValue > 255 ? 65535 : 255;
+
+      if ( rangeGuess > 255 )
+      {
+        QgsContrastEnhancement contrast( Qgis::DataType::UnknownDataType );
+        contrast.setMinimumValue( 0 );
+        contrast.setMaximumValue( rangeGuess );
+        contrast.setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+        renderer->setRedContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+        renderer->setGreenContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+        renderer->setBlueContrastEnhancement( new QgsContrastEnhancement( contrast ) );
+      }
+    }
+
+    if ( renderer )
+      return renderer.release();
+  }
 
   if ( mAttributes.indexOf( "Classification"_L1 ) >= 0 )
   {

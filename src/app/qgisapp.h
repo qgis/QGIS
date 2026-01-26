@@ -184,7 +184,6 @@ class QgsCustomizationDialog;
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgspointxy.h"
-#include "qgsrasterminmaxorigin.h"
 #include "qgsrecentprojectsitemsmodel.h"
 #include "qgsvectorlayersaveasdialog.h"
 #include "qobjectuniqueptr.h"

@@ -41,6 +41,7 @@ It proxies display and actions to
       CommonAngleSnapping,
       Distance,
       Bearing,
+      Weight,
     };
     typedef QFlags<QgsAdvancedDigitizingFloater::FloaterItem> FloaterItems;
 
@@ -94,6 +95,33 @@ Set whether the floater ``item`` should be visible or not.
 :param visible: 
 
 .. versionadded:: 3.32
+%End
+
+  public slots:
+
+    void changeWeight( const QString &text );
+%Docstring
+Updates the weight value displayed in the floater for NURBSCurve.
+
+:param text: The weight value as a string
+
+.. versionadded:: 4.0
+%End
+
+    void enabledChangedWeight( bool enabled );
+%Docstring
+Shows or hides the weight widget in the floater for NURBSCurve.
+
+:param enabled: Whether weight editing is active
+
+.. versionadded:: 4.0
+%End
+
+    void focusOnWeight();
+%Docstring
+Requests focus on the weight input field for NURBSCurve.
+
+.. versionadded:: 4.0
 %End
 
   private:

@@ -632,21 +632,28 @@ void QgsNurbsCurve::filterVertices( const std::function<bool( const QgsPoint & )
   clearCache();
 }
 
-void QgsNurbsCurve::generateUniformKnots()
+QVector<double> QgsNurbsCurve::generateUniformKnots( int numControlPoints, int degree )
 {
-  const int n = mControlPoints.size();
-  const int knotsSize = n + mDegree + 1;
-  mKnots.clear();
-  mKnots.reserve( knotsSize );
+  Q_ASSERT( numControlPoints > degree );
+
+  const int knotsSize = numControlPoints + degree + 1;
+  QVector<double> knots;
+  knots.reserve( knotsSize );
   for ( int i = 0; i < knotsSize; ++i )
   {
-    if ( i <= mDegree )
-      mKnots.append( 0.0 );
-    else if ( i >= n )
-      mKnots.append( 1.0 );
+    if ( i <= degree )
+      knots.append( 0.0 );
+    else if ( i >= numControlPoints )
+      knots.append( 1.0 );
     else
-      mKnots.append( static_cast<double>( i - mDegree ) / ( n - mDegree ) );
+      knots.append( static_cast<double>( i - degree ) / ( numControlPoints - degree ) );
   }
+  return knots;
+}
+
+void QgsNurbsCurve::generateUniformKnots()
+{
+  mKnots = generateUniformKnots( mControlPoints.size(), mDegree );
 }
 
 bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
@@ -660,7 +667,7 @@ bool QgsNurbsCurve::fromWkb( QgsConstWkbPtr &wkb )
   const unsigned char headerEndianness = *static_cast<const unsigned char *>( wkb );
 
   Qgis::WkbType type = wkb.readHeader();
-  if ( QgsWkbTypes::flatType( type ) != Qgis::WkbType::NurbsCurve )
+  if ( !QgsWkbTypes::isNurbsType( type ) )
     return false;
 
   mWkbType = type;

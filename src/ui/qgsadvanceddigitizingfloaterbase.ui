@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>310</width>
-    <height>233</height>
+    <height>260</height>
    </rect>
   </property>
   <property name="palette">
@@ -268,6 +268,32 @@
      </property>
     </widget>
    </item>
+   <item row="10" column="1">
+    <widget class="QLabel" name="mWeightLabel">
+     <property name="text">
+      <string>w</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="3">
+    <widget class="QLineEdit" name="mWeightLineEdit">
+     <property name="sizeIncrement">
+      <size>
+       <width>40</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
@@ -275,6 +301,7 @@
   <tabstop>mAngleLineEdit</tabstop>
   <tabstop>mXLineEdit</tabstop>
   <tabstop>mYLineEdit</tabstop>
+  <tabstop>mWeightLineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections/>

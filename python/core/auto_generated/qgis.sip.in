@@ -284,6 +284,12 @@ The development version
       CircularString,
       Streaming,
       Shape,
+      NurbsCurve,
+    };
+
+    enum class NurbsMode
+    {
+      ControlPoints,
     };
 
     enum class VectorLayerTypeFlag

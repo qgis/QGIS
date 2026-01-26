@@ -117,6 +117,9 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     const QgsPointXY point = toMapCoordinates( e->pos() );
+    if ( mRubberBandPoints->numberOfVertices() > 0 && *mRubberBandPoints->getPoint( 0, mRubberBandPoints->numberOfVertices() - 1 ) == point )
+      return;
+
     if ( mRubberBandPoints->numberOfVertices() == 1 && !mToleranceLocked )
     {
       QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );

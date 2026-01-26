@@ -42,7 +42,6 @@ class CORE_EXPORT QgsWkbTypes
 {
     Q_GADGET
   public:
-
     /**
      * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
      * \see isSingleType()
@@ -215,7 +214,6 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::Polygon25D:
         case Qgis::WkbType::MultiPolygon25D:
           return Qgis::WkbType::Polygon25D;
-
       }
       return Qgis::WkbType::Unknown;
     }
@@ -574,7 +572,6 @@ class CORE_EXPORT QgsWkbTypes
     {
       switch ( type )
       {
-
         case Qgis::WkbType::CircularString:
         case Qgis::WkbType::CompoundCurve:
         case Qgis::WkbType::NurbsCurve:
@@ -680,7 +677,6 @@ class CORE_EXPORT QgsWkbTypes
         case Qgis::WkbType::TriangleZM:
         case Qgis::WkbType::Unknown:
           return type;
-
       }
       return Qgis::WkbType::Unknown;
     }
@@ -803,7 +799,6 @@ class CORE_EXPORT QgsWkbTypes
 
         case Qgis::WkbType::NoGeometry:
           return Qgis::WkbType::NoGeometry;
-
       }
       return Qgis::WkbType::Unknown;
     }
@@ -893,7 +888,6 @@ class CORE_EXPORT QgsWkbTypes
 
         default:
           return true;
-
       }
     }
 
@@ -915,6 +909,17 @@ class CORE_EXPORT QgsWkbTypes
         default:
           return false;
       }
+    }
+
+    /**
+     * Returns TRUE if the WKB type is a NURBS curve type.
+     *
+     * \returns TRUE if the WKB type is a NURBS curve type.
+     * \since QGIS 4.0
+     */
+    Q_INVOKABLE static bool isNurbsType( Qgis::WkbType type ) SIP_HOLDGIL
+    {
+      return flatType( type ) == Qgis::WkbType::NurbsCurve;
     }
 
     /**
@@ -1126,7 +1131,6 @@ class CORE_EXPORT QgsWkbTypes
 
         default:
           return false;
-
       }
     }
 
@@ -1176,7 +1180,6 @@ class CORE_EXPORT QgsWkbTypes
 
         default:
           return false;
-
       }
     }
 
@@ -1290,7 +1293,6 @@ class CORE_EXPORT QgsWkbTypes
       else
         return Qgis::WkbType::Unknown;
     }
-
 };
 
 #endif // QGSWKBTYPES_H

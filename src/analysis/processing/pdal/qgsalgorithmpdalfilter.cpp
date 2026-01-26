@@ -68,6 +68,9 @@ void QgsPdalFilterAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterPointCloudLayer( u"INPUT"_s, QObject::tr( "Input layer" ) ) );
   addParameter( new QgsProcessingParameterExpression( u"FILTER_EXPRESSION"_s, QObject::tr( "Filter expression" ), QVariant(), u"INPUT"_s, false, Qgis::ExpressionType::PointCloud ) );
   addParameter( new QgsProcessingParameterExtent( u"FILTER_EXTENT"_s, QObject::tr( "Cropping extent" ), QVariant(), true ) );
+
+  createVpcOutputFormatParameter();
+
   addParameter( new QgsProcessingParameterPointCloudDestination( u"OUTPUT"_s, QObject::tr( "Filtered" ) ) );
 }
 
@@ -86,6 +89,7 @@ QStringList QgsPdalFilterAlgorithm::createArgumentLists( const QVariantMap &para
 
   QStringList args = { u"translate"_s, u"--input=%1"_s.arg( layer->source() ), u"--output=%1"_s.arg( outputFile ) };
 
+  applyVpcOutputFormatParameter( outputFile, args, parameters, context, feedback );
 
   const QString filterExpression = parameterAsString( parameters, u"FILTER_EXPRESSION"_s, context ).trimmed();
   if ( !filterExpression.isEmpty() )
