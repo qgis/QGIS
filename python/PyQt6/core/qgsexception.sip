@@ -84,7 +84,6 @@ class QgsSettingsException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
 %End
 
-%If ( HAVE_SFCGAL_SIP )
 %Exception QgsSfcgalException(SIP_Exception) /PyName=QgsSfcgalException/
 {
 %TypeHeaderCode
@@ -96,7 +95,6 @@ class QgsSettingsException(Exception):
   SIP_UNBLOCK_THREADS
 %End
 };
-%End
 
 %TypeHintCode
 class QgsSfcgalException(Exception):
