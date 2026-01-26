@@ -11,6 +11,7 @@
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsCsException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -28,6 +29,7 @@ class QgsCsException(Exception):
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsProcessingException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -45,6 +47,7 @@ class QgsProcessingException(Exception):
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsProviderConnectionException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -62,6 +65,7 @@ class QgsProviderConnectionException(Exception):
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsNotSupportedException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -79,6 +83,7 @@ class QgsNotSupportedException(Exception):
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsSettingsException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -96,6 +101,7 @@ class QgsSettingsException(Exception):
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsSfcgalException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -113,6 +119,7 @@ class QgsSfcgalException(Exception):
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsInvalidArgumentException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
@@ -133,6 +140,7 @@ class QgsInvalidArgumentException(Exception):
 %End
 };
 
+// don't forget to define docstring in __init__.py.in!
 %TypeHintCode
 class QgsException(Exception):
     def __init__(self, *args, **kwargs) -> None: ...
