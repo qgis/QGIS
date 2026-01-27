@@ -20,7 +20,10 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsSelectiveMaskingSourceSet::QgsSelectiveMaskingSourceSet()
   : mId( QUuid::createUuid().toString() )
