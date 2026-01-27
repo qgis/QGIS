@@ -221,7 +221,7 @@ class CORE_EXPORT QgsStringStatisticalSummary
     QString mMinority;
     QString mMajority;
 
-    void testString( const QString &string );
+    void testString( const QString &string, bool isNull );
 };
 
 #endif // QGSSTRINGSTATISTICALSUMMARY_H

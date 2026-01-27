@@ -365,7 +365,7 @@ QVariantMap QgsBasicStatisticsAlgorithm::calculateStringStatistics( const QVaria
   outputs.insert( u"COUNT"_s, stat.count() );
   outputs.insert( u"UNIQUE"_s, stat.countDistinct() );
   outputs.insert( u"EMPTY"_s, stat.countMissing() );
-  outputs.insert( u"FILLED"_s, stat.count() - stat.countMissing() );
+  outputs.insert( u"FILLED"_s, count - stat.countMissing() );
   outputs.insert( u"MIN"_s, stat.min() );
   outputs.insert( u"MAX"_s, stat.max() );
   outputs.insert( u"MIN_LENGTH"_s, stat.minLength() );
