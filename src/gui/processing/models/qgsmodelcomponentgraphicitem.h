@@ -667,6 +667,13 @@ class GUI_EXPORT QgsModelGroupBoxGraphicItem : public QgsModelComponentGraphicIt
     void contextMenuEvent( QGraphicsSceneContextMenuEvent *event ) override;
     bool canDeleteComponent() override;
 
+    /**
+     * Applies edits to the item, using an updated \a groupBox definition.
+     *
+     * \since QGIS 4.0
+     */
+    void applyEdit( const QgsProcessingModelGroupBox &groupBox );
+
   protected:
     QColor fillColor( State state ) const override;
     QColor strokeColor( State state ) const override;

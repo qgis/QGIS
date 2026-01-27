@@ -31,6 +31,9 @@ class QgsModelViewToolPan;
 class QgsModelViewToolSelect;
 class QgsScreenHelper;
 class QgsProcessingAlgorithmDialogBase;
+class QgsModelDesignerConfigDockWidget;
+class QgsProcessingParameterWidgetContext;
+class QgsProcessingContextGenerator;
 
 ///@cond NOT_STABLE
 
@@ -97,8 +100,18 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     /**
      * Sets the related \a scene.
+     *
+     * \see modelScene()
      */
     void setModelScene( QgsModelGraphicsScene *scene SIP_TRANSFER );
+
+    /**
+     * Returns the related model scene.
+     *
+     * \see setModelScene()
+     * \since QGIS 4.0
+     */
+    QgsModelGraphicsScene *modelScene();
 
     /**
      * Save action.
@@ -132,6 +145,17 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     virtual bool saveModel( bool saveAs = false ) = 0;
     // cppcheck-suppress pureVirtualCall
     virtual QgsProcessingAlgorithmDialogBase *createExecutionDialog() = 0 SIP_TRANSFERBACK;
+
+    /**
+     * Creates a new widget context appropriate for the dialog.
+     */
+    virtual QgsProcessingParameterWidgetContext createWidgetContext() = 0; // cppcheck-suppress pureVirtualCall
+
+    /**
+     * Registers a Processing context \a generator class that will be used to retrieve
+     * a Processing context for the dialog when required.
+     */
+    void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
     QToolBar *toolbar() { return mToolbar; }
     QAction *actionOpen() { return mActionOpen; }
@@ -193,6 +217,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void run( const QSet<QString> &childAlgorithmSubset = QSet<QString>() );
     void showChildAlgorithmOutputs( const QString &childId );
     void showChildAlgorithmLog( const QString &childId );
+    void onItemFocused( QgsModelComponentGraphicItem *item );
 
   private:
     enum UndoCommand
@@ -230,6 +255,11 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     QAction *mActionPaste = nullptr;
     int mBlockUndoCommands = 0;
     int mIgnoreUndoStackChanges = 0;
+
+    QgsDockWidget *mConfigWidgetDock = nullptr;
+    QgsModelDesignerConfigDockWidget *mConfigWidget = nullptr;
+
+    QgsProcessingContextGenerator *mProcessingContextGenerator = nullptr;
 
     QString mTitle;
 

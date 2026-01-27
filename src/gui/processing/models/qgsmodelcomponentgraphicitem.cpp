@@ -1513,6 +1513,14 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
   return false;
 }
 
+void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &groupBox )
+{
+  emit aboutToChange( tr( "Edit Group Box" ) );
+  model()->addGroupBox( groupBox );
+  emit changed();
+  emit requestModelRepaint();
+}
+
 void QgsModelGroupBoxGraphicItem::deleteComponent()
 {
   if ( const QgsProcessingModelGroupBox *box = dynamic_cast<const QgsProcessingModelGroupBox *>( component() ) )
@@ -1532,10 +1540,7 @@ void QgsModelGroupBoxGraphicItem::editComponent()
 
     if ( dlg.exec() )
     {
-      emit aboutToChange( tr( "Edit Group Box" ) );
-      model()->addGroupBox( dlg.groupBox() );
-      emit changed();
-      emit requestModelRepaint();
+      applyEdit( dlg.groupBox() );
     }
   }
 }

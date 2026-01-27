@@ -194,6 +194,15 @@ class GUI_EXPORT QgsProcessingModelerParameterWidget : public QWidget, public Qg
      */
     void setSourceType( Qgis::ProcessingModelChildParameterSource type );
 
+  signals:
+
+    /**
+     * Emitted whenever the definition of the parameter is changed in the widget.
+     *
+     * \since QGIS 4.0
+     */
+    void changed();
+
   private slots:
 
     void sourceMenuAboutToShow();

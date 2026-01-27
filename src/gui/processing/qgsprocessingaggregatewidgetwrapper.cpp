@@ -241,6 +241,8 @@ QgsProcessingAggregateParameterDefinitionWidget::QgsProcessingAggregateParameter
     mParentLayerComboBox->setCurrentIndex( mParentLayerComboBox->count() - 1 );
   }
 
+  connect( mParentLayerComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsProcessingAbstractParameterDefinitionWidget::changed );
+
   vlayout->addWidget( mParentLayerComboBox );
   setLayout( vlayout );
 }
