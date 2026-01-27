@@ -40,11 +40,6 @@
 #include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QNoDraw>
 #include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QStencilMask>
-#include <Qt3DRender/QStencilOperation>
-#include <Qt3DRender/QStencilOperationArguments>
-#include <Qt3DRender/QStencilTest>
-#include <Qt3DRender/QStencilTestArguments>
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgsframegraph.cpp"
