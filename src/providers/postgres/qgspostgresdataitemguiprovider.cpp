@@ -937,6 +937,7 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
     return;
   }
 
+  const QString comment = QgsPostgresUtils::projectComment( conn, projectItem->schemaName(), projectItem->name() );
   const QString newUri = projectItem->uriWithNewName( dlg.name() );
 
   // read the project, set title and new filename
@@ -959,6 +960,14 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
     return;
+  }
+
+  if ( !comment.isEmpty() )
+  {
+    if ( !QgsPostgresUtils::setProjectComment( conn, dlg.name(), projectItem->schemaName(), comment ) )
+    {
+      notify( tr( "Rename Project" ), tr( "Failed to set project comment for '%1'" ).arg( dlg.name() ), context, Qgis::MessageLevel::Warning );
+    }
   }
 
   // refresh
