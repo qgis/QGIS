@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsSelectiveMaskingSourceSet
 {
 %Docstring(signature="appended")
