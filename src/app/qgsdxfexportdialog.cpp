@@ -27,13 +27,18 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmapthemecollection.h"
+#include "qgsmessagebar.h"
+#include "qgsmessagebaritem.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QTextCodec>
 
 #include "moc_qgsdxfexportdialog.cpp"
 
@@ -772,6 +777,24 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( mDeselectDataDefinedBlocks, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deselectDataDefinedBlocks );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDxfExportDialog::showHelp );
 
+  connect( mEncoding, &QComboBox::currentTextChanged, this, [this] {
+    setOkEnabled();
+  } );
+
+  connect( mLayerTitleAsName, &QAbstractButton::toggled, this, [this] {
+    setOkEnabled();
+  } );
+
+  connect( mModel, &QAbstractItemModel::dataChanged, this, [this] {
+    setOkEnabled();
+  } );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, [this] {
+    setOkEnabled();
+  } );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, [this] {
+    setOkEnabled();
+  } );
+
   connect( mFileName, &QgsFileWidget::fileChanged, this, [this]( const QString &filePath ) {
     QgsSettings settings;
     QFileInfo tmplFileInfo( filePath );
@@ -930,6 +953,7 @@ void QgsDxfExportDialog::loadSettingsFromFile()
     {
       QgsDxfExportDialog::settingsDxfLastSettingsDir->setValue( QFileInfo( fileName ).path() );
       mMessageBar->pushMessage( QString(), tr( "DXF Export settings loaded!" ), Qgis::MessageLevel::Success, 0 );
+      setOkEnabled();
     }
   }
 }
@@ -1215,7 +1239,9 @@ void QgsDxfExportDialog::setOkEnabled()
   QFileInfo fi( filePath );
 
   bool ok = ( fi.absoluteDir().exists() && !fi.baseName().isEmpty() );
-  btn->setEnabled( ok );
+  const bool encodingOk = validateEncodingForLayerNames();
+
+  btn->setEnabled( ok && encodingOk );
 }
 
 
@@ -1232,6 +1258,99 @@ bool QgsDxfExportDialog::selectedFeaturesOnly() const
 bool QgsDxfExportDialog::layerTitleAsName() const
 {
   return mLayerTitleAsName->isChecked();
+}
+
+bool QgsDxfExportDialog::validateEncodingForLayerNames()
+{
+  clearEncodingWarning();
+
+  const QString encodingName = mEncoding->currentText();
+  if ( encodingName.isEmpty() )
+    return true;
+
+  QTextCodec *codec = QTextCodec::codecForName( encodingName.toLocal8Bit() );
+  if ( !codec )
+  {
+    const QStringList details { tr( "Choose another encoding or rename the layers so they are compatible." ) };
+    showEncodingWarning( tr( "Encoding %1 is not available on this system." ).arg( encodingName ), details );
+    return false;
+  }
+
+  QStringList unencodableNames;
+  for ( const QgsDxfExport::DxfLayer &layer : layers() )
+  {
+    if ( layer.layerOutputAttributeIndex() >= 0 )
+      continue; // name will come from attribute values, which we cannot pre-validate
+
+    QString candidateName = layer.overriddenName();
+    if ( candidateName.isEmpty() )
+    {
+      if ( layerTitleAsName() )
+      {
+        const QString title = layer.layer()->serverProperties()->title();
+        if ( !title.isEmpty() )
+          candidateName = title;
+      }
+
+      if ( candidateName.isEmpty() )
+        candidateName = layer.layer()->name();
+    }
+
+    if ( candidateName.isEmpty() )
+      continue;
+
+    if ( !codec->canEncode( candidateName ) )
+      unencodableNames << candidateName;
+  }
+
+  if ( unencodableNames.isEmpty() )
+    return true;
+
+  QStringList preview = unencodableNames.mid( 0, 3 );
+  QStringList detailLines;
+  detailLines << tr( "Encoding %1 cannot encode these layer names. Choose another encoding or rename the layers:" ).arg( encodingName );
+  detailLines << preview;
+  if ( unencodableNames.size() > preview.size() )
+    detailLines << tr( "…and %1 more" ).arg( unencodableNames.size() - preview.size() );
+
+  showEncodingWarning( tr( "Encoding %1 cannot encode one or more layer names. Choose another encoding or rename the layers." ).arg( encodingName ), detailLines );
+  return false;
+}
+
+void QgsDxfExportDialog::showEncodingWarning( const QString &message, const QStringList &details )
+{
+  clearEncodingWarning();
+  QWidget *warningWidget = new QWidget();
+  QHBoxLayout *layout = new QHBoxLayout( warningWidget );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->setSpacing( 6 );
+
+  QLabel *label = new QLabel( message, warningWidget );
+  label->setWordWrap( true );
+  layout->addWidget( label, 1 );
+
+  if ( !details.isEmpty() )
+  {
+    QPushButton *more = new QPushButton( tr( "Details…" ), warningWidget );
+    more->setAutoDefault( false );
+    more->setDefault( false );
+    const QString fullText = details.join( u"\n" );
+    QObject::connect( more, &QPushButton::clicked, this, [this, fullText] {
+      QMessageBox::information( this, tr( "DXF encoding" ), fullText );
+    } );
+    layout->addWidget( more, 0 );
+  }
+
+  mEncodingWarningItem = mMessageBar->pushWidget( warningWidget, Qgis::MessageLevel::Warning, 0 );
+}
+
+void QgsDxfExportDialog::clearEncodingWarning()
+{
+  if ( mEncodingWarningItem )
+  {
+    mMessageBar->popWidget( mEncodingWarningItem );
+    mEncodingWarningItem = nullptr;
+  }
 }
 
 bool QgsDxfExportDialog::force2d() const

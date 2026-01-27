@@ -36,6 +36,8 @@
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
+class QTextCodec;
+class QgsMessageBarItem;
 
 class FieldSelectorDelegate : public QItemDelegate
 {
@@ -145,12 +147,17 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void showHelp();
 
   private:
+    bool validateEncodingForLayerNames();
+    void showEncodingWarning( const QString &message, const QStringList &details );
+    void clearEncodingWarning();
+
     void cleanGroup( QgsLayerTreeNode *node );
     QgsLayerTree *mLayerTreeGroup = nullptr;
     FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
     QgsVectorLayerAndAttributeModel *mModel = nullptr;
     QgsDxfExportLayerTreeView *mTreeView = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
+    QgsMessageBarItem *mEncodingWarningItem = nullptr;
 
     QgsCoordinateReferenceSystem mCRS;
 };
