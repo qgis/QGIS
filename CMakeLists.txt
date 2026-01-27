@@ -73,6 +73,21 @@ set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINO
 set(RELEASE_NAME "Master")
 project(qgis VERSION ${COMPLETE_VERSION})
 
+# Emscripten/WebAssembly specific configuration
+if(EMSCRIPTEN)
+  message(STATUS "Configuring for Emscripten/WebAssembly")
+  # Emscripten supports pthreads, but CMake's FindThreads doesn't detect it properly
+  # Set the threading variables manually
+  set(CMAKE_THREAD_LIBS_INIT "-pthread")
+  set(CMAKE_HAVE_THREADS_LIBRARY 1)
+  set(CMAKE_USE_PTHREADS_INIT 1)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+  # Prevent FindThreads from running again
+  set(Threads_FOUND TRUE)
+  set(CMAKE_THREAD_LIBS_INIT "-pthread" CACHE STRING "Thread library used.")
+  set(CMAKE_USE_PTHREADS_INIT 1 CACHE STRING "Use pthreads")
+endif()
+
 set(QGIS_APP_NAME "qgis" CACHE STRING "The main app name and bundle name")
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
@@ -418,7 +433,7 @@ if(WITH_CORE)
   #############################################################
   # search for dependencies
 
-  if(NOT WIN32 AND NOT ANDROID)
+  if(NOT WIN32 AND NOT ANDROID AND NOT EMSCRIPTEN)
     include(CheckFunctionExists)
     CHECK_FUNCTION_EXISTS(openpty OPENPTY_IN_LIBC)
     if(NOT OPENPTY_IN_LIBC)

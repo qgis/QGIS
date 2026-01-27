@@ -24,7 +24,8 @@ set(VCPKG_CMAKE_SYSTEM_NAME Emscripten)
 set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/../toolchains/wasm.cmake")
 set(ENV{EMSCRIPTEN_ROOT} "${EMSCRIPTEN_ROOT}")
 
-set(VCPKG_BUILD_TYPE release)
+# Build both debug and release - CMake will select based on CMAKE_BUILD_TYPE
+# (VCPKG_BUILD_TYPE not set = builds both)
 
 # TODO:
 #  -msimd128 would be nice but requires patching gdal
