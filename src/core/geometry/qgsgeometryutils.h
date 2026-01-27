@@ -1515,6 +1515,18 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static bool checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, QgsPoint &pt1 SIP_OUT, QgsPoint &pt2 SIP_OUT, QgsPoint &pt3 SIP_OUT, double epsilon = std::numeric_limits<double>::epsilon() );
 
+    /**
+     * Interpolates the Z value at the given (x, y) location within the triangle defined by points a, b, and c.
+     *
+     * \param a First vertex of the triangle.
+     * \param b Second vertex of the triangle.
+     * \param c Third vertex of the triangle.
+     * \param x X coordinate of the point to interpolate.
+     * \param y Y coordinate of the point to interpolate.
+     * \return The interpolated Z value at the specified (x, y) location.
+     */
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
+
   private:
 
     /**

@@ -2413,6 +2413,12 @@ The development version
       ContinuousSurface,
     };
 
+    enum class PointCloudProfileType
+    {
+      IndividualPoints,
+      TriangulatedSurface,
+    };
+
     enum class ProfileGeneratorFlag
     {
       RespectsMaximumErrorMapUnit,
