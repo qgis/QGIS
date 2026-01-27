@@ -145,9 +145,9 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QgsPanelWidget *mainWidget();
 
     /**
-     * Shows and raises the dialog 
-     * 
-     * \since QGIS 4.0  
+     * Shows and raises the dialog
+     *
+     * \since QGIS 4.0
      */
     void showDialog();
 
@@ -206,6 +206,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * \since QGIS 3.24
      */
     virtual void setParameters( const QVariantMap &values );
+
+
+    /**
+     * Returns the dialog's cancel button.
+     */
+    QPushButton *cancelButton();
 
   public slots:
 
@@ -290,6 +296,25 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     void showParameters();
 
+    /**
+     * Resets the dialog's gui, ready for another algorithm execution.
+     */
+    void resetGui();
+
+    /**
+     * Returns if the dialog is considered running an algorithm.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool isRunning();
+
+    /**
+     * Forces the dialog to close by detaching any running task of the dialog THEN closing the dialog.
+     *
+     * \since QGIS 4.0
+     */
+    void forceClose();
+
     void reject() override;
 
   protected:
@@ -300,10 +325,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      */
     QPushButton *runButton();
 
-    /**
-     * Returns the dialog's cancel button.
-     */
-    QPushButton *cancelButton();
 
     /**
      * Returns the dialog's change parameters button.
@@ -348,11 +369,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
      * Displays an info \a message in the dialog's log.
      */
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
-
-    /**
-     * Resets the dialog's gui, ready for another algorithm execution.
-     */
-    void resetGui();
 
     /**
      * For subclasses to register their own GUI controls to be reset, ready

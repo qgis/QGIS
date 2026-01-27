@@ -68,6 +68,8 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.history_log_id = None
         self.history_details = {}
 
+        self._is_running = False
+
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
 
@@ -226,6 +228,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.cancelButton().setEnabled(False)
 
             self.iterateParam = None
+            self._is_running = True
 
             for param in self.algorithm().parameterDefinitions():
                 if (
@@ -469,6 +472,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.resetGui()
                 return
 
+        self._is_running = False
         self.setExecuted(True)
         self.setResults(result)
         self.setInfo(
@@ -490,32 +494,5 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     escapeHtml=False,
                 )
 
-
-class ModelerAlgorithmDialog(AlgorithmDialog):
-    """
-    Used in the context of the model designer.
-    Wrapper around AlgorithmDialog, to check if the underlying model may have changed.
-    """
-
-    def __init__(self, alg, parent=None):
-        super().__init__(alg, False, parent)
-
-        # Hold the state if the underlying model have changed since opening this dialog
-        self.has_any_changed = False
-
-    def runAlgorithm(self):
-        if not self.has_any_changed:
-            return super().runAlgorithm()
-
-        run_alg_anyway = QMessageBox.question(
-            self,
-            "Model may have change",
-            'Model may have change, do you want to execute algorithm "as is" anyway ?',
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            defaultButton=QMessageBox.StandardButton.Yes,
-        )
-        if run_alg_anyway == QMessageBox.StandardButton.Yes:
-            return super().runAlgorithm()
-
-    def onDirtySet(self):
-        self.has_any_changed = True
+    def isRunning(self):
+        return self._is_running

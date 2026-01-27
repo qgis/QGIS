@@ -124,6 +124,9 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
 
   QgsGui::enableAutoGeometryRestore( this );
 
+  setWindowModality( Qt::WindowModality::NonModal );
+  setWindowFlags( windowFlags() | Qt::WindowMinimizeButtonHint | Qt::Window | Qt::WindowCloseButtonHint | Qt::WindowSystemMenuHint );
+
   txtLog->setOpenLinks( false );
   connect( txtLog, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::urlClicked );
 
@@ -909,6 +912,12 @@ bool QgsProcessingAlgorithmDialogBase::isFinalized()
   return true;
 }
 
+bool QgsProcessingAlgorithmDialogBase::isRunning()
+{
+  return true;
+}
+
+
 void QgsProcessingAlgorithmDialogBase::applyContextOverrides( QgsProcessingContext *context )
 {
   if ( !context )
@@ -956,6 +965,14 @@ void QgsProcessingAlgorithmDialogBase::reject()
   }
   QDialog::reject();
 }
+
+
+void QgsProcessingAlgorithmDialogBase::forceClose()
+{
+  mAlgorithmTask = nullptr;
+  close();
+}
+
 
 //
 // QgsProcessingAlgorithmProgressDialog

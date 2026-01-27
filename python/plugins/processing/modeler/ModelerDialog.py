@@ -56,7 +56,7 @@ from qgis.gui import (
 )
 from qgis.utils import iface
 
-from processing.gui.AlgorithmDialog import ModelerAlgorithmDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerParameterDefinitionDialog import (
     ModelerParameterDefinitionDialog,
 )
@@ -125,8 +125,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         self.context_generator = ContextGenerator(self.processing_context)
 
     def createExecutionDialog(self):
-        dlg = ModelerAlgorithmDialog(self.model().create(), parent=self)
-        self.dirtySet.connect(dlg.onDirtySet)
+        dlg = AlgorithmDialog(self.model().create(), parent=self)
 
         return dlg
 

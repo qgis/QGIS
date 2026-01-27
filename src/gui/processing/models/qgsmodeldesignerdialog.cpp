@@ -550,9 +550,6 @@ void QgsModelDesignerDialog::updateVariablesGui()
 
 void QgsModelDesignerDialog::setDirty( bool dirty )
 {
-  if ( dirty )
-    emit dirtySet();
-
   mHasChanged = dirty;
   updateWindowTitle();
 }
@@ -1082,6 +1079,52 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
   }
 
 
+  if ( mAlgorithmDialog && mAlgorithmDialog->isRunning() ) // Switch to is running
+  {
+    QMessageBox messageBox;
+    messageBox.setWindowTitle( tr( "The model is already running" ) );
+    messageBox.setText( tr( "The model is already running" ) );
+    messageBox.setStandardButtons( QMessageBox::StandardButton::Cancel | QMessageBox::StandardButton::RestoreDefaults | QMessageBox::StandardButton::Ok );
+
+    QAbstractButton *buttonShowRunningAlg = messageBox.button( QMessageBox::StandardButton::Ok );
+    buttonShowRunningAlg->setText( tr( "Show algorithm" ) );
+
+    QAbstractButton *buttonReRun = messageBox.button( QMessageBox::StandardButton::RestoreDefaults );
+    buttonReRun->setText( tr( "Re-run algorithm" ) );
+
+    int r = messageBox.exec();
+
+    switch ( r )
+    {
+      case QMessageBox::StandardButton::Cancel:
+        return;
+      case QMessageBox::StandardButton::RestoreDefaults:
+        // Simulate a cancel and close
+        mAlgorithmDialog->show();
+        mAlgorithmDialog->cancelButton()->click();
+
+        mAlgorithmDialog->forceClose();
+
+        //Stop tracking change to the previous dialog in the QPointer
+        mAlgorithmDialog.clear();
+        break;
+      case QMessageBox::StandardButton::Ok:
+        mAlgorithmDialog->showDialog();
+        return;
+        break;
+      default:
+        break;
+    }
+  }
+  else if ( mAlgorithmDialog )
+  {
+    // Close and create a new one
+    mAlgorithmDialog->close();
+    //Stop tracking change to the previous dialog in the QPointer
+    mAlgorithmDialog.clear();
+  }
+
+
   if ( !mAlgorithmDialog )
   {
     mAlgorithmDialog = createExecutionDialog();
@@ -1089,7 +1132,12 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
     mAlgorithmDialog->setLogLevel( Qgis::ProcessingLogLevel::ModelDebug );
     mAlgorithmDialog->setParameters( mModel->designerParameterValues() );
 
-    connect( mAlgorithmDialog, &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [=]( QgsProcessingContext *context ) {
+    Qt::WindowFlags flags = Qt::Window | Qt::WindowSystemMenuHint
+                            | Qt::WindowMinimizeButtonHint
+                            | Qt::WindowCloseButtonHint;
+    mAlgorithmDialog->setWindowFlags( flags );
+
+    connect( mAlgorithmDialog.get(), &QgsProcessingAlgorithmDialogBase::algorithmAboutToRun, this, [this, childAlgorithmSubset]( QgsProcessingContext *context ) {
       if ( !childAlgorithmSubset.empty() )
       {
         // start from previous state
@@ -1126,7 +1174,7 @@ void QgsModelDesignerDialog::run( const QSet<QString> &childAlgorithmSubset )
       setLastRunResult( context->modelResult() );
     } );
   }
-  mAlgorithmDialog->show();
+  mAlgorithmDialog->showDialog();
 }
 
 void QgsModelDesignerDialog::showChildAlgorithmOutputs( const QString &childId )

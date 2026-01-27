@@ -150,6 +150,12 @@ Sets the parameter ``values`` to show in the dialog.
 .. versionadded:: 3.24
 %End
 
+
+    QPushButton *cancelButton();
+%Docstring
+Returns the dialog's cancel button.
+%End
+
   public slots:
 
     void reportError( const QString &error, bool fatalError );
@@ -238,6 +244,26 @@ Copies the current log contents to the clipboard.
 Switches the dialog to the parameters page.
 %End
 
+    void resetGui();
+%Docstring
+Resets the dialog's gui, ready for another algorithm execution.
+%End
+
+    virtual bool isRunning();
+%Docstring
+Returns if the dialog is considered running an algorithm.
+
+.. versionadded:: 4.0
+%End
+
+    void forceClose();
+%Docstring
+Forces the dialog to close by detaching any running task of the dialog
+THEN closing the dialog.
+
+.. versionadded:: 4.0
+%End
+
     virtual void reject();
 
 
@@ -250,10 +276,6 @@ Switches the dialog to the parameters page.
 Returns the dialog's run button.
 %End
 
-    QPushButton *cancelButton();
-%Docstring
-Returns the dialog's cancel button.
-%End
 
     QPushButton *changeParametersButton();
 %Docstring
@@ -302,11 +324,6 @@ Sets the algorithm results.
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true, bool isWarning = false );
 %Docstring
 Displays an info ``message`` in the dialog's log.
-%End
-
-    void resetGui();
-%Docstring
-Resets the dialog's gui, ready for another algorithm execution.
 %End
 
     virtual void resetAdditionalGui();
