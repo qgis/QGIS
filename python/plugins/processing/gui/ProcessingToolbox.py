@@ -168,9 +168,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
             actions = ProviderActions.actions[provider.id()]
             menu = QMenu(provider.name(), self)
+            menu.setObjectName(provider.name() + "_menu")
             for action in actions:
                 action.setData(self)
                 act = QAction(action.name, menu)
+                act.setObjectName(action.name)
                 act.triggered.connect(action.execute)
                 menu.addAction(act)
             toolbarButton.setMenu(menu)

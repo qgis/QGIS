@@ -11,6 +11,7 @@ include_directories(
 
 set(TESTS
   testqgisapp.cpp
+  testqgisappwidgetnames.cpp
   testqgsappbrowserproviders.cpp
   testqgisappclipboard.cpp
   testqgisappdockwidgets.cpp

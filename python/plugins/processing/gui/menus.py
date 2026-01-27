@@ -188,6 +188,7 @@ def initMenusAndToolbars():
     toolButton = QToolButton(toolbar)
     toolButton.setPopupMode(QToolButton.ToolButtonPopupMode.MenuButtonPopup)
     toolButtonAction = toolbar.addWidget(toolButton)
+    toolButtonAction.setObjectName("selectByToolButton")
 
 
 if iface is not None:
@@ -369,7 +370,9 @@ def getMenu(name, parent):
     if menus:
         return menus[0]
     else:
-        return parent.addMenu(name)
+        menu = parent.addMenu(name)
+        menu.setObjectName(name)
+        return menu
 
 
 def findAction(actions, alg):
