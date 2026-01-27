@@ -26,7 +26,7 @@ class QgsReadWriteContext;
 
 /**
  * \ingroup core
- * \class QgsSelectiveMaskSourceSet
+ * \class QgsSelectiveMaskingSourceSet
  *
  * \brief Represents a named set of selective masking sources (QgsSelectiveMaskSource).
  *
