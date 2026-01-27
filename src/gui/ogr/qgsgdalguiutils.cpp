@@ -26,6 +26,9 @@
 #include "qgsspinbox.h"
 
 #include <QComboBox>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsGdalGuiUtils::createDatabaseURI( const QString &connectionType, const QString &host, const QString &database, QString port, const QString &configId, QString username, QString password, bool expandAuthConfig )
 {

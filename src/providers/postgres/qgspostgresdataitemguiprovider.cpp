@@ -43,8 +43,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPair>
+#include <QString>
 
 #include "moc_qgspostgresdataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsPostgresDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {

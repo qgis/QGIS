@@ -24,7 +24,10 @@
 #include "qgscoordinatereferencesystem.h"
 
 #include <QSettings>
+#include <QString>
 #include <QTemporaryDir>
+
+using namespace Qt::StringLiterals;
 
 void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 {

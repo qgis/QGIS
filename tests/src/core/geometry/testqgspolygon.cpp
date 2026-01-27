@@ -27,6 +27,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPolygon : public QObject
 {
     Q_OBJECT

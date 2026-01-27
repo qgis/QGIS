@@ -23,6 +23,10 @@
 #include "qgswmsrenderer.h"
 #include "qgswmsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
   void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )

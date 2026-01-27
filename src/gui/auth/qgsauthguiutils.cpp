@@ -27,7 +27,10 @@
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QString>
 #include <QTreeWidgetItem>
+
+using namespace Qt::StringLiterals;
 
 QColor QgsAuthGuiUtils::greenColor()
 {

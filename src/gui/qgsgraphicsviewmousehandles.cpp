@@ -26,9 +26,12 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsView>
 #include <QPainter>
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgsgraphicsviewmousehandles.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

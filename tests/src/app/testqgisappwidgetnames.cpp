@@ -19,6 +19,9 @@
 
 #include <QApplication>
 #include <QSplashScreen>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

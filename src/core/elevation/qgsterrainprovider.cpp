@@ -19,7 +19,10 @@
 #include "qgsmeshlayerutils.h"
 #include "qgsrasterbandstats.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractTerrainProvider::~QgsAbstractTerrainProvider() = default;
 

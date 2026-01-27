@@ -22,9 +22,12 @@
 #include <QDebug>
 #include <QFile>
 #include <QLibrary>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsopenclutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #if defined(UNICODE) && !defined(_UNICODE)

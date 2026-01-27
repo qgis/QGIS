@@ -18,6 +18,9 @@
 #include "qgsogrguiprovider.h"
 
 #include <QList>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

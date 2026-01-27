@@ -27,8 +27,11 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 QReadWriteLock QgsGoogleMapsGeocoder::sMutex;
 

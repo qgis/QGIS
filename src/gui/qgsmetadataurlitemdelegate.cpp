@@ -18,9 +18,12 @@
 #include "qgsmetadataurlitemdelegate.h"
 
 #include <QComboBox>
+#include <QString>
 #include <QStringListModel>
 
 #include "moc_qgsmetadataurlitemdelegate.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

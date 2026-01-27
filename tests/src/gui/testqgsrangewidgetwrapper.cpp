@@ -32,7 +32,10 @@
 
 #include <QLineEdit>
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 #define SPECIAL_TEXT_WHEN_EMPTY QString( QChar( 0x2063 ) )
 

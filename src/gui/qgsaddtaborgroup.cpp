@@ -24,8 +24,11 @@
 
 #include <QComboBox>
 #include <QRadioButton>
+#include <QString>
 
 #include "moc_qgsaddtaborgroup.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAddAttributeFormContainerDialog::QgsAddAttributeFormContainerDialog( QgsVectorLayer *layer, const QList<ContainerPair> &existingContainerList, QModelIndex &currentItemIndex, QWidget *parent )
   : QDialog( parent )

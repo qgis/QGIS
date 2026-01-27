@@ -117,6 +117,8 @@
 
 #include "moc_qgsvectorlayer.cpp"
 
+using namespace Qt::StringLiterals;
+
 const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyDrawingTol = new QgsSettingsEntryDouble( u"simplifyDrawingTol"_s, QgsSettingsTree::sTreeQgis, Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD );
 const QgsSettingsEntryBool *QgsVectorLayer::settingsSimplifyLocal = new QgsSettingsEntryBool( u"simplifyLocal"_s, QgsSettingsTree::sTreeQgis, true );
 const QgsSettingsEntryDouble *QgsVectorLayer::settingsSimplifyMaxScale = new QgsSettingsEntryDouble( u"simplifyMaxScale"_s, QgsSettingsTree::sTreeQgis, 1.0 );

@@ -46,6 +46,7 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QString>
 #include <QStringBuilder>
 #include <QStringList>
 #include <QUrl>
@@ -58,6 +59,8 @@
 #include <QtSql/QSqlRecord>
 
 #include "moc_qgsmssqlprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 constexpr int sMssqlConQueryLogFilePrefixLength = CMAKE_SOURCE_DIR[sizeof( CMAKE_SOURCE_DIR ) - 1] == '/' ? sizeof( CMAKE_SOURCE_DIR ) + 1 : sizeof( CMAKE_SOURCE_DIR );
 #define LoggedExec( query, sql ) execLogged( query, sql, QString( QString( __FILE__ ).mid( sMssqlConQueryLogFilePrefixLength ) + ':' + QString::number( __LINE__ ) + " (" + __FUNCTION__ + ")" ) )

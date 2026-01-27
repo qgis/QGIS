@@ -30,6 +30,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgs3DExporter : public QgsTest
 {
     Q_OBJECT

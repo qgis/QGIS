@@ -29,8 +29,11 @@
 #include "qgsmimedatautils.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgshanadataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHanaConnectionItem::QgsHanaConnectionItem(
   QgsDataItem *parent,

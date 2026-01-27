@@ -31,9 +31,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsnewmemorylayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {

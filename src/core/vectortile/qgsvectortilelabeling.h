@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgsvectorlayerlabelprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorTileLayer;
 class QgsVectorTileRendererData;
 

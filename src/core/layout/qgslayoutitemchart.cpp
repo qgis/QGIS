@@ -28,8 +28,11 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemchart.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemChart::QgsLayoutItemChart( QgsLayout *layout )
   : QgsLayoutItem( layout )

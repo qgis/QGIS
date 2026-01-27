@@ -32,8 +32,11 @@
 
 #include <QFileDialog>
 #include <QFontDatabase>
+#include <QString>
 
 #include "moc_qgsrastercalcdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QgsMapCanvas *mapCanvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

@@ -26,7 +26,11 @@
 #include "qgspiechartplot.h"
 #include "qgsplotregistry.h"
 
+#include <QString>
+
 #include "moc_qgsplotwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsPlotWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {

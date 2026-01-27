@@ -54,8 +54,11 @@
 #include <QMutex>
 #include <QRegularExpression>
 #include <QSet>
+#include <QString>
 #include <QTextCodec>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
 {

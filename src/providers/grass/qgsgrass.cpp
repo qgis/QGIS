@@ -14,7 +14,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QString>
 #include <qglobal.h>
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 // to avoid conflicting SF_UNKNOWN

@@ -99,6 +99,8 @@ email                : sherman at mrcc.com
 
 #include "moc_qgsmapcanvas.cpp"
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup gui
  * \brief Deprecated to be deleted, stuff from here should be moved elsewhere.

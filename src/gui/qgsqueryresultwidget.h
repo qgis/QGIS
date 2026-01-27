@@ -28,10 +28,13 @@
 
 #include <QDialog>
 #include <QMainWindow>
+#include <QString>
 #include <QStyledItemDelegate>
 #include <QThread>
 #include <QWidget>
 #include <QtConcurrent>
+
+using namespace Qt::StringLiterals;
 
 class QgsCodeEditorWidget;
 class QgsCodeEditorSQL;

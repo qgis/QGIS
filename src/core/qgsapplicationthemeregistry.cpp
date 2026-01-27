@@ -20,6 +20,9 @@
 #include "qgsapplication.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsApplicationThemeRegistry::QgsApplicationThemeRegistry()
 {

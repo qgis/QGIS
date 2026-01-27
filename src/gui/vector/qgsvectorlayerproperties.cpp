@@ -85,9 +85,12 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsvectorlayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsMapCanvas *canvas,

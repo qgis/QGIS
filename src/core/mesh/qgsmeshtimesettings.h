@@ -24,6 +24,9 @@
 
 #include <QDateTime>
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

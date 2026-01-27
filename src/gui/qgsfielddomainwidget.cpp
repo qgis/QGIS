@@ -21,8 +21,11 @@
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsfielddomainwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractFieldDomainWidget

@@ -19,7 +19,11 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 
+#include <QString>
+
 #include "moc_qgsundowidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUndoWidget::QgsUndoWidget( QWidget *parent, QgsMapCanvas *mapCanvas )
   : QgsPanelWidget( parent )

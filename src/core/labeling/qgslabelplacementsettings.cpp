@@ -19,6 +19,10 @@
 #include "qgspallabeling.h"
 #include "qgspropertycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsLabelPlacementSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {
   if ( properties.isActive( QgsPalLayerSettings::Property::AllowDegradedPlacement ) )

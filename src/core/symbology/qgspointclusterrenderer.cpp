@@ -28,6 +28,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPointClusterRenderer::QgsPointClusterRenderer()
   : QgsPointDistanceRenderer( u"pointCluster"_s )
 {

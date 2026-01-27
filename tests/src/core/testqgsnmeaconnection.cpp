@@ -22,6 +22,9 @@
 #include <QBuffer>
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class ReplayNmeaConnection : public QgsNmeaConnection
 {

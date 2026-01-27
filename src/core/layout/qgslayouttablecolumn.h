@@ -24,6 +24,9 @@
 #include <QColor>
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

@@ -26,6 +26,8 @@
 #include <QStringList>
 #include <QtTest/QTest>
 
+using namespace Qt::StringLiterals;
+
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */
 #else

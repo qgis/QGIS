@@ -21,8 +21,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmdalsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMdalSourceSelect::QgsMdalSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

@@ -26,10 +26,13 @@
 #include "qgsproject.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
 #include "moc_qgsmaprendererparalleljob.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )

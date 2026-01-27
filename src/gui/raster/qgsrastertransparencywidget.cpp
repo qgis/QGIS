@@ -33,10 +33,13 @@
 #include <QIntValidator>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
 #include <QWidget>
 
 #include "moc_qgsrastertransparencywidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterTransparencyWidget::QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -40,8 +40,11 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeshlayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayerProperties::QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsLayerPropertiesDialog( lyr, canvas, u"MeshLayerProperties"_s, parent, fl )

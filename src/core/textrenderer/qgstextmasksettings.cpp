@@ -22,6 +22,10 @@
 #include "qgstextrenderer_p.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTextMaskSettings::QgsTextMaskSettings()
 {
   d = new QgsTextMaskSettingsPrivate();

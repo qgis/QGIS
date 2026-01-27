@@ -21,6 +21,10 @@
 #include "qgslinesymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTiledSceneWireframeRenderer::QgsTiledSceneWireframeRenderer()
 {
   mFillSymbol = createDefaultFillSymbol();

@@ -25,6 +25,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, const QString &outputFormat )
   : mInterpolator( i )

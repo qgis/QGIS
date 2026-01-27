@@ -30,6 +30,8 @@
 #include <QStringList>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsapplication.h>
 #include "qgscompoundcurve.h"

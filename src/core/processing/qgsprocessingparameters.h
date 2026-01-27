@@ -31,6 +31,9 @@
 
 #include <QColor>
 #include <QMap>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsProcessingContext;
 class QgsProcessingAlgorithm;

@@ -16,6 +16,10 @@
 
 #include "qgsattributeeditorcontainer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAttributeEditorContainer::~QgsAttributeEditorContainer()
 {
   qDeleteAll( mChildren );

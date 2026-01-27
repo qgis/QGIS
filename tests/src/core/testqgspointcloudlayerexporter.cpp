@@ -21,6 +21,10 @@
 #include "qgsproject.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsPointCloudLayerExporter : public QObject
 {
     Q_OBJECT

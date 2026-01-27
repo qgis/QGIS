@@ -49,6 +49,8 @@
 
 #include "moc_qgsclipboard.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsClipboard::QgsClipboard()
 {
   connect( QApplication::clipboard(), &QClipboard::dataChanged, this, &QgsClipboard::systemClipboardChanged );

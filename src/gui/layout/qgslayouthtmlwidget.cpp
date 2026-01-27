@@ -25,9 +25,12 @@
 #include "qgssettings.h"
 
 #include <QFileDialog>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgslayouthtmlwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemHtml *>( frame->multiFrame() ) : nullptr )

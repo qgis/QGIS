@@ -31,7 +31,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( u"default-snap-mode"_s, QgsSettingsTree::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 

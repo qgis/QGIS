@@ -17,6 +17,9 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgsrasterlayer.h>

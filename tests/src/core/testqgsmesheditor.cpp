@@ -30,6 +30,9 @@
 #include "qgstriangularmesh.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMeshEditor : public QObject
 {

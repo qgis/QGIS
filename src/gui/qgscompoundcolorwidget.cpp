@@ -33,10 +33,13 @@
 #include <QPushButton>
 #include <QRegularExpression>
 #include <QScreen>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgscompoundcolorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCompoundColorWidget::QgsCompoundColorWidget( QWidget *parent, const QColor &color, Layout widgetLayout )
   : QgsPanelWidget( parent )

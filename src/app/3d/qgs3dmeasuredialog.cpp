@@ -23,8 +23,11 @@
 
 #include <QCloseEvent>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgs3dmeasuredialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasureLine *tool, Qt::WindowFlags f )
   : QDialog( nullptr, f )

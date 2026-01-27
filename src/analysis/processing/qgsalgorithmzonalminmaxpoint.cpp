@@ -19,6 +19,10 @@
 
 #include "qgszonalstatistics.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsZonalMinimumMaximumPointAlgorithm::name() const

@@ -35,9 +35,12 @@
 #include <QClipboard>
 #include <QDrag>
 #include <QMenu>
+#include <QString>
 #include <QToolTip>
 
 #include "moc_qgsfontbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFontButton::QgsFontButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

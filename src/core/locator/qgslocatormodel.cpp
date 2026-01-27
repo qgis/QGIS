@@ -23,8 +23,11 @@
 
 #include <QFont>
 #include <QPalette>
+#include <QString>
 
 #include "moc_qgslocatormodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLocatorModel

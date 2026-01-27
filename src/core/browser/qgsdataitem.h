@@ -25,6 +25,9 @@
 #include <QFutureWatcher>
 #include <QIcon>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsDataItem;
 class QMenu;

@@ -37,9 +37,12 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsgrassnewmapset.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

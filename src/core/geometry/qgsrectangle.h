@@ -26,6 +26,9 @@
 
 #include <QDomDocument>
 #include <QRectF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QString;
 class QRectF;

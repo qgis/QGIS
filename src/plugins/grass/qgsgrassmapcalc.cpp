@@ -32,10 +32,13 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMouseEvent>
+#include <QString>
 #include <QTextStream>
 #include <QToolBar>
 
 #include "moc_qgsgrassmapcalc.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,

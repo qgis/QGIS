@@ -40,6 +40,8 @@
 
 #include "moc_qgscodeeditorpython.cpp"
 
+using namespace Qt::StringLiterals;
+
 const QMap<QString, QString> QgsCodeEditorPython::sCompletionPairs {
   { "(", ")" },
   { "[", "]" },

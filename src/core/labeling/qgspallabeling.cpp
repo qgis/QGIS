@@ -63,6 +63,8 @@
 #include <QTime>
 #include <QWidget>
 
+using namespace Qt::StringLiterals;
+
 using namespace pal;
 
 // -------------

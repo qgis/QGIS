@@ -17,7 +17,11 @@
 
 #include "qgswkbtypes.h"
 
+#include <QString>
+
 #include "moc_qgswkbtypes.cpp"
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

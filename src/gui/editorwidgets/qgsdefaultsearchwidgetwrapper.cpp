@@ -24,8 +24,11 @@
 #include "qgssettings.h"
 
 #include <QHBoxLayout>
+#include <QString>
 
 #include "moc_qgsdefaultsearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDefaultSearchWidgetWrapper::QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

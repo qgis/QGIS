@@ -25,8 +25,11 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmeshdatasetgrouptreewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent )
   : QWidget( parent )

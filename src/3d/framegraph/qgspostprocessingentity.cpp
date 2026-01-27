@@ -22,6 +22,7 @@
 #include "qgsframegraph.h"
 #include "qgsshadowrenderview.h"
 
+#include <QString>
 #include <QUrl>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
@@ -33,6 +34,8 @@
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgspostprocessingentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPostprocessingEntity::QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )

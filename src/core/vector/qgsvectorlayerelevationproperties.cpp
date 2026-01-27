@@ -28,7 +28,11 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerElevationProperties::QgsVectorLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

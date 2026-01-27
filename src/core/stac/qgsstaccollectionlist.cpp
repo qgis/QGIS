@@ -15,6 +15,10 @@
 
 #include "qgsstaccollectionlist.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacCollectionList::QgsStacCollectionList( const QVector< QgsStacCollection * > collections, const QVector< QgsStacLink > links, int numberMatched )
   : mCollections( collections )
   , mNumberMatched( numberMatched )

@@ -36,8 +36,11 @@
 
 #include <QDialog>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsmaptoolannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

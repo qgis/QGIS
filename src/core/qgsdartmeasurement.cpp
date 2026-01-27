@@ -15,7 +15,10 @@
 
 #include "qgsdartmeasurement.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsDartMeasurement::QgsDartMeasurement( const QString &name, Type type, const QString &value )
   : mName( name )

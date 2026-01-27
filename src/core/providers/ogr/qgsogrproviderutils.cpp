@@ -40,7 +40,10 @@ email                : nyall dot dawson at gmail dot com
 #include <QInputDialog>
 #include <QRegularExpression>
 #include <QStorageInfo>
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #include <windows.h>

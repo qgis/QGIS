@@ -71,8 +71,11 @@
 #include <QMimeDatabase>
 #include <QProcessEnvironment>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrlQuery>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 

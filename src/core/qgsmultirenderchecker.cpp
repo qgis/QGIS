@@ -21,6 +21,9 @@
 #include "qgslayoutexporter.h"
 
 #include <QDebug>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiRenderChecker::QgsMultiRenderChecker()
 {

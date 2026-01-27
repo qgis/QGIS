@@ -18,6 +18,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsrasterblock.h>
 #include <qgsmeshlayer.h>

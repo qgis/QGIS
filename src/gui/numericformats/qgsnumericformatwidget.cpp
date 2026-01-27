@@ -27,8 +27,11 @@
 #include "qgsscientificnumericformat.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgsnumericformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsNumericFormatWidget::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {

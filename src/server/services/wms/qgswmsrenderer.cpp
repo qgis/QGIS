@@ -82,10 +82,13 @@
 #include <QDir>
 #include <QImage>
 #include <QPainter>
+#include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QUrl>
 #include <QXmlStreamReader>
+
+using namespace Qt::StringLiterals;
 
 //for printing
 #include "qgslayoutatlas.h"

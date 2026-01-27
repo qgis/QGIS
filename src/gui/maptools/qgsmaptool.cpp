@@ -24,8 +24,11 @@
 
 #include <QAbstractButton>
 #include <QAction>
+#include <QString>
 
 #include "moc_qgsmaptool.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )

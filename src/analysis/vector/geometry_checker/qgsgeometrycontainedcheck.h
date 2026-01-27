@@ -22,6 +22,10 @@
 #include "qgsgeometrycheckerror.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief A contained check error.

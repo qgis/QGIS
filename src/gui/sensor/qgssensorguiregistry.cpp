@@ -19,7 +19,11 @@
 
 #include "qgssensorwidget.h"
 
+#include <QString>
+
 #include "moc_qgssensorguiregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSensorGuiRegistry::QgsSensorGuiRegistry( QObject *parent )
   : QObject( parent )

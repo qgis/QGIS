@@ -30,6 +30,9 @@
 
 #include <QNetworkRequest>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileMVTDecoder::QgsVectorTileMVTDecoder( const QgsVectorTileMatrixSet &structure )
   : mStructure( structure )

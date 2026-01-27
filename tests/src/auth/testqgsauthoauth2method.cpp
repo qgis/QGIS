@@ -29,6 +29,8 @@
 #include <QTemporaryFile>
 #include <QtTest/QTest>
 
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_GUI
 #include "qgsauthoauth2edit.h"
 #endif

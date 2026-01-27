@@ -21,9 +21,12 @@
 #include "qgslogger.h"
 
 #include <QMessageAuthenticationCode>
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsauthmaptilerhmacsha256method.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthmaptilerhmacsha256edit.h"

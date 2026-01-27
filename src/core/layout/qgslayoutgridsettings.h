@@ -23,6 +23,9 @@
 #include "qgslayoutundocommand.h"
 
 #include <QPen>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsReadWriteContext;

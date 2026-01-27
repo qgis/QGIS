@@ -27,7 +27,11 @@
 #include "qgstiledscenetexturerendererwidget.h"
 #include "qgstiledscenewireframerendererwidget.h"
 
+#include <QString>
+
 #include "moc_qgstiledscenerendererpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool initTiledSceneRenderer( const QString &name, QgsTiledSceneRendererWidgetFunc f, const QString &iconName = QString() )
 {

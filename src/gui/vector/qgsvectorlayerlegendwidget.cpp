@@ -28,10 +28,13 @@
 
 #include <QBoxLayout>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTreeView>
 #include <QTreeWidget>
 
 #include "moc_qgsvectorlayerlegendwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   : QWidget( parent )

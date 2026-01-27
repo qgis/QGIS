@@ -15,6 +15,10 @@
 
 #include "qgs3dgamepadcontroller.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_QTGAMEPAD
 #include "moc_qgs3dgamepadcontroller.cpp"
 
