@@ -62,6 +62,7 @@ try:
     QgsGeometryUtils.bisector = staticmethod(QgsGeometryUtils.bisector)
     QgsGeometryUtils.circleCenterRadius = staticmethod(QgsGeometryUtils.circleCenterRadius)
     QgsGeometryUtils.lineIntersection = staticmethod(QgsGeometryUtils.lineIntersection)
+    QgsGeometryUtils.intersectionPointOfLinesByBearing = staticmethod(QgsGeometryUtils.intersectionPointOfLinesByBearing)
     QgsGeometryUtils.segmentIntersection = staticmethod(QgsGeometryUtils.segmentIntersection)
     QgsGeometryUtils.createPointWithMatchingDimensions = staticmethod(QgsGeometryUtils.createPointWithMatchingDimensions)
     QgsGeometryUtils.interpolatePointOnSegment = staticmethod(QgsGeometryUtils.interpolatePointOnSegment)
