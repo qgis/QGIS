@@ -71,7 +71,6 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
   endif()
   ")
   add_custom_command(
-    POST_BUILD
     OUTPUT ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
     DEPENDS ${LANDINGPAGE_SOURCE_FILES}
     COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -79,6 +78,18 @@ if (WITH_SERVER_LANDINGPAGE_WEBAPP)
     ${LANDINGPAGE_OUTPUT_PATH}/
     COMMAND ${CMAKE_COMMAND} -E touch ${LANDINGPAGE_OUTPUT_PATH}/landingpage.stamp
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_BINARY_DIR}/yarn_commands.cmake
+  )
+
+  # see outputDir in: resources/server/src/landingpage/vue.config.js
+  cmake_path(
+    APPEND LANDINGPAGE_OUTPUT_PATH
+    "../../api/ogc/static/landingpage"
+    OUTPUT_VARIABLE LANDINGPAGE_YARN_OUTPUTDIR
+  )
+
+  install(
+    DIRECTORY ${LANDINGPAGE_YARN_OUTPUTDIR}
+    DESTINATION ${QGIS_DATA_DIR}/resources/server/api/ogc/static
   )
 endif()
 
