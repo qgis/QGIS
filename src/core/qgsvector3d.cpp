@@ -14,3 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvector3d.h"
+
+#include "qgspoint.h"
+
+QgsPoint QgsVector3D::toQgsPoint() const
+{
+  return QgsPoint( mX, mY, mZ );
+}
