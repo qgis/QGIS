@@ -36,7 +36,7 @@ the connected slot without danger of the task being first removed by the
   public:
 
     QgsNetworkContentFetcherTask( const QUrl &url, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
-                                  const QString &description = QString() );
+                                  const QString &description = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches the
 specified ``url``.
@@ -46,10 +46,13 @@ argument.
 
 Since QGIS 3.28 the optional ``description`` can be explicitly set. If
 not specified, a default task description will be generated.
+
+Since QGIS 3.44.8 the optional ``headers`` can be used to add custom
+HTTP headers to the request.
 %End
 
     QgsNetworkContentFetcherTask( const QNetworkRequest &request, const QString &authcfg = QString(), QgsTask::Flags flags = QgsTask::CanCancel,
-                                  const QString &description = QString() );
+                                  const QString &description = QString(), const QgsHttpHeaders &headers = QgsHttpHeaders() );
 %Docstring
 Constructor for a QgsNetworkContentFetcherTask which fetches the
 specified network ``request``.
@@ -59,6 +62,9 @@ argument.
 
 Since QGIS 3.28 the optional ``description`` can be explicitly set. If
 not specified, a default task description will be generated.
+
+Since QGIS 3.44.8 the optional ``headers`` can be used to add custom
+HTTP headers to the request.
 %End
 
     ~QgsNetworkContentFetcherTask();
