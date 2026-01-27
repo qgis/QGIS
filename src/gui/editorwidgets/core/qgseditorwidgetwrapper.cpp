@@ -129,6 +129,10 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
         break;
     }
   }
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 9, 0 ) && QT_VERSION < QT_VERSION_CHECK( 6, 10, 0 )
+  widget()->style()->unpolish( widget() );
+  widget()->style()->polish( widget() );
+#endif
 }
 
 bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue )
