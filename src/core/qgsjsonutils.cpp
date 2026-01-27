@@ -34,11 +34,11 @@
 #include "qgsproject.h"
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
+#include "qgstextcodec.h"
 #include "qgsvectorlayer.h"
 
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QTextCodec>
 
 #include "moc_qgsjsonutils.cpp"
 
@@ -282,20 +282,14 @@ void QgsJsonExporter::setDestinationCrs( const QgsCoordinateReferenceSystem &des
 // QgsJsonUtils
 //
 
-QgsFeatureList QgsJsonUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
+QgsFeatureList QgsJsonUtils::stringToFeatureList( const QString &string, const QgsFields &fields, const std::optional<QgsTextCodec> &encoding )
 {
-  if ( !encoding )
-    encoding = QTextCodec::codecForName( "UTF-8" );
-
-  return QgsOgrUtils::stringToFeatureList( string, fields, encoding );
+  return QgsOgrUtils::stringToFeatureList( string, fields, encoding.value_or( QgsTextCodec( QStringConverter::Encoding::Utf8 ) ) );
 }
 
-QgsFields QgsJsonUtils::stringToFields( const QString &string, QTextCodec *encoding )
+QgsFields QgsJsonUtils::stringToFields( const QString &string, const std::optional<QgsTextCodec> &encoding )
 {
-  if ( !encoding )
-    encoding = QTextCodec::codecForName( "UTF-8" );
-
-  return QgsOgrUtils::stringToFields( string, encoding );
+  return QgsOgrUtils::stringToFields( string, encoding.value_or( QgsTextCodec( QStringConverter::Encoding::Utf8 ) ) );
 }
 
 QString QgsJsonUtils::encodeValue( const QVariant &value )

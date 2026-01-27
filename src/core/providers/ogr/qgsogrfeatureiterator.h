@@ -51,7 +51,7 @@ class QgsOgrFeatureSource final: public QgsAbstractFeatureSource
     QString mLayerName;
     int mLayerIndex;
     QString mSubsetString;
-    QTextCodec *mEncoding = nullptr;
+    QgsTextCodec mEncoding;
     QgsFields mFields;
     bool mFirstFieldIsFid;
     QgsFields mFieldsWithoutFid;

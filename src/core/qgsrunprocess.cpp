@@ -29,7 +29,6 @@
 #include <QApplication>
 #include <QMessageBox>
 #include <QProcess>
-#include <QTextCodec>
 
 #include "moc_qgsrunprocess.cpp"
 
@@ -105,8 +104,7 @@ void QgsRunProcess::die()
 void QgsRunProcess::stdoutAvailable()
 {
   const QByteArray bytes( mProcess->readAllStandardOutput() );
-  QTextCodec *codec = QTextCodec::codecForLocale();
-  const QString line( codec->toUnicode( bytes ) );
+  const QString line = QStringDecoder( QStringDecoder::System ).decode( bytes );
 
   // Add the new output to the dialog box
   mOutput->appendMessage( line );
@@ -115,8 +113,7 @@ void QgsRunProcess::stdoutAvailable()
 void QgsRunProcess::stderrAvailable()
 {
   const QByteArray bytes( mProcess->readAllStandardOutput() );
-  QTextCodec *codec = QTextCodec::codecForLocale();
-  const QString line( codec->toUnicode( bytes ) );
+  const QString line = QStringDecoder( QStringDecoder::System ).decode( bytes );
 
   // Add the new output to the dialog box, but color it red
   mOutput->appendMessage( "<font color=red>" + line + "</font>" );

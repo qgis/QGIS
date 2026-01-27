@@ -22,7 +22,6 @@
 #include "qgslogger.h"
 
 #include <QObject>
-#include <QTextCodec>
 
 #include "moc_qgsgrassfeatureiterator.cpp"
 
@@ -696,7 +695,7 @@ void QgsGrassFeatureIterator::setFeatureAttributes( int cat, QgsFeature *feature
       value = mSource->mLayer->attribute( cat, *iter );
       if ( value.userType() == QMetaType::Type::QByteArray )
       {
-        value = QVariant( mSource->mEncoding->toUnicode( value.toByteArray() ) );
+        value = QVariant( mSource->mEncoding.decode( value.toByteArray() ) );
       }
     }
     else
@@ -731,7 +730,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider *p )
   , mGrassType( p->mGrassType )
   , mQgisType( p->mQgisType )
   , mFields( p->fields() )
-  , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
+  , mEncoding( p->textEncoding().value() )
   , mEditing( p->mEditBuffer )
 {
   Q_ASSERT( mLayer );

@@ -29,10 +29,10 @@
 #include "qgssetrequestinitiator_p.h"
 #include "qgssqliteexpressioncompiler.h"
 #include "qgssymbol.h"
+#include "qgstextcodec.h"
 #include "qgswkbtypes.h"
 
 #include <QFile>
-#include <QTextCodec>
 
 // using from provider:
 // - setRelevantFields(), mRelevantFieldsForNextFeature
@@ -365,7 +365,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
 
       if ( mAllowResetReading )
       {
-        if ( OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( whereClause ).constData() ) == OGRERR_NONE )
+        if ( OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding.encode( whereClause ).constData() ) == OGRERR_NONE )
         {
           //if only partial success when compiling expression, we need to double-check results using QGIS' expressions
           mExpressionCompiled = ( result == QgsSqlExpressionCompiler::Complete );
@@ -374,7 +374,7 @@ QgsOgrFeatureIterator::QgsOgrFeatureIterator( QgsOgrFeatureSource *source, bool 
         else if ( !mSource->mSubsetString.isEmpty() )
         {
           // OGR rejected the compiled expression. Make sure we restore the original subset string if set (and do the filtering on QGIS' side)
-          OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
+          OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding.encode( mSource->mSubsetString ).constData() );
         }
       }
 
@@ -659,7 +659,7 @@ bool QgsOgrFeatureIterator::close()
   // this fixes https://github.com/qgis/QGIS/issues/51934
   if ( mOgrLayer && ! mSource->mSubsetString.isEmpty() )
   {
-    OGR_L_SetAttributeFilter( mOgrLayer,  mSource->mEncoding->fromUnicode( mSource->mSubsetString ).constData() );
+    OGR_L_SetAttributeFilter( mOgrLayer, mSource->mEncoding.encode( mSource->mSubsetString ).constData() );
   }
 
   if ( mSharedDS )
@@ -814,7 +814,7 @@ QgsOgrFeatureSource::QgsOgrFeatureSource( const QgsOgrProvider *p )
   , mLayerName( p->layerName() )
   , mLayerIndex( p->layerIndex() )
   , mSubsetString( QgsOgrProviderUtils::cleanSubsetString( p->mSubsetString ) )
-  , mEncoding( p->textEncoding() ) // no copying - this is a borrowed pointer from Qt
+  , mEncoding( p->textEncoding().value() )
   , mFields( p->mAttributeFields )
   , mFirstFieldIsFid( p->mFirstFieldIsFid )
   , mOgrGeometryTypeFilter( p->mUniqueGeometryType ? wkbUnknown : QgsOgrProviderUtils::ogrWkbSingleFlattenAndLinear( p->mOgrGeometryTypeFilter ) )

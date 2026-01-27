@@ -618,6 +618,7 @@ set(QGIS_CORE_SRCS
   qgstemporalrangeobject.cpp
   qgstemporalutils.cpp
   qgstessellator.cpp
+  qgstextcodec.cpp
   qgsthreadingutils.cpp
   qgstilecache.cpp
   qgstiledownloadmanager.cpp
@@ -1350,6 +1351,7 @@ set(QGIS_CORE_HDRS
   qgstemporalutils.h
   qgstessellator.h
   qgstestutils.h
+  qgstextcodec.h
   qgsthreadingutils.h
   qgstilecache.h
   qgstiledownloadmanager.h
@@ -2794,8 +2796,6 @@ endif()
 if (WITH_SPATIALITE)
   target_link_libraries(qgis_core spatialite::spatialite)
 endif()
-
-target_link_libraries(qgis_core Qt6::Core5Compat)
 
 if (WITH_EPT)
   target_link_libraries(qgis_core

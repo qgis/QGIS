@@ -18,6 +18,8 @@
 #ifndef QGSDELIMITEDTEXTFILE_H
 #define QGSDELIMITEDTEXTFILE_H
 
+#include "qgstextcodec.h"
+
 #include <QObject>
 #include <QRegularExpression>
 #include <QStringList>
@@ -27,7 +29,6 @@ class QgsFeature;
 class QgsField;
 class QFile;
 class QFileSystemWatcher;
-class QTextCodec;
 
 
 /**
@@ -400,7 +401,7 @@ class QgsDelimitedTextFile : public QObject
     QString mFileName;
     QString mEncoding;
     QFile *mFile = nullptr;
-    QTextCodec *mCodec = nullptr;
+    QgsTextCodec mCodec;
     bool mUseWatcher = false;
     QFileSystemWatcher *mWatcher = nullptr;
 

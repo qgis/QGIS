@@ -23,6 +23,7 @@
 #include "drw_interface.h"
 #include "qgsabstractgeometry.h"
 #include "qgsogrutils.h"
+#include "qgstextcodec.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
@@ -225,7 +226,7 @@ class QgsDwgImporter : public DRW_Interface
 
     QLabel *mLabel = nullptr;
     int mEntities = 0;
-    QTextCodec *mCodec = nullptr;
+    std::optional<QgsTextCodec> mDecoder;
     QElapsedTimer mTime;
 };
 

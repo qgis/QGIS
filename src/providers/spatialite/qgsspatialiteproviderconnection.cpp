@@ -27,10 +27,10 @@
 #include "qgssettings.h"
 #include "qgsspatialiteconnection.h"
 #include "qgsspatialiteprovider.h"
+#include "qgstextcodec.h"
 #include "qgsvectorlayer.h"
 
 #include <QRegularExpression>
-#include <QTextCodec>
 
 QgsSpatiaLiteProviderConnection::QgsSpatiaLiteProviderConnection( const QString &name )
   : QgsAbstractDatabaseProviderConnection( name )
@@ -515,7 +515,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsSpatiaLiteProviderConnecti
       gdal::ogr_feature_unique_ptr fet;
       if ( fet.reset( OGR_L_GetNextFeature( ogrLayer ) ), fet )
       {
-        const QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QTextCodec::codecForName( "UTF-8" ) ) };
+        const QgsFields fields { QgsOgrUtils::readOgrFields( fet.get(), QStringConverter::Encoding::System ) };
 
         // geom column name
         QString geomColumnName;
@@ -630,7 +630,7 @@ QVariantList QgsSpatialiteProviderResultIterator::nextRowInternal()
     {
       if ( !mFields.isEmpty() )
       {
-        QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QTextCodec::codecForName( "UTF-8" ) ) };
+        QgsFeature f { QgsOgrUtils::readOgrFeature( fet.get(), mFields, QStringConverter::Encoding::Utf8 ) };
         const QgsAttributes constAttrs = f.attributes();
         for ( const QVariant &attribute : constAttrs )
         {

@@ -27,7 +27,6 @@
 #include <QMutexLocker>
 #include <QObject>
 #include <QSet>
-#include <QTextCodec>
 #include <QTextStream>
 
 #define OUTPUT_PRECISION 12

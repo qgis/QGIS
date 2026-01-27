@@ -32,9 +32,8 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsogrproxytextcodec.h"
+#include "qgstextcodec.h"
 #include "qgsthreadingutils.h"
-
-#include <QTextCodec>
 
 #include "moc_qgsvectordataprovider.cpp"
 
@@ -277,34 +276,26 @@ void QgsVectorDataProvider::setEncoding( const QString &e )
   // Use UTF-8 if no encoding is specified
   if ( e.isEmpty() )
   {
-    mEncoding = QTextCodec::codecForName( "UTF-8" );
+    mEncoding = QStringConverter::Encoding::Utf8;
   }
   else
   {
-    mEncoding = QTextCodec::codecForName( e.toLocal8Bit().constData() );
-  }
-  if ( !mEncoding && e != "System"_L1 )
-  {
-    if ( !e.isEmpty() )
+    mEncoding = QgsTextCodec::fromName( e );
+
+    if ( !mEncoding && e != "System"_L1 )
     {
       // can we use the OGR proxy codec?
       if ( QgsOgrProxyTextCodec::supportedCodecs().contains( e, Qt::CaseInsensitive ) )
       {
-        //from the Qt docs (https://doc.qt.io/qt-5/qtextcodec.html#QTextCodec-1)
-        // "The QTextCodec should always be constructed on the heap (i.e. with new).
-        // Qt takes ownership and will delete it when the application terminates."
-        mEncoding = new QgsOgrProxyTextCodec( e.toLocal8Bit() );
+        mEncoding = QgsTextCodec( std::make_unique<QgsOgrProxyTextCodec>( e.toLocal8Bit() ) );
       }
       else
       {
         QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
-        mEncoding = QTextCodec::codecForName( "System" );
+        mEncoding = QStringConverter::Encoding::System;
       }
     }
   }
-
-  if ( !mEncoding )
-    mEncoding = QTextCodec::codecForLocale();
 
   Q_ASSERT( mEncoding );
 }
@@ -788,11 +779,7 @@ QStringList QgsVectorDataProvider::availableEncodings()
   static std::once_flag initialized;
   std::call_once( initialized, []
   {
-    const auto codecs { QTextCodec::availableCodecs() };
-    for ( const QByteArray &codec : codecs )
-    {
-      sEncodings << codec;
-    }
+    sEncodings = QStringConverter::availableCodecs();
 #if 0
     smEncodings << "BIG5";
     smEncodings << "BIG5-HKSCS";
@@ -845,7 +832,6 @@ QStringList QgsVectorDataProvider::availableEncodings()
     std::sort( sEncodings.begin(), sEncodings.end(), _compareEncodings );
     const auto last = std::unique( sEncodings.begin(), sEncodings.end(), _removeDuplicateEncodings );
     sEncodings.erase( last, sEncodings.end() );
-
   } );
 
   return sEncodings;
@@ -918,7 +904,7 @@ void QgsVectorDataProvider::setNativeTypes( const QList<NativeType> &nativeTypes
   mNativeTypes = nativeTypes;
 }
 
-QTextCodec *QgsVectorDataProvider::textEncoding() const
+std::optional<QgsTextCodec> QgsVectorDataProvider::textEncoding() const
 {
   // non fatal for now -- the "rasterize" processing algorithm is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL

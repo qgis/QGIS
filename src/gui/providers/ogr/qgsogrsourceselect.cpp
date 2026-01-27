@@ -25,7 +25,6 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
-#include <QTextCodec>
 
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"

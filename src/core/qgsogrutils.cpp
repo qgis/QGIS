@@ -39,6 +39,7 @@
 #include "qgspolygon.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
+#include "qgstextcodec.h"
 #include "qgsvariantutils.h"
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
@@ -49,7 +50,6 @@
 
 #include <cmath>
 #include <limits>
-#include <QTextCodec>
 #include <QUuid>
 #include <cpl_error.h>
 #include <QJsonDocument>
@@ -424,7 +424,7 @@ std::unique_ptr< OGRField > QgsOgrUtils::variantToOGRField( const QVariant &valu
   return res;
 }
 
-QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding )
+QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, const std::optional<QgsTextCodec> &encoding )
 {
   QgsFeature feature;
   if ( !ogrFet )
@@ -449,7 +449,7 @@ QgsFeature QgsOgrUtils::readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fie
   return feature;
 }
 
-QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
+QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, const std::optional<QgsTextCodec> &encoding )
 {
   QgsFields fields;
 
@@ -466,7 +466,7 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
       continue;
     }
 
-    QString name = encoding ? encoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ) : QString::fromUtf8( OGR_Fld_GetNameRef( fldDef ) );
+    const QString name = encoding ? encoding->decode( OGR_Fld_GetNameRef( fldDef ) ) : QString::fromUtf8( OGR_Fld_GetNameRef( fldDef ) );
     QMetaType::Type varType;
     switch ( OGR_Fld_GetType( fldDef ) )
     {
@@ -506,7 +506,7 @@ QgsFields QgsOgrUtils::readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding )
 }
 
 
-QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok )
+QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, const std::optional<QgsTextCodec> &encoding, bool *ok )
 {
   if ( attIndex < 0 || attIndex >= fields.count() )
   {
@@ -519,7 +519,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   return getOgrFeatureAttribute( ogrFet, field, attIndex, encoding, ok );
 }
 
-QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, QTextCodec *encoding, bool *ok )
+QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, const std::optional<QgsTextCodec> &encoding, bool *ok )
 {
   if ( !ogrFet || attIndex < 0 )
   {
@@ -550,7 +550,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
     const char *json = OGR_F_GetFieldAsString( ogrFet, attIndex );
     QString jsonContent;
     if ( encoding )
-      jsonContent = encoding->toUnicode( json ).toUtf8();
+      jsonContent = encoding->decode( json ).toUtf8();
     else
       jsonContent = QString::fromUtf8( json ).toUtf8();
 
@@ -576,7 +576,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         if ( field.typeName() != "JSON"_L1 || ! getJsonValue() )
         {
           if ( encoding )
-            value = QVariant( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
+            value = QVariant( encoding->decode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
           else
             value = QVariant( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ) );
 
@@ -653,7 +653,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
             for ( int i = 0; i < count; i++ )
             {
               if ( encoding )
-                list << encoding->toUnicode( lst[i] );
+                list << encoding->decode( lst[i] );
               else
                 list << QString::fromUtf8( lst[i] );
             }
@@ -680,7 +680,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
                 for ( int i = 0; i < count; i++ )
                 {
                   if ( encoding )
-                    list << encoding->toUnicode( lst[i] );
+                    list << encoding->decode( lst[i] );
                   else
                     list << QString::fromUtf8( lst[i] );
                 }
@@ -766,7 +766,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
         //it has to be JSON
         //it's null if no json format
         if ( encoding )
-          value = QJsonDocument::fromJson( encoding->toUnicode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ).toUtf8() ).toVariant();
+          value = QJsonDocument::fromJson( encoding->decode( OGR_F_GetFieldAsString( ogrFet, attIndex ) ).toUtf8() ).toVariant();
         else
           value = QJsonDocument::fromJson( QString::fromUtf8( OGR_F_GetFieldAsString( ogrFet, attIndex ) ).toUtf8() ).toVariant();
         break;
@@ -785,7 +785,7 @@ QVariant QgsOgrUtils::getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField
   return value;
 }
 
-bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding )
+bool QgsOgrUtils::readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, const std::optional<QgsTextCodec> &encoding )
 {
   // read all attributes
   feature.initAttributes( fields.count() );
@@ -1072,7 +1072,7 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   return g;
 }
 
-QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding )
+QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString &string, const QgsFields &fields, const std::optional<QgsTextCodec> &encoding )
 {
   QgsFeatureList features;
   if ( string.isEmpty() )
@@ -1114,7 +1114,7 @@ QgsFeatureList QgsOgrUtils::stringToFeatureList( const QString &string, const Qg
   return features;
 }
 
-QgsFields QgsOgrUtils::stringToFields( const QString &string, QTextCodec *encoding )
+QgsFields QgsOgrUtils::stringToFields( const QString &string, const std::optional<QgsTextCodec> &encoding )
 {
   QgsFields fields;
   if ( string.isEmpty() )

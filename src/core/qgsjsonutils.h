@@ -21,6 +21,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
+#include "qgstextcodec.h"
 
 #include <QJsonObject>
 #include <QPointer>
@@ -29,8 +30,6 @@
 #include <nlohmann/json_fwd.hpp>
 using namespace nlohmann;
 #endif
-
-class QTextCodec;
 
 /**
  * \ingroup core
@@ -331,7 +330,7 @@ class CORE_EXPORT QgsJsonUtils
      * \see stringToFields()
      * \note this function is a wrapper around QgsOgrUtils::stringToFeatureList()
      */
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), QTextCodec *encoding SIP_PYARGREMOVE6 = nullptr );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields = QgsFields(), const std::optional<QgsTextCodec> &encoding SIP_PYARGREMOVE6 = std::nullopt );
 
     /**
      * Attempts to retrieve the fields from a GeoJSON  \a string representing a collection of features.
@@ -340,7 +339,7 @@ class CORE_EXPORT QgsJsonUtils
      * \see stringToFeatureList()
      * \note this function is a wrapper around QgsOgrUtils::stringToFields()
      */
-    static QgsFields stringToFields( const QString &string, QTextCodec *encoding SIP_PYARGREMOVE6 = nullptr );
+    static QgsFields stringToFields( const QString &string, const std::optional<QgsTextCodec> &encoding SIP_PYARGREMOVE6 = std::nullopt );
 
     /**
      * Encodes a value to a JSON string representation, adding appropriate quotations and escaping

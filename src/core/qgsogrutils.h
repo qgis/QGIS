@@ -31,7 +31,7 @@
 class QgsCoordinateReferenceSystem;
 class QgsFieldDomain;
 
-class QTextCodec;
+class QgsTextCodec;
 class QgsWeakRelation;
 
 namespace gdal
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param encoding text encoding
      * \returns valid feature if read was successful
      */
-    static QgsFeature readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, QTextCodec *encoding );
+    static QgsFeature readOgrFeature( OGRFeatureH ogrFet, const QgsFields &fields, const std::optional<QgsTextCodec> &encoding );
 
     /**
      * Reads an OGR feature and returns a corresponding fields collection.
@@ -229,7 +229,7 @@ class CORE_EXPORT QgsOgrUtils
      * \param encoding text encoding
      * \returns fields collection if read was successful
      */
-    static QgsFields readOgrFields( OGRFeatureH ogrFet, QTextCodec *encoding );
+    static QgsFields readOgrFields( OGRFeatureH ogrFet, const std::optional<QgsTextCodec> &encoding );
 
     /**
      * Retrieves an attribute value from an OGR feature.
@@ -241,7 +241,7 @@ class CORE_EXPORT QgsOgrUtils
      * \returns attribute converted to a QVariant object
      * \see readOgrFeatureAttributes()
      */
-    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
+    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, const std::optional<QgsTextCodec> &encoding, bool *ok = nullptr );
 
     /**
      * Retrieves an attribute value from an OGR feature, using a provided \a field definition.
@@ -255,7 +255,7 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.10.1
      */
-    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
+    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsField &field, int attIndex, const std::optional<QgsTextCodec> &encoding, bool *ok = nullptr );
 
     /**
      * Reads all attributes from an OGR feature into a QgsFeature.
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsOgrUtils
      * \returns TRUE if attribute read was successful
      * \see getOgrFeatureAttribute()
      */
-    static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, QTextCodec *encoding );
+    static bool readOgrFeatureAttributes( OGRFeatureH ogrFet, const QgsFields &fields, QgsFeature &feature, const std::optional<QgsTextCodec> &encoding );
 
     /**
      * Reads the geometry from an OGR feature into a QgsFeature.
@@ -296,7 +296,7 @@ class CORE_EXPORT QgsOgrUtils
      * \returns list of parsed features, or an empty list if no features could be parsed
      * \see stringToFields()
      */
-    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, QTextCodec *encoding );
+    static QgsFeatureList stringToFeatureList( const QString &string, const QgsFields &fields, const std::optional<QgsTextCodec> &encoding );
 
     /**
      * Attempts to retrieve the fields from a string representing a collection of features using OGR.
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsOgrUtils
      * \returns retrieved fields collection, or an empty list if no fields could be determined from the string
      * \see stringToFeatureList()
      */
-    static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
+    static QgsFields stringToFields( const QString &string, const std::optional<QgsTextCodec> &encoding );
 
     /**
      * Converts a c string list to a QStringList. Presumes a null terminated string list.

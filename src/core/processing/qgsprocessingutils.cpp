@@ -40,7 +40,6 @@
 #include "qgsvectortilelayer.h"
 
 #include <QRegularExpression>
-#include <QTextCodec>
 #include <QUuid>
 
 #include "moc_qgsprocessingutils.cpp"
@@ -1749,14 +1748,9 @@ QVariantMap QgsProcessingUtils::preprocessQgisProcessParameters( const QVariantM
 
 QString QgsProcessingUtils::resolveDefaultEncoding( const QString &defaultEncoding )
 {
-  if ( ! QTextCodec::availableCodecs().contains( defaultEncoding.toLatin1() ) )
+  if ( !QStringConverter::availableCodecs().contains( defaultEncoding ) )
   {
-    const QString systemCodec = QTextCodec::codecForLocale()->name();
-    if ( ! systemCodec.isEmpty() )
-    {
-      return systemCodec;
-    }
-    return QString( "UTF-8" );
+    return QStringConverter::nameForEncoding( QStringConverter::Encoding::System );
   }
 
   return defaultEncoding;

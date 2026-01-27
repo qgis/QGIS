@@ -15,6 +15,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "qgstextcodec.h"
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
@@ -23,8 +25,6 @@ using namespace nlohmann;
 #include "qgsoapifutils.h"
 
 #include <set>
-
-#include <QTextCodec>
 
 bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
 {
@@ -453,12 +453,8 @@ void QgsOapifCollectionsRequest::processReply()
 
   QgsDebugMsgLevel( u"parsing collections response: "_s + buffer, 4 );
 
-  QTextCodec::ConverterState state;
-  QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
-  Q_ASSERT( codec );
-
-  const QString utf8Text = codec->toUnicode( buffer.constData(), buffer.size(), &state );
-  if ( state.invalidChars != 0 )
+  const QString utf8Text = QgsTextCodec( QStringConverter::Encoding::Utf8 ).decode( QByteArrayView( buffer.constData(), buffer.size() ) );
+  if ( utf8Text.isNull() )
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;
@@ -576,12 +572,8 @@ void QgsOapifCollectionRequest::processReply()
 
   QgsDebugMsgLevel( u"parsing collection response: "_s + buffer, 4 );
 
-  QTextCodec::ConverterState state;
-  QTextCodec *codec = QTextCodec::codecForName( "UTF-8" );
-  Q_ASSERT( codec );
-
-  const QString utf8Text = codec->toUnicode( buffer.constData(), buffer.size(), &state );
-  if ( state.invalidChars != 0 )
+  const QString utf8Text = QgsTextCodec( QStringConverter::Encoding::Utf8 ).decode( QByteArrayView( buffer.constData(), buffer.size() ) );
+  if ( utf8Text.isNull() )
   {
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;

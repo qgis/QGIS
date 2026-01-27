@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsfields.h"
 #include "qgsrectangle.h"
+#include "qgstextcodec.h"
 #include "qgswkbptr.h"
 
 #include <QByteArray>
@@ -37,7 +38,7 @@
 #endif
 
 class QgsCoordinateReferenceSystem;
-class QTextCodec;
+class QgsTextCodec;
 
 #ifndef SIP_RUN
 
@@ -368,7 +369,7 @@ class CORE_EXPORT QgsGmlStreamingParser
     //! Whether we found a unhandled geometry element
     bool mFoundUnhandledGeometryElement;
     //! text codec used to read data with an expat unsupported encoding
-    QTextCodec *mCodec = nullptr;
+    std::optional<QgsTextCodec> mCodec;
 };
 
 #endif

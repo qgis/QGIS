@@ -28,8 +28,6 @@ using namespace nlohmann;
 #include "cpl_conv.h"
 #include "cpl_vsi.h"
 
-#include <QTextCodec>
-
 QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url, const QString &featureFormat )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), QgsHttpHeaders(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url ), mFeatureFormat( featureFormat )
 {

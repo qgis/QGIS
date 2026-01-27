@@ -44,6 +44,7 @@
 #include "qgssettings.h"
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
+#include "qgstextcodec.h"
 #include "qgsvectorlayer.h"
 
 #include <QDir>
@@ -54,7 +55,6 @@
 #include <QMutex>
 #include <QRegularExpression>
 #include <QSet>
-#include <QTextCodec>
 #include <QTextStream>
 
 QgsField QgsVectorFileWriter::FieldValueConverter::fieldDefinition( const QgsField &field )
@@ -412,21 +412,23 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   }
 
   // use appropriate codec
-  mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().constData() );
-  if ( !mCodec )
+  std::optional<QgsTextCodec> codec = QgsTextCodec::fromName( fileEncoding.toLocal8Bit().constData() );
+  if ( !codec )
   {
-    QgsDebugError( "error finding QTextCodec for " + fileEncoding );
+    QgsDebugError( "error finding codec for " + fileEncoding );
 
     QgsSettings settings;
-    QString enc = settings.value( u"UI/encoding"_s, "System" ).toString();
-    mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
-    if ( !mCodec )
+    QString enc = settings.value( u"UI/encoding"_s ).toString();
+    if ( !enc.isEmpty() )
     {
-      QgsDebugError( "error finding QTextCodec for " + enc );
-      mCodec = QTextCodec::codecForLocale();
-      Q_ASSERT( mCodec );
+      codec = QgsTextCodec::fromName( enc.toLocal8Bit().constData() );
+      if ( !codec )
+      {
+        QgsDebugError( "error finding codec for " + enc );
+      }
     }
   }
+  mCodec = codec.value_or( QgsTextCodec() );
 
   // consider spatial reference system of the layer
   if ( driverName == "KML"_L1 || driverName == "LIBKML"_L1 || driverName == "GPX"_L1 )
@@ -625,7 +627,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
         if ( action == AppendToLayerAddFields )
         {
-          int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( attrField.name() ) );
+          int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec.encode( attrField.name() ) );
           if ( ogrIdx >= 0 )
           {
             mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
@@ -874,7 +876,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         }
 
         // create field definition
-        gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( mCodec->fromUnicode( name ), ogrType ) );
+        gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( mCodec.encode( name ), ogrType ) );
         if ( ogrWidth > 0 )
         {
           OGR_Fld_SetWidth( fld.get(), ogrWidth );
@@ -898,12 +900,12 @@ void QgsVectorFileWriter::init( QString vectorFileName,
             // field alternative names MUST be unique (at least for Geopackage, but let's apply the constraint universally)
             alternativeName = attrField.alias() + u" (%1)"_s.arg( ++counter );
           }
-          OGR_Fld_SetAlternativeName( fld.get(), mCodec->fromUnicode( alternativeName ).constData() );
+          OGR_Fld_SetAlternativeName( fld.get(), mCodec.encode( alternativeName ).constData() );
           usedAlternativeNames.insert( alternativeName );
         }
 #endif
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,7,0)
-        OGR_Fld_SetComment( fld.get(), mCodec->fromUnicode( attrField.comment() ).constData() );
+        OGR_Fld_SetComment( fld.get(), mCodec.encode( attrField.comment() ).constData() );
 #endif
 
         if ( mIncludeConstraints )
@@ -990,7 +992,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
           return;
         }
 
-        int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
+        int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec.encode( name ) );
         QgsDebugMsgLevel( u"returned field index for %1: %2"_s.arg( name ).arg( ogrIdx ), 2 );
         if ( ogrIdx < 0 || existingIdxs.contains( ogrIdx ) )
         {
@@ -1034,7 +1036,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       {
         QgsField attrField = fields.at( fldIdx );
         QString name( attrField.name() );
-        int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
+        int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec.encode( name ) );
         if ( ogrIdx >= 0 )
           mAttrIdxToOgrIdx.insert( fldIdx, ogrIdx );
       }
@@ -2892,7 +2894,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
         break;
       case QMetaType::Type::QString:
-        OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
+        OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( attrValue.toString() ).constData() );
         break;
       case QMetaType::Type::Double:
         OGR_F_SetFieldDouble( poFeature.get(), ogrField, attrValue.toDouble() );
@@ -2907,7 +2909,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       case QMetaType::Type::QDateTime:
         if ( mOgrDriverName == "ESRI Shapefile"_L1 )
         {
-          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toDateTime().toString( u"yyyy/MM/dd hh:mm:ss.zzz"_s ) ).constData() );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( attrValue.toDateTime().toString( u"yyyy/MM/dd hh:mm:ss.zzz"_s ) ).constData() );
         }
         else
         {
@@ -2927,7 +2929,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
       case QMetaType::Type::QTime:
         if ( mOgrDriverName == "ESRI Shapefile"_L1 )
         {
-          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( attrValue.toString() ).constData() );
         }
         else
         {
@@ -2962,7 +2964,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           {
             jsonString = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).constData() );
           }
-          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( jsonString.constData() ) );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( jsonString.constData() ) );
           break;
         }
 
@@ -2976,7 +2978,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             int pos = 0;
             for ( const QString &string : list )
             {
-              lst[pos] = CPLStrdup( mCodec->fromUnicode( string ).data() );
+              lst[pos] = CPLStrdup( mCodec.encode( string ).data() );
               pos++;
             }
           }
@@ -2986,7 +2988,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
         }
         else
         {
-          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( list.join( ',' ) ).constData() );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( list.join( ',' ) ).constData() );
         }
         break;
       }
@@ -3001,7 +3003,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           {
             jsonString = QString::fromUtf8( doc.toJson( QJsonDocument::Compact ).data() );
           }
-          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( jsonString.constData() ) );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( jsonString.constData() ) );
           break;
         }
 
@@ -3018,7 +3020,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
               int pos = 0;
               for ( const QString &string : list )
               {
-                lst[pos] = CPLStrdup( mCodec->fromUnicode( string ).data() );
+                lst[pos] = CPLStrdup( mCodec.encode( string ).data() );
                 pos++;
               }
             }
@@ -3028,7 +3030,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
           }
           else
           {
-            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( list.join( ',' ) ).constData() );
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( list.join( ',' ) ).constData() );
           }
           break;
         }
@@ -3059,7 +3061,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             {
               strings << QString::number( value.toInt() );
             }
-            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( strings.join( ',' ) ).constData() );
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( strings.join( ',' ) ).constData() );
           }
           break;
         }
@@ -3090,7 +3092,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             {
               strings << QString::number( value.toDouble() );
             }
-            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( strings.join( ',' ) ).constData() );
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( strings.join( ',' ) ).constData() );
           }
           break;
         }
@@ -3121,7 +3123,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             {
               strings << QString::number( value.toLongLong() );
             }
-            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( strings.join( ',' ) ).constData() );
+            OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( strings.join( ',' ) ).constData() );
           }
           break;
         }
@@ -3141,7 +3143,7 @@ gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeatur
             const QByteArray json { doc.toJson( QJsonDocument::Compact ) };
             jsonString = QString::fromUtf8( json.data() );
           }
-          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( jsonString.constData() ) );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec.encode( jsonString.constData() ) );
           break;
         }
       }

@@ -17,7 +17,6 @@
 #include "qgstest.h"
 
 #include <QTemporaryFile>
-#include <QTextCodec>
 #include <QUrl>
 
 //qgis includes...
@@ -1467,9 +1466,9 @@ void TestQgsGML::testUnknownEncoding()
 
   Qgis::WkbType wkbType;
 
-  QTextCodec *codec = QTextCodec::codecForName( encoding );
+  const QgsTextCodec codec = QgsTextCodec::fromName( encoding ).value();
 
-  QByteArray data = codec->fromUnicode(
+  QByteArray data = codec.encode(
     QStringLiteral(
       "%1<myns:FeatureCollection "
       "xmlns:myns='http://myns' "

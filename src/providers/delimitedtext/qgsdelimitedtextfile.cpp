@@ -25,7 +25,6 @@
 #include <QFileSystemWatcher>
 #include <QRegularExpression>
 #include <QStringList>
-#include <QTextCodec>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QtGlobal>
@@ -58,10 +57,6 @@ QgsDelimitedTextFile::~QgsDelimitedTextFile()
 
 void QgsDelimitedTextFile::close()
 {
-  if ( mCodec )
-  {
-    mCodec = nullptr;
-  }
   if ( mFile )
   {
     delete mFile;
@@ -93,13 +88,18 @@ bool QgsDelimitedTextFile::open()
     }
     if ( mFile )
     {
-      mCodec = QTextCodec::codecForName( !mEncoding.isEmpty() ? mEncoding.toLatin1() : QByteArray( "UTF-8" ) );
-      if ( !mCodec )
+      std::optional<QgsTextCodec> codec = QgsTextCodec::fromName( mEncoding.toLatin1() );
+      if ( codec )
       {
-        QgsDebugMsgLevel( u"Wrong codec '%1' for %2, falling back to locale default."_s.arg( mEncoding, mFileName ), 2 );
-        mCodec = QTextCodec::codecForLocale();
-        mEncoding = mCodec->name();
+        mCodec = codec.value();
       }
+      else
+      {
+        QgsDebugMsgLevel( u"Wrong codec '%1' for %2, falling back to UTF-8."_s.arg( mEncoding, mFileName ), 2 );
+        mCodec = QStringConverter::Utf8;
+        mEncoding = mCodec.name();
+      }
+
       if ( mUseWatcher )
       {
         mWatcher = new QFileSystemWatcher();
@@ -601,7 +601,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
   if ( mLineNumber == 0 )
   {
     mPosInBuffer = 0;
-    mBuffer = mCodec->toUnicode( mFile->read( mMaxBufferSize ) );
+    mBuffer = mCodec.decode( mFile->read( mMaxBufferSize ) );
   }
 
   while ( !mBuffer.isEmpty() )
@@ -650,7 +650,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         {
           // If we are just at the end of the buffer, read an extra character
           // from the stream
-          const QString newChar = mCodec->toUnicode( mFile->read( 1 ) );
+          const QString newChar = mCodec.decode( mFile->read( 1 ) );
           mBuffer += newChar;
           if ( newChar == '\n' )
           {
@@ -681,7 +681,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::nextLine( QString &buffer, bo
         // Read more bytes from file to have up to mMaxBufferSize characters
         // in our buffer (after having subset it from mPosInBuffer)
         mBuffer = mBuffer.mid( mPosInBuffer );
-        mBuffer += mCodec->toUnicode( mFile->read( mMaxBufferSize - mBuffer.size() ) );
+        mBuffer += mCodec.decode( mFile->read( mMaxBufferSize - mBuffer.size() ) );
         mPosInBuffer = 0;
         continue;
       }

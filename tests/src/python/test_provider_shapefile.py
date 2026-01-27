@@ -700,13 +700,13 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
         file_path = os.path.join(TEST_DATA_DIR, "shapefile", "windows-1252.shp")
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.dataProvider().encoding(), "windows-1252")
+        self.assertEqual(vl.dataProvider().encoding(), "CP1252")
         self.assertEqual(next(vl.getFeatures())[1], "äöü")
 
         file_path = os.path.join(TEST_DATA_DIR, "shapefile", "windows-1252_ldid.shp")
         vl = QgsVectorLayer(file_path)
         self.assertTrue(vl.isValid())
-        self.assertEqual(vl.dataProvider().encoding(), "windows-1252")
+        self.assertEqual(vl.dataProvider().encoding(), "CP1252")
         self.assertEqual(next(vl.getFeatures())[1], "äöü")
 
         if int(gdal.VersionInfo("VERSION_NUM")) >= GDAL_COMPUTE_VERSION(3, 1, 0):
@@ -714,7 +714,7 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
             file_path = os.path.join(TEST_DATA_DIR, "shapefile", "windows-1252.zip")
             vl = QgsVectorLayer(f"/vsizip/{file_path}")
             self.assertTrue(vl.isValid())
-            self.assertEqual(vl.dataProvider().encoding(), "windows-1252")
+            self.assertEqual(vl.dataProvider().encoding(), "CP1252")
             self.assertEqual(next(vl.getFeatures())[1], "äöü")
 
         file_path = os.path.join(TEST_DATA_DIR, "shapefile", "system_encoding.shp")

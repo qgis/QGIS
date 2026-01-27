@@ -29,6 +29,7 @@
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsscrollarea.h"
+#include "qgstextcodec.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -36,7 +37,6 @@
 #include <QFileDialog>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
-#include <QTextCodec>
 
 #include "moc_qgsgrassmoduleoptions.cpp"
 
@@ -923,7 +923,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
   // GRASS commands usually output text in system default encoding.
   // Let's use the System codec whether Qt doesn't recognize the encoding
   // of the interface description (see https://github.com/qgis/QGIS/issues/14461)
-  QTextCodec *codec = nullptr;
+  std::optional<QgsTextCodec> codec;
 
   QgsDebugMsgLevel( "trying to get encoding name from XML interface description...", 3 );
 
@@ -939,12 +939,11 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
     QByteArray enc = match.captured( 2 ).toLocal8Bit();
     QgsDebugMsgLevel( QString( "found encoding name '%1'" ).arg( QString::fromUtf8( enc ) ), 3 );
 
-    codec = QTextCodec::codecForName( enc );
+    codec = QgsTextCodec::fromName( enc );
     if ( !codec )
     {
       QgsDebugMsgLevel( "unrecognized encoding name. Let's use 'System' codec", 2 );
-      codec = QTextCodec::codecForName( "System" );
-      Q_ASSERT( codec );
+      codec = QStringConverter::Encoding::System;
     }
   }
   else
@@ -958,12 +957,12 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   if ( codec )
   {
-    QgsDebugMsgLevel( QString( "parsing XML interface description using '%1' codec..." ).arg( QString::fromUtf8( codec->name() ) ), 3 );
-    ok = gDoc.setContent( codec->toUnicode( baDesc ), false, &err, &line, &column );
+    QgsDebugMsgLevel( QString( "parsing XML interface description using '%1' codec..." ).arg( codec->name() ), 3 );
+    ok = gDoc.setContent( codec->decode( baDesc ), false, &err, &line, &column );
     if ( !ok )
     {
       QgsDebugMsgLevel( "parse FAILED. Will let Qt detects encoding", 2 );
-      codec = nullptr;
+      codec = std::nullopt;
     }
   }
 

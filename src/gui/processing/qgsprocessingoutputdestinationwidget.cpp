@@ -32,7 +32,6 @@
 #include <QInputDialog>
 #include <QLocale>
 #include <QMenu>
-#include <QTextCodec>
 #include <QUrl>
 
 #include "moc_qgsprocessingoutputdestinationwidget.cpp"
