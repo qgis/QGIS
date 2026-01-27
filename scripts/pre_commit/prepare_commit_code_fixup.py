@@ -112,6 +112,9 @@ qlatin1str_single_char = re.compile(
     r"""(.*)(.startsWith\(|.endsWith\(|.indexOf\(|.lastIndexOf\(|.compare\(|\+=) ?("[^"]") ?_L1(.*)"""
 )
 
+# regex to detect if the processed line contains _s or _L1 literals
+pattern_has_qt_literal = re.compile(r'u"(?:\\.|[^"\\])*"_s|"(?:\\.|[^"\\])*"_L1')
+
 make_unique_shared = re.compile(
     r"""^(\s*)std::(?:unique|shared)_ptr<\s*(.*?)\s*>(\s*.*?\s*=\s*std::make_(?:unique|shared)<\s*(.*?)\s*>.*)$"""
 )
@@ -610,6 +613,13 @@ def process_file(filename: str):
 
     fixed_lines = [apply_line_fixups(line) for line in lines]
 
+    # check for usage of Qt String Literals (_s or _L1)
+    uses_qt_literals = False
+    for line in fixed_lines:
+        if pattern_has_qt_literal.search(line):
+            uses_qt_literals = True
+            break
+
     # sort includes
     final_output = []
 
@@ -641,10 +651,28 @@ def process_file(filename: str):
         # TODO: handle headers in conditional #if blocks
         break
 
+    # if we detected literal usage, force QString header to be included
+    # otherwise we get fragile behavior -- a unity build may be successful
+    # locally, but fail elsewhere
+    if uses_qt_literals:
+        # We append it here; duplication is handled by set() later
+        include_lines.append("#include <QString>")
+
     # dedupe includes
     include_lines = list(set(include_lines))
     sorted_includes = sort_includes(include_lines, input_file_stem)
     final_output.extend(sorted_includes)
+
+    # if we detected QString literal usage, ensure the using namespace directive exists
+    if uses_qt_literals:
+        already_has_namespace_using = any(
+            "using namespace Qt::StringLiterals" in l for l in fixed_lines
+        )
+
+        if not already_has_namespace_using:
+            final_output.append("")
+            final_output.append("using namespace Qt::StringLiterals;")
+            final_output.append("")
 
     # add remaining lines, if non-empty
     has_more_lines = False
