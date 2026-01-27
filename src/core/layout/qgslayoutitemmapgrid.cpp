@@ -1162,18 +1162,18 @@ void QgsLayoutItemMapGrid::drawGridFrameTicks( QPainter *p, GridExtension *exten
       QVector2D pB;
       if ( mGridFrameStyle == Qgis::MapGridFrameStyle::InteriorTicks )
       {
-        pA = annot.position + fA * vector;
-        pB = annot.position + fB * vector;
+        pA = annot.position + static_cast< float >( fA ) * vector;
+        pB = annot.position + static_cast< float >( fB ) * vector;
       }
       else if ( mGridFrameStyle == Qgis::MapGridFrameStyle::ExteriorTicks )
       {
-        pA = annot.position - fA * vector;
-        pB = annot.position - fB * vector;
+        pA = annot.position - static_cast< float >( fA ) * vector;
+        pB = annot.position - static_cast< float >( fB ) * vector;
       }
       else // InteriorExteriorTicks
       {
-        pA = annot.position - fB * vector;
-        pB = annot.position + ( fB - 2.0 * mEvaluatedGridFrameMargin ) * vector;
+        pA = annot.position - static_cast< float >( fB ) * vector;
+        pB = annot.position + static_cast< float >( fB - 2.0 * mEvaluatedGridFrameMargin ) * vector;
       }
       p->drawLine( QLineF( pA.toPointF(), pB.toPointF() ) );
 
@@ -1442,7 +1442,7 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QgsRenderContext &context, 
   const bool outside = ( anotPos == Qgis::MapGridAnnotationPosition::OutsideMapFrame );
 
   QPointF anchorMM;
-  int rotation = 0;
+  double rotation = 0;
 
   if (
     anotDir == Qgis::MapGridAnnotationDirection::AboveTick ||
