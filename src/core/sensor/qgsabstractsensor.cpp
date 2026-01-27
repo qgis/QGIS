@@ -16,9 +16,12 @@
 
 #include "qgsabstractsensor.h"
 
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsabstractsensor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractSensor::QgsAbstractSensor( QObject *parent )
   : QObject( parent )

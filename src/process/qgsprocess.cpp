@@ -22,7 +22,11 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingregistry.h"
 
+#include <QString>
+
 #include "moc_qgsprocess.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_3D
 #include "qgs3dalgorithms.h"

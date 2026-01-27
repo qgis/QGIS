@@ -21,9 +21,12 @@
 
 #include <QLocalSocket>
 #include <QMetaType>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsqtlocationconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsQtLocationConnection::QgsQtLocationConnection()
   : QgsGpsConnection( new QLocalSocket() )

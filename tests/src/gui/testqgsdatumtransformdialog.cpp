@@ -19,6 +19,10 @@
 #include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsDatumTransformDialog : public QObject
 {
     Q_OBJECT

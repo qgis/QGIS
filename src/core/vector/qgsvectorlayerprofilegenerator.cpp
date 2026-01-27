@@ -42,6 +42,9 @@
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include <QPolygonF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsVectorLayerProfileResults

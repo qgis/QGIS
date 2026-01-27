@@ -27,6 +27,10 @@
 #include "qgsvectorlayerelevationproperties.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstract3DSymbol *QgsPoint3DSymbol::clone() const
 {
   return new QgsPoint3DSymbol( *this );

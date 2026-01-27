@@ -63,7 +63,11 @@
 #include "qgsunittypes.h"
 #include "qgswelcomepage.h"
 
+#include <QString>
+
 #include "moc_qgsoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"

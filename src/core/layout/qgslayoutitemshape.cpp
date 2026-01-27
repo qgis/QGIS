@@ -25,8 +25,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemshape.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   : QgsLayoutItem( layout )

@@ -22,8 +22,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgspointcloudsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

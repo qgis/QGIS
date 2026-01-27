@@ -22,6 +22,10 @@
 #include "qgssettingsentry.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
 #endif

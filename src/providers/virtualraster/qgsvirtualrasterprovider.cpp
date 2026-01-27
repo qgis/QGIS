@@ -19,7 +19,11 @@
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
 
+#include <QString>
+
 #include "moc_qgsvirtualrasterprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define PROVIDER_KEY u"virtualraster"_s
 #define PROVIDER_DESCRIPTION u"Virtual Raster data provider"_s

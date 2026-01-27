@@ -36,6 +36,10 @@
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsLabelingEngine : public QgsTest
 {
     Q_OBJECT

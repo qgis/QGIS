@@ -22,6 +22,10 @@
 #include "qgis_core.h"
 #include "qgssymbollayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsLineSymbol;
 
 /**

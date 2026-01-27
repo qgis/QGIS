@@ -28,9 +28,12 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgssnappinglayertreemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )

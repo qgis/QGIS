@@ -30,7 +30,11 @@
 #include "qgspoint.h"
 #include "qgsstatusbar.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircularstringradius.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeCircularStringRadiusMetadata::TOOL_ID = u"circular-string-by-radius"_s;
 

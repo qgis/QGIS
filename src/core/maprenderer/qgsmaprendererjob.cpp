@@ -51,10 +51,13 @@
 #include <QElapsedTimer>
 #include <QPainter>
 #include <QPicture>
+#include <QString>
 #include <QTimer>
 #include <QtConcurrentMap>
 
 #include "moc_qgsmaprendererjob.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( u"logCanvasRefreshEvent"_s, QgsSettingsTree::sTreeMap, false );
 const QgsSettingsEntryString *QgsMapRendererJob::settingsMaskBackend = new QgsSettingsEntryString( u"mask-backend"_s, QgsSettingsTree::sTreeMap, QString(), u"Backend engine to use for selective masking"_s );

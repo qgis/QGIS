@@ -46,8 +46,11 @@
 #include <QCursor>
 #include <QPixmap>
 #include <QStatusBar>
+#include <QString>
 
 #include "moc_qgsmaptoolcapture.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )

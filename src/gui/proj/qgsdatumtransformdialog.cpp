@@ -31,8 +31,11 @@
 
 #include <QDir>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdatumtransformdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool QgsDatumTransformDialog::run( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs, QWidget *parent, QgsMapCanvas *mapCanvas, const QString &windowTitle )
 {

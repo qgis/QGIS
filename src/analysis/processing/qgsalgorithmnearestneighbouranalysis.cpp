@@ -21,7 +21,10 @@
 #include "qgsdistancearea.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

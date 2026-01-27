@@ -19,8 +19,11 @@
 #include "qgsvectorlayerutils.h"
 
 #include <QMetaType>
+#include <QString>
 #include <QThread>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

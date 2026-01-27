@@ -15,6 +15,10 @@
 
 #include <limits>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // GDAL includes
 #include <gdal.h>
 #include <cpl_conv.h>

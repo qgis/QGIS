@@ -12,6 +12,7 @@
 
 
 
+
 typedef QMap<QString, QString> QgsStringMap;
 typedef QMap<QString, QgsSymbol * > QgsSymbolMap;
 

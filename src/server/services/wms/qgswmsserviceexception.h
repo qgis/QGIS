@@ -24,6 +24,8 @@
 #include <QMetaEnum>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
 

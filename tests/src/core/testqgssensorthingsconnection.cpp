@@ -20,6 +20,8 @@
 #include <QString>
 #include <QtConcurrent>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsSensorThingsConnection : public QObject
 {
     Q_OBJECT

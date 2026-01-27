@@ -23,6 +23,10 @@
 #include "qgspolygon.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsGeometryPaintEngine
 //

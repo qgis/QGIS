@@ -20,6 +20,9 @@
 
 #include <QFile>
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMbTiles::QgsMbTiles( const QString &filename )
   : mFilename( filename )

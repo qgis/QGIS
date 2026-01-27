@@ -21,7 +21,11 @@
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfeaturepickermodelbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )

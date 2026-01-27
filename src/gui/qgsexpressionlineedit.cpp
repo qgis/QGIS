@@ -28,10 +28,13 @@
 #include "qgsvectorlayer.h"
 
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsexpressionlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )

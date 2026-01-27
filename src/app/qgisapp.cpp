@@ -52,8 +52,11 @@
 #include <QSpinBox>
 #include <QSplashScreen>
 #include <QStandardPaths>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>

@@ -25,8 +25,11 @@
 
 #include <QCheckBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslayouttablebackgroundcolorsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutTableBackgroundColorsDialog::QgsLayoutTableBackgroundColorsDialog( QgsLayoutTable *table, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

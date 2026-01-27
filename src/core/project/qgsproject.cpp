@@ -90,6 +90,7 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QString>
 #include <QTemporaryFile>
 #include <QTextStream>
 #include <QThreadPool>
@@ -97,6 +98,8 @@
 #include <QUuid>
 
 #include "moc_qgsproject.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #include <sys/utime.h>

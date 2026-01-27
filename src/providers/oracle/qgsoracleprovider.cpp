@@ -44,7 +44,11 @@
 #include "qgsthreadingutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsoracleprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsoraclesourceselect.h"

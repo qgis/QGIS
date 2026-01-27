@@ -20,6 +20,10 @@
 
 #include "qgsgeometryareacheck.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief A sliver polygon check.

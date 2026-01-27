@@ -24,7 +24,11 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
 #include "moc_qgsgpsdetector.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if defined(QT_POSITIONING_LIB)
 #include "qgsqtlocationconnection.h"

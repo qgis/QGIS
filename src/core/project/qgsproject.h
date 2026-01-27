@@ -54,8 +54,11 @@
 #include <QList>
 #include <QObject>
 #include <QPair>
+#include <QString>
 #include <QStringList>
 #include <QTranslator>
+
+using namespace Qt::StringLiterals;
 
 class QFileInfo;
 class QDomDocument;

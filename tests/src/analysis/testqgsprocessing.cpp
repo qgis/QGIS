@@ -63,7 +63,10 @@
 #include <QFileInfo>
 #include <QList>
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class DummyAlgorithm : public QgsProcessingAlgorithm
 {

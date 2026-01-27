@@ -22,6 +22,10 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvirtuallayerdefinition.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVirtualLayerDefinition QgsVirtualLayerDefinitionUtils::fromJoinedLayer( QgsVectorLayer *layer )
 {
   QgsVirtualLayerDefinition def;

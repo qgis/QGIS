@@ -23,7 +23,11 @@
 #include "qgslogger.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsfavoritesitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsFavoritesItem

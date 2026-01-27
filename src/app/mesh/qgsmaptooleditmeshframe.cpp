@@ -50,8 +50,11 @@
 
 #include <QLocale>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmaptooleditmeshframe.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsZValueWidget

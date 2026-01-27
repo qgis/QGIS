@@ -20,6 +20,10 @@
 #include "qgspointcloudlayer.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalFilterNoiseRadiusAlgorithm::name() const

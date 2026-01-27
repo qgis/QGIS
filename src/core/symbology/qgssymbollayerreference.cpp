@@ -18,6 +18,9 @@
 #include "qgis.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString symbolLayerReferenceListToString( const QgsSymbolLayerReferenceList &lst )
 {

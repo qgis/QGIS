@@ -23,8 +23,11 @@
 #include "qgswmsprovider.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgswmsnewconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName )
   : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, u"WMS"_s, connName )

@@ -27,6 +27,8 @@
 #include <QPainter>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPolyhedralSurface : public QObject
 {
     Q_OBJECT

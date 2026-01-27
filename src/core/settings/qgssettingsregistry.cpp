@@ -19,6 +19,10 @@
 #include "qgssettingsentry.h"
 #include "qgssettingsentrygroup.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsSettingsRegistry::QgsSettingsRegistry()
   : mSettingsEntriesMap()
   , mSettingsRegistryChildList()

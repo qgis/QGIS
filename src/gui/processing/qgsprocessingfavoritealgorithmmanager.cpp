@@ -18,7 +18,11 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingfavoritealgorithmmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

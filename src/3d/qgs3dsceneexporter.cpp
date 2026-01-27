@@ -42,6 +42,7 @@
 
 #include <QByteArray>
 #include <QFile>
+#include <QString>
 #include <QTextStream>
 #include <QVector>
 #include <Qt3DCore/QAttribute>
@@ -70,6 +71,8 @@
 #include <Qt3DRender/QTextureImage>
 
 #include "moc_qgs3dsceneexporter.cpp"
+
+using namespace Qt::StringLiterals;
 
 template<typename T>
 QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &data )

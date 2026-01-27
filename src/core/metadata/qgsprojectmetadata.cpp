@@ -21,6 +21,9 @@
 
 #include <QDomDocument>
 #include <QDomNode>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )
 {

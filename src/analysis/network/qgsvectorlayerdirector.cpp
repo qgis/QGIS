@@ -36,6 +36,8 @@
 
 #include "moc_qgsvectorlayerdirector.cpp"
 
+using namespace Qt::StringLiterals;
+
 using namespace SpatialIndex;
 
 struct TiePointInfo

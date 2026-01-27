@@ -29,9 +29,12 @@
 #include <QEventLoop>
 #include <QFuture>
 #include <QNetworkCacheMetaData>
+#include <QString>
 #include <QtConcurrent>
 
 #include "moc_qgsbasenetworkrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 static QMutex gMemoryCacheMmutex;
 static QCache<QUrl, std::pair<QDateTime, QByteArray>> gCache( 10 * 1024 * 1024 );

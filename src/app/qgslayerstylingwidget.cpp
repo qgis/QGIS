@@ -57,11 +57,14 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QSizePolicy>
+#include <QString>
 #include <QUndoStack>
 #include <QVBoxLayout>
 #include <QWidget>
 
 #include "moc_qgslayerstylingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"

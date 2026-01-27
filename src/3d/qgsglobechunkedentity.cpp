@@ -33,6 +33,7 @@
 
 #include <QByteArray>
 #include <QImage>
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
@@ -42,6 +43,8 @@
 #include <Qt3DRender/QTextureImage>
 
 #include "moc_qgsglobechunkedentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

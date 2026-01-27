@@ -19,6 +19,10 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsFilterAlgorithm::name() const

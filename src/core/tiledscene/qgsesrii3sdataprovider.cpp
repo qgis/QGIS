@@ -36,8 +36,11 @@
 #include <QFileInfo>
 #include <QIcon>
 #include <QQuaternion>
+#include <QString>
 
 #include "moc_qgsesrii3sdataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define I3S_PROVIDER_KEY u"esrii3s"_s
 #define I3S_PROVIDER_DESCRIPTION u"ESRI I3S data provider"_s

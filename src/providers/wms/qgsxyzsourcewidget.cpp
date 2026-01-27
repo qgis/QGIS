@@ -20,7 +20,11 @@
 #include "qgsproviderregistry.h"
 #include "qgswmssourceselect.h"
 
+#include <QString>
+
 #include "moc_qgsxyzsourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsXyzSourceWidget::QgsXyzSourceWidget( QWidget *parent )
   : QgsProviderSourceWidget( parent )

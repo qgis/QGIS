@@ -13,6 +13,7 @@
 
 
 
+
 class QgsRectangle
 {
 %Docstring(signature="appended")

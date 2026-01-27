@@ -32,9 +32,12 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgspointcloudlayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayerProperties::QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( lyr, canvas, u"PointCloudLayerProperties"_s, parent, flags )

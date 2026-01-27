@@ -59,10 +59,13 @@
 #include <QActionGroup>
 #include <QProgressBar>
 #include <QShortcut>
+#include <QString>
 #include <QToolBar>
 #include <QWidget>
 
 #include "moc_qgs3dmapcanvaswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryDouble *Qgs3DMapCanvasWidget::settingClippingTolerance = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTree3DMap, 100, u"Tolerance distance for 3D Map cross section"_s, Qgis::SettingsOptions(), 0 );
 const QgsSettingsEntryBool *Qgs3DMapCanvasWidget::settingCrossSectionToleranceLocked = new QgsSettingsEntryBool( u"cross-section-tolerance-locked"_s, QgsSettingsTree::sTree3DMap, true, u"Whether cross section tolerance is locked"_s );

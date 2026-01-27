@@ -22,8 +22,11 @@
 
 #include <QIcon>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgsmaplayermodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent, QgsProject *project )
   : QAbstractItemModel( parent )

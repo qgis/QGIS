@@ -24,8 +24,11 @@
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslayernotesmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsLayerNotesManager::editLayerNotes( QgsMapLayer *layer, QWidget *parent )
 {

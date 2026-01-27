@@ -25,7 +25,11 @@
 #include "qgsstacitem.h"
 #include "qgsstacitemcollection.h"
 
+#include <QString>
+
 #include "moc_qgsstacdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 constexpr int MAX_DISPLAYED_ITEMS = 20;
 

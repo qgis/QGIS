@@ -22,6 +22,10 @@
 #include "qgscontrastenhancement.h"
 #include "qgspointcloudblock.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPointCloudRgbRenderer::QgsPointCloudRgbRenderer()
 {
 

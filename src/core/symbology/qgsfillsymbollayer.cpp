@@ -48,8 +48,11 @@
 #include <QFile>
 #include <QPagedPaintDevice>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 #include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 QgsSimpleFillSymbolLayer::QgsSimpleFillSymbolLayer( const QColor &color, Qt::BrushStyle style, const QColor &strokeColor, Qt::PenStyle strokeStyle, double strokeWidth,
     Qt::PenJoinStyle penJoinStyle )

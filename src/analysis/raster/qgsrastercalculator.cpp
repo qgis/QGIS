@@ -31,6 +31,9 @@
 #include "qgsrasterprojector.h"
 
 #include <QFile>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"

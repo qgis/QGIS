@@ -26,7 +26,10 @@
 
 #include <QDir>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 bool QgsColorScheme::setColors( const QgsNamedColorList &colors, const QString &context, const QColor &baseColor )
 {

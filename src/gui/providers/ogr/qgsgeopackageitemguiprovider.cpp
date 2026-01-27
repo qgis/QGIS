@@ -17,7 +17,11 @@
 
 #include "qgsgeopackageitemguiprovider.h"
 
+#include <QString>
+
 #include "moc_qgsgeopackageitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

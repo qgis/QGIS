@@ -23,8 +23,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsaddattrdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

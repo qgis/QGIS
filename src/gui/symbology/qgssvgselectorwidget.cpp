@@ -36,10 +36,13 @@
 #include <QModelIndex>
 #include <QPixmapCache>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QStyle>
 #include <QTime>
 
 #include "moc_qgssvgselectorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QgsSvgSelectorLoader
 

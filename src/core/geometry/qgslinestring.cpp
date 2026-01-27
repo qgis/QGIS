@@ -37,6 +37,9 @@
 #include <QDomDocument>
 #include <QJsonObject>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

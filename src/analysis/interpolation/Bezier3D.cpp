@@ -20,6 +20,10 @@
 #include "Vector3D.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void Bezier3D::calcFirstDer( float t, Vector3D *v )
 {
   if ( v && mControlPoly )

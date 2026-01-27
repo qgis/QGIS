@@ -30,8 +30,11 @@
 #include <QAction>
 #include <QClipboard>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsrulebasedlabelingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 const double ICON_PADDING_FACTOR = 0.16;
 

@@ -19,8 +19,11 @@
 #include "qgsmessagelog.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsmessageoutput.cpp"
+
+using namespace Qt::StringLiterals;
 
 static QgsMessageOutput *messageOutputConsole_()
 {

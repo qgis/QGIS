@@ -25,8 +25,11 @@
 
 #include <QFileInfo>
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsvtpkvectortiledataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

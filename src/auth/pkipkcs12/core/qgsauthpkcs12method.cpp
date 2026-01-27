@@ -21,7 +21,11 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsauthpkcs12method.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthpkcs12edit.h"

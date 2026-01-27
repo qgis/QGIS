@@ -17,6 +17,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include <qgsrectangle.h>
 #include <qgspoint.h>

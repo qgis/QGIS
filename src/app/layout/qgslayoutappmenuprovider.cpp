@@ -25,8 +25,11 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgslayoutappmenuprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAppMenuProvider::QgsLayoutAppMenuProvider( QgsLayoutDesignerDialog *designer )
   : QObject( nullptr )

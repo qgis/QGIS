@@ -48,8 +48,11 @@ email                : morb at ozemail dot com dot au
 #include "qgsvectorlayer.h"
 
 #include <QCache>
+#include <QString>
 
 #include "moc_qgsgeometry.cpp"
+
+using namespace Qt::StringLiterals;
 
 struct QgsGeometryPrivate
 {

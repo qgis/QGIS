@@ -25,7 +25,11 @@
 #include "qgsmessagelog.h"
 #include "qgsprocessingprovider.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingfeedback.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_PDAL_QGIS
 #include <pdal/pdal.hpp>

@@ -28,10 +28,13 @@
 #include <QDate>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QValidator>
 #include <QVariant>
 
 #include "moc_qgsfieldvalidator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat )
   : QValidator( parent )

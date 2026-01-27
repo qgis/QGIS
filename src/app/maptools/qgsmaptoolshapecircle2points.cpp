@@ -21,7 +21,11 @@
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircle2points.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsMapToolShapeCircle2PointsMetadata::id() const
 {

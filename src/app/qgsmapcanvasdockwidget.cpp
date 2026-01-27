@@ -37,10 +37,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QRadioButton>
+#include <QString>
 #include <QToolBar>
 #include <QToolButton>
 
 #include "moc_qgsmapcanvasdockwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent, bool isDocked )
   : QWidget( parent )

@@ -20,6 +20,8 @@
 #include "qgsserverstatichandler.h"
 #include "qgswfs3handlers.h"
 
+#include <QString>
+
 using namespace Qt::StringLiterals;
 
 /**

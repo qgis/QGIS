@@ -26,9 +26,12 @@
 #include "qgsvariantutils.h"
 
 #include <QNetworkReply>
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsnetworkcontentfetcher.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {

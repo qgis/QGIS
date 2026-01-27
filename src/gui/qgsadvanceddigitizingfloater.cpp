@@ -23,8 +23,11 @@
 #include <QEnterEvent>
 #include <QLocale>
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsadvanceddigitizingfloater.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAdvancedDigitizingFloater::QgsAdvancedDigitizingFloater( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QWidget( canvas->viewport() )

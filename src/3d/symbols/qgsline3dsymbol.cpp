@@ -23,6 +23,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerelevationproperties.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLine3DSymbol::QgsLine3DSymbol()
   : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
 {

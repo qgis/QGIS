@@ -45,8 +45,11 @@
 #include <QLineEdit>
 #include <QRegularExpressionMatch>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgsvariantdelegate.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
   : QItemDelegate( parent )

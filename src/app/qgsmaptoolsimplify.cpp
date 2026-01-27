@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsmaptoolsimplify.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
   : QWidget( parent )

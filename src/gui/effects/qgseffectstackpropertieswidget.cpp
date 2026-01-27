@@ -30,9 +30,12 @@
 #include <QPicture>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgseffectstackpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

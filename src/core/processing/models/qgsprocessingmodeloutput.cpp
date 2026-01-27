@@ -17,6 +17,10 @@
 
 #include "qgsprocessingmodeloutput.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsProcessingModelOutput::QgsProcessingModelOutput( const QString &name, const QString &description )

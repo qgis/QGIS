@@ -25,6 +25,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsListWidget : public QObject
 {

@@ -27,6 +27,9 @@
 
 #include <QCryptographicHash>
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings )
   : mSettings( settings )

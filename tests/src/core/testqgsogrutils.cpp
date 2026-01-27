@@ -41,6 +41,8 @@
 #include <QStringList>
 #include <QTime>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsOgrUtils : public QObject
 {
     Q_OBJECT

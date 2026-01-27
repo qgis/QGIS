@@ -40,8 +40,11 @@
 #include <QObject>
 #include <QPainter>
 #include <QSet>
+#include <QString>
 #include <QUndoStack>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QgsAbstract3DRenderer;
 class QgsAbstractProfileSource;

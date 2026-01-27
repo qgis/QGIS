@@ -22,6 +22,10 @@
 #include "qgsmaplayer.h"
 #include "qgsvectortilematrixset.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorTileRenderer;
 class QgsVectorTileLabeling;
 class QgsFeature;

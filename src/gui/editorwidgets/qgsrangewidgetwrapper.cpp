@@ -23,8 +23,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsrangewidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

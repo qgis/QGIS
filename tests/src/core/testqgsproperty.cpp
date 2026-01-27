@@ -25,6 +25,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 enum class PropertyKeys : int
 {

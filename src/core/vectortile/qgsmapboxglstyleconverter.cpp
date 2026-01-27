@@ -46,8 +46,11 @@
 
 #include <QBuffer>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsmapboxglstyleconverter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {

@@ -33,9 +33,12 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 #include <qstackedwidget.h>
 
 #include "moc_qgslayerpropertiesdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerPropertiesDialog::QgsLayerPropertiesDialog( QgsMapLayer *layer, QgsMapCanvas *canvas, const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
   : QgsOptionsDialogBase( settingsKey, parent, fl, settings )

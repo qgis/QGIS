@@ -87,9 +87,12 @@ email                : tim at linfiniti.com
 #include <QPixmap>
 #include <QRegularExpression>
 #include <QSlider>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsrasterlayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryDouble *QgsRasterLayer::settingsRasterDefaultOversampling = new QgsSettingsEntryDouble( u"default-oversampling"_s, QgsSettingsTree::sTreeRaster, 2.0 );
 const QgsSettingsEntryBool *QgsRasterLayer::settingsRasterDefaultEarlyResampling = new QgsSettingsEntryBool( u"default-early-resampling"_s, QgsSettingsTree::sTreeRaster, false );
