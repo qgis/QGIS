@@ -2645,6 +2645,12 @@ void TestQgs3DRendering::testExtrudedPolygonsHighlighting()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
   engine.setRootEntity( scene );
 
+  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "polygon3d_extrusion", "polygon3d_extrusion", img, QString(), 40, QSize( 0, 0 ), 2 );
+
   auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
   QgsFeatureRequest req;
   req.setFilterFids( { 105, 269, 388, 395, 397 } );
@@ -2653,11 +2659,8 @@ void TestQgs3DRendering::testExtrudedPolygonsHighlighting()
   while ( fit.nextFeature( feature ) )
     highlighter->highlightFeature( feature, mLayerBuildings );
 
-  scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, -250, 0 ), 500, 45, 0 );
-
   Qgs3DUtils::captureSceneImage( engine, scene );
-  QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
-
+  img = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "polygon3d_extrusion_highlighting", "polygon3d_extrusion_highlighting", img, QString(), 40, QSize( 0, 0 ), 2 );
 
   highlighter->clearHighlights();
@@ -2714,13 +2717,17 @@ void TestQgs3DRendering::testInstancedRenderingHighlighting()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
-  highlighter->highlightFeature( f1, layerPointsZ.get() );
-
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 45, 0 );
 
   Qgs3DUtils::captureSceneImage( engine, scene );
   QImage imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "sphere_rendering", "sphere_rendering", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgSphere = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "sphere_rendering_highlighting", "sphere_rendering_highlighting", imgSphere, QString(), 40, QSize( 0, 0 ), 2 );
 
   highlighter->clearHighlights();
@@ -2780,13 +2787,17 @@ void TestQgs3DRendering::testModelPointRenderingHighlighting()
   Qgs3DMapScene *scene = new Qgs3DMapScene( *mapSettings, &engine );
   engine.setRootEntity( scene );
 
-  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
-  highlighter->highlightFeature( f1, layerPointsZ.get() );
-
   scene->cameraController()->setLookingAtPoint( QgsVector3D( 0, 0, 0 ), 2500, 60, 0 );
 
   Qgs3DUtils::captureSceneImage( engine, scene );
   QImage imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
+  QGSVERIFYIMAGECHECK( "model_rendering", "model_rendering", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
+
+  auto highlighter = std::make_unique<Qgs3DHighlightFeatureHandler>( scene );
+  highlighter->highlightFeature( f1, layerPointsZ.get() );
+
+  Qgs3DUtils::captureSceneImage( engine, scene );
+  imgModel = Qgs3DUtils::captureSceneImage( engine, scene );
   QGSVERIFYIMAGECHECK( "model_rendering_highlighting", "model_rendering_highlighting", imgModel, QString(), 80, QSize( 0, 0 ), 2 );
 
   highlighter->clearHighlights();
