@@ -6612,7 +6612,6 @@ bool QgisApp::addProject( const QString &projectFile )
   return returnCode;
 } // QgisApp::addProject(QString projectFile)
 
-
 bool QgisApp::fileSave()
 {
   // if we don't have a file name, then obviously we need to get one; note
@@ -10950,6 +10949,10 @@ bool QgisApp::toggleEditingVectorLayer( QgsVectorLayer *vlayer, bool allowCancel
       {
         QApplication::setOverrideCursor( Qt::WaitCursor );
 
+        if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
+            break;
+        };
+
         QStringList commitErrors;
         if ( !QgsProject::instance()->commitChanges( commitErrors, true, vlayer ) )
         {
@@ -11188,6 +11191,11 @@ bool QgisApp::toggleEditingPointCloudLayer( QgsPointCloudLayer *pclayer, bool al
       {
         QgsTemporaryCursorOverride waitCursor( Qt::WaitCursor );
         QgsCanvasRefreshBlocker refreshBlocker;
+        
+        if (!QgisApp::instance()->tryCommitChanges(pclayer)) {
+          break;
+        }
+
         if ( !pclayer->commitChanges( true ) )
         {
           visibleMessageBar()->pushWarning(
@@ -11271,6 +11279,12 @@ void QgisApp::saveVectorLayerEdits( QgsMapLayer *layer, bool leaveEditable, bool
 
 
   QStringList commitErrors;
+
+  if (!QgisApp::instance()->tryCommitChanges(vlayer)) {
+    mSaveRollbackInProgress = false;
+    return;
+  }
+
   if ( !QgsProject::instance()->commitChanges( commitErrors, !leaveEditable, vlayer ) )
   {
     mSaveRollbackInProgress = false;
@@ -11317,6 +11331,10 @@ void QgisApp::savePointCloudLayerEdits( QgsMapLayer *layer, bool leaveEditable, 
     mSaveRollbackInProgress = true;
 
   QgsCanvasRefreshBlocker refreshBlocker;
+
+  if (!QgisApp::instance()->tryCommitChanges(pclayer)) {
+    return;
+  }
 
   if ( !pclayer->commitChanges( !leaveEditable ) )
     visibleMessageBar()->pushWarning(
@@ -13200,9 +13218,19 @@ void QgisApp::registerApplicationExitBlocker( QgsApplicationExitBlockerInterface
   mApplicationExitBlockers << blocker;
 }
 
+void QgisApp::registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker )
+{
+  mLayerChangesCommitBlockers << blocker;
+}
+
 void QgisApp::unregisterApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker )
 {
   mApplicationExitBlockers.removeAll( blocker );
+}
+
+void QgisApp::unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker )
+{
+  mLayerChangesCommitBlockers.removeAll( blocker );
 }
 
 void QgisApp::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
@@ -17305,6 +17333,19 @@ QMenu *QgisApp::createPopupMenu()
   return menu;
 }
 
+bool QgisApp::tryCommitChanges( QgsMapLayer * layer )
+{
+  for(QgsLayerChangesCommitBlockerInterface* blocker: mLayerChangesCommitBlockers) 
+   {
+     if (!blocker->allowCommit(layer) )
+      {
+        messageBar()->pushWarning( tr("Committing changes to the layer is blocked"), 
+        tr("The ability to commit changes to the '%1' layer has been blocked by a plugin or script").arg( layer->name() ));
+        return false;
+      }
+   }
+  return true;
+}
 
 void QgisApp::showSystemNotification( const QString &title, const QString &message, bool replaceExisting )
 {
