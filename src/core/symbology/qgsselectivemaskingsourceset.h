@@ -20,6 +20,10 @@
 #include "qgis_sip.h"
 #include "qgsselectivemaskingsource.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QDomElement;
 class QDomDocument;
 class QgsReadWriteContext;

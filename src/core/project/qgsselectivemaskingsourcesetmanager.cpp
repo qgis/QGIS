@@ -19,7 +19,11 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsselectivemaskingsourceset.h"
 
+#include <QString>
+
 #include "moc_qgsselectivemaskingsourcesetmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSelectiveMaskingSourceSetManager::QgsSelectiveMaskingSourceSetManager( QgsProject *project )
   : QgsAbstractProjectStoredObjectManager( project )

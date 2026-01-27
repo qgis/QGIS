@@ -38,11 +38,14 @@
 #include <QMessageBox>
 #include <QPointer>
 #include <QScreen>
+#include <QString>
 #include <QToolButton>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
 #include "moc_qgsmasksourceselectionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static void expandAll( QTreeWidgetItem *item )
 {
