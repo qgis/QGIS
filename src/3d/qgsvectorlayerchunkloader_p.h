@@ -134,7 +134,8 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
 
   private:
     friend class QgsRuleBasedChunkedEntity;
-    //! This implementation is shared between QgsVectorLayerChunkedEntity and QgsRuleBasedChunkedEntity
+    friend class QgsCategorizedChunkedEntity;
+    //! This implementation is shared between QgsVectorLayerChunkedEntity, QgsRuleBasedChunkedEntity and QgsCategorizedChunkedEntity
     static QList<QgsRayCastHit> rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRay3D &ray, const QgsRayCastContext &context, const QgsVector3D &origin );
 
     Qt3DCore::QTransform *mTransform = nullptr;

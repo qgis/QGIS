@@ -10,6 +10,7 @@
 
 
 
+
 class QgsPhongTexturedMaterialSettings : QgsAbstractMaterialSettings
 {
 %Docstring(signature="appended")
@@ -134,6 +135,61 @@ Sets the texture rotation in degrees
 Sets opacity of the surface.
 
 .. versionadded:: 3.28
+%End
+
+    virtual QColor averageColor() const;
+
+%Docstring
+Returns an approximate color representing the blended material color.
+
+This function calculates a weighted average of the ambient, diffuse, and
+specular color components to produce a single representative color.
+
+.. seealso:: :py:func:`ambient`
+
+.. seealso:: :py:func:`specular`
+
+.. seealso:: :py:func:`diffuseTexturePath`
+
+.. versionadded:: 4.0
+%End
+
+    void setColorsFromBase( const QColor &baseColor, float metallic );
+%Docstring
+Decompose an average color into Phong material components.
+
+Sets ambient and specular colors from the input color. This also sets
+the shininess parameter based on the metallic value.
+
+:param baseColor: The color to decompose
+:param metallic: Controls how "metal-like" a material appears. Value
+                 between 0 and 1
+
+.. seealso:: :py:func:`setAmbient`
+
+.. seealso:: :py:func:`setSpecular`
+
+.. seealso:: :py:func:`setShininess`
+
+.. versionadded:: 4.0
+%End
+
+    virtual void setColorsFromBase( const QColor &baseColor );
+
+%Docstring
+Decomposes a base color into Phong material components.
+
+Sets ambient and specular colors from the input color. This is
+equivalent to calling setColorsFromBase with the metallic parameter
+equal to 0: setColorsFromBase(baseColor, 0).
+
+:param baseColor: The color to decompose
+
+.. seealso:: :py:func:`setAmbient`
+
+.. seealso:: :py:func:`setSpecular`
+
+.. versionadded:: 4.0
 %End
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
