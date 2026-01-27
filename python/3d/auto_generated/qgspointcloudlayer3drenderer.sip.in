@@ -121,6 +121,24 @@ Returns the renderer behavior when zoomed out
 .. versionadded:: 3.42
 %End
 
+    void setOverviewSwitchingScale( double scale );
+%Docstring
+Sets the overview switching scale
+
+Used to determine when point clouds switch from rendering bounding boxes
+to displaying full point data. The value is compared against screen
+space error (SSE) calculated from camera distance and node size.
+
+.. versionadded:: 4.0
+%End
+
+    double overviewSwitchingScale() const;
+%Docstring
+Returns the overview switching scale
+
+.. versionadded:: 4.0
+%End
+
   private:
     QgsPointCloudLayer3DRenderer( const QgsPointCloudLayer3DRenderer & );
     QgsPointCloudLayer3DRenderer &operator=( const QgsPointCloudLayer3DRenderer & );
