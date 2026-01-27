@@ -651,8 +651,8 @@ if(WITH_CORE)
 
   message(STATUS "Found Qt version: ${Qt6Core_VERSION}")
 
-  if (WITH_QUICK)
-    find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
+  if (WITH_DESKTOP OR WITH_QUICK)
+    find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick QuickControls2 REQUIRED)
     # following variable is used in qgsconfig.h
     set (HAVE_QUICK TRUE)
   endif()

@@ -98,7 +98,7 @@ class QgsUserInputWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsVectorTileLayer;
-class QgsWelcomePage;
+class QgsWelcomeScreen;
 class QgsOptionsWidgetFactory;
 class QgsStatusBar;
 class QgsGeometryValidationService;
@@ -1431,6 +1431,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new file from a template project
     bool fileNewFromTemplate( const QString &fileName );
 
+    //! Create a new file with a basemap added
+    bool fileNewWithBasemap();
+
     //! Show the spatial bookmark manager panel
     void showBookmarkManager( bool show );
 
@@ -1513,6 +1516,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Open a url in the users configured browser
     void openURL( QString url, bool useQgisDocDirectory = true );
+
+    //! Opens the plugin manager (since QGIS 4.0)
+    void showPluginManager( int tabIndex = -1 );
 
   protected:
     void showEvent( QShowEvent *event ) override;
@@ -1632,9 +1638,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void decreaseGamma();
 
-
-    //! plugin manager
-    void showPluginManager();
     //! load Python support if possible
     void loadPythonSupport();
 
@@ -2308,6 +2311,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void activeLayerChanged( QgsMapLayer *layer );
 
+    /**
+     * Emitted when the plugin updates are available.
+     *
+     * \since QGIS 4.0
+     */
+    void pluginUpdatesAvailable( const QStringList &plugins );
+
   private:
     void createPreviewImage( const QString &path, const QIcon &overlayIcon = QIcon() );
     void startProfile( const QString &name );
@@ -2804,7 +2814,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QDateTime mProjectLastModified;
 
-    QgsWelcomePage *mWelcomePage = nullptr;
+    QgsWelcomeScreen *mWelcomeScreen = nullptr;
 
     QStackedWidget *mCentralContainer = nullptr;
 

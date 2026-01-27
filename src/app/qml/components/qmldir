@@ -1,0 +1,5 @@
+module components
+NewsCard 1.0 NewsCard.qml
+TemplateCard 1.0 TemplateCard.qml
+UpdateNotificationBar 1.0 UpdateNotificationBar.qml
+FooterBar 1.0 FooterBar.qml
