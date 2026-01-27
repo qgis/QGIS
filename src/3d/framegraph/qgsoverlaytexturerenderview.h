@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsdebugtexturerenderview.h
+  qgsoverlaytexturerenderview.h
   --------------------------------------
   Date                 : June 2024
   Copyright            : (C) 2024 by Benoit De Mezzo
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDEBUGTEXTURERENDERVIEW_H
-#define QGSDEBUGTEXTURERENDERVIEW_H
+#ifndef QGSOVERLAYTEXTURERENDERVIEW_H
+#define QGSOVERLAYTEXTURERENDERVIEW_H
 
 #include "qgsabstractrenderview.h"
 
@@ -27,22 +27,22 @@ namespace Qt3DRender
 
 /**
  * \ingroup qgis_3d
- * \brief Simple renderview to preview/debug textures
+ * \brief Simple render view to preview overlay textures in 3D view.
  *
- * \see QgsDebugTextureEntity
+ * \see QgsOverlayTextureEntity
  *
  * \note Not available in Python bindings
  *
  * \since QGIS 3.44
  */
-class QgsDebugTextureRenderView : public QgsAbstractRenderView
+class QgsOverlayTextureRenderView : public QgsAbstractRenderView
 {
   public:
     //! Constructor
-    QgsDebugTextureRenderView( const QString &viewName );
+    QgsOverlayTextureRenderView( const QString &viewName );
 
     //! Returns layer in which entities must be added in the in order to be processed by this renderview.
-    Qt3DRender::QLayer *debugLayer() const;
+    Qt3DRender::QLayer *overlayLayer() const;
 
   private:
     Qt3DRender::QLayer *mLayer = nullptr;
@@ -50,4 +50,4 @@ class QgsDebugTextureRenderView : public QgsAbstractRenderView
     void buildRenderPass();
 };
 
-#endif // QGSDEBUGTEXTURERENDERVIEW_H
+#endif // QGSOVERLAYTEXTURERENDERVIEW_H

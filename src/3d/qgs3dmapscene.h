@@ -48,6 +48,7 @@ class QgsAbstract3DEngine;
 class QgsAbstract3DRenderer;
 class QgsMapLayer;
 class Qgs3DMapSettings;
+class QgsMapOverlayEntity;
 class QgsTerrainEntity;
 class QgsGlobeEntity;
 class QgsChunkedEntity;
@@ -364,10 +365,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onDebugOverlayEnabledChanged();
     void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+    void onShowMapOverlayChanged();
 
     void onOriginChanged();
 
     bool updateCameraNearFarPlanes();
+
+    void applyPendingOverlayUpdate();
 
   private:
 #ifdef SIP_RUN
@@ -388,6 +392,9 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;
+
+    void schedule2DMapOverlayUpdate();
+    void update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints );
 
   private:
     Qgs3DMapSettings &mMap;
@@ -419,6 +426,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     QList<QVector4D> mClipPlanesEquations;
     int mMaxClipPlanes = 6;
+
+    //! 2d map overlay
+    QgsMapOverlayEntity *mMapOverlayEntity = nullptr;
+    QTimer *mOverlayUpdateTimer = nullptr;
 
     friend class TestQgs3DRendering;
 };
