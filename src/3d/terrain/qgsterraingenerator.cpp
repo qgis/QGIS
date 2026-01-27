@@ -80,3 +80,8 @@ bool QgsTerrainGenerator::isValid() const
 {
   return mIsValid;
 }
+
+QgsTerrainGenerator::Capabilities QgsTerrainGenerator::capabilities() const
+{
+  return QgsTerrainGenerator::Capability::NoCapabilities;
+}
