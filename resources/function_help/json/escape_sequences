@@ -1,0 +1,20 @@
+{
+  "name": "Escape Sequences",
+  "type": "value",
+  "groups": ["String"],
+  "description": "Special character sequences that can be used inside string literals to represent characters that cannot be typed directly.<br><br>The following escape sequences are supported:<br><ul><li><b>\\\\n</b> - newline character</li><li><b>\\\\t</b> - tab character</li><li><b>\\\\\\\\</b> - backslash character</li><li><b>\\\\'</b> - single quote character</li></ul>",
+  "examples": [{
+    "expression": "'Line 1\\\\nLine 2'",
+    "returns": "a string with a newline between 'Line 1' and 'Line 2'"
+  }, {
+    "expression": "'Column1\\\\tColumn2'",
+    "returns": "a string with a tab character between the columns"
+  }, {
+    "expression": "'It\\\\'s working'",
+    "returns": "'It's working'"
+  }, {
+    "expression": "'C:\\\\\\\\Users\\\\\\\\Name'",
+    "returns": "'C:\\\\Users\\\\Name'"
+  }],
+  "tags": ["escape", "sequences", "newline", "tab", "backslash", "quote", "special", "characters", "string", "literal"]
+}
