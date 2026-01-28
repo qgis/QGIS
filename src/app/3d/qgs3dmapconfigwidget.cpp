@@ -177,6 +177,10 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
   cboCameraProjectionType->setCurrentIndex( cboCameraProjectionType->findData( mMap->projectionType() ) );
   mCameraNavigationModeCombo->setCurrentIndex( mCameraNavigationModeCombo->findData( QVariant::fromValue( mMap->cameraNavigationMode() ) ) );
   mCameraMovementSpeed->setValue( mMap->cameraMovementSpeed() );
+  mInvertVerticalAxisCombo->addItem( tr( "Never" ), QVariant::fromValue( Qgis::VerticalAxisInversion::Never ) );
+  mInvertVerticalAxisCombo->addItem( tr( "Only When Dragging" ), QVariant::fromValue( Qgis::VerticalAxisInversion::WhenDragging ) );
+  mInvertVerticalAxisCombo->addItem( tr( "Always" ), QVariant::fromValue( Qgis::VerticalAxisInversion::Always ) );
+  mInvertVerticalAxisCombo->setCurrentIndex( mInvertVerticalAxisCombo->findData( QVariant::fromValue( mMap->cameraVerticalAxisInversion() ) ) );
 
   chkShowLabels->setChecked( mMap->showLabels() );
   mFpsCounterCheckBox->setChecked( mMap->isFpsCounterEnabled() );
@@ -359,6 +363,7 @@ void Qgs3DMapConfigWidget::apply()
   mMap->setProjectionType( cboCameraProjectionType->currentData().value<Qt3DRender::QCameraLens::ProjectionType>() );
   mMap->setCameraNavigationMode( mCameraNavigationModeCombo->currentData().value<Qgis::NavigationMode>() );
   mMap->setCameraMovementSpeed( mCameraMovementSpeed->value() );
+  mMap->setCameraVerticalAxisInversion( mInvertVerticalAxisCombo->currentData().value<Qgis::VerticalAxisInversion>() );
   mMap->setShowLabels( chkShowLabels->isChecked() );
   mMap->setIsFpsCounterEnabled( mFpsCounterCheckBox->isChecked() );
   mMap->setShowDebugPanel( chkShowDebugPanel->isChecked() );

@@ -598,6 +598,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setCameraMovementSpeed( double movementSpeed );
 
     /**
+     * Returns the camera vertical axis inversion setting
+     * \since QGIS 4.0
+     */
+    Qgis::VerticalAxisInversion cameraVerticalAxisInversion() const;
+
+    /**
+     * Sets the camera vertical axis inversion setting
+     * \since QGIS 4.0
+     */
+    void setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion inversion );
+
+    /**
      * Sets DPI used for conversion between real world units (e.g. mm) and pixels
      * \param dpi the number of dot per inch
      * \since QGIS 3.10
@@ -991,6 +1003,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void cameraMovementSpeedChanged();
 
     /**
+     * Emitted when the camera vertical axis inversion setting was changed
+     * \since QGIS 4.0
+     */
+    void cameraVerticalAxisInversionChanged();
+
+    /**
      * Emitted when skybox settings are changed
      * \since QGIS 3.16
      */
@@ -1102,6 +1120,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //<! Camera lens projection type
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
+    Qgis::VerticalAxisInversion mCameraVerticalAxisInversion = Qgis::VerticalAxisInversion::WhenDragging;
     QList<QgsMapLayerRef> mLayers; //!< Layers to be rendered
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;

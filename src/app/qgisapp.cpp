@@ -13652,6 +13652,9 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
     map->setProjectionType( defaultProjection );
     map->setFieldOfView( settings.value( u"map3d/defaultFieldOfView"_s, 45, QgsSettings::App ).toInt() );
 
+    const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
+    map->setCameraVerticalAxisInversion( axisInversion );
+
     map->setTransformContext( QgsProject::instance()->transformContext() );
     map->setPathResolver( QgsProject::instance()->pathResolver() );
     map->setMapThemeCollection( QgsProject::instance()->mapThemeCollection() );
@@ -13753,10 +13756,6 @@ Qgs3DMapCanvas *QgisApp::createNewMapCanvas3D( const QString &name, Qgis::SceneM
         break;
       }
     }
-
-    const Qgis::VerticalAxisInversion axisInversion = settings.enumValue( u"map3d/axisInversion"_s, Qgis::VerticalAxisInversion::WhenDragging, QgsSettings::App );
-    if ( canvasWidget->mapCanvas3D()->cameraController() )
-      canvasWidget->mapCanvas3D()->cameraController()->setVerticalAxisInversion( axisInversion );
 
     QDomImplementation DomImplementation;
     QDomDocumentType documentType = DomImplementation.createDocumentType(

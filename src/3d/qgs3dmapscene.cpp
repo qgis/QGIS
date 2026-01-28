@@ -157,6 +157,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   connect( &map, &Qgs3DMapSettings::debugDepthMapSettingsChanged, this, &Qgs3DMapScene::onDebugDepthMapSettingsChanged );
   connect( &map, &Qgs3DMapSettings::fpsCounterEnabledChanged, this, &Qgs3DMapScene::fpsCounterEnabledChanged );
   connect( &map, &Qgs3DMapSettings::cameraMovementSpeedChanged, this, &Qgs3DMapScene::onCameraMovementSpeedChanged );
+  connect( &map, &Qgs3DMapSettings::cameraVerticalAxisInversionChanged, this, &Qgs3DMapScene::onCameraVerticalAxisInversionChanged );
   connect( &map, &Qgs3DMapSettings::cameraNavigationModeChanged, this, &Qgs3DMapScene::onCameraNavigationModeChanged );
   connect( &map, &Qgs3DMapSettings::debugOverlayEnabledChanged, this, &Qgs3DMapScene::onDebugOverlayEnabledChanged );
   connect( &map, &Qgs3DMapSettings::stopUpdatesChanged, this, &Qgs3DMapScene::onStopUpdatesChanged );
@@ -231,6 +232,7 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
   onShowMapOverlayChanged();
 
   onCameraMovementSpeedChanged();
+  onCameraVerticalAxisInversionChanged();
 
   on3DAxisSettingsChanged();
 }
@@ -1219,6 +1221,11 @@ void Qgs3DMapScene::onShowMapOverlayChanged()
 void Qgs3DMapScene::onCameraMovementSpeedChanged()
 {
   mCameraController->setCameraMovementSpeed( mMap.cameraMovementSpeed() );
+}
+
+void Qgs3DMapScene::onCameraVerticalAxisInversionChanged()
+{
+  mCameraController->setVerticalAxisInversion( mMap.cameraVerticalAxisInversion() );
 }
 
 void Qgs3DMapScene::onCameraNavigationModeChanged()

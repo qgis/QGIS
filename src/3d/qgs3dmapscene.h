@@ -362,6 +362,7 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onDebugShadowMapSettingsChanged();
     void onDebugDepthMapSettingsChanged();
     void onCameraMovementSpeedChanged();
+    void onCameraVerticalAxisInversionChanged();
     void onCameraNavigationModeChanged();
     void onDebugOverlayEnabledChanged();
     void onStopUpdatesChanged();
