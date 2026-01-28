@@ -38,9 +38,12 @@
 #include <QPainter>
 #include <QPalette>
 #include <QPicture>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsmodelcomponentgraphicitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

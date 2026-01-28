@@ -39,6 +39,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 #define DEG2RAD(x)    ((x)*M_PI/180)
 #define RAD2DEG(r) (180.0 * (r) / M_PI)
 #define POW2(x) ((x)*(x))

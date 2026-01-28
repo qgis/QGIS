@@ -19,6 +19,10 @@
 
 #include "qgsrasterdataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterNuller::QgsRasterNuller( QgsRasterInterface *input )
   : QgsRasterInterface( input )
 {

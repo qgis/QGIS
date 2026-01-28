@@ -22,6 +22,10 @@
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialitesourceselect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for spatialite source select
 class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 {

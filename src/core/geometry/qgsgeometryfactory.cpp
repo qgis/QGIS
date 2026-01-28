@@ -35,6 +35,10 @@
 #include "qgstriangulatedsurface.h"
 #include "qgswkbtypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )

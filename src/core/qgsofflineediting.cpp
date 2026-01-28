@@ -42,8 +42,11 @@
 #include <QDomNode>
 #include <QFile>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsofflineediting.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

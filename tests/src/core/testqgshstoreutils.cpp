@@ -18,6 +18,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsHstoreUtils : public QObject
 {
     Q_OBJECT

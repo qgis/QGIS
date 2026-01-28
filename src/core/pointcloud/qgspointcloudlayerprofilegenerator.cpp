@@ -30,6 +30,10 @@
 #include "qgsprofilesnapping.h"
 #include "qgsproject.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsPointCloudLayerProfileGenerator
 //

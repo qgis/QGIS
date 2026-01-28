@@ -16,6 +16,10 @@
 #include "qgstest.h"
 #include "qgswmsparameters.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the WMS parameters class

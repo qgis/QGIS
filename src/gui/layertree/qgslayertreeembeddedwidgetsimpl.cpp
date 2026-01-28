@@ -21,9 +21,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSlider>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgslayertreeembeddedwidgetsimpl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

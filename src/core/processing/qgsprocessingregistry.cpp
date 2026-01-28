@@ -27,7 +27,11 @@
 #include "qgsprocessingparametervectortilewriterlayers.h"
 #include "qgsvectorfilewriter.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )

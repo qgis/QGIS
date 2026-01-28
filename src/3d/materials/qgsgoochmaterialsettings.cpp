@@ -19,6 +19,7 @@
 #include "qgscolorutils.h"
 #include "qgshighlightmaterial.h"
 
+#include <QString>
 #include <QUrl>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
@@ -28,6 +29,8 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 QString QgsGoochMaterialSettings::type() const
 {

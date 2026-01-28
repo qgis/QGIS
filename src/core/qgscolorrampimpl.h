@@ -23,6 +23,9 @@
 
 #include <QColor>
 #include <QGradient>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE

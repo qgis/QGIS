@@ -15,6 +15,10 @@
 
 #include "qgsabstract3dsymbol.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPropertiesDefinition QgsAbstract3DSymbol::sPropertyDefinitions;
 
 

@@ -35,7 +35,10 @@
 #include "qgsprovidermetadata.h"
 #include "qgsrasterfilewriter.h"
 
+#include <QString>
 #include <QtConcurrent>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

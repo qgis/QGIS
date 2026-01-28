@@ -26,8 +26,11 @@
 
 #include <QComboBox>
 #include <QImageWriter>
+#include <QString>
 
 #include "moc_qgslayoutatlaswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout )
   : QWidget( parent )

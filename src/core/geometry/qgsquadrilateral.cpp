@@ -19,6 +19,10 @@
 
 #include "qgsgeometryutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsQuadrilateral::QgsQuadrilateral() = default;
 
 QgsQuadrilateral::QgsQuadrilateral( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, const QgsPoint &p4 )

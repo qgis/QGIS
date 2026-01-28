@@ -24,6 +24,10 @@
 #include "qgsmultipolygon.h"
 #include "qgspolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 bool QgsGeometrySelfIntersectionCheckError::isEqual( const QgsSingleGeometryCheckError *other ) const
 {
   return QgsSingleGeometryCheckError::isEqual( other ) && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment1 == intersection().segment1 && static_cast<const QgsGeometrySelfIntersectionCheckError *>( other )->intersection().segment2 == intersection().segment2;

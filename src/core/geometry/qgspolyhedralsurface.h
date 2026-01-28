@@ -24,6 +24,10 @@
 #include "qgspolygon.h"
 #include "qgssurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsPolyhedralSurface

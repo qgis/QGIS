@@ -35,8 +35,11 @@
 #include "qgssqliteutils.h"
 
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgscoordinatereferencesystemregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCoordinateReferenceSystemRegistry::QgsCoordinateReferenceSystemRegistry( QObject *parent )
   : QObject( parent )

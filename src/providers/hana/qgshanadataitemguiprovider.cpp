@@ -34,8 +34,11 @@
 
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgshanadataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsHanaDataItemGuiProvider::populateContextMenu(
   QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context
@@ -109,21 +112,6 @@ void QgsHanaDataItemGuiProvider::populateContextMenu(
     maintainMenu->addAction( actionDelete );
 
     menu->addMenu( maintainMenu );
-  }
-
-  if ( QgsHanaLayerItem *layerItem = qobject_cast<QgsHanaLayerItem *>( item ) )
-  {
-    const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-    if ( !layerInfo.isView )
-    {
-      QMenu *maintainMenu = new QMenu( tr( "Table Operations" ), menu );
-
-      QAction *actionRenameLayer = new QAction( tr( "Rename Table…" ), this );
-      connect( actionRenameLayer, &QAction::triggered, this, [layerItem, context] { renameLayer( layerItem, context ); } );
-      maintainMenu->addAction( actionRenameLayer );
-
-      menu->addMenu( maintainMenu );
-    }
   }
 }
 
@@ -365,39 +353,6 @@ void QgsHanaDataItemGuiProvider::renameSchema( QgsHanaSchemaItem *schemaItem, Qg
   else
   {
     notify( caption, tr( "Unable to rename schema '%1'\n%2" ).arg( schemaName, errorMsg ), context, Qgis::MessageLevel::Warning );
-  }
-}
-
-void QgsHanaDataItemGuiProvider::renameLayer( QgsHanaLayerItem *layerItem, QgsDataItemGuiContext context )
-{
-  const QgsHanaLayerProperty &layerInfo = layerItem->layerInfo();
-  const QString caption = tr( "Rename Table" );
-  QgsNewNameDialog dlg( tr( "table '%1.%2'" ).arg( layerInfo.schemaName, layerInfo.tableName ), layerInfo.tableName );
-  dlg.setWindowTitle( caption );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == layerInfo.tableName )
-    return;
-
-  const QString newLayerName = dlg.name();
-  QString errorMsg;
-  try
-  {
-    const QgsHanaProviderConnection providerConn( layerItem->uri(), {} );
-    providerConn.renameVectorTable( layerInfo.schemaName, layerInfo.tableName, newLayerName );
-  }
-  catch ( const QgsProviderConnectionException &ex )
-  {
-    errorMsg = ex.what();
-  }
-
-  if ( errorMsg.isEmpty() )
-  {
-    notify( caption, tr( "'%1' renamed successfully to '%2'." ).arg( layerInfo.tableName, newLayerName ), context, Qgis::MessageLevel::Success );
-    if ( layerItem->parent() )
-      layerItem->parent()->refresh();
-  }
-  else
-  {
-    notify( caption, tr( "Unable to rename '%1'\n%2" ).arg( layerInfo.tableName, errorMsg ), context, Qgis::MessageLevel::Warning );
   }
 }
 

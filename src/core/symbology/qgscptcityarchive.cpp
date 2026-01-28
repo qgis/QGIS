@@ -33,10 +33,13 @@
 #include <QDomElement>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
 #include <QStyle>
 #include <QVector>
 
 #include "moc_qgscptcityarchive.cpp"
+
+using namespace Qt::StringLiterals;
 
 typedef QMap< QString, QgsCptCityArchive * > ArchiveRegistry;
 typedef QMap< QString, QMap< QString, QString > > CopyingInfoMap;

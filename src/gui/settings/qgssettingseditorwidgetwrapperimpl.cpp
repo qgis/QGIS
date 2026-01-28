@@ -22,8 +22,11 @@
 
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgssettingseditorwidgetwrapperimpl.cpp"
+
+using namespace Qt::StringLiterals;
 
 // *******
 // String with line edit (= default)

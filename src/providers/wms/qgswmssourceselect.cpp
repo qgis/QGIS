@@ -53,10 +53,13 @@
 #include <QNetworkRequest>
 #include <QPicture>
 #include <QRadioButton>
+#include <QString>
 #include <QUrl>
 #include <QValidator>
 
 #include "moc_qgswmssourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )

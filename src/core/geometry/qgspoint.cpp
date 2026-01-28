@@ -33,8 +33,11 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspoint.cpp"
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

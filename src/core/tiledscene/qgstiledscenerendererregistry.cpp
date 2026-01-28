@@ -16,6 +16,10 @@
 
 #include "qgstiledscenerenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // default renderers
 #include "qgstiledscenetexturerenderer.h"
 #include "qgstiledscenewireframerenderer.h"

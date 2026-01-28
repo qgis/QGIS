@@ -22,7 +22,10 @@
 #include <QDateTime>
 #include <QObject>
 #include <QPixmap>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 class QgsNetworkContentFetcher;
 class QgsSettingsEntryBool;

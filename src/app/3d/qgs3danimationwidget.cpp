@@ -29,9 +29,12 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgs3danimationwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DAnimationWidget::Qgs3DAnimationWidget( QWidget *parent )
   : QWidget( parent )

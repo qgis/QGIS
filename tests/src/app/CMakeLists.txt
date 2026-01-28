@@ -11,6 +11,7 @@ include_directories(
 
 set(TESTS
   testqgisapp.cpp
+  testqgisappwidgetnames.cpp
   testqgsappbrowserproviders.cpp
   testqgisappclipboard.cpp
   testqgisappdockwidgets.cpp
@@ -42,6 +43,7 @@ set(TESTS
   testqgsmaptoolfeaturearray.cpp
   testqgsmaptoolellipse.cpp
   testqgsmaptoolcircle.cpp
+  testqgsmaptoolnurbs.cpp
   testqgsmaptoolrectangle.cpp
   testqgsmaptoolregularpolygon.cpp
   testqgsmaptoolsplitparts.cpp

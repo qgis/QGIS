@@ -22,6 +22,10 @@
 #include "qgsgeocoderresult.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsBatchGeocodeAlgorithm::QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocoder )
   : QgsProcessingFeatureBasedAlgorithm()
   , mGeocoder( geocoder )

@@ -119,11 +119,14 @@
 #include <QRegularExpression>
 #include <QScreen>
 #include <QStandardPaths>
+#include <QString>
 #include <QStyle>
 #include <QTextStream>
 #include <QThreadPool>
 
 #include "moc_qgsapplication.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( u"userLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 

@@ -33,6 +33,9 @@ class QgsLineString;
  * \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
+ *
+ * \note This class is primarily intended to wrap the low-level mathematical implementations found in QgsGeometryUtilsBase,
+ * exposing them using QGIS geometry classes and providing Python bindings.
  */
 class CORE_EXPORT QgsGeometryUtils
 {

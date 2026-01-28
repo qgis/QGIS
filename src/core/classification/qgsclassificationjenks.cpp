@@ -20,6 +20,9 @@
 #include "qgsapplication.h"
 
 #include <QRandomGenerator>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsClassificationJenks::QgsClassificationJenks()
   : QgsClassificationMethod()

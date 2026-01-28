@@ -184,7 +184,6 @@ class QgsCustomizationDialog;
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgspointxy.h"
-#include "qgsrasterminmaxorigin.h"
 #include "qgsrecentprojectsitemsmodel.h"
 #include "qgsvectorlayersaveasdialog.h"
 #include "qobjectuniqueptr.h"
@@ -196,8 +195,11 @@ class QgsCustomizationDialog;
 #include <QPointer>
 #include <QSslError>
 #include <QStackedWidget>
+#include <QString>
 #include <QTapAndHoldGesture>
 #include <QToolBar>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #include <windows.h>

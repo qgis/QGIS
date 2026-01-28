@@ -54,6 +54,7 @@ bool QgsMapToolDigitizeFeature::supportsTechnique( Qgis::CaptureTechnique techni
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
     case Qgis::CaptureTechnique::Shape:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return mode() != QgsMapToolCapture::CapturePoint;
   }
   return false;

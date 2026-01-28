@@ -25,8 +25,11 @@
 #include "qgsproviderregistry.h"
 #include "qgstaskmanager.h"
 
+#include <QString>
 #include <QTextStream>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 class QButtonGroup;
 class QgisInterface;

@@ -30,8 +30,11 @@
 #include <QAction>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgssymbolslistwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent, QgsVectorLayer *layer )
   : QWidget( parent )

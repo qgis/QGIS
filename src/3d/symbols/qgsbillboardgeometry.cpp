@@ -15,6 +15,7 @@
 
 #include "qgsbillboardgeometry.h"
 
+#include <QString>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>

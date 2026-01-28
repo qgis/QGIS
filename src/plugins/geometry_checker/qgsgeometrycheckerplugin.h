@@ -22,6 +22,9 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsGeometryCheckerDialog;
 

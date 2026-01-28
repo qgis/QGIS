@@ -28,11 +28,14 @@
 #include <QPlainTextEdit>
 #include <QScrollBar>
 #include <QStatusBar>
+#include <QString>
 #include <QTableWidget>
 #include <QToolButton>
 #include <QToolTip>
 
 #include "moc_qgsmessagelogviewer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

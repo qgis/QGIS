@@ -21,7 +21,10 @@
 #include "qgsreclassifyutils.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QTemporaryDir>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsReclassifyUtils : public QgsTest
 {

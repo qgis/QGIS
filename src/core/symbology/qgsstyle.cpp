@@ -47,9 +47,12 @@
 #include <QDomNodeList>
 #include <QFile>
 #include <QFileInfo>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsstyle.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define STYLE_CURRENT_VERSION  "2"
 

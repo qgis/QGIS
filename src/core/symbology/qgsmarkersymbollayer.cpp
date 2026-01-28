@@ -42,8 +42,11 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
 

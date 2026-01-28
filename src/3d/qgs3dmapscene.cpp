@@ -66,6 +66,7 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <QString>
 #include <QSurface>
 #include <QTimer>
 #include <QUrl>
@@ -88,6 +89,8 @@
 #include <QtMath>
 
 #include "moc_qgs3dmapscene.cpp"
+
+using namespace Qt::StringLiterals;
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 

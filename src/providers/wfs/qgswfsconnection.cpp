@@ -20,7 +20,11 @@
 #include "qgssettingsentryimpl.h"
 #include "qgswfsconstants.h"
 
+#include <QString>
+
 #include "moc_qgswfsconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 static const QString SERVICE_WFS = u"WFS"_s;
 

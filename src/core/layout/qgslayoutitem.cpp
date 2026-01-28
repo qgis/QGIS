@@ -33,10 +33,13 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
 
 #include "moc_qgslayoutitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define CACHE_SIZE_LIMIT 5000
 

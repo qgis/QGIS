@@ -28,9 +28,12 @@
 #include "qgspolygon.h"
 #include "qgsrubberband.h"
 
+#include <QString>
 #include <QVector4D>
 
 #include "moc_qgsmaptoolclippingplanes.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas )
   : QgsMapTool( canvas ), m3DCanvasWidget( mapCanvas )
@@ -117,6 +120,9 @@ void QgsMapToolClippingPlanes::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( e->button() == Qt::LeftButton )
   {
     const QgsPointXY point = toMapCoordinates( e->pos() );
+    if ( mRubberBandPoints->numberOfVertices() > 0 && *mRubberBandPoints->getPoint( 0, mRubberBandPoints->numberOfVertices() - 1 ) == point )
+      return;
+
     if ( mRubberBandPoints->numberOfVertices() == 1 && !mToleranceLocked )
     {
       QgsPointXY pt0 = *mRubberBandPoints->getPoint( 0, 0 );

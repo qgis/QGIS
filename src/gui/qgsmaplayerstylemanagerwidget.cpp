@@ -31,10 +31,13 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QToolBar>
 #include <QVBoxLayout>
 
 #include "moc_qgsmaplayerstylemanagerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

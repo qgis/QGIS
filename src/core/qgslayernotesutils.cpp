@@ -17,6 +17,10 @@
 
 #include "qgsmaplayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsLayerNotesUtils::layerNotes( const QgsMapLayer *layer )
 {
   if ( !layer )

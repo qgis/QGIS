@@ -582,6 +582,8 @@ if(WITH_CORE)
   set(QT_VERSION_BASE "Qt6")
   set(QT_VERSION_BASE_LOWER "qt6")
 
+  find_package(${QT_VERSION_BASE} ${QT_MIN_VERSION} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
+
   # Use QtSerialPort optionally for GPS
   set (WITH_QTSERIALPORT TRUE CACHE BOOL "Determines whether QtSerialPort should be tried for GPS positioning")
   if (WITH_QTSERIALPORT)
@@ -606,7 +608,6 @@ if(WITH_CORE)
     message(STATUS "PDF4Qt disabled")
   endif()
 
-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
   if(WITH_QTPOSITIONING)
     find_package(${QT_VERSION_BASE} COMPONENTS Positioning REQUIRED)
   endif()

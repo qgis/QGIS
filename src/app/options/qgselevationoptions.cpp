@@ -19,8 +19,11 @@
 #include "qgssettings.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgselevationoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsElevationOptionsWidget

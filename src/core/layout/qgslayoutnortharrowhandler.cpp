@@ -22,7 +22,11 @@ email                : nyall dot dawson at gmail dot com
 #include "qgslayoutitemmap.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgslayoutnortharrowhandler.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutNorthArrowHandler::QgsLayoutNorthArrowHandler( QObject *parent )
   : QObject( parent )

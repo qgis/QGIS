@@ -17,7 +17,11 @@
 
 #include "qgsgeopackageitemguiprovider.h"
 
+#include <QString>
+
 #include "moc_qgsgeopackageitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -56,8 +60,6 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
     // (We only show the rename action when the user has a single layer selected -- it doesn't work on multi-layers at once)
     if ( selectedItems.size() == 1 && layerItem->capabilities2() & Qgis::BrowserItemCapability::Rename )
     {
-      QMenu *manageLayerMenu = new QMenu( tr( "Manage" ), menu );
-
       QAction *actionRenameLayer = new QAction( tr( "Rename Layer “%1”…" ).arg( layerItem->name() ), menu );
       const QString uri = layerItem->uri();
       const QString providerKey = layerItem->providerKey();
@@ -66,9 +68,8 @@ void QgsGeoPackageItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu
       connect( actionRenameLayer, &QAction::triggered, this, [this, uri, providerKey, tableNames, itemPointer, context] {
         renameVectorLayer( uri, providerKey, tableNames, itemPointer, context );
       } );
-      manageLayerMenu->addAction( actionRenameLayer );
 
-      menu->addMenu( manageLayerMenu );
+      QgsDataItemGuiProviderUtils::addToSubMenu( menu, actionRenameLayer, tr( "Manage" ) );
     }
   }
 

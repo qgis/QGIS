@@ -158,6 +158,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
+  processing/qgsalgorithmforceccw.cpp
+  processing/qgsalgorithmforcecw.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgenerateelevationprofile.cpp
@@ -350,6 +352,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/pdal/qgsalgorithmpdalfilternoiseradius.cpp
   processing/pdal/qgsalgorithmpdalclassifyground.cpp
   processing/pdal/qgsalgorithmpdaltransform.cpp
+  processing/pdal/qgsalgorithmpdalcompare.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp

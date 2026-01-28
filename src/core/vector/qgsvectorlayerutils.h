@@ -21,6 +21,10 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFeatureRenderer;
 class QgsSymbolLayer;
 class QgsSymbolLayerId;

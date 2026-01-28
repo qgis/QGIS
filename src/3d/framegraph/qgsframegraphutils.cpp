@@ -16,6 +16,7 @@
 #include "qgsframegraphutils.h"
 
 #include <QMetaEnum>
+#include <QString>
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QBlendEquation>

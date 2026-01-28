@@ -19,6 +19,8 @@
 #include <QString>
 #include <QtConcurrent>
 
+using namespace Qt::StringLiterals;
+
 class TestCredentials : public QgsCredentials
 {
   public:

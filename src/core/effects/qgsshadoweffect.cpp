@@ -22,6 +22,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsShadowEffect::QgsShadowEffect()
   : mColor( Qt::black )
 {

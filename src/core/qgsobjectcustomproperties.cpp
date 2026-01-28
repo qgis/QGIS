@@ -21,7 +21,10 @@
 #include "qgsxmlutils.h"
 
 #include <QDomNode>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QStringList QgsObjectCustomProperties::keys() const
 {

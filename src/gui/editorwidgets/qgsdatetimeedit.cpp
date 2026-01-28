@@ -22,10 +22,13 @@
 #include <QCalendarWidget>
 #include <QLineEdit>
 #include <QMouseEvent>
+#include <QString>
 #include <QStyle>
 #include <QStyleOptionSpinBox>
 
 #include "moc_qgsdatetimeedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )

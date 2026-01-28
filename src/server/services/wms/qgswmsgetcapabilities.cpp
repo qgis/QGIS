@@ -40,6 +40,10 @@
 #include "qgsvectorlayer.h"
 #include "qgswmsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWms
 {
   namespace

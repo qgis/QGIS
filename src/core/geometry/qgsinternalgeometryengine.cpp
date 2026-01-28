@@ -36,8 +36,11 @@
 #include "qgspolygon.h"
 #include "qgstessellator.h"
 
+#include <QString>
 #include <QTransform>
 #include <queue>
+
+using namespace Qt::StringLiterals;
 
 QgsInternalGeometryEngine::QgsInternalGeometryEngine( const QgsGeometry &geometry )
   : mGeometry( geometry.constGet() )

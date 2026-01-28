@@ -29,6 +29,10 @@
 #include "qgsprofilesnapping.h"
 #include "qgsterrainprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsMeshLayerProfileGenerator
 //

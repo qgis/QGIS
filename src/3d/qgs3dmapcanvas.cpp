@@ -25,6 +25,7 @@
 #include "qgstemporalcontroller.h"
 #include "qgswindow3dengine.h"
 
+#include <QString>
 #include <QTimer>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCoreAspect>
@@ -36,6 +37,8 @@
 #include <Qt3DRender/QRenderSettings>
 
 #include "moc_qgs3dmapcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )

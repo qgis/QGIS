@@ -35,7 +35,10 @@
 #include <QPointF>
 #include <QPolygonF>
 #include <QSize>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsSymbolLayer::sPropertyDefinitions;
 

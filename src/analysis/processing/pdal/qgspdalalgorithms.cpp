@@ -22,6 +22,7 @@
 #include "qgsalgorithmpdalbuildvpc.h"
 #include "qgsalgorithmpdalclassifyground.h"
 #include "qgsalgorithmpdalclip.h"
+#include "qgsalgorithmpdalcompare.h"
 #include "qgsalgorithmpdalconvertformat.h"
 #include "qgsalgorithmpdalcreatecopc.h"
 #include "qgsalgorithmpdaldensity.h"
@@ -43,7 +44,11 @@
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
 
+#include <QString>
+
 #include "moc_qgspdalalgorithms.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -123,6 +128,7 @@ void QgsPdalAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPdalFilterNoiseRadiusAlgorithm() );
   addAlgorithm( new QgsPdalClassifyGroundAlgorithm() );
   addAlgorithm( new QgsPdalTransformAlgorithm() );
+  addAlgorithm( new QgsPdalCompareAlgorithm() );
 }
 
 ///@endcond

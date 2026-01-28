@@ -15,7 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QString>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 #if QT_CONFIG( process )
 

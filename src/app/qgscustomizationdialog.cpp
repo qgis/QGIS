@@ -27,13 +27,17 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolButton>
 #include <QWidgetAction>
 #include <qnamespace.h>
 
 #include "moc_qgscustomizationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef QGIS_DEBUG
 #include <QAbstractItemModelTester>
@@ -42,6 +46,8 @@
 constexpr int TOOLBAR_COLUMN = 4;
 
 const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir = new QgsSettingsEntryString( u"last-save-directory"_s, sTreeCustomization, QDir::homePath(), u"Last directory used when saving a customization XML file"_s );
+
+#define ACTIONPATHS_MIMEDATA_NAME "application/qgis.customization.actionpaths"
 
 QgsCustomizationDialog::QgsCustomizationModel::QgsCustomizationModel( QgisApp *qgisApp, Mode mode, QObject *parent )
   : QAbstractItemModel( parent )
@@ -86,15 +92,32 @@ QVariant QgsCustomizationDialog::QgsCustomizationModel::data( const QModelIndex 
 
 bool QgsCustomizationDialog::QgsCustomizationModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( !index.isValid() || role != Qt::CheckStateRole )
+  if ( !index.isValid() || ( role != Qt::ItemDataRole::CheckStateRole && role != Qt::ItemDataRole::EditRole ) )
     return false;
 
   QgsCustomization::QgsItem *item = static_cast<QgsCustomization::QgsItem *>( index.internalPointer() );
-  if ( item )
+  if ( !item )
+    return false;
+
+  switch ( role )
   {
-    item->setVisible( value.value<Qt::CheckState>() == Qt::CheckState::Checked );
-    emit dataChanged( index, index, QList<int>() << Qt::CheckStateRole );
-    return true;
+    case Qt::ItemDataRole::CheckStateRole:
+      item->setVisible( value.value<Qt::CheckState>() == Qt::CheckState::Checked );
+      emit dataChanged( index, index, QList<int>() << Qt::CheckStateRole );
+      return true;
+      break;
+
+    case Qt::ItemDataRole::EditRole:
+      if ( index.column() == 1 )
+      {
+        item->setTitle( value.toString() );
+        emit dataChanged( index, index, QList<int>() << Qt::EditRole );
+        return true;
+      }
+      break;
+
+    default:
+      break;
   }
 
   return false;
@@ -106,10 +129,24 @@ Qt::ItemFlags QgsCustomizationDialog::QgsCustomizationModel::flags( const QModel
     return Qt::ItemFlags();
 
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  QgsCustomization::QgsItem *item = index.parent().isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
+  switch ( mMode )
+  {
+    case Mode::ActionSelector:
+      if ( item && item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Drag ) )
+        flags |= Qt::ItemIsDragEnabled;
+      break;
 
-  if ( mMode == Mode::ItemVisibility && index.parent().isValid() && index.column() == 0 )
-    flags |= Qt::ItemIsUserCheckable;
+    case Mode::ItemVisibility:
+      // only root item (which have an invalid parent) are checkable
+      if ( index.parent().isValid() && index.column() == 0 )
+        flags |= Qt::ItemIsUserCheckable;
 
+      if ( item && item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Rename ) && index.column() == 1 )
+        flags |= Qt::ItemIsEditable;
+
+      flags |= Qt::ItemIsDropEnabled;
+  }
   return flags;
 }
 
@@ -237,6 +274,179 @@ const std::unique_ptr<QgsCustomization> &QgsCustomizationDialog::QgsCustomizatio
   return mCustomization;
 }
 
+QModelIndex QgsCustomizationDialog::QgsCustomizationModel::addUserItem( const QModelIndex &parent )
+{
+  QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
+
+  if ( !item || ( !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) && !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) ) )
+    return {};
+
+  const int nbChildren = static_cast<int>( item->childItemList().size() );
+  beginInsertRows( parent, nbChildren, nbChildren );
+
+  if ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) )
+  {
+    const QString name = mCustomization->uniqueMenuName();
+    item->addChild( std::make_unique<QgsCustomization::QgsUserMenuItem>( name, name, item ) );
+  }
+  else if ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) )
+  {
+    const QString name = mCustomization->uniqueToolBarName();
+    item->addChild( std::make_unique<QgsCustomization::QgsUserToolBarItem>( name, name, item ) );
+  }
+  else
+  {
+    QgsDebugError( "Cannot add child to this item" );
+    return {};
+  }
+
+  endInsertRows();
+
+  return index( nbChildren, 0, parent );
+}
+
+void QgsCustomizationDialog::QgsCustomizationModel::deleteUserItems( const QModelIndexList &indexes )
+{
+  QHash<QgsCustomization::QgsItem *, QModelIndex> toDelete;
+  bool allAcceptDelete = false;
+  for ( const QModelIndex &index : indexes )
+  {
+    QgsCustomization::QgsItem *item = index.isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
+    allAcceptDelete = item && item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Delete );
+    if ( !allAcceptDelete )
+      break;
+
+    toDelete.insert( item, index );
+  }
+
+  // Shall not happen, but better to check anyway
+  if ( !allAcceptDelete )
+    return;
+
+  // We need to remove all items whose parent is already in deleted list
+  std::function<bool( QgsCustomization::QgsItem * )> alreadyDeleted = [&alreadyDeleted, &toDelete]( QgsCustomization::QgsItem *item ) {
+    return item && ( toDelete.contains( item->parent() ) || alreadyDeleted( item->parent() ) );
+  };
+
+  QHash<QgsCustomization::QgsItem *, QModelIndex>::iterator it = toDelete.begin();
+  while ( it != toDelete.end() )
+  {
+    // NOLINTBEGIN(bugprone-branch-clone)
+    if ( alreadyDeleted( it.key() ) )
+    {
+      it = toDelete.erase( it );
+    }
+    else
+    {
+      ++it;
+    }
+    // NOLINTEND(bugprone-branch-clone)
+  }
+
+  for ( QHash<QgsCustomization::QgsItem *, QModelIndex>::const_iterator it = toDelete.cbegin(); it != toDelete.cend(); ++it )
+  {
+    QgsCustomization::QgsItem *item = it.key();
+    const int index = static_cast<int>( item->parent() ? item->parent()->indexOf( item ) : -1 );
+    if ( index < 0 )
+    {
+      QgsDebugError( "Impossible to find item among parent's children" );
+      continue;
+    }
+
+    beginRemoveRows( parent( it.value() ), index, index );
+    item->parent()->deleteChild( index );
+    endRemoveRows();
+  }
+}
+
+QMimeData *QgsCustomizationDialog::QgsCustomizationModel::mimeData( const QModelIndexList &indexes ) const
+{
+  QMimeData *mimeData = new QMimeData();
+
+
+  QStringList strActionPaths;
+  QSet<int> rows;
+  for ( const QModelIndex &index : indexes )
+  {
+    // there could be several indexes for each column representing the same row
+    if ( rows.contains( index.row() ) )
+      continue;
+
+    rows << index.row();
+
+    QgsCustomization::QgsItem *item = index.isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
+    if ( QgsCustomization::QgsActionItem *action = dynamic_cast<QgsCustomization::QgsActionItem *>( item ) )
+      strActionPaths << action->path();
+  }
+
+  QByteArray actionPaths;
+  QDataStream dataStreamWrite( &actionPaths, QIODevice::WriteOnly );
+  dataStreamWrite << strActionPaths;
+
+  mimeData->setData( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ), actionPaths );
+
+  return mimeData;
+}
+
+bool QgsCustomizationDialog::QgsCustomizationModel::canDropMimeData( const QMimeData *data, Qt::DropAction action, int, int, const QModelIndex & ) const
+{
+  // QgsCustomization::Item *item = parent.isValid() ? static_cast<QgsCustomization::Item *>( parent.internalPointer() ) : nullptr;
+  return ( action == Qt::DropAction::LinkAction || action == Qt::DropAction::MoveAction || action == Qt::DropAction::CopyAction )
+         // TODO Qt issue https://qt-project.atlassian.net/browse/QTBUG-76418?focusedCommentId=465643
+         // canDropMimeData() doesn't work if the result value differs from one index to another, specially
+         // when we start with a cannot-drop-item after we start dragging
+         // Try to see if we can workaround thin in dragEnterEvent
+         // uncomment the following lines when fixed
+         /* && item && item->hasCapability( QgsCustomization::Item::ItemCapability::UserMenuChild ) */
+         && data && data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) );
+}
+
+bool QgsCustomizationDialog::QgsCustomizationModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent )
+{
+  if ( action == Qt::IgnoreAction )
+    return true;
+
+  QgsCustomization::QgsItem *item = parent.isValid() ? static_cast<QgsCustomization::QgsItem *>( parent.internalPointer() ) : nullptr;
+  if ( !item || !item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddActionRefChild ) || !data || !data->hasFormat( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) ) )
+    return false;
+
+  QDataStream dataStreamRead( data->data( QStringLiteral( ACTIONPATHS_MIMEDATA_NAME ) ) );
+  QStringList actionPaths;
+  dataStreamRead >> actionPaths;
+
+  QList<QPair<QgsCustomization::QgsActionItem *, QString>> actions; // name, path
+  for ( QString actionPath : actionPaths )
+  {
+    QgsCustomization::QgsActionItem *action = mCustomization->getItem<QgsCustomization::QgsActionItem>( actionPath );
+    if ( !action )
+    {
+      QgsDebugError( u"Invalid action path '%1'"_s.arg( actionPath ) );
+      continue;
+    }
+
+    actions << QPair<QgsCustomization::QgsActionItem *, QString> { action, actionPath };
+  }
+
+  if ( actions.isEmpty() )
+    return false;
+
+  if ( row == -1 )
+    row = 0; // if dropped directly onto group item, insert at first position
+
+  beginInsertRows( parent, row, row + static_cast<int>( actions.count() ) - 1 );
+  for ( QPair<QgsCustomization::QgsActionItem *, QString> actionAndPath : actions )
+  {
+    QgsCustomization::QgsActionItem *action = actionAndPath.first;
+    auto actionRef = std::make_unique<QgsCustomization::QgsActionRefItem>( mCustomization->uniqueActionName( action->name() ), action->title(), actionAndPath.second, item );
+    actionRef->setVisible( action->isVisible() );
+    item->insertChild( row, std::move( actionRef ) );
+  }
+
+  endInsertRows();
+
+  return true;
+}
+
 ////////////////
 
 QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
@@ -257,6 +467,9 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
   connect( actionSelectAll, &QAction::triggered, this, &QgsCustomizationDialog::onSelectAll );
   connect( mCustomizationEnabledCheckBox, &QCheckBox::toggled, this, &QgsCustomizationDialog::enableCustomization );
   connect( actionCatch, &QAction::triggered, this, &QgsCustomizationDialog::onActionCatchToggled );
+  connect( mAddAction, &QAction::triggered, this, &QgsCustomizationDialog::addUserItem );
+  connect( mDeleteAction, &QAction::triggered, this, &QgsCustomizationDialog::deleteSelectedItems );
+  connect( mListActionsAction, &QAction::triggered, this, &QgsCustomizationDialog::updateSplitterSizes );
 
   connect( buttonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::ok );
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::apply );
@@ -264,28 +477,53 @@ QgsCustomizationDialog::QgsCustomizationDialog( QgisApp *qgisApp )
   connect( buttonBox->button( QDialogButtonBox::Reset ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::reset );
   connect( buttonBox->button( QDialogButtonBox::Help ), &QAbstractButton::clicked, this, &QgsCustomizationDialog::showHelp );
 
-  mItemsVisibilityModel = new QgsCustomizationModel( mQgisApp, QgsCustomizationModel::Mode::ItemVisibility, this );
-  QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );
-  proxyModel->sort( 0 );
-  proxyModel->setFilterKeyColumn( 0 );
-  proxyModel->setFilterCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
-  proxyModel->setSortCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
+  {
+    mActionsModel = new QgsCustomizationModel( mQgisApp, QgsCustomizationModel::Mode::ActionSelector, this );
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );
+    proxyModel->sort( 0 );
+    proxyModel->setFilterKeyColumn( 0 );
+    proxyModel->setFilterCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
+    proxyModel->setSortCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
 
-#ifdef QGIS_DEBUG
-  new QAbstractItemModelTester( mItemsVisibilityModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
+    proxyModel->setRecursiveFilteringEnabled( true );
+    proxyModel->setSourceModel( mActionsModel );
+    mActionsTreeView->setModel( proxyModel );
+    mActionsTreeView->header()->resizeSection( 0, 250 );
+    connect( mFilterActionsLe, &QgsFilterLineEdit::valueChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString );
+  }
+
+  {
+    mItemsVisibilityModel = new QgsCustomizationModel( mQgisApp, QgsCustomizationModel::Mode::ItemVisibility, this );
+    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );
+    proxyModel->setFilterKeyColumn( 0 );
+    proxyModel->setFilterCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
+    proxyModel->setSortCaseSensitivity( Qt::CaseSensitivity::CaseInsensitive );
+
+#ifdef DEBUG_MODEL
+    new QAbstractItemModelTester( mItemsVisibilityModel, QAbstractItemModelTester::FailureReportingMode::Fatal, this );
 #endif
 
-  proxyModel->setRecursiveFilteringEnabled( true );
-  proxyModel->setSourceModel( mItemsVisibilityModel );
-  mTreeView->setModel( proxyModel );
-  mTreeView->resizeColumnToContents( 0 );
-  mTreeView->header()->resizeSection( 0, 250 );
-  connect( mFilterLe, &QgsFilterLineEdit::valueChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString );
+    proxyModel->setRecursiveFilteringEnabled( true );
+    proxyModel->setSourceModel( mItemsVisibilityModel );
+    mTreeView->setModel( proxyModel );
+    mTreeView->resizeColumnToContents( 0 );
+    mTreeView->header()->resizeSection( 0, 250 );
+    mTreeView->setContextMenuPolicy( Qt::ContextMenuPolicy::ActionsContextMenu );
+    mTreeView->addActions( QList<QAction *>() << mDeleteAction << mAddAction );
+    connect( mFilterLe, &QgsFilterLineEdit::valueChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString );
+    connect( mTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsCustomizationDialog::currentItemChanged );
+    connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsCustomizationDialog::selectedItemsChanged );
+  }
 
+  mActionsTreeView->setEnabled( false );
+  mFilterActionsLe->setEnabled( false );
   mTreeView->setEnabled( false );
   toolBar->setEnabled( false );
   mFilterLe->setEnabled( false );
   mCustomizationEnabledCheckBox->setChecked( customization()->isEnabled() );
+  updateSplitterSizes();
+  currentItemChanged();
+  selectedItemsChanged();
 }
 
 void QgsCustomizationDialog::reset()
@@ -377,9 +615,11 @@ void QgsCustomizationDialog::onSelectAll( bool )
 
 void QgsCustomizationDialog::enableCustomization( bool checked )
 {
+  mActionsTreeView->setEnabled( checked );
   mTreeView->setEnabled( checked );
   toolBar->setEnabled( checked );
   mFilterLe->setEnabled( checked );
+  mFilterActionsLe->setEnabled( checked );
 
   if ( checked != customization()->isEnabled() )
     customization()->setEnabled( checked );
@@ -388,6 +628,69 @@ void QgsCustomizationDialog::enableCustomization( bool checked )
 void QgsCustomizationDialog::showHelp()
 {
   QgsHelp::openHelp( u"introduction/qgis_configuration.html#sec-customization"_s );
+}
+
+void QgsCustomizationDialog::currentItemChanged()
+{
+  const QModelIndex index = treeViewModel()->mapToSource( mTreeView->currentIndex() );
+  QgsCustomization::QgsItem *item = index.isValid() ? static_cast<QgsCustomization::QgsItem *>( index.internalPointer() ) : nullptr;
+
+  const bool isEnabled = item && ( item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserMenuChild ) || item->hasCapability( QgsCustomization::QgsItem::ItemCapability::AddUserToolBarChild ) );
+  mAddAction->setEnabled( isEnabled );
+
+  QString tooltip = tr( "Add a user defined menu or toolbar" );
+  if ( !isEnabled )
+    tooltip += "<br/><br/>" + tr( "Current item doesn't accept user menu or toolbar" );
+
+  mAddAction->setToolTip( tooltip );
+}
+
+void QgsCustomizationDialog::selectedItemsChanged()
+{
+  bool allAcceptDelete = false;
+  for ( const QModelIndex &index : mTreeView->selectionModel()->selectedIndexes() )
+  {
+    const QModelIndex sourceIndex = treeViewModel()->mapToSource( index );
+    QgsCustomization::QgsItem *item = sourceIndex.isValid() ? static_cast<QgsCustomization::QgsItem *>( sourceIndex.internalPointer() ) : nullptr;
+    allAcceptDelete = item && item->hasCapability( QgsCustomization::QgsItem::ItemCapability::Delete );
+    if ( !allAcceptDelete )
+      break;
+  }
+
+  mDeleteAction->setEnabled( allAcceptDelete );
+
+  QString tooltip = tr( "Delete selected items" );
+  if ( !allAcceptDelete )
+    tooltip += "<br/><br/>" + tr( "Currently selected item are not all deletable" );
+
+  mDeleteAction->setToolTip( tooltip );
+}
+
+void QgsCustomizationDialog::addUserItem()
+{
+  const QModelIndex parentIndex = treeViewModel()->mapToSource( mTreeView->selectionModel()->currentIndex() );
+  const QModelIndex userItemIndex = mItemsVisibilityModel->addUserItem( parentIndex );
+  const QModelIndex viewUserItemIndex = treeViewModel()->mapFromSource( userItemIndex );
+  mTreeView->scrollTo( viewUserItemIndex );
+  mTreeView->setCurrentIndex( viewUserItemIndex );
+}
+
+void QgsCustomizationDialog::deleteSelectedItems()
+{
+  QModelIndexList sourceIndexes;
+  for ( const QModelIndex &index : mTreeView->selectionModel()->selectedIndexes() )
+  {
+    sourceIndexes << treeViewModel()->mapToSource( index );
+  }
+
+  mItemsVisibilityModel->deleteUserItems( sourceIndexes );
+}
+
+void QgsCustomizationDialog::updateSplitterSizes()
+{
+  // the splitter size values are arbitrary here, the only important thing is to set 0
+  // when the tool button is not checked
+  mSplitter->setSizes( QList<int>() << 200 << ( mListActionsAction->isChecked() ? 200 : 0 ) );
 }
 
 void QgsCustomizationDialog::onActionCatchToggled( bool triggered )
@@ -443,7 +746,7 @@ bool QgsCustomizationDialog::selectWidget( QWidget *widget )
   if ( items.isEmpty() )
     return false;
 
-  const QModelIndex currentIndex = static_cast<QSortFilterProxyModel *>( mTreeView->model() )->mapFromSource( items.first() );
+  const QModelIndex currentIndex = treeViewModel()->mapFromSource( items.first() );
   mTreeView->selectionModel()->setCurrentIndex( currentIndex, QItemSelectionModel::SelectCurrent );
 
   raise();
@@ -467,7 +770,12 @@ void QgsCustomizationDialog::preNotify( QObject *receiver, QEvent *event, bool *
   }
 }
 
-const std::unique_ptr<QgsCustomization> &QgsCustomizationDialog::customization() const
+QgsCustomization *QgsCustomizationDialog::customization() const
 {
-  return mItemsVisibilityModel->customization();
+  return mItemsVisibilityModel->customization().get();
+}
+
+QSortFilterProxyModel *QgsCustomizationDialog::treeViewModel() const
+{
+  return static_cast<QSortFilterProxyModel *>( mTreeView->model() );
 }

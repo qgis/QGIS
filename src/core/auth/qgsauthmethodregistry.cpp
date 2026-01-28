@@ -24,6 +24,10 @@
 #include "qgsmessagelog.h"
 #include "qgsmessageoutput.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_STATIC_PROVIDERS
 #include "qgsauthbasicmethod.h"
 #include "qgsauthesritokenmethod.h"

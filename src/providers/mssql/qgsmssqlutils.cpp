@@ -20,6 +20,10 @@
 #include "qgsvariantutils.h"
 #include "qgswkbtypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsMssqlUtils::quotedValue( const QVariant &value )
 {
   if ( QgsVariantUtils::isNull( value ) )

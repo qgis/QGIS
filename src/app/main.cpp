@@ -42,6 +42,8 @@
 #include <QStyleFactory>
 #include <QSurfaceFormat>
 
+using namespace Qt::StringLiterals;
+
 #if !defined( Q_OS_WIN )
 #include "sigwatch.h"
 #endif

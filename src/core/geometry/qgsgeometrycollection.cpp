@@ -31,6 +31,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeometryCollection::QgsGeometryCollection()
 {
   mWkbType = Qgis::WkbType::GeometryCollection;

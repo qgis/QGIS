@@ -20,6 +20,10 @@
 #include "qgspainterswapper.h"
 #include "qgssymbollayerreference.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMaskMarkerSymbolLayer::QgsMaskMarkerSymbolLayer()
 {
   mSymbol = QgsMarkerSymbol::createSimple( QVariantMap() );

@@ -20,7 +20,11 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeregistrybridge.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root, QgsProject *project, QObject *parent )
   : QObject( parent )

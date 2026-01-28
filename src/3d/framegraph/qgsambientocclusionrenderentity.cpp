@@ -17,6 +17,7 @@
 
 #include <random>
 
+#include <QString>
 #include <Qt3DRender/QParameter>
 
 #include "moc_qgsambientocclusionrenderentity.cpp"

@@ -17,6 +17,10 @@
 
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 Qgs3DMapExportSettings::Qgs3DMapExportSettings()
 {
   const QgsSettings settings;

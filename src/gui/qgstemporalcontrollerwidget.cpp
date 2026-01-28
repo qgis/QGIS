@@ -33,8 +33,11 @@
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgstemporalcontrollerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTemporalControllerWidget::QgsTemporalControllerWidget( QWidget *parent )
   : QgsPanelWidget( parent )

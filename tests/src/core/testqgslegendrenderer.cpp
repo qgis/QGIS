@@ -53,6 +53,9 @@
 
 #include <QJsonArray>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestRasterRenderer : public QgsPalettedRasterRenderer
 {

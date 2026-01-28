@@ -69,6 +69,9 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DRendering : public QgsTest
 {

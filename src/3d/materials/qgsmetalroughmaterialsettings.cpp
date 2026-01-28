@@ -19,6 +19,10 @@
 #include "qgsmetalroughmaterial.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsMetalRoughMaterialSettings::type() const
 {
   return u"metalrough"_s;

@@ -29,10 +29,13 @@
 #include <QNetworkCacheMetaData>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrl>
 #include <QWaitCondition>
 
 #include "moc_qgsblockingnetworkrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBlockingNetworkRequest::QgsBlockingNetworkRequest( Qgis::NetworkRequestFlags flags )
   : mFlags( flags )

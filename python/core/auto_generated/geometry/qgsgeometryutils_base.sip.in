@@ -14,6 +14,11 @@ class QgsGeometryUtilsBase
 %Docstring(signature="appended")
 Convenience functions for geometry utils.
 
+.. note::
+
+   This class contains the low-level mathematical implementations using primitive types (like double),
+   avoiding the use of QGIS geometry classes (like :py:class:`QgsPoint`).
+
 .. versionadded:: 3.34
 %End
 

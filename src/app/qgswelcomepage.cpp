@@ -40,11 +40,14 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QSplitter>
+#include <QString>
 #include <QTextBrowser>
 #include <QUrl>
 #include <QVBoxLayout>
 
 #include "moc_qgswelcomepage.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define FEED_URL "https://feed.qgis.org/"
 

@@ -25,7 +25,11 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsstyleentityvisitor.h"
 
+#include <QString>
+
 #include "moc_qgslayoutmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QgsAbstractProjectStoredObjectManager( project )

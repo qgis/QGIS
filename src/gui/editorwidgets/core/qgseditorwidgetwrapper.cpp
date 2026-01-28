@@ -22,9 +22,12 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
 #include <QTableView>
 
 #include "moc_qgseditorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )

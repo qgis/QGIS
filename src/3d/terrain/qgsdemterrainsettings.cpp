@@ -19,6 +19,10 @@
 #include "qgsdemterraingenerator.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractTerrainSettings *QgsDemTerrainSettings::create()
 {
   return new QgsDemTerrainSettings();

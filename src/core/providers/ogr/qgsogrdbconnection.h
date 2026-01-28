@@ -22,7 +22,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

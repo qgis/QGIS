@@ -21,6 +21,10 @@
 
 #include "qgsdataitemguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT

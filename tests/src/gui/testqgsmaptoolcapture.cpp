@@ -25,6 +25,9 @@
 
 #include <QCoreApplication>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolCapture : public QObject
 {

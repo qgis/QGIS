@@ -19,6 +19,8 @@
 #include <QSignalSpy>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgis.h"
 #include "qgsapplication.h"

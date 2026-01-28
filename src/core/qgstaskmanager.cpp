@@ -23,9 +23,12 @@
 #include "qgsproject.h"
 
 #include <QStack>
+#include <QString>
 #include <QtConcurrentRun>
 
 #include "moc_qgstaskmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsTask
