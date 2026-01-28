@@ -1045,6 +1045,24 @@ Retrieves the second fill color for the grid frame.
 .. seealso:: :py:func:`frameFillColor1`
 %End
 
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+%Docstring
+Returns the horizontal alignment for annotation text.
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+
+.. versionadded:: 4.0
+%End
+
+    void setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment );
+%Docstring
+Sets the horizontal ``alignment`` for annotation text.
+
+.. seealso:: :py:func:`horizontalAlignment`
+
+.. versionadded:: 4.0
+%End
+
     virtual QgsExpressionContext createExpressionContext() const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;

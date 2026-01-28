@@ -15,7 +15,9 @@ from typing import Optional
 from qgis.PyQt.QtCore import QDir, QRectF
 from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
+    Qgis,
     QgsCoordinateReferenceSystem,
     QgsLayout,
     QgsLayoutItemMap,
@@ -28,6 +30,7 @@ from qgis.core import (
     QgsLineSymbol,
     QgsProperty,
     QgsSymbolLayer,
+    QgsReadWriteContext,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -42,6 +45,32 @@ class TestQgsLayoutMapGrid(QgisTestCase):
     @classmethod
     def control_path_prefix(cls):
         return "composer_mapgrid"
+
+    def test_getters_setters(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map_item = QgsLayoutItemMap(layout)
+
+        grid = QgsLayoutItemMapGrid("test", map_item)
+
+        # default MUST be center to maintain existing project appearance
+        self.assertEqual(
+            grid.horizontalAlignment(), Qgis.TextHorizontalAlignment.Center
+        )
+        grid.setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
+        self.assertEqual(grid.horizontalAlignment(), Qgis.TextHorizontalAlignment.Right)
+
+        doc = QDomDocument()
+        elem = doc.createElement("grid")
+        context = QgsReadWriteContext()
+        self.assertTrue(grid.writeXml(elem, doc, context))
+
+        grid2 = QgsLayoutItemMapGrid("test2", map_item)
+        self.assertTrue(grid2.readXml(elem.firstChildElement(), doc, context))
+
+        self.assertEqual(
+            grid2.horizontalAlignment(), Qgis.TextHorizontalAlignment.Right
+        )
 
     def testGrid(self):
         layout = QgsLayout(QgsProject.instance())
@@ -1333,6 +1362,1241 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         self.assertTrue(
             self.render_layout_check(
                 "composermap_datadefined_annotationdistance", layout
+            )
+        )
+
+    def testHorizontalAlignCenter(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 20, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_hcenter", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignLeft(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 20, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Left)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_left", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignRight(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 20, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_right", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignCenterVert(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_hcenter_vert", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignLeftVert(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Left)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_left_vert", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignRightVert(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_right_vert", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignCenterVertDescending(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_hcenter_vert_descend",
+                layout,
+                allowed_mismatch=100,
+            )
+        )
+
+    def testHorizontalAlignLeftVertDescending(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Left)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_left_vert_descend", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignRightVertDescending(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_right_vert_descend", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignCenterBoundaryDirection(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_hcenter_boundary_dir",
+                layout,
+                allowed_mismatch=100,
+            )
+        )
+
+    def testHorizontalAlignLeftBoundaryDirection(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Left)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_left_boundary_dir", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignRightBoundaryDirection(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_right_boundary_dir", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignCenterAboveTick(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_hcenter_above_tick", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignLeftAboveTick(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Left)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_left_above_tick", layout, allowed_mismatch=100
+            )
+        )
+
+    def testHorizontalAlignRightAboveTick(self):
+        layout = QgsLayout(QgsProject.instance())
+        layout.initializeDefaults()
+        map = QgsLayoutItemMap(layout)
+        map.attemptSetSceneRect(QRectF(50, 60, 180, 100))
+        map.setFrameEnabled(True)
+        map.setBackgroundColor(QColor(150, 100, 100))
+        layout.addLayoutItem(map)
+
+        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
+        map.setExtent(myRectangle)
+        map.grid().setIntervalX(2000)
+        map.grid().setIntervalY(2000)
+        map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.ExteriorTicks)
+        map.grid().setFrameWidth(10)
+        map.grid().setFramePenSize(1)
+        map.grid().setFramePenColor(QColor(0, 0, 0))
+        map.grid().setEnabled(True)
+        map.grid().setStyle(QgsLayoutItemMapGrid.GridStyle.FrameAnnotationsOnly)
+        map.grid().setAnnotationEnabled(True)
+        map.grid().setHorizontalAlignment(Qgis.TextHorizontalAlignment.Right)
+        format = QgsTextFormat.fromQFont(getTestFont("Bold"))
+        map.grid().setAnnotationTextFormat(format)
+        map.grid().setAnnotationPrecision(0)
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+        map.grid().setAnnotationPosition(
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDisplay(
+            QgsLayoutItemMapGrid.DisplayMode.ShowAll,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Right,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Bottom,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Left,
+        )
+        map.grid().setAnnotationDirection(
+            QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
+            QgsLayoutItemMapGrid.BorderSide.Top,
+        )
+
+        map.grid().setAnnotationFormat(Qgis.MapGridAnnotationFormat.CustomFormat)
+        map.grid().setAnnotationExpression("@grid_number || '\\nXX'")
+        map.updateBoundingRect()
+
+        self.assertTrue(
+            self.render_layout_check(
+                "composermap_multiline_right_above_tick", layout, allowed_mismatch=100
             )
         )
 
