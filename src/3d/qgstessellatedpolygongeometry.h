@@ -23,6 +23,7 @@
 class Qgs3DSceneExporter;
 class QgsPolygon;
 class QgsPointXY;
+class QVector3D;
 
 namespace Qt3DCore
 {
@@ -82,7 +83,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      * Returns ID of the feature to which given triangle index belongs (used for picking).
      * In case such triangle index does not match any feature, FID_NULL is returned.
      */
-    QgsFeatureId triangleIndexToFeatureId( uint triangleIndex ) const;
+    QgsFeatureId triangleIndexToFeatureId( uint triangleIndex, QVector3D ( *facePoints )[3] = nullptr ) const;
 
     //! Returns included feature ids
     QVector<QgsFeatureId> featureIds() const { return mTriangleIndexFids; }

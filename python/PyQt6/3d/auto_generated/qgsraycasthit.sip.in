@@ -59,6 +59,11 @@ Sets the point cloud point ``attributes``, empty map if hit was not on a
 point cloud point
 %End
 
+    void addProperty( const QString &key, const QVariant &value );
+%Docstring
+Adds a property to the hit
+%End
+
 };
 
 /************************************************************************
