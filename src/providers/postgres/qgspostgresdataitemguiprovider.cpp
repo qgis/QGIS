@@ -940,6 +940,20 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
     return;
   }
 
+  QgsProject *project = QgsProject::instance();
+
+  QgsPostgresProjectUri pgProjectUri;
+  pgProjectUri.connInfo = conn->uri();
+  pgProjectUri.schemaName = projectItem->schemaName();
+  pgProjectUri.projectName = projectItem->name();
+
+  // if project fileName is same as the selected project encoded uri, then update current project with new fileName
+  if ( project->fileName() == QgsPostgresProjectStorage::encodeUri( pgProjectUri ) )
+  {
+    pgProjectUri.projectName = dlg.name();
+    project->setFileName( QgsPostgresProjectStorage::encodeUri( pgProjectUri ) );
+  }
+
   if ( !QgsPostgresUtils::renameProject( conn, projectItem->schemaName(), projectItem->name(), dlg.name() ) )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
