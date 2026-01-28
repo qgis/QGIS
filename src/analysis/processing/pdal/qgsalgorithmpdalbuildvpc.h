@@ -44,6 +44,13 @@ class QgsPdalBuildVpcAlgorithm : public QgsPdalAlgorithmBase
 
     QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+  private:
+    bool mConvertToCopc = false;
+    QString mTemporaryVpcFile;
+    QString mConvertToCopcFile;
+
     friend class TestQgsProcessingPdalAlgs;
 };
 
