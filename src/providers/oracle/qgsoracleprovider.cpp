@@ -2766,8 +2766,37 @@ void QgsOracleProvider::updateExtents()
 
 bool QgsOracleProvider::getGeometryDetails()
 {
+  QgsOracleConn *conn = connectionRO();
+  QSqlQuery qry( *conn );
+  QString ownerName = mOwnerName;
+  QString tableName = mTableName;
+  const QString requestedGeometryColumn = mGeometryColumn;
+
+  if ( mGeometryColumn.isNull() && mRequestedGeomType != Qgis::WkbType::NoGeometry && !mIsQuery )
+  {
+    // if not specified in advance, determine geometry column name
+    const QString sql { u"SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS WHERE owner=? AND table_name=? AND data_type='SDO_GEOMETRY'"_s };
+    if ( LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName, mUri.uri() ) )
+    {
+      if ( qry.next() )
+      {
+        mGeometryColumn = qry.value( 0 ).toString();
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Could not determine geometry column name: No SDO_GEOMETRY results found for %1.%2 in ALL_TAB_COLUMNS" ).arg( ownerName, tableName ), tr( "Oracle" ) );
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "Could not determine geometry column name.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( qry.lastError().text() ).arg( qry.lastQuery() ), tr( "Oracle" ) );
+    }
+  }
+
   if ( mGeometryColumn.isNull() )
   {
+    // maintain old behavior -- if we had no explicit geometry column name and can't determine it automatically, treat
+    // the layer as a valid non-spatial table
     mDetectedGeomType = Qgis::WkbType::NoGeometry;
     mValid = true;
     return true;
@@ -2780,12 +2809,6 @@ bool QgsOracleProvider::getGeometryDetails()
     return true;
   }
 
-  QString ownerName = mOwnerName;
-  QString tableName = mTableName;
-  QString geomCol = mGeometryColumn;
-
-  QgsOracleConn *conn = connectionRO();
-  QSqlQuery qry( *conn );
   if ( mIsQuery )
   {
     const QString sql { QStringLiteral( "SELECT %1 FROM %2 WHERE 1=0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery ) };
@@ -2816,7 +2839,7 @@ bool QgsOracleProvider::getGeometryDetails()
     {
       const QString sql { QStringLiteral( "SELECT srid FROM mdsys.all_sdo_geom_metadata WHERE owner=? AND table_name=? AND column_name=?" ) };
 
-      if ( LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName << geomCol, mUri.uri() ) )
+      if ( LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName << mGeometryColumn, mUri.uri() ) )
       {
         if ( qry.next() )
         {
@@ -2824,7 +2847,7 @@ bool QgsOracleProvider::getGeometryDetails()
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Could not retrieve SRID of %1.\nThe error message from the database was:\n%2.\nSQL: %3" ).arg( mQuery ).arg( qry.lastError().text() ).arg( qry.lastQuery() ), tr( "Oracle" ) );
+          QgsMessageLog::logMessage( tr( "Could not retrieve SRID of %1.%2 (%3): No matches found in all_sdo_geom_metadata" ).arg( ownerName, tableName, mGeometryColumn ), tr( "Oracle" ) );
         }
       }
       else
@@ -2835,7 +2858,7 @@ bool QgsOracleProvider::getGeometryDetails()
 
     QString sql { mUseEstimatedMetadata ? QStringLiteral( "SELECT DISTINCT gtype FROM (SELECT t.%1.sdo_gtype AS gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<100) WHERE rownum<=2" ) : QStringLiteral( "SELECT DISTINCT t.%1.sdo_gtype FROM %2 t WHERE t.%1 IS NOT NULL AND rownum<=2" ) };
 
-    sql = sql.arg( quotedIdentifier( geomCol ), mQuery );
+    sql = sql.arg( quotedIdentifier( mGeometryColumn ), mQuery );
 
     if ( LoggedExecStatic( qry, sql, QVariantList(), mUri.uri() ) )
     {
@@ -2907,8 +2930,14 @@ bool QgsOracleProvider::getGeometryDetails()
         }
         else
         {
-          // we need to filter
+          // mixed types, so we need to filter
           detectedType = Qgis::WkbType::Unknown;
+          // maybe only a single detected srid, if so, we can at least set that
+          const QSet< int > detectedSrids = qgis::listToSet( layerProperty.srids );
+          if ( detectedSrids.size() == 1 )
+          {
+            detectedSrid = *detectedSrids.constBegin();
+          }
         }
       }
       else
@@ -2928,7 +2957,24 @@ bool QgsOracleProvider::getGeometryDetails()
   QgsDebugMsgLevel( QStringLiteral( "Detected type is %1" ).arg( qgsEnumValueToKey( mDetectedGeomType ) ), 2 );
   QgsDebugMsgLevel( QStringLiteral( "Requested type is %1" ).arg( qgsEnumValueToKey( mRequestedGeomType ) ), 2 );
 
-  mValid = ( mDetectedGeomType != Qgis::WkbType::Unknown || mRequestedGeomType != Qgis::WkbType::Unknown );
+  if ( mDetectedGeomType == Qgis::WkbType::Unknown && mRequestedGeomType == Qgis::WkbType::Unknown )
+  {
+    if ( requestedGeometryColumn.isNull() )
+    {
+      // maintain old behavior -- if we had no explicit geometry column name and can't determine it automatically, treat
+      // the layer as a valid non-spatial table
+      mDetectedGeomType = Qgis::WkbType::NoGeometry;
+      mValid = true;
+    }
+    else
+    {
+      mValid = false;
+    }
+  }
+  else
+  {
+    mValid = true;
+  }
 
   if ( !mValid )
     return false;
