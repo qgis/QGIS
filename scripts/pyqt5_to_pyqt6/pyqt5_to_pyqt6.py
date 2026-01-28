@@ -227,7 +227,8 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
     removed_imports = defaultdict(set)
     import_offsets = {}
     has_unfixed_errors = False  # True if there is at least one error impossible to fix
-
+    fix_full_enums = {}
+    # Full replacements for enums (Owner.Value -> Fully.Qualified.Value)
     object_types = {}
 
     def visit_assign(_node: ast.Assign, _parent):
@@ -475,7 +476,6 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 visit_subscript(node, parent)
             elif isinstance(node, ast.Assign):
                 visit_assign(node, parent)
-
             if (
                 isinstance(node, ast.FunctionDef)
                 and node.name in rename_function_definitions
@@ -523,12 +523,38 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                 and not isinstance(parent, ast.Attribute)
                 and (node.value.id, node.attr) in qt_enums
             ):
-                fix_qt_enums[Offset(node.lineno, node.col_offset)] = (
+                enum_type = qt_enums[(node.value.id, node.attr)]
+                offset = Offset(node.lineno, node.col_offset)
+
+                # Cache resolved enum type to avoid repeating the lookup and to make the special-casing clearer.
+                # Special-case for QGIS Processing enums: suggested owner is wrong
+                if (
+                    node.value.id == "QgsProcessing"
+                    and enum_type == "ProcessingSourceType"
+                ):
+                    fix_full_enums[offset] = (
+                        f"QgsProcessing.SourceType.{node.attr}"
+                        if qgis3_compat
+                        else f"Qgis.ProcessingSourceType.{node.attr}"
+                    )
+                    continue
+
+                if (
+                    node.value.id == "QgsProcessingParameterNumber"
+                    and enum_type == "ProcessingNumberParameterType"
+                ):
+                    fix_full_enums[offset] = (
+                        f"QgsProcessingParameterNumber.Type.{node.attr}"
+                        if qgis3_compat
+                        else f"Qgis.ProcessingNumberParameterType.{node.attr}"
+                    )
+                    continue
+
+                fix_qt_enums[offset] = (
                     node.value.id,
-                    qt_enums[(node.value.id, node.attr)],
+                    enum_type,
                     node.attr,
                 )
-
             if (
                 isinstance(node, ast.Attribute)
                 and isinstance(node.value, ast.Name)
@@ -556,6 +582,10 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
         for key, value in fix_qt_enums.items():
             logging.warning(
                 f"{filename}:{key.line}:{key.utf8_byte_offset} - Enum error, add '{value[1]}' before '{value[2]}'"
+            )
+        for key, value in fix_full_enums.items():
+            logging.warning(
+                f"{filename}:{key.line}:{key.utf8_byte_offset} - Enum error, replace with '{value}'"
             )
 
         for key, value in member_renames.items():
@@ -599,6 +629,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
             fix_qvariant_type,
             fix_pyqt_import,
             fix_qt_enums,
+            fix_full_enums,
             rename_qt_enums,
             member_renames,
             function_def_renames,
@@ -612,6 +643,17 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
 
     tokens = src_to_tokens(contents)
     for i, token in reversed_enumerate(tokens):
+        # Special-case: QGIS Processing enums have wrong suggested owner
+        # Replace "QgsProcessing.TypeVectorLine" -> "QgsProcessing.SourceType.TypeVectorLine"
+        # Replace "QgsProcessingParameterNumber.Double" -> "QgsProcessingParameterNumber.Type.Double"
+        if token.offset in fix_full_enums:
+            # Replace "Owner.Value" with full qualified name
+            # tokens[i] should be Owner, tokens[i+1] '.', tokens[i+2] Value
+            assert tokens[i + 1].src == "."
+            tokens[i] = tokens[i]._replace(src=fix_full_enums[token.offset])
+            tokens[i + 1] = tokens[i + 1]._replace(src="")
+            tokens[i + 2] = tokens[i + 2]._replace(src="")
+
         if token.offset in import_offsets:
             end_import_offset = Offset(*import_offsets[token.offset][-2:])
             del import_offsets[token.offset]
