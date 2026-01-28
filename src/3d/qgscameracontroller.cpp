@@ -561,6 +561,17 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
     float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
 
+    switch ( mVerticalAxisInversion )
+    {
+      case Qgis::VerticalAxisInversion::Always:
+      case Qgis::VerticalAxisInversion::WhenDragging:
+        pitchDiff *= -1;
+        break;
+
+      case Qgis::VerticalAxisInversion::Never:
+        break;
+    }
+
     if ( !mDepthBufferIsReady )
       return;
 
@@ -748,8 +759,19 @@ void QgsCameraController::onPositionChangedGlobeTerrainNavigation( Qt3DInput::QM
     setMouseParameters( MouseOperation::RotationCenter, mMousePos );
 
     const float scale = static_cast<float>( std::max( mScene->engine()->size().width(), mScene->engine()->size().height() ) );
-    const float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
+    float pitchDiff = 180.0f * static_cast<float>( mouse->y() - mClickPoint.y() ) / scale;
     const float yawDiff = -180.0f * static_cast<float>( mouse->x() - mClickPoint.x() ) / scale;
+
+    switch ( mVerticalAxisInversion )
+    {
+      case Qgis::VerticalAxisInversion::Always:
+      case Qgis::VerticalAxisInversion::WhenDragging:
+        pitchDiff *= -1;
+        break;
+
+      case Qgis::VerticalAxisInversion::Never:
+        break;
+    }
 
     mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
     mCameraPose.setHeadingAngle( mRotationYaw + yawDiff );
