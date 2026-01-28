@@ -937,40 +937,7 @@ void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectIte
     return;
   }
 
-  const QString newUri = projectItem->uriWithNewName( dlg.name() );
-
-  // read the project, set title and new filename
-  QgsProject project;
-  project.read( projectItem->path() );
-  project.setTitle( dlg.name() );
-  project.setFileName( newUri );
-
-  // write project to the database
-  const bool success = project.write();
-  if ( !success )
-  {
-    notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
-    conn->unref();
-    return;
-  }
-
-  // if column exist copy from old project to the newly saved one prior to deleting the old one
-  if ( QgsPostgresUtils::columnExists( conn, projectItem->schemaName(), u"qgis_projects"_s, u"comment"_s ) )
-  {
-    const QString sql = u"UPDATE %1.%2 SET comment = (SELECT comment FROM %1.%2 WHERE name = %3) WHERE name = %4"_s
-                          .arg( QgsPostgresConn::quotedIdentifier( projectItem->schemaName() ), QgsPostgresConn::quotedIdentifier( u"qgis_projects"_s ), QgsPostgresConn::quotedValue( projectItem->name() ), QgsPostgresConn::quotedValue( dlg.name() ) );
-
-    QgsPostgresResult result( conn->LoggedPQexec( "QgsPostgresDataItemGuiProvider", sql ) );
-
-    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-    {
-      notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
-      conn->unref();
-      return;
-    }
-  }
-
-  if ( !QgsPostgresUtils::deleteProjectFromSchema( conn, projectItem->name(), projectItem->schemaName() ) )
+  if ( !QgsPostgresUtils::renameProject( conn, projectItem->schemaName(), projectItem->name(), dlg.name() ) )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project “%1” to “%2”" ).arg( projectItem->name(), dlg.name() ), context, Qgis::MessageLevel::Warning );
     conn->unref();
