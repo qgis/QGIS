@@ -294,6 +294,7 @@ void TestQgs3DCameraController::testRotationCenter()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -445,6 +446,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -588,6 +590,7 @@ void TestQgs3DCameraController::testTranslateRotationCenterTranslate()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
@@ -1008,6 +1011,7 @@ void TestQgs3DCameraController::testRotationCenterRotationCameraRotationCenter()
   mapSettings->setCrs( mLayerRgb->crs() );
   mapSettings->setExtent( fullExtent );
   mapSettings->setLayers( QList<QgsMapLayer *>() << mLayerRgb << mLayerBuildings );
+  mapSettings->setCameraVerticalAxisInversion( Qgis::VerticalAxisInversion::Never );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
   flatTerrain->setCrs( mapSettings->crs(), QgsCoordinateTransformContext() );
