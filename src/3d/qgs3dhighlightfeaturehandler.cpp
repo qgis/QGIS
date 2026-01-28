@@ -29,9 +29,12 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgs3dhighlightfeaturehandler.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DHighlightFeatureHandler::Qgs3DHighlightFeatureHandler( Qgs3DMapScene *scene )
   : mScene( scene )

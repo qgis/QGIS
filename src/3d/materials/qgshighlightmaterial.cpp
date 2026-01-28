@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 
 #include <QColor>
+#include <QString>
 #include <QUrl>
 #include <Qt3DRender/QCullFace>
 #include <Qt3DRender/QDepthTest>
@@ -27,6 +28,8 @@
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgshighlightmaterial.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
