@@ -264,6 +264,11 @@ arguments specify the translation in pixels.
     virtual Type type() const;
 
 
+    QgsVertexId nodeId() const;
+%Docstring
+Returns the deleted node ID.
+%End
+
     double translationX() const;
 %Docstring
 Returns the x-axis translation, in layer units.

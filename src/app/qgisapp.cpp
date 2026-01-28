@@ -3258,7 +3258,7 @@ void QgisApp::createActions()
 
     QShortcut *selectAllShortcut = new QShortcut( QKeySequence::SelectAll, widget );
     selectAllShortcut->setContext( Qt::WidgetWithChildrenShortcut );
-    connect( selectAllShortcut, &QShortcut::activated, this, [this] { selectAll(); } );
+    connect( selectAllShortcut, &QShortcut::activated, this, &QgisApp::selectAll );
   }
 
 #ifndef HAVE_POSTGRESQL
