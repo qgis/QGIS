@@ -221,6 +221,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmraiseexception.cpp
   processing/qgsalgorithmrandomextract.cpp
+  processing/qgsalgorithmrandomextractwithinsubsets.cpp
   processing/qgsalgorithmrandompointsextent.cpp
   processing/qgsalgorithmrandompointsinpolygons.cpp
   processing/qgsalgorithmrandompointsonlines.cpp
