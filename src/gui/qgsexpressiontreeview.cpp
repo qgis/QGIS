@@ -296,6 +296,8 @@ void QgsExpressionTreeView::updateFunctionTree()
   // use -1 as sort order here -- NULL should always show before the field list
   registerItem( u"Fields and Values"_s, u"NULL"_s, u"NULL"_s, QString(), QgsExpressionItem::ExpressionNode, false, -1 );
 
+  registerItem( u"String"_s, u"Escape sequences"_s, u"'\\n'"_s, QString(), QgsExpressionItem::ExpressionNode, false, -1, QIcon(), QgsExpression::tags( u"Escape sequences"_s ) );
+
   // Load the functions from the QgsExpression class
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
