@@ -101,6 +101,30 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
      */
     static QgsCircle fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 ) SIP_HOLDGIL; // cppcheck-suppress duplInheritedMember
 
+    /**
+     * Constructs circles passing through 2 points with a given \a radius.
+     *
+     * This method returns 0, 1 or 2 circles depending on the geometric configuration:
+     *
+     * - 0 circles: if the radius is smaller than half the distance between the points
+     * - 1 circle: if the radius equals half the distance (diameter case)
+     * - 2 circles: if the radius is larger than half the distance
+     *
+     * When \a pos is specified and valid, only the circle whose center is closest
+     * to \a pos is returned.
+     *
+     * Z and M values are transferred from the input points to the circle center.
+     * The azimuth always takes the default value.
+     *
+     * \param pt1 First point on the circle.
+     * \param pt2 Second point on the circle.
+     * \param radius The radius of the circle (must be positive).
+     * \param pos Optional point to select the nearest circle center.
+     * \return Vector containing 0, 1 or 2 circles.
+     *
+     * \since QGIS 4.0
+     */
+    static QVector<QgsCircle> from2PointsRadius( const QgsPoint &pt1, const QgsPoint &pt2, double radius, const QgsPoint &pos = QgsPoint() ) SIP_HOLDGIL;
 
     /**
      * Constructs a circle by 3 tangents on the circle (aka inscribed circle of a triangle).

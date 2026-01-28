@@ -28,6 +28,7 @@ class TestQgsCircle : public QObject
   private slots:
     void constructor();
     void from2Points();
+    void from2PointsRadius();
     void fromExtent();
     void from3Points();
     void fromCenterDiameter();
@@ -522,6 +523,88 @@ void TestQgsCircle::asGML()
   // asGML2
   QString expectedGML2( u"<LineString xmlns=\"gml\"><coordinates xmlns=\"gml\" cs=\",\" ts=\" \">1,4 1.05,4 1.1,4 1.16,4 1.21,3.99 1.26,3.99 1.31,3.98 1.37,3.98 1.42,3.97 1.47,3.96 1.52,3.95 1.57,3.94 1.62,3.93 1.67,3.92 1.73,3.91 1.78,3.9 1.83,3.88 1.88,3.87 1.93,3.85 1.98,3.84 2.03,3.82 2.08,3.8 2.12,3.78 2.17,3.76 2.22,3.74 2.27,3.72 2.32,3.7 2.36,3.67 2.41,3.65 2.45,3.62 2.5,3.6 2.55,3.57 2.59,3.54 2.63,3.52 2.68,3.49 2.72,3.46 2.76,3.43 2.81,3.4 2.85,3.36 2.89,3.33 2.93,3.3 2.97,3.26 3.01,3.23 3.05,3.19 3.08,3.16 3.12,3.12 3.16,3.08 3.19,3.05 3.23,3.01 3.26,2.97 3.3,2.93 3.33,2.89 3.36,2.85 3.4,2.81 3.43,2.76 3.46,2.72 3.49,2.68 3.52,2.63 3.54,2.59 3.57,2.55 3.6,2.5 3.62,2.45 3.65,2.41 3.67,2.36 3.7,2.32 3.72,2.27 3.74,2.22 3.76,2.17 3.78,2.12 3.8,2.08 3.82,2.03 3.84,1.98 3.85,1.93 3.87,1.88 3.88,1.83 3.9,1.78 3.91,1.73 3.92,1.67 3.93,1.62 3.94,1.57 3.95,1.52 3.96,1.47 3.97,1.42 3.98,1.37 3.98,1.31 3.99,1.26 3.99,1.21 4,1.16 4,1.1 4,1.05 4,1 4,0.95 4,0.9 4,0.84 3.99,0.79 3.99,0.74 3.98,0.69 3.98,0.63 3.97,0.58 3.96,0.53 3.95,0.48 3.94,0.43 3.93,0.38 3.92,0.33 3.91,0.27 3.9,0.22 3.88,0.17 3.87,0.12 3.85,0.07 3.84,0.02 3.82,-0.03 3.8,-0.08 3.78,-0.12 3.76,-0.17 3.74,-0.22 3.72,-0.27 3.7,-0.32 3.67,-0.36 3.65,-0.41 3.62,-0.45 3.6,-0.5 3.57,-0.55 3.54,-0.59 3.52,-0.63 3.49,-0.68 3.46,-0.72 3.43,-0.76 3.4,-0.81 3.36,-0.85 3.33,-0.89 3.3,-0.93 3.26,-0.97 3.23,-1.01 3.19,-1.05 3.16,-1.08 3.12,-1.12 3.08,-1.16 3.05,-1.19 3.01,-1.23 2.97,-1.26 2.93,-1.3 2.89,-1.33 2.85,-1.36 2.81,-1.4 2.76,-1.43 2.72,-1.46 2.68,-1.49 2.63,-1.52 2.59,-1.54 2.55,-1.57 2.5,-1.6 2.45,-1.62 2.41,-1.65 2.36,-1.67 2.32,-1.7 2.27,-1.72 2.22,-1.74 2.17,-1.76 2.12,-1.78 2.08,-1.8 2.03,-1.82 1.98,-1.84 1.93,-1.85 1.88,-1.87 1.83,-1.88 1.78,-1.9 1.73,-1.91 1.67,-1.92 1.62,-1.93 1.57,-1.94 1.52,-1.95 1.47,-1.96 1.42,-1.97 1.37,-1.98 1.31,-1.98 1.26,-1.99 1.21,-1.99 1.16,-2 1.1,-2 1.05,-2 1,-2 0.95,-2 0.9,-2 0.84,-2 0.79,-1.99 0.74,-1.99 0.69,-1.98 0.63,-1.98 0.58,-1.97 0.53,-1.96 0.48,-1.95 0.43,-1.94 0.38,-1.93 0.33,-1.92 0.27,-1.91 0.22,-1.9 0.17,-1.88 0.12,-1.87 0.07,-1.85 0.02,-1.84 -0.03,-1.82 -0.08,-1.8 -0.12,-1.78 -0.17,-1.76 -0.22,-1.74 -0.27,-1.72 -0.32,-1.7 -0.36,-1.67 -0.41,-1.65 -0.45,-1.62 -0.5,-1.6 -0.55,-1.57 -0.59,-1.54 -0.63,-1.52 -0.68,-1.49 -0.72,-1.46 -0.76,-1.43 -0.81,-1.4 -0.85,-1.36 -0.89,-1.33 -0.93,-1.3 -0.97,-1.26 -1.01,-1.23 -1.05,-1.19 -1.08,-1.16 -1.12,-1.12 -1.16,-1.08 -1.19,-1.05 -1.23,-1.01 -1.26,-0.97 -1.3,-0.93 -1.33,-0.89 -1.36,-0.85 -1.4,-0.81 -1.43,-0.76 -1.46,-0.72 -1.49,-0.68 -1.52,-0.63 -1.54,-0.59 -1.57,-0.55 -1.6,-0.5 -1.62,-0.45 -1.65,-0.41 -1.67,-0.36 -1.7,-0.32 -1.72,-0.27 -1.74,-0.22 -1.76,-0.17 -1.78,-0.12 -1.8,-0.08 -1.82,-0.03 -1.84,0.02 -1.85,0.07 -1.87,0.12 -1.88,0.17 -1.9,0.22 -1.91,0.27 -1.92,0.33 -1.93,0.38 -1.94,0.43 -1.95,0.48 -1.96,0.53 -1.97,0.58 -1.98,0.63 -1.98,0.69 -1.99,0.74 -1.99,0.79 -2,0.84 -2,0.9 -2,0.95 -2,1 -2,1.05 -2,1.1 -2,1.16 -1.99,1.21 -1.99,1.26 -1.98,1.31 -1.98,1.37 -1.97,1.42 -1.96,1.47 -1.95,1.52 -1.94,1.57 -1.93,1.62 -1.92,1.67 -1.91,1.73 -1.9,1.78 -1.88,1.83 -1.87,1.88 -1.85,1.93 -1.84,1.98 -1.82,2.03 -1.8,2.08 -1.78,2.12 -1.76,2.17 -1.74,2.22 -1.72,2.27 -1.7,2.32 -1.67,2.36 -1.65,2.41 -1.62,2.45 -1.6,2.5 -1.57,2.55 -1.54,2.59 -1.52,2.63 -1.49,2.68 -1.46,2.72 -1.43,2.76 -1.4,2.81 -1.36,2.85 -1.33,2.89 -1.3,2.93 -1.26,2.97 -1.23,3.01 -1.19,3.05 -1.16,3.08 -1.12,3.12 -1.08,3.16 -1.05,3.19 -1.01,3.23 -0.97,3.26 -0.93,3.3 -0.89,3.33 -0.85,3.36 -0.81,3.4 -0.76,3.43 -0.72,3.46 -0.68,3.49 -0.63,3.52 -0.59,3.54 -0.55,3.57 -0.5,3.6 -0.45,3.62 -0.41,3.65 -0.36,3.67 -0.32,3.7 -0.27,3.72 -0.22,3.74 -0.17,3.76 -0.12,3.78 -0.08,3.8 -0.03,3.82 0.02,3.84 0.07,3.85 0.12,3.87 0.17,3.88 0.22,3.9 0.27,3.91 0.33,3.92 0.38,3.93 0.43,3.94 0.48,3.95 0.53,3.96 0.58,3.97 0.63,3.98 0.69,3.98 0.74,3.99 0.79,3.99 0.84,4 0.9,4 0.95,4 1,4</coordinates></LineString>"_s );
   QGSCOMPAREGML( elemToString( exportCircle.asGml2( doc, 2 ) ), expectedGML2 );
+}
+
+void TestQgsCircle::from2PointsRadius()
+{
+  QVector<QgsCircle> circles;
+
+  // Test 1: Radius too small - no solution
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 10, 0 ), 2 );
+  QVERIFY( circles.isEmpty() );
+
+  // Test 2: Negative radius - no solution
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 4, 0 ), -5 );
+  QVERIFY( circles.isEmpty() );
+
+  // Test 3: Zero radius - no solution
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 4, 0 ), 0 );
+  QVERIFY( circles.isEmpty() );
+
+  // Test 4: Diameter case - exactly 1 solution
+  // P1=(0,0), P2=(4,0), R=2 -> center at (2,0)
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 4, 0 ), 2 );
+  QCOMPARE( circles.count(), 1 );
+  QGSCOMPARENEARPOINT( circles.at( 0 ).center(), QgsPoint( 2, 0 ), 0.0001 );
+  QGSCOMPARENEAR( circles.at( 0 ).radius(), 2.0, 0.0001 );
+
+  // Test 5: Two solutions case
+  // P1=(0,0), P2=(4,0), R=3 -> centers at (2, sqrt(5)) and (2, -sqrt(5))
+  const double expectedH = std::sqrt( 9.0 - 4.0 ); // sqrt(R² - d²) = sqrt(9 - 4) = sqrt(5)
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 4, 0 ), 3 );
+  QCOMPARE( circles.count(), 2 );
+
+  // First center should be at (2, sqrt(5))
+  QGSCOMPARENEARPOINT( circles.at( 0 ).center(), QgsPoint( 2, expectedH ), 0.0001 );
+  QGSCOMPARENEAR( circles.at( 0 ).radius(), 3.0, 0.0001 );
+
+  // Second center should be at (2, -sqrt(5))
+  QGSCOMPARENEARPOINT( circles.at( 1 ).center(), QgsPoint( 2, -expectedH ), 0.0001 );
+  QGSCOMPARENEAR( circles.at( 1 ).radius(), 3.0, 0.0001 );
+
+  // Test 6: Selection by position - returns nearest
+  // With pos near the upper center
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 4, 0 ), 3, QgsPoint( 2, 5 ) );
+  QCOMPARE( circles.count(), 1 );
+  QGSCOMPARENEARPOINT( circles.at( 0 ).center(), QgsPoint( 2, expectedH ), 0.0001 );
+
+  // With pos near the lower center
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 4, 0 ), 3, QgsPoint( 2, -5 ) );
+  QCOMPARE( circles.count(), 1 );
+  QGSCOMPARENEARPOINT( circles.at( 0 ).center(), QgsPoint( 2, -expectedH ), 0.0001 );
+
+  // Test 7: Vertical line case
+  // P1=(0,0), P2=(0,6), R=5 -> centers at (4, 3) and (-4, 3)
+  const double expectedHVert = std::sqrt( 25.0 - 9.0 ); // sqrt(25 - 9) = 4
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 0, 6 ), 5 );
+  QCOMPARE( circles.count(), 2 );
+  QGSCOMPARENEARPOINT( circles.at( 0 ).center(), QgsPoint( -expectedHVert, 3 ), 0.0001 );
+  QGSCOMPARENEARPOINT( circles.at( 1 ).center(), QgsPoint( expectedHVert, 3 ), 0.0001 );
+
+  // Test 8: Z value transfer
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0, 10 ), QgsPoint( 4, 0, 20 ), 2 );
+  QCOMPARE( circles.count(), 1 );
+  QVERIFY( circles.at( 0 ).center().is3D() );
+  QGSCOMPARENEAR( circles.at( 0 ).center().z(), 10.0, 0.0001 );
+
+  // Test 9: M value transfer
+  circles = QgsCircle::from2PointsRadius( QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 100 ), QgsPoint( Qgis::WkbType::PointM, 4, 0, 0, 200 ), 2 );
+  QCOMPARE( circles.count(), 1 );
+  QVERIFY( circles.at( 0 ).center().isMeasure() );
+  QGSCOMPARENEAR( circles.at( 0 ).center().m(), 100.0, 0.0001 );
+
+  // Test 10: Diagonal line case
+  // P1=(0,0), P2=(4,4), R=4 -> verify circles pass through both points
+  circles = QgsCircle::from2PointsRadius( QgsPoint( 0, 0 ), QgsPoint( 4, 4 ), 4 );
+  QCOMPARE( circles.count(), 2 );
+  // Verify both circles have correct radius
+  QGSCOMPARENEAR( circles.at( 0 ).radius(), 4.0, 0.0001 );
+  QGSCOMPARENEAR( circles.at( 1 ).radius(), 4.0, 0.0001 );
+  // Verify distance from center to points equals radius
+  QGSCOMPARENEAR( circles.at( 0 ).center().distance( QgsPoint( 0, 0 ) ), 4.0, 0.0001 );
+  QGSCOMPARENEAR( circles.at( 0 ).center().distance( QgsPoint( 4, 4 ) ), 4.0, 0.0001 );
+  QGSCOMPARENEAR( circles.at( 1 ).center().distance( QgsPoint( 0, 0 ) ), 4.0, 0.0001 );
+  QGSCOMPARENEAR( circles.at( 1 ).center().distance( QgsPoint( 4, 4 ) ), 4.0, 0.0001 );
 }
 
 QGSTEST_MAIN( TestQgsCircle )

@@ -794,6 +794,7 @@
         <file>themes/default/mActionLockExtent.svg</file>
         <file>themes/default/mGeoPackage.svg</file>
         <file>themes/default/mActionCircle2Points.svg</file>
+        <file>themes/default/mActionCircle2PointsRadius.svg</file>
         <file>themes/default/mActionCircle3Points.svg</file>
         <file>themes/default/mActionCircleCenterPoint.svg</file>
         <file>themes/default/mActionEllipseFoci.svg</file>
