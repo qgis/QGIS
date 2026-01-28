@@ -1,0 +1,21 @@
+{
+  "name": "py-pydantic-core",
+  "version": "2.41.5",
+  "description": "Data validation using Python type hints.",
+  "homepage": "https://github.com/pydantic/pydantic",
+  "dependencies": [
+    {
+      "name": "py-maturin",
+      "host": true
+    },
+    "python3",
+    {
+      "name": "vcpkg-python-scripts",
+      "host": true
+    },
+    {
+      "name": "vcpkg-tool-rust",
+      "host": true
+    }
+  ]
+}
