@@ -683,6 +683,49 @@ bool QgsGeometryCollection::deleteVertex( QgsVertexId position )
   return success;
 }
 
+bool QgsGeometryCollection::deleteVertices( const QList<QgsVertexId> &positions )
+{
+  QMap<int, QList<QgsVertexId >> partVertices;
+  for ( QgsVertexId pos : positions )
+  {
+    partVertices[pos.part].append( pos );
+  }
+
+  QMapIterator<int, QList<QgsVertexId >> partVerticesIt( partVertices );
+  partVerticesIt.toBack();
+  while ( partVerticesIt.hasPrevious() )
+  {
+    partVerticesIt.previous();
+    int part = partVerticesIt.key();
+    QList<QgsVertexId> partVertices = partVerticesIt.value();
+    QgsAbstractGeometry *geom = mGeometries.at( part );
+    if ( !geom )
+    {
+      return false;
+    }
+
+    if ( QgsWkbTypes::flatType( geom->wkbType() ) == Qgis::WkbType::Point )
+    {
+      removeGeometry( part );
+      continue;
+    }
+
+    // quit if any vertex on any part fails to be deleted
+    if ( !geom->deleteVertices( partVertices ) )
+    {
+      return false;
+    }
+
+    // remove geometry if no vertices left
+    if ( geom->isEmpty() )
+    {
+      removeGeometry( part );
+    }
+  }
+  clearCache(); // set bounding box invalid
+  return true;
+}
+
 double QgsGeometryCollection::length() const
 {
   double length = 0.0;
