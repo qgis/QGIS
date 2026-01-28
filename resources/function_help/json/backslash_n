@@ -1,0 +1,11 @@
+{
+  "name": "\\\\n",
+  "type": "value",
+  "groups": ["String"],
+  "description": "Inserts a newline character in a string literal.",
+  "examples": [{
+    "expression": "'Hello\\\\nWorld'",
+    "returns": "a string with a newline between 'Hello' and 'World'"
+  }],
+  "tags": ["escape", "newline", "line", "break", "string"]
+}
