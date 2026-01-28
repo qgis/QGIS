@@ -21,6 +21,10 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsRandomExtractWithinSubsetsAlgorithmBase::sampleFeatureIds( QgsFeatureSource *source, const double value, const QString &fieldName, QgsProcessingFeedback *feedback )
@@ -54,7 +58,6 @@ void QgsRandomExtractWithinSubsetsAlgorithmBase::sampleFeatureIds( QgsFeatureSou
     i++;
     feedback->setProgress( static_cast<double>( i ) * step );
   }
-  feedback->pushInfo( QObject::tr( "Done." ) );
 
   // initialize random engine
   std::random_device randomDevice;
@@ -122,7 +125,6 @@ void QgsRandomExtractWithinSubsetsAlgorithmBase::sampleFeatureIds( QgsFeatureSou
     i++;
     feedback->setProgress( 50.0 + ( static_cast<double>( i ) * step ) );
   }
-  feedback->pushInfo( QObject::tr( "Done." ) );
 }
 
 QString QgsRandomExtractWithinSubsetsAlgorithmBase::group() const
