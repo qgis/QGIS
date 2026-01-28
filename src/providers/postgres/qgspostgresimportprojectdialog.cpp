@@ -172,8 +172,7 @@ QSet<QString> QgsPostgresImportProjectDialog::projectNamesInSchema()
 QString QgsPostgresImportProjectDialog::prepareProjectName( const QString &fullFilePath )
 {
   QgsProject project;
-  project.read( fullFilePath );
-  QString projectName = project.title().isEmpty() ? project.baseName() : project.title();
+  project.read( fullFilePath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoadLayouts | Qgis::ProjectReadFlag::DontLoad3DViews | Qgis::ProjectReadFlag::TrustLayerMetadata );
 
   QString projectName = createUniqueProjectName( project.baseName() );
 
