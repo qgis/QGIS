@@ -36,6 +36,9 @@
 #include <QDir>
 #include <QJsonDocument>
 #include <QMutex>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsBackgroundCachedSharedData::QgsBackgroundCachedSharedData(
   const QString &uri, const QString &providerName, const QString &componentTranslated

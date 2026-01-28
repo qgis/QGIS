@@ -24,6 +24,7 @@
 #include <QFileInfo>
 #include <QFileSystemWatcher>
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QTextCodec>
 #include <QUrl>
@@ -31,6 +32,8 @@
 #include <QtGlobal>
 
 #include "moc_qgsdelimitedtextfile.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )

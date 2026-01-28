@@ -29,6 +29,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
     explicit FilterExcludePoint( const QgsPointXY &p )

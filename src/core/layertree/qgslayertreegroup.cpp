@@ -21,9 +21,12 @@
 #include "qgsmaplayer.h"
 
 #include <QDomElement>
+#include <QString>
 #include <QStringList>
 
 #include "moc_qgslayertreegroup.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeGroup::QgsLayerTreeGroup( const QString &name, bool checked )
   : QgsLayerTreeNode( NodeGroup, checked )

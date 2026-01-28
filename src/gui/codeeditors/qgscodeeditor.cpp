@@ -38,11 +38,14 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QString>
 #include <QWidget>
 #include <Qsci/qscilexer.h>
 #include <Qsci/qscistyle.h>
 
 #include "moc_qgscodeeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 const QgsSettingsEntryBool *QgsCodeEditor::settingContextHelpHover = new QgsSettingsEntryBool( u"context-help-hover"_s, sTreeCodeEditor, false, u"Whether the context help should works on hovered words"_s );

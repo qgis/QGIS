@@ -19,6 +19,10 @@
 #include "qgscreateannotationitemmaptool.h"
 #include "qgsmaptoolcapture.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define SIP_NO_FILE
 
 class QgsSettingsEntryString;

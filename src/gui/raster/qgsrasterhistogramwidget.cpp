@@ -31,8 +31,11 @@
 #include <QMenu>
 #include <QPainter>
 #include <QRandomGenerator>
+#include <QString>
 
 #include "moc_qgsrasterhistogramwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QWT Charting widget
 #include <qwt_global.h>

@@ -25,6 +25,10 @@
 #include "qgsstyle.h"
 #include "qgsvector3d.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;

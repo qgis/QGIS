@@ -32,6 +32,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #if GDAL_VERSION_NUM < GDAL_COMPUTE_VERSION(3,4,0)
 #include "qgsgdalutils.h"
 #endif

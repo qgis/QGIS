@@ -30,7 +30,11 @@
 #include "qgsmulticurve.h"
 #include "qgsmultisurface.h"
 
+#include <QString>
+
 #include "moc_qgsmeshtriangulation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshTriangulation::QgsMeshTriangulation()
   : QObject()

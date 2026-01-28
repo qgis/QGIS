@@ -24,6 +24,10 @@
 #include "qgspointclouddataprovider.h"
 #include "qgsstyle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPointCloudCategory::QgsPointCloudCategory( const int value, const QColor &color, const QString &label, bool render, double pointSize )
   : mValue( value )
   , mColor( color )

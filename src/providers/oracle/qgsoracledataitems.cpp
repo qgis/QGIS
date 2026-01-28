@@ -33,8 +33,11 @@
 #include <QProgressDialog>
 #include <QSqlError>
 #include <QStatusBar>
+#include <QString>
 
 #include "moc_qgsoracledataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool deleteLayer( const QString &uri, QString &errCause )
 {

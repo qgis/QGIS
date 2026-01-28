@@ -34,9 +34,12 @@
 #include <QDragEnterEvent>
 #include <QMimeData>
 #include <QScrollBar>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsmodelgraphicsview.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

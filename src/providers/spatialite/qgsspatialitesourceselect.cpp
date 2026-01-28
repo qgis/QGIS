@@ -35,11 +35,14 @@ email                : a.furieri@lqt.it
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QStringList>
 #include <QTableWidgetItem>
 #include <QTextStream>
 
 #include "moc_qgsspatialitesourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )

@@ -18,7 +18,11 @@
 
 #include "qgsiodevicesensor.h"
 
+#include <QString>
+
 #include "moc_qgssensorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>

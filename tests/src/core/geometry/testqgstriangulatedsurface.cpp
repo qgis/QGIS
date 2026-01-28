@@ -26,6 +26,8 @@
 #include <QString>
 #include <qtestcase.h>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsTriangulatedSurface : public QObject
 {
     Q_OBJECT

@@ -44,7 +44,11 @@
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
 
+#include <QString>
+
 #include "moc_qgspdalalgorithms.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

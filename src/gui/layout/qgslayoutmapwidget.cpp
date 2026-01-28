@@ -38,9 +38,12 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QStringListModel>
 
 #include "moc_qgslayoutmapwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item, QgsMapCanvas *mapCanvas )
   : QgsLayoutItemBaseWidget( nullptr, item )

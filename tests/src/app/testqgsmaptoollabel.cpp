@@ -30,6 +30,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsMapToolLabel : public QObject
 {
     Q_OBJECT

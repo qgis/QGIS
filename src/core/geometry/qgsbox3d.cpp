@@ -21,7 +21,11 @@
 #include "qgspoint.h"
 #include "qgsvector3d.h"
 
+#include <QString>
+
 #include "moc_qgsbox3d.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBox3D::QgsBox3D( double xmin, double ymin, double zmin, double xmax, double ymax, double zmax, bool normalize )
   : mBounds2d( xmin, ymin, xmax, ymax, false )

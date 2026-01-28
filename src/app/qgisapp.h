@@ -195,8 +195,11 @@ class QgsCustomizationDialog;
 #include <QPointer>
 #include <QSslError>
 #include <QStackedWidget>
+#include <QString>
 #include <QTapAndHoldGesture>
 #include <QToolBar>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #include <windows.h>

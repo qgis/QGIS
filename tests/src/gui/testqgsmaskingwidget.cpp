@@ -23,7 +23,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QElapsedTimer>
+#include <QString>
 #include <QTreeWidget>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMaskingWidget : public QgsTest
 {

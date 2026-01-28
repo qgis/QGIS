@@ -18,6 +18,10 @@
 
 #include "qgsalgorithmdensifygeometriesbycount.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsDensifyGeometriesByCountAlgorithm::name() const

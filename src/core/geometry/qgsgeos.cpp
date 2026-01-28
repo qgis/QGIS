@@ -33,6 +33,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgspolyhedralsurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
 #define CATCH_GEOS(r) \

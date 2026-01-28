@@ -30,6 +30,10 @@
 #include "qgsvectorlayer.h"
 #include "qgswfsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWfs
 {
 

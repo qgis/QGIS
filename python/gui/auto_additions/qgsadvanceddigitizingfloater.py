@@ -8,6 +8,7 @@ QgsAdvancedDigitizingFloater.FloaterItem.Angle.__doc__ = ""
 QgsAdvancedDigitizingFloater.FloaterItem.CommonAngleSnapping.__doc__ = ""
 QgsAdvancedDigitizingFloater.FloaterItem.Distance.__doc__ = ""
 QgsAdvancedDigitizingFloater.FloaterItem.Bearing.__doc__ = ""
+QgsAdvancedDigitizingFloater.FloaterItem.Weight.__doc__ = "Weight for NURBSCurve \n.. versionadded:: 4.0"
 QgsAdvancedDigitizingFloater.FloaterItem.__doc__ = """Available floater items
 
 * ``XCoordinate``: 
@@ -18,6 +19,10 @@ QgsAdvancedDigitizingFloater.FloaterItem.__doc__ = """Available floater items
 * ``CommonAngleSnapping``: 
 * ``Distance``: 
 * ``Bearing``: 
+* ``Weight``: Weight for NURBSCurve
+
+  .. versionadded:: 4.0
+
 
 """
 # --

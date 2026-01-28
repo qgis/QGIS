@@ -22,6 +22,9 @@
 #include "qgsunittypes.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 Qgis::DistanceUnit QgsXmlUtils::readMapUnits( const QDomElement &element )
 {

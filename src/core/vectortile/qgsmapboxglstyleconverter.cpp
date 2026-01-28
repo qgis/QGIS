@@ -46,8 +46,11 @@
 
 #include <QBuffer>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsmapboxglstyleconverter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapBoxGlStyleConverter::QgsMapBoxGlStyleConverter()
 {
@@ -876,6 +879,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
   }
 
   const QVariantMap jsonPaint = jsonLayer.value( u"paint"_s ).toMap();
+
   QgsPropertyCollection ddProperties;
 
   // circle color
@@ -924,12 +928,12 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
 
       case QMetaType::Type::QVariantMap:
         circleDiameter = -1;
-        ddProperties.setProperty( QgsSymbolLayer::Property::Width, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor() * 2, &circleDiameter ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::Size, parseInterpolateByZoom( jsonCircleRadius.toMap(), context, context.pixelSizeConversionFactor() * 2, &circleDiameter ) );
         break;
 
       case QMetaType::Type::QVariantList:
       case QMetaType::Type::QStringList:
-        ddProperties.setProperty( QgsSymbolLayer::Property::Width, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * 2, 255, nullptr, &circleDiameter ) );
+        ddProperties.setProperty( QgsSymbolLayer::Property::Size, parseValueList( jsonCircleRadius.toList(), PropertyType::Numeric, context, context.pixelSizeConversionFactor() * 2, 255, nullptr, &circleDiameter ) );
         break;
 
       default:
@@ -1085,7 +1089,7 @@ bool QgsMapBoxGlStyleConverter::parseCircleLayer( const QVariantMap &jsonLayer, 
 
   // set render units
   symbol->setOutputUnit( context.targetUnit() );
-  symbol->setDataDefinedProperties( ddProperties );
+  markerSymbolLayer->setDataDefinedProperties( ddProperties );
 
   if ( !circleTranslate.isNull() )
   {

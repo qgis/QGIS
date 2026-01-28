@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmtaperedbuffer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsTaperedBufferAlgorithm::name() const

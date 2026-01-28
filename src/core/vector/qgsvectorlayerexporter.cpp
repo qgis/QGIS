@@ -34,9 +34,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QProgressDialog>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsvectorlayerexporter.cpp"
+
+using namespace Qt::StringLiterals;
 
 typedef Qgis::VectorExportResult createEmptyLayer_t(
   const QString &uri,

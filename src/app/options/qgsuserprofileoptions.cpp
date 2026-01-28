@@ -20,7 +20,11 @@
 #include "qgssettings.h"
 #include "qgsuserprofilemanager.h"
 
+#include <QString>
+
 #include "moc_qgsuserprofileoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsUserProfileOptionsWidget

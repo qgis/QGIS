@@ -28,8 +28,11 @@
 #include <QIcon>
 #include <QMenu>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgsdbqueryhistoryprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

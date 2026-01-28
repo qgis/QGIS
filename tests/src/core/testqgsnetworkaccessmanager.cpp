@@ -25,7 +25,10 @@
 #include <QNetworkCookieJar>
 #include <QNetworkReply>
 #include <QObject>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 class BackgroundRequest : public QThread
 {

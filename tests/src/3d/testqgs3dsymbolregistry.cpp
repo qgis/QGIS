@@ -21,6 +21,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //dummy symbol for testing
 class Dummy3DSymbol : public QgsAbstract3DSymbol

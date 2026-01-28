@@ -22,8 +22,11 @@
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsactionlocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionLocatorFilter::QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent )
   : QgsLocatorFilter( parent )

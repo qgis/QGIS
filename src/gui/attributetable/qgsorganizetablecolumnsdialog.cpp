@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsorganizetablecolumnsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

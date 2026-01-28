@@ -26,9 +26,12 @@
 #include <QMessageBox>
 #include <QMouseEvent>
 #include <QPushButton>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgscolordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorDialog::QgsColorDialog( QWidget *parent, Qt::WindowFlags fl, const QColor &color )
   : QDialog( parent, fl )

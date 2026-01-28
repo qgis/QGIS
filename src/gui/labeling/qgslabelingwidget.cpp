@@ -30,8 +30,11 @@
 
 #include <QDialogButtonBox>
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgslabelingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelingWidget::QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent, QgsMessageBar *messageBar )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

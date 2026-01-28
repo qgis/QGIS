@@ -28,6 +28,8 @@
 
 #include "moc_qgsnetworkreplyparser.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsNetworkReplyParser::QgsNetworkReplyParser( QNetworkReply *reply )
   : mReply( reply )
 {

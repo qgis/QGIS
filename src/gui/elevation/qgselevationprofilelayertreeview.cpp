@@ -36,8 +36,11 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgselevationprofilelayertreeview.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE = u"elevationProfileRegistry"_s;
 

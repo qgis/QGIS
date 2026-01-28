@@ -41,6 +41,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
 #include "qgsweakrelation.h"
 #include "qgsproviderregistry.h"

@@ -18,7 +18,11 @@
 
 #include "qgis.h"
 
+#include <QString>
+
 #include "moc_qgsunittypes.cpp"
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

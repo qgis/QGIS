@@ -35,6 +35,8 @@ email                : morb at ozemail dot com dot au
 #include <QString>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>
 using namespace nlohmann;

@@ -36,7 +36,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsfilterrestorer.h"

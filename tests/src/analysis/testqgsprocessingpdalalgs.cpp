@@ -24,7 +24,10 @@
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProcessingPdalAlgs : public QgsTest
 {
@@ -46,6 +49,7 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void buildVpc();
     void clip();
     void convertFormat();
+    void convertFormatVpcOutputFormat();
     void density();
     void exportRaster();
     void exportRasterTin();
@@ -76,6 +80,7 @@ class TestQgsProcessingPdalAlgs : public QgsTest
     void updateFileListArg( QStringList &args, const QString &fileName );
 
     QString mPointCloudLayerPath;
+    QString mVpcPointCloudLayerPath;
     const QString mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
 };
 
@@ -94,6 +99,10 @@ void TestQgsProcessingPdalAlgs::initTestCase()
   const QString pointCloudFileName = mDataDir + "/point_clouds/copc/rgb.copc.laz";
   const QFileInfo pointCloudFileInfo( pointCloudFileName );
   mPointCloudLayerPath = pointCloudFileInfo.filePath();
+
+  const QString vpcPointCloudFileName = mDataDir + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc";
+  const QFileInfo vpcPointCloudFileInfo( vpcPointCloudFileName );
+  mVpcPointCloudLayerPath = vpcPointCloudFileInfo.filePath();
 }
 
 void TestQgsProcessingPdalAlgs::cleanupTestCase()
@@ -198,6 +207,89 @@ void TestQgsProcessingPdalAlgs::convertFormat()
 
   QVERIFY( ok );
   QVERIFY( QFileInfo::exists( outputPointCloud ) );
+}
+
+void TestQgsProcessingPdalAlgs::convertFormatVpcOutputFormat()
+{
+  QgsPdalAlgorithmBase *alg = const_cast<QgsPdalAlgorithmBase *>( static_cast<const QgsPdalAlgorithmBase *>( QgsApplication::processingRegistry()->algorithmById( u"pdal:convertformat"_s ) ) );
+
+  auto context = std::make_unique<QgsProcessingContext>();
+  context->setProject( QgsProject::instance() );
+  context->setMaximumThreads( 0 );
+
+  QgsProcessingFeedback feedback;
+
+  // case 1 - convert to LAS
+  QString outputVpc = QDir::tempPath() + "/converted_las_output.vpc";
+
+  // Get converted data VPC subfolder
+  QFileInfo fileInfo( outputVpc );
+  QString parentDir = fileInfo.absolutePath();
+  QString stem = fileInfo.baseName();
+  QString vpcDataSubfolder = parentDir + "/" + stem;
+
+  QString vpcOutputFormat = u"LAS"_s;
+
+  QVariantMap parameters;
+  parameters.insert( u"INPUT"_s, mVpcPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputVpc );
+  parameters.insert( u"VPC_OUTPUT_FORMAT"_s, vpcOutputFormat );
+
+  QStringList args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mVpcPointCloudLayerPath ) << u"--output=%1"_s.arg( outputVpc ) << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() ) );
+
+  bool ok = false;
+  alg->run( parameters, *context, &feedback, &ok );
+
+  QVERIFY( ok );
+  QVERIFY( QFileInfo::exists( outputVpc ) );
+
+  // files in subdirectory
+  QDir dir( vpcDataSubfolder );
+  QStringList resultSubfolderFiles = dir.entryList( QDir::Files );
+
+  QCOMPARE( resultSubfolderFiles.size(), 4 );
+
+  for ( const QString &file : resultSubfolderFiles )
+  {
+    QVERIFY( file.endsWith( ".las" ) );
+  }
+
+  // case 2 - convert to COPC.LAZ
+  outputVpc = QDir::tempPath() + "/converted_copc_laz_output.vpc";
+
+  // Get converted data VPC subfolder
+  fileInfo = QFileInfo( outputVpc );
+  parentDir = fileInfo.absolutePath();
+  stem = fileInfo.baseName();
+  vpcDataSubfolder = parentDir + "/" + stem;
+
+  vpcOutputFormat = u"COPC"_s;
+
+  parameters.clear();
+  parameters.insert( u"INPUT"_s, mVpcPointCloudLayerPath );
+  parameters.insert( u"OUTPUT"_s, outputVpc );
+  parameters.insert( u"VPC_OUTPUT_FORMAT"_s, vpcOutputFormat );
+
+  args = alg->createArgumentLists( parameters, *context, &feedback );
+  QCOMPARE( args, QStringList() << u"translate"_s << u"--input=%1"_s.arg( mVpcPointCloudLayerPath ) << u"--output=%1"_s.arg( outputVpc ) << u"--vpc-output-format=%1"_s.arg( vpcOutputFormat.toLower() ) );
+
+  ok = false;
+  alg->run( parameters, *context, &feedback, &ok );
+
+  QVERIFY( ok );
+  QVERIFY( QFileInfo::exists( outputVpc ) );
+
+  // files in subdirectory
+  dir = QDir( vpcDataSubfolder );
+  resultSubfolderFiles = dir.entryList( QDir::Files );
+
+  QCOMPARE( resultSubfolderFiles.size(), 4 );
+
+  for ( const QString &file : resultSubfolderFiles )
+  {
+    QVERIFY( file.endsWith( ".copc.laz" ) );
+  }
 }
 
 void TestQgsProcessingPdalAlgs::reproject()

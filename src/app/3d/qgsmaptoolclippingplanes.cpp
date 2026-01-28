@@ -28,9 +28,12 @@
 #include "qgspolygon.h"
 #include "qgsrubberband.h"
 
+#include <QString>
 #include <QVector4D>
 
 #include "moc_qgsmaptoolclippingplanes.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolClippingPlanes::QgsMapToolClippingPlanes( QgsMapCanvas *canvas, Qgs3DMapCanvasWidget *mapCanvas )
   : QgsMapTool( canvas ), m3DCanvasWidget( mapCanvas )

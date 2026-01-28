@@ -28,7 +28,10 @@
 #include "qgssurface.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <qmath.h>
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryCheckerUtils::LayerFeature::LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, const QgsGeometryCheckContext *context, bool useMapCrs )
   : mFeaturePool( pool )

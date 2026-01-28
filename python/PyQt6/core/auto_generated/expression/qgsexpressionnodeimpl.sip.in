@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
 %Docstring(signature="appended")

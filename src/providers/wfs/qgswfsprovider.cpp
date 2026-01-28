@@ -57,12 +57,15 @@
 #include <QPair>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QString>
 #include <QTimer>
 #include <QUrl>
 #include <QUrlQuery>
 #include <QWidget>
 
 #include "moc_qgswfsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsWFSProvider::WFS_PROVIDER_KEY = u"WFS"_s;
 const QString QgsWFSProvider::WFS_PROVIDER_DESCRIPTION = u"WFS data provider"_s;

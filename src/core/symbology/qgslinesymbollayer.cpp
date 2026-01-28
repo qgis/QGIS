@@ -47,6 +47,9 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSimpleLineSymbolLayer::QgsSimpleLineSymbolLayer( const QColor &color, double width, Qt::PenStyle penStyle )
   : mPenStyle( penStyle )

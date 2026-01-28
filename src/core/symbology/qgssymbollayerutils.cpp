@@ -59,9 +59,12 @@
 #include <QPicture>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 #include <qmath.h>
+
+using namespace Qt::StringLiterals;
 
 #define POINTS_TO_MM 2.83464567
 

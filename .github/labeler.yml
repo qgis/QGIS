@@ -1,67 +1,79 @@
 "3D":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'resources/3d/**/*',
     'src/3d/**/*',
     'src/app/3d/**/*',
   ]
 
 "Annotations":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/core/annotations/**/*',
     'src/gui/annotations/**/*',
   ]
 
 "Chore":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     '.ci/**/*',
     '.docker/**/*',
     '.github/**/*',
   ]
 
 "DB Manager":
-  - any: ['python/plugins/db_manager/**/*']
+- changed-files:
+  - any-glob-to-any-file: ['python/plugins/db_manager/**/*']
 
 "Expressions":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/core/expression/**/*',
     'resources/function_help/**/*',
   ]
 
 "Form":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/core/editform/**/*',
     'src/gui/attributeformconfig/**/*',
   ]
 
 "GRASS":
-  - any: ['python/plugins/grassprovider/**/*']
+- changed-files:
+  - any-glob-to-any-file: ['python/plugins/grassprovider/**/*']
 
 "GUI/UX":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'images/**/*',
     'resources/themes/**/*',
 #    'src/gui/**/*', too broad
   ]
 
 "HANA data provider":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/providers/hana/**/*',
   ]
 
 "Labeling":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/app/labeling/**/*',
     'src/core/labeling/**/*',
   ]
 
 "Locator":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/core/locator/**/*',
     'src/gui/locator/**/*',
   ]
 
 "Mesh":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'external/mdal/**/*',
     'src/analysis/mesh/**/*',
     'src/core/mesh/**/*',
@@ -69,20 +81,24 @@
   ]
 
 "Metasearch":
-  - any: ['python/plugins/MetaSearch/**/*']
+- changed-files:
+  - any-glob-to-any-file: ['python/plugins/MetaSearch/**/*']
 
 "Point Clouds":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/app/pointcloud/**/*',
     'src/core/pointcloud/**/*',
     'src/gui/pointcloud/**/*',
   ]
 
 "PostGIS data provider":
-  - any: ['src/providers/postgres/**/*']
+- changed-files:
+  - any-glob-to-any-file: ['src/providers/postgres/**/*']
 
 "Processing":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
       'python/plugins/processing/**/*',
       'src/analysis/**/*',
       'src/core/processing/**/*',
@@ -90,23 +106,27 @@
   ]
 
 "Python Console":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'python/console/**/*',
   ]
 
 "Quick":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/quickgui/**/*',
   ]
 
 "Server":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
       'src/server/**/*',
       'resources/server/**/*'
   ]
 
 "Vector tiles":
-  - any: [
+- changed-files:
+  - any-glob-to-any-file: [
     'src/core/vectortile/**/*',
     'src/gui/vectortile/**/*',
   ]

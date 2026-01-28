@@ -25,6 +25,9 @@
 #include "qgscoordinatetransformcontext.h"
 
 #include <QExplicitlySharedDataPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsCoordinateTransformPrivate;
 class QgsPointXY;

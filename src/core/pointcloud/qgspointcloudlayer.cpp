@@ -47,9 +47,12 @@
 #include "qgsvirtualpointcloudprovider.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgspointcloudlayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,

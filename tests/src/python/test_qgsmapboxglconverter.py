@@ -1567,6 +1567,66 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
         }
         self.assertEqual(properties, expected_properties)
 
+        # data defined circle
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "id": "cicle_layer",
+            "type": "circle",
+            "paint": {
+                "circle-opacity": 0,
+                "circle-stroke-color": "#919191",
+                "circle-color": "#000000",
+                "circle-stroke-width": {"stops": [[16, 0.125], [17, 0.25], [18, 0.5]]},
+                "circle-stroke-opacity": 1,
+                "circle-radius": {
+                    "stops": [[16, 2.375], [17, 4.75], [18, 9.5], [19, 19]]
+                },
+            },
+        }
+        has_renderer, rendererStyle = QgsMapBoxGlStyleConverter.parseCircleLayer(
+            style, context
+        )
+        self.assertTrue(has_renderer)
+        self.assertEqual(
+            rendererStyle.geometryType(), QgsWkbTypes.GeometryType.PointGeometry
+        )
+        symbol_layer = rendererStyle.symbol().symbolLayers()[0]
+        properties = symbol_layer.properties()
+        expected_properties = {
+            "angle": "0",
+            "cap_style": "square",
+            "color": "0,0,0,0,rgb:0,0,0,0",
+            "horizontal_anchor_point": "1",
+            "joinstyle": "bevel",
+            "name": "circle",
+            "offset": "0,0",
+            "offset_map_unit_scale": "3x:0,0,0,0,0,0",
+            "offset_unit": "Pixel",
+            "outline_color": "145,145,145,255,rgb:0.5686275,0.5686275,0.5686275,1",
+            "outline_style": "solid",
+            "outline_width": "0.125",
+            "outline_width_map_unit_scale": "3x:0,0,0,0,0,0",
+            "outline_width_unit": "Pixel",
+            "scale_method": "diameter",
+            "size": "4.75",
+            "size_map_unit_scale": "3x:0,0,0,0,0,0",
+            "size_unit": "Pixel",
+            "vertical_anchor_point": "1",
+        }
+        self.assertEqual(properties, expected_properties)
+
+        dd_props = symbol_layer.dataDefinedProperties()
+        prop = dd_props.property(QgsSymbolLayer.Property.Size)
+        self.assertEqual(
+            prop.asExpression(),
+            "CASE WHEN @vector_tile_zoom >= 16 AND @vector_tile_zoom <= 17 THEN (scale_linear(@vector_tile_zoom,16,17,2.375,4.75)) * 2 WHEN @vector_tile_zoom > 17 AND @vector_tile_zoom <= 18 THEN (scale_linear(@vector_tile_zoom,17,18,4.75,9.5)) * 2 WHEN @vector_tile_zoom > 18 AND @vector_tile_zoom <= 19 THEN (scale_linear(@vector_tile_zoom,18,19,9.5,19)) * 2 WHEN @vector_tile_zoom > 19 THEN 38 END",
+        )
+        prop = dd_props.property(QgsSymbolLayer.Property.StrokeWidth)
+        self.assertEqual(
+            prop.asExpression(),
+            "CASE WHEN @vector_tile_zoom >= 16 AND @vector_tile_zoom <= 17 THEN scale_linear(@vector_tile_zoom,16,17,0.125,0.25) WHEN @vector_tile_zoom > 17 AND @vector_tile_zoom <= 18 THEN scale_linear(@vector_tile_zoom,17,18,0.25,0.5) WHEN @vector_tile_zoom > 18 THEN 0.5 END",
+        )
+
     def testParseArrayStops(self):
         conversion_context = QgsMapBoxGlStyleConversionContext()
         exp = QgsMapBoxGlStyleConverter.parseArrayStops({}, conversion_context, 1)

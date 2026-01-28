@@ -21,6 +21,10 @@
 
 #include "qgsspatialindexkdbush.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsDbscanClusteringAlgorithm::name() const

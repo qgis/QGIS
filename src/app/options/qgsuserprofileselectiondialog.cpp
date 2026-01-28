@@ -23,8 +23,11 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsuserprofileselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
   : QDialog( parent ), mManager( manager )

@@ -21,7 +21,11 @@
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
 #include "moc_qgstemporalnavigationobject.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTemporalNavigationObject::QgsTemporalNavigationObject( QObject *parent )
   : QgsTemporalController( parent )

@@ -29,8 +29,11 @@
 
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspointcloudlayersaveasdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayerSaveAsDialog::QgsPointCloudLayerSaveAsDialog( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

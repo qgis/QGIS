@@ -26,6 +26,10 @@
 #include "qgsmarkersymbollayer.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVectorTileBasicRendererStyle::QgsVectorTileBasicRendererStyle( const QString &stName, const QString &laName, Qgis::GeometryType geomType )
   : mStyleName( stName )
   , mLayerName( laName )

@@ -92,6 +92,10 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
 
+    double mRedMax = std::numeric_limits<double>::lowest();
+    double mGreenMax = std::numeric_limits<double>::lowest();
+    double mBlueMax = std::numeric_limits<double>::lowest();
+
     QStringList mUriList;
     QgsRectangle mExtent;
     qint64 mPointCount = 0;

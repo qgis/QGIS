@@ -25,6 +25,10 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsmessagelog.h"
 #include "qgsvirtuallayerblob.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 static QString quotedColumn( QString name )
 {
   return "\"" + name.replace( "\""_L1, "\"\""_L1 ) + "\"";

@@ -46,6 +46,10 @@
 #include "qgstextlabelfeature.h"
 #include "qgstextrendererutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace pal;
 
 FeaturePart::FeaturePart( QgsLabelFeature *feat, const GEOSGeometry *geom )

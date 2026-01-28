@@ -23,7 +23,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapeellipseextent.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeEllipseExtentMetadata::TOOL_ID = u"ellipse-from-extent"_s;
 

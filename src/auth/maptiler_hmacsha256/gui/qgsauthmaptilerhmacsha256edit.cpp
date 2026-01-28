@@ -17,7 +17,11 @@
 #include "ui_qgsauthmaptilerhmacsha256edit.h"
 #include "qgsauthmaptilerhmacsha256edit.h"
 
+#include <QString>
+
 #include "moc_qgsauthmaptilerhmacsha256edit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthMapTilerHmacSha256Edit::QgsAuthMapTilerHmacSha256Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

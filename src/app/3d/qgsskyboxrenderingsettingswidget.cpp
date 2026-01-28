@@ -20,8 +20,11 @@
 
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsskyboxrenderingsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSkyboxRenderingSettingsWidget::QgsSkyboxRenderingSettingsWidget( QWidget *parent )
   : QWidget( parent )

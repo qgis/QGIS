@@ -25,9 +25,12 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgspainting.h"
 
+#include <QString>
 #include <QtConcurrentRun>
 
 #include "moc_qgsmaprenderercustompainterjob.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsMapRendererAbstractCustomPainterJob

@@ -22,7 +22,10 @@
 
 #include <QDateTime>
 #include <QDomElement>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

@@ -33,9 +33,12 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QString>
 #include <QTableWidget>
 
 #include "moc_qgsstatisticalsummarydockwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 typedef QList<Qgis::Statistic> StatsList;
 typedef QList<Qgis::StringStatistic> StringStatsList;

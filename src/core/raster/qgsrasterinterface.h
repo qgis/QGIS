@@ -32,6 +32,9 @@
 
 #include <QCoreApplication>
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

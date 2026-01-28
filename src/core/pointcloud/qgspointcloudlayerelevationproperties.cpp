@@ -23,7 +23,11 @@
 #include "qgspointcloudlayer.h"
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudlayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayerElevationProperties::QgsPointCloudLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

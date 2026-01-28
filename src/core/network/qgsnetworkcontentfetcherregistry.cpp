@@ -24,9 +24,12 @@
 #include <QFileInfo>
 #include <QMimeDatabase>
 #include <QMimeType>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsnetworkcontentfetcherregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {
@@ -38,7 +41,7 @@ QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
   mFileRegistry.clear();
 }
 
-QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const Qgis::ActionStart fetchingMode, const QString &authConfig )
+QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, const Qgis::ActionStart fetchingMode, const QString &authConfig, const QgsHttpHeaders &headers )
 {
 
   if ( mFileRegistry.contains( url ) )
@@ -46,7 +49,7 @@ QgsFetchedContent *QgsNetworkContentFetcherRegistry::fetch( const QString &url, 
     return mFileRegistry.value( url );
   }
 
-  QgsFetchedContent *content = new QgsFetchedContent( url, nullptr, QgsFetchedContent::NotStarted, authConfig );
+  QgsFetchedContent *content = new QgsFetchedContent( url, nullptr, QgsFetchedContent::NotStarted, authConfig, headers );
 
   mFileRegistry.insert( url, content );
 
@@ -134,7 +137,7 @@ void QgsFetchedContent::download( bool redownload )
        status() == QgsFetchedContent::NotStarted ||
        status() == QgsFetchedContent::Failed )
   {
-    mFetchingTask = new QgsNetworkContentFetcherTask( mUrl, mAuthConfig );
+    mFetchingTask = new QgsNetworkContentFetcherTask( mUrl, mAuthConfig, QgsTask::CanCancel, QString(), mHeaders );
     // use taskCompleted which is main thread rather than fetched signal in worker thread
     connect( mFetchingTask, &QgsNetworkContentFetcherTask::taskCompleted, this, &QgsFetchedContent::taskCompleted );
     connect( mFetchingTask, &QgsNetworkContentFetcherTask::taskTerminated, this, &QgsFetchedContent::taskCompleted );

@@ -46,9 +46,12 @@
 #include <QList>
 #include <QPainter>
 #include <QSpinBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsmapsavedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapSaveDialog::QgsMapSaveDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations, const QList<QgsAnnotation *> &annotations, DialogType type )
   : QDialog( parent )

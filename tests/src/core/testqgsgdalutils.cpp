@@ -24,6 +24,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsGdalUtils : public QObject
 {
     Q_OBJECT

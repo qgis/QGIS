@@ -30,9 +30,12 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionGraphicsItem>
 
 #include "moc_qgslayoutitempage.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   : QgsLayoutItem( layout, false )

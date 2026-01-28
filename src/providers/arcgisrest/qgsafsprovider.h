@@ -31,6 +31,10 @@
 #include "qgssettingsentryimpl.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
  */

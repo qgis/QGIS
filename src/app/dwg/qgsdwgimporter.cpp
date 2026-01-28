@@ -51,6 +51,8 @@
 #include <QTransform>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 #define LOG( x )                                                     \
   {                                                                  \
     QgsDebugMsgLevel( x, 2 );                                        \

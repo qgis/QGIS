@@ -20,6 +20,10 @@
 #include "NormVecDecorator.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator *tin )
   : mTIN( tin )
 {

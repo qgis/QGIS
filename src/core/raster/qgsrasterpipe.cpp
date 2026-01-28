@@ -30,6 +30,9 @@
 #include "qgsrasterresamplefilter.h"
 
 #include <QByteArray>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterPipe::QgsRasterPipe( const QgsRasterPipe &pipe )
 {

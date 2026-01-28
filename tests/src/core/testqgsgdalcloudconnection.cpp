@@ -20,6 +20,8 @@
 #include <QString>
 #include <QtConcurrent>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsGdalCloudConnection : public QObject
 {
     Q_OBJECT

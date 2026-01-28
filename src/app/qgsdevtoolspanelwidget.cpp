@@ -23,7 +23,11 @@
 #include "qgspanelwidgetstack.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
+
 #include "moc_qgsdevtoolspanelwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsDevToolsPanelWidget::settingLastActiveTab = new QgsSettingsEntryString( u"last-active-tab"_s, QgsDevToolsPanelWidget::sTreeDevTools, QString(), u"Last visible tab in developer tools panel"_s );
 

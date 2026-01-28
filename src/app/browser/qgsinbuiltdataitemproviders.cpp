@@ -78,9 +78,12 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsinbuiltdataitemproviders.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {

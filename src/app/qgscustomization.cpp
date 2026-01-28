@@ -39,8 +39,11 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QStatusBar>
+#include <QString>
 #include <QToolButton>
 #include <QWidgetAction>
+
+using namespace Qt::StringLiterals;
 
 #define CUSTOMIZATION_CURRENT_VERSION "1"
 

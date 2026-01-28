@@ -10,6 +10,7 @@
 
 
 
+
 class QgsOfflineEditing : QObject
 {
 %Docstring(signature="appended")

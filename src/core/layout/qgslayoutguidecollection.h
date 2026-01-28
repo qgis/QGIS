@@ -28,6 +28,9 @@
 #include <QGraphicsLineItem>
 #include <QPen>
 #include <QSortFilterProxyModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsLayoutPageCollection;

@@ -19,6 +19,9 @@
 #include "qgstest.h"
 
 #include <QPixmap>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //header for class being tested
 #include "qgsprojutils.h"

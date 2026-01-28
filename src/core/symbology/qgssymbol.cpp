@@ -61,7 +61,10 @@
 #include <QPainter>
 #include <QPicture>
 #include <QSize>
+#include <QString>
 #include <QSvgGenerator>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsSymbol::sPropertyDefinitions;
 

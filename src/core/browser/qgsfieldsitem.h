@@ -23,6 +23,10 @@
 #include "qgsdataitem.h"
 #include "qgsfield.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A browser item which contains a collection of field items.

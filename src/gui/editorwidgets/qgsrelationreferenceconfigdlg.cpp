@@ -23,7 +23,11 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrelationreferenceconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationReferenceConfigDlg::QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

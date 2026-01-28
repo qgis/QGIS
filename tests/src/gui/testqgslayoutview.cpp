@@ -25,8 +25,11 @@
 #include "qgsproject.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QSvgGenerator>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutView : public QObject
 {

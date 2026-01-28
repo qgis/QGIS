@@ -19,6 +19,10 @@
 #include "qgssettings.h"
 #include "qgssettingsproxy.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 Qgis::SettingsType QgsSettingsEntryVariant::settingsType() const
 {
   return Qgis::SettingsType::Variant;

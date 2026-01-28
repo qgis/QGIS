@@ -26,9 +26,12 @@
 
 #include <QFocusEvent>
 #include <QHeaderView>
+#include <QString>
 #include <QTimer>
 #include <QTreeView>
 #include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 class QgsLocator;
 class QgsLocatorResultsView;

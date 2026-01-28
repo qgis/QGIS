@@ -23,6 +23,10 @@
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTriangle::QgsTriangle()
 {
   mWkbType = Qgis::WkbType::Triangle;

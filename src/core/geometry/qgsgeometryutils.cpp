@@ -32,8 +32,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {

@@ -42,8 +42,11 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QString>
 #include <QTreeView>
 #include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;

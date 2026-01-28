@@ -26,6 +26,9 @@
 #include "qgscurve.h"
 
 #include <QPolygonF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -321,6 +324,22 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
 #endif
 
     /**
+     * Generates a uniform clamped knot vector for a NURBS curve.
+     *
+     * The generated knot vector has size = numControlPoints + degree + 1, with:
+     *
+     * - The first (degree + 1) knots are set to 0.0 (indices 0 to degree).
+     * - The last (degree + 1) knots are set to 1.0 (indices numControlPoints to numControlPoints + degree).
+     * - Interior knots uniformly spaced
+     *
+     * \param numControlPoints number of control points
+     * \param degree degree of the NURBS curve (must be >= 1)
+     * \returns the generated knot vector
+     * \since QGIS 4.0
+     */
+    static QVector<double> generateUniformKnots( int numControlPoints, int degree );
+
+    /**
      * Cast the \a geom to a QgsNurbsCurve.
      * Should be used by qgsgeometry_cast<QgsNurbsCurve *>( geometry ).
      * \note Not available in Python.
@@ -354,8 +373,8 @@ class CORE_EXPORT QgsNurbsCurve : public QgsCurve
      * Generates a uniform knot vector based on current degree and control points count.
      * Clears the existing knot vector and generates a new one following the formula:
      *
-     * - First (degree+1) knots are 0
-     * - Last (degree+1) knots are 1
+     * - The first (degree + 1) knots are set to 0.0 (indices 0 to degree).
+     * - The last (degree + 1) knots are set to 1.0 (indices numControlPoints to numControlPoints + degree).
      * - Interior knots are uniformly spaced
      */
     void generateUniformKnots();
