@@ -1058,6 +1058,9 @@ Returns the list of extra dataset URIs associated with this layer
 .. versionadded:: 4.0
 %End
 
+    virtual QString loadNamedStyle( const QString &uri, bool &resultFlag /Out/, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, Qgis::LoadStyleFlags flags = Qgis::LoadStyleFlags() );
+
+
   public slots:
 
     virtual void setTransformContext( const QgsCoordinateTransformContext &transformContext );

@@ -893,6 +893,10 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
           }
         }
 
+        menuStyleManager->addSeparator()->setObjectName( "LoadSaveStyleSeparator"_L1 );
+        menuStyleManager->addAction( tr( "Load Style…" ), app, [app, layer] { app->loadStyleFromFile( layer ); } );
+        menuStyleManager->addAction( tr( "Save Style…" ), app, [app, layer] { app->saveStyleFile( layer ); } );
+
         menu->addMenu( menuStyleManager );
       }
       else
