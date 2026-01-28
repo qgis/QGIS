@@ -553,7 +553,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
               {
                 QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
                 output->setTitle( tr( "Import to GeoPackage database" ) );
-                output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+                output->setMessage( tr( "Failed to import some vector layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
                 output->showMessage();
               }
             } );
@@ -575,7 +575,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
               {
                 QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
                 output->setTitle( tr( "Import to GeoPackage database" ) );
-                output->setMessage( tr( "Failed to import some raster layers!\n\n" ) + errorMessage, QgsMessageOutput::MessageText );
+                output->setMessage( tr( "Failed to import some raster layers!\n\n" ) + errorMessage, Qgis::StringFormat::PlainText );
                 output->showMessage();
               }
               // Always try to delete the imported raster, in case the gpkg has been left
@@ -598,7 +598,7 @@ bool QgsGeoPackageItemGuiProvider::handleDropGeopackage( QgsGeoPackageCollection
   {
     QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
     output->setTitle( tr( "Import to GeoPackage database" ) );
-    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), QgsMessageOutput::MessageText );
+    output->setMessage( tr( "Failed to import some layers!\n\n" ) + importResults.join( QLatin1Char( '\n' ) ), Qgis::StringFormat::PlainText );
     output->showMessage();
   }
   if ( hasSubTasks )
