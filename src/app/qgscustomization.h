@@ -23,6 +23,7 @@
 
 #include <QDomDocument>
 #include <QIcon>
+#include <QMap>
 
 class QWidget;
 class QgsBrowserDockWidget;
