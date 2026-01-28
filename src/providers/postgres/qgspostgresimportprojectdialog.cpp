@@ -175,7 +175,7 @@ QString QgsPostgresImportProjectDialog::prepareProjectName( const QString &fullF
   project.read( fullFilePath );
   QString projectName = project.title().isEmpty() ? project.baseName() : project.title();
 
-  projectName = createUniqueProjectName( projectName );
+  QString projectName = createUniqueProjectName( project.baseName() );
 
   mExistingProjectNames.insert( projectName );
   return projectName;
