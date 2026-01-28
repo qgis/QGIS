@@ -78,6 +78,7 @@ QgsPointCloudDataProvider::Capabilities QgsVirtualPointCloudProvider::capabiliti
   QgsPointCloudDataProvider::Capabilities c;
   c.setFlag( QgsPointCloudDataProvider::Capability::ContainSubIndexes );
   c.setFlag( QgsPointCloudDataProvider::Capability::CreateRenderer );
+  c.setFlag( QgsPointCloudDataProvider::Capability::ChangeAttributeValues );
   return c;
 }
 
