@@ -4329,6 +4329,7 @@ class TestQgsExpression : public QObject
       QTest::newRow( "Disjoint" ) << "disjoint( $geometry, geomFromWKT('LINESTRING ( 2 0, 0 2 )') )" << QgsGeometry::fromPointXY( point ) << false << QVariant( 1 );
       QTest::newRow( "No Equals point" ) << "equals( $geometry, geomFromWKT('POINT( 1 0 )') )" << QgsGeometry::fromPointXY( point ) << false << QVariant( 0 );
       QTest::newRow( "Equals point" ) << "equals( $geometry, geomFromWKT('POINT( 0 0 )') )" << QgsGeometry::fromPointXY( point ) << false << QVariant( 1 );
+      QTest::newRow( "No Equals multipoint" ) << "equals( $geometry, geomFromWKT('MULTIPOINT( ( 0 0 ) )') )" << QgsGeometry::fromPointXY( point ) << false << QVariant( 0 );
       QTest::newRow( "No Equals line" ) << "equals( $geometry, geomFromWKT('LINESTRING( 10 10, 0 0 )') )" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 0 );
       QTest::newRow( "Equals line" ) << "equals( $geometry, geomFromWKT('LINESTRING( 0 0, 10 10 )') )" << QgsGeometry::fromPolylineXY( line ) << false << QVariant( 1 );
       QTest::newRow( "No Equals polygon" ) << "equals( $geometry, geomFromWKT('POLYGON(( 0 0, 10 0, 10 10, 0 0 ))') )" << QgsGeometry::fromPolygonXY( polygon ) << false << QVariant( 0 );
