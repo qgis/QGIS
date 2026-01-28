@@ -528,7 +528,7 @@ void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString
   // Mark the node so that we know which custom nodes correspond to elevation profile sources
   customNode->setCustomProperty( u"source"_s, QgsElevationProfileLayerTreeView::CUSTOM_NODE_ELEVATION_PROFILE_SOURCE );
 
-  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( -1, customNode.release() );
+  QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( 0, customNode.release() );
   if ( !node )
     QgsDebugError( QString( "The custom node with id '%1' could not be added!" ).arg( sourceId ) );
 }
