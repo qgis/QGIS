@@ -1,0 +1,11 @@
+{
+  "name": "\\\\'",
+  "type": "value",
+  "groups": ["String"],
+  "description": "Inserts a literal single quote character in a string.",
+  "examples": [{
+    "expression": "'It\\\\'s working'",
+    "returns": "'It's working'"
+  }],
+  "tags": ["escape", "quote", "apostrophe", "string"]
+}

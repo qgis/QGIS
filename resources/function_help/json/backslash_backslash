@@ -1,0 +1,11 @@
+{
+  "name": "\\\\\\\\",
+  "type": "value",
+  "groups": ["String"],
+  "description": "Inserts a literal backslash character in a string.",
+  "examples": [{
+    "expression": "'C:\\\\\\\\Users\\\\\\\\Name'",
+    "returns": "'C:\\\\Users\\\\Name'"
+  }],
+  "tags": ["escape", "backslash", "string"]
+}

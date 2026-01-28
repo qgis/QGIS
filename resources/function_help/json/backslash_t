@@ -1,0 +1,11 @@
+{
+  "name": "\\\\t",
+  "type": "value",
+  "groups": ["String"],
+  "description": "Inserts a tab character in a string literal.",
+  "examples": [{
+    "expression": "'Name\\\\tAge\\\\tCity'",
+    "returns": "Name    Age    City (tabs between the words)"
+  }],
+  "tags": ["escape", "tab", "tabulation", "string"]
+}
