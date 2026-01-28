@@ -1,0 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingtaskqueuedialog.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsProcessingTaskQueueDialog : QDialog
+{
+%Docstring(signature="appended")
+Dialog for managing the processing task queue.
+
+.. note::
+
+   This is not considered stable API and may change in future QGIS versions.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingtaskqueuedialog.h"
+%End
+  public:
+    QgsProcessingTaskQueueDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsProcessingTaskQueueDialog.
+
+:param parent: parent widget
+:param flags: window flags
+%End
+
+    ~QgsProcessingTaskQueueDialog();
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/processing/qgsprocessingtaskqueuedialog.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
