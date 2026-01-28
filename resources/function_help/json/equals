@@ -14,6 +14,9 @@
     "expression": "equals( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'POINT( 0 0 )' ) )",
     "returns": "TRUE"
   }, {
+    "expression": "equals( geom_from_wkt( 'POINT( 0 0 )' ), geom_from_wkt( 'MULTIPOINT( ( 0 0 ) )' ) )",
+    "returns": "FALSE"
+  }, {
     "expression": "equals( geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ), geom_from_wkt( 'LINESTRING( 0 0, 1 1 )' ) )",
     "returns": "TRUE"
   }, {
