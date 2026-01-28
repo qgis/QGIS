@@ -689,8 +689,13 @@ class FileWidgetWrapper(WidgetWrapper):
         else:
             filter = self.tr("All files (*.*)")
 
+        file_filter = self.parameterDefinition().createFileFilter()
         filename, selected_filter = QFileDialog.getOpenFileName(
-            self.widget, self.tr("Select File"), path, filter
+            self.widget,
+            self.tr("Select File"),
+            path,
+            file_filter,
+            file_filter.split(";;")[0],
         )
         if filename:
             self.combo.setEditText(filename)
