@@ -1,3 +1,13 @@
+class QgsProcessingException : QgsException
+{
+%TypeHeaderCode
+#include "qgsexception.h"
+%End
+
+public:
+    QgsProcessingException(const QString &message);
+};
+
 %Exception QgsCsException(SIP_Exception) /PyName=QgsCsException/
 {
 %TypeHeaderCode
