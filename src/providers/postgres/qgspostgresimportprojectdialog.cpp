@@ -171,11 +171,7 @@ QSet<QString> QgsPostgresImportProjectDialog::projectNamesInSchema()
 
 QString QgsPostgresImportProjectDialog::prepareProjectName( const QString &fullFilePath )
 {
-  QgsProject project;
-  project.read( fullFilePath );
-  QString projectName = project.title().isEmpty() ? project.baseName() : project.title();
-
-  projectName = createUniqueProjectName( projectName );
+  QString projectName = createUniqueProjectName( QFileInfo( fullFilePath ).baseName() );
 
   mExistingProjectNames.insert( projectName );
   return projectName;
