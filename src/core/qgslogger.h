@@ -156,8 +156,7 @@ class CORE_EXPORT QgsLogger
     /**
      * Reads the environment variable QGIS_LOG_FILE.
      *
-     * Returns an empty string if the variable is not set, otherwise returns a file name for writing log
-messages to.
+     * Returns an empty string if the variable is not set, otherwise returns a file name for writing log messages to.
      *
      * Calling this method initializes the logging system by reading
      * the environment variables QGIS_LOG_FILE, QGIS_DEBUG, and QGIS_DEBUG_FILE.
