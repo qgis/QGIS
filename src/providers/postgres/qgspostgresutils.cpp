@@ -746,6 +746,9 @@ BEGIN
         WHERE name = OLD.NAME;
 
     ELSIF TG_OP = 'UPDATE' THEN
+      IF NEW.name IS DISTINCT FROM OLD.name THEN
+        UPDATE %1.qgis_projects_versions SET name = NEW.name WHERE name = OLD.name;
+      END IF;
       IF NEW.content IS DISTINCT FROM OLD.content THEN
           INSERT INTO %1.qgis_projects_versions ( name, metadata, content, comment, date_saved )
             VALUES (OLD.name, OLD.metadata, OLD.content, OLD.comment,
