@@ -834,3 +834,19 @@ bool QgsPostgresUtils::moveProjectVersions( QgsPostgresConn *conn, const QString
 
   return true;
 }
+
+bool QgsPostgresUtils::renameProject( QgsPostgresConn *conn, const QString &schemaName, const QString &oldProjectName, const QString &newProjectName )
+{
+  const QString sql = u"UPDATE %1.qgis_projects SET name=%2 WHERE name=%3"_s
+                        .arg( QgsPostgresConn::quotedIdentifier( schemaName ) )
+                        .arg( QgsPostgresConn::quotedValue( newProjectName ) )
+                        .arg( QgsPostgresConn::quotedValue( oldProjectName ) );
+
+  QgsPostgresResult result( conn->PQexec( sql ) );
+  if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+  {
+    return false;
+  }
+
+  return true;
+}
