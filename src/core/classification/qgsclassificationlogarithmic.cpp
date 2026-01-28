@@ -158,7 +158,11 @@ QString QgsClassificationLogarithmic::labelForRange( double lowerValue, double u
       break;
   }
 
-  return labelFormat().arg( lowerLabel, upperLabel );
+  const bool isFirst = ( position == QgsClassificationMethod::LowerBound );
+  const QString lowerOp = isFirst ? QString::fromUtf8( "≤" ) : QString::fromUtf8( "<" );
+  const QString upperOp = QString::fromUtf8( "≤" );
+
+  return u"%1 %2 x %3 %4"_s.arg( lowerLabel, lowerOp, upperOp, upperLabel );
 }
 
 bool QgsClassificationLogarithmic::valuesRequired() const
