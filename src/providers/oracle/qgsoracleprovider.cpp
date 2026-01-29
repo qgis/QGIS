@@ -2775,7 +2775,7 @@ bool QgsOracleProvider::getGeometryDetails()
   if ( mGeometryColumn.isNull() && mRequestedGeomType != Qgis::WkbType::NoGeometry && !mIsQuery )
   {
     // if not specified in advance, determine geometry column name
-    const QString sql { u"SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS WHERE owner=? AND table_name=? AND data_type='SDO_GEOMETRY'"_s };
+    const QString sql { QStringLiteral( "SELECT COLUMN_NAME FROM ALL_TAB_COLUMNS WHERE owner=? AND table_name=? AND data_type='SDO_GEOMETRY'" ) };
     if ( LoggedExecStatic( qry, sql, QVariantList() << ownerName << tableName, mUri.uri() ) )
     {
       if ( qry.next() )
