@@ -30,7 +30,7 @@ QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudLayer
   : mLayer( layer )
 {}
 
-QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
+QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QMap<int, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
   : QgsPointCloudLayerUndoCommand( layer )
   , mAttribute( attribute )
   , mNewValue( value )
@@ -40,12 +40,16 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
   QList<NodeProcessData> processData;
   for ( auto it = mappedPoints.constBegin(); it != mappedPoints.constEnd(); ++it )
   {
-    const QString &uri = it.key();
-    QgsPointCloudIndex index = mLayer->index( uri );
+    const int position = it.key();
+    QgsPointCloudIndex index;
+    if ( position < 0 )
+      index = mLayer->index();
+    else
+      index = mLayer->subIndex( position );
     const auto &nodes = it.value();
     for ( auto nodeIt = nodes.constBegin(); nodeIt != nodes.constEnd(); ++nodeIt )
     {
-      processData.append( { uri, index, nodeIt.key(), nodeIt.value() } );
+      processData.append( { position, index, nodeIt.key(), nodeIt.value() } );
     }
   }
 
@@ -87,15 +91,15 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
       }
     }
 
-    return std::pair { data.uri, std::pair { n, perNodeData } };
+    return std::pair { data.position, std::pair { n, perNodeData } };
   };
 
-  std::function reduceFn = []( QMap<QString, QHash<QgsPointCloudNodeId, PerNodeData>> &res, const std::pair<QString, std::pair<QgsPointCloudNodeId, PerNodeData>> &pair )
+  std::function reduceFn = []( QMap<int, QHash<QgsPointCloudNodeId, PerNodeData>> &res, const std::pair<int, std::pair<QgsPointCloudNodeId, PerNodeData>> &pair )
   {
     res[pair.first][pair.second.first] = pair.second.second;
   };
 
-  mPerNodeData = QtConcurrent::blockingMappedReduced<QMap<QString, QHash<QgsPointCloudNodeId, PerNodeData>>>(
+  mPerNodeData = QtConcurrent::blockingMappedReduced<QMap<int, QHash<QgsPointCloudNodeId, PerNodeData>>>(
                    processData,
                    std::move( mapFn ), std::move( reduceFn )
                  );
@@ -120,10 +124,14 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
 
   for ( auto it = mPerNodeData.begin(); it != mPerNodeData.end(); ++it )
   {
-    const QString &uri = it.key();
+    const int position = it.key();
     QHash<QgsPointCloudNodeId, PerNodeData> &nodesData = it.value();
 
-    QgsPointCloudIndex index = mLayer->index( uri );
+    QgsPointCloudIndex index;
+    if ( position < 0 )
+      index = mLayer->index();
+    else
+      index = mLayer->subIndex( position );
     QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( index.get() );
     QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
 
@@ -161,7 +169,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
 
     for ( auto itNode = nodesData.constBegin(); itNode != nodesData.constEnd(); itNode++ )
     {
-      emit mLayer->chunkAttributeValuesChanged( uri, itNode.key() );
+      emit mLayer->chunkAttributeValuesChanged( itNode.key(), position );
     }
   }
 }
