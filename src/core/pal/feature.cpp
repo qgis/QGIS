@@ -1668,7 +1668,7 @@ std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std
     double lineAnchorPoint = 0;
     if ( !usingStretchToFitMode )
     {
-      if ( originalPoint && offset != NoOffset )
+      if ( originalPoint )
       {
         // the actual anchor point for the offset curves is the closest point on those offset curves
         // to the anchor point on the original line. This avoids anchor points which differ greatly
