@@ -82,6 +82,19 @@ class QgsFeature3DHandler
      */
     int featureCount() const { return mFeatureCount; }
 
+    /**
+     * Sets whether the feature handler should use highlight material for the created 3D entities. This is used
+     * for highlighting identified features.
+     * \since QGIS 4.0
+     */
+    void setHighlightingEnabled( bool enable ) { mHighlightingEnabled = enable; }
+
+    /**
+     * Returns whether the feature handler will use highlight material for the created 3D entities.
+     * \since QGIS 4.0
+     */
+    bool highlightingEnabled() const { return mHighlightingEnabled; }
+
   protected:
     //! updates zMinimum, zMaximum from the vector of positions in 3D world coordinates
     void updateZRangeFromPositions( const QVector<QVector3D> &positions );
@@ -96,6 +109,7 @@ class QgsFeature3DHandler
     float mZMin = std::numeric_limits<float>::max();
     float mZMax = std::numeric_limits<float>::lowest();
     int mFeatureCount = 0;
+    bool mHighlightingEnabled = false;
 
     /**
      * Origin (in map coordinates) for output geometries - it is kind of arbitrary, but it should be
