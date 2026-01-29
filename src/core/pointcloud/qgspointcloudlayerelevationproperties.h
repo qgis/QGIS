@@ -214,7 +214,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     /**
      * Sets the profile \a type used when generating elevation profile plots.
      *
-     * \see renderType()
+     * \see type()
      * \since QGIS 4.0
      */
     void setType( Qgis::PointCloudProfileType type ) { mType = type; }
@@ -222,10 +222,10 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     /**
      * Returns the profile type used when generating elevation profile plots.
      *
-     * \see setRenderType()
+     * \see setType()
      * \since QGIS 4.0
      */
-    Qgis::PointCloudProfileType renderType() const { return mType; }
+    Qgis::PointCloudProfileType type() const { return mType; }
 
     /**
      * Returns the symbol used to render lines for the layer in elevation profile plots.
@@ -321,7 +321,6 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
 
   private:
     void setDefaultProfileLineSymbol( const QColor &color );
-    void setDefaultProfileMarkerSymbol( const QColor &color );
     void setDefaultProfileFillSymbol( const QColor &color );
 
     double mMaximumScreenError = 0.3;
@@ -332,7 +331,7 @@ class CORE_EXPORT QgsPointCloudLayerElevationProperties : public QgsMapLayerElev
     Qgis::PointCloudSymbol mPointSymbol = Qgis::PointCloudSymbol::Square;
     std::unique_ptr< QgsLineSymbol > mProfileLineSymbol;
     std::unique_ptr< QgsFillSymbol > mProfileFillSymbol;
-    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::FillBelow;
+    Qgis::ProfileSurfaceSymbology mSymbology = Qgis::ProfileSurfaceSymbology::Line;
     double mElevationLimit = std::numeric_limits<double>::quiet_NaN();
     QColor mPointColor;
     bool mRespectLayerColors = true;

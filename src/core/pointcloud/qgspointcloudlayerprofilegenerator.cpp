@@ -610,12 +610,6 @@ int QgsPointCloudLayerProfileGeneratorBase::visitNodesAsync( const QVector<QgsPo
   return nodesDrawn;
 }
 
-void QgsPointCloudLayerProfileGeneratorBase::visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange )
-{
-  Q_UNUSED( block );
-  Q_UNUSED( zRange );
-}
-
 void QgsPointCloudLayerProfileGeneratorBase::gatherPoints( QgsPointCloudIndex &pc, QgsPointCloudRequest &request, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent )
 {
   const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, pc.root(), maxErrorPixels, nodeErrorPixels, zRange, searchExtent );
@@ -1082,10 +1076,10 @@ void QgsTriangulatedPointCloudLayerProfileResults::copyPropertiesFromGenerator( 
   mProfileCurve.reset( pcGenerator->mProfileCurve->clone() );
   mTolerance = pcGenerator->mTolerance;
 
-  mLineSymbol.reset( pcGenerator->lineSymbol()->clone() );
-  mFillSymbol.reset( pcGenerator->fillSymbol()->clone() );
-  symbology = pcGenerator->symbology();
-  mElevationLimit = pcGenerator->elevationLimit();
+  mLineSymbol.reset( pcGenerator->mLineSymbol->clone() );
+  mFillSymbol.reset( pcGenerator->mFillSymbol->clone() );
+  symbology = pcGenerator->mSymbology;
+  mElevationLimit = pcGenerator->mElevationLimit;
 
   mZOffset = pcGenerator->mZOffset;
   mZScale = pcGenerator->mZScale;

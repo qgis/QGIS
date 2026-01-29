@@ -30,7 +30,6 @@
 #include "qgscoordinatetransformcontext.h"
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
@@ -48,7 +47,6 @@ class QgsPointCloudRequest;
 class QgsPointCloudBlock;
 class QgsGeos;
 class QgsPreparedPointCloudRendererData;
-class QgsTriangle;
 
 #define SIP_NO_FILE
 
@@ -139,7 +137,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
     QVector<QgsPointCloudNodeId> traverseTree( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent );
     int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
     int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
-    virtual void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
+    virtual void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange ) = 0;
 
     QPointer< QgsPointCloudLayer > mLayer;
     QgsPointCloudIndex mIndex;
@@ -272,30 +270,7 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileGenerator : public QgsPoi
     QgsFeedback *feedback() const override;
     QString type() const override;
 
-    Qgis::ProfileSurfaceSymbology symbology() const
-    {
-      return mSymbology;
-    }
-
-    QgsLineSymbol *lineSymbol() const
-    {
-      return mLineSymbol.get();
-    }
-
-    QgsFillSymbol *fillSymbol() const
-    {
-      return mFillSymbol.get();
-    }
-
-    double elevationLimit() const
-    {
-      return mElevationLimit;
-    }
-
   private:
-    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange );
-    int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
-    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
     void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange ) override;
 
     std::unique_ptr< QgsTriangulatedPointCloudLayerProfileResults > mResults;

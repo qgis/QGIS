@@ -91,7 +91,7 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
   connect( mCheckBoxRespectLayerColors, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mOpacityByDistanceCheckBox, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mLayer, &QgsMapLayer::crsChanged, this, &QgsPointCloudElevationPropertiesWidget::updateVerticalCrsOptions );
-  connect( mCheckBoxShowMarkersAtSampledPoints, &QCheckBox::toggled, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
+  connect( mElevationLimitSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mTypeCombobox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this] {
     switch ( static_cast<Qgis::PointCloudProfileType>( mTypeCombobox->currentData().toInt() ) )
     {
@@ -127,7 +127,6 @@ QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( 
     onChanged();
   } );
   connect( mLineStyleButton, &QgsSymbolButton::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
-  connect( mMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
   connect( mFillStyleButton, &QgsSymbolButton::changed, this, &QgsPointCloudElevationPropertiesWidget::onChanged );
 
   setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#elevation-properties"_s );
@@ -152,12 +151,12 @@ void QgsPointCloudElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
   mPointColorButton->setColor( properties->pointColor() );
   mCheckBoxRespectLayerColors->setChecked( properties->respectLayerColors() );
   mOpacityByDistanceCheckBox->setChecked( properties->applyOpacityByDistanceEffect() );
-  mTypeCombobox->setCurrentIndex( mTypeCombobox->findData( static_cast<int>( properties->renderType() ) ) );
+  mTypeCombobox->setCurrentIndex( mTypeCombobox->findData( static_cast<int>( properties->type() ) ) );
 
   mLineStyleButton->setSymbol( properties->profileLineSymbol()->clone() );
   mFillStyleButton->setSymbol( properties->profileFillSymbol()->clone() );
 
-  switch ( properties->renderType() )
+  switch ( properties->type() )
   {
     case Qgis::PointCloudProfileType::IndividualPoints:
       mInterpretationStackedWidget->setCurrentWidget( pageIndividualPoints );

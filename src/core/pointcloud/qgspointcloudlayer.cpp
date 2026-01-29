@@ -129,7 +129,7 @@ QgsAbstractProfileGenerator *QgsPointCloudLayer::createProfileGenerator( const Q
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mElevationProperties && mElevationProperties->renderType() == Qgis::PointCloudProfileType::TriangulatedSurface )
+  if ( mElevationProperties && mElevationProperties->type() == Qgis::PointCloudProfileType::TriangulatedSurface )
   {
     return new QgsTriangulatedPointCloudLayerProfileGenerator( this, request );
   }
