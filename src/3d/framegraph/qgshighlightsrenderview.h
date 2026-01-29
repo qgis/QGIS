@@ -49,6 +49,8 @@ class QgsHighlightsRenderView : public QgsAbstractRenderView
     //! Returns a layer that should be attached to entities meant to be rendered by QgsHighlightsRenderView
     Qt3DRender::QLayer *highlightsLayer() { return mHighlightsLayer; }
 
+    //! Returns the width of the generated silhouette effect in pixels
+    static int silhouetteWidth() { return 3; }
 
   private:
     /**

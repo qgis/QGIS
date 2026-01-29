@@ -19,6 +19,7 @@
 #include "qgs3dutils.h"
 #include "qgsgeos.h"
 #include "qgsgeotransform.h"
+#include "qgshighlightsrenderview.h"
 #include "qgsline3dsymbol.h"
 #include "qgslinematerial_p.h"
 #include "qgslinevertexdata_p.h"
@@ -32,11 +33,14 @@
 #include "qgstessellator.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QGeometryRenderer>
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -365,7 +369,6 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( selected );
   materialContext.setSelectionColor( context.selectionColor() );
-  materialContext.setIsHighlighted( mHighlightingEnabled );
   QgsMaterial *material = mSymbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Lines, materialContext );
   if ( !material )
   {
@@ -374,7 +377,21 @@ void QgsThickLine3DSymbolHandler::makeEntity( Qt3DCore::QEntity *parent, const Q
   }
 
   if ( QgsLineMaterial *lineMaterial = dynamic_cast<QgsLineMaterial *>( material ) )
-    lineMaterial->setLineWidth( mSymbol->width() );
+  {
+    float width = mSymbol->width();
+    if ( mHighlightingEnabled )
+    {
+      const QgsSettings settings;
+      const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+      lineMaterial->setLineColor( color );
+      // This is a workaround, make lines thicker to avoid rendering thin lines as three parallel lines with a gap between them
+      // Ideally we would want highlighted lines to be:
+      // - Rendered with an increased line width during highlights render view first pass
+      // - Not rendered during highlights render view second pass (multi-viewport one)
+      width = std::max<float>( static_cast<float>( QgsHighlightsRenderView::silhouetteWidth() * 2 ), mSymbol->width() );
+    }
+    lineMaterial->setLineWidth( width );
+  }
 
   Qt3DCore::QEntity *entity = new Qt3DCore::QEntity;
 
