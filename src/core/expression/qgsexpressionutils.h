@@ -31,8 +31,11 @@
 #include <QDate>
 #include <QDateTime>
 #include <QLocale>
+#include <QString>
 #include <QThread>
 #include <QTime>
+
+using namespace Qt::StringLiterals;
 
 class QgsMapLayer;
 class QgsGradientColorRamp;

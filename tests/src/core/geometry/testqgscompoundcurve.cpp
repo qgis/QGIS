@@ -28,6 +28,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsCompoundCurve : public QObject
 {
     Q_OBJECT

@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmextractbyextent.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExtractByExtentAlgorithm::name() const

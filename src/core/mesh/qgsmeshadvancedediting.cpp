@@ -25,6 +25,10 @@
 #include "qgsprojectelevationproperties.h"
 #include "qgsterrainprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsMeshAdvancedEditing::QgsMeshAdvancedEditing() = default;
 
 QgsMeshAdvancedEditing::~QgsMeshAdvancedEditing() = default;

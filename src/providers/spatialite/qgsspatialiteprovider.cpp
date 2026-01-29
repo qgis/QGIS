@@ -43,8 +43,11 @@ email                : a.furieri@lqt.it
 #include <QDir>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsspatialiteprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 

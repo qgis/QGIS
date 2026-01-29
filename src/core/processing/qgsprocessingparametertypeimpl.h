@@ -23,6 +23,9 @@
 #include "qgsprocessingparametertype.h"
 
 #include <QCoreApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define SIP_NO_FILE
 

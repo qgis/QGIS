@@ -1,4 +1,8 @@
+#include <QString>
+
 #include "moc_qgsfield.cpp"
+
+using namespace Qt::StringLiterals;
 
 /***************************************************************************
        qgsfield.cpp - Describes a field in a layer or table

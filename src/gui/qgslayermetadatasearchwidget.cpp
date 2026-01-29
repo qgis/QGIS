@@ -23,7 +23,11 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectviewsettings.h"
 
+#include <QString>
+
 #include "moc_qgslayermetadatasearchwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerMetadataSearchWidget::QgsLayerMetadataSearchWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

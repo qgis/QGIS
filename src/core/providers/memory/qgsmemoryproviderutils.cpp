@@ -20,7 +20,10 @@
 #include "qgsfields.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 QString memoryLayerFieldType( QMetaType::Type type, const QString &typeString )
 {

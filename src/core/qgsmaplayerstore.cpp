@@ -22,8 +22,11 @@
 #include "qgsthreadingutils.h"
 
 #include <QList>
+#include <QString>
 
 #include "moc_qgsmaplayerstore.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStore::QgsMapLayerStore( QObject *parent )
   : QObject( parent )

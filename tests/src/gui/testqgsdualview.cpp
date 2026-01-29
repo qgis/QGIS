@@ -35,6 +35,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayercache.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsDualView : public QObject
 {
     Q_OBJECT

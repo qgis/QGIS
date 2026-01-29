@@ -20,8 +20,11 @@
 #include "qgssensorregistry.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsiodevicesensor.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if defined( Q_OS_ANDROID ) || defined( Q_OS_LINUX )
 #include <sys/socket.h>

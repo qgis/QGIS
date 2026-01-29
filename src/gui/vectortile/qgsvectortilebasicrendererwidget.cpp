@@ -32,8 +32,11 @@
 #include <QMenu>
 #include <QPointer>
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgsvectortilebasicrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

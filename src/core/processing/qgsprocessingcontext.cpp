@@ -22,6 +22,10 @@
 #include "qgsproviderregistry.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsProcessingContext
 //

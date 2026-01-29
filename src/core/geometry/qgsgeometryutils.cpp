@@ -32,8 +32,11 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgswkbptr.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 QVector<QgsLineString *> QgsGeometryUtils::extractLineStrings( const QgsAbstractGeometry *geom )
 {
@@ -536,6 +539,62 @@ QgsPoint QgsGeometryUtils::interpolatePointOnArc( const QgsPoint &pt1, const Qgs
                    : 0;
 
   return QgsPoint( pt1.wkbType(), x, y, z, m );
+}
+
+QgsPoint QgsGeometryUtils::interpolatePointOnCubicBezier( const QgsPoint &p0, const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, double t )
+{
+  const bool hasZ = p0.is3D() && p1.is3D() && p2.is3D() && p3.is3D();
+  const bool hasM = p0.isMeasure() && p1.isMeasure() && p2.isMeasure() && p3.isMeasure();
+
+  double x, y;
+  double z = std::numeric_limits<double>::quiet_NaN();
+  double m = std::numeric_limits<double>::quiet_NaN();
+
+  QgsGeometryUtilsBase::interpolatePointOnCubicBezier( p0.x(), p0.y(), p0.z(), p0.m(),
+      p1.x(), p1.y(), p1.z(), p1.m(),
+      p2.x(), p2.y(), p2.z(), p2.m(),
+      p3.x(), p3.y(), p3.z(), p3.m(),
+      t, hasZ, hasM,
+      x, y, z, m );
+
+  Qgis::WkbType wkbType = Qgis::WkbType::Point;
+  if ( hasZ && hasM )
+    wkbType = Qgis::WkbType::PointZM;
+  else if ( hasZ )
+    wkbType = Qgis::WkbType::PointZ;
+  else if ( hasM )
+    wkbType = Qgis::WkbType::PointM;
+
+  return QgsPoint( wkbType, x, y, z, m );
+}
+
+void QgsGeometryUtilsBase::interpolatePointOnCubicBezier(
+  double p0x, double p0y, double p0z, double p0m,
+  double p1x, double p1y, double p1z, double p1m,
+  double p2x, double p2y, double p2z, double p2m,
+  double p3x, double p3y, double p3z, double p3m,
+  double t, bool hasZ, bool hasM,
+  double &outX, double &outY, double &outZ, double &outM )
+{
+  // Cubic Bézier formula: B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+  const double t1 = 1.0 - t;
+  const double t1_2 = t1 * t1;
+  const double t1_3 = t1_2 * t1;
+  const double t_2 = t * t;
+  const double t_3 = t_2 * t;
+
+  outX = t1_3 * p0x + 3.0 * t1_2 * t * p1x + 3.0 * t1 * t_2 * p2x + t_3 * p3x;
+  outY = t1_3 * p0y + 3.0 * t1_2 * t * p1y + 3.0 * t1 * t_2 * p2y + t_3 * p3y;
+
+  if ( hasZ )
+  {
+    outZ = t1_3 * p0z + 3.0 * t1_2 * t * p1z + 3.0 * t1 * t_2 * p2z + t_3 * p3z;
+  }
+
+  if ( hasM )
+  {
+    outM = t1_3 * p0m + 3.0 * t1_2 * t * p1m + 3.0 * t1 * t_2 * p2m + t_3 * p3m;
+  }
 }
 
 bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result, double radius, const QgsPoint &mousePos )

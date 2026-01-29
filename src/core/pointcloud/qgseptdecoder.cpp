@@ -26,6 +26,9 @@
 #include "qgsvector3d.h"
 
 #include <QFile>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

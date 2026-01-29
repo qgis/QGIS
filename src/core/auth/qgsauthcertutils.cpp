@@ -25,7 +25,10 @@
 #include <QFile>
 #include <QObject>
 #include <QSslCertificate>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MAC
 #include <string.h>

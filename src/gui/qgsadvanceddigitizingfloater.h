@@ -55,6 +55,7 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
       CommonAngleSnapping = 1 << 6,
       Distance = 1 << 7,
       Bearing = 1 << 8,
+      Weight = 1 << 9, //!< Weight for NURBSCurve \since QGIS 4.0
     };
     Q_DECLARE_FLAGS( FloaterItems, FloaterItem )
     Q_FLAG( FloaterItem )
@@ -102,6 +103,28 @@ class GUI_EXPORT QgsAdvancedDigitizingFloater : public QWidget, private Ui::QgsA
     * \since QGIS 3.32
     */
     void setItemVisibility( const QgsAdvancedDigitizingFloater::FloaterItem &item, bool visible );
+
+  public slots:
+
+    /**
+    * Updates the weight value displayed in the floater for NURBSCurve.
+    * \param text The weight value as a string
+    * \since QGIS 4.0
+    */
+    void changeWeight( const QString &text );
+
+    /**
+    * Shows or hides the weight widget in the floater for NURBSCurve.
+    * \param enabled Whether weight editing is active
+    * \since QGIS 4.0
+    */
+    void enabledChangedWeight( bool enabled );
+
+    /**
+    * Requests focus on the weight input field for NURBSCurve.
+    * \since QGIS 4.0
+    */
+    void focusOnWeight();
 
   private slots:
 

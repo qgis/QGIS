@@ -25,6 +25,10 @@
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationRectangleTextItem::QgsAnnotationRectangleTextItem( const QString &text, const QgsRectangle &bounds )
   : QgsAnnotationRectItem( bounds )
   , mText( text )

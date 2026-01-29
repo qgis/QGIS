@@ -22,6 +22,10 @@
 #include "qgis_sip.h"
 #include "qgscurve.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsCompoundCurve

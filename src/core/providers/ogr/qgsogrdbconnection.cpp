@@ -17,7 +17,11 @@
  ***************************************************************************/
 #include "qgsogrdbconnection.h"
 
+#include <QString>
+
 #include "moc_qgsogrdbconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsOgrDbConnection::settingsOgrConnectionPath = new QgsSettingsEntryString( u"providers/ogr/%1/connections/%2/path"_s, QString(), QString() );
 

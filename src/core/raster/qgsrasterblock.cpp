@@ -26,6 +26,9 @@
 #include <QByteArray>
 #include <QColor>
 #include <QLocale>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define GDAL_MINMAXELT_NS qgis_gdal
 #include "gdal_minmax_element.hpp"

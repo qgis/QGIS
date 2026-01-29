@@ -26,6 +26,10 @@
 #include "lazperf/writers.hpp"
 #include "qgslazdecoder.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Keeps one entry of COPC hierarchy
 struct HierarchyEntry
 {

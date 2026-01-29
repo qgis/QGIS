@@ -49,8 +49,11 @@
 
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstextformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )
@@ -320,6 +323,10 @@ void QgsTextFormatWidget::initWidget()
   mCurvedModeDescriptionLabel->setFont( font );
   updateCurvedLabelDescription();
 
+  mComboMultipartBehavior->addItem( tr( "Label Largest Part Only" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly ) );
+  mComboMultipartBehavior->addItem( tr( "Label Every Part with Entire Label" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel ) );
+  mComboMultipartBehavior->addItem( tr( "Split Label Text Lines over Parts" ), QVariant::fromValue( Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts ) );
+
   updateAvailableShadowPositions();
 
   mBackgroundMarkerSymbolButton->setSymbolType( Qgis::SymbolType::Marker );
@@ -475,7 +482,7 @@ void QgsTextFormatWidget::initWidget()
   QList<QWidget *> widgets;
   widgets << btnBufferColor
           << btnTextColor
-          << chkLabelPerFeaturePart
+          << mComboMultipartBehavior
           << chkLineAbove
           << chkLineBelow
           << chkLineOn
@@ -609,7 +616,8 @@ void QgsTextFormatWidget::initWidget()
           << mComboCurvedLabelMode
           << mTabDistanceUnitWidget
           << mTabStopDistanceSpin
-          << mChkNoDuplicates;
+          << mChkNoDuplicates
+          << mCheckWhitespaceIsNotACollision;
 
   connectValueChanged( widgets );
 
@@ -952,6 +960,7 @@ void QgsTextFormatWidget::populateDataDefinedButtons()
   registerDataDefinedButton( mAllowInferiorPlacementDBtn, QgsPalLayerSettings::Property::AllowDegradedPlacement );
   registerDataDefinedButton( mOverlapHandlingDBtn, QgsPalLayerSettings::Property::OverlapHandling );
   registerDataDefinedButton( mCurvedLabelModeDDBtn, QgsPalLayerSettings::Property::CurvedLabelMode );
+  registerDataDefinedButton( mWhitespaceDDBtn, QgsPalLayerSettings::Property::WhitespaceCollisionHandling );
 
   // TODO: is this necessary? maybe just use the data defined-only rotation?
   //mPointAngleDDBtn, QgsPalLayerSettings::OffsetRotation,
@@ -1527,6 +1536,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   bool showRotationFrame = false;
   bool showMaxCharAngleFrame = false;
   bool showCurvedLabelModeFrame = false;
+  bool showWhitespaceCollisionFrame = false;
 
   const Qgis::LabelPlacement currentPlacement = static_cast<Qgis::LabelPlacement>( mPlacementModeComboBox->currentData().toInt() );
   const bool showPolygonPlacementOptions = ( currentGeometryType == Qgis::GeometryType::Polygon && currentPlacement != Qgis::LabelPlacement::Line && currentPlacement != Qgis::LabelPlacement::PerimeterCurved && currentPlacement != Qgis::LabelPlacement::OutsidePolygons );
@@ -1567,6 +1577,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
     showLineFrame = true;
     showDistanceFrame = true;
     showCurvedLabelModeFrame = currentPlacement == Qgis::LabelPlacement::Curved || currentPlacement == Qgis::LabelPlacement::PerimeterCurved;
+    showWhitespaceCollisionFrame = currentPlacement == Qgis::LabelPlacement::Curved || currentPlacement == Qgis::LabelPlacement::PerimeterCurved;
     //showRotationFrame = true; // TODO: uncomment when supported
 
     const bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
@@ -1596,6 +1607,7 @@ void QgsTextFormatWidget::updatePlacementWidgets()
   mPlacementMaximumDistanceFrame->setVisible( showMaximumDistanceFrame );
   mPlacementPrioritizationFrame->setVisible( showPrioritizationFrame );
   mPlacementOffsetTypeFrame->setVisible( showOffsetTypeFrame );
+  mWhitespaceCollisionFrame->setVisible( showWhitespaceCollisionFrame );
   mPlacementRotationFrame->setVisible( showRotationFrame );
   mPlacementRepeatGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line || ( currentGeometryType == Qgis::GeometryType::Polygon && ( currentPlacement == Qgis::LabelPlacement::Line || currentPlacement == Qgis::LabelPlacement::PerimeterCurved ) ) );
   mPlacementOverrunGroupBox->setVisible( currentGeometryType == Qgis::GeometryType::Line && currentPlacement != Qgis::LabelPlacement::Horizontal );

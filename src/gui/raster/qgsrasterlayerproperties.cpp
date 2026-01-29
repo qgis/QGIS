@@ -88,12 +88,15 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QScreen>
+#include <QString>
 #include <QTableWidgetItem>
 #include <QTextStream>
 #include <QUrl>
 #include <QVector>
 
 #include "moc_qgsrasterlayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags fl )
   : QgsLayerPropertiesDialog( lyr, canvas, u"RasterLayerProperties"_s, parent, fl )

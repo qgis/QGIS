@@ -21,8 +21,11 @@
 #include "qgsunittypes.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojecttimesettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectTimeSettings::QgsProjectTimeSettings( QObject *parent )
   : QObject( parent )

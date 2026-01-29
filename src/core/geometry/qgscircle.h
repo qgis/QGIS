@@ -2,8 +2,8 @@
                          qgscircle.h
                          --------------
     begin                : March 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    copyright            : (C) 2017 by Loïc Bartoletti
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -27,6 +27,8 @@
 #include "qgsrectangle.h"
 
 #include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsPoint;
 

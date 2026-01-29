@@ -22,6 +22,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_SPATIALITE
 #include <spatialite.h>
 #endif

@@ -20,9 +20,12 @@
 #include "qgsmaplayer.h"
 
 #include <QStandardItemModel>
+#include <QString>
 #include <QStringListModel>
 
 #include "moc_qgslayertreeembeddedconfigwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget *parent )
   : QWidget( parent )

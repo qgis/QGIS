@@ -26,9 +26,12 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QQueue>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgspointcloudlayerexporter.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_PDAL_QGIS
 #include <memory>

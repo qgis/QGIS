@@ -37,6 +37,10 @@
 #include "qgsvariantutils.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPropertiesDefinition QgsCallout::sPropertyDefinitions;
 
 void QgsCallout::initPropertyDefinitions()

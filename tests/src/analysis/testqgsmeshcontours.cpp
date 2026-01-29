@@ -23,7 +23,10 @@ Email                : zilolv at gmail dot com
 #include "qgsmeshlayer.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <qdebug.h>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMeshContours : public QgsTest
 {

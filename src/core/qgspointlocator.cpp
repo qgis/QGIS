@@ -33,9 +33,12 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgswkbptr.h"
 
+#include <QString>
 #include <QtConcurrent>
 
 #include "moc_qgspointlocator.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace SpatialIndex;
 
@@ -358,9 +361,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
-
 ////////////////////////////////////////////////////////////////////////////
-
 
 /**
  * \ingroup core

@@ -21,6 +21,10 @@
 #include "qgswfscapabilities.h"
 #include "qgswfsrequest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFeatureDownloaderImpl;
 class QgsGmlStreamingParser;
 

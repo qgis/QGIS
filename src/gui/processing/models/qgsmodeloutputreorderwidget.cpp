@@ -20,8 +20,11 @@
 
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
+#include <QString>
 
 #include "moc_qgsmodeloutputreorderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

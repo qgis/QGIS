@@ -24,9 +24,12 @@
 #include <QFont>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsstatusbarmagnifierwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   : QWidget( parent )

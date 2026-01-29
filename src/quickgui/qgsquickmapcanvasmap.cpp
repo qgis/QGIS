@@ -34,8 +34,11 @@
 #include <QQuickWindow>
 #include <QSGSimpleTextureNode>
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgsquickmapcanvasmap.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   : QQuickItem( parent )

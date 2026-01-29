@@ -22,6 +22,10 @@
 #include "qgsfeaturerequest.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsServerFeatureId::getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes )
 {
   if ( pkAttributes.isEmpty() )

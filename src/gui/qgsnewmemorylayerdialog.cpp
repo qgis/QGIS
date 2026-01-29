@@ -31,9 +31,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsnewmemorylayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {
@@ -74,6 +77,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
     Qgis::WkbType::Triangle,
     Qgis::WkbType::PolyhedralSurface,
     Qgis::WkbType::TIN,
+    Qgis::WkbType::NurbsCurve,
   };
 
   for ( const auto type : geomTypes )

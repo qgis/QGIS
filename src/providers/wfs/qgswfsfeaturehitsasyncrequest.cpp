@@ -21,7 +21,11 @@
 #include "qgsgml.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
+
 #include "moc_qgswfsfeaturehitsasyncrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWFSFeatureHitsAsyncRequest::QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri )
   : QgsWfsRequest( uri )

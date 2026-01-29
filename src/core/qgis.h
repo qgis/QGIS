@@ -294,6 +294,7 @@ class CORE_EXPORT Qgis
       MultiSurface = 12, //!< MultiSurface
       PolyhedralSurface = 15, //!< PolyhedralSurface \since QGIS 3.40
       TIN = 16, //!< TIN \since QGIS 3.40
+      NurbsCurve = 21, //!< NurbsCurve \since QGIS 4.0
       NoGeometry = 100, //!< No geometry
       PointZ = 1001, //!< PointZ
       LineStringZ = 1002, //!< LineStringZ
@@ -310,6 +311,7 @@ class CORE_EXPORT Qgis
       MultiSurfaceZ = 1012, //!< MultiSurfaceZ
       PolyhedralSurfaceZ = 1015, //!< PolyhedralSurfaceZ
       TINZ = 1016, //!< TINZ
+      NurbsCurveZ = 1021, //!< NurbsCurveZ \since QGIS 4.0
       PointM = 2001, //!< PointM
       LineStringM = 2002, //!< LineStringM
       PolygonM = 2003, //!< PolygonM
@@ -325,6 +327,7 @@ class CORE_EXPORT Qgis
       MultiSurfaceM = 2012, //!< MultiSurfaceM
       PolyhedralSurfaceM = 2015, //!< PolyhedralSurfaceM
       TINM = 2016, //!< TINM
+      NurbsCurveM = 2021, //!< NurbsCurveM \since QGIS 4.0
       PointZM = 3001, //!< PointZM
       LineStringZM = 3002, //!< LineStringZM
       PolygonZM = 3003, //!< PolygonZM
@@ -340,6 +343,7 @@ class CORE_EXPORT Qgis
       PolyhedralSurfaceZM = 3015, //!< PolyhedralSurfaceM
       TINZM = 3016, //!< TINZM
       TriangleZM = 3017, //!< TriangleZM
+      NurbsCurveZM = 3021, //!< NurbsCurveZM \since QGIS 4.0
       Point25D = 0x80000001, //!< Point25D
       LineString25D, //!< LineString25D
       Polygon25D, //!< Polygon25D
@@ -402,8 +406,20 @@ class CORE_EXPORT Qgis
       CircularString, //!< Capture in circular strings
       Streaming, //!< Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
       Shape, //!< Digitize shapes.
+      NurbsCurve, //!< Digitizes NURBS curves with control points. \since QGIS 4.0
     };
     Q_ENUM( CaptureTechnique )
+
+    /**
+     * NURBS digitizing mode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class NurbsMode : int
+    {
+      ControlPoints, //!< Direct control points mode - the curve is attracted to control points but does not pass through them
+    };
+    Q_ENUM( NurbsMode )
 
     /**
      * Vector layer type flags.
@@ -1175,6 +1191,18 @@ class CORE_EXPORT Qgis
     Q_ENUM( LabelOverlapHandling )
 
     /**
+     * Label whitespace collision handling.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LabelWhitespaceCollisionHandling : int
+    {
+      TreatWhitespaceAsCollision, //!< Treat overlapping whitespace text in labels and whitespace overlapping obstacles as collisions
+      IgnoreWhitespaceCollisions, //!< Ignore overlapping whitespace text in labels and whitespace overlapping obstacles
+    };
+    Q_ENUM( LabelWhitespaceCollisionHandling )
+
+    /**
      * Label prioritization.
      *
      * \since QGIS 3.38
@@ -1245,6 +1273,19 @@ class CORE_EXPORT Qgis
       OverPoint, //!< Label directly centered over point \since QGIS 3.38
     };
     Q_ENUM( LabelPredefinedPointPosition )
+
+    /**
+     * Behavior modifier for labeling features with multi-part geometries.
+     *
+     * \since QGIS 4.0
+     */
+    enum class MultiPartLabelingBehavior : int
+    {
+      LabelLargestPartOnly, //!< Place a label only on the largest part from the geometry
+      LabelEveryPartWithEntireLabel, //!< Place the (same) entire label over every part from the geometry
+      SplitLabelTextLinesOverParts, //!< Splits the label text over the parts of the geometry, such that each consecutive part is labeled with the corresponding text line from the label text
+    };
+    Q_ENUM( MultiPartLabelingBehavior )
 
     /**
      * Behavior modifier for label offset and distance, only applies in some
@@ -3083,6 +3124,7 @@ class CORE_EXPORT Qgis
       {
       Segment SIP_MONKEYPATCH_COMPAT_NAME( SegmentVertex ) = 1, //!< The actual start or end point of a segment
       Curve SIP_MONKEYPATCH_COMPAT_NAME( CurveVertex ) = 2, //!< An intermediate point on a segment defining the curvature of the segment
+      ControlPoint SIP_MONKEYPATCH_COMPAT_NAME( ControlPointVertex ) = 3, //!< A NURBS control point (does not lie on the curve) \since QGIS 4.0
     };
     Q_ENUM( VertexType )
 
@@ -4600,6 +4642,19 @@ class CORE_EXPORT Qgis
     };
     // !!! WARNING: If adding new values to this enum, make sure you update QgsLegendSettings constructor accordingly!!
     Q_ENUM( LegendComponent )
+
+    /**
+     * Legend synchronization mode.
+     *
+     * \since QGIS 4.0
+     */
+    enum class LegendSyncMode : int
+    {
+      AllProjectLayers, //!< Synchronize to all project layers.
+      VisibleLayers, //!< Synchronize to map layers. The legend will include layers which are included in the linked map only.
+      Manual, //!< No automatic synchronization of legend layers. The legend will be manually populated.
+    };
+    Q_ENUM( LegendSyncMode )
 
     /**
      * Legend JSON export flags.

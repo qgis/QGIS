@@ -29,8 +29,11 @@
 #include <QFile>
 #include <QFileDialog>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsauthimportidentitydialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent )
   : QDialog( parent )

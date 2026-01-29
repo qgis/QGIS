@@ -44,15 +44,17 @@
 #include <QMessageBox>
 #include <QPalette>
 #include <QPushButton>
-#include <QRegExp>
 #include <QRegularExpression>
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
+#include <QString>
 #include <QTextStream>
 #include <QTimer>
 #include <QUrl>
 
 #include "moc_qgspluginmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"

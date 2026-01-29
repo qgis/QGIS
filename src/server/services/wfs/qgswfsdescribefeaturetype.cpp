@@ -32,6 +32,9 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWfs
 {

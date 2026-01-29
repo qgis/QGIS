@@ -29,6 +29,8 @@
 #include <QStringList>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 #define TINY_VALUE std::numeric_limits<double>::epsilon() * 20
 
 /**

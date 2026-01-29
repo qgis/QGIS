@@ -20,7 +20,10 @@
 #include "qgswkbtypes.h"
 
 #include <QMimeData>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerItem;
 class QgsLayerTreeNode;

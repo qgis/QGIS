@@ -26,6 +26,9 @@
 #include <QDebug>
 #include <QDir>
 #include <QLibrary>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 typedef void unloadHook_t( QgsServiceModule * );
 

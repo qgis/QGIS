@@ -26,6 +26,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsCategorizedRendererWidget : public QObject
 {
     Q_OBJECT

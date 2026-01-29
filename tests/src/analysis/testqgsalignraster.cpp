@@ -23,6 +23,9 @@
 #include "qgstest.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 static QString _tempFile( const QString &name )
 {

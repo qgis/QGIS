@@ -24,8 +24,11 @@
 
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsspatialiteconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )

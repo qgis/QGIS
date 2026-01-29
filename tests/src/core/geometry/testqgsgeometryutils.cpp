@@ -25,6 +25,9 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsGeometryUtils : public QObject
 {
@@ -79,6 +82,7 @@ class TestQgsGeometryUtils : public QObject
     void testPointOnLineWithDistance();
     void testPointFractionAlongLine();
     void interpolatePointOnArc();
+    void testInterpolatePointOnCubicBezier();
     void testSegmentizeArcHalfCircle();
     void testSegmentizeArcHalfCircleOtherDirection();
     void testSegmentizeArcFullCircle();
@@ -2064,6 +2068,43 @@ void TestQgsGeometryUtils::testCheckWeaklyFor3DPlane()
   Line3DNoPlane.fromWkt( u"LINESTRING Z (0 0 0, 1 1 1, 2 2 2)"_s );
   QVERIFY( !Line3DNoPlane.isEmpty() );
   QVERIFY( !QgsGeometryUtils::checkWeaklyFor3DPlane( &Line3DNoPlane, pt1, pt2, pt3 ) );
+}
+
+void TestQgsGeometryUtils::testInterpolatePointOnCubicBezier()
+{
+  // 2D
+  QCOMPARE( QgsGeometryUtils::interpolatePointOnCubicBezier( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, -1 ), QgsPoint( 3, 0 ), 0 ), QgsPoint( 0, 0 ) );
+  QCOMPARE( QgsGeometryUtils::interpolatePointOnCubicBezier( QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, -1 ), QgsPoint( 3, 0 ), 1 ), QgsPoint( 3, 0 ) );
+  QgsPoint p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, -1 ), QgsPoint( 3, 0 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+
+  // With Z
+  p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( 0, 0, 10 ), QgsPoint( 1, 1, 12 ), QgsPoint( 2, -1, 14 ), QgsPoint( 3, 0, 16 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( p.z(), 13.0 ) );
+
+  // With M
+  p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( Qgis::WkbType::PointM, 0, 0, 0, 20 ), QgsPoint( Qgis::WkbType::PointM, 1, 1, 0, 22 ), QgsPoint( Qgis::WkbType::PointM, 2, -1, 0, 24 ), QgsPoint( Qgis::WkbType::PointM, 3, 0, 0, 26 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( p.m(), 23.0 ) );
+
+  // With Z and M
+  p = QgsGeometryUtils::interpolatePointOnCubicBezier(
+    QgsPoint( Qgis::WkbType::PointZM, 0, 0, 10, 20 ), QgsPoint( Qgis::WkbType::PointZM, 1, 1, 12, 22 ), QgsPoint( Qgis::WkbType::PointZM, 2, -1, 14, 24 ), QgsPoint( Qgis::WkbType::PointZM, 3, 0, 16, 26 ), 0.5
+  );
+  QVERIFY( qgsDoubleNear( p.x(), 1.5 ) );
+  QVERIFY( qgsDoubleNear( p.y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( p.z(), 13.0 ) );
+  QVERIFY( qgsDoubleNear( p.m(), 23.0 ) );
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtils )

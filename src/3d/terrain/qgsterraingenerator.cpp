@@ -20,7 +20,11 @@
 #include "qgsabstractterrainsettings.h"
 #include "qgscoordinatetransform.h"
 
+#include <QString>
+
 #include "moc_qgsterraingenerator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) const
 {

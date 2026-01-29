@@ -32,6 +32,10 @@
 #include "qgsprocessingvectortilewriterlayerswidgetwrapper.h"
 #include "qgsprocessingwidgetwrapperimpl.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
 {
   addAlgorithmConfigurationWidgetFactory( new QgsFilterAlgorithmConfigurationWidgetFactory() );

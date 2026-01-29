@@ -21,6 +21,8 @@
 #include <QIcon>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 static const QString PROVIDER_KEY = u"grassraster"_s;
 static const QString PROVIDER_DESCRIPTION = u"GRASS %1 raster provider"_s.arg( GRASS_VERSION_MAJOR );
 

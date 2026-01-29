@@ -10,6 +10,7 @@
 
 
 
+
 class QgsTransformEffect : QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")

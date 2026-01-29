@@ -42,6 +42,9 @@
 
 #include <QElapsedTimer>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )

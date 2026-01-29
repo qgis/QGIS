@@ -18,6 +18,9 @@
 #include "qgsserverexception.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // QgsServerException
 QgsServerException::QgsServerException( const QString &message, int responseCode )

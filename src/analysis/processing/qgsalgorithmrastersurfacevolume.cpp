@@ -20,7 +20,10 @@
 #include "qgsstringutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

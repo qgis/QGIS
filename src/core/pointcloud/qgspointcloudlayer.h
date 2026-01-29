@@ -30,6 +30,8 @@ class QgsPointCloudLayerRenderer;
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsPointCloudRenderer;
 class QgsPointCloudLayerElevationProperties;
 class QgsAbstractPointCloud3DRenderer;

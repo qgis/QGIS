@@ -29,10 +29,13 @@
 #include <QCompleter>
 #include <QLayout>
 #include <QMenu>
+#include <QString>
 #include <QTextLayout>
 #include <QTextLine>
 
 #include "moc_qgslocatorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( u"tree-height"_s, sTreeGuiLocator, 20, u"Number of rows to show in the locator tree (requires a restart)"_s, Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );

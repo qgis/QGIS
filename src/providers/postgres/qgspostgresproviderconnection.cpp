@@ -29,6 +29,9 @@
 
 #include <QIcon>
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

@@ -22,10 +22,13 @@
 #include "qgsoapiffeaturedownloaderimpl.h"
 #include "qgsoapifutils.h"
 
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsoapifshareddata.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOapifSharedData::QgsOapifSharedData( const QString &uri )
   : QgsBackgroundCachedSharedData( uri, "oapif", tr( "OAPIF" ) )

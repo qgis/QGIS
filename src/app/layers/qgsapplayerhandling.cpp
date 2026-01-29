@@ -28,7 +28,11 @@
 #include "qgsprojecttimesettings.h"
 #include "qgsterrainprovider.h"
 
+#include <QString>
+
 #include "moc_qgsapplayerhandling.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_3D
 #include "qgspointcloudlayer3drenderer.h"

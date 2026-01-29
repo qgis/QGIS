@@ -22,8 +22,11 @@
 #include "qgsprovidersublayerdetails.h"
 
 #include <QLocale>
+#include <QString>
 
 #include "moc_qgsprovidersublayermodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsProviderSublayerModelNode

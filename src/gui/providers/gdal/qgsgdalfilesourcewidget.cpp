@@ -17,7 +17,11 @@
 
 #include "qgsgdalfilesourcewidget.h"
 
+#include <QString>
+
 #include "moc_qgsgdalfilesourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -18,6 +18,10 @@
 #include "qgsgeometryutils_base.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTextBackgroundSettings::ShapeType QgsTextRendererUtils::decodeShapeType( const QString &string )
 {
   QgsTextBackgroundSettings::ShapeType shpkind = QgsTextBackgroundSettings::ShapeRectangle;
@@ -392,6 +396,8 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     placement.y = characterStartY;
     placement.width = characterWidth;
     placement.height = characterHeight;
+    const QString grapheme = metrics.grapheme( placement.graphemeIndex );
+    placement.isWhitespace = grapheme.isEmpty() || grapheme.at( 0 ).isSpace() || grapheme.at( 0 ) == '\t';
     if ( output->flippedCharacterPlacementToGetUprightLabels )
     {
       // rotate in place

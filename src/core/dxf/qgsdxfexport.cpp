@@ -56,7 +56,10 @@
 #include "qgswkbtypes.h"
 
 #include <QIODevice>
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )

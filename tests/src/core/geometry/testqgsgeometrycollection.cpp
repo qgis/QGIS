@@ -33,6 +33,8 @@
 #include <QString>
 #include <qtestcase.h>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsGeometryCollection : public QObject
 {
     Q_OBJECT

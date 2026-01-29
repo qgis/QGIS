@@ -22,6 +22,9 @@
 
 #include <QLocale>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutPolyline : public QgsTest
 {

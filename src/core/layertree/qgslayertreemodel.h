@@ -25,8 +25,11 @@
 #include <QAbstractItemModel>
 #include <QFont>
 #include <QIcon>
+#include <QString>
 #include <QTimer>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayerTreeNode;
 class QgsLayerTreeGroup;

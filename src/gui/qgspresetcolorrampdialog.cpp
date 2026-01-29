@@ -23,8 +23,11 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgspresetcolorrampdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPresetColorRampWidget::QgsPresetColorRampWidget( const QgsPresetSchemeColorRamp &ramp, QWidget *parent )
   : QgsPanelWidget( parent )

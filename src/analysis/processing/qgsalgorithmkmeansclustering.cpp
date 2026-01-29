@@ -20,6 +20,10 @@
 #include <random>
 #include <unordered_map>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 constexpr uint KMEANS_MAX_ITERATIONS = 1000;

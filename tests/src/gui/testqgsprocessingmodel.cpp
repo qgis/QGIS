@@ -23,7 +23,10 @@
 #include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

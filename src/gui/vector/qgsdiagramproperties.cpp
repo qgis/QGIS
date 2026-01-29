@@ -44,9 +44,12 @@
 #include <QList>
 #include <QMessageBox>
 #include <QRandomGenerator>
+#include <QString>
 #include <QStyledItemDelegate>
 
 #include "moc_qgsdiagramproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
 {

@@ -22,7 +22,11 @@
 #include "qgspointcloudrendererpropertieswidget.h"
 #include "qgsprojectionselectionwidget.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudElevationPropertiesWidget::QgsPointCloudElevationPropertiesWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

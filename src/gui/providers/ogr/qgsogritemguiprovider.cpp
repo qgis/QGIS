@@ -17,7 +17,11 @@
 
 #include "qgsogritemguiprovider.h"
 
+#include <QString>
+
 #include "moc_qgsogritemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

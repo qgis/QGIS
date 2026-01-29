@@ -23,6 +23,10 @@
 #include "qgspathresolver.h"
 #include "qgsprojecttranslator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsReadWriteContextCategoryPopper;
 
 /**
@@ -153,6 +157,20 @@ class CORE_EXPORT QgsReadWriteContext
      */
     void setTransformContext( const QgsCoordinateTransformContext &transformContext );
 
+    /**
+     * Returns the currently used layer id as string.
+     * \since QGIS 4.0
+     */
+    const QString currentLayerId() const { return mCurrentLayerId; }
+
+    /**
+     * Sets the current layer id.
+     * So functions are able to emit the layer that is currently relevant.
+     *
+     * \since QGIS 4.0
+     */
+    void setCurrentLayerId( const QString &layerId ) {mCurrentLayerId = layerId;}
+
   private:
 
     //! Pop the last category
@@ -164,6 +182,7 @@ class CORE_EXPORT QgsReadWriteContext
     QgsProjectTranslator *mProjectTranslator = nullptr;
     friend class QgsReadWriteContextCategoryPopper;
     QgsCoordinateTransformContext mCoordinateTransformContext = QgsCoordinateTransformContext();
+    QString mCurrentLayerId;
 };
 
 

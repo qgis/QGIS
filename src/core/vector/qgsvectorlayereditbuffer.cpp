@@ -23,7 +23,11 @@
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayereditbuffer.cpp"
+
+using namespace Qt::StringLiterals;
 
 //! populate two lists (ks, vs) from map - in reverse order
 template <class Key, class T> void mapToReversedLists( const QMap< Key, T > &map, QList<Key> &ks, QList<T> &vs )

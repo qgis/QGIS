@@ -20,6 +20,10 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsprocessingparameteraggregate.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsAggregateAlgorithm::name() const

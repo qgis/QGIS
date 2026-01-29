@@ -26,6 +26,10 @@
 #include "qgsvectorlayer3drenderer.h"
 #include "qgsvectorlayerchunkloader_p.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsChunkedEntity : public QgsTest
 {
     Q_OBJECT

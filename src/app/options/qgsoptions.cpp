@@ -39,6 +39,7 @@
 #include "qgsgui.h"
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayout.h"
+#include "qgslayoutitemlegend.h"
 #include "qgslocaldefaultsettings.h"
 #include "qgslocalizeddatapathregistry.h"
 #include "qgslocatoroptionswidget.h"
@@ -62,7 +63,11 @@
 #include "qgsunittypes.h"
 #include "qgswelcomepage.h"
 
+#include <QString>
+
 #include "moc_qgsoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
@@ -233,6 +238,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mProjectTrustBehaviorComboBox->addItem( tr( "Never Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::NeverAsk ) );
   mProjectTrustBehaviorComboBox->addItem( tr( "Ask for Trust" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Ask ) );
   mProjectTrustBehaviorComboBox->addItem( tr( "Always Execute (Not Recommended)" ), QVariant::fromValue( Qgis::EmbeddedScriptMode::Always ) );
+
+  mLegendSyncModeCombo->addItem( tr( "Synchronize to All Project Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::AllProjectLayers ) );
+  mLegendSyncModeCombo->addItem( tr( "Synchronize to Visible Layers" ), QVariant::fromValue( Qgis::LegendSyncMode::VisibleLayers ) );
+  mLegendSyncModeCombo->addItem( tr( "Manual" ), QVariant::fromValue( Qgis::LegendSyncMode::Manual ) );
 
   mIdentifyHighlightColorButton->setColorDialogTitle( tr( "Identify Highlight Color" ) );
   mIdentifyHighlightColorButton->setAllowOpacity( true );
@@ -1008,6 +1017,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   mComposerFontComboBox->blockSignals( false );
+
+  mLegendSyncModeCombo->setCurrentIndex( mLegendSyncModeCombo->findData( QVariant::fromValue( QgsLayoutItemLegend::settingDefaultLegendSyncMode->value() ) ) );
 
   //default layout grid color
   int gridRed, gridGreen, gridBlue, gridAlpha;
@@ -1858,6 +1869,8 @@ void QgsOptions::saveOptions()
   //default font
   QString layoutFont = mComposerFontComboBox->currentFont().family();
   mSettings->setValue( u"LayoutDesigner/defaultFont"_s, layoutFont, QgsSettings::Gui );
+
+  QgsLayoutItemLegend::settingDefaultLegendSyncMode->setValue( mLegendSyncModeCombo->currentData().value< Qgis::LegendSyncMode >() );
 
   //grid color
   mSettings->setValue( u"LayoutDesigner/gridRed"_s, mGridColorButton->color().red(), QgsSettings::Gui );

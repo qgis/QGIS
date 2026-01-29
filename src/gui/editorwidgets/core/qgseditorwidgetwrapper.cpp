@@ -22,9 +22,12 @@
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
 #include <QTableView>
 
 #include "moc_qgseditorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEditorWidgetWrapper::QgsEditorWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( vl, editor, parent )
@@ -129,6 +132,10 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
         break;
     }
   }
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 9, 0 ) && QT_VERSION < QT_VERSION_CHECK( 6, 10, 0 )
+  widget()->style()->unpolish( widget() );
+  widget()->style()->polish( widget() );
+#endif
 }
 
 bool QgsEditorWidgetWrapper::setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue )

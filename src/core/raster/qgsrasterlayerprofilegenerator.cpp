@@ -29,7 +29,10 @@
 #include "qgsthreadingutils.h"
 
 #include <QPolygonF>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRasterLayerProfileResults

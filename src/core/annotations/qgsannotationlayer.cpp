@@ -30,9 +30,12 @@
 #include "qgspainting.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsannotationlayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsAnnotationLayerSpatialIndex : public RTree<QString, float, 2, float>

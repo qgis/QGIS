@@ -190,8 +190,6 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsAnnotationMapTool
     QList<QPair<QString, QString>> mCopiedItems;
     QgsPointXY mCopiedItemsTopLeft;
 
-    bool mRefreshSelectedItemAfterRedraw = false;
-
     QObjectUniquePtr<QgsMapToolSelectAnnotationMouseHandles> mMouseHandles;
     bool mHoveringMouseHandles = false;
     QPointF mLastScenePos;

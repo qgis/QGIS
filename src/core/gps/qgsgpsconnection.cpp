@@ -22,8 +22,11 @@
 #include "qgssettingstree.h"
 
 #include <QIODevice>
+#include <QString>
 
 #include "moc_qgsgpsconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType> *QgsGpsConnection::settingsGpsConnectionType = new QgsSettingsEntryEnumFlag<Qgis::GpsConnectionType>( u"gps-connection-type"_s, QgsSettingsTree::sTreeGps, Qgis::GpsConnectionType::Automatic, u"GPS connection type"_s ) SIP_SKIP;
 

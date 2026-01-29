@@ -22,6 +22,10 @@
 #include "qgsserverprojectutils.h"
 #include "qgswmsserviceexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace QgsWms;
 
 const double OGC_PX_M = 0.00028; // OGC reference pixel size in meter

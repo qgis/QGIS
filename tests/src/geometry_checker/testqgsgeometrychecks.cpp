@@ -48,7 +48,10 @@
 #include "qgsvectordataproviderfeaturepool.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <qfuturewatcher.h>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsGeometryChecks : public QObject
 {

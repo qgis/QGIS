@@ -17,6 +17,7 @@ set(QGIS_3D_SRCS
   qgs3dmapsettings.cpp
   qgs3dmaptool.cpp
   qgs3dmapcanvas.cpp
+  qgscrosssection.cpp
   qgs3drendercontext.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
@@ -156,6 +157,7 @@ set(QGIS_3D_HDRS
   qgs3dtypes.h
   qgs3dutils.h
   qgs3dmapcanvas.h
+  qgscrosssection.h
   qgs3dwiredmesh_p.h
   qgsaabb.h
   qgsabstract3dengine.h

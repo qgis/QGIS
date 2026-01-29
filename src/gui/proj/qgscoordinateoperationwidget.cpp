@@ -33,8 +33,11 @@
 #include <QDir>
 #include <QPushButton>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgscoordinateoperationwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   : QWidget( parent )

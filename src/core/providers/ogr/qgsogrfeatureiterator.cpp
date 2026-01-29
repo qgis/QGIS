@@ -32,7 +32,10 @@
 #include "qgswkbtypes.h"
 
 #include <QFile>
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 // using from provider:
 // - setRelevantFields(), mRelevantFieldsForNextFeature

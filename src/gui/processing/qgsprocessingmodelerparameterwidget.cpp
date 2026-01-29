@@ -36,9 +36,12 @@
 #include <QLabel>
 #include <QMenu>
 #include <QStackedWidget>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingmodelerparameterwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingModelerParameterWidget::QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent )
   : QWidget( parent )

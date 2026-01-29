@@ -20,6 +20,9 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsNewsFeedParser : public QObject
 {

@@ -30,6 +30,8 @@
 #include <QString>
 #include <QWidget>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsRubberband : public QgsTest
 {
     Q_OBJECT

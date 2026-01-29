@@ -20,6 +20,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class DummyFeedback : public QgsProcessingFeedback
 {
     Q_OBJECT

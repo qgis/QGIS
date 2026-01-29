@@ -29,8 +29,11 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsprojectlayergroupdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEmbeddedLayerTreeModel::QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )

@@ -21,6 +21,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsStatisticSummary : public QObject
 {
     Q_OBJECT
