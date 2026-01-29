@@ -176,8 +176,8 @@ void QgsHighlightsRenderView::buildRenderPasses()
 
 void QgsHighlightsRenderView::updateViewportSizes( int width, int height )
 {
-  const float offsetX = silhouetteWidth() / static_cast<float>( width );
-  const float offsetY = silhouetteWidth() / static_cast<float>( height );
+  const float offsetX = static_cast<float>( silhouetteWidth() ) / static_cast<float>( width );
+  const float offsetY = static_cast<float>( silhouetteWidth() ) / static_cast<float>( height );
   mViewportUp->setNormalizedRect( QRectF( offsetX, 0.0f, 1.0f + offsetX, 1.0f ) );
   mViewportDown->setNormalizedRect( QRectF( 0.0f, offsetY, 1.0f, 1.0f + offsetY ) );
   mViewportLeft->setNormalizedRect( QRectF( -offsetX, 0.0f, 1.0f - offsetX, 1.0f ) );
