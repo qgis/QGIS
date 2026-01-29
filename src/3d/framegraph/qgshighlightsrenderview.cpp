@@ -34,12 +34,12 @@
 #include <Qt3DRender/QStencilTest>
 #include <Qt3DRender/QStencilTestArguments>
 #include <Qt3DRender/QViewport>
+#include <Qt3DRender/qsubtreeenabler.h>
 
-QgsHighlightsRenderView::QgsHighlightsRenderView( const QString &viewName, Qt3DRender::QRenderTarget *target, Qt3DRender::QCamera *camera, Qt3DRender::QViewport *viewport )
+QgsHighlightsRenderView::QgsHighlightsRenderView( const QString &viewName, Qt3DRender::QRenderTarget *target, Qt3DRender::QCamera *camera )
   : QgsAbstractRenderView( viewName )
   , mRenderTarget( target )
   , mMainCamera( camera )
-  , mMainViewport( viewport )
 {
   mHighlightsLayer = new Qt3DRender::QLayer;
   mHighlightsLayer->setRecursive( true );
@@ -50,10 +50,11 @@ QgsHighlightsRenderView::QgsHighlightsRenderView( const QString &viewName, Qt3DR
 
 void QgsHighlightsRenderView::buildRenderPasses()
 {
-  Qt3DRender::QRenderTargetSelector *highlightsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mMainViewport );
+  Qt3DRender::QRenderTargetSelector *highlightsRenderTargetSelector = new Qt3DRender::QRenderTargetSelector( mRendererEnabler );
   highlightsRenderTargetSelector->setTarget( mRenderTarget );
 
-  // First Pass:
+  // Step 1: draw semi-transparent highlight
+  //
   // Clear stencil and render all Highlights Layer's entities as semi-transparent, with no depth test,
   // while writing to the stencil buffer. Depth buffer is not modified.
   {
@@ -114,7 +115,8 @@ void QgsHighlightsRenderView::buildRenderPasses()
     stateSet->addRenderState( stencilTest );
   }
 
-  // Next Passes:
+  // Step 2: draw silhouette around highlighted entities (solid color, no transparency)
+  //
   // Render the highlights entities offseted by x pixels on each of 4 directions using stencil test
   // to only paint around the existing semi-transparent highlight entities.
   {
@@ -151,21 +153,13 @@ void QgsHighlightsRenderView::buildRenderPasses()
     cameraSelector->setObjectName( "Highlights Pass CameraSelector2" );
     cameraSelector->setCamera( mMainCamera );
 
-    mViewportUp = new Qt3DRender::QViewport( cameraSelector );
-    Qt3DRender::QLayerFilter *layerFilter1 = new Qt3DRender::QLayerFilter( mViewportUp );
-    layerFilter1->addLayer( mHighlightsLayer );
+    Qt3DRender::QLayerFilter *layerFilter = new Qt3DRender::QLayerFilter( cameraSelector );
+    layerFilter->addLayer( mHighlightsLayer );
 
-    mViewportDown = new Qt3DRender::QViewport( cameraSelector );
-    Qt3DRender::QLayerFilter *layerFilter2 = new Qt3DRender::QLayerFilter( mViewportDown );
-    layerFilter2->addLayer( mHighlightsLayer );
-
-    mViewportLeft = new Qt3DRender::QViewport( cameraSelector );
-    Qt3DRender::QLayerFilter *layerFilter3 = new Qt3DRender::QLayerFilter( mViewportLeft );
-    layerFilter3->addLayer( mHighlightsLayer );
-
-    mViewportRight = new Qt3DRender::QViewport( cameraSelector );
-    Qt3DRender::QLayerFilter *layerFilter4 = new Qt3DRender::QLayerFilter( mViewportRight );
-    layerFilter4->addLayer( mHighlightsLayer );
+    mViewportUp = new Qt3DRender::QViewport( layerFilter );
+    mViewportDown = new Qt3DRender::QViewport( layerFilter );
+    mViewportLeft = new Qt3DRender::QViewport( layerFilter );
+    mViewportRight = new Qt3DRender::QViewport( layerFilter );
   }
 
   const QVector<Qt3DRender::QRenderTargetOutput *> outputs = mRenderTarget->outputs();

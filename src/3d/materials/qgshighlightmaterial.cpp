@@ -20,8 +20,6 @@
 #include <QColor>
 #include <QString>
 #include <QUrl>
-#include <Qt3DRender/QCullFace>
-#include <Qt3DRender/QDepthTest>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
@@ -50,11 +48,6 @@ void QgsHighlightMaterial::init( QgsMaterialSettingsRenderingTechnique rendering
   technique->graphicsApiFilter()->setMajorVersion( 3 );
   technique->graphicsApiFilter()->setMinorVersion( 3 );
 
-  Qt3DRender::QFilterKey *filterKey = new Qt3DRender::QFilterKey;
-  filterKey->setName( u"renderingStyle"_s );
-  filterKey->setValue( u"forward"_s );
-  technique->addFilterKey( filterKey );
-
   Qt3DRender::QRenderPass *pass = new Qt3DRender::QRenderPass;
 
   Qt3DRender::QShaderProgram *shaderProgram = new Qt3DRender::QShaderProgram;
@@ -76,7 +69,8 @@ void QgsHighlightMaterial::init( QgsMaterialSettingsRenderingTechnique rendering
     case QgsMaterialSettingsRenderingTechnique::Lines:
     case QgsMaterialSettingsRenderingTechnique::Points:
     {
-      // Lines and billboards are not supported yet
+      // Lines are single color and do not need the highlight material
+      // Billboards are not supported yet
       break;
     }
   }
@@ -85,20 +79,11 @@ void QgsHighlightMaterial::init( QgsMaterialSettingsRenderingTechnique rendering
   pass->setShaderProgram( shaderProgram );
 
   const QgsSettings settings;
-  const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
+  QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+  color.setAlphaF( alpha );
   Qt3DRender::QParameter *colorParam = new Qt3DRender::QParameter( u"color"_s, color );
   pass->addParameter( colorParam );
-  const float alpha = settings.value( u"Map/highlight/colorAlpha"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toFloat() / 255.f;
-  Qt3DRender::QParameter *opacityParam = new Qt3DRender::QParameter( u"opacity"_s, alpha );
-  pass->addParameter( opacityParam );
-
-  Qt3DRender::QDepthTest *depthTest = new Qt3DRender::QDepthTest;
-  depthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
-  pass->addRenderState( depthTest );
-
-  Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
-  cullFace->setMode( Qt3DRender::QCullFace::NoCulling );
-  pass->addRenderState( cullFace );
 
   technique->addRenderPass( pass );
   effect->addTechnique( technique );

@@ -59,7 +59,7 @@ void QgsFrameGraph::constructForwardRenderPass()
 
 void QgsFrameGraph::constructHighlightsPass()
 {
-  registerRenderView( std::make_unique<QgsHighlightsRenderView>( HIGHLIGHTS_RENDERVIEW, forwardRenderView().renderTargetSelector()->target(), mMainCamera, mMainViewPort ), HIGHLIGHTS_RENDERVIEW );
+  registerRenderView( std::make_unique<QgsHighlightsRenderView>( HIGHLIGHTS_RENDERVIEW, forwardRenderView().renderTargetSelector()->target(), mMainCamera ), HIGHLIGHTS_RENDERVIEW );
 }
 
 void QgsFrameGraph::constructShadowRenderPass()

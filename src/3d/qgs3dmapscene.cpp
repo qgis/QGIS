@@ -921,8 +921,8 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
 
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
 
-  // Here we check if the entity should not be rendered during the initial forward pass
-  // For example highlights should only be rendered during their own pass, so we check for attached QLayers
+  // Here we check if the entity should not be rendered in the forward render view
+  // For example highlight entities should only be rendered in the highlights render view, so we check for attached QLayers
   const QVector<Qt3DRender::QLayer *> layers = newEntity->componentsOfType<Qt3DRender::QLayer>();
   if ( layers.contains( frameGraph->highlightsRenderView().highlightsLayer() ) )
     return;

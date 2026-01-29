@@ -16,7 +16,6 @@
 #include "qgssimplelinematerialsettings.h"
 
 #include "qgscolorutils.h"
-#include "qgshighlightmaterial.h"
 #include "qgslinematerial_p.h"
 
 #include <QMap>
@@ -102,7 +101,8 @@ QgsMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRende
     {
       if ( context.isHighlighted() )
       {
-        return new QgsHighlightMaterial( technique );
+        // QgsHighlightMaterial does not support lines
+        return nullptr;
       }
 
       QgsLineMaterial *mat = new QgsLineMaterial;

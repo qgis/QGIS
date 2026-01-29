@@ -42,15 +42,13 @@ class QgsHighlightsRenderView : public QgsAbstractRenderView
 {
   public:
     //! Constructor
-    QgsHighlightsRenderView( const QString &viewName, Qt3DRender::QRenderTarget *target, Qt3DRender::QCamera *camera, Qt3DRender::QViewport *viewport );
+    QgsHighlightsRenderView( const QString &viewName, Qt3DRender::QRenderTarget *target, Qt3DRender::QCamera *camera );
 
     void updateWindowResize( int width, int height ) override;
 
-    //! Returns a layer object used to indicate that the object is transparent
+    //! Returns a layer that should be attached to entities meant to be rendered by QgsHighlightsRenderView
     Qt3DRender::QLayer *highlightsLayer() { return mHighlightsLayer; }
 
-    //! Returns current render target selector
-    Qt3DRender::QRenderTargetSelector *renderTargetSelector() { return mRenderTargetSelector; }
 
   private:
     /**
@@ -64,7 +62,6 @@ class QgsHighlightsRenderView : public QgsAbstractRenderView
 
     Qt3DRender::QRenderTarget *mRenderTarget = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;
-    Qt3DRender::QViewport *mMainViewport = nullptr;
     //! Four viewports displaced by pixel offset, for rendering the silhouette
     Qt3DRender::QViewport *mViewportUp = nullptr;
     Qt3DRender::QViewport *mViewportDown = nullptr;
@@ -72,7 +69,6 @@ class QgsHighlightsRenderView : public QgsAbstractRenderView
     Qt3DRender::QViewport *mViewportRight = nullptr;
 
     Qt3DRender::QLayer *mHighlightsLayer = nullptr;
-    Qt3DRender::QRenderTargetSelector *mRenderTargetSelector = nullptr;
 };
 
 #endif // QGSHIGHLIGHTSRENDERVIEW_H

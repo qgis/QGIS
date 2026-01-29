@@ -551,6 +551,9 @@ void QgsModelPoint3DSymbolHandler::addMeshEntities( const Qgs3DRenderContext &co
     materialContext.setIsHighlighted( areHighlighted );
     QgsMaterial *mat = symbol->materialSettings()->toMaterial( QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
 
+    if ( !mat )
+      return;
+
     const QUrl url = QUrl::fromLocalFile( source );
 
     // get nodes
