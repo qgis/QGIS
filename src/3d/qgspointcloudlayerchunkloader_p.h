@@ -133,6 +133,8 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     void updateIndex();
 
   private:
+    static QgsPointCloudIndex resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition );
+
     QgsPointCloudLayer *mLayer = nullptr;
     std::unique_ptr<QgsChunkUpdaterFactory> mChunkUpdaterFactory;
     int mIndexPosition;

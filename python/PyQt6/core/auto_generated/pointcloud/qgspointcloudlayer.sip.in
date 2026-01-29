@@ -297,7 +297,7 @@ otherwise the index is fetched from the data provider.
 
 
 
-    bool isVpc();
+    bool isVpc() const;
 %Docstring
 Returns whether the layer has a virtual point cloud data provider or
 not.
@@ -305,7 +305,7 @@ not.
 .. versionadded:: 4.0
 %End
 
-    QgsPointCloudIndex overview();
+    QgsPointCloudIndex overview() const;
 %Docstring
 Returns the overview point cloud index associated with the layer (only
 if the layer has a virtual point cloud data provider).
