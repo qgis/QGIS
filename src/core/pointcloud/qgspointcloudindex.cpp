@@ -476,12 +476,6 @@ int QgsPointCloudIndex::span() const
   return mIndex->span();
 }
 
-QString QgsPointCloudIndex::uri() const
-{
-  Q_ASSERT( mIndex );
-  return mIndex->uri();
-}
-
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
 {
   Q_ASSERT( mIndex );

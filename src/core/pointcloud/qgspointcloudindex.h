@@ -370,13 +370,6 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      */
     virtual QVariantMap extraMetadata() const;
 
-    /**
-     *  Returns the URI used to load the index
-     *
-     * \since QGIS 4.0
-     */
-    QString uri() const { return mUri; }
-
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
