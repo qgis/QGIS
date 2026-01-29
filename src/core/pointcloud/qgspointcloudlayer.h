@@ -356,7 +356,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 4.0
      */
-    QVector<QgsPointCloudSubIndex> subIndexes() SIP_SKIP;
+    QVector<QgsPointCloudSubIndex> subIndexes() const SIP_SKIP;
 
     /**
      * Returns the point cloud index at requested position (only if the layer has a virtual point cloud data provider).
@@ -365,21 +365,21 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 4.0
      */
-    QgsPointCloudIndex subIndex( int i ) SIP_SKIP;
+    QgsPointCloudIndex subIndex( int i ) const SIP_SKIP;
 
     /**
      * Returns whether the layer has a virtual point cloud data provider or not.
      *
      * \since QGIS 4.0
      */
-    bool isVpc() { return mIsVpc; }
+    bool isVpc() const { return mIsVpc; }
 
     /**
      * Returns the overview point cloud index associated with the layer (only if the layer has a virtual point cloud data provider).
      *
      * \since QGIS 4.0
      */
-    QgsPointCloudIndex overview();
+    QgsPointCloudIndex overview() const;
 
   signals:
 
@@ -414,7 +414,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
-    bool inEditing();
 
   private:
 
@@ -444,7 +443,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     long mStatsCalculationTask = 0;
 
     QgsPointCloudIndex mEditIndex;
-    // QVector<QgsPointCloudIndex> mEditingSubIndexes;
     QMap< int, QgsPointCloudIndex > mEditingIndexes;
     bool mIsVpc = false;
     QString mCommitError;

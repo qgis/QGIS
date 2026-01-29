@@ -286,7 +286,7 @@ static QgsChunkNode *findChunkNodeFromNodeId( QgsChunkNode *rootNode, QgsPointCl
 
 
 QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, const int indexPosition, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
-  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, indexPosition < 0 ? pcl->isVpc() ? pcl->overview() : pcl->index() : pcl->subIndex( indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, resolveIndex( pcl, indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
   , mLayer( pcl )
   , mIndexPosition( indexPosition )
 {
@@ -318,6 +318,14 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 {
   // cancel / wait for jobs
   cancelActiveJobs();
+}
+
+QgsPointCloudIndex QgsPointCloudLayerChunkedEntity::resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition )
+{
+  if ( indexPosition < 0 )
+    return pcl->isVpc() ? pcl->overview() : pcl->index();
+  else
+    return pcl->subIndex( indexPosition );
 }
 
 void QgsPointCloudLayerChunkedEntity::updateIndex()
