@@ -285,31 +285,32 @@ static QgsChunkNode *findChunkNodeFromNodeId( QgsChunkNode *rootNode, QgsPointCl
 }
 
 
-QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, QgsPointCloudIndex index, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
-  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, std::move( index ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
+QgsPointCloudLayerChunkedEntity::QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, const int indexPosition, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maximumScreenSpaceError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget )
+  : QgsChunkedEntity( map, maximumScreenSpaceError, new QgsPointCloudLayerChunkLoaderFactory( Qgs3DRenderContext::fromMapSettings( map ), coordinateTransform, indexPosition < 0 ? pcl->isVpc() ? pcl->overview() : pcl->index() : pcl->subIndex( indexPosition ), symbol, zValueScale, zValueOffset, pointBudget ), true, pointBudget )
   , mLayer( pcl )
+  , mIndexPosition( indexPosition )
 {
   setShowBoundingBoxes( showBoundingBoxes );
 
   if ( pcl->supportsEditing() )
   {
-    // when editing starts or stops, we need to update our index to use the editing index (or not)
-    connect( pcl, &QgsPointCloudLayer::editingStarted, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
-    connect( pcl, &QgsPointCloudLayer::editingStopped, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
-
     mChunkUpdaterFactory = std::make_unique<QgsChunkUpdaterFactory>( mChunkLoaderFactory );
+    // when editing starts or stops, we need to update our index to use the editing index (or not)
+    if ( ( pcl->isVpc() && indexPosition >= 0 ) || ( !pcl->isVpc() ) )
+    {
+      connect( pcl, &QgsPointCloudLayer::editingStarted, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
+      connect( pcl, &QgsPointCloudLayer::editingStopped, this, &QgsPointCloudLayerChunkedEntity::updateIndex );
+      connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QgsPointCloudNodeId &n, const int &indexPosition ) {
+        if ( indexPosition != mIndexPosition )
+          return;
 
-    connect( pcl, &QgsPointCloudLayer::chunkAttributeValuesChanged, this, [this]( const QString &uri, const QgsPointCloudNodeId &n ) {
-      const QString indexUri = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex.uri();
-      if ( indexUri != uri )
-        return;
-
-      QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );
-      if ( node )
-      {
-        updateNodes( QList<QgsChunkNode *>() << node, mChunkUpdaterFactory.get() );
-      }
-    } );
+        QgsChunkNode *node = findChunkNodeFromNodeId( mRootNode, n );
+        if ( node )
+        {
+          updateNodes( QList<QgsChunkNode *>() << node, mChunkUpdaterFactory.get() );
+        }
+      } );
+    }
   }
 }
 
@@ -321,11 +322,13 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 
 void QgsPointCloudLayerChunkedEntity::updateIndex()
 {
-  QString uri;
-  QgsPointCloudIndex pc = static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex;
-  if ( pc.isValid() )
-    uri = pc.uri();
-  static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index( uri );
+  if ( mLayer->isVpc() )
+  {
+    if ( mIndexPosition >= 0 )
+      static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->subIndex( mIndexPosition );
+  }
+  else
+    static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();
 }
 
 QList<QgsRayCastHit> QgsPointCloudLayerChunkedEntity::rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const

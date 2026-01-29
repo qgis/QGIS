@@ -82,18 +82,19 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
   Q_ASSERT( mapLayer->type() == Qgis::LayerType::PointCloud );
   QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
 
-  QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> mappedPoints;
-  if ( QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( pcLayer->dataProvider() ) )
+  QMap<int, QHash<QgsPointCloudNodeId, QVector<int>>> mappedPoints;
+  if ( pcLayer->isVpc() )
   {
-    for ( QgsPointCloudSubIndex subIndex : vpcProvider->subIndexes() )
+    const QVector<QgsPointCloudSubIndex> subIndexes = pcLayer->subIndexes();
+    for ( qsizetype i = 0; i < subIndexes.size(); i++ )
     {
+      QgsPointCloudSubIndex subIndex = subIndexes.at( i );
       QgsPointCloudIndex pc = subIndex.index();
       if ( !pc || !pc.isValid() )
         continue;
 
-      const QString uri = pc.uri();
       const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas, pc );
-      mappedPoints.insert( uri, sel );
+      mappedPoints.insert( i, sel );
     }
   }
   else
@@ -102,9 +103,8 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
     if ( !pc || !pc.isValid() )
       return;
 
-    const QString uri = pc.uri();
     const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas, pc );
-    mappedPoints.insert( uri, sel );
+    mappedPoints.insert( -1, sel );
   }
 
   int offset;

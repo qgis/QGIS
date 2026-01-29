@@ -63,7 +63,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
     mOverviewEntity = new QgsPointCloudLayerChunkedEntity(
       mapSettings(),
       mLayer,
-      provider()->overview(),
+      -2,
       mCoordinateTransform,
       dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
       mMaximumScreenSpaceError,
@@ -118,7 +118,7 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
   QgsPointCloudLayerChunkedEntity *newChunkedEntity = new QgsPointCloudLayerChunkedEntity(
     mapSettings(),
     mLayer,
-    si.index(),
+    i,
     mCoordinateTransform,
     static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
     mMaximumScreenSpaceError,

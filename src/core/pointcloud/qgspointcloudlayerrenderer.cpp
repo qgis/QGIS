@@ -50,7 +50,7 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayerName( layer->name() )
   , mLayerAttributes( layer->attributes() )
-  , mSubIndexes( layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
+  , mSubIndexes( layer->subIndexes() )
   , mFeedback( new QgsFeedback )
   , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {

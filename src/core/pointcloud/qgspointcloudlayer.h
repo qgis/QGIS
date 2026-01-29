@@ -323,7 +323,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * changes can be discarded by calling rollBack().
      * \since QGIS 3.42
      */
-    bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value, const QString &uri = QString() ) SIP_SKIP;
+    bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
     /**
      * Attempts to modify attribute values for specific points in the editing buffer.
@@ -338,7 +338,7 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      * changes can be discarded by calling rollBack().
      * \since QGIS 4.0
      */
-    bool changeAttributeValue( const QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
+    bool changeAttributeValue( const QMap<int, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
     /**
      * Returns the point cloud index associated with the layer.
@@ -347,7 +347,39 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.42
      */
-    QgsPointCloudIndex index( const QString &uri = QString() ) const;
+    QgsPointCloudIndex index() const;
+
+    /**
+     * Returns point cloud indexes associated with the layer (only if the layer has a virtual point cloud data provider).
+     * If the layer is editable, QgsPointCloudEditingIndexes are returned,
+     * otherwise the indexes are fetched from the data provider.
+     *
+     * \since QGIS 4.0
+     */
+    QVector<QgsPointCloudSubIndex> subIndexes() SIP_SKIP;
+
+    /**
+     * Returns the point cloud index at requested position (only if the layer has a virtual point cloud data provider).
+     * If the layer is editable, QgsPointCloudEditingIndex is returned,
+     * otherwise the index is fetched from the data provider.
+     *
+     * \since QGIS 4.0
+     */
+    QgsPointCloudIndex subIndex( int i ) SIP_SKIP;
+
+    /**
+     * Returns whether the layer has a virtual point cloud data provider or not.
+     *
+     * \since QGIS 4.0
+     */
+    bool isVpc() { return mIsVpc; }
+
+    /**
+     * Returns the overview point cloud index associated with the layer (only if the layer has a virtual point cloud data provider).
+     *
+     * \since QGIS 4.0
+     */
+    QgsPointCloudIndex overview();
 
   signals:
 
@@ -377,11 +409,12 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      *
      * \since QGIS 3.42
      */
-    void chunkAttributeValuesChanged( const QString &uri, const QgsPointCloudNodeId &n );
+    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n, const int &position );
 
   private slots:
     void onPointCloudIndexGenerationStateChanged( QgsPointCloudDataProvider::PointCloudIndexGenerationState state );
     void setDataSourcePrivate( const QString &dataSource, const QString &baseName, const QString &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags ) override;
+    bool inEditing();
 
   private:
 
@@ -411,7 +444,8 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     long mStatsCalculationTask = 0;
 
     QgsPointCloudIndex mEditIndex;
-    QVector<QgsPointCloudIndex> mEditingSubIndexes;
+    // QVector<QgsPointCloudIndex> mEditingSubIndexes;
+    QMap< int, QgsPointCloudIndex > mEditingIndexes;
     bool mIsVpc = false;
     QString mCommitError;
 

@@ -1015,40 +1015,26 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
 bool QgsPointCloudLayer::startEditing()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( ( !mIsVpc && mEditIndex ) || ( mIsVpc && !mEditingSubIndexes.isEmpty() ) )
+  if ( ( !mIsVpc && mEditIndex ) || ( mIsVpc && !mEditingIndexes.isEmpty() ) )
     return false;
 
   if ( mIsVpc )
   {
     QgsVirtualPointCloudProvider *vpcProvider = qobject_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
     const QVector<QgsPointCloudSubIndex> subIndexes = vpcProvider->subIndexes();
-    mEditingSubIndexes.clear();
 
     for ( int i = 0; i < subIndexes.size(); ++i )
     {
       const QgsPointCloudSubIndex &subIndex = subIndexes.at( i );
-
       QgsPointCloudIndex index = subIndex.index();
 
       if ( !index.isValid() )
       {
-        mDataProvider->loadSubIndex( i );
-        index = subIndexes.at( i ).index();
-
-        if ( !index.isValid() )
-        {
-          mEditingSubIndexes.clear();
-          return false;
-        }
+        continue;
       }
 
       QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
-      if ( !editIndex.isValid() )
-      {
-        mEditingSubIndexes.clear();
-        return false;
-      }
-      mEditingSubIndexes.append( editIndex );
+      mEditingIndexes[ i ] = editIndex;
     }
 
     emit editingStarted();
@@ -1071,12 +1057,12 @@ bool QgsPointCloudLayer::startEditing()
 bool QgsPointCloudLayer::commitChanges( bool stopEditing )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( ( !mIsVpc && !mEditIndex ) || ( mIsVpc && mEditingSubIndexes.isEmpty() ) )
+  if ( ( !mIsVpc && !mEditIndex ) || ( mIsVpc && mEditingIndexes.isEmpty() ) )
     return false;
 
   if ( mIsVpc )
   {
-    for ( QgsPointCloudIndex &index : mEditingSubIndexes )
+    for ( QgsPointCloudIndex &index : mEditingIndexes )
       if ( index.isModified() && !index.commitChanges( &mCommitError ) )
         return false;
   }
@@ -1094,7 +1080,7 @@ bool QgsPointCloudLayer::commitChanges( bool stopEditing )
   if ( stopEditing )
   {
     if ( mIsVpc )
-      mEditingSubIndexes.clear();
+      mEditingIndexes.clear();
     else
       mEditIndex = QgsPointCloudIndex();
 
@@ -1115,30 +1101,30 @@ bool QgsPointCloudLayer::rollBack()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
   if ( mIsVpc )
   {
-    if ( mEditingSubIndexes.isEmpty() )
+    if ( mEditingIndexes.isEmpty() )
       return false;
 
-    QVector<QPair<QString, QList<QgsPointCloudNodeId>>> queuedUpdates;
-    queuedUpdates.reserve( mEditingSubIndexes.size() );
-    for ( const QgsPointCloudIndex &index : std::as_const( mEditingSubIndexes ) )
+    QVector<QPair<int, QList<QgsPointCloudNodeId>>> queuedUpdates;
+    queuedUpdates.reserve( mEditingIndexes.size() );
+    for ( auto [position, index] : mEditingIndexes.asKeyValueRange() )
     {
       if ( !index.isValid() )
         continue;
       const QList<QgsPointCloudNodeId> updatedNodes = index.updatedNodes();
       if ( !updatedNodes.isEmpty() )
-        queuedUpdates.push_back( qMakePair( index.uri(), updatedNodes ) );
+        queuedUpdates.push_back( qMakePair( position, updatedNodes ) );
     }
 
     undoStack()->clear();
-    mEditingSubIndexes.clear();
+    mEditingIndexes.clear();
     emit editingStopped();
 
-    for ( const QPair<QString, QList<QgsPointCloudNodeId>> &pair : std::as_const( queuedUpdates ) )
+    for ( const QPair<int, QList<QgsPointCloudNodeId>> &pair : std::as_const( queuedUpdates ) )
     {
-      const QString &uri = pair.first;
+      const int position = pair.first;
       const QList<QgsPointCloudNodeId> &nodes = pair.second;
       for ( const QgsPointCloudNodeId &n : nodes )
-        emit chunkAttributeValuesChanged( uri, n );
+        emit chunkAttributeValuesChanged( n, position );
     }
   }
   else
@@ -1150,12 +1136,11 @@ bool QgsPointCloudLayer::rollBack()
 
     undoStack()->clear();
 
-    const QString uri = mEditIndex.uri();
     mEditIndex = QgsPointCloudIndex();
     emit editingStopped();
 
     for ( const QgsPointCloudNodeId &n : updatedNodes )
-      emit chunkAttributeValuesChanged( uri, n );
+      emit chunkAttributeValuesChanged( n, -1 );
 
     // emitting layerModified() is not required as that's done automatically
     // when undo stack index changes
@@ -1173,7 +1158,7 @@ bool QgsPointCloudLayer::isEditable() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mEditIndex || ( mIsVpc && !mEditingSubIndexes.isEmpty() ) )
+  if ( mEditIndex || ( mIsVpc && !mEditingIndexes.isEmpty() ) )
     return true;
 
   return false;
@@ -1184,7 +1169,7 @@ bool QgsPointCloudLayer::isModified() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
   if ( mIsVpc )
   {
-    for ( const QgsPointCloudIndex &index : std::as_const( mEditingSubIndexes ) )
+    for ( const QgsPointCloudIndex &index : std::as_const( mEditingIndexes ) )
     {
       if ( index.isModified() )
         return true;
@@ -1199,16 +1184,13 @@ bool QgsPointCloudLayer::isModified() const
   }
 }
 
-bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value, const QString &uri )
+bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value )
 {
-  const QString sourceUri = mIsVpc ? uri : mEditIndex.uri();
-  if ( sourceUri.isEmpty() )
-    return false;
-
-  return this->changeAttributeValue( { { uri, { { n, points } } } }, attribute, value );
+  // for regular point clouds, we send -1 for the position parameter
+  return this->changeAttributeValue( { { -1, { { n, points } } } }, attribute, value );
 }
 
-bool QgsPointCloudLayer::changeAttributeValue( const QMap<QString, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
+bool QgsPointCloudLayer::changeAttributeValue( const QMap<int, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
@@ -1216,21 +1198,15 @@ bool QgsPointCloudLayer::changeAttributeValue( const QMap<QString, QHash<QgsPoin
 
   for ( auto it = mappedPoints.constBegin(); it != mappedPoints.constEnd(); it++ )
   {
-    QString uri = it.key();
+    const int position = it.key();
     QHash<QgsPointCloudNodeId, QVector<int>> nodesAndPoints = it.value();
     QgsPointCloudIndex *editIndexPtr = nullptr;
 
     // NOLINTBEGIN(bugprone-branch-clone)
     if ( mIsVpc )
     {
-      for ( QgsPointCloudIndex &index : mEditingSubIndexes )
-      {
-        if ( index.uri() == uri )
-        {
-          editIndexPtr = &index;
-          break;
-        }
-      }
+      QgsPointCloudIndex index = subIndex( position );
+      editIndexPtr = &index;
     }
     else
     {
@@ -1292,47 +1268,93 @@ bool QgsPointCloudLayer::changeAttributeValue( const QMap<QString, QHash<QgsPoin
   return true;
 }
 
-QgsPointCloudIndex QgsPointCloudLayer::index( const QString &uri ) const
+QgsPointCloudIndex QgsPointCloudLayer::index() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-  if ( mIsVpc )
+  if ( mEditIndex )
+    return mEditIndex;
+
+  if ( mDataProvider )
+    return mDataProvider->index();
+
+  return QgsPointCloudIndex();
+}
+
+QVector<QgsPointCloudSubIndex> QgsPointCloudLayer::subIndexes()
+{
+  if ( !mDataProvider )
+    return QVector<QgsPointCloudSubIndex>();
+
+  QVector<QgsPointCloudSubIndex> subs = mDataProvider->subIndexes();
+
+  if ( !inEditing() )
   {
-    for ( const QgsPointCloudIndex &subIndex : mEditingSubIndexes )
+    return subs;
+  }
+
+  QVector<QgsPointCloudSubIndex> indexes;
+  indexes.reserve( subs.size() );
+
+  for ( qsizetype i = 0; i < subs.size(); i++ )
+  {
+    if ( mEditingIndexes.contains( i ) )
     {
-      if ( !subIndex || !subIndex.isValid() )
-        continue;
-
-      const QString uriSubIndex = subIndex.uri();
-      if ( uriSubIndex == uri )
-        return subIndex;
+      QgsPointCloudSubIndex sub = subs[ i ];
+      sub.setIndex( mEditingIndexes[ i ] );
+      indexes.append( sub );
+      continue;
     }
+    indexes.append( subs[ i ] );
+  }
 
-    if ( !mDataProvider )
+  return indexes;
+}
+
+QgsPointCloudIndex QgsPointCloudLayer::subIndex( int i )
+{
+  if ( !mDataProvider )
+    return QgsPointCloudIndex();
+
+  if ( !inEditing() )
+  {
+    auto indexes = mDataProvider->subIndexes();
+    if ( i < 0 || indexes.size() <= i )
       return QgsPointCloudIndex();
 
-    if ( QgsVirtualPointCloudProvider *vpcProvider = qobject_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() ) )
-    {
-      if ( vpcProvider->overview() && uri == vpcProvider->overview().uri() )
-        return vpcProvider->overview();
+    return indexes[ i ].index();
+  }
 
-      const QVector<QgsPointCloudSubIndex> subIndexes = vpcProvider->subIndexes();
-      for ( const QgsPointCloudSubIndex &subIndex : std::as_const( subIndexes ) )
-      {
-        if ( subIndex.uri() == uri )
-          return subIndex.index();
-      }
+  if ( !mEditingIndexes.contains( i ) )
+  {
+    auto indexes = mDataProvider->subIndexes();
+    const QgsPointCloudSubIndex &subIndex = indexes.at( i );
+    QgsPointCloudIndex index = subIndex.index();
+
+    if ( !index.isValid() )
+    {
+      return QgsPointCloudIndex();
     }
 
-    return QgsPointCloudIndex();
+    QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
+    mEditingIndexes[ i ] = editIndex;
   }
-  else
-  {
-    if ( mEditIndex )
-      return mEditIndex;
 
-    if ( mDataProvider )
-      return mDataProvider->index();
+  return mEditingIndexes[ i ];
+}
 
+QgsPointCloudIndex QgsPointCloudLayer::overview()
+{
+  if ( !mDataProvider || !mIsVpc )
     return QgsPointCloudIndex();
-  }
+
+  const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() );
+  return vpcProvider->overview();
+}
+
+bool QgsPointCloudLayer::inEditing()
+{
+  if ( mEditIndex || !mEditingIndexes.isEmpty() )
+    return true;
+
+  return false;
 }
