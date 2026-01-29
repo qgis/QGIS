@@ -47,6 +47,8 @@ class CORE_EXPORT QgsClassificationStandardDeviation : public QgsClassificationM
 
     double mStdDev = 1.0;
     double mEffectiveSymmetryPoint = 0.0;
+
+    friend class TestQgsClassificationStandardDeviation;
 };
 
 #endif // QGSCLASSIFICATIONSTANDARDDEVIATION_H

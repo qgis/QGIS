@@ -256,5 +256,6 @@ if (ENABLE_PGTEST)
   SET_TESTS_PROPERTIES(test_core_vectorlayerjoinbuffer PROPERTIES LABELS "POSTGRES")
 endif()
 
+add_subdirectory(classification)
 add_subdirectory(geometry)
 add_subdirectory(vector)
