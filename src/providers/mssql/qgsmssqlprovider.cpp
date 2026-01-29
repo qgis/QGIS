@@ -277,18 +277,26 @@ void QgsMssqlProvider::loadMetadata()
 
   QSqlQuery query = createQuery();
   query.setForwardOnly( true );
-  if ( !LoggedExec( query, u"SELECT f_geometry_column, srid, geometry_type, coord_dimension FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2"_s.arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) ) ) )
+  const QString sql = u"IF OBJECT_ID('geometry_columns', 'U') IS NOT NULL "
+                      u"SELECT f_geometry_column, srid, geometry_type, coord_dimension "
+                      u"FROM geometry_columns WHERE f_table_schema=%1 AND f_table_name=%2"_s
+                        .arg( QgsMssqlUtils::quotedValue( mSchemaName ), QgsMssqlUtils::quotedValue( mTableName ) );
+
+  if ( !LoggedExec( query, sql ) )
   {
     QgsDebugError( u"SQL:%1\n  Error:%2"_s.arg( query.lastQuery(), query.lastError().text() ) );
   }
-
-  if ( query.isActive() && query.next() )
+  else if ( query.isActive() && query.next() )
   {
     mGeometryColName = query.value( 0 ).toString();
     mSRId = query.value( 1 ).toInt();
     const int dimensions = query.value( 3 ).toInt();
     const QString detectedType { QgsMssqlProvider::typeFromMetadata( query.value( 2 ).toString().toUpper(), dimensions ) };
     mWkbType = getWkbType( detectedType );
+  }
+  else
+  {
+    QgsDebugError( u"Could not retrieve geometry metadata for %1.%2 from geometry_columns: table does not exist or no matching record"_s.arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ) );
   }
 }
 
