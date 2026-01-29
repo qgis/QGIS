@@ -8,7 +8,7 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "c8ff38b5c7e84ed2380f14cffb137bf76f9d6418",
+        "baseline": "7aaf1fda3fd1d86e6230b9a6d5ef686f353aa061",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
           "arrow",
@@ -165,7 +165,10 @@
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
-        "py-pydantic",
+        {
+          "name": "py-pydantic",
+          "platform": "!windows"
+        },
         "py-pyproj",
         {
           "name": "py-pyqt6",
