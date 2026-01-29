@@ -721,7 +721,7 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       return;
   }
 
-  if ( !mIsQuery )
+  if ( !mIsQuery && mSRId > 0 )
   {
     // Get the extents from the spatial index table to speed up load times.
     // We have to use max() and min() because you can have more then one index but the biggest area is what we want to use.
@@ -750,6 +750,15 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
   // If we can't find the extents in the spatial index table just do what we normally do.
   bool readAllGeography = false;
+  QString sridColumns;
+  if ( mSRId <= 0 )
+  {
+    // piggy-back unknown SRId retrieval onto extent calculation, using min(Srid) and max(Srid) to get single scalar values
+    // since the extent query will only return a SINGLE row. That's enough to tell us whether there's a single distinct
+    // srid in use
+    sridColumns = QStringLiteral( ", min(%1.STSrid), max(%1.STSrid)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
+  }
+
   if ( estimate )
   {
     if ( mGeometryColType == QLatin1String( "geometry" ) )
@@ -758,6 +767,9 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
         statement = QStringLiteral( "select min(%1.STPointN(1).STX), min(%1.STPointN(1).STY), max(%1.STPointN(1).STX), max(%1.STPointN(1).STY)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       else
         statement = QStringLiteral( "select min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STX else NULL end), min(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STY else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STX else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STPointN(1).STY else NULL end)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
+
+      if ( !sridColumns.isEmpty() )
+        statement += sridColumns;
     }
     else
     {
@@ -779,6 +791,8 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
         statement = QStringLiteral( "select min(%1.STEnvelope().STPointN(1).STX), min(%1.STEnvelope().STPointN(1).STY), max(%1.STEnvelope().STPointN(3).STX), max(%1.STEnvelope().STPointN(3).STY)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
       else
         statement = QStringLiteral( "select min(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(1).STX  else NULL end), min(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(1).STY else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(3).STX else NULL end), max(case when (%1.STIsValid() = 1) THEN %1.STEnvelope().STPointN(3).STY else NULL end)" ).arg( QgsMssqlUtils::quotedIdentifier( mGeometryColName ) );
+      if ( !sridColumns.isEmpty() )
+        statement += sridColumns;
     }
     else
     {
@@ -819,16 +833,43 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
 
     // See https://docs.microsoft.com/en-us/previous-versions/software-testing/cc441928(v=msdn.10)
     const QString sampleFilter = QString( "(ABS(CAST((BINARY_CHECKSUM(%1)) as int)) % 100) = 42" ).arg( cols );
+    const int sampleFilterCol = sridColumns.isEmpty() ? 4 : 6;
 
     const QString statementSample = statement + ( mSqlWhereClause.isEmpty() ? " WHERE " : " AND " ) + sampleFilter;
 
-    if ( LoggedExec( query, statementSample ) && query.next() && !QgsVariantUtils::isNull( query.value( 0 ) ) && query.value( 4 ).toInt() >= minSampleCount )
+    if ( LoggedExec( query, statementSample ) && query.next() )
     {
-      mExtent.setXMinimum( query.value( 0 ).toDouble() );
-      mExtent.setYMinimum( query.value( 1 ).toDouble() );
-      mExtent.setXMaximum( query.value( 2 ).toDouble() );
-      mExtent.setYMaximum( query.value( 3 ).toDouble() );
-      return;
+      const int sampleCount = query.value( sampleFilterCol ).toInt();
+      if ( sampleCount < minSampleCount )
+      {
+        QgsDebugMsgLevel( QStringLiteral( "Could not use estimated statistics for %1.%2: sample count %3 is too low" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ).arg( sampleCount ), 2 );
+      }
+      if ( !QgsVariantUtils::isNull( query.value( 0 ) ) && sampleCount >= minSampleCount )
+      {
+        mExtent.setXMinimum( query.value( 0 ).toDouble() );
+        mExtent.setYMinimum( query.value( 1 ).toDouble() );
+        mExtent.setXMaximum( query.value( 2 ).toDouble() );
+        mExtent.setYMaximum( query.value( 3 ).toDouble() );
+
+        if ( mSRId <= 0 )
+        {
+          QSet< int > srIdExtrema;
+          if ( !QgsVariantUtils::isNull( query.value( 4 ) ) )
+            srIdExtrema.insert( query.value( 4 ).toInt() );
+          if ( !QgsVariantUtils::isNull( query.value( 5 ) ) )
+            srIdExtrema.insert( query.value( 5 ).toInt() );
+          if ( srIdExtrema.size() == 1 )
+          {
+            mSRId = *srIdExtrema.constBegin();
+          }
+          else
+          {
+            QgsDebugError( QStringLiteral( "Could not determine srid for %1.%2: found multiple IDs" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ) );
+          }
+        }
+
+        return;
+      }
     }
   }
 
@@ -858,6 +899,24 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate ) const
       mExtent.setXMaximum( query.value( 2 ).toDouble() );
       mExtent.setYMaximum( query.value( 3 ).toDouble() );
     }
+
+    if ( mSRId <= 0 )
+    {
+      QSet< int > srIdExtrema;
+      if ( !QgsVariantUtils::isNull( query.value( 4 ) ) )
+        srIdExtrema.insert( query.value( 4 ).toInt() );
+      if ( !QgsVariantUtils::isNull( query.value( 5 ) ) )
+        srIdExtrema.insert( query.value( 5 ).toInt() );
+      if ( srIdExtrema.size() == 1 )
+      {
+        mSRId = *srIdExtrema.constBegin();
+      }
+      else
+      {
+        QgsDebugError( QStringLiteral( "Could not determine srid for %1.%2: found multiple IDs" ).arg( QgsMssqlUtils::quotedIdentifier( mSchemaName ), QgsMssqlUtils::quotedIdentifier( mTableName ) ) );
+      }
+    }
+
     return;
   }
 
