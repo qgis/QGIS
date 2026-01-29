@@ -385,11 +385,6 @@ Returns ``True`` if there are uncommitted changes, ``False`` otherwise
 Returns a list of node IDs that have been modified
 %End
 
-    QString uri() const;
-%Docstring
-Returns the uri used to load the index
-%End
-
 };
 
 
