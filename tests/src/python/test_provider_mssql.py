@@ -1672,6 +1672,69 @@ class TestPyQgsMssqlProvider(QgisTestCase, MssqlProviderTestBase):
         )
         self.assertFalse(QgsVectorLayerUtils.validateAttribute(vl, f, 2)[0])
 
+    def test_retrieve_geom_column(self):
+        """
+        Test creating provider with no explicit geometry column name specified
+        """
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'pk\' type=POINT table="qgis_test"."someData" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geom")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                1: "Point (-70.3 66.3)",
+                2: "Point (-68.2 70.8)",
+                3: "",
+                4: "Point (-65.3 78.3)",
+                5: "Point (-71.1 78.2)",
+            },
+        )
+
+    def test_retrieve_geom_column_estimate(self):
+        """
+        Test creating provider with no explicit geometry column name specified
+        """
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable key=\'pk\' type=POLYGON table="qgis_test"."invalid_polys" estimatedmetadata="true" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "ogr_geometry")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4167")
+
+    def test_retrieve_geom_column_and_pk(self):
+        """
+        Test creating provider with no explicit geometry column name or pk specified
+        """
+        vl = QgsVectorLayer(
+            self.dbconn
+            + ' sslmode=disable type=POINT table="qgis_test"."someData" sql=',
+            "test",
+            "mssql",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geom")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+        self.assertEqual(vl.dataProvider().pkAttributeIndexes(), [0])
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                1: "Point (-70.3 66.3)",
+                2: "Point (-68.2 70.8)",
+                3: "",
+                4: "Point (-65.3 78.3)",
+                5: "Point (-71.1 78.2)",
+            },
+        )
+
 
 class TestPyQgsMssqlProviderQuery(QgisTestCase, MssqlProviderTestBase):
 
