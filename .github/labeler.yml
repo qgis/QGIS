@@ -4,13 +4,46 @@
     'resources/3d/**/*',
     'src/3d/**/*',
     'src/app/3d/**/*',
+    'src/core/3d/**/*',
+    'src/ui/3d/**/*',
   ]
 
 "Annotations":
 - changed-files:
   - any-glob-to-any-file: [
+    'src/app/annotations/**/*',
     'src/core/annotations/**/*',
     'src/gui/annotations/**/*',
+    'src/ui/annotations/**/*',
+  ]
+
+"ArcGIS REST provider":
+- changed-files:
+  - any-glob-to-any-file: [
+    'src/core/providers/argisrest/**/*',
+    'src/providers/arcgisrest/**/*',
+  ]
+
+"Authentication":
+- changed-files:
+  - any-glob-to-any-file: [
+    'src/auth/**/*',
+    'src/core/auth/**/*',
+    'src/gui/auth/**/*',
+    'src/ui/auth/**/*',
+  ]
+
+"Build/Install":
+- changed-files:
+  - any-glob-to-any-file: [
+    'cmake/**/*',
+    'debian/**/*',
+    'linux/**/*',
+    'ms-windows/**/*',
+    'nix/**/*',
+    'postinstall/**/*',
+    'rpm/**/*',
+    'vcpkg/**/*',
   ]
 
 "Chore":
@@ -25,6 +58,14 @@
 - changed-files:
   - any-glob-to-any-file: ['python/plugins/db_manager/**/*']
 
+"Digitizing":
+- changed-files:
+  - any-glob-to-any-file: [
+    'src/app/maptools/**/*',
+    'src/app/vertextool/**/*',
+    'src/gui/maptools/**/*',
+  ]
+
 "Expressions":
 - changed-files:
   - any-glob-to-any-file: [
@@ -37,11 +78,17 @@
   - any-glob-to-any-file: [
     'src/core/editform/**/*',
     'src/gui/attributeformconfig/**/*',
+    'src/gui/editorwidgets/**/*',
+    'src/ui/attributeformconfig/**/*',
+    'src/ui/editorwidgets/**/*',
   ]
 
 "GRASS":
 - changed-files:
-  - any-glob-to-any-file: ['python/plugins/grassprovider/**/*']
+  - any-glob-to-any-file: [
+    'python/plugins/grassprovider/**/*',
+    'src/providers/grass/**/*'
+  ]
 
 "GUI/UX":
 - changed-files:
@@ -49,6 +96,7 @@
     'images/**/*',
     'resources/themes/**/*',
 #    'src/gui/**/*', too broad
+    'src/ui/**/*.ui'
   ]
 
 "HANA data provider":
@@ -62,11 +110,15 @@
   - any-glob-to-any-file: [
     'src/app/labeling/**/*',
     'src/core/labeling/**/*',
+    'src/core/pal/**/*',
+    'src/gui/labeling/**/*',
+    'src/ui/labeling/**/*',
   ]
 
 "Locator":
 - changed-files:
   - any-glob-to-any-file: [
+    'src/app/locator/**/*',
     'src/core/locator/**/*',
     'src/gui/locator/**/*',
   ]
@@ -76,33 +128,64 @@
   - any-glob-to-any-file: [
     'external/mdal/**/*',
     'src/analysis/mesh/**/*',
+    'src/app/mesh/**/*',
     'src/core/mesh/**/*',
     'src/gui/mesh/**/*',
+    'src/ui/mesh/**/*',
   ]
 
 "Metasearch":
 - changed-files:
   - any-glob-to-any-file: ['python/plugins/MetaSearch/**/*']
 
+"MS SQL data provider":
+- changed-files:
+  - any-glob-to-any-file: ['src/providers/mssql/**/*']
+
+"Oracle data provider":
+- changed-files:
+  - any-glob-to-any-file: ['src/providers/oracle/**/*']
+
 "Point Clouds":
 - changed-files:
   - any-glob-to-any-file: [
+    'external/pdal_wrench/**/*',
     'src/app/pointcloud/**/*',
     'src/core/pointcloud/**/*',
     'src/gui/pointcloud/**/*',
+    'src/providers/pdal/**/*',
+    'src/ui/pointcloud/**/*',
   ]
 
 "PostGIS data provider":
 - changed-files:
   - any-glob-to-any-file: ['src/providers/postgres/**/*']
 
+"Print Layouts":
+- changed-files:
+  - any-glob-to-any-file: [
+    'src/app/layout/**/*',
+    'src/core/layout/**/*',
+    'src/gui/layout/**/*',
+    'src/ui/layout/**/*',
+  ]
+
 "Processing":
 - changed-files:
   - any-glob-to-any-file: [
-      'python/plugins/processing/**/*',
-      'src/analysis/**/*',
-      'src/core/processing/**/*',
-      'src/process/**/*'
+    'python/plugins/processing/**/*',
+    'src/analysis/**/*',
+    'src/core/processing/**/*',
+    'src/process/**/*'
+    'src/ui/processing/**/*',
+  ]
+
+"Profile tool":
+- changed-files:
+  - any-glob-to-any-file: [
+    'src/app/elevation/**/*',
+    'src/core/elevation/**/*',
+    'src/gui/elevation/**/*',
   ]
 
 "Python Console":
@@ -117,11 +200,20 @@
     'src/quickgui/**/*',
   ]
 
+"Rasters":
+- changed-files:
+  - any-glob-to-any-file: [
+    'src/app/raster/**/*',
+    'src/core/raster/**/*',
+    'src/gui/raster/**/*',
+    'src/ui/raster/**/*',
+  ]
+
 "Server":
 - changed-files:
   - any-glob-to-any-file: [
-      'src/server/**/*',
-      'resources/server/**/*'
+    'src/server/**/*',
+    'resources/server/**/*'
   ]
 
 "Vector tiles":
