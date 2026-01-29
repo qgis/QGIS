@@ -76,8 +76,6 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
   if ( !anUri.srid().isEmpty() )
     mSRId = anUri.srid().toInt();
-  else
-    mSRId = -1;
 
   mWkbType = anUri.wkbType();
 
@@ -154,7 +152,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
     if ( !anUri.geometryColumn().isEmpty() )
       mGeometryColName = anUri.geometryColumn();
 
-    if ( mSRId < 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
+    if ( mSRId <= 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
     {
       loadMetadata();
     }
@@ -218,7 +216,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
       {
         // table contains no geometries
         mWkbType = Qgis::WkbType::NoGeometry;
-        mSRId = 0;
+        mSRId = -1;
       }
     }
   }
@@ -298,7 +296,7 @@ QMetaType::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
 
 void QgsMssqlProvider::loadMetadata()
 {
-  mSRId = 0;
+  mSRId = -1;
   mWkbType = Qgis::WkbType::Unknown;
 
   QSqlQuery query = createQuery();

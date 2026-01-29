@@ -209,7 +209,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
      */
     QList<int> mPrimaryKeyAttrs;
 
-    mutable long mSRId;
+    mutable long mSRId = -1;
     QString mGeometryColName;
     QString mGeometryColType;
 
