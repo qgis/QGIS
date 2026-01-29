@@ -2675,6 +2675,22 @@ bool QgisApp::event( QEvent *event )
   {
     done = gestureEvent( static_cast<QGestureEvent *>( event ) );
   }
+  else if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( mMapCanvas->mapTool() )
+    {
+      QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+      if ( mMapCanvas->mapTool()->shortcutEvent( keyEvent ) )
+      {
+        event->accept();
+        done = true;
+      }
+    }
+    if ( !done )
+    {
+      done = QMainWindow::event( event );
+    }
+  }
   else
   {
     // pass other events to base class

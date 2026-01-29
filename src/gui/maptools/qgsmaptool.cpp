@@ -223,6 +223,12 @@ bool QgsMapTool::canvasToolTipEvent( QHelpEvent *e )
   return false;
 }
 
+bool QgsMapTool::shortcutEvent( QKeyEvent *e )
+{
+  Q_UNUSED( e )
+  return false;
+}
+
 QgsMapCanvas *QgsMapTool::canvas() const
 {
   return mCanvas;
