@@ -54,7 +54,7 @@ class APP_EXPORT QgsVersionMigration
     virtual bool requiresMigration() = 0;
 };
 
-
+#if 0
 class Qgs2To3Migration : public QgsVersionMigration
 {
   public:
@@ -75,5 +75,6 @@ class Qgs2To3Migration : public QgsVersionMigration
 
     QSettings *mOldSettings = nullptr;
 };
+#endif
 
 #endif // QGSVERSIONMIGRATION_H

@@ -39,12 +39,13 @@ using namespace Qt::StringLiterals;
 
 std::unique_ptr<QgsVersionMigration> QgsVersionMigration::canMigrate( int fromVersion, int toVersion )
 {
-  if ( fromVersion == 20000 && toVersion >= 29900 )
-  {
-    return std::make_unique<Qgs2To3Migration>();
-  }
   return nullptr;
 }
+
+#if 0
+//
+// Qgs2To3Migration
+//
 
 QgsError Qgs2To3Migration::runMigration()
 {
@@ -350,3 +351,6 @@ QString Qgs2To3Migration::migrationFilePath()
 {
   return QgsApplication::resolvePkgPath() + "/resources/2to3migration.txt";
 }
+
+#endif
+
