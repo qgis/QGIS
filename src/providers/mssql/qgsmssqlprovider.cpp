@@ -163,7 +163,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
     {
       if ( mSRId <= 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
       {
-        loadMetadata();
+        loadMetadataFromGeometryColumnsTable();
       }
       else
       {
@@ -268,7 +268,7 @@ QgsFeatureIterator QgsMssqlProvider::getFeatures( const QgsFeatureRequest &reque
   return QgsFeatureIterator( new QgsMssqlFeatureIterator( new QgsMssqlFeatureSource( this ), true, request ) );
 }
 
-void QgsMssqlProvider::loadMetadata()
+void QgsMssqlProvider::loadMetadataFromGeometryColumnsTable()
 {
   mSRId = -1;
   mWkbType = Qgis::WkbType::Unknown;
