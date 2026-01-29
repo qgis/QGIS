@@ -165,7 +165,10 @@
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
-        "py-pydantic",
+        {
+          "name": "py-pydantic",
+          "platform": "!windows"
+        },
         "py-pyproj",
         {
           "name": "py-pyqt6",
