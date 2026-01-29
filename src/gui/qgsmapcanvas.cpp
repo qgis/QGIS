@@ -3540,6 +3540,11 @@ const QgsLabelingEngineSettings &QgsMapCanvas::labelingEngineSettings() const
   return mSettings.labelingEngineSettings();
 }
 
+void QgsMapCanvas::setSelectiveMaskingSourceSets( const QVector<QgsSelectiveMaskingSourceSet> &sets )
+{
+  mSettings.setSelectiveMaskingSourceSets( sets );
+}
+
 void QgsMapCanvas::startPreviewJobs()
 {
   stopPreviewJobs(); //just in case still running

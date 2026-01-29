@@ -27,6 +27,7 @@ Base class for list models representing the objects available in a
     enum class CustomRole /BaseType=IntEnum/
     {
       Object,
+      IsEmptyObject,
     };
 
     QgsProjectStoredObjectManagerModelBase( QObject *parent /TransferThis/ = 0 );

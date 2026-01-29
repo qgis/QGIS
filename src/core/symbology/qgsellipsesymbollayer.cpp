@@ -417,8 +417,7 @@ QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
 
-  copyDataDefinedProperties( m );
-  copyPaintEffect( m );
+  copyCommonProperties( m );
   return m;
 }
 

@@ -1801,6 +1801,12 @@ The development version
       GlowSpread,
     };
 
+    enum class SelectiveMaskSourceType
+    {
+      SymbolLayer,
+      Label,
+    };
+
     enum class VertexType
       {
       Segment,

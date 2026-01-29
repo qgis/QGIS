@@ -65,8 +65,7 @@ QgsMaskMarkerSymbolLayer *QgsMaskMarkerSymbolLayer::clone() const
   QgsMaskMarkerSymbolLayer *l = static_cast<QgsMaskMarkerSymbolLayer *>( create( properties() ) );
   l->setSubSymbol( mSymbol->clone() );
   l->setMasks( mMaskedSymbolLayers );
-  copyDataDefinedProperties( l );
-  copyPaintEffect( l );
+  copyCommonProperties( l );
   return l;
 }
 
@@ -182,9 +181,6 @@ void QgsMaskMarkerSymbolLayer::renderPoint( QPointF point, QgsSymbolRenderContex
   }
 
   if ( !renderContext.maskPainter() )
-    return;
-
-  if ( mMaskedSymbolLayers.isEmpty() )
     return;
 
   // Otherwise switch to the mask painter before rendering

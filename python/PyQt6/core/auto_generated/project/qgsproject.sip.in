@@ -916,6 +916,15 @@ profiles within the project.
 %End
 
 
+    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager();
+%Docstring
+Returns the project's selective masking set manager, which manages
+storage of a set of selective masking source sets within the project.
+
+.. versionadded:: 4.0
+%End
+
+
     QgsMapViewsManager *viewsManager();
 %Docstring
 Returns the project's views manager, which manages map views (including
