@@ -1407,7 +1407,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &updatedFeature, bool skipDefault
     bool hasChanged = false;
     bool hasError = false;
 
-    if ( ( updatedFeature.hasGeometry() || currentFeature.hasGeometry() ) && !updatedFeature.geometry().equals( currentFeature.geometry() ) )
+    if ( ( updatedFeature.hasGeometry() || currentFeature.hasGeometry() ) && !updatedFeature.geometry().isEqual( currentFeature.geometry() ) )
     {
       QgsGeometry geometry = updatedFeature.geometry();
       if ( changeGeometry( updatedFeature.id(), geometry, true ) )

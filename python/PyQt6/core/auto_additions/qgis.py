@@ -4043,6 +4043,19 @@ Qgis.JoinStyle3D.__doc__ = """Join styles for 3D buffers.
 # --
 Qgis.JoinStyle3D.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.GeometryBackend.QGIS.__doc__ = "Use internal implementation"
+Qgis.GeometryBackend.GEOS.__doc__ = "Use GEOS implementation"
+Qgis.GeometryBackend.__doc__ = """Geometry backend for :py:class:`QgsGeometry`.
+
+.. versionadded:: 4.0
+
+* ``QGIS``: Use internal implementation
+* ``GEOS``: Use GEOS implementation
+
+"""
+# --
+Qgis.GeometryBackend.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.GeosCreationFlag.RejectOnInvalidSubGeometry.__doc__ = "Don't allow geometries with invalid sub-geometries to be created"
 Qgis.GeosCreationFlag.SkipEmptyInteriorRings.__doc__ = "Skip any empty polygon interior ring"
 Qgis.GeosCreationFlag.__doc__ = """Flags which control geos geometry creation behavior.
