@@ -277,18 +277,18 @@
         </property>
         <widget class="QWidget" name="pageIndividualPoints">
          <layout class="QGridLayout" name="gridLayout_7">
-         <property name="leftMargin">
-                <number>0</number>
-        </property>
-        <property name="topMargin">
-                <number>0</number>
-        </property>
-        <property name="rightMargin">
-                <number>0</number>
-        </property>
-        <property name="bottomMargin">
-                <number>0</number>
-        </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayoutIndividualPoints">
             <property name="leftMargin">
@@ -297,12 +297,12 @@
             <property name="topMargin">
              <number>0</number>
             </property>
-             <property name="rightMargin">
-               <number>0</number>
-             </property>
-             <property name="bottomMargin">
-                <number>0</number>
-             </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
             <item row="0" column="1">
              <widget class="QgsDoubleSpinBox" name="mPointSizeSpinBox">
               <property name="decimals">
@@ -384,17 +384,17 @@
         <widget class="QWidget" name="pageTriangulatedSurface">
          <layout class="QGridLayout" name="gridLayout_8">
           <property name="leftMargin">
-            <number>0</number>
+           <number>0</number>
           </property>
           <property name="topMargin">
-            <number>0</number>
+           <number>0</number>
           </property>
-            <property name="rightMargin">
-          <number>0</number>
-           </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
           <property name="bottomMargin">
            <number>0</number>
-        </property>
+          </property>
           <item row="0" column="0">
            <layout class="QGridLayout" name="gridLayoutTriangulatedSurface">
             <property name="leftMargin">
@@ -403,22 +403,16 @@
             <property name="topMargin">
              <number>0</number>
             </property>
-             <property name="rightMargin">
-               <number>0</number>
-             </property>
-             <property name="bottomMargin">
-                <number>0</number>
-             </property>
-            <item row="5" column="1">
-             <widget class="QgsSymbolButton" name="mMarkerStyleButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="labelStyle">
               <property name="text">
-               <string/>
+               <string>Style</string>
               </property>
              </widget>
             </item>
@@ -435,44 +429,10 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QComboBox" name="mSurfaceStyleCombobox"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="labelFillStyle">
-              <property name="text">
-               <string>Fill style</string>
-              </property>
-             </widget>
-            </item>
             <item row="3" column="0">
              <widget class="QLabel" name="labelLimit">
               <property name="text">
                <string>Limit</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0">
-             <widget class="QLabel" name="labelMarkerStyle">
-              <property name="text">
-               <string>Marker style</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="labelStyle">
-              <property name="text">
-               <string>Style</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QgsDoubleSpinBox" name="mElevationLimitSpinBox"/>
-            </item>
-            <item row="4" column="0" colspan="2">
-             <widget class="QCheckBox" name="mCheckBoxShowMarkersAtSampledPoints">
-              <property name="text">
-               <string>Show markers at sampled points</string>
               </property>
              </widget>
             </item>
@@ -482,6 +442,16 @@
                <string>Line style</string>
               </property>
              </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="labelFillStyle">
+              <property name="text">
+               <string>Fill style</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="mSurfaceStyleCombobox"/>
             </item>
             <item row="1" column="1">
              <widget class="QgsSymbolButton" name="mLineStyleButton">
@@ -495,6 +465,9 @@
                <string/>
               </property>
              </widget>
+            </item>
+            <item row="3" column="1">
+             <widget class="QgsDoubleSpinBox" name="mElevationLimitSpinBox"/>
             </item>
            </layout>
           </item>

@@ -238,16 +238,16 @@ profile plots.
 %Docstring
 Sets the profile ``type`` used when generating elevation profile plots.
 
-.. seealso:: :py:func:`renderType`
+.. seealso:: :py:func:`type`
 
 .. versionadded:: 4.0
 %End
 
-    Qgis::PointCloudProfileType renderType() const;
+    Qgis::PointCloudProfileType type() const;
 %Docstring
 Returns the profile type used when generating elevation profile plots.
 
-.. seealso:: :py:func:`setRenderType`
+.. seealso:: :py:func:`setType`
 
 .. versionadded:: 4.0
 %End
