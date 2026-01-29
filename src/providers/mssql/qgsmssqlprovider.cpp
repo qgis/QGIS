@@ -154,7 +154,7 @@ QgsMssqlProvider::QgsMssqlProvider( const QString &uri, const ProviderOptions &o
 
     if ( mSRId <= 0 || mWkbType == Qgis::WkbType::Unknown || mGeometryColName.isEmpty() )
     {
-      loadMetadata();
+      loadMetadataFromGeometryColumnsTable();
     }
     loadFields();
 
@@ -294,7 +294,7 @@ QMetaType::Type QgsMssqlProvider::DecodeSqlType( const QString &sqlTypeName )
   return type;
 }
 
-void QgsMssqlProvider::loadMetadata()
+void QgsMssqlProvider::loadMetadataFromGeometryColumnsTable()
 {
   mSRId = -1;
   mWkbType = Qgis::WkbType::Unknown;
