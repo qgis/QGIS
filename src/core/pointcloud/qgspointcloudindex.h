@@ -652,9 +652,6 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     //! Returns a list of node IDs that have been modified
     QList<QgsPointCloudNodeId> updatedNodes() const;
 
-    //! Returns the uri used to load the index
-    QString uri() const;
-
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;
 
