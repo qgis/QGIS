@@ -19,15 +19,19 @@
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgspluginmanager.h"
 #include "qgssettings.h"
 
 #include <QAbstractButton>
 #include <QMessageBox>
 #include <QQmlContext>
+#include <QString>
 #include <QUrl>
 #include <QVBoxLayout>
 
 #include "moc_qgswelcomescreen.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define FEED_URL "https://feed.qgis.org/"
 
@@ -68,7 +72,7 @@ void QgsWelcomeScreenController::clearRecentProjects()
 
 void QgsWelcomeScreenController::showPluginManager()
 {
-  QgisApp::instance()->showPluginManager( 3 ); // 3 == PLUGMAN_TAB_UPGRADEABLE
+  QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) );
 }
 
 void QgsWelcomeScreenController::hideScene()
@@ -121,8 +125,6 @@ QgsWelcomeScreen::QgsWelcomeScreen( bool skipVersionCheck, QWidget *parent )
     connect( mVersionInfo, &QgsVersionInfo::versionInfoAvailable, this, &QgsWelcomeScreen::versionInfoReceived );
     mVersionInfo->checkVersion();
   }
-
-  connect( QgisApp::instance(), &QgisApp::pluginUpdatesAvailable, this, &QgsWelcomeScreen::pluginUpdatesAvailableReceived );
 }
 
 bool QgsWelcomeScreen::eventFilter( QObject *object, QEvent *event )

@@ -373,7 +373,6 @@ using namespace Qt::StringLiterals;
 #include "qgspdalalgorithms.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
-#include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspointxy.h"
 #include "qgspuzzlewidget.h"
@@ -2021,6 +2020,26 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   }
 
   startProfile( tr( "Welcome screen" ) );
+  connect( this, &QgisApp::pluginUpdatesAvailable, this, [this]( const QStringList &plugins ) {
+    const QString updateMessage = tr( "Plugin update(s) available: %1" ).arg( plugins.join( ", "_L1 ) );
+    QgsMessageLog::logMessage( updateMessage, tr( "Plugins" ) );
+
+    if ( mWelcomeScreen->isVisible() )
+    {
+      mWelcomeScreen->pluginUpdatesAvailableReceived( plugins );
+    }
+    else
+    {
+      QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "Plugins" ), updateMessage );
+      QPushButton *updateButton = new QPushButton( tr( "Install Updates…" ) );
+      connect( updateButton, &QPushButton::clicked, []() {
+        QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) );
+      } );
+      messageWidget->layout()->addWidget( updateButton );
+      messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
+    }
+  } );
+
   QgsWelcomeScreen::registerTypes();
 
   mWelcomeScreen = new QgsWelcomeScreen( options.testFlag( AppOption::SkipVersionCheck ), this->centralWidget() );
@@ -3130,7 +3149,7 @@ void QgisApp::createActions()
 
   // Plugin Menu Items
 
-  connect( mActionManagePlugins, &QAction::triggered, this, &QgisApp::showPluginManager );
+  connect( mActionManagePlugins, &QAction::triggered, this, [this]( bool ) { showPluginManager(); } );
   connect( mActionShowPythonDialog, &QAction::triggered, this, &QgisApp::showPythonDialog );
 
   // Settings Menu Items
@@ -5902,6 +5921,10 @@ void QgisApp::fileClose()
   }
 }
 
+bool QgisApp::canCreateNewProject()
+{
+  return !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits();
+}
 
 //as file new but accepts flags to indicate whether we should prompt to save
 bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
@@ -5911,7 +5934,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   if ( promptToSaveFlag )
   {
-    if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+    if ( !canCreateNewProject() )
     {
       return false; //cancel pressed
     }
@@ -5983,7 +6006,7 @@ bool QgisApp::fileNewWithBasemap()
   if ( checkTasksDependOnProject() )
     return false;
 
-  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+  if ( !canCreateNewProject() )
   {
     return false; //cancel pressed
   }
@@ -6003,7 +6026,7 @@ bool QgisApp::fileNewFromTemplate( const QString &fileName )
   if ( checkTasksDependOnProject() )
     return false;
 
-  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+  if ( !canCreateNewProject() )
   {
     return false; //cancel pressed
   }

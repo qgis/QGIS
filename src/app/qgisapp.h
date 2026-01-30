@@ -76,7 +76,6 @@ class QgsMapTool;
 class QgsMapToolsDigitizingTechniqueManager;
 class QgsOptions;
 class QgsPluginLayer;
-class QgsPluginManager;
 class QgsPointCloudLayer;
 class QgsPointXY;
 class QgsPrintLayout;
@@ -183,6 +182,7 @@ class QgsCustomizationDialog;
 #include "qgsmimedatautils.h"
 #include "qgsoptionsutils.h"
 #include "qgsoptionswidgetfactory.h"
+#include "qgspluginmanager.h"
 #include "qgspointxy.h"
 #include "qgsrecentprojectsitemsmodel.h"
 #include "qgsvectorlayersaveasdialog.h"
@@ -2555,6 +2555,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void renderDecorationItems( QPainter *p ) const;
 
     void handleRenderedLayerStatistics() const;
+
+    bool canCreateNewProject();
 
     QgsScreenHelper *mScreenHelper = nullptr;
 
