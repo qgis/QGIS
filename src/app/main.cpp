@@ -229,6 +229,44 @@ void myPrint( const char *fmt, ... )
   va_end( ap );
 }
 
+void copyProfileNamesFromQgis3( const QString &configLocalStorageLocation )
+{
+  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
+  const QDir qgis3ProfilesRootPath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles"_s ) ) );
+  const QDir qgis4ProfilesRootPath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles"_s ) ) );
+  if ( !qgis3ProfilesRootPath.exists() )
+  {
+    QgsDebugMsgLevel( u"No QGIS3 profiles path exists at %1, nothing to migrate"_s.arg( qgis3ProfilesRootPath.path() ), 2 );
+    return;
+  }
+
+  QgsDebugMsgLevel( u"Syncing profile list from %1 to %2"_s.arg( qgis3ProfilesRootPath.path(), qgis4ProfilesRootPath.path() ), 2 );
+  const QStringList qgis3Profiles = QDir( qgis3ProfilesRootPath ).entryList( QDir::Dirs | QDir::NoDotAndDotDot );
+  if ( qgis4ProfilesRootPath.exists() )
+  {
+    if ( !qgis4ProfilesRootPath.mkpath( "." ) )
+    {
+      QgsDebugError( u"Cannot create QGIS4 settings path, migrating profiles from QGIS3 cannot be performed"_s );
+      return;
+    }
+  }
+
+  // create new (empty) profile folders for all existing QGIS 3 profiles
+  for ( const QString &profile : qgis3Profiles )
+  {
+    const QString profilePath = qgis4ProfilesRootPath.filePath( profile );
+    if ( QFile::exists( profilePath ) )
+      continue;
+
+    QgsDebugMsgLevel( u"Creating empty profile %1 at %2"_s.arg( profile, profilePath ), 2 );
+    if ( !QDir( profilePath ).mkpath( "." ) )
+    {
+      QgsDebugError( u"Cannot create empty profile %1 at %2, skipping"_s.arg( profile, profilePath ) );
+      continue;
+    }
+  }
+}
+
 static void dumpBacktrace( unsigned int depth )
 {
   if ( depth == 0 )
@@ -1045,6 +1083,10 @@ int main( int argc, char *argv[] )
   {
     QgsApplication::setTranslation( QLocale().name() );
   }
+
+  // before doing any profile management, sync the available SET of profiles to an existing QGIS3 set.
+  // This doesn't actually COPY any profiles, just makes them available for selection on QGIS 4
+  copyProfileNamesFromQgis3( configLocalStorageLocation );
 
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
