@@ -649,7 +649,6 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mPointSymbol( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointSymbol() )
   , mPointColor( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->pointColor() )
   , mOpacityByDistanceEffect( qgis::down_cast< QgsPointCloudLayerElevationProperties* >( layer->elevationProperties() )->applyOpacityByDistanceEffect() )
-  , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
 {
 }
 
@@ -833,7 +832,6 @@ void QgsPointCloudLayerProfileGenerator::visitBlock( const QgsPointCloudBlock *b
 
 QgsTriangulatedPointCloudLayerProfileGenerator::QgsTriangulatedPointCloudLayerProfileGenerator( QgsPointCloudLayer *layer, const QgsProfileRequest &request )
   : QgsPointCloudLayerProfileGeneratorBase( layer, request )
-  , mProfileCurve( request.profileCurve() ? request.profileCurve()->clone() : nullptr )
 {
   mSymbology = qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->profileSymbology();
   mElevationLimit = qgis::down_cast< QgsPointCloudLayerElevationProperties * >( layer->elevationProperties() )->elevationLimit();
