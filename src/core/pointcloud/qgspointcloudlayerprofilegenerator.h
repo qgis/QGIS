@@ -129,7 +129,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
      * Constructor for QgsPointCloudLayerProfileGenerator.
      */
     QgsPointCloudLayerProfileGeneratorBase( QgsPointCloudLayer *layer, const QgsProfileRequest &request );
-    virtual ~QgsPointCloudLayerProfileGeneratorBase();
+    virtual ~QgsPointCloudLayerProfileGeneratorBase() override;
 
   protected:
     bool collectData( QgsGeos &curve, const double &mapUnitsPerPixel, const double &maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCrs );
