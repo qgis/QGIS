@@ -431,7 +431,7 @@ void QgsMaskSourceSelectionWidget::newSet()
   dlg.setHintString( tr( "Enter a unique selective masking set name" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setAllowEmptyName( false );
-  dlg.setConflictingNameWarning( tr( "Name already exists!" ) );
+  dlg.setConflictingNameWarning( tr( "A masking set with this name already exists." ) );
 
   if ( dlg.exec() != QDialog::Accepted )
   {
@@ -480,7 +480,7 @@ void QgsMaskSourceSelectionWidget::renameSet()
   dlg.setHintString( tr( "Enter a unique selective masking set name" ) );
   dlg.setOverwriteEnabled( false );
   dlg.setAllowEmptyName( false );
-  dlg.setConflictingNameWarning( tr( "Name already exists!" ) );
+  dlg.setConflictingNameWarning( tr( "A masking set with this name already exists." ) );
 
   if ( dlg.exec() != QDialog::Accepted )
   {

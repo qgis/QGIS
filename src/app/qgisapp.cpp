@@ -9043,7 +9043,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+    dlg.setConflictingNameWarning( tr( "A %1 with this title already exists." ).arg( typeString ) );
 
     dlg.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [helpPage] {
@@ -16214,7 +16214,7 @@ void QgisApp::renameView()
   renameDlg.setWindowTitle( tr( "Map Views" ) );
   //renameDlg.setHintString( tr( "Name of the new view" ) );
   renameDlg.setOverwriteEnabled( false );
-  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists" ) );
+  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists." ) );
   renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
   connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( u"map_views/map_view.html"_s );
@@ -16288,7 +16288,7 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 void QgisApp::newProfile()
 {
   QgsNewNameDialog dlg( QString(), QString(), QStringList(), userProfileManager()->allProfiles(), Qt::CaseInsensitive, this );
-  dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A user profile with this name already exists." ) );
   dlg.setOverwriteEnabled( false );
   dlg.setHintString( tr( "New profile name" ) );
   dlg.setWindowTitle( tr( "New Profile Name" ) );
