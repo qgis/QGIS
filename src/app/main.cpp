@@ -1230,35 +1230,31 @@ int main( int argc, char *argv[] )
   for ( const QString &preApplicationLogMessage : std::as_const( preApplicationLogMessages ) )
     QgsMessageLog::logMessage( preApplicationLogMessage, QString(), Qgis::MessageLevel::Info );
 
-  // Settings migration is only supported on the default profile for now.
-  if ( profileName == "default"_L1 )
+  const QDir qgisConfigRootPath = QDir( configLocalStorageLocation );
+  const QDir qgis3ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS3/profiles/%1"_s.arg( profileName ) ) ) );
+  const QDir qgis4ProfilePath = QDir( QDir::cleanPath( qgisConfigRootPath.filePath( u"../QGIS4/profiles/%1"_s.arg( profileName ) ) ) );
+  if ( qgis3ProfilePath.exists() )
   {
-    // Note: this flag is ka version number so that we can reset it once we change the version.
-    // Note2: Is this a good idea can we do it better.
-    // Note3: Updated to only show if we have a migration from QGIS 2 - see https://github.com/qgis/QGIS/pull/38616
-    QString path = QSettings( "QGIS", "QGIS2" ).fileName();
-    if ( QFile::exists( path ) )
+    QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
+    QgsSettings migSettings;
+    int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
+    bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
+    std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
+    if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
     {
-      QgsSettings migSettings;
-      int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
-      bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
-      std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
-      if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
+      bool runMigration = true;
+      if ( !settingsMigrationForce && showWelcome )
       {
-        bool runMigration = true;
-        if ( !settingsMigrationForce && showWelcome )
-        {
-          QgsFirstRunDialog dlg;
-          dlg.exec();
-          runMigration = dlg.migrateSettings();
-          migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
-        }
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        migSettings.setValue( u"migration/firstRunVersionFlag"_s, Qgis::versionInt() );
+      }
 
-        if ( runMigration )
-        {
-          QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
-          migration->runMigration();
-        }
+      if ( runMigration )
+      {
+        QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
+        migration->runMigration();
       }
     }
   }
