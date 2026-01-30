@@ -65,6 +65,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrenderer.h"
 #include "qgsscalecalculator.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgsserverapiutils.h"
 #include "qgsserverexception.h"
 #include "qgsserverfeatureid.h"
@@ -1485,6 +1486,8 @@ namespace QgsWms
 
     // add labeling engine settings
     mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
+
+    mapSettings.setSelectiveMaskingSourceSets( mProject->selectiveMaskingSourceSetManager()->sets() );
 
     mapSettings.setScaleMethod( mProject->scaleMethod() );
 
