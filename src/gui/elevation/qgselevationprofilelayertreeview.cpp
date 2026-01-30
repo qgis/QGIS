@@ -530,12 +530,20 @@ void QgsElevationProfileLayerTreeView::addNodeForRegisteredSource( const QString
 
   QgsLayerTreeCustomNode *node = mLayerTree->insertCustomNode( 0, customNode.release() );
   if ( !node )
-    QgsDebugError( QString( "The custom node with id '%1' could not be added!" ).arg( sourceId ) );
+    QgsDebugError( u"The custom node with id '%1' could not be added!"_s.arg( sourceId ) );
 }
 
 void QgsElevationProfileLayerTreeView::removeNodeForUnregisteredSource( const QString &sourceId )
 {
-  mLayerTree->removeCustomNode( sourceId );
+  QgsLayerTreeCustomNode *node = mLayerTree->findCustomNode( sourceId );
+  if ( node )
+  {
+    qobject_cast< QgsLayerTreeGroup * >( node->parent() )->removeChildNode( node );
+  }
+  else
+  {
+    QgsDebugError( u"The custom node with id '%1' was not found and couldn't be removed!"_s.arg( sourceId ) );
+  }
 }
 
 QgsElevationProfileLayerTreeProxyModel *QgsElevationProfileLayerTreeView::proxyModel()
