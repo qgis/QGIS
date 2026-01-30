@@ -23,6 +23,7 @@
 #include "qgscompoundcurve.h"
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
+#include "qgsfileutils.h"
 #include "qgsgeometrycollection.h"
 #include "qgsinterval.h"
 #include "qgslinestring.h"
@@ -224,37 +225,6 @@ class TEST_EXPORT QgsTest : public QObject
     }
 
     /**
-     * Recursively copies a whole directory.
-     */
-    void copyDirectory( const QString &source, const QString &destination )
-    {
-      QDir sourceDir( source );
-      if ( !sourceDir.exists() )
-        return;
-
-      QDir destDir( destination );
-      if ( !destDir.exists() )
-      {
-        destDir.mkdir( destination );
-      }
-
-      const QStringList files = sourceDir.entryList( QDir::Files );
-      for ( const QString &file : files )
-      {
-        const QString srcFileName = sourceDir.filePath( file );
-        const QString destFileName = destDir.filePath( file );
-        QFile::copy( srcFileName, destFileName );
-      }
-      const QStringList dirs = sourceDir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot );
-      for ( const QString &dir : dirs )
-      {
-        const QString srcDirName = sourceDir.filePath( dir );
-        const QString destDirName = destDir.filePath( dir );
-        copyDirectory( srcDirName, destDirName );
-      }
-    }
-
-    /**
      * Copies a complete directory from the test data with the given directory path to a
      * temporary directory and returns the full path to the copy.
      */
@@ -275,7 +245,7 @@ class TEST_EXPORT QgsTest : public QObject
 
       const QString copiedDataPath = mTemporaryDir->filePath( temporarySubdirectory + '/' + srcFileInfo.fileName() );
 
-      copyDirectory( srcPath, copiedDataPath );
+      QgsFileUtils::copyDirectory( srcPath, copiedDataPath );
       return copiedDataPath;
     }
 
