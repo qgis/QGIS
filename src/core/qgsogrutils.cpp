@@ -37,6 +37,7 @@
 #include "qgsmultipolygon.h"
 #include "qgsogrproviderutils.h"
 #include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvariantutils.h"
@@ -915,6 +916,19 @@ std::unique_ptr< QgsMultiPolygon > ogrGeometryToQgsMultiPolygon( OGRGeometryH ge
   return polygon;
 }
 
+std::unique_ptr<QgsPolyhedralSurface > ogrGeometryToQgsPolyhedralSurface( OGRGeometryH geom )
+{
+  auto polyhedralSurface = std::make_unique< QgsPolyhedralSurface >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  for ( int i = 0; i < count; ++i )
+  {
+    polyhedralSurface->addPatch( ogrGeometryToQgsPolygon( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polyhedralSurface;
+}
+
 Qgis::WkbType QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
 {
   switch ( ogrGeomType )
@@ -1011,6 +1025,7 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
 
   // optimised case for some geometry classes, avoiding wkb conversion on OGR/QGIS sides
   // TODO - extend to other classes!
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( QgsWkbTypes::flatType( wkbType ) )
   {
     case Qgis::WkbType::Point:
@@ -1043,9 +1058,15 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
       return QgsGeometry( ogrGeometryToQgsMultiPolygon( geom ) );
     }
 
+    case Qgis::WkbType::PolyhedralSurface:
+    {
+      return QgsGeometry( ogrGeometryToQgsPolyhedralSurface( geom ) );
+    }
+
     default:
       break;
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   // Fallback to inefficient WKB conversions
 
