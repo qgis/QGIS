@@ -106,6 +106,7 @@ class QgsWelcomeScreen : public QQuickWidget
 
   public slots:
     void clearRecentProjects();
+    void pluginUpdatesAvailableReceived( const QStringList &plugins );
 
   signals:
     void projectRemoved( int row );
@@ -115,7 +116,6 @@ class QgsWelcomeScreen : public QQuickWidget
 
   private slots:
     void versionInfoReceived();
-    void pluginUpdatesAvailableReceived( const QStringList &plugins );
 
   private:
     void refreshGeometry();
