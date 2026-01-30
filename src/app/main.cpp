@@ -1237,11 +1237,17 @@ int main( int argc, char *argv[] )
   {
     QgsDebugMsgLevel( u"Considering migration from %1 to %2"_s.arg( qgis3ProfilePath.path(), qgis4ProfilePath.path() ), 2 );
     QgsSettings migSettings;
-    int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
-    bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
-    std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 20000, Qgis::versionInt() ) );
+    // don't show dialog for settings migration from 3->4
+#if 0
+    const int firstRunVersion = migSettings.value( u"migration/firstRunVersionFlag"_s, 0 ).toInt();
+    const bool showWelcome = ( firstRunVersion == 0 || Qgis::versionInt() > firstRunVersion );
+#else
+    constexpr bool showWelcome = false;
+#endif
+    std::unique_ptr<QgsVersionMigration> migration( QgsVersionMigration::canMigrate( 30000, Qgis::versionInt() ) );
     if ( migration && ( settingsMigrationForce || migration->requiresMigration() ) )
     {
+      QgsDebugMsgLevel( u"Migration required!"_s, 2 );
       bool runMigration = true;
       if ( !settingsMigrationForce && showWelcome )
       {
@@ -1254,7 +1260,7 @@ int main( int argc, char *argv[] )
       if ( runMigration )
       {
         QgsDebugMsgLevel( u"RUNNING MIGRATION"_s, 2 );
-        migration->runMigration();
+        migration->runMigration( qgis3ProfilePath.path(), qgis4ProfilePath.path() );
       }
     }
   }

@@ -50,7 +50,7 @@ class APP_EXPORT QgsVersionMigration
      * Run the version migration to convert between versions.
      * \return QgsError containing any error messages when running the conversion.
      */
-    virtual QgsError runMigration() = 0;
+    virtual QgsError runMigration( const QString &oldProfilePath, const QString &newProfilePath ) = 0;
     virtual bool requiresMigration() = 0;
 };
 
@@ -76,5 +76,12 @@ class Qgs2To3Migration : public QgsVersionMigration
     QSettings *mOldSettings = nullptr;
 };
 #endif
+
+class Qgs3To4Migration : public QgsVersionMigration
+{
+  public:
+    QgsError runMigration( const QString &oldProfilePath, const QString &newProfilePath ) override;
+    bool requiresMigration() override;
+};
 
 #endif // QGSVERSIONMIGRATION_H
