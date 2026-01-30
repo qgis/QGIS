@@ -122,11 +122,18 @@ class CORE_EXPORT QgsPointCloudLayerProfileResults : public QgsAbstractProfileRe
 };
 
 
+/**
+ * \brief Base class for the point cloud elevation profile generators.
+ *
+ * \note Not available in Python bindings
+ * \ingroup core
+ * \since QGIS 4.0
+ */
 class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractProfileGenerator
 {
   public:
     /**
-     * Constructor for QgsPointCloudLayerProfileGenerator.
+     * Constructor for QgsPointCloudLayerProfileGeneratorBase.
      */
     QgsPointCloudLayerProfileGeneratorBase( QgsPointCloudLayer *layer, const QgsProfileRequest &request );
     virtual ~QgsPointCloudLayerProfileGeneratorBase() override;
@@ -209,8 +216,6 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsPointCloudLayer
     std::unique_ptr< QgsPointCloudLayerProfileResults > mResults;
     QVector< QgsPointCloudLayerProfileResults::PointResult > mGatheredPoints;
 
-    std::unique_ptr< QgsCurve > mProfileCurve;
-
     friend class QgsPointCloudLayerProfileResults;
 };
 
@@ -281,8 +286,6 @@ class CORE_EXPORT QgsTriangulatedPointCloudLayerProfileGenerator : public QgsPoi
     std::unique_ptr< QgsLineSymbol > mLineSymbol;
     std::unique_ptr< QgsFillSymbol > mFillSymbol;
     double mElevationLimit = std::numeric_limits< double >::quiet_NaN();
-
-    std::unique_ptr< QgsCurve > mProfileCurve;
 
     friend class QgsTriangulatedPointCloudLayerProfileResults;
 };
