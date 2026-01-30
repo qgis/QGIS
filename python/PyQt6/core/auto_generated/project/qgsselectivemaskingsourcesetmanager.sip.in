@@ -54,7 +54,7 @@ could not be added (eg as a result of a duplicate set name).
 
     bool updateSet( const QgsSelectiveMaskingSourceSet &set );
 %Docstring
-Replaces the definition of a ``set`` already in the manager.
+Updates the definition of a ``set`` already in the manager.
 
 The definition of the existing set with matching ID will be replaced
 with the updated set.

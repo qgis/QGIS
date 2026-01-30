@@ -73,7 +73,7 @@ class CORE_EXPORT QgsSelectiveMaskingSourceSetManager : public QgsAbstractProjec
     bool addSet( const QgsSelectiveMaskingSourceSet &set );
 
     /**
-     * Replaces the definition of a \a set already in the manager.
+     * Updates the definition of a \a set already in the manager.
      *
      * The definition of the existing set with matching ID will be replaced with the updated set.
      */
