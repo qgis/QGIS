@@ -8443,7 +8443,7 @@ void QgisApp::loadStyleFromFile( QgsMapLayer *layer )
       break;
     }
     case Qgis::LayerType::Raster:
-      QgsRasterLayerProperties( layer, mMapCanvas ).loadStyleFromFile();
+      QgsRasterLayerProperties( layer, mMapCanvas ).loadStyle();
       break;
 
     case Qgis::LayerType::Mesh:
