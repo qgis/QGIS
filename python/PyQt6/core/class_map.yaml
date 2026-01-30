@@ -1203,11 +1203,11 @@ QgsApplication.userThemesFolder: src/core/qgsapplication.h#L510
 QgsApplication.validityCheckRegistry: src/core/qgsapplication.h#L777
 QgsApplication.x11EventFilter: src/core/qgsapplication.h#L1140
 QgsApplication: src/core/qgsapplication.h#L101
-QgsApplicationThemeRegistry.addTheme: src/core/qgsapplicationthemeregistry.h#L54
-QgsApplicationThemeRegistry.removeTheme: src/core/qgsapplicationthemeregistry.h#L62
-QgsApplicationThemeRegistry.themeFolder: src/core/qgsapplicationthemeregistry.h#L72
-QgsApplicationThemeRegistry.themes: src/core/qgsapplicationthemeregistry.h#L67
-QgsApplicationThemeRegistry: src/core/qgsapplicationthemeregistry.h#L35
+QgsApplicationThemeRegistry.addTheme: src/core/qgsapplicationthemeregistry.h#L55
+QgsApplicationThemeRegistry.removeTheme: src/core/qgsapplicationthemeregistry.h#L63
+QgsApplicationThemeRegistry.themeFolder: src/core/qgsapplicationthemeregistry.h#L73
+QgsApplicationThemeRegistry.themes: src/core/qgsapplicationthemeregistry.h#L68
+QgsApplicationThemeRegistry: src/core/qgsapplicationthemeregistry.h#L36
 QgsArcGisPortalUtils.retrieveGroupContent: src/core/providers/arcgis/qgsarcgisportalutils.h#L133
 QgsArcGisPortalUtils.retrieveGroupContent: src/core/providers/arcgis/qgsarcgisportalutils.h#L151
 QgsArcGisPortalUtils.retrieveGroupItemsOfType: src/core/providers/arcgis/qgsarcgisportalutils.h#L170
