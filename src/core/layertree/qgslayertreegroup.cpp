@@ -227,13 +227,22 @@ void QgsLayerTreeGroup::removeLayer( QgsMapLayer *layer )
   updateGroupLayers();
 }
 
-void QgsLayerTreeGroup::removeCustomNode( const QString &id )
+void QgsLayerTreeGroup::removeCustomNode( QgsLayerTreeCustomNode *customNode )
 {
-  QgsLayerTreeCustomNode *node = findCustomNode( id );
-  if ( node )
+  for ( QgsLayerTreeNode *child : std::as_const( mChildren ) )
   {
-    removeChildNode( node );
+    if ( QgsLayerTree::isCustomNode( child ) )
+    {
+      QgsLayerTreeCustomNode *childCustom = QgsLayerTree::toCustomNode( child );
+      if ( childCustom->nodeId() == customNode->nodeId() )
+      {
+        removeChildren( mChildren.indexOf( child ), 1 );
+        break;
+      }
+    }
   }
+
+  updateGroupLayers();
 }
 
 void QgsLayerTreeGroup::removeChildren( int from, int count )
