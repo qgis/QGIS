@@ -218,6 +218,12 @@
         },
         "opencl",
         "qtdeclarative",
+        {
+          "name": "qtcharts",
+          "features": [
+            "qml"
+          ]
+        },
         "qtimageformats",
         "qtquickcontrols2",
         "qttools",
