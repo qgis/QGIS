@@ -17,6 +17,7 @@
 
 #include "qgis.h"
 #include "qgsexception.h"
+#include "qgslogger.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
@@ -647,13 +648,19 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
 {
   QDir sourceDir( source );
   if ( !sourceDir.exists() )
+  {
+    QgsDebugError( u"Cannot copy %1 to %2, source directory does not exist"_s.arg( source, destination ) );
     return false;
+  }
 
   QDir destDir( destination );
   if ( !destDir.exists() )
   {
     if ( !destDir.mkdir( destination ) )
+    {
+      QgsDebugError( u"Cannot copy %1 to %2, could not make target directory"_s.arg( source, destination ) );
       return false;
+    }
   }
 
   bool copiedAll = true;
@@ -664,6 +671,7 @@ bool QgsFileUtils::copyDirectory( const QString &source, const QString &destinat
     const QString destFileName = destDir.filePath( file );
     if ( !QFile::copy( srcFileName, destFileName ) )
     {
+      QgsDebugError( u"Cannot copy %1 to %2"_s.arg( srcFileName, destFileName ) );
       copiedAll = false;
     }
   }
