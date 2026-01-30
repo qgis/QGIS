@@ -166,15 +166,6 @@ int main( int argc, char *argv[] )
     return 0;
   }
 
-  QString myPrefixPath;
-  if ( myPrefixPath.isEmpty() )
-  {
-    QDir dir( QCoreApplication::applicationDirPath() );
-    dir.cdUp();
-    myPrefixPath = dir.absolutePath();
-  }
-  QgsApplication::setPrefixPath( myPrefixPath, true );
-
   // Set up the QSettings environment must be done after qapp is created
   QgsApplication::setOrganizationName( u"QGIS"_s );
   QgsApplication::setOrganizationDomain( u"qgis.org"_s );
