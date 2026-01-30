@@ -233,6 +233,20 @@ already exist is found.
 .. versionadded:: 3.30
 %End
 
+    static bool copyDirectory( const QString &source, const QString &destination );
+%Docstring
+Recursively copies a whole directory.
+
+Returns ``True`` if the copy was successful and all files and folders
+were copied.
+
+.. note::
+
+   If an error occurs while copying a file, this method still attempts to copy all remaining files and folders.
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************

@@ -642,3 +642,40 @@ QString QgsFileUtils::uniquePath( const QString &path )
   }
   return uniquePath;
 }
+
+bool QgsFileUtils::copyDirectory( const QString &source, const QString &destination )
+{
+  QDir sourceDir( source );
+  if ( !sourceDir.exists() )
+    return false;
+
+  QDir destDir( destination );
+  if ( !destDir.exists() )
+  {
+    if ( !destDir.mkdir( destination ) )
+      return false;
+  }
+
+  bool copiedAll = true;
+  const QStringList files = sourceDir.entryList( QDir::Files );
+  for ( const QString &file : files )
+  {
+    const QString srcFileName = sourceDir.filePath( file );
+    const QString destFileName = destDir.filePath( file );
+    if ( !QFile::copy( srcFileName, destFileName ) )
+    {
+      copiedAll = false;
+    }
+  }
+  const QStringList dirs = sourceDir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot );
+  for ( const QString &dir : dirs )
+  {
+    const QString srcDirName = sourceDir.filePath( dir );
+    const QString destDirName = destDir.filePath( dir );
+    if ( !copyDirectory( srcDirName, destDirName ) )
+    {
+      copiedAll = false;
+    }
+  }
+  return copiedAll;
+}
