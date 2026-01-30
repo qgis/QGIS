@@ -6166,7 +6166,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictOnLine()
   format.setColor( QColor( 0, 0, 0 ) );
   settings.setFormat( format );
 
-  settings.fieldName = u"'XXXXXXXX'"_s;
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
   settings.isExpression = true;
   settings.placement = Qgis::LabelPlacement::Curved;
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine );
@@ -6175,12 +6175,12 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictOnLine()
   settings.lineSettings().setLineAnchorPercent( 0.0 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
 
-  auto vl2 = std::make_unique<QgsVectorLayer>( u"LineString?crs=epsg:3946&field=id:integer"_s, u"vl"_s, u"memory"_s );
-  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { u"color"_s, u"#000000"_s }, { u"outline_width"_s, 0.6 } } ).release() ) );
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
 
   QgsFeature f;
   f.setAttributes( QgsAttributes() << 1 );
-  f.setGeometry( QgsGeometry::fromWkt( u"LineString (190000 5000010, 190200 5000000)"_s ) );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190200 5000000)" ) ) );
   QVERIFY( vl2->dataProvider()->addFeature( f ) );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
