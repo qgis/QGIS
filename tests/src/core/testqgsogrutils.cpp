@@ -211,6 +211,14 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
   geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QCOMPARE( geom.asWkt( 3 ), u"PolyhedralSurface Z (((0.2 0 0, 1 0 0, 1 1 0, 0 1 0, 0.2 0 0)))"_s );
   OGR_G_DestroyGeometry( ogrGeom );
+  ogrGeom = nullptr;
+
+  wkt = QByteArray( "TIN Z (((0 0 0, 1.2 0 0, 0 1 0, 0 0 0)),((1 0 0, 1 1 0, 0 1 0, 1 0 0)))" );
+  wktChar = wkt.data();
+  OGR_G_CreateFromWkt( &wktChar, nullptr, &ogrGeom );
+  geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
+  QCOMPARE( geom.asWkt( 3 ), u"TIN Z (((0 0 0, 1.2 0 0, 0 1 0, 0 0 0)),((1 0 0, 1 1 0, 0 1 0, 1 0 0)))"_s );
+  OGR_G_DestroyGeometry( ogrGeom );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
@@ -241,6 +249,12 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry2_data()
   QTest::newRow( "polyhedralsurfacez2" ) << u"PolyhedralSurface Z (((0 0 0, 1 0 0, 0 1 0, 0 0 0)),((0 0 0, 0 1 0, 0 0 1, 0 0 0)))"_s << static_cast<int>( Qgis::WkbType::PolyhedralSurfaceZ );
   QTest::newRow( "polyhedralsurfacem" ) << u"PolyhedralSurface M (((0.2 0 1, 1 0 1, 1 1 1, 0 1 1, 0.2 0 1)))"_s << static_cast<int>( Qgis::WkbType::PolyhedralSurfaceM );
   QTest::newRow( "polyhedralsurfacezm" ) << u"PolyhedralSurface ZM (((0.2 0 0 1, 1 0 0 1, 1 1 0 1, 0 1 0 1, 0.2 0 0 1)))"_s << static_cast<int>( Qgis::WkbType::PolyhedralSurfaceZM );
+
+  QTest::newRow( "tin" ) << u"TIN (((0 0, 1.1 0, 0 1, 0 0)))"_s << static_cast<int>( Qgis::WkbType::TIN );
+  QTest::newRow( "tinz" ) << u"TIN Z (((0 0 0, 1.1 0 0, 0 1 0, 0 0 0)))"_s << static_cast<int>( Qgis::WkbType::TINZ );
+  QTest::newRow( "tinz2" ) << u"TIN Z (((0 0 0, 1.1 0 0, 0 1 0, 0 0 0)),((1 0 0, 1 1 0, 0 1.2 0, 1 0 0)))"_s << static_cast<int>( Qgis::WkbType::TINZ );
+  QTest::newRow( "tinm" ) << u"TIN M (((0 0 1, 1 0 1, 0 1.1 1, 0 0 1)))"_s << static_cast<int>( Qgis::WkbType::TINM );
+  QTest::newRow( "tinzm" ) << u"TIN ZM (((0 0 0 1, 1 0 0 1, 0 1.1 0 1, 0 0 0 1)))"_s << static_cast<int>( Qgis::WkbType::TINZM );
 }
 
 void TestQgsOgrUtils::ogrGeometryToQgsGeometry2()
