@@ -1255,6 +1255,39 @@ class CORE_EXPORT QgsGeometryUtils
     }
 
     /**
+     * Calculates the intersection point of two lines defined by point and bearing.
+     *
+     * Each line is defined by a point and a bearing (azimuth). The bearing is measured
+     * clockwise from north in radians.
+     *
+     * \param pt1 point on the first line
+     * \param bearing1 bearing from the first point in radians (clockwise from north)
+     * \param pt2 point on the second line
+     * \param bearing2 bearing from the second point in radians (clockwise from north)
+     * \param intersection will be set to the intersection point.
+     *
+     * \returns TRUE if an intersection was found, FALSE if lines are parallel
+     *
+     * \see lineIntersection()
+     * \see QgsGeometryUtilsBase::intersectionPointOfLinesByBearing()
+     *
+     * \since QGIS 4.0
+     */
+    static bool intersectionPointOfLinesByBearing( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection SIP_OUT ) SIP_HOLDGIL
+    {
+      double intersectionX = 0.0, intersectionY = 0.0;
+      const bool found = QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( pt1.x(), pt1.y(), bearing1, pt2.x(), pt2.y(), bearing2, intersectionX, intersectionY );
+
+      intersection = QgsPoint( intersectionX, intersectionY );
+
+      // z and m support for intersection point
+      QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << pt1 << pt2, intersection );
+
+      return found;
+    }
+
+
+    /**
      * \brief Compute the intersection between two segments
      * \param p1 First segment start point
      * \param p2 First segment end point

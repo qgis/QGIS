@@ -116,6 +116,7 @@ ADD_PYTHON_TEST(PyQgsGeometryGeneratorSymbolLayer test_qgsgeometrygeneratorsymbo
 ADD_PYTHON_TEST(PyQgsGeometryPaintDevice test_qgsgeometrypaintdevice.py)
 ADD_PYTHON_TEST(PyQgsGeometryTest test_qgsgeometry.py)
 ADD_PYTHON_TEST(PyQgsGeometryValidator test_qgsgeometryvalidator.py)
+ADD_PYTHON_TEST(PyQgsGeometryUtils test_qgsgeometryutils.py)
 ADD_PYTHON_TEST(PyQgsGoogleMapsGeocoder test_qgsgooglemapsgeocoder.py)
 ADD_PYTHON_TEST(PyQgsGpsLogger test_qgsgpslogger.py)
 ADD_PYTHON_TEST(PyQgsGpxProvider test_provider_gpx.py)
