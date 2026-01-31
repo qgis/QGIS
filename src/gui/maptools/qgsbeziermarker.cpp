@@ -166,13 +166,13 @@ void QgsBezierMarker::updateHandleMarkers( const QgsBezierData &data )
   for ( int i = 0; i < data.handleCount(); ++i )
   {
     const QgsPoint &handle = data.handle( i );
-    const int anchorIdx = i / 2;
-    if ( anchorIdx >= data.anchorCount() )
+    const int anchorIndex = i / 2;
+    if ( anchorIndex >= data.anchorCount() )
     {
       mHandleMarkers[i]->setVisible( false );
       continue;
     }
-    const QgsPoint &anchor = data.anchor( anchorIdx );
+    const QgsPoint &anchor = data.anchor( anchorIndex );
 
     const bool isRetracted = qgsDoubleNear( handle.x(), anchor.x() ) && qgsDoubleNear( handle.y(), anchor.y() );
 
@@ -211,13 +211,13 @@ void QgsBezierMarker::updateHandleLines( const QgsBezierData &data )
     mHandleLines[i]->reset( Qgis::GeometryType::Line );
 
     const QgsPoint &handle = data.handle( i );
-    const int anchorIdx = i / 2;
-    if ( anchorIdx >= data.anchorCount() )
+    const int anchorIndex = i / 2;
+    if ( anchorIndex >= data.anchorCount() )
     {
       mHandleLines[i]->setVisible( false );
       continue;
     }
-    const QgsPoint &anchor = data.anchor( anchorIdx );
+    const QgsPoint &anchor = data.anchor( anchorIndex );
 
     const bool isRetracted = qgsDoubleNear( handle.x(), anchor.x() ) && qgsDoubleNear( handle.y(), anchor.y() );
 

@@ -25,100 +25,100 @@
 
 const QgsAnchorWithHandles QgsBezierData::sInvalidAnchor;
 
-void QgsBezierData::addAnchor( const QgsPoint &pt )
+void QgsBezierData::addAnchor( const QgsPoint &point )
 {
-  mData.append( QgsAnchorWithHandles( pt ) );
+  mData.append( QgsAnchorWithHandles( point ) );
 }
 
-void QgsBezierData::moveAnchor( int idx, const QgsPoint &pt )
+void QgsBezierData::moveAnchor( int index, const QgsPoint &point )
 {
-  if ( idx < 0 || idx >= mData.count() )
+  if ( index < 0 || index >= mData.count() )
     return;
 
-  QgsAnchorWithHandles &data = mData[idx];
+  QgsAnchorWithHandles &data = mData[index];
 
   // Calculate offset
-  const double dx = pt.x() - data.anchor.x();
-  const double dy = pt.y() - data.anchor.y();
-  const double dz = pt.is3D() ? ( pt.z() - data.anchor.z() ) : 0.0;
+  const double dx = point.x() - data.anchor.x();
+  const double dy = point.y() - data.anchor.y();
+  const double dz = point.is3D() ? ( point.z() - data.anchor.z() ) : 0.0;
 
   // Move anchor
-  data.anchor = pt;
+  data.anchor = point;
 
   // Move both handles relatively
   data.leftHandle.setX( data.leftHandle.x() + dx );
   data.leftHandle.setY( data.leftHandle.y() + dy );
-  if ( pt.is3D() )
+  if ( point.is3D() )
     data.leftHandle.setZ( data.leftHandle.z() + dz );
 
   data.rightHandle.setX( data.rightHandle.x() + dx );
   data.rightHandle.setY( data.rightHandle.y() + dy );
-  if ( pt.is3D() )
+  if ( point.is3D() )
     data.rightHandle.setZ( data.rightHandle.z() + dz );
 }
 
-void QgsBezierData::moveHandle( int idx, const QgsPoint &pt )
+void QgsBezierData::moveHandle( int index, const QgsPoint &point )
 {
-  const int anchorIdx = idx / 2;
-  if ( anchorIdx < 0 || anchorIdx >= mData.count() )
+  const int anchorIndex = index / 2;
+  if ( anchorIndex < 0 || anchorIndex >= mData.count() )
     return;
 
-  if ( idx % 2 == 0 )
-    mData[anchorIdx].leftHandle = pt;
+  if ( index % 2 == 0 )
+    mData[anchorIndex].leftHandle = point;
   else
-    mData[anchorIdx].rightHandle = pt;
+    mData[anchorIndex].rightHandle = point;
 }
 
-void QgsBezierData::insertAnchor( int segmentIdx, const QgsPoint &pt )
+void QgsBezierData::insertAnchor( int segmentIndex, const QgsPoint &point )
 {
-  if ( segmentIdx < 0 || segmentIdx > mData.count() )
+  if ( segmentIndex < 0 || segmentIndex > mData.count() )
     return;
 
-  mData.insert( segmentIdx, QgsAnchorWithHandles( pt ) );
+  mData.insert( segmentIndex, QgsAnchorWithHandles( point ) );
 }
 
-void QgsBezierData::deleteAnchor( int idx )
+void QgsBezierData::deleteAnchor( int index )
 {
-  if ( idx < 0 || idx >= mData.count() )
+  if ( index < 0 || index >= mData.count() )
     return;
 
-  mData.removeAt( idx );
+  mData.removeAt( index );
 }
 
-void QgsBezierData::retractHandle( int idx )
+void QgsBezierData::retractHandle( int index )
 {
-  const int anchorIdx = idx / 2;
-  if ( anchorIdx < 0 || anchorIdx >= mData.count() )
+  const int anchorIndex = index / 2;
+  if ( anchorIndex < 0 || anchorIndex >= mData.count() )
     return;
 
-  if ( idx % 2 == 0 )
-    mData[anchorIdx].leftHandle = mData[anchorIdx].anchor;
+  if ( index % 2 == 0 )
+    mData[anchorIndex].leftHandle = mData[anchorIndex].anchor;
   else
-    mData[anchorIdx].rightHandle = mData[anchorIdx].anchor;
+    mData[anchorIndex].rightHandle = mData[anchorIndex].anchor;
 }
 
-void QgsBezierData::extendHandle( int idx, const QgsPoint &pt )
+void QgsBezierData::extendHandle( int index, const QgsPoint &point )
 {
-  moveHandle( idx, pt );
+  moveHandle( index, point );
 }
 
-QgsPoint QgsBezierData::anchor( int idx ) const
+QgsPoint QgsBezierData::anchor( int index ) const
 {
-  if ( idx < 0 || idx >= mData.count() )
+  if ( index < 0 || index >= mData.count() )
     return QgsPoint();
-  return mData[idx].anchor;
+  return mData[index].anchor;
 }
 
-QgsPoint QgsBezierData::handle( int idx ) const
+QgsPoint QgsBezierData::handle( int index ) const
 {
-  const int anchorIdx = idx / 2;
-  if ( anchorIdx < 0 || anchorIdx >= mData.count() )
+  const int anchorIndex = index / 2;
+  if ( anchorIndex < 0 || anchorIndex >= mData.count() )
     return QgsPoint();
 
-  if ( idx % 2 == 0 )
-    return mData[anchorIdx].leftHandle;
+  if ( index % 2 == 0 )
+    return mData[anchorIndex].leftHandle;
   else
-    return mData[anchorIdx].rightHandle;
+    return mData[anchorIndex].rightHandle;
 }
 
 QVector<QgsPoint> QgsBezierData::anchors() const
@@ -142,11 +142,11 @@ QVector<QgsPoint> QgsBezierData::handles() const
   return result;
 }
 
-const QgsAnchorWithHandles &QgsBezierData::anchorWithHandles( int idx ) const
+const QgsAnchorWithHandles &QgsBezierData::anchorWithHandles( int index ) const
 {
-  if ( idx < 0 || idx >= mData.count() )
+  if ( index < 0 || index >= mData.count() )
     return sInvalidAnchor;
-  return mData[idx];
+  return mData[index];
 }
 
 QgsPointSequence QgsBezierData::interpolate() const
@@ -215,30 +215,30 @@ void QgsBezierData::clear()
   mData.clear();
 }
 
-int QgsBezierData::findClosestAnchor( const QgsPoint &pt, double tolerance ) const
+int QgsBezierData::findClosestAnchor( const QgsPoint &point, double tolerance ) const
 {
-  int closestIdx = -1;
-  double minDistSq = tolerance * tolerance;
+  int closestIndex = -1;
+  double minDistanceSquared = tolerance * tolerance;
 
   for ( int i = 0; i < mData.count(); ++i )
   {
-    const double dx = mData[i].anchor.x() - pt.x();
-    const double dy = mData[i].anchor.y() - pt.y();
-    const double distSq = dx * dx + dy * dy;
-    if ( distSq < minDistSq )
+    const double dx = mData[i].anchor.x() - point.x();
+    const double dy = mData[i].anchor.y() - point.y();
+    const double distanceSquared = dx * dx + dy * dy;
+    if ( distanceSquared < minDistanceSquared )
     {
-      minDistSq = distSq;
-      closestIdx = i;
+      minDistanceSquared = distanceSquared;
+      closestIndex = i;
     }
   }
 
-  return closestIdx;
+  return closestIndex;
 }
 
-int QgsBezierData::findClosestHandle( const QgsPoint &pt, double tolerance ) const
+int QgsBezierData::findClosestHandle( const QgsPoint &point, double tolerance ) const
 {
-  int closestIdx = -1;
-  double minDistSq = tolerance * tolerance;
+  int closestIndex = -1;
+  double minDistanceSquared = tolerance * tolerance;
 
   for ( int i = 0; i < mData.count(); ++i )
   {
@@ -247,40 +247,40 @@ int QgsBezierData::findClosestHandle( const QgsPoint &pt, double tolerance ) con
     // Check left handle (index 2*i)
     if ( !qgsDoubleNear( awh.leftHandle.x(), awh.anchor.x() ) || !qgsDoubleNear( awh.leftHandle.y(), awh.anchor.y() ) )
     {
-      const double dx = awh.leftHandle.x() - pt.x();
-      const double dy = awh.leftHandle.y() - pt.y();
-      const double distSq = dx * dx + dy * dy;
-      if ( distSq < minDistSq )
+      const double dx = awh.leftHandle.x() - point.x();
+      const double dy = awh.leftHandle.y() - point.y();
+      const double distanceSquared = dx * dx + dy * dy;
+      if ( distanceSquared < minDistanceSquared )
       {
-        minDistSq = distSq;
-        closestIdx = i * 2;
+        minDistanceSquared = distanceSquared;
+        closestIndex = i * 2;
       }
     }
 
     // Check right handle (index 2*i+1)
     if ( !qgsDoubleNear( awh.rightHandle.x(), awh.anchor.x() ) || !qgsDoubleNear( awh.rightHandle.y(), awh.anchor.y() ) )
     {
-      const double dx = awh.rightHandle.x() - pt.x();
-      const double dy = awh.rightHandle.y() - pt.y();
-      const double distSq = dx * dx + dy * dy;
-      if ( distSq < minDistSq )
+      const double dx = awh.rightHandle.x() - point.x();
+      const double dy = awh.rightHandle.y() - point.y();
+      const double distanceSquared = dx * dx + dy * dy;
+      if ( distanceSquared < minDistanceSquared )
       {
-        minDistSq = distSq;
-        closestIdx = i * 2 + 1;
+        minDistanceSquared = distanceSquared;
+        closestIndex = i * 2 + 1;
       }
     }
   }
 
-  return closestIdx;
+  return closestIndex;
 }
 
-int QgsBezierData::findClosestSegment( const QgsPoint &pt, double tolerance ) const
+int QgsBezierData::findClosestSegment( const QgsPoint &point, double tolerance ) const
 {
   if ( mData.count() < 2 )
     return -1;
 
   int closestSegment = -1;
-  double minDistSq = tolerance * tolerance;
+  double minDistanceSquared = tolerance * tolerance;
 
   // Check each segment
   for ( int i = 0; i < mData.count() - 1; ++i )
@@ -296,13 +296,13 @@ int QgsBezierData::findClosestSegment( const QgsPoint &pt, double tolerance ) co
       const double t = static_cast<double>( j ) / INTERPOLATION_POINTS;
       const QgsPoint curvePoint = QgsGeometryUtils::interpolatePointOnCubicBezier( p0, p1, p2, p3, t );
 
-      const double dx = curvePoint.x() - pt.x();
-      const double dy = curvePoint.y() - pt.y();
-      const double distSq = dx * dx + dy * dy;
+      const double dx = curvePoint.x() - point.x();
+      const double dy = curvePoint.y() - point.y();
+      const double distanceSquared = dx * dx + dy * dy;
 
-      if ( distSq < minDistSq )
+      if ( distanceSquared < minDistanceSquared )
       {
-        minDistSq = distSq;
+        minDistanceSquared = distanceSquared;
         closestSegment = i;
       }
     }
