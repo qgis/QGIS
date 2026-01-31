@@ -26,17 +26,21 @@
 QgsBezierMarker::QgsBezierMarker( QgsMapCanvas *canvas, QObject *parent )
   : QObject( parent )
   , mCanvas( canvas )
-  , mCurveRubberBand( std::make_unique<QgsRubberBand>( canvas, Qgis::GeometryType::Line ) )
+  , mCurveRubberBand( new QgsRubberBand( canvas, Qgis::GeometryType::Line ) )
 {
   mCurveRubberBand->setColor( QgsSettingsRegistryCore::settingsDigitizingLineColor->value() );
   mCurveRubberBand->setWidth( QgsSettingsRegistryCore::settingsDigitizingLineWidth->value() );
 }
 
-QgsBezierMarker::~QgsBezierMarker() = default;
-
-std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createAnchorMarker()
+QgsBezierMarker::~QgsBezierMarker()
 {
-  auto marker = std::make_unique<QgsVertexMarker>( mCanvas );
+  qDeleteAll( mAnchorMarkers );
+  qDeleteAll( mHandleMarkers );
+}
+
+QgsVertexMarker *QgsBezierMarker::createAnchorMarker()
+{
+  QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
   marker->setIconType( QgsVertexMarker::ICON_BOX );
   marker->setIconSize( MarkerConfig::AnchorMarkerSize );
   const QColor snapColor = QgsSettingsRegistryCore::settingsDigitizingSnapColor->value();
@@ -48,9 +52,9 @@ std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createAnchorMarker()
   return marker;
 }
 
-std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createHandleMarker()
+QgsVertexMarker *QgsBezierMarker::createHandleMarker()
 {
-  auto marker = std::make_unique<QgsVertexMarker>( mCanvas );
+  QgsVertexMarker *marker = new QgsVertexMarker( mCanvas );
   marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
   marker->setIconSize( MarkerConfig::HandleMarkerSize );
   QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
@@ -65,9 +69,9 @@ std::unique_ptr<QgsVertexMarker> QgsBezierMarker::createHandleMarker()
   return marker;
 }
 
-std::unique_ptr<QgsRubberBand> QgsBezierMarker::createHandleLine()
+QObjectUniquePtr<QgsRubberBand> QgsBezierMarker::createHandleLine()
 {
-  auto rb = std::make_unique<QgsRubberBand>( mCanvas, Qgis::GeometryType::Line );
+  QObjectUniquePtr<QgsRubberBand> rb( new QgsRubberBand( mCanvas, Qgis::GeometryType::Line ) );
   QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
   lineColor.setAlpha( MarkerConfig::HandleLineAlpha );
   rb->setColor( lineColor );
@@ -109,6 +113,7 @@ void QgsBezierMarker::updateAnchorMarkers( const QgsBezierData &data )
   }
   while ( static_cast<int>( mAnchorMarkers.size() ) > data.anchorCount() )
   {
+    delete mAnchorMarkers.back();
     mAnchorMarkers.pop_back();
   }
 
@@ -146,6 +151,7 @@ void QgsBezierMarker::updateHandleMarkers( const QgsBezierData &data )
   }
   while ( static_cast<int>( mHandleMarkers.size() ) > data.handleCount() )
   {
+    delete mHandleMarkers.back();
     mHandleMarkers.pop_back();
   }
 
@@ -252,7 +258,9 @@ void QgsBezierMarker::setHandlesVisible( bool visible )
 
 void QgsBezierMarker::clear()
 {
+  qDeleteAll( mAnchorMarkers );
   mAnchorMarkers.clear();
+  qDeleteAll( mHandleMarkers );
   mHandleMarkers.clear();
   mHandleLines.clear();
 

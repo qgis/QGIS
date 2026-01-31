@@ -21,6 +21,7 @@
 
 #include "qgis_gui.h"
 #include "qgsbezierdata.h"
+#include "qobjectuniqueptr.h"
 
 #include <QObject>
 
@@ -111,10 +112,10 @@ class GUI_EXPORT QgsBezierMarker : public QObject
   private:
     QgsMapCanvas *mCanvas = nullptr;
 
-    std::vector<std::unique_ptr<QgsVertexMarker>> mAnchorMarkers;
-    std::vector<std::unique_ptr<QgsVertexMarker>> mHandleMarkers;
-    std::vector<std::unique_ptr<QgsRubberBand>> mHandleLines;
-    std::unique_ptr<QgsRubberBand> mCurveRubberBand;
+    std::vector<QgsVertexMarker *> mAnchorMarkers;
+    std::vector<QgsVertexMarker *> mHandleMarkers;
+    std::vector<QObjectUniquePtr<QgsRubberBand>> mHandleLines;
+    QObjectUniquePtr<QgsRubberBand> mCurveRubberBand;
 
     int mHighlightedAnchor = -1;
     int mHighlightedHandle = -1;
@@ -123,13 +124,13 @@ class GUI_EXPORT QgsBezierMarker : public QObject
     bool mHandlesVisible = true;
 
     //! Creates a new anchor marker
-    std::unique_ptr<QgsVertexMarker> createAnchorMarker();
+    QgsVertexMarker *createAnchorMarker();
 
     //! Creates a new handle marker
-    std::unique_ptr<QgsVertexMarker> createHandleMarker();
+    QgsVertexMarker *createHandleMarker();
 
     //! Creates a new handle line rubber band
-    std::unique_ptr<QgsRubberBand> createHandleLine();
+    QObjectUniquePtr<QgsRubberBand> createHandleLine();
 
     //! Updates anchor markers
     void updateAnchorMarkers( const QgsBezierData &data );
