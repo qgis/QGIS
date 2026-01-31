@@ -1655,9 +1655,17 @@ void QgsApplication::exitQgis()
 
   QgsStyle::cleanDefaultStyle();
 
-  // tear-down GDAL/OGR
-  OGRCleanupAll();
-  GDALDestroyDriverManager();
+  // tear-down GDAL/OGR, but only if there are no remaining opened
+  // datasets (cf https://github.com/qgis/QGIS/issues/58724)
+  // Outputting to stdin is obviously absurd, but intended here, since
+  // we are just interested in the count of still open datasets.
+  if ( GDALDumpOpenDatasets( stdin ) == 0 )
+  {
+    OGRCleanupAll();
+    GDALDestroyDriverManager();
+  }
+  else
+    QgsDebugMsgLevel( u"Skipping call to GDALDestroyDriverManager() due to still opened datasets"_s, 5 );
 }
 
 QString QgsApplication::showSettings()
