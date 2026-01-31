@@ -419,7 +419,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasLimitCoverageLayerRenderCheckBox->setCheckState( mAtlas->limitCoverageLayerRenderToCurrentFeature() ? Qt::Checked : Qt::Unchecked );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
 
-  const bool singleFile = mLayout->customProperty( u"singleFile"_s ).toBool();
+  const bool singleFile = mLayout->customProperty( u"singleFile"_s, true ).toBool();
   mAtlasSingleFileCheckBox->setCheckState( singleFile ? Qt::Checked : Qt::Unchecked );
   mAtlasFilenamePatternEdit->setEnabled( !singleFile );
   mAtlasFilenameExpressionButton->setEnabled( !singleFile );
