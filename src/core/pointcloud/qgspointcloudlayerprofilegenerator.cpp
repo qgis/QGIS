@@ -372,7 +372,7 @@ QgsPointCloudLayerProfileGeneratorBase::QgsPointCloudLayerProfileGeneratorBase( 
 
 QgsPointCloudLayerProfileGeneratorBase::~QgsPointCloudLayerProfileGeneratorBase() = default;
 
-bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const double &mapUnitsPerPixel, const double &maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCoordinates )
+bool QgsPointCloudLayerProfileGeneratorBase::collectData( QgsGeos &curve, const double mapUnitsPerPixel, const double maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCoordinates )
 {
   maxErrorInLayerCoordinates = 0;
 
@@ -623,6 +623,7 @@ void QgsPointCloudLayerProfileGeneratorBase::gatherPoints( QgsPointCloudIndex &p
     return;
   }
 
+  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( pc.accessType() )
   {
     case Qgis::PointCloudAccessType::Local:
@@ -636,6 +637,7 @@ void QgsPointCloudLayerProfileGeneratorBase::gatherPoints( QgsPointCloudIndex &p
       break;
     }
   }
+  // NOLINTEND(bugprone-branch-clone)
 }
 
 //

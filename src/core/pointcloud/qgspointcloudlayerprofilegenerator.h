@@ -139,7 +139,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
     virtual ~QgsPointCloudLayerProfileGeneratorBase() override;
 
   protected:
-    bool collectData( QgsGeos &curve, const double &mapUnitsPerPixel, const double &maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCrs );
+    bool collectData( QgsGeos &curve, const double mapUnitsPerPixel, const double maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCrs );
     void gatherPoints( QgsPointCloudIndex &pc, QgsPointCloudRequest &request, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent );
     QVector<QgsPointCloudNodeId> traverseTree( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent );
     int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
