@@ -1075,6 +1075,7 @@ class TestQgsExpression : public QObject
 
       // concatenation
       QTest::newRow( "concat with plus" ) << "'a' + 'b'" << false << QVariant( "ab" );
+      QTest::newRow( "plus string with null" ) << "'a' + null" << false << QVariant();
       QTest::newRow( "concat" ) << "'a' || 'b'" << false << QVariant( "ab" );
       QTest::newRow( "concat with int" ) << "'a' || 1" << false << QVariant( "a1" );
       QTest::newRow( "concat with int" ) << "2 || 'b'" << false << QVariant( "2b" );
@@ -5813,6 +5814,24 @@ class TestQgsExpression : public QObject
       res = exp.evaluate( &context );
       QCOMPARE( static_cast<QMetaType::Type>( res.userType() ), QMetaType::Type::QString );
       QCOMPARE( res.toString(), u"test"_s );
+    }
+
+    void testPlusNULLAttributeValue()
+    {
+      // Test that + operator propagates NULL from field values
+      // https://github.com/qgis/QGIS/issues/64634
+
+      QgsFields fields;
+      fields.append( QgsField( u"notes"_s, QMetaType::Type::QString ) );
+
+      QgsFeature f;
+      f.initAttributes( 1 );
+      f.setAttribute( 0, QVariant() ); // NULL
+
+      QgsExpressionContext context = QgsExpressionContextUtils::createFeatureBasedContext( f, fields );
+      QgsExpression exp( u"' - ' + notes"_s );
+      QVariant res = exp.evaluate( &context );
+      QVERIFY( res.isNull() ); // Should be NULL, not " - "
     }
 
     void testIsFieldEqualityExpression_data()

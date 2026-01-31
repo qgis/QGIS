@@ -402,9 +402,11 @@ QVariant QgsExpressionNodeBinaryOperator::evalNode( QgsExpression *parent, const
     case boPlus:
       if ( vL.userType() == QMetaType::Type::QString && vR.userType() == QMetaType::Type::QString )
       {
-        QString sL = QgsExpressionUtils::isNull( vL ) ? QString() : QgsExpressionUtils::getStringValue( vL, parent );
+        if ( QgsExpressionUtils::isNull( vL ) || QgsExpressionUtils::isNull( vR ) )
+          return QVariant();
+        QString sL = QgsExpressionUtils::getStringValue( vL, parent );
         ENSURE_NO_EVAL_ERROR
-        QString sR = QgsExpressionUtils::isNull( vR ) ? QString() : QgsExpressionUtils::getStringValue( vR, parent );
+        QString sR = QgsExpressionUtils::getStringValue( vR, parent );
         ENSURE_NO_EVAL_ERROR
         return QVariant( sL + sR );
       }
