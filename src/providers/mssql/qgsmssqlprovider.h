@@ -162,7 +162,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
   protected:
     //! Loads fields from input file to member attributeFields
     void loadFields();
-    void loadMetadata();
+    void loadMetadataFromGeometryColumnsTable();
 
   private:
     bool execLogged( QSqlQuery &qry, const QString &sql, const QString &queryOrigin = QString() ) const;
@@ -201,7 +201,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
      */
     QList<int> mPrimaryKeyAttrs;
 
-    mutable long mSRId;
+    mutable long mSRId = -1;
     QString mGeometryColName;
     QString mGeometryColType;
 
