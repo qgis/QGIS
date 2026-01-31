@@ -139,11 +139,92 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
     virtual ~QgsPointCloudLayerProfileGeneratorBase() override;
 
   protected:
+
+    /**
+     * Collects point cloud data along a curve within the specified range and tolerance.
+     *
+     * Prepares attribute requests and renderer data,
+     * then gathers points from relevant point cloud indexes.
+     * Updates the maximum allowable error in layer coordinates.
+     *
+     * \param curve Search geometry.
+     * \param mapUnitsPerPixel Number of map units per pixel in the distance dimension.
+     * \param maximumErrorPixels Maximum permissible projected error in pixels.
+     * \param zRange Vertical range filter.
+     * \param maxErrorInLayerCoordinates Output parameter for the derived maximum error in layer CRS.
+     * \return True on success, false if canceled or an error occured.
+     */
     bool collectData( QgsGeos &curve, const double mapUnitsPerPixel, const double maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCrs );
+
+    /**
+     * Collects points from the point cloud index within the given extent and Z range.
+     *
+     * Traverses the node tree to identify relevant nodes, then loads and processes them
+     * either synchronously or asynchronously depending on the access type.
+     *
+     * \param pc Pint cloud index.
+     * \param request Point cloud data request item.
+     * \param maxErrorPixels Maximum allowed projected error in pixels.
+     * \param nodeErrorPixels Node's projected error in pixels.
+     * \param zRange Vertical range filter.
+     * \param searchExtent Search extent.
+     */
     void gatherPoints( QgsPointCloudIndex &pc, QgsPointCloudRequest &request, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent );
+
+    /**
+     * Recursively traverses the point cloud node tree to gather visible nodes.
+     *
+     * Filters nodes based on Z range, spatial intersection with the search extent,
+     * and screen-space error threshold. Returns all nodes that meet the criteria
+     * and contain points.
+     *
+     * \param pc Point cloud index.
+     * \param n Node ID to evaluate.
+     * \param maxErrorPixels Maximum allowed projected error in pixels.
+     * \param nodeErrorPixels Node's projected error in pixels.
+     * \param zRange Vertical range filter.
+     * \param searchExtent Search extent.
+     * \return List of nodes that satisfy the given constraints.
+     */
     QVector<QgsPointCloudNodeId> traverseTree( QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange, const QgsRectangle &searchExtent );
+
+    /**
+     * Synchronously visits point cloud nodes and processes their data.
+     *
+     * Loads each node’s block data sequentially, calls visitBlock() for valid blocks
+     * within the given Z range.
+     *
+     * \param nodes Nodes to process.
+     * \param pc Point cloud index.
+     * \param request Point cloud data request item.
+     * \param zRange Vertical range for filtering points.
+     * \return Number of successfully processed nodes.
+     */
     int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+
+    /**
+     * Asynchronously visits point cloud nodes, loading their data and processing valid blocks.
+     *
+     * Requests node data asynchronously, waits for completion and calls visitBlock() for each
+     * successfully loaded block within the specified Z range.
+     *
+     * \param nodes List of nodes to process.
+     * \param pc Point cloud index.
+     * \param request Point cloud data request item.
+     * \param zRange Vertical range for filtering points.
+     * \return Number of successfully processed nodes.
+     */
     int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+
+    /**
+     * Visits a point cloud block and collects points within the given Z range and search geometry.
+     *
+     * Extracts point coordinates from the block, optionally filters them using the renderer,
+     * handled reprojection if needed and adds the valid points to results.
+     *
+     * \param block Point cloud block to process.
+     * \param zRange Vertical range to include points within.
+     */
     virtual void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange ) = 0;
 
     QPointer< QgsPointCloudLayer > mLayer;
