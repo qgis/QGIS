@@ -156,7 +156,7 @@ class GUI_EXPORT QgsBezierData
      * Returns the interpolated points of the curve for visualization.
      * Uses cubic Bézier interpolation between anchor points.
      */
-    QgsPointSequence interpolate() const;
+    QgsPointSequence interpolateLine() const;
 
     /**
      * Converts the Poly-Bézier data to a QgsNurbsCurve.

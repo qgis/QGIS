@@ -95,7 +95,7 @@ void QgsBezierMarker::updateCurve( const QgsBezierData &data )
   if ( data.anchorCount() < 1 )
     return;
 
-  QgsPointSequence points = data.interpolate();
+  QgsPointSequence points = data.interpolateLine();
 
   for ( const QgsPoint &pt : std::as_const( points ) )
   {
