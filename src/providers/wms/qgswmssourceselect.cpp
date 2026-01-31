@@ -188,7 +188,7 @@ void QgsWMSSourceSelect::updateFormatButtons( const QStringList &availableFormat
 void QgsWMSSourceSelect::refresh()
 {
   // Reload WMS connections and update the GUI
-  QgsDebugMsgLevel( u"Refreshing WMS connections ..."_s, 2 );
+  QgsDebugMsgLevel( u"Refreshing WMS connections..."_s, 2 );
   populateConnectionList();
 }
 
@@ -209,7 +209,7 @@ void QgsWMSSourceSelect::populateConnectionList()
 
 void QgsWMSSourceSelect::btnNew_clicked()
 {
-  auto nc = new QgsWmsNewConnection( this );
+  auto nc = new QgsWmsNewConnection( this, QString(), QgsNewHttpConnection::FlagShowHttpSettings );
   nc->setAttribute( Qt::WA_DeleteOnClose );
 
   // For testability, do not use exec()
@@ -222,7 +222,7 @@ void QgsWMSSourceSelect::btnNew_clicked()
 
 void QgsWMSSourceSelect::btnEdit_clicked()
 {
-  auto nc = std::make_unique<QgsWmsNewConnection>( this, cmbConnections->currentText() );
+  auto nc = std::make_unique<QgsWmsNewConnection>( this, cmbConnections->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc->exec() )
   {

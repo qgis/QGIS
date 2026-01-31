@@ -29,8 +29,8 @@
 
 using namespace Qt::StringLiterals;
 
-QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName )
-  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, u"WMS"_s, connName )
+QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName, QgsNewHttpConnection::Flags flags )
+  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, u"WMS"_s, connName, flags )
 {
   connect( wmsFormatDetectButton(), &QPushButton::clicked, this, &QgsWmsNewConnection::detectFormat );
   initWmsSpecificSettings();
