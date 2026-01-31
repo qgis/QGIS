@@ -149,7 +149,7 @@ const QgsAnchorWithHandles &QgsBezierData::anchorWithHandles( int index ) const
   return mData[index];
 }
 
-QgsPointSequence QgsBezierData::interpolate() const
+QgsPointSequence QgsBezierData::interpolateLine() const
 {
   QgsPointSequence result;
 

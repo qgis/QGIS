@@ -191,7 +191,7 @@ void TestQgsBezierData::testInterpolate()
   data.addAnchor( QgsPoint( 0, 0 ) );
   data.addAnchor( QgsPoint( 10, 10 ) );
 
-  QgsPointSequence points = data.interpolate();
+  QgsPointSequence points = data.interpolateLine();
   QVERIFY( !points.isEmpty() );
   QCOMPARE( points.first(), QgsPoint( 0, 0 ) );
   QCOMPARE( points.last(), QgsPoint( 10, 10 ) );

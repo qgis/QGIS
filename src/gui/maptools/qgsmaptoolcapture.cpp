@@ -699,7 +699,7 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
       mBezierMarker->updateCurve( previewData );
 
-      QgsPointSequence points = previewData.interpolate();
+      QgsPointSequence points = previewData.interpolateLine();
 
       if ( !mTempRubberBand )
       {
@@ -1713,7 +1713,7 @@ void QgsMapToolCapture::updateExtraSnapLayer()
       }
 
       // Add interpolated curve points for snapping to the curve itself
-      const QgsPointSequence interpolated = mBezierData->interpolate();
+      const QgsPointSequence interpolated = mBezierData->interpolateLine();
       for ( const QgsPoint &pt : interpolated )
       {
         lineForSnap->addVertex( pt );
