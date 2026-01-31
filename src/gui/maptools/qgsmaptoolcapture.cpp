@@ -26,6 +26,7 @@
 #include "qgscompoundcurve.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgeometrycollection.h"
 #include "qgsgeometryvalidator.h"
 #include "qgslinestring.h"
 #include "qgslogger.h"
@@ -1660,72 +1661,68 @@ void QgsMapToolCapture::updateExtraSnapLayer()
     // For NURBS curves, include both the evaluated curve and control points for snapping
     if ( mLineDigitizingType == Qgis::WkbType::NurbsCurve && mTempRubberBand && mTempRubberBand->pointsCount() >= 2 )
     {
-      // Create a LineString that includes both the interpolated curve points AND control points
-      auto lineForSnap = std::make_unique<QgsLineString>();
+      // Create a GeometryCollection containing control points and evaluated curve
+      auto collection = std::make_unique<QgsGeometryCollection>();
 
-      // First, add all control points from the rubber band (for snapping to control points)
+      // Add control points as individual Point geometries
       const int pointCount = mTempRubberBand->pointsCount();
       // Exclude the last point (cursor position)
       for ( int i = 0; i < pointCount - 1; ++i )
       {
-        lineForSnap->addVertex( mTempRubberBand->pointFromEnd( pointCount - 1 - i ) );
+        collection->addGeometry( new QgsPoint( mTempRubberBand->pointFromEnd( pointCount - 1 - i ) ) );
       }
 
-      // Then, try to get the evaluated curve and add its vertices (for snapping to the curve)
+      // Add the evaluated curve as a LineString
       std::unique_ptr<QgsCurve> nurbsCurve( mTempRubberBand->curve() );
       if ( nurbsCurve )
       {
         std::unique_ptr<QgsLineString> curvePoints( nurbsCurve->curveToLine() );
         if ( curvePoints )
         {
-          for ( int i = 0; i < curvePoints->numPoints(); ++i )
+          // For polygon mode, close the curve to allow snapping to first point
+          if ( mCaptureMode == CapturePolygon && curvePoints->numPoints() >= 3 )
           {
-            lineForSnap->addVertex( curvePoints->pointN( i ) );
+            curvePoints->close();
           }
+          collection->addGeometry( curvePoints.release() );
         }
       }
 
-      // For polygon mode, close the curve to allow snapping to first point
-      if ( mCaptureMode == CapturePolygon && lineForSnap->numPoints() >= 3 )
-      {
-        lineForSnap->close();
-      }
-
-      geom = QgsGeometry( lineForSnap.release() );
+      geom = QgsGeometry( collection.release() );
     }
     else if ( mBezierData && mBezierData->anchorCount() >= 2 )
     {
-      // Poly-Bézier mode: include anchors, handles, and interpolated curve for snapping
-      auto lineForSnap = std::make_unique<QgsLineString>();
+      // Poly-Bézier mode: create a GeometryCollection containing anchors, handles, and interpolated curve
+      auto collection = std::make_unique<QgsGeometryCollection>();
 
-      // Add all anchors for snapping
+      // Add all anchors as individual Point geometries
       const QVector<QgsPoint> anchors = mBezierData->anchors();
-      for ( const QgsPoint &pt : anchors )
+      for ( const QgsPoint &point : anchors )
       {
-        lineForSnap->addVertex( pt );
+        collection->addGeometry( new QgsPoint( point ) );
       }
 
-      // Add all handles for snapping
+      // Add all handles as individual Point geometries
       const QVector<QgsPoint> handles = mBezierData->handles();
-      for ( const QgsPoint &pt : handles )
+      for ( const QgsPoint &point : handles )
       {
-        lineForSnap->addVertex( pt );
+        collection->addGeometry( new QgsPoint( point ) );
       }
 
-      // Add interpolated curve points for snapping to the curve itself
+      // Add interpolated curve as a LineString
       const QgsPointSequence interpolated = mBezierData->interpolateLine();
-      for ( const QgsPoint &pt : interpolated )
+      if ( !interpolated.isEmpty() )
       {
-        lineForSnap->addVertex( pt );
+        auto curveLineString = std::make_unique<QgsLineString>( interpolated );
+        // For polygon mode, close the curve to allow snapping to first point
+        if ( mCaptureMode == CapturePolygon && curveLineString->numPoints() >= 3 )
+        {
+          curveLineString->close();
+        }
+        collection->addGeometry( curveLineString.release() );
       }
 
-      // For polygon mode, close the curve to allow snapping to first point
-      if ( mCaptureMode == CapturePolygon && lineForSnap->numPoints() >= 3 )
-      {
-        lineForSnap->close();
-      }
-
-      geom = QgsGeometry( lineForSnap.release() );
+      geom = QgsGeometry( collection.release() );
     }
     else if ( mCaptureCurve.numPoints() >= 2 )
     {
