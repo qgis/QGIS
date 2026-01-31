@@ -38,7 +38,7 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QShaderProgram>
 #include <Qt3DRender/QTechnique>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 #include "moc_qgspointcloudlayerchunkloader_p.cpp"
 

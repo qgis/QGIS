@@ -18,7 +18,6 @@
 
 #include <QObject>
 #include <QString>
-#include <QtConcurrent>
 
 using namespace Qt::StringLiterals;
 

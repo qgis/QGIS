@@ -53,7 +53,6 @@
 #include <QPicture>
 #include <QString>
 #include <QTimer>
-#include <QtConcurrentMap>
 
 #include "moc_qgsmaprendererjob.cpp"
 
