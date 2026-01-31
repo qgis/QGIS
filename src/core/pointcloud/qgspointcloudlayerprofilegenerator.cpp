@@ -717,18 +717,16 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   QgsGeos originalCurveGeos( sourceCurve );
   originalCurveGeos.prepareGeometry();
 
-  if ( !collectData( originalCurveGeos, mapUnitsPerPixel, maximumErrorPixels, context.elevationRange(), maxErrorInLayerCrs ) )
-    return false;
-
-  mResults = std::make_unique< QgsPointCloudLayerProfileResults >();
-  mResults->copyPropertiesFromGenerator( this );
-  mResults->mMaxErrorInLayerCoordinates = maxErrorInLayerCrs;
-
-  if ( mGatheredPoints.empty() )
+  if ( !collectData( originalCurveGeos, mapUnitsPerPixel, maximumErrorPixels, context.elevationRange(), maxErrorInLayerCrs ) || mGatheredPoints.empty() )
   {
     mResults = nullptr;
     return false;
   }
+
+
+  mResults = std::make_unique< QgsPointCloudLayerProfileResults >();
+  mResults->copyPropertiesFromGenerator( this );
+  mResults->mMaxErrorInLayerCoordinates = maxErrorInLayerCrs;
 
   // convert x/y values back to distance/height values
   QString lastError;
@@ -749,6 +747,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     mResults->minZ = std::min( destData->z, mResults->minZ );
     mResults->maxZ = std::max( destData->z, mResults->maxZ );
   }
+  mResults->finalize( mFeedback.get() );
 
   return true;
 }
