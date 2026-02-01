@@ -152,7 +152,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
      * \param maximumErrorPixels Maximum permissible projected error in pixels.
      * \param zRange Vertical range filter.
      * \param maxErrorInLayerCrs Output parameter for the derived maximum error in layer CRS.
-     * \return True on success, false if canceled or an error occured.
+     * \return True on success, false if canceled or an error occurred.
      */
     bool collectData( QgsGeos &curve, const double mapUnitsPerPixel, const double maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCrs );
 
