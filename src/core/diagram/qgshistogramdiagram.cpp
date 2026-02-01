@@ -82,12 +82,24 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRen
     case QgsDiagramSettings::Down:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
       size.scale( s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
+      if ( maxValue == 0 )
+      {
+        // Add minimal height to trigger rendering when maximum value is zero (when all
+        // categories' value are zero or negative).
+        size.setHeight( 2 );
+      }
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
       mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
       size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size() + spacing * std::max( 0, static_cast<int>( s.categoryAttributes.size() ) - 1 ), Qt::IgnoreAspectRatio );
+      if ( maxValue == 0 )
+      {
+        // Add minimal height to trigger rendering when maximum value is zero (when all
+        // categories' value are zero or negative).
+        size.setWidth( 2 );
+      }
       break;
   }
 
