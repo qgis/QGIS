@@ -151,7 +151,7 @@ class CORE_EXPORT QgsPointCloudLayerProfileGeneratorBase : public QgsAbstractPro
      * \param mapUnitsPerPixel Number of map units per pixel in the distance dimension.
      * \param maximumErrorPixels Maximum permissible projected error in pixels.
      * \param zRange Vertical range filter.
-     * \param maxErrorInLayerCoordinates Output parameter for the derived maximum error in layer CRS.
+     * \param maxErrorInLayerCrs Output parameter for the derived maximum error in layer CRS.
      * \return True on success, false if canceled or an error occured.
      */
     bool collectData( QgsGeos &curve, const double mapUnitsPerPixel, const double maximumErrorPixels, const QgsDoubleRange &zRange, double &maxErrorInLayerCrs );
