@@ -175,7 +175,7 @@ void QgsProcessingToolboxModel::rebuild()
   }
 
 
-  if ( mRegistry )
+  if ( mRegistry && QgsApplication::processingRegistry() )
   {
     auto groupNode = std::make_unique<QgsProcessingToolboxModelParameterGroupNode>();
 
