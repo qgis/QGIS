@@ -1853,7 +1853,7 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           std::unique_ptr<QgsNurbsCurve> nurbsCurve = mBezierData->asNurbsCurve();
           if ( nurbsCurve )
           {
-            // Transform to layer coordinates
+            // Transform to layer coordinates if a layer is present
             QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer() );
             if ( vlayer )
             {
@@ -1871,45 +1871,45 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
                   return;
                 }
               }
-
-              std::unique_ptr<QgsCurve> curveToAdd;
-
-              // Close for polygon if needed
-              if ( mode() == CapturePolygon && !nurbsCurve->isClosed() )
-              {
-                // For polygon, wrap in compound curve and add closing segment
-                auto compound = std::make_unique<QgsCompoundCurve>();
-                compound->addCurve( nurbsCurve.release() );
-                // Add closing line segment from end to start
-                auto closingSegment = std::make_unique<QgsLineString>();
-                closingSegment->addVertex( compound->endPoint() );
-                closingSegment->addVertex( compound->startPoint() );
-                compound->addCurve( closingSegment.release() );
-                curveToAdd = std::move( compound );
-              }
-              else
-              {
-                curveToAdd.reset( nurbsCurve.release() );
-              }
-              QgsGeometry g;
-
-              if ( mode() == CaptureLine )
-              {
-                g = QgsGeometry( curveToAdd->clone() );
-                geometryCaptured( g );
-                lineCaptured( curveToAdd.release() );
-              }
-              else // CapturePolygon
-              {
-                auto poly = std::make_unique<QgsCurvePolygon>();
-                poly->setExteriorRing( curveToAdd.release() );
-                g = QgsGeometry( poly->clone() );
-                geometryCaptured( g );
-                polygonCaptured( poly.get() );
-              }
-
-              digitizingFinished = true;
             }
+
+            std::unique_ptr<QgsCurve> curveToAdd;
+
+            // Close for polygon if needed
+            if ( mode() == CapturePolygon && !nurbsCurve->isClosed() )
+            {
+              // For polygon, wrap in compound curve and add closing segment
+              auto compound = std::make_unique<QgsCompoundCurve>();
+              compound->addCurve( nurbsCurve.release() );
+              // Add closing line segment from end to start
+              auto closingSegment = std::make_unique<QgsLineString>();
+              closingSegment->addVertex( compound->endPoint() );
+              closingSegment->addVertex( compound->startPoint() );
+              compound->addCurve( closingSegment.release() );
+              curveToAdd = std::move( compound );
+            }
+            else
+            {
+              curveToAdd.reset( nurbsCurve.release() );
+            }
+            QgsGeometry g;
+
+            if ( mode() == CaptureLine )
+            {
+              g = QgsGeometry( curveToAdd->clone() );
+              geometryCaptured( g );
+              lineCaptured( curveToAdd.release() );
+            }
+            else // CapturePolygon
+            {
+              auto poly = std::make_unique<QgsCurvePolygon>();
+              poly->setExteriorRing( curveToAdd.release() );
+              g = QgsGeometry( poly->clone() );
+              geometryCaptured( g );
+              polygonCaptured( poly.get() );
+            }
+
+            digitizingFinished = true;
           }
         }
 
