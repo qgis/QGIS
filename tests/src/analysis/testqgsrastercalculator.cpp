@@ -12,6 +12,8 @@ Email                : nyall dot dawson at gmail dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <clocale>
+
 #include "qgstest.h"
 
 #include <QString>
@@ -108,6 +110,8 @@ void TestQgsRasterCalculator::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+  // To ensure consistent decimal separator set LC_NUMERIC=C
+  std::setlocale( LC_NUMERIC, "C" );
 
   QString testDataDir = QStringLiteral( TEST_DATA_DIR ) + '/'; //defined in CmakeLists.txt
 
@@ -864,7 +868,7 @@ void TestQgsRasterCalculator::toString()
   QCOMPARE( _test( QStringLiteral( R"raw(("r@1"<100.09)*0.1)raw" ), true ), QString( R"raw(( float ) ( ( float ) "r@1" < ( float ) 100.09 ) * ( float ) 0.1)raw" ) );
   //test the conditional statement
   QCOMPARE( _test( u"if( \"raster@1\" > 5 , 100 , 5)"_s, false ), QString( "if( \"raster@1\" > 5 , 100 , 5 )" ) );
-  QCOMPARE( _test( u"if( \"raster@1\" > 5 , 100 , 5)"_s, true ), QString( " ( ( float ) ( ( float ) \"raster@1\" > ( float ) 5 ) ) ? ( ( float ) 100 ) : ( ( float ) 5 ) " ) );
+  QCOMPARE( _test( u"if( \"raster@1\" > 5 , 100 , 5)"_s, true ), QString( " ( bool ) ( ( float ) ( ( float ) \"raster@1\" > ( float ) 5 ) ) ? ( ( float ) 100 ) : ( ( float ) 5 ) " ) );
 
   QString error;
   std::unique_ptr<QgsRasterCalcNode> calcNode( QgsRasterCalcNode::parseRasterCalcString( u"min( \"raster@1\" )"_s, error ) );
