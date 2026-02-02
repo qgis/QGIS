@@ -50,6 +50,7 @@
 #include <QPdfWriter>
 #include <QPushButton>
 #include <QShortcut>
+#include <QString>
 #include <QSvgGenerator>
 #include <QTextStream>
 #include <QToolButton>
@@ -57,6 +58,8 @@
 #include <QUrl>
 
 #include "moc_qgsmodeldesignerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -25,7 +25,11 @@
 #include "qgspoint.h"
 #include "qgsquadrilateral.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperectanglecenter.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRectangleCenterMetadata::TOOL_ID = u"rectangle-from-center-and-a-point"_s;
 

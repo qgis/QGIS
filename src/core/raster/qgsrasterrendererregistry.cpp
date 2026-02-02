@@ -34,6 +34,9 @@
 #include "qgssinglebandpseudocolorrenderer.h"
 
 #include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsRasterRendererRegistryEntry::QgsRasterRendererRegistryEntry( const QString &name, const QString &visibleName,
     QgsRasterRendererCreateFunc rendererFunction,

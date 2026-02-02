@@ -22,6 +22,10 @@
 #include "qgsauthsslerrorsdialog.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );

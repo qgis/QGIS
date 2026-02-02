@@ -26,6 +26,10 @@
 #include "qgstracer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsTracer : public QObject
 {
     Q_OBJECT

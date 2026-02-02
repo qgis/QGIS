@@ -23,7 +23,11 @@
 #include "qgspagesizeregistry.h"
 #include "qgsplot.h"
 
+#include <QString>
+
 #include "moc_qgselevationprofilepdfexportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfilePdfExportDialog::QgsElevationProfilePdfExportDialog( QWidget *parent )
   : QDialog( parent )

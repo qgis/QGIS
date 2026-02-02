@@ -29,7 +29,11 @@
 #include "qgsstackedwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <QString>
+
 #include "moc_qgspointcloud3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )

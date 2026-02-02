@@ -22,8 +22,11 @@
 
 #include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QString>
 
 #include "moc_qgsgeopdflayertreemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeospatialPdfLayerTreeModel::QgsGeospatialPdfLayerTreeModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QgsMapLayerModel( layers, parent )

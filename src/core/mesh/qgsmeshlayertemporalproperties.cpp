@@ -21,7 +21,11 @@
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"
 
+#include <QString>
+
 #include "moc_qgsmeshlayertemporalproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayerTemporalProperties::QgsMeshLayerTemporalProperties( QObject *parent, bool enabled ):
   QgsMapLayerTemporalProperties( parent, enabled )

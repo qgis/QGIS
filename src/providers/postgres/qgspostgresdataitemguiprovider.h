@@ -19,6 +19,10 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
 class QgsPGConnectionItem;
@@ -67,6 +71,7 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void setProjectComment( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static bool enableProjectsVersioning( const QString connectionName, const QString &schemaName, QgsDataItemGuiContext context );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H

@@ -26,6 +26,9 @@
 
 #include <QDomElement>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * Internal structure to keep weak pointer to QgsMapLayer or layerId

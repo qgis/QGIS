@@ -42,7 +42,10 @@
 #include <QMap>
 #include <QMutex>
 #include <QSet>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QPainter;
 class QImage;

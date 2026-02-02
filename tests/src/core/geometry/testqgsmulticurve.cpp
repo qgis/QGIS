@@ -23,6 +23,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsMultiCurve : public QObject
 {
     Q_OBJECT

@@ -28,8 +28,11 @@
 
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 
 #include "moc_qgsjoindialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alreadyJoinedLayers, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

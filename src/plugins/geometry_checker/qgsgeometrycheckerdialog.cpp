@@ -24,9 +24,12 @@
 #include "qgssettings.h"
 
 #include <QCloseEvent>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgsgeometrycheckerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryCheckerDialog::QgsGeometryCheckerDialog( QgisInterface *iface, QWidget *parent )
   : QDialog( parent )

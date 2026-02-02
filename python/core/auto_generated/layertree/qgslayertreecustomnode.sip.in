@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayerTreeCustomNode : QgsLayerTreeNode
 {
 %Docstring(signature="appended")

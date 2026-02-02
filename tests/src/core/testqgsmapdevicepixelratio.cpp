@@ -27,6 +27,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 

@@ -34,6 +34,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 class QgsFeature;
 class QgsVectorLayer;
 class QgsPaintEffect;

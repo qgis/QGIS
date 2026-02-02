@@ -28,8 +28,11 @@
 
 #include <QDesktopServices>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsnominatimlocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsNominatimLocatorFilter::settingCountryCodes = new QgsSettingsEntryString( u"country-codes"_s, sTreeAppLocatorFilters, QString(), u"Country codes"_s );
 

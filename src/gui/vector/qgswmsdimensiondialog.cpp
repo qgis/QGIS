@@ -22,8 +22,11 @@
 
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 
 #include "moc_qgswmsdimensiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWmsDimensionDialog::QgsWmsDimensionDialog( QgsVectorLayer *layer, QStringList alreadyDefinedDimensions, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

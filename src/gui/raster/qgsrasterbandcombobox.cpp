@@ -18,7 +18,11 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrasterbandcombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterBandComboBox::QgsRasterBandComboBox( QWidget *parent )
   : QComboBox( parent )

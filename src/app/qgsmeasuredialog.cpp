@@ -33,8 +33,11 @@
 #include <QCloseEvent>
 #include <QLocale>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsmeasuredialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsMeasureDialog::settingClipboardHeader = new QgsSettingsEntryBool( u"clipboard-header"_s, QgsSettingsTree::sTreeMeasure, false, QObject::tr( "Whether the header should be copied to the clipboard along the coordinates, distances" ) );
 

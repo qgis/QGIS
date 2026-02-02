@@ -21,6 +21,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsweakrelation.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsWeakRelation : public QObject
 {
     Q_OBJECT

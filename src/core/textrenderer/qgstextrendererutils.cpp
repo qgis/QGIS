@@ -18,6 +18,10 @@
 #include "qgsgeometryutils_base.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTextBackgroundSettings::ShapeType QgsTextRendererUtils::decodeShapeType( const QString &string )
 {
   QgsTextBackgroundSettings::ShapeType shpkind = QgsTextBackgroundSettings::ShapeRectangle;
@@ -155,7 +159,7 @@ QColor QgsTextRendererUtils::readColor( QgsVectorLayer *layer, const QString &pr
 
 std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const QPolygonF &line, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, Qgis::CurvedTextFlags flags )
 {
-  const int numPoints = line.size();
+  const std::size_t numPoints = line.size();
   std::vector<double> pathDistances( numPoints );
 
   const QPointF *p = line.data();
@@ -171,7 +175,7 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   x[0] = prevX;
   y[0] = prevY;
 
-  for ( int i = 1; i < numPoints; ++i )
+  for ( std::size_t i = 1; i < numPoints; ++i )
   {
     dx = p->x() - prevX;
     dy = p->y() - prevY;
@@ -187,15 +191,18 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   return generateCurvedTextPlacementPrivate( metrics, x.data(), y.data(), numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, false );
 }
 
-std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, Qgis::CurvedTextFlags flags )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacement( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, double maxConcaveAngle, double maxConvexAngle, Qgis::CurvedTextFlags flags, double additionalCharacterSpacing, double additionalWordSpacing )
 {
-  return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle );
+  return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, false, additionalCharacterSpacing, additionalWordSpacing );
 }
 
-std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, Qgis::CurvedTextFlags flags, double maxConcaveAngle, double maxConvexAngle, bool isSecondAttempt )
+std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendererUtils::generateCurvedTextPlacementPrivate( const QgsPrecalculatedTextMetrics &metrics, const double *x, const double *y, int numPoints, const std::vector<double> &pathDistances, double offsetAlongLine, LabelLineDirection direction, Qgis::CurvedTextFlags flags, double maxConcaveAngle, double maxConvexAngle, bool isSecondAttempt, double additionalCharacterSpacing, double additionalWordSpacing )
 {
   auto output = std::make_unique< CurvePlacementProperties >();
   output->graphemePlacement.reserve( metrics.count() );
+
+  if ( !qgsDoubleNear( additionalCharacterSpacing, 0 ) || !qgsDoubleNear( additionalWordSpacing, 0 ) )
+    flags.setFlag( Qgis::CurvedTextFlag::ExtendLineToFitText );
 
   double offsetAlongSegment = offsetAlongLine;
   int index = 1;
@@ -234,7 +241,23 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     {
       const double characterWidth = metrics.characterWidth( i );
       double characterStartX, characterStartY;
-      if ( !nextCharPosition( characterWidth, pathDistances[endindex], x, y, numPoints, endindex, distance, characterStartX, characterStartY, endLabelX, endLabelY, flags ) )
+
+      // calculate additional spacing for this character
+      double currentSpacing = 0.0;
+      if ( i > 0 )
+      {
+        currentSpacing = additionalCharacterSpacing;
+        if ( !qgsDoubleNear( additionalWordSpacing, 0.0 ) )
+        {
+          const QString g = metrics.grapheme( i - 1 );
+          if ( !g.isEmpty() && g.at( 0 ).isSpace() )
+          {
+            currentSpacing += additionalWordSpacing;
+          }
+        }
+      }
+
+      if ( !nextCharPosition( characterWidth, pathDistances, x, y, numPoints, endindex, distance, characterStartX, characterStartY, endLabelX, endLabelY, flags, currentSpacing ) )
       {
         if ( flags & Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
         {
@@ -284,20 +307,41 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   {
     const double lastCharacterAngle = angle;
 
+    // next character index, depending on the orientation
+    const int k = !output->flippedCharacterPlacementToGetUprightLabels ? i : characterCount - i - 1;
+
     // grab the next character according to the orientation
-    const double characterWidth = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterWidth( i ) : metrics.characterWidth( characterCount - i - 1 );
+    const double characterWidth = metrics.characterWidth( k );
     if ( qgsDoubleNear( characterWidth, 0.0 ) )
       // Certain scripts rely on zero-width character, skip those to prevent failure (see #15801)
       continue;
 
-    const double characterHeight = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterHeight( i ) : metrics.characterHeight( characterCount - i - 1 );
-    const double characterDescent = !output->flippedCharacterPlacementToGetUprightLabels ? metrics.characterDescent( i ) : metrics.characterDescent( characterCount - i - 1 );
+    const double characterHeight =  metrics.characterHeight( k );
+    const double characterDescent = metrics.characterDescent( k );
 
     double characterStartX = 0;
     double characterStartY = 0;
     double characterEndX = 0;
     double characterEndY = 0;
-    if ( !nextCharPosition( characterWidth, pathDistances[index], x, y, numPoints, index, offsetAlongSegment, characterStartX, characterStartY, characterEndX, characterEndY, flags ) )
+
+    // Calculate Spacing
+    double currentSpacing = 0.0;
+    if ( i > 0 )
+    {
+      currentSpacing = additionalCharacterSpacing;
+      if ( !qgsDoubleNear( additionalWordSpacing, 0.0 ) )
+      {
+        int prevCharIndex = !output->flippedCharacterPlacementToGetUprightLabels ? k - 1 : k + 1;
+        if ( prevCharIndex >= 0 && prevCharIndex < metrics.count() )
+        {
+          const QString g = metrics.grapheme( prevCharIndex );
+          if ( !g.isEmpty() && g.at( 0 ).isSpace() )
+            currentSpacing += additionalWordSpacing;
+        }
+      }
+    }
+
+    if ( !nextCharPosition( characterWidth, pathDistances, x, y, numPoints, index, offsetAlongSegment, characterStartX, characterStartY, characterEndX, characterEndY, flags, currentSpacing ) )
     {
       if ( flags & Qgis::CurvedTextFlag::TruncateStringWhenLineIsTooShort )
       {
@@ -352,6 +396,8 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
     placement.y = characterStartY;
     placement.width = characterWidth;
     placement.height = characterHeight;
+    const QString grapheme = metrics.grapheme( placement.graphemeIndex );
+    placement.isWhitespace = grapheme.isEmpty() || grapheme.at( 0 ).isSpace() || grapheme.at( 0 ) == '\t';
     if ( output->flippedCharacterPlacementToGetUprightLabels )
     {
       // rotate in place
@@ -376,26 +422,55 @@ std::unique_ptr< QgsTextRendererUtils::CurvePlacementProperties > QgsTextRendere
   {
     // more of text is upside down then right side up...
     // if text should be shown upright then retry with the opposite orientation
-    return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, true );
+    return generateCurvedTextPlacementPrivate( metrics, x, y, numPoints, pathDistances, offsetAlongLine, direction, flags, maxConcaveAngle, maxConvexAngle, true, additionalCharacterSpacing, additionalWordSpacing );
   }
 
   return output;
 }
 
-bool QgsTextRendererUtils::nextCharPosition( double charWidth, double segmentLength, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment, double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY, Qgis::CurvedTextFlags flags )
+bool QgsTextRendererUtils::nextCharPosition( double charWidth, const std::vector<double> &pathDistances, const double *x, const double *y, int numPoints, int &index, double &currentDistanceAlongSegment, double &characterStartX, double &characterStartY, double &characterEndX, double &characterEndY, Qgis::CurvedTextFlags flags, double additionalSpacing )
 {
-  // Coordinates this character will start at
-  if ( qgsDoubleNear( segmentLength, 0.0 ) )
+  if ( !qgsDoubleNear( additionalSpacing, 0.0 ) )
+  {
+    currentDistanceAlongSegment += additionalSpacing;
+
+    // forward spacing
+    while ( index < numPoints && currentDistanceAlongSegment > pathDistances[index] )
+    {
+      currentDistanceAlongSegment -= pathDistances[index];
+      index++;
+    }
+    // backward spacing (compression)
+    while ( currentDistanceAlongSegment < 0 )
+    {
+      index--;
+      if ( index < 1 )
+        return false;
+      currentDistanceAlongSegment += pathDistances[index];
+    }
+  }
+
+  // intentional for readability:
+  // NOLINTBEGIN(bugprone-branch-clone)
+  if ( index >= numPoints )
+  {
+    // do not support extending the line start or end points via additional spacing
+    return false;
+  }
+  else if ( qgsDoubleNear( pathDistances[index], 0.0 ) )
   {
     // Not allowed to place across on 0 length segments or discontinuities
     return false;
   }
+  // NOLINTEND(bugprone-branch-clone)
 
   double segmentStartX = x[index - 1];
   double segmentStartY = y[index - 1];
 
   double segmentEndX = x[index];
   double segmentEndY = y[index];
+
+  double segmentLength = pathDistances[index];
 
   const double segmentDx = segmentEndX - segmentStartX;
   const double segmentDy = segmentEndY - segmentStartY;

@@ -17,6 +17,10 @@
 
 #include "qgspointcloudexpression.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 const char *QgsPointCloudExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
 {
   // this must correspond (number and order of element) to the declaration of the enum BinaryOperator

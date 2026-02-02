@@ -28,6 +28,8 @@
 #include <QStringList>
 #include <QTimer>
 
+using namespace Qt::StringLiterals;
+
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */
 #else
@@ -163,15 +165,6 @@ int main( int argc, char *argv[] )
     QgsProcessingExec::showUsage( args.at( 0 ) );
     return 0;
   }
-
-  QString myPrefixPath;
-  if ( myPrefixPath.isEmpty() )
-  {
-    QDir dir( QCoreApplication::applicationDirPath() );
-    dir.cdUp();
-    myPrefixPath = dir.absolutePath();
-  }
-  QgsApplication::setPrefixPath( myPrefixPath, true );
 
   // Set up the QSettings environment must be done after qapp is created
   QgsApplication::setOrganizationName( u"QGIS"_s );

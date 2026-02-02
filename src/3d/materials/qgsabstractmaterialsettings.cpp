@@ -15,6 +15,10 @@
 
 #include "qgsabstractmaterialsettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPropertiesDefinition QgsAbstractMaterialSettings::sPropertyDefinitions;
 
 void QgsAbstractMaterialSettings::readXml( const QDomElement &element, const QgsReadWriteContext & )

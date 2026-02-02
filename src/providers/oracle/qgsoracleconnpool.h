@@ -20,6 +20,10 @@
 #include "qgslogger.h"
 #include "qgsoracleconn.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 inline QString qgsConnectionPool_ConnectionToName( QgsOracleConn *c )
 {
   return c->connInfo();

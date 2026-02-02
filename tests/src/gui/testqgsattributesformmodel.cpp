@@ -19,6 +19,10 @@
 #include "qgsproject.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
 #endif

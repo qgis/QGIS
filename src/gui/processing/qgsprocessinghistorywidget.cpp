@@ -26,10 +26,13 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTextStream>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessinghistorywidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingHistoryWidget::QgsProcessingHistoryWidget( QWidget *parent )
   : QgsPanelWidget( parent )

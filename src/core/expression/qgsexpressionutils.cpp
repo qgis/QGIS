@@ -25,6 +25,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QgsExpressionUtils::TVL QgsExpressionUtils::AND[3][3] =

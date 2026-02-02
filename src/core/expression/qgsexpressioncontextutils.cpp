@@ -43,6 +43,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsExpressionContextScope *QgsExpressionContextUtils::globalScope()
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Global" ) );

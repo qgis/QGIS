@@ -31,7 +31,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectortileconnection.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<Qgis::SnappingMode> *QgsSettingsRegistryCore::settingsDigitizingDefaultSnapMode = new QgsSettingsEntryEnumFlag<Qgis::SnappingMode>( u"default-snap-mode"_s, QgsSettingsTree::sTreeDigitizing, Qgis::SnappingMode::AllLayers );
 
@@ -46,6 +49,10 @@ const QgsSettingsEntryEnumFlag<Qgis::JoinStyle> *QgsSettingsRegistryCore::settin
 const QgsSettingsEntryEnumFlag<Qgis::EndCapStyle> *QgsSettingsRegistryCore::settingsDigitizingOffsetCapStyle = new QgsSettingsEntryEnumFlag<Qgis::EndCapStyle>( u"offset-cap-style"_s, QgsSettingsTree::sTreeDigitizing,  Qgis::EndCapStyle::Round );
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingStreamTolerance = new QgsSettingsEntryInteger( u"stream-tolerance"_s, QgsSettingsTree::sTreeDigitizing, 2 );
+
+const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingNurbsDegree = new QgsSettingsEntryInteger( u"nurbs-degree"_s, QgsSettingsTree::sTreeDigitizing, 3 );
+
+const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *QgsSettingsRegistryCore::settingsDigitizingNurbsMode = new QgsSettingsEntryEnumFlag<Qgis::NurbsMode>( u"nurbs-mode"_s, QgsSettingsTree::sTreeDigitizing, Qgis::NurbsMode::ControlPoints );
 
 const QgsSettingsEntryInteger *QgsSettingsRegistryCore::settingsDigitizingLineWidth = new QgsSettingsEntryInteger( u"line-width"_s, QgsSettingsTree::sTreeDigitizing, 1 );
 

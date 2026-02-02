@@ -31,8 +31,11 @@
 
 #include <QColor>
 #include <QFile>
+#include <QString>
 #include <QTextStream>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 QgsRelief::QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
   : mInputFile( inputFile )

@@ -19,6 +19,9 @@
 #include <QPixmap>
 #include <QSettings>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //header for class being tested
 #include "qgscoordinatereferencesystemregistry.h"

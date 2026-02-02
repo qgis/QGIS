@@ -29,6 +29,9 @@
 
 #include <QElapsedTimer>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
@@ -610,11 +613,56 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mRequest.flags() & Qgis::FeatureRequestFlag::ExactIntersect )
   {
-    QString curveToLineFn; // in PostGIS < 1.5 the st_curvetoline function does not exist
-    if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
-      curveToLineFn = u"st_curvetoline"_s; // st_ prefix is always used
-    whereClause += u" AND %1(%2(%3%4),%5)"_s
-                     .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects", curveToLineFn, QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ), castToGeometry ? "::geometry" : "", qBox );
+    // Build geometry conversion function chain based on geometry type
+    // This is needed because ST_Intersects uses GEOS which doesn't support
+    // certain geometry types (TIN, PolyhedralSurface)
+    QString geomConversionFn;
+    const Qgis::WkbType flatGeomType = QgsWkbTypes::flatType( mSource->mDetectedGeomType );
+
+    // For TIN and PolyhedralSurface: convert to MultiPolygon for GEOS compatibility
+    // This is a workaround since GEOS doesn't support these types directly
+    if ( flatGeomType == Qgis::WkbType::TIN || flatGeomType == Qgis::WkbType::PolyhedralSurface )
+    {
+      if ( mConn->majorVersion() >= 3 )
+      {
+        // PostGIS 3.0+: TIN works directly with GEOS, only PolyhedralSurface needs conversion
+        if ( flatGeomType == Qgis::WkbType::PolyhedralSurface )
+        {
+          geomConversionFn = u"(SELECT ST_Collect(d.geom) FROM ST_Dump(%1) AS d)"_s;
+        }
+      }
+      else
+      {
+        // PostGIS < 3.0: Both TIN and PolyhedralSurface need full conversion
+        // ST_Dump extracts individual triangles/polygons, then convert each to simple polygon
+        // using ST_MakePolygon to avoid Triangle type (unsupported by GEOS in PostGIS < 3.0)
+        if ( flatGeomType == Qgis::WkbType::TIN )
+        {
+          // Triangles have no interior rings (holes)
+          geomConversionFn = u"(SELECT ST_Multi(ST_Collect(ST_MakePolygon(ST_ExteriorRing(d.geom)))) FROM ST_Dump(%1) AS d)"_s;
+        }
+        else
+        {
+          // PolyhedralSurface: preserve interior rings (holes)
+          geomConversionFn = u"(SELECT ST_Multi(ST_Collect(ST_MakePolygon(ST_ExteriorRing(d.geom), ARRAY(SELECT ST_InteriorRingN(d.geom, i) FROM generate_series(1, ST_NumInteriorRings(d.geom)) AS i)))) FROM ST_Dump(%1) AS d)"_s;
+        }
+      }
+    }
+    // For curve types use st_curvetoline to linearize
+    else if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
+    {
+      geomConversionFn = u"st_curvetoline(%1)"_s;
+    }
+
+    QString geomExpr = QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn );
+    if ( castToGeometry )
+      geomExpr += "::geometry"_L1;
+
+    if ( !geomConversionFn.isEmpty() )
+      geomExpr = geomConversionFn.arg( geomExpr );
+
+    whereClause += u" AND %1(%2,%3)"_s
+                     .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects", geomExpr, qBox );
   }
 
   if ( !mSource->mRequestedSrid.isEmpty() && ( mSource->mRequestedSrid != mSource->mDetectedSrid || mSource->mRequestedSrid.toInt() == 0 ) )

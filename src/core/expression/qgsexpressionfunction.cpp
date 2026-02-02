@@ -71,8 +71,11 @@
 #include <QMimeDatabase>
 #include <QProcessEnvironment>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrlQuery>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 typedef QList<QgsExpressionFunction *> ExpressionFunctionList;
 
@@ -5278,6 +5281,13 @@ static QVariant fcnWithin( const QVariantList &values, const QgsExpressionContex
   return fGeom.within( sGeom ) ? TVL_True : TVL_False;
 }
 
+static QVariant fcnEquals( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
+{
+  QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+  QgsGeometry sGeom = QgsExpressionUtils::getGeometry( values.at( 1 ), parent );
+  return fGeom.equals( sGeom ) ? TVL_True : TVL_False;
+}
+
 static QVariant fcnBuffer( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   const QgsGeometry fGeom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
@@ -9454,6 +9464,9 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( u"within"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s )
                                             << QgsExpressionFunction::Parameter( u"geometry2"_s ),
                                             fcnWithin, u"GeometryGroup"_s )
+        << new QgsStaticExpressionFunction( u"equals"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry1"_s )
+                                            << QgsExpressionFunction::Parameter( u"geometry2"_s ),
+                                            fcnEquals, u"GeometryGroup"_s )
         << new QgsStaticExpressionFunction( u"translate"_s, QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( u"geometry"_s )
                                             << QgsExpressionFunction::Parameter( u"dx"_s )
                                             << QgsExpressionFunction::Parameter( u"dy"_s ),

@@ -29,10 +29,13 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QString>
 #include <QTableWidget>
 #include <QWidget>
 
 #include "moc_qgsautheditorwidgets.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthMethodPlugins::QgsAuthMethodPlugins( QWidget *parent )
   : QDialog( parent )

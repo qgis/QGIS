@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QScreen>
+#include <QString>
 #include <QWidget>
 #include <Qt3DCore/QTransform>
 #include <Qt3DExtras/QConeMesh>
@@ -40,6 +41,8 @@
 #include <Qt3DRender/qcameralens.h>
 
 #include "moc_qgs3daxis.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DAxis::Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, //
                       QgsCameraController *cameraCtrl, Qgs3DMapSettings *map )

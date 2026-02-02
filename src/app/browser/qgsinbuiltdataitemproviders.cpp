@@ -78,9 +78,12 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsinbuiltdataitemproviders.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsAppDirectoryItemGuiProvider::name()
 {
@@ -1856,7 +1859,72 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
     }
 
     // Move to schema should not be available for connections and schemata
-    const bool isTable = qobject_cast<QgsLayerItem *>( item );
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item );
+    const bool isTable = static_cast< bool >( layerItem );
+    if ( selectedItems.size() == 1 && layerItem && layerItem->mapLayerType() == Qgis::LayerType::Vector && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::RenameVectorTable ) )
+    {
+      // some providers implement their own Rename Table action, with provider-specific logic.
+      // Until we can make the generic method flexible enough to handle that logic, hide the generic
+      // action from these providers so we don't get two different Rename actions.
+
+      const bool providerImplementsRename = layerItem->providerKey() == "postgresraster"_L1 || layerItem->providerKey() == u"postgres"_s
+                                            || qobject_cast< QgsGeoPackageVectorLayerItem * >( layerItem );
+      if ( !providerImplementsRename )
+      {
+        QAction *renameTableAction = new QAction( tr( "Rename Table…" ), menu );
+        const QString connectionUri = conn->uri();
+        const QString providerKey = conn->providerKey();
+        const QString schema = item->parent()->name();
+        const QString tableName = item->name();
+
+        QPointer< QgsLayerItem > layerItem( qobject_cast<QgsLayerItem *>( item ) );
+
+        connect( renameTableAction, &QAction::triggered, renameTableAction, [providerKey, connectionUri, schema, tableName, context, layerItem = std::move( layerItem )] {
+          QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
+          if ( !md )
+            return;
+
+          std::unique_ptr<QgsAbstractDatabaseProviderConnection> conn2( qgis::down_cast<QgsAbstractDatabaseProviderConnection *>( md->createConnection( connectionUri, QVariantMap() ) ) );
+
+          QgsNewNameDialog dlg( tr( "Table %1.%2" ).arg( schema, tableName ), tableName );
+          dlg.setWindowTitle( tr( "Rename Table" ) );
+          if ( dlg.exec() != QDialog::Accepted || dlg.name() == tableName )
+            return;
+
+          QString errCause;
+          try
+          {
+            conn2->renameVectorTable( schema, tableName, dlg.name() );
+          }
+          catch ( QgsProviderConnectionException &ex )
+          {
+            errCause = ex.what();
+          }
+
+          if ( !errCause.isEmpty() )
+          {
+            notify( tr( "Cannot rename table" ), errCause, context, Qgis::MessageLevel::Critical );
+          }
+          else if ( context.messageBar() )
+          {
+            context.messageBar()->pushMessage( tr( "Renamed table to %1" ).arg( dlg.name() ), Qgis::MessageLevel::Success );
+          }
+
+          if ( layerItem )
+          {
+            // it's not always the direct parent responsible for creating layer items -- ensure we refresh
+            // the correct ancestor to get the newly renamed table showing
+            if ( QgsDataItem *itemToRefresh = layerItem->ancestorAtDepth( layerItem->creatorAncestorDepth() ) )
+            {
+              itemToRefresh->refresh();
+            }
+          }
+        } );
+
+        QgsDataItemGuiProviderUtils::addToSubMenu( menu, renameTableAction, tr( "Manage" ) );
+      }
+    }
+
     if ( isTable && conn && conn->capabilities().testFlag( QgsAbstractDatabaseProviderConnection::Capability::MoveTableToSchema ) )
     {
       const QString connectionUri = conn->uri();
@@ -2104,6 +2172,8 @@ void QgsDatabaseItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *
         }
         else if ( context.messageBar() )
         {
+          if ( item->parent() )
+            item->parent()->refresh();
           context.messageBar()->pushMessage( tr( "Edited comment on %1" ).arg( fullName ), Qgis::MessageLevel::Success );
         }
       } );

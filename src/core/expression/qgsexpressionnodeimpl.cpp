@@ -23,7 +23,10 @@
 #include <QDate>
 #include <QDateTime>
 #include <QRegularExpression>
+#include <QString>
 #include <QTime>
+
+using namespace Qt::StringLiterals;
 
 const char *QgsExpressionNodeBinaryOperator::BINARY_OPERATOR_TEXT[] =
 {

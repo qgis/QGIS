@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmarraytranslatedfeatures.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsArrayTranslatedFeaturesAlgorithm::name() const

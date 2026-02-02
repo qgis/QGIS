@@ -19,6 +19,8 @@
 #include <QString>
 #include <QtConcurrentMap>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include "qgsexpression.h"
 #include "qgsfeature.h"
@@ -187,6 +189,8 @@ void TestQgsOverlayExpression::testOverlay_data()
 
   QTest::newRow( "equals no match" ) << "overlay_equals('rectangles')" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
   QTest::newRow( "equals no match [cached]" ) << "overlay_equals('rectangles',cache:=true)" << "POLYGON((-156 46, -149 46, -148 37, -156 46))" << false;
+  QTest::newRow( "equals no match different vertices order" ) << "overlay_equals('rectangles')" << "POLYGON((-160 50, -160 35, -145 35, -145 50, -160 50))" << false;
+  QTest::newRow( "equals no match different vertices order [cached]" ) << "overlay_equals('rectangles',cache:=true)" << "POLYGON((-160 50, -160 35, -145 35, -145 50, -160 50))" << false;
 
   QTest::newRow( "disjoint" ) << "overlay_disjoint('rectangles')" << "LINESTRING(-155 15, -122 55, -84 4)" << true;
   QTest::newRow( "disjoint [cached]" ) << "overlay_disjoint('rectangles',cache:=true)" << "LINESTRING(-155 15, -122 55, -84 4)" << true;

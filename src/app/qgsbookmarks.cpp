@@ -37,10 +37,13 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QModelIndex>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 
 #include "moc_qgsbookmarks.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int QgsDoubleSpinBoxBookmarksDelegate::DEFAULT_DECIMAL_PLACES = 6;
 

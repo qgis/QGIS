@@ -17,7 +17,11 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgstabwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTabWidget::QgsTabWidget( QWidget *parent )
   : QTabWidget( parent )

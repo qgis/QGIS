@@ -25,7 +25,10 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QString>
 #include <QTime>
+
+using namespace Qt::StringLiterals;
 
 //////////////
 

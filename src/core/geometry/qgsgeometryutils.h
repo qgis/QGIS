@@ -33,6 +33,9 @@ class QgsLineString;
  * \ingroup core
  * \class QgsGeometryUtils
  * \brief Contains various geometry utility functions.
+ *
+ * \note This class is primarily intended to wrap the low-level mathematical implementations found in QgsGeometryUtilsBase,
+ * exposing them using QGIS geometry classes and providing Python bindings.
  */
 class CORE_EXPORT QgsGeometryUtils
 {
@@ -234,6 +237,28 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 3.4
      */
     static QgsPoint interpolatePointOnArc( const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, double distance ) SIP_HOLDGIL;
+
+    /**
+     * Evaluates a point on a cubic Bézier curve defined by four control points.
+     *
+     * \param p0 start point (the curve passes through this point)
+     * \param p1 first control point
+     * \param p2 second control point
+     * \param p3 end point (the curve passes through this point)
+     * \param t parameter value between 0 and 1
+     *
+     * \returns the point on the Bézier curve at parameter \a t
+     *
+     * Any Z or M values present in the input points will also be interpolated.
+     *
+     * The cubic Bézier formula is:
+     * \code{.unparsed}
+     * B(t) = (1-t)³P₀ + 3(1-t)²tP₁ + 3(1-t)t²P₂ + t³P₃
+     * \endcode
+     *
+     * \since QGIS 4.0
+     */
+    static QgsPoint interpolatePointOnCubicBezier( const QgsPoint &p0, const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3, double t ) SIP_HOLDGIL;
 
     /**
      * Calculates midpoint on circle passing through \a p1 and \a p2, closest to
@@ -1230,6 +1255,39 @@ class CORE_EXPORT QgsGeometryUtils
     }
 
     /**
+     * Calculates the intersection point of two lines defined by point and bearing.
+     *
+     * Each line is defined by a point and a bearing (azimuth). The bearing is measured
+     * clockwise from north in radians.
+     *
+     * \param pt1 point on the first line
+     * \param bearing1 bearing from the first point in radians (clockwise from north)
+     * \param pt2 point on the second line
+     * \param bearing2 bearing from the second point in radians (clockwise from north)
+     * \param intersection will be set to the intersection point.
+     *
+     * \returns TRUE if an intersection was found, FALSE if lines are parallel
+     *
+     * \see lineIntersection()
+     * \see QgsGeometryUtilsBase::intersectionPointOfLinesByBearing()
+     *
+     * \since QGIS 4.0
+     */
+    static bool intersectionPointOfLinesByBearing( const QgsPoint &pt1, double bearing1, const QgsPoint &pt2, double bearing2, QgsPoint &intersection SIP_OUT ) SIP_HOLDGIL
+    {
+      double intersectionX = 0.0, intersectionY = 0.0;
+      const bool found = QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( pt1.x(), pt1.y(), bearing1, pt2.x(), pt2.y(), bearing2, intersectionX, intersectionY );
+
+      intersection = QgsPoint( intersectionX, intersectionY );
+
+      // z and m support for intersection point
+      QgsGeometryUtils::transferFirstZOrMValueToPoint( QgsPointSequence() << pt1 << pt2, intersection );
+
+      return found;
+    }
+
+
+    /**
      * \brief Compute the intersection between two segments
      * \param p1 First segment start point
      * \param p2 First segment end point
@@ -1489,6 +1547,18 @@ class CORE_EXPORT QgsGeometryUtils
      * \since QGIS 4.0
      */
     static bool checkWeaklyFor3DPlane( const QgsAbstractGeometry *geom, QgsPoint &pt1 SIP_OUT, QgsPoint &pt2 SIP_OUT, QgsPoint &pt3 SIP_OUT, double epsilon = std::numeric_limits<double>::epsilon() );
+
+    /**
+     * Interpolates the Z value at the given (x, y) location within the triangle defined by points a, b, and c.
+     *
+     * \param a First vertex of the triangle.
+     * \param b Second vertex of the triangle.
+     * \param c Third vertex of the triangle.
+     * \param x X coordinate of the point to interpolate.
+     * \param y Y coordinate of the point to interpolate.
+     * \return The interpolated Z value at the specified (x, y) location.
+     */
+    static double interpolateZ( const QgsPoint &a, const QgsPoint &b, const QgsPoint &c, double x, double y );
 
   private:
 

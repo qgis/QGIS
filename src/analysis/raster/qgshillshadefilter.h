@@ -21,6 +21,10 @@
 #include "qgis_analysis.h"
 #include "qgsderivativefilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \class QgsHillshadeFilter

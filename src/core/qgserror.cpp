@@ -22,6 +22,9 @@
 #include "qgsversion.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsErrorMessage::QgsErrorMessage( const QString &message, const QString &tag, const QString &file, const QString &function, int line )
   : mMessage( message )

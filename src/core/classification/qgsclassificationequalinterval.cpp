@@ -18,6 +18,9 @@
 #include "qgsapplication.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const QString QgsClassificationEqualInterval::METHOD_ID = u"EqualInterval"_s;
 

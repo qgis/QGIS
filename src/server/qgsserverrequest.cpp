@@ -21,9 +21,12 @@
 
 #include "qgsstringutils.h"
 
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsserverrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsServerRequest::QgsServerRequest( const QString &url, Method method, const Headers &headers )
   : QgsServerRequest( QUrl( url ), method, headers )

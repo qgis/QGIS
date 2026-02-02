@@ -21,6 +21,10 @@
 #include "qgspointcloudsourceselect.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 class QgsPointCloudSourceSelectProvider : public QgsSourceSelectProvider

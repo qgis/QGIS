@@ -26,6 +26,10 @@
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve )
   : QgsAnnotationItem()
   , mText( text )
@@ -157,6 +161,17 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationLineTextItem::applyEditV2( 
       mCurve->transform( transform );
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      QgsPointXY center = mCurve->boundingBox().center();
+      QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
+      transform.rotate( -rotateOperation->angle() );
+      transform.translate( -center.x(), -center.y() );
+      mCurve->transform( transform );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
   }
 
   return Qgis::AnnotationItemEditOperationResult::Invalid;
@@ -182,6 +197,18 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationLineTextItem::trans
       QgsAnnotationItemEditOperationTranslateItem *moveOperation = qgis::down_cast< QgsAnnotationItemEditOperationTranslateItem * >( operation );
       const QTransform transform = QTransform::fromTranslate( moveOperation->translationX(), moveOperation->translationY() );
       std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
+      modifiedCurve->transform( transform );
+      return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
+    }
+
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      std::unique_ptr< QgsCurve > modifiedCurve( mCurve->clone() );
+      QgsPointXY center = modifiedCurve->boundingBox().center();
+      QTransform transform = QTransform::fromTranslate( center.x(), center.y() );
+      transform.rotate( -rotateOperation->angle() );
+      transform.translate( -center.x(), -center.y() );
       modifiedCurve->transform( transform );
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( std::move( modifiedCurve ) ) );
     }

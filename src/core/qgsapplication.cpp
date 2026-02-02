@@ -25,6 +25,7 @@
 #include "qgsactionscoperegistry.h"
 #include "qgsannotationitemregistry.h"
 #include "qgsannotationregistry.h"
+#include "qgsapplicationthemeregistry.h"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthmanager.h"
 #include "qgsbabelformatregistry.h"
@@ -80,6 +81,7 @@
 #include "qgsrendererregistry.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsscalebarrendererregistry.h"
+#include "qgsselectivemaskingsourceset.h"
 #include "qgssensorregistry.h"
 #include "qgssensorthingsutils.h"
 #include "qgssettings.h"
@@ -118,11 +120,14 @@
 #include <QRegularExpression>
 #include <QScreen>
 #include <QStandardPaths>
+#include <QString>
 #include <QStyle>
 #include <QTextStream>
 #include <QThreadPool>
 
 #include "moc_qgsapplication.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsApplication::settingsLocaleUserLocale = new QgsSettingsEntryString( u"userLocale"_s, QgsSettingsTree::sTreeLocale, QString() );
 
@@ -174,6 +179,7 @@ struct QgsApplication::ApplicationMembers
   std::unique_ptr<Qgs3DSymbolRegistry > m3DSymbolRegistry;
   std::unique_ptr<QgsActionScopeRegistry > mActionScopeRegistry;
   std::unique_ptr<QgsAnnotationRegistry > mAnnotationRegistry;
+  std::unique_ptr<QgsApplicationThemeRegistry > mApplicationThemeRegistry;
   std::unique_ptr<QgsColorSchemeRegistry > mColorSchemeRegistry;
   std::unique_ptr<QgsLocalizedDataPathRegistry > mLocalizedDataPathRegistry;
   std::unique_ptr<QgsNumericFormatRegistry > mNumericFormatRegistry;
@@ -347,6 +353,7 @@ void registerMetaTypes()
   qRegisterMetaType< QgsGpsInformation >( "QgsGpsInformation" );
   qRegisterMetaType< QgsSensorThingsExpansionDefinition >( "QgsSensorThingsExpansionDefinition" );
   qRegisterMetaType< QTimeZone >( "QTimeZone" );
+  qRegisterMetaType< QgsSelectiveMaskingSourceSet >( "QgsSelectiveMaskingSourceSet" );
 };
 
 void QgsApplication::init( QString profileFolder )
@@ -499,11 +506,12 @@ void QgsApplication::init( QString profileFolder )
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + u"proj"_s );
 #ifdef Q_OS_MACOS
-  // append bundled proj lib for MacOS
-  QString projLib( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
-  if ( QFile::exists( projLib ) )
+  // Set bundled proj data path as env var, so it's also available for pyproj and subprocesses (e.g. processing algorithms)
+  const QString projData( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
+  if ( QFile::exists( projData ) )
   {
-    currentProjSearchPaths.append( projLib );
+    qputenv( "PROJ_DATA", projData.toUtf8() );
+    currentProjSearchPaths.append( projData );
   }
 #endif // Q_OS_MACOS
 
@@ -1116,25 +1124,45 @@ QString QgsApplication::themeName()
 void QgsApplication::setUITheme( const QString &themeName )
 {
   // Loop all style sheets, find matching name, load it.
-  QHash<QString, QString> themes = QgsApplication::uiThemes();
-  if ( themeName == "default"_L1 || !themes.contains( themeName ) )
+  const QString path = applicationThemeRegistry()->themeFolder( themeName );
+  if ( themeName == "default"_L1 || path.isEmpty() )
   {
     setThemeName( u"default"_s );
     qApp->setStyleSheet( QString() );
+    instance()->themeChanged();
     return;
   }
 
-  QString path = themes.value( themeName );
-  QString stylesheetname = path + "/style.qss";
-
-  QFile file( stylesheetname );
+  QFile file( path + "/style.qss" );
   QFile variablesfile( path + "/variables.qss" );
-
   QFileInfo variableInfo( variablesfile );
 
   if ( !file.open( QIODevice::ReadOnly ) || ( variableInfo.exists() && !variablesfile.open( QIODevice::ReadOnly ) ) )
   {
+    qApp->setStyleSheet( QString() );
+    instance()->themeChanged();
     return;
+  }
+
+  QFile palettefile( path + "/palette.txt" );
+  QFileInfo paletteInfo( palettefile );
+  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
+  {
+    QPalette pal = qApp->palette();
+    QTextStream in( &palettefile );
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      QStringList parts = line.split( ':' );
+      if ( parts.count() == 2 )
+      {
+        int role = parts.at( 0 ).trimmed().toInt();
+        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
+        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
+      }
+    }
+    palettefile.close();
+    qApp->setPalette( pal );
   }
 
   QString styledata = file.readAll();
@@ -1178,52 +1206,14 @@ void QgsApplication::setUITheme( const QString &themeName )
 
   qApp->setStyleSheet( styledata );
 
-  QFile palettefile( path + "/palette.txt" );
-  QFileInfo paletteInfo( palettefile );
-  if ( paletteInfo.exists() && palettefile.open( QIODevice::ReadOnly ) )
-  {
-    QPalette pal = qApp->palette();
-    QTextStream in( &palettefile );
-    while ( !in.atEnd() )
-    {
-      QString line = in.readLine();
-      QStringList parts = line.split( ':' );
-      if ( parts.count() == 2 )
-      {
-        int role = parts.at( 0 ).trimmed().toInt();
-        QColor color = QgsSymbolLayerUtils::decodeColor( parts.at( 1 ).trimmed() );
-        pal.setColor( static_cast< QPalette::ColorRole >( role ), color );
-      }
-    }
-    palettefile.close();
-    qApp->setPalette( pal );
-  }
-
   setThemeName( themeName );
+  instance()->themeChanged();
 }
 
 QHash<QString, QString> QgsApplication::uiThemes()
 {
-  QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
-  QHash<QString, QString> mapping;
+  QHash<QString, QString> mapping = applicationThemeRegistry()->themeFolders();
   mapping.insert( u"default"_s, QString() );
-  const auto constPaths = paths;
-  for ( const QString &path : constPaths )
-  {
-    QDir folder( path );
-    QFileInfoList styleFiles = folder.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
-    const auto constStyleFiles = styleFiles;
-    for ( const QFileInfo &info : constStyleFiles )
-    {
-      QFileInfo styleFile( info.absoluteFilePath() + "/style.qss" );
-      if ( !styleFile.exists() )
-        continue;
-
-      QString name = info.baseName();
-      QString path = info.absoluteFilePath();
-      mapping.insert( name, path );
-    }
-  }
   return mapping;
 }
 
@@ -1668,9 +1658,17 @@ void QgsApplication::exitQgis()
 
   QgsStyle::cleanDefaultStyle();
 
-  // tear-down GDAL/OGR
-  OGRCleanupAll();
-  GDALDestroyDriverManager();
+  // tear-down GDAL/OGR, but only if there are no remaining opened
+  // datasets (cf https://github.com/qgis/QGIS/issues/58724)
+  // Outputting to stdin is obviously absurd, but intended here, since
+  // we are just interested in the count of still open datasets.
+  if ( GDALDumpOpenDatasets( stdin ) == 0 )
+  {
+    OGRCleanupAll();
+    GDALDestroyDriverManager();
+  }
+  else
+    QgsDebugMsgLevel( u"Skipping call to GDALDestroyDriverManager() due to still opened datasets"_s, 5 );
 }
 
 QString QgsApplication::showSettings()
@@ -2695,6 +2693,11 @@ QgsAnnotationRegistry *QgsApplication::annotationRegistry()
   return members()->mAnnotationRegistry.get();
 }
 
+QgsApplicationThemeRegistry *QgsApplication::applicationThemeRegistry()
+{
+  return members()->mApplicationThemeRegistry.get();
+}
+
 QgsNumericFormatRegistry *QgsApplication::numericFormatRegistry()
 {
   return members()->mNumericFormatRegistry.get();
@@ -2897,6 +2900,11 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
     profiler->end();
   }
   {
+    profiler->start( tr( "Setup application theme registry" ) );
+    mApplicationThemeRegistry = std::make_unique<QgsApplicationThemeRegistry>();
+    profiler->end();
+  }
+  {
     profiler->start( tr( "Setup annotation item registry" ) );
     mAnnotationItemRegistry = std::make_unique<QgsAnnotationItemRegistry>();
     mAnnotationItemRegistry->populate();
@@ -2982,6 +2990,7 @@ QgsApplication::ApplicationMembers::~ApplicationMembers()
   m3DRendererRegistry.reset();
   m3DSymbolRegistry.reset();
   mAnnotationRegistry.reset();
+  mApplicationThemeRegistry.reset();
   mColorSchemeRegistry.reset();
   mFieldFormatterRegistry.reset();
   mGpsConnectionRegistry.reset();

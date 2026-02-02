@@ -18,8 +18,11 @@
 #include "qgsmessagelog.h"
 #include "qgswfsconstants.h"
 
+#include <QString>
 #include <QUrlQuery>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 QgsWFSDataSourceURI::QgsWFSDataSourceURI( const QString &uri )
   : mURI( uri )

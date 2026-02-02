@@ -24,6 +24,10 @@
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapToPixelSimplifier;
 
 ///@cond PRIVATE

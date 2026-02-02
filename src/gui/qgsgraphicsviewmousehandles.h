@@ -109,6 +109,15 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
      */
     void setRotationEnabled( bool enable );
 
+    /**
+     * Sets to TRUE for item dragging behavior to require a mouse click,
+     * mouse movement, then a second mouse click to confirm the dragging
+     * operation.
+     *
+     * \since QGIS 4.0
+     */
+    void setCadMouseDigitizingModeEnabled( bool enable );
+
   public slots:
 
     //! Redraws handles when selected item size changes
@@ -238,6 +247,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     QRectF mResizeRect;
 
+    bool mCadMouseDigitizingMode = false;
+
     bool mRotationEnabled = false;
     //! Center point around which rotation occurs
     QPointF mRotationCenter;
@@ -254,8 +265,11 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     Qgis::MouseHandlesAction mCurrentMouseMoveAction = Qgis::MouseHandlesAction::NoAction;
     bool mDoubleClickInProgress = false;
 
+
     //! True if user is currently dragging items
     bool mIsDragging = false;
+    //! True if user is starting to drag items in click-click behavior
+    bool mIsDragStarting = false;
     //! True is user is currently resizing items
     bool mIsResizing = false;
     //! True is user is currently rotating items
@@ -281,6 +295,8 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
+
+    friend class QgsMapToolSelectAnnotation;
 };
 
 ///@endcond PRIVATE

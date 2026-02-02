@@ -20,7 +20,10 @@
 #include "qgis_sip.h"
 #include "qgscodeeditor.h"
 
+#include <QString>
 #include <Qsci/qscilexerpython.h>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryInteger;
 class QgsSettingsEntryBool;

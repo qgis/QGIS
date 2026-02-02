@@ -207,7 +207,7 @@ class _3D_EXPORT QgsRubberBand3D
     void updateGeometry();
     void updateMarkerMaterial();
     void setupMarker( Qt3DCore::QEntity *parentEntity );
-    void setupLine( Qt3DCore::QEntity *parentEntity, QgsAbstract3DEngine *engine );
+    void setupLine( Qt3DCore::QEntity *parentEntity );
     void setupPolygon( Qt3DCore::QEntity *parentEntity );
     //! negative index counts from end
     void removePoint( int index );

@@ -24,6 +24,10 @@
 #include "qgsrendercontext.h"
 #include "qgstextrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()
   , mText( text )
@@ -273,6 +277,13 @@ Qgis::AnnotationItemEditOperationResult QgsAnnotationPointTextItem::applyEditV2(
       return Qgis::AnnotationItemEditOperationResult::Success;
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
+    {
+      QgsAnnotationItemEditOperationRotateItem *rotateOperation = qgis::down_cast< QgsAnnotationItemEditOperationRotateItem * >( operation );
+      mAngle = std::fmod( mAngle + rotateOperation->angle(), 360.0 );
+      return Qgis::AnnotationItemEditOperationResult::Success;
+    }
+
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;
   }
@@ -296,6 +307,7 @@ QgsAnnotationItemEditOperationTransientResults *QgsAnnotationPointTextItem::tran
       return new QgsAnnotationItemEditOperationTransientResults( QgsGeometry( new QgsPoint( mPoint.x() + moveOperation->translationX(), mPoint.y() + moveOperation->translationY() ) ) );
     }
 
+    case QgsAbstractAnnotationItemEditOperation::Type::RotateItem:
     case QgsAbstractAnnotationItemEditOperation::Type::DeleteNode:
     case QgsAbstractAnnotationItemEditOperation::Type::AddNode:
       break;

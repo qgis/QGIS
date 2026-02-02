@@ -21,6 +21,9 @@
 #include "qgsmessagelog.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsProjectBadLayerHandler::handleBadLayers( const QList<QDomNode> &layers )
 {

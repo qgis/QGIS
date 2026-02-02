@@ -39,6 +39,9 @@
 #include "qgstest.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayout : public QgsTest
 {
@@ -974,7 +977,7 @@ void TestQgsLayout::legendRestoredFromTemplate()
   // add a legend
   QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &c );
   c.addLayoutItem( legend );
-  legend->setAutoUpdateModel( false );
+  legend->setSyncMode( Qgis::LegendSyncMode::Manual );
 
   QgsLegendModel *model = legend->model();
   QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
@@ -1050,7 +1053,7 @@ void TestQgsLayout::legendRestoredFromTemplateAutoUpdate()
   // add a legend
   QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &c );
   c.addLayoutItem( legend );
-  legend->setAutoUpdateModel( true );
+  legend->setSyncMode( Qgis::LegendSyncMode::AllProjectLayers );
 
   QgsLegendModel *model = legend->model();
   QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );

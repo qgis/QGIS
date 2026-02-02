@@ -37,9 +37,12 @@
 #include "qgsterrainprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgslayoutitemelevationprofile.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define CACHE_SIZE_LIMIT 5000
 

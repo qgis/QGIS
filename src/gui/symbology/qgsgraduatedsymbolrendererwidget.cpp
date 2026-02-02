@@ -56,9 +56,12 @@
 #include <QScreen>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsgraduatedsymbolrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // ------------------------------ Model ------------------------------------
 

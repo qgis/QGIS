@@ -3,7 +3,7 @@
                          -------------------
     begin                : January 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,6 +22,10 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsTriangle::QgsTriangle()
 {

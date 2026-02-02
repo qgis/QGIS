@@ -18,6 +18,10 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgssqliteutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsProviderSqlQueryBuilder::~QgsProviderSqlQueryBuilder() = default;
 
 QString QgsProviderSqlQueryBuilder::createLimitQueryForTable( const QString &schema, const QString &name, int limit ) const

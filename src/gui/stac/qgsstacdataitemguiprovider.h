@@ -22,6 +22,10 @@
 #include "qgis_gui.h"
 #include "qgsdataitemguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT

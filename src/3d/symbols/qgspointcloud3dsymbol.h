@@ -24,6 +24,10 @@
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup qgis_3d
  * \brief 3D symbol that draws point cloud geometries as 3D objects.

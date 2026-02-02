@@ -21,6 +21,10 @@
 #include "qgsvectortilelayer.h"
 #include "qgsvectortilerenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsVectorTileBasicLabelingStyle::writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const
 {
   elem.setAttribute( u"name"_s, mStyleName );

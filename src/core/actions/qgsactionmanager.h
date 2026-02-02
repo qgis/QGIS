@@ -122,8 +122,12 @@ class CORE_EXPORT QgsActionManager: public QObject
     //! Writes the actions out in XML format
     bool writeXml( QDomNode &layer_node ) const;
 
-    //! Reads the actions in in XML format
-    bool readXml( const QDomNode &layer_node );
+    /**
+    * Reads the actions in in XML format
+    * \param layer_node the layer's xml node
+    * \param context The readwrite context (Since QGIS 4.0)
+    */
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
      * Gets an action by its \a id.

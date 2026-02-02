@@ -30,8 +30,11 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgspgnewconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

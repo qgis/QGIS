@@ -21,9 +21,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgstransactiongroup.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTransactionGroup::QgsTransactionGroup( QObject *parent )
   : QObject( parent )

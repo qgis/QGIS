@@ -37,9 +37,13 @@
 #include <QDialog>
 #include <QDir>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QStandardPaths>
+#include <QString>
 #include <QTimer>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 bool QgsXmlSchemaAnalyzer::readAttributesFromSchema(
   const QString &translatedProviderName,

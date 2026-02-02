@@ -9,6 +9,7 @@
 
 
 
+
 class QgsRendererCategory
 {
 %Docstring(signature="appended")

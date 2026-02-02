@@ -30,8 +30,11 @@
 #include "qgswfsutils.h"
 
 #include <QEventLoop>
+#include <QString>
 
 #include "moc_qgsoapiffeaturedownloaderimpl.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOapifFeatureDownloaderImpl::QgsOapifFeatureDownloaderImpl( QgsOapifSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
   : QgsBaseNetworkRequest( shared->mURI.auth(), tr( "OAPIF" ) ), QgsFeatureDownloaderImpl( shared, downloader ), mShared( shared )

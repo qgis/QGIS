@@ -25,6 +25,8 @@
 #include <QMutex>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 #define SIP_NO_FILE
 
 #include <functional>

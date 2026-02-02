@@ -15,11 +15,14 @@
 
 #include "qgsbillboardgeometry.h"
 
+#include <QString>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 
 #include "moc_qgsbillboardgeometry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   : QGeometry( parent )

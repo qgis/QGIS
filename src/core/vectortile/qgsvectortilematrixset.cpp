@@ -20,6 +20,10 @@
 #include "qgsmessagelog.h"
 #include "qgstiles.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVectorTileMatrixSet QgsVectorTileMatrixSet::fromWebMercator( int minimumZoom, int maximumZoom )
 {
   QgsVectorTileMatrixSet res;

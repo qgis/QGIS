@@ -23,6 +23,9 @@
 #include <QDirIterator>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -389,7 +392,7 @@ QVariantMap QgsImportPhotosAlgorithm::processAlgorithm( const QVariantMap &param
       continue;
     }
 
-    char **GDALmetadata = GDALGetMetadata( hDS.get(), nullptr );
+    CSLConstList GDALmetadata = GDALGetMetadata( hDS.get(), nullptr );
     if ( !GDALmetadata )
     {
       GDALmetadata = GDALGetMetadata( hDS.get(), "EXIF" );

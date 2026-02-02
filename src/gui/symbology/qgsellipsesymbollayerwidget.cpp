@@ -19,8 +19,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QColorDialog>
+#include <QString>
 
 #include "moc_qgsellipsesymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent )
   : QgsSymbolLayerWidget( parent, vl )

@@ -29,8 +29,11 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QObject>
+#include <QString>
 
 #include "moc_qgsfieldexpressionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )

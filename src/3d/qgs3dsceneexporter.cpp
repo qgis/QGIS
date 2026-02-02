@@ -42,6 +42,7 @@
 
 #include <QByteArray>
 #include <QFile>
+#include <QString>
 #include <QTextStream>
 #include <QVector>
 #include <Qt3DCore/QAttribute>
@@ -70,6 +71,8 @@
 #include <Qt3DRender/QTextureImage>
 
 #include "moc_qgs3dsceneexporter.cpp"
+
+using namespace Qt::StringLiterals;
 
 template<typename T>
 QVector<T> getAttributeData( Qt3DCore::QAttribute *attribute, const QByteArray &data )
@@ -254,7 +257,7 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
 void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString &layerName )
 {
   Qgs3DMapSettings *settings = terrain->mapSettings();
-  if ( !settings->terrainRenderingEnabled() )
+  if ( !settings->terrainRenderingEnabled() || !mTerrainExportEnabled )
     return;
 
   QgsChunkNode *node = terrain->rootNode();

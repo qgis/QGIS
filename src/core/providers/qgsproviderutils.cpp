@@ -19,6 +19,9 @@
 #include "qgsprovidersublayerdetails.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 bool QgsProviderUtils::sublayerDetailsAreIncomplete( const QList<QgsProviderSublayerDetails> &details, SublayerCompletenessFlags flags )
 {

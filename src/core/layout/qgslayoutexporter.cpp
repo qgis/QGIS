@@ -35,9 +35,12 @@
 #include <QBuffer>
 #include <QImageWriter>
 #include <QSize>
+#include <QString>
 #include <QSvgGenerator>
 #include <QTextStream>
 #include <QTimeZone>
+
+using namespace Qt::StringLiterals;
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 8, 0)
 #include <QColorSpace>

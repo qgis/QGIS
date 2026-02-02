@@ -19,9 +19,12 @@
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"
 
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsversioninfo.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
   : QObject( parent )

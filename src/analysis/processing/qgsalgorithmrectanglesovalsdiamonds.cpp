@@ -21,6 +21,10 @@
 #include "qgslinestring.h"
 #include "qgspolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRectanglesOvalsDiamondsAlgorithm::name() const

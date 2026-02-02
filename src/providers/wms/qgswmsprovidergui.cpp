@@ -28,6 +28,10 @@
 #include "qgsxyzsourceselect.h"
 #include "qgsxyzsourcewidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for WMS layers source select
 class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
 {

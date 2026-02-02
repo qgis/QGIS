@@ -35,7 +35,10 @@
 #include <QDir>
 #include <QElapsedTimer>
 #include <QFile>
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 #if defined(_MSC_VER)
 #ifndef UNICODE

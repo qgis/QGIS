@@ -28,6 +28,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 // None of this is stable API!

@@ -76,11 +76,14 @@
 #include <QPushButton>
 #include <QScrollBar>
 #include <QSslCipher>
+#include <QString>
 #include <QStyle>
 #include <QTimer>
 #include <QToolButton>
 
 #include "moc_qgsauthsslimportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )

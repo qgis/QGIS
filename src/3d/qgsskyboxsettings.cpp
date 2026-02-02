@@ -19,6 +19,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSkyboxSettings::QgsSkyboxSettings( const QgsSkyboxSettings &other )
   : mSkyboxType( other.mSkyboxType )

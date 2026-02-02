@@ -38,8 +38,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgslayoutelevationprofilewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 std::function<void( QgsLayoutElevationProfileWidget *, QMenu * )> QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = []( QgsLayoutElevationProfileWidget *, QMenu * ) {};
 

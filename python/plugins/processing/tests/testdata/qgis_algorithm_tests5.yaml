@@ -659,3 +659,47 @@ tests:
             precision: 2
           fields:
             fid: skip
+
+  - algorithm: native:forcecw
+    name: Force clockwise polys
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_rhr_polys.gml
+        type: vector
+
+  - algorithm: native:forcecw
+    name: Force clockwise multipolys
+    params:
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_rhr_multipolys.gml
+        type: vector
+
+  - algorithm: native:forceccw
+    name: Force counter-clockwise polys
+    params:
+      INPUT:
+        name: polys.gml|layername=polys2
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_ccw_polys.gml
+        type: vector
+
+  - algorithm: native:forceccw
+    name: Force counter-clockwise multipolys
+    params:
+      INPUT:
+        name: multipolys.gml|layername=multipolys
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/force_ccw_multipolys.gml
+        type: vector

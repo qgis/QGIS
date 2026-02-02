@@ -34,7 +34,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 
+#include <QString>
+
 #include "moc_qgsmaplayerlegend.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent )
   : QObject( parent )

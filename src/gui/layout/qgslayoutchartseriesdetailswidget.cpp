@@ -19,7 +19,11 @@
 
 #include "qgsexpressionbuilderdialog.h"
 
+#include <QString>
+
 #include "moc_qgslayoutchartseriesdetailswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutChartSeriesDetailsWidget::QgsLayoutChartSeriesDetailsWidget( QgsVectorLayer *layer, int index, const QgsLayoutItemChart::SeriesDetails &seriesDetails, QWidget *parent )
   : QgsPanelWidget( parent )

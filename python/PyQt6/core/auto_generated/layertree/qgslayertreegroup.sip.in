@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsLayerTreeGroup : QgsLayerTreeNode
 {
 %Docstring(signature="appended")

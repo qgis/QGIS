@@ -28,8 +28,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgsoraclenewconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QDialog( parent, fl )

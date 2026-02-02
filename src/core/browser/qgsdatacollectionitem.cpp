@@ -25,8 +25,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsdatacollectionitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem *parent,
     const QString &name,

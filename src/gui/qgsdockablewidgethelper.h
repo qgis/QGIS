@@ -25,7 +25,10 @@
 #include <QDomElement>
 #include <QMainWindow>
 #include <QPointer>
+#include <QString>
 #include <QToolButton>
+
+using namespace Qt::StringLiterals;
 
 #define SIP_NO_FILE
 

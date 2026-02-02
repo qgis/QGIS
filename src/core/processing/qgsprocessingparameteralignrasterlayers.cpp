@@ -18,6 +18,10 @@
 #include "qgis.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsProcessingParameterAlignRasterLayers::QgsProcessingParameterAlignRasterLayers( const QString &name, const QString &description )
   : QgsProcessingParameterDefinition( name, description, QVariant(), false )
 {

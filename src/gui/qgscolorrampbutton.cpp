@@ -34,8 +34,11 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgscolorrampbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorRampButton::QgsColorRampButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

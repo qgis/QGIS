@@ -40,6 +40,9 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutMap : public QgsTest
 {
