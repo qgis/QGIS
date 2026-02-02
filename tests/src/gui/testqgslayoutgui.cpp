@@ -47,6 +47,7 @@ class TestQgsLayoutGui : public QObject
     void testProxyCrash();
     void testElevationProfileWidgetLegacy();
     void testElevationProfileWidget();
+    void testElevationProfileWidgetRemovingSources();
 
   private:
 };
@@ -345,6 +346,59 @@ void TestQgsLayoutGui::testElevationProfileWidget()
   QCOMPARE( profile.sources().at( 0 )->profileSourceName(), u"vl3"_s );
   QCOMPARE( profile.sources().at( 1 )->profileSourceName(), u"vl2"_s );
   QCOMPARE( profile.sources().at( 2 )->profileSourceName(), u"vl1"_s );
+}
+
+void TestQgsLayoutGui::testElevationProfileWidgetRemovingSources()
+{
+  QgsProject project;
+  QgsLayout layout( &project );
+  QgsVectorLayer *vl1 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl1"_s, u"memory"_s );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl1->elevationProperties() )->setZOffset( 5 );
+  QgsVectorLayer *vl2 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl2"_s, u"memory"_s );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl2->elevationProperties() )->setZOffset( 5 );
+  QgsVectorLayer *vl3 = new QgsVectorLayer( u"Point?field=intarray:int[]&field=strarray:string[]&field=intf:int"_s, u"vl3"_s, u"memory"_s );
+  qobject_cast< QgsVectorLayerElevationProperties * >( vl3->elevationProperties() )->setZOffset( 5 );
+  project.addMapLayers( { vl1, vl2, vl3 } );
+
+  QgsLayoutItemElevationProfile profile( &layout );
+  // sources will be rendered from vl3->vl1 from bottom to top
+  profile.setSources( { vl1, vl2, vl3 } );
+  QgsLayoutElevationProfileWidget widget( &profile );
+
+  QCOMPARE( widget.mLayerTree->children().size(), 3 );
+  // in widget's layer tree the sources should be in the same order v1->vl3 than the layout item profile
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 0 ) )->layer()->name(), u"vl1"_s );
+  QVERIFY( widget.mLayerTree->children().at( 0 )->isItemVisibilityCheckedRecursive() );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 1 ) )->layer()->name(), u"vl2"_s );
+  QVERIFY( widget.mLayerTree->children().at( 1 )->isItemVisibilityCheckedRecursive() );
+  QCOMPARE( qobject_cast< QgsLayerTreeLayer * >( widget.mLayerTree->children().at( 2 ) )->layer()->name(), u"vl3"_s );
+  QVERIFY( widget.mLayerTree->children().at( 2 )->isItemVisibilityCheckedRecursive() );
+
+  QgsElevationProfileCanvas canvas;
+  canvas.setProject( &project );
+  // sources will be rendered from vl3->vl1 from bottom to top
+  canvas.setSources( { vl1, vl2, vl3 } );
+
+  widget.copySettingsFromProfileCanvas( &canvas );
+  QCOMPARE( profile.sources().size(), 3 );
+  // sources should be in opposite order of rendering, ie vl1 before vl3 as vl1 is rendered on top
+  QCOMPARE( profile.sources().at( 0 )->profileSourceName(), u"vl1"_s );
+  QCOMPARE( profile.sources().at( 1 )->profileSourceName(), u"vl2"_s );
+  QCOMPARE( profile.sources().at( 2 )->profileSourceName(), u"vl3"_s );
+
+  QDomDocument doc;
+  QDomElement parentElem = doc.createElement( u"Parent"_s );
+  profile.writeXml( parentElem, doc, QgsReadWriteContext() );
+
+  project.removeMapLayer( vl2 );
+
+  // Check that when reading from XML, unavailable layers are skipped as sources
+  QgsLayoutItemElevationProfile profile2( &layout );
+  QDomElement itemElem = parentElem.firstChildElement( u"LayoutItem"_s );
+  profile2.readXml( itemElem, doc, QgsReadWriteContext() );
+  QCOMPARE( profile2.sources().size(), 2 );
+  QCOMPARE( profile2.sources().at( 0 )->profileSourceName(), u"vl1"_s );
+  QCOMPARE( profile2.sources().at( 1 )->profileSourceName(), u"vl3"_s );
 }
 
 QTEST_MAIN( TestQgsLayoutGui )
