@@ -134,7 +134,7 @@ class PolarPlot(QgisAlgorithm):
 
         # Sum up values by category
         category_sums = {category: 0 for category in set(names)}
-        for idx in range(len(names)):
+        for idx, _ in enumerate(names):
             category_sums[names[idx]] += values[idx]
 
         data = [
