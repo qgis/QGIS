@@ -127,25 +127,15 @@ class PolarPlot(QgisAlgorithm):
 
         output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
-        values = vector.values(source, valuefieldname)
-
-        # Load a vector of categories
-        category_index = source.fields().lookupField(namefieldname)
-        categories = vector.convert_nulls(
-            [
-                i[namefieldname]
-                for i in source.getFeatures(
-                    QgsFeatureRequest()
-                    .setFlags(QgsFeatureRequest.Flag.NoGeometry)
-                    .setSubsetOfAttributes([category_index])
-                )
-            ],
-            "<NULL>",
+        values = vector.values(source, valuefieldname)[valuefieldname]
+        names = vector.load_field(
+            source, namefieldname, nullstring="<NULL>", nonestring="<NULL>"
         )
+
         # Sum up values by category
-        category_sums = {category: 0 for category in set(categories)}
-        for idx in range(len(categories)):
-            category_sums[categories[idx]] += values[valuefieldname][idx]
+        category_sums = {category: 0 for category in set(names)}
+        for idx in range(len(names)):
+            category_sums[names[idx]] += values[idx]
 
         data = [
             go.Barpolar(

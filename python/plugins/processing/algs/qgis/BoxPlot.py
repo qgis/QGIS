@@ -169,17 +169,8 @@ class BoxPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)
 
-        x_index = source.fields().lookupField(namefieldname)
-        x_var = vector.convert_nulls(
-            [
-                i[namefieldname]
-                for i in source.getFeatures(
-                    QgsFeatureRequest()
-                    .setFlags(QgsFeatureRequest.Flag.NoGeometry)
-                    .setSubsetOfAttributes([x_index])
-                )
-            ],
-            "<NULL>",
+        x_var = vector.load_field(
+            source, namefieldname, nullstring="<NULL>", nonestring="<NULL>"
         )
 
         msdIndex = self.parameterAsEnum(parameters, self.MSD, context)
