@@ -477,6 +477,7 @@ using namespace Qt::StringLiterals;
 #include "devtools/querylogger/qgsqueryloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
 
+#include "qgsmaplayerloadstyledialog.h"
 #include "browser/qgsinbuiltdataitemproviders.h"
 
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -8428,6 +8429,82 @@ void QgisApp::saveAsLayerDefinition()
 
   QFileInfo fi( path );
   settings.setValue( u"UI/lastQLRDir"_s, fi.path() );
+}
+
+void QgisApp::loadStyleFromFile( const QList<QgsMapLayer *> layers )
+{
+  if ( layers.count() < 0 )
+  {
+    return;
+  }
+
+  // TODO should we check that all the layers are of the same type here?
+
+  QString errorMsg;
+  QStringList ids, names, descriptions;
+
+  QString filePath;
+  QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories;
+  QgsLayerPropertiesDialog::StyleType type = QgsLayerPropertiesDialog::StyleType::QML;
+
+  // vectors and rasters have more complex options including categories, so they need QgsMapLayerLoadStyleDialog
+  if ( layers.at( 0 )->type() == Qgis::LayerType::Vector || layers.at( 0 )->type() == Qgis::LayerType::Raster )
+  {
+    QgsMapLayerLoadStyleDialog dlg( layers[0], this );
+    dlg.allowLoadingOnlyFromFiles();
+    dlg.initializeLists( ids, names, descriptions, 0 );
+    if ( dlg.exec() )
+    {
+      filePath = dlg.filePath();
+      categories = dlg.styleCategories();
+      type = dlg.currentStyleType();
+    }
+  }
+  else // for other layer types just ask for file name
+  {
+    QgsSettings settings;
+    const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
+
+    filePath = QFileDialog::getOpenFileName(
+      this,
+      tr( "Load layer properties from style file" ),
+      lastUsedDir,
+      tr( "QGIS Layer Style File" ) + " (*.qml)"
+    );
+    if ( filePath.isEmpty() )
+      return;
+
+    // ensure the user never omits the extension from the file name
+    if ( !filePath.endsWith( ".qml"_L1, Qt::CaseInsensitive ) )
+      filePath += ".qml"_L1;
+
+    settings.setValue( u"style/lastStyleDir"_s, QFileInfo( filePath ).absolutePath() );
+  }
+
+  if ( !filePath.isEmpty() )
+  {
+    for ( QgsMapLayer *layer : layers )
+    {
+      bool loaded = false;
+
+      if ( type == QgsLayerPropertiesDialog::SLD )
+      {
+        errorMsg = layer->loadSldStyle( filePath, loaded );
+      }
+      else
+      {
+        errorMsg = layer->loadNamedStyle( filePath, loaded, false, categories );
+      }
+
+      // TODO should be report the issue for every layer, or just callect names of layers where it could not be applied and report that after the cycle?
+      if ( !loaded )
+      {
+        //let the user know what went wrong
+        QMessageBox::warning( this, tr( "Load Style" ), errorMsg );
+        return;
+      }
+    }
+  }
 }
 
 void QgisApp::loadStyleFromFile( QgsMapLayer *layer )
