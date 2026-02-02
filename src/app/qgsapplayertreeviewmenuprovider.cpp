@@ -905,6 +905,29 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         {
           menu->addAction( tr( "Paste Style" ), QgisApp::instance(), &QgisApp::applyStyleToGroup );
         }
+
+        const QList<QgsLayerTreeLayer *> selectedLayerNodes = mView->selectedLayerNodes();
+        QList<QgsMapLayer *> layers;
+        layers.reserve( selectedLayerNodes.size() );
+
+        for ( QgsLayerTreeLayer *l : selectedLayerNodes )
+        {
+          QgsMapLayer *layer = QgsLayerTree::toLayer( l )->layer();
+          layers.push_back( layer );
+        }
+
+        bool allLayersSameType = false;
+        if ( !layers.empty() )
+        {
+          allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers[0]->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
+        }
+
+        if ( allLayersSameType )
+        {
+          QgisApp *app = QgisApp::instance();
+
+          menu->addAction( tr( "Load Style…" ), app, [app, layers] { app->loadStyleFromFile( layers ); } );
+        }
       }
 
       // Actions for layer notes
