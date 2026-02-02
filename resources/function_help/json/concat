@@ -28,5 +28,6 @@
     "expression": "concat('The Wall', NULL)",
     "returns": "'The Wall'"
   }],
+  "notes": "See also: the || operator, which also concatenates strings but propagates NULL values according to the SQL-standard (i.e., if any operand is NULL, the result is NULL). Use concat() when you want NULLs treated as empty strings, or || when NULL should make the entire result NULL.",
   "tags": ["empty", "converted", "numbers", "concatenates", "null", "strings", "several", "other", "values"]
 }
