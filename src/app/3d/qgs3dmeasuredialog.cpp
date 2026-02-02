@@ -63,9 +63,9 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, Qt::WindowFla
   else
   {
     mTable->hide();
-    totalDistanceLabel->setText( tr( "Total" ) );
-    editHorizontalTotal->hide();
-    totalHorizontalDistanceLabel->hide();
+    totalDistanceLabel->setText( tr( "Total 3D Area" ) );
+    editHorizontalTotal->show();
+    totalHorizontalDistanceLabel->setText( tr( "Total Horizontal Area" ) );
   }
 
   // Initialize unit combo box
@@ -126,6 +126,7 @@ void Qgs3DMeasureDialog::addPoint()
     ring.close();
     QgsPolygon polygon( ring.clone() );
     mTotal = polygon.area3D();
+    mHorizontalTotal = polygon.area();
     updateTotal();
   }
 }
@@ -346,6 +347,7 @@ void Qgs3DMeasureDialog::updateTotal()
   if ( mMeasureArea )
   {
     editTotal->setText( formatArea( mTotal ) );
+    editHorizontalTotal->setText( formatArea( mHorizontalTotal ) );
   }
   else
   {
