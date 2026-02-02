@@ -176,7 +176,7 @@
     'python/plugins/processing/**/*',
     'src/analysis/**/*',
     'src/core/processing/**/*',
-    'src/process/**/*'
+    'src/process/**/*',
     'src/ui/processing/**/*',
   ]
 
