@@ -23,6 +23,19 @@ __copyright__ = '(C) 2014, Nathan Woodrow'
 
 import typing as _typing
 
+if _typing.TYPE_CHECKING:
+    # Exception classes that SIP doesn't export to stub files properly
+    # These are available at runtime from qgis._core but need explicit
+    # type hints for IDE support (see issue #63592)
+    from qgis._core import (
+        QgsException,
+        QgsCsException,
+        QgsProcessingException,
+        QgsProviderConnectionException,
+        QgsNotSupportedException,
+        QgsSettingsException,
+    )
+
 from qgis.PyQt.QtCore import NULL
 from qgis.PyQt.QtCore import Qt as _Qt
 from qgis.PyQt.QtCore import QMetaType as _QMetaType
