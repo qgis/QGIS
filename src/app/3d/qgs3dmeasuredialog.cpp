@@ -67,9 +67,9 @@ Qgs3DMeasureDialog::Qgs3DMeasureDialog( Qgs3DMapToolMeasure *tool, QWidget *pare
   else
   {
     mTable->hide();
-    totalDistanceLabel->setText( tr( "Total" ) );
-    editHorizontalTotal->hide();
-    totalHorizontalDistanceLabel->hide();
+    totalDistanceLabel->setText( tr( "Total 3D Area" ) );
+    editHorizontalTotal->show();
+    totalHorizontalDistanceLabel->setText( tr( "Total Horizontal Area" ) );
   }
 
   // Initialize unit combo box
@@ -135,7 +135,9 @@ void Qgs3DMeasureDialog::addPoint()
     tessellator.setTriangulationAlgorithm( Qgis::TriangulationAlgorithm::Earcut );
     tessellator.addPolygon( polygon, 0 );
 
-    mTotal = tessellator.asMultiPolygon()->area3D();
+    std::unique_ptr<QgsMultiPolygon> tessellation = tessellator.asMultiPolygon();
+    mTotal = tessellation->area3D();
+    mHorizontalTotal = tessellation->area();
     updateTotal();
   }
 }
@@ -350,6 +352,7 @@ void Qgs3DMeasureDialog::updateTotal()
   if ( mMeasureArea )
   {
     editTotal->setText( formatArea( mTotal ) );
+    editHorizontalTotal->setText( formatArea( mHorizontalTotal ) );
   }
   else
   {
