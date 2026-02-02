@@ -1,5 +1,5 @@
 {
-  "name": "\\\\'",
+  "name": "\\\\' (quote character)",
   "type": "value",
   "groups": ["String"],
   "description": "Inserts a literal single quote character in a string.",
