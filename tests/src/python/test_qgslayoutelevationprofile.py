@@ -708,9 +708,13 @@ class TestQgsLayoutItemElevationProfile(QgisTestCase, LayoutItemTestCase):
             )
         )
 
-        profile_item.setLayers([vl])
-
+        profile_item.setSources([vl])
         self.assertTrue(self.render_layout_check("vector_layer", layout))
+
+        # Fix for issue 64218
+        # (removing a source from project should not crash the layout)
+        p.removeAllMapLayers()
+        self.assertTrue(self.render_layout_check("vector_layer_after_removal", layout))
 
     def test_draw_distance_units(self):
         """
