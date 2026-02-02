@@ -2,7 +2,7 @@
   "name": "+",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Addition of two values. If one of the values is NULL the result will be NULL.",
+  "description": "Addition of two values or concatenation of two strings.<br><br>For numeric and datetime operations, if either value is NULL the result will be NULL.<br><br>For string concatenation, NULL values from fields are treated as empty strings. Use the || operator instead if you want NULL propagation for strings.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -20,8 +20,12 @@
     "expression": "'QGIS ' + 'ROCKS'",
     "returns": "'QGIS ROCKS'"
   }, {
+    "expression": "'Value: ' + \"Notes\"",
+    "returns": "'Value: ' (when Notes field is NULL)",
+    "note": "NULL from fields treated as empty string"
+  }, {
     "expression": "to_datetime('2020-08-01 12:00:00') + '1 day 2 hours'",
     "returns": "2020-08-02T14:00:00"
   }],
-  "tags": ["addition", "null", "result", "values"]
+  "tags": ["addition", "concatenation", "null", "result", "values", "strings"]
 }
