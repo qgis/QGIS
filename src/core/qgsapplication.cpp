@@ -506,11 +506,12 @@ void QgsApplication::init( QString profileFolder )
   QStringList currentProjSearchPaths = QgsProjUtils::searchPaths();
   currentProjSearchPaths.append( qgisSettingsDirPath() + u"proj"_s );
 #ifdef Q_OS_MACOS
-  // append bundled proj lib for MacOS
-  QString projLib( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
-  if ( QFile::exists( projLib ) )
+  // Set bundled proj data path as env var, so it's also available for pyproj and subprocesses (e.g. processing algorithms)
+  const QString projData( QDir::cleanPath( pkgDataPath().append( "/proj" ) ) );
+  if ( QFile::exists( projData ) )
   {
-    currentProjSearchPaths.append( projLib );
+    qputenv( "PROJ_DATA", projData.toUtf8() );
+    currentProjSearchPaths.append( projData );
   }
 #endif // Q_OS_MACOS
 
