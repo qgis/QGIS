@@ -23,12 +23,15 @@
 #include "qgsphongtexturedmaterial.h"
 
 #include <QMap>
+#include <QString>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QPaintedTextureImage>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
+
+using namespace Qt::StringLiterals;
 
 QString QgsPhongTexturedMaterialSettings::type() const
 {

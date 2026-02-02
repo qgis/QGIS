@@ -29,10 +29,13 @@
 #include <QImageReader>
 #include <QRegularExpression>
 #include <QSqlDatabase>
+#include <QString>
 #include <QTextStream>
 #include <QUrl>
 
 #include "moc_qgsabout.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MACOS
 // Modeless dialog with close button only

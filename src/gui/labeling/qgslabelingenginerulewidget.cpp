@@ -21,8 +21,11 @@
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslabelingenginerulewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLabelingEngineRuleDialog

@@ -25,8 +25,11 @@
 
 #include <QMessageBox>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsrasterminmaxwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent )
   : QWidget( parent )

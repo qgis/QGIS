@@ -57,11 +57,14 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QSizePolicy>
+#include <QString>
 #include <QUndoStack>
 #include <QVBoxLayout>
 #include <QWidget>
 
 #include "moc_qgslayerstylingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_3D
 #include "qgsvectorlayer3drendererwidget.h"
@@ -841,16 +844,28 @@ void QgsLayerStylingWidget::setCurrentPage( QgsLayerStylingWidget::Page page )
 
 void QgsLayerStylingWidget::setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId, bool multipleItems )
 {
-  mContext.setAnnotationId( itemId );
+  const bool matchingPreviousItem = layer == mCurrentLayer && mContext.annotationId() == itemId;
+  if ( !matchingPreviousItem )
+  {
+    mContext.setAnnotationId( itemId );
+    if ( layer )
+    {
+      setLayer( layer );
+    }
+  }
+
   if ( layer )
   {
-    setLayer( layer );
     mStackedWidget->setCurrentIndex( mLayerPage );
   }
 
   if ( QgsAnnotationItemPropertiesWidget *configWidget = qobject_cast<QgsAnnotationItemPropertiesWidget *>( mWidgetStack->mainPanel() ) )
   {
-    configWidget->setMapLayerConfigWidgetContext( mContext );
+    if ( !matchingPreviousItem )
+    {
+      mWidgetStack->acceptAllPanels();
+      configWidget->setMapLayerConfigWidgetContext( mContext );
+    }
 
     if ( itemId.isEmpty() )
     {

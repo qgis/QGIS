@@ -26,6 +26,10 @@
 #include "qgscurve.h"
 #include "qgssurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPolygon;
 
 /**

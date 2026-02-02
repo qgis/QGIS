@@ -20,6 +20,10 @@
 #include "qgspostgresprovider.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //The only purpose of this class is to set geomColumn and srid
 class QgsTestPostgresExpressionCompiler : public QgsPostgresExpressionCompiler
 {

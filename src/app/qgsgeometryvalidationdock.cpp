@@ -31,9 +31,12 @@ email                : matthias@opengis.ch
 
 #include <QButtonGroup>
 #include <QPropertyAnimation>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsgeometryvalidationdock.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryValidationDock::QgsGeometryValidationDock( const QString &title, QgsMapCanvas *mapCanvas, QgisApp *parent, Qt::WindowFlags flags )
   : QgsDockWidget( title, parent, flags )

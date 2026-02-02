@@ -20,9 +20,12 @@
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgslayoutitemmapitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemMapItem::QgsLayoutItemMapItem( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutObject( map->layout() )

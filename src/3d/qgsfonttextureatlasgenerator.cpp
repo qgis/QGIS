@@ -24,6 +24,9 @@
 #include <QPainter>
 #include <QRegularExpressionMatch>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // rectpack2D library
 #include <finders_interface.h>

@@ -29,8 +29,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgstiledscenelayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTiledSceneLayerProperties::QgsTiledSceneLayerProperties( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( layer, canvas, u"QgsTiledSceneLayerProperties"_s, parent, flags )

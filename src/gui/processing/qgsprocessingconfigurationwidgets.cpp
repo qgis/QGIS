@@ -28,10 +28,13 @@
 #include <QGridLayout>
 #include <QHeaderView>
 #include <QLabel>
+#include <QString>
 #include <QTableWidget>
 #include <QToolButton>
 
 #include "moc_qgsprocessingconfigurationwidgets.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

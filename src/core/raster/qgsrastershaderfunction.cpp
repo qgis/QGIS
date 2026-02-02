@@ -19,6 +19,10 @@ email                : ersts@amnh.org
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterShaderFunction::QgsRasterShaderFunction( double minimumValue, double maximumValue )
   : mMaximumValue( maximumValue )
   , mMinimumValue( minimumValue )

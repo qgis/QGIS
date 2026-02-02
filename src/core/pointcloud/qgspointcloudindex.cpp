@@ -30,10 +30,13 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
 #include <QTime>
 #include <QtDebug>
 #include <qglobal.h>
 #include <qstringliteral.h>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudNodeId::QgsPointCloudNodeId()
   : mX( 0 )

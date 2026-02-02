@@ -23,6 +23,10 @@
 #include "qgsserverogcapi.h"
 #include "qgsserverstatichandler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * Landing page API
  * \since QGIS 3.16

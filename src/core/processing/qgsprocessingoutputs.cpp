@@ -20,7 +20,10 @@
 #include "qgsvariantutils.h"
 
 #include <QDir>
+#include <QString>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingOutputDefinition::QgsProcessingOutputDefinition( const QString &name, const QString &description )
   : mName( name )

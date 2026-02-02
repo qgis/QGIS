@@ -28,8 +28,11 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgsanimationexportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnimationExportDialog::QgsAnimationExportDialog( QWidget *parent, QgsMapCanvas *mapCanvas, const QList<QgsMapDecoration *> &decorations )
   : QDialog( parent )

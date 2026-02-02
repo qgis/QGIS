@@ -19,6 +19,10 @@ email                : nyall dot dawson at gmail dot com
 
 #include "qgsstyle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLegendPatchShape::QgsLegendPatchShape( Qgis::SymbolType type, const QgsGeometry &geometry, bool preserveAspectRatio )
   : mSymbolType( type )
   , mGeometry( geometry )

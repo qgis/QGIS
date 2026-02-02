@@ -29,10 +29,13 @@
 #include "qgsthreadingutils.h"
 
 #include <QDebug>
+#include <QString>
 #include <QtConcurrent/QtConcurrentMap>
 #include <QtMath>
 
 #include "moc_qgspointclouddataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudDataProvider::QgsPointCloudDataProvider(
   const QString &uri,

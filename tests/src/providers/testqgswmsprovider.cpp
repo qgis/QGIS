@@ -25,7 +25,10 @@
 
 #include <QFile>
 #include <QObject>
+#include <QString>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

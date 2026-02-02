@@ -29,7 +29,11 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayoutmapgridwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, QgsLayoutItemMap *map )
   : QgsLayoutItemBaseWidget( nullptr, mapGrid )

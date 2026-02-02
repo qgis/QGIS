@@ -22,7 +22,10 @@
 #include "qgis_sip.h"
 #include "qgscurve.h"
 
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

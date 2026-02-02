@@ -25,9 +25,12 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QVersionNumber>
 
 #include "moc_qgsexpressiontreeview.cpp"
+
+using namespace Qt::StringLiterals;
 
 //! Returns a HTML formatted string for use as a \a relation item help.
 QString formatRelationHelp( const QgsRelation &relation )

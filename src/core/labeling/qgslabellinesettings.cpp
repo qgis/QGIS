@@ -20,7 +20,11 @@
 #include "qgspallabeling.h"
 #include "qgspropertycollection.h"
 
+#include <QString>
+
 #include "moc_qgslabellinesettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsLabelLineSettings::updateDataDefinedProperties( const QgsPropertyCollection &properties, QgsExpressionContext &context )
 {

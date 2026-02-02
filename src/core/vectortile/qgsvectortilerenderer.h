@@ -20,6 +20,10 @@
 #include "qgsfeature.h"
 #include "qgstiles.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsRenderContext;
 class QgsReadWriteContext;
 class QgsProject;

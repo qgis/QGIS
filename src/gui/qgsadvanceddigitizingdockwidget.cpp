@@ -44,8 +44,11 @@
 #include <QCoreApplication>
 #include <QEvent>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsadvanceddigitizingdockwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadSnappingPriorityPrioritizeFeature = new QgsSettingsEntryBool( u"cad-snapping-prioritize-feature"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if snapping to features has priority over snapping to common angles." ) );
 const QgsSettingsEntryBool *QgsAdvancedDigitizingDockWidget::settingsCadRecordConstructionGuides = new QgsSettingsEntryBool( u"cad-record-construction-guides"_s, QgsSettingsTree::sTreeDigitizing, false, tr( "Determines if construction guides are being recorded." ) );

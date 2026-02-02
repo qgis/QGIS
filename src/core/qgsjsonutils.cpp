@@ -38,9 +38,12 @@
 
 #include <QJsonArray>
 #include <QJsonDocument>
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsjsonutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsJsonExporter::QgsJsonExporter( QgsVectorLayer *vectorLayer, int precision )
   : mPrecision( precision )

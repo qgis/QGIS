@@ -26,10 +26,13 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTableView>
 #include <QToolButton>
 
 #include "moc_qgsprocessingaggregatewidgets.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAggregateMappingModel

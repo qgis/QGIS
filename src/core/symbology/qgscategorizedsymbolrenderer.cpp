@@ -48,7 +48,10 @@
 #include <QDomElement>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsRendererCategory::QgsRendererCategory( const QVariant &value, QgsSymbol *symbol, const QString &label, bool render, const QString &uuid )
   : mValue( value )

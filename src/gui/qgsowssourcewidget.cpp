@@ -21,8 +21,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QNetworkRequest>
+#include <QString>
 
 #include "moc_qgsowssourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *parent )
   : QgsProviderSourceWidget( parent )

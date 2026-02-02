@@ -20,6 +20,10 @@
 #include "qgsnumericformatregistry.h"
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTableCell::QgsTableCell( const QVariant &content )
   : mContent( content )
 {}

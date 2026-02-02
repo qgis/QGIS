@@ -72,6 +72,8 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
+    QgsTerrainGenerator::Capabilities capabilities() const override;
+
   private:
     void updateGenerator();
 

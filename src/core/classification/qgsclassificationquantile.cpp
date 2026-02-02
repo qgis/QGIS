@@ -18,6 +18,10 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsClassificationQuantile::QgsClassificationQuantile()
   : QgsClassificationMethod()
 {

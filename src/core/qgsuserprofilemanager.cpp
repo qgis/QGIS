@@ -26,9 +26,12 @@
 #include <QFile>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsuserprofilemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUserProfileManager::QgsUserProfileManager( const QString &rootLocation, QObject *parent )
   : QObject( parent )

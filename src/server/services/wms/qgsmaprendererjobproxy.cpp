@@ -24,7 +24,10 @@
 #include "qgsmaprendererparalleljob.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {

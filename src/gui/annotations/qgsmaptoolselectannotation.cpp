@@ -31,6 +31,7 @@
 #include "qgssnapindicator.h"
 
 #include <QGraphicsSceneHoverEvent>
+#include <QKeySequence>
 #include <QScreen>
 #include <QTransform>
 #include <QWindow>
@@ -48,6 +49,7 @@ QgsAnnotationItemRubberBand::QgsAnnotationItemRubberBand( const QString &layerId
   setSecondaryStrokeColor( QColor( 255, 255, 255, 100 ) );
   setColor( QColor( 50, 50, 50, 200 ) );
   setZValue( 10 );
+  setSelected( false );
 }
 
 QgsAnnotationLayer *QgsAnnotationItemRubberBand::layer() const
@@ -129,21 +131,33 @@ void QgsMapToolSelectAnnotation::cadCanvasMoveEvent( QgsMapMouseEvent *event )
 
   if ( event->buttons() == Qt::NoButton )
   {
-    if ( mMouseHandles->sceneBoundingRect().contains( scenePos ) )
+    if ( mMouseHandles->isDragging() )
     {
-      QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverMove );
+      QGraphicsSceneMouseEvent forwardedEvent( QEvent::GraphicsSceneMouseMove );
       forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
       forwardedEvent.setScenePos( scenePos );
-      mMouseHandles->hoverMoveEvent( &forwardedEvent );
-      mHoveringMouseHandles = true;
+      forwardedEvent.setLastScenePos( mLastScenePos );
+      forwardedEvent.setButton( Qt::LeftButton );
+      mMouseHandles->mouseMoveEvent( &forwardedEvent );
     }
-    else if ( mHoveringMouseHandles )
+    else
     {
-      QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverLeave );
-      forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
-      forwardedEvent.setScenePos( scenePos );
-      mMouseHandles->hoverMoveEvent( &forwardedEvent );
-      mHoveringMouseHandles = false;
+      if ( mMouseHandles->sceneBoundingRect().contains( scenePos ) )
+      {
+        QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverMove );
+        forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
+        forwardedEvent.setScenePos( scenePos );
+        mMouseHandles->hoverMoveEvent( &forwardedEvent );
+        mHoveringMouseHandles = true;
+      }
+      else if ( mHoveringMouseHandles )
+      {
+        QGraphicsSceneHoverEvent forwardedEvent( QEvent::GraphicsSceneHoverLeave );
+        forwardedEvent.setPos( mMouseHandles->mapFromScene( scenePos ) );
+        forwardedEvent.setScenePos( scenePos );
+        mMouseHandles->hoverMoveEvent( &forwardedEvent );
+        mHoveringMouseHandles = false;
+      }
     }
   }
   else if ( event->buttons() == Qt::LeftButton )
@@ -268,52 +282,7 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
     return;
   }
 
-  if ( event->key() == Qt::Key_C || event->key() == Qt::Key_X )
-  {
-    mCopiedItems.clear();
-    mCopiedItemsTopLeft = toMapCoordinates( QPoint( mMouseHandles->sceneBoundingRect().topLeft().x(), mMouseHandles->sceneBoundingRect().topLeft().y() ) );
-    for ( std::unique_ptr<QgsAnnotationItemRubberBand> &selectedItem : mSelectedItems )
-    {
-      mCopiedItems << qMakePair( selectedItem->layerId(), selectedItem->itemId() );
-    }
-    if ( event->key() == Qt::Key_C )
-    {
-      event->ignore();
-      return;
-    }
-  }
-  else if ( event->key() == Qt::Key_V )
-  {
-    const QgsPointXY copiedItemsSceneTopLeft = mCanvas->mapSettings().mapToPixel().transform( mCopiedItemsTopLeft );
-    const double deltaX = mLastScenePos.x() - copiedItemsSceneTopLeft.x();
-    const double deltaY = mLastScenePos.y() - copiedItemsSceneTopLeft.y();
-    if ( !mSelectedItems.empty() )
-    {
-      mSelectedItems.clear();
-    }
-
-    for ( const QPair<QString, QString> &copiedItem : mCopiedItems )
-    {
-      if ( QgsAnnotationItem *annotationItem = annotationItemFromId( copiedItem.first, copiedItem.second ) )
-      {
-        QgsAnnotationLayer *annotationLayer = dynamic_cast<QgsAnnotationLayer *>( layer() );
-        if ( !annotationLayer )
-        {
-          annotationLayer = QgsProject::instance()->mainAnnotationLayer();
-        }
-        QString pastedItemId = annotationLayer->addItem( annotationItem->clone() );
-
-        mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( annotationLayer->id(), pastedItemId, mCanvas ) );
-        attemptMoveBy( mSelectedItems.back().get(), deltaX, deltaY );
-      }
-    }
-    emit selectedItemsChanged();
-    updateSelectedItem();
-    event->ignore();
-    return;
-  }
-
-  if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete || event->key() == Qt::Key_X )
+  if ( event->key() == Qt::Key_Backspace || event->key() == Qt::Key_Delete )
   {
     while ( !mSelectedItems.empty() )
     {
@@ -360,12 +329,83 @@ void QgsMapToolSelectAnnotation::keyPressEvent( QKeyEvent *event )
   }
 }
 
+bool QgsMapToolSelectAnnotation::shortcutEvent( QKeyEvent *event )
+{
+  if ( mMouseHandles->isDragging() || mMouseHandles->isResizing() || mMouseHandles->isRotating() )
+  {
+    return true;
+  }
+  // NOLINTBEGIN(bugprone-narrowing-conversions)
+  QKeySequence keySequence( event->key() | event->modifiers() );
+  // NOLINTEND(bugprone-narrowing-conversions)
+  if ( keySequence == QKeySequence::Copy || keySequence == QKeySequence::Cut )
+  {
+    mCopiedItems.clear();
+    mCopiedItemsTopLeft = toMapCoordinates( QPoint( mMouseHandles->sceneBoundingRect().topLeft().x(), mMouseHandles->sceneBoundingRect().topLeft().y() ) );
+    for ( std::unique_ptr<QgsAnnotationItemRubberBand> &selectedItem : mSelectedItems )
+    {
+      if ( QgsAnnotationItem *annotationItem = selectedItem->item() )
+      {
+        std::unique_ptr<QgsAnnotationItem> copiedItem;
+        copiedItem.reset( annotationItem->clone() );
+        mCopiedItems.push_back( std::move( copiedItem ) );
+      }
+    }
+
+    if ( keySequence == QKeySequence::Cut )
+    {
+      while ( !mSelectedItems.empty() )
+      {
+        if ( QgsAnnotationLayer *annotationLayer = mSelectedItems.back()->layer() )
+        {
+          annotationLayer->removeItem( mSelectedItems.back()->itemId() );
+        }
+        mSelectedItems.pop_back();
+      }
+      emit selectedItemsChanged();
+    }
+
+    return true;
+  }
+  else if ( keySequence == QKeySequence::Paste )
+  {
+    const QgsPointXY copiedItemsSceneTopLeft = mCanvas->mapSettings().mapToPixel().transform( mCopiedItemsTopLeft );
+    const double deltaX = mLastScenePos.x() - copiedItemsSceneTopLeft.x();
+    const double deltaY = mLastScenePos.y() - copiedItemsSceneTopLeft.y();
+    if ( !mSelectedItems.empty() )
+    {
+      mSelectedItems.clear();
+    }
+
+    for ( std::unique_ptr<QgsAnnotationItem> &copiedItem : mCopiedItems )
+    {
+      QgsAnnotationLayer *annotationLayer = dynamic_cast<QgsAnnotationLayer *>( layer() );
+      if ( !annotationLayer )
+      {
+        annotationLayer = QgsProject::instance()->mainAnnotationLayer();
+      }
+      QString pastedItemId = annotationLayer->addItem( copiedItem->clone() );
+      mSelectedItems.push_back( std::make_unique<QgsAnnotationItemRubberBand>( annotationLayer->id(), pastedItemId, mCanvas ) );
+      attemptMoveBy( mSelectedItems.back().get(), deltaX, deltaY );
+      mSelectedItems.back().get()->setNeedsUpdatedBoundingBox( true );
+    }
+    emit selectedItemsChanged();
+
+    return true;
+  }
+
+  return false;
+}
+
 QList<QgsAnnotationItemRubberBand *> QgsMapToolSelectAnnotation::selectedItems() const
 {
   QList<QgsAnnotationItemRubberBand *> items;
   for ( const std::unique_ptr<QgsAnnotationItemRubberBand> &selectedItem : mSelectedItems )
   {
-    items << selectedItem.get();
+    if ( !selectedItem.get()->boundingBox().isEmpty() )
+    {
+      items << selectedItem.get();
+    }
   }
   return items;
 }

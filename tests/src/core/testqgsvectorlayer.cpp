@@ -24,6 +24,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include <qgsgeometry.h>
 #include <qgsmaplayer.h>

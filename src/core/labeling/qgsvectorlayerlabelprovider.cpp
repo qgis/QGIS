@@ -40,8 +40,11 @@
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include <QPicture>
+#include <QString>
 #include <QTextDocument>
 #include <QTextFragment>
+
+using namespace Qt::StringLiterals;
 
 using namespace pal;
 

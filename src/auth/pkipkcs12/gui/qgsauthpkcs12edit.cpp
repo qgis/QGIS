@@ -27,8 +27,11 @@
 #include <QFileInfo>
 #include <QSslCertificate>
 #include <QSslKey>
+#include <QString>
 
 #include "moc_qgsauthpkcs12edit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthPkcs12Edit::QgsAuthPkcs12Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

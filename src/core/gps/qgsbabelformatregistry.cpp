@@ -25,6 +25,8 @@
 #include <QRegularExpression>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelWptDownload = new QgsSettingsEntryString( u"wptdownload"_s, sTreeBabelDevices );
 
 const QgsSettingsEntryString *QgsBabelFormatRegistry::settingsBabelWptUpload = new QgsSettingsEntryString( u"wptupload"_s, sTreeBabelDevices );

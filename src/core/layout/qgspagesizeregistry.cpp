@@ -19,6 +19,10 @@
 #include "qgis.h"
 #include "qgslayoutmeasurementconverter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsPageSizeRegistry
 //

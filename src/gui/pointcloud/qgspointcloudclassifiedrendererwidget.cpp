@@ -31,8 +31,11 @@
 
 #include <QInputDialog>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgspointcloudclassifiedrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

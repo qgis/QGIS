@@ -29,8 +29,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsidentifymenu.cpp"
+
+using namespace Qt::StringLiterals;
 
 //TODO 4.0 add explicitly qobject parent to constructor
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )

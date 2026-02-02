@@ -21,6 +21,9 @@
 
 #include <QBrush>
 #include <QPen>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QPainter;
 class QPointF;

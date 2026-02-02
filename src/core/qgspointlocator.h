@@ -36,6 +36,9 @@ class QgsVectorLayerFeatureSource;
 #include "qgsvectorlayer.h"
 
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

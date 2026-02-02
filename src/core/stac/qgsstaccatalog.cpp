@@ -15,6 +15,10 @@
 
 #include "qgsstaccatalog.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacCatalog::QgsStacCatalog( const QString &id,
                                 const QString &version,
                                 const QString &description,

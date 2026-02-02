@@ -19,7 +19,10 @@
 
 #include <QDomDocument>
 #include <QFile>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 bool QgsScaleUtils::saveScaleList( const QString &fileName, const QStringList &scales, QString &errorMessage )
 {

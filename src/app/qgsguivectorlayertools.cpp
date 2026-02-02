@@ -26,9 +26,12 @@
 #include "qgsvectorlayerutils.h"
 
 #include <QMessageBox>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsguivectorlayertools.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool QgsGuiVectorLayerTools::addFeatureV2( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature, const QgsVectorLayerToolsContext &context ) const
 {

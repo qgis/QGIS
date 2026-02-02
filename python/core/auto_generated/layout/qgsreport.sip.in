@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsReport : QObject, QgsAbstractReportSection, QgsMasterLayoutInterface
 {
 %Docstring(signature="appended")

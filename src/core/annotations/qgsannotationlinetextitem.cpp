@@ -26,6 +26,10 @@
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationLineTextItem::QgsAnnotationLineTextItem( const QString &text, QgsCurve *curve )
   : QgsAnnotationItem()
   , mText( text )

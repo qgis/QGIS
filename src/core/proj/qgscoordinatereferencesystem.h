@@ -23,6 +23,10 @@
 
 #include "qgis_core.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //qt includes
 #include <QString>
 #include <QMap>

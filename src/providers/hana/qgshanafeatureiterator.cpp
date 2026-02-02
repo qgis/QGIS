@@ -31,6 +31,10 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace
 {
   QgsRectangle clampBBOX( const QgsRectangle &bbox, const QgsCoordinateReferenceSystem &crs, double allowedExcessFactor )

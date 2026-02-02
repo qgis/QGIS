@@ -22,8 +22,11 @@
 #include <QEnterEvent>
 #include <QLocale>
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsadvanceddigitizingtools.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAdvancedDigitizingTool::QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QObject( canvas ? canvas->viewport() : nullptr )

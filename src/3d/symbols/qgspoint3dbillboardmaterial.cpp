@@ -20,6 +20,7 @@
 #include "qgsmarkersymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
 #include <QUrl>
 #include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QBlendEquationArguments>
@@ -32,6 +33,8 @@
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgspoint3dbillboardmaterial.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPoint3DBillboardMaterial::QgsPoint3DBillboardMaterial( Mode mode )
   : mSize( new Qt3DRender::QParameter( "BB_SIZE", QSizeF( 100, 100 ), this ) )

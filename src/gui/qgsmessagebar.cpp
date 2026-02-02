@@ -30,11 +30,14 @@
 #include <QPalette>
 #include <QProgressBar>
 #include <QStackedWidget>
+#include <QString>
 #include <QTimer>
 #include <QToolButton>
 #include <QWidget>
 
 #include "moc_qgsmessagebar.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
   : QFrame( parent )

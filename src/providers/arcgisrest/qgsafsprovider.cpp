@@ -32,7 +32,11 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
 #include "moc_qgsafsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : QgsVectorDataProvider( uri, options, flags )

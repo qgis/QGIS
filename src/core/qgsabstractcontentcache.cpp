@@ -20,8 +20,11 @@
 #include "qgssetrequestinitiator_p.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsabstractcontentcache.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractContentCacheEntry

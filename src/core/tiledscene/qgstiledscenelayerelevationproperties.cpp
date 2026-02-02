@@ -19,7 +19,11 @@
 
 #include "qgstiledscenelayer.h"
 
+#include <QString>
+
 #include "moc_qgstiledscenelayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTiledSceneLayerElevationProperties::QgsTiledSceneLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

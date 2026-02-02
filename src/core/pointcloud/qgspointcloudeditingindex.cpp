@@ -25,6 +25,9 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QMutex>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
 {

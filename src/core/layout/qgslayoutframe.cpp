@@ -20,7 +20,11 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutmultiframe.h"
 
+#include <QString>
+
 #include "moc_qgslayoutframe.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame )
   : QgsLayoutItem( layout )

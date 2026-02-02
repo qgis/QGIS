@@ -29,9 +29,12 @@
 
 #include <QColorDialog>
 #include <QFontDialog>
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgslayoutscalebarwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBar )
   : QgsLayoutItemBaseWidget( nullptr, scaleBar )

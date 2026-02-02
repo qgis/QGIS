@@ -26,10 +26,13 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QProgressBar>
+#include <QString>
 #include <QToolBar>
 #include <QTreeView>
 
 #include "moc_qgstaskmanagerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsTaskManagerWidget

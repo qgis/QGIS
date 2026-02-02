@@ -29,7 +29,10 @@
 #include <QDomDocument>
 #include <QFile>
 #include <QImage>
+#include <QString>
 #include <QTextDocumentFragment>
+
+using namespace Qt::StringLiterals;
 
 QgsVtpkTiles::QgsVtpkTiles( const QString &filename )
   : mFilename( filename )

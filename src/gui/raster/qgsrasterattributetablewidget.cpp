@@ -30,9 +30,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolBar>
 
 #include "moc_qgsrasterattributetablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, QgsRasterLayer *rasterLayer, const int bandNumber )
   : QgsPanelWidget( parent )

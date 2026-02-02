@@ -24,9 +24,12 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayerselectionmanager.h"
 
+#include <QString>
 #include <QWindow>
 
 #include "moc_qgsfeatureselectiondlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent )
   : QDialog( parent, Qt::Window )

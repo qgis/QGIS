@@ -35,7 +35,10 @@
 #include <QList>
 #include <QMap>
 #include <QPair>
+#include <QString>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QgsMapToPixel;
 class QgsRasterRenderer;

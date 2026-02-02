@@ -34,7 +34,11 @@
 #include "qgssinglebandgrayrendererwidget.h"
 #include "qgssinglebandpseudocolorrendererwidget.h"
 
+#include <QString>
+
 #include "moc_qgsrendererrasterpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsRendererRasterPropertiesWidget::initRendererWidgetFunctions()
 {

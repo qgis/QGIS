@@ -15,6 +15,10 @@
 
 #include <nlohmann/json.hpp>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include "qgslogger.h"

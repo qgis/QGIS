@@ -23,10 +23,13 @@
 
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QString>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
 #include "moc_qgsmodelgroupboxdefinitionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent )
   : QDialog( parent )

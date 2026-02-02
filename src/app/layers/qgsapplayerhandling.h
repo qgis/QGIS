@@ -24,6 +24,9 @@
 #include "qgsvectorlayerref.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsMapLayer;
 class QgsProviderSublayerDetails;

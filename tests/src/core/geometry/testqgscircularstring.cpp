@@ -29,6 +29,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsCircularString : public QObject
 {
     Q_OBJECT

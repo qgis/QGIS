@@ -45,6 +45,7 @@
 
 #include "qsql_ocispatial.h"
 
+#include <QString>
 #include <qsqldriverplugin.h>
 
 #include "moc_main.cpp"

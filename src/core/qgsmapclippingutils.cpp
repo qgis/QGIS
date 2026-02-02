@@ -23,6 +23,9 @@
 #include "qgsrendercontext.h"
 
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QList<QgsMapClippingRegion> QgsMapClippingUtils::collectClippingRegionsForLayer( const QgsRenderContext &context, const QgsMapLayer *layer )
 {

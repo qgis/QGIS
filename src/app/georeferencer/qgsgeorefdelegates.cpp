@@ -24,6 +24,7 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgsgeorefdelegates.cpp"
 

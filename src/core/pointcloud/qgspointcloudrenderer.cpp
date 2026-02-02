@@ -29,7 +29,10 @@
 #include "qgsvirtualpointcloudprovider.h"
 
 #include <QPointer>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudRenderContext::QgsPointCloudRenderContext( QgsRenderContext &context, const QgsVector3D &scale, const QgsVector3D &offset, double zValueScale, double zValueFixedOffset, QgsFeedback *feedback )
   : mRenderContext( context )

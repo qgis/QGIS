@@ -20,6 +20,10 @@
 
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsOgrProxyTextCodec::QgsOgrProxyTextCodec( const QByteArray &name )
   : mName( name )
 {

@@ -26,8 +26,11 @@
 
 #include <QByteArray>
 #include <QDomDocument>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response )
   : mRequest( request )

@@ -39,9 +39,12 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QSpinBox>
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsvectorlayersaveasdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

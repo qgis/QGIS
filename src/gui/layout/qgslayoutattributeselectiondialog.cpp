@@ -34,8 +34,11 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSpinBox>
+#include <QString>
 
 #include "moc_qgslayoutattributeselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QgsLayoutAttributeTableColumnModelBase
 

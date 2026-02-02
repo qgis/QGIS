@@ -21,6 +21,10 @@
 #include "qgslayertreelayer.h"
 #include "qgslayertreenode.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Namespace with helper functions for layer tree operations.

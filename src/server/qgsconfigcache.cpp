@@ -23,8 +23,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QFile>
+#include <QString>
 
 #include "moc_qgsconfigcache.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsConfigCache *QgsConfigCache::sInstance = nullptr;
 

@@ -21,7 +21,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QDomElement>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 static void _readOldLegendGroup( const QDomElement &groupElem, QgsLayerTreeGroup *parent );
 static void _readOldLegendLayer( const QDomElement &layerElem, QgsLayerTreeGroup *parent );

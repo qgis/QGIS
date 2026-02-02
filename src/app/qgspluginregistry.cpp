@@ -35,6 +35,9 @@
 #include <QFileInfo>
 #include <QLibrary>
 #include <QMessageBox>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef WITH_BINDINGS
 #include "qgspythonutils.h"

@@ -27,6 +27,9 @@
 
 #include <QDebug>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresRasterSharedData::~QgsPostgresRasterSharedData() = default;
 

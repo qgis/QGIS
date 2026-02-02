@@ -28,6 +28,9 @@
 #include "qgslayoutserializableobject.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsLayoutGuideCollection;

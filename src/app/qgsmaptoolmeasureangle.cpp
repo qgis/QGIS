@@ -27,7 +27,11 @@
 #include "qgssettings.h"
 #include "qgssnapindicator.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolmeasureangle.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

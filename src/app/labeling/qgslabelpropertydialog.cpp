@@ -36,8 +36,11 @@
 #include <QColorDialog>
 #include <QDialogButtonBox>
 #include <QFontDatabase>
+#include <QString>
 
 #include "moc_qgslabelpropertydialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

@@ -23,8 +23,11 @@
 #include "qgslogger.h"
 
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsauthcerttrustpolicycombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent, QgsAuthCertUtils::CertTrustPolicy policy, QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
   : QComboBox( parent )

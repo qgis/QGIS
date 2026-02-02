@@ -21,6 +21,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsAttributesFormProperties : public QObject
 {
     Q_OBJECT

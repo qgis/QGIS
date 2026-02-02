@@ -20,6 +20,10 @@
 #include "qgsrasterfilewriter.h"
 #include "qgstotalcurvaturefilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsTotalCurvatureAlgorithm::name() const

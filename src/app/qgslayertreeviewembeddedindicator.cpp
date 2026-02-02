@@ -20,7 +20,11 @@
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
 
+#include <QString>
+
 #include "moc_qgslayertreeviewembeddedindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewEmbeddedIndicatorProvider::QgsLayerTreeViewEmbeddedIndicatorProvider( QgsLayerTreeView *view )
   : QObject( view )

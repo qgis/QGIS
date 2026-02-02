@@ -28,8 +28,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsrubberband.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geometryType )
   : QObject( nullptr )

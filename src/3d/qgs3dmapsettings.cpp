@@ -34,8 +34,11 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgs3dmapsettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapSettings::Qgs3DMapSettings()
   : QObject( nullptr )

@@ -148,7 +148,11 @@
 #include "qgsalgorithmgltftovector.h"
 #include "qgsruntimeprofiler.h"
 
+#include <QString>
+
 #include "moc_qgsnativealgorithms.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if QT_CONFIG( process )
 #include "qgsalgorithmgpsbabeltools.h"

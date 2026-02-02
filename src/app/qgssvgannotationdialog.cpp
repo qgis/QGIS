@@ -30,8 +30,11 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgssvgannotationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

@@ -40,6 +40,9 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
@@ -1041,7 +1044,7 @@ bool QgsVectorLayerUtils::fieldIsEditable( const QgsVectorLayer *layer, int fiel
 }
 
 
-QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVectorLayer *layer )
+QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::collectObjectsMaskedByLabelsFromLayer( const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector<QgsVectorLayer *> &allRenderedVectorLayers )
 {
   class LabelMasksVisitor : public QgsStyleEntityVisitorInterface
   {
@@ -1050,7 +1053,7 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
       {
         if ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule )
         {
-          currentRule = node.identifier;
+          currentLabelRuleId = node.identifier;
           return true;
         }
         return false;
@@ -1067,10 +1070,10 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
             // is involved
             const bool hasEffects = maskSettings.opacity() < 1 ||
                                     ( maskSettings.paintEffect() && maskSettings.paintEffect()->enabled() );
-            for ( const auto &r : maskSettings.maskedSymbolLayers() )
+            for ( const QgsSymbolLayerReference &r : maskSettings.maskedSymbolLayers() )
             {
-              QgsMaskedLayer &maskedLayer = maskedLayers[currentRule][r.layerId()];
-              maskedLayer.symbolLayerIds.insert( r.symbolLayerIdV2() );
+              QgsMaskedLayer &maskedLayer = maskedLayers[currentLabelRuleId][r.layerId()];
+              maskedLayer.symbolLayerIdsToMask.insert( r.symbolLayerIdV2() );
               maskedLayer.hasEffects = hasEffects;
             }
           }
@@ -1080,18 +1083,90 @@ QHash<QString, QgsMaskedLayers> QgsVectorLayerUtils::labelMasks( const QgsVector
 
       QHash<QString, QgsMaskedLayers> maskedLayers;
       // Current label rule, empty string for a simple labeling
-      QString currentRule;
+      QString currentLabelRuleId;
   };
 
-  if ( ! layer->labeling() )
-    return {};
-
   LabelMasksVisitor visitor;
-  layer->labeling()->accept( &visitor );
-  return std::move( visitor.maskedLayers );
+
+  if ( layer->labeling() )
+  {
+    layer->labeling()->accept( &visitor );
+  }
+
+  class LabelSelectiveMaskingSetVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule );
+      }
+
+      bool visitSymbol( const QgsSymbol *symbol )
+      {
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          if ( !sl->selectiveMaskingSourceSetId().isEmpty() )
+          {
+            auto it = selectiveMaskingSourceSets.constFind( sl->selectiveMaskingSourceSetId() );
+            if ( it != selectiveMaskingSourceSets.constEnd() )
+            {
+              const QVector<QgsSelectiveMaskSource> maskingSources = it.value().sources();
+              for ( const QgsSelectiveMaskSource &maskSource : maskingSources )
+              {
+                if ( maskSource.sourceType() == Qgis::SelectiveMaskSourceType::Label && maskSource.layerId() == maskingLayerId )
+                {
+                  QgsMaskedLayer &maskedLayer = maskedLayers[maskSource.sourceId()][maskedLayerId];
+                  maskedLayer.symbolLayerIdsToMask.insert( sl->id() );
+                }
+              }
+            }
+          }
+
+          // recurse over sub symbols
+          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol() )
+          {
+            visitSymbol( subSymbol );
+          }
+        }
+
+        return true;
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+          if ( symbolEntity->symbol() )
+            visitSymbol( symbolEntity->symbol() );
+        }
+        return true;
+      }
+
+      QHash<QString, QgsMaskedLayers> maskedLayers;
+      QString maskingLayerId;
+      QString maskedLayerId;
+      QHash< QString, QgsSelectiveMaskingSourceSet > selectiveMaskingSourceSets;
+  };
+
+  LabelSelectiveMaskingSetVisitor selectiveMaskingSetVisitor;
+  selectiveMaskingSetVisitor.maskingLayerId = layer->id();
+  selectiveMaskingSetVisitor.maskedLayers = std::move( visitor.maskedLayers );
+  selectiveMaskingSetVisitor.selectiveMaskingSourceSets = selectiveMaskingSourceSets;
+  for ( QgsVectorLayer *layer : allRenderedVectorLayers )
+  {
+    if ( layer->renderer() )
+    {
+      selectiveMaskingSetVisitor.maskedLayerId = layer->id();
+      layer->renderer()->accept( &selectiveMaskingSetVisitor );
+    }
+  }
+
+  return std::move( selectiveMaskingSetVisitor.maskedLayers );
 }
 
-QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *layer )
+QgsMaskedLayers QgsVectorLayerUtils::collectObjectsMaskedBySymbolLayersFromLayer( const QgsVectorLayer *layer, const QHash< QString, QgsSelectiveMaskingSourceSet > &selectiveMaskingSourceSets, const QVector<QgsVectorLayer *> &allRenderedVectorLayers )
 {
   if ( ! layer->renderer() )
     return {};
@@ -1119,13 +1194,15 @@ QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *lay
           // recurse over sub symbols
           const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol();
           if ( subSymbol )
-            slHasEffects |= visitSymbol( subSymbol );
-
-          for ( const auto &mask : sl->masks() )
           {
-            QgsMaskedLayer &maskedLayer = maskedLayers[mask.layerId()];
+            slHasEffects = visitSymbol( subSymbol ) || slHasEffects;
+          }
+
+          for ( const QgsSymbolLayerReference &thingToMask : sl->masks() )
+          {
+            QgsMaskedLayer &maskedLayer = maskedLayers[thingToMask.layerId()];
             maskedLayer.hasEffects |= slHasEffects;
-            maskedLayer.symbolLayerIds.insert( mask.symbolLayerIdV2() );
+            maskedLayer.symbolLayerIdsToMask.insert( thingToMask.symbolLayerIdV2() );
           }
         }
 
@@ -1147,7 +1224,79 @@ QgsMaskedLayers QgsVectorLayerUtils::symbolLayerMasks( const QgsVectorLayer *lay
 
   SymbolLayerVisitor visitor;
   layer->renderer()->accept( &visitor );
-  return visitor.maskedLayers;
+
+
+  class SymbolLayerSelectiveMaskingSetVisitor : public QgsStyleEntityVisitorInterface
+  {
+    public:
+      bool visitEnter( const QgsStyleEntityVisitorInterface::Node &node ) override
+      {
+        return ( node.type == QgsStyleEntityVisitorInterface::NodeType::SymbolRule );
+      }
+
+      // Returns true if the visited symbol has effects
+      bool visitSymbol( const QgsSymbol *symbol )
+      {
+        for ( int idx = 0; idx < symbol->symbolLayerCount(); idx++ )
+        {
+          const QgsSymbolLayer *sl = symbol->symbolLayer( idx );
+          if ( !sl->selectiveMaskingSourceSetId().isEmpty() )
+          {
+            auto it = selectiveMaskingSourceSets.constFind( sl->selectiveMaskingSourceSetId() );
+            if ( it != selectiveMaskingSourceSets.constEnd() )
+            {
+              const QVector<QgsSelectiveMaskSource> maskingSources = it.value().sources();
+              for ( const QgsSelectiveMaskSource &maskSource : maskingSources )
+              {
+                if ( maskSource.sourceType() == Qgis::SelectiveMaskSourceType::SymbolLayer && maskSource.layerId() == maskingLayerId )
+                {
+                  QgsMaskedLayer &maskedLayer = maskedLayers[maskedLayerId];
+                  maskedLayer.symbolLayerIdsToMask.insert( sl->id() );
+                }
+              }
+            }
+          }
+
+          // recurse over sub symbols
+          if ( const QgsSymbol *subSymbol = const_cast<QgsSymbolLayer *>( sl )->subSymbol() )
+          {
+            visitSymbol( subSymbol );
+          }
+        }
+
+        return true;
+      }
+
+      bool visit( const QgsStyleEntityVisitorInterface::StyleLeaf &leaf ) override
+      {
+        if ( leaf.entity && leaf.entity->type() == QgsStyle::SymbolEntity )
+        {
+          auto symbolEntity = static_cast<const QgsStyleSymbolEntity *>( leaf.entity );
+          if ( symbolEntity->symbol() )
+            visitSymbol( symbolEntity->symbol() );
+        }
+        return true;
+      }
+      QgsMaskedLayers maskedLayers;
+      QString maskingLayerId;
+      QString maskedLayerId;
+      QHash< QString, QgsSelectiveMaskingSourceSet > selectiveMaskingSourceSets;
+  };
+
+  SymbolLayerSelectiveMaskingSetVisitor selectiveMaskingSetVisitor;
+  selectiveMaskingSetVisitor.maskingLayerId = layer->id();
+  selectiveMaskingSetVisitor.maskedLayers = visitor.maskedLayers;
+  selectiveMaskingSetVisitor.selectiveMaskingSourceSets = selectiveMaskingSourceSets;
+  for ( QgsVectorLayer *layer : allRenderedVectorLayers )
+  {
+    if ( layer->renderer() )
+    {
+      selectiveMaskingSetVisitor.maskedLayerId = layer->id();
+      layer->renderer()->accept( &selectiveMaskingSetVisitor );
+    }
+  }
+
+  return selectiveMaskingSetVisitor.maskedLayers;
 }
 
 QString QgsVectorLayerUtils::getFeatureDisplayString( const QgsVectorLayer *layer, const QgsFeature &feature )

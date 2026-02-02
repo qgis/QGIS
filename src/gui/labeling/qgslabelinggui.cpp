@@ -38,8 +38,11 @@
 
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgslabelinggui.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

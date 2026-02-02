@@ -25,10 +25,13 @@
 #include <QMouseEvent>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QString>
 #include <QStyleOptionGroupBox>
 #include <QToolButton>
 
 #include "moc_qgscollapsiblegroupbox.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString COLLAPSE_HIDE_BORDER_FIX = u" QgsCollapsibleGroupBoxBasic { border: none; }"_s;
 

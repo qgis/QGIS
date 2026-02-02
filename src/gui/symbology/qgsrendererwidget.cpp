@@ -33,8 +33,11 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererWidget::QgsRendererWidget( QgsVectorLayer *layer, QgsStyle *style )
   : mLayer( layer )

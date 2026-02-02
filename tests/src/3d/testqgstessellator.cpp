@@ -20,7 +20,10 @@
 #include "qgstessellator.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QVector3D>
+
+using namespace Qt::StringLiterals;
 
 static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
 {

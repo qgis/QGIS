@@ -19,6 +19,10 @@
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractTerrainSettings *QgsFlatTerrainSettings::create()
 {
   return new QgsFlatTerrainSettings();

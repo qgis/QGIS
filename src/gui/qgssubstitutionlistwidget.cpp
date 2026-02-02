@@ -25,9 +25,12 @@
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgssubstitutionlistwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSubstitutionListWidget::QgsSubstitutionListWidget( QWidget *parent )
   : QgsPanelWidget( parent )

@@ -27,6 +27,9 @@
 #include "testqgsmaptoolutils.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolRectangle : public QObject
 {

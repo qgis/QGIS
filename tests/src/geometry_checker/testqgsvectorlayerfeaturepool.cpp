@@ -17,6 +17,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeaturepool.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsVectorLayerFeaturePool : public QObject
 {
     Q_OBJECT

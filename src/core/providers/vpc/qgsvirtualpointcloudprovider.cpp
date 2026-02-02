@@ -40,8 +40,11 @@
 #include "qgsthreadingutils.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsvirtualpointcloudprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

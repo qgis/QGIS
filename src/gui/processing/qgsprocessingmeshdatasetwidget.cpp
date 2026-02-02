@@ -29,10 +29,13 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessingmeshdatasetwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

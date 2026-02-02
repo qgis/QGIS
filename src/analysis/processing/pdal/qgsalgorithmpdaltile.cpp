@@ -21,6 +21,10 @@
 #include "qgsprocessingutils.h"
 #include "qgsrunprocess.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPdalTileAlgorithm::name() const

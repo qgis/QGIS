@@ -20,8 +20,11 @@
 #include <QColorDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdecorationscalebardialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, Qgis::DistanceUnit units, QWidget *parent )
   : QDialog( parent )

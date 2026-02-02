@@ -20,8 +20,11 @@
 #include "qgsrasterlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgscreaterasterattributetabledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCreateRasterAttributeTableDialog::QgsCreateRasterAttributeTableDialog( QgsRasterLayer *rasterLayer, QWidget *parent )
   : QDialog( parent )

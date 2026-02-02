@@ -21,7 +21,10 @@
 #include "qgsunittypes.h"
 
 #include <QPicture>
+#include <QString>
 #include <QTransform>
+
+using namespace Qt::StringLiterals;
 
 QgsPaintEffect *QgsTransformEffect::create( const QVariantMap &map )
 {

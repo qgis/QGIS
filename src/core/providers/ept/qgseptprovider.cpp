@@ -28,8 +28,11 @@
 
 #include <QFileInfo>
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgseptprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

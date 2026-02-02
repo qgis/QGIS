@@ -40,6 +40,9 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWfs
 {

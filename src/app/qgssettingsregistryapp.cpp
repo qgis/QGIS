@@ -26,6 +26,10 @@
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_GEOREFERENCER
 #include "qgsgcptransformer.h"
 #endif

@@ -28,6 +28,9 @@
 #include "qgsrasterrange.h"
 
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsRectangle;
 

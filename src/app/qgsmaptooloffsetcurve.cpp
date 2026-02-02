@@ -35,8 +35,11 @@
 #include <QGraphicsProxyWidget>
 #include <QGridLayout>
 #include <QLabel>
+#include <QString>
 
 #include "moc_qgsmaptooloffsetcurve.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )

@@ -34,6 +34,8 @@
 #include <QUrl>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 class QgsCoordinateTransform;
 class QgsNetworkAccessManager;
 class QgsWmsCapabilities;

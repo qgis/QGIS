@@ -21,6 +21,10 @@
 #include "qgsalignrasterdata.h"
 #include "qgsprocessingparameteralignrasterlayers.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 Qgis::ProcessingAlgorithmFlags QgsAlignRastersAlgorithm::flags() const

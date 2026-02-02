@@ -36,9 +36,12 @@
 #include <QFileDialog>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsgrassmoduleoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 /******************* QgsGrassModuleOptions *******************/
 

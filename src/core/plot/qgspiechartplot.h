@@ -24,6 +24,10 @@
 #include "qgsnumericformat.h"
 #include "qgsplot.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorLayerAbstractPlotDataGatherer;
 
 

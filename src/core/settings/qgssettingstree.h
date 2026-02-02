@@ -18,6 +18,10 @@
 
 #include "qgssettingstreenode.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \class QgsSettingsTree

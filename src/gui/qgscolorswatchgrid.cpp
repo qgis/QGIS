@@ -23,8 +23,11 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgscolorswatchgrid.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define NUMBER_COLORS_PER_ROW 10 //number of color swatches per row
 

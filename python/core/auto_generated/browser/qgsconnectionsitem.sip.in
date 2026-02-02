@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsConnectionsRootItem : QgsDataCollectionItem
 {
 %Docstring(signature="appended")

@@ -19,8 +19,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QDomDocument>
+#include <QString>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QDirectionalLight>
+
+using namespace Qt::StringLiterals;
 
 Qgis::LightSourceType QgsDirectionalLightSettings::type() const
 {

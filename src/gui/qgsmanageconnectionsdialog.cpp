@@ -31,9 +31,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsmanageconnectionsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsManageConnectionsDialog::QgsManageConnectionsDialog( QWidget *parent, Mode mode, Type type, const QString &fileName )
   : QDialog( parent )

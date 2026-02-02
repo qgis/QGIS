@@ -27,12 +27,15 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsdelimitedtextsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int MAX_SAMPLE_LENGTH = 200;
 

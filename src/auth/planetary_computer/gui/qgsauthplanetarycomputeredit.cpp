@@ -17,7 +17,11 @@
 #include "ui_qgsauthplanetarycomputeredit.h"
 #include "qgsauthplanetarycomputeredit.h"
 
+#include <QString>
+
 #include "moc_qgsauthplanetarycomputeredit.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsAuthPlanetaryComputerEdit::REQUEST_URL_TEMPLATE = u"https://login.microsoftonline.com/%1/oauth2/v2.0/authorize"_s;
 const QString QgsAuthPlanetaryComputerEdit::TOKEN_URL_TEMPLATE = u"https://login.microsoftonline.com/%1/oauth2/v2.0/token"_s;

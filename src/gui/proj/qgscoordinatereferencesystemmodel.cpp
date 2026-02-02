@@ -21,8 +21,11 @@
 #include "qgsstringutils.h"
 
 #include <QFont>
+#include <QString>
 
 #include "moc_qgscoordinatereferencesystemmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCoordinateReferenceSystemModel::QgsCoordinateReferenceSystemModel( QObject *parent )
   : QAbstractItemModel( parent )

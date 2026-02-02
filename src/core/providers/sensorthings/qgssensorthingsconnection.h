@@ -23,7 +23,10 @@
 #include "qgshttpheaders.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;

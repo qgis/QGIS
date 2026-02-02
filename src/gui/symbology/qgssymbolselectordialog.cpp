@@ -22,7 +22,11 @@
 #include "qgssymbollayerregistry.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgssymbolselectordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 // the widgets
 #include "qgssymbolslistwidget.h"

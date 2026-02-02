@@ -33,6 +33,7 @@
 #include "qgsraycastingutils.h"
 
 #include <QPointSize>
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QShaderProgram>
@@ -40,6 +41,8 @@
 #include <QtConcurrent>
 
 #include "moc_qgspointcloudlayerchunkloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

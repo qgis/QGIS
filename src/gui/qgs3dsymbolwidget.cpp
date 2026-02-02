@@ -22,9 +22,12 @@
 #include "qgshelp.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgs3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DSymbolWidget::Qgs3DSymbolWidget( QWidget *parent )
   : QWidget( parent )

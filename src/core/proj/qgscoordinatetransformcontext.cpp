@@ -21,6 +21,10 @@
 #include "qgsprojutils.h"
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString crsToKey( const QgsCoordinateReferenceSystem &crs )
 {
   return crs.authid().isEmpty() ? crs.toWkt( Qgis::CrsWktVariant::Preferred ) : crs.authid();

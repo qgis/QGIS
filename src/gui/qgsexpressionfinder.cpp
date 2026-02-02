@@ -18,7 +18,10 @@
 
 #include <QPlainTextEdit>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextEdit>
+
+using namespace Qt::StringLiterals;
 
 static const QString EXPRESSION_PATTERN = u"\\[%\\s*(.*?)\\s*%\\]"_s;
 

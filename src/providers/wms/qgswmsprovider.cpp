@@ -70,6 +70,7 @@
 #include <QPainter>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QStringBuilder>
 #include <QTextCodec>
 #include <QThread>
@@ -78,6 +79,8 @@
 #include <QUrlQuery>
 
 #include "moc_qgswmsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef QGISDEBUG
 #include <QFile>

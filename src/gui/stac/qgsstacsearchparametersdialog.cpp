@@ -26,9 +26,12 @@
 #include <QScrollBar>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTextDocument>
 
 #include "moc_qgsstacsearchparametersdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

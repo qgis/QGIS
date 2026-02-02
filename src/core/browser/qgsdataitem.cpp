@@ -41,6 +41,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QRegularExpression>
+#include <QString>
 #include <QStyle>
 #include <QTimer>
 #include <QTreeWidget>
@@ -50,6 +51,8 @@
 #include <QtConcurrentRun>
 
 #include "moc_qgsdataitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 // use GDAL VSI mechanism
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok

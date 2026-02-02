@@ -21,6 +21,9 @@
 #include "qgssymbollayerutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QDomDocument;
 class QDomElement;

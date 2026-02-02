@@ -19,6 +19,10 @@
 
 #include "qgsprocessingparameterfieldmap.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRefactorFieldsAlgorithm::name() const

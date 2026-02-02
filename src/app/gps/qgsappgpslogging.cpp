@@ -26,7 +26,11 @@
 #include "qgssettingstree.h"
 #include "qgsvectorlayergpslogger.h"
 
+#include <QString>
+
 #include "moc_qgsappgpslogging.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsAppGpsLogging::settingLastLogFolder = new QgsSettingsEntryString( u"last-log-folder"_s, QgsSettingsTree::sTreeGps, QString(), u"Last used folder for GPS log files"_s );
 

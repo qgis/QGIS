@@ -32,9 +32,12 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgspalettedrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

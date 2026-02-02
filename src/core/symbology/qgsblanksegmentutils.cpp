@@ -17,6 +17,10 @@
 
 #include "qgsrendercontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QList<QList<QgsBlankSegmentUtils::BlankSegments>> QgsBlankSegmentUtils::parseBlankSegments( const QString &strBlankSegments, const QgsRenderContext &renderContext, Qgis::RenderUnit unit, QString &error )
 {
   QString currentNumber;

@@ -35,10 +35,13 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QStringList>
 #include <QStyledItemDelegate>
 
 #include "moc_qgshanasourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsHanaSourceSelectDelegate::createEditor(

@@ -615,6 +615,8 @@ QgsProcessingException.__doc__ = "Custom exception class for processing related 
 QgsProviderConnectionException.__doc__ = "Custom exception class for provider connection related exceptions."
 QgsNotSupportedException.__doc__ = "Custom exception class which is raised when an operation is not supported."
 QgsSettingsException.__doc__ = "Custom exception class for settings related exceptions."
+QgsSfcgalException.__doc__ = "Custom exception class for SfCGAL related operations."
+QgsInvalidArgumentException.__doc__ = "Custom exception class when argument are invalid.\n\nIe. algorithms or processing can not continue computation."
 QgsException.__doc__ = "Defines a QGIS exception class."
 
 try:

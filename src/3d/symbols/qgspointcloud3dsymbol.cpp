@@ -19,8 +19,11 @@
 #include "qgscolorutils.h"
 #include "qgsmaterial.h"
 
+#include <QString>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTexture>
+
+using namespace Qt::StringLiterals;
 
 // QgsPointCloud3DSymbol
 

@@ -23,7 +23,11 @@
 #include "qgssettingstree.h"
 #include "qgssnappingutils.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolfeaturearray.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode> *QgsMapToolFeatureArray::settingsMode = new QgsSettingsEntryEnumFlag<QgsMapToolFeatureArray::ArrayMode>( u"featurearray-mode"_s, QgsSettingsTree::sTreeDigitizing, QgsMapToolFeatureArray::ArrayMode::FeatureCount );
 const QgsSettingsEntryInteger *QgsMapToolFeatureArray::settingsFeatureCount = new QgsSettingsEntryInteger( u"featurearray-feature-count"_s, QgsSettingsTree::sTreeDigitizing, 0 );

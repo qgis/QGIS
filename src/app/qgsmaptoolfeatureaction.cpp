@@ -34,8 +34,11 @@
 
 #include <QSettings>
 #include <QStatusBar>
+#include <QString>
 
 #include "moc_qgsmaptoolfeatureaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

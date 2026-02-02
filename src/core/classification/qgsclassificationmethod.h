@@ -21,6 +21,9 @@
 #include "qgsprocessingparameters.h"
 
 #include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 class QgsRendererRange;

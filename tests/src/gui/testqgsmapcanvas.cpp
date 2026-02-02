@@ -25,7 +25,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QSignalSpy>
+#include <QString>
 #include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 namespace QTest
 {

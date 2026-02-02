@@ -35,6 +35,8 @@
 #include <QString>
 #include <QVariantMap>
 
+using namespace Qt::StringLiterals;
+
 class QgsDataItem;
 class QgsDataItemProvider;
 class QgsTransaction;

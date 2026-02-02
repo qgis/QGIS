@@ -32,9 +32,12 @@
 
 #include <QCamera>
 #include <QQueue>
+#include <QString>
 #include <QtConcurrentMap>
 
 #include "moc_qgs3dmaptoolpointcloudchangeattribute.cpp"
+
+using namespace Qt::StringLiterals;
 
 class QgsPointCloudAttribute;
 class QgsMapLayer;

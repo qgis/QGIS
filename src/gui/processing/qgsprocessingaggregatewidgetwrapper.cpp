@@ -26,9 +26,12 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingaggregatewidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 

@@ -22,7 +22,11 @@
 #include "qgsmessageoutput.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgsappcoordinateoperationhandlers.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAppMissingRequiredGridHandler

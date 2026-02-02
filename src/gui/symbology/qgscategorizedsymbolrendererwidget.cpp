@@ -50,9 +50,12 @@
 #include <QScreen>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgscategorizedsymbolrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -22,6 +22,8 @@
 #include <QRegularExpression>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString &function, const QString &pyFormName, QgsAttributeForm *form )
   : QgsAttributeFormInterface( form )
   , mPyFunctionName( function )

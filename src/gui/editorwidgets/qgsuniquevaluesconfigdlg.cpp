@@ -15,7 +15,11 @@
 
 #include "qgsuniquevaluesconfigdlg.h"
 
+#include <QString>
+
 #include "moc_qgsuniquevaluesconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUniqueValuesConfigDlg::QgsUniqueValuesConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

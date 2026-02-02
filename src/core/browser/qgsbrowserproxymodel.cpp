@@ -20,8 +20,11 @@
 #include "qgslayeritem.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsbrowserproxymodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBrowserProxyModel::QgsBrowserProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

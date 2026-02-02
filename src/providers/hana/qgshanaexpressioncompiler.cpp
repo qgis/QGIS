@@ -21,6 +21,10 @@
 #include "qgslogger.h"
 #include "qgssqlexpressioncompiler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsHanaExpressionCompiler::QgsHanaExpressionCompiler( QgsHanaFeatureSource *source, bool ignoreStaticNodes )
   : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger | QgsSqlExpressionCompiler::NoNullInBooleanLogic, ignoreStaticNodes )
   , mGeometryColumn( source->mGeometryColumn )

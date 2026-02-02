@@ -15,6 +15,10 @@
 
 #include "qgsprocessingparametermeshdataset.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /// @cond PRIVATE
 ///
 QgsProcessingParameterMeshDatasetGroups::QgsProcessingParameterMeshDatasetGroups( const QString &name,

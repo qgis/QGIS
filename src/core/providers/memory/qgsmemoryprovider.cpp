@@ -27,10 +27,13 @@
 
 #include <QIcon>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsmemoryprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

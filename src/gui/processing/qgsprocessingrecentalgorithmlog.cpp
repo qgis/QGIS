@@ -17,7 +17,11 @@
 
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsprocessingrecentalgorithmlog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -24,7 +24,11 @@
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgslayoutpagecollection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )

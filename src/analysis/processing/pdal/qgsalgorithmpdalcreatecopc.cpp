@@ -20,7 +20,10 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QProcessEnvironment>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_PDAL_QGIS
 #include "QgisUntwine.hpp"

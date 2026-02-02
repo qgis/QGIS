@@ -65,6 +65,7 @@
 #include <QLocale>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QString>
 #include <QTextStream>
 #include <QTimer>
 #include <QUrl>
@@ -72,6 +73,8 @@
 #include <QXmlStreamReader>
 
 #include "moc_qgsmaplayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
 {

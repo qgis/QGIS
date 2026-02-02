@@ -49,10 +49,13 @@
 #include <QApplication>
 #include <QPainter>
 #include <QScreen>
+#include <QString>
 #include <QStyleOptionGraphicsItem>
 #include <QTimer>
 
 #include "moc_qgslayoutitemmap.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsLayoutItemMap::settingForceRasterMasks = new QgsSettingsEntryBool( u"force-raster-masks"_s, QgsSettingsTree::sTreeLayout, false, u"Whether to force rasterized clipping masks, regardless of output format."_s );
 

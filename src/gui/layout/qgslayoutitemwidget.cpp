@@ -31,8 +31,11 @@
 #include "qgssymbolbutton.h"
 
 #include <QButtonGroup>
+#include <QString>
 
 #include "moc_qgslayoutitemwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutConfigObject

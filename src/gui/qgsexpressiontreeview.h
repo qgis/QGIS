@@ -24,7 +24,10 @@
 #include <QPointer>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTreeView>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 

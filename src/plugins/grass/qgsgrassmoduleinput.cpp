@@ -34,8 +34,11 @@
 #include <QSettings>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTreeView>
 #include <QVBoxLayout>
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

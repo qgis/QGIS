@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmsubdivide.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )

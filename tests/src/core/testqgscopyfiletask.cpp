@@ -21,6 +21,8 @@
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * Unit tests for QgsCopyFileTask

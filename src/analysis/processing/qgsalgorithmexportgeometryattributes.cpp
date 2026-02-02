@@ -21,6 +21,10 @@
 #include "qgsgeometrycollection.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExportGeometryAttributesAlgorithm::name() const

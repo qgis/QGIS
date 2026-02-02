@@ -21,6 +21,10 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsRandomExtractSelectAlgorithmBase::sampleFeatureIds( QgsFeatureSource *source, const long long count, QgsProcessingFeedback *feedback )

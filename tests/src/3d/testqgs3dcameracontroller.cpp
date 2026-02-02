@@ -31,6 +31,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgs3DCameraController : public QgsTest
 {
     Q_OBJECT

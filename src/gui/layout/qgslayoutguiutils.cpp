@@ -52,6 +52,10 @@
 #include "qgsmapcanvas.h"
 #include "qgsplot.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * Attempts to find the best guess at a map item to link \a referenceItem to,
  * by:

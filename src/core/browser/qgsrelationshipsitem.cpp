@@ -23,7 +23,11 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
 #include "moc_qgsrelationshipsitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationshipsItem::QgsRelationshipsItem( QgsDataItem *parent,
     const QString &path,

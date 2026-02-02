@@ -18,7 +18,11 @@
 #include "qgsapplication.h"
 #include "qgssensorregistry.h"
 
+#include <QString>
+
 #include "moc_qgssensormanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSensorManager::QgsSensorManager( QObject *parent )
   : QObject( parent )

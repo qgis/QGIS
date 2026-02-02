@@ -20,7 +20,11 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
 #include "moc_qgsfieldmappingmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions, QObject *parent )
   : QAbstractTableModel( parent )

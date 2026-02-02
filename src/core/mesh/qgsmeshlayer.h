@@ -30,6 +30,10 @@
 #include "qgsmeshsimplificationsettings.h"
 #include "qgsmeshtimesettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
 class QgsSymbol;

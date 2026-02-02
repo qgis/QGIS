@@ -30,7 +30,11 @@
 #include "qgsrasterprojector.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsgrassprovidermodule.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsnewnamedialog.h"

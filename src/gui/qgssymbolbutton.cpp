@@ -38,8 +38,11 @@
 #include <QClipboard>
 #include <QDrag>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgssymbolbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSymbolButton::QgsSymbolButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

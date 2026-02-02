@@ -20,6 +20,10 @@
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsDistanceWithinAlgorithm::addDistanceParameter()

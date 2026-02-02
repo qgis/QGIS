@@ -17,7 +17,11 @@
 
 #include "qgsprocessing.h"
 
+#include <QString>
+
 #include "moc_qgsprocessing.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsProcessing::settingsPreferFilenameAsLayerName = new QgsSettingsEntryBool( u"prefer-filename-as-layer-name"_s, sTreeConfiguration, true, QObject::tr( "Prefer filename as layer name" ) );
 

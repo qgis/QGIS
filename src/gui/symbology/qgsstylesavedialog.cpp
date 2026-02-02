@@ -26,8 +26,11 @@
 
 #include <QCheckBox>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsstylesavedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity type )
   : QDialog( parent )

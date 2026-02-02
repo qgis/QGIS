@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmremoveduplicatevertices.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsAlgorithmRemoveDuplicateVertices::name() const

@@ -40,9 +40,12 @@
 #include <QPushButton>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingmultipleselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

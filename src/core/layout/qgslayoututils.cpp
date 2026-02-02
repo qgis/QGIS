@@ -28,7 +28,10 @@
 #include "qgssettingsregistrycore.h"
 
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionGraphicsItem>
+
+using namespace Qt::StringLiterals;
 
 #ifndef M_DEG2RAD
 #define M_DEG2RAD 0.0174532925

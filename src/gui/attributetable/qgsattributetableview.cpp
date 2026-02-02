@@ -34,9 +34,12 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsattributetableview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   : QgsTableView( parent )

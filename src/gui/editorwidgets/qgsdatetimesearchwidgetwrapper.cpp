@@ -23,9 +23,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
+#include <QString>
 #include <qcalendarwidget.h>
 
 #include "moc_qgsdatetimesearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

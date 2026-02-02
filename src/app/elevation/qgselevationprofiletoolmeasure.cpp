@@ -27,8 +27,11 @@
 #include <QGraphicsLineItem>
 #include <QGridLayout>
 #include <QLabel>
+#include <QString>
 
 #include "moc_qgselevationprofiletoolmeasure.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsProfileMeasureResultsDialog

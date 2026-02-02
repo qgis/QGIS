@@ -20,6 +20,10 @@
 #include "qgsabstractreportsection.h"
 #include "qgsfeatureiterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 // This is not considered stable API - it is exposed to python bindings only for unit testing!

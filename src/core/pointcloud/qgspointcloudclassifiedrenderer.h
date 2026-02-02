@@ -23,6 +23,10 @@
 #include "qgscolorrampshader.h"
 #include "qgspointcloudrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Represents an individual category (class) from a QgsPointCloudClassifiedRenderer.

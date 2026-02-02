@@ -23,8 +23,11 @@ email                : jef at norbit dot de
 #include "qgspostgresconnpool.h"
 
 #include <QMetaType>
+#include <QString>
 
 #include "moc_qgscolumntypethread.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useEstimatedMetaData, bool allowGeometrylessTables )
   : mName( name )

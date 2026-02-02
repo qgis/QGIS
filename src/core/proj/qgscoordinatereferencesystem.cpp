@@ -47,9 +47,12 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgscoordinatereferencesystem.cpp"
+
+using namespace Qt::StringLiterals;
 
 //gdal and ogr includes (needed for == operator)
 #include <ogr_srs_api.h>

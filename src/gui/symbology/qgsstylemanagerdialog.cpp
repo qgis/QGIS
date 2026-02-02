@@ -58,9 +58,12 @@
 #include <QPushButton>
 #include <QShortcut>
 #include <QStandardItemModel>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsstylemanagerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsStyleManagerDialog::settingLastStyleDatabaseFolder = new QgsSettingsEntryString( u"last-style-database-folder"_s, sTtreeStyleManager, QString(), u"Last used folder for style databases"_s );
 

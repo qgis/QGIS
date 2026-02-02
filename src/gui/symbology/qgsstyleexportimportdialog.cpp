@@ -36,10 +36,13 @@
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTemporaryFile>
 #include <QUrl>
 
 #include "moc_qgsstyleexportimportdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStyleExportImportDialog::QgsStyleExportImportDialog( QgsStyle *style, QWidget *parent, Mode mode )
   : QDialog( parent )

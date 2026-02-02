@@ -29,9 +29,12 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QRegularExpression>
+#include <QString>
 #include <QTreeWidgetItemIterator>
 
 #include "moc_qgsnewdatabasetablenamewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // List of data item provider keys that are filesystem based
 QStringList QgsNewDatabaseTableNameWidget::FILESYSTEM_BASED_DATAITEM_PROVIDERS { u"GPKG"_s, u"spatialite"_s };

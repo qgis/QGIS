@@ -34,6 +34,10 @@
 #include "qgsstyle.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsPointCloud3DRendering : public QgsTest
 {
     Q_OBJECT

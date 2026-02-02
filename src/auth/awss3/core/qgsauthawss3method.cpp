@@ -22,9 +22,12 @@
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <QMessageAuthenticationCode>
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsauthawss3method.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthawss3edit.h"

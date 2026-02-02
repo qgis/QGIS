@@ -38,12 +38,15 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
+#include <QString>
 #include <QToolBar>
 #include <QToolButton>
 #include <QTreeView>
 #include <QWidgetAction>
 
 #include "moc_qgssnappingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

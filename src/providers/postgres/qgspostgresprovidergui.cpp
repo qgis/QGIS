@@ -26,6 +26,10 @@
 #include "qgssourceselectprovider.h"
 #include "raster/qgspostgresrastertemporalsettingswidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for postgres source select
 class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider //#spellok
 {

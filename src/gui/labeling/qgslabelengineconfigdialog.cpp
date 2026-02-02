@@ -29,8 +29,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgslabelengineconfigdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelEngineConfigWidget::QgsLabelEngineConfigWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsPanelWidget( parent ), mCanvas( canvas )

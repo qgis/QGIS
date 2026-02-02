@@ -40,11 +40,14 @@
 #include <QMessageBox>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QString>
 #include <QToolButton>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgshandlebadlayers.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsHandleBadLayersHandler::handleBadLayers( const QList<QDomNode> &layers )
 {

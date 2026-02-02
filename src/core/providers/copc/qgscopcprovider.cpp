@@ -27,8 +27,11 @@
 #include "qgsthreadingutils.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgscopcprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

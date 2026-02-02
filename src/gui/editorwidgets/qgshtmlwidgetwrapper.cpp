@@ -22,8 +22,11 @@
 #include "qgswebframe.h"
 
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgshtmlwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHtmlWidgetWrapper::QgsHtmlWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )

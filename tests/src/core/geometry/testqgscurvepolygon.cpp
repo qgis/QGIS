@@ -28,6 +28,8 @@
 #include <QPainter>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsCurvePolygon : public QObject
 {
     Q_OBJECT

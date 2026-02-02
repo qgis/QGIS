@@ -28,6 +28,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgswfscapabilities.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsRectangle;
 class QgsWFSSharedData;
 

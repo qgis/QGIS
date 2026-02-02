@@ -23,6 +23,9 @@
 #include "qgsrendercontext.h"
 
 #include <QPicture>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsEffectStack::QgsEffectStack( const QgsEffectStack &other )
   : QgsPaintEffect( other )

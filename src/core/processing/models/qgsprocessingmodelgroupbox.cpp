@@ -17,7 +17,10 @@
 
 #include "qgsprocessingmodelgroupbox.h"
 
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

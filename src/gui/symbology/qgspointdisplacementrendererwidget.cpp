@@ -26,7 +26,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgspointdisplacementrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

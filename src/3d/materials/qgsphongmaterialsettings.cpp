@@ -19,6 +19,7 @@
 #include "qgscolorutils.h"
 
 #include <QMap>
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
@@ -26,6 +27,8 @@
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 QString QgsPhongMaterialSettings::type() const
 {

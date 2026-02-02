@@ -27,10 +27,13 @@
 
 #include <QDomDocument>
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QUrlQuery>
 
 #include "moc_qgswfsgetcapabilities.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsWfsGetCapabilitiesRequest::QgsWfsGetCapabilitiesRequest( const QString &uri, const QgsDataProvider::ProviderOptions &options )
   : QgsWfsRequest( QgsWFSDataSourceURI( uri ) ), mOptions( options )

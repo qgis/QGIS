@@ -45,8 +45,11 @@
 #include <QDesktopServices>
 #include <QDir>
 #include <QFile>
+#include <QString>
 #include <QTextStream>
 #include <QtTest/QTest>
+
+using namespace Qt::StringLiterals;
 
 #define QGSTEST_MAIN( TestObject )             \
   QT_BEGIN_NAMESPACE                           \

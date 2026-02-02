@@ -27,6 +27,9 @@
 
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const QgsScaleBarSettings &settings, const ScaleBarContext &scaleContext ) const
 {

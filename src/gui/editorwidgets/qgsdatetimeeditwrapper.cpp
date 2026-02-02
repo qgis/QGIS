@@ -26,10 +26,13 @@
 #include <QCalendarWidget>
 #include <QDateEdit>
 #include <QDateTimeEdit>
+#include <QString>
 #include <QTextCharFormat>
 #include <QTimeEdit>
 
 #include "moc_qgsdatetimeeditwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )

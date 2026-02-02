@@ -34,9 +34,12 @@
 #include "qgsunittypes.h"
 
 #include <QLabel>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsgpstoolbar.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> *QgsGpsToolBar::settingShowInToolbar = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( u"show-in-toolbar"_s, QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Location, u"GPS information components to show in GPS toolbar"_s );
 

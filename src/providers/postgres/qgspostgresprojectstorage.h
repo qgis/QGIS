@@ -20,6 +20,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgsprojectstorage.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Stores information parsed from postgres project URI
 struct QgsPostgresProjectUri
 {

@@ -24,8 +24,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QApplication>
+#include <QString>
 
 #include "moc_qgsrelation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelation::QgsRelation()
   : d( new QgsRelationPrivate() )

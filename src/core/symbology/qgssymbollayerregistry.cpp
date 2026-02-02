@@ -26,6 +26,10 @@
 #include "qgsmasksymbollayer.h"
 #include "qgsvectorfieldsymbollayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsSymbolLayerRegistry::QgsSymbolLayerRegistry()
 {
   // init registry with known symbol layers

@@ -30,6 +30,10 @@
 #include "qgspolygon3dsymbolwidget.h"
 #include "qgssimplelinematerialwidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void Qgs3DAppUtils::initialize()
 {
   qgis::down_cast<Qgs3DSymbolMetadata *>( QgsApplication::symbol3DRegistry()->symbolMetadata( u"point"_s ) )->setWidgetFunction( QgsPoint3DSymbolWidget::create );

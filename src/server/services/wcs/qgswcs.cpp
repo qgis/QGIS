@@ -23,6 +23,10 @@
 #include "qgswcsgetcoverage.h"
 #include "qgswcsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define QSTR_COMPARE( str, lit ) \
   ( str.compare( QLatin1String( lit ), Qt::CaseInsensitive ) == 0 )
 

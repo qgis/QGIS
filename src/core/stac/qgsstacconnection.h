@@ -23,7 +23,10 @@
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryString;
 class QgsSettingsEntryVariantMap;

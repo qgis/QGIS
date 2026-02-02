@@ -18,7 +18,10 @@
 
 #include <QRandomGenerator>
 #include <QSqlError>
+#include <QString>
 #include <qtconcurrentrun.h>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include "qgis.h"

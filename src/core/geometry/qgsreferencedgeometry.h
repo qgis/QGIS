@@ -24,6 +24,10 @@
 #include "qgsgeometry.h"
 #include "qgsrectangle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \class QgsReferencedGeometryBase
  * \ingroup core

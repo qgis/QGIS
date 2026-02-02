@@ -39,8 +39,11 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QSet>
+#include <QString>
 
 #include "moc_qgswcscapabilities.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #include <float.h>

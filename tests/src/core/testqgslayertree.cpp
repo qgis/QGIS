@@ -35,6 +35,9 @@
 #include "qgsvectorlayerlabelprovider.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayerTree : public QObject
 {

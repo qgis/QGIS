@@ -27,7 +27,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsgeometrygapcheck.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGeometryGapCheck::QgsGeometryGapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )

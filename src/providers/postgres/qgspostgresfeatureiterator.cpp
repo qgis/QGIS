@@ -29,6 +29,9 @@
 
 #include <QElapsedTimer>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )

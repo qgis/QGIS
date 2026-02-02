@@ -36,9 +36,12 @@
 #include <QMimeData>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsprocessinghistoryprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingHistoryProvider::QgsProcessingHistoryProvider()
 {

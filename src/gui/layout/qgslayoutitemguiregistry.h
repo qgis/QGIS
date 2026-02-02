@@ -27,6 +27,9 @@
 
 #include <QGraphicsItem>
 #include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayout;
 class QgsLayoutView;

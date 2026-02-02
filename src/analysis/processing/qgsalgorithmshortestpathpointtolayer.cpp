@@ -20,6 +20,10 @@
 #include "qgsgraphanalyzer.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsShortestPathPointToLayerAlgorithm::name() const

@@ -23,8 +23,11 @@
 #include "qgshistoryproviderregistry.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgshistoryentrymodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsHistoryEntryRootNode : public QgsHistoryEntryGroup

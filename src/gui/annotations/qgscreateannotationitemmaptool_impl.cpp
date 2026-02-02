@@ -40,8 +40,11 @@
 
 #include <QFileDialog>
 #include <QImageReader>
+#include <QString>
 
 #include "moc_qgscreateannotationitemmaptool_impl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

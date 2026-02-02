@@ -20,7 +20,10 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const Qgis::LayoutUnit units )
   : mX( x )

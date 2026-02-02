@@ -29,6 +29,9 @@
 #include <QDomElement>
 #include <QPainter>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
   : mStrokeColor( QColor( 35, 35, 35 ) )
@@ -414,8 +417,7 @@ QgsEllipseSymbolLayer *QgsEllipseSymbolLayer::clone() const
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
 
-  copyDataDefinedProperties( m );
-  copyPaintEffect( m );
+  copyCommonProperties( m );
   return m;
 }
 

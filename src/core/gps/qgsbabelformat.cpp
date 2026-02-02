@@ -20,6 +20,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 QgsAbstractBabelFormat::QgsAbstractBabelFormat( const QString &name )
   : mName( name )
 {

@@ -23,6 +23,10 @@
 #include "qgsserverprojectutils.h"
 #include "qgswmtsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 namespace QgsWmts
 {
   namespace

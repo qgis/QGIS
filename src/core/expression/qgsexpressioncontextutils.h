@@ -25,6 +25,8 @@
 #include <QString>
 #include <QVariantMap>
 
+using namespace Qt::StringLiterals;
+
 class QgsExpressionContextScope;
 class QgsProject;
 class QgsLayout;

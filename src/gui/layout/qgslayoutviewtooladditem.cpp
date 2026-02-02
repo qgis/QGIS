@@ -29,8 +29,11 @@
 #include <QGraphicsRectItem>
 #include <QMouseEvent>
 #include <QPen>
+#include <QString>
 
 #include "moc_qgslayoutviewtooladditem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Add item" ) )

@@ -39,8 +39,11 @@
 #include <QImageReader>
 #include <QMimeData>
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsimagedroptextedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 QgsImageDropTextEdit::QgsImageDropTextEdit( QWidget *parent )

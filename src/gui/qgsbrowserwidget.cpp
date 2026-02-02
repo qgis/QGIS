@@ -40,10 +40,13 @@
 #include <QMenu>
 #include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolButton>
 #include <QTreeView>
 
 #include "moc_qgsbrowserwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 // browser layer properties dialog
 #include "qgsapplication.h"

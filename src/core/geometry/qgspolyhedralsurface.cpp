@@ -36,6 +36,9 @@
 
 #include <QPainter>
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPolyhedralSurface::QgsPolyhedralSurface()
 {

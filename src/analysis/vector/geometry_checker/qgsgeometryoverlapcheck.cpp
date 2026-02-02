@@ -22,6 +22,10 @@
 #include "qgsgeometryengine.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeometryOverlapCheck::QgsGeometryOverlapCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
   : QgsGeometryCheck( context, configuration )
   , mOverlapThresholdMapUnits( configurationValue<double>( u"maxOverlapArea"_s ) )

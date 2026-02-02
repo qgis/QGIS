@@ -21,6 +21,10 @@
 
 #include "qgsgeometryutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRegularPolygon::QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numSides, const ConstructionOption circle )
   : mCenter( center )
 {

@@ -24,6 +24,10 @@
 #include "qgsrendercontext.h"
 #include "qgstextrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationPointTextItem::QgsAnnotationPointTextItem( const QString &text, QgsPointXY point )
   : QgsAnnotationItem()
   , mText( text )

@@ -26,9 +26,12 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
 #include <QThread>
 #include <QThreadPool>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 class TestTask : public QgsTask
 {

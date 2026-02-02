@@ -31,8 +31,11 @@
 #include "qgssettings.h"
 
 #include <QMatrix4x4>
+#include <QString>
 #include <QVector3D>
 #include <Qt3DCore/QEntity>
+
+using namespace Qt::StringLiterals;
 
 class Qgs3DMapSettings;
 

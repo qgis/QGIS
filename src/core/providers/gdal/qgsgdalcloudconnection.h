@@ -20,6 +20,10 @@
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define SIP_NO_FILE
 
 #include <QStringList>

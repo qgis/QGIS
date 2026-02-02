@@ -22,9 +22,12 @@
 #include <QPalette>
 #include <QRegularExpression>
 #include <QShortcut>
+#include <QString>
 #include <QWidgetAction>
 
 #include "moc_qgsshortcutsmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )

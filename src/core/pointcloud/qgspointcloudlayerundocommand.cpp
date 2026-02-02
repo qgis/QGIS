@@ -21,7 +21,10 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayereditutils.h"
 
+#include <QString>
 #include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudLayer *layer )
   : mLayer( layer )

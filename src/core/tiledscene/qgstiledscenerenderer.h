@@ -22,6 +22,10 @@
 #include "qgis_sip.h"
 #include "qgsrendercontext.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsLayerTreeLayer;
 class QgsLayerTreeModelLegendNode;
 

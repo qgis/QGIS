@@ -26,11 +26,14 @@
 #include <QGlobalStatic>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 #include <QThread>
 #include <QTimer>
 #include <QToolButton>
 
 #include "moc_qgscredentialdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QMutex QgsCredentialDialog::sIgnoredConnectionsCacheMutex;
 typedef QSet<QString> IgnoredConnectionsSet;

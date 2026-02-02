@@ -20,6 +20,10 @@
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A simple 4x4 matrix implementation useful for transformation in 3D space.

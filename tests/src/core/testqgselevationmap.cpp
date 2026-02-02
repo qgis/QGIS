@@ -19,6 +19,10 @@ Email                : wonder dot sk at gmail dot com
 #include "qgsrasterlayerelevationproperties.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsElevationMap : public QgsTest
 {
     Q_OBJECT

@@ -22,9 +22,12 @@
 
 #include <QMessageBox>
 #include <QSpinBox>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsnewvectortabledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewVectorTableDialog::QgsNewVectorTableDialog( QgsAbstractDatabaseProviderConnection *conn, QWidget *parent )
   : QDialog( parent )

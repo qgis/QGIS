@@ -18,7 +18,11 @@
 #include "qgsfieldmodel.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
 #include "moc_qgsfieldproxymodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldProxyModel::QgsFieldProxyModel( QObject *parent )
   : QSortFilterProxyModel( parent )

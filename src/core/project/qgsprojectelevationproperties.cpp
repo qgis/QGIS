@@ -20,8 +20,11 @@
 #include "qgsterrainprovider.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectElevationProperties::QgsProjectElevationProperties( QObject *parent )
   : QObject( parent )

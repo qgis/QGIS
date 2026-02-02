@@ -27,6 +27,9 @@
 #include "qgswcsserviceexception.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup server

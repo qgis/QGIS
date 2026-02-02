@@ -25,7 +25,11 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolchangelabelproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )

@@ -46,9 +46,12 @@
 
 #include <QMenu>
 #include <QRubberBand>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsvertextool.cpp"
+
+using namespace Qt::StringLiterals;
 
 uint qHash( const Vertex &v )
 {

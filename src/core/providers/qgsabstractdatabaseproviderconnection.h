@@ -24,6 +24,9 @@
 #include "qgsvectordataprovider.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsFeedback;
 class QgsFieldDomain;

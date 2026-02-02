@@ -27,7 +27,10 @@
 #include <QColor>
 #include <QDesktopServices>
 #include <QFont>
+#include <QString>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDatabaseQueryLoggerRootNode

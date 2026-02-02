@@ -20,8 +20,11 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPointer>
+#include <QString>
 
 #include "moc_qgsmeshvariablestrokewidthwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
   const QgsInterpolatedLineWidth &variableStrokeWidth,

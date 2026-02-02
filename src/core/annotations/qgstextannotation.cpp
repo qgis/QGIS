@@ -23,8 +23,11 @@ email                : marco dot hugentobler at hugis dot net
 
 #include <QDomDocument>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgstextannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextAnnotation::QgsTextAnnotation( QObject *parent )
   : QgsAnnotation( parent )

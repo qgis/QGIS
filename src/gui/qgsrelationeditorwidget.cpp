@@ -36,9 +36,12 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTreeWidget>
 
 #include "moc_qgsrelationeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 ///

@@ -39,12 +39,15 @@
 #include <QNetworkReply>
 #include <QRecursiveMutex>
 #include <QStandardPaths>
+#include <QString>
 #include <QThreadStorage>
 #include <QTimer>
 #include <QUrl>
 #include <QUuid>
 
 #include "moc_qgsnetworkaccessmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryInteger *QgsNetworkAccessManager::settingsNetworkTimeout = new QgsSettingsEntryInteger( u"network-timeout"_s, QgsSettingsTree::sTreeNetwork, 60000, QObject::tr( "Network timeout" ) );
 

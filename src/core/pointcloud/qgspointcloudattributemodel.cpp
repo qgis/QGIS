@@ -22,7 +22,11 @@
 #include "qgspointcloudlayer.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudattributemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudAttributeModel::QgsPointCloudAttributeModel( QObject *parent )
   : QAbstractItemModel( parent )

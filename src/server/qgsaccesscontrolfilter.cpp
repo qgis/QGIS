@@ -23,6 +23,10 @@
 #include "qgsfeature.h"
 #include "qgsmessagelog.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Constructor
 QgsAccessControlFilter::QgsAccessControlFilter( const QgsServerInterface *serverInterface )
   : mServerInterface( serverInterface )

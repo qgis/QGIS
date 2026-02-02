@@ -14,6 +14,10 @@
  ***************************************************************************/
 #include "qgsrendererregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // default renderers
 #include "qgssinglesymbolrenderer.h"
 #include "qgscategorizedsymbolrenderer.h"

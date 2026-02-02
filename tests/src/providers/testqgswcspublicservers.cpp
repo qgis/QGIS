@@ -37,6 +37,8 @@
 #include <QStringList>
 #include <QTextStream>
 
+using namespace Qt::StringLiterals;
+
 #ifdef Q_OS_WIN
 #include <fcntl.h> /*  _O_BINARY */
 #else

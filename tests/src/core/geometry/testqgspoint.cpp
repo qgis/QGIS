@@ -24,6 +24,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPoint : public QObject
 {
     Q_OBJECT

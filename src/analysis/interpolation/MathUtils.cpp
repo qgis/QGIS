@@ -21,6 +21,10 @@
 #include "qgslogger.h"
 #include "qgspoint.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result )
 {
   if ( p1 && p2 && p3 && result )

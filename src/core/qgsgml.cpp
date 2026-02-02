@@ -38,10 +38,13 @@
 #include <QRegularExpression>
 #include <QSet>
 #include <QSettings>
+#include <QString>
 #include <QTextCodec>
 #include <QUrl>
 
 #include "moc_qgsgml.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 

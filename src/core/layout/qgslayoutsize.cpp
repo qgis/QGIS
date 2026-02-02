@@ -20,7 +20,10 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutSize::QgsLayoutSize( const double width, const double height, const Qgis::LayoutUnit units )
   : mWidth( width )

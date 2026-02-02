@@ -20,9 +20,12 @@
 
 #include <QAction>
 #include <QLayout>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsdockablewidgethelper.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

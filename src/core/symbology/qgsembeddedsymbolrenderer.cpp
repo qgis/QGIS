@@ -21,6 +21,10 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsEmbeddedSymbolRenderer::QgsEmbeddedSymbolRenderer( QgsSymbol *defaultSymbol )
   : QgsFeatureRenderer( u"embeddedSymbol"_s )
   , mDefaultSymbol( defaultSymbol )

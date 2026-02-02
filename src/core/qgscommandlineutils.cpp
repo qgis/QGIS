@@ -27,7 +27,10 @@
 #include "qgsprojutils.h"
 #include "qgsversion.h"
 
+#include <QString>
 #include <QSysInfo>
+
+using namespace Qt::StringLiterals;
 
 #ifdef WITH_SFCGAL
 #include <SFCGAL/capi/sfcgal_c.h>

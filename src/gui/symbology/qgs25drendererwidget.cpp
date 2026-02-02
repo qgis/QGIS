@@ -20,7 +20,11 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgs25drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs25DRendererWidget::Qgs25DRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
   : QgsRendererWidget( layer, style )

@@ -29,6 +29,10 @@ while QGIS server internal logging is printed to stderr.
 #include <string>
 #include <thread>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //for CMAKE_INSTALL_PREFIX
 #include "qgscommandlineutils.h"
 #include "qgsconfig.h"

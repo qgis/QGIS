@@ -29,9 +29,12 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QtAlgorithms>
 
 #include "moc_qgslayoutatlas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )

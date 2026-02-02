@@ -18,6 +18,10 @@
 #include "qgsdatasourceuri.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 const QgsSettingsEntryString *QgsStacConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeConnectionStac );

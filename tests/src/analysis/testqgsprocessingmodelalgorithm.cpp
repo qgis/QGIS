@@ -24,6 +24,9 @@
 #include "qgsxmlutils.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class DummyAlgorithm2 : public QgsProcessingAlgorithm
 {

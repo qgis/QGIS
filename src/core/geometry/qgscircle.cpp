@@ -24,6 +24,10 @@
 #include "qgslinestring.h"
 #include "qgstriangle.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsCircle::QgsCircle()
   : QgsEllipse( QgsPoint(), 0.0, 0.0, 0.0 )
 {

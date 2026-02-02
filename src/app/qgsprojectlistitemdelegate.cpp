@@ -24,9 +24,12 @@
 #include <QAbstractTextDocumentLayout>
 #include <QApplication>
 #include <QPainter>
+#include <QString>
 #include <QTextDocument>
 
 #include "moc_qgsprojectlistitemdelegate.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectListItemDelegate::QgsProjectListItemDelegate( QObject *parent )
   : QStyledItemDelegate( parent )

@@ -22,6 +22,10 @@
 #include <cstring>
 #include <limits>
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // Changed #include <qapp.h> to <qapplication.h>. Apparently some
 // debian distros do not include the qapp.h wrapper and the compilation
 // fails. [gsherman]

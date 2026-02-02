@@ -282,12 +282,12 @@ void TestQgsMapToolSelectAnnotation::testMoveItem()
   QCOMPARE( spy.at( 0 ).at( 1 ).toString(), i1id );
 
   // a mouse press on the item will start moving the item
-  utils.mousePress( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
   // move mouse and click to end item move
   utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
   utils.mouseMove( 4.5, 4.5, Qt::LeftButton );
-  utils.mouseRelease( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 4.5, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   while ( !canvas.isDrawing() )
   {
     QgsApplication::processEvents();
@@ -300,10 +300,10 @@ void TestQgsMapToolSelectAnnotation::testMoveItem()
 
   // start a new move
   utils.mouseMove( 4.6, 4.5 );
-  utils.mousePress( 4.6, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 4.6, 4.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   utils.mouseMove( 1.5, 1.5, Qt::LeftButton );
   utils.mouseMove( 1.5, 1.5, Qt::LeftButton );
-  utils.mouseRelease( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
+  utils.mouseClick( 1.5, 1.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   while ( !canvas.isDrawing() )
   {
     QgsApplication::processEvents();

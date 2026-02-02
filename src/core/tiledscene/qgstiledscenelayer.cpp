@@ -30,7 +30,11 @@
 #include "qgstiledscenerendererregistry.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
 #include "moc_qgstiledscenelayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTiledSceneLayer::QgsTiledSceneLayer( const QString &uri,
                                         const QString &baseName,

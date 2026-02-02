@@ -34,9 +34,12 @@
 #include "qgsvectorlayer.h"
 
 #include <QDebug>
+#include <QString>
 #include <qlogging.h>
 
 #include "moc_topolTest.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool _canExportToGeos( const QgsGeometry &geom )
 {

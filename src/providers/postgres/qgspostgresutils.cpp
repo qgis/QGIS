@@ -20,6 +20,10 @@
 #include "qgslogger.h"
 #include "qgsstringutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // ----------
 
 void QgsPostgresSharedData::addFeaturesCounted( long long diff )

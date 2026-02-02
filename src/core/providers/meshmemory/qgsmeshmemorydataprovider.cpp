@@ -22,8 +22,11 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsmeshmemorydataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define TEXT_PROVIDER_KEY u"mesh_memory"_s
 #define TEXT_PROVIDER_DESCRIPTION u"Mesh memory provider"_s

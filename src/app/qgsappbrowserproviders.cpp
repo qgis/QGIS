@@ -34,9 +34,12 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsappbrowserproviders.cpp"
+
+using namespace Qt::StringLiterals;
 
 QIcon QgsBookmarksItem::iconBookmarks()
 {

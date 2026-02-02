@@ -23,9 +23,12 @@
 #include "qgsrelationmanager.h"
 #include "qgsrelationwidgetregistry.h"
 
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgsrelationwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationWidgetWrapper::QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor, QWidget *parent )
   : QgsRelationWidgetWrapper( u"relation_editor"_s, vl, relation, editor, parent )

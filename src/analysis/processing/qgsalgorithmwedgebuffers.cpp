@@ -20,6 +20,10 @@
 #include "qgsmultipoint.h"
 #include "qgsmultisurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsWedgeBuffersAlgorithm::name() const

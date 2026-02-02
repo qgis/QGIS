@@ -22,6 +22,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsSimplifyMethod : public QObject
 {
     Q_OBJECT

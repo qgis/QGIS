@@ -19,7 +19,11 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
 #include "moc_qgspasswordlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPasswordLineEdit::QgsPasswordLineEdit( QWidget *parent, bool passwordVisible )
   : QLineEdit( parent )

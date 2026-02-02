@@ -18,7 +18,11 @@
 #include "qgsmaplayerlistutils_p.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayertree.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTree::QgsLayerTree()
 {

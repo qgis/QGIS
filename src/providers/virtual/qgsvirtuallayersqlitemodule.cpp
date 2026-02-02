@@ -39,6 +39,9 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <QBuffer>
 #include <QCoreApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * Create metadata tables if needed

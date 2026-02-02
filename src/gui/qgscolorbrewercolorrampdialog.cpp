@@ -21,8 +21,11 @@
 
 #include <QAbstractButton>
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgscolorbrewercolorrampdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if 0 // unused
 static void updateColorButton( QAbstractButton *button, QColor color )

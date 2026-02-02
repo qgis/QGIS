@@ -17,7 +17,10 @@
 #include "qgstest.h"
 
 #include <QPixmapCache>
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsSvgSelectorWidget : public QgsTest
 {

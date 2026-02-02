@@ -61,9 +61,12 @@
 #include <QPainter>
 #include <QRegularExpression>
 #include <QStandardItemModel>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgssymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionContext QgsSymbolLayerWidget::createExpressionContext() const
 {

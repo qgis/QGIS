@@ -30,9 +30,12 @@
 #include "qgstiledsceneboundingvolume.h"
 #include "qgstiledscenetile.h"
 
+#include <QString>
 #include <QtConcurrentRun>
 
 #include "moc_qgstiledscenechunkloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

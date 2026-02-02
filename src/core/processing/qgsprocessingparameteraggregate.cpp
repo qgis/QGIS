@@ -15,6 +15,10 @@
 
 #include "qgsprocessingparameteraggregate.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsProcessingParameterAggregate::QgsProcessingParameterAggregate( const QString &name, const QString &description, const QString &parentLayerParameterName, bool optional )
   : QgsProcessingParameterDefinition( name, description, QVariant(), optional )
   , mParentLayerParameterName( parentLayerParameterName )

@@ -28,8 +28,11 @@
 #include "qgsstacparser.h"
 
 #include <QFile>
+#include <QString>
 
 #include "moc_qgsstaccontroller.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStacController::~QgsStacController()
 {

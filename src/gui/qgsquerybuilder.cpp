@@ -31,9 +31,12 @@
 #include <QListView>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsquerybuilder.cpp"
+
+using namespace Qt::StringLiterals;
 
 // constructor used when the query builder must make its own
 // connection to the database

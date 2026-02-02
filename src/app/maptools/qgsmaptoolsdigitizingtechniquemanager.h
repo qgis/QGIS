@@ -23,7 +23,10 @@
 #include "qgsmaptoolshapeabstract.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QWidgetAction>
+
+using namespace Qt::StringLiterals;
 
 class QgsSpinBox;
 class QgsSettingsEntryString;

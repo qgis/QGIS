@@ -30,8 +30,11 @@
 
 #include <QColorDialog>
 #include <QGraphicsScene>
+#include <QString>
 
 #include "moc_qgstextannotationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

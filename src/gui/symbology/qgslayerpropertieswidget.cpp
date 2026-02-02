@@ -46,8 +46,11 @@
 #include <QMessageBox>
 #include <QPicture>
 #include <QStandardItem>
+#include <QString>
 
 #include "moc_qgslayerpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool _initWidgetFunction( const QString &name, QgsSymbolLayerWidgetFunc f )
 {

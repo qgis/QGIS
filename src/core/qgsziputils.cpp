@@ -25,6 +25,9 @@
 
 #include <QDir>
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 bool QgsZipUtils::isZipFile( const QString &filename )
 {

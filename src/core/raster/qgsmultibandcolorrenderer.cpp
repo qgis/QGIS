@@ -26,6 +26,9 @@
 #include <QDomElement>
 #include <QImage>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
     QgsContrastEnhancement *redEnhancement,

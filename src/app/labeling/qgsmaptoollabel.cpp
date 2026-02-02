@@ -38,8 +38,11 @@
 #include "qgsvectorlayerlabeling.h"
 
 #include <QMouseEvent>
+#include <QString>
 
 #include "moc_qgsmaptoollabel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolLabel::QgsMapToolLabel( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )

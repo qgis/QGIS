@@ -21,8 +21,11 @@
 #include "qgstextformat.h"
 #include "qgstextfragment.h"
 
+#include <QString>
 #include <QTextBlock>
 #include <QTextDocument>
+
+using namespace Qt::StringLiterals;
 
 QgsTextDocument::~QgsTextDocument() = default;
 

@@ -20,6 +20,10 @@
 #include "qgsrasterfilewriter.h"
 #include "qgsruggednessfilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRuggednessAlgorithm::name() const

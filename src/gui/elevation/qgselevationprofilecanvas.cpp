@@ -40,10 +40,13 @@
 #include "qgsterrainprovider.h"
 
 #include <QPalette>
+#include <QString>
 #include <QTimer>
 #include <QWheelEvent>
 
 #include "moc_qgselevationprofilecanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsElevationProfilePlotItem : public Qgs2DXyPlot, public QgsPlotCanvasItem

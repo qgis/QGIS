@@ -20,7 +20,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayergpslogger.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerGpsLogger::QgsVectorLayerGpsLogger( QgsGpsConnection *connection, QObject *parent )
   : QgsGpsLogger( connection, parent )

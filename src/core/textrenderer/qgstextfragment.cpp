@@ -18,7 +18,10 @@
 #include "qgsstringutils.h"
 
 #include <QFontMetricsF>
+#include <QString>
 #include <QTextFragment>
+
+using namespace Qt::StringLiterals;
 
 QgsTextFragment::QgsTextFragment( const QString &text, const QgsTextCharacterFormat &format )
   : mText( text != u"\ufffc"_s ? text : QString() )

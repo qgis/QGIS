@@ -26,9 +26,12 @@
 
 #include <QPainter>
 #include <QPixmap>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsmeshrenderer3daveragingwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshRenderer3DAveragingWidget::QgsMeshRenderer3DAveragingWidget( QWidget *parent )
   : QWidget( parent )

@@ -28,10 +28,13 @@
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QString>
 #include <QTextEdit>
 #include <QtCrypto>
 
 #include "moc_qgsauthcertificateinfo.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthCertInfo::QgsAuthCertInfo( const QSslCertificate &cert, bool manageCertTrust, QWidget *parent, const QList<QSslCertificate> &connectionCAs )
   : QWidget( parent )

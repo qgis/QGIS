@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsRenderedAnnotationItemDetails : QgsRenderedItemDetails
 {
 %Docstring(signature="appended")

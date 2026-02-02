@@ -24,7 +24,11 @@
 #include "qgsvectordataprovidertemporalcapabilities.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayertemporalproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerTemporalProperties::QgsVectorLayerTemporalProperties( QObject *parent, bool enabled )
   :  QgsMapLayerTemporalProperties( parent, enabled )

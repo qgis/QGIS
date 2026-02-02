@@ -20,7 +20,11 @@
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgselevationprofile.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfile::QgsElevationProfile( QgsProject *project )
   : mProject( project )

@@ -32,10 +32,13 @@
 #include <QInputDialog>
 #include <QLocale>
 #include <QMenu>
+#include <QString>
 #include <QTextCodec>
 #include <QUrl>
 
 #include "moc_qgsprocessingoutputdestinationwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

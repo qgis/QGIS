@@ -33,8 +33,11 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 #include <QSemaphore>
+#include <QString>
 #include <QStringList>
 #include <QWaitCondition>
+
+using namespace Qt::StringLiterals;
 
 class QgsFeedback;
 class QgsSettingsEntryInteger;

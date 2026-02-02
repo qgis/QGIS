@@ -21,8 +21,11 @@
 #include "qgsmessagebar.h"
 
 #include <QLayout>
+#include <QString>
 
 #include "moc_qgsactionwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsWidgetWrapper( layer, editor, parent )

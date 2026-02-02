@@ -42,8 +42,11 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 static constexpr int MAX_FONT_CHARACTER_SIZE_IN_PIXELS = 500;
 
@@ -1403,8 +1406,7 @@ QgsSimpleMarkerSymbolLayer *QgsSimpleMarkerSymbolLayer::clone() const
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   m->setPenCapStyle( mPenCapStyle );
-  copyDataDefinedProperties( m );
-  copyPaintEffect( m );
+  copyCommonProperties( m );
   return m;
 }
 
@@ -2003,8 +2005,7 @@ QVariantMap QgsFilledMarkerSymbolLayer::properties() const
 QgsFilledMarkerSymbolLayer *QgsFilledMarkerSymbolLayer::clone() const
 {
   QgsFilledMarkerSymbolLayer *m = static_cast< QgsFilledMarkerSymbolLayer * >( QgsFilledMarkerSymbolLayer::create( properties() ) );
-  copyPaintEffect( m );
-  copyDataDefinedProperties( m );
+  copyCommonProperties( m );
   m->setSubSymbol( mFill->clone() );
   return m;
 }
@@ -3481,8 +3482,7 @@ void QgsRasterMarkerSymbolLayer::copyCommonProperties( QgsRasterMarkerSymbolLaye
   other->setSizeMapUnitScale( mSizeMapUnitScale );
   other->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   other->setVerticalAnchorPoint( mVerticalAnchorPoint );
-  copyDataDefinedProperties( other );
-  copyPaintEffect( other );
+  QgsSymbolLayer::copyCommonProperties( other );
 }
 
 bool QgsRasterMarkerSymbolLayer::usesMapUnits() const
@@ -4069,8 +4069,7 @@ QgsFontMarkerSymbolLayer *QgsFontMarkerSymbolLayer::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
-  copyDataDefinedProperties( m );
-  copyPaintEffect( m );
+  copyCommonProperties( m );
   return m;
 }
 

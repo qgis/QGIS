@@ -24,6 +24,7 @@
 #include "qgssourcecache.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QUrl>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
@@ -44,6 +45,8 @@
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

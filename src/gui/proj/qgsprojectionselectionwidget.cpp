@@ -25,8 +25,11 @@
 #include "qgssettings.h"
 
 #include <QHBoxLayout>
+#include <QString>
 
 #include "moc_qgsprojectionselectionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

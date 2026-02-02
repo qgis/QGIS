@@ -57,7 +57,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QObject>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
 

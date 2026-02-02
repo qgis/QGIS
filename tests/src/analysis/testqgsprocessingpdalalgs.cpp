@@ -24,7 +24,10 @@
 #include "qgsprocessingregistry.h"
 #include "qgstest.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProcessingPdalAlgs : public QgsTest
 {

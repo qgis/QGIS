@@ -30,7 +30,11 @@
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgspostgresdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem *parent, const QString &name, const QString &path )

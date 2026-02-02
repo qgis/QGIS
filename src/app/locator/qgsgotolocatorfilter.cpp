@@ -23,9 +23,12 @@
 #include "qgsfeedback.h"
 #include "qgsmapcanvas.h"
 
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsgotolocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGotoLocatorFilter::QgsGotoLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

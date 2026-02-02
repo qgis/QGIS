@@ -32,6 +32,10 @@
 #include "qgsrendercontext.h"
 #include "qgsrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSymbolLayer;
 class QTextCodec;
 class QgsFeatureIterator;

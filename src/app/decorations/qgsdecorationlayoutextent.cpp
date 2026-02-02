@@ -34,8 +34,11 @@
 #include "qgstextrenderer.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsdecorationlayoutextent.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   : QgsDecorationItem( parent )

@@ -42,6 +42,10 @@
 #include "qgstiledscenelayer3drenderer.h"
 #include "qgsvectorlayer3drenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 Qgs3D *Qgs3D::instance()
 {
   static Qgs3D *sInstance( new Qgs3D() );

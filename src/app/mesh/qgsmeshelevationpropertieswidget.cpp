@@ -26,8 +26,11 @@
 
 #include <QAction>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsmeshelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshElevationPropertiesWidget::QgsMeshElevationPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

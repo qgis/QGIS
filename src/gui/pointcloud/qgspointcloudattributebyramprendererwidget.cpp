@@ -24,7 +24,11 @@
 #include "qgspointcloudlayerelevationproperties.h"
 #include "qgsstyle.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudattributebyramprendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

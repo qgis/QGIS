@@ -21,6 +21,10 @@
 #include "vector/qgsgeometrysnapper.h"
 #include "vector/qgsgeometrysnappersinglesource.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSnapGeometriesAlgorithm::name() const

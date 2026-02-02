@@ -20,8 +20,11 @@
 #include "qgsauthmanager.h"
 
 #include <QDateTime>
+#include <QString>
 
 #include "moc_qgsauthsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthSettingsWidget::QgsAuthSettingsWidget( QWidget *parent, const QString &configId, const QString &username, const QString &password, const QString &dataprovider )
   : QWidget( parent )

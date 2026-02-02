@@ -21,7 +21,11 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsauthpkipathsmethod.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthpkipathsedit.h"

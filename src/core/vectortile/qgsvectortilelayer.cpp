@@ -37,10 +37,13 @@
 #include "qgsvectortilemvtdecoder.h"
 #include "qgsvectortileutils.h"
 
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsvectortilelayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileLayer::QgsVectorTileLayer( const QString &uri, const QString &baseName, const LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::VectorTile, baseName )

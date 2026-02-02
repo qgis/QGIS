@@ -10,6 +10,7 @@
 
 
 
+
 class QgsDiagram /NoDefaultCtors/
 {
 %Docstring(signature="appended")

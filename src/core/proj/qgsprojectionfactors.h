@@ -22,6 +22,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \class QgsProjectionFactors
  * \ingroup core

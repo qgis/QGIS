@@ -22,7 +22,11 @@
 #include "qgsgui.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgscodeeditoroptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsCodeEditorOptionsWidget

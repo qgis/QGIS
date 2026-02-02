@@ -32,6 +32,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationRectItem::QgsAnnotationRectItem( const QgsRectangle &bounds )
   : QgsAnnotationItem()
   , mBounds( bounds )

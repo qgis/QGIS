@@ -20,8 +20,11 @@
 
 #include <QDialogButtonBox>
 #include <QFile>
+#include <QString>
 
 #include "moc_qgsdashspacedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDashSpaceWidget::QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent )
   : QgsPanelWidget( parent )

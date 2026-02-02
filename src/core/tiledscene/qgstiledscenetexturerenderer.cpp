@@ -21,6 +21,10 @@
 #include "qgspainting.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTiledSceneTextureRenderer::QgsTiledSceneTextureRenderer()
 {
   mFillSymbol = createDefaultFillSymbol();

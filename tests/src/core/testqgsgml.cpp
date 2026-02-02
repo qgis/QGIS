@@ -16,9 +16,12 @@
 
 #include "qgstest.h"
 
+#include <QString>
 #include <QTemporaryFile>
 #include <QTextCodec>
 #include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgsgeometry.h>

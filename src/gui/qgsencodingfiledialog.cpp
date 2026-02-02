@@ -25,9 +25,12 @@
 #include <QLabel>
 #include <QLayout>
 #include <QPushButton>
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsencodingfiledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEncodingFileDialog::QgsEncodingFileDialog( QWidget *parent, const QString &caption, const QString &directory, const QString &filter, const QString &encoding )
   : QFileDialog( parent, caption, directory, filter )

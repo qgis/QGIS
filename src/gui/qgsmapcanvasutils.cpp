@@ -20,6 +20,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertemporalproperties.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 long QgsMapCanvasUtils::zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter )
 {
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );

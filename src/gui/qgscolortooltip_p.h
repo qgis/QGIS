@@ -20,6 +20,9 @@
 
 #include <QBuffer>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup gui

@@ -21,7 +21,11 @@
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgssnappingutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
   : QObject( parent )

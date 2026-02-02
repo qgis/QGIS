@@ -21,9 +21,12 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsvectorrenderingoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsVectorRenderingOptionsWidget

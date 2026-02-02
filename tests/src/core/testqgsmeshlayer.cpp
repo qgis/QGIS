@@ -22,6 +22,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsmaplayer.h"
 #include "qgsmeshlayer.h"

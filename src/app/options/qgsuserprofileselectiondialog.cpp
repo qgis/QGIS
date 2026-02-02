@@ -23,8 +23,11 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsuserprofileselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
   : QDialog( parent ), mManager( manager )
@@ -76,7 +79,7 @@ void QgsUserProfileSelectionDialog::onAddProfile()
 {
   // Ask for a new profile name
   QgsNewNameDialog dlg( QString(), QString(), QStringList(), mManager->allProfiles(), Qt::CaseInsensitive, this );
-  dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A user profile with this name already exists." ) );
   dlg.setOverwriteEnabled( false );
   dlg.setHintString( tr( "New profile name" ) );
   dlg.setWindowTitle( tr( "New Profile Name" ) );

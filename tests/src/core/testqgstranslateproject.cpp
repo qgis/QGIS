@@ -32,6 +32,9 @@
 
 #include <QDir>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsTranslateProject : public QObject
 {

@@ -22,10 +22,13 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QSlider>
+#include <QString>
 #include <QVBoxLayout>
 #include <QVideoWidget>
 
 #include "moc_qgsmediawidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   : QWidget( parent )

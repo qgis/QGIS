@@ -22,6 +22,9 @@
 #include "qgstest.h"
 
 #include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsGcpTransformer : public QgsTest
 {

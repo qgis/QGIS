@@ -30,6 +30,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsProject;
 
 /**

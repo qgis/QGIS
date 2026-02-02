@@ -31,6 +31,9 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
   : mMinimumValue( minimumValuePossible( dataType ) )

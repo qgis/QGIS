@@ -21,7 +21,11 @@
 #include "qgshelp.h"
 #include "qgsmapcanvas.h"
 
+#include <QString>
+
 #include "moc_qgsdecorationcopyrightdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 //qt includes
 #include <QColorDialog>

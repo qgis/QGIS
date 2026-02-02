@@ -22,7 +22,11 @@
 #include "qgslayoutviewmouseevent.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgslayoutviewtoolmoveitemcontent.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutViewToolMoveItemContent::QgsLayoutViewToolMoveItemContent( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Select" ) )

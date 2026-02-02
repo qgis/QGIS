@@ -21,7 +21,10 @@
 
 #include <QFile>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 bool QgsRasterRendererUtils::parseColorMapFile( const QString &path, QList<QgsColorRampShader::ColorRampItem> &items, Qgis::ShaderInterpolationMethod &type, QStringList &errors )
 {

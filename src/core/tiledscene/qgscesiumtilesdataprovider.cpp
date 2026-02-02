@@ -49,11 +49,14 @@
 #include <QNetworkRequest>
 #include <QRecursiveMutex>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 #include <qstringliteral.h>
 
 #include "moc_qgscesiumtilesdataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

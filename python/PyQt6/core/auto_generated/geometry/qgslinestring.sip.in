@@ -13,6 +13,7 @@
 
 
 
+
 class QgsLineString: QgsCurve
 {
 %Docstring(signature="appended")

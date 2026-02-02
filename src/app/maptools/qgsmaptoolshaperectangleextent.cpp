@@ -24,7 +24,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperectangleextent.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRectangleExtentMetadata::TOOL_ID = u"rectangle-from-extent"_s;
 

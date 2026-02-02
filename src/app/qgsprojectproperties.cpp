@@ -18,7 +18,11 @@
 
 #include "qgsprojectproperties.h"
 
+#include <QString>
+
 #include "moc_qgsprojectproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 //qgis includes
 #include "qgsapplication.h"

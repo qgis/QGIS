@@ -31,10 +31,13 @@
 #include "qgssymbollayerutils.h"
 
 #include <QGraphicsPathItem>
+#include <QString>
 #include <QSvgRenderer>
 #include <QVector2D>
 
 #include "moc_qgslayoutitempolyline.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPolyline::QgsLayoutItemPolyline( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )

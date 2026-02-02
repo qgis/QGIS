@@ -25,6 +25,9 @@
 #include "qgsvectorfilewriter.h"
 
 #include <QStack>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 double leftOfTresh = 0;
 

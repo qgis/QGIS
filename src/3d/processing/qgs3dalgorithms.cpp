@@ -20,7 +20,11 @@
 #include "qgsalgorithmtessellate.h"
 #include "qgsapplication.h"
 
+#include <QString>
+
 #include "moc_qgs3dalgorithms.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

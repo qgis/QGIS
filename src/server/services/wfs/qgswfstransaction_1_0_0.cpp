@@ -39,6 +39,9 @@
 #include "qgswfsutils.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWfs
 {

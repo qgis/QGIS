@@ -21,7 +21,11 @@
 #include "qgsmessagelog.h"
 #include "qgsprojectviewsettings.h"
 
+#include <QString>
+
 #include "moc_qgsquickmapsettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsQuickMapSettings::QgsQuickMapSettings( QObject *parent )
   : QObject( parent )

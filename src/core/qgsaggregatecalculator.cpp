@@ -29,6 +29,10 @@
 #include "qgsstringstatisticalsummary.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAggregateCalculator::QgsAggregateCalculator( const QgsVectorLayer *layer )
   : mLayer( layer )
 {

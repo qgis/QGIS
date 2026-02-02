@@ -26,8 +26,11 @@
 
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgspostgresprojectstoragedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresProjectStorageDialog::QgsPostgresProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )

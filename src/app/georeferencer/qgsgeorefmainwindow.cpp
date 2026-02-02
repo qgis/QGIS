@@ -66,11 +66,14 @@
 #include <QPlainTextEdit>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QString>
 #include <QStringList>
 #include <QTextStream>
 #include <QUrl>
 
 #include "moc_qgsgeorefmainwindow.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *QgsGeoreferencerMainWindow::settingResamplingMethod = new QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod>( u"resampling-method"_s, sTreeGeoreferencer, QgsImageWarper::ResamplingMethod::NearestNeighbour, u"Last used georeferencer resampling method"_s );
 

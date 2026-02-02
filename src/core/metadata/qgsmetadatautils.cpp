@@ -20,7 +20,10 @@
 #include "qgslayermetadata.h"
 
 #include <QDomDocument>
+#include <QString>
 #include <QTextDocumentFragment>
+
+using namespace Qt::StringLiterals;
 
 QgsLayerMetadata QgsMetadataUtils::convertFromEsri( const QDomDocument &document )
 {

@@ -26,9 +26,12 @@
 #include "qgssensorwidget.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 #include <QTableWidget>
 
 #include "moc_qgssensortablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSensorSettingsWidget::QgsSensorSettingsWidget( QgsAbstractSensor *sensor, QWidget *parent )
   : QgsPanelWidget( parent )

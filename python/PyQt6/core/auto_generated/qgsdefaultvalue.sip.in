@@ -8,6 +8,7 @@
 
 
 
+
 class QgsDefaultValue
 {
 %Docstring(signature="appended")

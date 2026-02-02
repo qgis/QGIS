@@ -18,7 +18,11 @@
 #include "qgsapplication.h"
 #include "qgsfieldconstraints.h"
 
+#include <QString>
+
 #include "moc_qgsattributesformtreeviewindicatorprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormTreeViewIndicatorProvider::QgsAttributesFormTreeViewIndicatorProvider( QgsAttributesFormBaseView *view )
   : QObject( view )

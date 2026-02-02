@@ -33,9 +33,12 @@
 #include "qgstextlabelfeature.h"
 #include "qgsvectorlayerlabelprovider.h"
 
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgslabelingengine.cpp"
+
+using namespace Qt::StringLiterals;
 
 // helper function for checking for job cancellation within PAL
 static bool _palIsCanceled( void *ctx )

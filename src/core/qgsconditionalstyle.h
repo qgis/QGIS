@@ -27,6 +27,9 @@
 #include <QHash>
 #include <QObject>
 #include <QPixmap>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsConditionalStyle;
 class QgsReadWriteContext;

@@ -25,7 +25,11 @@
 #include "qgssearchwidgetwrapper.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgseditorwidgetregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 // Editors
 #include "qgsbinarywidgetfactory.h"

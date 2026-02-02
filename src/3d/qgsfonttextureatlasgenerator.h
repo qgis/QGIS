@@ -23,6 +23,9 @@
 
 #include <QImage>
 #include <QRect>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsCharTextureRect;

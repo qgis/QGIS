@@ -69,6 +69,7 @@
 #include "qgsrelationmanager.h"
 #include "qgsrunnableprovidercreator.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgssensormanager.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssnappingconfig.h"
@@ -90,6 +91,7 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QString>
 #include <QTemporaryFile>
 #include <QTextStream>
 #include <QThreadPool>
@@ -97,6 +99,8 @@
 #include <QUuid>
 
 #include "moc_qgsproject.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #include <sys/utime.h>
@@ -370,6 +374,7 @@ QgsProject::QgsProject( QObject *parent, Qgis::ProjectCapabilities capabilities 
   , mAnnotationManager( new QgsAnnotationManager( this ) )
   , mLayoutManager( new QgsLayoutManager( this ) )
   , mElevationProfileManager( new QgsElevationProfileManager( this ) )
+  , mSelectiveMaskingSourceSetManager( new QgsSelectiveMaskingSourceSetManager( this ) )
   , m3DViewsManager( new QgsMapViewsManager( this ) )
   , mBookmarkManager( QgsBookmarkManager::createProjectBasedManager( this ) )
   , mSensorManager( new QgsSensorManager( this ) )
@@ -1273,6 +1278,7 @@ void QgsProject::clear()
   mAnnotationManager->clear();
   mLayoutManager->clear();
   mElevationProfileManager->clear();
+  mSelectiveMaskingSourceSetManager->clear();
   m3DViewsManager->clear();
   mBookmarkManager->clear();
   mSensorManager->clear();
@@ -2598,6 +2604,11 @@ bool QgsProject::readProjectFile( const QString &filename, Qgis::ProjectReadFlag
     mElevationProfileManager->resolveReferences( this );
   }
 
+  {
+    profile.switchTask( tr( "Loading selective masking source sets" ) );
+    mSelectiveMaskingSourceSetManager->readXml( doc->documentElement(), *doc, context );
+  }
+
   if ( !( flags & Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     profile.switchTask( tr( "Loading 3D Views" ) );
@@ -3535,6 +3546,11 @@ bool QgsProject::writeProjectFile( const QString &filename )
   }
 
   {
+    const QDomElement selectiveMaskingSourceSetElem = mSelectiveMaskingSourceSetManager->writeXml( *doc, context );
+    qgisNode.appendChild( selectiveMaskingSourceSetElem );
+  }
+
+  {
     const QDomElement views3DElem = m3DViewsManager->writeXml( *doc );
     qgisNode.appendChild( views3DElem );
   }
@@ -4375,6 +4391,20 @@ QgsElevationProfileManager *QgsProject::elevationProfileManager()
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return mElevationProfileManager.get();
+}
+
+const QgsSelectiveMaskingSourceSetManager *QgsProject::selectiveMaskingSourceSetManager() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSelectiveMaskingSourceSetManager.get();
+}
+
+QgsSelectiveMaskingSourceSetManager *QgsProject::selectiveMaskingSourceSetManager()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mSelectiveMaskingSourceSetManager.get();
 }
 
 const QgsMapViewsManager *QgsProject::viewsManager() const

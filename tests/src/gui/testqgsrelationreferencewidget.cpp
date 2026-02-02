@@ -37,6 +37,9 @@
 #include "qgsvectorlayertoolscontext.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QStringList getComboBoxItems( const QComboBox *cb )
 {

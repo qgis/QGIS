@@ -31,6 +31,9 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand )
   : QgsRasterRenderer( input, u"singlebandgray"_s )

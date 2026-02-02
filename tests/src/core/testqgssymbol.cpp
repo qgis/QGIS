@@ -17,7 +17,10 @@
 #include <QApplication>
 #include <QFileInfo>
 #include <QObject>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include "qgsmultirenderchecker.h"

@@ -29,7 +29,10 @@
 #include <QDateTime>
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QString>
 #include <QTime>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

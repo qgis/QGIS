@@ -36,9 +36,12 @@
 #include <QFileDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsvectortilelayerproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileLayerProperties::QgsVectorTileLayerProperties( QgsVectorTileLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent, Qt::WindowFlags flags )
   : QgsLayerPropertiesDialog( lyr, canvas, u"VectorTileLayerProperties"_s, parent, flags )

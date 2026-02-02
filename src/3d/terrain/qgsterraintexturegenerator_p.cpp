@@ -23,7 +23,11 @@
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgsterraintexturegenerator_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

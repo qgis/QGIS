@@ -34,7 +34,11 @@
 #include "qgstextformatwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudrendererpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {

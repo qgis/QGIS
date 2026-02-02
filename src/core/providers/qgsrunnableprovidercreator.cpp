@@ -19,9 +19,12 @@
 #include "qgsruntimeprofiler.h"
 
 #include <QDebug>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsrunnableprovidercreator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRunnableProviderCreator::QgsRunnableProviderCreator( const QString &layerId, const QString &providerKey, const QString &dataSource, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags )
   : mLayerId( layerId )

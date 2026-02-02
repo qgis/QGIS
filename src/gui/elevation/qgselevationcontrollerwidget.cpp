@@ -30,10 +30,13 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QPainterPath>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgselevationcontrollerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationControllerWidget::QgsElevationControllerWidget( QWidget *parent )
   : QWidget( parent )

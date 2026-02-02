@@ -30,7 +30,10 @@
 
 #include <QLabel>
 #include <QProgressBar>
+#include <QString>
 #include <QToolButton>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsExternalStorageFileWidget : public QObject
 {

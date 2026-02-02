@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsCompoundCurve: QgsCurve
 {
 %Docstring(signature="appended")

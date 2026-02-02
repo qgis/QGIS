@@ -20,8 +20,11 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QString>
 
 #include "moc_qgsmssqlgeomcolumntypethread.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMssqlGeomColumnTypeThread::QgsMssqlGeomColumnTypeThread( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password, bool useEstimatedMetadata, bool disableInvalidGeometryHandling )
   : mService( service )

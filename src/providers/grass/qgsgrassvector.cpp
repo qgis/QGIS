@@ -20,8 +20,11 @@
 #include "qgslogger.h"
 
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgsgrassvector.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

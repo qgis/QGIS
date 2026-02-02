@@ -39,10 +39,13 @@
 #include <QImage>
 #include <QNetworkReply>
 #include <QPainter>
+#include <QString>
 #include <QThread>
 #include <QUrl>
 
 #include "moc_qgslayoutitemhtml.cpp"
+
+using namespace Qt::StringLiterals;
 
 // clazy:excludeall=lambda-in-connect
 

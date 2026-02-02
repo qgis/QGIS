@@ -19,6 +19,10 @@
 #include "qgslogger.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsSimplifyMethod::setMethodType( MethodType methodType )
 {
   mMethodType = methodType;

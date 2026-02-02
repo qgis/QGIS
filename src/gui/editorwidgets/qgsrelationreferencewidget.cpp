@@ -36,9 +36,12 @@
 #include <QDialog>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsrelationreferencewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool qVariantListIsNull( const QVariantList &list )
 {

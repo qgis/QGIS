@@ -40,8 +40,11 @@
 
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsrendererpropertiesdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool initVectorLayerRenderer( const QString &name, QgsRendererWidgetFunc f, const QString &iconName = QString() )
 {

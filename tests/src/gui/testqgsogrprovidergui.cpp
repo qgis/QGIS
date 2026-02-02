@@ -22,7 +22,10 @@
 #include "qgsvectorlayer.h"
 
 #include <QSignalSpy>
+#include <QString>
 #include <QTemporaryFile>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

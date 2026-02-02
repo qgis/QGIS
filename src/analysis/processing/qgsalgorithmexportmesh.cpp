@@ -28,7 +28,10 @@
 #include "qgsprocessingparametermeshdataset.h"
 #include "qgsrasterfilewriter.h"
 
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

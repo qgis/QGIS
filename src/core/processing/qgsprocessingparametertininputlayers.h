@@ -19,6 +19,10 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \brief A parameter for processing algorithms that need a list of input vector layers to construct a TIN.
  *

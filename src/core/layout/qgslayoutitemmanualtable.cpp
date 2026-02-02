@@ -24,7 +24,11 @@
 #include "qgsnumericformat.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitemmanualtable.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutItemManualTable

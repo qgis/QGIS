@@ -20,8 +20,11 @@
 #include "qgssettings.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsexpressionbuilderdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent, const QString &key, const QgsExpressionContext &context )
   : QDialog( parent )

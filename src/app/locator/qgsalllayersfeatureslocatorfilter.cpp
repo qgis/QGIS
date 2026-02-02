@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QSpinBox>
+#include <QString>
 
 #include "moc_qgsalllayersfeatureslocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAllLayersFeaturesLocatorFilter::QgsAllLayersFeaturesLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

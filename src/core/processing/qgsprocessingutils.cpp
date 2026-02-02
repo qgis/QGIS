@@ -40,10 +40,13 @@
 #include "qgsvectortilelayer.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QTextCodec>
 #include <QUuid>
 
 #include "moc_qgsprocessingutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {

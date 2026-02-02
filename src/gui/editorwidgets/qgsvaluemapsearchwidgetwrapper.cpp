@@ -23,8 +23,11 @@
 
 #include <QSettings>
 #include <QSizePolicy>
+#include <QString>
 
 #include "moc_qgsvaluemapsearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )

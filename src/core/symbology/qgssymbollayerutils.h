@@ -30,6 +30,9 @@
 #include <QFont>
 #include <QMap>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define FONTMARKER_CHR_FIX  "~!_#!#_!~"
 

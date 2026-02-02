@@ -27,6 +27,10 @@
 #include "qgscolorutils.h"
 #include "qgsfontutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QDomElement QgsAttributeEditorElement::toDomElement( QDomDocument &doc ) const
 {
   QDomElement elem = doc.createElement( typeIdentifier() );

@@ -23,7 +23,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircle3points.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeCircle3PointsMetadata::TOOL_ID = u"circle-from-3-points"_s;
 

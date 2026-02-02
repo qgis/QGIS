@@ -40,6 +40,7 @@
 #include "qgstiles.h"
 #include "qgsvectortileutils.h"
 
+#include <QString>
 #include <QUrlQuery>
 #include <qglobal.h>
 #include <qnetworkrequest.h>
@@ -48,6 +49,8 @@
 #include <qvector.h>
 
 #include "moc_qgsquantizedmeshdataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

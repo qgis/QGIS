@@ -20,6 +20,10 @@
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudexpressionnodeimpl.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 double QgsPointCloudExpressionNode::eval( QgsPointCloudExpression *parent, int pointIndex )
 {
   if ( mHasCachedValue )

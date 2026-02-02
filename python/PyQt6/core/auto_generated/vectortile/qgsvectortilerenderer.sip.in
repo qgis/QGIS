@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsVectorTileRendererData
 {
 %Docstring(signature="appended")

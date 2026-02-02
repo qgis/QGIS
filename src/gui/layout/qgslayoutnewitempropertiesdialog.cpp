@@ -23,8 +23,11 @@
 #include "qgssettings.h"
 
 #include <QButtonGroup>
+#include <QString>
 
 #include "moc_qgslayoutnewitempropertiesdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

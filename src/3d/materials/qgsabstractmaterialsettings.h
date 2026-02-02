@@ -22,6 +22,9 @@
 #include "qgspropertycollection.h"
 
 #include <QColor>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QDomElement;
 class QgsReadWriteContext;

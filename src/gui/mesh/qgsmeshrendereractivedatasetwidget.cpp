@@ -23,8 +23,11 @@
 
 #include <QDateTime>
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsmeshrendereractivedatasetwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget *parent )
   : QWidget( parent )

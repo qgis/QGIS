@@ -38,6 +38,9 @@
 #include "qgsstoredexpressionmanager.h"
 
 #include <QMenu>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureFilterWidget::QgsFeatureFilterWidget( QWidget *parent )
   : QWidget( parent )

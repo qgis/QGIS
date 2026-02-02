@@ -21,6 +21,8 @@
 #include <QStringList>
 #include <QTextStream>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include <qgshttpheaders.h>
 #include <qgspoint.h>

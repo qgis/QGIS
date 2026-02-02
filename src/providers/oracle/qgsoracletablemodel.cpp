@@ -20,7 +20,11 @@
 #include "qgsiconutils.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsoracletablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOracleTableModel::QgsOracleTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

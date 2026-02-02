@@ -18,6 +18,10 @@
 #include "qgssettings.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 Q_DECLARE_METATYPE( QgsColorWidget::ColorComponent )
 
 void compareFloat( float a, float b )

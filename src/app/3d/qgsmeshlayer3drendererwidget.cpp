@@ -25,8 +25,11 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QString>
 
 #include "moc_qgsmeshlayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayer3DRendererWidget::QgsMeshLayer3DRendererWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

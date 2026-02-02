@@ -21,6 +21,10 @@
 #include "qgsvectorlayer.h"
 #include "qgszonalstatistics.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsZonalStatisticsAlgorithm::name() const

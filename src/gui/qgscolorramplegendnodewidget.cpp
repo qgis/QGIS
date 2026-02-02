@@ -22,8 +22,11 @@
 #include "qgsnumericformatselectorwidget.h"
 
 #include <QDialogButtonBox>
+#include <QString>
 
 #include "moc_qgscolorramplegendnodewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent, Capabilities capabilities )
   : QgsPanelWidget( parent )

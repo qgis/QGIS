@@ -24,9 +24,12 @@
 #include <QApplication>
 #include <QPainter>
 #include <QScrollBar>
+#include <QString>
 #include <QTextDocument>
 
 #include "moc_qgsstacitemlistmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -39,7 +39,11 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitemattributetable.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLayoutItemAttributeTable

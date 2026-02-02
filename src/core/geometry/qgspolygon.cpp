@@ -23,6 +23,10 @@
 #include "qgsmultilinestring.h"
 #include "qgswkbptr.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPolygon::QgsPolygon()
 {
   mWkbType = Qgis::WkbType::Polygon;

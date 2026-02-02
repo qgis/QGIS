@@ -18,7 +18,11 @@
 #include "qgsdoublevalidator.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsinterpolatedlinesymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent )
   : QgsSymbolLayerWidget( parent, layer )

@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsLayerItem : QgsDataItem
 {
 %Docstring(signature="appended")

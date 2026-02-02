@@ -24,6 +24,10 @@
 #include "qgswfssourceselect.h"
 #include "qgswfssubsetstringeditor.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for WFS layers source select
 class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 {

@@ -40,10 +40,13 @@
 #include "qgstextdocument.h"
 #include "qgstextureatlasgenerator.h"
 
+#include <QString>
 #include <Qt3DCore/QTransform>
 #include <QtConcurrent>
 
 #include "moc_qgsannotationlayerchunkloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

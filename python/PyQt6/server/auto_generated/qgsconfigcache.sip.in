@@ -12,6 +12,7 @@
 
 
 
+
 class QgsConfigCache : QObject
 {
 %Docstring(signature="appended")

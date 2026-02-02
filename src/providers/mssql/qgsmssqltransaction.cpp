@@ -21,9 +21,12 @@
 
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QtDebug>
 
 #include "moc_qgsmssqltransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMssqlTransaction::QgsMssqlTransaction( const QString &connString )
   : QgsTransaction( connString )

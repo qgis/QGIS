@@ -34,9 +34,12 @@
 #include "qgsogrproxytextcodec.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsvectordataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorDataProvider::QgsVectorDataProvider( const QString &uri, const ProviderOptions &options,
     Qgis::DataProviderReadFlags flags )

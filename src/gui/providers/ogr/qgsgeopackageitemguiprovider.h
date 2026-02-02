@@ -22,6 +22,9 @@
 #include "qgsmimedatautils.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE

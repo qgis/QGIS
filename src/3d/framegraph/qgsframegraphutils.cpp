@@ -16,6 +16,7 @@
 #include "qgsframegraphutils.h"
 
 #include <QMetaEnum>
+#include <QString>
 #include <Qt3DExtras/QTextureMaterial>
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QBlendEquation>
@@ -30,6 +31,8 @@
 #include <Qt3DRender/QSeamlessCubemap>
 #include <Qt3DRender/QSortPolicy>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 QStringList QgsFrameGraphUtils::dumpSceneGraph( const Qt3DCore::QNode *node, FgDumpContext context )
 {

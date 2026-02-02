@@ -48,10 +48,13 @@
 #include "qgsthreadingutils.h"
 #include "qgstriangularmesh.h"
 
+#include <QString>
 #include <QUrl>
 #include <QUuid>
 
 #include "moc_qgsmeshlayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayer::QgsMeshLayer( const QString &meshLayerPath,
                             const QString &baseName,

@@ -23,6 +23,10 @@
 #include "qgswfsfeaturehitsasyncrequest.h"
 #include "qgswfsrequest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsWFSSharedData;
 
 /**

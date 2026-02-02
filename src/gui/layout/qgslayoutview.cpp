@@ -41,8 +41,11 @@
 #include <QClipboard>
 #include <QMenu>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgslayoutview.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0

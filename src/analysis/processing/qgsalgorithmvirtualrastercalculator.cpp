@@ -19,6 +19,10 @@
 
 #include "qgsrasterdataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 Qgis::ProcessingAlgorithmFlags QgsVirtualRasterCalculatorAlgorithm::flags() const

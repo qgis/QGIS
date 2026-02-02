@@ -49,8 +49,11 @@
 
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstextformatwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextFormatWidget::QgsTextFormatWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )

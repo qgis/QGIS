@@ -26,9 +26,12 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsvaluemapconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

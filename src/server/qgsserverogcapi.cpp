@@ -22,9 +22,12 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QString>
 #include <QtGlobal>
 
 #include "moc_qgsserverogcapi.cpp"
+
+using namespace Qt::StringLiterals;
 
 QMap<QgsServerOgcApi::ContentType, QStringList> QgsServerOgcApi::sContentTypeMime = []() -> QMap<QgsServerOgcApi::ContentType, QStringList> {
   QMap<QgsServerOgcApi::ContentType, QStringList> map;

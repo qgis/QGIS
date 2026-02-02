@@ -19,6 +19,10 @@
 
 #include "qgsgeometrycollection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsConcaveHullByFeatureAlgorithm::name() const

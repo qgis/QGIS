@@ -33,6 +33,8 @@ class TestQgsGeometryUtilsBase : public QObject
     void testCreateFilletBase();
     void testPointsAreCollinear();
     void testInterpolatePointOnCubicBezier();
+    void testLineByTwoAngles_data();
+    void testLineByTwoAngles();
 };
 
 void TestQgsGeometryUtilsBase::testFuzzyEqual()
@@ -512,6 +514,99 @@ void TestQgsGeometryUtilsBase::testInterpolatePointOnCubicBezier()
   QVERIFY( qgsDoubleNear( outY, 0.0 ) );
   QVERIFY( qgsDoubleNear( outZ, 13.0 ) );
   QVERIFY( qgsDoubleNear( outM, 23.0 ) );
+}
+
+void TestQgsGeometryUtilsBase::testLineByTwoAngles_data()
+{
+  QTest::addColumn<double>( "x1" );
+  QTest::addColumn<double>( "y1" );
+  QTest::addColumn<double>( "bearing1" );
+  QTest::addColumn<double>( "x2" );
+  QTest::addColumn<double>( "y2" );
+  QTest::addColumn<double>( "bearing2" );
+  QTest::addColumn<bool>( "expectedSuccess" );
+  QTest::addColumn<double>( "expectedX" );
+  QTest::addColumn<double>( "expectedY" );
+
+  // Test 1: Simple right angle intersection
+  // Point 1 at (0,0) bearing north, Point 2 at (10,0) bearing west -> intersection at (0,0)
+  QTest::newRow( "simple_right_angle" )
+    << 0.0 << 0.0 << 0.0               // point 1 bearing north (0 rad)
+    << 10.0 << 0.0 << 3.0 * M_PI / 2.0 // point 2 bearing west (270 deg = 3π/2 rad)
+    << true
+    << 0.0 << 0.0; // intersection is where line 1 starts (line 2 heads west from (10,0))
+
+  // Test 2: Two lines from different points meeting at center
+  // Point 1 at (0,0) bearing NE (45 deg), Point 2 at (10,0) bearing NW (315 deg)
+  QTest::newRow( "meet_at_center" )
+    << 0.0 << 0.0 << M_PI / 4.0        // bearing NE (45 deg)
+    << 10.0 << 0.0 << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
+    << true
+    << 5.0 << 5.0; // meet at (5,5)
+
+  // Test 3: Lines meeting at known point
+  // Point 1 at (0,0) bearing east (90 deg), Point 2 at (0,5) bearing east (90 deg) -> parallel
+  QTest::newRow( "parallel_lines" )
+    << 0.0 << 0.0 << M_PI / 2.0 // bearing east
+    << 0.0 << 5.0 << M_PI / 2.0 // bearing east (parallel)
+    << false
+    << 0.0 << 0.0; // no intersection (parallel)
+
+  // Test 4: Lines meeting at acute angle - steeper
+  // Point 1 at (0,0) bearing north, Point 2 at (5,0) bearing NW (315 deg)
+  QTest::newRow( "acute_angle" )
+    << 0.0 << 0.0 << 0.0              // bearing north
+    << 5.0 << 0.0 << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
+    << true
+    << 0.0 << 5.0; // intersection at (0,5)
+
+  // Test 5: Point 1 looking north, Point 2 looking south (anti-parallel)
+  QTest::newRow( "anti_parallel" )
+    << 0.0 << 0.0 << 0.0  // bearing north
+    << 5.0 << 0.0 << M_PI // bearing south
+    << false
+    << 0.0 << 0.0; // no intersection (parallel directions)
+
+  // Test 6: Intersection in negative coordinates
+  QTest::newRow( "negative_coords" )
+    << 0.0 << 0.0 << 5.0 * M_PI / 4.0   // bearing SW (225 deg)
+    << -10.0 << 0.0 << 7.0 * M_PI / 4.0 // bearing NW (315 deg)
+    << true
+    << -5.0 << -5.0; // intersection at (-5,-5)
+
+  // Test 7: Same point, different bearings
+  QTest::newRow( "same_point_different_bearings" )
+    << 0.0 << 0.0 << 0.0        // bearing north
+    << 0.0 << 0.0 << M_PI / 2.0 // bearing east from same point
+    << true
+    << 0.0 << 0.0; // intersection at the common point
+}
+
+void TestQgsGeometryUtilsBase::testLineByTwoAngles()
+{
+  QFETCH( double, x1 );
+  QFETCH( double, y1 );
+  QFETCH( double, bearing1 );
+  QFETCH( double, x2 );
+  QFETCH( double, y2 );
+  QFETCH( double, bearing2 );
+  QFETCH( bool, expectedSuccess );
+  QFETCH( double, expectedX );
+  QFETCH( double, expectedY );
+
+  double intersectionX, intersectionY;
+  const bool result = QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( x1, y1, bearing1, x2, y2, bearing2, intersectionX, intersectionY );
+
+  QCOMPARE( result, expectedSuccess );
+
+  if ( expectedSuccess )
+  {
+    const double tolerance = 1e-8;
+    QVERIFY2( std::isfinite( intersectionX ), "Intersection X should be finite" );
+    QVERIFY2( std::isfinite( intersectionY ), "Intersection Y should be finite" );
+    QVERIFY2( qgsDoubleNear( intersectionX, expectedX, tolerance ), QString( "X coordinate: got %1, expected %2" ).arg( intersectionX ).arg( expectedX ).toLatin1() );
+    QVERIFY2( qgsDoubleNear( intersectionY, expectedY, tolerance ), QString( "Y coordinate: got %1, expected %2" ).arg( intersectionY ).arg( expectedY ).toLatin1() );
+  }
 }
 
 QGSTEST_MAIN( TestQgsGeometryUtilsBase )

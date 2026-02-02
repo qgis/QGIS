@@ -30,8 +30,11 @@
 #include "qgswindow3dengine.h"
 
 #include <QKeyEvent>
+#include <QString>
 
 #include "moc_qgs3dmaptoolmeasureline.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )

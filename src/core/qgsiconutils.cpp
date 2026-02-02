@@ -23,6 +23,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QIcon>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QIcon QgsIconUtils::iconForWkbType( Qgis::WkbType type )
 {

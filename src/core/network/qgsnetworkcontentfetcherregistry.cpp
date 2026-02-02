@@ -24,9 +24,12 @@
 #include <QFileInfo>
 #include <QMimeDatabase>
 #include <QMimeType>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsnetworkcontentfetcherregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNetworkContentFetcherRegistry::~QgsNetworkContentFetcherRegistry()
 {

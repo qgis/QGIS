@@ -27,8 +27,11 @@
 #include <QItemSelectionModel>
 #include <QMenu>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdbimportvectorlayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDbImportVectorLayerDialog::QgsDbImportVectorLayerDialog( QgsAbstractDatabaseProviderConnection *connection, QWidget *parent )
   : QDialog( parent )

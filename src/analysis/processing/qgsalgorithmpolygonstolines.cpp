@@ -22,6 +22,10 @@
 #include "qgsgeometrycollection.h"
 #include "qgsmultilinestring.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsPolygonsToLinesAlgorithm::name() const

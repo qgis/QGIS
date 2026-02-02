@@ -20,7 +20,11 @@
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsvirtuallayertask.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition )
   : mDefinition( definition )

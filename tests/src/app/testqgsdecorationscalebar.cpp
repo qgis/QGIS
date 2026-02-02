@@ -18,6 +18,10 @@
 #include "qgsmapsettings.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsDecorationScalebar : public QObject
 {
     Q_OBJECT

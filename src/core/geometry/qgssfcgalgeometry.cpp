@@ -23,6 +23,9 @@
 #include "qgswkbptr.h"
 
 #include <QByteArray>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSfcgalGeometry::QgsSfcgalGeometry()
   : mIsPrimitive( false )

@@ -19,7 +19,11 @@
 
 #include "qgsmessagelog.h"
 
+#include <QString>
+
 #include "moc_qgswmtsparameters.cpp"
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWmts
 {

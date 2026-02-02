@@ -31,8 +31,11 @@
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QTextStream>
 #include <qsettings.h>
+
+using namespace Qt::StringLiterals;
 
 std::unique_ptr<QgsVersionMigration> QgsVersionMigration::canMigrate( int fromVersion, int toVersion )
 {

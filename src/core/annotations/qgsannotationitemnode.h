@@ -23,6 +23,10 @@
 #include "qgspointxy.h"
 #include "qgsvertexid.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains information about a node used for editing an annotation item.

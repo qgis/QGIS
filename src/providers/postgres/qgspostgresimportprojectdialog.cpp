@@ -28,9 +28,12 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgspostgresimportprojectdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresImportProjectDialog::QgsPostgresImportProjectDialog( const QString connectionName, const QString targetSchema, QWidget *parent )
   : QDialog { parent }, mSchemaToImportTo( targetSchema )

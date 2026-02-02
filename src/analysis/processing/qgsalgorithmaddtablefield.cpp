@@ -19,6 +19,10 @@
 
 #include "qgsvariantutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsAddTableFieldAlgorithm::name() const

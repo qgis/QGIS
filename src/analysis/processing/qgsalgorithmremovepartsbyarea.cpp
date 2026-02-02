@@ -20,6 +20,10 @@
 #include "qgsgeometrycollection.h"
 #include "qgssurface.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRemovePartsByAreaAlgorithm::name() const

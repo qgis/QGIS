@@ -36,10 +36,13 @@
 #include <QGraphicsProxyWidget>
 #include <QPainter>
 #include <QSettings>
+#include <QString>
 #include <QTextStream>
 #include <QWidget>
 
 #include "moc_qgshtmlannotation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHtmlAnnotation::QgsHtmlAnnotation( QObject *parent )
   : QgsAnnotation( parent )

@@ -29,6 +29,9 @@
 #include <QLineEdit>
 #include <QMovie>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define SAMPLE_IMAGE u"%1/sample_image.png"_s.arg( TEST_DATA_DIR )
 #define OTHER_SAMPLE_IMAGE u"%1/sample_image2.png"_s.arg( TEST_DATA_DIR )

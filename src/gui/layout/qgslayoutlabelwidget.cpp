@@ -30,9 +30,12 @@
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QMenu>
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgslayoutlabelwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   : QgsLayoutItemBaseWidget( nullptr, label )

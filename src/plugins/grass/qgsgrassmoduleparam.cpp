@@ -37,8 +37,11 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgsgrassmoduleparam.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if 0
 extern "C"

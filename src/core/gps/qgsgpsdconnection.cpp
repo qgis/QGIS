@@ -19,9 +19,12 @@
 
 #include "qgslogger.h"
 
+#include <QString>
 #include <QTcpSocket>
 
 #include "moc_qgsgpsdconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGpsdConnection::QgsGpsdConnection( const QString &host, qint16 port, const QString &device )
   : QgsNmeaConnection( new QTcpSocket() )

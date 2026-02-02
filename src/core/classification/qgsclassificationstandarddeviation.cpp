@@ -19,6 +19,9 @@
 #include "qgsgraduatedsymbolrenderer.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const QString QgsClassificationStandardDeviation::METHOD_ID = u"StdDev"_s;
 

@@ -34,6 +34,9 @@
 #include <QCryptographicHash>
 #include <QDomDocument>
 #include <QFileSystemWatcher>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const QRegularExpression QgsLandingPageUtils::PROJECT_HASH_RE { u"/(?<projectHash>[a-f0-9]{32})"_s };
 QMap<QString, QString> QgsLandingPageUtils::AVAILABLE_PROJECTS;

@@ -27,7 +27,10 @@
 #include "qgssphere.h"
 
 #include <QIODevice>
+#include <QString>
 #include <QtCore/QBuffer>
+
+using namespace Qt::StringLiterals;
 
 QgsBox3D QgsCesiumUtils::parseRegion( const json &region )
 {

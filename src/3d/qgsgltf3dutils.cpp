@@ -29,12 +29,15 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QMatrix4x4>
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QTexture>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

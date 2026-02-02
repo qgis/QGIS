@@ -39,10 +39,13 @@
 #include <QNetworkProxy>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgswcsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef QGISDEBUG
 #include <QDir>

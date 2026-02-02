@@ -22,7 +22,10 @@
 #include "qgsmessagelog.h"
 
 #include <QDomDocument>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QgsProjectProperty::QgsProjectProperty() //NOLINT
 {

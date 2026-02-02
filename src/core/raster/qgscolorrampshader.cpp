@@ -34,6 +34,10 @@ originally part of the larger QgsRasterLayer class
 #include "qgsreadwritecontext.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsColorRampShader::QgsColorRampShader( double minimumValue, double maximumValue, QgsColorRamp *colorRamp, Qgis::ShaderInterpolationMethod type, Qgis::ShaderClassificationMethod classificationMode )
   : QgsRasterShaderFunction( minimumValue, maximumValue )
   , mColorRampType( type )

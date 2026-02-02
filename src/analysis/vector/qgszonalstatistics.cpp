@@ -27,6 +27,9 @@
 #include "qgsvectorlayer.h"
 
 #include <QFile>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, Qgis::ZonalStatistics stats )
   : QgsZonalStatistics( polygonLayer, rasterLayer ? rasterLayer->dataProvider() : nullptr, rasterLayer ? rasterLayer->crs() : QgsCoordinateReferenceSystem(), rasterLayer ? rasterLayer->rasterUnitsPerPixelX() : 0, rasterLayer ? rasterLayer->rasterUnitsPerPixelY() : 0, attributePrefix, rasterBand, stats )

@@ -18,6 +18,10 @@
 #include "qgsadvanceddigitizingtools.h"
 #include "qgsapplication.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAdvancedDigitizingTool *QgsAdvancedDigitizingToolAbstractMetadata::createTool( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )
 {
   return nullptr;

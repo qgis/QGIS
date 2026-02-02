@@ -44,7 +44,10 @@
 
 #include <QList>
 #include <QMutex>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryInteger;
 

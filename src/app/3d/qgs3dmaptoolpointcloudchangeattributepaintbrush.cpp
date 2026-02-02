@@ -27,7 +27,11 @@
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
 
+#include <QString>
+
 #include "moc_qgs3dmaptoolpointcloudchangeattributepaintbrush.cpp"
+
+using namespace Qt::StringLiterals;
 
 class QgsPointCloudAttribute;
 Qgs3DMapToolPointCloudChangeAttributePaintbrush::Qgs3DMapToolPointCloudChangeAttributePaintbrush( Qgs3DMapCanvas *canvas )

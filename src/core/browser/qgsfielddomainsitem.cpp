@@ -23,7 +23,11 @@
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
 #include "moc_qgsfielddomainsitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldDomainsItem::QgsFieldDomainsItem( QgsDataItem *parent,
     const QString &path,

@@ -24,6 +24,9 @@
 
 #include <QDate>
 #include <QDateTime>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \class QgsRange

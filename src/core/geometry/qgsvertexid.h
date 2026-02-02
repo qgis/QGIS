@@ -19,6 +19,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgis.h"
 #include "qgis_core.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsAbstractGeometry;
 
 /**

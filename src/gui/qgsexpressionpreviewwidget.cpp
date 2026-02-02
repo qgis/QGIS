@@ -21,10 +21,13 @@
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <qaction.h>
 #include <qclipboard.h>
 
 #include "moc_qgsexpressionpreviewwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   : QWidget( parent )

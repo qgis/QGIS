@@ -26,7 +26,11 @@
 #include "qgssettings.h"
 #include "qgssnapindicator.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolmeasurebearing.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolMeasureBearing::QgsMapToolMeasureBearing( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

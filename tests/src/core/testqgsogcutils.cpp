@@ -18,6 +18,10 @@
 
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsgeometry.h"
 #include "qgsogcutils.h"

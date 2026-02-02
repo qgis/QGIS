@@ -20,9 +20,12 @@
 
 #include <QMouseEvent>
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionFrame>
 
 #include "moc_qgsgradientstopeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )

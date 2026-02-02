@@ -23,9 +23,12 @@
 
 #include <QDateTime>
 #include <QMetaType>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsmessagelog.cpp"
+
+using namespace Qt::StringLiterals;
 
 class QgsMessageLogConsole;
 

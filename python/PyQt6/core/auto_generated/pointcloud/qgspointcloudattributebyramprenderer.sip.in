@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsPointCloudAttributeByRampRenderer : QgsPointCloudRenderer
 {
 %Docstring(signature="appended")

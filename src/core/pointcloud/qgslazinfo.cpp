@@ -22,6 +22,10 @@
 #include "qgslogger.h"
 #include "qgssetrequestinitiator_p.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // QgsLazInfo
 
 QgsLazInfo::QgsLazInfo() { }

@@ -17,7 +17,11 @@
 
 #include "qgsoracletransaction.h"
 
+#include <QString>
+
 #include "moc_qgsoracletransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -28,6 +28,10 @@
 #include "qgstextrenderer.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsDataDefinedSizeLegend::QgsDataDefinedSizeLegend()
 {
   auto lineSymbolLayer = std::make_unique< QgsSimpleLineSymbolLayer >( QColor( 0, 0, 0 ), 0.2 );

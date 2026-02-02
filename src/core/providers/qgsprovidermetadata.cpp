@@ -24,7 +24,11 @@
 #include "qgsmaplayer.h"
 #include "qgsprovidersublayerdetails.h"
 
+#include <QString>
+
 #include "moc_qgsprovidermetadata.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProviderMetadata::QgsProviderMetadata( QString const &key,
     QString const &description,

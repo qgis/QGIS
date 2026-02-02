@@ -17,7 +17,11 @@
 #include "qgsabstractprofilesource.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsprofilesourceregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProfileSourceRegistry::QgsProfileSourceRegistry()
 {

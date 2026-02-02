@@ -27,6 +27,10 @@
 #include "qgsspatialiteprovider.h"
 #include "qgssqliteexpressioncompiler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
 {

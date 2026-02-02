@@ -23,6 +23,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Resolves relative paths into absolute paths and vice versa.

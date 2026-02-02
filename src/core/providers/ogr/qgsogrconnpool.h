@@ -20,6 +20,10 @@
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrproviderutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include "qgis_sip.h"

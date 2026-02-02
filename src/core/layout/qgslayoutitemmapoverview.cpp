@@ -31,8 +31,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemmapoverview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemMapOverview::QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map )
   : QgsLayoutItemMapItem( name, map )

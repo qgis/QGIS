@@ -9,6 +9,8 @@
 
 
 
+
+
 struct QgsVertexId
 {
 %TypeHeaderCode

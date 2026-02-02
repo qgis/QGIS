@@ -21,7 +21,11 @@
 #include "qgsvaluerelationfieldformatter.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsvaluerelationconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

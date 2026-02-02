@@ -20,8 +20,11 @@
 #include <QCoreApplication>
 #include <QDir>
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgscapabilitiescache.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if defined( Q_OS_LINUX )
 #include <sys/vfs.h>

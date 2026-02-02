@@ -27,6 +27,9 @@
 #include <QImageWriter>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsGuiUtils
 {

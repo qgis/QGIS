@@ -1,9 +1,14 @@
 # The following has been generated automatically from src/core/project/qgsprojectstoredobjectmanagermodel.h
 # monkey patching scoped based enum
 QgsProjectStoredObjectManagerModelBase.CustomRole.Object.__doc__ = "Object"
+QgsProjectStoredObjectManagerModelBase.CustomRole.IsEmptyObject.__doc__ = "``True`` if row represents the empty object \n.. versionadded:: 4.0"
 QgsProjectStoredObjectManagerModelBase.CustomRole.__doc__ = """Custom model roles.
 
 * ``Object``: Object
+* ``IsEmptyObject``: ``True`` if row represents the empty object
+
+  .. versionadded:: 4.0
+
 
 """
 # --

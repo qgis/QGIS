@@ -19,6 +19,8 @@
 #include <QString>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsapplication.h"
 #include "qgsvectortileutils.h"

@@ -25,8 +25,11 @@
 #include <QDomElement>
 #include <QHeaderView>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgssnappingconfig.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, Qgis::SnappingTypes type, double tolerance, Qgis::MapToolUnit units, double minScale, double maxScale )
   : mValid( true )

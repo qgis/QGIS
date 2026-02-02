@@ -32,6 +32,10 @@
 #include "qgstextlabelfeature.h"
 #include "qgstextrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterLayerLabelProvider::QgsRasterLayerLabelProvider( QgsRasterLayer *layer )
   : QgsAbstractLabelProvider( layer )
   , mNumericFormat( std::make_unique< QgsBasicNumericFormat >() )

@@ -24,8 +24,11 @@
 
 #include <QBuffer>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgslegendpatchshapebutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )

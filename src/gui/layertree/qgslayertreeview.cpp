@@ -31,8 +31,11 @@
 #include <QMenu>
 #include <QMimeData>
 #include <QScrollBar>
+#include <QString>
 
 #include "moc_qgslayertreeview.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

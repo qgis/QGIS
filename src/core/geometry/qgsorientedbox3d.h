@@ -27,6 +27,9 @@
 #include "qgsvector3d.h"
 
 #include <QList>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsBox3D;
 class QgsCoordinateTransform;

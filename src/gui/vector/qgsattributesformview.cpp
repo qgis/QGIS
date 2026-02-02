@@ -41,10 +41,13 @@
 #include <QPlainTextEdit>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QString>
 #include <QTreeView>
 #include <QWidget>
 
 #include "moc_qgsattributesformview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributesFormBaseView::QgsAttributesFormBaseView( QgsVectorLayer *layer, QWidget *parent )
   : QTreeView( parent )

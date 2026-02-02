@@ -26,9 +26,12 @@ email                : even.rouault at spatialys.com
 
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QString>
 #include <Qsci/qscilexer.h>
 
 #include "moc_qgssqlcomposerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSQLComposerDialog::QgsSQLComposerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QgsSQLComposerDialog( nullptr, parent, fl )

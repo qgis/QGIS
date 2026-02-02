@@ -22,6 +22,10 @@
 #include "qgsstringutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRasterLayerZonalStatsAlgorithm::name() const

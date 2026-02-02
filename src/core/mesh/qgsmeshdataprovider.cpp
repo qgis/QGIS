@@ -21,7 +21,11 @@
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
+
 #include "moc_qgsmeshdataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshDataProvider::QgsMeshDataProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options,
     Qgis::DataProviderReadFlags flags )

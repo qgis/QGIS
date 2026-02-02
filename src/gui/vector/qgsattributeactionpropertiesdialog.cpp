@@ -30,8 +30,11 @@
 #include <QImageWriter>
 #include <QLineEdit>
 #include <QPlainTextEdit>
+#include <QString>
 
 #include "moc_qgsattributeactionpropertiesdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeActionPropertiesDialog::QgsAttributeActionPropertiesDialog( Qgis::AttributeActionType type, const QString &description, const QString &shortTitle, const QString &iconPath, const QString &actionText, bool capture, const QSet<QString> &actionScopes, const QString &notificationMessage, bool isEnabledOnlyWhenEditable, QgsVectorLayer *layer, QWidget *parent )
   : QDialog( parent )

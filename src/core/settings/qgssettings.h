@@ -24,6 +24,9 @@
 
 #include <QMetaEnum>
 #include <QSettings>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsProxy;
 

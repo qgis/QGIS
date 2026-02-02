@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmrenamelayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRenameLayerAlgorithm::name() const

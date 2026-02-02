@@ -42,11 +42,14 @@
 #include <QNetworkRequest>
 #include <QPainter>
 #include <QPicture>
+#include <QString>
 #include <QSvgRenderer>
 #include <QTemporaryDir>
 #include <QUuid>
 
 #include "moc_qgsimagecache.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

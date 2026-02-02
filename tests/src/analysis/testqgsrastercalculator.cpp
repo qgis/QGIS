@@ -14,6 +14,10 @@ Email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef HAVE_OPENCL
 #include "qgsopenclutils.h"
 #endif

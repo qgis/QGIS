@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFields;
 class QgsFeedback;
 class QgsRectangle;

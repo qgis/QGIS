@@ -29,8 +29,11 @@
 #include <QClipboard>
 #include <QMessageBox>
 #include <QMimeData>
+#include <QString>
 
 #include "moc_qgsrulebased3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   : QgsPanelWidget( parent )

@@ -22,7 +22,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperegularpolygoncentercorner.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRegularPolygonCenterCornerMetadata::TOOL_ID = u"regular-polygon-from-center-and-a-corner"_s;
 

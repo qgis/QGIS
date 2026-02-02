@@ -14,7 +14,11 @@
  ***************************************************************************/
 #include "qgsgeopackagedataitems.h"
 
+#include <QString>
+
 #include "moc_qgsgeopackagedataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -22,7 +22,11 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrelationmanagerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationManagerDialog::QgsRelationManagerDialog( QgsRelationManager *relationMgr, QWidget *parent )
   : QWidget( parent )

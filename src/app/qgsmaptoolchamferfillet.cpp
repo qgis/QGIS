@@ -38,8 +38,11 @@
 #include <QGraphicsProxyWidget>
 #include <QGridLayout>
 #include <QLabel>
+#include <QString>
 
 #include "moc_qgsmaptoolchamferfillet.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType> *QgsMapToolChamferFillet::settingsOperation = new QgsSettingsEntryEnumFlag<QgsGeometry::ChamferFilletOperationType>( u"chamferfillet-operation"_s, QgsSettingsTree::sTreeDigitizing, QgsGeometry::ChamferFilletOperationType::Chamfer );
 const QgsSettingsEntryInteger *QgsMapToolChamferFillet::settingsFilletSegment = new QgsSettingsEntryInteger( u"chamferfillet-fillet-segment"_s, QgsSettingsTree::sTreeDigitizing, 8, u"For fillet operation, number of segment used to create the arc."_s, Qgis::SettingsOption(), 1, 64 );

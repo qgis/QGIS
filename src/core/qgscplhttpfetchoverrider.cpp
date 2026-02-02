@@ -21,6 +21,10 @@
 #include "qgsblockingnetworkrequest.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsCPLHTTPFetchOverrider::QgsCPLHTTPFetchOverrider( const QString &authCfg, QgsFeedback *feedback )
   : mAuthCfg( authCfg )
   , mFeedback( feedback )

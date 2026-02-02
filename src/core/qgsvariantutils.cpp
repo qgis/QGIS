@@ -31,11 +31,14 @@
 #include <QPixmap>
 #include <QQuaternion>
 #include <QRect>
+#include <QString>
 #include <QTime>
 #include <QUuid>
 #include <QVector2D>
 #include <QVector3D>
 #include <QVector4D>
+
+using namespace Qt::StringLiterals;
 
 QString QgsVariantUtils::typeToDisplayString( QMetaType::Type type, QMetaType::Type subType )
 {

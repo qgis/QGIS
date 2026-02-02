@@ -23,8 +23,11 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgsgrassutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsGrassUtils::vectorLayerName( QString map, QString layer, int nLayers )
 {

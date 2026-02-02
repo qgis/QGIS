@@ -35,6 +35,9 @@
 #include <QImage>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {

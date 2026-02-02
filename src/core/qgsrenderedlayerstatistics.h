@@ -23,6 +23,10 @@
 #include "qgis_sip.h"
 #include "qgsrendereditemdetails.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains computed statistics for a layer render.

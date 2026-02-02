@@ -22,6 +22,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 QgsProjectVersion::QgsProjectVersion( int major, int minor, int sub, const QString &name )
   : mMajor( major )
   , mMinor( minor )

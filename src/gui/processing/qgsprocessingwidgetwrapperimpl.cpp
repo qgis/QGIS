@@ -83,10 +83,13 @@
 #include <QMenu>
 #include <QPlainTextEdit>
 #include <QRadioButton>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessingwidgetwrapperimpl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

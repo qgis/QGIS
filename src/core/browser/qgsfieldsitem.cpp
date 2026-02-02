@@ -27,7 +27,11 @@
 #include "qgsproviderregistry.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfieldsitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldsItem::QgsFieldsItem( QgsDataItem *parent,
                               const QString &path,

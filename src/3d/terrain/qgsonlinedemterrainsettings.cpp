@@ -20,6 +20,9 @@
 #include "qgsonlineterraingenerator.h"
 
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractTerrainSettings *QgsOnlineDemTerrainSettings::create()
 {

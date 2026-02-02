@@ -38,8 +38,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsrasterlayersaveasdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )

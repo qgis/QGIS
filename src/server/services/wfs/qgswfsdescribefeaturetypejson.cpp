@@ -28,6 +28,9 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace QgsWfs;
 

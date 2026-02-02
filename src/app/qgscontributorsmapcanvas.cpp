@@ -24,9 +24,12 @@
 
 #include <QCursor>
 #include <QFrame>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgscontributorsmapcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsContributorsMapTool::QgsContributorsMapTool( QgsMapCanvas *canvas, QgsVectorLayer *layer )
   : QgsMapToolPan( canvas )

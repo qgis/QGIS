@@ -30,11 +30,14 @@
 #include <QMimeData>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolButton>
 #include <QWidgetAction>
 #include <qnamespace.h>
 
 #include "moc_qgscustomizationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef QGIS_DEBUG
 #include <QAbstractItemModelTester>

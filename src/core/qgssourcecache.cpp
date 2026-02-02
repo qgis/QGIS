@@ -25,9 +25,12 @@
 
 #include <QBuffer>
 #include <QFile>
+#include <QString>
 #include <QTemporaryDir>
 
 #include "moc_qgssourcecache.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

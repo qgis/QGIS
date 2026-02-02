@@ -18,19 +18,34 @@
 #include "qgsguiutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreelayer.h"
+#include "qgsnewnamedialog.h"
 #include "qgsproject.h"
+#include "qgsrenderer.h"
+#include "qgsselectivemaskingsource.h"
+#include "qgsselectivemaskingsourceset.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
+#include "qgsselectivemaskingsourcesetmanagermodel.h"
 #include "qgsstyleentityvisitor.h"
+#include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
-#include "symbology/qgsrenderer.h"
-#include "symbology/qgssymbollayerutils.h"
 
+#include <QAction>
+#include <QComboBox>
+#include <QInputDialog>
+#include <QLabel>
+#include <QMenu>
+#include <QMessageBox>
 #include <QPointer>
 #include <QScreen>
+#include <QString>
+#include <QToolButton>
 #include <QTreeWidget>
 #include <QVBoxLayout>
 
 #include "moc_qgsmasksourceselectionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static void expandAll( QTreeWidgetItem *item )
 {
@@ -47,21 +62,58 @@ void printSymbolLayerRef( const QgsSymbolLayerReference &ref )
 QgsMaskSourceSelectionWidget::QgsMaskSourceSelectionWidget( QWidget *parent )
   : QWidget( parent )
 {
+  QVBoxLayout *vbox = new QVBoxLayout();
+  vbox->setContentsMargins( 0, 0, 0, 0 );
+
+  QHBoxLayout *hLayout = new QHBoxLayout();
+
+  mSetComboBox = new QComboBox();
+  mManagerModel = new QgsSelectiveMaskingSourceSetManagerModel( QgsProject::instance()->selectiveMaskingSourceSetManager(), this );
+  mManagerModel->setAllowEmptyObject( true );
+  mManagerProxyModel = new QgsSelectiveMaskingSourceSetManagerProxyModel( this );
+  mManagerProxyModel->setSourceModel( mManagerModel );
+  mSetComboBox->setModel( mManagerProxyModel );
+  connect( mSetComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsMaskSourceSelectionWidget::selectedSetChanged );
+
+  mSetsToolButton = new QToolButton();
+  mSetsToolButton->setText( u"…"_s );
+  mSetsToolButton->setPopupMode( QToolButton::InstantPopup );
+
+  QMenu *toolMenu = new QMenu( mSetsToolButton );
+  connect( toolMenu, &QMenu::aboutToShow, this, [this] {
+    const bool isCustomSelected = isCustomSet();
+    mRemoveAction->setEnabled( !isCustomSelected );
+    mRenameAction->setEnabled( !isCustomSelected );
+  } );
+  QAction *addAction = new QAction( tr( "New Selective Masking Set…" ), toolMenu );
+  connect( addAction, &QAction::triggered, this, &QgsMaskSourceSelectionWidget::newSet );
+  toolMenu->addAction( addAction );
+  mRemoveAction = new QAction( tr( "Remove Set…" ), toolMenu );
+  connect( mRemoveAction, &QAction::triggered, this, &QgsMaskSourceSelectionWidget::removeSet );
+  toolMenu->addAction( mRemoveAction );
+  mRenameAction = new QAction( tr( "Rename Set…" ), toolMenu );
+  connect( mRenameAction, &QAction::triggered, this, &QgsMaskSourceSelectionWidget::renameSet );
+  toolMenu->addAction( mRenameAction );
+  mSetsToolButton->setMenu( toolMenu );
+
+  hLayout->addWidget( new QLabel( tr( "Preset" ) ) );
+  hLayout->addWidget( mSetComboBox, 1 );
+  hLayout->addWidget( mSetsToolButton, 1 );
+  vbox->addLayout( hLayout );
+
   mTree = new QTreeWidget( this );
   mTree->setHeaderHidden( true );
 
-  connect( mTree, &QTreeWidget::itemChanged, this, [&]( QTreeWidgetItem *, int ) { emit this->changed(); } );
+  connect( mTree, &QTreeWidget::itemChanged, this, &QgsMaskSourceSelectionWidget::onItemChanged );
 
-  // place the tree in a layout
-  QVBoxLayout *vbox = new QVBoxLayout();
-  vbox->setContentsMargins( 0, 0, 0, 0 );
-  vbox->addWidget( mTree );
+  vbox->addWidget( mTree, 1 );
 
   setLayout( vbox );
 }
 
 void QgsMaskSourceSelectionWidget::update()
 {
+  mBlockChangedSignals++;
   mTree->clear();
   mItems.clear();
 
@@ -248,43 +300,198 @@ void QgsMaskSourceSelectionWidget::update()
   }
 
   expandAll( mTree->invisibleRootItem() );
+  mBlockChangedSignals--;
 }
 
-//! Returns the current selection
-QList<QgsMaskSourceSelectionWidget::MaskSource> QgsMaskSourceSelectionWidget::selection() const
+QgsSelectiveMaskingSourceSet QgsMaskSourceSelectionWidget::sourceSet() const
 {
-  QList<QgsMaskSourceSelectionWidget::MaskSource> sel;
+  QgsSelectiveMaskingSourceSet set;
+
+  const QModelIndex selectedIndex = mManagerProxyModel->mapToSource( mManagerProxyModel->index( mSetComboBox->currentIndex(), 0 ) );
+  const bool isCustomSet = mManagerModel->data( selectedIndex, static_cast< int >( QgsSelectiveMaskingSourceSetManagerModel::CustomRole::IsEmptyObject ) ).toBool();
+  if ( !isCustomSet )
+  {
+    set.setName( mManagerModel->data( selectedIndex, Qt::DisplayRole ).toString() );
+    set.setId( mManagerModel->data( selectedIndex, static_cast< int >( QgsSelectiveMaskingSourceSetManagerModel::CustomRole::SetId ) ).toString() );
+  }
+
   for ( auto it = mItems.begin(); it != mItems.end(); it++ )
   {
     if ( it.value()->checkState( 0 ) == Qt::Checked )
     {
       const QgsSymbolLayerReference &ref = it.key();
-      QgsMaskSourceSelectionWidget::MaskSource source;
-      source.isLabeling = ref.layerId().startsWith( "__labels__" );
-      source.layerId = source.isLabeling ? ref.layerId().mid( 10 ) : ref.layerId();
-      source.symbolLayerId = ref.symbolLayerIdV2();
-      sel.append( source );
+      QgsSelectiveMaskSource source;
+      const bool isLabeling = ref.layerId().startsWith( "__labels__" );
+      if ( isLabeling )
+      {
+        source.setSourceType( Qgis::SelectiveMaskSourceType::Label );
+        source.setLayerId( ref.layerId().mid( 10 ) );
+      }
+      else
+      {
+        source.setSourceType( Qgis::SelectiveMaskSourceType::SymbolLayer );
+        source.setLayerId( ref.layerId() );
+      }
+      source.setSourceId( ref.symbolLayerIdV2() );
+      set.append( source );
     }
   }
-  return sel;
+  return set;
 }
 
-//! Sets the symbol layer selection
-void QgsMaskSourceSelectionWidget::setSelection( const QList<QgsMaskSourceSelectionWidget::MaskSource> &sel )
+void QgsMaskSourceSelectionWidget::setSourceSet( const QgsSelectiveMaskingSourceSet &set )
 {
   // Clear current selection
+  mBlockChangedSignals++;
   for ( auto it = mItems.begin(); it != mItems.end(); it++ )
   {
     it.value()->setCheckState( 0, Qt::Unchecked );
   }
 
-  for ( const MaskSource &src : sel )
+  const QVector< QgsSelectiveMaskSource > sources = set.sources();
+  for ( const QgsSelectiveMaskSource &source : sources )
   {
-    const QString layerId = ( src.isLabeling ? "__labels__" : "" ) + src.layerId;
-    const auto it = mItems.find( QgsSymbolLayerReference( layerId, src.symbolLayerId ) );
+    QString layerId;
+    switch ( source.sourceType() )
+    {
+      case Qgis::SelectiveMaskSourceType::SymbolLayer:
+        layerId = source.layerId();
+        break;
+      case Qgis::SelectiveMaskSourceType::Label:
+        layerId = u"__labels__%1"_s.arg( source.layerId() );
+        break;
+    }
+    const auto it = mItems.find( QgsSymbolLayerReference( layerId, source.sourceId() ) );
     if ( it != mItems.end() )
     {
       it.value()->setCheckState( 0, Qt::Checked );
     }
   }
+  if ( !set.isValid() )
+  {
+    mSetComboBox->setCurrentIndex( 0 );
+  }
+  else
+  {
+    mSetComboBox->setCurrentIndex( mSetComboBox->findText( set.name() ) );
+  }
+  mBlockChangedSignals--;
+}
+
+void QgsMaskSourceSelectionWidget::selectedSetChanged()
+{
+  mBlockChangedSignals++;
+  if ( !isCustomSet() )
+  {
+    const QModelIndex selectedIndex = mManagerProxyModel->mapToSource( mManagerProxyModel->index( mSetComboBox->currentIndex(), 0 ) );
+    const QString selectedSetId = mManagerModel->data( selectedIndex, static_cast< int >( QgsSelectiveMaskingSourceSetManagerModel::CustomRole::SetId ) ).toString();
+    const QgsSelectiveMaskingSourceSet set = QgsProject::instance()->selectiveMaskingSourceSetManager()->setById( selectedSetId );
+    setSourceSet( set );
+  }
+  mBlockChangedSignals--;
+
+  emitChanged();
+}
+
+void QgsMaskSourceSelectionWidget::emitChanged()
+{
+  if ( !mBlockChangedSignals )
+  {
+    emit changed();
+  }
+}
+
+void QgsMaskSourceSelectionWidget::onItemChanged()
+{
+  if ( mBlockChangedSignals )
+    return;
+
+  if ( !isCustomSet() )
+  {
+    const QgsSelectiveMaskingSourceSet set = sourceSet();
+    QgsProject::instance()->selectiveMaskingSourceSetManager()->updateSet( set );
+  }
+  emitChanged();
+}
+
+void QgsMaskSourceSelectionWidget::newSet()
+{
+  QString newTitle = QgsProject::instance()->selectiveMaskingSourceSetManager()->generateUniqueTitle();
+
+  QStringList existingNames;
+  const QVector<QgsSelectiveMaskingSourceSet> sets = QgsProject::instance()->selectiveMaskingSourceSetManager()->sets();
+  existingNames.reserve( sets.size() );
+  for ( const QgsSelectiveMaskingSourceSet &set : sets )
+  {
+    existingNames << set.name();
+  }
+
+  QgsNewNameDialog dlg( tr( "selective masking set" ), newTitle, QStringList(), existingNames, Qt::CaseSensitive, this );
+  dlg.setWindowTitle( tr( "Create Selective Masking Set" ) );
+  dlg.setHintString( tr( "Enter a unique selective masking set name" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setAllowEmptyName( false );
+  dlg.setConflictingNameWarning( tr( "A masking set with this name already exists." ) );
+
+  if ( dlg.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+
+  QgsSelectiveMaskingSourceSet newSet;
+  newSet.setName( dlg.name() );
+  QgsProject::instance()->selectiveMaskingSourceSetManager()->addSet( newSet );
+  mSetComboBox->setCurrentIndex( mSetComboBox->findText( newSet.name() ) );
+}
+
+void QgsMaskSourceSelectionWidget::removeSet()
+{
+  if ( isCustomSet() )
+    return;
+
+  const QString setName = mSetComboBox->currentText();
+  if ( QMessageBox::warning( this, tr( "Remove Selective Masking Set" ), tr( "Do you really want to remove the selective masking set “%1”?" ).arg( setName ), QMessageBox::Ok | QMessageBox::Cancel ) != QMessageBox::Ok )
+  {
+    return;
+  }
+
+  mSetComboBox->setCurrentIndex( 0 );
+  QgsProject::instance()->selectiveMaskingSourceSetManager()->removeSet( setName );
+}
+
+void QgsMaskSourceSelectionWidget::renameSet()
+{
+  if ( isCustomSet() )
+    return;
+
+  const QString setName = mSetComboBox->currentText();
+
+  QStringList existingNames;
+  const QVector<QgsSelectiveMaskingSourceSet> sets = QgsProject::instance()->selectiveMaskingSourceSetManager()->sets();
+  existingNames.reserve( sets.size() );
+  for ( const QgsSelectiveMaskingSourceSet &set : sets )
+  {
+    if ( set.name() != setName )
+      existingNames << set.name();
+  }
+
+  QgsNewNameDialog dlg( tr( "selective masking set" ), setName, QStringList(), existingNames, Qt::CaseSensitive, this );
+  dlg.setWindowTitle( tr( "Rename Selective Masking Set" ) );
+  dlg.setHintString( tr( "Enter a unique selective masking set name" ) );
+  dlg.setOverwriteEnabled( false );
+  dlg.setAllowEmptyName( false );
+  dlg.setConflictingNameWarning( tr( "A masking set with this name already exists." ) );
+
+  if ( dlg.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+
+  QgsProject::instance()->selectiveMaskingSourceSetManager()->renameSet( setName, dlg.name() );
+}
+
+bool QgsMaskSourceSelectionWidget::isCustomSet() const
+{
+  const QModelIndex selectedIndex = mManagerProxyModel->mapToSource( mManagerProxyModel->index( mSetComboBox->currentIndex(), 0 ) );
+  return mManagerModel->data( selectedIndex, static_cast< int >( QgsSelectiveMaskingSourceSetManagerModel::CustomRole::IsEmptyObject ) ).toBool();
 }

@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCodeEditorPython : QgsCodeEditor
 {
 %Docstring(signature="appended")

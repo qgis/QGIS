@@ -20,8 +20,11 @@
 #include "qgsfeaturedownloader.h"
 #include "qgsfeaturedownloaderprogresstask.h"
 
+#include <QString>
 #include <QThread>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureDownloaderImpl::QgsFeatureDownloaderImpl( QgsBackgroundCachedSharedData *shared, QgsFeatureDownloader *downloader )
   : mSharedBase( shared )

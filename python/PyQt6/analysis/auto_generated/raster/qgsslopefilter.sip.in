@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsSlopeFilter : QgsDerivativeFilter
 {
 %Docstring(signature="appended")

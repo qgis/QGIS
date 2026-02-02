@@ -20,6 +20,9 @@
 #include "qgswmtsutils.h"
 
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWmts
 {

@@ -36,7 +36,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgstextformatwidget.h"
 
+#include <QString>
+
 #include "moc_qgsannotationitemwidget_impl.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -20,6 +20,10 @@
 #include "qgis.h"
 #include "qgsnumericformatwidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {

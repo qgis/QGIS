@@ -29,8 +29,11 @@
 #include "qgsstringutils.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspostgresrasterprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_KEY = u"postgresraster"_s;
 const QString QgsPostgresRasterProvider::PG_RASTER_PROVIDER_DESCRIPTION = u"Postgres raster provider"_s;

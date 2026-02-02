@@ -32,6 +32,8 @@
 #include <QStandardItemModel>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;
 class QgsMessageBar;

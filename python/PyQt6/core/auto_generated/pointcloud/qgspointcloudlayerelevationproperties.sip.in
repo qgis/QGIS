@@ -234,6 +234,151 @@ profile plots.
 .. seealso:: :py:func:`respectLayerColors`
 %End
 
+    void setType( Qgis::PointCloudProfileType type );
+%Docstring
+Sets the profile ``type`` used when generating elevation profile plots.
+
+.. seealso:: :py:func:`type`
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::PointCloudProfileType type() const;
+%Docstring
+Returns the profile type used when generating elevation profile plots.
+
+.. seealso:: :py:func:`setType`
+
+.. versionadded:: 4.0
+%End
+
+    QgsLineSymbol *profileLineSymbol() const;
+%Docstring
+Returns the symbol used to render lines for the layer in elevation
+profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`setProfileLineSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    void setProfileLineSymbol( QgsLineSymbol *symbol /Transfer/ );
+%Docstring
+Sets the line ``symbol`` used to render lines for the layer in elevation
+profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`profileLineSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    QgsFillSymbol *profileFillSymbol() const;
+%Docstring
+Returns the symbol used to render polygons for the layer in elevation
+profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`setProfileFillSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    void setProfileFillSymbol( QgsFillSymbol *symbol /Transfer/ );
+%Docstring
+Sets the fill ``symbol`` used to render polygons for the layer in
+elevation profile plots.
+
+Ownership of ``symbol`` is transferred to the plot.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`profileFillSymbol`
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::ProfileSurfaceSymbology profileSymbology() const;
+%Docstring
+Returns the symbology option used to render the point cloud profile in
+elevation profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`setProfileSymbology`
+
+.. versionadded:: 4.0
+%End
+
+    void setProfileSymbology( Qgis::ProfileSurfaceSymbology symbology );
+%Docstring
+Sets the ``symbology`` option used to render the point cloud profile in
+elevation profile plots.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`setProfileSymbology`
+
+.. versionadded:: 4.0
+%End
+
+    double elevationLimit() const;
+%Docstring
+Returns the elevation limit, which is used when
+:py:func:`~QgsPointCloudLayerElevationProperties.profileSymbology` is
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove to limit the fill to
+a specific elevation range.
+
+By default this is NaN, which indicates that there is no elevation
+limit.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`setElevationLimit`
+
+.. versionadded:: 4.0
+%End
+
+    void setElevationLimit( double limit );
+%Docstring
+Sets the elevation ``limit``, which is used when
+:py:func:`~QgsPointCloudLayerElevationProperties.profileSymbology` is
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillBelow or
+:py:class:`Qgis`.ProfileSurfaceSymbology.FillAbove to limit the fill to
+a specific elevation range.
+
+Set to NaN to indicate that there is no elevation limit.
+
+.. note::
+
+   This setting is only used when :py:func:`~QgsPointCloudLayerElevationProperties.type` is :py:class:`Qgis`.PointCloudProfileType.TriangulatedSurface.
+
+.. seealso:: :py:func:`elevationLimit`
+
+.. versionadded:: 4.0
+%End
+
 };
 
 /************************************************************************

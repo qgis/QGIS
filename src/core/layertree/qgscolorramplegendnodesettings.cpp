@@ -21,6 +21,10 @@
 #include "qgsnumericformat.h"
 #include "qgsnumericformatregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsColorRampLegendNodeSettings::QgsColorRampLegendNodeSettings()
   : mNumericFormat( std::make_unique< QgsBasicNumericFormat >() )
 {

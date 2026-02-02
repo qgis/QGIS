@@ -19,8 +19,11 @@
 #include "qgsbookmarkmanager.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsbookmarkmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBookmarkManagerModel::QgsBookmarkManagerModel( QgsBookmarkManager *manager, QgsBookmarkManager *projectManager, QObject *parent )
   : QAbstractTableModel( parent )

@@ -56,8 +56,11 @@
 #include <QGridLayout>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsattributetabledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionContext QgsAttributeTableDialog::createExpressionContext() const
 {

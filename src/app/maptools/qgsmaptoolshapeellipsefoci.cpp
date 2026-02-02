@@ -25,7 +25,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapeellipsefoci.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeEllipseFociMetadata::TOOL_ID = u"ellipse-from-foci"_s;
 

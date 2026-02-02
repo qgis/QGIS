@@ -27,7 +27,11 @@
 #include "qgsstyle.h"
 #include "qgstransformeffect.h"
 
+#include <QString>
+
 #include "moc_qgspainteffectwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // draw source

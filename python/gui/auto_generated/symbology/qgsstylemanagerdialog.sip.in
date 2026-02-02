@@ -12,6 +12,7 @@
 
 
 
+
 class QgsStyleManagerDialog : QDialog
 {
 %Docstring(signature="appended")

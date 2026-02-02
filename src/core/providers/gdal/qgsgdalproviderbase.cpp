@@ -17,6 +17,10 @@
 
 #include "qgsgdalproviderbase.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok

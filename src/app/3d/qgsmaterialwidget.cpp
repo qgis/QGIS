@@ -22,7 +22,11 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgsreadwritecontext.h"
 
+#include <QString>
+
 #include "moc_qgsmaterialwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMaterialWidget::QgsMaterialWidget( QWidget *parent )
   : QWidget( parent )

@@ -19,8 +19,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdiscoverrelationsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDiscoverRelationsDialog::QgsDiscoverRelationsDialog( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers, QWidget *parent )
   : QDialog( parent )

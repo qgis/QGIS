@@ -26,8 +26,11 @@
 #include <QEventLoop>
 #include <QFutureWatcher>
 #include <QObject>
+#include <QString>
 #include <QTemporaryFile>
 #include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsConnectionPool : public QObject
 {

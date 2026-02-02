@@ -29,10 +29,13 @@
 #include <QJsonObject>
 #include <QRandomGenerator>
 #include <QSettings>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgso2.cpp"
+
+using namespace Qt::StringLiterals;
 
 QString QgsO2::O2_OAUTH2_STATE = u"state"_s;
 

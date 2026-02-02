@@ -19,7 +19,11 @@
  ***************************************************************************/
 #include "qgsogrsourceselect.h"
 
+#include <QString>
+
 #include "moc_qgsogrsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

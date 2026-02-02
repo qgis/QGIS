@@ -32,11 +32,14 @@
 
 #include <QDomDocument>
 #include <QQuaternion>
+#include <QString>
 #include <QStringLiteral>
 #include <Qt3DInput>
 #include <Qt3DRender/QCamera>
 
 #include "moc_qgscameracontroller.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCameraController::QgsCameraController( Qgs3DMapScene *scene )
   : Qt3DCore::QEntity( scene )

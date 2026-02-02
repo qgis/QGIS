@@ -27,8 +27,11 @@
 
 #include <QBuffer>
 #include <QPalette>
+#include <QString>
 
 #include "moc_qgscolorramplegendnode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorRampLegendNode::QgsColorRampLegendNode( QgsLayerTreeLayer *nodeLayer, QgsColorRamp *ramp, const QString &minimumLabel, const QString &maximumLabel, QObject *parent, const QString &key, const QString &parentKey )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )

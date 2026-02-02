@@ -28,6 +28,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include <QSettings>

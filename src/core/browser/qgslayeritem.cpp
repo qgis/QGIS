@@ -22,7 +22,11 @@
 #include "qgsmaplayerfactory.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgslayeritem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QIcon QgsLayerItem::iconForWkbType( Qgis::WkbType type )
 {

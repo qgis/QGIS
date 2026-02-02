@@ -21,7 +21,11 @@
 #include "qgssensorthingsprovider.h"
 #include "qgssensorthingsutils.h"
 
+#include <QString>
+
 #include "moc_qgssensorthingsdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

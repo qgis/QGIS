@@ -23,7 +23,10 @@
 #include "vertextool/qgslockedfeature.h"
 #include "vertextool/qgsvertexeditor.h"
 
+#include <QString>
 #include <qnamespace.h>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmapthemes.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapThemes *QgsMapThemes::sInstance;
 

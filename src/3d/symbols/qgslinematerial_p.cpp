@@ -17,6 +17,7 @@
 
 #include <QColor>
 #include <QSizeF>
+#include <QString>
 #include <QUrl>
 #include <QVector3D>
 #include <Qt3DRender/QBlendEquation>

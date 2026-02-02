@@ -33,7 +33,11 @@
 #include "qgsstatusbar.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsgpscanvasbridge.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsGpsCanvasBridge::settingShowBearingLine = new QgsSettingsEntryBool( u"show-bearing-line"_s, QgsSettingsTree::sTreeGps, false, u"Whether the GPS bearing line symbol should be shown"_s );
 

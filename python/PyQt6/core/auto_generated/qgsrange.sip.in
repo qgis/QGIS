@@ -10,6 +10,7 @@
 
 
 
+
 template <T>
 class QgsRange
 {

@@ -39,10 +39,13 @@
 #include <QList>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QString>
 #include <QStringList>
 #include <QUrl>
 
 #include "moc_qgsactionmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionManager::QgsActionManager( QgsVectorLayer *layer )
   : mLayer( layer )

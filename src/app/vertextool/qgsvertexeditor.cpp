@@ -41,12 +41,15 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QStackedWidget>
+#include <QString>
 #include <QStyledItemDelegate>
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QVector2D>
 
 #include "moc_qgsvertexeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryBool *QgsVertexEditor::settingAutoPopupVertexEditorDock = new QgsSettingsEntryBool( u"auto-popup-vertex-editor-dock"_s, QgsSettingsTree::sTreeDigitizing, true, u"Whether the auto-popup behavior of the vertex editor dock should be enabled"_s );
 

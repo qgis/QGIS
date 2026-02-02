@@ -28,6 +28,9 @@
 
 #include <QCryptographicHash>
 #include <QFile>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

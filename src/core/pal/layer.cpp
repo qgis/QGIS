@@ -40,6 +40,10 @@
 #include "qgslogger.h"
 #include "util.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace pal;
 
 Layer::Layer( QgsAbstractLabelProvider *provider, const QString &name, Qgis::LabelPlacement arrangement, double defaultPriority, bool active, bool toLabel, Pal *pal )

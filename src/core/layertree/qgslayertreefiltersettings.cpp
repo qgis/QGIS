@@ -23,6 +23,10 @@
 #include "qgsmapsettings.h"
 #include "qgsreferencedgeometry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsLayerTreeFilterSettings::QgsLayerTreeFilterSettings( const QgsMapSettings &settings )
   : mMapSettings( std::make_unique<QgsMapSettings>( settings ) )
 {

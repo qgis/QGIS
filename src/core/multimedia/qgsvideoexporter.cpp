@@ -18,12 +18,15 @@
 #include "qgsfeedback.h"
 
 #include <QDirIterator>
+#include <QString>
 #include <QUrl>
 #include <QtMultimedia/QMediaCaptureSession>
 #include <QtMultimedia/QVideoFrame>
 #include <QtMultimedia/QVideoFrameInput>
 
 #include "moc_qgsvideoexporter.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool QgsVideoExporter::isAvailable()
 {

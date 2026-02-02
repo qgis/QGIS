@@ -29,6 +29,8 @@
 #include <QStringList>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsMapToPixelGeometrySimplifier class

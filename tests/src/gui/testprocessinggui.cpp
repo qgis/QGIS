@@ -112,7 +112,10 @@
 #include <QSignalSpy>
 #include <QStackedWidget>
 #include <QStandardItemModel>
+#include <QString>
 #include <QToolButton>
+
+using namespace Qt::StringLiterals;
 
 class TestParamDefinition : public QgsProcessingParameterDefinition
 {

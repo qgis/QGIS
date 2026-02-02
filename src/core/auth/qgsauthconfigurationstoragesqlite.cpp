@@ -23,9 +23,12 @@
 #include <QFileInfo>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QThread>
 
 #include "moc_qgsauthconfigurationstoragesqlite.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -27,7 +27,10 @@
 #include "qgssettingstree.h"
 
 #include <QPushButton>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryDouble;

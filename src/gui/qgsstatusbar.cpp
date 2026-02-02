@@ -24,9 +24,12 @@
 #include <QLineEdit>
 #include <QPalette>
 #include <QStatusBar>
+#include <QString>
 #include <QTimer>
 
 #include "moc_qgsstatusbar.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStatusBar::QgsStatusBar( QWidget *parent )
   : QWidget( parent )

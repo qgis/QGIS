@@ -20,6 +20,10 @@
 
 #include "qgsexception.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #ifdef WITH_SFCGAL
 #include "qgssfcgalgeometry.h"
 #endif

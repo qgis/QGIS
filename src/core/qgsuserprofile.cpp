@@ -23,7 +23,10 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QSettings>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsUserProfile::QgsUserProfile( const QString &folder )
 {

@@ -135,7 +135,7 @@ bool QgsElevationProfileManagerDialog::uniqueProfileTitle( QWidget *parent, QStr
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+    dlg.setConflictingNameWarning( tr( "An elevation profile with this name already exists." ) );
 
     if ( dlg.exec() != QDialog::Accepted )
     {

@@ -17,6 +17,10 @@
 
 #include "qgsmetadataalgorithms.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsCopyLayerMetadataAlgorithm::name() const

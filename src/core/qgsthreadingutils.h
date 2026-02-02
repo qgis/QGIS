@@ -23,7 +23,10 @@
 #include "qgis_core.h"
 #include "qgsfeedback.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 #if defined( QGISDEBUG ) || defined( AGGRESSIVE_SAFE_MODE )
 #include <QDebug>

@@ -27,6 +27,10 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsMapToolReverseLine : public QObject
 {
     Q_OBJECT

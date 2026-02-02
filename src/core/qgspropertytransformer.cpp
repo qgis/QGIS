@@ -25,6 +25,10 @@
 #include "qgspointxy.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //
 // QgsPropertyTransformer
 //

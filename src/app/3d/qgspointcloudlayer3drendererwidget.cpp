@@ -22,8 +22,11 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QString>
 
 #include "moc_qgspointcloudlayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayer3DRendererWidget::QgsPointCloudLayer3DRendererWidget( QgsPointCloudLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

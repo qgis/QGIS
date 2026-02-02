@@ -22,6 +22,10 @@
 #include "qgslogger.h"
 #include "qgssettingsentry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \class QgsSettingsEntryEnumFlag
  * \ingroup core

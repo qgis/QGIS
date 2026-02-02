@@ -39,8 +39,11 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QRadioButton>
+#include <QString>
 
 #include "moc_qgsarcgisrestsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsArcGisRestBrowserProxyModel

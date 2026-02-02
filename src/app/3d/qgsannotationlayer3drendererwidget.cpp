@@ -21,8 +21,11 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QString>
 
 #include "moc_qgsannotationlayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationLayer3DRendererWidget::QgsAnnotationLayer3DRendererWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

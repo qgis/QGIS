@@ -31,6 +31,9 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 using namespace inja;

@@ -15,8 +15,11 @@
 #include "qgsprojectgpssettings.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectgpssettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectGpsSettings::QgsProjectGpsSettings( QObject *parent )
   : QObject( parent )

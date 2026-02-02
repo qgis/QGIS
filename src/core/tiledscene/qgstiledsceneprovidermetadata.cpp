@@ -20,8 +20,11 @@
 #include "qgstiledscenedataitems.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgstiledsceneprovidermetadata.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

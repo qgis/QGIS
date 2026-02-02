@@ -30,6 +30,9 @@
 #include "testqgsmaptoolutils.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolEllipse : public QObject
 {

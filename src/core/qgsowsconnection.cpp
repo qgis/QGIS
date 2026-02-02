@@ -32,9 +32,12 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPicture>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsowsconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsXyzConnectionSettings::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeXyzConnections, QString() ) ;
 const QgsSettingsEntryVariantMap *QgsXyzConnectionSettings::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeXyzConnections ) ;

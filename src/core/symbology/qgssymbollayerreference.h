@@ -21,8 +21,11 @@
 #include "qgis_sip.h"
 
 #include <QList>
+#include <QString>
 #include <QVariant>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 

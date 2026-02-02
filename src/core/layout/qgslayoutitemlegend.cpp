@@ -50,8 +50,11 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemlegend.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLegendFilterProxyModel

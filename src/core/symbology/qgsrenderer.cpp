@@ -38,7 +38,10 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPolygonF>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 QgsPropertiesDefinition QgsFeatureRenderer::sPropertyDefinitions;
 

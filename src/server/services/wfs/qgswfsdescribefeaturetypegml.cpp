@@ -28,6 +28,10 @@
 #include "qgswfsparameters.h"
 #include "qgswfsutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace QgsWfs;
 
 QgsWfsDescribeFeatureTypeGml::QgsWfsDescribeFeatureTypeGml( const QgsWfsParameters wfsParams )

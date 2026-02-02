@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsAnnotationLayer : QgsMapLayer
 {
 %Docstring(signature="appended")

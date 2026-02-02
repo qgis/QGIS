@@ -18,7 +18,10 @@
 #include <QFileInfo>
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 // clazy:excludeall=qcolor-from-literal
 

@@ -15,6 +15,10 @@
 
 #include "qgsstacitem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsStacItem::QgsStacItem( const QString &id,
                           const QString &version,
                           const QgsGeometry &geometry,

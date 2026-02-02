@@ -125,6 +125,7 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsAnnotationMapTool
     void cadCanvasPressEvent( QgsMapMouseEvent *event ) override;
     void cadCanvasReleaseEvent( QgsMapMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
+    bool shortcutEvent( QKeyEvent *event ) override;
 
     /**
      * Returns the current list of selected annotation item rubberband items.
@@ -187,7 +188,7 @@ class GUI_EXPORT QgsMapToolSelectAnnotation : public QgsAnnotationMapTool
     void updateSelectedItem();
 
     std::vector<std::unique_ptr<QgsAnnotationItemRubberBand>> mSelectedItems;
-    QList<QPair<QString, QString>> mCopiedItems;
+    std::vector<std::unique_ptr<QgsAnnotationItem>> mCopiedItems;
     QgsPointXY mCopiedItemsTopLeft;
 
     QObjectUniquePtr<QgsMapToolSelectAnnotationMouseHandles> mMouseHandles;

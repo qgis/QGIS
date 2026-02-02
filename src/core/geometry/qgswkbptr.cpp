@@ -17,6 +17,10 @@
 #include "qgsapplication.h"
 #include "qgswkbtypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsWkbPtr::QgsWkbPtr( QByteArray &wkb )
 {
   mP = reinterpret_cast<unsigned char *>( wkb.data() );

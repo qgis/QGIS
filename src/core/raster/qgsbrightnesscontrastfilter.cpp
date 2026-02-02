@@ -21,6 +21,9 @@
 
 #include <QDomDocument>
 #include <QDomElement>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface *input )
   : QgsRasterInterface( input )

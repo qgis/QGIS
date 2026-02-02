@@ -2,7 +2,7 @@
   "name": "overlay_contains",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature spatially contains at least one feature from a target layer, or an array of expression-based results for the features in the target layer contained in the current feature.<br><br>Read more on the underlying GEOS \"Contains\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Contains.html'>ST_Contains</a> function.",
+  "description": "Returns whether the current feature spatially contains at least one feature from a target layer, or returns an array of expression-based results for the features in the target layer contained in the current feature.<br><br>Read more on the underlying GEOS \"Contains\" predicate, as described in PostGIS <a href='https://postgis.net/docs/ST_Contains.html'>ST_Contains</a> function.",
   "arguments": [{
     "arg": "layer",
     "description": "the layer whose overlay is checked"

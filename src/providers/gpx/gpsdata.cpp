@@ -27,8 +27,11 @@
 #include <QMutexLocker>
 #include <QObject>
 #include <QSet>
+#include <QString>
 #include <QTextCodec>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 #define OUTPUT_PRECISION 12
 

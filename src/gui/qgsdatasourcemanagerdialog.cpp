@@ -31,8 +31,11 @@
 #include "qgssourceselectproviderregistry.h"
 
 #include <QListWidgetItem>
+#include <QString>
 
 #include "moc_qgsdatasourcemanagerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *browserModel, QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl )
   : QgsOptionsDialogBase( tr( "Data Source Manager" ), parent, fl )

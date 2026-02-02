@@ -25,6 +25,10 @@
 #include "qgshanatablemodel.h"
 #include "qgslayeritem.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;
 class QgsHanaSchemaItem;

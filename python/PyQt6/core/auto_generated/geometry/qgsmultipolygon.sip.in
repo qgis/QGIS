@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsMultiPolygon: QgsMultiSurface
 {
 %Docstring(signature="appended")

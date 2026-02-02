@@ -23,6 +23,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayerplotdatagatherer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsBarChartPlot::QgsBarChartPlot()
 {
   setFillSymbolAt( 0, QgsPlotDefaultSettings::barChartFillSymbol() );

@@ -23,6 +23,10 @@
 #include "layout/qgsprintlayout.h"
 #include "qgsprocessingoutputs.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsLayoutMapExtentToLayerAlgorithm::name() const

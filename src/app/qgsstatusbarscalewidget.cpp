@@ -24,9 +24,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QString>
 #include <QValidator>
 
 #include "moc_qgsstatusbarscalewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStatusBarScaleWidget::QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QWidget( parent )

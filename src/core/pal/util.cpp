@@ -32,6 +32,10 @@
 #include "qgsgeos.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 std::optional<QVector<const GEOSGeometry *>> pal::Util::unmulti( const GEOSGeometry *the_geom )
 {
   QVector<const GEOSGeometry *> queue;

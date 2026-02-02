@@ -18,6 +18,10 @@
 
 #include "qgsalgorithmdensifygeometriesbyinterval.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsDensifyGeometriesByIntervalAlgorithm::name() const

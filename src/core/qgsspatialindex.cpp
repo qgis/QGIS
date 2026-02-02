@@ -28,6 +28,9 @@
 
 #include <QMutex>
 #include <QMutexLocker>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace SpatialIndex;
 

@@ -22,6 +22,10 @@
 #include "qgsnetworkspeedstrategy.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 //

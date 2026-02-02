@@ -21,6 +21,9 @@
 #include "qgis_sip.h"
 
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsTreeNamedListNode;
 class QgsSettingsEntryBase;

@@ -21,6 +21,10 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingparameters.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 bool QgsProcessingModelChildParameterSource::operator==( const QgsProcessingModelChildParameterSource &other ) const

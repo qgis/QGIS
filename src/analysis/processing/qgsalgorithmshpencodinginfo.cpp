@@ -19,6 +19,10 @@
 
 #include "qgsogrutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsShapefileEncodingInfoAlgorithm::name() const

@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmremovenullgeometry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRemoveNullGeometryAlgorithm::name() const

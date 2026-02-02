@@ -22,6 +22,10 @@
 #include "qgsrasterblock.h"
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "gdal.h"
 #include "gdalwarper.h"

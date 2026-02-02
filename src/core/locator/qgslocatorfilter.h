@@ -27,6 +27,8 @@
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 class QgsFeedback;
 class QgsLocatorFilter;
 

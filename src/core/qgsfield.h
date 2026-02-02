@@ -25,6 +25,8 @@
 #include <QVariant>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 typedef QList<int> QgsAttributeList SIP_SKIP;
 
 /***************************************************************************

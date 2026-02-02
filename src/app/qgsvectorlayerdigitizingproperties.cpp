@@ -28,8 +28,11 @@
 #include "qgsunittypes.h"
 
 #include <QFormLayout>
+#include <QString>
 
 #include "moc_qgsvectorlayerdigitizingproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerDigitizingPropertiesPage::QgsVectorLayerDigitizingPropertiesPage( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

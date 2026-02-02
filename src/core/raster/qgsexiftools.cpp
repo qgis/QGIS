@@ -18,7 +18,11 @@
 #include "qgslogger.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsexiftools.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_EXIV2
 #include <exiv2/exiv2.hpp>

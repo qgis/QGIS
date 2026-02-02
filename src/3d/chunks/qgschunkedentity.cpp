@@ -24,10 +24,13 @@
 #include "qgsgeotransform.h"
 
 #include <QElapsedTimer>
+#include <QString>
 #include <QVector4D>
 #include <queue>
 
 #include "moc_qgschunkedentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

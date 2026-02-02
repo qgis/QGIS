@@ -18,6 +18,9 @@
 #include "qgstest.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsAdvancedDigitizingToolsRegistry : public QObject
 {

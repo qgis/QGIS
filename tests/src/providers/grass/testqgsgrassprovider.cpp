@@ -40,6 +40,8 @@
 #include <QStringList>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 extern "C"
 {
 #ifndef _MSC_VER

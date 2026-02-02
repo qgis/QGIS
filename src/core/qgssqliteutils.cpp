@@ -23,7 +23,10 @@
 #include "qgsvariantutils.h"
 
 #include <QSet>
+#include <QString>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 // Temporary solution until GDAL Unique support is available
 #include <regex>

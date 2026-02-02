@@ -31,8 +31,11 @@
 
 #include <QClipboard>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgswfsdataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgswfssourceselect.h"

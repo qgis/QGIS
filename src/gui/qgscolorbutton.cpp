@@ -37,11 +37,14 @@
 #include <QPainter>
 #include <QPushButton>
 #include <QScreen>
+#include <QString>
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>
 
 #include "moc_qgscolorbutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSchemeRegistry *registry )
   : QToolButton( parent )

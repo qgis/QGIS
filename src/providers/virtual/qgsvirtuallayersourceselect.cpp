@@ -32,12 +32,15 @@ email                : hugo dot mercier at oslandia dot com
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 #include <QTextStream>
 #include <QUrl>
 #include <QWidget>
 #include <Qsci/qscilexer.h>
 
 #include "moc_qgsvirtuallayersourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, widgetMode )

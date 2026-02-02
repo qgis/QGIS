@@ -26,6 +26,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsNurbsCurve : public QObject
 {
     Q_OBJECT

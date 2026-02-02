@@ -42,6 +42,9 @@
 #include "qgsvectorlayerfeatureiterator.h"
 
 #include <QPolygonF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsVectorLayerProfileResults
@@ -719,6 +722,11 @@ QgsVectorLayerProfileGenerator::QgsVectorLayerProfileGenerator( QgsVectorLayer *
 QString QgsVectorLayerProfileGenerator::sourceId() const
 {
   return mId;
+}
+
+QString QgsVectorLayerProfileGenerator::type() const
+{
+  return u"vector"_s;
 }
 
 QgsVectorLayerProfileGenerator::~QgsVectorLayerProfileGenerator() = default;

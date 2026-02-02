@@ -49,8 +49,11 @@
 #include "qgsxmlutils.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgspostgresprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsPostgresProvider::POSTGRES_KEY = u"postgres"_s;
 const QString QgsPostgresProvider::POSTGRES_DESCRIPTION = u"PostgreSQL/PostGIS data provider"_s;

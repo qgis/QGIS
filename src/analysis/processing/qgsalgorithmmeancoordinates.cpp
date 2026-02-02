@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmmeancoordinates.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsMeanCoordinatesAlgorithm::name() const

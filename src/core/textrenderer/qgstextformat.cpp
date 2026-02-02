@@ -32,7 +32,10 @@
 #include <QFontDatabase>
 #include <QMimeData>
 #include <QScreen>
+#include <QString>
 #include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 QgsTextFormat::QgsTextFormat()
 {

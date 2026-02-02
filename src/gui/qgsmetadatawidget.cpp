@@ -34,6 +34,8 @@
 
 #include "moc_qgsmetadatawidget.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent ), mLayer( layer )
 {

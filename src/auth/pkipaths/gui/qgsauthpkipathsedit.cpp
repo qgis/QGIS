@@ -28,8 +28,11 @@
 #include <QFileInfo>
 #include <QSslCertificate>
 #include <QSslKey>
+#include <QString>
 
 #include "moc_qgsauthpkipathsedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   : QgsAuthMethodEdit( parent )

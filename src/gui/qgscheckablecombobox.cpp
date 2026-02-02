@@ -24,8 +24,11 @@
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QPoint>
+#include <QString>
 
 #include "moc_qgscheckablecombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckableItemModel::QgsCheckableItemModel( QObject *parent )
   : QStandardItemModel( 0, 1, parent )

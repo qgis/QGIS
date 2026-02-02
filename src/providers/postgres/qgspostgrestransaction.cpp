@@ -21,7 +21,11 @@
 #include "qgslogger.h"
 #include "qgspostgresconn.h"
 
+#include <QString>
+
 #include "moc_qgspostgrestransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
   : QgsTransaction( connString )

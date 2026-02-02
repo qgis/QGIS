@@ -26,9 +26,12 @@
 #include <QImage>
 #include <QImageReader>
 #include <QPainter>
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgsrenderchecker.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifndef CMAKE_SOURCE_DIR
 #error CMAKE_SOURCE_DIR undefined

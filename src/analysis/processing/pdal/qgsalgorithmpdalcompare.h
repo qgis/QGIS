@@ -23,6 +23,10 @@
 #include "qgis_sip.h"
 #include "qgspdalalgorithmbase.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 /**

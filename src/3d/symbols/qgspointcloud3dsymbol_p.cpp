@@ -28,6 +28,7 @@
 #include "qgspointcloudrequest.h"
 
 #include <QPointSize>
+#include <QString>
 #include <QUrl>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
@@ -41,6 +42,8 @@
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgspointcloud3dsymbol_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

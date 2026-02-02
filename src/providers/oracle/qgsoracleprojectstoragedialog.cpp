@@ -25,8 +25,11 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsoracleprojectstoragedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOracleProjectStorageDialog::QgsOracleProjectStorageDialog( bool saving, QWidget *parent )
   : QDialog( parent )

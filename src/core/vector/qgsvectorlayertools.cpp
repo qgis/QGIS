@@ -22,7 +22,11 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsvectorlayertools.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerTools::QgsVectorLayerTools()
   : QObject( nullptr )

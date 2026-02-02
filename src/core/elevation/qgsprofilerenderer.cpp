@@ -248,7 +248,7 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
     {
       job->mutex.lock();
       res = true;
-      if ( clearPreviousResults )
+      if ( clearPreviousResults || job->generator->type() != generator->type() )
       {
         job->results.reset();
         job->complete = false;

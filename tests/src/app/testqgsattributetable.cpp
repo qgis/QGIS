@@ -35,6 +35,9 @@
 #include "qgsvectorlayertemporalproperties.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

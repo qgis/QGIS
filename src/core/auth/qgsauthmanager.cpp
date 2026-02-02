@@ -30,10 +30,13 @@
 #include <QSqlDriver>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QTextStream>
 #include <QTime>
 #include <QTimer>
 #include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_AUTH
 #include <QtCrypto>

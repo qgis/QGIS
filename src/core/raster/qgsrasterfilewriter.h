@@ -24,6 +24,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class QgsRasterBlockFeedback;
 class QgsRasterIterator;
 class QgsRasterPipe;

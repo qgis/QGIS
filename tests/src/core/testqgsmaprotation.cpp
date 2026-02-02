@@ -21,6 +21,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis includes...
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"

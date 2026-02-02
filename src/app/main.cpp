@@ -42,6 +42,8 @@
 #include <QStyleFactory>
 #include <QSurfaceFormat>
 
+using namespace Qt::StringLiterals;
+
 #if !defined( Q_OS_WIN )
 #include "sigwatch.h"
 #endif
@@ -911,7 +913,7 @@ int main( int argc, char *argv[] )
 #endif
 
 
-#if defined( Q_OS_UNIX ) && !defined( Q_OS_MAC ) && !defined( ANDROID )
+#if defined( Q_OS_UNIX ) && !defined( Q_OS_MACOS ) && !defined( ANDROID )
   bool myUseGuiFlag = nullptr != getenv( "DISPLAY" );
 #else
   bool myUseGuiFlag = true;
@@ -938,7 +940,7 @@ int main( int argc, char *argv[] )
 #if !defined( QT_NO_OPENGL )
   QSurfaceFormat format;
   format.setRenderableType( QSurfaceFormat::OpenGL );
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
   format.setVersion( 4, 1 ); //OpenGL is deprecated on MacOS, use last supported version
   format.setProfile( QSurfaceFormat::CoreProfile );
 #else
@@ -1299,7 +1301,7 @@ int main( int argc, char *argv[] )
   QgsDebugMsgLevel( u"Rewritten macOS QCoreApplication::libraryPaths: %1"_s.arg( QCoreApplication::libraryPaths().join( " " ) ), 4 );
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
   // Set hidpi icons; use SVG icons, as PNGs will be relatively too small
   QCoreApplication::setAttribute( Qt::AA_UseHighDpiPixmaps );
 #else

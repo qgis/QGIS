@@ -17,6 +17,10 @@
 
 #include "qgsrasterrange.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterRange::QgsRasterRange( double min, double max, BoundsType bounds )
   : mMin( min )
   , mMax( max )

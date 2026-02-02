@@ -20,9 +20,12 @@
 #include "qgsvectorlayer.h"
 #include "topolError.h"
 
+#include <QString>
 #include <qlogging.h>
 
 #include "moc_dockModel.cpp"
+
+using namespace Qt::StringLiterals;
 
 DockModel::DockModel( QObject *parent )
 {

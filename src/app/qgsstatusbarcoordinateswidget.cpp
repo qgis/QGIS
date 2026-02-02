@@ -32,10 +32,13 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QSpacerItem>
+#include <QString>
 #include <QTimer>
 #include <QToolButton>
 
 #include "moc_qgsstatusbarcoordinateswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsStatusBarCoordinatesWidget::QgsStatusBarCoordinatesWidget( QWidget *parent )
   : QWidget( parent )

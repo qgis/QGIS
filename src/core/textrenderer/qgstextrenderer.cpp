@@ -37,7 +37,10 @@
 #include "qgstextrendererutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QTextBoundaryFinder>
+
+using namespace Qt::StringLiterals;
 
 Qgis::TextHorizontalAlignment QgsTextRenderer::convertQtHAlignment( Qt::Alignment alignment )
 {

@@ -36,9 +36,12 @@
 
 #include <QMimeData>
 #include <QPalette>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgslayertreemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QAbstractItemModel( parent )

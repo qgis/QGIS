@@ -30,8 +30,11 @@
 #include <QMenu>
 #include <QSet>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsfeaturelistview.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   : QListView( parent )

@@ -25,6 +25,10 @@
 #include "qgscplerrorhandler_p.h"
 #include "qgsogrutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeoPackageRasterWriter::QgsGeoPackageRasterWriter( const QgsMimeDataUtils::Uri &sourceUri, const QString &outputUrl ):
   mSourceUri( sourceUri ),
   mOutputUrl( outputUrl )

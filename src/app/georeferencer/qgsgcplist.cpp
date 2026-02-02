@@ -22,7 +22,10 @@
 #include "qgsproject.h"
 
 #include <QDir>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
 {

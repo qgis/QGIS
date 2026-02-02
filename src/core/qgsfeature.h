@@ -33,6 +33,8 @@ email                : sherman at mrcc.com
 #include <QVariant>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 class QgsFeature;
 class QgsFeaturePrivate;
 class QgsField;

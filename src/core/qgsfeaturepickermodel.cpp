@@ -20,7 +20,11 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfeaturepickermodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeaturePickerModel::QgsFeaturePickerModel( QObject *parent )
   :  QgsFeaturePickerModelBase( parent )

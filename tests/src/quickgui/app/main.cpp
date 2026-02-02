@@ -25,6 +25,9 @@
 #include <QQmlComponent>
 #include <QQmlContext>
 #include <QQmlError>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 int main( int argc, char *argv[] )
 {

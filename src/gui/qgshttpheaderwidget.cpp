@@ -23,7 +23,11 @@
 
 #include "qgsapplication.h"
 
+#include <QString>
+
 #include "moc_qgshttpheaderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsHttpHeaderWidget::QgsHttpHeaderWidget( QWidget *parent )
   : QWidget( parent )

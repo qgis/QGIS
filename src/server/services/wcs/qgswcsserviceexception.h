@@ -22,6 +22,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 namespace QgsWcs
 {
 

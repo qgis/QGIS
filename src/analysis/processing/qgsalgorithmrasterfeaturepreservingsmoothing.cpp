@@ -19,6 +19,10 @@
 
 #include "qgsrasterfilewriter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 struct Vector2D

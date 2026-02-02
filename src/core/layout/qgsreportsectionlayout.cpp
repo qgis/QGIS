@@ -18,6 +18,10 @@
 
 #include "qgslayout.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsReportSectionLayout::QgsReportSectionLayout( QgsAbstractReportSection *parent )

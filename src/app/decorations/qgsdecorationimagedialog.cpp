@@ -26,9 +26,12 @@
 #include <QDialogButtonBox>
 #include <QPainter>
 #include <QPushButton>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsdecorationimagedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationImageDialog::QgsDecorationImageDialog( QgsDecorationImage &deco, QWidget *parent )
   : QDialog( parent )

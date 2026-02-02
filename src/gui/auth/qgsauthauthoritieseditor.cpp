@@ -39,8 +39,11 @@
 #include <QPair>
 #include <QPushButton>
 #include <QSslConfiguration>
+#include <QString>
 
 #include "moc_qgsauthauthoritieseditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   : QWidget( parent )

@@ -28,6 +28,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSingleColorPointCloud3DSymbol;
 class TestQgs3DMapScene : public QgsTest
 {

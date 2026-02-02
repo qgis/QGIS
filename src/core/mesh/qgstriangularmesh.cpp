@@ -27,6 +27,9 @@
 #include "qgsrectangle.h"
 
 #include <QList>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 static void triangulateFaces( const QgsMeshFace &face,
                               int nativeIndex,

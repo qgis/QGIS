@@ -27,8 +27,11 @@
 #include "qgsvariantutils.h"
 
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsauthtrustedcasdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthTrustedCAsDialog::QgsAuthTrustedCAsDialog( QWidget *parent, const QList<QSslCertificate> &trustedCAs )
   : QDialog( parent )

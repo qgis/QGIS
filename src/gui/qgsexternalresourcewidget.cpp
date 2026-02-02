@@ -33,10 +33,13 @@
 #include <QMimeType>
 #include <QMovie>
 #include <QSettings>
+#include <QString>
 #include <QToolButton>
 #include <QVariant>
 
 #include "moc_qgsexternalresourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )

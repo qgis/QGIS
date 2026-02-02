@@ -24,6 +24,10 @@
 #include "qgsrasterinterface.h"
 #include "qgsrasteriterator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 void QgsReclassifyUtils::reportClasses( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsProcessingFeedback *feedback )

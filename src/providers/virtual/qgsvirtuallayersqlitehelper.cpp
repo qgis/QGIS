@@ -23,6 +23,8 @@ email                : hugo dot mercier at oslandia dot com
 #include <QString>
 #include <QVariant>
 
+using namespace Qt::StringLiterals;
+
 QgsScopedSqlite::QgsScopedSqlite( const QString &path, bool withExtension )
 {
   if ( withExtension )

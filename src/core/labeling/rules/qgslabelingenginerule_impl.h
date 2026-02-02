@@ -22,6 +22,10 @@
 #include "qgsmapunitscale.h"
 #include "qgsvectorlayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSpatialIndex;
 
 

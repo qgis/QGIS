@@ -574,6 +574,16 @@ bool QgsGeometryUtilsBase::lineIntersection( double p1x, double p1y, QgsVector v
   return true;
 }
 
+bool QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( double x1, double y1, double bearing1, double x2, double y2, double bearing2, double &intersectionX, double &intersectionY )
+{
+  // Convert bearings (clockwise from north) to direction vectors
+  // For bearing β: direction = (sin(β), cos(β))
+  const QgsVector v1( std::sin( bearing1 ), std::cos( bearing1 ) );
+  const QgsVector v2( std::sin( bearing2 ), std::cos( bearing2 ) );
+
+  return lineIntersection( x1, y1, v1, x2, y2, v2, intersectionX, intersectionY );
+}
+
 static bool equals( double p1x, double p1y, double p2x, double p2y, double epsilon = 1e-8 )
 {
   return qgsDoubleNear( p1x, p2x, epsilon ) && qgsDoubleNear( p1y, p2y, epsilon );

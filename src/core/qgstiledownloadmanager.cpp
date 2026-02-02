@@ -30,8 +30,11 @@
 #include <QNetworkReply>
 #include <QRegularExpression>
 #include <QStandardPaths>
+#include <QString>
 
 #include "moc_qgstiledownloadmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

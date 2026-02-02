@@ -30,8 +30,11 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsTextItem>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsmodelgraphicsscene.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

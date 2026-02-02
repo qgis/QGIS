@@ -30,8 +30,11 @@
 
 #include <QIcon>
 #include <QNetworkRequest>
+#include <QString>
 
 #include "moc_qgsxyzvectortiledataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

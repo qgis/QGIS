@@ -29,8 +29,11 @@
 #include <QDir>
 #include <QPainter>
 #include <QStandardPaths>
+#include <QString>
 
 #include "moc_qgstemplateprojectsmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   : QStandardItemModel( parent )

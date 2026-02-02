@@ -41,7 +41,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerlabeling.h"
 
+#include <QString>
 #include <qgsrasteranalysisutils.cpp>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProcessingAlgsPt2 : public QgsTest
 {

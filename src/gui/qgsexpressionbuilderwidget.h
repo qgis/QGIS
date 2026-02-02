@@ -26,7 +26,10 @@
 
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
+#include <QString>
 #include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 class QgsFields;
 class QgsExpressionHighlighter;

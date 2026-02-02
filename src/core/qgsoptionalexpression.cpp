@@ -16,6 +16,10 @@
 
 #include "qgsoptionalexpression.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression )
   : QgsOptional<QgsExpression>( expression )
 {

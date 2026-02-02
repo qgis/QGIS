@@ -23,8 +23,11 @@
 
 #include <QLineEdit>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsauthmasterpassresetdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMasterPasswordResetDialog::QgsMasterPasswordResetDialog( QWidget *parent )
   : QDialog( parent )

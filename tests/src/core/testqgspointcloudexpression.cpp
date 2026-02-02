@@ -24,6 +24,8 @@
 #include <QString>
 #include <QVector>
 
+using namespace Qt::StringLiterals;
+
 template<typename T>
 bool _storeToStream( char *s, size_t position, QgsPointCloudAttribute::DataType type, T value )
 {

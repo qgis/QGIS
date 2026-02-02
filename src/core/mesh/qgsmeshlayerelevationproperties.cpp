@@ -26,7 +26,11 @@
 #include "qgsmeshlayer.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsmeshlayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMeshLayerElevationProperties::QgsMeshLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

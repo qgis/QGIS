@@ -17,6 +17,9 @@ Email                : nyall dot dawson at gmail dot com
 #include "qgstest.h"
 
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsRuntimeProfiler : public QObject
 {

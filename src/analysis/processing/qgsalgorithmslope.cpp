@@ -20,6 +20,10 @@
 #include "qgsrasterfilewriter.h"
 #include "qgsslopefilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsSlopeAlgorithm::name() const

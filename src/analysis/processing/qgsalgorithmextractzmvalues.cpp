@@ -20,6 +20,10 @@
 
 #include "qgsfeaturerequest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 const std::vector<Qgis::Statistic> STATS {

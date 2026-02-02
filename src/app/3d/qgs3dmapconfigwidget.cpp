@@ -37,7 +37,11 @@
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
 
+#include <QString>
+
 #include "moc_qgs3dmapconfigwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )

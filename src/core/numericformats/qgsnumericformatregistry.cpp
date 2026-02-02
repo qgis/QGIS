@@ -26,6 +26,10 @@
 #include "qgsscientificnumericformat.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsNumericFormatRegistry::QgsNumericFormatRegistry()
 {
   addFormat( new QgsFallbackNumericFormat() );

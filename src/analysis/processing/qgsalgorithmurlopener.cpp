@@ -21,9 +21,12 @@
 #include "qgsprocessingparameters.h"
 
 #include <QDesktopServices>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsalgorithmurlopener.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

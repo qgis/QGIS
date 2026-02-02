@@ -30,9 +30,12 @@
 #include "qgssettings.h"
 #include "qgsstyle.h"
 
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsfilebaseddataitemprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsProviderSublayerItem

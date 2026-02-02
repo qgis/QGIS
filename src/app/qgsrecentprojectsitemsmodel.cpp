@@ -30,9 +30,12 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QPixmap>
+#include <QString>
 #include <QTextDocument>
 
 #include "moc_qgsrecentprojectsitemsmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRecentProjectItemsModel::QgsRecentProjectItemsModel( QObject *parent )
   : QAbstractListModel( parent )

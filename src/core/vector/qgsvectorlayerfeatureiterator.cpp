@@ -30,6 +30,10 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsvectorlayerjoinbuffer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>
 #endif

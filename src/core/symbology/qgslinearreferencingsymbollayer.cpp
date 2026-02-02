@@ -32,6 +32,10 @@
 #include "qgstextrenderer.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 class QgsTextLabelFeatureWithFormat : public QgsTextLabelFeature
 {
@@ -210,8 +214,7 @@ QgsLinearReferencingSymbolLayer *QgsLinearReferencingSymbolLayer::clone() const
   if ( mNumericFormat )
     res->mNumericFormat.reset( mNumericFormat->clone() );
 
-  copyDataDefinedProperties( res.get() );
-  copyPaintEffect( res.get() );
+  copyCommonProperties( res.get() );
 
   return res.release();
 }

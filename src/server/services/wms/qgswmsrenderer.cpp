@@ -65,6 +65,7 @@
 #include "qgsrasterrenderer.h"
 #include "qgsrenderer.h"
 #include "qgsscalecalculator.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgsserverapiutils.h"
 #include "qgsserverexception.h"
 #include "qgsserverfeatureid.h"
@@ -82,10 +83,13 @@
 #include <QDir>
 #include <QImage>
 #include <QPainter>
+#include <QString>
 #include <QStringList>
 #include <QTemporaryFile>
 #include <QUrl>
 #include <QXmlStreamReader>
+
+using namespace Qt::StringLiterals;
 
 //for printing
 #include "qgslayoutatlas.h"
@@ -1482,6 +1486,8 @@ namespace QgsWms
 
     // add labeling engine settings
     mapSettings.setLabelingEngineSettings( mProject->labelingEngineSettings() );
+
+    mapSettings.setSelectiveMaskingSourceSets( mProject->selectiveMaskingSourceSetManager()->sets() );
 
     mapSettings.setScaleMethod( mProject->scaleMethod() );
 

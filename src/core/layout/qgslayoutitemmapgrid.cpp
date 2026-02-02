@@ -47,9 +47,12 @@
 
 #include <QPainter>
 #include <QPen>
+#include <QString>
 #include <QVector2D>
 
 #include "moc_qgslayoutitemmapgrid.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define MAX_GRID_LINES 1000 //maximum number of horizontal or vertical grid lines to draw
 

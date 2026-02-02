@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsStoredQueryManager : QObject
 {
 %Docstring(signature="appended")

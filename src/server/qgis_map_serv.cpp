@@ -32,6 +32,8 @@
 
 #include <fcgi_stdio.h>
 
+using namespace Qt::StringLiterals;
+
 int fcgi_accept()
 {
 #ifdef Q_OS_WIN

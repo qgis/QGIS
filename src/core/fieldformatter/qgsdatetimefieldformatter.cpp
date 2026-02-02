@@ -21,6 +21,10 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 const QString QgsDateTimeFieldFormatter::DATE_FORMAT = u"yyyy-MM-dd"_s;
 const QString QgsDateTimeFieldFormatter::TIME_FORMAT = u"HH:mm:ss"_s;
 const QString QgsDateTimeFieldFormatter::DATETIME_FORMAT = u"yyyy-MM-dd HH:mm:ss"_s;

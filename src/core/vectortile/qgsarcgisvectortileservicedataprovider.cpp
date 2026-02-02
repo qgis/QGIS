@@ -28,10 +28,13 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonParseError>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsarcgisvectortileservicedataprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsNewHttpConnection : QDialog
 {
 %Docstring(signature="appended")

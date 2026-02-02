@@ -20,6 +20,10 @@
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsTransectAlgorithm::name() const

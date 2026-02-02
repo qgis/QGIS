@@ -37,9 +37,12 @@
 #include <QFutureWatcher>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QtConcurrentMap>
 
 #include "moc_qgsgeometrycheckersetuptab.cpp"
+
+using namespace Qt::StringLiterals;
 
 static const int LayerIdRole = Qt::UserRole + 1;
 

@@ -24,6 +24,10 @@
 #include "qgslinestring.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsEllipse::normalizeAxis()
 {
   mSemiMajorAxis = std::fabs( mSemiMajorAxis );

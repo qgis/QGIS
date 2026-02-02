@@ -25,7 +25,11 @@
 #include "qgspoint.h"
 #include "qgsquadrilateral.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperectanglecenter.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRectangleCenterMetadata::TOOL_ID = u"rectangle-from-center-and-a-point"_s;
 

@@ -22,7 +22,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperegularpolygoncenterpoint.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRegularPolygonCenterPointMetadata::TOOL_ID = u"regular-polygon-from-center-point"_s;
 

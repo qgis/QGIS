@@ -22,7 +22,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshaperegularpolygon2points.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeRegularPolygon2PointsMetadata::TOOL_ID = u"regular-polygon-from-2-points"_s;
 

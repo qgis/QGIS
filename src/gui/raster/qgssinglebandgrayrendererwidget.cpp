@@ -24,7 +24,11 @@
 #include "qgsrasterminmaxwidget.h"
 #include "qgssinglebandgrayrenderer.h"
 
+#include <QString>
+
 #include "moc_qgssinglebandgrayrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )

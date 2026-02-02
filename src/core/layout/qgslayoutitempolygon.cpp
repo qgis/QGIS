@@ -28,7 +28,11 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgslayoutitempolygon.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemPolygon::QgsLayoutItemPolygon( QgsLayout *layout )
   : QgsLayoutNodesItem( layout )

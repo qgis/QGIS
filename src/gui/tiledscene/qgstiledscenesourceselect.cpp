@@ -27,8 +27,11 @@
 
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgstiledscenesourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

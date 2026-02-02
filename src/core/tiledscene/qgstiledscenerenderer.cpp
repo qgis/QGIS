@@ -21,7 +21,10 @@
 #include "qgstiledscenerendererregistry.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsTiledSceneRenderContext

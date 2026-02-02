@@ -25,7 +25,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapeellipsecenter2points.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeEllipseCenter2PointsMetadata::TOOL_ID = u"ellipse-center-2-points"_s;
 

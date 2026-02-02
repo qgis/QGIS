@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsPoint: QgsAbstractGeometry
 {
 %Docstring(signature="appended")

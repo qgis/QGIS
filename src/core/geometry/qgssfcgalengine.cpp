@@ -25,6 +25,10 @@
 #include "qgsgeometryfactory.h"
 #include "qgssfcgalgeometry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // ===================================
 // sfcgal namespace
 // ===================================

@@ -24,7 +24,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QStyleOptionGraphicsItem>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutUtils : public QgsTest
 {

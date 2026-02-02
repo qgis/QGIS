@@ -21,7 +21,11 @@
 #include "qgslogger.h"
 #include "qgsmessagebar.h"
 
+#include <QString>
+
 #include "moc_qgsbrowserguimodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBrowserGuiModel::QgsBrowserGuiModel( QObject *parent )
   : QgsBrowserModel( parent )

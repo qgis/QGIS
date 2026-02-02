@@ -26,7 +26,11 @@
 #include "qgssettings.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
 #include "moc_qgsdisplayangle.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDisplayAngle::QgsDisplayAngle( QgsMapTool *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )

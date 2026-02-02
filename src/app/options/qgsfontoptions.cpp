@@ -20,8 +20,11 @@
 #include "qgssettings.h"
 
 #include <QDir>
+#include <QString>
 
 #include "moc_qgsfontoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsFontOptionsWidget

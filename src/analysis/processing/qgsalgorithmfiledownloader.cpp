@@ -24,10 +24,13 @@
 
 #include <QEventLoop>
 #include <QFileInfo>
+#include <QString>
 #include <QTimer>
 #include <QUrl>
 
 #include "moc_qgsalgorithmfiledownloader.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

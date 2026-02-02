@@ -19,12 +19,15 @@
 #include "qgsimageoperation.h"
 
 #include <QApplication>
+#include <QString>
 #include <QStyle>
 #include <QStyleFactory>
 #include <QStyleOption>
 #include <QWindow>
 
 #include "moc_qgsproxystyle.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProxyStyle::QgsProxyStyle( QWidget *parent )
   : QProxyStyle( nullptr ) // no base style yet - it transfers ownership, so we need a NEW QStyle object for the base style

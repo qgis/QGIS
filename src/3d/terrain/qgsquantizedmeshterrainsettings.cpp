@@ -19,6 +19,10 @@
 #include "qgsquantizedmeshterraingenerator.h"
 #include "qgstiledscenelayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAbstractTerrainSettings *QgsQuantizedMeshTerrainSettings::create()
 {
   return new QgsQuantizedMeshTerrainSettings();

@@ -2091,6 +2091,61 @@ class TestPyQgsOracleProvider(QgisTestCase, ProviderTestCase):
 
             self.execSQLCommand(f'DROP TABLE "QGIS"."DETECT_{name}"')
 
+    def testDetermineGeometryColumnNameTableInSdo_geom_metadata(self):
+        """
+        Try connecting to a spatial layer without explicitly stating the geometry column name
+        or SRID, for a table registered in sdo_geom_metadata
+        """
+        vl = QgsVectorLayer(
+            f'{self.dbconn} table="QGIS"."SOME_DATA" type=POINT sql=',
+            "testpoints",
+            "oracle",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().wkbType(), Qgis.WkbType.Point)
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "GEOM")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                5: "Point (-71.1 78.2)",
+                3: "",
+                1: "Point (-70.3 66.3)",
+                2: "Point (-68.2 70.8)",
+                4: "Point (-65.3 78.3)",
+            },
+        )
+
+    def testDetermineGeometryColumnNameTableNotInSdo_geom_metadata(self):
+        """
+        Try connecting to a spatial layer without explicitly stating the geometry column name
+        or SRID, for a table NOT registered in sdo_geom_metadata
+        """
+        vl = QgsVectorLayer(
+            f'{self.dbconn} table="QGIS"."POINT_DATA" type=POINT sql=',
+            "testpoints",
+            "oracle",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().wkbType(), Qgis.WkbType.Point)
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "GEOM")
+        self.assertEqual(vl.dataProvider().crs().authid(), "EPSG:4326")
+
+        self.assertEqual(
+            {f["pk"]: f.geometry().asWkt(1) for f in vl.dataProvider().getFeatures()},
+            {
+                1: "Point (1 2)",
+                2: "Point Z (1 2 3)",
+                3: "MultiPoint Z ((1 2 3),(4 5 6))",
+                4: "MultiPoint ((1 2),(3 4))",
+                5: "MultiPoint Z ((1 2 3),(4 5 6))",
+                6: "Point (1 2)",
+                7: "Point (3 4)",
+                8: "Point (5 6)",
+            },
+        )
+
     def testCredentialsCache(self):
         """
         Test that credentials are correctly cached when using

@@ -17,12 +17,15 @@
 
 #include "qgs3dutils.h"
 
+#include <QString>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
 
 #include "moc_qgsmaterial.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMaterial::CLIP_PLANE_ARRAY_PARAMETER_NAME = u"clipPlane[0]"_s;
 const QString QgsMaterial::CLIP_PLANE_MAX_PLANE_PARAMETER_NAME = u"max_plane_real"_s;

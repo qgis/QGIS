@@ -19,6 +19,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsLabelingWidget : public QgsTest
 {
     Q_OBJECT

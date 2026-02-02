@@ -36,8 +36,11 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
 #include <QStandardItemModel>
+#include <QString>
 #include <QStyledItemDelegate>
 #include <QTreeView>
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

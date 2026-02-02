@@ -21,8 +21,11 @@
 #include "qgsproviderregistry.h"
 
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsconnectionregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsConnectionRegistry::QgsConnectionRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )

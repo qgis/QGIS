@@ -27,8 +27,11 @@
 #include "qgsserverprojectutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 QgsRectangle QgsServerApiUtils::parseBbox( const QString &bbox )
 {

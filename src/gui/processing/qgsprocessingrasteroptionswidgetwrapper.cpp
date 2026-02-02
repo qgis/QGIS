@@ -23,8 +23,11 @@
 
 #include <QComboBox>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 

@@ -30,6 +30,9 @@
 #include "qgsvectorfilewriter.h"
 
 #include <QLocale>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond private
 std::once_flag usageInformationLoaderFlag;

@@ -41,7 +41,10 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QScreen>
+#include <QString>
 #include <QToolBar>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \param viewIdxStr empty for blank 3D view, number or string for loading from project by index/name

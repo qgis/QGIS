@@ -18,6 +18,9 @@
 #include "qgsmaterial.h"
 
 #include <QMap>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsNullMaterialSettings::type() const
 {

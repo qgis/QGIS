@@ -17,7 +17,11 @@
  ***************************************************************************/
 #include "qgsogrdbsourceselect.h"
 
+#include <QString>
+
 #include "moc_qgsogrdbsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

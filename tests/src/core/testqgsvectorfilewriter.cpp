@@ -31,6 +31,8 @@
 #include <QStringList>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 #if defined( linux )
 #include <langinfo.h>
 #endif

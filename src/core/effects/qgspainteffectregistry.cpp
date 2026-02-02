@@ -23,6 +23,10 @@
 #include "qgsshadoweffect.h"
 #include "qgstransformeffect.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName )
   : mName( name )
   , mVisibleName( visibleName )

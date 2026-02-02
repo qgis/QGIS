@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")

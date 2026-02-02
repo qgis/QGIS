@@ -41,8 +41,11 @@
 #include "qgsxmlschemaanalyzer.h"
 
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsoapifprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsOapifProvider::OAPIF_PROVIDER_KEY = u"OAPIF"_s;
 const QString QgsOapifProvider::OAPIF_PROVIDER_DESCRIPTION = u"OGC API - Features data provider"_s;

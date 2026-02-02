@@ -20,9 +20,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QWidget>
 
 #include "moc_qgssearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilterFlags()
 {

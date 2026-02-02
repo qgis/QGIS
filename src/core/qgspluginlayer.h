@@ -19,6 +19,10 @@
 #include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Base class for plugin layers.

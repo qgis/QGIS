@@ -21,6 +21,10 @@
 #include "qgshstoreutils.h"
 #include "qgsprocessingutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExplodeHstoreAlgorithm::name() const

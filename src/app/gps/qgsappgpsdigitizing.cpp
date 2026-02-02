@@ -33,9 +33,12 @@
 #include "qgssettingstree.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
 #include <QTimeZone>
 
 #include "moc_qgsappgpsdigitizing.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryString *QgsAppGpsDigitizing::settingTrackLineSymbol = new QgsSettingsEntryString( u"track-line-symbol"_s, QgsSettingsTree::sTreeGps, u"<symbol alpha=\"1\" name=\"gps-track-symbol\" force_rhr=\"0\" clip_to_extent=\"1\" type=\"line\"><layer enabled=\"1\" pass=\"0\" locked=\"0\" class=\"SimpleLine\"><Option type=\"Map\"><Option name=\"line_color\" type=\"QString\" value=\"219,30,42,255\"/><Option name=\"line_style\" type=\"QString\" value=\"solid\"/><Option name=\"line_width\" type=\"QString\" value=\"0.4\"/></Option></layer></symbol>"_s, u"Line symbol to use for GPS track line"_s, Qgis::SettingsOptions(), 0 );
 

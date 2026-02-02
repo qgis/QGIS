@@ -27,6 +27,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipoint.h"
 
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiCurve::QgsMultiCurve()
 {

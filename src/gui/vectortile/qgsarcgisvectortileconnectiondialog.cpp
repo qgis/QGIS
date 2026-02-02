@@ -21,8 +21,11 @@
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsarcgisvectortileconnectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

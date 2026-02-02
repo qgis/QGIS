@@ -15,6 +15,8 @@
  ***************************************************************************/
 #include <iostream>
 
+#include <QString>
+
 #ifdef _MSC_VER
 #define _NO_CVCONST_H
 #define _CRT_STDIO_ISO_WIDE_SPECIFIERS

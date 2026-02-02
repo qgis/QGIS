@@ -24,10 +24,13 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
+
+using namespace Qt::StringLiterals;
 
 class TestQgs3DMaterial : public QgsTest
 {

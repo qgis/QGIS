@@ -21,6 +21,10 @@
 #include "qgsmultipoint.h"
 #include "qgsspatialindex.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsDelaunayTriangulationAlgorithm::name() const

@@ -25,7 +25,11 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgssourcefieldsproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSourceFieldsProperties::QgsSourceFieldsProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )

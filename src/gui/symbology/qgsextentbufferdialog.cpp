@@ -26,9 +26,12 @@
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <qdialogbuttonbox.h>
 
 #include "moc_qgsextentbufferdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer *layer, QWidget *parent )
   : QgsPanelWidget( parent ), mSymbol( symbol ), mLayer( layer )

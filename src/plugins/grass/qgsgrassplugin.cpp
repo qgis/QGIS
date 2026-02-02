@@ -28,7 +28,11 @@
 #include "qgsgrassutils.h"
 #include "qgsmessagebar.h"
 
+#include <QString>
+
 #include "moc_qgsgrassplugin.cpp"
+
+using namespace Qt::StringLiterals;
 
 // includes
 #include "qgisinterface.h"

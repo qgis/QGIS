@@ -22,7 +22,11 @@
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrgbrenderer.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudrgbrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -26,6 +26,9 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_UNIX
 // For getrlimit()

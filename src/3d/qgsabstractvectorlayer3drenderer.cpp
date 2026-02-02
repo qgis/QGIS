@@ -17,6 +17,10 @@
 
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 void QgsVectorLayer3DTilingSettings::writeXml( QDomElement &elem ) const
 {
   QDomDocument doc = elem.ownerDocument();

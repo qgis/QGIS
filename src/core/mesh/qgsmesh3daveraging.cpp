@@ -23,6 +23,10 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshrenderersettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // threshold for length intervals, to avoid division by 0
 static const double eps = 1e-6;
 

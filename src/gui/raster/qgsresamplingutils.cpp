@@ -28,8 +28,11 @@
 #include <QComboBox>
 #include <QDoubleSpinBox>
 #include <QObject>
+#include <QString>
 
 #include "moc_qgsresamplingutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

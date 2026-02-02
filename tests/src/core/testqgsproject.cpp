@@ -33,7 +33,10 @@
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
 #include <QTimer>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsProject : public QObject
 {

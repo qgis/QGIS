@@ -25,6 +25,9 @@
 
 #include <QAbstractItemModelTester>
 #include <QDockWidget>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsCustomization : public QgsTest
 {

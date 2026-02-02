@@ -21,6 +21,10 @@
 #include "qgswmsrendercontext.h"
 #include "qgswmsrenderer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for the vector tile management in WMS

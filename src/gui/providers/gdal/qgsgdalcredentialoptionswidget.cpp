@@ -29,8 +29,11 @@
 #include <QComboBox>
 #include <QHoverEvent>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsgdalcredentialoptionswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsGdalCredentialOptionsModel

@@ -25,7 +25,10 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
 #include <QtTest/QSignalSpy>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutItemGroup : public QgsTest
 {

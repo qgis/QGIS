@@ -30,8 +30,11 @@
 #include "qgsxmlutils.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectstylesettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectStyleSettings::QgsProjectStyleSettings( QgsProject *project )
   : QObject( project )

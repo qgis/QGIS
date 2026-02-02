@@ -22,8 +22,11 @@
 #include "qgsproject.h"
 
 #include <QDomElement>
+#include <QString>
 
 #include "moc_qgsprojectviewsettings.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectViewSettings::QgsProjectViewSettings( QgsProject *project )
   : QObject( project )

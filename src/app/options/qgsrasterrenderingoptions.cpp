@@ -22,7 +22,11 @@
 #include "qgssettings.h"
 #include "qgssettingsregistrycore.h"
 
+#include <QString>
+
 #include "moc_qgsrasterrenderingoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRasterRenderingOptionsWidget

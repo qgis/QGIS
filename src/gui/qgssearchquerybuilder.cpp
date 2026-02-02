@@ -32,9 +32,12 @@
 #include <QListView>
 #include <QMessageBox>
 #include <QStandardItem>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgssearchquerybuilder.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

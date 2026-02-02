@@ -26,8 +26,11 @@
 
 #include <QMimeData>
 #include <QPalette>
+#include <QString>
 
 #include "moc_qgsprocessingtoolboxmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

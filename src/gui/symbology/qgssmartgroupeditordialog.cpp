@@ -20,9 +20,12 @@
 #include "qgsstyle.h"
 
 #include <QMessageBox>
+#include <QString>
 #include <QVariant>
 
 #include "moc_qgssmartgroupeditordialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 // -------------------------- //
 // Condition Widget functions //

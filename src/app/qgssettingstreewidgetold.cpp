@@ -50,8 +50,11 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgssettingstreewidgetold.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsTreeWidgetOld::QgsSettingsTreeWidgetOld( QWidget *parent )
   : QTreeWidget( parent )
