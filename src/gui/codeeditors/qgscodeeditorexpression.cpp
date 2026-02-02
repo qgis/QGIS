@@ -22,6 +22,8 @@
 
 #include "moc_qgscodeeditorexpression.cpp"
 
+using namespace Qt::StringLiterals;
+
 QgsCodeEditorExpression::QgsCodeEditorExpression( QWidget *parent )
   : QgsCodeEditor( parent )
 {

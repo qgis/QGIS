@@ -21,7 +21,11 @@
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
 
+#include <QString>
+
 #include "moc_qgsauthidentcertmethod.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthidentcertedit.h"

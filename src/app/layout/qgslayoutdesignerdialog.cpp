@@ -92,6 +92,7 @@
 #include <QScreen>
 #include <QShortcut>
 #include <QSlider>
+#include <QString>
 #include <QTreeView>
 #include <QUndoView>
 #include <QUrl>
@@ -99,6 +100,8 @@
 #include <QWindow>
 
 #include "moc_qgslayoutdesignerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if defined( HAVE_QTPRINTER )
 #include <QPageSetupDialog>

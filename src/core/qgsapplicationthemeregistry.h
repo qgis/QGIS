@@ -20,6 +20,7 @@
 
 #include "qgis_core.h"
 
+#include <QHash>
 #include <QList>
 
 /**

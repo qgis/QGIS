@@ -26,10 +26,13 @@
 #include <QEvent>
 #include <QGroupBox>
 #include <QLabel>
+#include <QString>
 #include <QTableView>
 #include <QTextDocumentFragment>
 #include <QTreeView>
 #include <QTreeWidget>
+
+using namespace Qt::StringLiterals;
 
 const int HIGHLIGHT_BACKGROUND_RED = 255;
 const int HIGHLIGHT_BACKGROUND_GREEN = 251;

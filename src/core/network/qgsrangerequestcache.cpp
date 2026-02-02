@@ -22,7 +22,10 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QString>
 #include <QtDebug>
+
+using namespace Qt::StringLiterals;
 
 QgsRangeRequestCache::QgsRangeRequestCache()
 {

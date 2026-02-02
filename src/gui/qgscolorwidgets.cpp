@@ -33,10 +33,13 @@
 #include <QPainter>
 #include <QRectF>
 #include <QResizeEvent>
+#include <QString>
 #include <QStyleOptionFrame>
 #include <QToolButton>
 
 #include "moc_qgscolorwidgets.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define HUE_MAX 360
 

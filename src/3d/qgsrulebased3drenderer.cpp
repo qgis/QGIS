@@ -26,6 +26,10 @@
 #include "qgsvectorlayer.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRuleBased3DRendererMetadata::QgsRuleBased3DRendererMetadata()
   : Qgs3DRendererAbstractMetadata( u"rulebased"_s )
 {

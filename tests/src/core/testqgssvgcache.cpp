@@ -28,6 +28,8 @@
 #include <QStringList>
 #include <QtConcurrent>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup UnitTests
  * This is a unit test for QgsSvgCache.

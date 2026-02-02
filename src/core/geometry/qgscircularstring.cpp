@@ -36,6 +36,9 @@
 #include <QJsonObject>
 #include <QPainter>
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsCircularString::QgsCircularString()
 {

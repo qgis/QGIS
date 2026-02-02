@@ -33,9 +33,12 @@
 
 #include <QFile>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
 
 #include "moc_qgsprocessingmodelalgorithm.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

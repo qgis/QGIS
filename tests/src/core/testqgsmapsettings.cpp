@@ -19,6 +19,8 @@
 #include <QObject>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include "qgsexpression.h"
 #include "qgsexpressioncontext.h"
@@ -69,6 +71,7 @@ class TestQgsMapSettings : public QObject
     void testLayersWithGroupLayers();
     void testMaskRenderSettings();
     void testDeprecatedFlagsRasterizePolicy();
+    void testSelectiveMaskSourceSets();
 
   private:
     QString toString( const QPolygonF &p, int decimalPlaces = 2 ) const;
@@ -837,6 +840,23 @@ void TestQgsMapSettings::testDeprecatedFlagsRasterizePolicy()
   settings.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput, true );
   settings.setFlag( Qgis::MapSettingsFlag::UseAdvancedEffects, false );
   QCOMPARE( settings.rasterizedRenderingPolicy(), Qgis::RasterizedRenderingPolicy::ForceVector );
+}
+
+void TestQgsMapSettings::testSelectiveMaskSourceSets()
+{
+  QgsMapSettings settings;
+  QCOMPARE( settings.selectiveMaskingSourceSets().size(), 0 );
+
+  QgsSelectiveMaskingSourceSet set1;
+  set1.setName( u"set1"_s );
+
+  QgsSelectiveMaskingSourceSet set2;
+  set2.setName( u"set2"_s );
+
+  settings.setSelectiveMaskingSourceSets( { set1, set2 } );
+  QCOMPARE( settings.selectiveMaskingSourceSets().size(), 2 );
+  QCOMPARE( settings.selectiveMaskingSourceSets().value( set1.id() ).name(), u"set1"_s );
+  QCOMPARE( settings.selectiveMaskingSourceSets().value( set2.id() ).name(), u"set2"_s );
 }
 
 QGSTEST_MAIN( TestQgsMapSettings )

@@ -34,9 +34,12 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QString>
 #include <QTableWidgetItem>
 
 #include "moc_qgsattributetypeloaddialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   : mLayer( vl )

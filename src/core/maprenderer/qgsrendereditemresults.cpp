@@ -21,6 +21,10 @@
 #include "qgsrenderedannotationitemdetails.h"
 #include "qgsrendereditemdetails.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDetails *, float, 2, float>
 {

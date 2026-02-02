@@ -20,8 +20,11 @@
 
 #include <QFont>
 #include <QIcon>
+#include <QString>
 
 #include "moc_qgsfieldmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldModel::QgsFieldModel( QObject *parent )
   : QAbstractItemModel( parent )

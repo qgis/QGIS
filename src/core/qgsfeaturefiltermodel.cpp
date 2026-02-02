@@ -19,7 +19,11 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsfeaturefiltermodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool qVariantListCompare( const QVariantList &a, const QVariantList &b )
 {

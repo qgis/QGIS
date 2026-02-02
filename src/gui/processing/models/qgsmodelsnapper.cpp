@@ -20,6 +20,10 @@
 
 #include "qgssettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsModelSnapper::QgsModelSnapper()
 {
   const QgsSettings s;

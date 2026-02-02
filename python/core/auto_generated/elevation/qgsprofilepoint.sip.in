@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsProfilePoint
 {
 %Docstring(signature="appended")

@@ -27,6 +27,9 @@
 #include "qgstest.h"
 
 #include <QApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests

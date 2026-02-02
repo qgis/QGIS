@@ -38,8 +38,11 @@ email                : tim@linfiniti.com
 #include <QFile>
 #include <QMenu>
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgsdecorationcopyright.cpp"
+
+using namespace Qt::StringLiterals;
 
 //non qt includes
 #include <cmath>

@@ -17,6 +17,10 @@
 #include "qgsrasterblock.h"
 #include "qgsrastermatrix.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRasterCalcNode::QgsRasterCalcNode( double number )
   : mNumber( number )
 {

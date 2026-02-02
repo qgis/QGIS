@@ -23,6 +23,10 @@
 #include "qgsproviderguimetadata.h"
 #include "qgssourceselectprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsHanaSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:

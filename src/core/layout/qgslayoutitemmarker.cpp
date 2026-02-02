@@ -25,8 +25,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
 #include "moc_qgslayoutitemmarker.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemMarker::QgsLayoutItemMarker( QgsLayout *layout )
   : QgsLayoutItem( layout )

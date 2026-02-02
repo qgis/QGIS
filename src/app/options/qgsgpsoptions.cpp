@@ -27,9 +27,12 @@
 #include "qgssettingsentryenumflag.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
 #include <QTimeZone>
 
 #include "moc_qgsgpsoptions.cpp"
+
+using namespace Qt::StringLiterals;
 
 const int MAXACQUISITIONINTERVAL = 3000; // max gps information acquisition suspension interval (in seconds)
 const int MAXDISTANCETHRESHOLD = 200;    // max gps distance threshold (in meters)

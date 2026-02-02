@@ -24,6 +24,8 @@
 #include <QList>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains information about a member of a datum ensemble.

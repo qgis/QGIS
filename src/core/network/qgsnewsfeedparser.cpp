@@ -28,9 +28,12 @@
 #include <QDir>
 #include <QFile>
 #include <QRegularExpression>
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsnewsfeedparser.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryInteger64 *QgsNewsFeedParser::settingsFeedLastFetchTime = new QgsSettingsEntryInteger64( u"last-fetch-time"_s, sTreeNewsFeed, 0, u"Feed last fetch time"_s, Qgis::SettingsOptions(), 0 );
 const QgsSettingsEntryString *QgsNewsFeedParser::settingsFeedLanguage = new QgsSettingsEntryString( u"lang"_s, sTreeNewsFeed, QString(), u"Feed language"_s );

@@ -28,8 +28,11 @@
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsnewmeshlayerdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNewMeshLayerDialog::QgsNewMeshLayerDialog( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

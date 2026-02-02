@@ -20,7 +20,11 @@
 #include "qgisapp.h"
 #include "qgsstringutils.h"
 
+#include <QString>
+
 #include "moc_qgssettingslocatorfilter.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsLocatorFilter::QgsSettingsLocatorFilter( QObject *parent )
   : QgsLocatorFilter( parent )

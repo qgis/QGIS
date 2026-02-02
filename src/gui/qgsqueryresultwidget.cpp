@@ -42,8 +42,11 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QShortcut>
+#include <QString>
 
 #include "moc_qgsqueryresultwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsQueryResultWidget::settingLastSourceFolder = new QgsSettingsEntryString( u"last-source-folder"_s, sTreeSqlQueries, QString(), u"Last used folder for SQL source files"_s );

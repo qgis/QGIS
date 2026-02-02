@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmtransform.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 

@@ -38,8 +38,11 @@
 #include <QDir>
 #include <QFileInfo>
 #include <QQueue>
+#include <QString>
 
 #include "moc_qgspdalprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define PROVIDER_KEY u"pdal"_s
 #define PROVIDER_DESCRIPTION u"PDAL point cloud data provider"_s

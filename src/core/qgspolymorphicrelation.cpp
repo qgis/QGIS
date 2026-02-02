@@ -21,8 +21,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QApplication>
+#include <QString>
 
 #include "moc_qgspolymorphicrelation.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPolymorphicRelation::QgsPolymorphicRelation()
   : d( new QgsPolymorphicRelationPrivate() )

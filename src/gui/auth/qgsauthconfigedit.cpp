@@ -27,8 +27,11 @@
 #include "qgslogger.h"
 
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsauthconfigedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, const QString &dataprovider )
   : QDialog( parent )

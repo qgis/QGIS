@@ -21,6 +21,10 @@
 #include "qgsfields.h"
 #include "qgsserverogcapihandler.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsFeatureRequest;
 class QgsServerOgcApi;
 class QgsFeature;

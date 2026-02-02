@@ -18,7 +18,11 @@
 
 #include "qgsgdalprovider.h"
 
+#include <QString>
+
 #include "moc_qgsgdalprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

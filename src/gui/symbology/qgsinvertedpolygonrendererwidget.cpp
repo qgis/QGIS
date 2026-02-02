@@ -21,7 +21,11 @@
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsinvertedpolygonrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererWidget *QgsInvertedPolygonRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

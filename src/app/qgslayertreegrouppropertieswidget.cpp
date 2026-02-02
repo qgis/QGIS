@@ -26,8 +26,11 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QString>
 
 #include "moc_qgslayertreegrouppropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeGroupPropertiesWidget::QgsLayerTreeGroupPropertiesWidget( QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( nullptr, canvas, parent )

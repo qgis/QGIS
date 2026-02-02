@@ -22,10 +22,13 @@
 #include "qgssettings.h"
 #include "qgssqliteutils.h"
 
+#include <QString>
 #include <QTextStream>
 #include <QUuid>
 
 #include "moc_qgsbookmarkmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsBookMark

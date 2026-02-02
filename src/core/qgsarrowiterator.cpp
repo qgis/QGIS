@@ -21,6 +21,10 @@
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define QGIS_NANOARROW_THROW_NOT_OK_ERR( expr, err )                                                                             \
   do                                                                                                                             \
   {                                                                                                                              \

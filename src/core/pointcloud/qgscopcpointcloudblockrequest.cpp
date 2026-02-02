@@ -24,7 +24,11 @@
 #include "qgssetrequestinitiator_p.h"
 #include "qgstiledownloadmanager.h"
 
+#include <QString>
+
 #include "moc_qgscopcpointcloudblockrequest.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsCopcPointCloudBlockRequest

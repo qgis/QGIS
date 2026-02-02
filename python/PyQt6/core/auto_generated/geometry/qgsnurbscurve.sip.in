@@ -11,6 +11,7 @@
 
 
 
+
 class QgsNurbsCurve : QgsCurve
 {
 %Docstring(signature="appended")

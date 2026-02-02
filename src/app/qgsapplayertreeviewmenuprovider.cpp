@@ -58,8 +58,11 @@
 
 #include <QClipboard>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsapplayertreeviewmenuprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView *view, QgsMapCanvas *canvas )
   : mView( view )

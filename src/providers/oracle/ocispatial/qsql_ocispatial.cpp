@@ -61,6 +61,7 @@
 
 #include "wkbptr.h"
 
+#include <QString>
 #include <QtSql/private/qsqlcachedresult_p.h>
 #include <QtSql/private/qsqldriver_p.h>
 #include <qcoreapplication.h>

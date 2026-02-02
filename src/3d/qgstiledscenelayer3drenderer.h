@@ -22,6 +22,10 @@
 #include "qgsabstract3drenderer.h"
 #include "qgsmaplayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsTiledSceneLayer;
 
 

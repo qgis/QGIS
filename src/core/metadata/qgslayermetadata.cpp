@@ -21,6 +21,9 @@
 #include "qgstranslationcontext.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsLayerMetadata *QgsLayerMetadata::clone() const
 {

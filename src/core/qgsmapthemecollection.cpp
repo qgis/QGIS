@@ -23,7 +23,11 @@
 #include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmapthemecollection.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapThemeCollection::QgsMapThemeCollection( QgsProject *project )
   : mProject( project )

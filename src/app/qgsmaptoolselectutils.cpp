@@ -42,9 +42,12 @@ email                : jpalmer at linz dot govt dot nz
 #include <QAction>
 #include <QApplication>
 #include <QMouseEvent>
+#include <QString>
 #include <QtConcurrent>
 
 #include "moc_qgsmaptoolselectutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayer *QgsMapToolSelectUtils::getCurrentTargetLayer( QgsMapCanvas *canvas )
 {

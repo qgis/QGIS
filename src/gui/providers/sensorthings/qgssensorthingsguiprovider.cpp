@@ -17,6 +17,10 @@
 
 #include "qgssensorthingsguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include <QList>

@@ -33,7 +33,10 @@
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 PyThreadState *_mainState = nullptr;
 

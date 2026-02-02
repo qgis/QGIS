@@ -2,7 +2,7 @@
   "name": "overlay_equals",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature is exactly equal to at least one feature from a target layer, or an array of expression-based results for the features in the target layer that are exactly equal to the current feature. Note that the order of vertices matters.",
+  "description": "Returns whether the current feature's geometry is exactly equal to at least one feature's geometry from a target layer, or returns an array of expression-based results for the features in the target layer whose geometry is exactly equal to the current feature's geometry. Note that the order of vertices matters.",
   "arguments": [{
     "arg": "layer",
     "description": "the layer whose overlay is checked"
@@ -26,10 +26,10 @@
   }],
   "examples": [{
     "expression": "overlay_equals('regions')",
-    "returns": "TRUE if the current feature is exactly equal to a region"
+    "returns": "TRUE if the current feature's geometry is exactly the same as the geometry of a region"
   }, {
     "expression": "overlay_equals('regions', filter:= population > 10000)",
-    "returns": "TRUE if the current feature is exactly equal to a region with a population greater than 10000"
+    "returns": "TRUE if the current feature's geometry is exactly the same as the geometry of a region whose population is greater than 10000"
   }, {
     "expression": "overlay_equals('regions', name)",
     "returns": "an array of names, for the regions exactly equal to the current feature"
@@ -43,5 +43,6 @@
     "expression": "overlay_equals(layer:='regions', expression:= geom_to_wkt(@geometry), limit:=2)",
     "returns": "an array of geometries (in WKT), for up to two regions exactly equal to the current feature"
   }],
+  "notes": "This function requires exact equality of geometries, meaning that the geometries 'LINESTRING( 0 0, 1 1 )' and 'LINESTRING( 1 1, 0 0 )' are different.",
   "tags": ["predicate", "current", "equals", "equal", "target", "array", "exactly", "described", "underlying", "features"]
 }

@@ -22,6 +22,10 @@
 #include "qgslayeritem.h"
 #include "qgswmsprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsWmsCapabilitiesDownload;
 
 class QgsWMSConnectionItem : public QgsDataCollectionItem

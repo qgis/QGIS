@@ -26,6 +26,9 @@
 #include "qgsgeometryutils_base.h"
 
 #include <QPolygonF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLineSegment2D;
 class QgsBox3D;

@@ -37,7 +37,10 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSet>
+#include <QString>
 #include <QUuid>
+
+using namespace Qt::StringLiterals;
 
 QgsRuleBasedRenderer::Rule::Rule( QgsSymbol *symbol, int scaleMinDenom, int scaleMaxDenom, const QString &filterExp, const QString &label, const QString &description, bool elseRule )
   : mSymbol( symbol )

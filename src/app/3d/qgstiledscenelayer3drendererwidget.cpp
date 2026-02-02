@@ -19,8 +19,11 @@
 #include "qgstiledscenelayer3drenderer.h"
 
 #include <QBoxLayout>
+#include <QString>
 
 #include "moc_qgstiledscenelayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTiledSceneLayer3DPropertiesWidget::QgsTiledSceneLayer3DPropertiesWidget( QWidget *parent )
   : QWidget( parent )

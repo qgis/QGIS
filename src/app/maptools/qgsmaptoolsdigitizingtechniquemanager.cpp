@@ -32,9 +32,12 @@
 #include <QActionGroup>
 #include <QComboBox>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsmaptoolsdigitizingtechniquemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique> *QgsMapToolsDigitizingTechniqueManager::settingsDigitizingTechnique = new QgsSettingsEntryEnumFlag<Qgis::CaptureTechnique>( u"technique"_s, QgsSettingsTree::sTreeDigitizing, Qgis::CaptureTechnique::StraightSegments, QObject::tr( "Current digitizing technique" ), Qgis::SettingsOption::SaveFormerValue ) SIP_SKIP;
 const QgsSettingsEntryString *QgsMapToolsDigitizingTechniqueManager::settingMapToolShapeCurrent = new QgsSettingsEntryString( u"current"_s, sTreeShapeMapTools, QgsMapToolShapeCircle2PointsMetadata::TOOL_ID, QObject::tr( "Current shape map tool" ) ) SIP_SKIP;
@@ -100,7 +103,8 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
 
   updateDigitizeModeButton( settingsDigitizingTechnique->value() );
 
-  QgisApp::instance()->mDigitizeToolBar->insertWidget( QgisApp::instance()->mDigitizeToolBar->actions().at( 3 ), mDigitizeModeToolButton );
+  QAction *action = QgisApp::instance()->mDigitizeToolBar->insertWidget( QgisApp::instance()->mDigitizeToolBar->actions().at( 3 ), mDigitizeModeToolButton );
+  action->setObjectName( u"mDigitizeModeToolButton"_s );
 
   // Digitizing shape tools
   const QList<QgsMapToolShapeMetadata *> mapTools = QgsGui::mapToolShapeRegistry()->mapToolMetadatas();
@@ -113,7 +117,8 @@ void QgsMapToolsDigitizingTechniqueManager::setupToolBars()
       shapeButton->setPopupMode( QToolButton::MenuButtonPopup );
       shapeButton->setMenu( new QMenu() );
 
-      QgisApp::instance()->mShapeDigitizeToolBar->addWidget( shapeButton );
+      QAction *action = QgisApp::instance()->mShapeDigitizeToolBar->addWidget( shapeButton );
+      action->setObjectName( u"shapeButtonAction"_s );
       QObject::connect( shapeButton, &QToolButton::triggered, this, [this]( QAction *action ) { setShapeTool( action->data().toString() ); } );
 
       mShapeCategoryButtons.insert( metadata->category(), shapeButton );

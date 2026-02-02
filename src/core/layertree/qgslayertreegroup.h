@@ -22,6 +22,10 @@
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayer;
 class QgsLayerTreeLayer;
 class QgsLayerTreeCustomNode;

@@ -20,8 +20,11 @@
 #include <QApplication>
 #include <QElapsedTimer>
 #include <QFile>
+#include <QString>
 #include <QThread>
 #include <QtDebug>
+
+using namespace Qt::StringLiterals;
 
 #ifndef CMAKE_SOURCE_DIR
 #error CMAKE_SOURCE_DIR undefined

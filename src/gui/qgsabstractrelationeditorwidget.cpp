@@ -32,8 +32,11 @@
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsabstractrelationeditorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAbstractRelationEditorWidget::QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent )
   : QWidget( parent )

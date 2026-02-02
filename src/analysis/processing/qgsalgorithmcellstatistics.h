@@ -26,6 +26,10 @@
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasterprojector.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 class QgsCellStatisticsAlgorithmBase : public QgsProcessingAlgorithm

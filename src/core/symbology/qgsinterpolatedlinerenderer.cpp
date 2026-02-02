@@ -24,6 +24,9 @@
 #include "qgsunittypes.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsInterpolatedLineRenderer::setInterpolatedWidth( const QgsInterpolatedLineWidth &strokeWidth )
 {
@@ -818,8 +821,7 @@ void QgsInterpolatedLineSymbolLayer::stopRender( QgsSymbolRenderContext & )
 QgsInterpolatedLineSymbolLayer *QgsInterpolatedLineSymbolLayer::clone() const
 {
   QgsInterpolatedLineSymbolLayer *l = static_cast<QgsInterpolatedLineSymbolLayer *>( create( properties() ) );
-  copyDataDefinedProperties( l );
-  copyPaintEffect( l );
+  copyCommonProperties( l );
   return l;
 }
 

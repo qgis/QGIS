@@ -24,8 +24,11 @@
 
 #include <QHBoxLayout>
 #include <QMenu>
+#include <QString>
 
 #include "moc_qgsscalewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsScaleWidget::QgsScaleWidget( QWidget *parent )
   : QWidget( parent )

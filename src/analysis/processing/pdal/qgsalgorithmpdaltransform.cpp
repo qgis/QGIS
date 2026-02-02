@@ -23,6 +23,9 @@
 
 #include <QMatrix3x3>
 #include <QQuaternion>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

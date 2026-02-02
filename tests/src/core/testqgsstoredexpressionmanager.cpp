@@ -18,6 +18,8 @@
 
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsStoredExpressionManager : public QObject
 {
     Q_OBJECT

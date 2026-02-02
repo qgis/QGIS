@@ -29,7 +29,11 @@
 #include "qgsproviderregistry.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgswmsconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 static const QString SERVICE_WMS = u"WMS"_s;
 

@@ -26,6 +26,9 @@
 #include <QColor>
 #include <QObject>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutPicture : public QgsTest
 {

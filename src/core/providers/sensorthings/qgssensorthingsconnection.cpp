@@ -20,6 +20,10 @@
 #include "qgsowsconnection.h"
 #include "qgssettingsentryimpl.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 const QgsSettingsEntryString *QgsSensorThingsProviderConnection::settingsUrl = new QgsSettingsEntryString( u"url"_s, sTreeSensorThingsConnections, QString() ) ;
 const QgsSettingsEntryVariantMap *QgsSensorThingsProviderConnection::settingsHeaders = new QgsSettingsEntryVariantMap( u"http-header"_s, sTreeSensorThingsConnections ) ;

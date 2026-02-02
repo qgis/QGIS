@@ -40,7 +40,6 @@ for f in $MODIFIED; do
   esac
 
   # Run Python formatters
-  "${TOPLEVEL}"/scripts/pre_commit/sort_includes.py "$f"
   "${TOPLEVEL}"/scripts/pre_commit/doxygen_space.py "$f"
 
   # Run astyle only on src/core, others are handled by clang-format (see .pre-commit-config.yaml)

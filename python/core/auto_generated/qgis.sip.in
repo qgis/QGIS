@@ -1801,6 +1801,12 @@ The development version
       GlowSpread,
     };
 
+    enum class SelectiveMaskSourceType
+    {
+      SymbolLayer,
+      Label,
+    };
+
     enum class VertexType
       {
       Segment,
@@ -2411,6 +2417,12 @@ The development version
     {
       IndividualFeatures,
       ContinuousSurface,
+    };
+
+    enum class PointCloudProfileType
+    {
+      IndividualPoints,
+      TriangulatedSurface,
     };
 
     enum class ProfileGeneratorFlag

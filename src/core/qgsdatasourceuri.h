@@ -26,6 +26,9 @@
 
 #include <QMap>
 #include <QSet>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core

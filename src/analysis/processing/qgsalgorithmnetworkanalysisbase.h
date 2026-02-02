@@ -27,6 +27,10 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerdirector.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 /**

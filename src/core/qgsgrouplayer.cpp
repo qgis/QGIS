@@ -28,7 +28,11 @@
 #include "qgspainting.h"
 #include "qgsthreadingutils.h"
 
+#include <QString>
+
 #include "moc_qgsgrouplayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGroupLayer::QgsGroupLayer( const QString &name, const LayerOptions &options )
   : QgsMapLayer( Qgis::LayerType::Group, name )

@@ -52,8 +52,11 @@
 #include <QSpinBox>
 #include <QSplashScreen>
 #include <QStandardPaths>
+#include <QString>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 #ifndef QT_NO_SSL
 #include <QSslConfiguration>
@@ -408,6 +411,7 @@
 #include "qgsrenderedlayerstatistics.h"
 #include "qgsreport.h"
 #include "qgsscalevisibilitydialog.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgsgroupwmsdatadialog.h"
 #include "qgsselectbyformdialog.h"
 #include "qgselevationshadingrenderersettingswidget.h"
@@ -822,7 +826,8 @@ void QgisApp::annotationItemTypeAdded( int id )
       groupToolButton->setAutoRaise( true );
       groupToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
       groupToolButton->setToolTip( groupText );
-      mAnnotationsToolBar->insertWidget( mAnnotationsItemInsertBefore, groupToolButton );
+      QAction *action = mAnnotationsToolBar->insertWidget( mAnnotationsItemInsertBefore, groupToolButton );
+      action->setObjectName( u"annotationGroupToolButton"_s );
       mAnnotationItemGroupToolButtons.insert( groupId, groupToolButton );
       groupButton = groupToolButton;
     }
@@ -2671,6 +2676,22 @@ bool QgisApp::event( QEvent *event )
   {
     done = gestureEvent( static_cast<QGestureEvent *>( event ) );
   }
+  else if ( event->type() == QEvent::ShortcutOverride )
+  {
+    if ( mMapCanvas->mapTool() )
+    {
+      QKeyEvent *keyEvent = static_cast<QKeyEvent *>( event );
+      if ( mMapCanvas->mapTool()->shortcutEvent( keyEvent ) )
+      {
+        event->accept();
+        done = true;
+      }
+    }
+    if ( !done )
+    {
+      done = QMainWindow::event( event );
+    }
+  }
   else
   {
     // pass other events to base class
@@ -3570,7 +3591,8 @@ void QgisApp::createToolBars()
   mSnappingWidget = new QgsSnappingWidget( QgsProject::instance(), mMapCanvas, mSnappingToolBar );
   mSnappingWidget->setObjectName( u"mSnappingWidget"_s );
   connect( mSnappingWidget, &QgsSnappingWidget::snappingConfigChanged, QgsProject::instance(), [this] { QgsProject::instance()->setSnappingConfig( mSnappingWidget->config() ); } );
-  mSnappingToolBar->addWidget( mSnappingWidget );
+  QAction *action = mSnappingToolBar->addWidget( mSnappingWidget );
+  action->setObjectName( u"mSnappingWidget"_s );
 
   mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
   mTracer->setActionEnableTracing( mSnappingWidget->enableTracingAction() );
@@ -3910,7 +3932,8 @@ void QgisApp::createToolBars()
     meshEditMenu->addSeparator();
     meshEditMenu->addAction( editMeshMapTool->digitizingWidgetActionSettings() );
     meshEditToolButton->setMenu( meshEditMenu );
-    mMeshToolBar->addWidget( meshEditToolButton );
+    QAction *action = mMeshToolBar->addWidget( meshEditToolButton );
+    action->setObjectName( u"meshEditToolButtonAction"_s );
 
     QToolButton *meshSelectToolButton = new QToolButton();
     meshSelectToolButton->setPopupMode( QToolButton::MenuButtonPopup );
@@ -3924,7 +3947,8 @@ void QgisApp::createToolBars()
     }
 
     meshSelectToolButton->setDefaultAction( editMeshMapTool->defaultSelectActions() );
-    mMeshToolBar->addWidget( meshSelectToolButton );
+    action = mMeshToolBar->addWidget( meshSelectToolButton );
+    action->setObjectName( u"meshSelectToolButtonAction"_s );
 
     mMeshToolBar->addAction( ( editMeshMapTool->transformAction() ) );
 
@@ -3937,7 +3961,8 @@ void QgisApp::createToolBars()
     meshForceByLineMenu->addSeparator();
     meshForceByLineMenu->addAction( editMeshMapTool->forceByLineWidgetActionSettings() );
     meshForceByLinesToolButton->setMenu( meshForceByLineMenu );
-    mMeshToolBar->addWidget( meshForceByLinesToolButton );
+    action = mMeshToolBar->addWidget( meshForceByLinesToolButton );
+    action->setObjectName( u"meshForceByLinesToolButton"_s );
 
     for ( QAction *mapToolAction : editMeshMapTool->mapToolActions() )
       mMapToolGroup->addAction( mapToolAction );
@@ -3952,7 +3977,8 @@ void QgisApp::createToolBars()
   annotationLayerMenu->addAction( mMainAnnotationLayerProperties );
   annotationLayerToolButton->setMenu( annotationLayerMenu );
   annotationLayerToolButton->setDefaultAction( mActionCreateAnnotationLayer );
-  mAnnotationsToolBar->insertWidget( mAnnotationsToolBar->actions().at( 0 ), annotationLayerToolButton );
+  QAction *act = mAnnotationsToolBar->insertWidget( mAnnotationsToolBar->actions().at( 0 ), annotationLayerToolButton );
+  act->setObjectName( u"annotationLayerToolButtonAction"_s );
 
   // Registered annotation items will be inserted before this separator
   mAnnotationsItemInsertBefore = mAnnotationsToolBar->addSeparator();
@@ -4418,6 +4444,9 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged, mMapCanvas, [this] {
     mMapCanvas->setLabelingEngineSettings( QgsProject::instance()->labelingEngineSettings() );
   } );
+  connect( QgsProject::instance()->selectiveMaskingSourceSetManager(), &QgsSelectiveMaskingSourceSetManager::changed, mMapCanvas, [this] {
+    mMapCanvas->setSelectiveMaskingSourceSets( QgsProject::instance()->selectiveMaskingSourceSetManager()->sets() );
+  } );
 
   connect( QgsProject::instance(), &QgsProject::backgroundColorChanged, this, [this] {
     const QColor backgroundColor = QgsProject::instance()->backgroundColor();
@@ -4725,6 +4754,10 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   mapCanvas->setProject( QgsProject::instance() );
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
+
+  connect( QgsProject::instance()->selectiveMaskingSourceSetManager(), &QgsSelectiveMaskingSourceSetManager::changed, mapCanvas, [mapCanvas] {
+    mapCanvas->setSelectiveMaskingSourceSets( QgsProject::instance()->selectiveMaskingSourceSetManager()->sets() );
+  } );
 
   applyProjectSettingsToCanvas( mapCanvas );
   applyDefaultSettingsToCanvas( mapCanvas );
@@ -9010,7 +9043,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+    dlg.setConflictingNameWarning( tr( "A %1 with this title already exists." ).arg( typeString ) );
 
     dlg.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [helpPage] {
@@ -16181,7 +16214,7 @@ void QgisApp::renameView()
   renameDlg.setWindowTitle( tr( "Map Views" ) );
   //renameDlg.setHintString( tr( "Name of the new view" ) );
   renameDlg.setOverwriteEnabled( false );
-  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists" ) );
+  renameDlg.setConflictingNameWarning( tr( "A view with this name already exists." ) );
   renameDlg.buttonBox()->addButton( QDialogButtonBox::Help );
   connect( renameDlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
     QgsHelp::openHelp( u"map_views/map_view.html"_s );
@@ -16255,7 +16288,7 @@ void QgisApp::keyPressEvent( QKeyEvent *e )
 void QgisApp::newProfile()
 {
   QgsNewNameDialog dlg( QString(), QString(), QStringList(), userProfileManager()->allProfiles(), Qt::CaseInsensitive, this );
-  dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A user profile with this name already exists." ) );
   dlg.setOverwriteEnabled( false );
   dlg.setHintString( tr( "New profile name" ) );
   dlg.setWindowTitle( tr( "New Profile Name" ) );

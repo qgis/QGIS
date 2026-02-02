@@ -23,6 +23,10 @@
 #include "qgsrelationmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsRelationReferenceFieldFormatter::QgsRelationReferenceFieldFormatter()
 {
   setFlags( flags() | QgsFieldFormatter::CanProvideAvailableValues );

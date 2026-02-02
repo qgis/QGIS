@@ -20,7 +20,11 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsrelationmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationManager::QgsRelationManager( QgsProject *project )
   : QObject( project )

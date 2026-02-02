@@ -21,6 +21,10 @@
 #include "qgsreadwritecontext.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsLayoutObject : public QgsTest
 {
     Q_OBJECT

@@ -17,7 +17,11 @@ email                : sherman at mrcc.com
 
 #include "qgsogrprovider.h"
 
+#include <QString>
+
 #include "moc_qgsogrprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

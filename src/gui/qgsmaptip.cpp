@@ -30,6 +30,10 @@
 #include "qgswebframe.h"
 #include "qgswebview.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // Qt includes
 #include <QPoint>
 #include <QToolTip>

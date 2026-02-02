@@ -21,6 +21,9 @@
 
 #include <QLocale>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsCoordinateFormatter::formatX( double x, QgsCoordinateFormatter::Format format, int precision, FormatFlags flags )
 {

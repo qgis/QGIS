@@ -24,6 +24,10 @@
 #include "qgis_sip.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 #define SIP_NO_FILE
 
 class QgsFeedback;

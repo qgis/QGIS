@@ -26,8 +26,11 @@
 
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsgrassvectormap.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {

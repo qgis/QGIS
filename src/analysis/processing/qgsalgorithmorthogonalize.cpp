@@ -19,6 +19,10 @@
 
 #include "qgsprocessing.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsOrthogonalizeAlgorithm::name() const

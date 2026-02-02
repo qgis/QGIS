@@ -34,8 +34,11 @@
 #include <QAction>
 #include <QMenu>
 #include <QRegularExpression>
+#include <QString>
 
 #include "moc_qgsextentwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExtentWidget::QgsExtentWidget( QWidget *parent, WidgetStyle style )
   : QWidget( parent )

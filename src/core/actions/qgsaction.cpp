@@ -34,9 +34,12 @@
 #include <QJsonDocument>
 #include <QMimeDatabase>
 #include <QNetworkRequest>
+#include <QString>
 #include <QTemporaryDir>
 #include <QUrl>
 #include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 bool QgsAction::runable() const
 {

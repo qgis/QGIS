@@ -28,8 +28,11 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 
 #include "moc_qgshananewconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace std;
 

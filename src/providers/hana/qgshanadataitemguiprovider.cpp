@@ -34,8 +34,11 @@
 
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgshanadataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsHanaDataItemGuiProvider::populateContextMenu(
   QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context

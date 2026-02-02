@@ -43,6 +43,7 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QString>
 #include <QStringList>
 #include <QTextStream>
 #include <QUrl>
@@ -50,6 +51,8 @@
 #include <QtGlobal>
 
 #include "moc_qgsdelimitedtextprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsDelimitedTextProvider::TEXT_PROVIDER_KEY = u"delimitedtext"_s;
 const QString QgsDelimitedTextProvider::TEXT_PROVIDER_DESCRIPTION = u"Delimited text data provider"_s;

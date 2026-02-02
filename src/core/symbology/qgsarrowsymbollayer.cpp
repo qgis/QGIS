@@ -23,6 +23,10 @@
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsArrowSymbolLayer::QgsArrowSymbolLayer()
 {
   /* default values */
@@ -120,8 +124,7 @@ QgsArrowSymbolLayer *QgsArrowSymbolLayer::clone() const
 {
   QgsArrowSymbolLayer *l = static_cast<QgsArrowSymbolLayer *>( create( properties() ) );
   l->setSubSymbol( mSymbol->clone() );
-  copyDataDefinedProperties( l );
-  copyPaintEffect( l );
+  copyCommonProperties( l );
   return l;
 }
 

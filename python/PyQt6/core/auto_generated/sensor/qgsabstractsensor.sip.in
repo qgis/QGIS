@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAbstractSensor : QObject
 {
 %Docstring(signature="appended")

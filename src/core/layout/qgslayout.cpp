@@ -43,7 +43,11 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgsunittypes.h"
 
+#include <QString>
+
 #include "moc_qgslayout.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryStringList *QgsLayout::settingsSearchPathForTemplates = new QgsSettingsEntryStringList( u"search-paths-for-templates"_s, QgsSettingsTree::sTreeLayout, QStringList(), QObject::tr( "Search path for templates" ) );
 

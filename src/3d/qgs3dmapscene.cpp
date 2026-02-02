@@ -64,6 +64,7 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <QString>
 #include <QSurface>
 #include <QTimer>
 #include <QUrl>
@@ -86,6 +87,8 @@
 #include <QtMath>
 
 #include "moc_qgs3dmapscene.cpp"
+
+using namespace Qt::StringLiterals;
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -1133,6 +1136,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   exporter.setExportTextures( exportSettings.exportTextures() );
   exporter.setTerrainTextureResolution( exportSettings.terrainTextureResolution() );
   exporter.setScale( exportSettings.scale() );
+  exporter.setTerrainExportEnabled( exportSettings.terrainExportEnabled() );
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
   {

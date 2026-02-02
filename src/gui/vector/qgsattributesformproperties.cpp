@@ -37,7 +37,11 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
+
 #include "moc_qgsattributesformproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"

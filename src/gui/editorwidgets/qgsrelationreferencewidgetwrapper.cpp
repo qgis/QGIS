@@ -22,7 +22,11 @@
 #include "qgsrelationreferencewidget.h"
 #include "qgsvaluerelationfieldformatter.h"
 
+#include <QString>
+
 #include "moc_qgsrelationreferencewidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )

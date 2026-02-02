@@ -25,7 +25,11 @@
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgspointclusterrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererWidget *QgsPointClusterRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {

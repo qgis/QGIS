@@ -23,7 +23,11 @@
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
 
+#include <QString>
+
 #include "moc_qgsrenderermeshpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererMeshPropertiesWidget::QgsRendererMeshPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )

@@ -22,7 +22,11 @@
 #include "qgslogger.h"
 #include "qgspostgresconn.h"
 
+#include <QString>
+
 #include "moc_qgspostgreslistener.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_WIN
 #include <winsock.h>

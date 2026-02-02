@@ -28,7 +28,11 @@
 #include "qgsproject.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsmssqldataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsmssqlsourceselect.h"

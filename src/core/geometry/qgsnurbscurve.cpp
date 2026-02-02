@@ -38,6 +38,9 @@
 #include "qgswkbtypes.h"
 
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace nlohmann;
 

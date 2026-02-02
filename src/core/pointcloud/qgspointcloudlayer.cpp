@@ -47,9 +47,12 @@
 #include "qgsvirtualpointcloudprovider.h"
 #include "qgsxmlutils.h"
 
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgspointcloudlayer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
                                         const QString &baseName,
@@ -128,6 +131,11 @@ QgsMapLayerRenderer *QgsPointCloudLayer::createMapRenderer( QgsRenderContext &re
 QgsAbstractProfileGenerator *QgsPointCloudLayer::createProfileGenerator( const QgsProfileRequest &request )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mElevationProperties && mElevationProperties->type() == Qgis::PointCloudProfileType::TriangulatedSurface )
+  {
+    return new QgsTriangulatedPointCloudLayerProfileGenerator( this, request );
+  }
 
   return new QgsPointCloudLayerProfileGenerator( this, request );
 }
