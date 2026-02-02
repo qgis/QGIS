@@ -114,6 +114,12 @@ class ProcessingHistoryBaseNode : public QgsHistoryEntryGroup
       if ( mPythonCommand.isEmpty() )
         return true;
 
+      if ( !QgsApplication::processingRegistry()->algorithmById( mAlgorithmId ) )
+      {
+        mProvider->emitShowMessage( QObject::tr( "Could not find algorithm '%1'. Check if corresponding algorithm provider is enabled." ).arg( mAlgorithmId ) );
+        return true;
+      }
+
       QString execAlgorithmDialogCommand = mPythonCommand;
       execAlgorithmDialogCommand.replace( "processing.run("_L1, "processing.execAlgorithmDialog("_L1 );
 
@@ -443,4 +449,9 @@ void QgsProcessingHistoryProvider::emitExecute( const QString &commands )
 void QgsProcessingHistoryProvider::emitCreateTest( const QString &command )
 {
   emit createTest( command );
+}
+
+void QgsProcessingHistoryProvider::emitShowMessage( const QString &message )
+{
+  emit showMessage( message );
 }
