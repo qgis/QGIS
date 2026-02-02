@@ -77,6 +77,11 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent, const Qgs
   mColorsMenu = new QMenu( this );
   mActionColors->setMenu( mColorsMenu );
 
+  mUserExpressionsAction = new QAction( tr( "Quick Expressions" ), this );
+  mUserExpressionsMenu = new QMenu( this );
+  mUserExpressionsAction->setMenu( mUserExpressionsMenu );
+  mDefineMenu->addAction( mUserExpressionsAction );
+
   mActionActive = new QAction( this );
   QFont f = mActionActive->font();
   f.setBold( true );
@@ -465,6 +470,36 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
   exprTitleAct->setFont( titlefont );
   exprTitleAct->setEnabled( false );
 
+  mUserExpressionsMenu->clear();
+  bool quickExpressionsActive = false;
+  {
+    QgsSettings settings;
+    QStringList quickExpressions = settings.value( "expressions/user", QStringList() ).toStringList();
+    for ( const QString &expr : quickExpressions )
+    {
+      QAction *act = mUserExpressionsMenu->addAction( expr );
+      act->setData( QVariant( expr ) );
+      if ( mProperty.propertyType() == Qgis::PropertyType::Expression &&
+          mExpressionString == expr )
+      {
+        act->setCheckable( true );
+        act->setChecked( true );
+        quickExpressionsActive = true;
+      }
+    }
+  }
+
+  if ( mUserExpressionsMenu->actions().isEmpty() )
+  {
+    QAction *act = mUserExpressionsMenu->addAction( tr( "No User Expressions" ) );
+    act->setEnabled( false );
+  }
+
+  mDefineMenu->addAction( mUserExpressionsAction );
+  mUserExpressionsMenu->menuAction()->setCheckable( true );
+  mUserExpressionsMenu->menuAction()->setChecked( quickExpressionsActive && !mProperty.transformer() );
+
+
   mVariablesMenu->clear();
   bool variableActive = false;
   if ( mExpressionContextGenerator )
@@ -628,6 +663,22 @@ void QgsPropertyOverrideButton::menuActionTriggered( QAction *action )
       emit changed();
     }
   }
+
+  else if ( mUserExpressionsMenu->actions().contains( action ) )
+  {
+    QString expr = action->data().toString();
+    if ( !expr.isEmpty() )
+    {
+      mExpressionString = expr;
+      mProperty.setExpressionString( expr );
+      mProperty.setTransformer( nullptr );
+      setActivePrivate( true );
+      updateSiblingWidgets( isActive() );
+      updateGui();
+      emit changed();
+    }
+  }
+
   else if ( mVariablesMenu->actions().contains( action ) ) // a variable name clicked
   {
     if ( mExpressionString != action->text().prepend( "@" ) )

@@ -278,6 +278,8 @@ class GUI_EXPORT QgsPropertyOverrideButton : public QToolButton
     QAction *mActionVariables = nullptr;
     QMenu *mColorsMenu = nullptr;
     QAction *mActionColors = nullptr;
+    QAction *mUserExpressionsAction = nullptr;
+    QMenu *mUserExpressionsMenu = nullptr;
 
     QAction *mActionActive = nullptr;
     QAction *mActionDescription = nullptr;
