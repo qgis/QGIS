@@ -1,5 +1,5 @@
 {
-  "name": "\\\\t",
+  "name": "\\\\t (tab character)",
   "type": "value",
   "groups": ["String"],
   "description": "Inserts a tab character in a string literal.",

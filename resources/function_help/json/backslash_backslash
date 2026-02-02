@@ -1,5 +1,5 @@
 {
-  "name": "\\\\\\\\",
+  "name": "\\\\\\\\ (backslash character)",
   "type": "value",
   "groups": ["String"],
   "description": "Inserts a literal backslash character in a string.",
