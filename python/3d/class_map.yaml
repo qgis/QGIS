@@ -700,11 +700,13 @@ QgsPointCloudLayer3DRenderer.clone: src/3d/qgspointcloudlayer3drenderer.h#L246
 QgsPointCloudLayer3DRenderer.convertFrom2DRenderer: src/3d/qgspointcloudlayer3drenderer.h#L304
 QgsPointCloudLayer3DRenderer.layer: src/3d/qgspointcloudlayer3drenderer.h#L243
 QgsPointCloudLayer3DRenderer.maximumScreenError: src/3d/qgspointcloudlayer3drenderer.h#L269
+QgsPointCloudLayer3DRenderer.overviewSwitchingScale: src/3d/qgspointcloudlayer3drenderer.h#L333
 QgsPointCloudLayer3DRenderer.pointRenderingBudget: src/3d/qgspointcloudlayer3drenderer.h#L298
 QgsPointCloudLayer3DRenderer.readXml: src/3d/qgspointcloudlayer3drenderer.h#L259
 QgsPointCloudLayer3DRenderer.resolveReferences: src/3d/qgspointcloudlayer3drenderer.h#L260
 QgsPointCloudLayer3DRenderer.setLayer: src/3d/qgspointcloudlayer3drenderer.h#L241
 QgsPointCloudLayer3DRenderer.setMaximumScreenError: src/3d/qgspointcloudlayer3drenderer.h#L278
+QgsPointCloudLayer3DRenderer.setOverviewSwitchingScale: src/3d/qgspointcloudlayer3drenderer.h#L327
 QgsPointCloudLayer3DRenderer.setPointRenderingBudget: src/3d/qgspointcloudlayer3drenderer.h#L302
 QgsPointCloudLayer3DRenderer.setShowBoundingBoxes: src/3d/qgspointcloudlayer3drenderer.h#L292
 QgsPointCloudLayer3DRenderer.setSymbol: src/3d/qgspointcloudlayer3drenderer.h#L254
