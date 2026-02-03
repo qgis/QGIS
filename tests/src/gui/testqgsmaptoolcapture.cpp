@@ -506,21 +506,23 @@ void TestQgsMapToolCapture::testMeasures()
   QCOMPARE( distance, QString() );
 
   QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Cartesian, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
-  QCOMPARE( area.left( 4 ), u"1665"_s );
+  QCOMPARE( area.left( 5 ), u"166,5"_s );
   QCOMPARE( area.right( 2 ), u"m\u00B2"_s );
   QCOMPARE( distance, QString() );
 
   QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Cartesian, area, distance );
   QCOMPARE( area, QString() );
-  QCOMPARE( distance.left( 3 ), u"166"_s );
+  QCOMPARE( distance.left( 4 ), u"1,66"_s );
   QCOMPARE( distance.right( 1 ), u"m"_s );
 
   QgsProject::instance()->setEllipsoid( u"EPSG:7030"_s );
+  QgsProject::instance()->setAreaUnits( Qgis::AreaUnit::Hectares );
   QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Ellipsoidal, Qgis::CadMeasurementDisplayType::Hidden, area, distance );
   QCOMPARE( area.left( 5 ), u"16.65"_s );
   QCOMPARE( area.right( 2 ), u"ha"_s );
   QCOMPARE( distance, QString() );
 
+  QgsProject::instance()->setDistanceUnits( Qgis::DistanceUnit::Kilometers );
   QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, QgsCoordinateReferenceSystem( u"EPSG:28355"_s ), Qgis::CadMeasurementDisplayType::Hidden, Qgis::CadMeasurementDisplayType::Ellipsoidal, area, distance );
   QCOMPARE( area, QString() );
   QCOMPARE( distance.left( 5 ), u"1.669"_s );
