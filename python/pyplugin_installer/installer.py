@@ -23,12 +23,22 @@
 """
 
 import os
+import shutil
 import json
 import zipfile
 from functools import partial
 
 from qgis.PyQt import sip
-from qgis.PyQt.QtCore import Qt, QObject, QDateTime, QDir, QUrl, QFileInfo, QFile
+from qgis.PyQt.QtCore import (
+    Qt,
+    QObject,
+    QDateTime,
+    QDir,
+    QUrl,
+    QFileInfo,
+    QFile,
+    QTemporaryDir,
+)
 from qgis.PyQt.QtWidgets import (
     QApplication,
     QDialog,
@@ -805,23 +815,16 @@ class QgsPluginInstaller(QObject):
         if isPluginLoaded(pluginName):
             unloadPlugin(pluginName)
 
-        # If the target directory already exists as a link,
-        # remove the link without resolving
-        QFile(pluginDirectory).remove()
-
         password = None
         infoString = None
         success = False
         keepTrying = True
 
+        extractDir = QTemporaryDir()
         while keepTrying:
             try:
                 # Test extraction. If fails, then exception will be raised and no removing occurs
-                unzip(filePath, pluginsDirectory, password)
-                # Removing old plugin files if exist
-                removeDir(pluginDirectory)
-                # Extract new files
-                unzip(filePath, pluginsDirectory, password)
+                unzip(filePath, extractDir.path(), password)
                 keepTrying = False
                 success = True
             except Exception as e:
@@ -859,6 +862,24 @@ class QgsPluginInstaller(QObject):
                         f"Failed to unzip the plugin package\n{filePath}.\nProbably it is broken"
                     )
                     keepTrying = False
+
+        if success:
+            # Removing old plugin files if exist
+            # If the target directory already exists as a link,
+            # the link should be removed without resolving
+            infoString = removeDir(pluginDirectory)
+            if infoString:
+                success = False
+
+            try:
+                shutil.move(extractDir.filePath(pluginName), pluginsDirectory)
+            except:
+                infoString = (
+                    self.tr("Could not store plugin to the plugin directory:")
+                    + "\n"
+                    + pluginDirectory
+                )
+                success = False
 
         if success:
             with OverrideCursor(Qt.CursorShape.WaitCursor):
