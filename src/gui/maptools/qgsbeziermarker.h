@@ -68,7 +68,6 @@ class GUI_EXPORT QgsBezierMarker : public QObject
      */
     explicit QgsBezierMarker( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
-    //! Destructor
     ~QgsBezierMarker() override;
 
     /**
