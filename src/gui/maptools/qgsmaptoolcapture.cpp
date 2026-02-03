@@ -561,8 +561,7 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( !mBezierMarker )
         mBezierMarker = std::make_unique<QgsBezierMarker>( mCanvas );
 
-      // Calculate tolerance in map units (10 pixels)
-      const double tolerance = mCanvas->mapUnitsPerPixel() * 10;
+      const double tolerance = searchRadiusMU( mCanvas );
 
       // Reset drag indices
       mBezierDragAnchorIndex = -1;
