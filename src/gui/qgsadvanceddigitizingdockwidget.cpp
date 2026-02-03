@@ -576,12 +576,20 @@ void QgsAdvancedDigitizingDockWidget::updateTransientGeometryProperties( const Q
     return;
   }
 
-  QString areaString;
-  QString totalLengthString;
-  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mMapCanvas->mapSettings().destinationCrs(), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::Area ), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ), areaString, totalLengthString );
+  if ( geometry.isEmpty() )
+  {
+    emit valueAreaChanged( QString() );
+    emit valueTotalLengthChanged( QString() );
+  }
+  else
+  {
+    QString areaString;
+    QString totalLengthString;
+    QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mMapCanvas->mapSettings().destinationCrs(), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::Area ), mFloater->itemMeasurementDisplayType( QgsAdvancedDigitizingFloater::FloaterItem::TotalLength ), areaString, totalLengthString );
 
-  emit valueAreaChanged( areaString );
-  emit valueTotalLengthChanged( totalLengthString );
+    emit valueAreaChanged( areaString );
+    emit valueTotalLengthChanged( totalLengthString );
+  }
 }
 
 void QgsAdvancedDigitizingDockWidget::setX( const QString &value, WidgetSetMode mode )
