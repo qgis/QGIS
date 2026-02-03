@@ -135,13 +135,17 @@ class ANALYSIS_EXPORT QgsGraph
     // Graph constructing methods
 
     /**
-     * Add a vertex to the graph
+     * Add a vertex to the graph.
+     *
+     * \returns the index of the newly added vertex.
      */
     int addVertex( const QgsPointXY &pt );
 
     /**
      * Add an edge to the graph, going from the \a fromVertexIdx
      * to \a toVertexIdx.
+     *
+     * \returns the index of the newly added edge.
      */
     int addEdge( int fromVertexIdx, int toVertexIdx, const QVector<QVariant> &strategies );
 
