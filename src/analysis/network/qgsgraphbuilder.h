@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODE
      *
      * \since QGIS 3.22
      */
-    QgsGraph *takeGraph() SIP_FACTORY;
+    std::unique_ptr< QgsGraph > takeGraph();
 
   private:
     std::unique_ptr<QgsGraph> mGraph;
