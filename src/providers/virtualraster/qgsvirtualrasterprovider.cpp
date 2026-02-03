@@ -132,6 +132,7 @@ QgsVirtualRasterProvider::QgsVirtualRasterProvider( const QgsVirtualRasterProvid
   for ( const auto &it : other.mRasterLayers )
   {
     QgsRasterLayer *rcProvidedLayer = it->clone();
+    mRasterLayers << rcProvidedLayer;
     for ( int j = 0; j < rcProvidedLayer->bandCount(); ++j )
     {
       QgsRasterCalculatorEntry entry;
