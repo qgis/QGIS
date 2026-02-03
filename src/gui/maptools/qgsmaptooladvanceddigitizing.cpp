@@ -19,6 +19,7 @@
 #include "qgsgeometryoptions.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
+#include "qgsmeasureutils.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssnaptogridcanvasitem.h"
@@ -26,7 +27,11 @@
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaptooladvanceddigitizing.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )
@@ -195,17 +200,7 @@ void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReference
 
       case Qgis::CadMeasurementDisplayType::Cartesian:
       {
-        if ( destinationCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
-        {
-          areaString = tr( "%1 %2" ).arg(
-            QString::number( g.area(), 'f', destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
-            QgsUnitTypes::toAbbreviatedString( QgsUnitTypes::distanceToAreaUnit( destinationCrs.mapUnits() ) )
-          );
-        }
-        else
-        {
-          areaString = QString::number( g.area(), 'f', 4 );
-        }
+        areaString = QgsMeasureUtils::formatAreaForProject( QgsProject::instance(), g.area(), QgsUnitTypes::distanceToAreaUnit( destinationCrs.mapUnits() ) );
         break;
       }
 
@@ -213,7 +208,7 @@ void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReference
       {
         createDistanceArea();
         const double area = distanceArea->measureArea( g );
-        areaString = distanceArea->formatArea( area, destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->areaUnits() );
+        areaString = QgsMeasureUtils::formatAreaForProject( QgsProject::instance(), area, distanceArea->areaUnits() );
         break;
       }
     }
@@ -228,24 +223,14 @@ void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReference
 
       case Qgis::CadMeasurementDisplayType::Cartesian:
       {
-        if ( destinationCrs.mapUnits() != Qgis::DistanceUnit::Unknown )
-        {
-          totalLengthString = tr( "%1 %2" ).arg(
-            QString::number( g.length(), 'f', destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4 ),
-            QgsUnitTypes::toAbbreviatedString( destinationCrs.mapUnits() )
-          );
-        }
-        else
-        {
-          totalLengthString = QString::number( g.length(), 'f', 4 );
-        }
+        totalLengthString = QgsMeasureUtils::formatDistanceForProject( QgsProject::instance(), g.length(), destinationCrs.mapUnits() );
         break;
       }
       case Qgis::CadMeasurementDisplayType::Ellipsoidal:
       {
         createDistanceArea();
         const double length = g.type() == Qgis::GeometryType::Polygon ? distanceArea->measurePerimeter( g ) : distanceArea->measureLength( g );
-        totalLengthString = distanceArea->formatDistance( length, destinationCrs.mapUnits() == Qgis::DistanceUnit::Degrees ? 6 : 4, QgsProject::instance()->distanceUnits() );
+        totalLengthString = QgsMeasureUtils::formatDistanceForProject( QgsProject::instance(), length, distanceArea->lengthUnits() );
         break;
       }
     }
