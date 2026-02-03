@@ -512,13 +512,6 @@ void QgsMapToolCapture::setCurrentCaptureTechnique( Qgis::CaptureTechnique techn
 
   mCurrentCaptureTechnique = technique;
 
-  // Emit help message for Poly-Bézier mode
-  if ( technique == Qgis::CaptureTechnique::NurbsCurve
-       && QgsSettingsRegistryCore::settingsDigitizingNurbsMode->value() == Qgis::NurbsMode::PolyBezier )
-  {
-    emit messageEmitted( tr( "Bézier editing: click and drag to add anchor with symmetric handles, click on handle/anchor to edit, Alt+click on anchor to extend handles, right-click to finish" ), Qgis::MessageLevel::Info );
-  }
-
   if ( technique == Qgis::CaptureTechnique::Shape && mCurrentShapeMapTool && isActive() )
   {
     clean();
@@ -584,7 +577,6 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
         mBezierDragHandleIndex = handleIdx;
         mBezierDragging = true;
         mBezierMarker->setHighlightedHandle( handleIdx );
-        emit messageEmitted( tr( "Bézier editing: drag to move handle, release to confirm" ), Qgis::MessageLevel::Info );
         return;
       }
 
@@ -598,7 +590,6 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
           mBezierDragAnchorIndex = anchorIdx;
           mBezierDragging = true;
           mBezierMarker->setHighlightedAnchor( anchorIdx );
-          emit messageEmitted( tr( "Bézier editing: drag to extend handles symmetrically, release to confirm" ), Qgis::MessageLevel::Info );
         }
         else
         {
@@ -606,7 +597,6 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
           mBezierMoveAnchorIndex = anchorIdx;
           mBezierDragging = true;
           mBezierMarker->setHighlightedAnchor( anchorIdx );
-          emit messageEmitted( tr( "Bézier editing: drag to move anchor, release to confirm" ), Qgis::MessageLevel::Info );
         }
         return;
       }
@@ -615,7 +605,6 @@ void QgsMapToolCapture::cadCanvasPressEvent( QgsMapMouseEvent *e )
       mBezierData->addAnchor( mapPoint );
       mBezierDragAnchorIndex = mBezierData->anchorCount() - 1;
       mBezierDragging = true;
-      emit messageEmitted( tr( "Bézier editing: drag to define handles, release to confirm anchor" ), Qgis::MessageLevel::Info );
 
       // Update visualization
       mBezierMarker->updateFromData( *mBezierData );
@@ -1835,8 +1824,6 @@ void QgsMapToolCapture::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
           mBezierMarker->updateFromData( *mBezierData );
         }
 
-        // Emit help message reminder
-        emit messageEmitted( tr( "Bézier editing: click and drag to add anchor, click on handle/anchor to edit, Alt+click to extend handles, right-click to finish" ), Qgis::MessageLevel::Info );
         return;
       }
       else if ( e->button() == Qt::RightButton )
