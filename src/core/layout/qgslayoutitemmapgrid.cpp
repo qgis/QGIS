@@ -2090,8 +2090,6 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
 
   mEvaluatedEnabled = mDataDefinedProperties.valueAsBool( QgsLayoutObject::DataDefinedProperty::MapGridEnabled, context, enabled() );
 
-  // suppress false positive clang tidy warning
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( mDataDefinedProperties.isActive( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) )
   {
     mDrawAnnotationProperty.reset( new QgsProperty( mDataDefinedProperties.property( QgsLayoutObject::DataDefinedProperty::MapGridDrawAnnotation ) ) );
@@ -2101,7 +2099,6 @@ void QgsLayoutItemMapGrid::refreshDataDefinedProperties()
   {
     mDrawAnnotationProperty.reset();
   }
-  // NOLINTEND(bugprone-branch-clone)
 
   switch ( mGridUnit )
   {

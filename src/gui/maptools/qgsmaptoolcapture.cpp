@@ -435,8 +435,6 @@ void QgsMapToolCapture::resetRubberBand()
 
 void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
 {
-  // suppress false positive clang tidy warning
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( activated )
   {
     connect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
@@ -447,7 +445,6 @@ void QgsMapToolCapture::setCurrentShapeMapToolIsActivated( bool activated )
     disconnect( mCurrentShapeMapTool, &QgsMapToolShapeAbstract::transientGeometryChanged, this, &QgsMapToolAdvancedDigitizing::transientGeometryChanged );
     mCurrentShapeMapTool->deactivate();
   }
-  // NOLINTEND(bugprone-branch-clone)
 }
 
 QgsRubberBand *QgsMapToolCapture::takeRubberBand()
