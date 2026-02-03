@@ -40,9 +40,9 @@ QgsGraph QgsGraphBuilder::graph() const
   return *mGraph;
 }
 
-QgsGraph *QgsGraphBuilder::takeGraph()
+std::unique_ptr< QgsGraph > QgsGraphBuilder::takeGraph()
 {
-  QgsGraph *res = mGraph.release();
+  std::unique_ptr< QgsGraph > res = std::move( mGraph );
 
   // create a new graph in case this builder is used for additional work
   mGraph = std::make_unique<QgsGraph>();
