@@ -1101,10 +1101,12 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
 
   //set elements in digitizing tab
   mComboStatusAreaDisplay->addItem( tr( "Hidden" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
-  mComboStatusAreaDisplay->addItem( tr( "Show Cartesian Area" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+  // see https://github.com/qgis/QGIS/pull/64496#discussion_r2681223874, re-enable if there's demand
+  //mComboStatusAreaDisplay->addItem( tr( "Show Cartesian Area" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
   mComboStatusAreaDisplay->addItem( tr( "Show Ellipsoidal Area" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
   mComboStatusLengthDisplay->addItem( tr( "Hidden" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Hidden ) );
-  mComboStatusLengthDisplay->addItem( tr( "Show Cartesian Distances" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
+  // see https://github.com/qgis/QGIS/pull/64496#discussion_r2681223874, re-enable if there's demand
+  //mComboStatusLengthDisplay->addItem( tr( "Show Cartesian Distances" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Cartesian ) );
   mComboStatusLengthDisplay->addItem( tr( "Show Ellipsoidal Distances" ), QVariant::fromValue( Qgis::CadMeasurementDisplayType::Ellipsoidal ) );
 
   mLineWidthSpinBox->setValue( QgsSettingsRegistryCore::settingsDigitizingLineWidth->value() );
