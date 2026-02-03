@@ -1044,8 +1044,6 @@ void QgsQueryResultWidget::storeCurrentQuery( Qgis::QueryStorageBackend backend 
 
 void QgsQueryResultWidget::showHistoryPanel( bool show )
 {
-  // the below code block trips up the clang analyser!
-  // NOLINTBEGIN(bugprone-branch-clone)
   if ( show )
   {
     mHistoryWidget = new QgsDatabaseQueryHistoryWidget();
@@ -1067,7 +1065,6 @@ void QgsQueryResultWidget::showHistoryPanel( bool show )
     mPanelStack->closePanel( mHistoryWidget );
     mHistoryWidget->deleteLater();
   }
-  // NOLINTEND(bugprone-branch-clone)
 }
 
 
