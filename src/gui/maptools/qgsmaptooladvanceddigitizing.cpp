@@ -191,7 +191,7 @@ void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReference
     distanceArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
   };
 
-  if ( g.type() == Qgis::GeometryType::Polygon && areaType != Qgis::CadMeasurementDisplayType::Hidden )
+  if ( g.type() == Qgis::GeometryType::Polygon )
   {
     switch ( areaType )
     {
@@ -214,25 +214,22 @@ void QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( const QgsReference
     }
   }
 
-  if ( totalLengthType != Qgis::CadMeasurementDisplayType::Hidden )
+  switch ( totalLengthType )
   {
-    switch ( totalLengthType )
-    {
-      case Qgis::CadMeasurementDisplayType::Hidden:
-        break;
+    case Qgis::CadMeasurementDisplayType::Hidden:
+      break;
 
-      case Qgis::CadMeasurementDisplayType::Cartesian:
-      {
-        totalLengthString = QgsMeasureUtils::formatDistanceForProject( QgsProject::instance(), g.length(), destinationCrs.mapUnits() );
-        break;
-      }
-      case Qgis::CadMeasurementDisplayType::Ellipsoidal:
-      {
-        createDistanceArea();
-        const double length = g.type() == Qgis::GeometryType::Polygon ? distanceArea->measurePerimeter( g ) : distanceArea->measureLength( g );
-        totalLengthString = QgsMeasureUtils::formatDistanceForProject( QgsProject::instance(), length, distanceArea->lengthUnits() );
-        break;
-      }
+    case Qgis::CadMeasurementDisplayType::Cartesian:
+    {
+      totalLengthString = QgsMeasureUtils::formatDistanceForProject( QgsProject::instance(), g.length(), destinationCrs.mapUnits() );
+      break;
+    }
+    case Qgis::CadMeasurementDisplayType::Ellipsoidal:
+    {
+      createDistanceArea();
+      const double length = g.type() == Qgis::GeometryType::Polygon ? distanceArea->measurePerimeter( g ) : distanceArea->measureLength( g );
+      totalLengthString = QgsMeasureUtils::formatDistanceForProject( QgsProject::instance(), length, distanceArea->lengthUnits() );
+      break;
     }
   }
 }
