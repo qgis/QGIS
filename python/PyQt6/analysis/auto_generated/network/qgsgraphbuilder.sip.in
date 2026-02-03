@@ -27,7 +27,7 @@ Default constructor
 
     ~QgsGraphBuilder();
 
-    virtual void addVertex( int id, const QgsPointXY &pt );
+    virtual int addVertex( int id, const QgsPointXY &pt );
 
 %Docstring
 MANDATORY BUILDER PROPERTY DECLARATION

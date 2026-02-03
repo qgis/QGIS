@@ -92,8 +92,10 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * \param id vertex identifier
      * \param pt vertex coordinates
      * \note id and pt are redundant. You can use pt or id to identify the vertex
+     *
+     * \returns the index of the newly added vertex
      */
-    virtual void addVertex( int id, const QgsPointXY &pt );
+    virtual int addVertex( int id, const QgsPointXY &pt );
 
     /**
      * Add edge to the graph
