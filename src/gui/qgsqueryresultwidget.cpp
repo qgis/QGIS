@@ -41,8 +41,10 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QShortcut>
 #include <QString>
+#include <QtConcurrentRun>
 
 #include "moc_qgsqueryresultwidget.cpp"
 

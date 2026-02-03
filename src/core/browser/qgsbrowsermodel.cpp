@@ -35,7 +35,6 @@
 #include <QString>
 #include <QStyle>
 #include <QUrl>
-#include <QtConcurrentMap>
 
 #include "moc_qgsbrowsermodel.cpp"
 

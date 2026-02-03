@@ -150,7 +150,7 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
-#include <QtConcurrent/QtConcurrentRun>
+#include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <memory>
 #include "qgsterraindownloader.h"
