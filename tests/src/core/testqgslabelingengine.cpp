@@ -138,6 +138,7 @@ class TestQgsLabelingEngine : public QgsTest
     void testLineAnchorParallelConstraints();
     void testLineAnchorDataDefinedType();
     void testLineAnchorCurved();
+    void testLineAnchorCurvedStrictOnLine();
     void testLineAnchorCurvedConstraints();
     void testLineAnchorCurvedOverrun();
     void testLineAnchorCurvedStrictAllUpsideDown();
@@ -6142,6 +6143,81 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
 
   img = job4.renderedImage();
   QGSVERIFYIMAGECHECK( "curved_anchor_30_below", "curved_anchor_30_below", img, QString(), 20, QSize( 0, 0 ), 2 );
+
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job5( mapSettings );
+  job5.start();
+  job5.waitForFinished();
+
+  img = job5.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_anchor_30_on_line", "curved_anchor_30_on_line", img, QString(), 20, QSize( 0, 0 ), 2 );
+}
+
+
+void TestQgsLabelingEngine::testLineAnchorCurvedStrictOnLine()
+{
+  // test line label anchor with curved labels, strict mode, on-line placement
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'XXXXXXXX'" );
+  settings.isExpression = true;
+  settings.placement = Qgis::LabelPlacement::Curved;
+  settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::OnLine );
+  settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
+  settings.lineSettings().setLineAnchorPercent( 0.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
+
+  auto vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineString?crs=epsg:3946&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  vl2->setRenderer( new QgsSingleSymbolRenderer( QgsLineSymbol::createSimple( { { QStringLiteral( "color" ), QStringLiteral( "#000000" ) }, { QStringLiteral( "outline_width" ), 0.6 } } ).release() ) );
+
+  QgsFeature f;
+  f.setAttributes( QgsAttributes() << 1 );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString (190000 5000010, 190200 5000000)" ) ) );
+  QVERIFY( vl2->dataProvider()->addFeature( f ) );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  const QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  mapSettings.setLabelingEngineSettings( createLabelEngineSettings() );
+  mapSettings.setDestinationCrs( vl2->crs() );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( f.geometry().boundingBox().buffered( 10 ) );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
+  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelRectOnly, true );
+  // engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_anchor_start_on_line", "curved_anchor_start_on_line", img, QString(), 20, QSize( 0, 0 ), 2 );
+
+  settings.lineSettings().setLineAnchorPercent( 1.0 );
+  settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  QgsMapRendererSequentialJob job2( mapSettings );
+  job2.start();
+  job2.waitForFinished();
+
+  img = job2.renderedImage();
+  QGSVERIFYIMAGECHECK( "curved_anchor_end_on_line", "curved_anchor_end_on_line", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
