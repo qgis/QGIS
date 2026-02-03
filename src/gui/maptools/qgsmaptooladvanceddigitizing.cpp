@@ -309,22 +309,29 @@ void QgsMapToolAdvancedDigitizing::onTransientGeometryChanged( const QgsReferenc
   if ( areaDisplayType == Qgis::CadMeasurementDisplayType::Hidden && totalLengthDisplayType == Qgis::CadMeasurementDisplayType::Hidden )
     return;
 
-  QString areaString;
-  QString totalLengthString;
-  QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mCanvas->mapSettings().destinationCrs(), areaDisplayType, totalLengthDisplayType, areaString, totalLengthString );
-
-  QStringList messageParts;
-  if ( !areaString.isEmpty() )
-    messageParts.append( tr( "Total area: %1" ).arg( areaString ) );
-  if ( !totalLengthString.isEmpty() )
+  if ( geometry.isEmpty() )
   {
-    if ( geometry.type() == Qgis::GeometryType::Polygon )
-      messageParts.append( tr( "Perimeter: %1" ).arg( totalLengthString ) );
-    else
-      messageParts.append( tr( "Total length: %1" ).arg( totalLengthString ) );
+    statusBar->clearMessage();
   }
+  else
+  {
+    QString areaString;
+    QString totalLengthString;
+    QgsMapToolAdvancedDigitizing::calculateGeometryMeasures( geometry, mCanvas->mapSettings().destinationCrs(), areaDisplayType, totalLengthDisplayType, areaString, totalLengthString );
 
-  statusBar->showMessage( messageParts.join( ' ' ) );
+    QStringList messageParts;
+    if ( !areaString.isEmpty() )
+      messageParts.append( tr( "Total area: %1" ).arg( areaString ) );
+    if ( !totalLengthString.isEmpty() )
+    {
+      if ( geometry.type() == Qgis::GeometryType::Polygon )
+        messageParts.append( tr( "Perimeter: %1" ).arg( totalLengthString ) );
+      else
+        messageParts.append( tr( "Total length: %1" ).arg( totalLengthString ) );
+    }
+
+    statusBar->showMessage( messageParts.join( ' ' ) );
+  }
 }
 
 bool QgsMapToolAdvancedDigitizing::snapToLayerGridEnabled() const

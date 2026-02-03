@@ -1226,6 +1226,8 @@ void QgsMapToolCapture::stopCapturing()
   mSnappingMatches.clear();
   if ( auto *lCurrentVectorLayer = currentVectorLayer() )
     lCurrentVectorLayer->triggerRepaint();
+
+  emit transientGeometryChanged( QgsReferencedGeometry() );
 }
 
 void QgsMapToolCapture::deleteTempRubberBand()
