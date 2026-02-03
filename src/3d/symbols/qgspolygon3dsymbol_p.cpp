@@ -317,8 +317,8 @@ void QgsPolygon3DSymbolHandler::finalize( Qt3DCore::QEntity *parent, const Qgs3D
   mZMin = std::min( outNormal.tessellator->zMinimum(), outSelected.tessellator->zMinimum() );
   mZMax = std::max( outNormal.tessellator->zMaximum(), outSelected.tessellator->zMaximum() );
 
-  // add entity for edges
-  if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() )
+  // add entity for edges, but not when doing highlighting
+  if ( mSymbol->edgesEnabled() && !outEdges.indexes.isEmpty() && !mHighlightingEnabled )
   {
     QgsLineMaterial *mat = new QgsLineMaterial;
     mat->setLineColor( mSymbol->edgeColor() );
@@ -411,6 +411,7 @@ QgsMaterial *QgsPolygon3DSymbolHandler::material( const QgsPolygon3DSymbol *symb
   QgsMaterialContext materialContext;
   materialContext.setIsSelected( isSelected );
   materialContext.setSelectionColor( context.selectionColor() );
+  materialContext.setIsHighlighted( mHighlightingEnabled );
 
   const bool dataDefined = mSymbol->materialSettings()->dataDefinedProperties().hasActiveProperties();
   QgsMaterial *material = symbol->materialSettings()->toMaterial( dataDefined ? QgsMaterialSettingsRenderingTechnique::TrianglesDataDefined : QgsMaterialSettingsRenderingTechnique::Triangles, materialContext );
