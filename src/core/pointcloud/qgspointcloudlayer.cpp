@@ -1204,6 +1204,8 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
   if ( !mEditable )
     return false;
 
+  QVector<QgsPointCloudSubIndex> subs = subIndexes();
+
   for ( auto it = mappedPoints.constBegin(); it != mappedPoints.constEnd(); it++ )
   {
     const int position = it.key();
@@ -1213,7 +1215,10 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
     // NOLINTBEGIN(bugprone-branch-clone)
     if ( mIsVpc )
     {
-      QgsPointCloudIndex index = subIndexes().at( position ).index();
+      if ( position >= subs.size() || position < 0 )
+        return false;
+
+      QgsPointCloudIndex index = subs.at( position ).index();
       if ( !index || !index.isValid() )
         return false;
 
