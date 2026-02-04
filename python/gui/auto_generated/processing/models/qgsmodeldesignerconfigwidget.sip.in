@@ -32,6 +32,13 @@ for configuring part of the model.
 %Docstring
 Constructor for QgsProcessingModelConfigWidget()
 %End
+
+  public slots:
+
+    void apply();
+%Docstring
+Applies the widget state to the model component.
+%End
 };
 
 class QgsProcessingModelConfigWidgetFactory : QObject

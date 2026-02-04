@@ -42,6 +42,13 @@ class GUI_EXPORT QgsProcessingModelConfigWidget : public QgsPanelWidget
      * Constructor for QgsProcessingModelConfigWidget()
      */
     QgsProcessingModelConfigWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+  public slots:
+
+    /**
+     * Applies the widget state to the model component.
+     */
+    void apply();
 };
 
 /**

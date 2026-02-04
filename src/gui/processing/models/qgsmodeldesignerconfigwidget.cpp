@@ -28,6 +28,11 @@ QgsProcessingModelConfigWidget::QgsProcessingModelConfigWidget( QWidget *parent 
 {
 }
 
+void QgsProcessingModelConfigWidget::apply()
+{
+  emit widgetChanged();
+}
+
 //
 // QgsProcessingModelConfigWidgetFactory
 //

@@ -23,10 +23,13 @@
 
 #include "qgis_gui.h"
 
+#include <QPointer>
+
 #define SIP_NO_FILE
 
 class QgsProcessingContext;
 class QgsProcessingModelComponent;
+class QgsProcessingModelConfigWidget;
 class QgsProcessingParameterWidgetContext;
 
 /**
@@ -55,6 +58,13 @@ class GUI_EXPORT QgsModelDesignerConfigDockWidget : public QWidget, private Ui::
      * \param widgetContext processing widget context
      */
     void showComponentConfig( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext );
+
+  private slots:
+
+    void apply();
+
+  private:
+    QPointer< QgsProcessingModelConfigWidget > mCurrentWidget;
 };
 
 #endif // QGSPROCESSINGMODELDESIGNERCONFIGDOCKWIDGET_H
