@@ -30,7 +30,7 @@ QgsPointCloudLayerUndoCommand::QgsPointCloudLayerUndoCommand( QgsPointCloudLayer
   : mLayer( layer )
 {}
 
-QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QMap<int, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
+QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChangeAttribute( QgsPointCloudLayer *layer, const QHash<int, QHash<QgsPointCloudNodeId, QVector<int>>> &mappedPoints, const QgsPointCloudAttribute &attribute, double value )
   : QgsPointCloudLayerUndoCommand( layer )
   , mAttribute( attribute )
   , mNewValue( value )
@@ -45,7 +45,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
     if ( position < 0 )
       index = mLayer->index();
     else
-      index = mLayer->subIndex( position );
+      index = mLayer->subIndex( position ).index();
     const auto &nodes = it.value();
     for ( auto nodeIt = nodes.constBegin(); nodeIt != nodes.constEnd(); ++nodeIt )
     {
@@ -131,7 +131,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
     if ( position < 0 )
       index = mLayer->index();
     else
-      index = mLayer->subIndex( position );
+      index = mLayer->subIndex( position ).index();
     QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( index.get() );
     QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
 

@@ -82,7 +82,7 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
   Q_ASSERT( mapLayer->type() == Qgis::LayerType::PointCloud );
   QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( mapLayer );
 
-  QMap<int, QHash<QgsPointCloudNodeId, QVector<int>>> mappedPoints;
+  QHash<int, QHash<QgsPointCloudNodeId, QVector<int>>> mappedPoints;
   if ( pcLayer->isVpc() )
   {
     const QVector<QgsPointCloudSubIndex> subIndexes = pcLayer->subIndexes();
@@ -90,8 +90,6 @@ void Qgs3DMapToolPointCloudChangeAttribute::changeAttributeValue( const QgsGeome
     {
       QgsPointCloudSubIndex subIndex = subIndexes.at( i );
       QgsPointCloudIndex pc = subIndex.index();
-      if ( !pc || !pc.isValid() )
-        continue;
 
       const SelectedPoints sel = searchPoints( pcLayer, preparedPolygon, canvas, pc );
       mappedPoints.insert( i, sel );

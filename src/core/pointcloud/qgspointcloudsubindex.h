@@ -50,6 +50,9 @@ class QgsPointCloudSubIndex
     {
     }
 
+    //! default constructor
+    QgsPointCloudSubIndex() = default;
+
     //! Returns the point cloud index. May be NULLPTR if not loaded.
     QgsPointCloudIndex index() const { return mIndex; }
 

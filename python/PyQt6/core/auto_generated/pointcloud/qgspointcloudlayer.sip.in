@@ -336,7 +336,7 @@ Emitted when statistics calculation state has changed
 .. versionadded:: 3.26
 %End
 
-    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n, const int &position );
+    void chunkAttributeValuesChanged( const QgsPointCloudNodeId &n, const int position );
 %Docstring
 Emitted when a node gets some attribute values of some points changed
 
