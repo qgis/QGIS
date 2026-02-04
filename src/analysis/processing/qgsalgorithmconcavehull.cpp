@@ -145,7 +145,7 @@ void QgsConcaveHullAlgorithm::concaveHullGeos( std::unique_ptr<QgsFeatureSink> &
   }
   const QgsGeometry concaveHull = allPoints.concaveHull( mPercentage, mAllowHoles );
 
-  if ( concaveHull.isNull() )
+  if ( concaveHull.isNull() && !concaveHull.lastError().isEmpty() )
   {
     feedback->reportError( concaveHull.lastError() );
   }
