@@ -1210,7 +1210,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
   {
     const int position = it.key();
     QHash<QgsPointCloudNodeId, QVector<int>> nodesAndPoints = it.value();
-    QgsPointCloudIndex *editIndexPtr = nullptr;
+    QgsPointCloudIndex editIndex;
 
     // NOLINTBEGIN(bugprone-branch-clone)
     if ( mIsVpc )
@@ -1222,11 +1222,11 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
       if ( !index || !index.isValid() )
         return false;
 
-      editIndexPtr = &index;
+      editIndex = index;
     }
     else
     {
-      editIndexPtr = &mEditIndex;
+      editIndex = mEditIndex;
     }
     // NOLINTEND(bugprone-branch-clone)
 
@@ -1236,7 +1236,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
          attribute.name().compare( 'Z'_L1, Qt::CaseInsensitive ) == 0 )
       return false;
 
-    const QgsPointCloudAttributeCollection attributeCollection = editIndexPtr->attributes();
+    const QgsPointCloudAttributeCollection attributeCollection = editIndex.attributes();
 
     int attributeOffset;
     const QgsPointCloudAttribute *at = attributeCollection.find( attribute.name(), attributeOffset );
@@ -1258,7 +1258,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
       QgsPointCloudNodeId n = it.key();
       QVector<int> points = it.value();
 
-      if ( !n.isValid() || !editIndexPtr->hasNode( n ) ) // todo: should not have to check if n.isValid
+      if ( !n.isValid() || !editIndex.hasNode( n ) ) // todo: should not have to check if n.isValid
         return false;
 
       if ( points.isEmpty() )
@@ -1274,7 +1274,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
           pointsMax = pt;
       }
 
-      if ( pointsMin < 0 || pointsMax >= editIndexPtr->getNode( n ).pointCount() )
+      if ( pointsMin < 0 || pointsMax >= editIndex.getNode( n ).pointCount() )
         return false;
     }
   }
