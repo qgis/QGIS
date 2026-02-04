@@ -7737,10 +7737,10 @@ QgsLayoutItemMapAtlasClippingSettings.setLayersToClip: src/core/layout/qgslayout
 QgsLayoutItemMapAtlasClippingSettings.setRestrictToLayers: src/core/layout/qgslayoutitemmap.h#L124
 QgsLayoutItemMapAtlasClippingSettings.writeXml: src/core/layout/qgslayoutitemmap.h#L151
 QgsLayoutItemMapAtlasClippingSettings: src/core/layout/qgslayoutitemmap.h#L41
-QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L901
-QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L943
-QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L955
-QgsLayoutItemMapGrid.accept: src/core/layout/qgslayoutitemmapgrid.h#L878
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L917
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L959
+QgsLayoutItemMapGrid.QgsLayoutItemMapGrid: src/core/layout/qgslayoutitemmapgrid.h#L971
+QgsLayoutItemMapGrid.accept: src/core/layout/qgslayoutitemmapgrid.h#L894
 QgsLayoutItemMapGrid.annotationDirection: src/core/layout/qgslayoutitemmapgrid.h#L574
 QgsLayoutItemMapGrid.annotationDisplay: src/core/layout/qgslayoutitemmapgrid.h#L529
 QgsLayoutItemMapGrid.annotationEnabled: src/core/layout/qgslayoutitemmapgrid.h#L448
@@ -7754,11 +7754,11 @@ QgsLayoutItemMapGrid.annotationPrecision: src/core/layout/qgslayoutitemmapgrid.h
 QgsLayoutItemMapGrid.annotationTextFormat: src/core/layout/qgslayoutitemmapgrid.h#L464
 QgsLayoutItemMapGrid.blendMode: src/core/layout/qgslayoutitemmapgrid.h#L180
 QgsLayoutItemMapGrid.calculateMaxExtension: src/core/layout/qgslayoutitemmapgrid.h#L196
-QgsLayoutItemMapGrid.copyProperties: src/core/layout/qgslayoutitemmapgrid.h#L886
-QgsLayoutItemMapGrid.createExpressionContext: src/core/layout/qgslayoutitemmapgrid.h#L877
+QgsLayoutItemMapGrid.copyProperties: src/core/layout/qgslayoutitemmapgrid.h#L902
+QgsLayoutItemMapGrid.createExpressionContext: src/core/layout/qgslayoutitemmapgrid.h#L893
 QgsLayoutItemMapGrid.crossLength: src/core/layout/qgslayoutitemmapgrid.h#L356
 QgsLayoutItemMapGrid.crs: src/core/layout/qgslayoutitemmapgrid.h#L168
-QgsLayoutItemMapGrid.crsChanged: src/core/layout/qgslayoutitemmapgrid.h#L895
+QgsLayoutItemMapGrid.crsChanged: src/core/layout/qgslayoutitemmapgrid.h#L911
 QgsLayoutItemMapGrid.draw: src/core/layout/qgslayoutitemmapgrid.h#L154
 QgsLayoutItemMapGrid.frameDivisions: src/core/layout/qgslayoutitemmapgrid.h#L628
 QgsLayoutItemMapGrid.frameFillColor1: src/core/layout/qgslayoutitemmapgrid.h#L859
@@ -7769,6 +7769,7 @@ QgsLayoutItemMapGrid.framePenSize: src/core/layout/qgslayoutitemmapgrid.h#L825
 QgsLayoutItemMapGrid.frameSideFlags: src/core/layout/qgslayoutitemmapgrid.h#L656
 QgsLayoutItemMapGrid.frameStyle: src/core/layout/qgslayoutitemmapgrid.h#L616
 QgsLayoutItemMapGrid.frameWidth: src/core/layout/qgslayoutitemmapgrid.h#L683
+QgsLayoutItemMapGrid.horizontalAlignment: src/core/layout/qgslayoutitemmapgrid.h#L883
 QgsLayoutItemMapGrid.intervalX: src/core/layout/qgslayoutitemmapgrid.h#L232
 QgsLayoutItemMapGrid.intervalY: src/core/layout/qgslayoutitemmapgrid.h#L248
 QgsLayoutItemMapGrid.lineSymbol: src/core/layout/qgslayoutitemmapgrid.h#L403
@@ -7779,7 +7780,7 @@ QgsLayoutItemMapGrid.minimumIntervalWidth: src/core/layout/qgslayoutitemmapgrid.
 QgsLayoutItemMapGrid.offsetX: src/core/layout/qgslayoutitemmapgrid.h#L264
 QgsLayoutItemMapGrid.offsetY: src/core/layout/qgslayoutitemmapgrid.h#L280
 QgsLayoutItemMapGrid.readXml: src/core/layout/qgslayoutitemmapgrid.h#L156
-QgsLayoutItemMapGrid.refresh: src/core/layout/qgslayoutitemmapgrid.h#L879
+QgsLayoutItemMapGrid.refresh: src/core/layout/qgslayoutitemmapgrid.h#L895
 QgsLayoutItemMapGrid.rotatedAnnotationsEnabled: src/core/layout/qgslayoutitemmapgrid.h#L753
 QgsLayoutItemMapGrid.rotatedAnnotationsLengthMode: src/core/layout/qgslayoutitemmapgrid.h#L767
 QgsLayoutItemMapGrid.rotatedAnnotationsMarginToCorner: src/core/layout/qgslayoutitemmapgrid.h#L795
@@ -7816,6 +7817,7 @@ QgsLayoutItemMapGrid.setFrameStyle: src/core/layout/qgslayoutitemmapgrid.h#L610
 QgsLayoutItemMapGrid.setFrameWidth: src/core/layout/qgslayoutitemmapgrid.h#L675
 QgsLayoutItemMapGrid.setGridLineColor: src/core/layout/qgslayoutitemmapgrid.h#L374
 QgsLayoutItemMapGrid.setGridLineWidth: src/core/layout/qgslayoutitemmapgrid.h#L365
+QgsLayoutItemMapGrid.setHorizontalAlignment: src/core/layout/qgslayoutitemmapgrid.h#L891
 QgsLayoutItemMapGrid.setIntervalX: src/core/layout/qgslayoutitemmapgrid.h#L224
 QgsLayoutItemMapGrid.setIntervalY: src/core/layout/qgslayoutitemmapgrid.h#L240
 QgsLayoutItemMapGrid.setLineSymbol: src/core/layout/qgslayoutitemmapgrid.h#L384
