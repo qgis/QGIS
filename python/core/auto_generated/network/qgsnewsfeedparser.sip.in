@@ -62,20 +62,7 @@ The optional ``authcfg`` argument can be used to specify an
 authentication configuration to use when connecting to the feed.
 %End
 
-    bool enabled() const;
-%Docstring
-Returns ``True`` if the feed URL associated with the news parser is
-enabled.
 
-.. versionadded:: 4.0
-%End
-
-    void setEnabled( bool enabled );
-%Docstring
-Sets whether the feed URL associated with the news parser is enabled.
-
-.. versionadded:: 4.0
-%End
 
     bool isFetching() const;
 %Docstring

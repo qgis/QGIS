@@ -115,14 +115,14 @@ class CORE_EXPORT QgsNewsFeedParser : public QObject
      *
      * \since QGIS 4.0
      */
-    bool enabled() const { return mEnabled; }
+    bool enabled() const SIP_SKIP { return mEnabled; }
 
     /**
      * Sets whether the feed URL associated with the news parser is enabled.
      *
      * \since QGIS 4.0
      */
-    void setEnabled( bool enabled );
+    void setEnabled( bool enabled ) SIP_SKIP;
 
     /**
      * Returns TRUE if the news parser is fetching items.
