@@ -579,9 +579,10 @@ void TestQgsPointCloudEditing::testCommitChanges()
 
 void TestQgsPointCloudEditing::testVPCStarStopEditing()
 {
-  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast/"_s );
+  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast"_s );
+  const QString vpcPath = dataPath + u"/combined.vpc"_s;
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
+  auto layer = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
 
   QVERIFY( layer->isValid() );
   QVERIFY( !layer->isEditable() );
@@ -677,9 +678,10 @@ void TestQgsPointCloudEditing::testVPCStarStopEditing()
 
 void TestQgsPointCloudEditing::testVPCModifyAttributeValue()
 {
-  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast/"_s );
+  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast"_s );
+  const QString vpcPath = dataPath + u"/combined.vpc"_s;
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
+  auto layer = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
 
   for ( int i = 0; i < 4; i++ )
   {
@@ -805,9 +807,10 @@ void TestQgsPointCloudEditing::testVPCModifyAttributeValue()
 
 void TestQgsPointCloudEditing::testVPCModifyAttributeValueInvalid()
 {
-  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast/"_s );
+  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast"_s );
+  const QString vpcPath = dataPath + u"/combined.vpc"_s;
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
+  auto layer = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
 
   // load only two, keep the other two not loaded for further tests
   layer->dataProvider()->loadSubIndex( 0 );
@@ -891,8 +894,9 @@ void TestQgsPointCloudEditing::testVPCModifyAttributeValueInvalid()
 void TestQgsPointCloudEditing::testVPCModifyAttributeValueFiltered()
 {
   const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast/"_s );
+  const QString vpcPath = dataPath + u"/combined.vpc"_s;
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
+  auto layer = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
   QVERIFY( layer->isValid() );
 
   QSignalSpy spy( layer.get(), &QgsMapLayer::layerModified );
@@ -945,9 +949,10 @@ void TestQgsPointCloudEditing::testVPCModifyAttributeValueFiltered()
 
 void TestQgsPointCloudEditing::testVPCCommitChanges()
 {
-  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast/"_s );
+  const QString dataPath = copyTestDataDirectory( u"point_clouds/virtual/sunshine-coast"_s );
+  const QString vpcPath = dataPath + u"/combined.vpc"_s;
 
-  auto layer = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
+  auto layer = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
 
   QVERIFY( layer->isValid() );
   QVERIFY( layer->startEditing() );
@@ -1032,7 +1037,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   QCOMPARE( block2Data[10], 1 );
 
   // try to open the file as a new layer and check saved values
-  auto layerNew = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
+  auto layerNew = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
 
   QSignalSpy spy2( layerNew.get(), &QgsMapLayer::layerModified );
 
@@ -1150,7 +1155,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   QCOMPARE( block8Data[10], 2 );
 
   // try to open the file as a new layer and check saved values
-  auto layerNew2 = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
+  auto layerNew2 = std::make_unique<QgsPointCloudLayer>( vpcPath, u"layer"_s, u"vpc"_s );
 
   // check values in the new layer
   layerNew2->dataProvider()->loadSubIndex( 0 );
