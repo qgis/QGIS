@@ -39,6 +39,8 @@
 
 #include <QString>
 
+#include "moc_qgsprocessingguiregistry.cpp"
+
 using namespace Qt::StringLiterals;
 
 QgsProcessingGuiRegistry::QgsProcessingGuiRegistry()
