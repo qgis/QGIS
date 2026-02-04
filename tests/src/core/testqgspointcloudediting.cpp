@@ -700,7 +700,7 @@ void TestQgsPointCloudEditing::testVPCModifyAttributeValue()
   mapSettings.setOutputSize( QSize( 400, 400 ) );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setDestinationCrs( layer->crs() );
-  mapSettings.setExtent( layer->subIndex( 3 ).extent() );
+  mapSettings.setExtent( layer->subIndexes().at( 3 ).extent() );
   mapSettings.setLayers( { layer.get() } );
   QGSVERIFYRENDERMAPSETTINGSCHECK( "classified_render_vpc_subindex3", "classified_render_vpc_subindex3", mapSettings );
 
@@ -809,7 +809,7 @@ void TestQgsPointCloudEditing::testVPCModifyAttributeValueInvalid()
 
   auto layer = std::make_unique<QgsPointCloudLayer>( dataPath + u"combined.vpc"_s, u"layer"_s, u"vpc"_s );
 
-  // load only two, keep the other two not loaded for futher tests
+  // load only two, keep the other two not loaded for further tests
   layer->dataProvider()->loadSubIndex( 0 );
   layer->dataProvider()->loadSubIndex( 1 );
 
@@ -961,13 +961,13 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   QgsPointCloudRequest request;
   request.setAttributes( QgsPointCloudAttributeCollection( QVector<QgsPointCloudAttribute>() << at ) );
 
-  const QgsPointCloudSubIndex &subIndex0 = layer->subIndex( 0 );
+  const QgsPointCloudSubIndex subIndex0 = layer->subIndexes().at( 0 );
   QVERIFY( !subIndex0.index() );
 
   layer->dataProvider()->loadSubIndex( 0 );
-  QVERIFY( layer->subIndex( 0 ).index().isValid() );
+  QVERIFY( layer->subIndexes().at( 0 ).index().isValid() );
   // check values before any changes
-  std::unique_ptr<QgsPointCloudBlock> block0 = layer->subIndex( 0 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block0 = layer->subIndexes().at( 0 ).index().nodeData( n, request );
 
   const char *block0Data = block0->data();
   QCOMPARE( block0Data[0], 2 ); // will be edited to 1
@@ -994,7 +994,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   QCOMPARE( spy.size(), 1 );
 
   // check values after change, before committing
-  std::unique_ptr<QgsPointCloudBlock> block1 = layer->subIndex( 0 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block1 = layer->subIndexes().at( 0 ).index().nodeData( n, request );
   const char *block1Data = block1->data();
 
   QCOMPARE( block1Data[0], 1 ); // edited to 1
@@ -1016,7 +1016,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   QCOMPARE( spy.size(), 2 );
 
   // check values after committing changes
-  std::unique_ptr<QgsPointCloudBlock> block2 = layer->subIndex( 0 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block2 = layer->subIndexes().at( 0 ).index().nodeData( n, request );
   const char *block2Data = block2->data();
 
   QCOMPARE( block2Data[0], 1 );
@@ -1038,7 +1038,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
 
   // check values in the new layer
   layerNew->dataProvider()->loadSubIndex( 0 );
-  std::unique_ptr<QgsPointCloudBlock> block3 = layerNew->subIndex( 0 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block3 = layerNew->subIndexes().at( 0 ).index().nodeData( n, request );
   const char *block3Data = block3->data();
 
   QCOMPARE( block3Data[0], 1 ); // will be edited to 3
@@ -1058,7 +1058,7 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   mappedPoints.insert( 0, points );
 
   layerNew->dataProvider()->loadSubIndex( 1 );
-  std::unique_ptr<QgsPointCloudBlock> block4 = layerNew->subIndex( 1 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block4 = layerNew->subIndexes().at( 1 ).index().nodeData( n, request );
   const char *block4Data = block4->data();
 
   QCOMPARE( block4Data[0], 2 );
@@ -1085,9 +1085,9 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   QCOMPARE( spy2.size(), 1 );
 
   // check values after modifying
-  std::unique_ptr<QgsPointCloudBlock> block5 = layerNew->subIndex( 0 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block5 = layerNew->subIndexes().at( 0 ).index().nodeData( n, request );
   const char *block5Data = block5->data();
-  std::unique_ptr<QgsPointCloudBlock> block6 = layerNew->subIndex( 1 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block6 = layerNew->subIndexes().at( 1 ).index().nodeData( n, request );
   const char *block6Data = block6->data();
 
   QCOMPARE( block5Data[0], 3 ); // edited to 3
@@ -1120,9 +1120,9 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   QCOMPARE( layerNew->undoStack()->count(), 0 );
   QCOMPARE( spy2.size(), 2 );
 
-  std::unique_ptr<QgsPointCloudBlock> block7 = layerNew->subIndex( 0 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block7 = layerNew->subIndexes().at( 0 ).index().nodeData( n, request );
   const char *block7Data = block7->data();
-  std::unique_ptr<QgsPointCloudBlock> block8 = layerNew->subIndex( 1 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block8 = layerNew->subIndexes().at( 1 ).index().nodeData( n, request );
   const char *block8Data = block8->data();
 
   QCOMPARE( block7Data[0], 3 );
@@ -1155,9 +1155,9 @@ void TestQgsPointCloudEditing::testVPCCommitChanges()
   // check values in the new layer
   layerNew2->dataProvider()->loadSubIndex( 0 );
   layerNew2->dataProvider()->loadSubIndex( 1 );
-  std::unique_ptr<QgsPointCloudBlock> block9 = layerNew2->subIndex( 0 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block9 = layerNew2->subIndexes().at( 0 ).index().nodeData( n, request );
   const char *block9Data = block9->data();
-  std::unique_ptr<QgsPointCloudBlock> block10 = layerNew2->subIndex( 1 ).index().nodeData( n, request );
+  std::unique_ptr<QgsPointCloudBlock> block10 = layerNew2->subIndexes().at( 1 ).index().nodeData( n, request );
   const char *block10Data = block10->data();
 
   QCOMPARE( block9Data[0], 3 );

@@ -296,7 +296,6 @@ otherwise the index is fetched from the data provider.
 %End
 
 
-
     bool isVpc() const;
 %Docstring
 Returns whether the layer has a virtual point cloud data provider or

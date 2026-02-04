@@ -358,15 +358,6 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
     QVector<QgsPointCloudSubIndex> subIndexes() const SIP_SKIP;
 
     /**
-     * Returns the QgsPointCloudSubIndex at requested position (only if the layer has a virtual point cloud data provider).
-     * If the layer is editable, QgsPointCloudSubIndex index() method points to the QgsPointCloudEditingIndex,
-     * otherwise the index is fetched from the data provider.
-     *
-     * \since QGIS 4.0
-     */
-    QgsPointCloudSubIndex subIndex( int i ) const SIP_SKIP;
-
-    /**
      * Returns whether the layer has a virtual point cloud data provider or not.
      *
      * \since QGIS 4.0

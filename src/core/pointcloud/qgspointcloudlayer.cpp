@@ -1213,7 +1213,7 @@ bool QgsPointCloudLayer::changeAttributeValue( const QHash<int, QHash<QgsPointCl
     // NOLINTBEGIN(bugprone-branch-clone)
     if ( mIsVpc )
     {
-      QgsPointCloudIndex index = subIndex( position ).index();
+      QgsPointCloudIndex index = subIndexes().at( position ).index();
       if ( !index || !index.isValid() )
         return false;
 
@@ -1326,39 +1326,6 @@ QVector<QgsPointCloudSubIndex> QgsPointCloudLayer::subIndexes() const
   }
 
   return indexes;
-}
-
-QgsPointCloudSubIndex QgsPointCloudLayer::subIndex( int i ) const
-{
-  if ( !mDataProvider || !mIsVpc )
-    return QgsPointCloudSubIndex();
-
-  QVector<QgsPointCloudSubIndex> indexes = mDataProvider->subIndexes();
-  if ( i < 0 || i > indexes.size() )
-    return QgsPointCloudSubIndex();
-
-  if ( !mEditable )
-  {
-    return indexes[ i ];
-  }
-
-  QgsPointCloudSubIndex sub = indexes.at( i );
-  if ( sub.index() && sub.index().isValid() )
-  {
-    if ( !mEditingIndexes.contains( i ) )
-    {
-      QgsPointCloudIndex index = sub.index();
-
-      if ( index.isValid() )
-      {
-        QgsPointCloudIndex editIndex( new QgsPointCloudEditingIndex( index ) );
-        mEditingIndexes[ i ] = editIndex;
-      }
-    }
-    sub.setIndex( mEditingIndexes[ i ] );
-  }
-
-  return sub;
 }
 
 QgsPointCloudIndex QgsPointCloudLayer::overview() const
