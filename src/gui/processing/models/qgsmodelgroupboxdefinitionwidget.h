@@ -47,13 +47,13 @@ class GUI_EXPORT QgsModelGroupBoxDefinitionPanelWidget : public QgsProcessingMod
     Q_OBJECT
   public:
     /**
-   * Constructor for QgsModelGroupBoxDefinitionPanelWidget, for the specified group \a box.
-   */
+     * Constructor for QgsModelGroupBoxDefinitionPanelWidget, for the specified group \a box.
+     */
     QgsModelGroupBoxDefinitionPanelWidget( const QgsProcessingModelGroupBox &box, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
-   * Returns a new instance of the group box, using the current settings defined in the dialog.
-   */
+     * Returns a new instance of the group box, using the current settings defined in the dialog.
+     */
     QgsProcessingModelGroupBox groupBox() const;
 
   private:

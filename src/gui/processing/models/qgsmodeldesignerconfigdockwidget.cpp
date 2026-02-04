@@ -29,6 +29,7 @@ QgsModelDesignerConfigDockWidget::QgsModelDesignerConfigDockWidget( QWidget *par
   setupUi( this );
 
   mStackedWidget->setCurrentWidget( mNoComponentPage );
+  connect( mButtonBox->button( QDialogButtonBox::Apply ), &QPushButton::clicked, this, &QgsModelDesignerConfigDockWidget::apply );
 }
 
 void QgsModelDesignerConfigDockWidget::showComponentConfig( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext )
@@ -38,12 +39,21 @@ void QgsModelDesignerConfigDockWidget::showComponentConfig( QgsProcessingModelCo
   QgsProcessingModelConfigWidget *widget = QgsGui::processingGuiRegistry()->createModelConfigWidgetForComponent( component, context, widgetContext );
   if ( widget )
   {
-    widget->setDockMode( true );
+    mCurrentWidget = widget;
+    mCurrentWidget->setDockMode( true );
     mStackedWidget->setCurrentWidget( mComponentConfigPage );
-    mWidgetStack->setMainPanel( widget );
+    mWidgetStack->setMainPanel( mCurrentWidget );
   }
   else
   {
     mStackedWidget->setCurrentWidget( mNoComponentPage );
+  }
+}
+
+void QgsModelDesignerConfigDockWidget::apply()
+{
+  if ( mCurrentWidget )
+  {
+    mCurrentWidget->apply();
   }
 }
