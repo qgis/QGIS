@@ -27,7 +27,6 @@
 #include "qgslinestring.h"
 #include "qgsmessagelog.h"
 #include "qgsogrutils.h"
-#include "qgspaintenginehack.h"
 #include "qgsprojectstylesettings.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"
@@ -1367,12 +1366,6 @@ void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPdfWriter *device
   // TODO: add option for this in layout
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
   //printer.setFontEmbeddingEnabled( true );
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 3, 0)
-  // paint engine hack not required, fixed upstream
-#else
-  QgsPaintEngineHack::fixEngineFlags( static_cast<QPaintDevice *>( device )->paintEngine() );
-#endif
 }
 
 void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPagedPaintDevice *device, bool setFirstPageSize )
