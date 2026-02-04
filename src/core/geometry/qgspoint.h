@@ -152,6 +152,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /**
      * Create a new point from a QVector3D.
      *
+     * \param vect vector to copy data from
      * \note Not available in Python bindings
      * \since QGIS 4.0
      */
@@ -160,6 +161,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /**
      * Create a new point from a QVector4D.
      *
+     * \param vect vector to copy data from
      * \note Not available in Python bindings
      * \since QGIS 4.0
      */
@@ -168,6 +170,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     /**
      * Create a new point from a QVector3D.
      *
+     * \param vect vector to copy data from
      * \note Not available in Python bindings
      * \since QGIS 4.0
      */
