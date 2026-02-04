@@ -489,6 +489,10 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     {
       mDiagramWidget = widget;
     }
+    else
+    {
+      delete current;
+    }
   }
 
   mWidgetStack->clear();
