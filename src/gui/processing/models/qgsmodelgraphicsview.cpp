@@ -377,12 +377,13 @@ void QgsModelGraphicsView::keyPressEvent( QKeyEvent *event )
     {
       QPointF delta = deltaForKeyEvent( event );
 
-      itemList.at( 0 )->aboutToChange( tr( "Move Items" ) );
+      startMacroCommand( tr( "Move Items" ) );
       for ( QgsModelComponentGraphicItem *item : itemList )
       {
         item->moveComponentBy( delta.x(), delta.y() );
       }
       itemList.at( 0 )->changed();
+      endMacroCommand();
     }
     event->accept();
   }
