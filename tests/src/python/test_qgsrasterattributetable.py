@@ -18,7 +18,7 @@ import shutil
 
 import numpy as np
 from osgeo import gdal, osr
-from qgis.PyQt.QtCore import QTemporaryDir, QVariant
+from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant, QDateTime
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
@@ -1525,15 +1525,15 @@ class TestQgsRasterAttributeTable(QgisTestCase):
   <Row index="0">
     <F>1</F>
     <F>false</F>
-    <F>XXXXXX</F>
     <F>2.3</F>
+    <F>XXXXXX</F>
     <F>2023/01/01 00:00:00+00</F>
   </Row>
   <Row index="1">
     <F>2</F>
     <F>true</F>
-    <F>XXXXXX</F>
     <F>3.4</F>
+    <F>XXXXXX</F>
     <F>2023/06/01 12:30:45+00</F>
   </Row>
 </GDALRasterAttributeTable>
@@ -1564,8 +1564,31 @@ class TestQgsRasterAttributeTable(QgisTestCase):
                 {"id": QVariant.Int},
                 {"bool_field": QVariant.Bool},
                 {"real_field": QVariant.Double},
-                # {"wkb_field": QVariant.UnknownType},
+                # "wkb_field" skipped due to unhandled type
                 {"datetime_field": QVariant.DateTime},
+            ],
+        )
+
+        # Check data
+        self.assertEqual(
+            rat.data(),
+            [
+                [
+                    1,
+                    False,
+                    2.3,
+                    QDateTime.fromString(
+                        "2023/01/01 00:00:00+00", Qt.DateFormat.ISODate
+                    ),
+                ],
+                [
+                    2,
+                    True,
+                    3.4,
+                    QDateTime.fromString(
+                        "2023/06/01 12:30:45+00", Qt.DateFormat.ISODate
+                    ),
+                ],
             ],
         )
 
