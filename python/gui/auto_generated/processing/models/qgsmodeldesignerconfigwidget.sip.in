@@ -63,6 +63,8 @@ Check if a model ``component`` is supported for this widget.
 Factory function to create the widget on demand as needed by the dock.
 
 :param component: model component to create widget for
+:param context: processing context
+:param widgetContext: processing widget context
 %End
 };
 

@@ -66,6 +66,8 @@ class GUI_EXPORT QgsProcessingModelConfigWidgetFactory : public QObject
     /**
      * Factory function to create the widget on demand as needed by the dock.
      * \param component model component to create widget for
+     * \param context processing context
+     * \param widgetContext processing widget context
      */
     virtual QgsProcessingModelConfigWidget *createWidget( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext ) const = 0 SIP_FACTORY;
 };
