@@ -29,28 +29,6 @@
 
 using namespace Qt::StringLiterals;
 
-QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( QgsPointCloudLayer *layer )
-{
-  if ( !layer ||
-       !layer->dataProvider() ||
-       !layer->dataProvider()->hasValidIndex() ||
-       !( layer->dataProvider()->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues ) )
-    return;
-
-  mUri = layer->source();
-  mIndex = layer->dataProvider()->index();
-
-  mAttributes = mIndex.attributes();
-  mScale = mIndex.scale();
-  mOffset = mIndex.offset();
-  mExtent = mIndex.extent();
-  mZMin = mIndex.zMin();
-  mZMax = mIndex.zMax();
-  mRootBounds = mIndex.rootNodeBounds();
-  mSpan = mIndex.span();
-  mIsValid = true;
-}
-
 QgsPointCloudEditingIndex::QgsPointCloudEditingIndex( const QgsPointCloudIndex &index )
 {
   if ( !index.isValid() )

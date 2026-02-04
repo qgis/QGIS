@@ -35,8 +35,6 @@ class QgsPointCloudLayer;
 class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
 {
   public:
-    //! Ctor
-    explicit QgsPointCloudEditingIndex( QgsPointCloudLayer *layer );
     //! Constructor
     explicit QgsPointCloudEditingIndex( const QgsPointCloudIndex &index );
 
