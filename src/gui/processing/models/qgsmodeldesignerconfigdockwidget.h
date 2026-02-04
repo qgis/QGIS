@@ -47,6 +47,13 @@ class GUI_EXPORT QgsModelDesignerConfigDockWidget : public QWidget, private Ui::
      */
     QgsModelDesignerConfigDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Shows the configuration widget for a \a component in the model.
+     *
+     * \param component model component to create widget for
+     * \param context processing context
+     * \param widgetContext processing widget context
+     */
     void showComponentConfig( QgsProcessingModelComponent *component, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext );
 };
 
