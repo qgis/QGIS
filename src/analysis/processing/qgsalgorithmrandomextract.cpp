@@ -43,7 +43,6 @@ void QgsRandomExtractSelectAlgorithmBase::sampleFeatureIds( QgsFeatureSource *so
       return;
     allFeats.push_back( f.id() );
   }
-  feedback->pushInfo( QObject::tr( "Done." ) );
 
   // initialize random engine
   std::random_device randomDevice;
@@ -143,7 +142,7 @@ void QgsRandomExtractAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Number of features" ) << QObject::tr( "Percentage of features" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( u"NUMBER"_s, QObject::tr( "Number/percentage of features" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"NUMBER"_s, QObject::tr( "Number/percentage of features" ), Qgis::ProcessingNumberParameterType::Double, 10, false, 0 ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted (random)" ) ) );
 }
@@ -160,13 +159,13 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
   const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
-  long long number = parameterAsInt( parameters, u"NUMBER"_s, context );
+  double number = parameterAsDouble( parameters, u"NUMBER"_s, context );
   const long long count = source->featureCount();
 
   if ( method == 0 )
   {
     // number of features
-    if ( number > count )
+    if ( number > static_cast<double>( count ) )
       throw QgsProcessingException( QObject::tr( "Selected number is greater than feature count. Choose a lower value and try again." ) );
   }
   else
@@ -175,10 +174,10 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     if ( number > 100 )
       throw QgsProcessingException( QObject::tr( "Percentage can't be greater than 100. Choose a lower value and try again." ) );
 
-    number = static_cast<long long>( std::ceil( number * count / 100 ) );
+    number = std::ceil( number * static_cast<double>( count ) / 100 );
   }
 
-  sampleFeatureIds( source.get(), number, feedback );
+  sampleFeatureIds( source.get(), static_cast<long long>( number ), feedback );
 
   feedback->pushInfo( QObject::tr( "Adding selected features" ) );
   QgsFeature f;
@@ -238,7 +237,7 @@ void QgsRandomSelectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Number of features" ) << QObject::tr( "Percentage of features" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( u"NUMBER"_s, QObject::tr( "Number/percentage of features" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"NUMBER"_s, QObject::tr( "Number/percentage of features" ), Qgis::ProcessingNumberParameterType::Double, 10, false, 0 ) );
 
   addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Selected (random)" ) ) );
 }
@@ -252,13 +251,13 @@ QVariantMap QgsRandomSelectionAlgorithm::processAlgorithm( const QVariantMap &pa
     throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT." ) );
 
   const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
-  long long number = parameterAsInt( parameters, u"NUMBER"_s, context );
+  double number = parameterAsDouble( parameters, u"NUMBER"_s, context );
   const long long count = mTargetLayer->featureCount();
 
   if ( method == 0 )
   {
     // number of features
-    if ( number > count )
+    if ( number > static_cast<double>( count ) )
       throw QgsProcessingException( QObject::tr( "Selected number is greater than feature count. Choose a lower value and try again." ) );
   }
   else
@@ -267,11 +266,11 @@ QVariantMap QgsRandomSelectionAlgorithm::processAlgorithm( const QVariantMap &pa
     if ( number > 100 )
       throw QgsProcessingException( QObject::tr( "Percentage can't be greater than 100. Choose a lower value and try again." ) );
 
-    number = static_cast<long long>( std::ceil( number * count / 100 ) );
+    number = std::ceil( number * static_cast<double>( count ) / 100 );
   }
 
   // Insert the selected features into a QgsFeatureIds set
-  sampleFeatureIds( mTargetLayer, number, feedback );
+  sampleFeatureIds( mTargetLayer, static_cast<long long>( number ), feedback );
 
   return QVariantMap();
 }
