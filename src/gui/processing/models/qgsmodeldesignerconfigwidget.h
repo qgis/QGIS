@@ -20,6 +20,7 @@
 #define QGSPROCESSINGMODELDESIGNERCONFIGWIDGET_H
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include "qgspanelwidget.h"
 
 class QgsProcessingContext;
