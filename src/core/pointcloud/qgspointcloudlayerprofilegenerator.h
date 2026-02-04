@@ -22,31 +22,26 @@
 #include <memory>
 
 #include "qgis_core.h"
-#include "qgis_sip.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinatetransformcontext.h"
-#include "qgsgeos.h"
-#include "qgslinesymbol.h"
 #include "qgspointcloudattribute.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
-#include "qgsvector3d.h"
 
-class QgsProfileRequest;
-class QgsCurve;
-class QgsPointCloudLayer;
 class QgsAbstractTerrainProvider;
-class QgsProfileSnapContext;
-class QgsPointCloudRenderer;
-class QgsPointCloudNodeId;
-class QgsPointCloudIndex;
-class QgsPointCloudRequest;
-class QgsPointCloudBlock;
+class QgsCurve;
 class QgsGeos;
+class QgsPointCloudBlock;
+class QgsPointCloudLayer;
+class QgsPointCloudNodeId;
+class QgsPointCloudRenderer;
+class QgsPointCloudRequest;
 class QgsPreparedPointCloudRendererData;
+class QgsProfileRequest;
+class QgsProfileSnapContext;
 
 #define SIP_NO_FILE
 

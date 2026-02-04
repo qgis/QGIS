@@ -16,7 +16,7 @@
 #ifndef QGS3DAXISSETTINGS_H
 #define QGS3DAXISSETTINGS_H
 
-#include "qgs3daxisrenderview.h"
+#include "qgis_3d.h"
 
 #include <QMap>
 #include <QString>

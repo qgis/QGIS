@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgis.h"
 #include "qgs3d.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"

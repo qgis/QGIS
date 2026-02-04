@@ -19,8 +19,12 @@
 #define QGSPOINTCLOUDEXPRESSIONNODEIMPL_H
 
 #include "qgsexpressionnodeimpl.h"
-#include "qgspointcloudblock.h"
 #include "qgspointcloudexpressionnode.h"
+
+#include <QString>
+
+class QgsPointCloudAttribute;
+class QgsPointCloudBlock;
 
 #define ENSURE_NO_EVAL_ERROR   {  if ( parent->hasEvalError() ) return std::numeric_limits<double>::quiet_NaN(); }
 

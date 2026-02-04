@@ -21,7 +21,6 @@
 
 #include "delaunator.hpp"
 #include "qgsapplication.h"
-#include "qgscolorramp.h"
 #include "qgselevationmap.h"
 #include "qgslogger.h"
 #include "qgsmapclippingutils.h"

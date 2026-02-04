@@ -18,11 +18,11 @@
 
 #include "ui_qgspointcloud3dsymbolwidget.h"
 
-#include "qgspointcloud3dsymbol.h"
-
-class QgsPointCloudLayer;
+class QgsContrastEnhancement;
 class QgsPointCloud3DSymbol;
 class QgsPointCloudClassifiedRendererWidget;
+class QgsPointCloudLayer;
+class QgsRgbPointCloud3DSymbol;
 
 class QgsPointCloud3DSymbolWidget : public QWidget, private Ui::QgsPointCloud3DSymbolWidget
 {

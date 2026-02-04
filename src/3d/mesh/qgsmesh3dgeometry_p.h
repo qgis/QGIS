@@ -19,7 +19,6 @@
 #define QGSMESHGEOMETRY_P_H
 
 #include "qgsmaplayerref.h"
-#include "qgsmesh3dsymbol.h"
 #include "qgsrectangle.h"
 #include "qgstriangularmesh.h"
 #include "qgsvector3d.h"
@@ -27,7 +26,6 @@
 #include <QFuture>
 #include <QVector3D>
 #include <Qt3DCore/QGeometry>
-#include <Qt3DExtras/qt3dextras_global.h>
 
 ///@cond PRIVATE
 
@@ -48,6 +46,7 @@ namespace Qt3DCore
   class QBuffer;
 } // namespace Qt3DCore
 
+class QgsMesh3DSymbol;
 class QgsMeshLayer;
 
 /**
