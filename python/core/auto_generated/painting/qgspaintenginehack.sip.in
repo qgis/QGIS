@@ -1,0 +1,34 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgspaintenginehack.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+class QgsPaintEngineHack : QPaintEngine /Deprecated="Since 4.0. This class no longer does anything and will be removed in QGIS 5.0."/
+{
+%Docstring(signature="appended")
+Hack to workaround Qt #5114 by disabling PatternTransform.
+
+.. deprecated:: 4.0
+
+   This class no longer does anything and will be removed in QGIS 5.0.
+%End
+
+%TypeHeaderCode
+#include "qgspaintenginehack.h"
+%End
+  public:
+    void fixFlags();
+    static void fixEngineFlags( QPaintEngine *engine );
+};
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/painting/qgspaintenginehack.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

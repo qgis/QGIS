@@ -518,6 +518,7 @@
 %Include auto_generated/painting/qgsgeometrypaintdevice.sip
 %Include auto_generated/painting/qgsmaskpaintdevice.sip
 %Include auto_generated/painting/qgsnullpainterdevice.sip
+%Include auto_generated/painting/qgspaintenginehack.sip
 %Include auto_generated/painting/qgspainting.sip
 %Include auto_generated/pdf/qgspdfrenderer.sip
 %Include auto_generated/plot/qgsbarchartplot.sip
