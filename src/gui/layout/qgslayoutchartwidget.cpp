@@ -60,6 +60,13 @@ QgsLayoutChartWidget::QgsLayoutChartWidget( QgsLayoutItemChart *chartItem )
   connect( mRemoveSeriesPushButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mRemoveSeriesPushButton_clicked );
   connect( mSeriesPropertiesButton, &QPushButton::clicked, this, &QgsLayoutChartWidget::mSeriesPropertiesButton_clicked );
 
+  mLinkedMapComboBox->setCurrentLayout( mChartItem->layout() );
+  mLinkedMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
+  connect( mLinkedMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutChartWidget::mLinkedMapComboBox_itemChanged );
+
+  connect( mFilterOnlyVisibleFeaturesCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mFilterOnlyVisibleFeaturesCheckBox_stateChanged );
+  connect( mIntersectAtlasCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutChartWidget::mIntersectAtlasCheckBox_stateChanged );
+
   setGuiElementValues();
 
   connect( mChartItem, &QgsLayoutObject::changed, this, &QgsLayoutChartWidget::setGuiElementValues );
@@ -116,6 +123,13 @@ void QgsLayoutChartWidget::setGuiElementValues()
     {
       addSeriesListItem( series.name() );
     }
+
+    whileBlocking( mFilterOnlyVisibleFeaturesCheckBox )->setChecked( mChartItem->filterOnlyVisibleFeatures() );
+    mLinkedMapLabel->setEnabled( mFilterOnlyVisibleFeaturesCheckBox->isChecked() );
+    mLinkedMapComboBox->setEnabled( mFilterOnlyVisibleFeaturesCheckBox->isChecked() );
+    whileBlocking( mLinkedMapComboBox )->setItem( mChartItem->map() );
+
+    whileBlocking( mIntersectAtlasCheckBox )->setChecked( mChartItem->filterToAtlasFeature() );
   }
   else
   {
@@ -397,4 +411,49 @@ void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
   } );
 
   openPanel( widget );
+}
+
+void QgsLayoutChartWidget::mLinkedMapComboBox_itemChanged( QgsLayoutItem *item )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Change Chart Map Item" ) );
+  mChartItem->setMap( qobject_cast<QgsLayoutItemMap *>( item ) );
+  mChartItem->endCommand();
+  mChartItem->update();
+}
+
+void QgsLayoutChartWidget::mFilterOnlyVisibleFeaturesCheckBox_stateChanged( int state )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Toggle Visible Features Only Filter" ) );
+  const bool useOnlyVisibleFeatures = ( state == Qt::Checked );
+  mChartItem->setFilterOnlyVisibleFeatures( useOnlyVisibleFeatures );
+  mChartItem->endCommand();
+  mChartItem->update();
+
+  //enable/disable map combobox based on state of checkbox
+  mLinkedMapComboBox->setEnabled( state == Qt::Checked );
+  mLinkedMapLabel->setEnabled( state == Qt::Checked );
+}
+
+void QgsLayoutChartWidget::mIntersectAtlasCheckBox_stateChanged( int state )
+{
+  if ( !mChartItem )
+  {
+    return;
+  }
+
+  mChartItem->beginCommand( tr( "Toggle Chart Atlas Filter" ) );
+  const bool filterToAtlas = ( state == Qt::Checked );
+  mChartItem->setFilterToAtlasFeature( filterToAtlas );
+  mChartItem->endCommand();
+  mChartItem->update();
 }
