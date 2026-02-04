@@ -187,7 +187,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       appendError( QgsErrorMessage( u"Could not download file: %1"_s.arg( reply.errorString() ) ) );
       return;
     }
-    bool mAllLocalFiles = false;
+    mAllLocalFiles = false;
   }
   else
   {
