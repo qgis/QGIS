@@ -199,8 +199,8 @@ specify the algorithm or model associated with the parameter.
 Returns a new instance of a parameter definition, using the current
 settings defined in the dialog.
 
-- The ``name`` parameter specifies the name for the newly created
-  parameter.
+The ``name`` parameter specifies the name for the newly created
+parameter.
 %End
 
     void setComments( const QString &comments );
