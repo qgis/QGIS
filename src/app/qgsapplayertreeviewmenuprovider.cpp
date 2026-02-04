@@ -658,6 +658,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
               menuExportVector->addAction( actionSaveAsDefinitionLayer );
               if ( vlayer->isSpatial() )
               {
+                // TODO QGIS 5.0 this can be removed as Load Style…/Save Style… exist in Styles submenu
                 QAction *actionSaveStyle = new QAction( tr( "Save as &QGIS Layer Style File…" ), menuExportVector );
                 connect( actionSaveStyle, &QAction::triggered, QgisApp::instance(), [] { QgisApp::instance()->saveStyleFile(); } );
                 menuExportVector->addAction( actionSaveStyle );
