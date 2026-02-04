@@ -323,7 +323,7 @@ QgsPointCloudLayerChunkedEntity::~QgsPointCloudLayerChunkedEntity()
 QgsPointCloudIndex QgsPointCloudLayerChunkedEntity::resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition )
 {
   if ( indexPosition >= 0 && pcl->isVpc() )
-    return pcl->subIndex( indexPosition ).index();
+    return pcl->subIndexes().at( indexPosition ).index();
   else if ( indexPosition == -1 && !pcl->isVpc() )
     return pcl->index();
   else if ( indexPosition == -2 && pcl->isVpc() )
@@ -337,7 +337,7 @@ void QgsPointCloudLayerChunkedEntity::updateIndex()
   if ( mLayer->isVpc() )
   {
     if ( mIndexPosition >= 0 )
-      static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->subIndex( mIndexPosition ).index();
+      static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->subIndexes().at( mIndexPosition ).index();
   }
   else
     static_cast<QgsPointCloudLayerChunkLoaderFactory *>( mChunkLoaderFactory )->mPointCloudIndex = mLayer->index();

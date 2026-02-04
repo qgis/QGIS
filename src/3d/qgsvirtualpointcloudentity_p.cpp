@@ -60,7 +60,7 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
 
   if ( provider()->overview() )
   {
-    // use -2 as a special indentifier for overview files in chunked entity
+    // use -2 as a special identifier for overview files in chunked entity
     mOverviewEntity = new QgsPointCloudLayerChunkedEntity(
       mapSettings(),
       mLayer,

@@ -45,7 +45,7 @@ QgsPointCloudLayerUndoCommandChangeAttribute::QgsPointCloudLayerUndoCommandChang
     if ( position < 0 )
       index = mLayer->index();
     else
-      index = mLayer->subIndex( position ).index();
+      index = mLayer->subIndexes().at( position ).index();
     const auto &nodes = it.value();
     for ( auto nodeIt = nodes.constBegin(); nodeIt != nodes.constEnd(); ++nodeIt )
     {
@@ -131,7 +131,7 @@ void QgsPointCloudLayerUndoCommandChangeAttribute::undoRedoPrivate( bool isUndo 
     if ( position < 0 )
       index = mLayer->index();
     else
-      index = mLayer->subIndex( position ).index();
+      index = mLayer->subIndexes().at( position ).index();
     QgsPointCloudEditingIndex *editIndex = dynamic_cast<QgsPointCloudEditingIndex *>( index.get() );
     QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( editIndex->backingIndex().get() );
 
