@@ -252,7 +252,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     std::unique_ptr< QgsLayoutItemElevationProfilePlot > mPlot;
 
     QList< QgsMapLayerRef > mLayers;
-    QList< QgsAbstractProfileSource * > mSources;
+    QList< std::variant< QgsMapLayerRef, QgsAbstractProfileSource * > > mSources;
 
     QgsCoordinateReferenceSystem mCrs;
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;

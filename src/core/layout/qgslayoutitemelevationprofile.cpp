@@ -509,7 +509,7 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
     // Legacy: If we have layers, extract their sources and return them.
     // We don't set mSources here, because we want the previous check to
     // continue failing if only layers are set.
-    // TODO: Remove in QGIS 5.0.
+    // TODO: Remove this if block in QGIS 5.0 along with setLayers/layers methods.
     QList< QgsAbstractProfileSource * > sources;
     const QList<QgsMapLayer *> layersToGenerate = layers();
     sources.reserve( layersToGenerate.size() );
@@ -529,12 +529,45 @@ QList<QgsAbstractProfileSource *> QgsLayoutItemElevationProfile::sources() const
     return sources;
   }
 
-  return mSources;
+  QList< QgsAbstractProfileSource * > sources;
+  sources.reserve( mSources.count() );
+  for ( auto source : mSources )
+  {
+    if ( QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
+    {
+      if ( QgsMapLayer *layer = layerRef->get() )
+      {
+        sources << layer->profileSource();
+      }
+    }
+    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    {
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        sources << *profileSource;
+      }
+    }
+  }
+
+  return sources;
 }
 
 void QgsLayoutItemElevationProfile::setSources( const QList<QgsAbstractProfileSource *> &sources )
 {
-  mSources = sources;
+  mSources.clear();
+  mSources.reserve( sources.count() );
+  for ( auto *profileSource : sources )
+  {
+    if ( auto layerRef = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( profileSource ) ) )
+    {
+      mSources << layerRef;
+    }
+    else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
+    {
+      mSources << profileSource;
+    }
+  }
+
   invalidateCache();
 }
 
@@ -888,24 +921,28 @@ bool QgsLayoutItemElevationProfile::writePropertiesToElement( QDomElement &layou
 
   {
     QDomElement sourcesElement = doc.createElement( u"profileSources"_s );
-    for ( QgsAbstractProfileSource *source : mSources )
+    for ( auto source : mSources )
     {
-      if ( source )
+      if ( QgsMapLayerRef *layerRef = std::get_if< QgsMapLayerRef >( &source ) )
       {
-        if ( QgsApplication::profileSourceRegistry()->findSourceById( source->profileSourceId() ) )
-        {
-          QDomElement sourceElement = doc.createElement( u"profileCustomSource"_s );
-          sourceElement.setAttribute( u"id"_s, source->profileSourceId() );
-          sourcesElement.appendChild( sourceElement );
-        }
-        else if ( auto layer = QgsMapLayerRef( dynamic_cast<QgsMapLayer *>( source ) ) )
+        if ( layerRef->get() )
         {
           QDomElement sourceElement = doc.createElement( u"profileLayerSource"_s );
-          layer.writeXml( sourceElement, rwContext );
+          layerRef->writeXml( sourceElement, rwContext );
+          sourcesElement.appendChild( sourceElement );
+        }
+      }
+      else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+      {
+        if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+        {
+          QDomElement sourceElement = doc.createElement( u"profileCustomSource"_s );
+          sourceElement.setAttribute( u"id"_s, ( *profileSource )->profileSourceId() );
           sourcesElement.appendChild( sourceElement );
         }
       }
     }
+
     layoutProfileElem.appendChild( sourcesElement );
   }
 
@@ -974,6 +1011,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
 
   {
     mSources.clear();
+    mSources.reserve( itemElem.elementsByTagName( u"profileSources"_s ).count() );
     const QDomElement sourcesElement = itemElem.firstChildElement( u"profileSources"_s );
     QDomElement sourceElement = sourcesElement.firstChildElement();
     while ( !sourceElement.isNull() )
@@ -983,7 +1021,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         const QString sourceId = sourceElement.attribute( u"id"_s );
         if ( QgsAbstractProfileSource *profileSource = QgsApplication::profileSourceRegistry()->findSourceById( sourceId ) )
         {
-          mSources.append( profileSource );
+          mSources << profileSource ;
         }
       }
       else if ( sourceElement.tagName() == "profileLayerSource"_L1 )
@@ -993,7 +1031,7 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
         ref.resolveWeakly( mLayout->project() );
         if ( ref.get() )
         {
-          mSources.append( ref.get()->profileSource() );
+          mSources << ref;
         }
       }
 
@@ -1011,7 +1049,6 @@ bool QgsLayoutItemElevationProfile::readPropertiesFromElement( const QDomElement
       setSubsectionsSymbol( subSectionsSymbol.release() );
     }
   }
-
 
   return true;
 }
@@ -1204,5 +1241,8 @@ void QgsLayoutItemElevationProfile::setSubsectionsSymbol( QgsLineSymbol *symbol 
 
 void QgsLayoutItemElevationProfile::setSourcesPrivate()
 {
-  mSources = QgsApplication::profileSourceRegistry()->profileSources();
+  mSources.clear();
+  mSources.reserve( QgsApplication::profileSourceRegistry()->profileSources().count() );
+  for ( auto source : QgsApplication::profileSourceRegistry()->profileSources() )
+    mSources << source;
 }
