@@ -157,6 +157,55 @@ void QgsLayoutItemChart::setSortExpression( const QString &expression )
   emit changed();
 }
 
+void QgsLayoutItemChart::setMap( QgsLayoutItemMap *map )
+{
+  if ( mMap == map )
+  {
+    return;
+  }
+
+  if ( mMap )
+  {
+    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemChart::refresh );
+    disconnect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemChart::refresh );
+  }
+  mMap = map;
+  if ( mMap )
+  {
+    connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemChart::refresh );
+    connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemChart::refresh );
+  }
+  refresh();
+
+  emit changed();
+}
+
+void QgsLayoutItemChart::setFilterOnlyVisibleFeatures( const bool visibleOnly )
+{
+  if ( mFilterOnlyVisibleFeatures == visibleOnly )
+  {
+    return;
+  }
+
+  mFilterOnlyVisibleFeatures = visibleOnly;
+  refresh();
+
+  emit changed();
+}
+
+void QgsLayoutItemChart::setFilterToAtlasFeature( const bool filterToAtlas )
+{
+  if ( mFilterToAtlasIntersection == filterToAtlas )
+  {
+    return;
+  }
+
+  mFilterToAtlasIntersection = filterToAtlas;
+  refresh();
+
+  emit changed();
+}
+
 void QgsLayoutItemChart::setSeriesList( const QList<QgsLayoutItemChart::SeriesDetails> &seriesList )
 {
   if ( mSeriesList == seriesList )
@@ -353,6 +402,32 @@ void QgsLayoutItemChart::prepareGatherer()
       request.addOrderBy( mSortExpression, mSortAscending );
     }
 
+    if ( mMap && mFilterOnlyVisibleFeatures )
+    {
+      QgsGeometry visibleRegionGeometry = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
+      if ( mVectorLayer->crs() != mMap->crs() )
+      {
+        const QgsCoordinateTransform transform( mVectorLayer->crs(), mMap->crs(), mLayout->project() );
+        if ( visibleRegionGeometry.transform( transform ) != Qgis::GeometryOperationResult ::Success )
+        {
+          visibleRegionGeometry = QgsGeometry();
+        }
+      }
+      if ( !visibleRegionGeometry.isNull() )
+      {
+        request.setDistanceWithin( visibleRegionGeometry, 0.0 );
+      }
+    }
+
+    if ( mFilterToAtlasIntersection )
+    {
+      const QgsGeometry atlasGeometry = mLayout->reportContext().currentGeometry( mVectorLayer->crs() );
+      if ( !atlasGeometry.isNull() )
+      {
+        request.setDistanceWithin( atlasGeometry, 0.0 );
+      }
+    }
+
     QgsFeatureIterator featureIterator = mVectorLayer->getFeatures( request );
 
     xyGatherer->setFeatureIterator( featureIterator );
@@ -407,6 +482,14 @@ bool QgsLayoutItemChart::writePropertiesToElement( QDomElement &element, QDomDoc
 
   element.setAttribute( u"sortExpression"_s, mSortExpression );
 
+  element.setAttribute( u"filterOnlyVisibleFeatures"_s, mFilterOnlyVisibleFeatures );
+  element.setAttribute( u"filterToAtlasIntersection"_s, mFilterToAtlasIntersection );
+
+  if ( mMap )
+  {
+    element.setAttribute( u"mapUuid"_s, mMap->uuid() );
+  }
+
   return true;
 }
 
@@ -445,7 +528,31 @@ bool QgsLayoutItemChart::readPropertiesFromElement( const QDomElement &element, 
   mSortAscending = element.attribute( u"sortAscending"_s, u"1"_s ).toInt();
   mSortExpression = element.attribute( u"sortExpression"_s );
 
+  mFilterOnlyVisibleFeatures = element.attribute( u"filterOnlyVisibleFeatures"_s, u"1"_s ).toInt();
+  mFilterToAtlasIntersection = element.attribute( u"filterToAtlasIntersection"_s, u"0"_s ).toInt();
+
+  mMapUuid = element.attribute( u"mapUuid"_s );
+  if ( mMap )
+  {
+    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemChart::refresh );
+    disconnect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemChart::refresh );
+    mMap = nullptr;
+  }
+
   mNeedsGathering = true;
 
   return true;
+}
+
+void QgsLayoutItemChart::finalizeRestoreFromXml()
+{
+  if ( !mMap && !mMapUuid.isEmpty() && mLayout )
+  {
+    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mMapUuid, true ) );
+    if ( mMap )
+    {
+      connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemChart::refresh );
+      connect( mMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemChart::refresh );
+    }
+  }
 }
