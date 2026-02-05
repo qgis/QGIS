@@ -186,8 +186,14 @@ QVariantMap QgsPdalBuildVpcAlgorithm::processAlgorithm( const QVariantMap &param
 
   runWrenchProcess( processArgs, feedback );
 
-  if ( multiStepFeedback.isCanceled() )
+  if ( multiStepFeedback.isCanceled() && mConvertToCopc )
+  {
+    if ( mConvertToCopc && !mTemporaryVpcFile.isEmpty() )
+    {
+      QFile::remove( mTemporaryVpcFile );
+    }
     return QVariantMap();
+  }
 
   if ( mConvertToCopc )
   {
@@ -204,6 +210,16 @@ QVariantMap QgsPdalBuildVpcAlgorithm::processAlgorithm( const QVariantMap &param
     applyThreadsParameter( args, context );
 
     runWrenchProcess( args, multiStepFeedback );
+  }
+
+  if ( mConvertToCopc && !mTemporaryVpcFile.isEmpty() )
+  {
+    QFile::remove( mTemporaryVpcFile );
+  }
+
+  if ( multiStepFeedback.isCanceled() )
+  {
+    return QVariantMap();
   }
 
   return getOutputs( parameters, context );
