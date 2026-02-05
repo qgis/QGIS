@@ -1,0 +1,15 @@
+{
+  "name": "project_bookmark",
+  "type": "function",
+  "groups": ["Bookmarks"],
+  "description": "Returns a project bookmark by name.",
+  "arguments": [{
+    "arg": "name",
+    "description": "a project bookmark name"
+  }],
+  "examples": [{
+    "expression": "project_bookmark('Home')",
+    "returns": "A map representing the 'Home' project bookmark."
+  }],
+  "tags": ["bookmarks", "project"]
+}
