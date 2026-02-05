@@ -176,20 +176,18 @@ QVariantMap QgsPdalBuildVpcAlgorithm::processAlgorithm( const QVariantMap &param
 {
   mConvertToCopc = parameterAsBool( parameters, u"CONVERT_COPC"_s, context );
 
-  QgsProcessingMultiStepFeedback *multiStepFeedback = nullptr;
-  if ( mConvertToCopc )
-  {
-    multiStepFeedback = new QgsProcessingMultiStepFeedback( 2, feedback );
-    multiStepFeedback->setCurrentStep( 0 );
-  }
+  QgsProcessingMultiStepFeedback multiStepFeedback( mConvertToCopc ? 2 : 1, feedback );
 
   const QStringList processArgs = createArgumentLists( parameters, context, feedback );
 
   runWrenchProcess( processArgs, feedback );
 
-  if ( mConvertToCopc && multiStepFeedback )
+  if ( multiStepFeedback.isCanceled() )
+    return QVariantMap();
+
+  if ( mConvertToCopc )
   {
-    multiStepFeedback->setCurrentStep( 1 );
+    multiStepFeedback.setCurrentStep( 1 );
 
     QStringList args;
     args.reserve( 5 );
