@@ -139,7 +139,10 @@ class ModelerInputGraphicItem(QgsModelParameterGraphicItem):
     def apply_new_param(
         self, new_param, old_description, old_name, comment, comment_color
     ):
-        self.aboutToChange.emit(self.tr("Edit {}").format(new_param.description()))
+        undo_command_id = f"param:{self.component().parameterName()}"
+        self.aboutToChange.emit(
+            self.tr("Edit {}").format(new_param.description()), undo_command_id
+        )
         self.model().removeModelParameter(self.component().parameterName())
 
         if new_param.description() != old_description:
@@ -208,7 +211,13 @@ class ModelerChildAlgorithmGraphicItem(QgsModelChildAlgorithmGraphicItem):
             # nothing changed, treat as cancel was pressed
             return
 
-        self.aboutToChange.emit(self.tr("Edit {}").format(alg.description()))
+        # TODO -- ideally we'd include the changed parameter name in the
+        # command ID, so that we get more granular undo/redo (i.e. per
+        # parameter change, not per child algorithm change)
+        undo_command_id = f"alg:{self.component().childId()}"
+        self.aboutToChange.emit(
+            self.tr("Edit {}").format(alg.description()), undo_command_id
+        )
         self.model().setChildAlgorithm(alg)
         self.requestModelRepaint.emit()
         self.changed.emit()
@@ -299,7 +308,10 @@ class ModelerOutputGraphicItem(QgsModelOutputGraphicItem):
         model_outputs[model_output.name()] = model_output
         child_alg.setModelOutputs(model_outputs)
 
-        self.aboutToChange.emit(self.tr("Edit {}").format(model_output.description()))
+        undo_command_id = f"output:{name}"
+        self.aboutToChange.emit(
+            self.tr("Edit {}").format(model_output.description()), undo_command_id
+        )
 
         self.model().updateDestinationParameters()
         self.requestModelRepaint.emit()

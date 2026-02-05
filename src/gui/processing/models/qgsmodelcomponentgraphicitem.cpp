@@ -1518,7 +1518,8 @@ bool QgsModelGroupBoxGraphicItem::canDeleteComponent()
 
 void QgsModelGroupBoxGraphicItem::applyEdit( const QgsProcessingModelGroupBox &groupBox )
 {
-  emit aboutToChange( tr( "Edit Group Box" ) );
+  const QString commandId = u"groupbox:%1"_s.arg( groupBox.uuid() );
+  emit aboutToChange( tr( "Edit Group Box" ), commandId );
   model()->addGroupBox( groupBox );
   emit changed();
   emit requestModelRepaint();
