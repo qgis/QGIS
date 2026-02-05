@@ -306,7 +306,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mNameEdit, &QLineEdit::textChanged, this, [this]( const QString &name ) {
     if ( mModel )
     {
-      beginUndoCommand( tr( "Change Model Name" ), NameChanged );
+      beginUndoCommand( tr( "Change Model Name" ), QString(), QgsModelUndoCommand::CommandOperation::NameChanged );
       mModel->setName( name );
       endUndoCommand();
       updateWindowTitle();
@@ -315,7 +315,7 @@ QgsModelDesignerDialog::QgsModelDesignerDialog( QWidget *parent, Qt::WindowFlags
   connect( mGroupEdit, &QLineEdit::textChanged, this, [this]( const QString &group ) {
     if ( mModel )
     {
-      beginUndoCommand( tr( "Change Model Group" ), GroupChanged );
+      beginUndoCommand( tr( "Change Model Group" ), QString(), QgsModelUndoCommand::CommandOperation::GroupChanged );
       mModel->setGroup( group );
       endUndoCommand();
       updateWindowTitle();
@@ -432,7 +432,7 @@ void QgsModelDesignerDialog::closeEvent( QCloseEvent *event )
     event->ignore();
 }
 
-void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
+void QgsModelDesignerDialog::beginUndoCommand( const QString &text, const QString &id, QgsModelUndoCommand::CommandOperation operation )
 {
   if ( mBlockUndoCommands || !mUndoStack )
     return;
@@ -440,7 +440,14 @@ void QgsModelDesignerDialog::beginUndoCommand( const QString &text, int id )
   if ( mActiveCommand )
     endUndoCommand();
 
-  mActiveCommand = std::make_unique<QgsModelUndoCommand>( mModel.get(), text, id );
+  if ( !id.isEmpty() )
+  {
+    mActiveCommand = std::make_unique<QgsModelUndoCommand>( mModel.get(), text, id );
+  }
+  else
+  {
+    mActiveCommand = std::make_unique<QgsModelUndoCommand>( mModel.get(), text, operation );
+  }
 }
 
 void QgsModelDesignerDialog::endUndoCommand()
@@ -528,7 +535,7 @@ void QgsModelDesignerDialog::setModelScene( QgsModelGraphicsScene *scene )
 
     repaintModel();
   } );
-  connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [this]( const QString &description, int id ) { beginUndoCommand( description, id ); } );
+  connect( mScene, &QgsModelGraphicsScene::componentAboutToChange, this, [this]( const QString &description, const QString &id ) { beginUndoCommand( description, id ); } );
   connect( mScene, &QgsModelGraphicsScene::componentChanged, this, [this] { endUndoCommand(); } );
   connect( mScene, &QgsModelGraphicsScene::runFromChild, this, &QgsModelDesignerDialog::runFromChild );
   connect( mScene, &QgsModelGraphicsScene::runSelected, this, &QgsModelDesignerDialog::runSelectedSteps );
