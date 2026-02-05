@@ -32,12 +32,15 @@ class TestQgsMessageLog(QgisTestCase):
         app_log = QgsApplication.messageLog()
 
         # signals should be emitted by application log
-        app_spy = QSignalSpy(app_log.messageReceivedWithType)
+        app_spy = QSignalSpy(app_log.messageReceivedWithFormat)
         app_spy_received = QSignalSpy(app_log.messageReceived[bool])
 
         QgsMessageLog.logMessage("test", "tag", Qgis.MessageLevel.Info, notifyUser=True)
         self.assertEqual(len(app_spy), 1)
-        self.assertEqual(app_spy[-1], ["test", "tag", Qgis.MessageLevel.Info])
+        self.assertEqual(
+            app_spy[-1],
+            ["test", "tag", Qgis.MessageLevel.Info, Qgis.StringFormat.PlainText],
+        )
         # info message, so messageReceived(bool) should not be emitted
         self.assertEqual(len(app_spy_received), 0)
 
@@ -45,7 +48,10 @@ class TestQgsMessageLog(QgisTestCase):
             "test", "tag", Qgis.MessageLevel.Warning, notifyUser=True
         )
         self.assertEqual(len(app_spy), 2)
-        self.assertEqual(app_spy[-1], ["test", "tag", Qgis.MessageLevel.Warning])
+        self.assertEqual(
+            app_spy[-1],
+            ["test", "tag", Qgis.MessageLevel.Warning, Qgis.StringFormat.PlainText],
+        )
         # warning message, so messageReceived(bool) should be emitted
         self.assertEqual(len(app_spy_received), 1)
 
@@ -59,14 +65,17 @@ class TestQgsMessageLog(QgisTestCase):
     def testBlocker(self):
         app_log = QgsApplication.messageLog()
 
-        spy = QSignalSpy(app_log.messageReceivedWithType)
+        spy = QSignalSpy(app_log.messageReceivedWithFormat)
         spy_received = QSignalSpy(app_log.messageReceived[bool])
 
         QgsMessageLog.logMessage(
             "test", "tag", Qgis.MessageLevel.Warning, notifyUser=True
         )
         self.assertEqual(len(spy), 1)
-        self.assertEqual(spy[-1], ["test", "tag", Qgis.MessageLevel.Warning])
+        self.assertEqual(
+            spy[-1],
+            ["test", "tag", Qgis.MessageLevel.Warning, Qgis.StringFormat.PlainText],
+        )
         self.assertEqual(len(spy_received), 1)
 
         # block notifications
