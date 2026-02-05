@@ -99,6 +99,7 @@ Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   , mIsDebugOverlayEnabled( other.mIsDebugOverlayEnabled )
   , mExtent( other.mExtent )
   , mShowExtentIn2DView( other.mShowExtentIn2DView )
+  , mShow2DMapOverlay( other.mShow2DMapOverlay )
 {
   setTerrainSettings( other.mTerrainSettings ? other.mTerrainSettings->clone() : new QgsFlatTerrainSettings() );
 
@@ -297,6 +298,16 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   QDomElement elem3dAxis = elem.firstChildElement( u"axis3d"_s );
   m3dAxisSettings.readXml( elem3dAxis, context );
+
+  QDomElement elemMapOverlay = elem.firstChildElement( u"map-overlay"_s );
+  if ( !elemMapOverlay.isNull() )
+  {
+    mShow2DMapOverlay = elemMapOverlay.attribute( u"enabled"_s, u"0"_s ).toInt();
+  }
+  else
+  {
+    mShow2DMapOverlay = false;
+  }
 }
 
 QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const
@@ -432,6 +443,13 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elem3dAxis = doc.createElement( u"axis3d"_s );
   m3dAxisSettings.writeXml( elem3dAxis, context );
   elem.appendChild( elem3dAxis );
+
+  if ( mShow2DMapOverlay )
+  {
+    QDomElement elemMapOverlay = doc.createElement( u"map-overlay"_s );
+    elemMapOverlay.setAttribute( u"enabled"_s, 1 );
+    elem.appendChild( elemMapOverlay );
+  }
 
   return elem;
 }
@@ -1538,4 +1556,22 @@ void Qgs3DMapSettings::setShowExtentIn2DView( bool show )
 
   mShowExtentIn2DView = show;
   emit showExtentIn2DViewChanged();
+}
+
+bool Qgs3DMapSettings::is2DMapOverlayEnabled() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mShow2DMapOverlay;
+}
+
+void Qgs3DMapSettings::setIs2DMapOverlayEnabled( bool enabled )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( mShow2DMapOverlay == enabled )
+    return;
+
+  mShow2DMapOverlay = enabled;
+  emit show2DMapOverlayChanged();
 }

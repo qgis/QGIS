@@ -32,6 +32,8 @@ set(QGIS_3D_SRCS
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
+  qgsmapoverlayentity.cpp
+  qgsmapoverlaytexturegenerator_p.cpp
   qgsoffscreen3dengine.cpp
   qgsraycastingutils.cpp
   qgsraycastcontext.cpp
@@ -93,12 +95,12 @@ set(QGIS_3D_SRCS
   framegraph/qgsambientocclusionrenderentity.cpp
   framegraph/qgsambientocclusionrenderview.cpp
   framegraph/qgsambientocclusionblurentity.cpp
-  framegraph/qgsdebugtextureentity.cpp
-  framegraph/qgsdebugtexturerenderview.cpp
   framegraph/qgsdepthentity.cpp
   framegraph/qgsdepthrenderview.cpp
   framegraph/qgsforwardrenderview.cpp
   framegraph/qgshighlightsrenderview.cpp
+  framegraph/qgsoverlaytextureentity.cpp
+  framegraph/qgsoverlaytexturerenderview.cpp
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgsrenderpassquad.cpp
   framegraph/qgsshadowrenderview.cpp
@@ -175,6 +177,8 @@ set(QGIS_3D_HDRS
   qgsglobechunkedentity.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
+  qgsmapoverlayentity.h
+  qgsmapoverlaytexturegenerator_p.h
   qgsmeshlayer3drenderer.h
   qgsoffscreen3dengine.h
   qgsraycastingutils.h
@@ -219,14 +223,14 @@ set(QGIS_3D_HDRS
   framegraph/qgsambientocclusionrenderentity.h
   framegraph/qgsambientocclusionrenderview.h
   framegraph/qgsambientocclusionblurentity.h
-  framegraph/qgsdebugtextureentity.h
-  framegraph/qgsdebugtexturerenderview.h
   framegraph/qgsdepthentity.h
   framegraph/qgsdepthrenderview.h
   framegraph/qgsforwardrenderview.h
   framegraph/qgsframegraph.h
   framegraph/qgsframegraphutils.h
   framegraph/qgshighlightsrenderview.h
+  framegraph/qgsoverlaytextureentity.h
+  framegraph/qgsoverlaytexturerenderview.h
   framegraph/qgspostprocessingentity.h
   framegraph/qgsrenderpassquad.h
   framegraph/qgsshadowrenderview.h
