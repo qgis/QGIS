@@ -2,7 +2,7 @@
   "name": "+",
   "type": "operator",
   "groups": ["Operators"],
-  "description": "Addition of two values. If one of the values is NULL the result will be NULL.<br><br><b>Can also concatenate strings, but NULL handling may be unreliable in that context so WE STRONGLY RECOMMEND AGAINST IT</b>. We recommend to use for string concatenation the <b>||</b> operator (propagates NULL) or the <b>concat</b> function (treats NULL as empty string).",
+  "description": "Addition of two values or concatenation of two strings.<br><br>For numeric and datetime operations, if either value is NULL the result will be NULL.<br><br>For string concatenation, NULL values from fields are treated as empty strings. Use the || operator instead if you want NULL propagation for strings.",
   "arguments": [{
     "arg": "a",
     "description": "value"
@@ -16,6 +16,12 @@
   }, {
     "expression": "5 + NULL",
     "returns": "NULL"
+  }, {
+    "expression": "'5' + NULL",
+    "returns": "NULL"
+  }, {
+    "expression": "'5' + \"name\"",
+    "returns": "'5' (if value in \"name\" field is NULL) or a concatenation of the two strings"
   }, {
     "expression": "'QGIS ' + 'ROCKS'",
     "returns": "'QGIS ROCKS'"

@@ -2,7 +2,7 @@
   "name": "concat",
   "type": "function",
   "groups": ["String"],
-  "description": "Concatenates several strings to one. NULL values are converted to empty strings. Other values (like numbers) are converted to strings.<br><br>See also: the <b>||</b> operator, which also concatenates strings but propagates NULL values according to the SQL-standard (if any operand is NULL, the result is NULL).<br><br>Use <b>concat()</b> when you want NULLs treated as empty strings, or <b>||</b> when NULL should make the entire result NULL.",
+  "description": "Concatenates several values to a single string. NULL values are converted to empty strings. Other values (like numbers) are converted to strings.<br><br>See the <b>||</b> function for a different behavior.",
   "variableLenArguments": true,
   "arguments": [{
     "arg": "string1",
