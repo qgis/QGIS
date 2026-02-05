@@ -231,7 +231,7 @@ The default implementation does nothing.
 Emitted by the item to request a repaint of the parent model scene.
 %End
 
-    void aboutToChange( const QString &text, int id = 0 );
+    void aboutToChange( const QString &text, const QString &id = QString() );
 %Docstring
 Emitted when the definition of the associated component is about to be
 changed by the item.

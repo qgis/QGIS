@@ -204,7 +204,7 @@ the model, with an additional margin arounds items.
 Emitted when a change in the model requires a full rebuild of the scene.
 %End
 
-    void componentAboutToChange( const QString &text, int id = 0 );
+    void componentAboutToChange( const QString &text, const QString &id = QString() );
 %Docstring
 Emitted whenever a component of the model is about to be changed.
 

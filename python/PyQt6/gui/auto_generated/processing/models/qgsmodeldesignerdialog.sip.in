@@ -34,7 +34,7 @@ Model designer dialog base class.
     virtual void closeEvent( QCloseEvent *event );
 
 
-    void beginUndoCommand( const QString &text, int id = 0 );
+    void beginUndoCommand( const QString &text, const QString &id = QString() );
 %Docstring
 Starts an undo command. This should be called before any changes are
 made to the model.
