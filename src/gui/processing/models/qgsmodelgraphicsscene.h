@@ -214,7 +214,7 @@ class GUI_EXPORT QgsModelGraphicsScene : public QGraphicsScene
     * The \a text argument gives the translated text describing the change about to occur, and the
     * optional \a id can be used to group the associated undo commands.
      */
-    void componentAboutToChange( const QString &text, int id = 0 );
+    void componentAboutToChange( const QString &text, const QString &id = QString() );
 
     /**
      * Emitted whenever a component of the model is changed.

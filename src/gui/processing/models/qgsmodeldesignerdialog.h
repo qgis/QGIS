@@ -20,6 +20,7 @@
 
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgsmodelundocommand.h"
 #include "qgsprocessingmodelchilddependency.h"
 #include "qgsprocessingtoolboxmodel.h"
 
@@ -68,7 +69,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     /**
      * Starts an undo command. This should be called before any changes are made to the model.
      */
-    void beginUndoCommand( const QString &text, int id = 0 );
+    void beginUndoCommand( const QString &text, const QString &id = QString(), QgsModelUndoCommand::CommandOperation operation SIP_PYARGREMOVE = QgsModelUndoCommand::CommandOperation::Unknown );
 
     /**
      * Ends the current undo command. This should be called after changes are made to the model.
@@ -220,12 +221,6 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void onItemFocused( QgsModelComponentGraphicItem *item );
 
   private:
-    enum UndoCommand
-    {
-      NameChanged = 1,
-      GroupChanged
-    };
-
     std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
 
     QgsScreenHelper *mScreenHelper = nullptr;
