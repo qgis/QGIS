@@ -5,6 +5,7 @@ set(PG_SRCS
   qgspostgresutils.cpp
   qgspostgresprovider.cpp
   qgspostgresconn.cpp
+  qgspostgresconnoauthhandler.cpp
   qgspostgresconnpool.cpp
   qgspostgresdataitems.cpp
   qgspostgresfeatureiterator.cpp
@@ -89,6 +90,7 @@ set(PGRASTER_SRCS
   raster/qgspostgresrastershareddata.cpp
   raster/qgspostgresrasterutils.cpp
   qgspostgresconn.cpp
+  qgspostgresconnoauthhandler.cpp
   qgspostgresconnpool.cpp
   qgspostgresprovidermetadatautils.cpp
 )
