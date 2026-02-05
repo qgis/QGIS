@@ -215,6 +215,15 @@ void QgsArrowSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mComputedHeadType = headType();
   mComputedArrowType = arrowType();
 
+  // Store all defaults
+  mDefaultScaledArrowWidth = mScaledArrowWidth;
+  mDefaultScaledArrowStartWidth = mScaledArrowStartWidth;
+  mDefaultScaledHeadLength = mScaledHeadLength;
+  mDefaultScaledHeadThickness = mScaledHeadThickness;
+  mDefaultScaledOffset = mScaledOffset;
+  mDefaultComputedHeadType = mComputedHeadType;
+  mDefaultComputedArrowType = mComputedArrowType;
+
   mSymbol->setRenderHints( mSymbol->renderHints() | Qgis::SymbolRenderHint::IsSymbolLayerSubSymbol );
 
   mSymbol->startRender( context.renderContext(), context.fields() );
@@ -664,6 +673,14 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
       {
         mScaledArrowWidth = context.renderContext().convertToPainterUnits( w, arrowWidthUnit(), arrowWidthUnitScale() );
       }
+      else
+      {
+        mScaledArrowWidth = mDefaultScaledArrowWidth;
+      }
+    }
+    else
+    {
+      mScaledArrowWidth = mDefaultScaledArrowWidth;
     }
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ArrowStartWidth ) )
@@ -677,6 +694,14 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
       {
         mScaledArrowStartWidth = context.renderContext().convertToPainterUnits( w, arrowStartWidthUnit(), arrowStartWidthUnitScale() );
       }
+      else
+      {
+        mScaledArrowStartWidth = mDefaultScaledArrowStartWidth;
+      }
+    }
+    else
+    {
+      mScaledArrowStartWidth = mDefaultScaledArrowStartWidth;
     }
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ArrowHeadLength ) )
@@ -690,6 +715,14 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
       {
         mScaledHeadLength = context.renderContext().convertToPainterUnits( w, headLengthUnit(), headLengthUnitScale() );
       }
+      else
+      {
+        mScaledHeadLength = mDefaultScaledHeadLength;
+      }
+    }
+    else
+    {
+      mScaledHeadLength = mDefaultScaledHeadLength;
     }
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::ArrowHeadThickness ) )
@@ -703,16 +736,35 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
       {
         mScaledHeadThickness = context.renderContext().convertToPainterUnits( w, headThicknessUnit(), headThicknessUnitScale() );
       }
+      else
+      {
+        mScaledHeadThickness = mDefaultScaledHeadThickness;
+      }
+    }
+    else
+    {
+      mScaledHeadThickness = mDefaultScaledHeadThickness;
     }
   }
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::Property::Offset ) )
   {
     context.setOriginalValueVariable( offset() );
     exprVal = mDataDefinedProperties.value( QgsSymbolLayer::Property::Offset, context.renderContext().expressionContext() );
-    const double w = exprVal.toDouble( &ok );
-    if ( ok )
+    if ( !QgsVariantUtils::isNull( exprVal ) )
     {
-      mScaledOffset = context.renderContext().convertToPainterUnits( w, offsetUnit(), offsetMapUnitScale() );
+      const double w = exprVal.toDouble( &ok );
+      if ( ok )
+      {
+        mScaledOffset = context.renderContext().convertToPainterUnits( w, offsetUnit(), offsetMapUnitScale() );
+      }
+      else
+      {
+        mScaledOffset = mDefaultScaledOffset;
+      }
+    }
+    else
+    {
+      mScaledOffset = mDefaultScaledOffset;
     }
   }
 
@@ -727,6 +779,14 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
       {
         mComputedHeadType = h;
       }
+      else
+      {
+        mComputedHeadType = mDefaultComputedHeadType;
+      }
+    }
+    else
+    {
+      mComputedHeadType = mDefaultComputedHeadType;
     }
   }
 
@@ -741,6 +801,14 @@ void QgsArrowSymbolLayer::_resolveDataDefined( QgsSymbolRenderContext &context )
       {
         mComputedArrowType = h;
       }
+      else
+      {
+        mComputedArrowType = mDefaultComputedArrowType;
+      }
+    }
+    else
+    {
+      mComputedArrowType = mDefaultComputedArrowType;
     }
   }
 }
