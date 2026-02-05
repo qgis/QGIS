@@ -8448,37 +8448,50 @@ void QgisApp::loadStyleFromFile( const QList<QgsMapLayer *> &layers )
   QgsLayerPropertiesDialog::StyleType type = QgsLayerPropertiesDialog::StyleType::QML;
 
   // vectors and rasters have more complex options including categories, so they need QgsMapLayerLoadStyleDialog
-  if ( layers.at( 0 )->type() == Qgis::LayerType::Vector || layers.at( 0 )->type() == Qgis::LayerType::Raster )
+  switch ( layers.at( 0 )->type() )
   {
-    QgsMapLayerLoadStyleDialog dlg( layers[0], this );
-    dlg.allowLoadingOnlyFromFiles();
-    dlg.initializeLists( ids, names, descriptions, 0 );
-    if ( dlg.exec() )
+    case Qgis::LayerType::Vector:
+    case Qgis::LayerType::Raster:
     {
-      filePath = dlg.filePath();
-      categories = dlg.styleCategories();
-      type = dlg.currentStyleType();
+      QgsMapLayerLoadStyleDialog dlg( layers[0], this );
+      dlg.allowLoadingOnlyFromFiles();
+      dlg.initializeLists( ids, names, descriptions, 0 );
+      if ( dlg.exec() )
+      {
+        filePath = dlg.filePath();
+        categories = dlg.styleCategories();
+        type = dlg.currentStyleType();
+      }
+      break;
     }
-  }
-  else // for other layer types just ask for file name
-  {
-    QgsSettings settings;
-    const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
+    case Qgis::LayerType::Mesh:
+    case Qgis::LayerType::VectorTile:
+    case Qgis::LayerType::PointCloud:
+    {
+      QgsSettings settings;
+      const QString lastUsedDir = settings.value( u"style/lastStyleDir"_s, QDir::homePath() ).toString();
 
-    filePath = QFileDialog::getOpenFileName(
-      this,
-      tr( "Load layer properties from style file" ),
-      lastUsedDir,
-      tr( "QGIS Layer Style File" ) + " (*.qml)"
-    );
-    if ( filePath.isEmpty() )
-      return;
+      filePath = QFileDialog::getOpenFileName(
+        this,
+        tr( "Load Layer Properties from Style File" ),
+        lastUsedDir,
+        tr( "QGIS Layer Style File" ) + " (*.qml)"
+      );
+      if ( filePath.isEmpty() )
+        return;
 
-    // ensure the user never omits the extension from the file name
-    if ( !filePath.endsWith( ".qml"_L1, Qt::CaseInsensitive ) )
-      filePath += ".qml"_L1;
+      filePath = QgsFileUtils::ensureFileNameHasExtension( filePath, { u"qml"_s } );
 
-    settings.setValue( u"style/lastStyleDir"_s, QFileInfo( filePath ).absolutePath() );
+      settings.setValue( u"style/lastStyleDir"_s, QFileInfo( filePath ).absolutePath() );
+      break;
+    }
+    case Qgis::LayerType::Annotation:
+    case Qgis::LayerType::TiledScene:
+    case Qgis::LayerType::Plugin:
+    case Qgis::LayerType::Group:
+    {
+      break;
+    }
   }
 
   if ( !filePath.isEmpty() )
