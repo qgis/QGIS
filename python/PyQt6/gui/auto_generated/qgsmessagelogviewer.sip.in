@@ -33,7 +33,7 @@ to the system's :py:func:`QgsApplication.messageLog()` instance.
 %Docstring
 Logs a ``message`` to the viewer.
 
-The ``format`` parameter defined message format (since QGIS 4.0)
+The ``format`` parameter specifies the message format (since QGIS 4.0)
 %End
 
     void showTab( const QString &tag );

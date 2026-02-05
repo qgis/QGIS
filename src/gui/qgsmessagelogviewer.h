@@ -49,7 +49,7 @@ class GUI_EXPORT QgsMessageLogViewer : public QDialog, private Ui::QgsMessageLog
     /**
      * Logs a \a message to the viewer.
      *
-     * The \a format parameter defined message format (since QGIS 4.0)
+     * The \a format parameter specifies the message format (since QGIS 4.0)
      */
     void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level, Qgis::StringFormat format = Qgis::StringFormat::PlainText );
 
