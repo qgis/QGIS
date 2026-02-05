@@ -492,6 +492,7 @@ void QgsLayerStylingWidget::updateCurrentWidgetLayer()
     else
     {
       delete current;
+      current = nullptr;
     }
   }
 
