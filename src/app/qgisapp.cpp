@@ -8433,7 +8433,7 @@ void QgisApp::saveAsLayerDefinition()
 
 void QgisApp::loadStyleFromFile( const QList<QgsMapLayer *> layers )
 {
-  if ( layers.count() < 0 )
+  if ( layers.empty() )
   {
     return;
   }
