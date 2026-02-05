@@ -200,6 +200,7 @@ class ExampleProcessingAlgorithm(QgsProcessingAlgorithm):
                 },
                 context=context,
                 feedback=feedback,
+                is_child_algorithm=True,
             )["OUTPUT"]
 
         # Return the results of the algorithm. In this case our only result is
