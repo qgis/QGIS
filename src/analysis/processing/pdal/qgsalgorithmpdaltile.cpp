@@ -85,7 +85,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QStringList layers = parameterAsFileList( parameters, u"LAYERS"_s, context );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -100,7 +100,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
   int length = parameterAsInt( parameters, u"LENGTH"_s, context );
 
   QStringList args;
-  args.reserve( layers.count() + 4 );
+  args.reserve( 7 );
 
   const QString tempDir = context.temporaryFolder().isEmpty() ? QgsProcessingUtils::tempFolder( &context ) : context.temporaryFolder();
 
@@ -127,10 +127,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
   }
 
   QTextStream out( &listFile );
-  for ( const QgsMapLayer *layer : std::as_const( layers ) )
-  {
-    out << layer->source() << "\n";
-  }
+  out << layers.join( '\n' );
 
   args << u"--input-file-list=%1"_s.arg( fileName );
 
