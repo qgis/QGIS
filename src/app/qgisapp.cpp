@@ -8522,8 +8522,7 @@ void QgisApp::loadStyleFromFile( const QList<QgsMapLayer *> &layers )
       // TODO should be report the issue for every layer, or just callect names of layers where it could not be applied and report that after the cycle?
       if ( !loaded )
       {
-        //let the user know what went wrong
-        QMessageBox::warning( this, tr( "Load Style" ), errorMsg );
+        mInfoBar->pushMessage( tr( "Load Style" ), errorMsg ), Qgis::MessageLevel::Warning );
         return;
       }
     }
