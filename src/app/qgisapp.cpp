@@ -8500,13 +8500,23 @@ void QgisApp::loadStyleFromFile( const QList<QgsMapLayer *> &layers )
     {
       bool loaded = false;
 
-      if ( type == QgsLayerPropertiesDialog::SLD )
+      switch ( type )
       {
-        errorMsg = layer->loadSldStyle( filePath, loaded );
-      }
-      else
-      {
-        errorMsg = layer->loadNamedStyle( filePath, loaded, false, categories );
+        case QgsLayerPropertiesDialog::SLD:
+        {
+          errorMsg = layer->loadSldStyle( filePath, loaded );
+          break;
+        }
+        case QgsLayerPropertiesDialog::QML:
+        {
+          errorMsg = layer->loadNamedStyle( filePath, loaded, false, categories );
+          break;
+        }
+        case QgsLayerPropertiesDialog::DatasourceDatabase:
+        case QgsLayerPropertiesDialog::UserDatabase:
+        {
+          break;
+        }
       }
 
       // TODO should be report the issue for every layer, or just callect names of layers where it could not be applied and report that after the cycle?
