@@ -1490,6 +1490,10 @@ class TestQgsRasterAttributeTable(QgisTestCase):
         )
         self.assertEqual(rat.data(), data_rows)
 
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 12, 0),
+        "GDAL 3.12.0 required",
+    )
     def testS102Rat(self):
         """Test issue GH #64797 - RAT reading for S-102 datasets does not work correctly"""
 
