@@ -160,7 +160,7 @@ QStringList QgsPdalBuildVpcAlgorithm::createArgumentLists( const QVariantMap &pa
   {
     const QString source = layer->source();
     out << source << "\n";
-    if ( !mConvertToCopc && ( source.endsWith( u".laz"_s, Qt::CaseInsensitive ) || source.endsWith( u".las"_s, Qt::CaseInsensitive ) ) )
+    if ( !mConvertToCopc && !source.endsWith( ".copc.laz"_L1, Qt::CaseInsensitive ) && !source.endsWith( "ept.json"_L1, Qt::CaseInsensitive ) )
     {
       containsNonDisplayableFiles = true;
     }
