@@ -299,12 +299,9 @@ void QgsDemHeightMapGenerator::waitForFinished()
 void QgsDemHeightMapGenerator::lazyLoadDtmCoarseData( int res, const QgsRectangle &rect )
 {
   QMutexLocker locker( &mLazyLoadDtmCoarseDataMutex );
-  if ( mDtmCoarseData.isEmpty() )
+  if ( !mDtmCoarseRasterBlock )
   {
-    std::unique_ptr<QgsRasterBlock> block( mClonedProvider->block( 1, rect, res, res ) );
-    block->convert( Qgis::DataType::Float32 );
-    mDtmCoarseData = block->data();
-    mDtmCoarseData.detach(); // make a deep copy
+    mDtmCoarseRasterBlock.reset( mClonedProvider->block( 1, rect, res, res ) );
   }
 }
 
@@ -322,8 +319,10 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
   cellX = std::clamp( cellX, 0, res - 1 );
   cellY = std::clamp( cellY, 0, res - 1 );
 
-  const float *data = ( const float * ) mDtmCoarseData.constData();
-  return data[cellX + cellY * res];
+  bool isNoData = false;
+  const double val = mDtmCoarseRasterBlock->valueAndNoData( cellX, cellY, isNoData );
+
+  return isNoData ? std::numeric_limits<float>::quiet_NaN() : static_cast<float>( val );
 }
 
 void QgsDemHeightMapGenerator::onFutureFinished()
