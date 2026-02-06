@@ -655,6 +655,16 @@ void QgisAppInterface::unregisterApplicationExitBlocker( QgsApplicationExitBlock
   qgis->unregisterApplicationExitBlocker( blocker );
 }
 
+void QgisAppInterface::registerLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker )
+{
+  qgis->registerLayerChangesCommitBlocker( blocker );
+}
+
+void QgisAppInterface::unregisterLayerChangesCommitBlocker( QgsLayerChangesCommitBlockerInterface *blocker )
+{
+  qgis->unregisterLayerChangesCommitBlocker( blocker );
+}
+
 void QgisAppInterface::registerMapToolHandler( QgsAbstractMapToolHandler *handler )
 {
   qgis->registerMapToolHandler( handler );
