@@ -3388,6 +3388,21 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Digitize Shape</string>
    </property>
   </action>
+  <action name="mActionDigitizeWithBezier">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithBezier.svg</normaloff>:/images/themes/default/mActionDigitizeWithBezier.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with Bézier Curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitizes NURBS curves with Bézier (handles and anchors)</string>
+   </property>
+  </action>
   <action name="mActionDigitizeWithNurbs">
    <property name="checkable">
     <bool>true</bool>

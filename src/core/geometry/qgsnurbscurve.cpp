@@ -654,6 +654,35 @@ QVector<double> QgsNurbsCurve::generateUniformKnots( int numControlPoints, int d
   return knots;
 }
 
+QVector<double> QgsNurbsCurve::generateKnotsForBezierConversion( int nAnchors )
+{
+  if ( nAnchors < 2 )
+    return QVector<double>();
+
+  // For n anchors, we have n-1 cubic Bézier segments
+  // Total knots: 4 + 3*(n-2) + 4 = 3n + 2
+  const int totalKnots = 3 * nAnchors + 2;
+  QVector<double> knots;
+  knots.reserve( totalKnots );
+
+  // First 4 knots are 0
+  for ( int i = 0; i < 4; ++i )
+    knots.append( 0.0 );
+
+  // Interior knots with multiplicity 3
+  for ( int i = 1; i < nAnchors - 1; ++i )
+  {
+    for ( int j = 0; j < 3; ++j )
+      knots.append( static_cast<double>( i ) );
+  }
+
+  // Last 4 knots are n-1
+  for ( int i = 0; i < 4; ++i )
+    knots.append( static_cast<double>( nAnchors - 1 ) );
+
+  return knots;
+}
+
 void QgsNurbsCurve::generateUniformKnots()
 {
   mKnots = generateUniformKnots( mControlPoints.size(), mDegree );

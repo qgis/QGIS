@@ -418,6 +418,7 @@ class CORE_EXPORT Qgis
     enum class NurbsMode : int
     {
       ControlPoints, //!< Direct control points mode - the curve is attracted to control points but does not pass through them
+      PolyBezier, //!< Poly-Bézier mode (vector graphics style) - anchors with tangent handles, the curve passes through anchor points
     };
     Q_ENUM( NurbsMode )
 
