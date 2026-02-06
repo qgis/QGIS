@@ -19,7 +19,6 @@
 #include "qgsdoublevalidator.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudattributebyramprenderer.h"
-#include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"

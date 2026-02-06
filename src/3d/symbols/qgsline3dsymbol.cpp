@@ -15,6 +15,7 @@
 
 #include "qgsline3dsymbol.h"
 
+#include "qgis.h"
 #include "qgs3d.h"
 #include "qgs3dexportobject.h"
 #include "qgs3dsceneexporter.h"

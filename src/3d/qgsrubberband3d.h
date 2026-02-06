@@ -31,8 +31,6 @@
 
 #include "qgis_3d.h"
 #include "qgsgeometry.h"
-#include "qgspolygon.h"
-#include "qgstessellator.h"
 #include "qobjectuniqueptr.h"
 
 #include <QColor>

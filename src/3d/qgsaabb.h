@@ -16,8 +16,6 @@
 #ifndef QGSAABB_H
 #define QGSAABB_H
 
-#include <cmath>
-
 #include "qgis_3d.h"
 #include "qgsbox3d.h"
 

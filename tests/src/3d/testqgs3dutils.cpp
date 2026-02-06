@@ -31,6 +31,7 @@
 
 #include <QSize>
 #include <QString>
+#include <Qt3DRender/QShaderProgram>
 #include <QtMath>
 
 using namespace Qt::StringLiterals;

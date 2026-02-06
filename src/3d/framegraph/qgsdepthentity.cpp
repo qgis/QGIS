@@ -15,12 +15,12 @@
 
 #include "qgsdepthentity.h"
 
-#include "qgsabstractrenderview.h"
-#include "qgsframegraph.h"
-
 #include <QString>
 #include <QUrl>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTexture>
 
 #include "moc_qgsdepthentity.cpp"
 

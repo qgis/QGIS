@@ -15,8 +15,6 @@
 
 #include "qgs3dsceneexporter.h"
 
-#include <numeric>
-
 #include "qgs3dexportobject.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"

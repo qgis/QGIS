@@ -18,17 +18,25 @@
 
 ///@cond PRIVATE
 
-#include "qgspointcloudlayer3drenderer.h"
+#include "qgsvector3d.h"
 
-#include <QFutureWatcher>
 #include <QVector3D>
-#include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
 
 #define SIP_NO_FILE
 
+namespace Qt3DCore
+{
+  class QBuffer;
+  class QEntity;
+} //namespace Qt3DCore
+
+class QgsBox3D;
+class QgsPointCloudIndex;
+class QgsPointCloudBlock;
+class QgsPointCloudRequest;
+class QgsPointCloud3DRenderContext;
 class QgsPointCloudNodeId;
-class QgsAABB;
 
 class QgsPointCloud3DSymbolHandler
 {

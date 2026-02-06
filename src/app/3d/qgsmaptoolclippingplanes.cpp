@@ -25,7 +25,7 @@
 #include "qgscrosssection.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
-#include "qgspolygon.h"
+#include "qgspointxy.h"
 #include "qgsrubberband.h"
 
 #include <QString>

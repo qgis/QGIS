@@ -17,7 +17,6 @@
 
 #include "qgis.h"
 #include "qgs3dtypes.h"
-#include "qgsphongmaterialsettings.h"
 #include "qgspolygon3dsymbol.h"
 
 #include <QString>

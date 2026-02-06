@@ -17,8 +17,8 @@
 
 #include "qgspointcloudstatscalculationtask.h"
 
+#include "qgsfeedback.h"
 #include "qgspointcloudindex.h"
-#include "qgspointcloudrenderer.h"
 
 #include "moc_qgspointcloudstatscalculationtask.cpp"
 

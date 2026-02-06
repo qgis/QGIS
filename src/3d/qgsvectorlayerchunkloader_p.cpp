@@ -39,6 +39,7 @@
 
 #include <QString>
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender/QGeometryRenderer>
 #include <QtConcurrentRun>
 
 #include "moc_qgsvectorlayerchunkloader_p.cpp"

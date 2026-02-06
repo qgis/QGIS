@@ -20,7 +20,6 @@
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3dsymbol.h"
 #include "qgsabstractvectorlayer3drenderer.h"
-#include "qgsmaplayerref.h"
 
 #include <QUuid>
 

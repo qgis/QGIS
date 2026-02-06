@@ -18,7 +18,11 @@
 #include <random>
 
 #include <QString>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QParameter>
+#include <Qt3DRender/QShaderProgram>
+#include <Qt3DRender/QTexture>
 
 #include "moc_qgsambientocclusionrenderentity.cpp"
 

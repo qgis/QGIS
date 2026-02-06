@@ -33,6 +33,7 @@
 #include "qgschunkloader.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloud3dsymbol_p.h"
+#include "qgspointcloudindex.h"
 #include "qgspointcloudlayer3drenderer.h"
 
 #include <QFutureWatcher>

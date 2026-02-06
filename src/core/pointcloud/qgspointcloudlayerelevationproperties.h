@@ -25,8 +25,6 @@
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
 #include "qgsmaplayerelevationproperties.h"
-#include "qgsmarkersymbol.h"
-#include "qgsunittypes.h"
 
 /**
  * \class QgsPointCloudLayerElevationProperties

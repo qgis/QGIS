@@ -19,10 +19,12 @@
 #include "qgsrenderpassquad.h"
 
 class QgsFrameGraph;
+
 namespace Qt3DRender
 {
   class QTexture2D;
-}
+  class QParameter;
+} //namespace Qt3DRender
 
 #define SIP_NO_FILE
 

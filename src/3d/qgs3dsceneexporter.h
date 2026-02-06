@@ -16,6 +16,7 @@
 #ifndef QGS3DSCENEEXPORTER_H
 #define QGS3DSCENEEXPORTER_H
 
+#include "qgis_3d.h"
 #include "qgs3dexportobject.h"
 #include "qgsfeatureid.h"
 

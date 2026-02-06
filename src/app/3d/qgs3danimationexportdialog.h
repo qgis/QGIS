@@ -18,13 +18,9 @@
 
 #include "ui_animationexport3ddialog.h"
 
-#include <memory>
-
-#include "qgs3danimationsettings.h"
-#include "qgs3dmapsettings.h"
-
+#include <QDialog>
 #include <QSize>
-#include <QWidget>
+#include <QString>
 
 /**
  * Dialog for settings for 3D animation export

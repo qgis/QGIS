@@ -25,7 +25,6 @@
 #include "qgspoint3dsymbol.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrulebased3drenderer.h"
-#include "qgstessellatedpolygongeometry.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsvectorlayerfeatureiterator.h"

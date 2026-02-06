@@ -17,10 +17,9 @@
 #define QGSRAYCASTHIT_H
 
 #include "qgis_3d.h"
-#include "qgsfeatureid.h"
 #include "qgsvector3d.h"
 
-#include <QVector3D>
+#include <QVariantMap>
 
 class QgsMapLayer;
 

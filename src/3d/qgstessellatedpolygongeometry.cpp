@@ -15,11 +15,8 @@
 
 #include "qgstessellatedpolygongeometry.h"
 
-#include "qgsmessagelog.h"
-#include "qgspolygon.h"
 #include "qgstessellator.h"
 
-#include <QMatrix4x4>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 

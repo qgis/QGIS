@@ -15,8 +15,8 @@
 
 #include "qgsline3dsymbol_p.h"
 
-#include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeos.h"
 #include "qgsgeotransform.h"
 #include "qgshighlightsrenderview.h"

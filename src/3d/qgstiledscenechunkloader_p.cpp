@@ -31,6 +31,7 @@
 #include "qgstiledscenetile.h"
 
 #include <QString>
+#include <Qt3DRender/QGeometryRenderer>
 #include <QtConcurrentRun>
 
 #include "moc_qgstiledscenechunkloader_p.cpp"

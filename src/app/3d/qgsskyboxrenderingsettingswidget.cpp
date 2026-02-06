@@ -16,7 +16,6 @@
 #include "qgsskyboxrenderingsettingswidget.h"
 
 #include "qgis.h"
-#include "qgs3dmapsettings.h"
 
 #include <QCheckBox>
 #include <QLineEdit>

@@ -19,7 +19,6 @@
 #define QGS3D_H
 
 #include "qgis_3d.h"
-#include "qgis_sip.h"
 
 class QgsMaterialRegistry;
 class Qgs3DTerrainRegistry;

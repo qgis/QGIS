@@ -16,7 +16,6 @@
 #include "qgspointcloudexpression.h"
 
 #include "qgsexpression.h"
-#include "qgspointcloudattribute.h"
 #include "qgspointcloudexpression_p.h"
 #include "qgspointcloudexpressionnodeimpl.h"
 

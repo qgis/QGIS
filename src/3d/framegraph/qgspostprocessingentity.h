@@ -22,6 +22,12 @@ class QgsFrameGraph;
 class QgsShadowRenderView;
 class QgsDirectionalLightSettings;
 
+namespace Qt3DRender
+{
+  class QCamera;
+  class QParameter;
+} //namespace Qt3DRender
+
 #define SIP_NO_FILE
 
 /**

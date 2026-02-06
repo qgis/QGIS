@@ -26,7 +26,6 @@
 #include "qgspointcloudrendererregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgsunittypes.h"
-#include "qgsvirtualpointcloudprovider.h"
 
 #include <QPointer>
 #include <QString>

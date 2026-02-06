@@ -70,6 +70,7 @@
 #include <QFileInfo>
 #include <QSignalSpy>
 #include <QString>
+#include <Qt3DRender/QGeometryRenderer>
 
 using namespace Qt::StringLiterals;
 

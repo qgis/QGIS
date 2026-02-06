@@ -17,6 +17,7 @@
 
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
+#include "qgsfeature3dhandler_p.h"
 #include "qgsgeotransform.h"
 #include "qgslinematerial_p.h"
 #include "qgslinestring.h"
