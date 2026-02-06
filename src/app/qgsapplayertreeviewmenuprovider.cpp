@@ -920,7 +920,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
         bool allLayersSameType = false;
         if ( !layers.empty() )
         {
-          allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers[0]->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
+          allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers.at( 0 )->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
         }
 
         if ( allLayersSameType )

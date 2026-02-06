@@ -1826,7 +1826,7 @@ void QgsAppLayerHandling::loadStyleFromFile( const QList<QgsMapLayer *> &layers 
     return;
   }
 
-  const bool allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers[0]->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
+  const bool allLayersSameType = std::all_of( layers.begin() + 1, layers.end(), [firstType = layers.at( 0 )->type()]( QgsMapLayer *layer ) { return layer->type() == firstType; } );
 
   if ( !allLayersSameType )
   {
