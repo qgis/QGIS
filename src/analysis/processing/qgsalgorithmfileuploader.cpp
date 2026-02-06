@@ -77,7 +77,7 @@ QgsFileUploaderAlgorithm *QgsFileUploaderAlgorithm::createInstance() const
 
 void QgsFileUploaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( u"FILE"_s, QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All file (%1)" ).arg( "*.*"_L1 ) ) );
+  addParameter( new QgsProcessingParameterFile( u"FILE"_s, QObject::tr( "File to upload" ), Qgis::ProcessingFileParameterBehavior::File, QString(), QVariant(), false, QObject::tr( "All files (%1)" ).arg( "*.*"_L1 ) ) );
   addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "To URL" ), QVariant(), false, false ) );
 
   auto formNameParam = std::make_unique<QgsProcessingParameterString>( u"FORMNAME"_s, tr( "Form name field" ), QString(), false, true );
