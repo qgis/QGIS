@@ -221,10 +221,16 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
           QgsMessageBarItem *barItem = new QgsMessageBarItem( QObject::tr( "Unsupported files in VPC layer" ), QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() ), Qgis::MessageLevel::Warning, 0 );
           QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
           barItem->setWidget( button );
-          QObject::connect( button, &QPushButton::clicked, barItem, [barItem]() {
+          QObject::connect( button, &QPushButton::clicked, barItem, [barItem, layer]() {
+            const QString message = QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() )
+                                    + u"\n"_s
+                                    + QObject::tr( "QGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format." )
+                                    + u"\n\n"_s
+                                    + QObject::tr( "You can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." );
+
             QgsMessageViewer *dialog = new QgsMessageViewer( barItem );
             dialog->setTitle( QObject::tr( "Unsupported files in VPC layer" ) );
-            dialog->setMessageAsPlainText( QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents.\nQGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format.\n\nYou can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." ).arg( layer->name() ) );
+            dialog->setMessageAsPlainText( message );
             dialog->showMessage();
           } );
 
