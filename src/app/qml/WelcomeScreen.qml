@@ -367,6 +367,7 @@ Item {
             id: welcomeView
             Layout.fillWidth: true
             Layout.fillHeight: true
+            visible: !newsSwitch.checked || newsListView.count == 0
             contentWidth: welcomeLayout.width
             contentHeight: welcomeLayout.height
             rightPadding: 12
@@ -381,7 +382,6 @@ Item {
             
             ColumnLayout {
               id: welcomeLayout
-              visible: !newsSwitch.checked || newsListView.count == 0
               width: welcomeNewsLayout.width - welcomeView.rightPadding
               spacing: 12
 
@@ -477,6 +477,7 @@ Item {
               width: newsListView.width - 12
               title: Title
               description: Content
+              imageSource: ImageUrl
               showCloseButton: true
 
               onReadMoreClicked: {
