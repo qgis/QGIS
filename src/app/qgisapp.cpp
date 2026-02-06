@@ -5890,7 +5890,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits() )
+  if ( canCreateNewProject() )
   {
     closeProject();
     userProfileManager()->updateLastProfileName();
@@ -5923,7 +5923,7 @@ void QgisApp::fileClose()
 
 bool QgisApp::canCreateNewProject()
 {
-  return !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits();
+  return checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits();
 }
 
 //as file new but accepts flags to indicate whether we should prompt to save
