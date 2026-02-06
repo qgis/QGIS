@@ -220,7 +220,7 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
           QgsMessageBarItem *barItem = new QgsMessageBarItem( QObject::tr( "Unsupported files in VPC layer" ), QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() ), Qgis::MessageLevel::Warning, 0 );
           QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
           barItem->setWidget( button );
-          connect( button, &QPushButton::clicked, barItem, [barItem]() {
+          QObject::connect( button, &QPushButton::clicked, barItem, [barItem]() {
             QMessageBox::information(
               barItem,
               QObject::tr( "Unsupported files in VPC layer" ),
