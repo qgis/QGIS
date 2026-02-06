@@ -78,6 +78,10 @@ QgsPointCloudDataProvider::Capabilities QgsVirtualPointCloudProvider::capabiliti
   QgsPointCloudDataProvider::Capabilities c;
   c.setFlag( QgsPointCloudDataProvider::Capability::ContainSubIndexes );
   c.setFlag( QgsPointCloudDataProvider::Capability::CreateRenderer );
+  if ( mAllEditableFiles && mAllLocalFiles )
+  {
+    c.setFlag( QgsPointCloudDataProvider::Capability::ChangeAttributeValues );
+  }
   return c;
 }
 
@@ -183,6 +187,7 @@ void QgsVirtualPointCloudProvider::parseFile()
       appendError( QgsErrorMessage( u"Could not download file: %1"_s.arg( reply.errorString() ) ) );
       return;
     }
+    mAllLocalFiles = false;
   }
   else
   {
@@ -251,6 +256,11 @@ void QgsVirtualPointCloudProvider::parseFile()
       uri = QString::fromStdString( f["assets"]["data"]["href"] );
     }
 
+    if ( uri.startsWith( "http"_L1 ) )
+    {
+      mAllLocalFiles = false;
+    }
+
     // look for vpc overview reference
     if ( !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
     {
@@ -274,6 +284,11 @@ void QgsVirtualPointCloudProvider::parseFile()
          !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
     {
       QgsDebugError( u"Unsupported point cloud uri: %1"_s.arg( uri ) );
+    }
+
+    if ( !uri.endsWith( u"copc.laz"_s, Qt::CaseSensitivity::CaseInsensitive ) )
+    {
+      mAllEditableFiles = false;
     }
 
     if ( f["properties"].contains( "pc:count" ) )

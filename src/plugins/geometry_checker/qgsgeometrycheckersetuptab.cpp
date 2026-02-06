@@ -38,7 +38,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QString>
-#include <QtConcurrentMap>
 
 #include "moc_qgsgeometrycheckersetuptab.cpp"
 

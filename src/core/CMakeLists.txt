@@ -550,6 +550,7 @@ set(QGIS_CORE_SRCS
   qgsmathutils.cpp
   qgsmatrix4x4.cpp
   qgsmbtiles.cpp
+  qgsmeasureutils.cpp
   qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
@@ -1276,6 +1277,7 @@ set(QGIS_CORE_HDRS
   qgsmathutils.h
   qgsmatrix4x4.h
   qgsmbtiles.h
+  qgsmeasureutils.h
   qgsmessagelog.h
   qgsmessageoutput.h
   qgsmimedatautils.h

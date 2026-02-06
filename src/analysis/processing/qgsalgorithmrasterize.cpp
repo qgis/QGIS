@@ -36,7 +36,7 @@
 #include "qgsrasterfilewriter.h"
 
 #include <QString>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 using namespace Qt::StringLiterals;
 

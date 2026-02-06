@@ -63,7 +63,16 @@ Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas 
 
   // get rid of annoying outer focus rect on Mac
   m3DOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
-  m3DOptionsListWidget->setCurrentRow( settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt() );
+  int tabIndex = settings.value( u"Windows/3DMapConfig/Tab"_s, 0 ).toInt();
+  if ( map->sceneMode() == Qgis::SceneMode::Globe )
+  {
+    // Disable General tab in the dialog when in the Globe mode as in this case
+    // this tab is empty, see https://github.com/qgis/QGIS/issues/63651
+    m3DOptionsListWidget->item( 0 )->setFlags( m3DOptionsListWidget->item( 0 )->flags() & ~Qt::ItemIsEnabled );
+    tabIndex = tabIndex == 0 ? 1 : tabIndex;
+  }
+
+  m3DOptionsListWidget->setCurrentRow( tabIndex );
   connect( m3DOptionsListWidget, &QListWidget::currentRowChanged, this, [this]( int index ) { m3DOptionsStackedWidget->setCurrentIndex( index ); } );
   m3DOptionsStackedWidget->setCurrentIndex( m3DOptionsListWidget->currentRow() );
 

@@ -123,7 +123,7 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, QgsPointCloudIndex index, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
+    explicit QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, const int indexPosition, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
@@ -133,8 +133,11 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
     void updateIndex();
 
   private:
+    static QgsPointCloudIndex resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition );
+
     QgsPointCloudLayer *mLayer = nullptr;
     std::unique_ptr<QgsChunkUpdaterFactory> mChunkUpdaterFactory;
+    int mIndexPosition;
 };
 
 /// @endcond
