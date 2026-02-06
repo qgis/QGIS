@@ -17,13 +17,17 @@
 #include <memory>
 #include <ogr_api.h>
 
+#include "qgscircularstring.h"
+#include "qgscompoundcurve.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscurvepolygon.h"
 #include "qgsexpression.h"
 #include "qgsexpression_p.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionfunction.h"
 #include "qgsexpressionnodeimpl.h"
 #include "qgsgeometry.h"
+#include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgsmultipolygon.h"
 #include "qgsogrutils.h"
@@ -1505,6 +1509,163 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
         lineStringElem.appendChild( coordElem );
         return lineStringElem;
       }
+      case Qgis::WkbType::CircularStringZ:
+        hasZValue = true;
+        [[fallthrough]];
+      case Qgis::WkbType::CircularString:
+      {
+        // GML2: do not serialize CircularString
+        if ( gmlVersion == GML_2_1_2 )
+          return QDomElement();
+
+        const QgsCircularString *circularString = qgsgeometry_cast< const QgsCircularString * >( geometry.constGet() );
+        if ( !circularString )
+          return QDomElement();
+
+        QDomElement curveElem = doc.createElement( u"gml:Curve"_s );
+        if ( !srsName.isEmpty() )
+          curveElem.setAttribute( u"srsName"_s, srsName );
+        if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+          curveElem.setAttribute( u"gml:id"_s, gmlIdBase );
+
+        QDomElement segmentsElem = doc.createElement( u"gml:segments"_s );
+
+        QDomElement posListElem = doc.createElement( u"gml:posList"_s );
+        posListElem.setAttribute( u"srsDimension"_s, hasZValue ? u"3"_s : u"2"_s );
+
+        QString coordString;
+        const int nPoints = circularString->numPoints();
+        for ( int idx = 0; idx < nPoints; ++idx )
+        {
+          if ( idx != 0 )
+            coordString += ts;
+
+          const QgsPoint point = circularString->pointN( idx );
+          const double x = invertAxisOrientation ? point.y() : point.x();
+          const double y = invertAxisOrientation ? point.x() : point.y();
+          coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+          if ( hasZValue )
+          {
+            coordString += cs + qgsDoubleToString( point.z(), precision );
+          }
+        }
+
+        posListElem.appendChild( doc.createTextNode( coordString ) );
+
+        QDomElement arcElem = doc.createElement( u"gml:ArcString"_s );
+        arcElem.appendChild( posListElem );
+        segmentsElem.appendChild( arcElem );
+
+        if ( !segmentsElem.firstChild().isNull() )
+          curveElem.appendChild( segmentsElem );
+
+        return curveElem;
+      }
+      case Qgis::WkbType::CompoundCurveZ:
+        hasZValue = true;
+        [[fallthrough]];
+      case Qgis::WkbType::CompoundCurve:
+      {
+        // GML2: do not serialize CompoundCurve
+        if ( gmlVersion == GML_2_1_2 )
+          return QDomElement();
+
+        const QgsCompoundCurve *compoundCurve = qgsgeometry_cast< const QgsCompoundCurve * >( geometry.constGet() );
+        if ( !compoundCurve )
+          return QDomElement();
+
+        QDomElement curveElem = doc.createElement( u"gml:Curve"_s );
+        if ( !srsName.isEmpty() )
+          curveElem.setAttribute( u"srsName"_s, srsName );
+        if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+          curveElem.setAttribute( u"gml:id"_s, gmlIdBase );
+
+        QDomElement segmentsElem = doc.createElement( u"gml:segments"_s );
+
+        const int nParts = compoundCurve->nCurves();
+        for ( int idx = 0; idx < nParts; ++idx )
+        {
+          const QgsCurve *partCurve = compoundCurve->curveAt( idx );
+          if ( !partCurve )
+            continue;
+
+          const Qgis::WkbType partFlatType = QgsWkbTypes::flatType( partCurve->wkbType() );
+          const bool isCircularString = partFlatType == Qgis::WkbType::CircularString;
+          const bool isLineString = partFlatType == Qgis::WkbType::LineString;
+
+          QDomElement posListElem = doc.createElement( u"gml:posList"_s );
+          posListElem.setAttribute( u"srsDimension"_s, hasZValue ? u"3"_s : u"2"_s );
+
+          QString coordString;
+          if ( isCircularString )
+          {
+            const QgsCircularString *circularString = qgsgeometry_cast< const QgsCircularString * >( partCurve );
+            if ( !circularString )
+              continue;
+
+            const int nPoints = circularString->numPoints();
+            for ( int p = 0; p < nPoints; ++p )
+            {
+              if ( p != 0 )
+                coordString += ts;
+
+              const QgsPoint point = circularString->pointN( p );
+              const double x = invertAxisOrientation ? point.y() : point.x();
+              const double y = invertAxisOrientation ? point.x() : point.y();
+              coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+              if ( hasZValue )
+              {
+                coordString += cs + qgsDoubleToString( point.z(), precision );
+              }
+            }
+          }
+          else if ( isLineString )
+          {
+            const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( partCurve );
+            if ( !lineString )
+              continue;
+
+            const int nPoints = lineString->numPoints();
+            for ( int p = 0; p < nPoints; ++p )
+            {
+              if ( p != 0 )
+                coordString += ts;
+
+              const QgsPoint point = lineString->pointN( p );
+              const double x = invertAxisOrientation ? point.y() : point.x();
+              const double y = invertAxisOrientation ? point.x() : point.y();
+              coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+              if ( hasZValue )
+              {
+                coordString += cs + qgsDoubleToString( point.z(), precision );
+              }
+            }
+          }
+
+          posListElem.appendChild( doc.createTextNode( coordString ) );
+
+          if ( isCircularString )
+          {
+            QDomElement arcElem = doc.createElement( u"gml:ArcString"_s );
+            arcElem.appendChild( posListElem );
+            segmentsElem.appendChild( arcElem );
+          }
+          else if ( isLineString )
+          {
+            QDomElement segElem = doc.createElement( u"gml:LineStringSegment"_s );
+            segElem.appendChild( posListElem );
+            segmentsElem.appendChild( segElem );
+          }
+        }
+
+        if ( !segmentsElem.firstChild().isNull() )
+          curveElem.appendChild( segmentsElem );
+
+        return curveElem;
+      }
       case Qgis::WkbType::MultiLineString25D:
       case Qgis::WkbType::MultiLineStringZ:
         hasZValue = true;
@@ -1717,6 +1878,219 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry,
           }
         }
         return multiPolygonElem;
+      }
+      case Qgis::WkbType::CurvePolygonZ:
+        hasZValue = true;
+        [[fallthrough]];
+      case Qgis::WkbType::CurvePolygon:
+      {
+        // GML2: do not serialize CurvePolygon
+        if ( gmlVersion == GML_2_1_2 )
+          return QDomElement();
+
+        const QgsCurvePolygon *curvePolygon = qgsgeometry_cast< const QgsCurvePolygon * >( geometry.constGet() );
+        if ( !curvePolygon )
+          return QDomElement();
+
+        QDomElement curvePolygonElem = doc.createElement( u"gml:Polygon"_s );
+        if ( gmlVersion == GML_3_2_1 && !gmlIdBase.isEmpty() )
+          curvePolygonElem.setAttribute( u"gml:id"_s, gmlIdBase );
+        if ( !srsName.isEmpty() )
+          curvePolygonElem.setAttribute( u"srsName"_s, srsName );
+
+        const int numInteriorRings = curvePolygon->numInteriorRings();
+        const int numRings = 1 + numInteriorRings;
+        for ( int idx = 0; idx < numRings; ++idx )
+        {
+          const QString boundaryName = idx == 0 ? u"gml:exterior"_s : u"gml:interior"_s;
+          QDomElement boundaryElem = doc.createElement( boundaryName );
+          QDomElement ringElem = doc.createElement( u"gml:Ring"_s );
+
+          const QgsCurve *ringCurve = idx == 0 ? curvePolygon->exteriorRing() : curvePolygon->interiorRing( idx - 1 );
+          if ( !ringCurve )
+            return QDomElement();
+
+          const Qgis::WkbType ringType = QgsWkbTypes::flatType( ringCurve->wkbType() );
+          if ( hasZValue )
+          {
+            if ( ringType != Qgis::WkbType::CircularString )
+              return QDomElement();
+          }
+          else
+          {
+            if ( ringType != Qgis::WkbType::CompoundCurve && ringType != Qgis::WkbType::CircularString && ringType != Qgis::WkbType::LineString )
+              return QDomElement();
+          }
+
+          QDomElement curveElem = doc.createElement( u"gml:Curve"_s );
+          if ( !srsName.isEmpty() )
+            curveElem.setAttribute( u"srsName"_s, srsName );
+          QDomElement segmentsElem = doc.createElement( u"gml:segments"_s );
+
+          if ( ringType == Qgis::WkbType::CompoundCurve )
+          {
+            const QgsCompoundCurve *compoundCurve = qgsgeometry_cast< const QgsCompoundCurve * >( ringCurve );
+            if ( !compoundCurve )
+              return QDomElement();
+
+            const int nParts = compoundCurve->nCurves();
+            for ( int jdx = 0; jdx < nParts; ++jdx )
+            {
+              const QgsCurve *partCurve = compoundCurve->curveAt( jdx );
+              if ( !partCurve )
+                continue;
+
+              const Qgis::WkbType partFlatType = QgsWkbTypes::flatType( partCurve->wkbType() );
+
+              QDomElement posListElem = doc.createElement( u"gml:posList"_s );
+              posListElem.setAttribute( u"srsDimension"_s, hasZValue ? u"3"_s : u"2"_s );
+
+              QString coordString;
+              if ( partFlatType == Qgis::WkbType::CircularString )
+              {
+                const QgsCircularString *circularString = qgsgeometry_cast< const QgsCircularString * >( partCurve );
+                if ( !circularString )
+                  return QDomElement();
+
+                const int nPoints = circularString->numPoints();
+                for ( int p = 0; p < nPoints; ++p )
+                {
+                  if ( p != 0 )
+                    coordString += ts;
+
+                  const QgsPoint point = circularString->pointN( p );
+                  const double x = invertAxisOrientation ? point.y() : point.x();
+                  const double y = invertAxisOrientation ? point.x() : point.y();
+                  coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+                  if ( hasZValue )
+                  {
+                    coordString += cs + qgsDoubleToString( point.z(), precision );
+                  }
+                }
+              }
+              else if ( partFlatType == Qgis::WkbType::LineString )
+              {
+                const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( partCurve );
+                if ( !lineString )
+                  return QDomElement();
+
+                const int nPoints = lineString->numPoints();
+                for ( int p = 0; p < nPoints; ++p )
+                {
+                  if ( p != 0 )
+                    coordString += ts;
+
+                  const QgsPoint point = lineString->pointN( p );
+                  const double x = invertAxisOrientation ? point.y() : point.x();
+                  const double y = invertAxisOrientation ? point.x() : point.y();
+                  coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+                  if ( hasZValue )
+                  {
+                    coordString += cs + qgsDoubleToString( point.z(), precision );
+                  }
+                }
+              }
+              else
+              {
+                return QDomElement();
+              }
+
+              posListElem.appendChild( doc.createTextNode( coordString ) );
+
+              if ( partFlatType == Qgis::WkbType::CircularString )
+              {
+                QDomElement arcElem = doc.createElement( u"gml:ArcString"_s );
+                arcElem.appendChild( posListElem );
+                segmentsElem.appendChild( arcElem );
+              }
+              else if ( partFlatType == Qgis::WkbType::LineString )
+              {
+                QDomElement segElem = doc.createElement( u"gml:LineStringSegment"_s );
+                segElem.appendChild( posListElem );
+                segmentsElem.appendChild( segElem );
+              }
+            }
+          }
+          else if ( ringType == Qgis::WkbType::CircularString )
+          {
+            const QgsCircularString *circularString = qgsgeometry_cast< const QgsCircularString * >( ringCurve );
+            if ( !circularString )
+              return QDomElement();
+
+            QDomElement posListElem = doc.createElement( u"gml:posList"_s );
+            posListElem.setAttribute( u"srsDimension"_s, hasZValue ? u"3"_s : u"2"_s );
+
+            QString coordString;
+            const int nPoints = circularString->numPoints();
+            for ( int p = 0; p < nPoints; ++p )
+            {
+              if ( p != 0 )
+                coordString += ts;
+
+              const QgsPoint point = circularString->pointN( p );
+              const double x = invertAxisOrientation ? point.y() : point.x();
+              const double y = invertAxisOrientation ? point.x() : point.y();
+              coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+              if ( hasZValue )
+              {
+                coordString += cs + qgsDoubleToString( point.z(), precision );
+              }
+            }
+
+            posListElem.appendChild( doc.createTextNode( coordString ) );
+
+            QDomElement arcElem = doc.createElement( u"gml:ArcString"_s );
+            arcElem.appendChild( posListElem );
+            segmentsElem.appendChild( arcElem );
+          }
+          else
+          {
+            const QgsLineString *lineString = qgsgeometry_cast< const QgsLineString * >( ringCurve );
+            if ( !lineString )
+              return QDomElement();
+
+            QDomElement posListElem = doc.createElement( u"gml:posList"_s );
+            posListElem.setAttribute( u"srsDimension"_s, hasZValue ? u"3"_s : u"2"_s );
+
+            QString coordString;
+            const int nPoints = lineString->numPoints();
+            for ( int p = 0; p < nPoints; ++p )
+            {
+              if ( p != 0 )
+                coordString += ts;
+
+              const QgsPoint point = lineString->pointN( p );
+              const double x = invertAxisOrientation ? point.y() : point.x();
+              const double y = invertAxisOrientation ? point.x() : point.y();
+              coordString += qgsDoubleToString( x, precision ) + cs + qgsDoubleToString( y, precision );
+
+              if ( hasZValue )
+              {
+                coordString += cs + qgsDoubleToString( point.z(), precision );
+              }
+            }
+
+            posListElem.appendChild( doc.createTextNode( coordString ) );
+
+            QDomElement segElem = doc.createElement( u"gml:LineStringSegment"_s );
+            segElem.appendChild( posListElem );
+            segmentsElem.appendChild( segElem );
+          }
+
+          if ( !segmentsElem.firstChild().isNull() )
+            curveElem.appendChild( segmentsElem );
+
+          QDomElement curveMemberElem = doc.createElement( u"gml:curveMember"_s );
+          curveMemberElem.appendChild( curveElem );
+          ringElem.appendChild( curveMemberElem );
+          boundaryElem.appendChild( ringElem );
+          curvePolygonElem.appendChild( boundaryElem );
+        }
+
+        return curvePolygonElem;
       }
       default:
         return QDomElement();
@@ -2161,8 +2535,10 @@ QDomElement QgsOgcUtils::SQLStatementToOgcFilter( const QgsSQLStatement &stateme
 {
   if ( gmlGeomType == "Point"_L1 )
     return Qgis::WkbType::Point;
-  if ( gmlGeomType == "LineString"_L1 || gmlGeomType == "Curve"_L1 )
+  if ( gmlGeomType == "LineString"_L1 )
     return Qgis::WkbType::LineString;
+  if ( gmlGeomType == "Curve"_L1 )
+    return Qgis::WkbType::CompoundCurve;
   if ( gmlGeomType == "Polygon"_L1 || gmlGeomType == "Surface"_L1 )
     return Qgis::WkbType::Polygon;
   if ( gmlGeomType == "MultiPoint"_L1 )
