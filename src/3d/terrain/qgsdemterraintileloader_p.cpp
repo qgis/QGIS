@@ -320,7 +320,7 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
   cellY = std::clamp( cellY, 0, res - 1 );
 
   bool isNoData = false;
-  const double val = mDtmCoarseRasterBlock->valueAndNoData( cellX, cellY, isNoData );
+  const double val = mDtmCoarseRasterBlock->valueAndNoData( cellY, cellX, isNoData );
 
   return isNoData ? std::numeric_limits<float>::quiet_NaN() : static_cast<float>( val );
 }
