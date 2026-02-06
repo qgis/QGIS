@@ -117,6 +117,14 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     bool useSnappingIndicator() const;
 
+    /**
+     * Calculates geometry measures for a \a geometry, including area and total length (or perimeter).
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 4.0
+     */
+    SIP_SKIP static void calculateGeometryMeasures( const QgsReferencedGeometry &geometry, const QgsCoordinateReferenceSystem &destinationCrs, Qgis::CadMeasurementDisplayType areaType, Qgis::CadMeasurementDisplayType totalLengthType, QString &areaString, QString &totalLengthString );
+
   protected:
     /**
      * Sets whether functionality of advanced digitizing dock widget is currently allowed.
@@ -230,6 +238,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     void cadPointChanged( const QgsPointXY &point );
 
     void onCurrentLayerChanged();
+
+    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
 
   private:
     //! Whether to allow use of advanced digitizing dock at this point

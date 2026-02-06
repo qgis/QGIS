@@ -19,12 +19,11 @@
 #include "qgsfocuskeeper.h"
 #include "qgsgui.h"
 #include "qgsnative.h"
-#include "qgsprojectlistitemdelegate.h"
 #include "qgsprojectstorage.h"
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageguiregistry.h"
 #include "qgsprojectstorageregistry.h"
-#include "qgswelcomepage.h"
+#include "qgswelcomescreen.h"
 
 #include <QAction>
 #include <QEvent>
@@ -33,8 +32,8 @@
 
 #include "moc_qgsrecentprojectsmenueventfilter.cpp"
 
-QgsRecentProjectsMenuEventFilter::QgsRecentProjectsMenuEventFilter( QgsWelcomePage *welcomePage, QObject *parent )
-  : QObject( parent ), mWelcomePage( welcomePage )
+QgsRecentProjectsMenuEventFilter::QgsRecentProjectsMenuEventFilter( QgsWelcomeScreen *welcomeScreen, QObject *parent )
+  : QObject( parent ), mWelcomeScreen( welcomeScreen )
 {
 }
 
@@ -63,38 +62,30 @@ bool QgsRecentProjectsMenuEventFilter::eventFilter( QObject *obj, QEvent *event 
   if ( !ok )
     return QObject::eventFilter( obj, event );
 
-  const QModelIndex modelIndex = mWelcomePage->recentProjectsModel()->index( actionIndex, 0 );
-  const bool pinned = mWelcomePage->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PinRole ).toBool();
-  QString path = mWelcomePage->recentProjectsModel()->data( modelIndex, QgsProjectListItemDelegate::PathRole ).toString();
-  QgsProjectStorage *storage = QgsApplication::projectStorageRegistry()->projectStorageFromUri( path );
-  if ( storage )
-  {
-    path = storage->filePath( path );
-  }
+  const QModelIndex modelIndex = mWelcomeScreen->recentProjectsModel()->index( actionIndex, 0 );
 
   QMenu subMenu;
+  const bool pinned = mWelcomeScreen->recentProjectsModel()->data( modelIndex, static_cast<int>( QgsRecentProjectItemsModel::CustomRole::PinnedRole ) ).toBool();
   if ( pinned )
   {
     QAction *unpin = subMenu.addAction( tr( "Unpin from List" ) );
-    connect( unpin, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->unpinProject( actionIndex ); } );
+    connect( unpin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->unpinProject( actionIndex ); } );
   }
   else
   {
     QAction *pin = subMenu.addAction( tr( "Pin to List" ) );
-    connect( pin, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->pinProject( actionIndex ); } );
+    connect( pin, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->pinProject( actionIndex ); } );
   }
 
+  const QString path = mWelcomeScreen->recentProjectsModel()->data( modelIndex, static_cast<int>( QgsRecentProjectItemsModel::CustomRole::NativePathRole ) ).toString();
   if ( !path.isEmpty() )
   {
     QAction *openFolderAction = subMenu.addAction( tr( "Open Directory…" ) );
-    connect( openFolderAction, &QAction::triggered, this, [path] {
-      const QgsFocusKeeper focusKeeper;
-      QgsGui::nativePlatformInterface()->openFileExplorerAndSelectFile( path );
-    } );
+    connect( openFolderAction, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->openProject( actionIndex ); } );
   }
 
   QAction *remove = subMenu.addAction( tr( "Remove from List" ) );
-  connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomePage->removeProject( actionIndex ); } );
+  connect( remove, &QAction::triggered, this, [this, actionIndex] { mWelcomeScreen->recentProjectsModel()->removeProject( actionIndex ); } );
   subMenu.exec( menu->mapToGlobal( mouseEvent->pos() ) );
   return true;
 }

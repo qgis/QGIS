@@ -67,6 +67,9 @@ HINTS[15]="Avoid module-wide import of QtWidgets, which results in all Qt Widget
 IMPORTS[16]="#include <QtWidgets/QtWidgets>"
 HINTS[16]="Avoid module-wide import of QtWidgets, which results in all Qt Widget headers being imported."
 
+IMPORTS[17]="#include <QtConcurrent>"
+HINTS[17]="Avoid module-wide import of QtConcurrent, which results in QtCore being imported. Include only the required header, eg. <QtConcurrentRun>, <QtConcurrentMap> etc."
+
 RES=
 DIR=$(git rev-parse --show-toplevel)
 

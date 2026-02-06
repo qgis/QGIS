@@ -43,7 +43,7 @@ email                : jpalmer at linz dot govt dot nz
 #include <QApplication>
 #include <QMouseEvent>
 #include <QString>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 #include "moc_qgsmaptoolselectutils.cpp"
 

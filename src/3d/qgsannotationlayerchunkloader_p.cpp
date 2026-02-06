@@ -41,8 +41,9 @@
 #include "qgstextureatlasgenerator.h"
 
 #include <QString>
+#include <QTimer>
 #include <Qt3DCore/QTransform>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 #include "moc_qgsannotationlayerchunkloader_p.cpp"
 

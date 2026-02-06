@@ -69,7 +69,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
   mColorTexture->wrapMode()->setY( Qt3DRender::QTextureWrapMode::ClampToEdge );
 
   mDepthTexture = new Qt3DRender::QTexture2D;
-  mDepthTexture->setFormat( Qt3DRender::QTexture2D::TextureFormat::DepthFormat );
+  mDepthTexture->setFormat( Qt3DRender::QAbstractTexture::D24S8 );
   mDepthTexture->setGenerateMipMaps( false );
   mDepthTexture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
   mDepthTexture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
@@ -78,7 +78,7 @@ Qt3DRender::QRenderTarget *QgsForwardRenderView::buildTextures()
 
   Qt3DRender::QRenderTarget *renderTarget = new Qt3DRender::QRenderTarget;
   Qt3DRender::QRenderTargetOutput *renderTargetDepthOutput = new Qt3DRender::QRenderTargetOutput;
-  renderTargetDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::Depth );
+  renderTargetDepthOutput->setAttachmentPoint( Qt3DRender::QRenderTargetOutput::DepthStencil );
   renderTargetDepthOutput->setTexture( mDepthTexture );
   renderTarget->addOutput( renderTargetDepthOutput );
 

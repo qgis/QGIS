@@ -30,7 +30,7 @@
 #include <QFuture>
 #include <QNetworkCacheMetaData>
 #include <QString>
-#include <QtConcurrent>
+#include <QUrlQuery>
 
 #include "moc_qgsbasenetworkrequest.cpp"
 

@@ -34,7 +34,6 @@
 #include "qgswkbptr.h"
 
 #include <QString>
-#include <QtConcurrent>
 
 #include "moc_qgspointlocator.cpp"
 

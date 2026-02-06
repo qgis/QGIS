@@ -160,6 +160,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
     //! Settings entry digitizing tracing max feature count
     static const QgsSettingsEntryInteger *settingsDigitizingTracingMaxFeatureCount;
 
+    //! Settings entry digitizing status bar area display
+    static const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *settingsDigitizingStatusBarAreaDisplay;
+
+    //! Settings entry digitizing status bar perimeter/total length display
+    static const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *settingsDigitizingStatusBarTotalLengthDisplay;
+
     //! Settings entry path to GPSBabel executable.
     static const QgsSettingsEntryString *settingsGpsBabelPath;
 

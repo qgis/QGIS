@@ -195,7 +195,7 @@ void TestQgsVirtualRasterProvider::absoluteRelativeUri()
 
 void TestQgsVirtualRasterProvider::testConstructorWrong()
 {
-  //Giving an invalid uri, with more raster referencies compared to the raster.ref that are present in the formula
+  //Giving an invalid uri, with more raster references compared to the raster.ref that are present in the formula
   QString str1 = u"?crs=EPSG:4326&extent=18.6662979442000001,45.7767014376000034,18.7035979441999984,45.8117014376000000&width=373&height=350&formula=\"dem@1\" + 200&dem:provider=gdal&landsat:provider=gdal"_s;
   QString uri = QString( "%1&%2&%3" ).arg( str1, u"dem:uri="_s % mTestDataDir % u"raster/dem.tif"_s, u"landsat:uri="_s % mTestDataDir % u"landsat.tif"_s );
   auto layer = std::make_unique<QgsRasterLayer>( uri, u"layer"_s, u"virtualraster"_s );

@@ -623,7 +623,6 @@ void QgsPointCloudLayerProfileGeneratorBase::gatherPoints( QgsPointCloudIndex &p
     return;
   }
 
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( pc.accessType() )
   {
     case Qgis::PointCloudAccessType::Local:
@@ -637,7 +636,6 @@ void QgsPointCloudLayerProfileGeneratorBase::gatherPoints( QgsPointCloudIndex &p
       break;
     }
   }
-  // NOLINTEND(bugprone-branch-clone)
 }
 
 //

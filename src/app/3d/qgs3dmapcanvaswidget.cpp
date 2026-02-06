@@ -99,7 +99,17 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   mActionToggleEditing = new QAction( QgsApplication::getThemeIcon( u"/mActionToggleEditing.svg"_s ), tr( "Toggle editing" ), this );
   mActionToggleEditing->setCheckable( true );
   connect( mActionToggleEditing, &QAction::triggered, this, [this] {
-    QgisApp::instance()->toggleEditing( QgisApp::instance()->activeLayer() );
+    QgsMapLayer *layer = QgisApp::instance()->activeLayer();
+    QgsPointCloudLayer *pcLayer = qobject_cast<QgsPointCloudLayer *>( layer );
+    for ( QgsPointCloudSubIndex &subIndex : pcLayer->subIndexes() )
+    {
+      if ( !subIndex.index() || !subIndex.index().isValid() )
+      {
+        mMessageBar->pushMessage( tr( "Virtual Point Cloud editing" ), tr( "Some of the files referenced by the VPC have not yet been loaded, selection of areas of a not yet loaded dataset will not cause any changes to its data. Only actually selected points will be edited." ) );
+        break;
+      }
+    }
+    QgisApp::instance()->toggleEditing( pcLayer );
     mCanvas->setMapTool( nullptr );
   } );
   mActionUndo = new QAction( QgsApplication::getThemeIcon( u"/mActionUndo.svg"_s ), tr( "Undo" ), this );

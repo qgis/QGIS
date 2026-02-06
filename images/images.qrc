@@ -1062,6 +1062,8 @@
         <file>themes/default/field_indicators/mIndicatorDefaultValue.svg</file>
         <file>themes/default/field_indicators/mIndicatorDefaultValueApplyOnUpdate.svg</file>
         <file>themes/default/mIconRenderOnTerrain.svg</file>
+        <file>themes/default/mIconFloaterCartesian.svg</file>
+        <file>themes/default/mIconFloaterEllipsoid.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

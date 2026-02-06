@@ -102,6 +102,9 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsCoordinateReferenceSystem mCrs;
     double mAverageSubIndexWidth = 0;
     double mAverageSubIndexHeight = 0;
+
+    bool mAllEditableFiles = true;
+    bool mAllLocalFiles = true;
 };
 
 class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata

@@ -129,6 +129,7 @@
 %Include auto_generated/qgsmaskrendersettings.sip
 %Include auto_generated/qgsmathutils.sip
 %Include auto_generated/qgsmatrix4x4.sip
+%Include auto_generated/qgsmeasureutils.sip
 %Include auto_generated/qgsmessagelog.sip
 %Include auto_generated/qgsmessageoutput.sip
 %Include auto_generated/qgsmimedatautils.sip

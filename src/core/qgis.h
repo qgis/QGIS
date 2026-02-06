@@ -4153,6 +4153,17 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( CadConstraintType )
 
+    /**
+     * Advanced digitizing measurement display types.
+     * \since QGIS 4.0
+     */
+    enum class CadMeasurementDisplayType : int
+    {
+      Hidden, //!< Hide measurement
+      Cartesian, //!< Use Cartesian measurements
+      Ellipsoidal, //!< Use Ellipsoidal measurements
+    };
+    Q_ENUM( CadMeasurementDisplayType )
 
     /**
      * Flags which control the behavior of QgsProjects.

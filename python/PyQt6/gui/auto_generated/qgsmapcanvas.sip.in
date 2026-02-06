@@ -948,6 +948,26 @@ Ownership of ``controller`` is transferred to the canvas.
 .. versionadded:: 3.34
 %End
 
+    QgsStatusBar *statusBar();
+%Docstring
+Returns the associated status bar.
+
+May be ``None`` if not set.
+
+.. seealso:: :py:func:`setStatusBar`
+
+.. versionadded:: 4.0
+%End
+
+    void setStatusBar( QgsStatusBar *bar );
+%Docstring
+Sets the associated status ``bar``.
+
+.. seealso:: :py:func:`statusBar`
+
+.. versionadded:: 4.0
+%End
+
   public slots:
 
     void refresh();

@@ -30,7 +30,7 @@
 
 #include <QDebug>
 #include <QString>
-#include <QtConcurrent/QtConcurrentMap>
+#include <QtConcurrentMap>
 #include <QtMath>
 
 #include "moc_qgspointclouddataprovider.cpp"

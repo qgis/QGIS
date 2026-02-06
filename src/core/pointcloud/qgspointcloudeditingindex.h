@@ -35,8 +35,8 @@ class QgsPointCloudLayer;
 class CORE_EXPORT QgsPointCloudEditingIndex : public QgsAbstractPointCloudIndex
 {
   public:
-    //! Ctor
-    explicit QgsPointCloudEditingIndex( QgsPointCloudLayer *layer );
+    //! Constructor
+    explicit QgsPointCloudEditingIndex( const QgsPointCloudIndex &index );
 
     void load( const QString &fileName, const QString &authcfg = QString() ) override;
     bool isValid() const override;

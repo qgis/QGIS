@@ -42,7 +42,7 @@ QgsNewsFeedModel.CustomRole.__doc__ = """Custom model roles.
 # --
 QgsNewsFeedModel.CustomRole.baseClass = QgsNewsFeedModel
 try:
-    QgsNewsFeedModel.__overridden_methods__ = ['data', 'flags', 'index', 'parent', 'rowCount', 'columnCount']
+    QgsNewsFeedModel.__overridden_methods__ = ['data', 'flags', 'index', 'parent', 'rowCount', 'columnCount', 'roleNames']
     QgsNewsFeedModel.__group__ = ['network']
 except (NameError, AttributeError):
     pass

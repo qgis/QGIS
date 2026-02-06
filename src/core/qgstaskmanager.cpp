@@ -24,7 +24,6 @@
 
 #include <QStack>
 #include <QString>
-#include <QtConcurrentRun>
 
 #include "moc_qgstaskmanager.cpp"
 

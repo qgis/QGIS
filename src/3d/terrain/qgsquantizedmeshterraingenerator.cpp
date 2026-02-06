@@ -47,7 +47,6 @@
 #include <QPhongMaterial>
 #include <QString>
 #include <QTextureMaterial>
-#include <QtConcurrentRun>
 #include <QtGlobal>
 
 #include "moc_qgsquantizedmeshterraingenerator.cpp"

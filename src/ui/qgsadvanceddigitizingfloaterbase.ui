@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>310</width>
-    <height>260</height>
+    <height>233</height>
    </rect>
   </property>
   <property name="palette">
@@ -72,56 +72,30 @@
    <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <item row="6" column="1">
+   <item row="6" column="0" colspan="2">
     <widget class="QLabel" name="mZLabel">
      <property name="text">
       <string>z</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="7" column="1">
-    <widget class="QLabel" name="mMLabel">
+   <item row="8" column="0" colspan="2">
+    <widget class="QLabel" name="mBearingLabel">
      <property name="text">
-      <string>m</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <string>↻</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <widget class="QLabel" name="mYLabel">
-     <property name="text">
-      <string>y</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="mXLabel">
-     <property name="text">
-      <string>x</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="3">
-    <widget class="QLineEdit" name="mYLineEdit">
-     <property name="minimumSize">
+   <item row="6" column="3">
+    <widget class="QLineEdit" name="mZLineEdit">
+     <property name="sizeIncrement">
       <size>
        <width>40</width>
        <height>0</height>
       </size>
-     </property>
-     <property name="toolTip">
-      <string/>
      </property>
      <property name="text">
       <string>-</string>
@@ -131,13 +105,33 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="mAngleLabel">
+   <item row="10" column="0">
+    <widget class="QLabel" name="mAreaMeasurementTypeLabel">
      <property name="text">
-      <string>a</string>
+      <string/>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="3">
+    <widget class="QLineEdit" name="mTotalLengthLineEdit">
+     <property name="text">
+      <string>-</string>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QLabel" name="mYLabel">
+     <property name="text">
+      <string>y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
     </widget>
    </item>
@@ -153,18 +147,55 @@
       <bool>false</bool>
      </property>
      <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+      <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="6" column="3">
-    <widget class="QLineEdit" name="mZLineEdit">
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="mDistanceLabel">
+     <property name="text">
+      <string>d</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="2">
+    <widget class="QLabel" name="mCommonAngleSnappingLabel">
+     <property name="text">
+      <string>∠</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3">
+    <widget class="QLineEdit" name="mMLineEdit">
      <property name="sizeIncrement">
       <size>
        <width>40</width>
        <height>0</height>
       </size>
      </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="mAngleLabel">
+     <property name="text">
+      <string>a</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="3">
+    <widget class="QLineEdit" name="mTotalAreaLineEdit">
      <property name="text">
       <string>-</string>
      </property>
@@ -192,36 +223,40 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="1">
-    <widget class="QLabel" name="mCommonAngleSnappingLabel">
+   <item row="10" column="1">
+    <widget class="QLabel" name="mAreaLabel">
      <property name="text">
-      <string>∠</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="mDistanceLabel">
-     <property name="text">
-      <string>d</string>
+      <string>k</string>
      </property>
      <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="7" column="3">
-    <widget class="QLineEdit" name="mMLineEdit">
-     <property name="sizeIncrement">
-      <size>
-       <width>40</width>
-       <height>0</height>
-      </size>
-     </property>
+   <item row="7" column="0" colspan="2">
+    <widget class="QLabel" name="mMLabel">
      <property name="text">
-      <string>-</string>
+      <string>m</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="3">
+    <widget class="QLineEdit" name="mBearingLineEdit">
      <property name="frame">
       <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0">
+    <widget class="QLabel" name="mLengthMeasurementTypeLabel">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
      </property>
     </widget>
    </item>
@@ -244,6 +279,26 @@
      </property>
     </widget>
    </item>
+   <item row="11" column="1">
+    <widget class="QLabel" name="mTotalLengthLabel">
+     <property name="text">
+      <string>p</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QLabel" name="mXLabel">
+     <property name="text">
+      <string>x</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
    <item row="9" column="3">
     <widget class="QLineEdit" name="mCommonAngleSnappingLineEdit">
      <property name="text">
@@ -254,38 +309,37 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="1">
-    <widget class="QLabel" name="mBearingLabel">
-     <property name="text">
-      <string>↻</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="3">
-    <widget class="QLineEdit" name="mBearingLineEdit">
-     <property name="frame">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="1">
-    <widget class="QLabel" name="mWeightLabel">
-     <property name="text">
-      <string>w</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="3">
-    <widget class="QLineEdit" name="mWeightLineEdit">
-     <property name="sizeIncrement">
+   <item row="5" column="3">
+    <widget class="QLineEdit" name="mYLineEdit">
+     <property name="minimumSize">
       <size>
        <width>40</width>
        <height>0</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="text">
+      <string>-</string>
+     </property>
+     <property name="frame">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1">
+    <widget class="QLabel" name="mWeightLabel">
+     <property name="text">
+      <string>w</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="2" colspan="2">
+    <widget class="QLineEdit" name="mWeightLineEdit">
      <property name="text">
       <string>-</string>
      </property>
@@ -297,11 +351,16 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>mXLineEdit</tabstop>
   <tabstop>mDistanceLineEdit</tabstop>
   <tabstop>mAngleLineEdit</tabstop>
-  <tabstop>mXLineEdit</tabstop>
+  <tabstop>mBearingLineEdit</tabstop>
   <tabstop>mYLineEdit</tabstop>
-  <tabstop>mWeightLineEdit</tabstop>
+  <tabstop>mZLineEdit</tabstop>
+  <tabstop>mMLineEdit</tabstop>
+  <tabstop>mCommonAngleSnappingLineEdit</tabstop>
+  <tabstop>mTotalAreaLineEdit</tabstop>
+  <tabstop>mTotalLengthLineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections/>

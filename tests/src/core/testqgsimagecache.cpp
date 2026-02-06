@@ -31,7 +31,7 @@
 #include <QSignalSpy>
 #include <QString>
 #include <QStringList>
-#include <QtConcurrent>
+#include <QtConcurrentMap>
 
 using namespace Qt::StringLiterals;
 

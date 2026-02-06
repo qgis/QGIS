@@ -28,7 +28,7 @@
 
 #include <QQueue>
 #include <QString>
-#include <QtConcurrent/QtConcurrentMap>
+#include <QtConcurrentMap>
 
 #include "moc_qgspointcloudstatscalculator.cpp"
 

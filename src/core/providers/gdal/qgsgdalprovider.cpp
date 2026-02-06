@@ -701,7 +701,7 @@ QString QgsGdalProvider::bandDescription( int bandNumber )
 
   if ( GDALGetRasterCount( mGdalDataset ) > 0 )
   {
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+    GDALRasterBandH gdalBand = getBand( bandNumber );
     if ( gdalBand )
     {
       const QString description { GDALGetMetadataItem( gdalBand, "DESCRIPTION", nullptr ) };
@@ -1383,7 +1383,7 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
       if ( !dimExtraValues.isEmpty() )
       {
         QStringList bandNameValues;
-        GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, bandNumber );
+        GDALRasterBandH gdalBand = getBand( bandNumber );
         GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
         if ( GDALmetadata )
         {
@@ -1565,7 +1565,7 @@ double QgsGdalProvider::sample( const QgsPointXY &point, int band, bool *ok, con
     return std::numeric_limits<double>::quiet_NaN();
   }
 
-  GDALRasterBandH hBand = GDALGetRasterBand( mGdalDataset, band );
+  GDALRasterBandH hBand = getBand( band );
   if ( !hBand )
     return std::numeric_limits<double>::quiet_NaN();
 
@@ -1750,7 +1750,7 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return dataTypeFromGdal( GDT_Byte );
 
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   GDALDataType myGdalDataType = GDALGetRasterDataType( myGdalBand );
   Qgis::DataType myDataType = dataTypeFromGdal( myGdalDataType );
 
@@ -1859,7 +1859,7 @@ Qgis::RasterColorInterpretation QgsGdalProvider::colorInterpretation( int bandNo
 
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return colorInterpretationFromGdal( GCI_AlphaBand );
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = getBand( bandNo );
   return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }
 

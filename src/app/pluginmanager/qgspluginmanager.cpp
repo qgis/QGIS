@@ -161,7 +161,7 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   buttonInstallExperimental->hide();
   buttonUninstall->hide();
   frameSettings->setHidden( true );
-  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( true );
+  mOptionsListWidget->item( static_cast<int>( Tabs::InstallFromZip ) )->setHidden( true );
 
   voteRating->hide();
   voteLabel->hide();
@@ -193,7 +193,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
-  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
+  mOptionsListWidget->item( static_cast<int>( Tabs::InstallFromZip ) )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
   buttonInstallExperimental->setVisible( settingsAllowExperimental->value() );
@@ -651,10 +651,10 @@ void QgsPluginManager::reloadModelData()
   buttonUpgradeAll->setEnabled( hasUpgradeablePlugins() );
 
   // Disable tabs that are empty because of no suitable plugins in the model.
-  mOptionsListWidget->item( PLUGMAN_TAB_NOT_INSTALLED )->setHidden( !hasAvailablePlugins() );
-  mOptionsListWidget->item( PLUGMAN_TAB_UPGRADEABLE )->setHidden( !hasUpgradeablePlugins() );
-  mOptionsListWidget->item( PLUGMAN_TAB_NEW )->setHidden( !hasNewPlugins() );
-  mOptionsListWidget->item( PLUGMAN_TAB_INVALID )->setHidden( !hasInvalidPlugins() );
+  mOptionsListWidget->item( static_cast<int>( Tabs::NotInstalledPlugins ) )->setHidden( !hasAvailablePlugins() );
+  mOptionsListWidget->item( static_cast<int>( Tabs::UpgradeablePlugins ) )->setHidden( !hasUpgradeablePlugins() );
+  mOptionsListWidget->item( static_cast<int>( Tabs::NewPlugins ) )->setHidden( !hasNewPlugins() );
+  mOptionsListWidget->item( static_cast<int>( Tabs::InvalidPlugins ) )->setHidden( !hasInvalidPlugins() );
 }
 
 
@@ -1237,53 +1237,64 @@ void QgsPluginManager::reject()
 
 void QgsPluginManager::setCurrentTab( int idx )
 {
-  if ( idx == PLUGMAN_TAB_SETTINGS )
-  {
-    mOptionsStackedWidget->setCurrentIndex( 2 );
-  }
-  else if ( idx == PLUGMAN_TAB_INSTALL_FROM_ZIP )
-  {
-    mOptionsStackedWidget->setCurrentIndex( 1 );
-  }
-  else
-  {
-    mOptionsStackedWidget->setCurrentIndex( 0 );
+  QStringList acceptedStatuses;
+  QString tabTitle;
 
-    QStringList acceptedStatuses;
-    QString tabTitle;
-    switch ( idx )
-    {
-      case PLUGMAN_TAB_ALL:
-        // all (statuses ends with Z are for spacers to always sort properly)
-        acceptedStatuses << u"installed"_s << u"not installed"_s << u"new"_s << u"orphan"_s << u"none available"_s << u"newer"_s << u"upgradeable"_s << u"not installedZ"_s << u"installedZ"_s << u"upgradeableZ"_s << u"orphanZ"_s << u"newerZZ"_s << QString();
-        tabTitle = u"all_plugins"_s;
-        break;
-      case PLUGMAN_TAB_INSTALLED:
-        // installed (statuses ends with Z are for spacers to always sort properly)
-        acceptedStatuses << u"installed"_s << u"orphan"_s << u"newer"_s << u"upgradeable"_s << u"installedZ"_s << u"upgradeableZ"_s << u"orphanZ"_s << u"newerZZ"_s << QString();
-        tabTitle = u"installed_plugins"_s;
-        break;
-      case PLUGMAN_TAB_NOT_INSTALLED:
-        // not installed (get more)
-        acceptedStatuses << u"not installed"_s << u"new"_s;
-        tabTitle = u"not_installed_plugins"_s;
-        break;
-      case PLUGMAN_TAB_UPGRADEABLE:
-        // upgradeable
-        acceptedStatuses << u"upgradeable"_s;
-        tabTitle = u"upgradeable_plugins"_s;
-        break;
-      case PLUGMAN_TAB_NEW:
-        // new
-        acceptedStatuses << u"new"_s;
-        tabTitle = u"new_plugins"_s;
-        break;
-      case PLUGMAN_TAB_INVALID:
-        // invalid
-        acceptedStatuses << u"invalid"_s;
-        tabTitle = u"invalid_plugins"_s;
-        break;
-    }
+  switch ( static_cast<Tabs>( idx ) )
+  {
+    case Tabs::AllPlugins:
+      mOptionsStackedWidget->setCurrentIndex( 0 );
+      // all (statuses ends with Z are for spacers to always sort properly)
+      acceptedStatuses << u"installed"_s << u"not installed"_s << u"new"_s << u"orphan"_s << u"none available"_s << u"newer"_s << u"upgradeable"_s << u"not installedZ"_s << u"installedZ"_s << u"upgradeableZ"_s << u"orphanZ"_s << u"newerZZ"_s << QString();
+      tabTitle = u"all_plugins"_s;
+      break;
+
+    case Tabs::InstalledPlugins:
+      mOptionsStackedWidget->setCurrentIndex( 0 );
+      // installed (statuses ends with Z are for spacers to always sort properly)
+      acceptedStatuses << u"installed"_s << u"orphan"_s << u"newer"_s << u"upgradeable"_s << u"installedZ"_s << u"upgradeableZ"_s << u"orphanZ"_s << u"newerZZ"_s << QString();
+      tabTitle = u"installed_plugins"_s;
+      break;
+
+    case Tabs::NotInstalledPlugins:
+      mOptionsStackedWidget->setCurrentIndex( 0 );
+      // not installed (get more)
+      acceptedStatuses << u"not installed"_s << u"new"_s;
+      tabTitle = u"not_installed_plugins"_s;
+      break;
+
+    case Tabs::UpgradeablePlugins:
+      mOptionsStackedWidget->setCurrentIndex( 0 );
+      // upgradeable
+      acceptedStatuses << u"upgradeable"_s;
+      tabTitle = u"upgradeable_plugins"_s;
+      break;
+
+    case Tabs::NewPlugins:
+      mOptionsStackedWidget->setCurrentIndex( 0 );
+      // new
+      acceptedStatuses << u"new"_s;
+      tabTitle = u"new_plugins"_s;
+      break;
+
+    case Tabs::InvalidPlugins:
+      mOptionsStackedWidget->setCurrentIndex( 0 );
+      // invalid
+      acceptedStatuses << u"invalid"_s;
+      tabTitle = u"invalid_plugins"_s;
+      break;
+
+    case Tabs::InstallFromZip:
+      mOptionsStackedWidget->setCurrentIndex( 1 );
+      break;
+
+    case Tabs::Settings:
+      mOptionsStackedWidget->setCurrentIndex( 2 );
+      break;
+  }
+
+  if ( mOptionsStackedWidget->currentIndex() == 0 )
+  {
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
     // load tab description HTML to the detail browser
@@ -1394,7 +1405,7 @@ void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
     {
       QStringList params = url.path().split( '/' );
       leFilter->setText( u"tag:%1"_s.arg( params[1] ) );
-      mOptionsListWidget->setCurrentRow( PLUGMAN_TAB_ALL );
+      mOptionsListWidget->setCurrentRow( static_cast<int>( Tabs::AllPlugins ) );
     }
   }
   else

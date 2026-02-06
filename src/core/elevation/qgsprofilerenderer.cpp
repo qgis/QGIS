@@ -23,7 +23,6 @@
 #include "qgsprofilesnapping.h"
 
 #include <QtConcurrentMap>
-#include <QtConcurrentRun>
 
 #include "moc_qgsprofilerenderer.cpp"
 

@@ -38,7 +38,6 @@
 #include <QElapsedTimer>
 #include <QFutureWatcher>
 #include <QMutex>
-#include <QtConcurrent/QtConcurrentRun>
 
 class QgsRasterDataProvider;
 class QgsRasterLayer;

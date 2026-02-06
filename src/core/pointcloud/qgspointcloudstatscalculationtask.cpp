@@ -20,8 +20,6 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudrenderer.h"
 
-#include <QtConcurrent/QtConcurrent>
-
 #include "moc_qgspointcloudstatscalculationtask.cpp"
 
 ///@cond PRIVATE

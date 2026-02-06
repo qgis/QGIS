@@ -431,7 +431,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    // NOLINTBEGIN(bugprone-branch-clone)
     Q_NOWARN_DEPRECATED_PUSH
     if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
     {
@@ -442,7 +441,6 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       mLayout->renderContext().featureFilterProvider()->filterFeatures( layer, req );
     }
     Q_NOWARN_DEPRECATED_POP
-    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 
