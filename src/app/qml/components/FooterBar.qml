@@ -50,7 +50,7 @@ Rectangle {
       Material.accent: "#8c8c8c"
       text: qsTr("Go to qgis.org")
       font.bold: true
-      onClicked: root.supportClicked()
+      onClicked: root.websiteClicked()
     }
   }
 }
