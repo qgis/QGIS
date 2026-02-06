@@ -6380,11 +6380,9 @@ void QgisApp::showRasterCalculator()
       case QgsRasterCalculator::Result::CalculationError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "An error occurred while performing the calculation." ), Qgis::MessageLevel::Critical );
         break;
-#ifdef HAVE_OPENCL
       case QgsRasterCalculator::Result::OpenCLKernelBuildError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "An error occurred while performing the calculation using OpenCL. See OpenCL log messages for details." ), Qgis::MessageLevel::Critical );
         break;
-#endif
     }
     p.hide();
   }
