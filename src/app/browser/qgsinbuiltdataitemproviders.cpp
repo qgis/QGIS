@@ -2533,9 +2533,10 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
           QMenu *createFieldDomainMenu = new QMenu( tr( "New Field Domain" ), menu );
           menu->addMenu( createFieldDomainMenu );
 
-          auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri]( Qgis::FieldDomainType type ) {
+          auto createDomain = [context, itemWeakPointer = QPointer<QgsDataItem>( item ), md, connectionUri, policiesEditable]( Qgis::FieldDomainType type ) {
             QgsFieldDomainDialog dialog( type, QgisApp::instance() );
             dialog.setWindowTitle( tr( "New Field Domain" ) );
+            dialog.setPoliciesEditable( policiesEditable );
             if ( dialog.exec() )
             {
               std::unique_ptr<QgsFieldDomain> newDomain( dialog.createFieldDomain() );
@@ -2598,11 +2599,12 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
             QAction *editFieldDomainAction = new QAction( QObject::tr( "Edit Field Domain…" ), menu );
             menu->addAction( editFieldDomainAction );
 
-            connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, fieldDomainLambda = std::move( fieldDomain )] {
+            connect( editFieldDomainAction, &QAction::triggered, this, [context, item, md, connectionUri, policiesEditable, fieldDomainLambda = std::move( fieldDomain )] {
               QgsFieldDomainDialog dialog( fieldDomainLambda->type(), QgisApp::instance() );
               dialog.setWindowTitle( tr( "Edit Field Domain" ) );
               dialog.setFieldDomain( fieldDomainLambda.get() );
               dialog.setNameEditable( false );
+              dialog.setPoliciesEditable( policiesEditable );
 
               if ( dialog.exec() )
               {
