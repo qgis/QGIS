@@ -2516,6 +2516,9 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
       connectionUri = fileItem->path();
     }
 
+    QFileInfo itemFileInfo( item->path() );
+    bool policiesEditable = itemFileInfo.isDir() && item->name().endsWith( u".gdb"_s, Qt::CaseInsensitive );
+
     // Check if domain creation is supported
     QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
     if ( md )
