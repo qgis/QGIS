@@ -46,6 +46,7 @@
 #include <QProcess>
 #include <QProgressBar>
 #include <QProgressDialog>
+#include <QQuickStyle>
 #include <QRegularExpression>
 #include <QScreen>
 #include <QShortcut>
@@ -372,7 +373,6 @@ using namespace Qt::StringLiterals;
 #include "qgspdalalgorithms.h"
 #include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
-#include "qgspluginmanager.h"
 #include "qgspluginregistry.h"
 #include "qgspointxy.h"
 #include "qgspuzzlewidget.h"
@@ -444,7 +444,7 @@ using namespace Qt::StringLiterals;
 #include "qgsmapthemes.h"
 #include "qgsmessagelogviewer.h"
 #include "qgsmaplayeractionregistry.h"
-#include "qgswelcomepage.h"
+#include "qgswelcomescreen.h"
 #include "qgsrecentprojectsmenueventfilter.h"
 #include "qgsversioninfo.h"
 #include "qgslegendfilterbutton.h"
@@ -1003,6 +1003,8 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   QColor splashTextColor = Qgis::releaseName() == "Master"_L1 ? QColor( 93, 153, 51 ) : Qt::black;
 
+  QQuickStyle::setStyle( u"Material"_s );
+
   startProfile( tr( "Create user profile manager" ) );
   mUserProfileManager = new QgsUserProfileManager( QString(), this );
   mUserProfileManager->setRootLocation( rootProfileLocation );
@@ -1121,54 +1123,15 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
   endProfile();
 
-  startProfile( tr( "Welcome page" ) );
-  mWelcomePage = new QgsWelcomePage( options.testFlag( AppOption::SkipVersionCheck ) );
-  connect( mWelcomePage, &QgsWelcomePage::projectRemoved, this, [this]( int row ) {
-    mRecentProjects.removeAt( row );
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  connect( mWelcomePage, &QgsWelcomePage::projectPinned, this, [this]( int row ) {
-    mRecentProjects.at( row ).pin = true;
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  connect( mWelcomePage, &QgsWelcomePage::projectUnpinned, this, [this]( int row ) {
-    mRecentProjects.at( row ).pin = false;
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  connect( mWelcomePage, &QgsWelcomePage::projectsCleared, this, [this]( bool clearPinned ) {
-    if ( clearPinned )
-    {
-      mRecentProjects.clear();
-    }
-    else
-    {
-      mRecentProjects.erase(
-        std::remove_if(
-          mRecentProjects.begin(),
-          mRecentProjects.end(),
-          []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pin; }
-        ),
-        mRecentProjects.end()
-      );
-    }
-    saveRecentProjects();
-    updateRecentProjectPaths();
-  } );
-  endProfile();
-
   mCentralContainer = new QStackedWidget;
   mCentralContainer->insertWidget( 0, mMapCanvas );
-  mCentralContainer->insertWidget( 1, mWelcomePage );
-
   centralLayout->addWidget( mCentralContainer, 0, 0, 2, 1 );
+
   mInfoBar->raise();
 
   connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgisApp::showMapCanvas );
 
-  mCentralContainer->setCurrentIndex( mProjOpen ? 0 : 1 );
+  mCentralContainer->setCurrentIndex( 0 );
 
   startProfile( tr( "User input dock" ) );
   // User Input Dock Widget
@@ -1283,6 +1246,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
   functionProfile( &QgisApp::createToolBars, this, u"Toolbars"_s );
   functionProfile( &QgisApp::createStatusBar, this, u"Status bar"_s );
   functionProfile( &QgisApp::setupCanvasTools, this, u"Create canvas tools"_s );
+  mMapCanvas->setStatusBar( mStatusBar );
 
   applyDefaultSettingsToCanvas( mMapCanvas );
 
@@ -1721,14 +1685,6 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   functionProfile( &QgisApp::readSettings, this, u"Read theme settings"_s );
 
-  // Update recent project list (as possible custom project storages are now registered by plugins)
-  mSplash->showMessage( tr( "Updating recent project paths" ), Qt::AlignHCenter | Qt::AlignBottom, splashTextColor );
-  qApp->processEvents();
-  startProfile( tr( "Update recent project paths" ) );
-  updateRecentProjectPaths();
-  mWelcomePage->setRecentProjects( mRecentProjects );
-  endProfile();
-
   // Set icon size of toolbars
   if ( settings.contains( u"/qgis/toolbarIconSize"_s ) )
   {
@@ -1959,10 +1915,10 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 
   // the most important part of the initialization: make sure that people can play puzzle if they need
   QgsPuzzleWidget *puzzleWidget = new QgsPuzzleWidget( mMapCanvas );
-  mCentralContainer->insertWidget( 2, puzzleWidget );
+  mCentralContainer->insertWidget( 1, puzzleWidget );
   connect( mCoordsEdit, &QgsStatusBarCoordinatesWidget::weAreBored, this, [this, puzzleWidget] {
     if ( puzzleWidget->letsGetThePartyStarted() )
-      mCentralContainer->setCurrentIndex( 2 );
+      mCentralContainer->setCurrentIndex( 1 );
   } );
   connect( puzzleWidget, &QgsPuzzleWidget::done, this, [this] {
     mCentralContainer->setCurrentIndex( 0 );
@@ -2063,6 +2019,72 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
       messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Critical, 0 );
     }
   }
+
+  startProfile( tr( "Welcome screen" ) );
+  connect( this, &QgisApp::pluginUpdatesAvailable, this, [this]( const QStringList &plugins ) {
+    const QString updateMessage = tr( "Plugin update(s) available: %1" ).arg( plugins.join( ", "_L1 ) );
+    QgsMessageLog::logMessage( updateMessage, tr( "Plugins" ) );
+
+    if ( mWelcomeScreen->isVisible() )
+    {
+      mWelcomeScreen->pluginUpdatesAvailableReceived( plugins );
+    }
+
+    // Be extra visible, show in message bar too
+    QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "Plugins" ), updateMessage );
+    QPushButton *updateButton = new QPushButton( tr( "Install Updates…" ) );
+    connect( updateButton, &QPushButton::clicked, []() {
+      QgisApp::instance()->showPluginManager( static_cast<int>( QgsPluginManager::Tabs::UpgradeablePlugins ) );
+    } );
+    messageWidget->layout()->addWidget( updateButton );
+    messageBar()->pushWidget( messageWidget, Qgis::MessageLevel::Warning, 0 );
+  } );
+
+  QgsWelcomeScreen::registerTypes();
+
+  mWelcomeScreen = new QgsWelcomeScreen( options.testFlag( AppOption::SkipVersionCheck ), this->centralWidget() );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectRemoved, this, [this]( int row ) {
+    mRecentProjects.removeAt( row );
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectPinned, this, [this]( int row ) {
+    mRecentProjects.at( row ).pinned = true;
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectUnpinned, this, [this]( int row ) {
+    mRecentProjects.at( row ).pinned = false;
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+  connect( mWelcomeScreen, &QgsWelcomeScreen::projectsCleared, this, [this]( bool clearPinned ) {
+    if ( clearPinned )
+    {
+      mRecentProjects.clear();
+    }
+    else
+    {
+      mRecentProjects.erase(
+        std::remove_if(
+          mRecentProjects.begin(),
+          mRecentProjects.end(),
+          []( const QgsRecentProjectItemsModel::RecentProjectData &recentProject ) { return !recentProject.pinned; }
+        ),
+        mRecentProjects.end()
+      );
+    }
+    saveRecentProjects();
+    updateRecentProjectPaths();
+  } );
+
+  updateRecentProjectPaths();
+  mWelcomeScreen->setRecentProjects( mRecentProjects );
+  if ( !mProjOpen )
+  {
+    mWelcomeScreen->showScene();
+  }
+  endProfile();
 }
 
 QgisApp::QgisApp()
@@ -2158,7 +2180,7 @@ QgisApp::~QgisApp()
   delete mTracer;
 
   delete mVectorLayerTools;
-  delete mWelcomePage;
+  delete mWelcomeScreen;
   delete mBookMarksDockWidget;
 
   // Gracefully delete window manager now
@@ -2867,9 +2889,9 @@ void QgisApp::readRecentProjects()
     data.path = settings.value( u"path"_s ).toString();
     data.previewImagePath = settings.value( u"previewImage"_s ).toString();
     data.crs = settings.value( u"crs"_s ).toString();
-    data.pin = settings.value( u"pin"_s ).toBool();
+    data.pinned = settings.value( u"pin"_s ).toBool();
     settings.endGroup();
-    if ( data.pin )
+    if ( data.pinned )
     {
       mRecentProjects.insert( pinPos, data );
       pinPos++;
@@ -3125,7 +3147,7 @@ void QgisApp::createActions()
 
   // Plugin Menu Items
 
-  connect( mActionManagePlugins, &QAction::triggered, this, &QgisApp::showPluginManager );
+  connect( mActionManagePlugins, &QAction::triggered, this, [this]( bool ) { showPluginManager(); } );
   connect( mActionShowPythonDialog, &QAction::triggered, this, &QgisApp::showPythonDialog );
 
   // Settings Menu Items
@@ -3428,9 +3450,8 @@ void QgisApp::createMenus()
 
   // Connect once for the entire submenu.
   connect( mRecentProjectsMenu, &QMenu::triggered, this, static_cast<void ( QgisApp::* )( QAction *action )>( &QgisApp::openProject ) );
-  QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomePage, mRecentProjectsMenu );
+  QgsRecentProjectsMenuEventFilter *recentsProjectMenuEventFilter = new QgsRecentProjectsMenuEventFilter( mWelcomeScreen, mRecentProjectsMenu );
   mRecentProjectsMenu->installEventFilter( recentsProjectMenuEventFilter );
-
 
   connect( mProjectFromTemplateMenu, &QMenu::triggered, this, &QgisApp::fileNewFromTemplateAction );
 
@@ -4752,6 +4773,8 @@ QgsMapCanvasDockWidget *QgisApp::createNewMapCanvasDock( const QString &name, bo
   mapCanvas->freeze( true );
   mapCanvas->setObjectName( name );
   mapCanvas->setProject( QgsProject::instance() );
+  mapCanvas->setStatusBar( mStatusBar );
+
   connect( mapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   connect( mLayerTreeCanvasBridge, &QgsLayerTreeMapCanvasBridge::canvasLayersChanged, mapCanvas, &QgsMapCanvas::setLayers );
 
@@ -5292,7 +5315,7 @@ void QgisApp::updateRecentProjectPaths()
     }
 
     action->setData( projectIndex++ );
-    if ( recentProject.pin )
+    if ( recentProject.pinned )
     {
       action->setIcon( QgsApplication::getThemeIcon( u"/pin.svg"_s ) );
     }
@@ -5303,7 +5326,7 @@ void QgisApp::updateRecentProjectPaths()
   {
     mRecentProjectsMenu->addSeparator();
     QAction *clearRecentProjectsAction = mRecentProjectsMenu->addAction( tr( "Clear List" ) );
-    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomePage, [this]() { mWelcomePage->clearRecentProjects(); } );
+    connect( clearRecentProjectsAction, &QAction::triggered, mWelcomeScreen, [this]() { mWelcomeScreen->clearRecentProjects(); } );
   }
 
   std::vector<QgsNative::RecentProjectProperties> recentProjects;
@@ -5345,7 +5368,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
 
   int idx = mRecentProjects.indexOf( projectData );
   if ( idx != -1 )
-    projectData.pin = mRecentProjects.at( idx ).pin;
+    projectData.pinned = mRecentProjects.at( idx ).pinned;
 
   if ( savePreviewImage )
   {
@@ -5369,7 +5392,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   bool pinnedTop = true;
   for ( const QgsRecentProjectItemsModel::RecentProjectData &recentProject : std::as_const( mRecentProjects ) )
   {
-    if ( recentProject.pin )
+    if ( recentProject.pinned )
     {
       pinnedCount++;
       if ( pinnedTop )
@@ -5387,7 +5410,7 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   mRecentProjects.removeAll( projectData );
 
   // Insert this file to the list
-  mRecentProjects.insert( projectData.pin ? 0 : nonPinnedPos, projectData );
+  mRecentProjects.insert( projectData.pinned ? 0 : nonPinnedPos, projectData );
 
   const uint maxProjects = QgsSettings().value( u"maxRecentProjects"_s, 20, QgsSettings::App ).toUInt();
 
@@ -5407,8 +5430,10 @@ void QgisApp::saveRecentProjectPath( bool savePreviewImage, const QIcon &iconOve
   updateRecentProjectPaths();
 
   // Update welcome page list
-  if ( mWelcomePage )
-    mWelcomePage->setRecentProjects( mRecentProjects );
+  if ( mWelcomeScreen )
+  {
+    mWelcomeScreen->setRecentProjects( mRecentProjects );
+  }
 
 } // QgisApp::saveRecentProjectPath
 
@@ -5429,7 +5454,7 @@ void QgisApp::saveRecentProjects()
     settings.setValue( u"path"_s, recentProject.path );
     settings.setValue( u"previewImage"_s, recentProject.previewImagePath );
     settings.setValue( u"crs"_s, recentProject.crs );
-    settings.setValue( u"pin"_s, recentProject.pin );
+    settings.setValue( u"pin"_s, recentProject.pinned );
     settings.endGroup();
   }
 }
@@ -5891,9 +5916,15 @@ bool QgisApp::fileNewBlank()
 void QgisApp::fileClose()
 {
   if ( fileNewBlank() )
-    mCentralContainer->setCurrentIndex( 1 );
+  {
+    mWelcomeScreen->showScene();
+  }
 }
 
+bool QgisApp::canCreateNewProject()
+{
+  return !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits();
+}
 
 //as file new but accepts flags to indicate whether we should prompt to save
 bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
@@ -5903,7 +5934,7 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 
   if ( promptToSaveFlag )
   {
-    if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+    if ( !canCreateNewProject() )
     {
       return false; //cancel pressed
     }
@@ -5970,12 +6001,32 @@ bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   return true;
 }
 
+bool QgisApp::fileNewWithBasemap()
+{
+  if ( checkTasksDependOnProject() )
+    return false;
+
+  if ( !canCreateNewProject() )
+  {
+    return false; //cancel pressed
+  }
+
+  [[maybe_unused]] QgsProjectDirtyBlocker dirtyBlocker( QgsProject::instance() );
+  QgsProject::instance()->clear();
+
+  QgsRasterLayer *basemapLayer = new QgsRasterLayer( u"type=xyz&tilePixelRatio=1&url=https://tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0&crs=EPSG3857"_s, u"OpenStreetMap"_s, "wms"_L1 );
+  QgsProject::instance()->setCrs( basemapLayer->crs() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << basemapLayer );
+
+  return true;
+}
+
 bool QgisApp::fileNewFromTemplate( const QString &fileName )
 {
   if ( checkTasksDependOnProject() )
     return false;
 
-  if ( !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits() )
+  if ( !canCreateNewProject() )
   {
     return false; //cancel pressed
   }
@@ -6328,6 +6379,9 @@ void QgisApp::showRasterCalculator()
 
       case QgsRasterCalculator::Result::CalculationError:
         visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "An error occurred while performing the calculation." ), Qgis::MessageLevel::Critical );
+        break;
+      case QgsRasterCalculator::Result::OpenCLKernelBuildError:
+        visibleMessageBar()->pushMessage( tr( "Raster calculator" ), tr( "An error occurred while performing the calculation using OpenCL. See OpenCL log messages for details." ), Qgis::MessageLevel::Critical );
         break;
     }
     p.hide();
@@ -12476,13 +12530,13 @@ void QgisApp::zoomToLayerExtent()
   mLayerTreeView->defaultActions()->zoomToLayers( mMapCanvas );
 }
 
-void QgisApp::showPluginManager()
+void QgisApp::showPluginManager( int tabIndex )
 {
 #ifdef WITH_BINDINGS
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady()"_s );
+    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady()"_s.arg( tabIndex ) );
   }
   else
 #endif
@@ -12898,8 +12952,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     double factor = mySettings.value( u"qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
     mMagnifierWidget->setDefaultFactor( factor );
     mMagnifierWidget->updateMagnification( factor );
-
-    mWelcomePage->updateNewsFeedVisibility();
   }
 }
 
@@ -14812,7 +14864,10 @@ void QgisApp::showMapCanvas()
 {
   // Map layers changed -> switch to map canvas
   if ( mCentralContainer )
+  {
     mCentralContainer->setCurrentIndex( 0 );
+    mWelcomeScreen->hideScene();
+  }
 }
 
 void QgisApp::markDirty()
@@ -16351,8 +16406,10 @@ void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
 {
   // Render the map canvas
   const double devicePixelRatio = mMapCanvas->mapSettings().devicePixelRatio();
-  QSize previewSize( 250, 177 ); // h = w / std::sqrt(2)
-  QRect previewRect( QPoint( ( mMapCanvas->width() - previewSize.width() ) / 2, ( mMapCanvas->height() - previewSize.height() ) / 2 ), previewSize );
+  const int mapCanvasWidth = mMapCanvas->width();
+  const int mapCanvasHeight = mMapCanvas->height();
+  QSize previewSize( std::min( 512, mapCanvasWidth ), std::min( 512, mapCanvasHeight ) );
+  QRect previewRect( QPoint( ( mapCanvasWidth - previewSize.width() ) / 2, ( mapCanvasHeight - previewSize.height() ) / 2 ), previewSize );
 
   QPixmap previewImage( previewSize * devicePixelRatio );
   previewImage.setDevicePixelRatio( devicePixelRatio );
@@ -16363,7 +16420,7 @@ void QgisApp::createPreviewImage( const QString &path, const QIcon &icon )
   if ( !icon.isNull() )
   {
     QPixmap pixmap = icon.pixmap( QSize( 24, 24 ) );
-    previewPainter.drawPixmap( QPointF( 250 - 24 - 5, 177 - 24 - 5 ), pixmap );
+    previewPainter.drawPixmap( QPointF( previewSize.width() - pixmap.width() - 5, previewSize.height() - pixmap.height() - 5 ), pixmap );
   }
   previewPainter.end();
 

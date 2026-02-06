@@ -17,6 +17,7 @@
 
 #include "qgs3dutils.h"
 #include "qgscolorutils.h"
+#include "qgshighlightmaterial.h"
 
 #include <QString>
 #include <QUrl>
@@ -113,6 +114,11 @@ QgsMaterial *QgsGoochMaterialSettings::toMaterial( QgsMaterialSettingsRenderingT
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
+      if ( context.isHighlighted() )
+      {
+        return new QgsHighlightMaterial( technique );
+      }
+
       return buildMaterial( context );
     }
 

@@ -69,7 +69,7 @@ def initMenusAndToolbars():
     defaultMenuEntries.update(
         {
             "native:creategrid": researchToolsMenu,
-            "qgis:randomselection": researchToolsMenu,
+            "native:randomselection": researchToolsMenu,
             "qgis:randomselectionwithinsubsets": researchToolsMenu,
             "native:randompointsinextent": researchToolsMenu,
             "qgis:randompointsinlayerbounds": researchToolsMenu,

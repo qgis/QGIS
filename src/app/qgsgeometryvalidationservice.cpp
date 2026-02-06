@@ -32,7 +32,7 @@ email                : matthias@opengis.ch
 
 #include <QFutureWatcher>
 #include <QString>
-#include <QtConcurrent>
+#include <QtConcurrentMap>
 
 #include "moc_qgsgeometryvalidationservice.cpp"
 

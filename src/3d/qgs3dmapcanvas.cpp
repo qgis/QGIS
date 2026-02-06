@@ -21,13 +21,12 @@
 #include "qgs3dmaptool.h"
 #include "qgs3dutils.h"
 #include "qgsframegraph.h"
-#include "qgspointcloudlayer3drenderer.h"
 #include "qgsraycastcontext.h"
-#include "qgsrubberband3d.h"
 #include "qgstemporalcontroller.h"
 #include "qgswindow3dengine.h"
 
 #include <QString>
+#include <QTimer>
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QCoreAspect>
 #include <Qt3DInput/QInputAspect>
@@ -85,8 +84,6 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
-  qDeleteAll( mHighlights );
-  mHighlights.clear();
 
   delete m_aspectEngine;
 }
@@ -162,6 +159,8 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
   connect( mScene, &Qgs3DMapScene::fpsCountChanged, this, &Qgs3DMapCanvas::fpsCountChanged );
   connect( mScene, &Qgs3DMapScene::fpsCounterEnabledChanged, this, &Qgs3DMapCanvas::fpsCounterEnabledChanged );
   connect( mScene, &Qgs3DMapScene::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged );
+
+  mHighlightsHandler.reset( new Qgs3DHighlightFeatureHandler( mScene ) );
 
   delete mMapSettings;
   mMapSettings = mapSettings;
@@ -405,53 +404,10 @@ QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
 
 void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *layer )
 {
-  // we only support point clouds for now
-  if ( layer->type() != Qgis::LayerType::PointCloud )
-    return;
-
-  const QgsGeometry geom = feature.geometry();
-  const QgsPoint pt( geom.vertexAt( 0 ) );
-
-  if ( !mHighlights.contains( layer ) )
-  {
-    QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
-
-    const QgsSettings settings;
-    const QColor color = QColor( settings.value( u"Map/highlight/color"_s, Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-    band->setColor( color );
-    band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
-    if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
-    {
-      band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
-    }
-    mHighlights.insert( layer, band );
-
-    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
-  }
-  mHighlights[layer]->addPoint( pt );
-}
-
-void Qgs3DMapCanvas::updateHighlightSizes()
-{
-  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
-  {
-    if ( QgsPointCloudLayer3DRenderer *rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
-    {
-      if ( mHighlights.contains( layer ) )
-      {
-        mHighlights[layer]->setWidth( rnd->symbol()->pointSize() + 1 );
-      }
-    }
-  }
+  mHighlightsHandler->highlightFeature( feature, layer );
 }
 
 void Qgs3DMapCanvas::clearHighlights()
 {
-  for ( auto it = mHighlights.keyBegin(); it != mHighlights.keyEnd(); it++ )
-  {
-    disconnect( it.base().key(), &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
-  }
-
-  qDeleteAll( mHighlights );
-  mHighlights.clear();
+  mHighlightsHandler->clearHighlights();
 }
