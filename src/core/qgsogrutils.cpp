@@ -37,9 +37,14 @@
 #include "qgsmultipolygon.h"
 #include "qgsogrproviderutils.h"
 #include "qgspolygon.h"
+#include "qgspolyhedralsurface.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvariantutils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3,6,0)
 #include "qgsweakrelation.h"
@@ -915,6 +920,19 @@ std::unique_ptr< QgsMultiPolygon > ogrGeometryToQgsMultiPolygon( OGRGeometryH ge
   return polygon;
 }
 
+std::unique_ptr<QgsPolyhedralSurface > ogrGeometryToQgsPolyhedralSurface( OGRGeometryH geom )
+{
+  auto polyhedralSurface = std::make_unique< QgsPolyhedralSurface >();
+
+  const int count = OGR_G_GetGeometryCount( geom );
+  for ( int i = 0; i < count; ++i )
+  {
+    polyhedralSurface->addPatch( ogrGeometryToQgsPolygon( OGR_G_GetGeometryRef( geom, i ) ).release() );
+  }
+
+  return polyhedralSurface;
+}
+
 Qgis::WkbType QgsOgrUtils::ogrGeometryTypeToQgsWkbType( OGRwkbGeometryType ogrGeomType )
 {
   switch ( ogrGeomType )
@@ -1043,6 +1061,11 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
       return QgsGeometry( ogrGeometryToQgsMultiPolygon( geom ) );
     }
 
+    case Qgis::WkbType::PolyhedralSurface:
+    {
+      return QgsGeometry( ogrGeometryToQgsPolyhedralSurface( geom ) );
+    }
+
     default:
       break;
   }
@@ -1065,7 +1088,7 @@ QgsGeometry QgsOgrUtils::ogrGeometryToQgsGeometry( OGRGeometryH geom )
   // get the wkb representation
   int memorySize = OGR_G_WkbSize( geom );
   unsigned char *wkb = new unsigned char[memorySize];
-  OGR_G_ExportToWkb( geom, static_cast<OGRwkbByteOrder>( QgsApplication::endian() ), wkb );
+  OGR_G_ExportToIsoWkb( geom, static_cast<OGRwkbByteOrder>( QgsApplication::endian() ), wkb );
 
   QgsGeometry g;
   g.fromWkb( wkb, memorySize );

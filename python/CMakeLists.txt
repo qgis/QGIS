@@ -451,6 +451,13 @@ foreach(module ${PY_MODULES})
     install(FILES ${sip_files} DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${module}/auto_generated DESTINATION ${SIP_DEFAULT_SIP_DIR}/qgis/${module})
   endif()
+
+  if(SIP_BUILD_EXECUTABLE)
+    add_custom_command(TARGET py${module}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${module}/build/_${module_out}/_${module_out}.pyi" "${QGIS_PYTHON_OUTPUT_DIRECTORY}"
+    )
+  endif()
 endforeach(module)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/pyproject.toml @ONLY)

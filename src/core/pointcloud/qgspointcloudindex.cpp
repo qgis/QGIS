@@ -30,10 +30,13 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QString>
 #include <QTime>
 #include <QtDebug>
 #include <qglobal.h>
 #include <qstringliteral.h>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudNodeId::QgsPointCloudNodeId()
   : mX( 0 )
@@ -473,6 +476,11 @@ int QgsPointCloudIndex::span() const
   return mIndex->span();
 }
 
+QString QgsPointCloudIndex::uri() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->uri();
+}
 
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
 {

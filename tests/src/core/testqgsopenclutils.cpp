@@ -23,6 +23,8 @@
 #include <QString>
 #include <QTemporaryFile>
 
+using namespace Qt::StringLiterals;
+
 //header for class being tested
 #include <qgsopenclutils.h>
 #include <qgshillshaderenderer.h>

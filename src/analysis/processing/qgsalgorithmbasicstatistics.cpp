@@ -21,6 +21,10 @@
 #include "qgsstatisticalsummary.h"
 #include "qgsstringstatisticalsummary.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsBasicStatisticsAlgorithm::name() const

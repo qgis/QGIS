@@ -9,6 +9,7 @@
 
 
 
+
 class QgsNewsFeedParser : QObject
 {
 %Docstring(signature="appended")
@@ -59,6 +60,15 @@ Constructor for QgsNewsFeedParser, parsing the specified ``feedUrl``.
 
 The optional ``authcfg`` argument can be used to specify an
 authentication configuration to use when connecting to the feed.
+%End
+
+
+
+    bool isFetching() const;
+%Docstring
+Returns ``True`` if the news parser is fetching items.
+
+.. versionadded:: 4.0
 %End
 
     QList< QgsNewsFeedParser::Entry > entries() const;
@@ -141,6 +151,21 @@ Emitted whenever an ``entry`` is dismissed (as a result of a call to
 %Docstring
 Emitted when the image attached to the entry with the specified ``key``
 has been fetched and is now available.
+%End
+
+    void enabledChanged();
+%Docstring
+Emitted when the enabled/disabled state of the feed URL associated to
+the news parser changes.
+
+.. versionadded:: 4.0
+%End
+
+    void isFetchingChanged();
+%Docstring
+Emitted when the news parser's fetching state changes.
+
+.. versionadded:: 4.0
 %End
 
 };

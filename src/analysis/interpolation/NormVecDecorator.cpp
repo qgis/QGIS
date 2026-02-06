@@ -22,6 +22,9 @@
 #include "qgspoint.h"
 
 #include <QApplication>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 NormVecDecorator::~NormVecDecorator()
 {

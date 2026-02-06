@@ -26,6 +26,9 @@
 
 #include <QLineEdit>
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsFilterLineEdit;
 

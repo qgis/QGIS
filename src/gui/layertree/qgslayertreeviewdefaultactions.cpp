@@ -25,8 +25,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QAction>
+#include <QString>
 
 #include "moc_qgslayertreeviewdefaultactions.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeViewBase *view )
   : QObject( view )

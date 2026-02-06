@@ -18,6 +18,10 @@
 #include "qgssqlcomposerdialog.h"
 #include "qgstest.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsSQLComposerDialog : public QObject
 {
     Q_OBJECT

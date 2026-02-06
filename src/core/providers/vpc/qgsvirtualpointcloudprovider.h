@@ -100,6 +100,10 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudIndex mOverview = QgsPointCloudIndex( nullptr );
 
+    double mRedMax = std::numeric_limits<double>::lowest();
+    double mGreenMax = std::numeric_limits<double>::lowest();
+    double mBlueMax = std::numeric_limits<double>::lowest();
+
     QStringList mUriList;
     QgsRectangle mExtent;
     qint64 mPointCount = 0;
@@ -107,6 +111,8 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     double mAverageSubIndexWidth = 0;
     double mAverageSubIndexHeight = 0;
     bool mContainsUnsupportedFiles = false;
+    bool mAllEditableFiles = true;
+    bool mAllLocalFiles = true;
 };
 
 class QgsVirtualPointCloudProviderMetadata : public QgsProviderMetadata

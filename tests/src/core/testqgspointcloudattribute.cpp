@@ -29,6 +29,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class TestQgsPointCloudAttribute : public QObject
 {
     Q_OBJECT

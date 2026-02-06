@@ -22,9 +22,12 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 
+#include <QString>
 #include <QUuid>
 
 #include "moc_qgslayoutmultiframe.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )
   : QgsLayoutObject( layout )

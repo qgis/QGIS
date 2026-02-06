@@ -48,10 +48,13 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPropertyAnimation>
+#include <QString>
 #include <QTextStream>
 #include <QVersionNumber>
 
 #include "moc_qgsexpressionbuilderwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool formatterCanProvideAvailableValues( QgsVectorLayer *layer, const QString &fieldName )
 {

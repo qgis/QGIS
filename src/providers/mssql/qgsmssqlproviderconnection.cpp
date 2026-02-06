@@ -35,6 +35,9 @@
 #include <QIcon>
 #include <QSqlField>
 #include <QSqlRecord>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 const QStringList QgsMssqlProviderConnection::EXTRA_CONNECTION_PARAMETERS {
   u"geometryColumnsOnly"_s,

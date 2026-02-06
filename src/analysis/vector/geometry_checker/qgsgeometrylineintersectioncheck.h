@@ -20,6 +20,10 @@
 
 #include "qgsgeometrycheck.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief A line intersection check.

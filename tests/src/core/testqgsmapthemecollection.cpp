@@ -22,6 +22,10 @@
 #include "qgstest.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsMapThemeCollection : public QObject
 {
     Q_OBJECT

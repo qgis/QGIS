@@ -20,6 +20,10 @@
 #include "qgscolorutils.h"
 #include "qgsprocessingmodelcomment.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsProcessingModelComponent::QgsProcessingModelComponent( const QString &description )

@@ -22,8 +22,11 @@
 #include "qgsreadwritecontext.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgslayoutqptdrophandler.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutQptDropHandler::QgsLayoutQptDropHandler( QObject *parent )
   : QgsLayoutCustomDropHandler( parent )

@@ -23,6 +23,9 @@ email                : ersts@amnh.org
 #include "qgis_sip.h"
 
 #include <QList>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QDomDocument;
 class QDomElement;

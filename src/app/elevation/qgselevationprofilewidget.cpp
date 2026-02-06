@@ -71,10 +71,13 @@
 #include <QProgressBar>
 #include <QShortcut>
 #include <QSplitter>
+#include <QString>
 #include <QTimer>
 #include <QToolBar>
 
 #include "moc_qgselevationprofilewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QgsSettingsEntryDouble *QgsElevationProfileWidget::settingTolerance = new QgsSettingsEntryDouble( u"tolerance"_s, QgsSettingsTree::sTreeElevationProfile, 0.1, u"Tolerance distance for elevation profile plots"_s, Qgis::SettingsOptions(), 0 );
 
@@ -1234,7 +1237,7 @@ void QgsElevationProfileWidget::renameProfileTriggered()
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+    dlg.setConflictingNameWarning( tr( "An elevation profile with this name already exists." ) );
 
     if ( dlg.exec() != QDialog::Accepted )
     {

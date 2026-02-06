@@ -19,7 +19,11 @@
 #include "qgsreadwritecontext.h"
 #include "qgsruntimeprofiler.h"
 
+#include <QString>
+
 #include "moc_qgselevationprofilemanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationProfileManager::QgsElevationProfileManager( QgsProject *project )
   : QgsAbstractProjectStoredObjectManager( project )

@@ -139,6 +139,8 @@
 #include "qgsalgorithmfixgeometryoverlap.h"
 #include "qgsalgorithmfixgeometryselfintersection.h"
 #include "qgsalgorithmflattenrelationships.h"
+#include "qgsalgorithmforceccw.h"
+#include "qgsalgorithmforcecw.h"
 #include "qgsalgorithmforcerhr.h"
 #include "qgsalgorithmfuzzifyraster.h"
 #include "qgsalgorithmgenerateelevationprofile.h"
@@ -146,7 +148,11 @@
 #include "qgsalgorithmgltftovector.h"
 #include "qgsruntimeprofiler.h"
 
+#include <QString>
+
 #include "moc_qgsnativealgorithms.cpp"
+
+using namespace Qt::StringLiterals;
 
 #if QT_CONFIG( process )
 #include "qgsalgorithmgpsbabeltools.h"
@@ -478,6 +484,8 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsFindProjectionAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsFlattenRelationshipsAlgorithm() );
+  addAlgorithm( new QgsForceCCWAlgorithm() );
+  addAlgorithm( new QgsForceCWAlgorithm() );
   addAlgorithm( new QgsForceRHRAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterLinearMembershipAlgorithm() );
   addAlgorithm( new QgsFuzzifyRasterPowerMembershipAlgorithm() );

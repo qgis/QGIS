@@ -22,6 +22,10 @@
 #include "qgsvectortileloader.h"
 #include "qgsziputils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 class SetStylePostProcessor : public QgsProcessingLayerPostProcessorInterface

@@ -23,6 +23,10 @@
 #include "qgspathresolver.h"
 #include "qgsprojecttranslator.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsReadWriteContextCategoryPopper;
 
 /**

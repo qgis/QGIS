@@ -48,8 +48,11 @@ email                : morb at ozemail dot com dot au
 #include "qgsvectorlayer.h"
 
 #include <QCache>
+#include <QString>
 
 #include "moc_qgsgeometry.cpp"
+
+using namespace Qt::StringLiterals;
 
 struct QgsGeometryPrivate
 {
@@ -1096,7 +1099,6 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
   std::unique_ptr< QgsAbstractGeometry > p( part );
   if ( !d->geometry )
   {
-    // NOLINTBEGIN(bugprone-branch-clone)
     switch ( QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) )
     {
       case Qgis::WkbType::Point:
@@ -1125,7 +1127,6 @@ Qgis::GeometryOperationResult QgsGeometry::addPartV2( QgsAbstractGeometry *part,
       default:
         reset( nullptr );
         return Qgis::GeometryOperationResult::AddPartNotMultiGeometry;
-        // NOLINTEND(bugprone-branch-clone)
     }
   }
   else
@@ -1811,6 +1812,56 @@ QVector<QgsGeometry> QgsGeometry::coerceToType( const Qgis::WkbType type, double
   if ( !QgsWkbTypes::isCurvedType( type ) && QgsWkbTypes::isCurvedType( newGeom.wkbType() ) )
   {
     newGeom = QgsGeometry( d->geometry.get()->segmentize() );
+  }
+
+  // Handle NurbsCurve: if target is curved but NOT NurbsCurve, and source contains NurbsCurve,
+  // we need to segmentize the NURBS parts first
+  if ( QgsWkbTypes::isCurvedType( type ) && !QgsWkbTypes::isNurbsType( type ) )
+  {
+    // Check if geometry contains NurbsCurve that needs conversion
+    bool hasNurbs = false;
+    if ( QgsWkbTypes::isNurbsType( newGeom.wkbType() ) )
+    {
+      hasNurbs = true;
+    }
+    else if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( newGeom.constGet() ) )
+    {
+      for ( int i = 0; i < collection->numGeometries(); ++i )
+      {
+        if ( QgsWkbTypes::isNurbsType( collection->geometryN( i )->wkbType() ) )
+        {
+          hasNurbs = true;
+          break;
+        }
+      }
+    }
+    else if ( const QgsCurvePolygon *cp = qgsgeometry_cast< const QgsCurvePolygon * >( newGeom.constGet() ) )
+    {
+      if ( cp->exteriorRing() && QgsWkbTypes::isNurbsType( cp->exteriorRing()->wkbType() ) )
+        hasNurbs = true;
+      for ( int i = 0; !hasNurbs && i < cp->numInteriorRings(); ++i )
+      {
+        if ( QgsWkbTypes::isNurbsType( cp->interiorRing( i )->wkbType() ) )
+          hasNurbs = true;
+      }
+    }
+    else if ( const QgsCompoundCurve *cc = qgsgeometry_cast< const QgsCompoundCurve * >( newGeom.constGet() ) )
+    {
+      for ( int i = 0; i < cc->nCurves(); ++i )
+      {
+        if ( QgsWkbTypes::isNurbsType( cc->curveAt( i )->wkbType() ) )
+        {
+          hasNurbs = true;
+          break;
+        }
+      }
+    }
+
+    if ( hasNurbs )
+    {
+      // Segmentize to remove NURBS, then we'll convert back to curve type below
+      newGeom = QgsGeometry( newGeom.constGet()->segmentize() );
+    }
   }
 
   // polygon -> line

@@ -20,6 +20,10 @@
 #include "qgsgeometryutils.h"
 #include "qgsgraphanalyzer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsServiceAreaFromPointAlgorithm::name() const

@@ -23,6 +23,10 @@
 #include "qgslogger.h"
 #include "qgsrasterlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTerrainDownloader::QgsTerrainDownloader( const QgsCoordinateTransformContext &transformContext )
 {
   setDataSource( defaultDataSource() );

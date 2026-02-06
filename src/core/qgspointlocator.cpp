@@ -33,9 +33,11 @@
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgswkbptr.h"
 
-#include <QtConcurrent>
+#include <QString>
 
 #include "moc_qgspointlocator.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace SpatialIndex;
 

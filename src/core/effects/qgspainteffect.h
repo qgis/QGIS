@@ -25,6 +25,9 @@
 #include <QDomElement>
 #include <QPainter>
 #include <QPicture>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsRenderContext;
 

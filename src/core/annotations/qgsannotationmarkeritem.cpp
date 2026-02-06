@@ -23,6 +23,10 @@
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAnnotationMarkerItem::QgsAnnotationMarkerItem( const QgsPoint &point )
   : QgsAnnotationItem()
   , mPoint( point )

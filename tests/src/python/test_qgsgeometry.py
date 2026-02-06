@@ -12896,6 +12896,47 @@ class TestQgsGeometry(QgisTestCase):
             ["MultiPolygon (((0 0, 0 1, 1 1, 0 0)))"],
         )
 
+        # NurbsCurve to LineString (segmentization)
+        # We don't test exact representation here due to too long WKT produced
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.LineString,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("LineString"))
+
+        # NurbsCurve to MultiLineString
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.MultiLineString,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("MultiLineString"))
+
+        # Closed NurbsCurve to Polygon
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 10 0, 10 10, 0 10, 0 0))",
+            QgsWkbTypes.Type.Polygon,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("Polygon"))
+
+        # Open NurbsCurve to Polygon (auto-close)
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.Polygon,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("Polygon"))
+
+        # NurbsCurve to MultiPoint
+        result = coerce_to_wkt(
+            "NURBSCURVE(2, (0 0, 5 10, 10 0))",
+            QgsWkbTypes.Type.MultiPoint,
+        )
+        self.assertEqual(len(result), 1)
+        self.assertTrue(result[0].startswith("MultiPoint"))
+
     def testTriangularWaves(self):
         """Test triangular waves"""
         self.assertEqual(

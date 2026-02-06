@@ -11,6 +11,7 @@
 
 
 
+
 class QgsExpressionItem : QStandardItem
 {
 %Docstring(signature="appended")

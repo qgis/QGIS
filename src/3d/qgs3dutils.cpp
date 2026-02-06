@@ -45,11 +45,14 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <QString>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DLogic/QFrameAction>
 #include <Qt3DRender/QRenderSettings>
 #include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 #if !defined( Q_OS_MAC )
 #include <GL/gl.h>

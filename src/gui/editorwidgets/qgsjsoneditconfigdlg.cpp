@@ -15,7 +15,11 @@
 
 #include "qgsjsoneditconfigdlg.h"
 
+#include <QString>
+
 #include "moc_qgsjsoneditconfigdlg.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsJsonEditConfigDlg::QgsJsonEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

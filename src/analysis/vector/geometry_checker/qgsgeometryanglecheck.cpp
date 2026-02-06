@@ -21,6 +21,10 @@
 #include "qgsgeometrycheckerror.h"
 #include "qgsgeometryutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QList<Qgis::GeometryType> QgsGeometryAngleCheck::compatibleGeometryTypes() const
 {
   return factoryCompatibleGeometryTypes();

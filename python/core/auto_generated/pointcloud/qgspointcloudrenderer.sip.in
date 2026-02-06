@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsPointCloudRenderContext
 {
 %Docstring(signature="appended")
@@ -623,6 +625,26 @@ Sets the renderer behavior when zoomed out
 Returns the renderer behavior when zoomed out
 
 .. versionadded:: 3.42
+%End
+
+    void setOverviewSwitchingScale( const double value );
+%Docstring
+Sets the overview switching scale
+
+Point clouds whose extents intersect the map extent are considered
+visible. When zoomed out beyond the overview switching scale (render
+extent exceeds average point cloud dimensions by the scale factor), and
+overview zoom-out behavior is enabled, the overview is rendered instead
+of an individual point cloud.
+
+.. versionadded:: 4.0
+%End
+
+    double overviewSwitchingScale() const;
+%Docstring
+Returns the overview switching scale
+
+.. versionadded:: 4.0
 %End
 
   protected:

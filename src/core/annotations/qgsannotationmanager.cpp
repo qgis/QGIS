@@ -28,7 +28,11 @@
 #include "qgsstyleentityvisitor.h"
 #include "qgssvgannotation.h"
 
+#include <QString>
+
 #include "moc_qgsannotationmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationManager::QgsAnnotationManager( QgsProject *project )
   : QObject( project )

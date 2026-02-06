@@ -30,8 +30,11 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QString>
 
 #include "moc_qgsvectorlayer3drendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )

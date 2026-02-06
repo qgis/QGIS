@@ -29,7 +29,11 @@
 #include "qgsstackedwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <QString>
+
 #include "moc_qgspointcloud3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *layer, QgsPointCloud3DSymbol *symbol, QWidget *parent )
   : QWidget( parent )
@@ -152,14 +156,22 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
+
+        for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
+        {
+          mOverviewSwitchingScale->addItem( it.value(), it.key() );
+        }
+        setOverviewSwitchingScale( 1.0 );
       }
     }
     else
     {
       mZoomOutOptions->setEnabled( false );
+      mOverviewSwitchingScale->setEnabled( false );
     }
 
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
+    connect( mOverviewSwitchingScale, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   }
   else
   {
@@ -698,6 +710,16 @@ void QgsPointCloud3DSymbolWidget::setZoomOutBehavior( const Qgis::PointCloudZoom
 Qgis::PointCloudZoomOutRenderBehavior QgsPointCloud3DSymbolWidget::zoomOutBehavior() const
 {
   return mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>();
+}
+
+void QgsPointCloud3DSymbolWidget::setOverviewSwitchingScale( double scale )
+{
+  mOverviewSwitchingScale->setCurrentIndex( mOverviewSwitchingScale->findData( scale ) );
+}
+
+double QgsPointCloud3DSymbolWidget::overviewSwitchingScale() const
+{
+  return mOverviewSwitchingScaleMap.key( mOverviewSwitchingScale->currentText() );
 }
 
 void QgsPointCloud3DSymbolWidget::connectChildPanels( QgsPanelWidget *parent )

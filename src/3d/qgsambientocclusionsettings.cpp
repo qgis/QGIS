@@ -18,6 +18,9 @@
 #include "qgsreadwritecontext.h"
 
 #include <QDomDocument>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAmbientOcclusionSettings::QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other )
   : mEnabled( other.mEnabled )

@@ -743,6 +743,7 @@ Qgis.CaptureTechnique.StraightSegments.__doc__ = "Default capture mode - capture
 Qgis.CaptureTechnique.CircularString.__doc__ = "Capture in circular strings"
 Qgis.CaptureTechnique.Streaming.__doc__ = "Streaming points digitizing mode (points are automatically added as the mouse cursor moves)."
 Qgis.CaptureTechnique.Shape.__doc__ = "Digitize shapes."
+Qgis.CaptureTechnique.NurbsCurve.__doc__ = "Digitizes NURBS curves with control points. \n.. versionadded:: 4.0"
 Qgis.CaptureTechnique.__doc__ = """Capture technique.
 
 .. versionadded:: 3.26
@@ -751,10 +752,25 @@ Qgis.CaptureTechnique.__doc__ = """Capture technique.
 * ``CircularString``: Capture in circular strings
 * ``Streaming``: Streaming points digitizing mode (points are automatically added as the mouse cursor moves).
 * ``Shape``: Digitize shapes.
+* ``NurbsCurve``: Digitizes NURBS curves with control points.
+
+  .. versionadded:: 4.0
+
 
 """
 # --
 Qgis.CaptureTechnique.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.NurbsMode.ControlPoints.__doc__ = "Direct control points mode - the curve is attracted to control points but does not pass through them"
+Qgis.NurbsMode.__doc__ = """NURBS digitizing mode.
+
+.. versionadded:: 4.0
+
+* ``ControlPoints``: Direct control points mode - the curve is attracted to control points but does not pass through them
+
+"""
+# --
+Qgis.NurbsMode.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.VectorLayerTypeFlag.SqlQuery.__doc__ = "SQL query layer"
 Qgis.VectorLayerTypeFlag.__doc__ = """Vector layer type flags.
@@ -5735,6 +5751,19 @@ Qgis.RenderSubcomponentProperty.__doc__ = """Rendering subcomponent properties.
 """
 # --
 Qgis.RenderSubcomponentProperty.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.SelectiveMaskSourceType.SymbolLayer.__doc__ = "A mask generated from a symbol layer"
+Qgis.SelectiveMaskSourceType.Label.__doc__ = "A mask generated from a labeling provider"
+Qgis.SelectiveMaskSourceType.__doc__ = """Selective masking source types.
+
+.. versionadded:: 4.0
+
+* ``SymbolLayer``: A mask generated from a symbol layer
+* ``Label``: A mask generated from a labeling provider
+
+"""
+# --
+Qgis.SelectiveMaskSourceType.baseClass = Qgis
 QgsVertexId.VertexType = Qgis.VertexType
 # monkey patching scoped based enum
 QgsVertexId.SegmentVertex = Qgis.VertexType.Segment
@@ -7549,6 +7578,21 @@ Qgis.CadConstraintType.__doc__ = """Advanced digitizing constraint type.
 # --
 Qgis.CadConstraintType.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.CadMeasurementDisplayType.Hidden.__doc__ = "Hide measurement"
+Qgis.CadMeasurementDisplayType.Cartesian.__doc__ = "Use Cartesian measurements"
+Qgis.CadMeasurementDisplayType.Ellipsoidal.__doc__ = "Use Ellipsoidal measurements"
+Qgis.CadMeasurementDisplayType.__doc__ = """Advanced digitizing measurement display types.
+
+.. versionadded:: 4.0
+
+* ``Hidden``: Hide measurement
+* ``Cartesian``: Use Cartesian measurements
+* ``Ellipsoidal``: Use Ellipsoidal measurements
+
+"""
+# --
+Qgis.CadMeasurementDisplayType.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide.__doc__ = "If set, default values for fields will be evaluated on the provider side when features from the project are created instead of when they are committed."
 Qgis.ProjectFlag.TrustStoredLayerStatistics.__doc__ = "If set, then layer statistics (such as the layer extent) will be read from values stored in the project instead of requesting updated values from the data provider. Additionally, when this flag is set, primary key unicity is not checked for views and materialized views with Postgres provider."
 Qgis.ProjectFlag.RememberLayerEditStatusBetweenSessions.__doc__ = "If set, then any layers set to be editable will be stored in the project and immediately made editable whenever that project is restored"
@@ -7703,6 +7747,19 @@ Qgis.VectorProfileType.__doc__ = """Types of elevation profiles to generate for 
 """
 # --
 Qgis.VectorProfileType.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudProfileType.IndividualPoints.__doc__ = "Sample individual points from the point cloud"
+Qgis.PointCloudProfileType.TriangulatedSurface.__doc__ = "Create a TIN from the point cloud using Delaunay triangulation"
+Qgis.PointCloudProfileType.__doc__ = """Types of elevation profiles to generate for point cloud sources.
+
+.. versionadded:: 4.0
+
+* ``IndividualPoints``: Sample individual points from the point cloud
+* ``TriangulatedSurface``: Create a TIN from the point cloud using Delaunay triangulation
+
+"""
+# --
+Qgis.PointCloudProfileType.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.ProfileGeneratorFlag.RespectsMaximumErrorMapUnit.__doc__ = "Generated profile respects the QgsProfileGenerationContext.maximumErrorMapUnits() property."
 Qgis.ProfileGeneratorFlag.RespectsDistanceRange.__doc__ = "Generated profile respects the QgsProfileGenerationContext.distanceRange() property."

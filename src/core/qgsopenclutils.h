@@ -20,7 +20,10 @@
 
 #define CL_HPP_ENABLE_EXCEPTIONS
 
+#include <QString>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MAC
 #define CL_HPP_MINIMUM_OPENCL_VERSION 120

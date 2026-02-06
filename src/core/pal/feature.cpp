@@ -46,6 +46,10 @@
 #include "qgstextlabelfeature.h"
 #include "qgstextrendererutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace pal;
 
 FeaturePart::FeaturePart( QgsLabelFeature *feat, const GEOSGeometry *geom )
@@ -1492,8 +1496,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
   if ( characterCount == 0 )
     return 0;
 
-  // clang-tidy false positive
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( mLF->curvedLabelMode() )
   {
     case Qgis::CurvedLabelMode::Default:
@@ -1503,7 +1505,6 @@ std::size_t FeaturePart::createCurvedCandidatesAlongLine( std::vector< std::uniq
     case Qgis::CurvedLabelMode::PlaceCharactersAtVertices:
       return createCurvedCandidateWithCharactersAtVertices( lPos, mapShape, pal );
   }
-  // NOLINTEND(bugprone-branch-clone)
   BUILTIN_UNREACHABLE
 }
 
@@ -1664,7 +1665,7 @@ std::size_t FeaturePart::createDefaultCurvedCandidatesAlongLine( std::vector<std
     double lineAnchorPoint = 0;
     if ( !usingStretchToFitMode )
     {
-      if ( originalPoint && offset != NoOffset )
+      if ( originalPoint )
       {
         // the actual anchor point for the offset curves is the closest point on those offset curves
         // to the anchor point on the original line. This avoids anchor points which differ greatly

@@ -28,9 +28,12 @@
 #include "qgssymbol.h"
 #include "qgssymbollayer.h"
 
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgsgrasseditrenderer.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGrassEditRenderer::QgsGrassEditRenderer()
   : QgsFeatureRenderer( u"grassEdit"_s )

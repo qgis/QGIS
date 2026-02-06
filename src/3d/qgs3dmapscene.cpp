@@ -37,6 +37,7 @@
 #include "qgsframegraph.h"
 #include "qgsgeotransform.h"
 #include "qgsglobechunkedentity.h"
+#include "qgshighlightsrenderview.h"
 #include "qgslinematerial_p.h"
 #include "qgslogger.h"
 #include "qgsmaplayerelevationproperties.h"
@@ -51,6 +52,7 @@
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspostprocessingentity.h"
 #include "qgsrulebased3drenderer.h"
+#include "qgsshadowrenderview.h"
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"
 #include "qgssourcecache.h"
@@ -64,6 +66,7 @@
 
 #include <QOpenGLContext>
 #include <QOpenGLFunctions>
+#include <QString>
 #include <QSurface>
 #include <QTimer>
 #include <QUrl>
@@ -86,6 +89,8 @@
 #include <QtMath>
 
 #include "moc_qgs3dmapscene.cpp"
+
+using namespace Qt::StringLiterals;
 
 std::function<QMap<QString, Qgs3DMapScene *>()> Qgs3DMapScene::sOpenScenesFunction = [] { return QMap<QString, Qgs3DMapScene *>(); };
 
@@ -576,6 +581,11 @@ void Qgs3DMapScene::createTerrainDeferred()
 
   if ( terrainOrGlobe )
   {
+    // The terrain is not added through addSceneEntity(), so we add the required QLayers here
+    QgsFrameGraph *frameGraph = mEngine->frameGraph();
+    terrainOrGlobe->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    terrainOrGlobe->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
+
     terrainOrGlobe->setParent( this );
     terrainOrGlobe->setShowBoundingBoxes( mMap.showTerrainBoundingBoxes() );
 
@@ -622,10 +632,13 @@ void Qgs3DMapScene::updateLights()
     entity->deleteLater();
   mLightEntities.clear();
 
+  QgsFrameGraph *frameGraph = mEngine->frameGraph();
   const QList<QgsLightSource *> newLights = mMap.lightSources();
   for ( const QgsLightSource *source : newLights )
   {
-    mLightEntities.append( source->createEntity( mMap, this ) );
+    Qt3DCore::QEntity *entity = source->createEntity( mMap, this );
+    entity->addComponent( frameGraph->forwardRenderView().renderLayer() );
+    mLightEntities.append( entity );
   }
 
   onShadowSettingsChanged();
@@ -906,8 +919,19 @@ void Qgs3DMapScene::finalizeNewEntity( Qt3DCore::QEntity *newEntity )
     bm->setViewportSize( mEngine->size() );
   }
 
-  // Finalize adding the 3D transparent objects by adding the layer components to the entities
   QgsFrameGraph *frameGraph = mEngine->frameGraph();
+
+  // Here we check if the entity should not be rendered in the forward render view
+  // For example highlight entities should only be rendered in the highlights render view, so we check for attached QLayers
+  const QVector<Qt3DRender::QLayer *> layers = newEntity->componentsOfType<Qt3DRender::QLayer>();
+  if ( layers.contains( frameGraph->highlightsRenderView().highlightsLayer() ) )
+    return;
+
+  // Add the required QLayers to the entity
+  newEntity->addComponent( frameGraph->forwardRenderView().renderLayer() );
+  newEntity->addComponent( frameGraph->shadowRenderView().entityCastingShadowsLayer() );
+
+  // Finalize adding the 3D transparent objects by adding the layer components to the entities
   Qt3DRender::QLayer *transparentLayer = frameGraph->forwardRenderView().transparentObjectLayer();
   const QList<Qt3DRender::QMaterial *> childMaterials = newEntity->findChildren<Qt3DRender::QMaterial *>();
   for ( Qt3DRender::QMaterial *material : childMaterials )
@@ -1133,6 +1157,7 @@ bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   exporter.setExportTextures( exportSettings.exportTextures() );
   exporter.setTerrainTextureResolution( exportSettings.terrainTextureResolution() );
   exporter.setScale( exportSettings.scale() );
+  exporter.setTerrainExportEnabled( exportSettings.terrainExportEnabled() );
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); ++it )
   {

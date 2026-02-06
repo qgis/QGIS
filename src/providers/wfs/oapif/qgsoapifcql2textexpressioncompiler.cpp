@@ -22,6 +22,10 @@
 #include "qgslogger.h"
 #include "qgsvariantutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsOapifCql2TextExpressionCompiler::QgsOapifCql2TextExpressionCompiler(
   const QMap<QString, QgsOapifQueryablesRequest::Queryable> &queryables,
   bool supportsLikeBetweenIn,

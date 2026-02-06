@@ -23,7 +23,10 @@
 #include "qgsmaptoolshapeabstract.h"
 #include "qgssettingstree.h"
 
+#include <QString>
 #include <QWidgetAction>
+
+using namespace Qt::StringLiterals;
 
 class QgsSpinBox;
 class QgsSettingsEntryString;
@@ -43,6 +46,26 @@ class APP_EXPORT QgsStreamDigitizingSettingsAction : public QWidgetAction
 
   private:
     QgsSpinBox *mStreamToleranceSpinBox = nullptr;
+};
+
+class QComboBox;
+class QLabel;
+
+class APP_EXPORT QgsNurbsDigitizingSettingsAction : public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+    QgsNurbsDigitizingSettingsAction( QWidget *parent = nullptr );
+    ~QgsNurbsDigitizingSettingsAction() override;
+
+  private slots:
+    void updateDegreeEnabled( int modeIndex );
+
+  private:
+    QComboBox *mNurbsModeComboBox = nullptr;
+    QgsSpinBox *mNurbsDegreeSpinBox = nullptr;
+    QLabel *mNurbsDegreeLabel = nullptr;
 };
 
 class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
@@ -83,6 +106,7 @@ class APP_EXPORT QgsMapToolsDigitizingTechniqueManager : public QObject
 
     QToolButton *mDigitizeModeToolButton = nullptr;
     QgsStreamDigitizingSettingsAction *mStreamDigitizingSettingsAction = nullptr;
+    QgsNurbsDigitizingSettingsAction *mNurbsDigitizingSettingsAction = nullptr;
 };
 
 #endif // QGSMAPTOOLSDIGITIZINGTECHNIQUEMANAGER_H

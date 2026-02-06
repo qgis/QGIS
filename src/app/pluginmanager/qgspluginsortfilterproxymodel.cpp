@@ -16,6 +16,8 @@
 
 #include "qgspluginsortfilterproxymodel.h"
 
+#include <QString>
+
 #include "moc_qgspluginsortfilterproxymodel.cpp"
 
 using namespace Qt::StringLiterals;

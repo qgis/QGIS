@@ -18,7 +18,11 @@
 #include "qgsline3dsymbol.h"
 #include "qgsphongmaterialsettings.h"
 
+#include <QString>
+
 #include "moc_qgsline3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
   : Qgs3DSymbolWidget( parent )

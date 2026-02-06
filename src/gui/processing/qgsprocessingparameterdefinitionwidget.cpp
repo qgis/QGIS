@@ -31,11 +31,14 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QString>
 #include <QTabWidget>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
 #include "moc_qgsprocessingparameterdefinitionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProcessingAbstractParameterDefinitionWidget::QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &, const QgsProcessingParameterWidgetContext &context, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm *, QWidget *parent )
   : QWidget( parent )

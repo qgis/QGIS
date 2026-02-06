@@ -29,9 +29,12 @@
 
 #include <QGraphicsSceneMouseEvent>
 #include <QPainter>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsmodelgraphicitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond NOT_STABLE
 

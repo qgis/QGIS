@@ -27,9 +27,12 @@
 #include <QListView>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QToolButton>
 
 #include "moc_qgsprocessingpointcloudexpressionlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

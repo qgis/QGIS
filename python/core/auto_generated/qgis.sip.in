@@ -284,6 +284,12 @@ The development version
       CircularString,
       Streaming,
       Shape,
+      NurbsCurve,
+    };
+
+    enum class NurbsMode
+    {
+      ControlPoints,
     };
 
     enum class VectorLayerTypeFlag
@@ -1795,6 +1801,12 @@ The development version
       GlowSpread,
     };
 
+    enum class SelectiveMaskSourceType
+    {
+      SymbolLayer,
+      Label,
+    };
+
     enum class VertexType
       {
       Segment,
@@ -2336,6 +2348,12 @@ The development version
       MValue,
     };
 
+    enum class CadMeasurementDisplayType
+    {
+      Hidden,
+      Cartesian,
+      Ellipsoidal,
+    };
 
     enum class ProjectFlag
     {
@@ -2405,6 +2423,12 @@ The development version
     {
       IndividualFeatures,
       ContinuousSurface,
+    };
+
+    enum class PointCloudProfileType
+    {
+      IndividualPoints,
+      TriangulatedSurface,
     };
 
     enum class ProfileGeneratorFlag

@@ -24,11 +24,14 @@
 #include "qgswkbtypes.h"
 
 #include <QRegularExpression>
+#include <QString>
 #include <QStringList>
 #include <QUrl>
 #include <QUrlQuery>
 
 #include "moc_qgsdatasourceuri.cpp"
+
+using namespace Qt::StringLiterals;
 
 #define HIDING_TOKEN u"XXXXXXXX"_s
 

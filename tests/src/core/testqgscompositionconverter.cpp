@@ -38,6 +38,9 @@
 #include "qgstest.h"
 
 #include <QDebug>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 // Debug output for dom nodes
 QDebug operator<<( QDebug dbg, const QDomNode &node )

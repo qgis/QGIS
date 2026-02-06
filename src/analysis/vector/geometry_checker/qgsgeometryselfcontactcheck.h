@@ -20,6 +20,10 @@
 
 #include "qgssinglegeometrycheck.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief A self contact check.

@@ -12,6 +12,7 @@
 
 
 
+
 class QgsExpression
 {
 %Docstring(signature="appended")

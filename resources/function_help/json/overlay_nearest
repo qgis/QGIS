@@ -2,7 +2,7 @@
   "name": "overlay_nearest",
   "type": "function",
   "groups": ["GeometryGroup"],
-  "description": "Returns whether the current feature has feature(s) from a target layer within a given distance, or an array of expression-based results for the features in the target layer within a distance from the current feature.<br><br>Note: This function can be slow and consume a lot of memory for large layers.",
+  "description": "Returns whether the current feature has feature(s) from a target layer within a given distance, or returns an array of expression-based results for the features in the target layer within a distance from the current feature.<br><br>Note: This function can be slow and consume a lot of memory for large layers.",
   "arguments": [{
     "arg": "layer",
     "description": "the target layer"

@@ -30,10 +30,13 @@
 #include "qgsvectorlayerchunkloader_p.h"
 #include "qgsvectorlayerfeatureiterator.h"
 
+#include <QString>
 #include <Qt3DCore/QTransform>
-#include <QtConcurrent>
+#include <QtConcurrentRun>
 
 #include "moc_qgsrulebasedchunkloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

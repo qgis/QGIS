@@ -28,9 +28,12 @@
 #include <QMouseEvent>
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
+#include <QString>
 #include <QTextEdit>
 
 #include "moc_qgsrasterpyramidsoptionswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterPyramidsOptionsWidget::QgsRasterPyramidsOptionsWidget( QWidget *parent, const QString &provider )
   : QWidget( parent )

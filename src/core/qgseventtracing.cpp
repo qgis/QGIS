@@ -17,7 +17,10 @@
 
 #include <QCoreApplication>
 #include <QFile>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 

@@ -20,6 +20,10 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsHanaSchemaItem;
 class QgsHanaLayerItem;
 class QgsHanaConnectionItem;

@@ -29,9 +29,12 @@
 #include "qgsvariantutils.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
 #include <QtAlgorithms>
 
 #include "moc_qgslayoutatlas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )
@@ -307,7 +310,6 @@ int QgsLayoutAtlas::updateFeatures()
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   if ( mLayout->renderContext().featureFilterProvider() )
   {
-    // NOLINTBEGIN(bugprone-branch-clone)
     Q_NOWARN_DEPRECATED_PUSH
     if ( mLayout->renderContext().featureFilterProvider()->isFilterThreadSafe() )
     {
@@ -318,7 +320,6 @@ int QgsLayoutAtlas::updateFeatures()
       mLayout->renderContext().featureFilterProvider()->filterFeatures( mCoverageLayer.get(), req );
     }
     Q_NOWARN_DEPRECATED_POP
-    // NOLINTEND(bugprone-branch-clone)
   }
 #endif
 

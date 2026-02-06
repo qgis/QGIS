@@ -26,6 +26,10 @@
 #include "qgstriangle.h"
 #include "qgsvertexid.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsTriangulatedSurface::QgsTriangulatedSurface()
 {
   mWkbType = Qgis::WkbType::TIN;

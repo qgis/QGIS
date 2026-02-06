@@ -20,6 +20,9 @@
 #include "qgsunittypes.h"
 
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsElevationShadingRenderer::QgsElevationShadingRenderer()
 {

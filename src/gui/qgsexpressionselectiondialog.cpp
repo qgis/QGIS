@@ -25,7 +25,11 @@
 #include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsexpressionselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
   : QDialog( parent )

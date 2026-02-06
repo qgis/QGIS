@@ -24,9 +24,12 @@
 #include "qgsmessagelog.h"
 
 #include <QDebug>
+#include <QString>
 #include <QThread>
 
 #include <fcgi_stdio.h>
+
+using namespace Qt::StringLiterals;
 
 #if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
 #include <unistd.h>

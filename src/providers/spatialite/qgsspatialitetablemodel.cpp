@@ -19,7 +19,11 @@
 
 #include "qgsiconutils.h"
 
+#include <QString>
+
 #include "moc_qgsspatialitetablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSpatiaLiteTableModel::QgsSpatiaLiteTableModel( QObject *parent )
   : QgsAbstractDbTableModel( parent )

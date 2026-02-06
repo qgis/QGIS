@@ -44,10 +44,13 @@
 #include <QNetworkReply>
 #include <QNetworkRequest>
 #include <QPainter>
+#include <QString>
 #include <QTimer>
 #include <QUrlQuery>
 
 #include "moc_qgsamsprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsAmsProvider::AMS_PROVIDER_KEY = u"arcgismapserver"_s;
 const QString QgsAmsProvider::AMS_PROVIDER_DESCRIPTION = u"ArcGIS Map Service data provider"_s;

@@ -62,6 +62,7 @@ try:
     QgsGeometryUtils.bisector = staticmethod(QgsGeometryUtils.bisector)
     QgsGeometryUtils.circleCenterRadius = staticmethod(QgsGeometryUtils.circleCenterRadius)
     QgsGeometryUtils.lineIntersection = staticmethod(QgsGeometryUtils.lineIntersection)
+    QgsGeometryUtils.intersectionPointOfLinesByBearing = staticmethod(QgsGeometryUtils.intersectionPointOfLinesByBearing)
     QgsGeometryUtils.segmentIntersection = staticmethod(QgsGeometryUtils.segmentIntersection)
     QgsGeometryUtils.createPointWithMatchingDimensions = staticmethod(QgsGeometryUtils.createPointWithMatchingDimensions)
     QgsGeometryUtils.interpolatePointOnSegment = staticmethod(QgsGeometryUtils.interpolatePointOnSegment)
@@ -73,6 +74,7 @@ try:
     QgsGeometryUtils.chamferVertex = staticmethod(QgsGeometryUtils.chamferVertex)
     QgsGeometryUtils.filletVertex = staticmethod(QgsGeometryUtils.filletVertex)
     QgsGeometryUtils.checkWeaklyFor3DPlane = staticmethod(QgsGeometryUtils.checkWeaklyFor3DPlane)
+    QgsGeometryUtils.interpolateZ = staticmethod(QgsGeometryUtils.interpolateZ)
     QgsGeometryUtils.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass

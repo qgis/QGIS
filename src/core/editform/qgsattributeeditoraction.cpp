@@ -18,6 +18,10 @@
 #include "qgsactionmanager.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsAttributeEditorAction::QgsAttributeEditorAction( const QgsAction &action, QgsAttributeEditorElement *parent )
   : QgsAttributeEditorElement( Qgis::AttributeEditorType::Action, action.id().toString(), parent )
   , mAction( action )

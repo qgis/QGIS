@@ -34,8 +34,11 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmssqldataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsMssqlDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {

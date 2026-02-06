@@ -35,10 +35,13 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTableWidgetItem>
 #include <QTextStream>
 
 #include "moc_qgsattributetypedialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QWidget( parent )

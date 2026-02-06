@@ -25,8 +25,11 @@
 #include "qgsstringutils.h"
 
 #include <QDebug>
+#include <QString>
 
 #include <fcgi_stdio.h>
+
+using namespace Qt::StringLiterals;
 
 QgsFcgiServerRequest::QgsFcgiServerRequest()
 {

@@ -48,8 +48,11 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgslayoutlegendwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

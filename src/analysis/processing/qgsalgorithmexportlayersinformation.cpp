@@ -19,6 +19,10 @@
 
 #include "qgsproviderregistry.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsExportLayersInformationAlgorithm::name() const

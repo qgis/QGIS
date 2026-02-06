@@ -42,12 +42,15 @@
 
 #include <QElapsedTimer>
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
   , mLayerName( layer->name() )
   , mLayerAttributes( layer->attributes() )
-  , mSubIndexes( layer->dataProvider() ? layer->dataProvider()->subIndexes() : QVector<QgsPointCloudSubIndex>() )
+  , mSubIndexes( layer->subIndexes() )
   , mFeedback( new QgsFeedback )
   , mEnableProfile( context.flags() & Qgis::RenderContextFlag::RecordProfile )
 {
@@ -216,8 +219,9 @@ bool QgsPointCloudLayerRenderer::render()
         visibleIndexes.append( si );
       }
     }
-    const bool zoomedOut = renderExtent.width() > mAverageSubIndexWidth ||
-                           renderExtent.height() > mAverageSubIndexHeight;
+    const double overviewSwitchingScale = mRenderer->overviewSwitchingScale();
+    const bool zoomedOut = renderExtent.width() > mAverageSubIndexWidth * overviewSwitchingScale ||
+                           renderExtent.height() > mAverageSubIndexHeight * overviewSwitchingScale;
     // if the overview of virtual point cloud exists, and we are zoomed out, we render just overview
     if ( mOverviewIndex && mOverviewIndex->isValid() && zoomedOut &&
          mRenderer->zoomOutBehavior() == Qgis::PointCloudZoomOutRenderBehavior::RenderOverview )

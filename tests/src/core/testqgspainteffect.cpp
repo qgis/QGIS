@@ -47,6 +47,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 

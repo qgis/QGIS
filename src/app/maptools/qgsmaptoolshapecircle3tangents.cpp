@@ -28,7 +28,11 @@
 #include "qgspoint.h"
 #include "qgssnappingutils.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecircle3tangents.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID = u"circle-from-3-tangents"_s;
 

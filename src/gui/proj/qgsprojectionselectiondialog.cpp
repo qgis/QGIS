@@ -25,8 +25,11 @@
 #include <QApplication>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsprojectionselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsCrsSelectionWidget

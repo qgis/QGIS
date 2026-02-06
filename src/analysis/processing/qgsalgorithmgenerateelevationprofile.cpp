@@ -30,6 +30,10 @@
 #include "qgsterrainprovider.h"
 #include "qgstextformat.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 class QgsAlgorithmElevationProfilePlotItem : public Qgs2DXyPlot

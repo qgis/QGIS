@@ -26,6 +26,10 @@
 #include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 class QgsRandomRasterAlgorithmBase : public QgsProcessingAlgorithm

@@ -19,7 +19,11 @@
 #include "qgsapplication.h"
 #include "qgsexpressioncontextutils.h"
 
+#include <QString>
+
 #include "moc_qgslabellineanchorwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLabelLineAnchorWidget::QgsLabelLineAnchorWidget( QWidget *parent, QgsVectorLayer *vl )
   : QgsLabelSettingsWidgetBase( parent, vl )

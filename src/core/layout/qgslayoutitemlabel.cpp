@@ -39,9 +39,12 @@
 #include <QDate>
 #include <QDomElement>
 #include <QPainter>
+#include <QString>
 #include <QTextDocument>
 
 #include "moc_qgslayoutitemlabel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   : QgsLayoutItem( layout )

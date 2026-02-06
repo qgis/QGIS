@@ -17,7 +17,11 @@
  ***************************************************************************/
 #include "qgis.h"
 
+#include <QString>
+
 #include "moc_qgis.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifndef QGSVERSION
 #include "qgsversion.h"

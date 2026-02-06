@@ -24,9 +24,12 @@
 #include "qgssettings.h"
 
 #include <QMessageBox>
+#include <QString>
 #include <QVector>
 
 #include "moc_qgsmaplayerloadstyledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWidget *parent )
   : QDialog( parent )

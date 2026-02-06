@@ -25,6 +25,10 @@
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class TestQgsMapToolSplitParts : public QObject
 {
     Q_OBJECT

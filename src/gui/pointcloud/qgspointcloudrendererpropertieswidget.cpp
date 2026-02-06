@@ -34,7 +34,11 @@
 #include "qgstextformatwidget.h"
 #include "qgsvirtualpointcloudprovider.h"
 
+#include <QString>
+
 #include "moc_qgspointcloudrendererpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -141,12 +145,21 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
       {
         mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
         mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
+
+        for ( auto it = mOverviewSwitchingScaleMap.constBegin(); it != mOverviewSwitchingScaleMap.constEnd(); ++it )
+        {
+          mOverviewSwitchingScale->addItem( it.value(), it.key() );
+        }
+        setOverviewSwitchingScale( 1.0 );
       }
     }
     else
     {
       mZoomOutOptions->setEnabled( false );
+      mOverviewSwitchingScale->setEnabled( false );
     }
+
+    connect( mOverviewSwitchingScale, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
     connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
       switch ( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() )
@@ -217,6 +230,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
+    setOverviewSwitchingScale( mLayer->renderer()->overviewSwitchingScale() );
 
     mTriangulateGroupBox->setChecked( mLayer->renderer()->renderAsTriangles() );
     mHorizontalTriangleCheckBox->setChecked( mLayer->renderer()->horizontalTriangleFilter() );
@@ -285,6 +299,8 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
   mLayer->renderer()->setZoomOutBehavior( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() );
+
+  mLayer->renderer()->setOverviewSwitchingScale( overviewSwitchingScale() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
@@ -358,4 +374,14 @@ void QgsPointCloudRendererPropertiesWidget::emitWidgetChanged()
 {
   if ( !mBlockChangedSignal )
     emit widgetChanged();
+}
+
+void QgsPointCloudRendererPropertiesWidget::setOverviewSwitchingScale( double scale )
+{
+  mOverviewSwitchingScale->setCurrentIndex( mOverviewSwitchingScale->findData( scale ) );
+}
+
+double QgsPointCloudRendererPropertiesWidget::overviewSwitchingScale() const
+{
+  return mOverviewSwitchingScaleMap.key( mOverviewSwitchingScale->currentText() );
 }

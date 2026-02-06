@@ -37,9 +37,12 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QScrollBar>
+#include <QString>
 #include <QUrlQuery>
 
 #include "moc_qgsstacsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

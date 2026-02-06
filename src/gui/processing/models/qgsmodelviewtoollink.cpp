@@ -28,7 +28,11 @@
 #include "qgsprocessingmodelchildalgorithm.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 
+#include <QString>
+
 #include "moc_qgsmodelviewtoollink.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsModelViewToolLink::QgsModelViewToolLink( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Link Tool" ) )

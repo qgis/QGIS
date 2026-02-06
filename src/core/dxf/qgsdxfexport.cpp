@@ -56,7 +56,10 @@
 #include "qgswkbtypes.h"
 
 #include <QIODevice>
+#include <QString>
 #include <QTextCodec>
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 #define strcasecmp( a, b ) stricmp( a, b )
@@ -102,7 +105,7 @@ void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
     {
       mLayerDDBlockMaxNumberOfClasses.insert( dxfLayer.layer()->id(), dxfLayer.dataDefinedBlocksMaximumNumberOfClasses() );
     }
-    if ( dxfLayer.overriddenName() != QString() )
+    if ( !dxfLayer.overriddenName().isEmpty() )
     {
       mLayerOverriddenName.insert( dxfLayer.layer()->id(), dxfLayer.overriddenName() );
     }
@@ -2400,9 +2403,10 @@ QStringList QgsDxfExport::encodings()
 QString QgsDxfExport::layerName( QgsVectorLayer *vl ) const
 {
   Q_ASSERT( vl );
-  if ( !mLayerOverriddenName.value( vl->id(), QString() ).isEmpty() )
+  auto overriddenNameIt = mLayerOverriddenName.constFind( vl->id() );
+  if ( overriddenNameIt != mLayerOverriddenName.constEnd() && !overriddenNameIt.value().isEmpty() )
   {
-    return mLayerOverriddenName.value( vl->id() );
+    return overriddenNameIt.value();
   }
   else if ( mLayerTitleAsName && ( !vl->metadata().title().isEmpty() || !vl->serverProperties()->title().isEmpty() ) )
   {

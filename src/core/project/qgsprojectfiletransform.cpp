@@ -39,7 +39,10 @@
 
 #include <QDomDocument>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 typedef QgsProjectVersion PFV;
 

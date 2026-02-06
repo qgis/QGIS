@@ -28,9 +28,12 @@
 
 #include <QFileInfo>
 #include <QPushButton>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsprojecttrustdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectTrustDialog::QgsProjectTrustDialog( QgsProject *project, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )

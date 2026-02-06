@@ -32,9 +32,12 @@ back to QgsVectorLayer.
 #include <QImageWriter>
 #include <QMessageBox>
 #include <QSettings>
+#include <QString>
 #include <QTableWidget>
 
 #include "moc_qgsattributeactiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager &actions, QWidget *parent )
   : QWidget( parent )

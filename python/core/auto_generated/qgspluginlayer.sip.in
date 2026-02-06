@@ -7,6 +7,8 @@
  ************************************************************************/
 
 
+
+
 class QgsPluginLayer : QgsMapLayer
 {
 %Docstring(signature="appended")

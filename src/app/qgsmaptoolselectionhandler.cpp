@@ -26,8 +26,11 @@
 #include <QBoxLayout>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QString>
 
 #include "moc_qgsmaptoolselectionhandler.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 

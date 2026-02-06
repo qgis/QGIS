@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmremoveduplicatesbyattribute.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRemoveDuplicatesByAttributeAlgorithm::name() const

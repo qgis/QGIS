@@ -27,7 +27,11 @@
 #include "qgsrasterlayer.h"
 #include "qgssymbollayerutils.h"
 
+#include <QString>
+
 #include "moc_qgsrasterlayerelevationproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterLayerElevationProperties::QgsRasterLayerElevationProperties( QObject *parent )
   : QgsMapLayerElevationProperties( parent )

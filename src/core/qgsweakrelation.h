@@ -20,6 +20,10 @@
 #include "qgsrelation.h"
 #include "qgsvectorlayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * Represent a QgsRelation with possibly unresolved layers or unmatched fields.
  *

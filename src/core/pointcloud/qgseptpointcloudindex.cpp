@@ -42,8 +42,11 @@
 #include <QJsonObject>
 #include <QNetworkRequest>
 #include <QQueue>
+#include <QString>
 #include <QTime>
 #include <QtDebug>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

@@ -25,8 +25,11 @@
 
 #include <QMap>
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgswfsnewconnection.cpp"
+
+using namespace Qt::StringLiterals;
 
 static QString translatedImageFormatFromMediaType( const QString &type )
 {

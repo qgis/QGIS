@@ -79,14 +79,15 @@ class ANALYSIS_EXPORT QgsRasterCalculator
     //! Result of the calculation
     enum class Result SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterCalculator, Result ) : int
     {
-      Success = 0,           //!< Calculation successful
-      CreateOutputError = 1, //!< Error creating output data file
-      InputLayerError = 2,   //!< Error reading input layer
-      Canceled = 3,          //!< User canceled calculation
-      ParserError = 4,       //!< Error parsing formula
-      MemoryError = 5,       //!< Error allocating memory for result
-      BandError = 6,         //!< Invalid band number for input
-      CalculationError = 7,  //!< Error occurred while performing calculation
+      Success = 0,               //!< Calculation successful
+      CreateOutputError = 1,     //!< Error creating output data file
+      InputLayerError = 2,       //!< Error reading input layer
+      Canceled = 3,              //!< User canceled calculation
+      ParserError = 4,           //!< Error parsing formula
+      MemoryError = 5,           //!< Error allocating memory for result
+      BandError = 6,             //!< Invalid band number for input
+      CalculationError = 7,      //!< Error occurred while performing calculation
+      OpenCLKernelBuildError = 8 //!< Error building OpenCL kernel
     };
 
 

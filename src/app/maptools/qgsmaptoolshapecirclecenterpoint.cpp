@@ -22,7 +22,11 @@
 #include "qgsmaptoolcapture.h"
 #include "qgspoint.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolshapecirclecenterpoint.cpp"
+
+using namespace Qt::StringLiterals;
 
 const QString QgsMapToolShapeCircleCenterPointMetadata::TOOL_ID = u"circle-by-a-center-point-and-another-point"_s;
 

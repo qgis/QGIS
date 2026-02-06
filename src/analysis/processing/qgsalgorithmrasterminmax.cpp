@@ -17,6 +17,10 @@
 
 #include "qgsalgorithmrasterminmax.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 QString QgsRasterMinMaxAlgorithm::name() const

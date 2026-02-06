@@ -23,9 +23,12 @@
 #include "qgsprojectitem.h"
 
 #include <QFileDialog>
+#include <QString>
 #include <QVBoxLayout>
 
 #include "moc_qgsbrowserdockwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent )
   : QgsDockWidget( parent )

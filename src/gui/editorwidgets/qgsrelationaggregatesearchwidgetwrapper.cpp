@@ -23,8 +23,11 @@
 
 #include <QGridLayout>
 #include <QLabel>
+#include <QString>
 
 #include "moc_qgsrelationaggregatesearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationAggregateSearchWidgetWrapper::QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *vl, QgsRelationWidgetWrapper *wrapper, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, -1, parent )

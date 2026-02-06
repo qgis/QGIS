@@ -66,8 +66,6 @@ void QgsWindow3DEngine::setRootEntity( Qt3DCore::QEntity *root )
 {
   mSceneRoot = root;
   mSceneRoot->setParent( mRoot );
-  mSceneRoot->addComponent( mFrameGraph->forwardRenderView().renderLayer() );
-  mSceneRoot->addComponent( mFrameGraph->shadowRenderView().entityCastingShadowsLayer() );
 }
 
 Qt3DRender::QRenderSettings *QgsWindow3DEngine::renderSettings()
