@@ -31,8 +31,8 @@
 
 #include "moc_qgsfileuploader.cpp"
 
-+using namespace Qt::StringLiterals;
-+
+using namespace Qt::StringLiterals;
+
 QgsFileUploader::QgsFileUploader( const QString &uploadFileName, const QUrl &url, const QString &formName, const QString &authcfg, bool delayStart )
   : mUrl( url )
   , mFormName( formName )

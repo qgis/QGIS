@@ -24,10 +24,13 @@
 #include "qgsprocessingparameters.h"
 
 #include <QFileInfo>
+#include <QString>
 #include <QTimer>
 #include <QUrl>
 
 #include "moc_qgsalgorithmfileuploader.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 

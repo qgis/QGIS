@@ -25,8 +25,8 @@
 #include <QTimer>
 #include <QUrl>
 
-+ using namespace Qt::StringLiterals;
-+ class TestQgsFileUploader:public QObject
+using namespace Qt::StringLiterals;
+class TestQgsFileUploader : public QObject
 {
     Q_OBJECT
   public:
