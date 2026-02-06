@@ -237,6 +237,17 @@ class CORE_EXPORT QgsFileUtils
      */
     static QString uniquePath( const QString &path );
 
+    /**
+     * Recursively copies a whole directory.
+     *
+     * Returns TRUE if the copy was successful and all files and folders were copied.
+     *
+     * \note If an error occurs while copying a file, this method still attempts to copy all remaining files and folders.
+     *
+     * \since QGIS 4.0
+     */
+    static bool copyDirectory( const QString &source, const QString &destination );
+
 };
 
 #endif // QGSFILEUTILS_H
