@@ -1247,6 +1247,23 @@
           46.130
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Damiano Lombardi",
+        "Committer": "No",
+        "First Commit Message": "Fix cmake config to find qca headers on Opensuse tumbleweed",
+        "First Commit Date": "07-09-2020",
+        "GIT Nickname": "domi4484"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.6071,
+          46.5279
+        ]
+      }
     }
   ]
 }
