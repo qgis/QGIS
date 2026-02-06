@@ -22,6 +22,7 @@
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmessagebar.h"
+#include "qgsmessageviewer.h"
 #include "qgspointcloudlayer.h"
 #include "qgsproject.h"
 #include "qgsprojectelevationproperties.h"
@@ -221,11 +222,10 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
           QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
           barItem->setWidget( button );
           QObject::connect( button, &QPushButton::clicked, barItem, [barItem]() {
-            QMessageBox::information(
-              barItem,
-              QObject::tr( "Unsupported files in VPC layer" ),
-              QObject::tr( "QGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format. You can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." )
-            );
+            QgsMessageViewer *dialog = new QgsMessageViewer( barItem );
+            dialog->setTitle( QObject::tr( "Unsupported files in VPC layer" ) );
+            dialog->setMessageAsPlainText( QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents.\nQGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format.\n\nYou can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." ).arg( layer->name() ) );
+            dialog->showMessage();
           } );
 
           QgisApp::instance()->visibleMessageBar()->pushItem( barItem );
