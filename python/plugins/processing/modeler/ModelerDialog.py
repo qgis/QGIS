@@ -123,6 +123,7 @@ class ModelerDialog(QgsModelDesignerDialog):
                 return self.processing_context
 
         self.context_generator = ContextGenerator(self.processing_context)
+        self.registerProcessingContextGenerator(self.context_generator)
 
     def createExecutionDialog(self):
         dlg = AlgorithmDialog(self.model().create(), parent=self)
@@ -257,7 +258,7 @@ class ModelerDialog(QgsModelDesignerDialog):
         scene.createItems(self.model(), context)
         scene.updateBounds()
 
-    def create_widget_context(self):
+    def createWidgetContext(self):
         """
         Returns a new widget context for use in the model editor
         """
@@ -294,12 +295,12 @@ class ModelerDialog(QgsModelDesignerDialog):
         if ModelerParameterDefinitionDialog.use_legacy_dialog(paramType=paramType):
             dlg = ModelerParameterDefinitionDialog(self.model(), paramType)
             if dlg.exec():
-                new_param = dlg.param
+                new_param = dlg.create_parameter()
                 comment = dlg.comments()
         else:
             # yay, use new API!
             context = createContext()
-            widget_context = self.create_widget_context()
+            widget_context = self.createWidgetContext()
             dlg = QgsProcessingParameterDefinitionDialog(
                 type=paramType,
                 context=context,

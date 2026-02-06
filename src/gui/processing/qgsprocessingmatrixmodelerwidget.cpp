@@ -50,6 +50,8 @@ void QgsProcessingMatrixModelerWidget::addColumn()
     items << new QStandardItem( '0' );
 
   mModel->appendColumn( items );
+
+  emit changed();
 }
 
 void QgsProcessingMatrixModelerWidget::removeColumns()
@@ -62,6 +64,8 @@ void QgsProcessingMatrixModelerWidget::removeColumns()
     mModel->removeColumns( i.column(), 1 );
 
   mTableView->setUpdatesEnabled( true );
+
+  emit changed();
 }
 
 void QgsProcessingMatrixModelerWidget::addRow()
@@ -71,6 +75,8 @@ void QgsProcessingMatrixModelerWidget::addRow()
     items << new QStandardItem( '0' );
 
   mModel->appendRow( items );
+
+  emit changed();
 }
 
 void QgsProcessingMatrixModelerWidget::removeRows()
@@ -83,12 +89,17 @@ void QgsProcessingMatrixModelerWidget::removeRows()
     mModel->removeRows( i.row(), 1 );
 
   mTableView->setUpdatesEnabled( true );
+
+  emit changed();
 }
 
 void QgsProcessingMatrixModelerWidget::clearTable()
 {
   if ( QMessageBox::question( nullptr, tr( "Clear table" ), tr( "Are you sure you want to clear table?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::Yes )
+  {
     mModel->clear();
+    emit changed();
+  }
 }
 
 void QgsProcessingMatrixModelerWidget::changeHeader( int index )
@@ -96,7 +107,10 @@ void QgsProcessingMatrixModelerWidget::changeHeader( int index )
   bool ok;
   QString text = QInputDialog::getText( nullptr, tr( "Enter column name" ), tr( "Column name" ), QLineEdit::Normal, QString(), &ok );
   if ( ok && !text.isEmpty() )
+  {
     mModel->setHeaderData( index, Qt::Horizontal, text );
+    emit changed();
+  }
 }
 
 QStringList QgsProcessingMatrixModelerWidget::headers() const
@@ -147,6 +161,7 @@ void QgsProcessingMatrixModelerWidget::setValue( const QStringList &headers, con
     }
   }
   mTableView->setModel( mModel );
+  emit changed();
 }
 
 bool QgsProcessingMatrixModelerWidget::fixedRows() const
@@ -157,6 +172,7 @@ bool QgsProcessingMatrixModelerWidget::fixedRows() const
 void QgsProcessingMatrixModelerWidget::setFixedRows( bool fixedRows )
 {
   mFixedRows->setChecked( fixedRows );
+  emit changed();
 }
 
 ///@endcond
