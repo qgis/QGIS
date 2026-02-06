@@ -32,6 +32,8 @@ class TestQgsEllipse : public QObject
     void fromCenterPoint();
     void fromCenter2Points();
     void fromFoci();
+    void from4Points();
+    void fromCenter3Points();
     void settersGetters();
     void equality();
     void points();
@@ -163,6 +165,147 @@ void TestQgsEllipse::fromFoci()
   QVERIFY( QgsEllipse( QgsPoint( 17.5, 2.5 ), 19.0530819616, 15.82782146, 135 ) == elp );
   QGSCOMPARENEARPOINT( QgsPoint( 25, -5 ), elp.foci().at( 0 ), 1e-8 );
   QGSCOMPARENEARPOINT( QgsPoint( 10, 10 ), elp.foci().at( 1 ), 1e-8 );
+}
+
+void TestQgsEllipse::from4Points()
+{
+  // Test 1: Basic axis-aligned ellipse
+  // Ellipse with center (0,0), semiMajorAxis=3, semiMinorAxis=2
+  // Points on ellipse: (3,0), (-3,0), (0,2), (0,-2)
+  QgsEllipse elp = QgsEllipse::from4Points(
+    QgsPoint( 3, 0 ), QgsPoint( -3, 0 ), QgsPoint( 0, 2 ), QgsPoint( 0, -2 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEARPOINT( elp.center(), QgsPoint( 0, 0 ), 1e-8 );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 3.0, 1e-8 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 2.0, 1e-8 );
+
+  // Test 2: Offset ellipse - center at (5, 5), semiMajorAxis=4, semiMinorAxis=2
+  // Points: (9,5), (1,5), (5,7), (5,3)
+  elp = QgsEllipse::from4Points(
+    QgsPoint( 9, 5 ), QgsPoint( 1, 5 ), QgsPoint( 5, 7 ), QgsPoint( 5, 3 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEARPOINT( elp.center(), QgsPoint( 5, 5 ), 1e-8 );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 4.0, 1e-8 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 2.0, 1e-8 );
+
+  // Test 3: Circle (4 points equidistant from center)
+  // Points on unit circle: (1,0), (-1,0), (0,1), (0,-1)
+  elp = QgsEllipse::from4Points(
+    QgsPoint( 1, 0 ), QgsPoint( -1, 0 ), QgsPoint( 0, 1 ), QgsPoint( 0, -1 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEARPOINT( elp.center(), QgsPoint( 0, 0 ), 1e-8 );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 1.0, 1e-8 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 1.0, 1e-8 );
+
+  // Test 4: Collinear points → empty ellipse
+  elp = QgsEllipse::from4Points(
+    QgsPoint( 0, 0 ), QgsPoint( 1, 1 ), QgsPoint( 2, 2 ), QgsPoint( 3, 3 )
+  );
+  QVERIFY( elp.isEmpty() );
+
+  // Test 5: Z/M value transfer
+  elp = QgsEllipse::from4Points(
+    QgsPoint( Qgis::WkbType::PointZM, 3, 0, 10, 20 ),
+    QgsPoint( Qgis::WkbType::PointZM, -3, 0, 11, 21 ),
+    QgsPoint( Qgis::WkbType::PointZM, 0, 2, 12, 22 ),
+    QgsPoint( Qgis::WkbType::PointZM, 0, -2, 13, 23 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QVERIFY( elp.center().is3D() );
+  QVERIFY( elp.center().isMeasure() );
+  QGSCOMPARENEAR( elp.center().z(), 10.0, 1e-8 );
+  QGSCOMPARENEAR( elp.center().m(), 20.0, 1e-8 );
+
+  // Test 6: Non-cardinal points on ellipse
+  // Ellipse x²/9 + y²/4 = 1 with points at parametric angles t = 0°, 60°, 90°, 120°
+  // These 4 points in the upper half-plane provide 4 independent constraints
+  const double c60 = std::cos( M_PI / 3.0 ); // cos(60°) = 0.5
+  const double s60 = std::sin( M_PI / 3.0 ); // sin(60°) ≈ 0.866
+  elp = QgsEllipse::from4Points(
+    QgsPoint( 3.0, 0.0 ),             // t=0°
+    QgsPoint( 3.0 * c60, 2.0 * s60 ), // t=60°: (1.5, 1.732)
+    QgsPoint( 0.0, 2.0 ),             // t=90°
+    QgsPoint( -3.0 * c60, 2.0 * s60 ) // t=120°: (-1.5, 1.732)
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEARPOINT( elp.center(), QgsPoint( 0, 0 ), 1e-6 );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 3.0, 1e-6 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 2.0, 1e-6 );
+}
+
+void TestQgsEllipse::fromCenter3Points()
+{
+  // Test 1: Basic axis-aligned ellipse
+  // Center (0,0), points (3,0) and (0,2) with pt3 same as pt2
+  QgsEllipse elp = QgsEllipse::fromCenter3Points(
+    QgsPoint( 0, 0 ), QgsPoint( 3, 0 ), QgsPoint( 0, 2 ), QgsPoint( 0, 2 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEARPOINT( elp.center(), QgsPoint( 0, 0 ), 1e-8 );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 3.0, 1e-8 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 2.0, 1e-8 );
+
+  // Test 2: Circle (3 points equidistant from center)
+  elp = QgsEllipse::fromCenter3Points(
+    QgsPoint( 0, 0 ), QgsPoint( 1, 0 ), QgsPoint( 0, 1 ), QgsPoint( -1, 0 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 1.0, 1e-6 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 1.0, 1e-6 );
+
+  // Test 3: Point at center → empty ellipse
+  elp = QgsEllipse::fromCenter3Points(
+    QgsPoint( 5, 5 ), QgsPoint( 5, 5 ), QgsPoint( 8, 5 ), QgsPoint( 5, 7 )
+  );
+  QVERIFY( elp.isEmpty() );
+
+  // Test 4: Rotated ellipse (45 degrees)
+  // Use points on ellipse rotated 45°
+  // For ellipse with a=3, b=2, rotated 45°:
+  // parametric: x = 3*cos(t)*cos(45) - 2*sin(t)*sin(45)
+  //             y = 3*cos(t)*sin(45) + 2*sin(t)*cos(45)
+  const double c45 = std::cos( M_PI / 4.0 );
+  const double s45 = std::sin( M_PI / 4.0 );
+  // t=0: (3*c45, 3*s45) ≈ (2.12, 2.12)
+  // t=90°: (-2*s45, 2*c45) ≈ (-1.41, 1.41)
+  // t=180°: (-3*c45, -3*s45) ≈ (-2.12, -2.12)
+  elp = QgsEllipse::fromCenter3Points(
+    QgsPoint( 0, 0 ),
+    QgsPoint( 3 * c45, 3 * s45 ),
+    QgsPoint( -2 * s45, 2 * c45 ),
+    QgsPoint( -3 * c45, -3 * s45 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 3.0, 1e-6 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 2.0, 1e-6 );
+
+  // Test 5: Z/M value transfer
+  elp = QgsEllipse::fromCenter3Points(
+    QgsPoint( Qgis::WkbType::PointZM, 0, 0, 100, 200 ),
+    QgsPoint( Qgis::WkbType::PointZM, 3, 0, 101, 201 ),
+    QgsPoint( Qgis::WkbType::PointZM, 0, 2, 102, 202 ),
+    QgsPoint( Qgis::WkbType::PointZM, -3, 0, 103, 203 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QVERIFY( elp.center().is3D() );
+  QVERIFY( elp.center().isMeasure() );
+  QGSCOMPARENEAR( elp.center().z(), 100.0, 1e-8 );
+  QGSCOMPARENEAR( elp.center().m(), 200.0, 1e-8 );
+
+  // Test 6: Offset center
+  elp = QgsEllipse::fromCenter3Points(
+    QgsPoint( 10, 20 ),
+    QgsPoint( 14, 20 ),
+    QgsPoint( 10, 22 ),
+    QgsPoint( 6, 20 )
+  );
+  QVERIFY( !elp.isEmpty() );
+  QGSCOMPARENEARPOINT( elp.center(), QgsPoint( 10, 20 ), 1e-8 );
+  QGSCOMPARENEAR( elp.semiMajorAxis(), 4.0, 1e-6 );
+  QGSCOMPARENEAR( elp.semiMinorAxis(), 2.0, 1e-6 );
 }
 
 void TestQgsEllipse::settersGetters()
