@@ -834,7 +834,7 @@ QCheckBox::indicator:checked {
 }
 
 QCheckBox::indicator:checked:disabled {
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -1000,7 +1000,7 @@ QAbstractItemView::indicator:checked, QListView::indicator:checked {
 QAbstractItemView::indicator:checked:disabled, QListView::indicator:checked:disabled {
     border: 1px solid @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
 }
 QAbstractItemView::indicator:unchecked, QListView::indicator:unchecked {
     background-color: @toggleoff;
@@ -1072,7 +1072,7 @@ QTreeView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
 QTreeView::indicator:checked:disabled {
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -1175,7 +1175,7 @@ QTableView::indicator:checked {
     image: url(@theme_path/icons/qcheckbox-checked.svg) !important;
 }
 QTableView::indicator:checked:disabled {
-    image: url(@theme_path/icons/qcheckbox-checked.svg);
+    image: url(@theme_path/icons/qcheckbox-checked-disabled.svg);
     border-color: @itemdarkbackground;
     background-color: rgba(0, 0, 0, 0);
 }
