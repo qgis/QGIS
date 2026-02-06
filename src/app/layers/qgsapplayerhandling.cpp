@@ -1869,7 +1869,7 @@ void QgsAppLayerHandling::loadStyleFromFile( const QList<QgsMapLayer *> &layers 
         nullptr,
         QObject::tr( "Load Layer Properties from Style File" ),
         lastUsedDir,
-        QObject::tr( "QGIS Layer Style File" ) + " (*.qml)"
+        QObject::tr( "QGIS Layer Style File" ) + u" (*.qml)"_s
       );
       if ( filePath.isEmpty() )
         return;
