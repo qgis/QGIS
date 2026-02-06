@@ -156,14 +156,8 @@ class BarPlot(QgisAlgorithm):
 
         values = vector.values(source, valuefieldname)
 
-        x_var = vector.convert_nulls(
-            [
-                i[namefieldname]
-                for i in source.getFeatures(
-                    QgsFeatureRequest().setFlags(QgsFeatureRequest.Flag.NoGeometry)
-                )
-            ],
-            "<NULL>",
+        x_var = vector.load_field(
+            source, namefieldname, nullstring="<NULL>", nonestring="<NULL>"
         )
 
         data = [go.Bar(x=x_var, y=values[valuefieldname])]
