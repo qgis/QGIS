@@ -203,7 +203,7 @@ QVariantMap QgsPdalBuildVpcAlgorithm::processAlgorithm( const QVariantMap &param
     runWrenchProcess( args, &multiStepFeedback );
   }
 
-  if ( mConvertToCopc && !mTemporaryVpcFile.isEmpty() )
+  if ( !mTemporaryVpcFile.isEmpty() )
   {
     QFile::remove( mTemporaryVpcFile );
   }
