@@ -242,7 +242,7 @@ Item {
                   switch (Type) {
                   case TemplateProjectsModel.TemplateType.Blank:
                     return "../images/blank.jpg";
-                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                  case TemplateProjectsModel.TemplateType.Basemap:
                     return "../images/basemap.jpg";
                   default:
                     return PreviewImagePath || "";

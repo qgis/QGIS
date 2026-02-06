@@ -47,7 +47,7 @@ class QgsTemplateProjectsModel : public QStandardItemModel
     enum class TemplateType : int
     {
       Blank,
-      OpenStreetMap,
+      Basemap,
       File,
     };
     Q_ENUM( TemplateType )
