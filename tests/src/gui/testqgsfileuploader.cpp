@@ -19,12 +19,14 @@
 #include "qgstest.h"
 
 #include <QObject>
+#include <QString>
 #include <QTemporaryDir>
 #include <QTemporaryFile>
 #include <QTimer>
 #include <QUrl>
 
-class TestQgsFileUploader : public QObject
++ using namespace Qt::StringLiterals;
++ class TestQgsFileUploader:public QObject
 {
     Q_OBJECT
   public:
