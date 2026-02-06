@@ -29,6 +29,7 @@ from qgis.PyQt.QtCore import (
     QObject,
     QCoreApplication,
     QFile,
+    QFileInfo,
     QDir,
     QDirIterator,
     QDate,
@@ -127,17 +128,16 @@ officialRepo = (
 # --- common functions ------------------------------------------------------------------- #
 def removeDir(path):
     result = ""
+    fi = QFileInfo(path)
     if not QFile(path).exists():
-        result = (
-            QCoreApplication.translate(
-                "QgsPluginInstaller",
-                "Nothing to remove! Plugin directory doesn't exist:",
-            )
-            + "\n"
-            + path
-        )
-    elif QFile(path).remove():  # if it is only link, just remove it without resolving.
         pass
+    elif fi.isSymbolicLink() or fi.isAlias() or fi.isJunction():
+        if sys.platform.startswith("win") and QDir(path).exists():
+            # it is a windows directory junction or directory sym link
+            QDir().rmdir(path)
+        else:
+            # if it is only a link, just remove it without resolving.
+            QFile(path).remove()
     else:
         fltr = QDir.Filter.Dirs | QDir.Filter.Files | QDir.Filter.Hidden
         iterator = QDirIterator(path, fltr, QDirIterator.IteratorFlag.Subdirectories)
@@ -151,6 +151,7 @@ def removeDir(path):
             item = iterator.next()
             if QDir().rmpath(item):
                 pass
+
     if QFile(path).exists():
         result = (
             QCoreApplication.translate(

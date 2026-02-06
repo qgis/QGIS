@@ -24,9 +24,17 @@
 """
 
 from pathlib import Path
+import shutil
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
+from qgis.PyQt.QtCore import (
+    QDir,
+    QUrl,
+    QFile,
+    QCoreApplication,
+    QTemporaryFile,
+    QTemporaryDir,
+)
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
@@ -67,10 +75,7 @@ class QgsPluginInstallerInstallingDialog(
         )
         self.redirectionCounter = 0
 
-        fileName = plugin["filename"]
-        tmpDir = QDir.tempPath()
-        tmpPath = QDir.cleanPath(tmpDir + "/" + fileName)
-        self.file = QFile(tmpPath)
+        self.file = QTemporaryFile()
 
         self.requestDownloading()
 
@@ -180,42 +185,55 @@ class QgsPluginInstallerInstallingDialog(
                 reply.deleteLater()
                 return
 
-        self.file.open(QFile.OpenModeFlag.WriteOnly)
-        self.file.write(reply.readAll())
+        if (
+            not self.file.open(QFile.OpenModeFlag.WriteOnly)
+            or self.file.write(reply.readAll()) == -1
+        ):
+            self.mResult = self.tr("Could not write to temporary folder.")
+            self.reject()
+            return
+
         self.file.close()
         self.stateChanged(0)
         reply.deleteLater()
-        pluginDir = HOME_PLUGIN_PATH
-        tmpPath = self.file.fileName()
+        pluginsDirectory = HOME_PLUGIN_PATH
         # make sure that the parent directory exists
-        if not QDir(pluginDir).exists():
-            QDir().mkpath(pluginDir)
-        # if the target directory already exists as a link, remove the link without resolving:
-        QFile(pluginDir + str(QDir.separator()) + self.plugin["id"]).remove()
+        if not QDir(pluginsDirectory).exists():
+            QDir().mkpath(pluginsDirectory)
+
+        pluginTargetDirectory = QDir.cleanPath(
+            pluginsDirectory + "/" + self.plugin["id"]
+        )
+        extractDir = QTemporaryDir()
         try:
-            unzip(
-                str(tmpPath), str(pluginDir)
-            )  # test extract. If fails, then exception will be raised and no removing occurs
-            # removing old plugin files if exist
-            removeDir(
-                QDir.cleanPath(pluginDir + "/" + self.plugin["id"])
-            )  # remove old plugin if exists
-            unzip(str(tmpPath), str(pluginDir))  # final extract.
+            unzip(self.file.fileName(), extractDir.path())
         except:
-            self.mResult = (
-                self.tr(
-                    "Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:"
-                )
-                + "\n"
-                + pluginDir
+            self.mResult = self.tr(
+                "Failed to unzip the plugin package. Probably it's broken or missing from the repository."
             )
             self.reject()
             return
+
+        # removing old plugin files if exist
+        # If the target directory already exists as a link,
+        # the link should be removed without resolving
+        self.mResult = removeDir(pluginTargetDirectory)
+        if self.mResult:
+            self.reject()
+            return
+
+        # move extracted plugin to plugins folder
         try:
-            # cleaning: removing the temporary zip file
-            QFile(tmpPath).remove()
+            shutil.move(extractDir.filePath(self.plugin["id"]), pluginsDirectory)
         except:
-            pass
+            self.mResult = (
+                self.tr("Could not store plugin to the plugin directory:")
+                + "\n"
+                + pluginsDirectory
+            )
+            self.reject()
+            return
+
         self.close()
 
     # ----------------------------------------- #
