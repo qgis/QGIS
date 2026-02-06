@@ -23,6 +23,7 @@
 #include "qgsabstract3drenderer.h"
 #include "qgsannotationlayer3drenderer.h"
 #include "qgsapplication.h"
+#include "qgscategorized3drenderer.h"
 #include "qgsgoochmaterialsettings.h"
 #include "qgsline3dsymbol.h"
 #include "qgsline3dsymbol_p.h"
@@ -65,6 +66,7 @@ void Qgs3D::initialize()
 
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsVectorLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsRuleBased3DRendererMetadata );
+  QgsApplication::renderer3DRegistry()->addRenderer( new QgsCategorized3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsMeshLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsPointCloudLayer3DRendererMetadata );
   QgsApplication::renderer3DRegistry()->addRenderer( new QgsTiledSceneLayer3DRendererMetadata );

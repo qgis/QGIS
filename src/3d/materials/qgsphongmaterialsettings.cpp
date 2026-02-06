@@ -73,6 +73,72 @@ bool QgsPhongMaterialSettings::equals( const QgsAbstractMaterialSettings *other 
   return *this == *otherPhong;
 }
 
+QColor QgsPhongMaterialSettings::averageColor() const
+{
+  const double avgDiffuseFactor = 0.5;
+  const double avgSpecularFactor = 0.1;
+
+  double red = mAmbientCoefficient * mAmbient.redF()
+               + mDiffuseCoefficient * avgDiffuseFactor * mDiffuse.redF()
+               + mSpecularCoefficient * avgSpecularFactor * mSpecular.redF();
+
+  double green = mAmbientCoefficient * mAmbient.greenF()
+                 + mDiffuseCoefficient * avgDiffuseFactor * mDiffuse.greenF()
+                 + mSpecularCoefficient * avgSpecularFactor * mSpecular.greenF();
+
+  double blue = mAmbientCoefficient * mAmbient.blueF()
+                + mDiffuseCoefficient * avgDiffuseFactor * mDiffuse.blueF()
+                + mSpecularCoefficient * avgSpecularFactor * mSpecular.blueF();
+
+  red = std::clamp( red, 0.0, 1.0 );
+  green = std::clamp( green, 0.0, 1.0 );
+  blue = std::clamp( blue, 0.0, 1.0 );
+
+  return QColor::fromRgbF( static_cast<float>( red ), static_cast<float>( green ), static_cast<float>( blue ), static_cast<float>( mOpacity ) );
+}
+
+void QgsPhongMaterialSettings::setColorsFromBase( const QColor &baseColor, float metallic )
+{
+  metallic = std::clamp( metallic, 0.0f, 1.0f );
+
+  const float baseR = baseColor.redF();
+  const float baseG = baseColor.greenF();
+  const float baseB = baseColor.blueF();
+
+  // ambient: stable, non-directional lighting
+  constexpr float AMBIENT_FACTOR = 0.2f;
+  mAmbient = QColor::fromRgbF( baseR * AMBIENT_FACTOR, baseG * AMBIENT_FACTOR, baseB * AMBIENT_FACTOR );
+
+  // F0: Fresnel reflectance at normal incidence
+  constexpr float F0_DIELECTRIC = 0.04f;
+  constexpr float F0_METALLIC = 0.6f;
+  const float ks = F0_DIELECTRIC * ( 1.0f - metallic ) + F0_METALLIC * metallic;
+  const float kd = 1.0f - ks;
+
+
+  mDiffuse = QColor::fromRgbF( kd * baseR, kd * baseG, kd * baseB );
+
+  // specular
+  // * Non-metallic surfaces: Independent of base color
+  // * Metallic surfaces:
+  //   - Reflect their own color
+  //   - Linear interpolation from white to base color as metallic increases
+  mSpecular = QColor::fromRgbF(
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseR,
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseG,
+    ( 1.0f - metallic ) * F0_DIELECTRIC + metallic * baseB
+  );
+
+  constexpr float MIN_SHININESS = 32.0f;
+  constexpr float MAX_SHININESS = 200.0f;
+  mShininess = MIN_SHININESS + metallic * ( MAX_SHININESS - MIN_SHININESS );
+}
+
+void QgsPhongMaterialSettings::setColorsFromBase( const QColor &baseColor )
+{
+  setColorsFromBase( baseColor, 0.0f );
+}
+
 void QgsPhongMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   mAmbient = QgsColorUtils::colorFromString( elem.attribute( u"ambient"_s, u"25,25,25"_s ) );

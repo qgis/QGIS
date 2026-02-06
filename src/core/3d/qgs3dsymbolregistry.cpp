@@ -62,7 +62,7 @@ QgsAbstract3DSymbol *Qgs3DSymbolRegistry::defaultSymbolForGeometryType( Qgis::Ge
   }
 }
 
-QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
+QgsFeature3DHandler *Qgs3DSymbolRegistry::createHandlerForSymbol( const QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol )
 {
   if ( !symbol )
     return nullptr;
