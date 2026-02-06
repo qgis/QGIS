@@ -142,11 +142,9 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Remove a custom node from this group. The node will be deleted.
      *
-     * \param id Id of the node to be removed.
-     *
      * \since QGIS 4.0
      */
-    void removeCustomNode( const QString &id );
+    void removeCustomNode( QgsLayerTreeCustomNode *customNode );
 
     /**
      * Remove child nodes from index "from". The nodes will be deleted.

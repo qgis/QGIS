@@ -756,6 +756,14 @@ void QgsElevationProfileWidget::setupLayerTreeView( bool resetTree )
     {
       copyProjectTree( mLayerTree );
     }
+
+    // Initially populates the tree view using sources from the source registry
+    const QList< QgsAbstractProfileSource * > sources = QgsApplication::profileSourceRegistry()->profileSources();
+    for ( auto *source : sources )
+    {
+      mLayerTreeView->addNodeForRegisteredSource( source->profileSourceId(), source->profileSourceName() );
+    }
+
     qobject_cast<QgsElevationProfileLayerTreeModel * >( mLayerTreeView->layerTreeModel() )->setAllowModifications( true );
 
     mLayerTreeBridge = new QgsLayerTreeRegistryBridge( mProfile->layerTree(), QgsProject::instance(), this );

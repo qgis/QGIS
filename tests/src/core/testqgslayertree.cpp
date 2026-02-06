@@ -974,11 +974,12 @@ void TestQgsLayerTree::testCustomNodeDeleted()
   group->insertCustomNode( -1, u"custom-id-2"_s, u"Custom Name 2"_s );
 
   QList< QgsLayerTreeNode * > order = root.layerAndCustomNodeOrder();
-  group->removeCustomNode( u"non-existent"_s );
-  QCOMPARE( order, root.layerAndCustomNodeOrder() );
+  QVERIFY( !root.findCustomNode( u"non-existent"_s ) );
 
   QVERIFY( group->findCustomNodeIds().contains( u"custom-id-2"_s ) );
-  group->removeCustomNode( u"custom-id-2"_s );
+  QgsLayerTreeCustomNode *node = root.findCustomNode( u"custom-id-2"_s );
+  QVERIFY( node );
+  qobject_cast< QgsLayerTreeGroup * >( node->parent() )->removeCustomNode( node );
   QVERIFY( order != root.layerAndCustomNodeOrder() );
   QVERIFY( !group->findCustomNodeIds().contains( u"custom-id-2"_s ) );
 }
