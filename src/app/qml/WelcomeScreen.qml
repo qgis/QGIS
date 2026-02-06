@@ -287,7 +287,7 @@ Item {
 
             Text {
               Layout.fillWidth: true
-              text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
+              text: newsSwitch.checked && newsListView.count != 0 ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
               font.pointSize: Application.font.pointSize * 1.3
               font.bold: true
               color: "#ffffff"
@@ -349,7 +349,7 @@ Item {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
                   newsFeedParser.enabled = !newsFeedParser.enabled
-                  if (newsFeedParser.enabled && newsListView.count == 0) {
+                  if (newsFeedParser.enabled) {
                     newsFeedParser.fetch();
                   }
                 }
@@ -381,7 +381,7 @@ Item {
             
             ColumnLayout {
               id: welcomeLayout
-              visible: !newsSwitch.checked
+              visible: !newsSwitch.checked || newsListView.count == 0
               width: welcomeNewsLayout.width - welcomeView.rightPadding
               spacing: 12
 
@@ -408,6 +408,7 @@ Item {
                 Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
                 radius: 6
                 color: "#ffffff"
+                visible: !newsSwitch.checked
 
                 ColumnLayout {
                   id: stayUpdateLayout
@@ -450,7 +451,10 @@ Item {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
                       hoverEnabled: true
-                      onClicked: newsSwitch.checked = true
+                      onClicked: {
+                        newsFeedParser.enabled = true;
+                        newsFeedParser.fetch();
+                      }
                     }
                   }
                 }
