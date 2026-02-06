@@ -217,7 +217,18 @@ void QgsAppLayerHandling::postProcessAddedLayer( QgsMapLayer *layer )
       {
         if ( vpcProvider->containsUnsupportedFiles() )
         {
-          QgisApp::instance()->visibleMessageBar()->pushWarning( QObject::tr( "Unsupported files in VPC" ), QObject::tr( "Some files (i.e. LAZ or LAS files) referenced by the virtual point cloud are unsupported and cannot be displayed." ) );
+          QgsMessageBarItem *barItem = new QgsMessageBarItem( QObject::tr( "Unsupported files in VPC layer" ), QObject::tr( "Layer %1 references point cloud files that can only be displayed by their extents." ).arg( layer->name() ), Qgis::MessageLevel::Warning, 0 );
+          QPushButton *button = new QPushButton( QObject::tr( "More Info" ), barItem );
+          barItem->setWidget( button );
+          connect( button, &QPushButton::clicked, barItem, [barItem]() {
+            QMessageBox::information(
+              barItem,
+              QObject::tr( "Unsupported files in VPC layer" ),
+              QObject::tr( "QGIS can display the actual points of a virtual point cloud only if the referenced point cloud files are in COPC or EPT format. You can convert the files to COPC format by running the Build virtual point cloud (VPC) algorithm and enabling the Convert individual files to COPC format checkbox." )
+            );
+          } );
+
+          QgisApp::instance()->visibleMessageBar()->pushItem( barItem );
         }
       }
 
