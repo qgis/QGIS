@@ -1220,7 +1220,19 @@ QList<QgsMapLayer *> QgsElevationProfileCanvas::layers() const
 
 void QgsElevationProfileCanvas::setSources( const QList<QgsAbstractProfileSource *> &sources )
 {
-  mSources = sources;
+  mSources.clear();
+  mSources.reserve( sources.count() );
+  for ( auto *profileSource : sources )
+  {
+    if ( auto weakLayerPointer = QgsWeakMapLayerPointer( dynamic_cast<QgsMapLayer *>( profileSource ) ) )
+    {
+      mSources << weakLayerPointer;
+    }
+    else if ( QgsApplication::profileSourceRegistry()->findSourceById( profileSource->profileSourceId() ) )
+    {
+      mSources << profileSource;
+    }
+  }
 }
 
 QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
@@ -1248,7 +1260,27 @@ QList<QgsAbstractProfileSource *> QgsElevationProfileCanvas::sources() const
     return sources;
   }
 
-  return mSources;
+  QList< QgsAbstractProfileSource * > sources;
+  sources.reserve( mSources.count() );
+  for ( auto source : mSources )
+  {
+    if ( QgsWeakMapLayerPointer *weakLayerPointer = std::get_if< QgsWeakMapLayerPointer >( &source ) )
+    {
+      if ( QgsMapLayer *layer = weakLayerPointer->data() )
+      {
+        sources << layer->profileSource();
+      }
+    }
+    else if ( auto profileSource = std::get_if< QgsAbstractProfileSource * >( &source ) )
+    {
+      if ( QgsApplication::profileSourceRegistry()->findSourceById( ( *profileSource )->profileSourceId() ) )
+      {
+        sources << *profileSource;
+      }
+    }
+  }
+
+  return sources;
 }
 
 void QgsElevationProfileCanvas::resizeEvent( QResizeEvent *event )
@@ -1529,5 +1561,8 @@ void QgsElevationProfileCanvas::setSubsectionsSymbol( QgsLineSymbol *symbol )
 
 void QgsElevationProfileCanvas::setSourcesPrivate()
 {
-  mSources = QgsApplication::profileSourceRegistry()->profileSources();
+  mSources.clear();
+  mSources.reserve( QgsApplication::profileSourceRegistry()->profileSources().count() );
+  for ( auto source : QgsApplication::profileSourceRegistry()->profileSources() )
+    mSources << source;
 }

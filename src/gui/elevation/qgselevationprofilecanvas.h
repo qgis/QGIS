@@ -395,7 +395,7 @@ class GUI_EXPORT QgsElevationProfileCanvas : public QgsPlotCanvas
     Qgis::DistanceUnit mDistanceUnit = Qgis::DistanceUnit::Unknown;
 
     QgsWeakMapLayerPointerList mLayers;
-    QList< QgsAbstractProfileSource * > mSources;
+    QList< std::variant< QgsWeakMapLayerPointer, QgsAbstractProfileSource * > > mSources;
 
     QgsElevationProfilePlotItem *mPlotItem = nullptr;
     QgsElevationProfileCrossHairsItem *mCrossHairsItem = nullptr;
