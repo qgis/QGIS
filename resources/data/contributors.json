@@ -1264,6 +1264,23 @@
           46.5279
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Dave Signer",
+        "Committer": "Yes",
+        "First Commit Message": "Use QStringLiteral",
+        "First Commit Date": "14-06-2017",
+        "GIT Nickname": "signedav"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.765546,
+          47.518775
+        ]
+      }
     }
   ]
 }
