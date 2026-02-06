@@ -122,7 +122,7 @@ QVariantMap QgsFileUploaderAlgorithm::processAlgorithm( const QVariantMap &param
 
 
   url = uploadUrl.toDisplayString();
-  feedback->pushInfo( QObject::tr( "Successfully upload file to %1" ).arg( url ) );
+  feedback->pushInfo( QObject::tr( "Successfully uploaded file to %1" ).arg( url ) );
 
   QVariantMap outputs;
   return outputs;
