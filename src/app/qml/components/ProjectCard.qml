@@ -4,12 +4,12 @@ import QtQuick.Controls
 import QtQuick.Controls.Material.impl
 import QtQuick.Effects
 
-Item {
+Rectangle {
   id: root
   implicitWidth: 280
   implicitHeight: 100
+  radius: 6
 
-  property int radius: 6
   property string title: ""
   property string subtitle: ""
   property string imageSource: ""
@@ -30,30 +30,10 @@ Item {
       anchors.fill: parent
       source: root.imageSource
       fillMode: Image.PreserveAspectCrop
-      visible: false
       cache: false
-      layer.enabled: true
+      opacity: 0.75
     }
 
-    Item {
-      id: mask
-      anchors.fill: parent
-      layer.enabled: true
-      visible: false
-
-      Rectangle {
-        anchors.fill: parent
-        radius: root.radius
-      }
-    }
-
-    MultiEffect {
-      anchors.fill: sourceImage
-      source: sourceImage
-      maskEnabled: true
-      maskSource: mask
-    }
-    
     Rectangle {
       anchors.fill: parent
       radius: root.radius
@@ -80,15 +60,6 @@ Item {
           easing.type: Easing.OutQuart
         }
       }
-    }
-    
-    Ripple {
-      clip: true
-      width: imageContainer.width
-      height: imageContainer.height
-      pressed: mouseArea.pressed
-      active: mouseArea.pressed
-      color: "#3393b023"
     }
   }
 
