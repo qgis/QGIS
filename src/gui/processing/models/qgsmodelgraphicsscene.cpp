@@ -612,7 +612,7 @@ void QgsModelGraphicsScene::showWarning( const QString &shortMessage, const QStr
   connect( detailsButton, &QPushButton::clicked, detailsButton, [detailsButton, title, longMessage] {
     QgsMessageViewer *dialog = new QgsMessageViewer( detailsButton );
     dialog->setTitle( title );
-    dialog->setMessage( longMessage, QgsMessageOutput::MessageHtml );
+    dialog->setMessage( longMessage, Qgis::StringFormat::Html );
     dialog->showMessage();
   } );
   messageWidget->layout()->addWidget( detailsButton );

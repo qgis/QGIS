@@ -1192,7 +1192,7 @@ void QgsDelimitedTextProvider::reportErrors( const QStringList &messages, bool s
     {
       QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
       output->setTitle( tr( "Delimited text file errors" ) );
-      output->setMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), QgsMessageOutput::MessageText );
+      output->setMessage( tr( "Errors in file %1" ).arg( mFile->fileName() ), Qgis::StringFormat::PlainText );
       const auto constMessages = messages;
       for ( const QString &message : constMessages )
       {
