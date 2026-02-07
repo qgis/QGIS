@@ -2374,3 +2374,11 @@ bool QgsMeshLayer::datasetsPathUnique( const QString &path )
 
   return !mExtraDatasetUri.contains( path );
 }
+
+QString QgsMeshLayer::loadNamedStyle( const QString &uri, bool &resultFlag, QgsMapLayer::StyleCategories categories, Qgis::LoadStyleFlags flags )
+{
+  QString result = QgsMapLayer::loadNamedStyle( uri, resultFlag, categories, flags );
+  emit rendererChanged();
+  emitStyleChanged();
+  return result;
+}

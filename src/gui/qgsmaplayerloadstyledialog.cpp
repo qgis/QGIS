@@ -357,3 +357,9 @@ void QgsMapLayerLoadStyleDialog::showHelp()
 {
   QgsHelp::openHelp( u"introduction/general_tools.html#save-and-share-layer-properties"_s );
 }
+
+void QgsMapLayerLoadStyleDialog::allowLoadingOnlyFromFiles()
+{
+  mStyleTypeComboBox->setEnabled( false );
+  mStyleTypeComboBox->setCurrentIndex( 0 );
+}

@@ -477,6 +477,7 @@ using namespace Qt::StringLiterals;
 #include "devtools/querylogger/qgsqueryloggerwidgetfactory.h"
 #include "devtools/profiler/qgsprofilerwidgetfactory.h"
 
+#include "qgsmaplayerloadstyledialog.h"
 #include "browser/qgsinbuiltdataitemproviders.h"
 
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -8428,6 +8429,16 @@ void QgisApp::saveAsLayerDefinition()
 
   QFileInfo fi( path );
   settings.setValue( u"UI/lastQLRDir"_s, fi.path() );
+}
+
+void QgisApp::loadStyleFromFile( const QList<QgsMapLayer *> &layers )
+{
+  QgsAppLayerHandling::loadStyleFromFile( layers );
+}
+
+void QgisApp::loadStyleFromFile( QgsMapLayer *layer )
+{
+  QgsAppLayerHandling::loadStyleFromFile( layer );
 }
 
 void QgisApp::saveStyleFile( QgsMapLayer *layer )

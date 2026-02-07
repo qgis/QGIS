@@ -213,6 +213,20 @@ class APP_EXPORT QgsAppLayerHandling
      */
     static void onVectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
 
+    /**
+     * Loads style for \a layer from selected source.
+     *
+     * \since QGIS 4.0
+     */
+    static void loadStyleFromFile( QgsMapLayer *layer );
+
+    /**
+     * Loads style for list of layers from selected file.
+     *
+     * \since QGIS 4.0
+     */
+    static void loadStyleFromFile( const QList<QgsMapLayer *> &layers );
+
   private:
     template<typename T> static QList<T *> addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
 
