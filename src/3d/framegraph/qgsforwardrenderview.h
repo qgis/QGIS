@@ -114,9 +114,7 @@ class QgsForwardRenderView : public QgsAbstractRenderView
     Qt3DRender::QTexture2D *mColorTexture = nullptr;
     Qt3DRender::QTexture2D *mDepthTexture = nullptr;
     // QDebugOverlay added in the forward pass
-#if QT_VERSION >= QT_VERSION_CHECK( 5, 15, 0 )
     Qt3DRender::QDebugOverlay *mDebugOverlay = nullptr;
-#endif
 
     /**
      * Builds the three forward passes needed by forward: one for solid objects, followed by two for transparent objects

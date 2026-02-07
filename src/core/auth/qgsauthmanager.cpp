@@ -1645,9 +1645,6 @@ bool QgsAuthManager::exportAuthenticationConfigsToXml( const QString &filename, 
     return false;
 
   QTextStream ts( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  ts.setCodec( "UTF-8" );
-#endif
   document.save( ts, 2 );
   file.close();
   return true;
