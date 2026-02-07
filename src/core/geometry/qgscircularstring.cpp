@@ -1318,6 +1318,84 @@ void QgsCircularString::deleteVertex( int i )
   clearCache();
 }
 
+bool QgsCircularString::deleteVertices( const QList<QgsVertexId> &positions )
+{
+  if ( positions.empty() )
+  {
+    return true;
+  }
+
+  int nVertices = this->numPoints();
+
+  QList<QgsVertexId> vertices = positions;
+
+  std::sort( vertices.begin(), vertices.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+  {
+    return a.vertex < b.vertex;
+  }
+           );
+
+  // remove adjacent vertices as deleting one will also delete the other
+  for ( size_t i = vertices.size() - 1; i >= 1; i-- )
+  {
+    int vertexNr = vertices[i].vertex;
+    int prevVertexNr = vertices[i - 1].vertex;
+
+    if ( vertexNr - 1 == prevVertexNr )
+    {
+      if ( vertexNr < nVertices - 2 )
+      {
+        vertices.removeAt( i );
+      }
+      else
+      {
+        vertices.removeAt( i - 1 );
+      }
+
+      nVertices -= 2;
+      i--;  // adjacent vertices handled, we can skip the next one as well
+
+      if ( i == 0 )
+        break;
+    }
+  }
+
+  nVertices = this->numPoints();
+
+  QListIterator<QgsVertexId> positionsIt( vertices );
+  positionsIt.toBack();
+  while ( positionsIt.hasPrevious() )
+  {
+    if ( nVertices < 4 ) //circular string must have at least 3 vertices
+    {
+      clear();
+      return true;
+    }
+
+    int currentVertexNr = positionsIt.previous().vertex;
+
+    if ( currentVertexNr < 0 || currentVertexNr > ( nVertices - 1 ) )
+    {
+      return false;
+    }
+
+    if ( currentVertexNr < nVertices - 2 )
+    {
+      deleteVertex( currentVertexNr + 1 );
+      deleteVertex( currentVertexNr );
+      nVertices = nVertices - 2;
+    }
+    else
+    {
+      deleteVertex( currentVertexNr );
+      deleteVertex( currentVertexNr - 1 );
+      nVertices = nVertices - 2;
+    }
+  }
+
+  return true;
+}
+
 double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   double minDist = std::numeric_limits<double>::max();

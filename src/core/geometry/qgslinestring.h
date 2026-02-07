@@ -1037,6 +1037,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
+    bool deleteVertices( const QList<QgsVertexId> &positions ) override;
 
     QgsLineString *reversed() const override SIP_FACTORY;
     QgsPoint *interpolatePoint( double distance ) const override SIP_FACTORY;

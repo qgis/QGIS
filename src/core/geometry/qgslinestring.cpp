@@ -2092,6 +2092,50 @@ bool QgsLineString::deleteVertex( QgsVertexId position )
   return true;
 }
 
+bool QgsLineString::deleteVertices( const QList<QgsVertexId> &vertices )
+{
+  if ( vertices.isEmpty() )
+  {
+    return false;
+  }
+
+  QList<QgsVertexId> positions = vertices;
+
+  std::sort( positions.begin(), positions.end(), []( const QgsVertexId & a, const QgsVertexId & b )
+  {
+    return a.vertex > b.vertex;
+  }
+           );
+
+  if ( positions.first().vertex >= mX.size() || positions.last().vertex < 0 )
+  {
+    return false;
+  }
+
+  for ( QgsVertexId position : positions )
+  {
+    mX.remove( position.vertex );
+    mY.remove( position.vertex );
+    if ( is3D() )
+    {
+      mZ.remove( position.vertex );
+    }
+    if ( isMeasure() )
+    {
+      mM.remove( position.vertex );
+    }
+  }
+
+  if ( numPoints() <= 1 )
+  {
+    clear();
+    return true;
+  }
+
+  clearCache(); //set bounding box invalid
+  return true;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
