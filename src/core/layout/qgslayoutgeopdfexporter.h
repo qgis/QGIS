@@ -96,7 +96,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
      * Sets QGIS project layers (including invisible ones) to layout item maps before rendering.
      * Only map items that do not follow map themes nor locked layers are altered.
      *
-     * Used by Geospatial PDF exports that should follow QGIS layer tree properties.
+     * Used by Geospatial PDF exports that should follow QGIS layer tree configuration.
      *
      * \return whether at least one map was found not following map themes nor locked layers.
      *
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
     bool setMapItemLayersBeforeRendering();
 
     /**
-     * Restores map item layers after a rendering operation for Geospatial PDFs that follow QGIS layer tree properties.
+     * Restores map item layers after a rendering operation for Geospatial PDFs that follow QGIS layer tree configuration.
      *
      * \see setMapItemLayersBeforeRendering()
      *
@@ -118,7 +118,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
 
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override;
 
-    QgsLayerTree *qgisLayerTree() const override;
+    QgsLayerTree *layerTree() const override;
 
     QgsLayout *mLayout = nullptr;
     QHash< QgsLayoutItemMap *, QgsGeospatialPdfRenderedFeatureHandler * > mMapHandlers;
@@ -130,7 +130,7 @@ class CORE_EXPORT QgsLayoutGeospatialPdfExporter : public QgsAbstractGeospatialP
 
     /**
      * To restore map item layers after a rendering operation for
-     * Geospatial PDF exports that follow QGIS layer tree properties
+     * Geospatial PDF exports that follow QGIS layer tree configuration
      */
     QMap< QString, QList< QgsMapLayer * > > mTemporaryLayersToRender;
 

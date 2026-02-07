@@ -256,10 +256,10 @@ QString QgsAbstractGeospatialPdfExporter::createCompositionXml( const QList<Comp
   createGeoreferencingXmlSection( page, doc, details, pageWidthPdfUnits, pageHeightPdfUnits );
 
   // layer tree and content
-  QgsLayerTree *layerTree = qgisLayerTree();
-  if ( details.useQgisLayerTreeProperties && layerTree )
+  QgsLayerTree *layerTreePointer = layerTree();
+  if ( details.useLayerTreeConfig && layerTreePointer )
   {
-    createLayerTreeAndContentXmlSectionsFromLayerTree( layerTree, compositionElem, page, doc, components, details );
+    createLayerTreeAndContentXmlSectionsFromLayerTree( layerTreePointer, compositionElem, page, doc, components, details );
   }
   else
   {

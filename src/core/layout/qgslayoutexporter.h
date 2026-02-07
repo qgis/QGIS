@@ -399,7 +399,7 @@ class CORE_EXPORT QgsLayoutExporter
        * If set, map item's which are not assigned a specific map theme will iterate through all listed
        * themes and a Geospatial PDF layer group will be created for each.
        *
-       * If PdfExportSettings::writeGeoPdf is FALSE or PdfExportSettings::useQGISLayerTreeProperties is TRUE
+       * If PdfExportSettings::writeGeoPdf is FALSE or PdfExportSettings::useLayerTreeConfig is TRUE
        * then this option has no effect.
        */
       QStringList exportThemes;
@@ -421,7 +421,7 @@ class CORE_EXPORT QgsLayoutExporter
        *
        * \since QGIS 4.0
        */
-      bool useQgisLayerTreeProperties = false;
+      bool useLayerTreeConfig = false;
     };
 
     /**

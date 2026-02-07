@@ -66,7 +66,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
 
   mGeospatialPDFCustomConfigRadioButton->setChecked( true );
   mGeospatialPDFCustomConfigFrame->setEnabled( true );
-  connect( mGeospatialPDFQgisConfigRadioButton, &QRadioButton::toggled, this, &QgsLayoutPdfExportOptionsDialog::toggleQgisConfig );
+  connect( mGeospatialPDFLayerTreeConfigRadioButton, &QRadioButton::toggled, this, &QgsLayoutPdfExportOptionsDialog::toggleLayerTreeConfig );
 
   mComboImageCompression->addItem( tr( "Lossy (JPEG)" ), false );
   mComboImageCompression->addItem( tr( "Lossless" ), true );
@@ -207,28 +207,28 @@ bool QgsLayoutPdfExportOptionsDialog::exportGeospatialPdf() const
   return mGeospatialPDFGroupBox->isChecked();
 }
 
-void QgsLayoutPdfExportOptionsDialog::setUseQgisLayerTreeConfig( bool enabled )
+void QgsLayoutPdfExportOptionsDialog::setUseLayerTreeConfig( bool enabled )
 {
   if ( !mGeospatialPdfAvailable )
     return;
 
-  mGeospatialPDFQgisConfigRadioButton->setChecked( enabled );
+  mGeospatialPDFLayerTreeConfigRadioButton->setChecked( enabled );
   mGeospatialPDFCustomConfigFrame->setEnabled( !enabled );
 }
 
-bool QgsLayoutPdfExportOptionsDialog::useQgisLayerTreeConfig() const
+bool QgsLayoutPdfExportOptionsDialog::useLayerTreeConfig() const
 {
   if ( !mGeospatialPdfAvailable )
     return false;
 
-  return mGeospatialPDFQgisConfigRadioButton->isChecked();
+  return mGeospatialPDFLayerTreeConfigRadioButton->isChecked();
 }
 
-void QgsLayoutPdfExportOptionsDialog::disableUseQgisLayerTreeConfig()
+void QgsLayoutPdfExportOptionsDialog::disableUseLayerTreeConfig()
 {
-  setUseQgisLayerTreeConfig( false );
-  mGeospatialPDFQgisConfigRadioButton->setEnabled( false );
-  mGeospatialPDFQgisConfigRadioButton->setToolTip( u"Unavailable: All map items in the layout are currently following either map themes or locked layers, which is not compatible with the QGIS layer tree configuration."_s );
+  setUseLayerTreeConfig( false );
+  mGeospatialPDFLayerTreeConfigRadioButton->setEnabled( false );
+  mGeospatialPDFLayerTreeConfigRadioButton->setToolTip( u"Unavailable: All map items in the layout are currently following either map themes or locked layers, which is not compatible with the QGIS layer tree configuration."_s );
 }
 
 void QgsLayoutPdfExportOptionsDialog::setExportThemes( const QStringList &themes )
@@ -335,7 +335,7 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( 
   }
 }
 
-void QgsLayoutPdfExportOptionsDialog::toggleQgisConfig()
+void QgsLayoutPdfExportOptionsDialog::toggleLayerTreeConfig()
 {
-  mGeospatialPDFCustomConfigFrame->setEnabled( !mGeospatialPDFQgisConfigRadioButton->isChecked() );
+  mGeospatialPDFCustomConfigFrame->setEnabled( !mGeospatialPDFLayerTreeConfigRadioButton->isChecked() );
 }

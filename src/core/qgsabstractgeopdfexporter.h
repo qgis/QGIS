@@ -331,7 +331,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        * Layers which are not included in this group will always have their own individual layer tree entry
        * created for them automatically.
        *
-       * If ExportDetails::useQGISLayerTreeProperties is TRUE then this option has no effect.
+       * If ExportDetails::useLayerTreeConfig is TRUE then this option has no effect.
        *
        * \see layerTreeGroupOrder
        */
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
       /**
        * Optional map of map layer ID to custom layer tree name to show in the created PDF file.
        *
-       * If ExportDetails::useQGISLayerTreeProperties is TRUE then this option has no effect.
+       * If ExportDetails::useLayerTreeConfig is TRUE then this option has no effect.
        *
        * \since QGIS 3.14
        */
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        * Optional map of map layer ID to initial visibility state. If a layer ID is not present in this,
        * it will default to being initially visible when opening the PDF.
        *
-       * If ExportDetails::useQGISLayerTreeProperties is TRUE then this option has no effect.
+       * If ExportDetails::useLayerTreeConfig is TRUE then this option has no effect.
        *
        * \since QGIS 3.14
        */
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        *
        * Layers appearing earlier in the list will show earlier in the Geospatial PDF layer tree list.
        *
-       * If ExportDetails::useQGISLayerTreeProperties is TRUE then this option has no effect.
+       * If ExportDetails::useLayerTreeConfig is TRUE then this option has no effect.
        *
        * \see layerTreeGroupOrder
        *
@@ -374,7 +374,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        *
        * Groups appearing earlier in the list will show earlier in the Geospatial PDF layer tree list.
        *
-       * If ExportDetails::useQGISLayerTreeProperties is TRUE then this option has no effect.
+       * If ExportDetails::useLayerTreeConfig is TRUE then this option has no effect.
        *
        * \see layerOrder
        * \see customLayerTreeGroups
@@ -386,7 +386,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
       /**
        * Contains a list of group names which should be considered as mutually exclusive.
        *
-       * If ExportDetails::useQGISLayerTreeProperties is TRUE then this option has no effect.
+       * If ExportDetails::useLayerTreeConfig is TRUE then this option has no effect.
        *
        * \since QGIS 3.40
        */
@@ -409,7 +409,7 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
        *
        * \since QGIS 4.0
        */
-      bool useQgisLayerTreeProperties = false;
+      bool useLayerTreeConfig = false;
 
     };
 
@@ -484,9 +484,9 @@ class CORE_EXPORT QgsAbstractGeospatialPdfExporter
     virtual VectorComponentDetail componentDetailForLayerId( const QString &layerId ) = 0;
 
     /**
-     * Returns the QGIS layer tree so that a composition XML can be created based on its properties.
+     * Returns the QGIS layer tree so that a composition XML can be created based on its configuration.
      */
-    virtual QgsLayerTree *qgisLayerTree() const = 0;
+    virtual QgsLayerTree *layerTree() const = 0;
 
     QList< VectorComponentDetail > mVectorComponents;
 
