@@ -2,7 +2,7 @@
   "name": "concat",
   "type": "function",
   "groups": ["String"],
-  "description": "Concatenates several strings to one. NULL values are converted to empty strings. Other values (like numbers) are converted to strings.",
+  "description": "Concatenates several values to a single string. NULL values are converted to empty strings. Other values (like numbers) are converted to strings.<br><br>See the <b>||</b> function for a different behavior.",
   "variableLenArguments": true,
   "arguments": [{
     "arg": "string1",
