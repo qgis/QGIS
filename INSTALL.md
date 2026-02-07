@@ -717,7 +717,7 @@ Download and install the following packages:
 **Cygwin packages required:**
 * `bison`
 * `flex`
-* `git` (install even if you have Git for Windows)
+* `git` (only needed if you do not already have Git available on your PATH; Git for Windows or any other Git installation is fine for cloning)
 
 **OSGeo4W packages required:**
 
