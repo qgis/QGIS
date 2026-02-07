@@ -369,7 +369,7 @@ class CORE_EXPORT QgsLayoutExporter
        * This is a recommended setting which results in Geospatial PDF files compatible
        * with the built-in Acrobat geospatial tools.
        *
-       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       * If PdfExportSettings::writeGeoPdf is FALSE then this option has no effect.
        */
       bool useIso32000ExtensionFormatGeoreferencing = true;
 
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsLayoutExporter
        * can break compatibility with the built-in Acrobat geospatial tools (yes, Geospatial PDF
        * format is a mess!).
        *
-       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       * If PdfExportSettings::writeGeoPdf is FALSE then this option has no effect.
        *
        * \deprecated QGIS 3.42. This parameter has no longer any effect. Only ISO 32000 georeferencing is handled.
       */
@@ -389,7 +389,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * TRUE if feature vector information (such as attributes) should be exported during Geospatial PDF exports.
        *
-       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       * If PdfExportSettings::writeGeoPdf is FALSE then this option has no effect.
        */
       bool includeGeoPdfFeatures = true;
 
@@ -399,7 +399,8 @@ class CORE_EXPORT QgsLayoutExporter
        * If set, map item's which are not assigned a specific map theme will iterate through all listed
        * themes and a Geospatial PDF layer group will be created for each.
        *
-       * If PdfExportSettings::writeGeoPdf is FALSE than this option has no effect.
+       * If PdfExportSettings::writeGeoPdf is FALSE or PdfExportSettings::useLayerTreeConfig is TRUE
+       * then this option has no effect.
        */
       QStringList exportThemes;
 
@@ -409,6 +410,18 @@ class CORE_EXPORT QgsLayoutExporter
        * \since QGIS 3.10
        */
       QVector<qreal> predefinedMapScales;
+
+      /**
+       * If set to TRUE, the layer tree from the QGIS project should be used when creating a Geospatial PDF.
+       * In that case, layer/group names, order, and visibility from the QGIS project will be reflected in the output PDF.
+       *
+       * When this option is active, the PdfExportSettings::exportThemes option has no effect.
+       *
+       * If PdfExportSettings::writeGeoPdf is FALSE then this option has no effect.
+       *
+       * \since QGIS 4.0
+       */
+      bool useLayerTreeConfig = false;
     };
 
     /**

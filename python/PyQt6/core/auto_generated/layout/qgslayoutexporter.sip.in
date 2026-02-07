@@ -219,6 +219,8 @@ set to the error description.
       QStringList exportThemes;
 
       QVector<qreal> predefinedMapScales;
+
+      bool useLayerTreeConfig;
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
