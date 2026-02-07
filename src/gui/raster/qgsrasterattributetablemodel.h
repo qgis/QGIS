@@ -36,7 +36,9 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     /**
      * Creates a new QgsRasterAttributeTableModel from raster attribute table \a rat and optional \a parent.
      */
-    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat,
+                                           QgsRasterLayer *layer,
+                                           QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns true if the Raster Attribute Table is editable.
@@ -135,6 +137,7 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
 
   private:
     QgsRasterAttributeTable *mRat = nullptr;
+    QgsRasterLayer *mLayer = nullptr;
     bool mEditable = false;
 
     // Checks for rat not nullptr and editable state
