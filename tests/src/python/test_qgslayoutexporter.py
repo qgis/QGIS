@@ -1939,8 +1939,7 @@ class TestQgsLayoutExporter(QgisTestCase):
                         self.assertAlmostEqual(legend_node.minimum(), 114.90, places=2)
                         self.assertEqual(legend_node.maximum(), 165)
 
-
-    def testGeospatialPdfQgisLayerTree(self):
+    def testGeospatialPdfLayerTree(self):
         def exportLayout(project_name, pdf_name, settings):
             p = QgsProject()
             p.read(os.path.join(TEST_DATA_DIR, "geospatial_pdf_projects", project_name))
@@ -1979,7 +1978,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = False
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_nested_groups_no_graphics.qgz",
@@ -2003,7 +2002,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = True
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_nested_groups_no_graphics.qgz",
@@ -2017,7 +2016,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = False
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_nested_groups_with_grouped_graphics.qgz",
@@ -2042,7 +2041,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = True
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_nested_groups_with_grouped_graphics.qgz",
@@ -2056,7 +2055,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = False
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_nested_groups_no_graphics_invisible_layers.qgz",
@@ -2080,7 +2079,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = True
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_nested_groups_no_graphics_invisible_layers.qgz",
@@ -2094,7 +2093,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = False
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_non_nested_group_no_graphics_with_grouplayer.qgz",
@@ -2115,7 +2114,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
         settings.includeGeoPdfFeatures = True
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         ds, i = exportLayout(
             "test_non_nested_group_no_graphics_with_grouplayer.qgz",
@@ -2125,7 +2124,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         self.assertEqual(i["metadata"]["LAYERS"], expected_metadata_layers)
         check_feature_info(ds)
 
-    def testErrorGeospatialPdfQgisLayerTreeAndThemes(self):
+    def testErrorGeospatialPdfLayerTreeAndThemes(self):
         p = QgsProject()
         p.read(
             os.path.join(
@@ -2144,7 +2143,7 @@ class TestQgsLayoutExporter(QgisTestCase):
         exporter = QgsLayoutExporter(l)
         settings = QgsLayoutExporter.PdfExportSettings()
         settings.writeGeoPdf = True
-        settings.useQgisLayerTreeProperties = True
+        settings.useLayerTreeConfig = True
 
         # Check that we get an error and an error message
         pdf_file_path = os.path.join(
