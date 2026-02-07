@@ -19,9 +19,11 @@ Item {
 
   signal clicked(MouseEvent mouse)
 
-  Item {
+  Rectangle {
     id: imageContainer
     anchors.fill: parent
+    color: "#ffffff"
+    radius: root.radius
 
     Image {
       id: sourceImage
