@@ -402,7 +402,15 @@ void QgsLayoutItemChart::prepareGatherer()
       request.addOrderBy( mSortExpression, mSortAscending );
     }
 
-    if ( mMap && mFilterOnlyVisibleFeatures )
+    if ( mFilterToAtlasIntersection )
+    {
+      const QgsGeometry atlasGeometry = mLayout->reportContext().currentGeometry( mVectorLayer->crs() );
+      if ( !atlasGeometry.isNull() )
+      {
+        request.setDistanceWithin( atlasGeometry, 0.0 );
+      }
+    }
+    else if ( mMap && mFilterOnlyVisibleFeatures )
     {
       QgsGeometry visibleRegionGeometry = QgsGeometry::fromQPolygonF( mMap->visibleExtentPolygon() );
       if ( mVectorLayer->crs() != mMap->crs() )
@@ -416,15 +424,6 @@ void QgsLayoutItemChart::prepareGatherer()
       if ( !visibleRegionGeometry.isNull() )
       {
         request.setDistanceWithin( visibleRegionGeometry, 0.0 );
-      }
-    }
-
-    if ( mFilterToAtlasIntersection )
-    {
-      const QgsGeometry atlasGeometry = mLayout->reportContext().currentGeometry( mVectorLayer->crs() );
-      if ( !atlasGeometry.isNull() )
-      {
-        request.setDistanceWithin( atlasGeometry, 0.0 );
       }
     }
 
