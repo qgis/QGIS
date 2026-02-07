@@ -5890,7 +5890,7 @@ void QgisApp::fileExit()
   }
 
   QgsCanvasRefreshBlocker refreshBlocker;
-  if ( checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits() )
+  if ( canCreateNewProject() )
   {
     closeProject();
     userProfileManager()->updateLastProfileName();
@@ -5910,11 +5910,13 @@ bool QgisApp::fileNew()
 
 bool QgisApp::fileNewBlank()
 {
+  qDebug() << "fileNewBlank!";
   return fileNew( true, true );
 }
 
 void QgisApp::fileClose()
 {
+  qDebug() << "fileClose!";
   if ( fileNewBlank() )
   {
     mWelcomeScreen->showScene();
@@ -5923,17 +5925,19 @@ void QgisApp::fileClose()
 
 bool QgisApp::canCreateNewProject()
 {
-  return !checkUnsavedLayerEdits() || !checkMemoryLayers() || !saveDirty() || !checkUnsavedRasterAttributeTableEdits();
+  return checkUnsavedLayerEdits() && checkMemoryLayers() && saveDirty() && checkExitBlockers() && checkUnsavedRasterAttributeTableEdits();
 }
 
 //as file new but accepts flags to indicate whether we should prompt to save
 bool QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
 {
+  qDebug() << "fileNew!";
   if ( checkTasksDependOnProject() )
     return false;
 
   if ( promptToSaveFlag )
   {
+    qDebug() << "promptToSaveFlag!";
     if ( !canCreateNewProject() )
     {
       return false; //cancel pressed

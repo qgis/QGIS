@@ -11,7 +11,7 @@ import "components"
 Item {
   id: welcomeScreen
 
-  property bool narrowLayout: height < 350 || width < 420
+  property bool narrowLayout: height < 350 || width < 480
 
   visible: height >= 300 && width >= 360
   width: 1100
@@ -31,15 +31,6 @@ Item {
       radius: 10
       color: "#002033"
       clip: true
-
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
 
       GridLayout {
         anchors {
@@ -242,7 +233,7 @@ Item {
                   switch (Type) {
                   case TemplateProjectsModel.TemplateType.Blank:
                     return "../images/blank.jpg";
-                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                  case TemplateProjectsModel.TemplateType.Basemap:
                     return "../images/basemap.jpg";
                   default:
                     return PreviewImagePath || "";
@@ -287,7 +278,7 @@ Item {
 
             Text {
               Layout.fillWidth: true
-              text: newsSwitch.checked ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
+              text: newsSwitch.checked && newsListView.count != 0 ? qsTr("Latest news") : qsTr("Welcome to QGIS!")
               font.pointSize: Application.font.pointSize * 1.3
               font.bold: true
               color: "#ffffff"
@@ -349,7 +340,7 @@ Item {
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
                   newsFeedParser.enabled = !newsFeedParser.enabled
-                  if (newsFeedParser.enabled && newsListView.count == 0) {
+                  if (newsFeedParser.enabled) {
                     newsFeedParser.fetch();
                   }
                 }
@@ -367,6 +358,7 @@ Item {
             id: welcomeView
             Layout.fillWidth: true
             Layout.fillHeight: true
+            visible: !newsSwitch.checked || newsListView.count == 0
             contentWidth: welcomeLayout.width
             contentHeight: welcomeLayout.height
             rightPadding: 12
@@ -381,7 +373,6 @@ Item {
             
             ColumnLayout {
               id: welcomeLayout
-              visible: !newsSwitch.checked
               width: welcomeNewsLayout.width - welcomeView.rightPadding
               spacing: 12
 
@@ -408,6 +399,7 @@ Item {
                 Layout.preferredHeight: stayUpdateLayout.childrenRect.height + 32
                 radius: 6
                 color: "#ffffff"
+                visible: !newsSwitch.checked
 
                 ColumnLayout {
                   id: stayUpdateLayout
@@ -450,7 +442,10 @@ Item {
                       anchors.fill: parent
                       cursorShape: Qt.PointingHandCursor
                       hoverEnabled: true
-                      onClicked: newsSwitch.checked = true
+                      onClicked: {
+                        newsFeedParser.enabled = true;
+                        newsFeedParser.fetch();
+                      }
                     }
                   }
                 }
@@ -473,6 +468,7 @@ Item {
               width: newsListView.width - 12
               title: Title
               description: Content
+              imageSource: ImageUrl
               showCloseButton: true
 
               onReadMoreClicked: {
@@ -550,15 +546,6 @@ Item {
       visible: false
       color: mainCard.color
 
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
-
       onInstallClicked: {
         welcomeScreenController.showPluginManager();
       }
@@ -571,15 +558,6 @@ Item {
       radius: 16
       visible: false
       color: mainCard.color
-
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
 
       onInstallClicked: {
         Qt.openUrlExternally("https://download.qgis.org/")
