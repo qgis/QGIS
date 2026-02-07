@@ -18,7 +18,7 @@ import shutil
 
 import numpy as np
 from osgeo import gdal, osr
-from qgis.PyQt.QtCore import QTemporaryDir, QVariant
+from qgis.PyQt.QtCore import Qt, QTemporaryDir, QVariant, QDateTime
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
     Qgis,
@@ -1489,6 +1489,112 @@ class TestQgsRasterAttributeTable(QgisTestCase):
             ],
         )
         self.assertEqual(rat.data(), data_rows)
+
+    @unittest.skipIf(
+        int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 12, 0),
+        "GDAL 3.12.0 required",
+    )
+    def testS102Rat(self):
+        """Test issue GH #64797 - RAT reading for S-102 datasets does not work correctly"""
+
+        s102RAT = """<PAMDataset>
+  <PAMRasterBand band="1">
+<GDALRasterAttributeTable tableType="thematic">
+  <FieldDefn index="0">
+    <Name>id</Name>
+    <Type typeAsString="Integer">0</Type>
+    <Usage usageAsString="MinMax">5</Usage>
+  </FieldDefn>
+  <FieldDefn index="1">
+    <Name>bool_field</Name>
+    <Type typeAsString="Boolean">3</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <FieldDefn index="2">
+    <Name>real_field</Name>
+    <Type typeAsString="Real">1</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <!-- unknown type to check it doesn't mess the order up -->
+  <FieldDefn index="3">
+    <Name>wkb_field</Name>
+    <Type typeAsString="WKBGeometry">5</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <FieldDefn index="4">
+    <Name>datetime_field</Name>
+    <Type typeAsString="DateTime">4</Type>
+    <Usage usageAsString="Generic">0</Usage>
+  </FieldDefn>
+  <Row index="0">
+    <F>1</F>
+    <F>false</F>
+    <F>2.3</F>
+    <F>XXXXXX</F>
+    <F>2023/01/01 00:00:00+00</F>
+  </Row>
+  <Row index="1">
+    <F>2</F>
+    <F>true</F>
+    <F>3.4</F>
+    <F>XXXXXX</F>
+    <F>2023/06/01 12:30:45+00</F>
+  </Row>
+</GDALRasterAttributeTable>
+</PAMRasterBand>
+</PAMDataset>
+"""
+        rat_path = os.path.join(self.temp_path, "s102_rat.tif.aux.xml")
+
+        with open(rat_path, "w+") as rat_file:
+            rat_file.write(s102RAT)
+
+        tif_path = os.path.join(self.temp_path, "s102_rat.tif")
+        # Create a 2x2 raster using GDAL
+        driver = gdal.GetDriverByName("GTiff")
+        dataset = driver.Create(tif_path, 2, 2, 1, gdal.GDT_Byte)
+        dataset.GetRasterBand(1).Fill(0)
+        dataset = None
+
+        raster = QgsRasterLayer(tif_path)
+
+        self.assertTrue(raster.isValid())
+        rat = raster.attributeTable(1)
+        self.assertIsNotNone(rat)
+        fields = [{f.name: f.type} for f in rat.fields()]
+        self.assertEqual(
+            fields,
+            [
+                {"id": QVariant.Int},
+                {"bool_field": QVariant.Bool},
+                {"real_field": QVariant.Double},
+                # "wkb_field" skipped due to unhandled type
+                {"datetime_field": QVariant.DateTime},
+            ],
+        )
+
+        # Check data
+        self.assertEqual(
+            rat.data(),
+            [
+                [
+                    1,
+                    False,
+                    2.3,
+                    QDateTime.fromString(
+                        "2023/01/01 00:00:00+00", Qt.DateFormat.ISODate
+                    ),
+                ],
+                [
+                    2,
+                    True,
+                    3.4,
+                    QDateTime.fromString(
+                        "2023/06/01 12:30:45+00", Qt.DateFormat.ISODate
+                    ),
+                ],
+            ],
+        )
 
 
 if __name__ == "__main__":
