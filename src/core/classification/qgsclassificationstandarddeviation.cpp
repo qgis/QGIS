@@ -109,15 +109,13 @@ QString QgsClassificationStandardDeviation::labelForRange( const double lowerVal
   switch ( position )
   {
     case LowerBound:
-      return u"< %1"_s.arg( upperLabel );
+      return u"x < %1"_s.arg( upperLabel );
     case Inner:
     {
-      QString label( labelFormat() );
-      label.replace( "%1"_L1, lowerLabel ).replace( "%2"_L1, upperLabel );
-      return label;
+      return u"%1 < x ≤ %2"_s.arg( lowerLabel, upperLabel );
     }
     case UpperBound:
-      return u"≥ %1"_s.arg( lowerLabel );
+      return u"x ≥ %1"_s.arg( lowerLabel );
   }
   return QString();
 }

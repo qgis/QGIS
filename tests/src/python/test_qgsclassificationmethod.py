@@ -75,7 +75,8 @@ class TestQgsClassificationMethods(QgisTestCase):
         r = m.classes(vl, "value", 8)
 
         self.assertEqual(len(r), 6)
-        self.assertEqual(r[0].label(), f"{QLocale().toString(2746.71)} - 10^4")
+        self.assertEqual(r[0].label(), f"{QLocale().toString(2746.71)} ≤ x ≤ 10^4")
+        self.assertEqual(r[1].label(), "10^4 < x ≤ 10^5")
         self.assertEqual(
             QgsClassificationMethod.rangesToBreaks(r),
             [10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0, 1000000000.0],
@@ -117,7 +118,7 @@ class TestQgsClassificationMethods(QgisTestCase):
         )
         r = m.classes(vl, "value", 4)
         self.assertEqual(len(r), 4)
-        self.assertEqual(r[0].label(), "1 - 10^1")
+        self.assertEqual(r[0].label(), "1 ≤ x ≤ 10^1")
         self.assertEqual(
             QgsClassificationMethod.rangesToBreaks(r), [10.0, 100.0, 1000.0, 10000.0]
         )
@@ -128,7 +129,7 @@ class TestQgsClassificationMethods(QgisTestCase):
             }
         )
         r = m.classes(vl, "value", 4)
-        self.assertEqual(r[0].label(), "-2 - 10^0")
+        self.assertEqual(r[0].label(), "-2 ≤ x ≤ 10^0")
         self.assertEqual(
             QgsClassificationMethod.rangesToBreaks(r),
             [1.0, 10.0, 100.0, 1000.0, 10000.0],
@@ -189,17 +190,19 @@ class TestQgsClassificationMethods(QgisTestCase):
     def testQgsClassificationFixedIntervalLabelForRange(self):
 
         m = QgsClassificationFixedInterval()
+        cPos = QgsClassificationFixedInterval.ClassPosition
 
-        # lowerValue, upperValue, labelFormat, expected
+        # lowerValue, upperValue, classPosition, expected
         cases = (
-            (1, 2, "%1 - %2", "1 - 2"),
-            (1, 2, "%1", "1"),
-            (1, 2, "%2", "2"),
+            (1, 2, cPos.LowerBound, "1 ≤ x ≤ 2"),
+            (1, 2, cPos.Inner, "1 < x ≤ 2"),
+            (1, 2, cPos.UpperBound, "1 < x ≤ 2"),
         )
 
-        for lowerValue, upperValue, labelFormat, expected in cases:
-            m.setLabelFormat(labelFormat)
-            self.assertEqual(m.labelForRange(lowerValue, upperValue), expected)
+        for lowerValue, upperValue, classPosition, expected in cases:
+            self.assertEqual(
+                m.labelForRange(lowerValue, upperValue, classPosition), expected
+            )
 
 
 if __name__ == "__main__":
