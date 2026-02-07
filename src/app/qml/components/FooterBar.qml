@@ -39,6 +39,7 @@ Rectangle {
       icon.width: 20
       icon.height: 20
       font.bold: true
+      background.layer.enabled: false
       onClicked: root.supportClicked()
     }
 
@@ -50,6 +51,7 @@ Rectangle {
       Material.accent: "#8c8c8c"
       text: qsTr("Go to qgis.org")
       font.bold: true
+      background.layer.enabled: false
       onClicked: root.websiteClicked()
     }
   }

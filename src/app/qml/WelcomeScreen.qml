@@ -11,7 +11,7 @@ import "components"
 Item {
   id: welcomeScreen
 
-  property bool narrowLayout: height < 350 || width < 420
+  property bool narrowLayout: height < 350 || width < 480
 
   visible: height >= 300 && width >= 360
   width: 1100
@@ -31,15 +31,6 @@ Item {
       radius: 10
       color: "#002033"
       clip: true
-
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
 
       GridLayout {
         anchors {
@@ -555,15 +546,6 @@ Item {
       visible: false
       color: mainCard.color
 
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
-
       onInstallClicked: {
         welcomeScreenController.showPluginManager();
       }
@@ -576,15 +558,6 @@ Item {
       radius: 16
       visible: false
       color: mainCard.color
-
-      layer.enabled: true
-      layer.effect: MultiEffect {
-        shadowEnabled: true
-        shadowColor: "#80000000"
-        shadowBlur: 1.0
-        shadowVerticalOffset: 8
-        shadowHorizontalOffset: 0
-      }
 
       onInstallClicked: {
         Qt.openUrlExternally("https://download.qgis.org/")
