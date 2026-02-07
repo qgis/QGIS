@@ -24,10 +24,15 @@ Building QGIS from source - step by step
    * [3.12. Building and running with Nix](#312-building-and-running-with-nix)
 - [4. Building on Windows](#4-building-on-windows)
    * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
-      + [4.1.1. Visual Studio 2022 Community Edition](#411-visual-studio-2022-community-edition)
-      + [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
-      + [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
-      + [4.1.4. OSGeo4W](#414-osgeo4w)
+      + [4.1.1. Quick Start - Automated Build with OSGeo4W Bootstrap (Recommended)](#411-quick-start---automated-build-with-osgeo4w-bootstrap-recommended)
+      + [4.1.2. Advanced - Manual Build Environment Setup](#412-advanced---manual-build-environment-setup)
+         - [4.1.2.1. Visual Studio 2022 Community Edition](#4121-visual-studio-2022-community-edition)
+         - [4.1.2.2. Other Tools and Dependencies](#4122-other-tools-and-dependencies)
+         - [4.1.2.3. Clone the QGIS Source Code](#4123-clone-the-qgis-source-code)
+         - [4.1.2.4. Build QGIS](#4124-build-qgis)
+      + [4.1.3. Building All Dependencies from Source](#413-building-all-dependencies-from-source)
+      + [4.1.4. Creating MSI Installers](#414-creating-msi-installers)
+      + [4.1.5. Troubleshooting Common Issues](#415-troubleshooting-common-issues)
    * [4.2. Building on Linux with mingw64](#42-building-on-linux-with-mingw64)
       + [4.2.1. Building with Docker](#421-building-with-docker)
          - [4.2.1.1. Initial setup](#4211-initial-setup)
@@ -613,109 +618,234 @@ nix run github:qgis/QGIS/pull/<PR-NUMBER>/merge#qgis
 ## 4.1. Building with Microsoft Visual Studio
 
 This section describes how to build QGIS using Visual Studio (MSVC) 2022 on Windows.
-The official Windows packages are built using OSGeo4W.
+The official Windows packages are built using OSGeo4W dependencies.
 
-This section describes the setup required to allow Visual Studio to be used to
-build QGIS.
+**Recommended approach:** Use the automated OSGeo4W bootstrap method (section 4.1.1) for the simplest setup.  
+**Advanced users:** Manual environment setup is documented in section 4.1.2.
 
-### 4.1.1. Visual Studio 2022 Community Edition
+### 4.1.1. Quick Start - Automated Build with OSGeo4W Bootstrap (Recommended)
+
+This method automatically sets up the build environment including Visual Studio (if needed)
+and all QGIS dependencies through OSGeo4W. This is the same method used for official builds.
+
+#### Prerequisites
+
+* Windows 10 or later (64-bit)
+* At least 10 GB free disk space
+* Internet connection for downloading dependencies
+
+#### Step-by-Step Instructions
+
+1. **Create a build directory**
+
+   Open a Command Prompt (`cmd.exe`) and run:
+
+   ```cmd
+   mkdir C:\qgis-build
+   cd C:\qgis-build
+   ```
+
+2. **Download OSGeo4W bootstrap scripts**
+
+   ```cmd
+   curl -JLO https://raw.githubusercontent.com/jef-n/OSGeo4W/refs/heads/master/bootstrap.cmd
+   curl -JLO https://raw.githubusercontent.com/jef-n/OSGeo4W/refs/heads/master/bootstrap.sh
+   ```
+
+3. **Run the bootstrap build**
+
+   To build the current development version (`qgis-dev`):
+
+   ```cmd
+   bootstrap.cmd qgis-dev
+   ```
+
+   This will:
+   * Download and install Visual Studio Build Tools if not already present
+   * Set up the OSGeo4W environment with all dependencies
+   * Clone the QGIS repository
+   * Configure and build QGIS
+   * Create OSGeo4W packages
+
+   **Note:** The first build can take several hours depending on your system.
+
+4. **Build output location**
+
+   After a successful build, OSGeo4W packages will be in `C:\qgis-build\x86_64\`
+
+5. **Installing the built package**
+
+   To install your built QGIS:
+   * Download and run the [OSGeo4W installer](https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe)
+   * Select "Advanced Install"
+   * Add `C:\qgis-build` as a "User URL" in the installer
+   * Select the `qgis-dev` package from your local build
+
+#### Building Other Versions
+
+* **Long-term release:** `bootstrap.cmd qgis-ltr`
+* **Latest release:** `bootstrap.cmd qgis`
+* **All packages:** `bootstrap.cmd` (no arguments builds everything including dependencies)
+
+#### Build Recipes
+
+The official build recipes are maintained in the [OSGeo4W repository](https://github.com/jef-n/OSGeo4W):
+* [qgis-dev](https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-dev/osgeo4w/package.sh) - nightly master builds
+* [qgis-ltr-dev](https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-ltr-dev/osgeo4w/package.sh) - long-term release nightlies
+* [qgis](https://github.com/jef-n/OSGeo4W/blob/master/src/qgis/osgeo4w/package.sh) - latest release
+* [qgis-rel-dev](https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-rel-dev/osgeo4w/package.sh) - next point release
+
+### 4.1.2. Advanced - Manual Build Environment Setup
+
+This section describes manual setup for users who need more control over their build environment.
+
+#### 4.1.2.1. Visual Studio 2022 Community Edition
 
 Download and install the [free (as in free beer) Community installer](https://c2rsetup.officeapps.live.com/c2r/downloadVS.aspx?sku=community&channel=Release&version=VS2022&source=VSLandingPage&cid=2030:7851336a02d44ba38a548acc719002df)
 
-Select "Desktop Development with C++"
+During installation, select "Desktop Development with C++"
 
-### 4.1.2. Other tools and dependencies
+#### 4.1.2.2. Other Tools and Dependencies
 
-Download and install following packages:
+Download and install the following packages:
 
-* [CMake](https://github.com/Kitware/CMake/releases/download/v3.31.4/cmake-3.31.4-windows-x86_64.msi)
-* GNU flex, GNU bison and GIT with [cygwin 64bit](https://cygwin.com/setup-x86_64.exe)
-* [OSGeo4W](https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe)
-* [ninja](https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-win.zip) (Version >= 1.10): Copy the `ninja.exe` to `C:\OSGeo4W\bin\`
+* [CMake](https://github.com/Kitware/CMake/releases/download/v3.31.4/cmake-3.31.4-windows-x86_64.msi) (Version >= 3.22)
+* [Cygwin 64bit](https://cygwin.com/setup-x86_64.exe) for GNU flex, bison, and git
+* [OSGeo4W](https://download.osgeo.org/osgeo4w/v2/osgeo4w-setup.exe) for QGIS dependencies
+* [ninja](https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-win.zip) (Version >= 1.10)
 
-For the QGIS build you need to install following packages from cygwin:
+**Cygwin packages required:**
+* `bison`
+* `flex`
+* `git` (install even if you have Git for Windows)
 
-* bison
-* flex
-* git (even if you already have Git for Windows installed)
+**OSGeo4W packages required:**
 
-and from OSGeo4W (select *Advanced Install*):
+Run the OSGeo4W installer, select "Advanced Install", and install:
 
-* qgis-dev-deps
+* `qgis-dev-deps` - This will automatically select all dependencies
 
-  * This will also select packages the above packages depend on.
+**Important:** Do **NOT** install the `msinttypes` package. It includes a `stdint.h` file in
+`OSGeo4W\include` that conflicts with Visual Studio's own `stdint.h`, breaking builds
+(particularly the virtual layer provider).
 
-  * Note: If you install other packages, this might cause issues. Particularly, make sure
-    **not** to install the msinttypes package. It installs a stdint.h file in
-    `OSGeo4W\include`, that conflicts with Visual Studio own stdint.h, which for
-    example breaks the build of the virtual layer provider.
+**Ninja setup:**
 
-If you intend to also build all the dependencies, you can refer to [the OSGeo4W repository](https://github.com/jef-n/OSGeo4W).
+After downloading ninja, extract `ninja.exe` and copy it to `C:\OSGeo4W\bin\`
 
-### 4.1.3. Clone the QGIS Source Code
+#### 4.1.2.3. Clone the QGIS Source Code
 
-Choose a directory to store the QGIS source code.
-For example, to put it in the OSGeo4W install, navigate there:
+1. **Choose a source directory**
 
+   For example, using the OSGeo4W installation directory:
+
+   ```cmd
+   cd C:\OSGeo4W
+   ```
+
+2. **Clone the repository**
+
+   ```cmd
+   git clone git://github.com/qgis/QGIS.git
+   cd QGIS
+   ```
+
+   **Note:** If Git for Windows is on your PATH, use a regular Command Prompt.
+   Otherwise, use the Cygwin terminal for git commands.
+
+3. **Configure Git**
+
+   To avoid false file modification reports:
+
+   ```cmd
+   git config core.filemode false
+   ```
+
+#### 4.1.2.4. Build QGIS
+
+After setting up dependencies and cloning the source:
+
+1. Open the **OSGeo4W Shell** (installed with OSGeo4W)
+2. Navigate to your QGIS source directory
+3. Follow the CMake configuration steps in the [OSGeo4W build recipes](https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-dev/osgeo4w/package.sh) as a reference
+
+**For detailed build steps, refer to the OSGeo4W build recipe scripts linked above.**
+
+### 4.1.3. Building All Dependencies from Source
+
+If you need to build all dependencies (not just QGIS), refer to the [OSGeo4W repository](https://github.com/jef-n/OSGeo4W)
+which contains build recipes for all packages including GDAL, Qt, PROJ, and other QGIS dependencies.
+
+### 4.1.4. Creating MSI Installers
+
+Standalone MSI installers are created from OSGeo4W packages using the scripts in the QGIS repository:
+
+* `scripts\msis.sh` - Shell script wrapper
+* `scripts/creatmsi.pl` - Perl script that creates the MSI
+
+These scripts package the OSGeo4W build outputs into Windows installer files.
+
+### 4.1.5. Troubleshooting Common Issues
+
+#### Build fails with "stdint.h" conflicts
+
+**Problem:** Compilation errors related to `stdint.h` type definitions.
+
+**Solution:** Ensure you have NOT installed the `msinttypes` package from OSGeo4W. If installed, remove it:
 ```cmd
-cd C:\OSGeo4W
+osgeo4w-setup.exe
 ```
+Select "Advanced Install" and uninstall `msinttypes`.
 
-This directory will be assumed for all instructions
-that follow.
+#### "ninja.exe not found" error
 
-On the command prompt clone the QGIS source from
-git to the source directory `QGIS`:
+**Problem:** CMake cannot find ninja build tool.
 
+**Solution:** 
+1. Download [ninja](https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-win.zip)
+2. Extract `ninja.exe` 
+3. Copy to `C:\OSGeo4W\bin\`
+4. Verify: `ninja --version` in OSGeo4W Shell
+
+#### Git reports many modified files that weren't changed
+
+**Problem:** Git shows false modifications due to line ending differences.
+
+**Solution:** Run in your QGIS repository:
 ```cmd
-git clone git://github.com/qgis/QGIS.git
-```
-
-This requires Git. If you have Git for Windows on your PATH already,
-you can do this from a normal command prompt. If you do not, you can
-use the Git package that was installed as part of Cygwin by opening
-a Cygwin[64] Terminal
-
-And, to avoid Git in Windows reporting changes to files not actually modified:
-
-```cmd
-cd QGIS
 git config core.filemode false
+git config core.autocrlf false
 ```
 
-### 4.1.4. OSGeo4W
+#### bootstrap.cmd fails to download Visual Studio
 
-The official Windows packages are made in OSGeo4W.  Also standalone MSI
-installers are also produced using the packages from OSGeo4W.
+**Problem:** The bootstrap script cannot download or install Visual Studio Build Tools.
 
-The nightly build of master (package qgis-dev) is made with the [OSGeo4W build
-recipe](https://github.com/jef-n/OSGeo4W/blob/master/src/qgis-dev/osgeo4w/package.sh).
+**Solution:** Manually install Visual Studio 2022 Community Edition first (see section 4.1.2.1), then re-run bootstrap.
 
-There are others for the long-term release build (qgis-ltr), the nightly of the
-next long-term point release (qgis-ltr-dev), the latest release (qgis), the
-nightly build of the next point release (qgis-rel-dev).
+#### Out of disk space during build
 
-To setup a build environment (including Visual C++ if not already installed) and to
-build the nightly run in a command line (cmd):
+**Problem:** Build fails due to insufficient disk space.
 
+**Solution:** 
+* Ensure at least 10 GB free space
+* The OSGeo4W environment and build artifacts can consume significant space
+* Consider using a disk with more capacity or cleaning temporary files
+
+#### Cannot access git.qgis.org or github.com
+
+**Problem:** Network or firewall blocks git protocol.
+
+**Solution:** Use HTTPS instead of git protocol:
 ```cmd
-mkdir osgeo4w-build
-cd osgeo4w-build
-curl -JLO https://raw.githubusercontent.com/jef-n/OSGeo4W/refs/heads/master/bootstrap.cmd
-curl -JLO https://raw.githubusercontent.com/jef-n/OSGeo4W/refs/heads/master/bootstrap.sh
-bootstrap.cmd qgis-dev
+git clone https://github.com/qgis/QGIS.git
 ```
 
-To build other packages you can simply replace qgis-dev with other packages.
-Calling `bootstrap.cmd` without any arguments will build all packages
-(including all dependencies).
+For more help, visit:
+* [QGIS Community](https://qgis.org/community/)
+* [QGIS Developers Mailing List](https://lists.osgeo.org/mailman/listinfo/qgis-developer)
+* [Stack Overflow - QGIS tag](https://stackoverflow.com/questions/tagged/qgis)
 
-After the build is succeeded the OSGeo4W packages will be in `x86_64/`.
-
-To install the package you can add the `osgeo4w-build` directory as `User URL`
-in the OSGeo4W installer and select your `qgis-dev` package.
-
-The MSIs are created with `scripts\msis.sh` (actually `scripts/creatmsi.pl`).
 
 
 ## 4.2. Building on Linux with mingw64
