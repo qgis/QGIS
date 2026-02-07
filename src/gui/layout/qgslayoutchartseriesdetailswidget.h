@@ -32,7 +32,7 @@
  * \brief A widget for editing series details for a layout chart item.
  * \since QGIS 4.0
 */
-class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, private Ui::QgsLayoutChartSeriesDetailsWidgetBase
+class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutChartSeriesDetailsWidgetBase
 {
     Q_OBJECT
 
@@ -58,12 +58,22 @@ class GUI_EXPORT QgsLayoutChartSeriesDetailsWidget : public QgsPanelWidget, priv
     //! Returns the filter expression
     QString filterExpression() const;
 
+    /**
+     * Register an expression context generator class that will be used to retrieve
+     * an expression context for configuration widgets when required.
+     */
+    void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
+
+    QgsExpressionContext createExpressionContext() const override;
+
   private slots:
     void mFilterButton_clicked();
 
   private:
     QPointer<QgsVectorLayer> mVectorLayer;
     int mIndex = 0;
+
+    QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
 
 #endif // QGSLAYOUTCHARTSERIESDETAILSWIDGET_H

@@ -372,6 +372,7 @@ void QgsLayoutChartWidget::mSeriesPropertiesButton_clicked()
   }
 
   QgsLayoutChartSeriesDetailsWidget *widget = new QgsLayoutChartSeriesDetailsWidget( mChartItem->sourceLayer(), idx, seriesList[idx], this );
+  widget->registerExpressionContextGenerator( mChartItem );
   widget->setPanelTitle( tr( "Series Details" ) );
   connect( widget, &QgsPanelWidget::widgetChanged, this, [this, widget]() {
     if ( !mChartItem )
