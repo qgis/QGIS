@@ -189,12 +189,12 @@
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QRadioButton" name="mGeospatialPDFQgisConfigRadioButton">
+               <widget class="QRadioButton" name="mGeospatialPDFLayerTreeConfigRadioButton">
                 <property name="toolTip">
-                 <string>Prefer QGIS Layer Tree properties for layer and group names, order, and visibility.</string>
+                 <string>Prefer layer tree properties for layer and group names, order, and visibility.</string>
                 </property>
                 <property name="text">
-                 <string>Follow QGIS layer tree configuration</string>
+                 <string>Follow layer tree configuration</string>
                 </property>
                </widget>
               </item>
@@ -402,7 +402,7 @@
   <tabstop>mTextRenderFormatComboBox</tabstop>
   <tabstop>mComboImageCompression</tabstop>
   <tabstop>mGeospatialPDFGroupBox</tabstop>
-  <tabstop>mGeospatialPDFQgisConfigRadioButton</tabstop>
+  <tabstop>mGeospatialPDFLayerTreeConfigRadioButton</tabstop>
   <tabstop>mGeospatialPDFCustomConfigRadioButton</tabstop>
   <tabstop>mIncludeMapThemesCheck</tabstop>
   <tabstop>mThemesList</tabstop>

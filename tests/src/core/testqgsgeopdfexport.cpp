@@ -28,7 +28,7 @@ using namespace Qt::StringLiterals;
 class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
   public:
-    void setQGISLayerTree( QgsLayerTree *layerTree ) { mLayerTree = layerTree; }
+    void setLayerTree( QgsLayerTree *layerTree ) { mLayerTree = layerTree; }
 
   private:
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override
@@ -40,7 +40,7 @@ class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
       detail.displayAttribute = u"attr %1"_s.arg( layerId );
       return detail;
     }
-    virtual QgsLayerTree *qgisLayerTree() const override { return mLayerTree; };
+    virtual QgsLayerTree *layerTree() const override { return mLayerTree; };
 
     // For testing purposes
     QgsLayerTree *mLayerTree = nullptr;
@@ -74,8 +74,8 @@ class TestQgsGeospatialPdfExport : public QgsTest
     void testGroupsWithSameLayer();
     void testCreatePdfTreeNodes();
     void testCreatePdfTreeNodesWithGroupLayer();
-    void testUseQgisLayerTree();
-    void testUseQgisLayerTreeInvisibleNodes();
+    void testUseLayerTree();
+    void testUseLayerTreeInvisibleNodes();
 };
 
 void TestQgsGeospatialPdfExport::initTestCase()
@@ -1429,7 +1429,7 @@ void TestQgsGeospatialPdfExport::testCreatePdfTreeNodesWithGroupLayer()
   QCOMPARE( secondChildElem.elementsByTagName( u"IfLayerOn"_s ).count(), 0L );
 }
 
-void TestQgsGeospatialPdfExport::testUseQgisLayerTree()
+void TestQgsGeospatialPdfExport::testUseLayerTree()
 {
   TestGeospatialPdfExporter geospatialPdfExporter;
 
@@ -1451,7 +1451,7 @@ void TestQgsGeospatialPdfExport::testUseQgisLayerTree()
   QgsMapLayer *layerPolys = qgisLayers.at( 3 );
   QgsMapLayer *layerRaster = qgisLayers.at( 4 );
 
-  geospatialPdfExporter.setQGISLayerTree( qgisLayerTree );
+  geospatialPdfExporter.setLayerTree( qgisLayerTree );
 
   QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
 
@@ -1468,7 +1468,7 @@ void TestQgsGeospatialPdfExport::testUseQgisLayerTree()
   }
 
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
-  details.useQgisLayerTreeProperties = true;
+  details.useLayerTreeConfig = true;
   details.includeFeatures = false;
 
   // Check the composition XML
@@ -1534,7 +1534,7 @@ void TestQgsGeospatialPdfExport::testUseQgisLayerTree()
   QCOMPARE( contentList.at( 4 ).toElement().elementsByTagName( u"PDF"_s ).at( 0 ).toElement().attribute( u"dataset"_s ), u"%1.pdf"_s.arg( layerRaster->name() ) );
 }
 
-void TestQgsGeospatialPdfExport::testUseQgisLayerTreeInvisibleNodes()
+void TestQgsGeospatialPdfExport::testUseLayerTreeInvisibleNodes()
 {
   TestGeospatialPdfExporter geospatialPdfExporter;
 
@@ -1556,7 +1556,7 @@ void TestQgsGeospatialPdfExport::testUseQgisLayerTreeInvisibleNodes()
   QgsMapLayer *layerPolys = qgisLayers.at( 3 );
   QgsMapLayer *layerRaster = qgisLayers.at( 4 );
 
-  geospatialPdfExporter.setQGISLayerTree( qgisLayerTree );
+  geospatialPdfExporter.setLayerTree( qgisLayerTree );
 
   QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
 
@@ -1573,7 +1573,7 @@ void TestQgsGeospatialPdfExport::testUseQgisLayerTreeInvisibleNodes()
   }
 
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
-  details.useQgisLayerTreeProperties = true;
+  details.useLayerTreeConfig = true;
   details.includeFeatures = false;
 
   // Check the composition XML

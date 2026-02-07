@@ -589,7 +589,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   mLayout->renderContext().setTextRenderFormat( settings.textRenderFormat );
 
-  if ( settings.writeGeoPdf && !settings.useQgisLayerTreeProperties )
+  if ( settings.writeGeoPdf && !settings.useLayerTreeConfig )
   {
     mLayout->renderContext().setExportThemes( settings.exportThemes );
   }
@@ -606,7 +606,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
     const QList<QGraphicsItem *> items = mLayout->items( Qt::AscendingOrder );
 
-    if ( settings.writeGeoPdf && settings.useQgisLayerTreeProperties )
+    if ( settings.writeGeoPdf && settings.useLayerTreeConfig )
     {
       bool res = geospatialPdfExporter->setMapItemLayersBeforeRendering();
       // If no map was found to set project layers, it means that all of them
@@ -662,7 +662,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     auto getExportGroupNameFunc = []( QgsLayoutItem *item ) -> QString { return item->customProperty( u"pdfExportGroup"_s ).toString(); };
     result = handleLayeredExport( items, exportFunc, getExportGroupNameFunc );
 
-    if ( settings.writeGeoPdf && settings.useQgisLayerTreeProperties )
+    if ( settings.writeGeoPdf && settings.useLayerTreeConfig )
     {
       // Restore map item layers right after the layer rendering
       geospatialPdfExporter->restoreMapItemLayersAfterRendering();
@@ -734,7 +734,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
         }
       }
 
-      if ( !settings.useQgisLayerTreeProperties )
+      if ( !settings.useLayerTreeConfig )
       {
         details.customLayerTreeGroups = geospatialPdfExporter->customLayerTreeGroups();
         details.initialLayerVisibility = geospatialPdfExporter->initialLayerVisibility();
@@ -750,7 +750,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
       }
       details.includeFeatures = settings.includeGeoPdfFeatures;
       details.useIso32000ExtensionFormatGeoreferencing = settings.useIso32000ExtensionFormatGeoreferencing;
-      details.useQgisLayerTreeProperties = settings.useQgisLayerTreeProperties;
+      details.useLayerTreeConfig = settings.useLayerTreeConfig;
 
       if ( !geospatialPdfExporter->finalize( pdfComponents, filePath, details ) )
       {
