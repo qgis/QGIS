@@ -24,11 +24,14 @@
 #include "qgsrasterattributetable.h"
 #include "qgsrasterattributetableaddcolumndialog.h"
 #include "qgsrasterattributetableaddrowdialog.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 
 #include <QAction>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QSortFilterProxyModel>
 #include <QString>
 #include <QToolBar>
@@ -74,6 +77,13 @@ QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, Q
   mActionSaveChanges = new QAction( QgsApplication::getThemeIcon( "/mActionSaveAllEdits.svg" ), tr( "&Save Changes" ), editToolBar );
   connect( mActionSaveChanges, &QAction::triggered, this, &QgsRasterAttributeTableWidget::saveChanges );
   editToolBar->addAction( mActionSaveChanges );
+
+  editToolBar->addSeparator();
+
+  mActionUpdatePixelCount = new QAction( QgsApplication::getThemeIcon( "/mActionRefresh.svg" ), tr( "Update Pixel &Count" ), editToolBar );
+  mActionUpdatePixelCount->setToolTip( tr( "Compute pixel counts for each class by scanning the raster" ) );
+  connect( mActionUpdatePixelCount, &QAction::triggered, this, &QgsRasterAttributeTableWidget::updatePixelCount );
+  editToolBar->addAction( mActionUpdatePixelCount );
 
   layout()->setMenuBar( editToolBar );
 
@@ -181,6 +191,10 @@ void QgsRasterAttributeTableWidget::updateButtons()
   mActionSaveChanges->setEnabled( mAttributeTableBuffer && mAttributeTableBuffer->isDirty() );
   mClassifyButton->setEnabled( mAttributeTableBuffer && mRasterLayer );
   mClassifyComboBox->setEnabled( mAttributeTableBuffer && mRasterLayer );
+
+  // Update Pixel Count is enabled when editable and has a PixelCount column
+  const bool hasPixelCountColumn = mAttributeTableBuffer && !mAttributeTableBuffer->fieldsByUsage( Qgis::RasterAttributeTableFieldUsage::PixelCount ).isEmpty();
+  mActionUpdatePixelCount->setEnabled( mEditable && hasPixelCountColumn && mRasterLayer );
 }
 
 void QgsRasterAttributeTableWidget::setDockMode( bool dockMode )
@@ -456,6 +470,72 @@ void QgsRasterAttributeTableWidget::removeRow()
       }
     }
   }
+}
+
+void QgsRasterAttributeTableWidget::updatePixelCount()
+{
+  if ( !mAttributeTableBuffer || !mRasterLayer || !mRasterLayer->dataProvider() )
+  {
+    return;
+  }
+
+  // Warn about potentially slow operation
+  if ( QMessageBox::question( nullptr, tr( "Update Pixel Count" ), tr( "Computing pixel counts requires scanning the entire raster. This may take significant time for large datasets.\n\nDo you want to continue?" ), QMessageBox::Yes | QMessageBox::No ) != QMessageBox::Yes )
+  {
+    return;
+  }
+
+  // Create progress dialog
+  QProgressDialog progress( tr( "Computing pixel counts…" ), tr( "Cancel" ), 0, 100, this );
+  progress.setWindowModality( Qt::WindowModal );
+  progress.setMinimumDuration( 0 );
+
+  // Create feedback object for progress/cancellation
+  QgsRasterBlockFeedback feedback;
+  connect( &feedback, &QgsRasterBlockFeedback::progressChanged, &progress, [&progress]( double value ) {
+    progress.setValue( static_cast<int>( value ) );
+  } );
+  connect( &progress, &QProgressDialog::canceled, &feedback, &QgsRasterBlockFeedback::cancel );
+
+  QString errorMessage;
+  const bool success = mAttributeTableBuffer->updatePixelCounts(
+    mRasterLayer->dataProvider(),
+    mCurrentBand,
+    &errorMessage,
+    &feedback
+  );
+
+  progress.close();
+
+  if ( !success )
+  {
+    if ( feedback.isCanceled() )
+    {
+      notify( tr( "Operation Canceled" ), tr( "Pixel count computation was canceled." ), Qgis::MessageLevel::Info );
+    }
+    else
+    {
+      notify( tr( "Update Pixel Count Failed" ), errorMessage, Qgis::MessageLevel::Critical );
+    }
+    return;
+  }
+
+  // Find the PixelCount column index and notify the model
+  const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages = mAttributeTableBuffer->usages();
+  const int pixelCountColIdx = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::PixelCount );
+
+  if ( pixelCountColIdx >= 0 && mModel && mModel->rowCount( QModelIndex() ) > 0 )
+  {
+    // Emit dataChanged for the entire PixelCount column
+    emit mModel->dataChanged(
+      mModel->index( 0, pixelCountColIdx ),
+      mModel->index( mModel->rowCount( QModelIndex() ) - 1, pixelCountColIdx ),
+      { Qt::DisplayRole }
+    );
+  }
+
+  notify( tr( "Update Pixel Count" ), tr( "Pixel counts updated successfully." ), Qgis::MessageLevel::Success );
+  updateButtons();
 }
 
 void QgsRasterAttributeTableWidget::bandChanged( const int index )

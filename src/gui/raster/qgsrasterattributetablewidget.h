@@ -173,6 +173,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     void removeColumn();
     void addRow();
     void removeRow();
+    void updatePixelCount();
     void bandChanged( const int index );
     void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
     void setDelegates();
@@ -191,6 +192,7 @@ class GUI_EXPORT QgsRasterAttributeTableWidget : public QgsPanelWidget, private 
     QAction *mActionAddRow = nullptr;
     QAction *mActionRemoveRow = nullptr;
     QAction *mActionSaveChanges = nullptr;
+    QAction *mActionUpdatePixelCount = nullptr;
 
     QgsMessageBar *mMessageBar = nullptr;
     QSortFilterProxyModel *mProxyModel = nullptr;

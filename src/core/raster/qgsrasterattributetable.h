@@ -27,9 +27,10 @@
 #include <QLinearGradient>
 #include <QObject>
 
+class QgsRasterBlockFeedback;
+class QgsRasterDataProvider;
 class QgsRasterLayer;
 class QgsRasterRenderer;
-class QgsRasterDataProvider;
 
 /**
  * \ingroup core
@@ -439,6 +440,28 @@ class CORE_EXPORT QgsRasterAttributeTable
      * \returns NULLPTR in case of errors or unsupported renderer.
      */
     static QgsRasterAttributeTable *createFromRaster( QgsRasterLayer *rasterLayer, int *bandNumber SIP_OUT = nullptr ) SIP_FACTORY;
+
+    /**
+     * Updates the PixelCount column values by scanning the raster data.
+     *
+     * This method iterates through all pixels in the raster and counts how many
+     * belong to each class defined in the Raster Attribute Table.
+     *
+     * For thematic RATs (discrete values): pixels are matched exactly to MinMax values.
+     * For athematic RATs (value ranges): pixels are matched to [Min, Max) ranges.
+     *
+     * \param provider the raster data provider to read from
+     * \param bandNumber the band number (1-indexed)
+     * \param errorMessage will be set if an error occurs
+     * \param feedback optional feedback object for progress reporting and cancellation
+     * \returns TRUE on success, FALSE on error or cancellation
+     *
+     * \note This operation can be slow for large rasters as it requires reading all pixels.
+     * \note The RAT must have a PixelCount column (use insertField() to add one first).
+     *
+     * \since QGIS 3.44
+     */
+    bool updatePixelCounts( QgsRasterDataProvider *provider, int bandNumber, QString *errorMessage SIP_OUT = nullptr, QgsRasterBlockFeedback *feedback = nullptr );
 
     /**
      * Returns information about supported Raster Attribute Table usages.

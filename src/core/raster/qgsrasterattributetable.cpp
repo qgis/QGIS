@@ -23,6 +23,9 @@
 #include "qgsfileutils.h"
 #include "qgsogrprovider.h"
 #include "qgspalettedrasterrenderer.h"
+#include "qgsrasterblock.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterinterface.h"
 #include "qgsrasterlayer.h"
 #include "qgsrastershader.h"
 #include "qgsrastershaderfunction.h"
@@ -1213,6 +1216,194 @@ QgsRasterAttributeTable *QgsRasterAttributeTable::createFromRaster( QgsRasterLay
   {
     return nullptr;
   }
+}
+
+bool QgsRasterAttributeTable::updatePixelCounts( QgsRasterDataProvider *provider, int bandNumber, QString *errorMessage, QgsRasterBlockFeedback *feedback )
+{
+  if ( !provider )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "No raster data provider specified." );
+    return false;
+  }
+
+  if ( !isValid() )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Raster Attribute Table is not valid." );
+    return false;
+  }
+
+  // Find PixelCount column
+  const QList<Qgis::RasterAttributeTableFieldUsage> fieldUsages { usages() };
+  const int pixelCountColIdx = fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::PixelCount );
+
+  if ( pixelCountColIdx < 0 )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Raster Attribute Table does not have a Pixel Count column. Add one first using 'Add Column'." );
+    return false;
+  }
+
+  // Determine if thematic (MinMax) or athematic (Min/Max ranges)
+  const bool isThematic = fieldUsages.contains( Qgis::RasterAttributeTableFieldUsage::MinMax );
+  const int minMaxColIdx = isThematic ? fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::MinMax ) : -1;
+  const int minColIdx = !isThematic ? fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Min ) : -1;
+  const int maxColIdx = !isThematic ? fieldUsages.indexOf( Qgis::RasterAttributeTableFieldUsage::Max ) : -1;
+
+  if ( isThematic && minMaxColIdx < 0 )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Raster Attribute Table is thematic but has no MinMax column." );
+    return false;
+  }
+
+  if ( !isThematic && ( minColIdx < 0 || maxColIdx < 0 ) )
+  {
+    if ( errorMessage )
+      *errorMessage = tr( "Raster Attribute Table is athematic but has no Min and/or Max columns." );
+    return false;
+  }
+
+  // Build value-to-row mapping for thematic RATs (integer lookup)
+  // Note: Float thematic RATs may have precision issues - use athematic for float data
+  QHash<qlonglong, int> valueToRow;
+
+  if ( isThematic )
+  {
+    for ( int rowIdx = 0; rowIdx < mData.count(); ++rowIdx )
+    {
+      bool ok = false;
+      const qlonglong iVal = value( rowIdx, minMaxColIdx ).toLongLong( &ok );
+      if ( ok )
+        valueToRow.insert( iVal, rowIdx );
+    }
+  }
+
+  // Pre-load athematic ranges for faster lookup
+  struct Range
+  {
+    double min;
+    double max;
+    int rowIdx;
+  };
+  QVector<Range> athematicRanges;
+
+  if ( !isThematic )
+  {
+    athematicRanges.reserve( mData.count() );
+    for ( int rowIdx = 0; rowIdx < mData.count(); ++rowIdx )
+    {
+      bool okMin = false, okMax = false;
+      const double minVal = value( rowIdx, minColIdx ).toDouble( &okMin );
+      const double maxVal = value( rowIdx, maxColIdx ).toDouble( &okMax );
+      if ( okMin && okMax )
+      {
+        athematicRanges.append( { minVal, maxVal, rowIdx } );
+      }
+    }
+  }
+
+  // Initialize counts
+  QVector<qlonglong> rowCounts( mData.count(), 0 );
+
+  // Get raster dimensions
+  const int width = provider->xSize();
+  const int height = provider->ySize();
+  const qint64 totalPixels = static_cast<qint64>( width ) * height;
+  qint64 processedPixels = 0;
+
+  // Block size for reading
+  const int blockWidth = std::min( 2000, width );
+  const int blockHeight = std::min( 2000, height );
+  const double xRes = provider->extent().width() / width;
+  const double yRes = provider->extent().height() / height;
+
+  // Iterate through blocks
+  for ( int blockRow = 0; blockRow < height; blockRow += blockHeight )
+  {
+    const int currentBlockHeight = std::min( blockHeight, height - blockRow );
+
+    for ( int blockCol = 0; blockCol < width; blockCol += blockWidth )
+    {
+      if ( feedback && feedback->isCanceled() )
+      {
+        if ( errorMessage )
+          *errorMessage = tr( "Operation canceled." );
+        return false;
+      }
+
+      const int currentBlockWidth = std::min( blockWidth, width - blockCol );
+      const QgsRectangle blockExtent(
+        provider->extent().xMinimum() + blockCol * xRes,
+        provider->extent().yMaximum() - ( blockRow + currentBlockHeight ) * yRes,
+        provider->extent().xMinimum() + ( blockCol + currentBlockWidth ) * xRes,
+        provider->extent().yMaximum() - blockRow * yRes
+      );
+      std::unique_ptr<QgsRasterBlock> block( provider->block( bandNumber, blockExtent, currentBlockWidth, currentBlockHeight ) );
+
+      if ( !block || !block->isValid() )
+      {
+        // Skip invalid blocks
+        processedPixels += static_cast<qint64>( currentBlockWidth ) * currentBlockHeight;
+        continue;
+      }
+
+      // Count pixels in this block
+      for ( int y = 0; y < currentBlockHeight; ++y )
+      {
+        for ( int x = 0; x < currentBlockWidth; ++x )
+        {
+          bool isNoData = false;
+          const double pixelValue = block->valueAndNoData( y, x, isNoData );
+
+          if ( isNoData )
+            continue;
+
+          int rowIdx = -1;
+
+          if ( isThematic )
+          {
+            rowIdx = valueToRow.value( static_cast<qlonglong>( pixelValue ), -1 );
+          }
+          else
+          {
+            // Range lookup [min, max)
+            for ( const Range &range : std::as_const( athematicRanges ) )
+            {
+              if ( pixelValue >= range.min && pixelValue < range.max )
+              {
+                rowIdx = range.rowIdx;
+                break;
+              }
+            }
+          }
+
+          if ( rowIdx >= 0 && rowIdx < rowCounts.size() )
+          {
+            rowCounts[rowIdx]++;
+          }
+        }
+      }
+
+      processedPixels += static_cast<qint64>( currentBlockWidth ) * currentBlockHeight;
+
+      // Report progress
+      if ( feedback && totalPixels > 0 )
+      {
+        feedback->setProgress( 100.0 * static_cast<double>( processedPixels ) / static_cast<double>( totalPixels ) );
+      }
+    }
+  }
+
+  // Update the PixelCount column
+  for ( int rowIdx = 0; rowIdx < mData.count(); ++rowIdx )
+  {
+    setValue( rowIdx, pixelCountColIdx, QVariant::fromValue( rowCounts[rowIdx] ) );
+  }
+
+  setDirty( true );
+  return true;
 }
 
 QHash<Qgis::RasterAttributeTableFieldUsage, QgsRasterAttributeTable::UsageInformation> QgsRasterAttributeTable::usageInformation()
