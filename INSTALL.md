@@ -746,7 +746,7 @@ After downloading ninja, extract `ninja.exe` and copy it to `C:\OSGeo4W\bin\`
 2. **Clone the repository**
 
    ```cmd
-   git clone git://github.com/qgis/QGIS.git
+   git clone https://github.com/qgis/QGIS.git
    cd QGIS
    ```
 
