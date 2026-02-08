@@ -92,7 +92,7 @@ class CORE_EXPORT QgsVectorTileLoader : public QObject
     //! Constructs tile loader for doing asynchronous requests and starts network requests
     QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter,
                          QgsFeedback *feedback, Qgis::RendererUsage usage );
-    ~QgsVectorTileLoader();
+    ~QgsVectorTileLoader() override;
 
     //! Blocks the caller until all asynchronous requests are finished (with a success or a failure)
     void downloadBlocking();

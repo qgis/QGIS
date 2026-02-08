@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgserror.h"
+
 #include <QIcon>
 
 /**

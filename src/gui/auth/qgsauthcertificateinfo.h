@@ -18,8 +18,9 @@
 #ifndef QGSAUTHCERTIFICATEINFO_H
 #define QGSAUTHCERTIFICATEINFO_H
 
-#include <QFile>
 #include "qgis_sip.h"
+
+#include <QFile>
 
 #ifndef QT_NO_SSL
 #include <QtCrypto>
@@ -113,9 +114,9 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     QBrush mDefaultItemForeground;
 
     bool mManageTrust;
-    bool mTrustCacheRebuilt;
-    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
-    QgsAuthCertUtils::CertTrustPolicy mCurrentTrustPolicy;
+    bool mTrustCacheRebuilt = false;
+    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy = QgsAuthCertUtils::DefaultTrust;
+    QgsAuthCertUtils::CertTrustPolicy mCurrentTrustPolicy = QgsAuthCertUtils::DefaultTrust;
 
     QTreeWidgetItem *mSecGeneral = nullptr;
     QTreeWidgetItem *mSecDetails = nullptr;

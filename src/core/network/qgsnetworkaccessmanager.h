@@ -18,23 +18,26 @@
 #ifndef QGSNETWORKACCESSMANAGER_H
 #define QGSNETWORKACCESSMANAGER_H
 
-#include <QList>
-#include "qgsnetworkreply.h"
+#include <memory>
+
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QStringList>
+#include "qgsnetworkreply.h"
+
+#include <QList>
+#include <QMutex>
 #include <QNetworkAccessManager>
 #include <QNetworkCookie>
 #include <QNetworkCookieJar>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
-#include <QMutex>
-#include <QWaitCondition>
 #include <QSemaphore>
-#include <memory>
+#include <QString>
+#include <QStringList>
+#include <QWaitCondition>
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
+using namespace Qt::StringLiterals;
 
 class QgsFeedback;
 class QgsSettingsEntryInteger;
@@ -569,7 +572,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeRequestPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -661,7 +664,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeAdvancedRequestPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End
@@ -718,7 +721,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     % MethodCode
     if ( !QgsNetworkAccessManager::removeReplyPreprocessor( *a0 ) )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No processor with id %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No processor with id %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     % End

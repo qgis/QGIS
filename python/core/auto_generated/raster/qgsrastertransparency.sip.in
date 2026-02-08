@@ -8,6 +8,9 @@
 
 
 
+
+
+
 class QgsRasterTransparency
 {
 %Docstring(signature="appended")

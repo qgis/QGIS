@@ -14,31 +14,34 @@
  ***************************************************************************/
 
 #include "qgsrelationreferencewidget.h"
-#include "moc_qgsrelationreferencewidget.cpp"
 
-#include <QPushButton>
-#include <QDialog>
-#include <QHBoxLayout>
-#include <QTimer>
-#include <QCompleter>
-
-#include "qgsattributeform.h"
-#include "qgsattributedialog.h"
 #include "qgsapplication.h"
+#include "qgsattributedialog.h"
+#include "qgsattributeform.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgsexpression.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturelistcombobox.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgshighlight.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaptooldigitizefeature.h"
+#include "qgsmaptoolidentifyfeature.h"
 #include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
-#include "qgsmaptoolidentifyfeature.h"
-#include "qgsmaptooldigitizefeature.h"
-#include "qgsfeatureiterator.h"
-#include "qgsfeaturelistcombobox.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QCompleter>
+#include <QDialog>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QString>
+#include <QTimer>
+
+#include "moc_qgsrelationreferencewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 bool qVariantListIsNull( const QVariantList &list )
 {
@@ -85,21 +88,21 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
 
   // open form button
   mOpenFormButton = new QToolButton();
-  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPropertyItem.svg" ) ) );
+  mOpenFormButton->setIcon( QgsApplication::getThemeIcon( u"/mActionPropertyItem.svg"_s ) );
   mOpenFormButton->setText( tr( "Open Related Feature Form" ) );
   editLayout->addWidget( mOpenFormButton );
 
   mAddEntryButton = new QToolButton();
-  mAddEntryButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAdd.svg" ) ) );
+  mAddEntryButton->setIcon( QgsApplication::getThemeIcon( u"/mActionAdd.svg"_s ) );
   mAddEntryButton->setText( tr( "Add New Entry" ) );
   editLayout->addWidget( mAddEntryButton );
 
   // highlight button
   mHighlightFeatureButton = new QToolButton( this );
   mHighlightFeatureButton->setPopupMode( QToolButton::MenuButtonPopup );
-  mHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionHighlightFeature.svg" ) ), tr( "Highlight feature" ), this );
-  mScaleHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleHighlightFeature.svg" ) ), tr( "Scale and highlight feature" ), this );
-  mPanHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionPanHighlightFeature.svg" ) ), tr( "Pan and highlight feature" ), this );
+  mHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( u"/mActionHighlightFeature.svg"_s ), tr( "Highlight feature" ), this );
+  mScaleHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( u"/mActionScaleHighlightFeature.svg"_s ), tr( "Scale and highlight feature" ), this );
+  mPanHighlightFeatureAction = new QAction( QgsApplication::getThemeIcon( u"/mActionPanHighlightFeature.svg"_s ), tr( "Pan and highlight feature" ), this );
   mHighlightFeatureButton->addAction( mHighlightFeatureAction );
   mHighlightFeatureButton->addAction( mScaleHighlightFeatureAction );
   mHighlightFeatureButton->addAction( mPanHighlightFeatureAction );
@@ -108,14 +111,14 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
 
   // map identification button
   mMapIdentificationButton = new QToolButton( this );
-  mMapIdentificationButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  mMapIdentificationButton->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
   mMapIdentificationButton->setText( tr( "Select on Map" ) );
   mMapIdentificationButton->setCheckable( true );
   editLayout->addWidget( mMapIdentificationButton );
 
   // remove foreign key button
   mRemoveFKButton = new QToolButton( this );
-  mRemoveFKButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemove.svg" ) ) );
+  mRemoveFKButton->setIcon( QgsApplication::getThemeIcon( u"/mActionRemove.svg"_s ) );
   mRemoveFKButton->setText( tr( "No Selection" ) );
   editLayout->addWidget( mRemoveFKButton );
 
@@ -134,7 +137,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   mInvalidLabel->setWordWrap( true );
   QFont font = mInvalidLabel->font();
   font.setItalic( true );
-  mInvalidLabel->setStyleSheet( QStringLiteral( "QLabel { color: red; } " ) );
+  mInvalidLabel->setStyleSheet( u"QLabel { color: red; } "_s );
   mInvalidLabel->setFont( font );
   mTopLayout->addWidget( mInvalidLabel );
 
@@ -192,7 +195,7 @@ void QgsRelationReferenceWidget::setRelation( const QgsRelation &relation, bool 
       mComboBox->setOrderExpression( mOrderExpression );
       mComboBox->setSortOrder( mSortOrder );
     }
-    mAttributeEditorFrame->setObjectName( QStringLiteral( "referencing/" ) + relation.name() );
+    mAttributeEditorFrame->setObjectName( u"referencing/"_s + relation.name() );
 
     if ( mEmbedForm )
     {
@@ -761,7 +764,7 @@ void QgsRelationReferenceWidget::filterChanged()
 
   // wrap the expression with parentheses as it might contain `OR`
   if ( !filterExpression.isEmpty() )
-    filterExpression = QStringLiteral( " ( %1 ) " ).arg( filterExpression );
+    filterExpression = u" ( %1 ) "_s.arg( filterExpression );
 
   // comboboxes have to be disabled before building filters
   if ( mChainFilters )
@@ -777,7 +780,7 @@ void QgsRelationReferenceWidget::filterChanged()
 
       if ( cb->currentText() == nullValue.toString() )
       {
-        filters[fieldName] = QStringLiteral( "\"%1\" IS NULL" ).arg( fieldName );
+        filters[fieldName] = u"\"%1\" IS NULL"_s.arg( fieldName );
       }
       else
       {
@@ -821,11 +824,11 @@ void QgsRelationReferenceWidget::filterChanged()
 
           QString expression = filterExpression;
           if ( !expression.isEmpty() && !filtersAttrs.isEmpty() )
-            expression += QLatin1String( " AND " );
+            expression += " AND "_L1;
 
-          expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ( " );
-          expression += qgsMapJoinValues( filtersAttrs, QLatin1String( " AND " ) );
-          expression += filtersAttrs.isEmpty() ? QString() : QStringLiteral( " ) " );
+          expression += filtersAttrs.isEmpty() ? QString() : u" ( "_s;
+          expression += qgsMapJoinValues( filtersAttrs, " AND "_L1 );
+          expression += filtersAttrs.isEmpty() ? QString() : u" ) "_s;
 
           subset << mReferencedLayer->fields().lookupField( fieldName );
 
@@ -857,11 +860,11 @@ void QgsRelationReferenceWidget::filterChanged()
   }
 
   if ( !filterExpression.isEmpty() && !filters.isEmpty() )
-    filterExpression += QLatin1String( " AND " );
+    filterExpression += " AND "_L1;
 
-  filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ( " );
-  filterExpression += qgsMapJoinValues( filters, QLatin1String( " AND " ) );
-  filterExpression += filters.isEmpty() ? QString() : QStringLiteral( " ) " );
+  filterExpression += filters.isEmpty() ? QString() : u" ( "_s;
+  filterExpression += qgsMapJoinValues( filters, " AND "_L1 );
+  filterExpression += filters.isEmpty() ? QString() : u" ) "_s;
 
   mComboBox->setFilterExpression( filterExpression );
 }

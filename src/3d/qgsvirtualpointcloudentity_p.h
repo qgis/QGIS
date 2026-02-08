@@ -28,10 +28,10 @@
 // version without notice, or even be removed.
 //
 
-#include "qgscoordinatetransform.h"
-#include "qgschunkedentity.h"
 #include "qgs3dmapsceneentity.h"
 #include "qgs3drendercontext.h"
+#include "qgschunkedentity.h"
+#include "qgscoordinatetransform.h"
 #include "qgspointcloudlayerchunkloader_p.h"
 
 class QgsAABB;
@@ -58,6 +58,9 @@ class QgsVirtualPointCloudEntity : public Qgs3DMapSceneEntity
   public:
     //! Constructs
     QgsVirtualPointCloudEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *layer, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
+
+    //! Destructs
+    ~QgsVirtualPointCloudEntity() override;
 
     //! This is called when the camera moves. It's responsible for loading new indexes and decides if subindex will be rendered as bbox or chunked entity.
     void handleSceneUpdate( const SceneContext &sceneContext ) override;

@@ -16,15 +16,20 @@
  ***************************************************************************/
 
 #include "qgsalgorithmforcerhr.h"
-#include "qgsvectorlayer.h"
-#include "qgsgeometrycollection.h"
+
 #include "qgscurvepolygon.h"
+#include "qgsgeometrycollection.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsForceRHRAlgorithm::name() const
 {
-  return QStringLiteral( "forcerhr" );
+  return u"forcerhr"_s;
 }
 
 QString QgsForceRHRAlgorithm::displayName() const
@@ -44,7 +49,7 @@ QString QgsForceRHRAlgorithm::group() const
 
 QString QgsForceRHRAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsForceRHRAlgorithm::sourceFlags() const
@@ -61,7 +66,9 @@ QString QgsForceRHRAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm forces polygon geometries to respect the Right-Hand-Rule, in which the area that is bounded by a polygon "
                       "is to the right of the boundary. In particular, the exterior ring is oriented in a clockwise direction and the interior "
-                      "rings in a counter-clockwise direction." );
+                      "rings in a counter-clockwise direction.\n\n"
+                      "Due to the inconsistency in the definition of the Right-Hand-Rule in some contexts, it is recommended to use the "
+                      "explicit \"Force polygons clockwise\" processing algorithm instead." );
 }
 
 QString QgsForceRHRAlgorithm::shortDescription() const

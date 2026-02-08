@@ -20,14 +20,15 @@ class QDomDocument;
 class QgsRectangle;
 class QgsBox3D;
 
-#include <QDomElement>
-#include <QMetaEnum>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 
+#include <QDomElement>
+#include <QMetaEnum>
+#include <QString>
 
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -76,7 +77,7 @@ class CORE_EXPORT QgsXmlUtils
      * \returns element containing encoded 3D box
      * \since QGIS 3.36
      */
-    static QDomElement writeBox3D( const QgsBox3D &box, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent3D" ) );
+    static QDomElement writeBox3D( const QgsBox3D &box, QDomDocument &doc, const QString &elementName = u"extent3D"_s );
 
     /**
      * Encodes a rectangle to a DOM element.
@@ -85,7 +86,7 @@ class CORE_EXPORT QgsXmlUtils
      * \param elementName name of the DOM element
      * \returns element containing encoded rectangle
      */
-    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName = QStringLiteral( "extent" ) );
+    static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc, const QString &elementName = u"extent"_s );
 
     /**
      * Write a QVariant to a QDomElement.

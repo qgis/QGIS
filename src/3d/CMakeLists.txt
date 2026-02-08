@@ -12,11 +12,13 @@ set(QGIS_3D_SRCS
   qgsannotationlayerchunkloader_p.cpp
   qgs3danimationsettings.cpp
   qgs3dexportobject.cpp
+  qgs3dhighlightfeaturehandler.cpp
   qgs3dmapexportsettings.cpp
   qgs3dmapscene.cpp
   qgs3dmapsettings.cpp
   qgs3dmaptool.cpp
   qgs3dmapcanvas.cpp
+  qgscrosssection.cpp
   qgs3drendercontext.cpp
   qgs3dsceneexporter.cpp
   qgs3dutils.cpp
@@ -71,6 +73,7 @@ set(QGIS_3D_SRCS
   materials/qgsabstractmaterialsettings.cpp
   materials/qgsglobematerial.cpp
   materials/qgsgoochmaterialsettings.cpp
+  materials/qgshighlightmaterial.cpp
   materials/qgsmaterial.cpp
   materials/qgsmaterialregistry.cpp
   materials/qgsmetalroughmaterial.cpp
@@ -95,6 +98,7 @@ set(QGIS_3D_SRCS
   framegraph/qgsdepthentity.cpp
   framegraph/qgsdepthrenderview.cpp
   framegraph/qgsforwardrenderview.cpp
+  framegraph/qgshighlightsrenderview.cpp
   framegraph/qgspostprocessingentity.cpp
   framegraph/qgsrenderpassquad.cpp
   framegraph/qgsshadowrenderview.cpp
@@ -147,6 +151,7 @@ set(QGIS_3D_HDRS
   qgs3danimationsettings.h
   qgs3daxis.h
   qgs3daxissettings.h
+  qgs3dhighlightfeaturehandler.h
   qgs3dmapscene.h
   qgs3dmapsettings.h
   qgs3dmaptool.h
@@ -156,6 +161,7 @@ set(QGIS_3D_HDRS
   qgs3dtypes.h
   qgs3dutils.h
   qgs3dmapcanvas.h
+  qgscrosssection.h
   qgs3dwiredmesh_p.h
   qgsaabb.h
   qgsabstract3dengine.h
@@ -196,6 +202,7 @@ set(QGIS_3D_HDRS
   materials/qgsabstractmaterialsettings.h
   materials/qgsglobematerial.h
   materials/qgsgoochmaterialsettings.h
+  materials/qgshighlightmaterial.h
   materials/qgsmaterial.h
   materials/qgsmaterialregistry.h
   materials/qgsmetalroughmaterial.h
@@ -219,6 +226,7 @@ set(QGIS_3D_HDRS
   framegraph/qgsforwardrenderview.h
   framegraph/qgsframegraph.h
   framegraph/qgsframegraphutils.h
+  framegraph/qgshighlightsrenderview.h
   framegraph/qgspostprocessingentity.h
   framegraph/qgsrenderpassquad.h
   framegraph/qgsshadowrenderview.h
@@ -301,15 +309,9 @@ endif()
 
 set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
-if (BUILD_WITH_QT6)
-  target_include_directories(qgis_3d SYSTEM PUBLIC
-    ${QT6_3DEXTRA_INCLUDE_DIR}
-  )
-else()
-  target_include_directories(qgis_3d SYSTEM PUBLIC
-    ${QT5_3DEXTRA_INCLUDE_DIR}
-  )
-endif()
+target_include_directories(qgis_3d SYSTEM PUBLIC
+  ${QT6_3DEXTRA_INCLUDE_DIR}
+)
 
 target_include_directories(qgis_3d PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}

@@ -13,10 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsproject.h"
-#include "qgssettings.h"
 #include "qgsgeometrycheckfactory.h"
 
+#include "qgsfeaturepool.h"
 #include "qgsgeometryanglecheck.h"
 #include "qgsgeometryareacheck.h"
 #include "qgsgeometrycontainedcheck.h"
@@ -38,11 +37,14 @@
 #include "qgsgeometryselfintersectioncheck.h"
 #include "qgsgeometrysliverpolygoncheck.h"
 #include "qgsgeometrytypecheck.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 
-#include "qgsfeaturepool.h"
+#include <QString>
 
+using namespace Qt::StringLiterals;
 
-QString QgsGeometryCheckFactory::sSettingsGroup = QStringLiteral( "/geometry_checker/previous_values/" );
+QString QgsGeometryCheckFactory::sSettingsGroup = u"/geometry_checker/previous_values/"_s;
 
 
 template<> void QgsGeometryCheckFactoryT<QgsGeometryAngleCheck>::restorePrevious( Ui::QgsGeometryCheckerSetupTab &ui ) const

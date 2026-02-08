@@ -20,7 +20,6 @@
 #include "qgis_gui.h"
 #include "qgssettingsregistry.h"
 
-
 class QgsSettingsEntryBool;
 
 /**
@@ -34,10 +33,10 @@ Q_NOWARN_DEPRECATED_PUSH
 class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
 {
     Q_NOWARN_UNREACHABLE_POP
-    // TODO QGIS 4 do not inherit QgsSettingsRegistry
+    // TODO QGIS 5 do not inherit QgsSettingsRegistry
   public:
     QgsSettingsRegistryGui();
-    virtual ~QgsSettingsRegistryGui();
+    ~QgsSettingsRegistryGui() override;
 
 #ifndef SIP_RUN
     //! Settings entry respect screen dpi

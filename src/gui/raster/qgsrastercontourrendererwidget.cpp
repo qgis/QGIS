@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsrastercontourrendererwidget.h"
-#include "moc_qgsrastercontourrendererwidget.cpp"
 
+#include "qgslinesymbol.h"
 #include "qgsrastercontourrenderer.h"
 #include "qgsrasterlayer.h"
-#include "qgslinesymbol.h"
+
+#include "moc_qgsrastercontourrendererwidget.cpp"
 
 QgsRasterContourRendererWidget::QgsRasterContourRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )

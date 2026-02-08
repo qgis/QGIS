@@ -11,6 +11,8 @@
 
 
 
+
+
 %MappedType QList<QgsSearchWidgetWrapper::FilterFlag> /TypeHintIn = "Iterable[QgsSearchWidgetWrapper.FilterFlag]",TypeHintOut = "List[QgsSearchWidgetWrapper.FilterFlag]", TypeHintValue = "[]"/
 {
 %TypeHeaderCode

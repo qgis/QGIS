@@ -14,10 +14,12 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool.h"
-#include "moc_qgscreateannotationitemmaptool.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsannotationlayer.h"
+
 #include "qgsannotationitem.h"
+#include "qgsannotationlayer.h"
+#include "qgsmapcanvas.h"
+
+#include "moc_qgscreateannotationitemmaptool.cpp"
 
 QgsCreateAnnotationItemMapToolHandler::QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent )
   : QObject( parent )

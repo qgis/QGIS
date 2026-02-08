@@ -15,16 +15,21 @@ email                : loic dot bartoletti at oslandia dot com
 
 #pragma once
 
+#include <iterator>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgsvector.h"
-#include <iterator>
+#include "qgsvector3d.h"
 
 /**
  * \ingroup core
  * \class QgsGeometryUtilsBase
  * \brief Convenience functions for geometry utils.
+ *
+ * \note This class contains the low-level mathematical implementations using primitive types (like double),
+ * avoiding the use of QGIS geometry classes (like QgsPoint).
+ *
  * \since QGIS 3.34
  */
 class CORE_EXPORT QgsGeometryUtilsBase
@@ -58,6 +63,16 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static double distance2D( double x1, double y1, double x2, double y2 ) SIP_HOLDGIL {return std::sqrt( sqrDistance2D( x1, y1, x2, y2 ) ); }
 
     /**
+     * Returns the squared 2D distance between \a point1 and \a point2
+     */
+    static double sqrDistance2D( QPointF point1, QPointF point2 ) SIP_HOLDGIL {return sqrDistance2D( point1.x(), point1.y(), point2.x(), point2.y() ); }
+
+    /**
+     * Returns the 2D distance between \a point1 and \a point2
+     */
+    static double distance2D( QPointF point1, QPointF point2 ) SIP_HOLDGIL {return distance2D( point1.x(), point1.y(), point2.x(), point2.y() );}
+
+    /**
      * Returns the squared distance between a point and a line.
      */
     static double sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX SIP_OUT, double &minDistY SIP_OUT, double epsilon ) SIP_HOLDGIL;
@@ -83,6 +98,47 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static void pointOnLineWithDistance( double x1, double y1, double x2, double y2, double distance, double &x, double &y,
                                          double *z1 = nullptr, double *z2 = nullptr, double *z = nullptr,
                                          double *m1 = nullptr, double *m2 = nullptr, double *m = nullptr ) SIP_SKIP;
+
+    /**
+     * Evaluates a point on a cubic Bézier curve defined by four control points.
+     *
+     * This is a high-performance version of the equivalent QgsGeometryUtils method which
+     * avoids creating a temporary QgsPoint object.
+     *
+     * \param p0x start point x
+     * \param p0y start point y
+     * \param p0z start point z
+     * \param p0m start point m
+     * \param p1x first control point x
+     * \param p1y first control point y
+     * \param p1z first control point z
+     * \param p1m first control point m
+     * \param p2x second control point x
+     * \param p2y second control point y
+     * \param p2z second control point z
+     * \param p2m second control point m
+     * \param p3x end point x
+     * \param p3y end point y
+     * \param p3z end point z
+     * \param p3m end point m
+     * \param t parameter value between 0 and 1
+     * \param hasZ whether to calculate a Z value
+     * \param hasM whether to calculate an M value
+     * \param outX calculated x-coordinate
+     * \param outY calculated y-coordinate
+     * \param outZ calculated z-coordinate
+     * \param outM calculated m-coordinate
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 4.0
+     */
+    static void interpolatePointOnCubicBezier(
+      double p0x, double p0y, double p0z, double p0m,
+      double p1x, double p1y, double p1z, double p1m,
+      double p2x, double p2y, double p2z, double p2m,
+      double p3x, double p3y, double p3z, double p3m,
+      double t, bool hasZ, bool hasM,
+      double &outX, double &outY, double &outZ, double &outM ) SIP_SKIP;
 
     /**
      * Calculates a point a certain \a proportion of the way along the segment from (\a x1, \a y1) to (\a x2, \a y2),
@@ -397,6 +453,14 @@ class CORE_EXPORT QgsGeometryUtilsBase
     static bool pointsAreCollinear( double x1, double y1, double x2, double y2, double x3, double y3, double epsilon );
 
     /**
+     * Given the points (\a x1, \a y1, \a z1), (\a x2, \a y2, \a z2) and (\a x3, \a y3, \a z3)
+     * returns TRUE if these points can be considered collinear with a specified tolerance \a epsilon.
+     *
+     * \since QGIS 4.0
+     */
+    static bool points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon );
+
+    /**
      * Returns the point (\a pointX, \a pointY) forming the bisector from segment (\a aX \a aY) (\a bX \a bY)
      * and segment (\a bX, \a bY) (\a dX, \a dY).
      * The bisector segment of AB-CD is (point, projection of point by \a angle)
@@ -455,6 +519,32 @@ class CORE_EXPORT QgsGeometryUtilsBase
      * \returns Whether the lines intersect
      */
     static bool lineIntersection( double p1x, double p1y, QgsVector v1, double p2x, double p2y, QgsVector v2, double &intersectionX SIP_OUT, double &intersectionY SIP_OUT ) SIP_HOLDGIL;
+
+    /**
+     * Calculates the intersection point of two lines defined by point and bearing.
+     *
+     * Each line is defined by a point and a bearing (azimuth). The bearing is measured
+     * clockwise from north in radians.
+     *
+     * \param x1 x-coordinate of the first point
+     * \param y1 y-coordinate of the first point
+     * \param bearing1 bearing from the first point in radians (clockwise from north)
+     * \param x2 x-coordinate of the second point
+     * \param y2 y-coordinate of the second point
+     * \param bearing2 bearing from the second point in radians (clockwise from north)
+     * \param intersectionX will be set to the X coordinate of the intersection point
+     * \param intersectionY will be set to the Y coordinate of the intersection point
+     *
+     * \returns TRUE if an intersection was found, FALSE if the lines are parallel
+     *
+     * \see lineIntersection()
+     * \see azimuth()
+     *
+     * \since QGIS 4.0
+     */
+    static bool intersectionPointOfLinesByBearing( double x1, double y1, double bearing1,
+        double x2, double y2, double bearing2,
+        double &intersectionX SIP_OUT, double &intersectionY SIP_OUT ) SIP_HOLDGIL;
 
     /**
      * \brief Compute the intersection between two segments
@@ -598,9 +688,7 @@ class CORE_EXPORT QgsGeometryUtilsBase
      *
      * \since QGIS 4.0
      */
-    static double maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
-                                   const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
-                                   double epsilon = 1e-8 ) SIP_HOLDGIL;
+    static double maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY, const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY, double epsilon = 1e-8 ) SIP_HOLDGIL;
 
     /**
      * Creates a chamfer (angled corner) between two line segments.

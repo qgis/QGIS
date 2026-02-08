@@ -15,10 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
 #include "qgspostgresexpressioncompiler.h"
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgresprovider.h"
+#include "qgstest.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //The only purpose of this class is to set geomColumn and srid
 class QgsTestPostgresExpressionCompiler : public QgsPostgresExpressionCompiler
@@ -45,16 +49,16 @@ class TestQgsPostgresExpressionCompiler : public QObject
 
 void TestQgsPostgresExpressionCompiler::testGeometryFromWkt()
 {
-  const QgsPostgresProvider p( QLatin1String( "" ), QgsDataProvider::ProviderOptions() );
+  const QgsPostgresProvider p( QLatin1String( "" ), QgsDataProvider::ProviderOptions() ); // skip-keyword-check
   QgsPostgresFeatureSource featureSource( &p );
-  QgsTestPostgresExpressionCompiler compiler( &featureSource, QStringLiteral( "4326" ), QStringLiteral( "geom" ) );
-  QgsExpression exp( QStringLiteral( "intersects($geometry,geom_from_wkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))" ) );
+  QgsTestPostgresExpressionCompiler compiler( &featureSource, u"4326"_s, u"geom"_s );
+  QgsExpression exp( u"intersects($geometry,geom_from_wkt('Polygon((0 0, 1 0, 1 1, 0 1, 0 0))'))"_s );
   const QgsExpressionContext expContext;
   exp.prepare( &expContext );
   const QgsSqlExpressionCompiler::Result r = compiler.compile( &exp );
   QCOMPARE( r, QgsSqlExpressionCompiler::Complete );
   const QString sql = compiler.result();
-  QCOMPARE( sql, QStringLiteral( "ST_Intersects(\"geom\",ST_GeomFromText('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',4326))" ) );
+  QCOMPARE( sql, u"ST_Intersects(\"geom\",ST_GeomFromText('Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',4326))"_s );
 }
 
 QGSTEST_MAIN( TestQgsPostgresExpressionCompiler )

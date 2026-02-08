@@ -15,9 +15,10 @@
 #ifndef QGSLABELINGENGINESETTINGS_H
 #define QGSLABELINGENGINESETTINGS_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
 #include <QColor>
 
 class QgsProject;
@@ -34,7 +35,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
 {
   public:
 
-    // TODO QGIS 4 - remove
+    // TODO QGIS 5 - remove
 
     /**
      * Search methods in the PAL library to remove colliding labels
@@ -136,7 +137,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      */
     Q_DECL_DEPRECATED Search searchMethod() const SIP_DEPRECATED { return Chain; }
 
-    // TODO QGIS 4.0 -- remove these, and just use read/writeXml directly:
+    // TODO QGIS 5.0 -- remove these, and just use read/writeXml directly:
 
     /**
      * Read configuration of the labeling engine from a project
@@ -187,7 +188,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
      */
     void resolveReferences( const QgsProject *project ); // cppcheck-suppress functionConst
 
-    // TODO QGIS 4.0: In reality the text render format settings don't only apply to labels, but also
+    // TODO QGIS 5.0: In reality the text render format settings don't only apply to labels, but also
     // ANY text rendered using QgsTextRenderer (including some non-label text items in layouts).
     // These methods should possibly be moved out of here and into the general QgsProject settings.
 

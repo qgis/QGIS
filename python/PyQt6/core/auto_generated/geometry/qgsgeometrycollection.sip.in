@@ -11,7 +11,6 @@
 
 
 
-
 class QgsGeometryCollection: QgsAbstractGeometry
 {
 %Docstring(signature="appended")
@@ -104,6 +103,7 @@ Returns a geometry from within the collection.
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
 
     virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
 
     virtual bool boundingBoxIntersects( const QgsBox3D &box3d ) const /HoldGIL/;
 
@@ -228,6 +228,8 @@ ownership to the caller.
 
     virtual double area() const /HoldGIL/;
 
+    virtual double area3D() const /HoldGIL/;
+
     virtual double perimeter() const /HoldGIL/;
 
 
@@ -274,6 +276,7 @@ Returns a geometry without curves. Caller takes ownership
     virtual const QgsAbstractGeometry *simplifiedTypeRef() const /HoldGIL/;
 
     virtual QgsGeometryCollection *simplifyByDistance( double tolerance ) const /Factory/;
+
 
     virtual bool transform( QgsAbstractGeometryTransformer *transformer, QgsFeedback *feedback = 0 );
 

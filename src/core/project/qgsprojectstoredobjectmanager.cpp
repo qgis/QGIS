@@ -14,8 +14,10 @@
  ***************************************************************************/
 
 #include "qgsprojectstoredobjectmanager.h"
-#include "moc_qgsprojectstoredobjectmanager.cpp"
+
 #include "qgsproject.h"
+
+#include "moc_qgsprojectstoredobjectmanager.cpp"
 
 //
 // QgsProjectStoredObjectManagerBase
@@ -135,3 +137,6 @@ template class QgsAbstractProjectStoredObjectManager<QgsMasterLayoutInterface>; 
 
 template class QgsAbstractProjectStoredObjectManager<QgsElevationProfile>; // clazy:exclude=missing-qobject-macro
 
+#include "qgsselectivemaskingsourceset.h"
+
+template class QgsAbstractProjectStoredObjectManager<QgsSelectiveMaskingSourceSet>; // clazy:exclude=missing-qobject-macro

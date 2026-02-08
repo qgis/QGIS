@@ -21,24 +21,31 @@
 
 #define SIP_NO_FILE
 
-#include <source_location>
 #include <SFCGAL/capi/sfcgal_c.h>
+#include <source_location>
 
+#include "qgis_core.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgsvector3d.h"
-#include "qgis_core.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgslogger.h"
-#include <QtGui/qmatrix4x4.h>
+
+#include <QMatrix4x4>
 
 class QgsGeometry;
 class QgsSfcgalGeometry;
 
 /// compute SFCGAL integer version from major, minor and patch number
+/// This is not available before SFCGAL version 2.3.
+#ifndef SFCGAL_MAKE_VERSION
 #define SFCGAL_MAKE_VERSION( major, minor, patch ) ( ( major ) * 10000 + ( minor ) * 100 + ( patch ) )
+#endif
 /// compute current SFCGAL integer version
-#define SFCGAL_VERSION SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
+/// This is not available before SFCGAL version 2.3.
+#ifndef SFCGAL_VERSION_NUM
+#define SFCGAL_VERSION_NUM SFCGAL_MAKE_VERSION( SFCGAL_VERSION_MAJOR_INT, SFCGAL_VERSION_MINOR_INT, SFCGAL_VERSION_PATCH_INT )
+#endif
 
 /// check if \a ptr is not null else add stacktrace entry and return the \a defaultObj
 #define CHECK_NOT_NULL( ptr, defaultObj )                                              \
@@ -64,7 +71,7 @@ class QgsSfcgalGeometry;
   }
 
 /// check if no error has been caught else add stacktrace entry, log the stacktrace and throw an exception
-#define THROW_ON_ERROR(errorMsg) \
+#define THROW_ON_ERROR(errorMsg)                                       \
   if ( !sfcgal::errorHandler()->hasSucceedOrStack( ( errorMsg ) ) )    \
   {                                                                    \
     QgsDebugError( sfcgal::errorHandler()->getFullText() );            \
@@ -103,7 +110,7 @@ namespace sfcgal
 namespace sfcgal
 {
   // ==== SFCGAL primitive
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   //! Shortcut to SFCGAL primitive
   using primitive = sfcgal_primitive_t;
   //! Shortcut to SFCGAL primitive type
@@ -667,7 +674,7 @@ class CORE_EXPORT QgsSfcgalEngine
      */
     static sfcgal::shared_geom approximateMedialAxis( const sfcgal::geometry *geom, QString *errorMsg = nullptr );
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 
     /**
      * Apply 3D matrix transform \a mat to geometry \a geom

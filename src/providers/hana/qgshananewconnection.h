@@ -17,10 +17,11 @@
 #ifndef QGSHANANEWCONNECTION_H
 #define QGSHANANEWCONNECTION_H
 
+#include "ui_qgshananewconnectionbase.h"
+
 #include "qgsguiutils.h"
 #include "qgshanasettings.h"
 #include "qgshelp.h"
-#include "ui_qgshananewconnectionbase.h"
 
 /**
  * \class QgsHanaNewConnection

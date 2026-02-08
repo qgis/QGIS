@@ -17,18 +17,13 @@
 #define QGSBILLBOARDGEOMETRY_H
 
 #include "qgis_3d.h"
+
 #include <QObject>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QAttribute>
-#else
-#include <Qt3DCore/QGeometry>
-#include <Qt3DCore/QBuffer>
-#include <Qt3DCore/QAttribute>
-#endif
-#include <QVector3D>
 #include <QVector2D>
+#include <QVector3D>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
 
 #define SIP_NO_FILE
 
@@ -43,11 +38,7 @@
  *
  * \since QGIS 3.10
  */
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-class _3D_EXPORT QgsBillboardGeometry : public Qt3DRender::QGeometry
-#else
 class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
-#endif
 {
     Q_OBJECT
 
@@ -113,19 +104,11 @@ class _3D_EXPORT QgsBillboardGeometry : public Qt3DCore::QGeometry
     };
     void setMode( Mode mode );
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    Qt3DRender::QAttribute *mPositionAttribute = nullptr;
-    Qt3DRender::QAttribute *mAtlasOffsetAttribute = nullptr;
-    Qt3DRender::QAttribute *mAtlasSizeAttribute = nullptr;
-    Qt3DRender::QAttribute *mAtlasPixelOffsetAttribute = nullptr;
-    Qt3DRender::QBuffer *mVertexBuffer = nullptr;
-#else
     Qt3DCore::QAttribute *mPositionAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasOffsetAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasSizeAttribute = nullptr;
     Qt3DCore::QAttribute *mAtlasPixelOffsetAttribute = nullptr;
     Qt3DCore::QBuffer *mVertexBuffer = nullptr;
-#endif
     int mVertexCount = 0;
 };
 

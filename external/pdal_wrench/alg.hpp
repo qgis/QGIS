@@ -116,11 +116,12 @@ struct Translate : public Alg
     std::string assignCrs;
     std::string transformCrs;
     std::string transformCoordOp;
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
+    std::string transformMatrix; // 4x4 matrix as 16 space-separated values
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
 
     std::vector<std::string> tileOutputFiles;
 
@@ -186,11 +187,11 @@ struct Clip : public Alg
     // parameters from the user
     std::string outputFile;
     std::string polygonFile;
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
     pdal::Arg* argPolygon = nullptr;
 
     std::vector<std::string> tileOutputFiles;
@@ -234,14 +235,14 @@ struct Thin : public Alg
     std::string mode;  // "every-nth" or "sample"
     int stepEveryN;  // keep every N-th point
     double stepSample;  // cell size for Poisson sampling
-    std::string outputFormat;  // las / laz / copc
+    std::string outputFormatVpc;  // las / laz / copc
 
     // args - initialized in addArgs()
     pdal::Arg* argOutput = nullptr;
     pdal::Arg* argMode = nullptr;
     pdal::Arg* argStepEveryN = nullptr;
     pdal::Arg* argStepSample = nullptr;
-    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
 
     std::vector<std::string> tileOutputFiles;
 
@@ -326,6 +327,147 @@ struct ToVector : public Alg
     //pdal::Arg* argAttribute = nullptr;
 
     std::vector<std::string> tileOutputFiles;
+
+    // impl
+    virtual void addArgs() override;
+    virtual bool checkArgs() override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+    virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+};
+
+
+struct ClassifyGround : public Alg
+{
+    ClassifyGround() { isStreaming = false; }
+
+    // parameters from the user
+    std::string outputFile;
+    std::string outputFormatVpc;  // las / laz / copc
+
+    double cellSize = 1.0;
+    double scalar = 1.25;
+    double slope = 0.15;
+    double threshold = 0.5;
+    double windowSize = 18.0;
+
+    // args - initialized in addArgs()
+    pdal::Arg* argOutput = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
+    pdal::Arg* argCellSize = nullptr;
+
+    pdal::Arg* argScalar = nullptr;
+    pdal::Arg* argSlope = nullptr;
+    pdal::Arg* argThreshold = nullptr;
+    pdal::Arg* argWindowSize = nullptr;
+    
+    std::vector<std::string> tileOutputFiles;
+
+    // impl
+    virtual void addArgs() override;
+    virtual bool checkArgs() override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+    virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+};
+
+
+struct FilterNoise: public Alg
+{
+
+    FilterNoise() { isStreaming = false; }
+
+    std::vector<std::string> tileOutputFiles;
+    
+    // parameters from the user
+    std::string outputFile;
+    std::string outputFormatVpc;  // las / laz / copc
+    std::string algorithm = "statistical"; // "statistical" or "radius"
+    bool removeNoisePoints = false;
+
+    // radius params
+    double radiusMinK = 2;
+    double radiusRadius = 1.0;
+
+    // statistical params
+    int statisticalMeanK = 8;
+    double statisticalMultiplier = 2.0;
+
+    // args - initialized in addArgs()
+    pdal::Arg* argOutput = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
+    pdal::Arg* argAlgorithm = nullptr;
+    pdal::Arg* argRemoveNoisePoints = nullptr;
+    pdal::Arg* argRadiusMinK = nullptr;
+    pdal::Arg* argRadiusRadius = nullptr;
+    pdal::Arg* argStatisticalMeanK = nullptr;
+    pdal::Arg* argStatisticalMultiplier = nullptr;
+    
+    // impl
+    virtual void addArgs() override;
+    virtual bool checkArgs() override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+    virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+};
+
+
+struct HeightAboveGround : public Alg
+{   
+    HeightAboveGround() { isStreaming = false; }
+    
+    // parameters from the user
+    std::string outputFile;
+    std::string outputFormatVpc;  // las / laz / copc
+    bool replaceZWithHeightAboveGround = true;
+    std::string algorithm = "nn";
+
+    // NN parameters
+    int nnCount = 1;
+    int nnMaxDistance = 0;
+    
+    // Delaunay parameters
+    int delaunayCount = 10;
+    
+    // args - initialized in addArgs()
+    pdal::Arg* argOutput = nullptr;
+    pdal::Arg* argOutputFormatVpc = nullptr;
+    pdal::Arg* argReplaceZWithHeightAboveGround = nullptr;
+    pdal::Arg* argAlgorithm = nullptr;
+
+    // args -NN parameters
+    pdal::Arg* argNNCount = nullptr;
+    pdal::Arg* argNNMaxDistance = nullptr;
+
+    // args - Delaunay parameters
+    pdal::Arg* argDelaunayCount = nullptr;
+
+    std::vector<std::string> tileOutputFiles;
+
+    // impl
+    virtual void addArgs() override;
+    virtual bool checkArgs() override;
+    virtual void preparePipelines(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+    virtual void finalize(std::vector<std::unique_ptr<PipelineManager>>& pipelines) override;
+};
+
+struct ComparePointClouds : public Alg
+{   
+    ComparePointClouds() { isStreaming = false; }
+
+    // parameters from the user
+    std::string outputFile;
+
+    std::string comparedInputFile;
+    double subsamplingCellSize;  // cell size for Poisson sampling
+    double normalRadius = 2.0;
+    double cylRadius = 2.0;
+    double cylHalflen = 5.0;
+    double regError = 0.0;
+    std::string cylOrientation = "up";
+
+    // args - initialized in addArgs()
+    pdal::Arg* argOutput = nullptr;
+    pdal::Arg* argOutputFormat = nullptr;
+    pdal::Arg* argComparedInputFile = nullptr;
+    pdal::Arg* argOrientation = nullptr;
 
     // impl
     virtual void addArgs() override;

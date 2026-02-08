@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsDbRelationWidget : QWidget
 {
 %Docstring(signature="appended")

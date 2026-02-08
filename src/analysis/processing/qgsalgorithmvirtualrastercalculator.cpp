@@ -16,7 +16,12 @@
  ***************************************************************************/
 
 #include "qgsalgorithmvirtualrastercalculator.h"
+
 #include "qgsrasterdataprovider.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -27,7 +32,7 @@ Qgis::ProcessingAlgorithmFlags QgsVirtualRasterCalculatorAlgorithm::flags() cons
 
 QString QgsVirtualRasterCalculatorAlgorithm::name() const
 {
-  return QStringLiteral( "virtualrastercalc" );
+  return u"virtualrastercalc"_s;
 }
 
 QString QgsVirtualRasterCalculatorAlgorithm::displayName() const
@@ -47,7 +52,7 @@ QString QgsVirtualRasterCalculatorAlgorithm::group() const
 
 QString QgsVirtualRasterCalculatorAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QString QgsVirtualRasterCalculatorAlgorithm::shortHelpString() const
@@ -67,35 +72,35 @@ QgsVirtualRasterCalculatorAlgorithm *QgsVirtualRasterCalculatorAlgorithm::create
 
 void QgsVirtualRasterCalculatorAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
-  addParameter( new QgsProcessingParameterExpression( QStringLiteral( "EXPRESSION" ), QObject::tr( "Expression" ), QVariant(), QStringLiteral( "LAYERS" ), false, Qgis::ExpressionType::RasterCalculator ) );
-  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "EXTENT" ), QObject::tr( "Output extent" ), QVariant(), true );
+  addParameter( new QgsProcessingParameterMultipleLayers( u"LAYERS"_s, QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Raster ) );
+  addParameter( new QgsProcessingParameterExpression( u"EXPRESSION"_s, QObject::tr( "Expression" ), QVariant(), u"LAYERS"_s, false, Qgis::ExpressionType::RasterCalculator ) );
+  auto extentParam = std::make_unique<QgsProcessingParameterExtent>( u"EXTENT"_s, QObject::tr( "Output extent" ), QVariant(), true );
   extentParam->setHelp( QObject::tr( "Extent of the output layer. If not specified, the extent will be the overall extent of all input layers" ) );
   addParameter( extentParam.release() );
-  auto cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "CELL_SIZE" ), QObject::tr( "Output cell size (leave empty to set automatically)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
+  auto cellSizeParam = std::make_unique<QgsProcessingParameterNumber>( u"CELL_SIZE"_s, QObject::tr( "Output cell size (leave empty to set automatically)" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0.0 );
   cellSizeParam->setHelp( QObject::tr( "Cell size of the output layer. If not specified, the smallest cell size from the input layers will be used" ) );
   addParameter( cellSizeParam.release() );
-  auto crsParam = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Output CRS" ), QVariant(), true );
+  auto crsParam = std::make_unique<QgsProcessingParameterCrs>( u"CRS"_s, QObject::tr( "Output CRS" ), QVariant(), true );
   crsParam->setHelp( QObject::tr( "CRS of the output layer. If not specified, the CRS of the first input layer will be used" ) );
   addParameter( crsParam.release() );
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "LAYER_NAME" ), QObject::tr( "Output layer name" ), QVariant(), false, true ) );
-  addOutput( new QgsProcessingOutputRasterLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Calculated" ) ) );
+  addParameter( new QgsProcessingParameterString( u"LAYER_NAME"_s, QObject::tr( "Output layer name" ), QVariant(), false, true ) );
+  addOutput( new QgsProcessingOutputRasterLayer( u"OUTPUT"_s, QObject::tr( "Calculated" ) ) );
 }
 
 QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"LAYERS"_s, context );
   if ( layers.isEmpty() )
   {
     throw QgsProcessingException( QObject::tr( "No input layers selected" ) );
   }
 
   QgsCoordinateReferenceSystem crs;
-  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  if ( parameters.value( u"CRS"_s ).isValid() )
   {
-    crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+    crs = parameterAsCrs( parameters, u"CRS"_s, context );
   }
   else
   {
@@ -103,9 +108,9 @@ QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVarian
   }
 
   QgsRectangle bbox;
-  if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
+  if ( parameters.value( u"EXTENT"_s ).isValid() )
   {
-    bbox = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, crs );
+    bbox = parameterAsExtent( parameters, u"EXTENT"_s, context, crs );
   }
   else
   {
@@ -143,14 +148,14 @@ QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVarian
     }
   }
 
-  double cellSize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
+  double cellSize = parameterAsDouble( parameters, u"CELL_SIZE"_s, context );
   if ( cellSize == 0 )
   {
     cellSize = minCellSize;
   }
 
-  const QString expression = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
-  QString layerName = parameterAsString( parameters, QStringLiteral( "LAYER_NAME" ), context );
+  const QString expression = parameterAsExpression( parameters, u"EXPRESSION"_s, context );
+  QString layerName = parameterAsString( parameters, u"LAYER_NAME"_s, context );
   if ( layerName.isEmpty() )
   {
     layerName = expression;
@@ -166,7 +171,7 @@ QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVarian
   rasterParameters.formula = expression;
 
   std::unique_ptr<QgsRasterLayer> layer;
-  layer = std::make_unique<QgsRasterLayer>( QgsRasterDataProvider::encodeVirtualRasterProviderUri( rasterParameters ), layerName, QStringLiteral( "virtualraster" ) );
+  layer = std::make_unique<QgsRasterLayer>( QgsRasterDataProvider::encodeVirtualRasterProviderUri( rasterParameters ), layerName, u"virtualraster"_s );
   if ( !layer->isValid() )
   {
     feedback->reportError( QObject::tr( "Failed to create virtual raster layer" ) );
@@ -175,12 +180,12 @@ QVariantMap QgsVirtualRasterCalculatorAlgorithm::processAlgorithm( const QVarian
   {
   }
   const QString layerId = layer->id();
-  const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT" ), QgsProcessingUtils::LayerHint::Raster );
+  const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT"_s, QgsProcessingUtils::LayerHint::Raster );
   context.addLayerToLoadOnCompletion( layerId, details );
   context.temporaryLayerStore()->addMapLayer( layer.release() );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), layerId );
+  outputs.insert( u"OUTPUT"_s, layerId );
   return outputs;
 }
 
@@ -191,7 +196,7 @@ Qgis::ProcessingAlgorithmFlags QgsVirtualRasterCalculatorModelerAlgorithm::flags
 
 QString QgsVirtualRasterCalculatorModelerAlgorithm::name() const
 {
-  return QStringLiteral( "modelervirtualrastercalc" );
+  return u"modelervirtualrastercalc"_s;
 }
 
 QString QgsVirtualRasterCalculatorModelerAlgorithm::displayName() const
@@ -211,7 +216,7 @@ QString QgsVirtualRasterCalculatorModelerAlgorithm::group() const
 
 QString QgsVirtualRasterCalculatorModelerAlgorithm::groupId() const
 {
-  return QStringLiteral( "rasteranalysis" );
+  return u"rasteranalysis"_s;
 }
 
 QgsVirtualRasterCalculatorModelerAlgorithm *QgsVirtualRasterCalculatorModelerAlgorithm::createInstance() const
@@ -223,16 +228,16 @@ QVariantMap QgsVirtualRasterCalculatorModelerAlgorithm::processAlgorithm( const 
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "INPUT" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, u"INPUT"_s, context );
   if ( layers.isEmpty() )
   {
     throw QgsProcessingException( QObject::tr( "No input layers selected" ) );
   }
 
   QgsCoordinateReferenceSystem crs;
-  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  if ( parameters.value( u"CRS"_s ).isValid() )
   {
-    crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+    crs = parameterAsCrs( parameters, u"CRS"_s, context );
   }
   else
   {
@@ -240,9 +245,9 @@ QVariantMap QgsVirtualRasterCalculatorModelerAlgorithm::processAlgorithm( const 
   }
 
   QgsRectangle bbox;
-  if ( parameters.value( QStringLiteral( "EXTENT" ) ).isValid() )
+  if ( parameters.value( u"EXTENT"_s ).isValid() )
   {
-    bbox = parameterAsExtent( parameters, QStringLiteral( "EXTENT" ), context, crs );
+    bbox = parameterAsExtent( parameters, u"EXTENT"_s, context, crs );
   }
   else
   {
@@ -282,14 +287,14 @@ QVariantMap QgsVirtualRasterCalculatorModelerAlgorithm::processAlgorithm( const 
     }
   }
 
-  double cellSize = parameterAsDouble( parameters, QStringLiteral( "CELL_SIZE" ), context );
+  double cellSize = parameterAsDouble( parameters, u"CELL_SIZE"_s, context );
   if ( cellSize == 0 )
   {
     cellSize = minCellSize;
   }
 
-  const QString expression = parameterAsExpression( parameters, QStringLiteral( "EXPRESSION" ), context );
-  QString layerName = parameterAsString( parameters, QStringLiteral( "LAYER_NAME" ), context );
+  const QString expression = parameterAsExpression( parameters, u"EXPRESSION"_s, context );
+  QString layerName = parameterAsString( parameters, u"LAYER_NAME"_s, context );
   if ( layerName.isEmpty() )
   {
     layerName = expression;
@@ -305,7 +310,7 @@ QVariantMap QgsVirtualRasterCalculatorModelerAlgorithm::processAlgorithm( const 
   rasterParameters.formula = expression;
 
   std::unique_ptr<QgsRasterLayer> layer;
-  layer = std::make_unique<QgsRasterLayer>( QgsRasterDataProvider::encodeVirtualRasterProviderUri( rasterParameters ), layerName, QStringLiteral( "virtualraster" ) );
+  layer = std::make_unique<QgsRasterLayer>( QgsRasterDataProvider::encodeVirtualRasterProviderUri( rasterParameters ), layerName, u"virtualraster"_s );
   if ( !layer->isValid() )
   {
     feedback->reportError( QObject::tr( "Failed to create virtual raster layer" ) );
@@ -314,12 +319,12 @@ QVariantMap QgsVirtualRasterCalculatorModelerAlgorithm::processAlgorithm( const 
   {
   }
   const QString layerId = layer->id();
-  const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), QStringLiteral( "OUTPUT" ), QgsProcessingUtils::LayerHint::Raster );
+  const QgsProcessingContext::LayerDetails details( layer->name(), context.project(), u"OUTPUT"_s, QgsProcessingUtils::LayerHint::Raster );
   context.addLayerToLoadOnCompletion( layerId, details );
   context.temporaryLayerStore()->addMapLayer( layer.release() );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), layerId );
+  outputs.insert( u"OUTPUT"_s, layerId );
   return outputs;
 }
 

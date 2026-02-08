@@ -13,11 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmergedfeaturerendererwidget.h"
-#include "moc_qgsmergedfeaturerendererwidget.cpp"
+
+#include <memory>
+
+#include "qgsapplication.h"
 #include "qgsmergedfeaturerenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
+
+#include <QString>
+
+#include "moc_qgsmergedfeaturerendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererWidget *QgsMergedFeatureRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -60,7 +68,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   if ( !mRenderer )
   {
     // use default embedded renderer
-    mRenderer.reset( new QgsMergedFeatureRenderer( QgsFeatureRenderer::defaultRenderer( type ) ) );
+    mRenderer = std::make_unique<QgsMergedFeatureRenderer>( QgsFeatureRenderer::defaultRenderer( type ) );
     if ( renderer )
       renderer->copyRendererData( mRenderer.get() );
   }
@@ -73,8 +81,8 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   mRendererComboBox->blockSignals( true );
   for ( ; it != rendererList.constEnd(); ++it, ++idx )
   {
-    if ( *it != QLatin1String( "mergedFeatureRenderer" )
-         && *it != QLatin1String( "invertedPolygonRenderer" ) ) //< an merged renderer cannot contain another merged or inverted renderer
+    if ( *it != "mergedFeatureRenderer"_L1
+         && *it != "invertedPolygonRenderer"_L1 ) //< an merged renderer cannot contain another merged or inverted renderer
     {
       QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), /* data */ *it );

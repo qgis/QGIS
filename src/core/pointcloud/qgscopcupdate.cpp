@@ -15,18 +15,20 @@
 
 #include "qgscopcupdate.h"
 
-#include "qgslazdecoder.h"
-
 #include <fstream>
 #include <iostream>
 
-#include <lazperf/header.hpp>
-#include <lazperf/vlr.hpp>
-#include <lazperf/Extractor.hpp>
-#include <lazperf/filestream.hpp>
-#include <lazperf/readers.hpp>
-#include <lazperf/writers.hpp>
+#include "lazperf/Extractor.hpp"
+#include "lazperf/filestream.hpp"
+#include "lazperf/header.hpp"
+#include "lazperf/readers.hpp"
+#include "lazperf/vlr.hpp"
+#include "lazperf/writers.hpp"
+#include "qgslazdecoder.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //! Keeps one entry of COPC hierarchy
 struct HierarchyEntry
@@ -239,7 +241,7 @@ bool QgsCopcUpdate::read( const QString &inputFilename )
   mFile.open( QgsLazDecoder::toNativePath( inputFilename ), std::ios::binary | std::ios::in );
   if ( mFile.fail() )
   {
-    mErrorMessage = QStringLiteral( "Could not open file for reading: %1" ).arg( inputFilename );
+    mErrorMessage = u"Could not open file for reading: %1"_s.arg( inputFilename );
     return false;
   }
 
@@ -259,7 +261,7 @@ bool QgsCopcUpdate::readHeader()
   mHeader = lazperf::header14::create( mFile );
   if ( !mFile )
   {
-    mErrorMessage = QStringLiteral( "Error reading COPC header" );
+    mErrorMessage = u"Error reading COPC header"_s;
     return false;
   }
 
@@ -269,7 +271,7 @@ bool QgsCopcUpdate::readHeader()
   int baseCount = lazperf::baseCount( mHeader.point_format_id );
   if ( baseCount == 0 )
   {
-    mErrorMessage = QStringLiteral( "Bad point record format: %1" ).arg( mHeader.point_format_id );
+    mErrorMessage = u"Bad point record format: %1"_s.arg( mHeader.point_format_id );
     return false;
   }
 

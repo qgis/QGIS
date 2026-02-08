@@ -10,6 +10,7 @@
 
 
 
+
 class QgsStatusBar : QWidget
 {
 %Docstring(signature="appended")
@@ -99,7 +100,6 @@ bar will be intercepted and shown on this status bar too.
 
 .. versionadded:: 3.8
 %End
-
 
   protected:
     virtual void changeEvent( QEvent *event );

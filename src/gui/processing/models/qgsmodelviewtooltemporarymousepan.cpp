@@ -14,10 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtooltemporarymousepan.h"
-#include "moc_qgsmodelviewtooltemporarymousepan.cpp"
-#include "qgsmodelviewmouseevent.h"
+
 #include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+
 #include <QScrollBar>
+
+#include "moc_qgsmodelviewtooltemporarymousepan.cpp"
 
 QgsModelViewToolTemporaryMousePan::QgsModelViewToolTemporaryMousePan( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Pan" ) )

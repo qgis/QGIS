@@ -102,7 +102,7 @@ class translate(GdalAlgorithm):
         )
 
         # backwards compatibility parameter
-        # TODO QGIS 4: remove parameter and related logic
+        # TODO QGIS 5: remove parameter and related logic
         options_param = QgsProcessingParameterString(
             self.OPTIONS,
             self.tr("Additional creation options"),
@@ -213,7 +213,7 @@ class translate(GdalAlgorithm):
 
             arguments.append("-ot " + self.TYPES[data_type])
 
-        output_format = QgsRasterFileWriter.driverForExtension(os.path.splitext(out)[1])
+        output_format = self.outputFormat(parameters, self.OUTPUT, context)
         if not output_format:
             raise QgsProcessingException(self.tr("Output format is invalid"))
 

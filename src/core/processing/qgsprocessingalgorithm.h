@@ -18,15 +18,16 @@
 #ifndef QGSPROCESSINGALGORITHM_H
 #define QGSPROCESSINGALGORITHM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include "qgsprocessingparameters.h"
-#include "qgsprocessingoutputs.h"
+#include "qgis_core.h"
 #include "qgsprocessingcontext.h"
+#include "qgsprocessingoutputs.h"
+#include "qgsprocessingparameters.h"
 #include "qgsprocessingutils.h"
+
+#include <QIcon>
 #include <QString>
 #include <QVariant>
-#include <QIcon>
 
 class QgsProcessingProvider;
 class QgsProcessingFeedback;
@@ -170,7 +171,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * helpString() or helpUrl().
      * \see helpUrl()
      * \see shortHelpString()
-     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Unused, will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual QString helpString() const SIP_HOLDGIL SIP_DEPRECATED;
 
@@ -847,6 +848,25 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * Evaluates the parameter with matching \a name to a output layer destination.
      */
     QString parameterAsOutputLayer( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a output format
+     *
+     * Output format may be empty.
+     *
+     * \since QGIS 4.0
+     */
+    QString parameterAsOutputFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+
+    /**
+     * Evaluates the parameter with matching \a name to a output format
+     *
+     * If no explicit output format is attached to the parameter, one will be
+     * attempted to be guessed from the file name extension.
+     *
+     * \since QGIS 4.0
+     */
+    QString parameterAsOutputRasterFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
 
     /**
      * Evaluates the parameter with matching \a name to a file based output destination.

@@ -1,0 +1,18 @@
+{
+  "name": "extract_seconds",
+  "type": "function",
+  "groups": ["Conversions"],
+  "description": "Extracts the decimal number of seconds from a decimal degrees value. The degrees and minutes components are ignored. The extracted seconds value will always be a positive value.",
+  "arguments": [{
+    "arg": "value",
+    "description": "A decimal degrees value."
+  }],
+  "examples": [{
+    "expression": "extract_seconds(135.7568)",
+    "returns": "24.4799"
+  }, {
+    "expression": "extract_seconds(-135.7568)",
+    "returns": "24.4799"
+  }],
+  "tags": ["dms", "degrees", "seconds", "decimal", "latitude", "longitude", "coordinate"]
+}

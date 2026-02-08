@@ -14,11 +14,12 @@
 ***************************************************************************/
 
 
-#include "qgiscustomwidgets.h"
 #include "qgsscrollareawidgetplugin.h"
-#include "moc_qgsscrollareawidgetplugin.cpp"
+
+#include "qgiscustomwidgets.h"
 #include "qgsscrollarea.h"
 
+#include "moc_qgsscrollareawidgetplugin.cpp"
 
 QgsScrollAreaWidgetPlugin::QgsScrollAreaWidgetPlugin( QObject *parent )
   : QObject( parent )

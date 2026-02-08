@@ -21,12 +21,16 @@
 #define QGSWFSPROVIDER_H
 
 #include "qgis.h"
-#include "qgsrectangle.h"
+#include "qgsbackgroundcachedfeatureiterator.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsogcutils.h"
+#include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgswfscapabilities.h"
-#include "qgsbackgroundcachedfeatureiterator.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsRectangle;
 class QgsWFSSharedData;
@@ -101,7 +105,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
 
     Qgis::VectorProviderCapabilities capabilities() const override;
 
-    QString storageType() const override { return QStringLiteral( "OGC WFS (Web Feature Service)" ); }
+    QString storageType() const override { return u"OGC WFS (Web Feature Service)"_s; }
 
     /* new functions */
 
@@ -110,7 +114,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     const QString processSQLWarningMsg() const { return mProcessSQLWarningMsg; }
 
     //Editing operations
-
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
@@ -130,7 +134,8 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     static QString buildIsNullGeometryFilter( const QgsWfsCapabilities &caps, const QString &geometryElement );
     static QString buildGeometryCollectionFilter( const QgsWfsCapabilities &caps, const QString &geometryElement );
 
-    /** Perform an initial GetFeature request with a 1-feature limit.
+    /**
+     * Perform an initial GetFeature request with a 1-feature limit.
      *  \param force If true, the request will be issued even if the provider already has a known wkbType set.
     */
     void issueInitialGetFeature( bool force = false );
@@ -186,18 +191,13 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     //! Set if metadata retrieval has been canceled (typically download of the schema)
     bool mMetadataRetrievalCanceled = false;
 
-    bool readAttributesFromSchemaWithoutGMLAS( QDomDocument &schemaDoc, const QString &prefixedTypename, QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, QString &errorMsg, bool &mayTryWithGMLAS );
-
-    bool readAttributesFromSchemaWithGMLAS( const QByteArray &response, const QString &prefixedTypename, QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing, QString &errorMsg );
-
   protected:
     //! String used to define a subset of the layer
     QString mSubsetString;
 
     //! Flag if provider is valid
     bool mValid = true;
-    //! Namespace URL of the server (comes from DescribeFeatureDocument)
-    QString mApplicationNamespace;
+
     //! Server capabilities for this layer (generated from capabilities document)
     Qgis::VectorProviderCapabilities mCapabilities;
     //! Fields of this typename. Might be different from mShared->mFields in case of SELECT
@@ -212,12 +212,6 @@ class QgsWFSProvider final : public QgsVectorDataProvider
      * the geometry attribute and the thematic attributes with their types.
     */
     bool describeFeatureType( QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing );
-
-    /**
-     * For a given typename, reads the name of the geometry attribute, the
-     * thematic attributes and their types from a dom document. Returns true in case of success.
-    */
-    bool readAttributesFromSchema( QDomDocument &schemaDoc, const QByteArray &response, bool singleLayerContext, const QString &prefixedTypename, QString &geometryAttribute, QgsFields &fields, Qgis::WkbType &geomType, bool &geometryMaybeMissing, QString &errorMsg );
 
     //helper methods for WFS-T
 
@@ -239,8 +233,7 @@ class QgsWFSProvider final : public QgsVectorDataProvider
     bool getCapabilities();
     //! Records provider error
     void handleException( const QDomDocument &serverResponse );
-    //! Converts DescribeFeatureType schema geometry property type to WKBType
-    Qgis::WkbType geomTypeFromPropertyType( const QString &attName, const QString &propType );
+
     //! Convert the value to its appropriate XML representation
     QString convertToXML( const QVariant &value );
 

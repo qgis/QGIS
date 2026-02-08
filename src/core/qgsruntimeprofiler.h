@@ -15,17 +15,19 @@
 #ifndef QGSRUNTIMEPROFILER_H
 #define QGSRUNTIMEPROFILER_H
 
-#include <QTime>
-#include <QElapsedTimer>
-#include "qgis_sip.h"
-#include <QPair>
-#include <QStack>
-#include <QList>
-#include <QAbstractItemModel>
-#include <memory>
 #include <deque>
-#include <QSet>
+#include <memory>
+
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QAbstractItemModel>
+#include <QElapsedTimer>
+#include <QList>
+#include <QPair>
+#include <QSet>
+#include <QStack>
+#include <QTime>
 
 #ifndef SIP_RUN
 

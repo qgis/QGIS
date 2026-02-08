@@ -16,11 +16,12 @@
 #ifndef QGSMODELVIEWTOOLZOOM_H
 #define QGSMODELVIEWTOOLZOOM_H
 
-#include "qgis_sip.h"
-#include "qgis_gui.h"
-#include "qgsmodelviewtool.h"
-#include "qgsmodelviewrubberband.h"
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsmodelviewrubberband.h"
+#include "qgsmodelviewtool.h"
 
 #define SIP_NO_FILE
 

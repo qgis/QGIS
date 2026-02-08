@@ -14,13 +14,18 @@
  ***************************************************************************/
 
 #include "qgsfeaturepickermodelbase.h"
-#include "moc_qgsfeaturepickermodelbase.cpp"
-#include "qgsfeatureexpressionvaluesgatherer.h"
 
-#include "qgsvectorlayer.h"
 #include "qgsconditionalstyle.h"
 #include "qgsexpressioncontextutils.h"
+#include "qgsfeatureexpressionvaluesgatherer.h"
 #include "qgsvaluerelationfieldformatter.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+#include "moc_qgsfeaturepickermodelbase.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeaturePickerModelBase::QgsFeaturePickerModelBase( QObject *parent )
   : QAbstractItemModel( parent )
@@ -461,9 +466,9 @@ void QgsFeaturePickerModelBase::scheduledReload()
     if ( mFilterValue.isEmpty() && !mFilterExpression.isEmpty() )
       filterClause = mFilterExpression;
     else if ( mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-      filterClause = QStringLiteral( "(%1) ILIKE '%%2%'" ).arg( mDisplayExpression, mFilterValue );
+      filterClause = u"(%1) ILIKE '%%2%'"_s.arg( mDisplayExpression, mFilterValue );
     else if ( !mFilterExpression.isEmpty() && !mFilterValue.isEmpty() )
-      filterClause = QStringLiteral( "(%1) AND ((%2) ILIKE '%%3%')" ).arg( mFilterExpression, mDisplayExpression, mFilterValue );
+      filterClause = u"(%1) AND ((%2) ILIKE '%%3%')"_s.arg( mFilterExpression, mDisplayExpression, mFilterValue );
 
     if ( !filterClause.isEmpty() )
     {

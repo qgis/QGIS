@@ -16,12 +16,12 @@
 #ifndef QGSFIELDCONSTRAINTS_H
 #define QGSFIELDCONSTRAINTS_H
 
-#include <QString>
-#include <QHash>
-#include <QObject>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QHash>
+#include <QObject>
+#include <QString>
 
 /**
  * \class QgsFieldConstraints

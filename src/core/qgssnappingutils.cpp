@@ -14,12 +14,18 @@
  ***************************************************************************/
 
 #include "qgssnappingutils.h"
-#include "moc_qgssnappingutils.cpp"
+
 #include "qgsgeometry.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 #include "qgsrendercontext.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+#include "moc_qgssnappingutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSnappingUtils::QgsSnappingUtils( QObject *parent, bool enableSnappingForInvisibleFeature )
   : QObject( parent )
@@ -538,7 +544,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
 
     if ( !relaxed )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Prepare index total: %1 ms" ).arg( t.elapsed() ), 2 );
+      QgsDebugMsgLevel( u"Prepare index total: %1 ms"_s.arg( t.elapsed() ), 2 );
     }
   }
 }
@@ -606,11 +612,11 @@ void QgsSnappingUtils::setCurrentLayer( QgsVectorLayer *layer )
 
 QString QgsSnappingUtils::dump()
 {
-  QString msg = QStringLiteral( "--- SNAPPING UTILS DUMP ---\n" );
+  QString msg = u"--- SNAPPING UTILS DUMP ---\n"_s;
 
   if ( !mMapSettings.hasValidSettings() )
   {
-    msg += QLatin1String( "invalid map settings!" );
+    msg += "invalid map settings!"_L1;
     return msg;
   }
 
@@ -620,7 +626,7 @@ QString QgsSnappingUtils::dump()
   {
     if ( mSnappingConfig.mode() == Qgis::SnappingMode::ActiveLayer && !mCurrentLayer )
     {
-      msg += QLatin1String( "no current layer!" );
+      msg += "no current layer!"_L1;
       return msg;
     }
 
@@ -646,42 +652,42 @@ QString QgsSnappingUtils::dump()
     msg += QString( "layer : %1\n"
                     "config: %2   tolerance %3 %4\n" )
            .arg( layer.layer->name() )
-           .arg( layer.type ).arg( layer.tolerance ).arg( static_cast<int>( layer.unit ) );
+           .arg( static_cast<int>( layer.type ) ).arg( layer.tolerance ).arg( static_cast<int>( layer.unit ) );
 
     if ( mStrategy == IndexAlwaysFull || mStrategy == IndexHybrid || mStrategy == IndexExtent )
     {
       if ( QgsPointLocator *loc = locatorForLayer( layer.layer ) )
       {
-        QString extentStr, cachedGeoms, limit( QStringLiteral( "no max area" ) );
+        QString extentStr, cachedGeoms, limit( u"no max area"_s );
         if ( const QgsRectangle *r = loc->extent() )
         {
-          extentStr = QStringLiteral( " extent %1" ).arg( r->toString() );
+          extentStr = u" extent %1"_s.arg( r->toString() );
         }
         else
-          extentStr = QStringLiteral( "full extent" );
+          extentStr = u"full extent"_s;
         if ( loc->hasIndex() )
-          cachedGeoms = QStringLiteral( "%1 feats" ).arg( loc->cachedGeometryCount() );
+          cachedGeoms = u"%1 feats"_s.arg( loc->cachedGeometryCount() );
         else
-          cachedGeoms = QStringLiteral( "not initialized" );
+          cachedGeoms = u"not initialized"_s;
         if ( mStrategy == IndexHybrid )
         {
           if ( mHybridMaxAreaPerLayer.contains( layer.layer->id() ) )
           {
             double maxArea = mStrategy == IndexHybrid ? mHybridMaxAreaPerLayer[layer.layer->id()] : -1;
             if ( maxArea != -1 )
-              limit = QStringLiteral( "max area %1" ).arg( maxArea );
+              limit = u"max area %1"_s.arg( maxArea );
           }
           else
-            limit = QStringLiteral( "not evaluated" );
+            limit = u"not evaluated"_s;
         }
-        msg += QStringLiteral( "index : YES | %1 | %2 | %3\n" ).arg( cachedGeoms, extentStr, limit );
+        msg += u"index : YES | %1 | %2 | %3\n"_s.arg( cachedGeoms, extentStr, limit );
       }
       else
-        msg += QLatin1String( "index : ???\n" ); // should not happen
+        msg += "index : ???\n"_L1; // should not happen
     }
     else
-      msg += QLatin1String( "index : NO\n" );
-    msg += QLatin1String( "-\n" );
+      msg += "index : NO\n"_L1;
+    msg += "-\n"_L1;
   }
 
   return msg;

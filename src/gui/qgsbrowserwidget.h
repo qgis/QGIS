@@ -16,9 +16,10 @@
 #define QGSBROWSERWIDGET_H
 
 #include "ui_qgsbrowserwidgetbase.h"
+
+#include "qgis_gui.h"
 #include "qgsmimedatautils.h"
 #include "qgspanelwidget.h"
-#include "qgis_gui.h"
 
 class QgsBrowserGuiModel;
 class QgsDockBrowserTreeView;
@@ -193,6 +194,7 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     QStringList mDisabledDataItemsKeys;
 
     friend class QgsBrowserDockWidget;
+    friend class TestQgsCustomization;
 };
 
 #endif // QGSBROWSERWIDGET_H

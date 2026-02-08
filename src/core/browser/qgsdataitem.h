@@ -17,13 +17,17 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgsmimedatautils.h"
 #include "qgis.h"
-#include <QObject>
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmimedatautils.h"
+
 #include <QFutureWatcher>
 #include <QIcon>
+#include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsDataItem;
 class QMenu;
@@ -94,7 +98,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsDataItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsDataItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -145,6 +149,25 @@ class CORE_EXPORT QgsDataItem : public QObject
     }
     SIP_END
 #endif
+
+    /**
+     * Returns the hierarchical depth of the item's original creator/source.
+     *
+     * This value represents the depth of the item that this object was created
+     * from. For example, a return value of 1 indicates that the item was created by its
+     * direct parent. A return value of 2 would indicate it was created by its
+     * grandparent, etc.
+     *
+     * A value of 0 indicates an unknown source, or an item which has not yet
+     * been added to the hierarchy.
+     *
+     * This value indicates the ancestor which must be refreshed in order to
+     * regenerate an item representing the same object as this item refers to.
+     *
+     * \see ancestorAtDepth()
+     * \since QGIS 4.0
+     */
+    int creatorAncestorDepth() const;
 
     Qgis::BrowserItemState state() const;
 
@@ -273,7 +296,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      * Writes the selected crs into data source. The original data source will be modified when calling this
      * method.
      *
-     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.6. This method is no longer used by QGIS and will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) SIP_DEPRECATED;
 
@@ -291,7 +314,7 @@ class CORE_EXPORT QgsDataItem : public QObject
      */
     Q_DECL_DEPRECATED virtual bool rename( const QString &name ) SIP_DEPRECATED;
 
-    // ### QGIS 4 - rename to capabilities()
+    // ### QGIS 5 - rename to capabilities()
 
     /**
      * Returns the capabilities for the data item.
@@ -347,6 +370,18 @@ class CORE_EXPORT QgsDataItem : public QObject
      * QObject hierarchy.
     */
     QgsDataItem *parent() const { return mParent; }
+
+    /**
+     * Returns the ancestor item at the specified \a depth.
+     *
+     * If \a depth is 1 then this method returns the parent() item. A \a depth
+     * of 2 would return its grandparent (e.g. the parent's parent item).
+     *
+     * Returns NULLPTR if no item exists at the specified depth.
+     *
+     * \since QGIS 4.0
+     */
+    QgsDataItem *ancestorAtDepth( int depth ) const;
 
     /**
      * Set item parent and connect / disconnect parent to / from item signals.
@@ -439,6 +474,13 @@ class CORE_EXPORT QgsDataItem : public QObject
      * \since QGIS 3.16
      */
     virtual QgsAbstractDatabaseProviderConnection *databaseConnection() const SIP_FACTORY;
+
+    // TODO should be private, but MSSQL data item provider is badly behaved and needs to
+    // manually manipulate this!
+    /**
+     * Creator ancestor depth.
+     */
+    SIP_SKIP int mCreatorAncestorDepth = 0;
 
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );
@@ -591,6 +633,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // Set to true if object has to be deleted when possible (nothing running in threads)
     bool mDeferredDelete = false;
     std::unique_ptr<QFutureWatcher<QVector<QgsDataItem *> >> mFutureWatcher;
+
     // number of items currently in loading (populating) state
     static QgsAnimatedIcon *sPopulatingIcon;
 };
@@ -609,7 +652,7 @@ class CORE_EXPORT QgsErrorItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsErrorItem: \"%1\" %2>" ).arg( sipCpp->name(), sipCpp->path() );
+    QString str = u"<QgsErrorItem: \"%1\" %2>"_s.arg( sipCpp->name(), sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

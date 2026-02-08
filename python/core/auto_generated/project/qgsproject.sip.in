@@ -716,7 +716,7 @@ Remove the given ``key`` from the specified ``scope``.
 
     QStringList entryList( const QString &scope, const QString &key ) const;
 %Docstring
-Returns a list of child keys with values which exist within the the
+Returns a list of child keys with values which exist within the
 specified ``scope`` and ``key``.
 
 This method does not return keys that contain other keys. See
@@ -731,7 +731,7 @@ keys.
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 %Docstring
 Returns a list of child keys which contain other keys that exist within
-the the specified ``scope`` and ``key``.
+the specified ``scope`` and ``key``.
 
 This method only returns keys with keys, it will not return keys that
 contain only values. See :py:func:`~QgsProject.entryList` to retrieve
@@ -911,6 +911,15 @@ atlases and reports within the project.
 %Docstring
 Returns the project's elevation profile manager, which manages elevation
 profiles within the project.
+
+.. versionadded:: 4.0
+%End
+
+
+    QgsSelectiveMaskingSourceSetManager *selectiveMaskingSourceSetManager();
+%Docstring
+Returns the project's selective masking set manager, which manages
+storage of a set of selective masking source sets within the project.
 
 .. versionadded:: 4.0
 %End
@@ -2270,14 +2279,30 @@ Emitted when a layer was added to the registry.
 
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );
 %Docstring
-Emitted, when a layer was added to the registry and the legend. Layers
-can also be private layers, which are signalled by
+Emitted when ``layers`` were added to the registry and the legend.
+
+Layers can also be private layers, which are signalled by
 :py:func:`~QgsProject.layersAdded` and
 :py:func:`~QgsProject.layerWasAdded` but will not be advertised by this
 signal.
 
 :param layers: List of :py:class:`QgsMapLayer` which were added to the
                legend.
+
+.. seealso:: :py:func:`layersAddedWithoutLegend`
+%End
+
+    void layersAddedWithoutLegend( const QList<QgsMapLayer *> &layers );
+%Docstring
+Emitted when ``layers`` were added to the registry without adding to the
+legend.
+
+:param layers: List of :py:class:`QgsMapLayer` which were added to the
+               project but not the legend.
+
+.. seealso:: :py:func:`legendLayersAdded`
+
+.. versionadded:: 4.0
 %End
 
     void isDirtyChanged( bool dirty );

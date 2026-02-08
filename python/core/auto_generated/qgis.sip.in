@@ -11,6 +11,8 @@
 
 
 
+
+
 %ModuleHeaderCode
 #include <qgis.h>
 %End
@@ -190,6 +192,7 @@ The development version
       MultiSurface,
       PolyhedralSurface,
       TIN,
+      NurbsCurve,
       NoGeometry,
       PointZ,
       LineStringZ,
@@ -206,6 +209,7 @@ The development version
       MultiSurfaceZ,
       PolyhedralSurfaceZ,
       TINZ,
+      NurbsCurveZ,
       PointM,
       LineStringM,
       PolygonM,
@@ -221,6 +225,7 @@ The development version
       MultiSurfaceM,
       PolyhedralSurfaceM,
       TINM,
+      NurbsCurveM,
       PointZM,
       LineStringZM,
       PolygonZM,
@@ -236,6 +241,7 @@ The development version
       PolyhedralSurfaceZM,
       TINZM,
       TriangleZM,
+      NurbsCurveZM,
       Point25D,
       LineString25D,
       Polygon25D,
@@ -278,6 +284,12 @@ The development version
       CircularString,
       Streaming,
       Shape,
+      NurbsCurve,
+    };
+
+    enum class NurbsMode
+    {
+      ControlPoints,
     };
 
     enum class VectorLayerTypeFlag
@@ -720,6 +732,12 @@ The development version
       AllowOverlapAtNoCost,
     };
 
+    enum class LabelWhitespaceCollisionHandling
+    {
+      TreatWhitespaceAsCollision,
+      IgnoreWhitespaceCollisions,
+    };
+
     enum class LabelPrioritization
     {
       PreferCloser,
@@ -739,6 +757,14 @@ The development version
       OutsidePolygons,
     };
 
+    enum class CurvedLabelMode
+    {
+      Default,
+      PlaceCharactersAtVertices,
+      StretchCharacterSpacingToFitLine,
+      StretchWordSpacingToFitLine,
+    };
+
     enum class LabelPredefinedPointPosition
       {
       TopLeft,
@@ -754,6 +780,13 @@ The development version
       BottomSlightlyRight,
       BottomRight,
       OverPoint,
+    };
+
+    enum class MultiPartLabelingBehavior
+    {
+      LabelLargestPartOnly,
+      LabelEveryPartWithEntireLabel,
+      SplitLabelTextLinesOverParts,
     };
 
     enum class LabelOffsetType
@@ -1663,7 +1696,7 @@ The development version
     {
       UseAllLabels,
       UsePartialCandidates,
-      // TODO QGIS 4.0: remove
+      // TODO QGIS 5.0: remove
       RenderOutlineLabels,
       DrawLabelRectOnly,
       DrawCandidates,
@@ -1768,10 +1801,17 @@ The development version
       GlowSpread,
     };
 
+    enum class SelectiveMaskSourceType
+    {
+      SymbolLayer,
+      Label,
+    };
+
     enum class VertexType
       {
       Segment,
       Curve,
+      ControlPoint,
     };
 
     enum class MarkerShape
@@ -2308,6 +2348,12 @@ The development version
       MValue,
     };
 
+    enum class CadMeasurementDisplayType
+    {
+      Hidden,
+      Cartesian,
+      Ellipsoidal,
+    };
 
     enum class ProjectFlag
     {
@@ -2377,6 +2423,12 @@ The development version
     {
       IndividualFeatures,
       ContinuousSurface,
+    };
+
+    enum class PointCloudProfileType
+    {
+      IndividualPoints,
+      TriangulatedSurface,
     };
 
     enum class ProfileGeneratorFlag
@@ -2568,6 +2620,13 @@ The development version
       Subgroup,
       Symbol,
       SymbolLabel,
+    };
+
+    enum class LegendSyncMode
+    {
+      AllProjectLayers,
+      VisibleLayers,
+      Manual,
     };
 
     enum class LegendJsonRenderFlag
@@ -3021,6 +3080,105 @@ The development version
       CenteredSegment,
     };
 
+
+    enum class MapGridUnit
+      {
+      MapUnits,
+      Millimeters,
+      Centimeters,
+      DynamicPageSizeBased,
+    };
+
+    enum class MapGridStyle
+      {
+      Lines,
+      LineCrosses,
+      Markers,
+      FrameAndAnnotationsOnly
+    };
+
+    enum class MapGridComponentVisibility
+      {
+      ShowAll,
+      LatitudeOnly,
+      LongitudeOnly,
+      HideAll
+    };
+
+    enum class MapGridAnnotationPosition
+      {
+      InsideMapFrame,
+      OutsideMapFrame,
+    };
+
+    enum class MapGridAnnotationDirection
+      {
+      Horizontal,
+      Vertical,
+      VerticalDescending,
+      BoundaryDirection,
+      AboveTick,
+      OnTick,
+      UnderTick,
+    };
+
+    enum class MapGridAnnotationFormat
+      {
+      Decimal,
+      DegreeMinute,
+      DegreeMinuteSecond,
+      DecimalWithSuffix,
+      DegreeMinuteNoSuffix,
+      DegreeMinutePadded,
+      DegreeMinuteSecondNoSuffix,
+      DegreeMinuteSecondPadded,
+      CustomFormat
+    };
+
+    enum class MapGridBorderSide
+      {
+      Left,
+      Right,
+      Bottom,
+      Top,
+    };
+
+    enum class MapGridFrameStyle
+      {
+      NoFrame,
+      Zebra,
+      InteriorTicks,
+      ExteriorTicks,
+      InteriorExteriorTicks,
+      LineBorder,
+      LineBorderNautical,
+      ZebraNautical,
+    };
+
+    enum class MapGridTickLengthMode
+      {
+      OrthogonalTicks,
+      NormalizedTicks,
+    };
+
+
+    enum class MapGridFrameSideFlag
+    {
+      Left,
+      Right,
+      Top,
+      Bottom
+    };
+
+    typedef QFlags<Qgis::MapGridFrameSideFlag> MapGridFrameSideFlags;
+
+
+    enum class MapGridAnnotationType
+      {
+      Longitude,
+      Latitude
+    };
+
     enum class InputControllerType
     {
       Map2D,
@@ -3047,6 +3205,8 @@ The development version
       SetFieldComment,
       SetFieldAlias,
       SetTableComment,
+      EditFieldDomain,
+      DeleteFieldDomain,
     };
     typedef QFlags<Qgis::DatabaseProviderConnectionCapability2> DatabaseProviderConnectionCapabilities2;
 
@@ -3495,6 +3655,12 @@ The development version
     typedef QFlags<Qgis::ExtrusionFace> ExtrusionFaces;
 
 
+    enum class TriangulationAlgorithm
+    {
+      ConstrainedDelaunay,
+      Earcut
+    };
+
     static const double DEFAULT_SEARCH_RADIUS_MM;
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
@@ -3586,11 +3752,31 @@ Else throws an exception.
 .. versionadded:: 4.0
 %End
 
-    static bool hasQtWebkit();
+    static bool hasGeographicLib();
 %Docstring
-Returns ``True`` if the QGIS build contains QtWebkit.
+Returns ``True`` if the QGIS build contains GeographicLib.
 
 .. versionadded:: 4.0
+%End
+
+    static int geographicLibVersion();
+%Docstring
+Returns the version of the GeographicLib library if QGIS is built with
+GeographicLib support.
+
+:raises QgsNotSupportedException: on QGIS builds based without
+                                  GeographicLib.
+
+.. versionadded:: 4.0
+%End
+
+ static bool hasQtWebkit();
+%Docstring
+Returns ``False``.
+
+.. deprecated:: 4.0
+
+   WebKit-Support was removed.
 %End
 
     static QString geoNone();
@@ -3614,7 +3800,7 @@ WKT string that represents a geographic coord system
 
 .. deprecated:: 3.44
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
  static QString geoProj4();
@@ -3623,7 +3809,7 @@ PROJ4 string that represents a geographic coord system.
 
 .. deprecated:: 3.44
 
-   Will be removed in QGIS 4.0.
+   Will be removed in QGIS 5.0.
 %End
 
 };
@@ -3807,6 +3993,8 @@ QFlags<Qgis::CurvedTextFlag> operator|(Qgis::CurvedTextFlag f1, QFlags<Qgis::Cur
 
 QFlags<Qgis::ExtrusionFace> operator|(Qgis::ExtrusionFace f1, QFlags<Qgis::ExtrusionFace> f2);
 
+QFlags<Qgis::MapGridFrameSideFlag> operator|(Qgis::MapGridFrameSideFlag f1, QFlags<Qgis::MapGridFrameSideFlag> f2);
+
 
 
 
@@ -3975,13 +4163,9 @@ numeric values, dates and times)
 .. seealso:: :py:func:`qgsVariantCompare`
 %End
 
-
 bool operator> ( const QVariant &v1, const QVariant &v2 );
 
 bool operator< ( const QVariant &v1, const QVariant &v2 );
-
-
-
 
  QString qgsVsiPrefix( const QString &path ) /Deprecated="Since 3.44. Use QgsGdalUtils.vsiPrefixForPath() instead."/;
 %Docstring
@@ -4004,9 +4188,6 @@ empty string if the path is not associated with a vsi prefix.
 
 
 typedef unsigned long long qgssize;
-
-
-
 
 
 

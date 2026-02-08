@@ -13,13 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgsmapsettings.h>
@@ -45,7 +48,7 @@ class TestQgsLayeredSymbolLevel : public QgsTest
     Q_OBJECT
   public:
     TestQgsLayeredSymbolLevel()
-      : QgsTest( QStringLiteral( "Layered Symbol Level Rendering Tests" ) ) {}
+      : QgsTest( u"Layered Symbol Level Rendering Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -77,7 +80,7 @@ void TestQgsLayeredSymbolLevel::initTestCase()
   //
   const QString myRoadsFileName = mTestDataDir + "layered_roads.shp";
   const QFileInfo myRoadsFileInfo( myRoadsFileName );
-  mpRoadsLayer = new QgsVectorLayer( myRoadsFileInfo.filePath(), myRoadsFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpRoadsLayer = new QgsVectorLayer( myRoadsFileInfo.filePath(), myRoadsFileInfo.completeBaseName(), u"ogr"_s );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
@@ -129,7 +132,7 @@ bool TestQgsLayeredSymbolLevel::imageCheck( const QString &testType )
   context << QgsExpressionContextUtils::mapSettingsScope( mMapSettings );
   mMapSettings.setExpressionContext( context );
   QgsMultiRenderChecker myChecker;
-  myChecker.setControlPathPrefix( QStringLiteral( "layered_symbol_levels" ) );
+  myChecker.setControlPathPrefix( u"layered_symbol_levels"_s );
   myChecker.setControlName( "expected_" + testType );
   myChecker.setMapSettings( mMapSettings );
   const bool myResultFlag = myChecker.runTest( testType, 0 );

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspuzzlewidget.h"
-#include "moc_qgspuzzlewidget.cpp"
 
 #include "qgsmapcanvas.h"
 
@@ -22,6 +21,7 @@
 #include <QMessageBox>
 #include <QRandomGenerator>
 
+#include "moc_qgspuzzlewidget.cpp"
 
 static bool testSolved( QVector<int> &positions )
 {

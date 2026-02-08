@@ -15,14 +15,14 @@
  ***************************************************************************/
 
 #include "qgselevationprofilemanagerdialog.h"
-#include "moc_qgselevationprofilemanagerdialog.cpp"
+
 #include "qgisapp.h"
+#include "qgselevationprofile.h"
 #include "qgselevationprofilemanager.h"
 #include "qgselevationprofilemanagermodel.h"
-#include "qgsproject.h"
 #include "qgsgui.h"
-#include "qgselevationprofile.h"
 #include "qgsnewnamedialog.h"
+#include "qgsproject.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -32,6 +32,8 @@
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QUrl>
+
+#include "moc_qgselevationprofilemanagerdialog.cpp"
 
 QgsElevationProfileManagerDialog::QgsElevationProfileManagerDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -133,7 +135,7 @@ bool QgsElevationProfileManagerDialog::uniqueProfileTitle( QWidget *parent, QStr
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "Title already exists!" ) );
+    dlg.setConflictingNameWarning( tr( "An elevation profile with this name already exists." ) );
 
     if ( dlg.exec() != QDialog::Accepted )
     {

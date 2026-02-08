@@ -16,17 +16,18 @@
  ***************************************************************************/
 
 #include "qgsmeshutils.h"
-#include "qgsmeshlayer.h"
-#include "qgsmaptopixel.h"
-#include "qgsrendercontext.h"
-#include "qgstriangularmesh.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshlayerinterpolator.h"
-#include "qgsgeometry.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
 
 #include <memory>
+
+#include "qgsgeometry.h"
+#include "qgslinestring.h"
+#include "qgsmaptopixel.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayerinterpolator.h"
+#include "qgsmeshlayerutils.h"
+#include "qgspolygon.h"
+#include "qgsrendercontext.h"
+#include "qgstriangularmesh.h"
 
 QgsRasterBlock *QgsMeshUtils::exportRasterBlock(
   const QgsMeshLayer &layer,

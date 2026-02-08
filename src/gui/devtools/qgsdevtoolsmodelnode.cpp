@@ -14,16 +14,22 @@
  ***************************************************************************/
 
 #include "qgsdevtoolsmodelnode.h"
-#include "qgis.h"
-#include <QUrlQuery>
-#include <QColor>
-#include <QBrush>
-#include <QFont>
-#include <QAction>
-#include <QDesktopServices>
-#include <QApplication>
-#include <QClipboard>
+
 #include <nlohmann/json.hpp>
+
+#include "qgis.h"
+
+#include <QAction>
+#include <QApplication>
+#include <QBrush>
+#include <QClipboard>
+#include <QColor>
+#include <QDesktopServices>
+#include <QFont>
+#include <QString>
+#include <QUrlQuery>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsDevToolsModelNode
@@ -131,7 +137,7 @@ QVariant QgsDevToolsModelValueNode::data( int role ) const
     case Qt::DisplayRole:
     case Qt::ToolTipRole:
     {
-      return QStringLiteral( "%1: %2" ).arg( mKey.leftJustified( 30, ' ' ), mValue );
+      return u"%1: %2"_s.arg( mKey.leftJustified( 30, ' ' ), mValue );
     }
 
     case Qt::ForegroundRole:
@@ -152,7 +158,7 @@ QList<QAction *> QgsDevToolsModelValueNode::actions( QObject *parent )
 
   QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
   QObject::connect( copyAction, &QAction::triggered, copyAction, [this] {
-    QApplication::clipboard()->setText( QStringLiteral( "%1: %2" ).arg( mKey, mValue ) );
+    QApplication::clipboard()->setText( u"%1: %2"_s.arg( mKey, mValue ) );
   } );
 
   res << copyAction;

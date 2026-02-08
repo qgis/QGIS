@@ -13,16 +13,18 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassfeatureiterator.h"
+
+#include "qgsgeometry.h"
+#include "qgsgrass.h"
+#include "qgsgrassprovider.h"
+#include "qgsgrassvectormap.h"
+#include "qgslogger.h"
+
 #include <QObject>
 #include <QTextCodec>
 
-#include "qgsgrass.h"
-#include "qgsgrassfeatureiterator.h"
 #include "moc_qgsgrassfeatureiterator.cpp"
-#include "qgsgrassprovider.h"
-#include "qgsgrassvectormap.h"
-#include "qgsgeometry.h"
-#include "qgslogger.h"
 
 extern "C"
 {
@@ -527,7 +529,7 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature &feature )
         int line = Vect_get_node_line( mSource->map(), lid, i );
         QgsDebugMsgLevel( "cancel", 3 );
         if ( i > 0 )
-          lines += QLatin1Char( ',' );
+          lines += ','_L1;
         lines += QString::number( line );
       }
       feature.setAttribute( 1, lines );

@@ -14,25 +14,30 @@
  ***************************************************************************/
 
 #include "qgsterrainentity.h"
-#include "moc_qgsterrainentity.cpp"
 
-#include "qgsaabb.h"
+#include <memory>
+
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
+#include "qgsaabb.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
+#include "qgscoordinatetransform.h"
 #include "qgsdemterraintilegeometry_p.h"
 #include "qgseventtracing.h"
+#include "qgsraycastingutils.h"
 #include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgs3dutils.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgscoordinatetransform.h"
-#include "qgsraycastingutils.h"
 
+#include <QString>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QGeometryRenderer>
 
+#include "moc_qgsterrainentity.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -76,7 +81,7 @@ QgsTerrainEntity::QgsTerrainEntity( Qgs3DMapSettings *map, Qt3DCore::QNode *pare
 
   mTextureGenerator = new QgsTerrainTextureGenerator( *map );
 
-  mUpdateJobFactory.reset( new TerrainMapUpdateJobFactory( mTextureGenerator ) );
+  mUpdateJobFactory = std::make_unique<TerrainMapUpdateJobFactory>( mTextureGenerator );
 
   mTerrainTransform = new Qt3DCore::QTransform;
   mTerrainTransform->setScale( 1.0f );
@@ -170,7 +175,7 @@ void QgsTerrainEntity::onShowBoundingBoxesChanged()
 
 void QgsTerrainEntity::invalidateMapImages()
 {
-  QgsEventTracing::addEvent( QgsEventTracing::Instant, QStringLiteral( "3D" ), QStringLiteral( "Invalidate textures" ) );
+  QgsEventTracing::addEvent( QgsEventTracing::Instant, u"3D"_s, u"Invalidate textures"_s );
 
   // handle active nodes
 

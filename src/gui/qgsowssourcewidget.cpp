@@ -16,12 +16,16 @@
  ***************************************************************************/
 
 #include "qgsowssourcewidget.h"
-#include "moc_qgsowssourcewidget.cpp"
-#include "qgsproviderregistry.h"
+
 #include "qgsmapcanvas.h"
+#include "qgsproviderregistry.h"
 
 #include <QNetworkRequest>
+#include <QString>
 
+#include "moc_qgsowssourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *parent )
   : QgsProviderSourceWidget( parent )
@@ -30,7 +34,7 @@ QgsOWSSourceWidget::QgsOWSSourceWidget( const QString &providerKey, QWidget *par
   setupUi( this );
 
   QgsCoordinateReferenceSystem destinationCrs;
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   mSpatialExtentBox->setOutputCrs( crs );
 }
 
@@ -40,7 +44,7 @@ void QgsOWSSourceWidget::setMapCanvas( QgsMapCanvas *canvas )
   QgsProviderSourceWidget::setMapCanvas( canvas );
 
   QgsCoordinateReferenceSystem destinationCrs;
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
 
   if ( mapCanvas() && mapCanvas()->mapSettings().destinationCrs().isValid() )
     destinationCrs = mapCanvas()->mapSettings().destinationCrs();
@@ -55,7 +59,7 @@ void QgsOWSSourceWidget::setMapCanvas( QgsMapCanvas *canvas )
 void QgsOWSSourceWidget::setExtent( const QgsRectangle &extent )
 {
   QgsCoordinateReferenceSystem destinationCrs;
-  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem( u"EPSG:4326"_s );
   mSpatialExtentBox->setOutputCrs( crs );
 
   if ( mapCanvas() && mapCanvas()->mapSettings().destinationCrs().isValid() )
@@ -75,9 +79,9 @@ QgsRectangle QgsOWSSourceWidget::extent() const
 void QgsOWSSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri( mProviderKey, uri );
-  bool inverted = mSourceParts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
+  bool inverted = mSourceParts.value( u"InvertAxisOrientation"_s ).toBool();
 
-  QString bbox = mSourceParts.value( QStringLiteral( "bbox" ) ).toString();
+  QString bbox = mSourceParts.value( u"bbox"_s ).toString();
   QgsRectangle extent;
   if ( !bbox.isEmpty() )
   {
@@ -112,12 +116,12 @@ QString QgsOWSSourceWidget::sourceUri() const
 
   if ( mSpatialExtentBox->isChecked() && !spatialExtent.isNull() )
   {
-    bool inverted = parts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
+    bool inverted = parts.value( u"InvertAxisOrientation"_s ).toBool();
 
     QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
                      .arg( qgsDoubleToString( spatialExtent.xMinimum() ), qgsDoubleToString( spatialExtent.yMinimum() ), qgsDoubleToString( spatialExtent.xMaximum() ), qgsDoubleToString( spatialExtent.yMaximum() ) );
 
-    parts.insert( QStringLiteral( "bbox" ), bbox );
+    parts.insert( u"bbox"_s, bbox );
   }
 
 

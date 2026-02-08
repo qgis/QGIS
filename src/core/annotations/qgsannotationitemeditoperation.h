@@ -17,13 +17,13 @@
 #ifndef QGSANNOTATIONITEMEDITOPERATION_H
 #define QGSANNOTATIONITEMEDITOPERATION_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
-#include "qgspointxy.h"
-#include "qgsvertexid.h"
 #include "qgsgeometry.h"
+#include "qgspointxy.h"
 #include "qgsrendercontext.h"
+#include "qgsvertexid.h"
 
 /**
  * \ingroup core
@@ -89,6 +89,7 @@ class CORE_EXPORT QgsAbstractAnnotationItemEditOperation
       DeleteNode, //!< Delete a node
       AddNode, //!< Add a node
       TranslateItem, //!< Translate (move) an item
+      RotateItem, //!< Rotate an item \since QGIS 4.0
     };
 
     /**
@@ -306,6 +307,36 @@ class CORE_EXPORT QgsAnnotationItemEditOperationTranslateItem : public QgsAbstra
     double mTranslatePixelsY = 0;
 
 };
+
+
+/**
+ * \ingroup core
+ * \brief Annotation item edit operation consisting of rotating an item.
+ * \since QGIS 4.0
+ */
+class CORE_EXPORT QgsAnnotationItemEditOperationRotateItem : public QgsAbstractAnnotationItemEditOperation
+{
+  public:
+
+    /**
+     * Constructor for QgsAnnotationItemEditOperationRotateItem, where the item with the specified \a itemId and rotation
+     * \a angle (in degrees)
+     */
+    QgsAnnotationItemEditOperationRotateItem( const QString &itemId, double angle );
+
+    Type type() const override;
+
+    /**
+     * Returns the rotation angle value (in degrees clockwise).
+     */
+    double angle() const { return mAngle; }
+
+  private:
+
+    double mAngle = 0;
+
+};
+
 
 /**
  * \ingroup core

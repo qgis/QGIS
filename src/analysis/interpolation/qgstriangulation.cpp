@@ -13,11 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstriangulation.h"
+
 #include "qgsfields.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsFields QgsTriangulation::triangulationFields()
 {
   QgsFields fields;
-  fields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString, QStringLiteral( "String" ) ) );
+  fields.append( QgsField( u"type"_s, QMetaType::Type::QString, u"String"_s ) );
   return fields;
 }

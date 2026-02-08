@@ -46,7 +46,7 @@ implementing filters called from
 
 
     class CadConstraint
-{
+    {
 %Docstring(signature="appended")
 The CadConstraint is a class for all basic constraints
 (angle/distance/x/y). It contains all values (locked, value, relative)
@@ -57,9 +57,6 @@ and pointers to corresponding widgets.
    Relative is not mandatory since it is not used for distance.
 %End
 
-%TypeHeaderCode
-#include "qgsadvanceddigitizingdockwidget.h"
-%End
       public:
         enum LockMode
         {
@@ -280,6 +277,13 @@ Returns the current advanced digitizing tool. Returns ``None`` if not
 set.
 
 .. versionadded:: 3.40
+%End
+
+    QgsAdvancedDigitizingFloater *floater() const;
+%Docstring
+Returns the advanced digitizing floater.
+
+.. versionadded:: 4.0
 %End
 
     void releaseLocks( bool releaseRepeatingLocks = true );
@@ -695,6 +699,31 @@ Convenient method to get the M value from the line edit wiget
 .. versionadded:: 3.22
 %End
 
+    void setWeight( const QString &value, bool enabled );
+%Docstring
+Set the weight value for NURBS curves.
+
+:param value: The weight value as a string
+:param enabled: Whether weight editing is enabled
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
+    QString weight() const;
+%Docstring
+Returns the current weight value for NURBS curves.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
     CadCapacities capacities() const;
 %Docstring
 Returns the capacities
@@ -707,6 +736,9 @@ Returns the formatted label for common angle snapping option.
 
 .. versionadded:: 3.32
 %End
+
+  public slots:
+
 
   signals:
 
@@ -733,7 +765,7 @@ event. This happens normally when a constraint is toggled.
 .. versionadded:: 3.22
 %End
 
- void pointChanged( const QgsPointXY &point ) /Deprecated="Since 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2() instead."/;
+ void pointChanged( const QgsPointXY &point ) /Deprecated="Since 3.22. No longer used, will be removed in QGIS 5.0. Use pointChangedV2() instead."/;
 %Docstring
 Sometimes a constraint may change the current point out of a mouse
 event. This happens normally when a constraint is toggled.
@@ -743,7 +775,7 @@ event. This happens normally when a constraint is toggled.
 
 .. deprecated:: 3.22
 
-   No longer used, will be removed in QGIS 4.0. Use :py:func:`~QgsAdvancedDigitizingDockWidget.pointChangedV2` instead.
+   No longer used, will be removed in QGIS 5.0. Use :py:func:`~QgsAdvancedDigitizingDockWidget.pointChangedV2` instead.
 %End
 
 
@@ -848,6 +880,43 @@ that must reflect the current advanced digitizing state.
    unstable API (will likely change)
 
 .. versionadded:: 3.32
+%End
+
+    void valueWeightChanged( const QString &value );
+%Docstring
+Emitted whenever the weight ``value`` changes for NURBS curves. Could be
+used by widgets that must reflect the current weight value.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
+    void valueAreaChanged( const QString &value );
+%Docstring
+Emitted whenever the total summed area ``value`` changes. Could be used
+by widgets that must reflect the current advanced digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
+    void valueTotalLengthChanged( const QString &value );
+%Docstring
+Emitted whenever the total length (or perimeter) ``value`` changes.
+Could be used by widgets that must reflect the current advanced
+digitizing state.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
 %End
 
     void lockXChanged( bool locked );
@@ -1120,6 +1189,21 @@ the current advanced digitizing state.
 .. versionadded:: 3.8
 %End
 
+    void enabledChangedWeight( bool enabled );
+%Docstring
+Emitted whenever the weight field is enabled or disabled for NURBS
+curves. Could be used by widgets that must reflect the current weight
+editing state.
+
+:param enabled: Whether the weight parameter is enabled or not.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
+%End
+
     void focusOnXRequested();
 %Docstring
 Emitted whenever the X field should get the focus using the shortcuts
@@ -1196,6 +1280,19 @@ field is being edited.
    unstable API (will likely change)
 
 .. versionadded:: 3.8
+%End
+
+    void focusOnWeightRequested();
+%Docstring
+Emitted whenever the weight field should get the focus using the
+shortcuts (W). Could be used by widgets to capture the focus when a
+field is being edited.
+
+.. note::
+
+   unstable API (will likely change)
+
+.. versionadded:: 4.0
 %End
 
     void valueCommonAngleSnappingChanged( double angle );

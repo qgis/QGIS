@@ -13,13 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDir>
-#include "qgstest.h"
-
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
 #include "qgshistogram.h"
+#include "qgstest.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
+#include <QDir>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -128,13 +131,13 @@ void TestQgsHistogram::fromLayer()
 
   QVERIFY( !h.setValues( nullptr, QString() ) );
 
-  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *layer = new QgsVectorLayer( u"Point?field=col1:real"_s, u"layer"_s, u"memory"_s );
   QVERIFY( layer->isValid() );
   QgsFeatureList features;
   for ( int i = 1; i <= 10; ++i )
   {
     QgsFeature f( layer->dataProvider()->fields(), i );
-    f.setAttribute( QStringLiteral( "col1" ), i );
+    f.setAttribute( u"col1"_s, i );
     features << f;
   }
   layer->dataProvider()->addFeatures( features );

@@ -18,8 +18,9 @@
 #ifndef QGSXYZSOURCESELECT_H
 #define QGSXYZSOURCESELECT_H
 
-#include "qgsabstractdatasourcewidget.h"
 #include "ui_qgstilesourceselectbase.h"
+
+#include "qgsabstractdatasourcewidget.h"
 
 class QgsXyzSourceWidget;
 

@@ -45,6 +45,7 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
     QgsElevationProfile,
+    QgsSelectiveMaskingSourceSet,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -455,6 +456,34 @@ class TestQgsProject(QgisTestCase):
         p.clear()
         self.assertFalse(p.elevationProfileManager().profiles())
 
+    def test_selective_masking_source_set_manager(self):
+        p = QgsProject()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
+        source_set1 = QgsSelectiveMaskingSourceSet()
+        source_set1.setName("p1")
+        p.selectiveMaskingSourceSetManager().addSet(source_set1)
+        source_set2 = QgsSelectiveMaskingSourceSet()
+        source_set2.setName("p2")
+        p.selectiveMaskingSourceSetManager().addSet(source_set2)
+        self.assertCountEqual(
+            [s.name() for s in p.selectiveMaskingSourceSetManager().sets()],
+            ["p1", "p2"],
+        )
+
+        with TemporaryDirectory() as d:
+            path = os.path.join(d, "selective_masking_sets.qgs")
+            self.assertTrue(p.write(path))
+            # Verify
+            p2 = QgsProject()
+            self.assertTrue(p2.read(path))
+            self.assertCountEqual(
+                [s.name() for s in p2.selectiveMaskingSourceSetManager().sets()],
+                ["p1", "p2"],
+            )
+
+        p.clear()
+        self.assertFalse(p.selectiveMaskingSourceSetManager().sets())
+
     def testReadEntry(self):
         prj = QgsProject.instance()
         prj.read(os.path.join(TEST_DATA_DIR, "labeling/test-labeling.qgs"))
@@ -599,6 +628,9 @@ class TestQgsProject(QgisTestCase):
         layer_was_added_spy = QSignalSpy(QgsProject.instance().layerWasAdded)
         layers_added_spy = QSignalSpy(QgsProject.instance().layersAdded)
         legend_layers_added_spy = QSignalSpy(QgsProject.instance().legendLayersAdded)
+        layers_added_without_legend_spy = QSignalSpy(
+            QgsProject.instance().layersAddedWithoutLegend
+        )
 
         l1 = createLayer("test")
         QgsProject.instance().addMapLayer(l1)
@@ -608,12 +640,14 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 1)
         self.assertEqual(len(layers_added_spy), 1)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 0)
 
         # layer not added to legend
         QgsProject.instance().addMapLayer(createLayer("test2"), False)
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
         # try readding a layer already in the registry
         QgsProject.instance().addMapLayer(l1)
@@ -621,6 +655,7 @@ class TestQgsProject(QgisTestCase):
         self.assertEqual(len(layer_was_added_spy), 2)
         self.assertEqual(len(layers_added_spy), 2)
         self.assertEqual(len(legend_layers_added_spy), 1)
+        self.assertEqual(len(layers_added_without_legend_spy), 1)
 
     def test_addMapLayers(self):
         """test adding multiple map layers to registry"""

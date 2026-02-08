@@ -16,15 +16,21 @@
  ***************************************************************************/
 
 #include "qgssourcecache.h"
-#include "moc_qgssourcecache.cpp"
-#include "qgsabstractcontentcache_p.h"
+
+#include <memory>
 
 #include "qgis.h"
+#include "qgsabstractcontentcache_p.h"
 #include "qgslogger.h"
 
-#include <QFile>
 #include <QBuffer>
+#include <QFile>
+#include <QString>
 #include <QTemporaryDir>
+
+#include "moc_qgssourcecache.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -50,7 +56,7 @@ int QgsSourceCacheEntry::dataSize() const
 
 void QgsSourceCacheEntry::dump() const
 {
-  QgsDebugMsgLevel( QStringLiteral( "path: %1" ).arg( path ), 3 );
+  QgsDebugMsgLevel( u"path: %1"_s.arg( path ), 3 );
 }
 
 ///@endcond
@@ -58,7 +64,7 @@ void QgsSourceCacheEntry::dump() const
 QgsSourceCache::QgsSourceCache( QObject *parent )
   : QgsAbstractContentCache< QgsSourceCacheEntry >( parent, QObject::tr( "Source" ) )
 {
-  temporaryDir.reset( new QTemporaryDir() );
+  temporaryDir = std::make_unique<QTemporaryDir>( );
 
   connect( this, &QgsAbstractContentCacheBase::remoteContentFetched, this, &QgsSourceCache::remoteSourceFetched );
 }
@@ -88,7 +94,7 @@ QString QgsSourceCache::fetchSource( const QString &path, bool &isBroken, bool b
 {
   QString filePath;
 
-  if ( !path.startsWith( QLatin1String( "base64:" ) ) && QFile::exists( path ) )
+  if ( !path.startsWith( "base64:"_L1 ) && QFile::exists( path ) )
   {
     filePath = path;
   }
@@ -110,7 +116,7 @@ QString QgsSourceCache::fetchSource( const QString &path, bool &isBroken, bool b
       QFile file( filePath );
       if ( !file.open( QIODevice::WriteOnly ) )
       {
-        QgsDebugError( QStringLiteral( "Can't open file %1" ).arg( filePath ) );
+        QgsDebugError( u"Can't open file %1"_s.arg( filePath ) );
         return QString();
       }
       file.write( ba );

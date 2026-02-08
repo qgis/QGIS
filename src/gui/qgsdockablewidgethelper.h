@@ -17,16 +17,18 @@
 #define QGSDOCKABLEWIDGETHELPER_H
 
 #include "qgis_gui.h"
+#include "qgsgui.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QDialog>
-#include <QToolButton>
-#include <QMainWindow>
 #include <QDomElement>
+#include <QMainWindow>
 #include <QPointer>
+#include <QString>
+#include <QToolButton>
 
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
-#include "qgsgui.h"
+using namespace Qt::StringLiterals;
 
 #define SIP_NO_FILE
 
@@ -54,7 +56,7 @@ class GUI_EXPORT QgsNonRejectableDialog : public QDialog
  */
 class GUI_EXPORT QgsDockableWidgetHelper : public QObject
 {
-    static inline QgsSettingsTreeNode *sTtreeDockConfigs = QgsGui::sTtreeWidgetGeometry->createNamedListNode( QStringLiteral( "docks" ) ) SIP_SKIP;
+    static inline QgsSettingsTreeNode *sTtreeDockConfigs = QgsGui::sTtreeWidgetGeometry->createNamedListNode( u"docks"_s ) SIP_SKIP;
 
     static const QgsSettingsEntryBool *sSettingsIsDocked SIP_SKIP;
     static const QgsSettingsEntryVariant *sSettingsDockGeometry SIP_SKIP;
@@ -99,10 +101,12 @@ class GUI_EXPORT QgsDockableWidgetHelper : public QObject
       Options options = Options()
     );
 
-    ~QgsDockableWidgetHelper();
+    ~QgsDockableWidgetHelper() override;
 
-    //! Returns if the widget is docked
-    //! \since 3.42
+    /**
+     * Returns if the widget is docked
+     * \since QGIS 3.42
+     */
     bool isDocked() const { return mIsDocked; }
 
     //! Reads the dimensions of both the dock widget and the top level window

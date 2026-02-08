@@ -14,11 +14,16 @@
  ***************************************************************************/
 
 #include "qgsmessageoutput.h"
-#include "moc_qgsmessageoutput.cpp"
+
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 
 #include <QRegularExpression>
+#include <QString>
+
+#include "moc_qgsmessageoutput.cpp"
+
+using namespace Qt::StringLiterals;
 
 static QgsMessageOutput *messageOutputConsole_()
 {
@@ -65,9 +70,9 @@ void QgsMessageOutputConsole::showMessage( bool )
 {
   if ( mMsgType == MessageHtml )
   {
-    mMessage.replace( QLatin1String( "<br>" ), QLatin1String( "\n" ) );
-    mMessage.replace( QLatin1String( "&nbsp;" ), QLatin1String( " " ) );
-    const thread_local QRegularExpression tagRX( QStringLiteral( "</?[^>]+>" ) );
+    mMessage.replace( "<br>"_L1, "\n"_L1 );
+    mMessage.replace( "&nbsp;"_L1, " "_L1 );
+    const thread_local QRegularExpression tagRX( u"</?[^>]+>"_s );
     mMessage.replace( tagRX, QString() );
   }
   QgsMessageLog::logMessage( mMessage, mTitle.isNull() ? QObject::tr( "Console" ) : mTitle );

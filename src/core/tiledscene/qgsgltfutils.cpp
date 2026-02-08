@@ -13,12 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsconfig.h"
 #include "qgsgltfutils.h"
 
+#include <memory>
+
 #include "qgsexception.h"
-#include "qgsmatrix4x4.h"
-#include "qgsconfig.h"
 #include "qgslogger.h"
+#include "qgsmatrix4x4.h"
 #include "qgstiledscenetile.h"
 #include "qgsziputils.h"
 
@@ -26,6 +28,9 @@
 #include <QMatrix4x4>
 #include <QQuaternion>
 #include <QRegularExpression>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #define TINYGLTF_IMPLEMENTATION       // should be defined just in one CPP file
 
@@ -78,7 +83,7 @@ bool QgsGltfUtils::accessorToMapCoordinates( const tinygltf::Model &model, int a
     {
       case Qgis::Axis::X:
       {
-        QgsDebugError( QStringLiteral( "X up translation not yet supported" ) );
+        QgsDebugError( u"X up translation not yet supported"_s );
         v = tileTransform.map( tileTranslationEcef );
         break;
       }
@@ -192,14 +197,14 @@ std::unique_ptr<QMatrix4x4> QgsGltfUtils::parseNodeTransform( const tinygltf::No
   std::unique_ptr<QMatrix4x4> matrix;
   if ( !node.matrix.empty() )
   {
-    matrix.reset( new QMatrix4x4 );
+    matrix = std::make_unique<QMatrix4x4>( );
     float *mdata = matrix->data();
     for ( int i = 0; i < 16; ++i )
       mdata[i] = static_cast< float >( node.matrix[i] );
   }
   else if ( node.translation.size() || node.rotation.size() || node.scale.size() )
   {
-    matrix.reset( new QMatrix4x4 );
+    matrix = std::make_unique<QMatrix4x4>( );
     if ( node.scale.size() )
     {
       matrix->scale( static_cast< float >( node.scale[0] ), static_cast< float >( node.scale[1] ), static_cast< float >( node.scale[2] ) );
@@ -260,7 +265,7 @@ QgsVector3D QgsGltfUtils::extractTileTranslation( tinygltf::Model &model, Qgis::
       switch ( upAxis )
       {
         case Qgis::Axis::X:
-          QgsDebugError( QStringLiteral( "X up translation not yet supported" ) );
+          QgsDebugError( u"X up translation not yet supported"_s );
           break;
         case Qgis::Axis::Y:
         {
@@ -370,9 +375,9 @@ bool QgsGltfUtils::loadGltfModel( const QByteArray &data, tinygltf::Model &model
     *warnings = QString::fromStdString( warn );
 
     // strip unwanted warnings
-    const thread_local QRegularExpression rxFailedToLoadExternalUriForImage( QStringLiteral( "Failed to load external 'uri' for image\\[\\d+\\] name = \".*?\"\\n?" ) );
+    const thread_local QRegularExpression rxFailedToLoadExternalUriForImage( u"Failed to load external 'uri' for image\\[\\d+\\] name = \".*?\"\\n?"_s );
     warnings->replace( rxFailedToLoadExternalUriForImage, QString() );
-    const thread_local QRegularExpression rxFileNotFound( QStringLiteral( "File not found : .*?\\n" ) );
+    const thread_local QRegularExpression rxFileNotFound( u"File not found : .*?\\n"_s );
     warnings->replace( rxFileNotFound, QString() );
   }
 
@@ -816,7 +821,7 @@ void QgsGltfUtils::I3SNodeContext::initFromTile( const QgsTiledSceneTile &tile, 
 {
   const QVariantMap tileMetadata = tile.metadata();
 
-  materialInfo = tileMetadata[QStringLiteral( "material" )].toMap();
+  materialInfo = tileMetadata[u"material"_s].toMap();
   isGlobalMode = sceneCrs.type() == Qgis::CrsType::Geocentric;
   if ( isGlobalMode )
   {

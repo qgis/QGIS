@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsNetworkRequestParameters
 {
 %Docstring(signature="appended")

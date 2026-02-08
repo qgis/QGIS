@@ -14,51 +14,54 @@
  ***************************************************************************/
 
 #include "qgscategorizedsymbolrendererwidget.h"
-#include "moc_qgscategorizedsymbolrendererwidget.cpp"
-#include "qgspanelwidget.h"
 
 #include "qgscategorizedsymbolrenderer.h"
-
+#include "qgscolorrampbutton.h"
+#include "qgscolorrampimpl.h"
 #include "qgsdatadefinedsizelegend.h"
 #include "qgsdatadefinedsizelegendwidget.h"
-#include "qgssymbol.h"
-#include "qgssymbollayerutils.h"
-#include "qgscolorrampimpl.h"
-#include "qgscolorrampbutton.h"
-#include "qgsstyle.h"
-#include "qgslogger.h"
+#include "qgsexpression.h"
 #include "qgsexpressioncontextutils.h"
-#include "qgstemporalcontroller.h"
-#include "qgssymbolselectordialog.h"
-#include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
+#include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgspanelwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
-#include "qgsexpression.h"
-#include "qgsmapcanvas.h"
 #include "qgssettings.h"
-#include "qgsguiutils.h"
-#include "qgsmarkersymbol.h"
+#include "qgsstyle.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbolselectordialog.h"
+#include "qgstemporalcontroller.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 
+#include <QClipboard>
+#include <QFileDialog>
 #include <QKeyEvent>
 #include <QMenu>
 #include <QMessageBox>
-#include <QStandardItemModel>
-#include <QStandardItem>
-#include <QPen>
 #include <QPainter>
-#include <QFileDialog>
-#include <QClipboard>
+#include <QPen>
 #include <QPointer>
 #include <QScreen>
+#include <QStandardItem>
+#include <QStandardItemModel>
+#include <QString>
 #include <QUuid>
+
+#include "moc_qgscategorizedsymbolrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QgsCategorizedSymbolRendererModel::QgsCategorizedSymbolRendererModel( QObject *parent, QScreen *screen )
   : QAbstractItemModel( parent )
-  , mMimeFormat( QStringLiteral( "application/x-qgscategorizedsymbolrendererv2model" ) )
+  , mMimeFormat( u"application/x-qgscategorizedsymbolrendererv2model"_s )
   , mScreen( screen )
 {
 }
@@ -168,7 +171,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
             const QVariantList list = category.value().toList();
             res.reserve( list.size() );
             for ( const QVariant &v : list )
-              res << QgsCategorizedSymbolRenderer::displayString( v );
+              res << QgsVariantUtils::displayString( v );
 
             if ( role == Qt::DisplayRole )
               return res.join( ';' );
@@ -181,7 +184,7 @@ QVariant QgsCategorizedSymbolRendererModel::data( const QModelIndex &index, int 
           }
           else
           {
-            return QgsCategorizedSymbolRenderer::displayString( category.value() );
+            return QgsVariantUtils::displayString( category.value() );
           }
         }
         case 2:
@@ -431,7 +434,7 @@ bool QgsCategorizedSymbolRendererModel::dropMimeData( const QMimeData *data, Qt:
     to = mRenderer->categories().size(); // out of rang ok, will be decreased
   for ( int i = rows.size() - 1; i >= 0; i-- )
   {
-    QgsDebugMsgLevel( QStringLiteral( "move %1 to %2" ).arg( rows[i] ).arg( to ), 2 );
+    QgsDebugMsgLevel( u"move %1 to %2"_s.arg( rows[i] ).arg( to ), 2 );
     int t = to;
     // moveCategory first removes and then inserts
     if ( rows[i] < t )
@@ -912,7 +915,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
     return;
   }
 
@@ -1089,7 +1092,7 @@ void QgsCategorizedSymbolRendererWidget::deleteUnusedCategories()
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
   }
 
   const QgsCategoryList catList = mRenderer->categories();
@@ -1114,7 +1117,7 @@ QList<QVariant> QgsCategorizedSymbolRendererWidget::layerUniqueValues( const QSt
   const QList<QVariant> uniqueValues = QgsVectorLayerUtils::uniqueValues( mLayer, attrName, valuesRetrieved );
   if ( !valuesRetrieved )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Unable to retrieve values from layer %1 with expression %2" ).arg( mLayer->name() ).arg( attrName ), 2 );
+    QgsDebugMsgLevel( u"Unable to retrieve values from layer %1 with expression %2"_s.arg( mLayer->name() ).arg( attrName ), 2 );
   }
   return uniqueValues;
 }
@@ -1220,7 +1223,7 @@ int QgsCategorizedSymbolRendererWidget::matchToSymbols( QgsStyle *style )
 void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
 {
   QgsSettings settings;
-  const QString openFileDir = settings.value( QStringLiteral( "UI/lastMatchToSymbolsDir" ), QDir::homePath() ).toString();
+  const QString openFileDir = settings.value( u"UI/lastMatchToSymbolsDir"_s, QDir::homePath() ).toString();
 
   const QString fileName = QFileDialog::getOpenFileName( this, tr( "Match to Symbols from File" ), openFileDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
@@ -1229,7 +1232,7 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   }
 
   const QFileInfo openFileInfo( fileName );
-  settings.setValue( QStringLiteral( "UI/lastMatchToSymbolsDir" ), openFileInfo.absolutePath() );
+  settings.setValue( u"UI/lastMatchToSymbolsDir"_s, openFileInfo.absolutePath() );
 
   QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )

@@ -14,50 +14,35 @@
  ***************************************************************************/
 
 #include "qgsframegraph.h"
-#include "moc_qgsframegraph.cpp"
-#include "qgsdirectionallightsettings.h"
-#include "qgspostprocessingentity.h"
+
 #include "qgs3dutils.h"
-#include "qgsframegraphutils.h"
 #include "qgsabstractrenderview.h"
+#include "qgsambientocclusionrenderview.h"
+#include "qgsdebugtextureentity.h"
+#include "qgsdebugtexturerenderview.h"
+#include "qgsdepthrenderview.h"
+#include "qgsdirectionallightsettings.h"
+#include "qgsforwardrenderview.h"
+#include "qgsframegraphutils.h"
+#include "qgshighlightsrenderview.h"
+#include "qgspostprocessingentity.h"
 #include "qgsshadowrenderview.h"
 
-
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QGeometry>
-
-typedef Qt3DRender::QAttribute Qt3DQAttribute;
-typedef Qt3DRender::QBuffer Qt3DQBuffer;
-typedef Qt3DRender::QGeometry Qt3DQGeometry;
-#else
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QGeometry>
-
-typedef Qt3DCore::QAttribute Qt3DQAttribute;
-typedef Qt3DCore::QBuffer Qt3DQBuffer;
-typedef Qt3DCore::QGeometry Qt3DQGeometry;
-#endif
-
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QBlendEquation>
-#include <Qt3DRender/QColorMask>
-#include <Qt3DRender/QSortPolicy>
-#include <Qt3DRender/QNoDepthMask>
-#include <Qt3DRender/QBlendEquationArguments>
 #include <Qt3DRender/QAbstractTexture>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGraphicsApiFilter>
+#include <Qt3DRender/QNoDepthMask>
 #include <Qt3DRender/QNoDraw>
-#include "qgsshadowrenderview.h"
-#include "qgsforwardrenderview.h"
-#include "qgsdepthrenderview.h"
-#include "qgsdepthentity.h"
-#include "qgsdebugtexturerenderview.h"
-#include "qgsdebugtextureentity.h"
-#include "qgsambientocclusionrenderview.h"
+#include <Qt3DRender/QSortPolicy>
+#include <Qt3DRender/QTechnique>
+
+#include "moc_qgsframegraph.cpp"
 
 const QString QgsFrameGraph::FORWARD_RENDERVIEW = "forward";
 const QString QgsFrameGraph::SHADOW_RENDERVIEW = "shadow";
@@ -65,10 +50,16 @@ const QString QgsFrameGraph::AXIS3D_RENDERVIEW = "3daxis";
 const QString QgsFrameGraph::DEPTH_RENDERVIEW = "depth";
 const QString QgsFrameGraph::DEBUG_RENDERVIEW = "debug_texture";
 const QString QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW = "ambient_occlusion";
+const QString QgsFrameGraph::HIGHLIGHTS_RENDERVIEW = "highlights";
 
 void QgsFrameGraph::constructForwardRenderPass()
 {
   registerRenderView( std::make_unique<QgsForwardRenderView>( FORWARD_RENDERVIEW, mMainCamera ), FORWARD_RENDERVIEW );
+}
+
+void QgsFrameGraph::constructHighlightsPass()
+{
+  registerRenderView( std::make_unique<QgsHighlightsRenderView>( HIGHLIGHTS_RENDERVIEW, forwardRenderView().renderTargetSelector()->target(), mMainCamera ), HIGHLIGHTS_RENDERVIEW );
 }
 
 void QgsFrameGraph::constructShadowRenderPass()
@@ -202,7 +193,6 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
   return mRubberBandsCameraSelector;
 }
 
-
 void QgsFrameGraph::constructDepthRenderPass()
 {
   // entity used to draw the depth texture and convert it to rgb image
@@ -268,6 +258,9 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   // Forward render
   constructForwardRenderPass();
+
+  // Highlighted items pass
+  constructHighlightsPass();
 
   // rubber bands (they should be always on top)
   Qt3DRender::QFrameGraphNode *rubberBandsPass = constructRubberBandsPass();
@@ -538,4 +531,10 @@ QgsAmbientOcclusionRenderView &QgsFrameGraph::ambientOcclusionRenderView()
 {
   QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::AMBIENT_OCCLUSION_RENDERVIEW].get();
   return *( dynamic_cast<QgsAmbientOcclusionRenderView *>( rv ) );
+}
+
+QgsHighlightsRenderView &QgsFrameGraph::highlightsRenderView()
+{
+  QgsAbstractRenderView *rv = mRenderViewMap[QgsFrameGraph::HIGHLIGHTS_RENDERVIEW].get();
+  return *( dynamic_cast<QgsHighlightsRenderView *>( rv ) );
 }

@@ -17,6 +17,7 @@
 #define QGSPROJECTSENSORSETTINGSWIDGET_H
 
 #include "ui_qgsprojectsensorettingswidgetbase.h"
+
 #include "qgsoptionswidgetfactory.h"
 
 #include <QDomDocument>

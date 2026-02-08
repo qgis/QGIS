@@ -15,26 +15,28 @@
 
 #include "qgshelp.h"
 
-#include "qgis.h"
-#include "qgssettings.h"
-#include "qgsapplication.h"
-#include "qgsexpressioncontext.h"
-#include "qgsmessagelog.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsblockingnetworkrequest.h"
-#include "qgsnetworkaccessmanager.h"
-#include "qgssetrequestinitiator_p.h"
-
-#include <QUrl>
-#include <QFileInfo>
-#include <QTcpSocket>
-#include <QDesktopServices>
-#include <QRegularExpression>
-#include <QNetworkProxy>
-#include <QNetworkProxyFactory>
-
 #include <memory>
 
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgsblockingnetworkrequest.h"
+#include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsmessagelog.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgssetrequestinitiator_p.h"
+#include "qgssettings.h"
+
+#include <QDesktopServices>
+#include <QFileInfo>
+#include <QNetworkProxy>
+#include <QNetworkProxyFactory>
+#include <QRegularExpression>
+#include <QString>
+#include <QTcpSocket>
+#include <QUrl>
+
+using namespace Qt::StringLiterals;
 
 void QgsHelp::openHelp( const QString &key )
 {
@@ -46,7 +48,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QUrl helpNotFound = QUrl::fromLocalFile( QgsApplication::pkgDataPath() + "/doc/nohelp.html" );
 
   const QgsSettings settings;
-  const QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
+  const QStringList paths = settings.value( u"help/helpSearchPath"_s ).toStringList();
   if ( paths.isEmpty() )
   {
     QgsMessageLog::logMessage( QObject::tr( "Help location is not configured!" ), QObject::tr( "QGIS Help" ) );
@@ -62,7 +64,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   const auto constPaths = paths;
   for ( const QString &path : constPaths )
   {
-    if ( path.endsWith( QLatin1String( "\\" ) ) || path.endsWith( QLatin1Char( '/' ) ) )
+    if ( path.endsWith( "\\"_L1 ) || path.endsWith( '/'_L1 ) )
     {
       fullPath = path.left( path.size() - 1 );
     }
@@ -74,17 +76,17 @@ QUrl QgsHelp::helpUrl( const QString &key )
     const auto constVariableNames = scope->variableNames();
     for ( const QString &var : constVariableNames )
     {
-      const QRegularExpression rx( QStringLiteral( "(<!\\$\\$)*(\\$%1)" ).arg( var ) );
+      const QRegularExpression rx( u"(<!\\$\\$)*(\\$%1)"_s.arg( var ) );
       fullPath.replace( rx, scope->variable( var ).toString() );
     }
-    const thread_local QRegularExpression pathRx( QStringLiteral( "(\\$\\$)" ) );
-    fullPath.replace( pathRx, QStringLiteral( "$" ) );
+    const thread_local QRegularExpression pathRx( u"(\\$\\$)"_s );
+    fullPath.replace( pathRx, u"$"_s );
 
-    helpPath = QStringLiteral( "%1/%2" ).arg( fullPath, key );
+    helpPath = u"%1/%2"_s.arg( fullPath, key );
 
     QgsMessageLog::logMessage( QObject::tr( "Trying to open help using key '%1'. Full URI is '%2'…" ).arg( key ).arg( helpPath ), QObject::tr( "QGIS Help" ), Qgis::MessageLevel::Info );
 
-    if ( helpPath.startsWith( QLatin1String( "http" ) ) )
+    if ( helpPath.startsWith( "http"_L1 ) )
     {
       if ( !QgsHelp::urlExists( helpPath ) )
       {
@@ -94,16 +96,16 @@ QUrl QgsHelp::helpUrl( const QString &key )
     }
     else
     {
-      const QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( QLatin1Char( '#' ) ) );
+      const QString filePath = helpPath.mid( 0, helpPath.lastIndexOf( '#'_L1 ) );
       if ( !QFileInfo::exists( filePath ) )
       {
         continue;
       }
       helpUrl = QUrl::fromLocalFile( filePath );
-      const int pos = helpPath.lastIndexOf( QLatin1Char( '#' ) );
+      const int pos = helpPath.lastIndexOf( '#'_L1 );
       if ( pos != -1 )
       {
-        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( QLatin1Char( '#' ) ) + 1, -1 ) );
+        helpUrl.setFragment( helpPath.mid( helpPath.lastIndexOf( '#'_L1 ) + 1, -1 ) );
       }
     }
 
@@ -120,7 +122,7 @@ bool QgsHelp::urlExists( const QString &url )
 
   QgsBlockingNetworkRequest request;
   QNetworkRequest req( helpUrl );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsHelp" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsHelp"_s );
 
   QgsBlockingNetworkRequest::ErrorCode errCode = request.head( req );
   return errCode == QgsBlockingNetworkRequest::NoError;

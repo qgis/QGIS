@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsPaintEffect /NoDefaultCtors/
 {
 %Docstring(signature="appended")
@@ -367,6 +369,7 @@ map.
     virtual QgsDrawSourceEffect *clone() const /Factory/;
 
     virtual QVariantMap properties() const;
+
 
     virtual void readProperties( const QVariantMap &props );
 

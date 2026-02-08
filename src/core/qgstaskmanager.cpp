@@ -16,13 +16,18 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
-#include "moc_qgstaskmanager.cpp"
-#include "qgsproject.h"
-#include "qgsmaplayerlistutils_p.h"
-#include <mutex>
-#include <QStack>
-#include <QtConcurrentRun>
 
+#include <mutex>
+
+#include "qgsmaplayerlistutils_p.h"
+#include "qgsproject.h"
+
+#include <QStack>
+#include <QString>
+
+#include "moc_qgstaskmanager.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsTask
@@ -38,7 +43,7 @@ QgsTask::QgsTask( const QString &name, Flags flags )
 
 QgsTask::~QgsTask()
 {
-  Q_ASSERT_X( mStatus != Running, "delete", QStringLiteral( "status was %1" ).arg( mStatus ).toLatin1() );
+  Q_ASSERT_X( mStatus != Running, "delete", u"status was %1"_s.arg( mStatus ).toLatin1() );
   // even here we are not sure that task start method has ended
   mNotFinishedMutex.lock();
   const auto constMSubTasks = mSubTasks;

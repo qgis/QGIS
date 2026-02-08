@@ -18,11 +18,11 @@
 #ifndef QGSLAYOUTUNDOCOMMAND_H
 #define QGSLAYOUTUNDOCOMMAND_H
 
-#include <QUndoCommand>
-#include "qgis_sip.h"
-#include <QDomDocument>
-
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
+#include <QDomDocument>
+#include <QUndoCommand>
 
 class QgsLayout;
 

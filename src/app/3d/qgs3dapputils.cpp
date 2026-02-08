@@ -14,33 +14,38 @@
  ***************************************************************************/
 
 #include "qgs3dapputils.h"
-#include "qgsapplication.h"
-#include "qgs3dsymbolregistry.h"
+
 #include "qgs3d.h"
-#include "qgsmaterialregistry.h"
-#include "qgspoint3dsymbolwidget.h"
-#include "qgspolygon3dsymbolwidget.h"
+#include "qgs3dicongenerator.h"
+#include "qgs3dsymbolregistry.h"
+#include "qgsapplication.h"
+#include "qgsgoochmaterialwidget.h"
 #include "qgsline3dsymbolwidget.h"
+#include "qgsmaterialregistry.h"
 #include "qgsmetalroughmaterialwidget.h"
+#include "qgsnullmaterialwidget.h"
 #include "qgsphongmaterialwidget.h"
 #include "qgsphongtexturedmaterialwidget.h"
-#include "qgsgoochmaterialwidget.h"
+#include "qgspoint3dsymbolwidget.h"
+#include "qgspolygon3dsymbolwidget.h"
 #include "qgssimplelinematerialwidget.h"
-#include "qgsnullmaterialwidget.h"
-#include "qgs3dicongenerator.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void Qgs3DAppUtils::initialize()
 {
-  qgis::down_cast<Qgs3DSymbolMetadata *>( QgsApplication::symbol3DRegistry()->symbolMetadata( QStringLiteral( "point" ) ) )->setWidgetFunction( QgsPoint3DSymbolWidget::create );
-  qgis::down_cast<Qgs3DSymbolMetadata *>( QgsApplication::symbol3DRegistry()->symbolMetadata( QStringLiteral( "line" ) ) )->setWidgetFunction( QgsLine3DSymbolWidget::create );
-  qgis::down_cast<Qgs3DSymbolMetadata *>( QgsApplication::symbol3DRegistry()->symbolMetadata( QStringLiteral( "polygon" ) ) )->setWidgetFunction( QgsPolygon3DSymbolWidget::create );
+  qgis::down_cast<Qgs3DSymbolMetadata *>( QgsApplication::symbol3DRegistry()->symbolMetadata( u"point"_s ) )->setWidgetFunction( QgsPoint3DSymbolWidget::create );
+  qgis::down_cast<Qgs3DSymbolMetadata *>( QgsApplication::symbol3DRegistry()->symbolMetadata( u"line"_s ) )->setWidgetFunction( QgsLine3DSymbolWidget::create );
+  qgis::down_cast<Qgs3DSymbolMetadata *>( QgsApplication::symbol3DRegistry()->symbolMetadata( u"polygon"_s ) )->setWidgetFunction( QgsPolygon3DSymbolWidget::create );
 
-  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "null" ) ) )->setWidgetFunction( QgsNullMaterialWidget::create );
-  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "phong" ) ) )->setWidgetFunction( QgsPhongMaterialWidget::create );
-  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "phongtextured" ) ) )->setWidgetFunction( QgsPhongTexturedMaterialWidget::create );
-  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "gooch" ) ) )->setWidgetFunction( QgsGoochMaterialWidget::create );
-  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "simpleline" ) ) )->setWidgetFunction( QgsSimpleLineMaterialWidget::create );
-  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( QStringLiteral( "metalrough" ) ) )->setWidgetFunction( QgsMetalRoughMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"null"_s ) )->setWidgetFunction( QgsNullMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"phong"_s ) )->setWidgetFunction( QgsPhongMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"phongtextured"_s ) )->setWidgetFunction( QgsPhongTexturedMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"gooch"_s ) )->setWidgetFunction( QgsGoochMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"simpleline"_s ) )->setWidgetFunction( QgsSimpleLineMaterialWidget::create );
+  qgis::down_cast<QgsMaterialSettingsMetadata *>( Qgs3D::materialRegistry()->materialSettingsMetadata( u"metalrough"_s ) )->setWidgetFunction( QgsMetalRoughMaterialWidget::create );
 
   QgsStyleModel::setIconGenerator( new Qgs3DIconGenerator( QgsApplication::defaultStyleModel() ) );
 }

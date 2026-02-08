@@ -13,27 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgs3d.h"
-#include "qgs3dutils.h"
-
-#include "qgsbox3d.h"
-#include "qgsray3d.h"
-
 #include "qgs3dexportobject.h"
 #include "qgs3dmapscene.h"
+#include "qgs3dutils.h"
+#include "qgsbox3d.h"
 #include "qgscameracontroller.h"
 #include "qgsflatterrainsettings.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspolygon3dsymbol.h"
 #include "qgsrasterlayer.h"
+#include "qgsray3d.h"
+#include "qgsraycastcontext.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayer3drenderer.h"
-#include "qgsraycastcontext.h"
 
 #include <QSize>
+#include <QString>
 #include <QtMath>
+
+using namespace Qt::StringLiterals;
 
 static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
 {
@@ -71,7 +71,7 @@ class TestQgs3DUtils : public QgsTest
     Q_OBJECT
   public:
     TestQgs3DUtils()
-      : QgsTest( QStringLiteral( "3D Utils" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"3D Utils"_s, u"3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -216,12 +216,12 @@ void TestQgs3DUtils::testQgsBox3DDistanceTo()
   {
     const QgsBox3D box( -1, -1, -1, 1, 1, 1 );
     QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), 0.0 );
-    QCOMPARE( box.distanceTo( QgsVector3D( 2, 2, 2 ) ), qSqrt( 3.0 ) );
+    QCOMPARE( box.distanceTo( QgsVector3D( 2, 2, 2 ) ), std::sqrt( 3.0 ) );
   }
   {
     const QgsBox3D box( 1, 2, 1, 4, 3, 3 );
     QCOMPARE( box.distanceTo( QgsVector3D( 1, 2, 1 ) ), 0.0 );
-    QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), qSqrt( 6.0 ) );
+    QCOMPARE( box.distanceTo( QgsVector3D( 0, 0, 0 ) ), std::sqrt( 6.0 ) );
   }
 }
 

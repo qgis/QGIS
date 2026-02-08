@@ -13,13 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
+
+using namespace Qt::StringLiterals;
 
 //qgis includes...
 #include <qgsmaplayer.h>
@@ -43,7 +46,7 @@ class TestQgsCentroidFillSymbol : public QgsTest
 
   public:
     TestQgsCentroidFillSymbol()
-      : QgsTest( QStringLiteral( "Centroid Fill Symbol Tests" ), QStringLiteral( "symbol_centroidfill" ) ) {}
+      : QgsTest( u"Centroid Fill Symbol Tests"_s, u"symbol_centroidfill"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -88,7 +91,7 @@ void TestQgsCentroidFillSymbol::initTestCase()
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), u"ogr"_s );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
@@ -201,8 +204,8 @@ void TestQgsCentroidFillSymbol::opacityWithDataDefinedColor()
 {
   const QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( u"if(Name='Dam', 'red', 'green')"_s ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( u"if(Name='Dam', 'blue', 'magenta')"_s ) );
   qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
   qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
@@ -217,13 +220,13 @@ void TestQgsCentroidFillSymbol::dataDefinedOpacity()
 {
   const QgsSimpleFillSymbolLayer simpleFill( QColor( 255, 255, 255, 100 ) );
 
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'red', 'green')" ) ) );
-  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( QStringLiteral( "if(Name='Dam', 'blue', 'magenta')" ) ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::FillColor, QgsProperty::fromExpression( u"if(Name='Dam', 'red', 'green')"_s ) );
+  mCentroidFill->subSymbol()->symbolLayer( 0 )->setDataDefinedProperty( QgsSymbolLayer::Property::StrokeColor, QgsProperty::fromExpression( u"if(Name='Dam', 'blue', 'magenta')"_s ) );
   qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setStrokeWidth( 0.5 );
   qgis::down_cast<QgsSimpleMarkerSymbolLayer *>( mCentroidFill->subSymbol()->symbolLayer( 0 ) )->setSize( 5 );
   mCentroidFill->subSymbol()->setOpacity( 0.5 );
   mFillSymbol->setOpacity( 1.0 );
-  mFillSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( QStringLiteral( "if(\"Value\" >10, 25, 50)" ) ) );
+  mFillSymbol->setDataDefinedProperty( QgsSymbol::Property::Opacity, QgsProperty::fromExpression( u"if(\"Value\" >10, 25, 50)"_s ) );
 
   mMapSettings.setExtent( mpPolysLayer->extent() );
   mMapSettings.setOutputDpi( 96 );

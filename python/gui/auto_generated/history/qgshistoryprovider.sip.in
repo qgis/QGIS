@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAbstractHistoryProvider : QObject
 {
 %Docstring(signature="appended")
@@ -31,7 +32,7 @@ the :py:class:`QgsHistoryProviderRegistry` class.
       sipType = nullptr;
 %End
 
-    virtual ~QgsAbstractHistoryProvider();
+    ~QgsAbstractHistoryProvider();
 
     virtual QString id() const = 0;
 %Docstring

@@ -18,25 +18,24 @@
 #ifndef QGSPOINTCLOUDINDEX_H
 #define QGSPOINTCLOUDINDEX_H
 
-#include <QString>
-#include <QHash>
-#include <QStringList>
-#include <QVector>
-#include <QList>
-#include <QMutex>
-#include <QCache>
-#include <QByteArray>
-
 #include "qgis_core.h"
-#include "qgspointcloudstatistics.h"
-#include "qgsrectangle.h"
-#include "qgsbox3d.h"
 #include "qgis_sip.h"
-#include "qgspointcloudblock.h"
+#include "qgsbox3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgspointcloudblock.h"
 #include "qgspointcloudexpression.h"
 #include "qgspointcloudrequest.h"
+#include "qgspointcloudstatistics.h"
+#include "qgsrectangle.h"
 
+#include <QByteArray>
+#include <QCache>
+#include <QHash>
+#include <QList>
+#include <QMutex>
+#include <QString>
+#include <QStringList>
+#include <QVector>
 
 class QgsPointCloudAttributeCollection;
 class QgsCoordinateReferenceSystem;
@@ -371,6 +370,13 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      */
     virtual QVariantMap extraMetadata() const;
 
+    /**
+     *  Returns the URI used to load the index
+     *
+     * \since QGIS 4.0
+     */
+    QString uri() const { return mUri; }
+
   protected: //TODO private
     //! Sets native attributes of the data
     void setAttributes( const QgsPointCloudAttributeCollection &attributes );
@@ -652,6 +658,9 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 
     //! Returns a list of node IDs that have been modified
     QList<QgsPointCloudNodeId> updatedNodes() const;
+
+    //! Returns the uri used to load the index
+    QString uri() const;
 
   private:
     std::shared_ptr<QgsAbstractPointCloudIndex> mIndex;

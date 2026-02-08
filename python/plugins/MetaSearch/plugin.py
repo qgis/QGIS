@@ -54,6 +54,7 @@ class MetaSearchPlugin:
 
         run_icon = QIcon("{}/{}".format(self.context.ppath, "images/MetaSearch.svg"))
         self.action_run = QAction(run_icon, "MetaSearch", self.iface.mainWindow())
+        self.action_run.setObjectName("action_run")
         self.action_run.setWhatsThis(
             QCoreApplication.translate("MetaSearch", "MetaSearch plugin")
         )
@@ -69,6 +70,7 @@ class MetaSearchPlugin:
         # help
         help_icon = QgsApplication.getThemeIcon("/mActionHelpContents.svg")
         self.action_help = QAction(help_icon, "Help", self.iface.mainWindow())
+        self.action_help.setObjectName("action_help")
         self.action_help.setWhatsThis(
             QCoreApplication.translate("MetaSearch", "MetaSearch plugin help")
         )

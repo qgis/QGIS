@@ -16,7 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbsourceselect.h"
+
+#include <QString>
+
 #include "moc_qgsogrdbsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include "qgsogrdbconnection.h"
@@ -33,7 +39,7 @@
 
 #include <QMessageBox>
 
-static const QString SETTINGS_WINDOWS_PATH = QStringLiteral( "ogr/%1SourceSelect" );
+static const QString SETTINGS_WINDOWS_PATH = u"ogr/%1SourceSelect"_s;
 
 QgsOgrDbSourceSelect::QgsOgrDbSourceSelect( const QString &theSettingsKey, const QString &theName, const QString &theExtensions, QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDbSourceSelect( parent, fl, theWidgetMode )
@@ -96,7 +102,7 @@ void QgsOgrDbSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 void QgsOgrDbSourceSelect::treeviewClicked( const QModelIndex &index )
 {
   const QString layerType = mTableModel->itemFromIndex( index )->data( Qt::UserRole + 2 ).toString();
-  mBuildQueryButton->setEnabled( index.parent().isValid() && layerType != QLatin1String( "Raster" ) );
+  mBuildQueryButton->setEnabled( index.parent().isValid() && layerType != "Raster"_L1 );
 }
 
 void QgsOgrDbSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
@@ -139,7 +145,7 @@ QString QgsOgrDbSourceSelect::layerURI( const QModelIndex &index )
   QString sql = mTableModel->itemFromIndex( index.sibling( index.row(), 3 ) )->text();
   if ( !sql.isEmpty() )
   {
-    uri += QStringLiteral( "|subset=%1" ).arg( sql );
+    uri += u"|subset=%1"_s.arg( sql );
   }
   return uri;
 }
@@ -196,7 +202,7 @@ void QgsOgrDbSourceSelect::addButtonClicked()
     if ( !dbInfo[currentSchemaName].contains( currentRow ) )
     {
       dbInfo[currentSchemaName][currentRow] = true;
-      if ( currentItem->data( Qt::UserRole + 2 ).toString().contains( QStringLiteral( "Raster" ), Qt::CaseInsensitive ) )
+      if ( currentItem->data( Qt::UserRole + 2 ).toString().contains( u"Raster"_s, Qt::CaseInsensitive ) )
       {
         selectedRasters << LayerInfo( layerURI( proxyModel()->mapToSource( *selected_it ) ), currentItem->data( Qt::DisplayRole ).toString() );
       }
@@ -219,14 +225,14 @@ void QgsOgrDbSourceSelect::addButtonClicked()
       Q_NOWARN_DEPRECATED_PUSH
       emit addVectorLayer( info.first, info.second );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::Vector, info.first, info.second, QStringLiteral( "ogr" ) );
+      emit addLayer( Qgis::LayerType::Vector, info.first, info.second, u"ogr"_s );
     }
     for ( const LayerInfo &info : std::as_const( selectedRasters ) )
     {
       Q_NOWARN_DEPRECATED_PUSH
-      emit addRasterLayer( info.first, info.second, QStringLiteral( "gdal" ) );
+      emit addRasterLayer( info.first, info.second, u"gdal"_s );
       Q_NOWARN_DEPRECATED_POP
-      emit addLayer( Qgis::LayerType::Raster, info.first, info.second, QStringLiteral( "gdal" ) );
+      emit addLayer( Qgis::LayerType::Raster, info.first, info.second, u"gdal"_s );
     }
     if ( widgetMode() == QgsProviderRegistry::WidgetMode::Standalone && !mHoldDialogOpen->isChecked() )
     {
@@ -248,7 +254,7 @@ void QgsOgrDbSourceSelect::btnConnect_clicked()
 
   mPath = conn.path();
 
-  const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "ogr" ) )->querySublayers( mPath );
+  const QList<QgsProviderSublayerDetails> sublayers = QgsProviderRegistry::instance()->providerMetadata( u"ogr"_s )->querySublayers( mPath );
 
   QModelIndex rootItemIndex = mTableModel->indexFromItem( mTableModel->invisibleRootItem() );
   mTableModel->removeRows( 0, mTableModel->rowCount( rootItemIndex ), rootItemIndex );
@@ -315,7 +321,7 @@ void QgsOgrDbSourceSelect::setSql( const QModelIndex &index )
   QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), 0 ) )->text();
 
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  auto vlayer = std::make_unique<QgsVectorLayer>( layerURI( index ), tableName, QStringLiteral( "ogr" ), options );
+  auto vlayer = std::make_unique<QgsVectorLayer>( layerURI( index ), tableName, u"ogr"_s, options );
 
   if ( !vlayer->isValid() )
   {
@@ -336,7 +342,7 @@ void QgsOgrDbSourceSelect::dbChanged()
 {
   // Remember which database was selected.
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "GeoPackage/connections/selected" ), cmbConnections->currentText() );
+  settings.setValue( u"GeoPackage/connections/selected"_s, cmbConnections->currentText() );
 }
 
 QString QgsOgrDbSourceSelect::settingPath() const
@@ -373,7 +379,7 @@ void QgsOgrDbSourceSelect::treeWidgetSelectionChanged( const QItemSelection &sel
 
 void QgsOgrDbSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#GeoPackage-layers" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#GeoPackage-layers"_s );
 }
 
 bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
@@ -392,7 +398,7 @@ bool QgsOgrDbSourceSelect::configureFromUri( const QString &uri )
   const QString connectionText { connectionName + tr( "@" ) + filePath };
   int idx { cmbConnections->findText( connectionText ) };
 
-  if ( idx < 0 && QgsOgrProviderUtils::saveConnection( filePath, QStringLiteral( "GPKG" ) ) )
+  if ( idx < 0 && QgsOgrProviderUtils::saveConnection( filePath, u"GPKG"_s ) )
   {
     populateConnectionList();
     idx = cmbConnections->findText( connectionText );

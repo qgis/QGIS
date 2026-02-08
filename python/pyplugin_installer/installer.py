@@ -215,27 +215,7 @@ class QgsPluginInstaller(QObject):
         if not updatable_plugin_names:
             return
 
-        if len(updatable_plugin_names) >= 2:
-            status = self.tr("Multiple plugin updates are available")
-        else:
-            status = self.tr("An update to the {} plugin is available").format(
-                updatable_plugin_names[0]
-            )
-
-        QgsMessageLog.logMessage(
-            "Plugin update(s) available : {}".format(",".join(updatable_plugin_names)),
-            self.tr("Plugins"),
-        )
-
-        bar = iface.messageBar()
-        self.message_bar_widget = bar.createMessage("", status)
-        update_button = QPushButton(self.tr("Install Updates…"))
-        tab_index = 3  # PLUGMAN_TAB_UPGRADEABLE
-        update_button.pressed.connect(
-            partial(self.showPluginManagerWhenReady, tab_index)
-        )
-        self.message_bar_widget.layout().addWidget(update_button)
-        bar.pushWidget(self.message_bar_widget, Qgis.MessageLevel.Info)
+        iface.mainWindow().pluginUpdatesAvailable.emit(updatable_plugin_names)
 
     # ----------------------------------------- #
     def exportRepositoriesToManager(self):
@@ -359,7 +339,7 @@ class QgsPluginInstaller(QObject):
     # ----------------------------------------- #
     def exportSettingsGroup(self):
         """Return QgsSettings settingsGroup value"""
-        # todo QGIS 4 remove
+        # todo QGIS 5 remove
         return "plugin-manager"
 
     # ----------------------------------------- #

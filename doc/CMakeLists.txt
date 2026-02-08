@@ -75,6 +75,7 @@ if(WITH_APIDOC)
       ${CMAKE_SOURCE_DIR}/src/core/maprenderer
       ${CMAKE_SOURCE_DIR}/src/core/mesh
       ${CMAKE_SOURCE_DIR}/src/core/metadata
+      ${CMAKE_SOURCE_DIR}/src/core/multimedia
       ${CMAKE_SOURCE_DIR}/src/core/network
       ${CMAKE_SOURCE_DIR}/src/core/numericformats
       ${CMAKE_SOURCE_DIR}/src/core/painting

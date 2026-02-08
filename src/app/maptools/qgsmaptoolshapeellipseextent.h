@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,8 +17,8 @@
 #ifndef QGSMAPTOOLSHAPEELLIPSEEXTENT_H
 #define QGSMAPTOOLSHAPEELLIPSEEXTENT_H
 
-#include "qgsmaptoolshapeellipseabstract.h"
 #include "qgis_app.h"
+#include "qgsmaptoolshapeellipseabstract.h"
 #include "qgsmaptoolshaperegistry.h"
 
 class APP_EXPORT QgsMapToolShapeEllipseExtentMetadata : public QgsMapToolShapeMetadata

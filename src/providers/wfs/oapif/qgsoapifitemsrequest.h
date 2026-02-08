@@ -16,15 +16,15 @@
 #ifndef QGSOAPIFITEMSREQUEST_H
 #define QGSOAPIFITEMSREQUEST_H
 
-#include <QObject>
+#include <vector>
 
-#include "qgsdatasourceuri.h"
-#include "qgsbasenetworkrequest.h"
-#include "qgsfeature.h"
 #include "qgsbackgroundcachedfeatureiterator.h"
+#include "qgsbasenetworkrequest.h"
+#include "qgsdatasourceuri.h"
+#include "qgsfeature.h"
 #include "qgsrectangle.h"
 
-#include <vector>
+#include <QObject>
 
 //! Manages the /items request
 class QgsOapifItemsRequest : public QgsBaseNetworkRequest
@@ -49,6 +49,9 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
 
     //! Returns application level error
     ApplicationLevelError applicationLevelError() const { return mAppLevelError; }
+
+    //! Return geometry column name
+    QString geometryColumnName() const { return mGeometryAttribute; }
 
     //! Return fields.
     const QgsFields &fields() const { return mFields; }
@@ -90,6 +93,8 @@ class QgsOapifItemsRequest : public QgsBaseNetworkRequest
     const QString mFeatureFormat;
 
     bool mComputeBbox = false;
+
+    QString mGeometryAttribute;
 
     QgsFields mFields;
 

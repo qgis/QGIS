@@ -16,14 +16,94 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrandomextract.h"
+
 #include <random>
-#include <functional>
+
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
+void QgsRandomExtractSelectAlgorithmBase::sampleFeatureIds( QgsFeatureSource *source, const long long count, QgsProcessingFeedback *feedback )
+{
+  // Build a list of all feature ids
+  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest()
+                                                  .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
+                                                  .setNoAttributes() );
+  std::vector<QgsFeatureId> allFeats;
+  allFeats.reserve( count );
+  QgsFeature f;
+  feedback->pushInfo( QObject::tr( "Building list of all features..." ) );
+  while ( fit.nextFeature( f ) )
+  {
+    if ( feedback->isCanceled() )
+      return;
+    allFeats.push_back( f.id() );
+  }
+  feedback->pushInfo( QObject::tr( "Done." ) );
+
+  // initialize random engine
+  std::random_device randomDevice;
+  std::mt19937 mersenneTwister( randomDevice() );
+  std::uniform_int_distribution<size_t> fidsDistribution;
+
+  // If the number of features to select is greater than half the total number of features
+  // we will instead randomly select features to *exclude* from the output layer
+  const std::size_t actualFeatureCount = allFeats.size();
+  std::size_t shuffledFeatureCount = count;
+  bool invertSelection = static_cast<std::size_t>( count ) > actualFeatureCount / 2;
+  if ( invertSelection )
+    shuffledFeatureCount = actualFeatureCount - count;
+
+  std::size_t nb = actualFeatureCount;
+
+  // Shuffle <number> features at the start of the iterator
+  feedback->pushInfo( QObject::tr( "Randomly selecting %1 features" ).arg( count ) );
+  auto cursor = allFeats.begin();
+  using difference_type = std::vector<QgsFeatureId>::difference_type;
+  while ( shuffledFeatureCount-- )
+  {
+    if ( feedback->isCanceled() )
+      return;
+
+    // Update the distribution to match the number of unshuffled features
+    fidsDistribution.param( std::uniform_int_distribution<size_t>::param_type( 0, nb - 1 ) );
+    // Swap the current feature with a random one
+    std::swap( *cursor, *( cursor + static_cast<difference_type>( fidsDistribution( mersenneTwister ) ) ) );
+    // Move the cursor to the next feature
+    ++cursor;
+
+    // Decrement the number of unshuffled features
+    --nb;
+  }
+
+  // Insert the selected features into a QgsFeatureIds set
+  if ( invertSelection )
+    for ( auto it = cursor; it != allFeats.end(); ++it )
+      mSelectedFeatureIds.insert( *it );
+  else
+    for ( auto it = allFeats.begin(); it != cursor; ++it )
+      mSelectedFeatureIds.insert( *it );
+}
+
+QString QgsRandomExtractSelectAlgorithmBase::group() const
+{
+  return QObject::tr( "Vector selection" );
+}
+
+QString QgsRandomExtractSelectAlgorithmBase::groupId() const
+{
+  return u"vectorselection"_s;
+}
+
+// Random extract algorithm
+
 QString QgsRandomExtractAlgorithm::name() const
 {
-  return QStringLiteral( "randomextract" );
+  return u"randomextract"_s;
 }
 
 QString QgsRandomExtractAlgorithm::displayName() const
@@ -34,16 +114,6 @@ QString QgsRandomExtractAlgorithm::displayName() const
 QStringList QgsRandomExtractAlgorithm::tags() const
 {
   return QObject::tr( "extract,filter,random,number,percentage" ).split( ',' );
-}
-
-QString QgsRandomExtractAlgorithm::group() const
-{
-  return QObject::tr( "Vector selection" );
-}
-
-QString QgsRandomExtractAlgorithm::groupId() const
-{
-  return QStringLiteral( "vectorselection" );
 }
 
 QString QgsRandomExtractAlgorithm::shortDescription() const
@@ -71,27 +141,27 @@ QgsRandomExtractAlgorithm *QgsRandomExtractAlgorithm::createInstance() const
 
 void QgsRandomExtractAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "METHOD" ), QObject::tr( "Method" ), QStringList() << QObject::tr( "Number of features" ) << QObject::tr( "Percentage of features" ), false, 0 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "NUMBER" ), QObject::tr( "Number/percentage of features" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
+  addParameter( new QgsProcessingParameterFeatureSource( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Number of features" ) << QObject::tr( "Percentage of features" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"NUMBER"_s, QObject::tr( "Number/percentage of features" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Extracted (random)" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( u"OUTPUT"_s, QObject::tr( "Extracted (random)" ) ) );
 }
 
 QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, u"INPUT"_s, context ) );
   if ( !source )
-    throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
+    throw QgsProcessingException( invalidSourceError( parameters, u"INPUT"_s ) );
 
   QString dest;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, source->fields(), source->wkbType(), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, u"OUTPUT"_s, context, dest, source->fields(), source->wkbType(), source->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
-    throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
+    throw QgsProcessingException( invalidSinkError( parameters, u"OUTPUT"_s ) );
 
-  const int method = parameterAsEnum( parameters, QStringLiteral( "METHOD" ), context );
-  int number = parameterAsInt( parameters, QStringLiteral( "NUMBER" ), context );
-  const long count = source->featureCount();
+  const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
+  long long number = parameterAsInt( parameters, u"NUMBER"_s, context );
+  const long long count = source->featureCount();
 
   if ( method == 0 )
   {
@@ -105,84 +175,113 @@ QVariantMap QgsRandomExtractAlgorithm::processAlgorithm( const QVariantMap &para
     if ( number > 100 )
       throw QgsProcessingException( QObject::tr( "Percentage can't be greater than 100. Choose a lower value and try again." ) );
 
-    number = static_cast<int>( std::ceil( number * count / 100 ) );
+    number = static_cast<long long>( std::ceil( number * count / 100 ) );
   }
 
-  // Build a list of all feature ids
-  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest()
-                                                  .setFlags( Qgis::FeatureRequestFlag::NoGeometry )
-                                                  .setNoAttributes() );
-  std::vector<QgsFeatureId> allFeats;
-  allFeats.reserve( count );
-  QgsFeature f;
-  feedback->pushInfo( QObject::tr( "Building list of all features..." ) );
-  while ( fit.nextFeature( f ) )
-  {
-    if ( feedback->isCanceled() )
-      return QVariantMap();
-    allFeats.push_back( f.id() );
-  }
-  feedback->pushInfo( QObject::tr( "Done." ) );
-
-  // initialize random engine
-  std::random_device randomDevice;
-  std::mt19937 mersenneTwister( randomDevice() );
-  std::uniform_int_distribution<size_t> fidsDistribution;
-
-  // If the number of features to select is greater than half the total number of features
-  // we will instead randomly select features to *exclude* from the output layer
-  size_t actualFeatureCount = allFeats.size();
-  size_t shuffledFeatureCount = number;
-  bool invertSelection = static_cast<size_t>( number ) > actualFeatureCount / 2;
-  if ( invertSelection )
-    shuffledFeatureCount = actualFeatureCount - number;
-
-  size_t nb = actualFeatureCount;
-
-  // Shuffle <number> features at the start of the iterator
-  feedback->pushInfo( QObject::tr( "Randomly select %1 features" ).arg( number ) );
-  auto cursor = allFeats.begin();
-  using difference_type = std::vector<QgsFeatureId>::difference_type;
-  while ( shuffledFeatureCount-- )
-  {
-    if ( feedback->isCanceled() )
-      return QVariantMap();
-
-    // Update the distribution to match the number of unshuffled features
-    fidsDistribution.param( std::uniform_int_distribution<size_t>::param_type( 0, nb - 1 ) );
-    // Swap the current feature with a random one
-    std::swap( *cursor, *( cursor + static_cast<difference_type>( fidsDistribution( mersenneTwister ) ) ) );
-    // Move the cursor to the next feature
-    ++cursor;
-
-    // Decrement the number of unshuffled features
-    --nb;
-  }
-
-  // Insert the selected features into a QgsFeatureIds set
-  QgsFeatureIds selected;
-  if ( invertSelection )
-    for ( auto it = cursor; it != allFeats.end(); ++it )
-      selected.insert( *it );
-  else
-    for ( auto it = allFeats.begin(); it != cursor; ++it )
-      selected.insert( *it );
+  sampleFeatureIds( source.get(), number, feedback );
 
   feedback->pushInfo( QObject::tr( "Adding selected features" ) );
-  fit = source->getFeatures( QgsFeatureRequest().setFilterFids( selected ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
+  QgsFeature f;
+  QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setFilterFids( mSelectedFeatureIds ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
   while ( fit.nextFeature( f ) )
   {
     if ( feedback->isCanceled() )
       return QVariantMap();
 
     if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )
-      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+      throw QgsProcessingException( writeFeatureError( sink.get(), parameters, u"OUTPUT"_s ) );
   }
 
   sink->finalize();
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), dest );
+  outputs.insert( u"OUTPUT"_s, dest );
+  return outputs;
+}
+
+// Random selection algorithm
+
+QString QgsRandomSelectionAlgorithm::name() const
+{
+  return u"randomselection"_s;
+}
+
+QString QgsRandomSelectionAlgorithm::displayName() const
+{
+  return QObject::tr( "Random selection" );
+}
+
+QStringList QgsRandomSelectionAlgorithm::tags() const
+{
+  return QObject::tr( "select,random,number,percentage" ).split( ',' );
+}
+
+QString QgsRandomSelectionAlgorithm::shortDescription() const
+{
+  return QObject::tr( "Randomly selects features from a vector layer." );
+}
+
+QString QgsRandomSelectionAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "This algorithm takes a vector layer and selects a subset of its features. "
+                      "No new layer is generated by this algorithm.\n\n"
+                      "The subset is defined randomly, using a percentage or count value to define "
+                      "the total number of features in the subset." );
+}
+
+QgsRandomSelectionAlgorithm *QgsRandomSelectionAlgorithm::createInstance() const
+{
+  return new QgsRandomSelectionAlgorithm();
+}
+
+void QgsRandomSelectionAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterVectorLayer( u"INPUT"_s, QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterEnum( u"METHOD"_s, QObject::tr( "Method" ), QStringList() << QObject::tr( "Number of features" ) << QObject::tr( "Percentage of features" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterNumber( u"NUMBER"_s, QObject::tr( "Number/percentage of features" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 0 ) );
+
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Selected (random)" ) ) );
+}
+
+QVariantMap QgsRandomSelectionAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+{
+  mInput = parameters.value( u"INPUT"_s );
+  mTargetLayer = parameterAsVectorLayer( parameters, u"INPUT"_s, context );
+
+  if ( !mTargetLayer )
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for INPUT." ) );
+
+  const int method = parameterAsEnum( parameters, u"METHOD"_s, context );
+  long long number = parameterAsInt( parameters, u"NUMBER"_s, context );
+  const long long count = mTargetLayer->featureCount();
+
+  if ( method == 0 )
+  {
+    // number of features
+    if ( number > count )
+      throw QgsProcessingException( QObject::tr( "Selected number is greater than feature count. Choose a lower value and try again." ) );
+  }
+  else
+  {
+    // percentage of features
+    if ( number > 100 )
+      throw QgsProcessingException( QObject::tr( "Percentage can't be greater than 100. Choose a lower value and try again." ) );
+
+    number = static_cast<long long>( std::ceil( number * count / 100 ) );
+  }
+
+  // Insert the selected features into a QgsFeatureIds set
+  sampleFeatureIds( mTargetLayer, number, feedback );
+
+  return QVariantMap();
+}
+
+QVariantMap QgsRandomSelectionAlgorithm::postProcessAlgorithm( QgsProcessingContext &, QgsProcessingFeedback * )
+{
+  mTargetLayer->selectByIds( mSelectedFeatureIds );
+
+  QVariantMap outputs;
+  outputs.insert( u"OUTPUT"_s, mInput );
   return outputs;
 }
 

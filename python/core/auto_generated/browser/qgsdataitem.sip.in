@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsDataItem : QObject
 {
 %Docstring(signature="appended")
@@ -120,6 +122,26 @@ Create children. Children are not expected to have parent set.
     {
       Py_DECREF( sipResObj );
     }
+%End
+
+    int creatorAncestorDepth() const;
+%Docstring
+Returns the hierarchical depth of the item's original creator/source.
+
+This value represents the depth of the item that this object was created
+from. For example, a return value of 1 indicates that the item was
+created by its direct parent. A return value of 2 would indicate it was
+created by its grandparent, etc.
+
+A value of 0 indicates an unknown source, or an item which has not yet
+been added to the hierarchy.
+
+This value indicates the ancestor which must be refreshed in order to
+regenerate an item representing the same object as this item refers to.
+
+.. seealso:: :py:func:`ancestorAtDepth`
+
+.. versionadded:: 4.0
 %End
 
     Qgis::BrowserItemState state() const;
@@ -272,14 +294,14 @@ a selection from browser model.
 .. versionadded:: 3.18
 %End
 
- virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0."/;
+ virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.6. This method is no longer used by QGIS and will be removed in QGIS 5.0."/;
 %Docstring
 Writes the selected crs into data source. The original data source will
 be modified when calling this method.
 
 .. deprecated:: 3.6
 
-   This method is no longer used by QGIS and will be removed in QGIS 4.0.
+   This method is no longer used by QGIS and will be removed in QGIS 5.0.
 %End
 
  virtual bool rename( const QString &name ) /Deprecated="Since 3.10. "/;
@@ -332,6 +354,19 @@ Sets the capabilities for the data item.
 %Docstring
 Gets item parent. QgsDataItem maintains its own items hierarchy, it does
 not use QObject hierarchy.
+%End
+
+    QgsDataItem *ancestorAtDepth( int depth ) const;
+%Docstring
+Returns the ancestor item at the specified ``depth``.
+
+If ``depth`` is 1 then this method returns the
+:py:func:`~QgsDataItem.parent` item. A ``depth`` of 2 would return its
+grandparent (e.g. the parent's parent item).
+
+Returns ``None`` if no item exists at the specified depth.
+
+.. versionadded:: 4.0
 %End
 
     void setParent( QgsDataItem *parent );
@@ -428,6 +463,7 @@ Ownership of the returned objects is transferred to the caller.
 
 .. versionadded:: 3.16
 %End
+
 
   protected:
     virtual void populate( const QVector<QgsDataItem *> &children );

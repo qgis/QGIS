@@ -17,10 +17,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsfeature.h"
-#include "qgsfields.h"
-#include "qgsfeaturesink.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsfeature.h"
+#include "qgsfeaturesink.h"
+#include "qgsfields.h"
+
 #include <QList>
 #include <QMetaType>
 #include <QVariant>
@@ -62,6 +63,8 @@ class CORE_EXPORT QgsFeatureStore : public QgsFeatureSink
     void setCrs( const QgsCoordinateReferenceSystem &crs ) { mCrs = crs; }
 
     bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
+
+    using QgsFeatureSink::addFeatures;
     bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
 
     /**

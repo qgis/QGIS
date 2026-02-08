@@ -18,15 +18,15 @@
 #ifndef QGSMSSQLFEATUREITERATOR_H
 #define QGSMSSQLFEATUREITERATOR_H
 
-#include "qgsmssqlgeometryparser.h"
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureiterator.h"
 #include "qgsfields.h"
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
-#include "qgscoordinatetransform.h"
-
+#include "qgsmssqlgeometryparser.h"
 #include "qgsmssqlprovider.h"
+
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
 
 class QgsMssqlProvider;
 class QgsMssqlQuery;

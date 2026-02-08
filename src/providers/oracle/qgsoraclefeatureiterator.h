@@ -18,12 +18,11 @@
 #ifndef QGSORACLEFEATUREITERATOR_H
 #define QGSORACLEFEATUREITERATOR_H
 
+#include "qgscoordinatetransform.h"
 #include "qgsfeatureiterator.h"
+#include "qgsoracleprovider.h"
 
 #include <QSqlQuery>
-
-#include "qgsoracleprovider.h"
-#include "qgscoordinatetransform.h"
 
 class QgsOracleConn;
 class QgsOracleProvider;

@@ -14,22 +14,25 @@
  ***************************************************************************/
 
 #include "qgsterraintexturegenerator_p.h"
-#include "moc_qgsterraintexturegenerator_p.cpp"
 
+#include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgseventtracing.h"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmapsettings.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgs3dmapsettings.h"
 
-#include "qgseventtracing.h"
+#include <QString>
+
+#include "moc_qgsterraintexturegenerator_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QgsTerrainTextureGenerator::QgsTerrainTextureGenerator( const Qgs3DMapSettings &map )
   : mMap( map )
-  , mLastJobId( 0 )
   , mTextureSize( QSize( mMap.terrainSettings()->mapTileResolution(), mMap.terrainSettings()->mapTileResolution() ) )
 {
 }
@@ -57,7 +60,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   }
   mapSettings.setOutputSize( size );
 
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), tileId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"Texture"_s, tileId.text() );
 
   QgsMapRendererSequentialJob *job = new QgsMapRendererSequentialJob( mapSettings );
   connect( job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
@@ -72,7 +75,7 @@ int QgsTerrainTextureGenerator::render( const QgsRectangle &extent, QgsChunkNode
   mJobs.insert( job, jobData ); //store job data just before launching the job
   job->start();
 
-  // QgsDebugMsgLevel( QStringLiteral("added job: %1 .... in queue: %2").arg( jobData.jobId ).arg( jobs.count() ), 2);
+  // QgsDebugMsgLevel( u"added job: %1 .... in queue: %2"_s.arg( jobData.jobId ).arg( jobs.count() ), 2);
   return jobData.jobId;
 }
 
@@ -82,7 +85,7 @@ void QgsTerrainTextureGenerator::cancelJob( int jobId )
   {
     if ( jd.jobId == jobId )
     {
-      // QgsDebugMsgLevel( QStringLiteral("canceling job %1").arg( jobId ), 2 );
+      // QgsDebugMsgLevel( u"canceling job %1"_s.arg( jobId ), 2 );
       disconnect( jd.job, &QgsMapRendererJob::finished, this, &QgsTerrainTextureGenerator::onRenderingFinished );
       connect( jd.job, &QgsMapRendererJob::finished, jd.job, &QgsMapRendererSequentialJob::deleteLater );
       jd.job->cancelWithoutBlocking();
@@ -158,9 +161,9 @@ void QgsTerrainTextureGenerator::onRenderingFinished()
   mapJob->deleteLater();
   mJobs.remove( mapJob );
 
-  // QgsDebugMsgLevel( QStringLiteral("finished job %1 ... in queue: %2").arg( jobData.jobId).arg( jobs.count() ), 2 );
+  // QgsDebugMsgLevel( u"finished job %1 ... in queue: %2"_s.arg( jobData.jobId).arg( jobs.count() ), 2 );
 
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "Texture" ), jobData.tileId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"Texture"_s, jobData.tileId.text() );
 
   // pass QImage further
   emit tileReady( jobData.jobId, img );

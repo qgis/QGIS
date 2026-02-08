@@ -14,12 +14,18 @@
  ***************************************************************************/
 
 #include "qgsfielddomainwidget.h"
-#include "moc_qgsfielddomainwidget.cpp"
+
 #include "qgsfielddomain.h"
-#include "qgsvariantutils.h"
 #include "qgsgui.h"
+#include "qgsvariantutils.h"
+
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgsfielddomainwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractFieldDomainWidget
@@ -77,6 +83,11 @@ void QgsRangeDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
   mMaxInclusiveCheckBox->setChecked( rangeDomain->maximumIsInclusive() );
 }
 
+void QgsFieldDomainWidget::setNameEditable( bool editable )
+{
+  mNameEdit->setEnabled( editable );
+}
+
 QgsFieldDomain *QgsRangeDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
 {
   return new QgsRangeFieldDomain( name, description, fieldType, mMinSpinBox->value(), mMinInclusiveCheckBox->isChecked(), mMaxSpinBox->value(), mMaxInclusiveCheckBox->isChecked() );
@@ -106,6 +117,11 @@ void QgsGlobDomainWidget::setFieldDomain( const QgsFieldDomain *domain )
     return;
 
   mEditGlob->setText( globDomain->glob() );
+}
+
+void QgsFieldDomainDialog::setNameEditable( bool editable )
+{
+  mWidget->setNameEditable( editable );
 }
 
 QgsFieldDomain *QgsGlobDomainWidget::createFieldDomain( const QString &name, const QString &description, QMetaType::Type fieldType ) const
@@ -434,7 +450,7 @@ bool QgsFieldDomainWidget::isValid() const
 QgsFieldDomainDialog::QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
-  setObjectName( QStringLiteral( "QgsFieldDomainDialog" ) );
+  setObjectName( u"QgsFieldDomainDialog"_s );
 
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsFieldDomainWidget( type );

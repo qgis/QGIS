@@ -16,26 +16,30 @@
  ***************************************************************************/
 
 #include "qgsattributetypeloaddialog.h"
-#include "moc_qgsattributetypeloaddialog.cpp"
 
-#include "qgsmaplayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgsvectordataprovider.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsmaplayer.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
-#include <QTableWidgetItem>
-#include <QLineEdit>
 #include <QComboBox>
-#include <QLabel>
-#include <QFrame>
 #include <QCompleter>
-#include <QSpinBox>
-#include <QPushButton>
-#include <QHBoxLayout>
 #include <QFileDialog>
+#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QString>
+#include <QTableWidgetItem>
+
+#include "moc_qgsattributetypeloaddialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   : mLayer( vl )
@@ -52,7 +56,7 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]( int index ) { createPreview( index ); } );
   connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#edit-widgets" ) );
+    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#edit-widgets"_s );
   } );
 }
 

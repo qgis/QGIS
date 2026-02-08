@@ -15,29 +15,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgs3d.h"
+#include "qgsgoochmaterialsettings.h"
 #include "qgsmaterial.h"
 #include "qgsmaterialregistry.h"
 #include "qgsphongmaterialsettings.h"
-#include "qgsgoochmaterialsettings.h"
 #include "qgssimplelinematerialsettings.h"
+#include "qgstest.h"
 
 #include <QObject>
+#include <QString>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QParameter>
 #include <Qt3DRender/QRenderPass>
 #include <Qt3DRender/QTechnique>
 
-#include "qgstest.h"
-#include "qgs3d.h"
+using namespace Qt::StringLiterals;
 
-
-class TestQgs3dMaterial : public QgsTest
+class TestQgs3DMaterial : public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgs3dMaterial()
-      : QgsTest( QStringLiteral( "3D Material Tests" ), QStringLiteral( "3d" ) )
+    TestQgs3DMaterial()
+      : QgsTest( u"3D Material Tests"_s, u"3d"_s )
     {}
 
   private slots:
@@ -54,33 +55,33 @@ class TestQgs3dMaterial : public QgsTest
     void setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings );
 };
 
-void TestQgs3dMaterial::initTestCase()
+void TestQgs3DMaterial::initTestCase()
 {
   QgsApplication::init(); // init paths for CRS lookup
   QgsApplication::initQgis();
 }
 
-void TestQgs3dMaterial::cleanupTestCase()
+void TestQgs3DMaterial::cleanupTestCase()
 {
   QgsApplication::exitQgis();
 }
 
-void TestQgs3dMaterial::init()
+void TestQgs3DMaterial::init()
 {
 }
 
-void TestQgs3dMaterial::cleanup()
+void TestQgs3DMaterial::cleanup()
 {
 }
 
-void TestQgs3dMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )
+void TestQgs3DMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )
 {
   collection.setProperty( propertyType, property );
   materialSettings.setDataDefinedProperties( collection );
 }
 
 
-void TestQgs3dMaterial::colorDataDefinedPhong()
+void TestQgs3DMaterial::colorDataDefinedPhong()
 {
   const QgsExpressionContext expressionContext;
   QgsPhongMaterialSettings phongSettings;
@@ -111,13 +112,13 @@ void TestQgs3dMaterial::colorDataDefinedPhong()
 
 
   QgsProperty redProperty;
-  redProperty.setExpressionString( QStringLiteral( "'red'" ) );
+  redProperty.setExpressionString( u"'red'"_s );
   redProperty.setActive( false );
   QgsProperty blueProperty;
-  blueProperty.setExpressionString( QStringLiteral( "'blue'" ) );
+  blueProperty.setExpressionString( u"'blue'"_s );
   blueProperty.setActive( false );
   QgsProperty yellowProperty;
-  yellowProperty.setExpressionString( QStringLiteral( "'yellow'" ) );
+  yellowProperty.setExpressionString( u"'yellow'"_s );
   yellowProperty.setActive( false );
 
   setColorProperty( redProperty, QgsAbstractMaterialSettings::Property::Diffuse, propertyCollection, phongSettings );
@@ -142,7 +143,7 @@ void TestQgs3dMaterial::colorDataDefinedPhong()
   QCOMPARE( phongSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_3 );
 }
 
-void TestQgs3dMaterial::colorDataDefinedGooch()
+void TestQgs3DMaterial::colorDataDefinedGooch()
 {
   const QgsExpressionContext expressionContext;
 
@@ -184,16 +185,16 @@ void TestQgs3dMaterial::colorDataDefinedGooch()
   colorByteArray_4[11] = 0xff;
 
   QgsProperty redProperty;
-  redProperty.setExpressionString( QStringLiteral( "'red'" ) );
+  redProperty.setExpressionString( u"'red'"_s );
   redProperty.setActive( false );
   QgsProperty blueProperty;
-  blueProperty.setExpressionString( QStringLiteral( "'blue'" ) );
+  blueProperty.setExpressionString( u"'blue'"_s );
   blueProperty.setActive( false );
   QgsProperty yellowProperty;
-  yellowProperty.setExpressionString( QStringLiteral( "'yellow'" ) );
+  yellowProperty.setExpressionString( u"'yellow'"_s );
   yellowProperty.setActive( false );
   QgsProperty whiteProperty;
-  whiteProperty.setExpressionString( QStringLiteral( "'white'" ) );
+  whiteProperty.setExpressionString( u"'white'"_s );
   whiteProperty.setActive( false );
 
   setColorProperty( redProperty, QgsAbstractMaterialSettings::Property::Diffuse, propertyCollection, goochSettings );
@@ -225,9 +226,9 @@ void TestQgs3dMaterial::colorDataDefinedGooch()
   QCOMPARE( goochSettings.dataDefinedVertexColorsAsByte( expressionContext ), colorByteArray_4 );
 }
 
-void TestQgs3dMaterial::clipping()
+void TestQgs3DMaterial::clipping()
 {
-  const QString defineClippingStr = QStringLiteral( "#define %1" ).arg( QgsMaterial::CLIP_PLANE_DEFINE );
+  const QString defineClippingStr = u"#define %1"_s.arg( QgsMaterial::CLIP_PLANE_DEFINE );
   const QList<QVector4D> clipPlanesEquations = QList<QVector4D>()
                                                << QVector4D( 0.866025, -0.5, 0, 150.0 )
                                                << QVector4D( -0.866025, 0.5, 0, 150.0 )
@@ -360,5 +361,5 @@ void TestQgs3dMaterial::clipping()
   QVERIFY( !QString( lineShaderCode[1] ).contains( defineClippingStr ) );
 }
 
-QGSTEST_MAIN( TestQgs3dMaterial )
+QGSTEST_MAIN( TestQgs3DMaterial )
 #include "testqgs3dmaterial.moc"

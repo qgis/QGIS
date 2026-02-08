@@ -16,11 +16,17 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgslayoutnortharrowhandler.h"
-#include "moc_qgslayoutnortharrowhandler.cpp"
-#include "qgslayoutitemmap.h"
-#include "qgslayout.h"
+
 #include "qgsbearingutils.h"
+#include "qgslayout.h"
+#include "qgslayoutitemmap.h"
 #include "qgslogger.h"
+
+#include <QString>
+
+#include "moc_qgslayoutnortharrowhandler.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutNorthArrowHandler::QgsLayoutNorthArrowHandler( QObject *parent )
   : QObject( parent )
@@ -66,7 +72,7 @@ void QgsLayoutNorthArrowHandler::updateMapRotation()
       catch ( QgsException &e )
       {
         Q_UNUSED( e )
-        QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+        QgsDebugError( u"Caught exception %1"_s.arg( e.what() ) );
       }
       break;
     }

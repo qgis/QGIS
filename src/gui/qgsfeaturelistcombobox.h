@@ -15,10 +15,10 @@
 #ifndef QGSFIELDLISTCOMBOBOX_H
 #define QGSFIELDLISTCOMBOBOX_H
 
-#include <QComboBox>
-
-#include "qgsfeature.h"
 #include "qgis_gui.h"
+#include "qgsfeature.h"
+
+#include <QComboBox>
 
 class QgsVectorLayer;
 class QgsFeatureFilterModel;

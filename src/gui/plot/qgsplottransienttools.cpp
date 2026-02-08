@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgsplottransienttools.h"
-#include "moc_qgsplottransienttools.cpp"
+
+#include "qgsapplication.h"
 #include "qgsplotcanvas.h"
 #include "qgsplotmouseevent.h"
-#include "qgsapplication.h"
 
-#include <QKeyEvent>
 #include <QApplication>
+#include <QKeyEvent>
+
+#include "moc_qgsplottransienttools.cpp"
 
 //
 // QgsPlotToolTemporaryKeyPan

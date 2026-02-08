@@ -13,6 +13,7 @@
 
 
 
+
 class QgsMapLayerLegend : QObject
 {
 %Docstring(signature="appended")

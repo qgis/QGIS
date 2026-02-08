@@ -18,16 +18,16 @@
 #ifndef QGSOPTIONS_H
 #define QGSOPTIONS_H
 
-#include "qgsoptionsdialogbase.h"
 #include "ui_qgsoptionsbase.h"
-#include "qgsguiutils.h"
-#include "qgisapp.h"
-#include "qgshelp.h"
 
+#include "qgis_app.h"
+#include "qgisapp.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsoptionsdialogbase.h"
 
 #include <QList>
-#include "qgis_app.h"
 
 class QgsExpressionContext;
 class QgsOptionsPageWidget;

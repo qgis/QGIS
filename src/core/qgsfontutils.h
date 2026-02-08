@@ -16,12 +16,12 @@
 #ifndef QGSFONTUTILS_H
 #define QGSFONTUTILS_H
 
-#include <QFont>
-#include <QString>
-#include <QDomElement>
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QDomElement>
+#include <QFont>
+#include <QString>
 
 class QMimeData;
 

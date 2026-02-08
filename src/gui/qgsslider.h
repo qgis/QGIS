@@ -18,10 +18,11 @@
 #ifndef QGSSLIDER_H
 #define QGSSLIDER_H
 
-#include <QSlider>
-#include "qgis_sip.h"
-#include <QVariant>
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QSlider>
+#include <QVariant>
 
 class QPaintEvent;
 
@@ -40,9 +41,38 @@ class GUI_EXPORT QgsSlider : public QSlider
     //! Constructor for QgsSlider
     QgsSlider( Qt::Orientation orientation, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    /**
+     * Sets the slider range's minimum value.
+     */
     void setMinimum( const QVariant &min );
+
+    /**
+     * Returns the slider range's minimum value.
+     * \since QGIS 4.0
+     */
+    QVariant minimum() const { return mMin; };
+
+    /**
+     * Sets the slider range's maximum value.
+     */
     void setMaximum( const QVariant &max );
+
+    /**
+     * Returns the slider range's maximum value.
+     * \since QGIS 4.0
+     */
+    QVariant maximum() const { return mMax; };
+
+    /**
+     * Sets the slider's single step value.
+     */
     void setSingleStep( const QVariant &step );
+
+    /**
+     * Returns the slider's single step value.
+     */
+    QVariant singleStep() const { return mStep; };
+
     void setValue( const QVariant &value );
     QVariant variantValue() const;
 

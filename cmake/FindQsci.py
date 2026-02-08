@@ -24,7 +24,7 @@
 #    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-"""Find QScintilla2 PyQt4/PyQt5 module version.
+"""Find QScintilla2 PyQt4/PyQt5/PyQt6 module version.
 
 .. note:: Redistribution and use is allowed according to the terms of the BSD
 license. For details see the accompanying COPYING-CMAKE-SCRIPTS file.

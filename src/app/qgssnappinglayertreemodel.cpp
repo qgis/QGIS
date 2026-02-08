@@ -14,21 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QComboBox>
-#include <QToolButton>
-#include <QDoubleSpinBox>
-#include <QMenu>
-#include <QAction>
 #include "qgssnappinglayertreemodel.h"
-#include "moc_qgssnappinglayertreemodel.cpp"
 
 #include "qgslayertree.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgssnappingconfig.h"
-#include "qgsvectorlayer.h"
-#include "qgsunittypes.h"
 #include "qgsscalewidget.h"
+#include "qgssnappingconfig.h"
+#include "qgsunittypes.h"
+#include "qgsvectorlayer.h"
+
+#include <QAction>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QMenu>
+#include <QString>
+#include <QToolButton>
+
+#include "moc_qgssnappinglayertreemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSnappingLayerDelegate::QgsSnappingLayerDelegate( QgsMapCanvas *canvas, QObject *parent )
   : QItemDelegate( parent )
@@ -59,7 +64,7 @@ QWidget *QgsSnappingLayerDelegate::createEditor( QWidget *parent, const QStyleOp
       typeMenu->addAction( action );
     }
     mTypeButton->setMenu( typeMenu );
-    mTypeButton->setObjectName( QStringLiteral( "SnappingTypeButton" ) );
+    mTypeButton->setObjectName( u"SnappingTypeButton"_s );
     mTypeButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     return mTypeButton;
   }

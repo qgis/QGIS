@@ -20,9 +20,9 @@
 #include "qgscamerapose.h"
 #include "qgscoordinatetransform.h"
 
+#include <QImage>
 #include <Qt3DCore/QEntity>
 #include <Qt3DInput/QMouseEvent>
-#include <QImage>
 
 #ifndef SIP_RUN
 namespace Qt3DInput
@@ -48,6 +48,7 @@ class QgsCameraPose;
 class QgsVector3D;
 class QgsWindow3DEngine;
 class Qgs3DMapScene;
+class QgsCrossSection;
 
 /**
  * \ingroup qgis_3d
@@ -291,6 +292,13 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     const QgsVector3D origin() const { return mOrigin; }
 
+    /**
+     * Sets the cross section side view definition for the 3D map canvas.
+     * The camera will be positioned to look at the cross section from the side.
+     * \since QGIS 4.0
+     */
+    void setCrossSectionSideView( const QgsCrossSection &crossSection );
+
     // Convenience methods to set camera view to standard positions
     //! Rotate to diagonal view. \since QGIS 3.44
     void rotateCameraToHome() { rotateToRespectingTerrain( 45.0f, 45.0f ); }
@@ -321,6 +329,12 @@ class _3D_EXPORT QgsCameraController : public QObject
      */
     void depthBufferCaptured( const QImage &depthImage );
 
+    /**
+     * Moves camera position by the given difference vector in world coordinates
+     * \since QGIS 4.0
+     */
+    void moveCenterPoint( const QVector3D &posDiff );
+
   private:
 #ifdef SIP_RUN
     QgsCameraController();
@@ -328,7 +342,6 @@ class _3D_EXPORT QgsCameraController : public QObject
 #endif
 
     void updateCameraFromPose();
-    void moveCameraPositionBy( const QVector3D &posDiff );
     //! Returns a pointer to the scene's engine's window or nullptr if engine is QgsOffscreen3DEngine
     QWindow *window() const;
 

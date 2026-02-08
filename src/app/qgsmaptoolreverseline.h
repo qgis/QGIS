@@ -16,11 +16,10 @@
 #ifndef QGSMAPTOOLREVERSELINE_H
 #define QGSMAPTOOLREVERSELINE_H
 
-#include "qgsmaptooledit.h"
 #include "qgis_app.h"
-#include "qgsgeometry.h"
 #include "qgsfeatureid.h"
-
+#include "qgsgeometry.h"
+#include "qgsmaptooledit.h"
 
 class QgsVertexMarker;
 

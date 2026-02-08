@@ -20,9 +20,9 @@ email                : wonder.sk at gmail dot com
 
 #include <sqlite3.h>
 
-#include <QFlags>
-
 #include "qgsoracleconn.h"
+
+#include <QFlags>
 
 /**
  * This class contains routines for local caching of listing of layers, so the add Oracle

@@ -13,24 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
-#include "qgstest.h"
+#include <memory>
 
 #include "qgs3d.h"
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
+#include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsflatterraingenerator.h"
+#include "qgsmaplayertemporalproperties.h"
 #include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshrenderersettings.h"
 #include "qgsmeshterraingenerator.h"
-#include "qgsmeshlayer3drenderer.h"
-#include "qgsmaplayertemporalproperties.h"
 #include "qgsoffscreen3dengine.h"
 #include "qgspointlightsettings.h"
 #include "qgsproject.h"
-#include "qgs3drendercontext.h"
+#include "qgstest.h"
+
+#include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMesh3DRendering : public QgsTest
 {
@@ -38,7 +42,7 @@ class TestQgsMesh3DRendering : public QgsTest
 
   public:
     TestQgsMesh3DRendering()
-      : QgsTest( QStringLiteral( "Mesh 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
+      : QgsTest( u"Mesh 3D Rendering Tests"_s, u"3d"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -65,7 +69,7 @@ void TestQgsMesh3DRendering::initTestCase()
   QgsApplication::initQgis();
   Qgs3D::initialize();
 
-  mProject.reset( new QgsProject );
+  mProject = std::make_unique<QgsProject>();
 
   mLayerMeshTerrain = new QgsMeshLayer( testDataPath( "/mesh/quad_flower.2dm" ), "mesh", "mdal" );
   QVERIFY( mLayerMeshTerrain->isValid() );

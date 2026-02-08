@@ -14,14 +14,19 @@
  ***************************************************************************/
 
 #include "qgsvectortileconnectiondialog.h"
-#include "moc_qgsvectortileconnectiondialog.cpp"
-#include "qgsvectortileconnection.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgssettingsenumflageditorwidgetwrapper.h"
+#include "qgsvectortileconnection.h"
 
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgsvectortileconnectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -41,7 +46,7 @@ QgsVectorTileConnectionDialog::QgsVectorTileConnectionDialog( QWidget *parent )
 
   buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-vector-tiles-services" ) );
+    QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-vector-tiles-services"_s );
   } );
   connect( mEditName, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );
   connect( mEditUrl, &QLineEdit::textChanged, this, &QgsVectorTileConnectionDialog::updateOkButtonState );

@@ -14,18 +14,22 @@
  ***************************************************************************/
 
 #include "qgsfeatureselectiondlg.h"
+
+#include "qgsapplication.h"
+#include "qgsattributeeditorcontext.h"
+#include "qgsdistancearea.h"
+#include "qgsexpressionselectiondialog.h"
+#include "qgsfeaturerequest.h"
+#include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsvectorlayerselectionmanager.h"
+
+#include <QString>
+#include <QWindow>
+
 #include "moc_qgsfeatureselectiondlg.cpp"
 
-#include "qgsvectorlayerselectionmanager.h"
-#include "qgsdistancearea.h"
-#include "qgsfeaturerequest.h"
-#include "qgsattributeeditorcontext.h"
-#include "qgsapplication.h"
-#include "qgsexpressionselectiondialog.h"
-#include "qgsmapcanvas.h"
-#include "qgsgui.h"
-
-#include <QWindow>
+using namespace Qt::StringLiterals;
 
 QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent )
   : QDialog( parent, Qt::Window )
@@ -81,7 +85,7 @@ void QgsFeatureSelectionDlg::showEvent( QShowEvent *event )
   QWindow *mainWindow = nullptr;
   for ( const auto &w : QgsApplication::topLevelWindows() )
   {
-    if ( w->objectName() == QLatin1String( "QgisAppWindow" ) )
+    if ( w->objectName() == "QgisAppWindow"_L1 )
     {
       mainWindow = w;
       break;

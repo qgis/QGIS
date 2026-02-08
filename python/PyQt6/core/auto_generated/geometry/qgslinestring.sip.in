@@ -13,6 +13,7 @@
 
 
 
+
 class QgsLineString: QgsCurve
 {
 %Docstring(signature="appended")
@@ -748,15 +749,32 @@ approximation of the curve.
 
 %Docstring
 Calculates the shoelace/triangle formula sum for the points in the
-linestring. If the linestring is closed (i.e. a polygon) then the
-polygon area is equal to the absolute value of the sum. Please note that
-the sum will be negative if the points are defined in clockwise order.
-Therefore, if you want to use the sum as an area (as the method name
-indicates) then you probably should use the absolute value, since
-otherwise a bug can be introduced (such as the bug fixed for github
-issue 49578)
+linestring. 2D version.
+
+If the linestring is closed (i.e. a polygon) then the polygon area is
+equal to the absolute value of the sum. Please note that the sum will be
+negative if the points are defined in clockwise order. Therefore, if you
+want to use the sum as an area (as the method name indicates) then you
+probably should use the absolute value, since otherwise a bug can be
+introduced (such as the bug fixed for github issue 49578)
 
 .. seealso:: https://en.wikipedia.org/wiki/Shoelace_formula#Triangle_formula
+%End
+
+    virtual void sumUpArea3D( double &sum /Out/ ) const;
+
+%Docstring
+Calculates the shoelace/triangle formula sum for the points in the
+linestring. 3D version.
+
+If the linestring is closed (i.e. a polygon) then the polygon area is
+equal to the value of the sum.
+
+.. note::
+
+   If the geometry is 2D, the method falls back to the 2D computation.
+
+.. versionadded:: 4.0
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;

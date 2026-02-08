@@ -22,11 +22,13 @@
 #define QGSSERVERINTERFACE_H
 
 #include "qgsconfig.h"
+
 #include "qgis_sip.h"
 #include "qgscapabilitiescache.h"
 #include "qgsrequesthandler.h"
 #include "qgsserverfilter.h"
 #include "qgsserversettings.h"
+
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsaccesscontrolfilter.h"
 #include "qgsaccesscontrol.h"

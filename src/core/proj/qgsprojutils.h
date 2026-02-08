@@ -17,14 +17,16 @@
 #ifndef QGSPROJUTILS_H
 #define QGSPROJUTILS_H
 
-#include <QtGlobal>
+#include "qgsconfig.h"
+
+#include <memory>
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsconfig.h"
 #include "qgsdatumtransform.h"
-#include <memory>
+
 #include <QStringList>
+#include <QtGlobal>
 
 #if !defined(USE_THREAD_LOCAL) || defined(Q_OS_WIN)
 #include <QThreadStorage>

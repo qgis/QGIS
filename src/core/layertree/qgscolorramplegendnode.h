@@ -18,8 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslayertreemodellegendnode.h"
 #include "qgscolorramplegendnodesettings.h"
+#include "qgslayertreemodellegendnode.h"
 
 class QgsColorRamp;
 
@@ -104,6 +104,34 @@ class CORE_EXPORT QgsColorRampLegendNode : public QgsLayerTreeModelLegendNode
      * \see settings()
      */
     void setSettings( const QgsColorRampLegendNodeSettings &settings );
+
+    /**
+     * Sets the node's minimum value.
+     *
+     * \since QGIS 4.0
+     */
+    void setMinimum( double minimum ) { mMinimumValue = minimum; };
+
+    /**
+     * Sets the node's maximum value.
+     *
+     * \since QGIS 4.0
+     */
+    void setMaximum( double maximum ) { mMaximumValue = maximum; };
+
+    /**
+     * Returns the node's minimum value.
+     *
+     * \since QGIS 4.0
+     */
+    double minimum() const { return mMinimumValue; };
+
+    /**
+     * Returns the node's maximum value.
+     *
+     * \since QGIS 4.0
+     */
+    double maximum() const { return mMaximumValue; };
 
   private:
     void init( QgsLayerTreeLayer *nodeLayer );

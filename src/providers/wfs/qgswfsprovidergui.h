@@ -13,11 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsproviderguimetadata.h"
+#include "qgssourceselectprovider.h"
 #include "qgswfsprovider.h"
 #include "qgswfssourceselect.h"
-#include "qgssourceselectprovider.h"
-#include "qgsproviderguimetadata.h"
-
 
 class QgsWfsProviderGuiMetadata : public QgsProviderGuiMetadata
 {

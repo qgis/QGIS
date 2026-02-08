@@ -14,26 +14,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMessageBox>
-
 #include "qgsorganizetablecolumnsdialog.h"
-#include "moc_qgsorganizetablecolumnsdialog.cpp"
-#include "qgsattributetableview.h"
 
 #include "qgsapplication.h"
-#include "qgsvectorlayer.h"
-#include "qgsexpression.h"
-
-#include "qgssearchquerybuilder.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsmessagebar.h"
-#include "qgsrubberband.h"
-#include "qgsfields.h"
+#include "qgsattributetableview.h"
 #include "qgseditorwidgetregistry.h"
-
+#include "qgsexpression.h"
+#include "qgsfields.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagebar.h"
+#include "qgsproject.h"
+#include "qgsrubberband.h"
+#include "qgssearchquerybuilder.h"
+#include "qgsvectorlayer.h"
 
+#include <QMessageBox>
+#include <QString>
+
+#include "moc_qgsorganizetablecolumnsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, const QgsAttributeTableConfig &config, QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -60,7 +61,7 @@ QgsOrganizeTableColumnsDialog::QgsOrganizeTableColumnsDialog( const QgsVectorLay
       if ( columnConfig.type == QgsAttributeTableConfig::Action )
       {
         item = new QListWidgetItem( tr( "[Action Widget]" ), mFieldsList );
-        item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) ) );
+        item->setIcon( QgsApplication::getThemeIcon( u"/propertyicons/action.svg"_s ) );
       }
       else
       {

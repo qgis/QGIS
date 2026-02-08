@@ -18,11 +18,15 @@
 
 #include "qgsdataitemguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsWcsDataItemGuiProvider : public QObject, public QgsDataItemGuiProvider
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "WCS" ); }
+    QString name() override { return u"WCS"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

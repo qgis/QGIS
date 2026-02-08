@@ -14,15 +14,16 @@
  ***************************************************************************/
 
 #include "qgsflatterraingenerator.h"
-#include "moc_qgsflatterraingenerator.cpp"
-
-#include <Qt3DRender/QGeometryRenderer>
 
 #include "qgs3dmapsettings.h"
 #include "qgschunknode.h"
 #include "qgsgeotransform.h"
 #include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
+
+#include <Qt3DRender/QGeometryRenderer>
+
+#include "moc_qgsflatterraingenerator.cpp"
 
 /// @cond PRIVATE
 

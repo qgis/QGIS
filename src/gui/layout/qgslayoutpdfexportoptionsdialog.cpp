@@ -15,20 +15,25 @@
  ***************************************************************************/
 
 #include "qgslayoutpdfexportoptionsdialog.h"
-#include "moc_qgslayoutpdfexportoptionsdialog.cpp"
+
 #include "qgis.h"
-#include "qgssettings.h"
+#include "qgsabstractgeopdfexporter.h"
+#include "qgsgeopdflayertreemodel.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsabstractgeopdfexporter.h"
-#include "qgsproject.h"
-#include "qgsmapthemecollection.h"
-#include "qgsgeopdflayertreemodel.h"
 #include "qgslayertree.h"
+#include "qgsmapthemecollection.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
 
 #include <QCheckBox>
-#include <QPushButton>
 #include <QMenu>
+#include <QPushButton>
+#include <QString>
+
+#include "moc_qgslayoutpdfexportoptionsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *parent, bool allowGeospatialPdfExport, const QString &geospatialPdfReason, const QStringList &geospatialPdfLayerOrder, Qt::WindowFlags flags )
   : QDialog( parent, flags )
@@ -267,7 +272,7 @@ bool QgsLayoutPdfExportOptionsDialog::openAfterExporting() const
 
 void QgsLayoutPdfExportOptionsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
+  QgsHelp::openHelp( u"print_composer/create_output.html"_s );
 }
 
 void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( QPoint point, const QModelIndex &index )

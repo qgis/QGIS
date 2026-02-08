@@ -16,16 +16,16 @@
 #ifndef QGSRASTERATTRIBUTETABLE_H
 #define QGSRASTERATTRIBUTETABLE_H
 
-#include "qgsfields.h"
-#include "qgsfeature.h"
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
 #include "qgscolorrampimpl.h"
+#include "qgsfeature.h"
+#include "qgsfields.h"
 
-#include <QObject>
-#include <QLinearGradient>
 #include <QCoreApplication>
+#include <QLinearGradient>
+#include <QObject>
 
 class QgsRasterLayer;
 class QgsRasterRenderer;

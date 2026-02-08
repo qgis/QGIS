@@ -17,7 +17,6 @@
 
 #include "qgslayoutmeasurementconverter.h"
 
-
 QgsLayoutMeasurement QgsLayoutMeasurementConverter::convert( const QgsLayoutMeasurement measurement, const Qgis::LayoutUnit targetUnits ) const
 {
   if ( measurement.units() == targetUnits )

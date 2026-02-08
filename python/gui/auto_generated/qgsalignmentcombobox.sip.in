@@ -8,6 +8,7 @@
 
 
 
+
 class QgsAlignmentComboBox : QComboBox
 {
 %Docstring(signature="appended")
@@ -47,6 +48,42 @@ Returns the current alignment choice.
 Sets the current ``alignment`` choice.
 
 .. seealso:: :py:func:`currentAlignment`
+%End
+
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+%Docstring
+Returns the current alignment choice as a QGIS horizontal text alignment
+enum.
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 4.0
+%End
+
+    Qgis::TextVerticalAlignment verticalAlignment() const;
+%Docstring
+Returns the current alignment choice as a QGIS horizontal text alignment
+enum.
+
+.. seealso:: :py:func:`verticalAlignment`
+
+.. versionadded:: 4.0
+%End
+
+    void setCurrentAlignment( Qgis::TextHorizontalAlignment alignment );
+%Docstring
+Sets the current ``alignment`` choice from a QGIS horizontal text
+alignment enum.
+
+.. versionadded:: 4.0
+%End
+
+    void setCurrentAlignment( Qgis::TextVerticalAlignment alignment );
+%Docstring
+Sets the current ``alignment`` choice from a QGIS vertical text
+alignment enum.
+
+.. versionadded:: 4.0
 %End
 
     void customizeAlignmentDisplay( Qt::Alignment alignment, const QString &text = QString(), const QIcon &icon = QIcon() );

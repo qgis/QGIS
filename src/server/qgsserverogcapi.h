@@ -16,9 +16,8 @@
 #ifndef QGSSERVEROGCAPI_H
 #define QGSSERVEROGCAPI_H
 
-#include "qgsserverapi.h"
 #include "qgis_server.h"
-
+#include "qgsserverapi.h"
 
 class QgsServerOgcApiHandler;
 
@@ -105,7 +104,7 @@ class SERVER_EXPORT QgsServerOgcApi : public QgsServerApi
     /**
      * Executes a request by passing the given \a context to the API handlers.
      */
-    virtual void executeRequest( const QgsServerApiContext &context ) const override SIP_THROW( QgsServerApiBadRequestException ) SIP_VIRTUALERRORHANDLER( serverapi_badrequest_exception_handler );
+    void executeRequest( const QgsServerApiContext &context ) const override SIP_THROW( QgsServerApiBadRequestException ) SIP_VIRTUALERRORHANDLER( serverapi_badrequest_exception_handler );
 
     /**
      * Returns a map of contentType => list of mime types

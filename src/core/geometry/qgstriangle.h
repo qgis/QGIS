@@ -3,7 +3,7 @@
                          -------------------
     begin                : January 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,9 +20,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgspolygon.h"
 #include "qgscircle.h"
 #include "qgslinestring.h"
+#include "qgspolygon.h"
 
 /**
  * \ingroup core

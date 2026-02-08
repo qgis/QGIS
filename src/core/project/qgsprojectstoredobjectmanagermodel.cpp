@@ -14,9 +14,11 @@
  ***************************************************************************/
 
 #include "qgsprojectstoredobjectmanagermodel.h"
-#include "moc_qgsprojectstoredobjectmanagermodel.cpp"
-#include <QMessageBox>
+
 #include <QIcon>
+#include <QMessageBox>
+
+#include "moc_qgsprojectstoredobjectmanagermodel.cpp"
 
 //
 // QgsProjectStoredObjectManagerModelBase
@@ -115,9 +117,25 @@ QVariant QgsProjectStoredObjectManagerModel<T>::dataInternal( const QModelIndex 
       return objectToVariant( mObjectManager->objects().at( objectRow ) );
     }
 
+    case static_cast< int >( CustomRole::IsEmptyObject ):
+    {
+      return isEmpty;
+    }
+
     case Qt::DecorationRole:
     {
-      return isEmpty || !mObjectManager ? QIcon() : mObjectManager->objects().at( objectRow )->icon();
+      if ( isEmpty || !mObjectManager )
+        return QIcon();
+
+      T *object = mObjectManager->objects().at( objectRow );
+      if constexpr( requires { object->icon(); } )
+      {
+        return object->icon();
+      }
+      else
+      {
+        return QIcon();
+      }
     }
 
     default:
@@ -323,6 +341,61 @@ template class QgsProjectStoredObjectManagerModel<QgsMasterLayoutInterface>; // 
 #include "qgselevationprofile.h"
 template class QgsProjectStoredObjectManagerModel<QgsElevationProfile>; // clazy:exclude=missing-qobject-macro
 
+#include "qgsselectivemaskingsourceset.h"
+
+template<>
+QVariant QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::objectToVariant( QgsSelectiveMaskingSourceSet *object ) const
+{
+  if ( object )
+    return QVariant::fromValue( object );
+  return QVariant();
+}
+
+template<>
+QgsSelectiveMaskingSourceSet *QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::objectFromIndex( const QModelIndex &index ) const
+{
+  if ( index.row() == 0 && mAllowEmpty )
+    return nullptr;
+
+  const QVariant variant = data( index, static_cast< int >( CustomRole::Object ) );
+  return qvariant_cast< QgsSelectiveMaskingSourceSet *>( variant );
+}
+
+template<>
+QModelIndex QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>::indexFromObject( QgsSelectiveMaskingSourceSet *object ) const
+{
+  if ( !mObjectManager )
+  {
+    return QModelIndex();
+  }
+
+  const QList< QgsSelectiveMaskingSourceSet * > objects = mObjectManager->objects();
+  int r = 0;
+  bool foundMatch = false;
+  for ( QgsSelectiveMaskingSourceSet *set : objects )
+  {
+    if ( set && set->id() == object->id() )
+    {
+      foundMatch = true;
+      break;
+    }
+    r++;
+  }
+  if ( !foundMatch )
+    return QModelIndex();
+
+  QModelIndex idx = index( mAllowEmpty ? r + 1 : r, 0, QModelIndex() );
+  if ( idx.isValid() )
+  {
+    return idx;
+  }
+
+  return QModelIndex();
+}
+
+
+template class QgsProjectStoredObjectManagerModel<QgsSelectiveMaskingSourceSet>; // clazy:exclude=missing-qobject-macro
+
 ///@endcond
 
 //
@@ -339,6 +412,16 @@ QgsProjectStoredObjectManagerProxyModelBase::QgsProjectStoredObjectManagerProxyM
 
 bool QgsProjectStoredObjectManagerProxyModelBase::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
+  if ( qobject_cast< QgsProjectStoredObjectManagerModelBase * >( sourceModel() ) )
+  {
+    const bool leftIsEmpty = sourceModel()->data( left, static_cast< int >( QgsProjectStoredObjectManagerModelBase::CustomRole::IsEmptyObject ) ).toBool();
+    const bool rightIsEmpty = sourceModel()->data( right, static_cast< int >( QgsProjectStoredObjectManagerModelBase::CustomRole::IsEmptyObject ) ).toBool();
+    if ( leftIsEmpty )
+      return true;
+    if ( rightIsEmpty )
+      return false;
+  }
+
   const QString leftText = sourceModel()->data( left, Qt::DisplayRole ).toString();
   const QString rightText = sourceModel()->data( right, Qt::DisplayRole ).toString();
   if ( leftText.isEmpty() )
@@ -399,4 +482,5 @@ bool QgsProjectStoredObjectManagerProxyModel<T>::filterAcceptsRowInternal( int s
 ///@cond PRIVATE
 template class QgsProjectStoredObjectManagerProxyModel<QgsMasterLayoutInterface>;  // clazy:exclude=missing-qobject-macro
 template class QgsProjectStoredObjectManagerProxyModel<QgsElevationProfile>;  // clazy:exclude=missing-qobject-macro
+template class QgsProjectStoredObjectManagerProxyModel<QgsSelectiveMaskingSourceSet>;  // clazy:exclude=missing-qobject-macro
 ///@endcond

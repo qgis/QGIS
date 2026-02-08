@@ -18,19 +18,23 @@
  ***************************************************************************/
 
 #include "qgsfieldvalidator.h"
-#include "moc_qgsfieldvalidator.cpp"
 
-#include <QValidator>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QDate>
-#include <QVariant>
-
-#include "qgssettings.h"
+#include "qgsapplication.h"
+#include "qgsfields.h"
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
-#include "qgsfields.h"
-#include "qgsapplication.h"
+#include "qgssettings.h"
+
+#include <QDate>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
+#include <QString>
+#include <QValidator>
+#include <QVariant>
+
+#include "moc_qgsfieldvalidator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat )
   : QValidator( parent )
@@ -44,7 +48,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     {
       if ( mField.length() > 0 )
       {
-        const QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
+        const QString re = u"-?\\d{0,%1}"_s.arg( mField.length() );
         mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else
@@ -62,17 +66,17 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
         // Also accept locale's decimalPoint if it's not a dot
         if ( QLocale().decimalPoint() != '.' )
         {
-          re = QStringLiteral( "-?\\d{0,%1}([\\.%2]\\d{0,%3})?" ).arg( mField.length() - mField.precision() ).arg( QLocale().decimalPoint() ).arg( mField.precision() );
+          re = u"-?\\d{0,%1}([\\.%2]\\d{0,%3})?"_s.arg( mField.length() - mField.precision() ).arg( QLocale().decimalPoint() ).arg( mField.precision() );
         }
         else
         {
-          re = QStringLiteral( "-?\\d{0,%1}([\\.,]\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
+          re = u"-?\\d{0,%1}([\\.,]\\d{0,%2})?"_s.arg( mField.length() - mField.precision() ).arg( mField.precision() );
         }
         mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else if ( mField.length() > 0 && mField.precision() == 0 )
       {
-        const QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
+        const QString re = u"-?\\d{0,%1}"_s.arg( mField.length() );
         mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
       else if ( mField.precision() > 0 )
@@ -81,11 +85,11 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
         // Also accept locale's decimalPoint if it's not a dot
         if ( QLocale().decimalPoint() != '.' )
         {
-          re = QStringLiteral( "-?\\d*([\\.%1]\\d{0,%2})?" ).arg( QLocale().decimalPoint(), mField.precision() );
+          re = u"-?\\d*([\\.%1]\\d{0,%2})?"_s.arg( QLocale().decimalPoint(), mField.precision() );
         }
         else
         {
-          re = QStringLiteral( "-?\\d*([\\.]\\d{0,%1})?" ).arg( mField.precision() );
+          re = u"-?\\d*([\\.]\\d{0,%1})?"_s.arg( mField.precision() );
         }
         mValidator = new QRegularExpressionValidator( QRegularExpression( re ), parent );
       }
@@ -154,14 +158,14 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   {
     return Acceptable;
   }
-  else if ( mField.type() == QMetaType::Type::User && mField.typeName().compare( QLatin1String( "geometry" ), Qt::CaseInsensitive ) == 0 )
+  else if ( mField.type() == QMetaType::Type::User && mField.typeName().compare( "geometry"_L1, Qt::CaseInsensitive ) == 0 )
   {
     return Acceptable;
   }
   else
   {
     QgsDebugError(
-      QStringLiteral( "unsupported type %1 (%2) for validation" )
+      u"unsupported type %1 (%2) for validation"_s
         .arg( mField.type() )
         .arg( mField.typeName() )
     );

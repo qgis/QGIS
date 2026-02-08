@@ -18,12 +18,16 @@
 #define QGSHANADATAITEMS_H
 
 #include "qgsconnectionsitem.h"
-#include "qgsdataitemprovider.h"
-#include "qgshanatablemodel.h"
 #include "qgsdatabaseschemaitem.h"
 #include "qgsdatacollectionitem.h"
-#include "qgslayeritem.h"
+#include "qgsdataitemprovider.h"
 #include "qgsdatasourceuri.h"
+#include "qgshanatablemodel.h"
+#include "qgslayeritem.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsHanaRootItem;
 class QgsHanaConnectionItem;
@@ -107,8 +111,8 @@ class QgsHanaLayerItem : public QgsLayerItem
 class QgsHanaDataItemProvider : public QgsDataItemProvider
 {
   public:
-    QString name() override { return QStringLiteral( "SAP HANA" ); }
-    QString dataProviderKey() const override { return QStringLiteral( "hana" ); }
+    QString name() override { return u"SAP HANA"_s; }
+    QString dataProviderKey() const override { return u"hana"_s; }
     Qgis::DataItemProviderCapabilities capabilities() const override { return Qgis::DataItemProviderCapability::Databases; }
     QgsDataItem *createDataItem( const QString &pathIn, QgsDataItem *parentItem ) override;
 };

@@ -16,21 +16,27 @@
  ***************************************************************************/
 
 #include "qgslayoutattributetablewidget.h"
-#include "moc_qgslayoutattributetablewidget.cpp"
-#include "qgslayoutatlas.h"
-#include "qgslayout.h"
-#include "qgslayoutframe.h"
-#include "qgslayoutattributeselectiondialog.h"
-#include "qgslayoutitemwidget.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgslayouttablecolumn.h"
-#include "qgslayoutitemmap.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsexpressionbuilderdialog.h"
-#include "qgsproject.h"
-#include "qgsrelationmanager.h"
+#include "qgslayout.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutattributeselectiondialog.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemwidget.h"
 #include "qgslayoutreportcontext.h"
 #include "qgslayouttablebackgroundcolorsdialog.h"
+#include "qgslayouttablecolumn.h"
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+#include "moc_qgslayoutattributetablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame )
   : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemAttributeTable *>( frame->multiFrame() ) : nullptr )
@@ -116,11 +122,11 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
 
   mGridColorButton->setColorDialogTitle( tr( "Select Grid Color" ) );
   mGridColorButton->setAllowOpacity( true );
-  mGridColorButton->setContext( QStringLiteral( "composer" ) );
+  mGridColorButton->setContext( u"composer"_s );
   mGridColorButton->setDefaultColor( Qt::black );
   mBackgroundColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mBackgroundColorButton->setAllowOpacity( true );
-  mBackgroundColorButton->setContext( QStringLiteral( "composer" ) );
+  mBackgroundColorButton->setContext( u"composer"_s );
   mBackgroundColorButton->setShowNoColor( true );
   mBackgroundColorButton->setNoColorString( tr( "No Background" ) );
 
@@ -183,11 +189,11 @@ QgsExpressionContext QgsLayoutAttributeTableWidget::createExpressionContext() co
     context = mTable->createExpressionContext();
 
   auto cellScope = std::make_unique<QgsExpressionContextScope>();
-  cellScope->setVariable( QStringLiteral( "row_number" ), 1, true );
-  cellScope->setVariable( QStringLiteral( "column_number" ), 1, true );
+  cellScope->setVariable( u"row_number"_s, 1, true );
+  cellScope->setVariable( u"column_number"_s, 1, true );
   context.appendScope( cellScope.release() );
 
-  context.setHighlightedVariables( { QStringLiteral( "row_number" ), QStringLiteral( "column_number" ) } );
+  context.setHighlightedVariables( { u"row_number"_s, u"column_number"_s } );
 
   return context;
 }
@@ -735,7 +741,7 @@ void QgsLayoutAttributeTableWidget::mFeatureFilterButton_clicked()
   }
 
   const QgsExpressionContext context = mTable->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( mTable->sourceLayer(), mFeatureFilterEdit->text(), this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( mTable->sourceLayer(), mFeatureFilterEdit->text(), this, u"generic"_s, context );
   exprDlg.setWindowTitle( tr( "Expression Based Filter" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

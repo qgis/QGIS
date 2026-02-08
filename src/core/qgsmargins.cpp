@@ -15,13 +15,17 @@
 
 #include "qgsmargins.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsMargins::toString() const
 {
   if ( isNull() )
     return QString();
   else
-    return QStringLiteral( "%1,%2,%3,%4" ).arg( qgsDoubleToString( mLeft ), qgsDoubleToString( mTop ),
-           qgsDoubleToString( mRight ), qgsDoubleToString( mBottom ) );
+    return u"%1,%2,%3,%4"_s.arg( qgsDoubleToString( mLeft ), qgsDoubleToString( mTop ),
+                                 qgsDoubleToString( mRight ), qgsDoubleToString( mBottom ) );
 }
 
 QgsMargins QgsMargins::fromString( const QString &string )

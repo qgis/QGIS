@@ -16,7 +16,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgis.h"
+
+#include <QString>
+
 #include "moc_qgis.cpp"
+
+using namespace Qt::StringLiterals;
+
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
@@ -34,6 +40,10 @@
 #include <gdal.h>
 #include <geos_c.h>
 #include <ogr_api.h>
+
+#ifdef WITH_GEOGRAPHICLIB
+#include <GeographicLib/Constants.hpp>
+#endif
 
 #define qgis_xstr(x) qgis_str(x)
 #define qgis_str(x) #x
@@ -103,20 +113,20 @@ void *qgsMalloc( size_t size )
 {
   if ( size == 0 )
   {
-    QgsDebugError( QStringLiteral( "Zero size requested" ) );
+    QgsDebugError( u"Zero size requested"_s );
     return nullptr;
   }
 
   if ( ( size >> ( 8 * sizeof( size ) - 1 ) ) != 0 )
   {
-    QgsDebugError( QStringLiteral( "qgsMalloc - bad size requested: %1" ).arg( size ) );
+    QgsDebugError( u"qgsMalloc - bad size requested: %1"_s.arg( size ) );
     return nullptr;
   }
 
   void *p = malloc( size );
   if ( !p )
   {
-    QgsDebugError( QStringLiteral( "Allocation of %1 bytes failed." ).arg( size ) );
+    QgsDebugError( u"Allocation of %1 bytes failed."_s.arg( size ) );
   }
   return p;
 }
@@ -636,9 +646,6 @@ uint qHash( const QVariant &variant )
     case QMetaType::Type::QUrl:
     case QMetaType::Type::QLocale:
     case QMetaType::Type::QRegularExpression:
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    case QMetaType::Type::QRegExp:
-#endif
       return qHash( variant.toString() );
     default:
       break;
@@ -717,18 +724,32 @@ int Qgis::sfcgalVersionInt()
 #endif
 }
 
-bool Qgis::hasQtWebkit()
+bool Qgis::hasGeographicLib()
 {
-#ifdef WITH_QTWEBKIT
+#ifdef WITH_GEOGRAPHICLIB
   return true;
 #else
   return false;
 #endif
 }
 
+int Qgis::geographicLibVersion()
+{
+#ifdef WITH_GEOGRAPHICLIB
+  return GEOGRAPHICLIB_VERSION_MAJOR * 10000 + GEOGRAPHICLIB_VERSION_MINOR * 100 + GEOGRAPHICLIB_VERSION_PATCH;
+#else
+  throw QgsNotSupportedException( u"GeographicLib is not available on this system"_s );
+#endif
+}
+
+bool Qgis::hasQtWebkit()
+{
+  return false;
+}
+
 int Qgis::geosVersionInt()
 {
-  static const int version = QStringLiteral( "%1%2%3" )
+  static const int version = u"%1%2%3"_s
                              .arg( GEOS_VERSION_MAJOR, 2, 10, QChar( '0' ) )
                              .arg( GEOS_VERSION_MINOR, 2, 10, QChar( '0' ) )
                              .arg( geosVersionPatch(), 2, 10, QChar( '0' ) ).toInt()
@@ -751,13 +772,3 @@ int Qgis::geosVersionPatch()
   static const int version = atoi( qgis_xstr( GEOS_VERSION_PATCH ) );
   return version;
 }
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-template<>
-bool qMapLessThanKey<QVariantList>( const QVariantList &key1, const QVariantList &key2 )
-{
-  // qt's built in qMapLessThanKey for QVariantList is broken and does a case-insensitive operation.
-  // this breaks QMap< QVariantList, ... >, where key matching incorrectly becomes case-insensitive..!!?!
-  return qgsVariantGreaterThan( key1, key2 ) && key1 != key2;
-}
-#endif

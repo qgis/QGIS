@@ -14,27 +14,30 @@
  ***************************************************************************/
 
 #include "qgspointlocator.h"
-#include "moc_qgspointlocator.cpp"
 
-#include "qgsfeatureiterator.h"
-#include "qgsgeometry.h"
-#include "qgsvectorlayer.h"
-#include "qgswkbptr.h"
-#include "qgis.h"
-#include "qgslogger.h"
-#include "qgsrenderer.h"
-#include "qgsapplication.h"
-#include "qgsvectorlayerfeatureiterator.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgslinestring.h"
-#include "qgscurvepolygon.h"
-#include "qgsrendercontext.h"
-#include "qgspointlocatorinittask.h"
-#include "qgsspatialindexutils.h"
 #include <spatialindex/SpatialIndex.h>
 
-#include <QLinkedListIterator>
-#include <QtConcurrent>
+#include "qgis.h"
+#include "qgsapplication.h"
+#include "qgscurvepolygon.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfeatureiterator.h"
+#include "qgsgeometry.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgspointlocatorinittask.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderer.h"
+#include "qgsspatialindexutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+#include "qgswkbptr.h"
+
+#include <QString>
+
+#include "moc_qgspointlocator.cpp"
+
+using namespace Qt::StringLiterals;
 
 using namespace SpatialIndex;
 
@@ -64,7 +67,10 @@ static const double POINT_LOC_EPSILON = 1e-12;
 class QgsPointLocator_Stream : public IDataStream
 {
   public:
-    explicit QgsPointLocator_Stream( const QLinkedList<RTree::Data *> &dataList )
+    /**
+     * \brief Construct a QgsPointLocator_Stream
+     */
+    explicit QgsPointLocator_Stream( const QVector<RTree::Data *> &dataList )
       : mDataList( dataList )
       , mIt( mDataList )
     { }
@@ -76,8 +82,8 @@ class QgsPointLocator_Stream : public IDataStream
     void rewind() override { Q_ASSERT( false && "not available" ); }
 
   private:
-    QLinkedList<RTree::Data *> mDataList;
-    QLinkedListIterator<RTree::Data *> mIt;
+    QVector<RTree::Data *> mDataList;
+    QVectorIterator<RTree::Data *> mIt;
 };
 
 
@@ -354,9 +360,7 @@ class QgsPointLocator_VisitorNearestLineEndpoint : public IVisitor
     QgsPointLocator::MatchFilter *mFilter = nullptr;
 };
 
-
 ////////////////////////////////////////////////////////////////////////////
-
 
 /**
  * \ingroup core
@@ -814,6 +818,7 @@ class QgsPointLocator_VisitorMiddlesInRect : public IVisitor
 
 ////////////////////////////////////////////////////////////////////////////
 #include <QStack>
+#include <memory>
 
 /**
  * \ingroup core
@@ -833,13 +838,13 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
       if ( !n )
         return;
 
-      QgsDebugMsgLevel( QStringLiteral( "NODE: %1" ).arg( n->getIdentifier() ), 4 );
+      QgsDebugMsgLevel( u"NODE: %1"_s.arg( n->getIdentifier() ), 4 );
       if ( n->getLevel() > 0 )
       {
         // inner nodes
         for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "- CH: %1" ).arg( n->getChildIdentifier( cChild ) ), 4 );
+          QgsDebugMsgLevel( u"- CH: %1"_s.arg( n->getChildIdentifier( cChild ) ), 4 );
           ids.push( n->getChildIdentifier( cChild ) );
         }
       }
@@ -848,7 +853,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
         // leaves
         for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
         {
-          QgsDebugMsgLevel( QStringLiteral( "- L: %1" ).arg( n->getChildIdentifier( cChild ) ), 4 );
+          QgsDebugMsgLevel( u"- L: %1"_s.arg( n->getChildIdentifier( cChild ) ), 4 );
         }
       }
 
@@ -925,7 +930,7 @@ void QgsPointLocator::setRenderContext( const QgsRenderContext *context )
 
   if ( context )
   {
-    mContext = std::unique_ptr<QgsRenderContext>( new QgsRenderContext( *context ) );
+    mContext = std::make_unique<QgsRenderContext>( *context );
     connect( mLayer, &QgsVectorLayer::styleChanged, this, &QgsPointLocator::destroyIndex );
   }
 
@@ -971,7 +976,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex, bool relaxed )
        || !mLayer->dataProvider()->isValid() )
     return false;
 
-  mSource.reset( new QgsVectorLayerFeatureSource( mLayer ) );
+  mSource = std::make_unique<QgsVectorLayerFeatureSource>( mLayer );
 
   if ( mContext )
   {
@@ -1039,11 +1044,11 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   QElapsedTimer t;
   t.start();
 
-  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex start : %1" ).arg( mSource->id() ), 2 );
+  QgsDebugMsgLevel( u"RebuildIndex start : %1"_s.arg( mSource->id() ), 2 );
 
   destroyIndex();
 
-  QLinkedList<RTree::Data *> dataList;
+  QVector<RTree::Data *> dataList;
   QgsFeature f;
 
   QgsFeatureRequest request;
@@ -1064,7 +1069,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       {
         Q_UNUSED( e )
         // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( QStringLiteral( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
+        QgsDebugError( u"could not transform bounding box to map, skipping the snap filter (%1)"_s.arg( e.what() ) );
       }
     }
     request.setFilterRect( rect );
@@ -1113,7 +1118,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
       {
         Q_UNUSED( e )
         // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        QgsDebugError( u"could not transform geometry to map, skipping the snap for it (%1)"_s.arg( e.what() ) );
         continue;
       }
     }
@@ -1167,7 +1172,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   }
   catch ( const std::exception &e )
   {
-    QgsDebugError( QStringLiteral( "An exception has occurred during the creation of RTree: %1" ).arg( e.what() ) );
+    QgsDebugError( u"An exception has occurred during the creation of RTree: %1"_s.arg( e.what() ) );
     destroyIndex();
     return false;
   }
@@ -1178,7 +1183,7 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     mRenderer->stopRender( *ctx );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "RebuildIndex end : %1 ms (%2)" ).arg( t.elapsed() ).arg( mSource->id() ), 2 );
+  QgsDebugMsgLevel( u"RebuildIndex end : %1 ms (%2)"_s.arg( t.elapsed() ).arg( mSource->id() ), 2 );
 
   return true;
 }
@@ -1257,7 +1262,7 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
       {
         Q_UNUSED( e )
         // See https://github.com/qgis/QGIS/issues/20749
-        QgsDebugError( QStringLiteral( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
+        QgsDebugError( u"could not transform geometry to map, skipping the snap for it (%1)"_s.arg( e.what() ) );
         return;
       }
     }
@@ -1479,7 +1484,7 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsPointXY &po
 
 QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPointXY &point, bool relaxed, QgsPointLocator::MatchFilter *filter )
 {
-  // TODO QGIS 4: reorder relaxed & filter parameters to match other methods' signatures
+  // TODO QGIS 5: reorder relaxed & filter parameters to match other methods' signatures
   if ( !prepare( relaxed ) )
     return MatchList();
 

@@ -16,13 +16,17 @@
 #ifndef QGSRASTERELEVATIONPROPERTIESWIDGET_H
 #define QGSRASTERELEVATIONPROPERTIESWIDGET_H
 
-#include "qgsmaplayerconfigwidget.h"
-#include "qgsmaplayerconfigwidgetfactory.h"
-#include "qgsexpressioncontextgenerator.h"
 #include "ui_qgsrasterelevationpropertieswidgetbase.h"
 
+#include "qgsexpressioncontextgenerator.h"
+#include "qgsmaplayerconfigwidget.h"
+#include "qgsmaplayerconfigwidgetfactory.h"
+
 #include <QAbstractItemModel>
+#include <QString>
 #include <QStyledItemDelegate>
+
+using namespace Qt::StringLiterals;
 
 class QgsRasterLayer;
 
@@ -110,8 +114,8 @@ class QgsRasterElevationPropertiesWidget : public QgsMapLayerConfigWidget, publi
     bool mBlockUpdates = false;
     QgsRasterBandFixedElevationRangeModel *mFixedRangePerBandModel = nullptr;
     QgsRasterBandDynamicElevationRangeModel *mDynamicRangePerBandModel = nullptr;
-    QString mFixedRangeLowerExpression = QStringLiteral( "@band" );
-    QString mFixedRangeUpperExpression = QStringLiteral( "@band" );
+    QString mFixedRangeLowerExpression = u"@band"_s;
+    QString mFixedRangeUpperExpression = u"@band"_s;
 };
 
 

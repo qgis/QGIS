@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 {
 %Docstring(signature="appended")

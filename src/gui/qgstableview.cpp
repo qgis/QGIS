@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 #include "qgstableview.h"
-#include "moc_qgstableview.cpp"
 
 #include <QWheelEvent>
+
+#include "moc_qgstableview.cpp"
 
 QgsTableView::QgsTableView( QWidget *parent )
   : QTableView( parent )

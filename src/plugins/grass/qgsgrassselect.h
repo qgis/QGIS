@@ -45,7 +45,7 @@ class QgsGrassSelect : public QDialog, private Ui::QgsGrassSelectBase
     QString mapset;
     QString map;
     QString layer;
-    int selectedType; // RASTER or GROUP
+    int selectedType = 0; // RASTER or GROUP
 
   public slots:
     void accept() override;

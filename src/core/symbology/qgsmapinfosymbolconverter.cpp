@@ -14,14 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmapinfosymbolconverter.h"
-#include "qgslogger.h"
-#include "qgslinesymbollayer.h"
-#include "qgsmarkersymbollayer.h"
-#include "qgsfillsymbollayer.h"
-#include "qgssymbol.h"
-#include "qgslinesymbol.h"
+
 #include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
+#include "qgslinesymbol.h"
+#include "qgslinesymbollayer.h"
+#include "qgslogger.h"
 #include "qgsmarkersymbol.h"
+#include "qgsmarkersymbollayer.h"
+#include "qgssymbol.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsMapInfoSymbolConversionContext
@@ -293,7 +298,7 @@ QgsLineSymbol *QgsMapInfoSymbolConverter::convertLineSymbol( int identifier, Qgs
       break;
 
     default:
-      QgsDebugError( QStringLiteral( "Unknown line symbol identifier %1" ).arg( identifier ) );
+      QgsDebugError( u"Unknown line symbol identifier %1"_s.arg( identifier ) );
       return nullptr;
   }
 

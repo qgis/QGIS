@@ -14,9 +14,10 @@ email                : loic dot bartoletti at oslandia dot com
  ***************************************************************************/
 
 #include "qgsgeometryutils_base.h"
-#include "qgsvector3d.h"
-#include "qgsvector.h"
+
 #include "qgsexception.h"
+#include "qgsvector.h"
+#include "qgsvector3d.h"
 
 double QgsGeometryUtilsBase::sqrDistToLine( double ptX, double ptY, double x1, double y1, double x2, double y2, double &minDistX, double &minDistY, double epsilon )
 {
@@ -573,6 +574,16 @@ bool QgsGeometryUtilsBase::lineIntersection( double p1x, double p1y, QgsVector v
   return true;
 }
 
+bool QgsGeometryUtilsBase::intersectionPointOfLinesByBearing( double x1, double y1, double bearing1, double x2, double y2, double bearing2, double &intersectionX, double &intersectionY )
+{
+  // Convert bearings (clockwise from north) to direction vectors
+  // For bearing β: direction = (sin(β), cos(β))
+  const QgsVector v1( std::sin( bearing1 ), std::cos( bearing1 ) );
+  const QgsVector v2( std::sin( bearing2 ), std::cos( bearing2 ) );
+
+  return lineIntersection( x1, y1, v1, x2, y2, v2, intersectionX, intersectionY );
+}
+
 static bool equals( double p1x, double p1y, double p2x, double p2y, double epsilon = 1e-8 )
 {
   return qgsDoubleNear( p1x, p2x, epsilon ) && qgsDoubleNear( p1y, p2y, epsilon );
@@ -751,6 +762,17 @@ bool QgsGeometryUtilsBase::pointsAreCollinear( double x1, double y1, double x2, 
   return qgsDoubleNear( x1 * ( y2 - y3 ) + x2 * ( y3 - y1 ) + x3 * ( y1 - y2 ), 0, epsilon );
 };
 
+bool QgsGeometryUtilsBase::points3DAreCollinear( double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double epsilon )
+{
+  // crossproduct
+  const double cx = ( y2 - y1 ) * ( z3 - z1 ) - ( z2 - z1 ) * ( y3 - y1 );
+  const double cy = ( z2 - z1 ) * ( x3 - x1 ) - ( x2 - x1 ) * ( z3 - z1 );
+  const double cz = ( x2 - x1 ) * ( y3 - y1 ) - ( y2 - y1 ) * ( x3 - x1 );
+
+  // The magnitude of the cross product must be close to 0
+  return qgsDoubleNear( cx * cx + cy * cy + cz * cz, 0.0, epsilon * epsilon );
+}
+
 double QgsGeometryUtilsBase::azimuth( double x1, double y1, double x2, double y2 )
 {
   const double dx = x2 - x1;
@@ -808,7 +830,7 @@ bool QgsGeometryUtilsBase::bisector( double aX, double aY, double bX, double bY,
 }
 
 
-double QgsGeometryUtilsBase::maxFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
+double QgsGeometryUtilsBase::maximumFilletRadius( const double segment1StartX, const double segment1StartY, const double segment1EndX, const double segment1EndY,
     const double segment2StartX, const double segment2StartY, const double segment2EndX, const double segment2EndY,
     double epsilon )
 {

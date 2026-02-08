@@ -17,11 +17,11 @@
 #define QGSRULEBASED3DRENDERER_H
 
 #include "qgis_3d.h"
-
 #include "qgs3drendererregistry.h"
-#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsabstractvectorlayer3drenderer.h"
 #include "qgsmaplayerref.h"
+
 #include <QUuid>
 
 class Qgs3DRenderContext;
@@ -245,13 +245,13 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * call prepare() on handlers and populate attributeNames
          * \note not available in Python bindings
          */
-        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, RuleToHandlerMap &handlers ) const SIP_SKIP;
+        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsBox3D &chunkExtent, RuleToHandlerMap &handlers ) const SIP_SKIP;
 
         /**
          * register individual features
          * \note not available in Python bindings
          */
-        RegisterResult registerFeature( QgsFeature &feature, Qgs3DRenderContext &context, RuleToHandlerMap &handlers ) const SIP_SKIP;
+        RegisterResult registerFeature( const QgsFeature &feature, Qgs3DRenderContext &context, const RuleToHandlerMap &handlers ) const SIP_SKIP;
 
       private:
 #ifdef SIP_RUN
@@ -265,7 +265,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * \param context   The context in which the rendering happens
          * \returns          TRUE if the feature shall be rendered
          */
-        bool isFilterOK( QgsFeature &f, Qgs3DRenderContext &context ) const;
+        bool isFilterOK( const QgsFeature &f, Qgs3DRenderContext &context ) const;
 
         /**
          * Initialize filters. Automatically called by setFilterExpression.

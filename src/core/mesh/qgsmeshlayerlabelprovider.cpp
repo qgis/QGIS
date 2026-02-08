@@ -17,31 +17,29 @@
 
 #include "qgsmeshlayerlabelprovider.h"
 
-#include "qgsgeometry.h"
-#include "qgslabelsearchtree.h"
-#include "qgspallabeling.h"
-#include "qgstextlabelfeature.h"
-#include "qgsmeshlayer.h"
-#include "qgsvectorlayer.h"
-#include "qgsrenderer.h"
-#include "qgspolygon.h"
-#include "qgslinestring.h"
-#include "qgsmultipolygon.h"
-#include "qgslogger.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsmaskidprovider.h"
-#include "qgstextcharacterformat.h"
-#include "qgstextfragment.h"
-#include "qgslabelingresults.h"
-#include "qgstextrenderer.h"
-#include "qgstriangularmesh.h"
-
 #include "feature.h"
 #include "labelposition.h"
-#include "qgssymbol.h"
-#include "qgsmarkersymbol.h"
-
 #include "pal/layer.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsgeometry.h"
+#include "qgslabelingresults.h"
+#include "qgslabelsearchtree.h"
+#include "qgslinestring.h"
+#include "qgslogger.h"
+#include "qgsmarkersymbol.h"
+#include "qgsmaskidprovider.h"
+#include "qgsmeshlayer.h"
+#include "qgsmultipolygon.h"
+#include "qgspallabeling.h"
+#include "qgspolygon.h"
+#include "qgsrenderer.h"
+#include "qgssymbol.h"
+#include "qgstextcharacterformat.h"
+#include "qgstextfragment.h"
+#include "qgstextlabelfeature.h"
+#include "qgstextrenderer.h"
+#include "qgstriangularmesh.h"
+#include "qgsvectorlayer.h"
 
 #include <QPicture>
 #include <QTextDocument>
@@ -130,12 +128,15 @@ QList<QgsLabelFeature *> QgsMeshLayerLabelProvider::labelFeatures( QgsRenderCont
 
 QList< QgsLabelFeature * > QgsMeshLayerLabelProvider::registerFeature( const QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry, const QgsSymbol *symbol )
 {
-  std::unique_ptr< QgsLabelFeature > label = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
+  std::vector< std::unique_ptr< QgsLabelFeature > > labels = mSettings.registerFeatureWithDetails( feature, context, obstacleGeometry, symbol );
   QList< QgsLabelFeature * > res;
-  if ( label )
+  for ( auto &it : labels )
   {
-    res << label.get();
-    mLabels << label.release();
+    if ( it )
+    {
+      res << it.get();
+      mLabels << it.release();
+    }
   }
   return res;
 }

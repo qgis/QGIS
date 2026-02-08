@@ -16,11 +16,11 @@
 #ifndef QGSLINE3DSYMBOLWIDGET_H
 #define QGSLINE3DSYMBOLWIDGET_H
 
-#include "qgs3dsymbolwidget.h"
-
 #include "ui_line3dsymbolwidget.h"
 
 #include <memory>
+
+#include "qgs3dsymbolwidget.h"
 
 class QgsLine3DSymbol;
 

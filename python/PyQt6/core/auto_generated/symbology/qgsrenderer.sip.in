@@ -11,6 +11,8 @@
 
 
 
+
+
 typedef QList<QgsSymbol *> QgsSymbolList;
 
 

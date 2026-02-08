@@ -16,12 +16,11 @@
 #ifndef QGSEXTENTGROUPBOX_H
 #define QGSEXTENTGROUPBOX_H
 
-#include "qgscollapsiblegroupbox.h"
+#include "qgis_gui.h"
 #include "qgis_sip.h"
-
+#include "qgscollapsiblegroupbox.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
-#include "qgis_gui.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsMapLayer;
@@ -47,7 +46,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox
     Q_PROPERTY( QString titleBase READ titleBase WRITE setTitleBase )
 
   public:
-    // TODO QGIS 4.0 -- use QgsExtentWidget enum instead
+    // TODO QGIS 5.0 -- use QgsExtentWidget enum instead
 
     //! Available states for the current extent selection in the widget
     enum ExtentState

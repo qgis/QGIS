@@ -13,18 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnumericformatregistry.h"
-#include "qgsnumericformat.h"
 
-#include "qgsfallbacknumericformat.h"
 #include "qgsbasicnumericformat.h"
 #include "qgsbearingnumericformat.h"
+#include "qgscoordinatenumericformat.h"
 #include "qgscurrencynumericformat.h"
+#include "qgsexpressionbasednumericformat.h"
+#include "qgsfallbacknumericformat.h"
+#include "qgsfractionnumericformat.h"
+#include "qgsnumericformat.h"
 #include "qgspercentagenumericformat.h"
 #include "qgsscientificnumericformat.h"
-#include "qgsfractionnumericformat.h"
-#include "qgscoordinatenumericformat.h"
-#include "qgsexpressionbasednumericformat.h"
 #include "qgsxmlutils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsNumericFormatRegistry::QgsNumericFormatRegistry()
 {
@@ -84,7 +88,7 @@ QgsNumericFormat *QgsNumericFormatRegistry::create( const QString &id, const QVa
 QgsNumericFormat *QgsNumericFormatRegistry::createFromXml( const QDomElement &element, const QgsReadWriteContext &context ) const
 {
   const QVariantMap configuration = QgsXmlUtils::readVariant( element.firstChildElement() ).toMap();
-  const QString id = element.attribute( QStringLiteral( "id" ) );
+  const QString id = element.attribute( u"id"_s );
 
   if ( mFormats.contains( id ) )
     return mFormats.value( id )->create( configuration, context );

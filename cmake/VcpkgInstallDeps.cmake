@@ -33,7 +33,8 @@ endif()
 if(MSVC)
   install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/" DESTINATION "${QGIS_BIN_SUBDIR}/Qt6") # qt plugins (qml and others)
 else()
-  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/plugins/" DESTINATION "${APP_PLUGINS_DIR}/") # qt plugins (qml and others)
+  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/plugins/" DESTINATION "${APP_PLUGINS_DIR}/") # qt plugins
+  install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/qml/" DESTINATION "${APP_PLUGINS_DIR}/../Qt6/qml/") # qml plugins
 endif()
 
 if(WITH_BINDINGS)
@@ -74,7 +75,7 @@ function(fixup_shebang INPUT_FILE OUTPUT_VARIABLE)
   set(${OUTPUT_VARIABLE} ${OUTPUT_FILE} PARENT_SCOPE)
 endfunction()
 
-if(NOT MSVC)
+if(NOT MSVC AND NOT EMSCRIPTEN)
   set(BUNDLED_PROGRAMS
     "tools/gdal/gdal_contour"
     "tools/gdal/gdal_create"

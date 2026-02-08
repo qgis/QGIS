@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsProcessingParametersWidget : QgsPanelWidget, QgsProcessingParametersGenerator
 {
 %Docstring(signature="appended")

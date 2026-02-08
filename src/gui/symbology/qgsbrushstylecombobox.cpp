@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 #include "qgsbrushstylecombobox.h"
-#include "moc_qgsbrushstylecombobox.cpp"
+
 #include "qgsguiutils.h"
 
-#include <QList>
-#include <QPair>
-
-#include <QBrush>
-#include <QPainter>
-#include <QPen>
 #include <QAbstractItemView>
+#include <QBrush>
+#include <QList>
+#include <QPainter>
+#include <QPair>
+#include <QPen>
+
+#include "moc_qgsbrushstylecombobox.cpp"
 
 QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget *parent )
   : QComboBox( parent )

@@ -122,6 +122,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmdropgeometry.cpp
   processing/qgsalgorithmdropmzvalues.cpp
   processing/qgsalgorithmdxfexport.cpp
+  processing/qgsalgorithmexecuteandloadpostgisquery.cpp
   processing/qgsalgorithmexecutepostgisquery.cpp
   processing/qgsalgorithmexecutespatialitequery.cpp
   processing/qgsalgorithmexecutespatialitequeryregistered.cpp
@@ -157,6 +158,8 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmfindprojection.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmflattenrelationships.cpp
+  processing/qgsalgorithmforceccw.cpp
+  processing/qgsalgorithmforcecw.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
   processing/qgsalgorithmgenerateelevationprofile.cpp
@@ -197,6 +200,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmmultiunion.cpp
   processing/qgsalgorithmnearestneighbouranalysis.cpp
   processing/qgsalgorithmnetworkanalysisbase.cpp
+  processing/qgsalgorithmnetworkextractendpoints.cpp
   processing/qgsalgorithmoffsetlines.cpp
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
@@ -223,7 +227,9 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmrandomraster.cpp
   processing/qgsalgorithmrastercalculator.cpp
   processing/qgsalgorithmrasterdtmslopebasedfilter.cpp
+  processing/qgsalgorithmrasterfeaturepreservingsmoothing.cpp
   processing/qgsalgorithmrasterfrequencybycomparisonoperator.cpp
+  processing/qgsalgorithmrastergaussianblur.cpp
   processing/qgsalgorithmrasterlayerproperties.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmrasterlogicalop.cpp
@@ -288,7 +294,10 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsymmetricaldifference.cpp
   processing/qgsalgorithmtaperedbuffer.cpp
   processing/qgsalgorithmtinmeshcreation.cpp
+  processing/qgsalgorithmtotalcurvature.cpp
   processing/qgsalgorithmtransect.cpp
+  processing/qgsalgorithmtransectbase.cpp
+  processing/qgsalgorithmtransectfixeddistance.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
   processing/qgsalgorithmtruncatetable.cpp
@@ -297,6 +306,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmuniquevalueindex.cpp
   processing/qgsalgorithmurlopener.cpp
   processing/qgsalgorithmhttprequest.cpp
+  processing/qgsalgorithmvalidatenetwork.cpp
   processing/qgsalgorithmvectorize.cpp
   processing/qgsalgorithmvirtualrastercalculator.cpp
   processing/qgsalgorithmvoronoipolygons.cpp
@@ -336,6 +346,13 @@ set(QGIS_ANALYSIS_SRCS
   processing/pdal/qgsalgorithmpdalthinbydecimate.cpp
   processing/pdal/qgsalgorithmpdalthinbyradius.cpp
   processing/pdal/qgsalgorithmpdaltile.cpp
+  processing/pdal/qgsalgorithmpdalheightabovegroundnearestneighbour.cpp
+  processing/pdal/qgsalgorithmpdalheightabovegroundtriangulation.cpp
+  processing/pdal/qgsalgorithmpdalfilternoisestatistical.cpp
+  processing/pdal/qgsalgorithmpdalfilternoiseradius.cpp
+  processing/pdal/qgsalgorithmpdalclassifyground.cpp
+  processing/pdal/qgsalgorithmpdaltransform.cpp
+  processing/pdal/qgsalgorithmpdalcompare.cpp
 
   raster/qgsalignraster.cpp
   raster/qgsninecellfilter.cpp
@@ -623,7 +640,7 @@ if(HAVE_GSL)
 endif()
 
 if(HAVE_OPENCL)
-    target_link_libraries(qgis_analysis ${OpenCL_LIBRARIES})
+    target_link_libraries(qgis_analysis OpenCL::OpenCL)
 endif()
 
 if (WITH_DRACO)

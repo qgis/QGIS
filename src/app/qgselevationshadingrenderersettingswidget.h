@@ -16,8 +16,9 @@
 #ifndef QGSSHADINGRENDERERSETTINGSWIDGET_H
 #define QGSSHADINGRENDERERSETTINGSWIDGET_H
 
-#include "qgsmaplayerconfigwidget.h"
 #include "ui_qgselevationshadingrenderersettingswidget.h"
+
+#include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 
 class QgsElevationShadingRendererSettingsWidget : public QgsMapLayerConfigWidget, private Ui::QgsElevationShadingRendererSettingsWidget

@@ -1212,6 +1212,27 @@ class TestQgsVectorLayerUtils(QgisTestCase):
             b"333333/@\x9a\x99\x99\x99\x99\x99\xd9?\x00\x00\x00\x00\x008\x8f\xc0",
         )
 
+    def test_field_is_editable(self):
+        layer = QgsVectorLayer(
+            "Point?field=fldtxt:string&field=fldint:integer&field=fldlong:int8&field=flddouble:double",
+            "points",
+            "memory",
+        )
+        self.assertTrue(layer.isValid())
+
+        feature = QgsVectorLayerUtils.createFeature(layer)
+
+        self.assertFalse(layer.isEditable())
+        self.assertFalse(QgsVectorLayerUtils.fieldIsEditable(layer, 0, feature))
+        self.assertTrue(
+            QgsVectorLayerUtils.fieldIsEditable(
+                layer,
+                0,
+                feature,
+                QgsVectorLayerUtils.FieldIsEditableFlag.IgnoreLayerEditability,
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

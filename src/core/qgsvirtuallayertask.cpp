@@ -16,16 +16,22 @@
  ***************************************************************************/
 
 #include "qgsvirtuallayertask.h"
-#include "moc_qgsvirtuallayertask.cpp"
+
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+
+#include <QString>
+
+#include "moc_qgsvirtuallayertask.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition )
   : mDefinition( definition )
 {
   mDefinition.setLazy( true );
   const QgsVectorLayer::LayerOptions options { QgsCoordinateTransformContext() };
-  mLayer = std::make_unique<QgsVectorLayer>( mDefinition.toString(), QStringLiteral( "layer" ), QLatin1String( "virtual" ), options );
+  mLayer = std::make_unique<QgsVectorLayer>( mDefinition.toString(), u"layer"_s, "virtual"_L1, options );
 }
 
 bool QgsVirtualLayerTask::run()
@@ -38,7 +44,7 @@ bool QgsVirtualLayerTask::run()
   }
   catch ( std::exception &e )
   {
-    QgsDebugError( QStringLiteral( "Reload error: %1" ).arg( e.what() ) );
+    QgsDebugError( u"Reload error: %1"_s.arg( e.what() ) );
     setExceptionText( e.what() );
     rc = false;
   }

@@ -19,13 +19,16 @@
 #define QGSRECTANGLE_H
 
 #include <iosfwd>
-#include <QDomDocument>
-#include <QRectF>
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgspointxy.h"
 
+#include <QDomDocument>
+#include <QRectF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QString;
 class QRectF;
@@ -199,7 +202,7 @@ class CORE_EXPORT QgsRectangle
      * Set a rectangle so that min corner is at max
      * and max corner is at min. It is NOT normalized.
      *
-     * \deprecated QGIS 3.34. Will be removed in QGIS 4.0. Use setNull().
+     * \deprecated QGIS 3.34. Will be removed in QGIS 5.0. Use setNull().
      */
     Q_DECL_DEPRECATED void setMinimal() SIP_DEPRECATED
     {
@@ -685,9 +688,9 @@ class CORE_EXPORT QgsRectangle
     % MethodCode
     QString str;
     if ( sipCpp->isNull() )
-      str = QStringLiteral( "<QgsRectangle()>" );
+      str = u"<QgsRectangle()>"_s;
     else
-      str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
+      str = u"<QgsRectangle: %1>"_s.arg( sipCpp->asWktCoordinates() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

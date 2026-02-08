@@ -14,10 +14,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthmaptilerhmacsha256edit.h"
-#include "moc_qgsauthmaptilerhmacsha256edit.cpp"
 #include "ui_qgsauthmaptilerhmacsha256edit.h"
+#include "qgsauthmaptilerhmacsha256edit.h"
 
+#include <QString>
+
+#include "moc_qgsauthmaptilerhmacsha256edit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthMapTilerHmacSha256Edit::QgsAuthMapTilerHmacSha256Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
@@ -40,7 +44,7 @@ bool QgsAuthMapTilerHmacSha256Edit::validateConfig()
 QgsStringMap QgsAuthMapTilerHmacSha256Edit::configMap() const
 {
   QgsStringMap config;
-  config.insert( QStringLiteral( "token" ), mTokenEdit->toPlainText() );
+  config.insert( u"token"_s, mTokenEdit->toPlainText() );
 
   return config;
 }
@@ -50,7 +54,7 @@ void QgsAuthMapTilerHmacSha256Edit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  mTokenEdit->setPlainText( configmap.value( QStringLiteral( "token" ) ) );
+  mTokenEdit->setPlainText( configmap.value( u"token"_s ) );
 
   validateConfig();
 }

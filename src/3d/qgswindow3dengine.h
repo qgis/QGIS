@@ -16,10 +16,9 @@
 #ifndef QGSWINDOW3DENGINE_H
 #define QGSWINDOW3DENGINE_H
 
-#include <QSize>
-
 #include "qgsabstract3dengine.h"
 
+#include <QSize>
 
 namespace Qt3DExtras
 {

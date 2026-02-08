@@ -14,38 +14,41 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgrassprovider.h"
+
+#include <cfloat>
 #include <cstring>
 #include <vector>
-#include <cfloat>
-
-#include <QString>
-#include <QDateTime>
-#include <QElapsedTimer>
 
 #include "qgis.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
+#include "qgsgrass.h"
+#include "qgsgrassfeatureiterator.h"
+#include "qgsgrassundocommand.h"
 #include "qgslinestring.h"
+#include "qgslogger.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayereditbuffer.h"
-#include "qgsgrass.h"
-#include "qgsgrassprovider.h"
-#include "moc_qgsgrassprovider.cpp"
-#include "qgsgrassfeatureiterator.h"
-#include "qgsgrassundocommand.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgslogger.h"
 
 #include <QByteArray>
+#include <QDateTime>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QString>
 #include <QTextCodec>
+
+#include "moc_qgsgrassprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef _MSC_VER
 // enable grass prototypes
@@ -92,7 +95,7 @@ typedef int Vect_delete_line_function_type( struct Map_info *, grass_off_t );
 Vect_rewrite_line_function_type *Vect_rewrite_line_function_pointer = ( Vect_rewrite_line_function_type * ) Vect_rewrite_line;
 Vect_delete_line_function_type *Vect_delete_line_function_pointer = ( Vect_delete_line_function_type * ) Vect_delete_line;
 
-static QString GRASS_KEY = QStringLiteral( "grass" );
+static QString GRASS_KEY = u"grass"_s;
 
 int QgsGrassProvider::sLastType = -9999;
 int QgsGrassProvider::sEditedCount = 0;
@@ -136,27 +139,27 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
   /* Parse Layer, supported layers <field>_point, <field>_line, <field>_area
   *  Layer is opened even if it is empty (has no features)
   */
-  if ( mLayerName.compare( QLatin1String( "boundary" ) ) == 0 ) // currently not used
+  if ( mLayerName.compare( "boundary"_L1 ) == 0 ) // currently not used
   {
     mLayerType = Boundary;
     mGrassType = GV_BOUNDARY;
   }
-  else if ( mLayerName.compare( QLatin1String( "centroid" ) ) == 0 ) // currently not used
+  else if ( mLayerName.compare( "centroid"_L1 ) == 0 ) // currently not used
   {
     mLayerType = Centroid;
     mGrassType = GV_CENTROID;
   }
-  else if ( mLayerName == QLatin1String( "topo_point" ) )
+  else if ( mLayerName == "topo_point"_L1 )
   {
     mLayerType = TopoPoint;
     mGrassType = GV_POINTS;
   }
-  else if ( mLayerName == QLatin1String( "topo_line" ) )
+  else if ( mLayerName == "topo_line"_L1 )
   {
     mLayerType = TopoLine;
     mGrassType = GV_LINES;
   }
-  else if ( mLayerName == QLatin1String( "topo_node" ) )
+  else if ( mLayerName == "topo_node"_L1 )
   {
     mLayerType = TopoNode;
     mGrassType = 0;
@@ -235,14 +238,14 @@ QgsGrassProvider::QgsGrassProvider( const QString &uri )
   connect( mLayer->map(), &QgsGrassVectorMap::dataChanged, this, &QgsGrassProvider::onDataChanged );
 
   // TODO: types according to database
-  setNativeTypes( QList<NativeType>() << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), QStringLiteral( "integer" ), QMetaType::Type::Int, -1, -1, -1, -1 ) << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), QStringLiteral( "double precision" ), QMetaType::Type::Double, -1, -1, -1, -1 ) << QgsVectorDataProvider::NativeType( tr( "Text" ), QStringLiteral( "text" ), QMetaType::Type::QString )
+  setNativeTypes( QList<NativeType>() << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), u"integer"_s, QMetaType::Type::Int, -1, -1, -1, -1 ) << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), u"double precision"_s, QMetaType::Type::Double, -1, -1, -1, -1 ) << QgsVectorDataProvider::NativeType( tr( "Text" ), u"text"_s, QMetaType::Type::QString )
                   // TODO:
                   // << QgsVectorDataProvider::NativeType( tr( "Date" ), "date", QVariant::Date, 8, 8 );
   );
 
   // Assign default encoding
   if ( !textEncoding() )
-    QgsVectorDataProvider::setEncoding( QStringLiteral( "UTF-8" ) );
+    QgsVectorDataProvider::setEncoding( u"UTF-8"_s );
 
   mValid = true;
 
@@ -380,7 +383,7 @@ QgsAbstractFeatureSource *QgsGrassProvider::featureSource() const
 
 QString QgsGrassProvider::storageType() const
 {
-  return QStringLiteral( "GRASS (Geographic Resources Analysis and Support System) file" );
+  return u"GRASS (Geographic Resources Analysis and Support System) file"_s;
 }
 
 
@@ -509,19 +512,19 @@ int QgsGrassProvider::grassLayerType( const QString &name )
   }
 
   QString ts = name.right( name.length() - pos - 1 );
-  if ( ts.compare( QLatin1String( "point" ) ) == 0 )
+  if ( ts.compare( "point"_L1 ) == 0 )
   {
     return GV_POINT; // ?! centroids may be points
   }
-  else if ( ts.compare( QLatin1String( "line" ) ) == 0 )
+  else if ( ts.compare( "line"_L1 ) == 0 )
   {
     return GV_LINES;
   }
-  else if ( ts.compare( QLatin1String( "face" ) ) == 0 )
+  else if ( ts.compare( "face"_L1 ) == 0 )
   {
     return GV_FACE;
   }
-  else if ( ts.compare( QLatin1String( "polygon" ) ) == 0 )
+  else if ( ts.compare( "polygon"_L1 ) == 0 )
   {
     return GV_AREA;
   }
@@ -944,7 +947,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
 
   dbString dbstr;
   db_init_string( &dbstr );
-  QString query = QStringLiteral( "select * from %1 where %2=%3" ).arg( fi->table, fi->key ).arg( cat );
+  QString query = u"select * from %1 where %2=%3"_s.arg( fi->table, fi->key ).arg( cat );
   db_set_string( &dbstr, query.toUtf8().constData() );
 
   QgsDebugMsgLevel( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ), 2 );
@@ -1024,24 +1027,24 @@ bool QgsGrassProvider::isTopoType( int layerType )
 
 void QgsGrassProvider::setTopoFields()
 {
-  mTopoFields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::Int ) );
+  mTopoFields.append( QgsField( u"id"_s, QMetaType::Type::Int ) );
 
   if ( mLayerType == TopoPoint )
   {
-    mTopoFields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
-    mTopoFields.append( QgsField( QStringLiteral( "node" ), QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( u"type"_s, QMetaType::Type::QString ) );
+    mTopoFields.append( QgsField( u"node"_s, QMetaType::Type::Int ) );
   }
   else if ( mLayerType == TopoLine )
   {
-    mTopoFields.append( QgsField( QStringLiteral( "type" ), QMetaType::Type::QString ) );
-    mTopoFields.append( QgsField( QStringLiteral( "node1" ), QMetaType::Type::Int ) );
-    mTopoFields.append( QgsField( QStringLiteral( "node2" ), QMetaType::Type::Int ) );
-    mTopoFields.append( QgsField( QStringLiteral( "left" ), QMetaType::Type::Int ) );
-    mTopoFields.append( QgsField( QStringLiteral( "right" ), QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( u"type"_s, QMetaType::Type::QString ) );
+    mTopoFields.append( QgsField( u"node1"_s, QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( u"node2"_s, QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( u"left"_s, QMetaType::Type::Int ) );
+    mTopoFields.append( QgsField( u"right"_s, QMetaType::Type::Int ) );
   }
   else if ( mLayerType == TopoNode )
   {
-    mTopoFields.append( QgsField( QStringLiteral( "lines" ), QMetaType::Type::QString ) );
+    mTopoFields.append( QgsField( u"lines"_s, QMetaType::Type::QString ) );
   }
 }
 

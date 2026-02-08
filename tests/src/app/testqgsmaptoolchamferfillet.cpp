@@ -1,9 +1,9 @@
 /***************************************************************************
      testqgsmaptoolchamferfillet.cpp
      --------------------------------
-    Date                 : March 2024
-    Copyright            : (C) 2024 by Juho Ervasti
-    Email                : juho dot ervasti at gispo dot fi
+    begin                : September 2025
+    copyright            : (C) 2025 by Oslandia
+    email                : benoit dot de dot mezzo at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,17 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolchamferfillet.h"
+#include "qgssettingsentryenumflag.h"
+#include "qgssettingsentryimpl.h"
+#include "qgstest.h"
 #include "qgsvectorlayer.h"
 #include "testqgsmaptoolutils.h"
 
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsentryenumflag.h"
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -76,15 +78,15 @@ void TestQgsMapToolChamferFillet::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( u"QGIS"_s );
+  QCoreApplication::setOrganizationDomain( u"qgis.org"_s );
+  QCoreApplication::setApplicationName( u"QGIS-TEST"_s );
 
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
 
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:3946"_s ) );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -93,15 +95,15 @@ void TestQgsMapToolChamferFillet::initTestCase()
   mCanvas->hide();
 
   // make testing layers
-  mLayerBase = new QgsVectorLayer( QStringLiteral( "Polygon?crs=EPSG:3946" ), QStringLiteral( "baselayer" ), QStringLiteral( "memory" ) );
+  mLayerBase = new QgsVectorLayer( u"Polygon?crs=EPSG:3946"_s, u"baselayer"_s, u"memory"_s );
   QVERIFY( mLayerBase->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerBase );
 
   mLayerBase->startEditing();
-  const QString wkt1 = QStringLiteral( "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))" );
+  const QString wkt1 = u"Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))"_s;
   QgsFeature f1;
   f1.setGeometry( QgsGeometry::fromWkt( wkt1 ) );
-  const QString wkt2 = QStringLiteral( "Polygon ((2 0, 2 5, 3 5, 3 0, 2 5, 3 5, 2 0))" );
+  const QString wkt2 = u"Polygon ((2 0, 2 5, 3 5, 3 0, 2 5, 3 5, 2 0))"_s;
   QgsFeature f2;
   f2.setGeometry( QgsGeometry::fromWkt( wkt2 ) );
 
@@ -232,7 +234,7 @@ void TestQgsMapToolChamferFillet::testFillet()
   utils.mouseMove( 0.25, 0.5 );
   utils.mouseClick( 0.25, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt1 = "Polygon ((0 0, 0 1, 0.05 1, 0.41 0.93, 0.72 0.72, 0.93 0.41, 1 0.05, 1 0, 0 0))";
+  const QString wkt1 = "Polygon ((0 0, 0 1, 0.05 1, 0.52 0.87, 0.87 0.53, 1 0.05, 1 0, 0 0))";
   QVERIFY( compareGeom( mLayerBase->getFeature( 1 ).geometry(), wkt1, 0.05 ) );
 
   mLayerBase->undoStack()->undo();
@@ -261,8 +263,9 @@ void TestQgsMapToolChamferFillet::testFillet()
   utils.mouseMove( 0.25, 0.5 );
   utils.mouseClick( 0.25, 0.5, Qt::LeftButton, Qt::KeyboardModifiers(), true );
 
-  const QString wkt2 = QString( "Polygon ((0 0, 0 1, 0.05 1, 0.14 1, 0.22 0.98, 0.31 0.96, 0.39 0.94, 0.47 0.9, 0.55 0.86, 0.62 0.81, "
-                                "0.69 0.75, 0.75 0.69, 0.81 0.62, 0.86 0.55, 0.9 0.47, 0.94 0.39, 0.96 0.31, 0.98 0.22, 1 0.14, 1 0.05, 1 0, 0 0))" );
+  const QString wkt2 = QString( "Polygon ((0 0, 0 1, 0.05 1, 0.14 1, 0.24 0.98, 0.33 0.96, 0.41 0.93, 0.5 0.89, "
+                                "0.58 0.84, 0.65 0.78, 0.72 0.72, 0.78 0.65, 0.84 0.58, 0.89 0.5, 0.93 0.41, "
+                                "0.96 0.33, 0.98 0.24, 1 0.14, 1 0.05, 1 0, 0 0))" );
   QVERIFY( compareGeom( mLayerBase->getFeature( 1 ).geometry(), wkt2, 0.05 ) );
 
   mLayerBase->undoStack()->undo();

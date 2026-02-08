@@ -191,7 +191,7 @@ class QWT_EXPORT QwtPicker : public QObject, public QwtEventPattern
     explicit QwtPicker( RubberBand rubberBand,
         DisplayMode trackerMode, QWidget* );
 
-    virtual ~QwtPicker();
+    ~QwtPicker() override;
 
     void setStateMachine( QwtPickerMachine* );
     const QwtPickerMachine* stateMachine() const;

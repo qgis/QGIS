@@ -16,8 +16,8 @@
 #ifndef QGSLAYERNOTESMANAGER_H
 #define QGSLAYERNOTESMANAGER_H
 
-#include <QString>
 #include <QDialog>
+#include <QString>
 
 class QgsMapLayer;
 class QWidget;

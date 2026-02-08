@@ -14,16 +14,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QObject>
-
 #include "qgscheckboxfieldformatter.h"
-#include "qgsvectorlayer.h"
+
 #include "qgsapplication.h"
 #include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+
+#include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsCheckBoxFieldFormatter::id() const
 {
-  return QStringLiteral( "CheckBox" );
+  return u"CheckBox"_s;
 }
 
 QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const
@@ -67,18 +71,18 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     else
     {
       textValue = value.toString();
-      if ( config.contains( QStringLiteral( "CheckedState" ) ) && textValue == config[ QStringLiteral( "CheckedState" ) ].toString() )
+      if ( config.contains( u"CheckedState"_s ) && textValue == config[ u"CheckedState"_s ].toString() )
       {
         boolValue = true;
       }
-      else if ( config.contains( QStringLiteral( "UncheckedState" ) ) && textValue == config[ QStringLiteral( "UncheckedState" ) ].toString() )
+      else if ( config.contains( u"UncheckedState"_s ) && textValue == config[ u"UncheckedState"_s ].toString() )
       {
         boolValue = false;
       }
       else
       {
         isNull = true;
-        textValue = QStringLiteral( "(%1)" ).arg( textValue );
+        textValue = u"(%1)"_s.arg( textValue );
       }
     }
   }
@@ -88,7 +92,7 @@ QString QgsCheckBoxFieldFormatter::representValue( QgsVectorLayer *layer, int fi
     return textValue;
   }
 
-  const TextDisplayMethod displayMethod = static_cast< TextDisplayMethod >( config.value( QStringLiteral( "TextDisplayMethod" ), QStringLiteral( "0" ) ).toInt() );
+  const TextDisplayMethod displayMethod = static_cast< TextDisplayMethod >( config.value( u"TextDisplayMethod"_s, u"0"_s ).toInt() );
   switch ( displayMethod )
   {
     case QgsCheckBoxFieldFormatter::ShowTrueFalse:

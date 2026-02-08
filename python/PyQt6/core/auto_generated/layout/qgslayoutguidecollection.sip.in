@@ -8,6 +8,9 @@
 
 
 
+
+
+
 class QgsLayoutGuide : QObject
 {
 %Docstring(signature="appended")

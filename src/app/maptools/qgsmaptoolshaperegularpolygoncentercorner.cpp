@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,14 +15,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperegularpolygoncentercorner.h"
-#include "moc_qgsmaptoolshaperegularpolygoncentercorner.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeRegularPolygonCenterCornerMetadata::TOOL_ID = QStringLiteral( "regular-polygon-from-center-and-a-corner" );
+#include <QString>
+
+#include "moc_qgsmaptoolshaperegularpolygoncentercorner.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeRegularPolygonCenterCornerMetadata::TOOL_ID = u"regular-polygon-from-center-and-a-corner"_s;
 
 QString QgsMapToolShapeRegularPolygonCenterCornerMetadata::id() const
 {
@@ -36,7 +42,7 @@ QString QgsMapToolShapeRegularPolygonCenterCornerMetadata::name() const
 
 QIcon QgsMapToolShapeRegularPolygonCenterCornerMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionRegularPolygonCenterCorner.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionRegularPolygonCenterCorner.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeRegularPolygonCenterCornerMetadata::category() const
@@ -96,6 +102,11 @@ void QgsMapToolShapeRegularPolygonCenterCorner::cadCanvasMoveEvent( QgsMapMouseE
   {
     const QgsRegularPolygon::ConstructionOption option = QgsRegularPolygon::InscribedCircle;
     mRegularPolygon = QgsRegularPolygon( mPoints.at( 0 ), point, mNumberSidesSpinBox->value(), option );
-    mTempRubberBand->setGeometry( mRegularPolygon.toPolygon() );
+    const QgsGeometry newGeometry( mRegularPolygon.toPolygon() );
+    if ( !newGeometry.isEmpty() )
+    {
+      mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+      setTransientGeometry( newGeometry );
+    }
   }
 }

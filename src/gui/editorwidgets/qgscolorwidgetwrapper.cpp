@@ -14,10 +14,15 @@
  ***************************************************************************/
 
 #include "qgscolorwidgetwrapper.h"
-#include "moc_qgscolorwidgetwrapper.cpp"
-#include "qgscolorbutton.h"
-#include <QLayout>
 
+#include "qgscolorbutton.h"
+
+#include <QLayout>
+#include <QString>
+
+#include "moc_qgscolorwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsColorWidgetWrapper::QgsColorWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -50,7 +55,7 @@ QWidget *QgsColorWidgetWrapper::createWidget( QWidget *parent )
   container->setLayout( layout );
   layout->setContentsMargins( 0, 0, 0, 0 );
   QgsColorButton *button = new QgsColorButton();
-  button->setContext( QStringLiteral( "editor" ) );
+  button->setContext( u"editor"_s );
   layout->addWidget( button );
   layout->addStretch();
   container->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Minimum );

@@ -70,7 +70,7 @@ class QWT_EXPORT QwtNullPaintDevice : public QPaintDevice
     };
 
     QwtNullPaintDevice();
-    virtual ~QwtNullPaintDevice();
+    ~QwtNullPaintDevice() override;
 
     void setMode( Mode );
     Mode mode() const;

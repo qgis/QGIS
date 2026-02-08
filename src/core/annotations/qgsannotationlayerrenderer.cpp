@@ -15,13 +15,19 @@
  ***************************************************************************/
 
 #include "qgsannotationlayerrenderer.h"
+
+#include <optional>
+
 #include "qgsannotationlayer.h"
 #include "qgsfeedback.h"
-#include "qgsrenderedannotationitemdetails.h"
 #include "qgspainteffect.h"
 #include "qgsrendercontext.h"
+#include "qgsrenderedannotationitemdetails.h"
 #include "qgsthreadingutils.h"
-#include <optional>
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *layer, QgsRenderContext &context )
   : QgsMapLayerRenderer( layer->id(), &context )
@@ -32,7 +38,7 @@ QgsAnnotationLayerRenderer::QgsAnnotationLayerRenderer( QgsAnnotationLayer *laye
 {
   if ( QgsMapLayer *linkedLayer = layer->linkedVisibilityLayer() )
   {
-    if ( !context.customProperties().value( QStringLiteral( "visible_layer_ids" ) ).toList().contains( linkedLayer->id() ) )
+    if ( !context.customProperties().value( u"visible_layer_ids"_s ).toList().contains( linkedLayer->id() ) )
     {
       mReadyToCompose = true;
       return;
@@ -81,7 +87,7 @@ QgsFeedback *QgsAnnotationLayerRenderer::feedback() const
 
 bool QgsAnnotationLayerRenderer::render()
 {
-  QgsScopedThreadName threadName( QStringLiteral( "render:%1" ).arg( mLayerName ) );
+  QgsScopedThreadName threadName( u"render:%1"_s.arg( mLayerName ) );
 
   QgsRenderContext &context = *renderContext();
 

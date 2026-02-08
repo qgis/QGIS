@@ -15,14 +15,14 @@
 #ifndef QGSHEATMAPRENDERER_H
 #define QGSHEATMAPRENDERER_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsrenderer.h"
+#include "qgscolorramplegendnodesettings.h"
 #include "qgsexpression.h"
 #include "qgsgeometry.h"
 #include "qgsmapunitscale.h"
-#include "qgis.h"
-#include "qgscolorramplegendnodesettings.h"
+#include "qgsrenderer.h"
 
 class QgsColorRamp;
 

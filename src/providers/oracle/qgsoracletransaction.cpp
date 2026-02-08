@@ -16,7 +16,13 @@
  ***************************************************************************/
 
 #include "qgsoracletransaction.h"
+
+#include <QString>
+
 #include "moc_qgsoracletransaction.cpp"
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include "qgslogger.h"
@@ -45,7 +51,7 @@ bool QgsOracleTransaction::beginTransaction( QString &, int /* statementTimeout 
 
 bool QgsOracleTransaction::commitTransaction( QString &error )
 {
-  if ( executeSql( QStringLiteral( "COMMIT" ), error ) )
+  if ( executeSql( u"COMMIT"_s, error ) )
   {
     mConn->disconnect();
     mConn = nullptr;
@@ -56,7 +62,7 @@ bool QgsOracleTransaction::commitTransaction( QString &error )
 
 bool QgsOracleTransaction::rollbackTransaction( QString &error )
 {
-  if ( executeSql( QStringLiteral( "ROLLBACK" ), error ) )
+  if ( executeSql( u"ROLLBACK"_s, error ) )
   {
     mConn->disconnect();
     mConn = nullptr;
@@ -79,9 +85,9 @@ bool QgsOracleTransaction::executeSql( const QString &sql, QString &errorMsg, bo
     createSavepoint( err );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Transaction sql: %1" ).arg( sql ), 2 );
+  QgsDebugMsgLevel( u"Transaction sql: %1"_s.arg( sql ), 2 );
 
-  QgsDatabaseQueryLogWrapper logWrapper { sql, mConnString, QStringLiteral( "oracle" ), QStringLiteral( "QgsOracleConn" ), QGS_QUERY_LOG_ORIGIN };
+  QgsDatabaseQueryLogWrapper logWrapper { sql, mConnString, u"oracle"_s, u"QgsOracleConn"_s, QGS_QUERY_LOG_ORIGIN };
   const bool res = mConn->exec( sql, true, &errorMsg );
   if ( !errorMsg.isEmpty() )
   {

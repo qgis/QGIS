@@ -22,10 +22,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_core.h"
+#include "qgsfeedback.h"
 #include "qgsgeopackagerasterwriter.h"
 #include "qgstaskmanager.h"
-#include "qgsfeedback.h"
-
 
 /**
  * \class QgsGeoPackageRasterWriterTask

@@ -16,15 +16,21 @@
  ***************************************************************************/
 
 #include "qgsalgorithmrepairshapefile.h"
-#include "qgsvectorlayer.h"
+
+#include <cpl_conv.h>
+
 #include "qgsvectordataprovider.h"
-#include "cpl_conv.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsRepairShapefileAlgorithm::name() const
 {
-  return QStringLiteral( "repairshapefile" );
+  return u"repairshapefile"_s;
 }
 
 QString QgsRepairShapefileAlgorithm::displayName() const
@@ -44,7 +50,7 @@ QString QgsRepairShapefileAlgorithm::group() const
 
 QString QgsRepairShapefileAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeneral" );
+  return u"vectorgeneral"_s;
 }
 
 QString QgsRepairShapefileAlgorithm::shortHelpString() const
@@ -64,17 +70,17 @@ QgsRepairShapefileAlgorithm *QgsRepairShapefileAlgorithm::createInstance() const
 
 void QgsRepairShapefileAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input Shapefile" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "shp" ), QVariant(), false, QObject::tr( "ESRI Shapefile" ) + QStringLiteral( " (*.shp *.SHP)" ) ) );
+  addParameter( new QgsProcessingParameterFile( u"INPUT"_s, QObject::tr( "Input Shapefile" ), Qgis::ProcessingFileParameterBehavior::File, u"shp"_s, QVariant(), false, QObject::tr( "ESRI Shapefile" ) + u" (*.shp *.SHP)"_s ) );
 
-  addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Repaired layer" ) ) );
+  addOutput( new QgsProcessingOutputVectorLayer( u"OUTPUT"_s, QObject::tr( "Repaired layer" ) ) );
 }
 
 QVariantMap QgsRepairShapefileAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString path = parameterAsFile( parameters, QStringLiteral( "INPUT" ), context );
+  const QString path = parameterAsFile( parameters, u"INPUT"_s, context );
 
   if ( !QFile::exists( path ) )
-    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( QLatin1String( "INPUT" ) ) );
+    throw QgsProcessingException( QObject::tr( "Could not load source layer for %1." ).arg( "INPUT"_L1 ) );
 
   CPLSetConfigOption( "SHAPE_RESTORE_SHX", "YES" );
 
@@ -90,7 +96,7 @@ QVariantMap QgsRepairShapefileAlgorithm::processAlgorithm( const QVariantMap &pa
   feedback->pushInfo( QObject::tr( "Successfully repaired, found %n feature(s)", nullptr, layer->featureCount() ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "OUTPUT" ), path );
+  outputs.insert( u"OUTPUT"_s, path );
   return outputs;
 }
 

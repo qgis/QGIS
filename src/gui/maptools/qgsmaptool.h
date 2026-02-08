@@ -17,15 +17,15 @@
 #define QGSMAPTOOL_H
 
 #include "qgsconfig.h"
-#include "qgis.h"
 
-#include <QCursor>
-#include <QString>
-#include <QObject>
-#include <QPointer>
-#include <QGestureEvent>
+#include "qgis.h"
 #include "qgis_gui.h"
 
+#include <QCursor>
+#include <QGestureEvent>
+#include <QObject>
+#include <QPointer>
+#include <QString>
 
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      Transient = 1 << 1,       //!< Deprecated since QGIS 3.36 -- no longer used by QGIS and will be removed in QGIS 4.0
+      Transient = 1 << 1,       //!< Deprecated since QGIS 3.36 -- no longer used by QGIS and will be removed in QGIS 5.0
       EditTool = 1 << 2,        //!< Map tool is an edit tool, which can only be used when layer is editable
       AllowZoomRect = 1 << 3,   //!< Allow zooming by rectangle (by holding shift and dragging) while the tool is active
       ShowContextMenu = 1 << 4, //!< Show a context menu when right-clicking with the tool (since QGIS 3.14). See populateContextMenu().
@@ -151,6 +151,15 @@ class GUI_EXPORT QgsMapTool : public QObject
      * \since QGIS 3.22
      */
     virtual bool canvasToolTipEvent( QHelpEvent *e );
+
+    /**
+     * Shortcut events coming from the application for overriding. The default
+     * implementation does nothing. Returns whether the event was handled by
+     * the tool and should not be propagated further.
+     *
+     * \since QGIS 4.0
+     */
+    virtual bool shortcutEvent( QKeyEvent *e );
 
     /**
      * Use this to associate a QAction to this maptool. Then when the setMapTool

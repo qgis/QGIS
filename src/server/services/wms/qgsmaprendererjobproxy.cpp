@@ -17,11 +17,17 @@
 
 #include "qgsmaprendererjobproxy.h"
 
-#include "qgsmessagelog.h"
-#include "qgsmaprendererparalleljob.h"
-#include "qgsmaprenderercustompainterjob.h"
+#include <memory>
+
 #include "qgsapplication.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmessagelog.h"
+
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 namespace QgsWms
 {
@@ -38,11 +44,11 @@ namespace QgsWms
     if ( mParallelRendering )
     {
       QgsApplication::setMaxThreads( maxThreads );
-      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering activated with %1 threads" ).arg( maxThreads ), QStringLiteral( "server" ), Qgis::MessageLevel::Info );
+      QgsMessageLog::logMessage( u"Parallel rendering activated with %1 threads"_s.arg( maxThreads ), u"server"_s, Qgis::MessageLevel::Info );
     }
     else
     {
-      QgsMessageLog::logMessage( QStringLiteral( "Parallel rendering deactivated" ), QStringLiteral( "server" ), Qgis::MessageLevel::Info );
+      QgsMessageLog::logMessage( u"Parallel rendering deactivated"_s, u"server"_s, Qgis::MessageLevel::Info );
     }
   }
 
@@ -71,7 +77,7 @@ namespace QgsWms
 
         renderJob.waitForFinished();
         *image = renderJob.renderedImage();
-        mPainter.reset( new QPainter( image ) );
+        mPainter = std::make_unique<QPainter>( image );
       }
 
       mErrors = renderJob.errors();
@@ -81,7 +87,7 @@ namespace QgsWms
     }
     else
     {
-      mPainter.reset( new QPainter( image ) );
+      mPainter = std::make_unique<QPainter>( image );
       QgsMapRendererCustomPainterJob renderJob( mapSettings, mPainter.get() );
       if ( feedback )
         QObject::connect( feedback, &QgsFeedback::canceled, &renderJob, &QgsMapRendererCustomPainterJob::cancel );

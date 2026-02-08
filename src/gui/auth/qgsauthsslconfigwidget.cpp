@@ -15,19 +15,22 @@
  ***************************************************************************/
 
 #include "qgsauthsslconfigwidget.h"
-#include "moc_qgsauthsslconfigwidget.cpp"
+
+#include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
+#include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgslogger.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSpinBox>
+#include <QString>
 #include <QUrl>
 
-#include "qgsauthguiutils.h"
-#include "qgsauthmanager.h"
-#include "qgslogger.h"
-#include "qgsapplication.h"
+#include "moc_qgsauthsslconfigwidget.cpp"
 
+using namespace Qt::StringLiterals;
 
 static const QString configFoundText_() { return QObject::tr( "Configuration loaded from database" ); }
 static const QString configNotFoundText_() { return QObject::tr( "Configuration not found in database" ); }
@@ -263,14 +266,14 @@ void QgsAuthSslConfigWidget::loadSslCustomConfig( const QgsAuthConfigSslServer &
   resetSslCertConfig();
   if ( config.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed-in SSL custom config is null" ) );
+    QgsDebugError( u"Passed-in SSL custom config is null"_s );
     return;
   }
 
   const QSslCertificate cert( config.sslCertificate() );
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "SSL custom config's cert is null" ) );
+    QgsDebugError( u"SSL custom config's cert is null"_s );
     return;
   }
 
@@ -294,7 +297,7 @@ void QgsAuthSslConfigWidget::saveSslCertConfig()
   }
   if ( !QgsApplication::authManager()->storeSslCertCustomConfig( sslCustomConfig() ) )
   {
-    QgsDebugError( QStringLiteral( "SSL custom config FAILED to store in authentication storage" ) );
+    QgsDebugError( u"SSL custom config FAILED to store in authentication storage"_s );
   }
 }
 
@@ -520,9 +523,9 @@ bool QgsAuthSslConfigWidget::validateHostPort( const QString &txt )
 
   // TODO: add QRegex checks against valid IP and domain.tld input
   //       i.e., currently accepts unlikely (though maybe valid) host:port combo, like 'a:1'
-  const QString urlbase( QStringLiteral( "https://%1" ).arg( hostport ) );
+  const QString urlbase( u"https://%1"_s.arg( hostport ) );
   const QUrl url( urlbase );
-  return ( !url.host().isEmpty() && QString::number( url.port() ).size() > 0 && QStringLiteral( "https://%1:%2" ).arg( url.host() ).arg( url.port() ) == urlbase );
+  return ( !url.host().isEmpty() && QString::number( url.port() ).size() > 0 && u"https://%1:%2"_s.arg( url.host() ).arg( url.port() ) == urlbase );
 }
 
 void QgsAuthSslConfigWidget::validateHostPortText( const QString &txt )

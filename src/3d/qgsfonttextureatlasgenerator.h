@@ -16,11 +16,16 @@
 #ifndef QGSFONTTEXTUREATLASGENERATOR_H
 #define QGSFONTTEXTUREATLASGENERATOR_H
 
+#include <vector>
+
 #include "qgis_3d.h"
 #include "qgstextformat.h"
-#include <vector>
-#include <QRect>
+
 #include <QImage>
+#include <QRect>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsCharTextureRect;
@@ -64,6 +69,7 @@ class _3D_EXPORT QgsFontTextureAtlas
      */
     QRect rect( const QString &grapheme ) const;
 #else
+
     /**
      * Returns the packed rectangle for the texture for the specified \a grapheme.
      *
@@ -74,7 +80,7 @@ class _3D_EXPORT QgsFontTextureAtlas
     const QRect res = sipCpp->rect( *a0 );
     if ( res.isNull() )
     {
-      PyErr_SetString( PyExc_KeyError, QStringLiteral( "No rectangle for character %1 exists." ).arg( *a0 ).toUtf8().constData() );
+      PyErr_SetString( PyExc_KeyError, u"No rectangle for character %1 exists."_s.arg( *a0 ).toUtf8().constData() );
       sipIsErr = 1;
     }
     else

@@ -8,6 +8,7 @@
 
 
 
+
 class QgsDetailedItemWidget : QWidget
 {
 %Docstring(signature="appended")

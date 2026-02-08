@@ -16,11 +16,13 @@
 #ifndef QGSPROCESSINGMULTIPLESELECTIONDIALOG_H
 #define QGSPROCESSINGMULTIPLESELECTIONDIALOG_H
 
+#include "ui_qgsprocessingmultipleselectiondialogbase.h"
+
 #include "qgis.h"
 #include "qgis_gui.h"
-#include "ui_qgsprocessingmultipleselectiondialogbase.h"
-#include "qgsprocessingparameters.h"
 #include "qgsmimedatautils.h"
+#include "qgsprocessingparameters.h"
+
 #include <QDialog>
 
 class QStandardItemModel;
@@ -110,9 +112,10 @@ class GUI_EXPORT QgsProcessingMultipleSelectionPanelWidget : public QgsPanelWidg
   protected:
     /**
      * Adds a new option to the widget.
+     *
+     * \a icon added in QGIS 4.0
      */
-    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
-
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
     //! Returns pointer to the list view
     QListView *listView() const { return mSelectionList; }
 

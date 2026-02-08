@@ -20,13 +20,14 @@
 
 /// @cond PRIVATE
 
-#include <QPointer>
-
-#include "qgspanelwidget.h"
 #include "ui_qgsmaskingwidgetbase.h"
-#include "qgsstyleentityvisitor.h"
-#include "qgis_sip.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgspanelwidget.h"
+#include "qgsstyleentityvisitor.h"
+
+#include <QPointer>
 
 class QgsMessageBarItem;
 
@@ -58,7 +59,7 @@ class GUI_EXPORT QgsMaskingWidget : public QgsPanelWidget, private Ui::QgsMaskin
     void onSelectionChanged();
 
   private:
-    QgsVectorLayer *mLayer = nullptr;
+    QPointer< QgsVectorLayer > mLayer;
     //! Populate the mask source and target widgets
     void populate();
 
@@ -78,7 +79,7 @@ class GUI_EXPORT QgsMaskingWidget : public QgsPanelWidget, private Ui::QgsMaskin
 class SymbolLayerVisitor : public QgsStyleEntityVisitorInterface
 {
   public:
-    typedef std::function<void( const QgsSymbolLayer *, const QString & )> SymbolLayerCallback;
+    typedef std::function<void( const QgsSymbolLayer * )> SymbolLayerCallback;
 
     //! constructor
     SymbolLayerVisitor( SymbolLayerCallback callback );

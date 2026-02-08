@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsLocator : QObject
 {
 %Docstring(signature="appended")

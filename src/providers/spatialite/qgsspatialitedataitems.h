@@ -15,11 +15,12 @@
 #ifndef QGSSPATIALITEDATAITEMS_H
 #define QGSSPATIALITEDATAITEMS_H
 
-#include "qgslayeritem.h"
+#include "qgsconfig.h"
+
+#include "qgsconnectionsitem.h"
 #include "qgsdatacollectionitem.h"
 #include "qgsdataitemprovider.h"
-#include "qgsconnectionsitem.h"
-#include "qgsconfig.h"
+#include "qgslayeritem.h"
 
 class QgsSLLayerItem : public QgsLayerItem
 {

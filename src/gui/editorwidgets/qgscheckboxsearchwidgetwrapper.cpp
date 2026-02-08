@@ -14,14 +14,18 @@
  ***************************************************************************/
 
 #include "qgscheckboxsearchwidgetwrapper.h"
-#include "moc_qgscheckboxsearchwidgetwrapper.cpp"
 
-#include "qgsfields.h"
 #include "qgscheckboxwidgetfactory.h"
+#include "qgsfields.h"
 #include "qgsvectorlayer.h"
 
-#include <QSettings>
 #include <QCheckBox>
+#include <QSettings>
+#include <QString>
+
+#include "moc_qgscheckboxsearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsCheckboxSearchWidgetWrapper::QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
@@ -53,7 +57,7 @@ QVariant QgsCheckboxSearchWidgetWrapper::value() const
     }
     else
     {
-      v = mCheckBox->isChecked() ? config( QStringLiteral( "CheckedState" ), true ) : config( QStringLiteral( "UncheckedState" ), false );
+      v = mCheckBox->isChecked() ? config( u"CheckedState"_s, true ) : config( u"UncheckedState"_s, false );
     }
   }
 
@@ -152,12 +156,12 @@ void QgsCheckboxSearchWidgetWrapper::setExpression( const QString &expression )
     case QMetaType::Type::LongLong:
     case QMetaType::Type::ULongLong:
     case QMetaType::Type::Double:
-      str = QStringLiteral( "%1 = %2" ).arg( QgsExpression::quotedColumnRef( fieldName ), exp );
+      str = u"%1 = %2"_s.arg( QgsExpression::quotedColumnRef( fieldName ), exp );
       break;
 
     default:
-      str = QStringLiteral( "%1 = '%2'" )
-              .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+      str = u"%1 = '%2'"_s
+              .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
       break;
   }
   mExpression = str;
@@ -173,7 +177,7 @@ void QgsCheckboxSearchWidgetWrapper::stateChanged( int )
     const QVariant currentValue = value();
     if ( currentValue.userType() == QMetaType::Type::Bool )
     {
-      exp = currentValue.toBool() ? QStringLiteral( "TRUE" ) : QStringLiteral( "FALSE" );
+      exp = currentValue.toBool() ? u"TRUE"_s : u"FALSE"_s;
     }
     else
     {

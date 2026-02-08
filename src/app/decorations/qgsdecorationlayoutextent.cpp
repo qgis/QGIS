@@ -17,22 +17,28 @@
  ***************************************************************************/
 
 #include "qgsdecorationlayoutextent.h"
-#include "moc_qgsdecorationlayoutextent.cpp"
-#include "qgsdecorationlayoutextentdialog.h"
 
-#include "qgslayoutitemmap.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgslinesymbollayer.h"
-#include "qgslayoutdesignerdialog.h"
+#include <memory>
+
 #include "qgisapp.h"
-#include "qgsproject.h"
-#include "qgssymbollayerutils.h"
-#include "qgsreadwritecontext.h"
-#include "qgstextrenderer.h"
+#include "qgsdecorationlayoutextentdialog.h"
+#include "qgsexception.h"
 #include "qgsfillsymbol.h"
+#include "qgsgeometry.h"
+#include "qgslayoutdesignerdialog.h"
+#include "qgslayoutitemmap.h"
+#include "qgslinesymbollayer.h"
+#include "qgsproject.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbollayerutils.h"
+#include "qgstextrenderer.h"
 
 #include <QPainter>
+#include <QString>
+
+#include "moc_qgsdecorationlayoutextent.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   : QgsDecorationItem( parent )
@@ -41,7 +47,7 @@ QgsDecorationLayoutExtent::QgsDecorationLayoutExtent( QObject *parent )
   mMarginUnit = Qgis::RenderUnit::Millimeters;
 
   setDisplayName( tr( "Layout Extent" ) );
-  mConfigurationName = QStringLiteral( "LayoutExtent" );
+  mConfigurationName = u"LayoutExtent"_s;
 
   projectRead();
 }
@@ -56,7 +62,7 @@ void QgsDecorationLayoutExtent::projectRead()
   QDomElement elem;
   QgsReadWriteContext rwContext;
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
-  QString xml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Symbol" ) );
+  QString xml = QgsProject::instance()->readEntry( mConfigurationName, u"/Symbol"_s );
   mSymbol.reset( nullptr );
   if ( !xml.isEmpty() )
   {
@@ -66,19 +72,19 @@ void QgsDecorationLayoutExtent::projectRead()
   }
   if ( !mSymbol )
   {
-    mSymbol.reset( new QgsFillSymbol() );
+    mSymbol = std::make_unique<QgsFillSymbol>();
     QgsSimpleLineSymbolLayer *layer = new QgsSimpleLineSymbolLayer( QColor( 0, 0, 0, 100 ), 0, Qt::DashLine );
     mSymbol->changeSymbolLayer( 0, layer );
   }
 
-  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+  QString textXml = QgsProject::instance()->readEntry( mConfigurationName, u"/Font"_s );
   if ( !textXml.isEmpty() )
   {
     doc.setContent( textXml );
     elem = doc.documentElement();
     mTextFormat.readXml( elem, rwContext );
   }
-  mLabelExtents = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Labels" ), true );
+  mLabelExtents = QgsProject::instance()->readBoolEntry( mConfigurationName, u"/Labels"_s, true );
 }
 
 void QgsDecorationLayoutExtent::saveToProject()
@@ -91,17 +97,17 @@ void QgsDecorationLayoutExtent::saveToProject()
   rwContext.setPathResolver( QgsProject::instance()->pathResolver() );
   if ( mSymbol )
   {
-    elem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "Symbol" ), mSymbol.get(), doc, rwContext );
+    elem = QgsSymbolLayerUtils::saveSymbol( u"Symbol"_s, mSymbol.get(), doc, rwContext );
     doc.appendChild( elem );
     // FIXME this works, but XML will not be valid as < is replaced by &lt;
-    QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Symbol" ), doc.toString() );
+    QgsProject::instance()->writeEntry( mConfigurationName, u"/Symbol"_s, doc.toString() );
   }
 
   QDomDocument textDoc;
   QDomElement textElem = mTextFormat.writeXml( textDoc, rwContext );
   textDoc.appendChild( textElem );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Font" ), textDoc.toString() );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Labels" ), mLabelExtents );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Font"_s, textDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Labels"_s, mLabelExtents );
 }
 
 void QgsDecorationLayoutExtent::run()

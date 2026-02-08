@@ -14,13 +14,18 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionwidgetwrapper.h"
-#include "moc_qgsactionwidgetwrapper.cpp"
+
 #include "qgsattributeform.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
 #include "qgsmessagebar.h"
 
 #include <QLayout>
+#include <QString>
+
+#include "moc_qgsactionwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsWidgetWrapper( layer, editor, parent )
@@ -127,7 +132,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
               return;
             }
 
-            const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
+            const QString formCode = u"locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n"_s
                                        .arg( ( quint64 ) form );
             QgsAction action { mAction };
             action.setCommand( formCode + mAction.command() );

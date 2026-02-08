@@ -14,13 +14,17 @@
  ***************************************************************************/
 
 #include "qgsdepthentity.h"
+
+#include "qgsabstractrenderview.h"
+#include "qgsframegraph.h"
+
+#include <QString>
+#include <QUrl>
+#include <Qt3DRender/QParameter>
+
 #include "moc_qgsdepthentity.cpp"
 
-#include <Qt3DRender/QParameter>
-#include <QUrl>
-
-#include "qgsframegraph.h"
-#include "qgsabstractrenderview.h"
+using namespace Qt::StringLiterals;
 
 QgsDepthEntity::QgsDepthEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLayer *layer, QNode *parent )
   : QgsRenderPassQuad( layer, parent )
@@ -31,8 +35,8 @@ QgsDepthEntity::QgsDepthEntity( Qt3DRender::QTexture2D *texture, Qt3DRender::QLa
   Qt3DRender::QParameter *textureParameter = new Qt3DRender::QParameter( "depthTexture", texture );
   mMaterial->addParameter( textureParameter );
 
-  const QString vertexShaderPath = QStringLiteral( "qrc:/shaders/depth_render.vert" );
-  const QString fragmentShaderPath = QStringLiteral( "qrc:/shaders/depth_render.frag" );
+  const QString vertexShaderPath = u"qrc:/shaders/depth_render.vert"_s;
+  const QString fragmentShaderPath = u"qrc:/shaders/depth_render.frag"_s;
 
   mShader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( vertexShaderPath ) ) );
   mShader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( fragmentShaderPath ) ) );

@@ -14,12 +14,16 @@
  ***************************************************************************/
 
 #include "qgsrendereditemresults.h"
-#include "qgsrendereditemdetails.h"
-#include "qgsrendercontext.h"
-#include "qgslogger.h"
-#include "qgsrenderedannotationitemdetails.h"
-#include "RTree.h"
 
+#include "RTree.h"
+#include "qgslogger.h"
+#include "qgsrendercontext.h"
+#include "qgsrenderedannotationitemdetails.h"
+#include "qgsrendereditemdetails.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 class QgsRenderedItemResultsSpatialIndex : public RTree<const QgsRenderedItemDetails *, float, 2, float>
@@ -152,7 +156,7 @@ void QgsRenderedItemResults::appendResults( const QList<QgsRenderedItemDetails *
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform rendered item's bounds to map CRS" ) );
+      QgsDebugError( u"Could not transform rendered item's bounds to map CRS"_s );
     }
 
     if ( QgsRenderedAnnotationItemDetails *annotationDetails = dynamic_cast< QgsRenderedAnnotationItemDetails * >( details ) )

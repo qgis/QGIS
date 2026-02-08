@@ -13,11 +13,12 @@
 *                                                                         *
 ***************************************************************************/
 
+#include "qgsrelationeditorwidgetplugin.h"
+
 #include "qgiscustomwidgets.h"
 #include "qgsrelationeditorwidget.h"
-#include "qgsrelationeditorwidgetplugin.h"
-#include "moc_qgsrelationeditorwidgetplugin.cpp"
 
+#include "moc_qgsrelationeditorwidgetplugin.cpp"
 
 QgsRelationEditorWidgetPlugin::QgsRelationEditorWidgetPlugin( QObject *parent )
   : QObject( parent )

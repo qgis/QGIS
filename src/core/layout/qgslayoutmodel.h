@@ -23,9 +23,9 @@
 #include "qgslayoutitemregistry.h"
 
 #include <QAbstractItemModel>
+#include <QSet>
 #include <QSortFilterProxyModel>
 #include <QStringList>
-#include <QSet>
 
 class QgsLayout;
 class QGraphicsItem;
@@ -396,7 +396,7 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
 
   private:
     QgsLayout *mLayout = nullptr;
-    QgsLayoutItemRegistry::ItemType mItemTypeFilter;
+    QgsLayoutItemRegistry::ItemType mItemTypeFilter =  QgsLayoutItemRegistry::LayoutItem ;
     QList< QgsLayoutItem * > mExceptedList;
     bool mAllowEmpty = false;
     QgsLayoutItem::Flags mItemFlags = QgsLayoutItem::Flags();

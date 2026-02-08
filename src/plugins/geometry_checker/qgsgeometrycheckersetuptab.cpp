@@ -15,22 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckersetuptab.h"
-#include "moc_qgsgeometrycheckersetuptab.cpp"
+
+#include "qgisinterface.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeaturepool.h"
+#include "qgsgeometrycheck.h"
+#include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheckfactory.h"
-#include "qgsgeometrycheck.h"
-#include "qgsfeaturepool.h"
-#include "qgsvectordataproviderfeaturepool.h"
-
-#include "qgsfeatureiterator.h"
-#include "qgisinterface.h"
-#include "qgsproject.h"
-#include "qgsvectorlayer.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsvectordataprovider.h"
 #include "qgsiconutils.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectordataproviderfeaturepool.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 #include <QAction>
 #include <QEventLoop>
@@ -38,7 +37,11 @@
 #include <QFutureWatcher>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QtConcurrentMap>
+#include <QString>
+
+#include "moc_qgsgeometrycheckersetuptab.cpp"
+
+using namespace Qt::StringLiterals;
 
 static const int LayerIdRole = Qt::UserRole + 1;
 
@@ -358,7 +361,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
         continue;
       }
       const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), QStringLiteral( "ogr" ), options );
+      QgsVectorLayer *newlayer = new QgsVectorLayer( outputPath, QFileInfo( outputPath ).completeBaseName(), u"ogr"_s, options );
       if ( selectedOnly )
       {
         QgsFeature feature;
@@ -429,7 +432,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
         {
           QString layerPath = layer->dataProvider()->dataSourceUri();
           delete layer;
-          if ( ui.comboBoxOutputFormat->currentText() == QLatin1String( "ESRI Shapefile" ) )
+          if ( ui.comboBoxOutputFormat->currentText() == "ESRI Shapefile"_L1 )
           {
             QgsVectorFileWriter::deleteShapeFile( layerPath );
           }

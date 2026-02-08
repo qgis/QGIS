@@ -22,6 +22,7 @@ from osgeo import gdal, ogr
 from qgis.PyQt.QtCore import QCoreApplication, QDateTime, QMetaType, Qt, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
+    NULL,
     QgsApplication,
     QgsBox3d,
     QgsFeature,
@@ -29,6 +30,7 @@ from qgis.core import (
     QgsGeometry,
     QgsRectangle,
     QgsSettings,
+    QgsTestUtils,
     QgsVectorLayer,
     QgsWkbTypes,
 )
@@ -39,37 +41,7 @@ from providertestbase import ProviderTestCase
 
 
 def sanitize(endpoint, query_params):
-    # Implement the logic of QgsBaseNetworkRequest::sendGET()
-    # Note query_params can actually contain subpaths, so create the full url
-    # by concatenating boths, and then figure out things...
-
-    url = endpoint + query_params
-    # For REST API using URL subpaths, normalize the subpaths
-    afterEndpointStartPos = url.find("fake_qgis_http_endpoint") + len(
-        "fake_qgis_http_endpoint"
-    )
-    afterEndpointStart = url[afterEndpointStartPos:]
-    afterEndpointStart = afterEndpointStart.replace("/", "_")
-    url = url[0:afterEndpointStartPos] + afterEndpointStart
-    posQuotationMark = url.find("?")
-    endpoint = url[0:posQuotationMark]
-    query_params = url[posQuotationMark:]
-
-    if len(endpoint + query_params) > 256:
-        ret = endpoint + hashlib.md5(query_params.encode()).hexdigest()
-        # print('Before: ' + endpoint + query_params)
-        # print('After:  ' + ret)
-        return ret
-    ret = endpoint + query_params.replace("?", "_").replace("&", "_").replace(
-        "<", "_"
-    ).replace(">", "_").replace('"', "_").replace("'", "_").replace(" ", "_").replace(
-        ":", "_"
-    ).replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
-    return ret
+    return QgsTestUtils.sanitizeFakeHttpEndpoint(f"{endpoint}{query_params}")
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -501,7 +473,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -918,6 +892,15 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
             sanitize(endpoint, "/collections/mycollection?" + ACCEPT_COLLECTION), "wb"
         ) as f:
             f.write(json.dumps(collection).encode("UTF-8"))
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4258&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(first_items).encode("UTF-8"))
 
         vl = QgsVectorLayer(
             "url='http://"
@@ -1466,7 +1449,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
 
         filename = sanitize(
-            endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            endpoint,
+            "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4258&"
+            + ACCEPT_ITEMS,
         )
         with open(filename, "wb") as f:
             f.write(json.dumps(items).encode("UTF-8"))
@@ -1891,7 +1876,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         # first items
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/2056&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -1914,6 +1901,15 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.sourceCrs().authid(), "EPSG:2056")
+
+        # first items
+        with open(
+            sanitize(
+                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
 
         # Test srsname parameter overrides default CRS
         vl = QgsVectorLayer(
@@ -1967,7 +1963,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         # first items
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/2056&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2071,6 +2069,70 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         source = vl.dataProvider()
 
         self.assertEqual(source.featureCount(), 123456789012345)
+
+    def testZGeometries(self):
+
+        # On Windows we must make sure that any backslash in the path is
+        # replaced by a forward slash so that QUrl can process it
+        basetestpath = tempfile.mkdtemp().replace("\\", "/")
+        endpoint = basetestpath + "/fake_qgis_http_endpoint_testZGeometries"
+
+        create_landing_page_api_collection(
+            endpoint,
+            storageCrs="http://www.opengis.net/def/crs/EPSG/0/4979",
+            bbox=[1, 48, 0, 3, 50, 200],
+        )
+
+        items = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {"type": "Point", "coordinates": [49, 2, 100]},
+                }
+            ],
+        }
+
+        # first items
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4979&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        # Create test layer
+
+        vl = QgsVectorLayer(
+            "url='http://" + endpoint + "' typename='mycollection'", "test", "OAPIF"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.PointZ)
+
+        source = vl.dataProvider()
+
+        app_log = QgsApplication.messageLog()
+        # signals should be emitted by application log
+        app_spy = QSignalSpy(app_log.messageReceived)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?limit=1000&crs=http://www.opengis.net/def/crs/EPSG/0/4979&"
+                + ACCEPT_ITEMS,
+            ),
+            "wb",
+        ) as f:
+            f.write(json.dumps(items).encode("UTF-8"))
+
+        features = [f for f in vl.getFeatures()]
+        self.assertEqual(len(features), 1)
+
+        self.assertEqual(len(app_spy), 0, list(app_spy))
 
     def testFeatureInsertionDeletion(self):
 
@@ -2275,7 +2337,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2425,7 +2489,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -2512,7 +2578,9 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         }
         with open(
             sanitize(
-                endpoint, "/collections/mycollection/items?limit=10&" + ACCEPT_ITEMS
+                endpoint,
+                "/collections/mycollection/items?limit=10&crs=http://www.opengis.net/def/crs/EPSG/0/4326&"
+                + ACCEPT_ITEMS,
             ),
             "wb",
         ) as f:
@@ -3187,6 +3255,440 @@ class TestPyQgsOapifProvider(QgisTestCase, ProviderTestCase):
         f = next(it)
         self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
         self.assertEqual(f.geometry().asWkt().upper(), "POINT (-70.25 66.25)")
+
+    def testGMLOutputFormat_no_xml_schema_paging(self):
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testGMLOutputFormat_no_xml_schema_paging"
+        )
+        collectionLinks = [
+            {
+                "type": "application/gml+xml",
+                "rel": "items",
+                "title": "Items in GML format",
+                "href": "http://" + endpoint + "/collections/mycollection/items?f=gml",
+            }
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            collectionLinks=collectionLinks,
+        )
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&limit=10&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:intfield>1</my:intfield>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            )
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' outputformat='application/gml+xml'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&limit=1000&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            data = b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:intfield>1</my:intfield>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            f.write(
+                (
+                    "OGC-NumberMatched: 2\r\nLink: <http://"
+                    + endpoint
+                    + '/collections/mycollection/items?f=gml&offset=next_offset>; rel="next"; type="application/gml+xml"\r\n\r\n'
+                ).encode("utf-8")
+                + data
+            )
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&offset=next_offset&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            data = b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.2">
+      <my:intfield>2</my:intfield>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.2"><gml:pos>50 3</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            f.write(b"\r\n" + data)
+
+        it = vl.getFeatures()
+
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (2 49)")
+        self.assertEqual(f["intfield"], 1)
+
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (3 50)")
+        self.assertEqual(f["intfield"], 2)
+
+    def testGMLOutputFormat_no_xml_schema_but_bulk_download(self):
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testGMLOutputFormat_no_xml_schema"
+        )
+        collectionLinks = [
+            {
+                "type": "application/gml+xml",
+                "rel": "items",
+                "title": "Items in GML format",
+                "href": "http://" + endpoint + "/collections/mycollection/items?f=gml",
+            },
+            {
+                "type": "application/gml+xml",
+                "rel": "enclosure",
+                "title": "Bulk download in GML format",
+                "href": "http://"
+                + endpoint
+                + "/collections/mycollection/items?bulk=yes",
+            },
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            collectionLinks=collectionLinks,
+        )
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&limit=10&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            data = b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:intfield>1</my:intfield>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            f.write(data)
+
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' outputformat='application/gml+xml'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?bulk=yes&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:intfield>1</my:intfield>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            )
+
+        it = vl.getFeatures()
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (2 49)")
+        self.assertEqual(f["intfield"], 1)
+
+    def testGMLOutputFormat_with_simple_xml_schema(self):
+        """Test parsing of simple feature schema with QGIS own schema parser"""
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testGMLOutputFormat_with_simple_xml_schema"
+        )
+        collectionLinks = [
+            {
+                "type": "application/gml+xml",
+                "rel": "items",
+                "title": "Items in GML format",
+                "href": "http://" + endpoint + "/collections/mycollection/items?f=gml",
+            },
+            {
+                "type": "application/xml",
+                "rel": "describedby",
+                "title": "XML schema",
+                "href": "http://"
+                + endpoint
+                + "/collections/mycollection/my_schema.xsd?",
+            },
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            collectionLinks=collectionLinks,
+        )
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&limit=10&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            data = b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:intfield>1</my:intfield>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            f.write(data)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/my_schema.xsd?",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""
+<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml"/>
+  <xsd:complexType name="mycollectionType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="otherfield" nillable="true" type="xsd:string"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometry" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="mycollection" substitutionGroup="gml:_Feature" type="my:mycollectionType"/>
+</xsd:schema>
+"""
+            )
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' outputformat='application/gml+xml'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&limit=1000&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:intfield>1</my:intfield>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            )
+
+        it = vl.getFeatures()
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (2 49)")
+        self.assertEqual(f["intfield"], 1)
+        self.assertEqual(f["otherfield"], NULL)
+
+    @unittest.skipIf(gdal.GetDriverByName("GMLAS") is None, "OGR GMLAS driver required")
+    def testGMLOutputFormat_with_complex_xml_schema(self):
+        """Test reading complex features"""
+
+        endpoint = (
+            self.__class__.basetestpath
+            + "/fake_qgis_http_endpoint_testGMLOutputFormat_with_complex_xml_schema"
+        )
+        collectionLinks = [
+            {
+                "type": "application/gml+xml",
+                "rel": "items",
+                "title": "Items in GML format",
+                "href": "http://" + endpoint + "/collections/mycollection/items?f=gml",
+            },
+            {
+                "type": "application/xml",
+                "rel": "describedby",
+                "title": "XML schema",
+                "href": "http://"
+                + endpoint
+                + "/collections/mycollection/my_schema.xsd?",
+            },
+        ]
+        create_landing_page_api_collection(
+            endpoint,
+            collectionLinks=collectionLinks,
+        )
+
+        with open(
+            sanitize(endpoint, "/collections/mycollection/items?f=gml&VERB=OPTIONS"),
+            "wb",
+        ) as f:
+            f.write(b"GET")
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&limit=10&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            data = b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:a><my:intfield>1</my:intfield></my:a>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            f.write(data)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/my_schema.xsd?",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""<xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
+  <xsd:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="https://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+  <xsd:complexType name="mycollectionType">
+    <xsd:complexContent>
+      <xsd:extension base="gml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element name="a" maxOccurs="1" minOccurs="0" type="my:subType"/>
+          <xsd:element maxOccurs="1" minOccurs="0" name="geometry" nillable="true" type="gml:PointPropertyType"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="mycollection" substitutionGroup="gml:_Feature" type="my:mycollectionType"/>
+  <xsd:complexType name="subType">
+    <xsd:sequence>
+      <xsd:element maxOccurs="1" minOccurs="0" name="intfield" nillable="true" type="xsd:int"/>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
+"""
+            )
+        vl = QgsVectorLayer(
+            "url='http://"
+            + endpoint
+            + "' typename='mycollection' outputformat='application/gml+xml'",
+            "test",
+            "OAPIF",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.wkbType(), QgsWkbTypes.Type.Point)
+
+        with open(
+            sanitize(
+                endpoint,
+                "/collections/mycollection/items?f=gml&limit=1000&Accept=application/gml+xml",
+            ),
+            "wb",
+        ) as f:
+            f.write(
+                b"""<foo:FeatureCollection xmlns:foo="http://example.com"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my">
+  <foo:featureMember>
+    <my:mycollection gml:id="mycollection.1">
+      <my:a><my:intfield>1</my:intfield></my:a>
+      <my:geometry><gml:Point srsName="http://www.opengis.net/def/crs/EPSG/0/4326" gml:id="geom.0"><gml:pos>49 2</gml:pos></gml:Point></my:geometry>
+    </my:mycollection>
+  </foo:featureMember>
+</foo:FeatureCollection>"""
+            )
+
+        self.assertEqual(
+            [f.name() for f in vl.fields()],
+            [
+                "id",
+                "metadataproperty",
+                "description_href",
+                "description_title",
+                "description_nilreason",
+                "description",
+                "descriptionreference_href",
+                "descriptionreference_title",
+                "descriptionreference_nilreason",
+                "identifier_codespace",
+                "identifier",
+                "name",
+                "location_location",
+                "a_intfield",
+                "a_intfield_nil",
+            ],
+        )
+        it = vl.getFeatures()
+        f = next(it)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.Type.Point)
+        self.assertEqual(f.geometry().asWkt().upper(), "POINT (2 49)")
+        self.assertEqual(f["a_intfield"], 1)
 
 
 if __name__ == "__main__":

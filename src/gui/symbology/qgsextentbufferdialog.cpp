@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "qgsextentbufferdialog.h"
-#include "moc_qgsextentbufferdialog.cpp"
-#include "qdialogbuttonbox.h"
+
 #include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
@@ -26,6 +25,13 @@
 #include "qgssymbolwidgetcontext.h"
 #include "qgsunittypes.h"
 #include "qgsvectorlayer.h"
+
+#include <QString>
+#include <qdialogbuttonbox.h>
+
+#include "moc_qgsextentbufferdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExtentBufferWidget::QgsExtentBufferWidget( QgsSymbol *symbol, QgsVectorLayer *layer, QWidget *parent )
   : QgsPanelWidget( parent ), mSymbol( symbol ), mLayer( layer )
@@ -172,5 +178,5 @@ void QgsExtentBufferDialog::setContext( const QgsSymbolWidgetContext &context )
 
 void QgsExtentBufferDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#extent-buffer" ) );
+  QgsHelp::openHelp( u"working_with_vector/vector_properties.html#extent-buffer"_s );
 }

@@ -13,14 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsgeometryfollowboundariescheck.h"
+
 #include "qgsfeedback.h"
 #include "qgsgeometrycheckcontext.h"
-#include "qgsgeometryfollowboundariescheck.h"
+#include "qgsgeometrycheckerror.h"
 #include "qgsgeometryengine.h"
 #include "qgsproject.h"
 #include "qgsspatialindex.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycheckerror.h"
 
 QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration, QgsVectorLayer *checkLayer )
   : QgsGeometryCheck( context, configuration )

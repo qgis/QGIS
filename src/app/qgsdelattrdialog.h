@@ -19,9 +19,12 @@
 #define QGSDELATTRDIALOG_H
 
 #include "ui_qgsdelattrdialogbase.h"
-#include <QDialog>
+
 #include <list>
+
 #include "qgis_app.h"
+
+#include <QDialog>
 
 class QgsVectorLayer;
 

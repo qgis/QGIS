@@ -13,10 +13,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthawss3edit.h"
-#include "moc_qgsauthawss3edit.cpp"
 #include "ui_qgsauthawss3edit.h"
+#include "qgsauthawss3edit.h"
 
+#include <QString>
+
+#include "moc_qgsauthawss3edit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthAwsS3Edit::QgsAuthAwsS3Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
@@ -41,9 +45,9 @@ bool QgsAuthAwsS3Edit::validateConfig()
 QgsStringMap QgsAuthAwsS3Edit::configMap() const
 {
   QgsStringMap config;
-  config.insert( QStringLiteral( "username" ), leUsername->text() );
-  config.insert( QStringLiteral( "password" ), lePassword->text() );
-  config.insert( QStringLiteral( "region" ), leRegion->text() );
+  config.insert( u"username"_s, leUsername->text() );
+  config.insert( u"password"_s, lePassword->text() );
+  config.insert( u"region"_s, leRegion->text() );
 
   return config;
 }
@@ -53,9 +57,9 @@ void QgsAuthAwsS3Edit::loadConfig( const QgsStringMap &configmap )
   clearConfig();
 
   mConfigMap = configmap;
-  leUsername->setText( configmap.value( QStringLiteral( "username" ) ) );
-  lePassword->setText( configmap.value( QStringLiteral( "password" ) ) );
-  leRegion->setText( configmap.value( QStringLiteral( "region" ) ) );
+  leUsername->setText( configmap.value( u"username"_s ) );
+  lePassword->setText( configmap.value( u"password"_s ) );
+  leRegion->setText( configmap.value( u"region"_s ) );
 
   validateConfig();
 }

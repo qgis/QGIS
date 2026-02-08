@@ -11,6 +11,7 @@
 
 
 
+
 class QgsPieChartPlot : Qgs2DPlot
 {
 %Docstring(signature="appended")

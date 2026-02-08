@@ -19,15 +19,19 @@
 #define QGSWFSSOURCESELECT_H
 
 #include "ui_qgswfssourceselectbase.h"
-#include "qgswfscapabilities.h"
-#include "qgsoapiflandingpagerequest.h"
-#include "qgsoapifcollection.h"
-#include "qgsproviderregistry.h"
+
 #include "qgsabstractdatasourcewidget.h"
+#include "qgsoapifcollection.h"
+#include "qgsoapiflandingpagerequest.h"
+#include "qgsproviderregistry.h"
+#include "qgswfscapabilities.h"
 
 #include <QItemDelegate>
-#include <QStandardItemModel>
 #include <QSortFilterProxyModel>
+#include <QStandardItemModel>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsProjectionSelectionDialog;
 class QgsWfsGetCapabilitiesRequest;
@@ -120,7 +124,7 @@ class QgsWFSSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsWF
     void startOapifLandingPageRequest();
     void startOapifCollectionsRequest( const QString &url );
     void resizeTreeViewAfterModelFill();
-    bool isOapif() const { return mVersion == QLatin1String( "OGC_API_FEATURES" ); }
+    bool isOapif() const { return mVersion == "OGC_API_FEATURES"_L1; }
 };
 
 #endif

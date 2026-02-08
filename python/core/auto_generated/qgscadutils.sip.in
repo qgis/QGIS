@@ -10,7 +10,6 @@
 
 
 
-
 class QgsCadUtils
 {
 %Docstring(signature="appended")
@@ -23,14 +22,11 @@ Provides routines for CAD editing.
   public:
 
     class AlignMapPointConstraint
-{
+    {
 %Docstring(signature="appended")
 Structure with details of one constraint.
 %End
 
-%TypeHeaderCode
-#include "qgscadutils.h"
-%End
       public:
 
         AlignMapPointConstraint( bool locked = false, bool relative = false, double value = 0 );
@@ -44,14 +40,11 @@ Constructor for AlignMapPointConstraint.
     };
 
     class AlignMapPointOutput
-{
+    {
 %Docstring(signature="appended")
 Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method.
 %End
 
-%TypeHeaderCode
-#include "qgscadutils.h"
-%End
       public:
         bool valid;
 
@@ -69,15 +62,12 @@ Structure returned from :py:func:`~QgsCadUtils.alignMapPoint` method.
     };
 
     class AlignMapPointContext
-{
+    {
 %Docstring(signature="appended")
 Defines constraints for the :py:func:`QgsCadUtils.alignMapPoint()`
 method.
 %End
 
-%TypeHeaderCode
-#include "qgscadutils.h"
-%End
       public:
         QgsSnappingUtils *snappingUtils;
         double mapUnitsPerPixel;

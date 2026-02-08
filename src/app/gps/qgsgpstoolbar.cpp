@@ -14,29 +14,34 @@
  ***************************************************************************/
 
 #include "qgsgpstoolbar.h"
-#include "moc_qgsgpstoolbar.cpp"
-#include "qgsappgpsconnection.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
+
 #include "qgis.h"
-#include "qgscoordinateutils.h"
 #include "qgisapp.h"
+#include "qgsappgpsconnection.h"
+#include "qgsappgpsdigitizing.h"
 #include "qgsappgpssettingsmenu.h"
 #include "qgsapplication.h"
-#include "qgsprojectgpssettings.h"
+#include "qgscoordinatetransform.h"
+#include "qgscoordinateutils.h"
+#include "qgsgpsinformation.h"
+#include "qgsmapcanvas.h"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayerproxymodel.h"
-#include "qgsappgpsdigitizing.h"
-#include "qgsunittypes.h"
-#include "qgsgpsinformation.h"
+#include "qgsproject.h"
+#include "qgsprojectgpssettings.h"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingstree.h"
+#include "qgsunittypes.h"
 
 #include <QLabel>
+#include <QString>
 #include <QToolButton>
 
-const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> *QgsGpsToolBar::settingShowInToolbar = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( QStringLiteral( "show-in-toolbar" ), QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Location, QStringLiteral( "GPS information components to show in GPS toolbar" ) );
+#include "moc_qgsgpstoolbar.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents> *QgsGpsToolBar::settingShowInToolbar = new QgsSettingsEntryEnumFlag<Qgis::GpsInformationComponents>( u"show-in-toolbar"_s, QgsSettingsTree::sTreeGps, Qgis::GpsInformationComponent::Location, u"GPS information components to show in GPS toolbar"_s );
 
 
 QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *canvas, QWidget *parent )
@@ -44,16 +49,17 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   , mConnection( connection )
   , mCanvas( canvas )
 {
-  setObjectName( QStringLiteral( "mGpsToolBar" ) );
+  setObjectName( u"mGpsToolBar"_s );
   setWindowTitle( tr( "GPS Toolbar" ) );
   setToolTip( tr( "GPS Toolbar" ) );
 
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"EPSG:4326"_s );
 
   mConnectAction = new QAction( tr( "Connect GPS" ), this );
   mConnectAction->setToolTip( tr( "Connect to GPS" ) );
-  mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
+  mConnectAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mIconGpsConnect.svg"_s ) );
   mConnectAction->setCheckable( true );
+  mConnectAction->setObjectName( u"mConnectAction"_s );
   addAction( mConnectAction );
 
   connect( mConnectAction, &QAction::toggled, this, [this]( bool connect ) {
@@ -64,8 +70,9 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   } );
 
   mRecenterAction = new QAction( tr( "Recenter" ), this );
+  mRecenterAction->setObjectName( u"mRecenterAction"_s );
   mRecenterAction->setToolTip( tr( "Recenter map on GPS location" ) );
-  mRecenterAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionRecenter.svg" ) ) );
+  mRecenterAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mActionRecenter.svg"_s ) );
   mRecenterAction->setEnabled( false );
 
   connect( mRecenterAction, &QAction::triggered, this, [this] {
@@ -99,32 +106,37 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   mDestinationLayerButton->setToolTip( tr( "Set destination layer for GPS digitized features" ) );
   mDestinationLayerButton->setMenu( mDestinationLayerMenu );
   mDestinationLayerButton->setPopupMode( QToolButton::InstantPopup );
-  mDestinationLayerButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsDestinationLayer.svg" ) ) );
-  addWidget( mDestinationLayerButton );
+  mDestinationLayerButton->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mIconGpsDestinationLayer.svg"_s ) );
+  QAction *action = addWidget( mDestinationLayerButton );
+  action->setObjectName( u"mDestinationLayerButtonAction"_s );
 
   mAddTrackVertexAction = new QAction( tr( "Add Track Vertex" ), this );
   mAddTrackVertexAction->setToolTip( tr( "Add vertex to GPS track using current GPS location" ) );
   mAddTrackVertexAction->setEnabled( false );
-  mAddTrackVertexAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionAddTrackPoint.svg" ) ) );
+  mAddTrackVertexAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mActionAddTrackPoint.svg"_s ) );
+  mAddTrackVertexAction->setObjectName( u"mAddTrackVertexAction"_s );
   connect( mAddTrackVertexAction, &QAction::triggered, this, &QgsGpsToolBar::addVertexClicked );
   addAction( mAddTrackVertexAction );
 
   mCreateFeatureAction = new QAction( tr( "Create Feature from Track" ), this );
-  mCreateFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionCaptureLine.svg" ) ) );
+  mCreateFeatureAction->setIcon( QgsApplication::getThemeIcon( u"mActionCaptureLine.svg"_s ) );
+  mCreateFeatureAction->setObjectName( u"mCreateFeatureAction"_s );
   connect( mCreateFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::addFeatureClicked );
   addAction( mCreateFeatureAction );
 
   mResetFeatureAction = new QAction( tr( "Reset Track" ), this );
-  mResetFeatureAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mActionReset.svg" ) ) );
+  mResetFeatureAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mActionReset.svg"_s ) );
+  mResetFeatureAction->setObjectName( u"mResetFeatureAction"_s );
   connect( mResetFeatureAction, &QAction::triggered, this, &QgsGpsToolBar::resetFeatureClicked );
   addAction( mResetFeatureAction );
 
   addSeparator();
 
   mShowInfoAction = new QAction( tr( "Information" ), this );
-  mShowInfoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionPropertiesWidget.svg" ) ) );
+  mShowInfoAction->setIcon( QgsApplication::getThemeIcon( u"mActionPropertiesWidget.svg"_s ) );
   mShowInfoAction->setToolTip( tr( "Show GPS Information Panel" ) );
   mShowInfoAction->setCheckable( true );
+  mShowInfoAction->setObjectName( u"mShowInfoAction"_s );
   addAction( mShowInfoAction );
 
   connect( mConnection, &QgsAppGpsConnection::positionChanged, this, &QgsGpsToolBar::updateLocationLabel );
@@ -136,8 +148,9 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
   settingsButton->setToolTip( tr( "Settings" ) );
   settingsButton->setMenu( QgisApp::instance()->gpsSettingsMenu() );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mSettingsMenuAction = addWidget( settingsButton );
+  mSettingsMenuAction->setObjectName( u"mSettingsMenuAction"_s );
 
   mRecenterAction->setEnabled( false );
   mCreateFeatureAction->setEnabled( false );
@@ -150,7 +163,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         whileBlocking( mConnectAction )->setChecked( false );
         mConnectAction->setText( tr( "Connect GPS" ) );
         mConnectAction->setToolTip( tr( "Connect to GPS" ) );
-        mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
+        mConnectAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mIconGpsConnect.svg"_s ) );
         mConnectAction->setEnabled( true );
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
@@ -161,7 +174,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
       case Qgis::DeviceConnectionStatus::Connecting:
         whileBlocking( mConnectAction )->setChecked( true );
         mConnectAction->setToolTip( tr( "Connecting to GPS" ) );
-        mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsConnect.svg" ) ) );
+        mConnectAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mIconGpsConnect.svg"_s ) );
         mConnectAction->setEnabled( false );
         mRecenterAction->setEnabled( false );
         mCreateFeatureAction->setEnabled( false );
@@ -173,7 +186,7 @@ QgsGpsToolBar::QgsGpsToolBar( QgsAppGpsConnection *connection, QgsMapCanvas *can
         whileBlocking( mConnectAction )->setChecked( true );
         mConnectAction->setText( tr( "Disconnect GPS" ) );
         mConnectAction->setToolTip( tr( "Disconnect from GPS" ) );
-        mConnectAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/gpsicons/mIconGpsDisconnect.svg" ) ) );
+        mConnectAction->setIcon( QgsApplication::getThemeIcon( u"/gpsicons/mIconGpsDisconnect.svg"_s ) );
         mConnectAction->setEnabled( true );
         mRecenterAction->setEnabled( true );
         mCreateFeatureAction->setEnabled( static_cast<bool>( QgsProject::instance()->gpsSettings()->destinationLayer() ) );
@@ -270,13 +283,13 @@ void QgsGpsToolBar::updateLocationLabel()
                                            : mDigitizing->trackDistanceFromStart();
 
               const QgsSettings settings;
-              const bool keepBaseUnit = settings.value( QStringLiteral( "qgis/measure/keepbaseunit" ), true ).toBool();
-              const int decimalPlaces = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), 3 ).toInt();
+              const bool keepBaseUnit = settings.value( u"qgis/measure/keepbaseunit"_s, true ).toBool();
+              const int decimalPlaces = settings.value( u"qgis/measure/decimalplaces"_s, 3 ).toInt();
 
               if ( measurement > 0 )
                 parts << mDigitizing->distanceArea().formatDistance( measurement, decimalPlaces, mDigitizing->distanceArea().lengthUnits(), keepBaseUnit );
               else
-                parts << QStringLiteral( "0%1" ).arg( QgsUnitTypes::toAbbreviatedString( mDigitizing->distanceArea().lengthUnits() ) );
+                parts << u"0%1"_s.arg( QgsUnitTypes::toAbbreviatedString( mDigitizing->distanceArea().lengthUnits() ) );
             }
 
             break;
@@ -353,7 +366,7 @@ void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
 
   QString buttonLabel = tr( "Create Feature" );
   QString buttonToolTip = tr( "Create Feature" );
-  QString icon = QStringLiteral( "mActionCaptureLine.svg" );
+  QString icon = u"mActionCaptureLine.svg"_s;
 
   const Qgis::GeometryType layerGeometryType = vlayer->geometryType();
   bool enable = true;
@@ -363,19 +376,19 @@ void QgsGpsToolBar::destinationLayerChanged( QgsVectorLayer *vlayer )
     case Qgis::GeometryType::Point:
       buttonLabel = tr( "Create Point Feature at Location" );
       buttonToolTip = tr( "Create a new point feature at the current GPS location" );
-      icon = QStringLiteral( "mActionCapturePoint.svg" );
+      icon = u"mActionCapturePoint.svg"_s;
       break;
 
     case Qgis::GeometryType::Line:
       buttonLabel = tr( "Create Line Feature from Track" );
       buttonToolTip = tr( "Create a new line feature using the current GPS track" );
-      icon = QStringLiteral( "mActionCaptureLine.svg" );
+      icon = u"mActionCaptureLine.svg"_s;
       break;
 
     case Qgis::GeometryType::Polygon:
       buttonLabel = tr( "Create Polygon Feature from Track" );
       buttonToolTip = tr( "Create a new polygon feature using the current GPS track" );
-      icon = QStringLiteral( "mActionCapturePolygon.svg" );
+      icon = u"mActionCapturePolygon.svg"_s;
       break;
 
     case Qgis::GeometryType::Unknown:

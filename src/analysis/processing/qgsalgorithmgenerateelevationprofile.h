@@ -21,9 +21,9 @@
 #define SIP_NO_FILE
 
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprofilerenderer.h"
-#include "qgsapplication.h"
 
 class QgsProfilePlotRenderer;
 

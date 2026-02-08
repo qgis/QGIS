@@ -16,13 +16,13 @@
 #ifndef QGSRASTERANALYSISUTILS_H
 #define QGSRASTERANALYSISUTILS_H
 
-#include "qgis_analysis.h"
-#include "qgis.h"
-#include "qgspointxy.h"
-
 #include <functional>
 #include <memory>
 #include <vector>
+
+#include "qgis.h"
+#include "qgis_analysis.h"
+#include "qgspointxy.h"
 
 #define SIP_NO_FILE
 
@@ -81,7 +81,7 @@ namespace QgsRasterAnalysisUtils
       std::vector<int> bands { 1 };
   };
 
-  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, QgsRasterDataProvider *destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
+  ANALYSIS_EXPORT void applyRasterLogicOperator( const std::vector<QgsRasterAnalysisUtils::RasterLogicInput> &inputs, std::unique_ptr<QgsRasterDataProvider> destinationRaster, double outputNoDataValue, const bool treatNoDataAsFalse, int width, int height, const QgsRectangle &extent, QgsFeedback *feedback, std::function<void( const std::vector<std::unique_ptr<QgsRasterBlock>> &, bool &, bool &, int, int, bool )> &applyLogicFunc, qgssize &noDataCount, qgssize &trueCount, qgssize &falseCount );
 
   /**
    * Returns a vector of double values obtained from a stack of input QgsRasterBlocks

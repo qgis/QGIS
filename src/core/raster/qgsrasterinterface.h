@@ -18,20 +18,23 @@
 #ifndef QGSRASTERINTERFACE_H
 #define QGSRASTERINTERFACE_H
 
-#include "qgis_core.h"
-#include "qgis_sip.h"
 #include <limits>
 
-#include <QCoreApplication> // for tr()
-#include <QImage>
-
-#include "qgsfeedback.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsfeedback.h"
+#include "qgsrasterbandstats.h"
 #include "qgsrasterblock.h"
 #include "qgsrasterhistogram.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
-#include "qgsrasterbandstats.h"
+
+#include <QCoreApplication>
+#include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -209,7 +212,7 @@ class CORE_EXPORT QgsRasterInterface
     //! Clone itself, create deep copy
     virtual QgsRasterInterface *clone() const = 0 SIP_FACTORY;
 
-    // TODO QGIS 4.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
+    // TODO QGIS 5.0 -- rename to interfaceCapabilities, to avoid confusion with QgsRasterDataProvider::providerCapabilities
     // (which inherits this class)
 
     /**
@@ -220,7 +223,7 @@ class CORE_EXPORT QgsRasterInterface
     /**
      * Returns the raster interface capabilities in friendly format.
      *
-     * \deprecated QGIS 3.40. Will be removed in QGIS 4.0.
+     * \deprecated QGIS 3.40. Will be removed in QGIS 5.0.
      */
     Q_DECL_DEPRECATED QString capabilitiesString() const SIP_DEPRECATED;
 
@@ -308,7 +311,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
     {
-      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+      QgsDebugMsgLevel( u"Entered"_s, 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 
@@ -319,7 +322,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterInterface *sourceInput()
     {
-      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+      QgsDebugMsgLevel( u"Entered"_s, 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 

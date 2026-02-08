@@ -11,15 +11,20 @@
  ***************************************************************************/
 
 #include "qgsdecorationscalebardialog.h"
-#include "moc_qgsdecorationscalebardialog.cpp"
+
 #include "qgsdecorationscalebar.h"
-#include "qgslogger.h"
-#include "qgshelp.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslogger.h"
 
 #include <QColorDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgsdecorationscalebardialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, Qgis::DistanceUnit units, QWidget *parent )
   : QDialog( parent )
@@ -51,7 +56,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
       spnSize->setSuffix( tr( " degrees" ) );
       break;
     default:
-      QgsDebugError( QStringLiteral( "Error: not picked up map units - actual value = %1" ).arg( qgsEnumValueToKey( units ) ) );
+      QgsDebugError( u"Error: not picked up map units - actual value = %1"_s.arg( qgsEnumValueToKey( units ) ) );
   }
   spnSize->setValue( mDeco.mPreferredSize );
 
@@ -90,12 +95,12 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setContext( u"gui"_s );
   pbnChangeColor->setColorDialogTitle( tr( "Select Scale Bar Fill Color" ) );
 
   pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
-  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setContext( u"gui"_s );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select Scale Bar Outline Color" ) );
 
   mButtonFontStyle->setMode( QgsFontButton::ModeTextRenderer );
@@ -104,7 +109,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
 void QgsDecorationScaleBarDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#scalebar-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#scalebar-decoration"_s );
 }
 
 void QgsDecorationScaleBarDialog::apply()

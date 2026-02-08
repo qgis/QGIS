@@ -20,9 +20,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgslayertreegroup.h"
 #include "qgslayertree.h"
-
+#include "qgslayertreegroup.h"
 
 /**
  * \ingroup core

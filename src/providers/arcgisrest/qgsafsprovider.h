@@ -19,17 +19,21 @@
 #define QGSAFSPROVIDER_H
 
 #include <memory>
-#include "qgsvectordataprovider.h"
+
+#include "geometry/qgswkbtypes.h"
 #include "qgsafsshareddata.h"
 #include "qgscoordinatereferencesystem.h"
-#include "geometry/qgswkbtypes.h"
 #include "qgsfields.h"
+#include "qgshttpheaders.h"
 #include "qgslayermetadata.h"
+#include "qgsprovidermetadata.h"
 #include "qgssettings.h"
 #include "qgssettingsentryimpl.h"
+#include "qgsvectordataprovider.h"
 
-#include "qgsprovidermetadata.h"
-#include "qgshttpheaders.h"
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \brief A provider reading features from a ArcGIS Feature Service
@@ -39,20 +43,21 @@ class QgsAfsProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-    static const inline QString AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
-    static const inline QString AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
+    static const inline QString AFS_PROVIDER_KEY = u"arcgisfeatureserver"_s;
+    static const inline QString AFS_PROVIDER_DESCRIPTION = u"ArcGIS Feature Service data provider"_s;
 
     QgsAfsProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     /* Inherited from QgsVectorDataProvider */
     QgsAbstractFeatureSource *featureSource() const override;
-    QString storageType() const override { return QStringLiteral( "ArcGIS Feature Service" ); }
+    QString storageType() const override { return u"ArcGIS Feature Service"_s; }
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
     Qgis::WkbType wkbType() const override;
     long long featureCount() const override;
     QgsFields fields() const override;
     QgsLayerMetadata layerMetadata() const override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attrMap ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometryMap ) override;

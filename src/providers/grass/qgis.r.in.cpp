@@ -15,10 +15,11 @@
 
 extern "C"
 {
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #ifdef WIN32
 #include <fcntl.h>
 #include <io.h>
@@ -84,7 +85,10 @@ int main( int argc, char **argv )
   QDataStream stdinStream( &stdinFile );
 
   QFile stdoutFile;
-  stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered );
+  if ( !stdoutFile.open( stdout, QIODevice::WriteOnly | QIODevice::Unbuffered ) )
+  {
+    G_fatal_error( "Could not open stdout for write" );
+  }
   QDataStream stdoutStream( &stdoutFile );
 
   qint32 proj, zone;

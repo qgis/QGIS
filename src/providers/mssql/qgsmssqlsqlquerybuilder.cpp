@@ -15,14 +15,19 @@ email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 #include "qgsmssqlsqlquerybuilder.h"
+
 #include "qgsmssqlutils.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsMsSqlSqlQueryBuilder::createLimitQueryForTable( const QString &schema, const QString &name, int limit ) const
 {
   if ( schema.isEmpty() )
-    return QStringLiteral( "SELECT TOP %1 * FROM %2" ).arg( limit ).arg( QgsMssqlUtils::quotedIdentifier( name ) );
+    return u"SELECT TOP %1 * FROM %2"_s.arg( limit ).arg( QgsMssqlUtils::quotedIdentifier( name ) );
   else
-    return QStringLiteral( "SELECT TOP %1 * FROM %2.%3" ).arg( limit ).arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( name ) );
+    return u"SELECT TOP %1 * FROM %2.%3"_s.arg( limit ).arg( QgsMssqlUtils::quotedIdentifier( schema ), QgsMssqlUtils::quotedIdentifier( name ) );
 }
 
 QString QgsMsSqlSqlQueryBuilder::quoteIdentifier( const QString &identifier ) const

@@ -14,13 +14,16 @@
  ***************************************************************************/
 
 
+#include "editorwidgets/core/qgseditorwidgetwrapper.h"
+#include "editorwidgets/qgskeyvaluewidgetfactory.h"
+#include "qgsapplication.h"
+#include "qgskeyvaluewidget.h"
 #include "qgstest.h"
-#include <QSignalSpy>
 
-#include <editorwidgets/qgskeyvaluewidgetfactory.h>
-#include <qgskeyvaluewidget.h>
-#include <editorwidgets/core/qgseditorwidgetwrapper.h>
-#include <qgsapplication.h>
+#include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsKeyValueWidget : public QObject
 {
@@ -40,7 +43,7 @@ class TestQgsKeyValueWidget : public QObject
 
     void testUpdate()
     {
-      const QgsKeyValueWidgetFactory factory( QStringLiteral( "testKeyValue" ) );
+      const QgsKeyValueWidgetFactory factory( u"testKeyValue"_s );
       QgsEditorWidgetWrapper *wrapper = factory.create( nullptr, 0, nullptr, nullptr );
       QVERIFY( wrapper );
       const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
@@ -49,8 +52,8 @@ class TestQgsKeyValueWidget : public QObject
       QVERIFY( widget );
 
       QVariantMap initial;
-      initial[QStringLiteral( "1" )] = "one";
-      initial[QStringLiteral( "2" )] = "two";
+      initial[u"1"_s] = "one";
+      initial[u"2"_s] = "two";
       wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
@@ -63,7 +66,7 @@ class TestQgsKeyValueWidget : public QObject
       QCOMPARE( spy.count(), 1 );
 
       QVariantMap expected = initial;
-      expected[QStringLiteral( "1" )] = "hello";
+      expected[u"1"_s] = "hello";
       const QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
       QCOMPARE( int( static_cast<QMetaType::Type>( eventValue.userType() ) ), int( QMetaType::Type::QVariantMap ) );
       QCOMPARE( eventValue.toMap(), expected );

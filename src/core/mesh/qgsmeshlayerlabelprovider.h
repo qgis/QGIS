@@ -22,8 +22,8 @@
 
 #include "qgis_core.h"
 #include "qgslabelingengine.h"
-#include "qgsrenderer.h"
 #include "qgspallabeling.h"
+#include "qgsrenderer.h"
 
 class QgsMeshLayer;
 

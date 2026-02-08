@@ -14,10 +14,14 @@
  ***************************************************************************/
 
 #include "qgssimplifymethod.h"
-#include "qgslogger.h"
+
 #include "qgsgeometrysimplifier.h"
+#include "qgslogger.h"
 #include "qgsmaptopixelgeometrysimplifier.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsSimplifyMethod::setMethodType( MethodType methodType )
 {
@@ -50,7 +54,7 @@ QgsAbstractGeometrySimplifier *QgsSimplifyMethod::createGeometrySimplifier( cons
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Simplification method type (%1) is not recognised" ).arg( methodType ) );
+    QgsDebugError( u"Simplification method type (%1) is not recognised"_s.arg( methodType ) );
     return nullptr;
   }
 }

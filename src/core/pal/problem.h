@@ -33,13 +33,15 @@
 #define SIP_NO_FILE
 
 
-#include "qgis_core.h"
 #include <list>
-#include <QList>
-#include "palrtree.h"
-#include "qgsrendercontext.h"
 #include <memory>
 #include <vector>
+
+#include "palrtree.h"
+#include "qgis_core.h"
+#include "qgsrendercontext.h"
+
+#include <QList>
 
 namespace pal
 {

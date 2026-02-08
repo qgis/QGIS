@@ -15,15 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofilerenderer.h"
-#include "moc_qgsprofilerenderer.cpp"
-#include "qgsabstractprofilesource.h"
+
 #include "qgsabstractprofilegenerator.h"
+#include "qgsabstractprofilesource.h"
 #include "qgscurve.h"
-#include "qgsprofilesnapping.h"
 #include "qgslinesymbollayer.h"
+#include "qgsprofilesnapping.h"
 
 #include <QtConcurrentMap>
-#include <QtConcurrentRun>
+
+#include "moc_qgsprofilerenderer.cpp"
 
 QgsProfilePlotRenderer::QgsProfilePlotRenderer( const QList< QgsAbstractProfileSource * > &sources,
     const QgsProfileRequest &request )
@@ -246,7 +247,7 @@ bool QgsProfilePlotRenderer::replaceSourceInternal( QgsAbstractProfileSource *so
     {
       job->mutex.lock();
       res = true;
-      if ( clearPreviousResults )
+      if ( clearPreviousResults || job->generator->type() != generator->type() )
       {
         job->results.reset();
         job->complete = false;

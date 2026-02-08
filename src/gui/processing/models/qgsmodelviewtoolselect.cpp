@@ -14,25 +14,29 @@
  ***************************************************************************/
 
 #include "qgsmodelviewtoolselect.h"
-#include "moc_qgsmodelviewtoolselect.cpp"
-#include "qgsmodelviewmouseevent.h"
-#include "qgsmodelgraphicsview.h"
-#include "qgsprocessingmodelalgorithm.h"
-#include "qgsmodelgraphicsscene.h"
+
+#include <memory>
+
 #include "qgsmodelcomponentgraphicitem.h"
-#include "qgsmodelviewmousehandles.h"
 #include "qgsmodelgraphicitem.h"
+#include "qgsmodelgraphicsscene.h"
+#include "qgsmodelgraphicsview.h"
+#include "qgsmodelviewmouseevent.h"
+#include "qgsmodelviewmousehandles.h"
+#include "qgsprocessingmodelalgorithm.h"
+
+#include "moc_qgsmodelviewtoolselect.cpp"
 
 QgsModelViewToolSelect::QgsModelViewToolSelect( QgsModelGraphicsView *view )
   : QgsModelViewTool( view, tr( "Select" ) )
 {
   setCursor( Qt::ArrowCursor );
 
-  mRubberBand.reset( new QgsModelViewRectangularRubberBand( view ) );
+  mRubberBand = std::make_unique<QgsModelViewRectangularRubberBand>( view );
   mRubberBand->setBrush( QBrush( QColor( 224, 178, 76, 63 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
 
-  mLinkTool.reset( new QgsModelViewToolLink( view ) );
+  mLinkTool = std::make_unique<QgsModelViewToolLink>( view );
 }
 
 QgsModelViewToolSelect::~QgsModelViewToolSelect()
