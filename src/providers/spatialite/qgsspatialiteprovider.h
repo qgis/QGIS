@@ -131,7 +131,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
      */
     // XXX For now we have disabled native transforms in the SpatiaLite
     //   (following the PostgreSQL provider example)
-    bool supportsNativeTransform()
+    bool supportsNativeTransform() const
     {
       return false;
     }
@@ -333,8 +333,6 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     //! SpatiaLite minor version
     int mSpatialiteVersionMinor = 0;
 
-    //! Internal transaction handling (for addFeatures etc.)
-    int mSavepointId;
     static QAtomicInt sSavepointId;
 
     /**

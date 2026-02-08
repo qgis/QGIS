@@ -56,7 +56,7 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    Qgis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
     QList<int> mIndices;
 };
 

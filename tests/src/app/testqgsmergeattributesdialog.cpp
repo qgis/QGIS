@@ -54,7 +54,7 @@ class TestQgsMergeattributesDialog : public QgsTest
       QgsVectorLayer ml( "Polygon", "test", "memory" );
       QVERIFY( ml.isValid() );
       QTemporaryFile tmpFile( QDir::tempPath() + "/TestQgsMergeattributesDialog" );
-      tmpFile.open();
+      QVERIFY( tmpFile.open() );
       const QString fileName( tmpFile.fileName() );
       options.driverName = "GPKG";
       options.layerName = "test";

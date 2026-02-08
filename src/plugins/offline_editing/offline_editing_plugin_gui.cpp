@@ -129,17 +129,17 @@ QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
   settings.setValue( QStringLiteral( "OfflineEditing/offline_data_path" ), mOfflineDataPath, QgsSettings::Section::Plugins );
 }
 
-QString QgsOfflineEditingPluginGui::offlineDataPath()
+QString QgsOfflineEditingPluginGui::offlineDataPath() const
 {
   return mOfflineDataPath;
 }
 
-QString QgsOfflineEditingPluginGui::offlineDbFile()
+QString QgsOfflineEditingPluginGui::offlineDbFile() const
 {
   return mOfflineDbFile;
 }
 
-QStringList QgsOfflineEditingPluginGui::selectedLayerIds()
+QStringList QgsOfflineEditingPluginGui::selectedLayerIds() const
 {
   return mSelectedLayerIds;
 }

@@ -74,6 +74,7 @@
 #include <QWindow>
 #include <QActionGroup>
 
+#include "qgsmaplayerutils.h"
 #include "qgsscreenhelper.h"
 #include "qgssettingsregistrycore.h"
 #include "qgsnetworkaccessmanager.h"
@@ -132,6 +133,8 @@
 
 #include "layers/qgsapplayerhandling.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgselevationprofilemanager.h"
+#include "qgselevationprofile.h"
 
 #include "canvas/qgsappcanvasfiltering.h"
 #include "canvas/qgscanvasrefreshblocker.h"
@@ -1563,7 +1566,7 @@ QgisApp::QgisApp( QSplashScreen *splash, AppOptions options, const QString &root
 #ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
+  connect( mWindowAction, &QAction::triggered, this, &QgisApp::activate );
 
   // add this window to Window menu
   addWindow( mWindowAction );
@@ -2173,8 +2176,9 @@ QgisApp::~QgisApp()
   qDeleteAll( mCustomDropHandlers );
   qDeleteAll( mCustomLayoutDropHandlers );
 
-  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
-  for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+  // don't iterate over mElevationProfileWidgets -- it will get modified during the cleanup!
+  const QSet<QgsElevationProfileWidget * > profileWidgets = mElevationProfileWidgets;
+  for ( QgsElevationProfileWidget *widget : profileWidgets )
   {
     widget->cancelJobs();
     delete widget;
@@ -2208,6 +2212,8 @@ QgisApp::~QgisApp()
   mLayerTreeView = nullptr;
   delete mMessageButton;
   mMessageButton = nullptr;
+  delete mAboutDialog;
+  mAboutDialog = nullptr;
 
   QgsGui::nativePlatformInterface()->cleanup();
 
@@ -3096,15 +3102,15 @@ void QgisApp::createActions()
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
   mActionWindowMinimize->setShortcut( tr( "Ctrl+M", "Minimize Window" ) );
   mActionWindowMinimize->setStatusTip( tr( "Minimizes the active window to the dock" ) );
-  connect( mActionWindowMinimize, SIGNAL( triggered() ), this, SLOT( showActiveWindowMinimized() ) );
+  connect( mActionWindowMinimize, &QAction::triggered, this, &QgisApp::showActiveWindowMinimized );
 
   mActionWindowZoom = new QAction( tr( "Zoom" ), this );
   mActionWindowZoom->setStatusTip( tr( "Toggles between a predefined size and the window size set by the user" ) );
-  connect( mActionWindowZoom, SIGNAL( triggered() ), this, SLOT( toggleActiveWindowMaximized() ) );
+  connect( mActionWindowZoom, &QAction::triggered, this, &QgisApp::toggleActiveWindowMaximized );
 
   mActionWindowAllToFront = new QAction( tr( "Bring All to Front" ), this );
   mActionWindowAllToFront->setStatusTip( tr( "Bring forward all open windows" ) );
-  connect( mActionWindowAllToFront, SIGNAL( triggered() ), this, SLOT( bringAllToFront() ) );
+  connect( mActionWindowAllToFront, &QAction::triggered, this, &QgisApp::bringAllToFront );
 
   // list of open windows
   mWindowActions = new QActionGroup( this );
@@ -4483,6 +4489,7 @@ void QgisApp::setupConnections()
   connect( mUndoWidget, &QgsUndoWidget::undoStackChanged, this, &QgisApp::updateUndoActions );
 
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgisApp::layoutsMenuAboutToShow );
+  connect( mMenuElevationProfiles, &QMenu::aboutToShow, this, &QgisApp::elevationProfilesMenuAboutToShow );
 
   connect( m3DMapViewsMenu, &QMenu::aboutToShow, this, &QgisApp::views3DMenuAboutToShow );
 }
@@ -5445,15 +5452,15 @@ void QgisApp::sponsors()
 
 void QgisApp::about()
 {
-  static QgsAbout *sAbt = nullptr;
-  if ( !sAbt )
+  if ( !mAboutDialog )
   {
-    sAbt = new QgsAbout( this );
+    mAboutDialog = new QgsAbout( this );
   }
-  sAbt->setVersion( QgisApp::getVersionString() );
-  sAbt->show();
-  sAbt->raise();
-  sAbt->activateWindow();
+
+  mAboutDialog->setVersion( QgisApp::getVersionString() );
+  mAboutDialog->show();
+  mAboutDialog->raise();
+  mAboutDialog->activateWindow();
 }
 
 QString QgisApp::getVersionString()
@@ -5666,16 +5673,19 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri, const QString
     }
   }
 
-  // Use the last used image format
-  QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), "image/png" ).toString();
-  for ( const QString &fmt : supportedFormats )
+  // Use the last used image format if not specified in the uri
+  if ( !uri.contains( QStringLiteral( "format=" ) ) )
   {
-    if ( fmt == lastImageEncoding )
+    const QString lastImageEncoding = QgsSettings().value( QStringLiteral( "/qgis/lastWmsImageEncoding" ), QStringLiteral( "image/png" ) ).toString();
+    for ( const QString &fmt : supportedFormats )
     {
-      const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
-      newuri.replace( sFormatRegEx, "format=" + fmt );
-      QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
-      break;
+      if ( fmt == lastImageEncoding )
+      {
+        const thread_local QRegularExpression sFormatRegEx( QStringLiteral( "format=[^&]+" ) );
+        newuri.replace( sFormatRegEx, "format=" + fmt );
+        QgsDebugMsgLevel( QStringLiteral( "Changing layer format to %1, new uri: %2" ).arg( fmt, uri ), 2 );
+        break;
+      }
     }
   }
   return newuri;
@@ -8190,22 +8200,31 @@ void QgisApp::makeMemoryLayerPermanent( QgsVectorLayer *layer )
 
       QgsMessageBarItem *barItem = new QgsMessageBarItem( tr( "Layer Saved" ), tr( "Successfully saved scratch layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( newFilename ).toString(), QDir::toNativeSeparators( newFilename ) ), Qgis::MessageLevel::Success, 0 );
 
-      if ( ( !newLayerName.isEmpty() ) )
+      QString layerNameForRename;
+
+      if ( newLayerName.isEmpty() )
       {
-        if ( newLayerName != vl->name() )
-        {
-          QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
-          barItem->setWidget( button );
+        QFileInfo fileInfoSource( source );
+        layerNameForRename = fileInfoSource.baseName();
+      }
+      else
+      {
+        layerNameForRename = newLayerName;
+      }
 
-          connect( vl, &QgsVectorLayer::willBeDeleted, this, [button]() {
-            button->setEnabled( false );
-          } );
+      if ( layerNameForRename != vl->name() )
+      {
+        QPushButton *button = new QPushButton( tr( "Also rename layer in layers panel" ), this );
+        barItem->setWidget( button );
 
-          connect( button, &QPushButton::clicked, this, [button, vl, newLayerName]() {
-            vl->setName( newLayerName );
-            button->setEnabled( false );
-          } );
-        }
+        connect( vl, &QgsVectorLayer::willBeDeleted, barItem, [button]() {
+          button->setEnabled( false );
+        } );
+
+        connect( button, &QPushButton::clicked, vl, [button, vl, layerNameForRename]() {
+          vl->setName( layerNameForRename );
+          button->setEnabled( false );
+        } );
       }
 
       this->visibleMessageBar()->pushItem( barItem );
@@ -9301,6 +9320,41 @@ void QgisApp::populateLayoutsMenu( QMenu *menu )
     std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
   menu->addActions( acts );
+}
+
+void QgisApp::elevationProfilesMenuAboutToShow()
+{
+  populateElevationProfilesMenu( mMenuElevationProfiles );
+}
+
+void QgisApp::populateElevationProfilesMenu( QMenu *menu )
+{
+  menu->clear();
+  QList<QAction *> actions;
+  const QList<QgsElevationProfile *> objects = QgsProject::instance()->elevationProfileManager()->objects();
+  actions.reserve( objects.size() );
+  for ( QgsElevationProfile *object : objects )
+  {
+    QAction *a = new QAction( object->name(), menu );
+    QPointer< QgsElevationProfile > profilePointer( object );
+    connect( a, &QAction::triggered, this, [this, profilePointer = std::move( profilePointer )] {
+      if ( profilePointer )
+        openElevationProfile( profilePointer.data() );
+    } );
+    actions << a;
+  }
+  if ( actions.size() > 1 )
+  {
+    // sort actions by text
+    std::sort( actions.begin(), actions.end(), cmpByText_ );
+  }
+  if ( !actions.isEmpty() )
+  {
+    menu->addActions( actions );
+    menu->addSeparator();
+  }
+  menu->addAction( mActionElevationProfile );
+  menu->addAction( mActionManageElevationProfiles );
 }
 
 void QgisApp::populate3DMapviewsMenu( QMenu *menu )
@@ -10433,9 +10487,11 @@ void QgisApp::pasteStyle( QgsMapLayer *destinationLayer, QgsMapLayer::StyleCateg
         return;
       }
 
-      bool isVectorStyle = doc.elementsByTagName( QStringLiteral( "pipe" ) ).isEmpty();
-      if ( ( selectionLayer->type() == Qgis::LayerType::Raster && isVectorStyle ) || ( selectionLayer->type() == Qgis::LayerType::Vector && !isVectorStyle ) )
+      const QDomElement rootElement { doc.firstChildElement( QStringLiteral( "qgis" ) ) };
+      const Qgis::LayerType styleOriginType { qgsEnumKeyToValue( rootElement.attribute( QStringLiteral( "layerType" ) ), Qgis::LayerType::Vector ) };
+      if ( selectionLayer->type() != styleOriginType )
       {
+        visibleMessageBar()->pushMessage( tr( "Cannot paste style to layer '%1' because the type doesn't match (%2 → %3)" ).arg( selectionLayer->name(), QgsMapLayerUtils::layerTypeToString( styleOriginType ), QgsMapLayerUtils::layerTypeToString( selectionLayer->type() ) ), errorMsg, Qgis::MessageLevel::Warning );
         return;
       }
 
@@ -13209,9 +13265,7 @@ void QgisApp::initLayouts()
 
   QgsLayoutElevationProfileWidget::sBuildCopyMenuFunction = [this]( QgsLayoutElevationProfileWidget *layoutWidget, QMenu *menu ) {
     menu->clear();
-    const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
-
-    if ( elevationProfileWidgets.empty() )
+    if ( mElevationProfileWidgets.empty() )
     {
       QAction *action = new QAction( tr( "No Elevation Profiles Found" ), menu );
       action->setEnabled( false );
@@ -13219,9 +13273,9 @@ void QgisApp::initLayouts()
     }
     else
     {
-      for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+      for ( QgsElevationProfileWidget *widget : mElevationProfileWidgets )
       {
-        QAction *action = new QAction( tr( "Copy From %1" ).arg( widget->canvasName() ), menu );
+        QAction *action = new QAction( tr( "Copy From %1" ).arg( widget->profile()->name() ), menu );
         connect( action, &QAction::triggered, widget, [layoutWidget, widget] {
           layoutWidget->copySettingsFromProfileCanvas( widget->profileCanvas() );
         } );
@@ -13261,40 +13315,39 @@ Qgs3DMapCanvasWidget *QgisApp::createNew3DMapCanvasDock( const QString &name, bo
 
 QgsElevationProfileWidget *QgisApp::createNewElevationProfile()
 {
-  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
+  QgsElevationProfile *profile = new QgsElevationProfile( QgsProject::instance() );
+  QgsElevationProfileWidget::applyDefaultSettingsToProfile( profile );
 
-  // find first available unused title
-  QString title;
-  int counter = 1;
-  while ( true )
+  profile->setName( QgsProject::instance()->elevationProfileManager()->generateUniqueTitle() );
+  if ( QgsProject::instance()->elevationProfileManager()->addProfile( profile ) )
   {
-    if ( counter == 1 )
-    {
-      title = tr( "Elevation Profile" );
-    }
-    else
-    {
-      title = tr( "Elevation Profile (%1)" ).arg( counter );
-    }
+    return openElevationProfile( profile );
+  }
+  return nullptr;
+}
 
-    bool canvasExists = false;
-    for ( QgsElevationProfileWidget *existingWidget : elevationProfileWidgets )
+QgsElevationProfileWidget *QgisApp::openElevationProfile( QgsElevationProfile *profile )
+{
+  if ( !profile )
+    return nullptr;
+
+  for ( QgsElevationProfileWidget *existingWidget : mElevationProfileWidgets )
+  {
+    if ( existingWidget->profile() == profile )
     {
-      if ( existingWidget->canvasName() == title )
-      {
-        canvasExists = true;
-        break;
-      }
+      existingWidget->dockableWidgetHelper()->setUserVisible( true );
+      return existingWidget;
     }
-
-    if ( !canvasExists )
-      break;
-
-    counter++;
   }
 
-  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( title );
-  widget->setMainCanvas( mMapCanvas );
+  QgsElevationProfileWidget *widget = new QgsElevationProfileWidget( profile, mMapCanvas );
+
+  connect( widget, &QgsElevationProfileWidget::destroyed, this, [this, widget] {
+    mElevationProfileWidgets.remove( widget );
+  } );
+
+  mElevationProfileWidgets.insert( widget );
+
   return widget;
 }
 
@@ -13782,8 +13835,9 @@ void QgisApp::closeProject()
   mLegendExpressionFilterButton->setChecked( false );
   mFilterLegendByMapContentAction->setChecked( false );
 
-  const QList<QgsElevationProfileWidget *> elevationProfileWidgets = findChildren<QgsElevationProfileWidget *>();
-  for ( QgsElevationProfileWidget *widget : elevationProfileWidgets )
+  // don't iterate over mElevationProfileWidgets -- it will get modified during the cleanup!
+  const QSet<QgsElevationProfileWidget * > profileWidgets = mElevationProfileWidgets;
+  for ( QgsElevationProfileWidget *widget : profileWidgets )
   {
     delete widget;
   }

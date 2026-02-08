@@ -119,12 +119,12 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
     QgsFeatureRenderer *mRenderer = nullptr;
     std::vector< std::unique_ptr< QgsFeatureRenderer> > mRenderers;
 
-    bool mDrawVertexMarkers;
-    bool mVertexMarkerOnlyForSelection;
+    bool mDrawVertexMarkers = false;
+    bool mVertexMarkerOnlyForSelection = false;
     Qgis::VertexMarkerType mVertexMarkerStyle = Qgis::VertexMarkerType::SemiTransparentCircle;
     double mVertexMarkerSize = 2.0;
 
-    Qgis::GeometryType mGeometryType;
+    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
 
     QSet<QString> mAttrNames;
 
@@ -140,10 +140,10 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
      */
     QgsVectorLayerDiagramProvider *mDiagramProvider = nullptr;
 
-    QPainter::CompositionMode mFeatureBlendMode;
+    QPainter::CompositionMode mFeatureBlendMode = QPainter::CompositionMode::CompositionMode_SourceOver;
 
     QgsVectorSimplifyMethod mSimplifyMethod;
-    bool mSimplifyGeometry;
+    bool mSimplifyGeometry = true;
 
     QList< QgsMapClippingRegion > mClippingRegions;
     QgsGeometry mClipFilterGeom;

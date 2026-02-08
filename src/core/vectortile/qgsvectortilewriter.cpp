@@ -280,7 +280,7 @@ bool QgsVectorTileWriter::writeTileFileXYZ( const QString &sourcePath, QgsTileXY
 }
 
 
-QString QgsVectorTileWriter::mbtilesJsonSchema()
+QString QgsVectorTileWriter::mbtilesJsonSchema() const
 {
   QVariantList arrayLayers;
   for ( const Layer &layer : std::as_const( mLayers ) )

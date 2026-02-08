@@ -132,7 +132,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     /**
      * Determine if the options list is in icon only mode
      */
-    bool iconOnly() { return mIconOnly; }
+    bool iconOnly() const { return mIconOnly; }
 
     /**
      * Sets the dialog \a page (by object name) to show.

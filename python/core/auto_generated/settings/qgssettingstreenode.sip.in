@@ -195,7 +195,7 @@ dynamically named key.
 #include "qgssettingstreenode.h"
 %End
   public:
-    virtual ~QgsSettingsTreeNamedListNode();
+    ~QgsSettingsTreeNamedListNode();
 
     QStringList items( const QStringList &parentsNamedItems = QStringList() ) const throw( QgsSettingsException );
 %Docstring

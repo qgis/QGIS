@@ -97,6 +97,7 @@ set(QGIS_CORE_SRCS
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
+  symbology/qgsblanksegmentutils.cpp
   symbology/qgscategorizedsymbolrenderer.cpp
   symbology/qgscolorbrewerpalette.cpp
   symbology/qgscombinedstylemodel.cpp
@@ -2019,6 +2020,8 @@ set(QGIS_CORE_HDRS
 
   symbology/qgs25drenderer.h
   symbology/qgsarrowsymbollayer.h
+
+  symbology/qgsblanksegmentutils.h
   symbology/qgscategorizedsymbolrenderer.h
   symbology/qgscolorbrewerpalette.h
   symbology/qgscombinedstylemodel.h
@@ -2413,6 +2416,10 @@ if(WITH_INTERNAL_SPATIALINDEX)
   check_function_exists(memset HAVE_MEMSET)
   check_function_exists(memcpy HAVE_MEMCPY)
   check_function_exists(bcopy HAVE_BCOPY)
+
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+    set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_OPTIONS "-Wno-type-limits;-Wno-extra;-Wno-overloaded-virtual")
+  endif()
 
   if(HAVE_SRAND48)
     set_source_files_properties(${SIDX_SRCS} PROPERTIES COMPILE_FLAGS -DHAVE_SRAND48=1)

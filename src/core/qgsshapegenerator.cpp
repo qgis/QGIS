@@ -160,13 +160,13 @@ QPainterPath QgsShapeGenerator::createBalloon( const QgsPointXY &origin, const Q
         path.arcTo( std::min( p1.x(), currentSegment.p1().x() ),
                     std::min( p1.y(), currentSegment.p1().y() ),
                     cornerRadius, cornerRadius,
-                    i == 0 ? -180 : ( i == 1 ? -90 : ( i == 2 ? 0 : 90 ) ),
+                    i == 1 ? -90 : ( i == 2 ? 0 : 90 ),
                     90 );
       else
         path.arcTo( std::min( p1.x(), currentSegment.p1().x() ),
                     std::min( p1.y(), currentSegment.p1().y() ),
                     cornerRadius, cornerRadius,
-                    i == 0 ? 180 : ( i == 1 ? 90 : ( i == 2 ? 0 : -90 ) ),
+                    i == 1 ? 90 : ( i == 2 ? 0 : -90 ),
                     -90 );
     }
 

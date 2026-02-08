@@ -48,7 +48,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
 
     int field() const { return mField; }
     bool isValid() const { return mValid; }
-    QgsGrassVectorMap *map() { return mMap; }
+    QgsGrassVectorMap *map() const { return mMap; }
 
     //! Category index index
     int cidxFieldIndex();
@@ -61,17 +61,17 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
      * Does not reflect add/delete column.
      * Original fields must be returned by provider fields()
     */
-    QgsFields &fields() { return mFields; }
+    const QgsFields &fields() const { return mFields; }
 
     /**
      * Current fields, as modified during editing, it contains cat field, without topo field.
      * This fields are used by layers which are not editied to reflect current state of editing.
     */
-    QgsFields &tableFields() { return mTableFields; }
+    const QgsFields &tableFields() const { return mTableFields; }
 
     static QStringList fieldNames( const QgsFields &fields );
 
-    QMap<int, QList<QVariant>> &attributes() { return mAttributes; }
+    const QMap<int, QList<QVariant>> &attributes() const { return mAttributes; }
 
     /**
      * Gets attribute for index corresponding to current fields(),
@@ -79,12 +79,12 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     */
     QVariant attribute( int cat, int index );
 
-    bool hasTable() { return mHasTable; }
-    int keyColumn() { return mKeyColumn; }
-    QString keyColumnName() { return mFieldInfo ? mFieldInfo->key : QString(); }
-    QList<QPair<double, double>> minMax() { return mMinMax; }
+    bool hasTable() const { return mHasTable; }
+    int keyColumn() const { return mKeyColumn; }
+    QString keyColumnName() const { return mFieldInfo ? mFieldInfo->key : QString(); }
+    QList<QPair<double, double>> minMax() const { return mMinMax; }
 
-    int userCount() { return mUsers; }
+    int userCount() const { return mUsers; }
     void addUser();
     void removeUser();
 

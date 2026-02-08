@@ -255,7 +255,7 @@ QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
   return mExpressionContextScope;
 }
 
-QList<QgsAction> QgsActionMenu::menuActions()
+QList<QgsAction> QgsActionMenu::menuActions() const
 {
   return mActions;
 }

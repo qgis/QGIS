@@ -907,6 +907,21 @@ overridden with these.
 .. versionadded:: 3.10.3
 %End
 
+    std::string toJsonString( bool multiline = false, int indentationWidth = 4, const QString &schema = QString() ) const;
+%Docstring
+Returns a JSON string representation of this CRS.
+
+The returned string will be a PROJJSON string representation of the CRS.
+
+If ``multiline`` is ``True`` then a formatted multiline json string will
+be returned, using the specified ``indentationWidth``.
+
+The ``schema`` argument can be used to set a URL to PROJJSON schema.
+This can be set to empty string to disable it.
+
+.. versionadded:: 4.0
+%End
+
     Qgis::CrsType type() const;
 %Docstring
 Returns the type of the CRS.

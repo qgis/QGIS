@@ -91,6 +91,7 @@ class TestQgsSfcgal : public QgsTest
     void extrude();
     void simplify();
     void approximateMedialAxis();
+    void primitiveCube();
 
   private:
     //! Must be called before each render test
@@ -104,6 +105,33 @@ class TestQgsSfcgal : public QgsTest
     void paintCurve( const QgsCurve *curve );
 
     std::unique_ptr<QgsSfcgalGeometry> openWktFile( const QString &wktFile );
+
+    inline bool qFuzzyCompare2( float f1, float f2, float epsilon = 0.000001 )
+    {
+      return std::abs( f1 - f2 ) < epsilon;
+    }
+
+    inline bool qFuzzyCompare2( const QMatrix4x4 &m1, const QMatrix4x4 &m2, float epsilon = 0.000001 )
+    {
+      const float *d1 = m1.data();
+      const float *d2 = m2.data();
+      return qFuzzyCompare2( d1[0 * 4 + 0], d2[0 * 4 + 0], epsilon ) && //
+             qFuzzyCompare2( d1[0 * 4 + 1], d2[0 * 4 + 1], epsilon ) && //
+             qFuzzyCompare2( d1[0 * 4 + 2], d2[0 * 4 + 2], epsilon ) && //
+             qFuzzyCompare2( d1[0 * 4 + 3], d2[0 * 4 + 3], epsilon ) && //
+             qFuzzyCompare2( d1[1 * 4 + 0], d2[1 * 4 + 0], epsilon ) && //
+             qFuzzyCompare2( d1[1 * 4 + 1], d2[1 * 4 + 1], epsilon ) && //
+             qFuzzyCompare2( d1[1 * 4 + 2], d2[1 * 4 + 2], epsilon ) && //
+             qFuzzyCompare2( d1[1 * 4 + 3], d2[1 * 4 + 3], epsilon ) && //
+             qFuzzyCompare2( d1[2 * 4 + 0], d2[2 * 4 + 0], epsilon ) && //
+             qFuzzyCompare2( d1[2 * 4 + 1], d2[2 * 4 + 1], epsilon ) && //
+             qFuzzyCompare2( d1[2 * 4 + 2], d2[2 * 4 + 2], epsilon ) && //
+             qFuzzyCompare2( d1[2 * 4 + 3], d2[2 * 4 + 3], epsilon ) && //
+             qFuzzyCompare2( d1[3 * 4 + 0], d2[3 * 4 + 0], epsilon ) && //
+             qFuzzyCompare2( d1[3 * 4 + 1], d2[3 * 4 + 1], epsilon ) && //
+             qFuzzyCompare2( d1[3 * 4 + 2], d2[3 * 4 + 2], epsilon ) && //
+             qFuzzyCompare2( d1[3 * 4 + 3], d2[3 * 4 + 3], epsilon );
+    }
 
     QgsPointXY mPoint1;
     QgsPointXY mPoint2;
@@ -400,7 +428,7 @@ void TestQgsSfcgal::isEqual()
   QVERIFY2( cloneGeomA, "QgsSfcgalGeometry::clone failure" );
   QCOMPARE( geomA.wkbType(), cloneGeomA->wkbType() );
 
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( { bool res = (geomA == *cloneGeomA.get()); Q_UNUSED(res); }, QgsNotSupportedException );
 #else
   QVERIFY2( geomA == *cloneGeomA.get(), "Should be equals" );
@@ -409,7 +437,7 @@ void TestQgsSfcgal::isEqual()
 
   // test with offset geometry
   QgsVector3D vector( 1.0, 1.0, 0 );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( geomA.translate( vector ), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> geomB( geomA.translate( vector ) );
@@ -426,7 +454,7 @@ void TestQgsSfcgal::boundary()
 {
   // 2D line
   auto sfcgalLine2D = std::make_unique<QgsSfcgalGeometry>( mpPolylineGeometryD );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalLine2D->boundary(), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> sfcgalLine2DBoundary( sfcgalLine2D->boundary() );
@@ -436,7 +464,7 @@ void TestQgsSfcgal::boundary()
 
   // 3D polygon
   auto sfcgalPolygon3D = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPolygon3D->boundary(), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> sfcgalPolygon3DBoundary( sfcgalPolygon3D->boundary() );
@@ -452,7 +480,7 @@ void TestQgsSfcgal::centroid()
   auto geomZB = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZB );
   auto geomZC = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZC );
 
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( geomZA->centroid(), QgsNotSupportedException );
   QVERIFY_EXCEPTION_THROWN( geomZB->centroid(), QgsNotSupportedException );
   QVERIFY_EXCEPTION_THROWN( geomZC->centroid(), QgsNotSupportedException );
@@ -473,7 +501,7 @@ void TestQgsSfcgal::dropZ()
   // PolygonZ
   auto sfcgalPolygonZ = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
   QCOMPARE( sfcgalPolygonZ->wkbType(), Qgis::WkbType::PolygonZ );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPolygonZ->dropZValue(), QgsNotSupportedException );
 #else
   QVERIFY( sfcgalPolygonZ->dropZValue() );
@@ -508,7 +536,7 @@ void TestQgsSfcgal::dropM()
   // PolygonZ
   auto sfcgalPolygonZ = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
   QCOMPARE( sfcgalPolygonZ->wkbType(), Qgis::WkbType::PolygonZ );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPolygonZ->dropMValue(), QgsNotSupportedException );
 #else
   QVERIFY( !sfcgalPolygonZ->dropMValue() );
@@ -542,7 +570,7 @@ void TestQgsSfcgal::addZValue()
   // 2D Point
   QgsSfcgalGeometry sfcgalPoint2D( "POINT (4 2)" );
   QCOMPARE( sfcgalPoint2D.wkbType(), Qgis::WkbType::Point );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint2D.addZValue(), QgsNotSupportedException );
 #else
   QVERIFY( sfcgalPoint2D.addZValue( 4 ) );
@@ -570,7 +598,7 @@ void TestQgsSfcgal::addMValue()
   // 2D Point
   QgsSfcgalGeometry sfcgalPoint2D( "POINT (4 2)" );
   QCOMPARE( sfcgalPoint2D.wkbType(), Qgis::WkbType::Point );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint2D.addMValue( 5 ), QgsNotSupportedException );
 #else
   QVERIFY( sfcgalPoint2D.addMValue( 5 ) );
@@ -598,7 +626,7 @@ void TestQgsSfcgal::swapXY()
   // 2D Point
   QgsSfcgalGeometry sfcgalPoint2D( "POINT (4 2)" );
   QCOMPARE( sfcgalPoint2D.wkbType(), Qgis::WkbType::Point );
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint2D.swapXy();, QgsNotSupportedException );
 #else
   sfcgalPoint2D.swapXy();
@@ -774,7 +802,7 @@ void TestQgsSfcgal::intersection3d()
     QVERIFY2( readGeom, "readGeom geometry is NULL." );
 
     // 4th: check coverage between actual and expected geometry
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
     QVERIFY2( readGeom->fuzzyEqual( *resultGeom, 0.1 ), "result geom does not match expected from file" );
 #endif
   }
@@ -957,7 +985,7 @@ void TestQgsSfcgal::buffer3DCheck()
     QVERIFY2( !isOK, "buffer3D geom matches expected from file, but should not!" );
 
     // isEquals passes with decimal dump
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
     isOK = QgsSfcgalEngine::isEqual( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), 0.001 );
     QVERIFY2( isOK, "buffer3D geom does not match expected from file" );
 #endif
@@ -995,7 +1023,7 @@ void TestQgsSfcgal::simplify()
   QVERIFY2( sfcgalLinestring2D.sfcgalGeometry() != nullptr, "Simplify - input geom is NULL." );
   QCOMPARE( sfcgalLinestring2D.wkbType(), Qgis::WkbType::LineString );
 
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalLinestring2D.simplify( 5, false ), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> simplifiedGeom( sfcgalLinestring2D.simplify( 5, false ) );
@@ -1020,6 +1048,112 @@ void TestQgsSfcgal::approximateMedialAxis()
   QString invalid_polygon_wkt( "POLYGON((0 0, 4 0, 4 4, 0 4, 0 0),(4 2, 5 2, 5 3, 4 3, 4 2))" );
   QgsSfcgalGeometry sfcgalPoint( invalid_polygon_wkt );
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint.approximateMedialAxis(), QgsSfcgalException );
+}
+
+void TestQgsSfcgal::primitiveCube()
+{
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+  std::unique_ptr<QgsSfcgalGeometry> cube = QgsSfcgalGeometry::createCube( 5 );
+  QCOMPARE( cube->wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
+  QCOMPARE( cube->geometryType(), "cube" );
+
+  // check clone
+  std::unique_ptr<QgsSfcgalGeometry> cube2 = cube->clone();
+  QVERIFY( *cube == *cube2 );
+
+  // check export as SFCGAL geometry
+  std::unique_ptr<QgsSfcgalGeometry> poly = cube->primitiveAsPolyhedralSurface();
+  QString expPolyWkt = "POLYHEDRALSURFACE Z (((0.0 0.0 0.0,0.0 5.0 0.0,5.0 5.0 0.0,5.0 0.0 0.0,0.0 0.0 0.0)),"
+                       "((0.0 0.0 5.0,5.0 0.0 5.0,5.0 5.0 5.0,0.0 5.0 5.0,0.0 0.0 5.0)),"
+                       "((0.0 0.0 0.0,5.0 0.0 0.0,5.0 0.0 5.0,0.0 0.0 5.0,0.0 0.0 0.0)),"
+                       "((0.0 5.0 0.0,0.0 5.0 5.0,5.0 5.0 5.0,5.0 5.0 0.0,0.0 5.0 0.0)),"
+                       "((5.0 0.0 0.0,5.0 5.0 0.0,5.0 5.0 5.0,5.0 0.0 5.0,5.0 0.0 0.0)),"
+                       "((0.0 0.0 0.0,0.0 0.0 5.0,0.0 5.0 5.0,0.0 5.0 0.0,0.0 0.0 0.0)))";
+  QCOMPARE( poly->asWkt( 1 ), expPolyWkt );
+
+  // check export as QgsAbstractGeometry
+  std::unique_ptr<QgsAbstractGeometry> qgsGeom = cube->asQgisGeometry();
+  QCOMPARE( qgsGeom->asWkt( 1 ), "PolyhedralSurface Z (((0 0 0, 0 5 0, 5 5 0, 5 0 0, 0 0 0)),"
+                                 "((0 0 5, 5 0 5, 5 5 5, 0 5 5, 0 0 5)),"
+                                 "((0 0 0, 5 0 0, 5 0 5, 0 0 5, 0 0 0)),"
+                                 "((0 5 0, 0 5 5, 5 5 5, 5 5 0, 0 5 0)),"
+                                 "((5 0 0, 5 5 0, 5 5 5, 5 0 5, 5 0 0)),"
+                                 "((0 0 0, 0 0 5, 0 5 5, 0 5 0, 0 0 0)))" );
+
+  // check compare
+  std::unique_ptr<QgsSfcgalGeometry> env = cube->envelope();
+  QVERIFY( *env != *cube );
+  QCOMPARE_NE( env->asWkt( 1 ), expPolyWkt ); // slight change in polygon order but...
+  QVERIFY( *env == *poly );                   // ...they are almost equal
+
+  // check translate
+  std::unique_ptr<QgsSfcgalGeometry> cubeT = cube->translate( { 1.0, 2.0, 3.0 } );
+  QCOMPARE( cubeT->primitiveTransform(), QMatrix4x4( 1.0, 0.0, 0.0, 1.0, //
+                                                     0.0, 1.0, 0.0, 2.0, //
+                                                     0.0, 0.0, 1.0, 3.0, //
+                                                     0.0, 0.0, 0.0, 1.0 ) );
+  QCOMPARE( cubeT->asWkt( 0 ), "POLYHEDRALSURFACE Z (((1 2 3,1 3 3,2 3 3,2 2 3,1 2 3)),"
+                               "((1 2 4,2 2 4,2 3 4,1 3 4,1 2 4)),"
+                               "((1 2 3,2 2 3,2 2 4,1 2 4,1 2 3)),"
+                               "((1 3 3,1 3 4,2 3 4,2 3 3,1 3 3)),"
+                               "((2 2 3,2 3 3,2 3 4,2 2 4,2 2 3)),"
+                               "((1 2 3,1 2 4,1 3 4,1 3 3,1 2 3)))" );
+
+  // check rotate
+  std::unique_ptr<QgsSfcgalGeometry> cubeR = cube->rotate3D( 90, { 0.0, 0.0, 1.0 }, { 0.0, 0.0, 0.0 } );
+  QVERIFY( qFuzzyCompare2( cubeR->primitiveTransform(), QMatrix4x4( -1.0e-07, -1.0, 0.0, 0.0, //
+                                                                    1.0, -1.0e-07, 0.0, 0.0,  //
+                                                                    0.0, 0.0, 1.0, 0.0,       //
+                                                                    0.0, 0.0, 0.0, 1.0 ) ) );
+  cubeR = cube->rotate3D( 90, { 0.0, 0.0, 1.0 }, { 1.0, 2.0, 3.0 } );
+  QVERIFY( qFuzzyCompare2( cubeR->primitiveTransform(), QMatrix4x4( -1.0e-07, -1.0, 0.0, -3.0, //
+                                                                    1.0, -1.0e-07, 0.0, -1.0,  //
+                                                                    0.0, 0.0, 1.0, 0.0,        //
+                                                                    0.0, 0.0, 0.0, 1.0 ) ) );
+  QCOMPARE( cubeR->asWkt( 0 ), "POLYHEDRALSURFACE Z (((-3 -1 0,-4 -1 0,-4 0 0,-3 0 0,-3 -1 0)),"
+                               "((-3 -1 1,-3 0 1,-4 0 1,-4 -1 1,-3 -1 1)),"
+                               "((-3 -1 0,-3 0 0,-3 0 1,-3 -1 1,-3 -1 0)),"
+                               "((-4 -1 0,-4 -1 1,-4 0 1,-4 0 0,-4 -1 0)),"
+                               "((-3 0 0,-4 0 0,-4 0 1,-3 0 1,-3 0 0)),"
+                               "((-3 -1 0,-3 -1 1,-4 -1 1,-4 -1 0,-3 -1 0)))" );
+
+  // check scale
+  std::unique_ptr<QgsSfcgalGeometry> cubeS = cube->scale( { 1.0, 2.0, 3.0 }, { 0.0, 0.0, 0.0 } );
+  QCOMPARE( cubeS->primitiveTransform(), QMatrix4x4( 1.0, 0.0, 0.0, 0.0, //
+                                                     0.0, 2.0, 0.0, 0.0, //
+                                                     0.0, 0.0, 3.0, 0.0, //
+                                                     0.0, 0.0, 0.0, 1.0 ) );
+  cubeS = cube->scale( { 1.0, 2.0, 3.0 }, { 1.0, 2.0, 3.0 } );
+  QCOMPARE( cubeS->primitiveTransform(), QMatrix4x4( 1.0, 0.0, 0.0, 0.0, //
+                                                     0.0, 2.0, 0.0, 2.0, //
+                                                     0.0, 0.0, 3.0, 6.0, //
+                                                     0.0, 0.0, 0.0, 1.0 ) );
+  QCOMPARE( cubeS->asWkt( 0 ), "POLYHEDRALSURFACE Z (((0 2 6,0 4 6,1 4 6,1 2 6,0 2 6)),"
+                               "((0 2 9,1 2 9,1 4 9,0 4 9,0 2 9)),"
+                               "((0 2 6,1 2 6,1 2 9,0 2 9,0 2 6)),"
+                               "((0 4 6,0 4 9,1 4 9,1 4 6,0 4 6)),"
+                               "((1 2 6,1 4 6,1 4 9,1 2 9,1 2 6)),"
+                               "((0 2 6,0 2 9,0 4 9,0 4 6,0 2 6)))" );
+
+  // check volume
+  QCOMPARE( cube->volume(), 125.0 );
+  // check area
+  QCOMPARE( cube->area(), 150.0 );
+
+  // check parameters
+  QList<std::pair<QString, QString>> params = cube->primitiveParameters();
+  QCOMPARE( params.size(), 1 );
+  QCOMPARE( params.at( 0 ).first, "size" );
+  QCOMPARE( params.at( 0 ).second, "double" );
+
+  QVariant param = cube->primitiveParameter( "size" );
+  QCOMPARE( param.toDouble(), 5.0 );
+
+  cube->primitiveSetParameter( "size", 8.2 );
+  param = cube->primitiveParameter( "size" );
+  QCOMPARE( param.toDouble(), 8.2 );
+
+#endif
 }
 
 QGSTEST_MAIN( TestQgsSfcgal )

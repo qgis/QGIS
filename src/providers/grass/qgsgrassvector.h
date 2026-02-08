@@ -35,7 +35,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
     QgsGrassObject grassObject() const { return mGrassObject; }
 
     //! Layer number (field)
-    int number() { return mNumber; }
+    int number() const { return mNumber; }
 
     //! Sets number of elements of given type.
     void setTypeCount( int type, int count ) { mTypeCounts[type] = count; }

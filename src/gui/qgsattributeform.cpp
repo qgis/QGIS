@@ -58,6 +58,8 @@
 #include "qgstexteditwrapper.h"
 #include "qgsfieldmodel.h"
 #include "qgscollapsiblegroupbox.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QDir>
 #include <QTextStream>
@@ -73,6 +75,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QSvgWidget>
+
 
 int QgsAttributeForm::sFormCounter = 0;
 
@@ -428,6 +431,35 @@ bool QgsAttributeForm::saveEdits( QString *error )
         {
           mFeature.setAttributes( updatedFeature.attributes() );
           mLayer->endEditCommand();
+
+          const QgsFields fields = mLayer->fields();
+          const QgsAttributes newValues = updatedFeature.attributes();
+          const QVariant lastUsedValuesVariant = mLayer->property( "AttributeFormLastUsedValues" );
+          QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
+          for ( int idx = 0; idx < fields.count(); ++idx )
+          {
+            const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( idx );
+            if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+            {
+              const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+              QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+              if ( !rememberLastUsedValues.contains( idx ) )
+              {
+                const bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+                rememberLastUsedValues[idx] = remember;
+                mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
+              }
+
+              const QVariant newValue = rememberLastUsedValues[idx] ? newValues.at( idx ) : QVariant();
+              if ( !lastUsedValues.contains( idx ) || lastUsedValues[idx] != newValue )
+              {
+                lastUsedValues[idx] = newValue;
+                QgsDebugMsgLevel( QStringLiteral( "Saving %1 for %2" ).arg( ( newValue.toString() ).arg( idx ) ), 2 );
+              }
+            }
+          }
+          mLayer->setProperty( "AttributeFormLastUsedValues", QVariant::fromValue<QgsAttributeMap>( lastUsedValues ) );
+
           setMode( QgsAttributeEditorContext::SingleEditMode );
           changedLayer = true;
         }
@@ -1096,7 +1128,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value, const QVariant
   updateConstraints( eww );
 
   // Update dependent fields (only if form is not initializing)
-  if ( mValuesInitialized )
+  if ( mValuesInitialized && !mIsSettingMultiEditFeatures )
   {
     //append field index here, so it's not updated recursive
     mAlreadyUpdatedFields.append( eww->fieldIdx() );
@@ -2071,6 +2103,27 @@ void QgsAttributeForm::init()
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
         mFormWidgets.append( formWidget );
+
+        const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( idx );
+        if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+        {
+          bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+          const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+          QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+          if ( rememberLastUsedValues.contains( idx ) )
+          {
+            remember = rememberLastUsedValues[idx];
+          }
+
+          formWidget->setRememberLastValue( remember );
+          connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
+            const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+            QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+            rememberLastUsedValues[idx] = remember;
+            mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
+          } );
+        }
+
         formWidget->createSearchWidgetWrappers( mContext );
 
         label->setBuddy( eww->widget() );
@@ -2447,6 +2500,25 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
         mFormEditorWidgets.insert( fldIdx, formWidget );
         mFormWidgets.append( formWidget );
+
+        const Qgis::AttributeFormReuseLastValuePolicy reusePolicy = mLayer->editFormConfig().reuseLastValuePolicy( fldIdx );
+        if ( reusePolicy != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed )
+        {
+          bool remember = reusePolicy == Qgis::AttributeFormReuseLastValuePolicy::AllowedDefaultOn;
+          const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+          QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+          if ( rememberLastUsedValues.contains( fldIdx ) )
+          {
+            remember = rememberLastUsedValues[fldIdx];
+          }
+          formWidget->setRememberLastValue( remember );
+          connect( formWidget, &QgsAttributeFormEditorWidget::rememberLastValueChanged, this, [this]( int idx, bool remember ) {
+            const QVariant rememberLastUsedValuesVariant = mLayer->property( "AttributeFormRememberLastUsedValues" );
+            QMap<int, bool> rememberLastUsedValues = rememberLastUsedValuesVariant.value<QMap<int, bool>>();
+            rememberLastUsedValues[idx] = remember;
+            mLayer->setProperty( "AttributeFormRememberLastUsedValues", QVariant::fromValue<QMap<int, bool>>( rememberLastUsedValues ) );
+          } );
+        }
 
         formWidget->createSearchWidgetWrappers( mContext );
 
@@ -3342,4 +3414,31 @@ void QgsAttributeForm::reloadIcon( const QString &file, const QString &tooltip, 
   sw->load( QgsApplication::iconPath( file ) );
   sw->setToolTip( tooltip );
   sw->show();
+}
+
+QgsFeature QgsAttributeForm::createFeature( QgsVectorLayer *layer, const QgsGeometry &geometry, const QgsAttributeMap &attributes, QgsExpressionContext &context )
+{
+  const bool reuseAllLastValues = QgsSettingsRegistryCore::settingsDigitizingReuseLastValues->value();
+  QgsDebugMsgLevel( QStringLiteral( "reuseAllLastValues: %1" ).arg( reuseAllLastValues ), 2 );
+
+  const QgsFields fields = layer->fields();
+  QgsAttributeMap initialAttributeValues;
+  for ( int idx = 0; idx < fields.count(); ++idx )
+  {
+    if ( attributes.contains( idx ) )
+    {
+      initialAttributeValues.insert( idx, attributes.value( idx ) );
+    }
+    else if ( ( reuseAllLastValues || layer->editFormConfig().reuseLastValuePolicy( idx ) != Qgis::AttributeFormReuseLastValuePolicy::NotAllowed ) )
+    {
+      const QVariant lastUsedValuesVariant = layer->property( "AttributeFormLastUsedValues" );
+      const QgsAttributeMap lastUsedValues = lastUsedValuesVariant.isValid() ? lastUsedValuesVariant.value<QgsAttributeMap>() : QgsAttributeMap();
+      if ( lastUsedValues.contains( idx ) && layer->dataProvider() && layer->dataProvider()->defaultValueClause( idx ) != lastUsedValues[idx] )
+      {
+        initialAttributeValues.insert( idx, lastUsedValues[idx] );
+      }
+    }
+  }
+
+  return QgsVectorLayerUtils::createFeature( layer, geometry, initialAttributeValues, &context );
 }

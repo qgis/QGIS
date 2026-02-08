@@ -75,20 +75,20 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     bool labelOnTop() const;
 
     /**
-     * Setter for checkbox to reuse last entered values for the field.
+     * Setter for checkbox to remember last entered values by default for the field.
      *
-     * \see reuseLastValues()
-     * \since QGIS 3.20
+     * \see reuseLastValuePolicy()
+     * \since QGIS 4.0
      */
-    void setReuseLastValues( bool reuse );
+    void setReuseLastValuePolicy( Qgis::AttributeFormReuseLastValuePolicy policy );
 
     /**
-     * Getter for checkbox to reuse last entered values for the field.
+     * Getter for checkbox to remember last entered values by default for the field.
      *
-     * \see setReuseLastValues()
-     * \since QGIS 3.20
+     * \see setReuseLastValuePolicy()
+     * \since QGIS 4.0
      */
-    bool reuseLastValues() const;
+    Qgis::AttributeFormReuseLastValuePolicy reuseLastValuePolicy() const;
 
     /**
      * Setter for label alias
@@ -298,6 +298,8 @@ class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttribu
     void onCurrentWidgetChanged( int index );
 
     void defaultExpressionChanged();
+
+    void updateReuseLastValuePolicyLabel();
 
     void updateSplitPolicyLabel();
 

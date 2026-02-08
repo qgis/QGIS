@@ -496,11 +496,6 @@ QgsWcsProvider *QgsWcsProvider::clone() const
   return provider;
 }
 
-QString QgsWcsProvider::baseUrl() const
-{
-  return mBaseUrl;
-}
-
 QString QgsWcsProvider::format() const
 {
   return mFormat;

@@ -65,7 +65,7 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   }
 }
 
-QgsAuthImportIdentityDialog::IdentityType QgsAuthImportIdentityDialog::identityType()
+QgsAuthImportIdentityDialog::IdentityType QgsAuthImportIdentityDialog::identityType() const
 {
   if ( mDisabled )
   {

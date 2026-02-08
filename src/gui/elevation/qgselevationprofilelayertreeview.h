@@ -56,7 +56,7 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
-
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
@@ -157,6 +157,13 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
      */
     void removeNodeForUnregisteredSource( const QString &sourceId );
 
+    /**
+     * Adds any layers from a \a project which currently aren't within the profile's layer tree.
+     *
+     * \since QGIS 4.0
+     */
+    void populateMissingLayers( QgsProject *project );
+
   signals:
 
     /**
@@ -170,11 +177,6 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QgsLayerTreeViewBase
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
-    /**
-     * Initially populates the tree view using layers from a \a project.
-     */
-    void populateInitialLayers( QgsProject *project );
-
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
     QgsElevationProfileLayerTreeProxyModel *mProxyModel = nullptr;
     QgsLayerTree *mLayerTree = nullptr;

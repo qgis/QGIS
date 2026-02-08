@@ -342,7 +342,7 @@ class CORE_EXPORT QgsMeshCalcUtils
 
     QgsMeshLayer *mMeshLayer; //!< Reference mesh
     bool mIsValid; //!< All used datasets (in datasetMap) do have outputs for same times & all used dataset names are present in mesh
-    QgsMeshDatasetGroupMetadata::DataType mOutputType; //!< Mesh can work only with one output types, so you cannot mix
+    QgsMeshDatasetGroupMetadata::DataType mOutputType = QgsMeshDatasetGroupMetadata::DataType::DataOnFaces; //!< Mesh can work only with one output types, so you cannot mix
     //!< E.g. one dataset with element outputs and one with node outputs
     QVector<double> mTimes;
     QMap < QString, std::shared_ptr<QgsMeshMemoryDatasetGroup> > mDatasetGroupMap; //!< Groups that are referenced in the expression

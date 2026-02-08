@@ -22,6 +22,8 @@
 #include "qgsgeometry.h"
 #include "qgsgeometryfactory.h"
 #include "qgssfcgalgeometry.h"
+#include <nlohmann/json.hpp>
+
 
 // ===================================
 // sfcgal namespace
@@ -35,22 +37,35 @@ sfcgal::ErrorHandler *sfcgal::errorHandler()
 }
 
 
-void sfcgal::Deleter::operator()( sfcgal::geometry *geom ) const
+void sfcgal::GeometryDeleter::operator()( sfcgal::geometry *geom ) const
 {
   sfcgal_geometry_delete( geom );
 }
 
 sfcgal::shared_geom sfcgal::make_shared_geom( sfcgal::geometry *geom )
 {
-  return sfcgal::shared_geom( geom, sfcgal::Deleter() );
+  return sfcgal::shared_geom( geom, sfcgal::GeometryDeleter() );
 }
 
-bool sfcgal::ErrorHandler::hasSucceedOrStack( QString *errorMsg, const char *fromFile, const char *fromFunc, int fromLine )
+
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+void sfcgal::PrimitiveDeleter::operator()( sfcgal::primitive *prim ) const
+{
+  sfcgal_primitive_delete( prim );
+}
+
+sfcgal::shared_prim sfcgal::make_shared_prim( sfcgal::primitive *prim )
+{
+  return sfcgal::shared_prim( prim, sfcgal::PrimitiveDeleter() );
+}
+#endif
+
+bool sfcgal::ErrorHandler::hasSucceedOrStack( QString *errorMsg, const std::source_location &location )
 {
   bool succeed = isTextEmpty();
   if ( !succeed )
   {
-    addText( "relaying error from: ", fromFile, fromFunc, fromLine );
+    addText( "relaying error from: ", location );
     if ( errorMsg )
     {
       errorMsg->append( errorMessages.first() );
@@ -68,7 +83,7 @@ int sfcgal::errorCallback( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL error occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
+  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL error occurred: %1" ).arg( buffer ) );
 
   return static_cast<int>( strlen( buffer ) );
 }
@@ -82,7 +97,7 @@ int sfcgal::warningCallback( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL warning occurred: %1" ).arg( buffer ), __FILE__, __FUNCTION__, __LINE__ );
+  sfcgal::errorHandler()->addText( QStringLiteral( "SFCGAL warning occurred: %1" ).arg( buffer ) );
 
   return static_cast<int>( strlen( buffer ) );
 }
@@ -118,9 +133,12 @@ bool sfcgal::ErrorHandler::isTextEmpty() const
   return errorMessages.isEmpty();
 }
 
-void sfcgal::ErrorHandler::addText( const QString &msg, const char *fromFile, const char *fromFunc, int fromLine )
+void sfcgal::ErrorHandler::addText( const QString &msg, const std::source_location &location )
 {
-  QString txt = QString( "%2 (%3:%4) %1" ).arg( msg ).arg( fromFunc ).arg( fromFile ).arg( fromLine );
+  QString txt = QString( "%2 (%3:%4) %1" ).arg( msg ) //
+                .arg( QString::fromStdString( location.function_name() ) ) //
+                .arg( QString::fromStdString( location.file_name() ) ) //
+                .arg( location.line() );
 
   errorMessages.push_front( txt );
 }
@@ -143,13 +161,13 @@ std::function<T(
   const sfcgal::geometry *,
   QString *
 )>
-lambda_geom_to_prim = [](
-                        T( *func_2d )( const sfcgal_geometry_t * ),
-                        T( *func_3d )( const sfcgal_geometry_t * ),
-                        const sfcgal::geometry *geom,
-                        QString *errorMsg
-                      )
-                      -> T
+lambda_geom_to_primtype = [](
+                            T( *func_2d )( const sfcgal_geometry_t * ),
+                            T( *func_3d )( const sfcgal_geometry_t * ),
+                            const sfcgal::geometry *geom,
+                            QString *errorMsg
+                          )
+                          -> T
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geom, std::numeric_limits<T>::quiet_NaN() );
@@ -182,14 +200,14 @@ std::function<T(
   const sfcgal::geometry *,
   QString *
 )>
-lambda_geomgeom_to_prim = [](
-                            T( *func_2d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ),
-                            T( *func_3d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ),
-                            const sfcgal::geometry *geomA,
-                            const sfcgal::geometry *geomB,
-                            QString *errorMsg
-                          )
-                          -> T
+lambda_geomgeom_to_primtype = [](
+                                T( *func_2d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ),
+                                T( *func_3d )( const sfcgal_geometry_t *, const sfcgal_geometry_t * ),
+                                const sfcgal::geometry *geomA,
+                                const sfcgal::geometry *geomB,
+                                QString *errorMsg
+                              )
+                              -> T
 {
   sfcgal::errorHandler()->clearText( errorMsg );
   CHECK_NOT_NULL( geomA, false );
@@ -313,8 +331,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsSfcgalEngine::toAbstractGeometry( const 
     Qgis::WkbType sfcgalType = QgsSfcgalEngine::wkbType( geom );
     sfcgal::errorHandler()->addText( QStringLiteral( "WKB contains unmanaged geometry type (WKB:%1 / SFCGAL:%2" ) //
                                      .arg( static_cast<int>( wkbPtr.readHeader() ) )                          //
-                                     .arg( static_cast<int>( sfcgalType ) ),
-                                     __FILE__, __FUNCTION__, __LINE__ );
+                                     .arg( static_cast<int>( sfcgalType ) ) );
   }
 
   return out;
@@ -342,7 +359,7 @@ sfcgal::shared_geom QgsSfcgalEngine::cloneGeometry( const sfcgal::geometry *geom
 
 QString QgsSfcgalEngine::geometryType( const sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Calculating %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "geometryType" ) );
@@ -390,7 +407,7 @@ QByteArray QgsSfcgalEngine::toWkb( const sfcgal::geometry *geom, QString *errorM
   sfcgal_geometry_as_wkb( geom, &wkbHex, &len );
   QByteArray wkbArray( wkbHex, static_cast<int>( len ) );
 
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
   sfcgal_free_buffer( wkbHex );
 #else
   free( wkbHex );
@@ -411,7 +428,7 @@ QString QgsSfcgalEngine::toWkt( const sfcgal::geometry *geom, int numDecimals, Q
   CHECK_SUCCESS( errorMsg, QString() );
 
   std::string wktString( wkt, len );
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
   sfcgal_free_buffer( wkt );
 #else
   free( wkt );
@@ -438,19 +455,18 @@ Qgis::WkbType QgsSfcgalEngine::wkbType( const sfcgal::geometry *geom, QString *e
   if ( qgisType >= Qgis::WkbType::Unknown && qgisType <= Qgis::WkbType::TriangleZM )
     return qgisType;
 
-  sfcgal::errorHandler()->addText( QStringLiteral( "WKB type '%1' is not known from QGIS" ).arg( wkbType ), //
-                                   __FILE__, __FUNCTION__, __LINE__ );
+  sfcgal::errorHandler()->addText( QStringLiteral( "WKB type '%1' is not known from QGIS" ).arg( wkbType ) );
   return Qgis::WkbType::Unknown;
 }
 
 int QgsSfcgalEngine::dimension( const sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Calculating %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "dimension" ) );
 #else
-  int out = lambda_geom_to_prim<int>( sfcgal_geometry_dimension, nullptr, geom, errorMsg );
+  int out = lambda_geom_to_primtype<int>( sfcgal_geometry_dimension, nullptr, geom, errorMsg );
   CHECK_SUCCESS( errorMsg, std::numeric_limits<int>::quiet_NaN() );
   return out;
 #endif
@@ -472,7 +488,7 @@ int QgsSfcgalEngine::partCount( const sfcgal::geometry *geom, QString *errorMsg 
     case SFCGAL_TYPE_MULTIPOLYGON:
     case SFCGAL_TYPE_MULTISOLID:
     case SFCGAL_TYPE_GEOMETRYCOLLECTION:
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
       out = sfcgal_geometry_num_geometries( geom );
 #else
       out = sfcgal_geometry_collection_num_geometries( geom );
@@ -485,14 +501,14 @@ int QgsSfcgalEngine::partCount( const sfcgal::geometry *geom, QString *errorMsg 
       out = sfcgal_solid_num_shells( geom );
       break;
     case SFCGAL_TYPE_POLYHEDRALSURFACE:
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
       out = sfcgal_polyhedral_surface_num_patches( geom );
 #else
       out = sfcgal_polyhedral_surface_num_polygons( geom );
 #endif
       break;
     case SFCGAL_TYPE_TRIANGULATEDSURFACE:
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
       out = sfcgal_triangulated_surface_num_patches( geom );
 #else
       out = sfcgal_triangulated_surface_num_triangles( geom );
@@ -518,7 +534,7 @@ int QgsSfcgalEngine::partCount( const sfcgal::geometry *geom, QString *errorMsg 
 
 bool QgsSfcgalEngine::addZValue( sfcgal::geometry *geom, double zValue, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )zValue;
   ( void )errorMsg;
@@ -533,7 +549,7 @@ bool QgsSfcgalEngine::addZValue( sfcgal::geometry *geom, double zValue, QString 
 
 bool QgsSfcgalEngine::addMValue( sfcgal::geometry *geom, double mValue, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )mValue;
   ( void )errorMsg;
@@ -548,7 +564,7 @@ bool QgsSfcgalEngine::addMValue( sfcgal::geometry *geom, double mValue, QString 
 
 bool QgsSfcgalEngine::dropZValue( sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Using %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "dropZValue" ) );
@@ -562,7 +578,7 @@ bool QgsSfcgalEngine::dropZValue( sfcgal::geometry *geom, QString *errorMsg )
 
 bool QgsSfcgalEngine::dropMValue( sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Using %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "dropMValue" ) );
@@ -576,7 +592,7 @@ bool QgsSfcgalEngine::dropMValue( sfcgal::geometry *geom, QString *errorMsg )
 
 void QgsSfcgalEngine::swapXy( sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Using %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "swapXy" ) );
@@ -590,7 +606,7 @@ void QgsSfcgalEngine::swapXy( sfcgal::geometry *geom, QString *errorMsg )
 
 bool QgsSfcgalEngine::isEqual( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, double tolerance, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geomA;
   ( void )geomB;
   ( void )tolerance;
@@ -610,7 +626,7 @@ bool QgsSfcgalEngine::isEqual( const sfcgal::geometry *geomA, const sfcgal::geom
 
 bool QgsSfcgalEngine::isEmpty( const sfcgal::geometry *geom, QString *errorMsg )
 {
-  int res = lambda_geom_to_prim<int>( sfcgal_geometry_is_empty, nullptr, geom, errorMsg );
+  int res = lambda_geom_to_primtype<int>( sfcgal_geometry_is_empty, nullptr, geom, errorMsg );
   CHECK_SUCCESS( errorMsg, false );
   return static_cast<bool>( res );
 }
@@ -645,12 +661,12 @@ bool QgsSfcgalEngine::isValid( const sfcgal::geometry *geom, QString *errorMsg, 
 
 bool QgsSfcgalEngine::isSimple( const sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Using %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "isSimple" ) );
 #else
-  int res = lambda_geom_to_prim<int>( sfcgal_geometry_is_simple, nullptr, geom, errorMsg );
+  int res = lambda_geom_to_primtype<int>( sfcgal_geometry_is_simple, nullptr, geom, errorMsg );
   CHECK_SUCCESS( errorMsg, false );
   return static_cast<bool>( res );
 #endif
@@ -658,7 +674,7 @@ bool QgsSfcgalEngine::isSimple( const sfcgal::geometry *geom, QString *errorMsg 
 
 sfcgal::shared_geom QgsSfcgalEngine::boundary( const sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Calculating %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "boundary" ) );
@@ -675,7 +691,7 @@ sfcgal::shared_geom QgsSfcgalEngine::boundary( const sfcgal::geometry *geom, QSt
 
 QgsPoint QgsSfcgalEngine::centroid( const sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Calculating %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "centroid" ) );
@@ -703,7 +719,7 @@ QgsPoint QgsSfcgalEngine::centroid( const sfcgal::geometry *geom, QString *error
 
 sfcgal::shared_geom QgsSfcgalEngine::translate( const sfcgal::geometry *geom, const QgsVector3D &translation, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )translation;
   ( void )errorMsg;
@@ -775,7 +791,7 @@ sfcgal::shared_geom QgsSfcgalEngine::rotate3D( const sfcgal::geometry *geom, dou
 
 double QgsSfcgalEngine::distance( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
 {
-  double out = lambda_geomgeom_to_prim<double>( sfcgal_geometry_distance, sfcgal_geometry_distance_3d, geomA, geomB, errorMsg );
+  double out = lambda_geomgeom_to_primtype<double>( sfcgal_geometry_distance, sfcgal_geometry_distance_3d, geomA, geomB, errorMsg );
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
   return out;
 }
@@ -790,19 +806,19 @@ bool QgsSfcgalEngine::distanceWithin( const sfcgal::geometry *geomA, const sfcga
 
 double QgsSfcgalEngine::area( const sfcgal::geometry *geom, QString *errorMsg )
 {
-  double out = lambda_geom_to_prim<double>( sfcgal_geometry_area, sfcgal_geometry_area_3d, geom, errorMsg );
+  double out = lambda_geom_to_primtype<double>( sfcgal_geometry_area, sfcgal_geometry_area_3d, geom, errorMsg );
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
   return out;
 }
 
 double QgsSfcgalEngine::length( const sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Calculating %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "length" ) );
 #else
-  double out = lambda_geom_to_prim<double>( sfcgal_geometry_length, sfcgal_geometry_length_3d, geom, errorMsg );
+  double out = lambda_geom_to_primtype<double>( sfcgal_geometry_length, sfcgal_geometry_length_3d, geom, errorMsg );
   CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
   return out;
 #endif
@@ -810,7 +826,7 @@ double QgsSfcgalEngine::length( const sfcgal::geometry *geom, QString *errorMsg 
 
 bool QgsSfcgalEngine::intersects( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
 {
-  int res = lambda_geomgeom_to_prim<int>( sfcgal_geometry_intersects, sfcgal_geometry_intersects_3d, geomA, geomB, errorMsg );
+  int res = lambda_geomgeom_to_primtype<int>( sfcgal_geometry_intersects, sfcgal_geometry_intersects_3d, geomA, geomB, errorMsg );
   CHECK_SUCCESS( errorMsg, false );
   return static_cast<bool>( res );
 }
@@ -864,14 +880,14 @@ sfcgal::shared_geom QgsSfcgalEngine::triangulate( const sfcgal::geometry *geom, 
 
 bool QgsSfcgalEngine::covers( const sfcgal::geometry *geomA, const sfcgal::geometry *geomB, QString *errorMsg )
 {
-  int res = lambda_geomgeom_to_prim<int>( sfcgal_geometry_covers, sfcgal_geometry_covers_3d, geomA, geomB, errorMsg );
+  int res = lambda_geomgeom_to_primtype<int>( sfcgal_geometry_covers, sfcgal_geometry_covers_3d, geomA, geomB, errorMsg );
   CHECK_SUCCESS( errorMsg, false );
   return static_cast<bool>( res );
 }
 
 sfcgal::shared_geom QgsSfcgalEngine::envelope( const sfcgal::geometry *geom, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )errorMsg;
   throw QgsNotSupportedException( QObject::tr( "Calculating %1 requires a QGIS build based on SFCGAL 2.1 or later" ).arg( "envelope" ) );
@@ -951,7 +967,7 @@ sfcgal::shared_geom QgsSfcgalEngine::extrude( const sfcgal::geometry *geom, cons
   for ( unsigned int shellIdx = 0; shellIdx < sfcgal_solid_num_shells( solid ); ++shellIdx )
   {
     const sfcgal_geometry_t *shell = sfcgal_solid_shell_n( solid, shellIdx );
-#if SFCGAL_VERSION_MAJOR_INT > 2 || ( SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT >= 1 )
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
     for ( unsigned int polyIdx = 0; polyIdx < sfcgal_polyhedral_surface_num_patches( shell ); ++polyIdx )
     {
       const sfcgal_geometry_t *patch = sfcgal_polyhedral_surface_patch_n( shell, polyIdx );
@@ -975,7 +991,7 @@ sfcgal::shared_geom QgsSfcgalEngine::extrude( const sfcgal::geometry *geom, cons
 
 sfcgal::shared_geom QgsSfcgalEngine::simplify( const sfcgal::geometry *geom, double tolerance, bool preserveTopology, QString *errorMsg )
 {
-#if SFCGAL_VERSION_MAJOR_INT == 2 && SFCGAL_VERSION_MINOR_INT < 1
+#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )geom;
   ( void )tolerance;
   ( void )preserveTopology;
@@ -1002,5 +1018,265 @@ sfcgal::shared_geom QgsSfcgalEngine::approximateMedialAxis( const sfcgal::geomet
 
   return sfcgal::make_shared_geom( result );
 }
+
+
+#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+sfcgal::shared_geom QgsSfcgalEngine::transform( const sfcgal::geometry *geom, const QMatrix4x4 &mat, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( geom, nullptr );
+
+  sfcgal::geometry *result;
+  result = sfcgal_geometry_transform( geom, mat.constData() );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  return sfcgal::make_shared_geom( result );
+}
+
+std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalEngine::toSfcgalGeometry( sfcgal::shared_prim &prim, sfcgal::primitiveType type, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim.get(), nullptr );
+
+  return std::make_unique<QgsSfcgalGeometry>( prim, type );
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::createCube( double size, QString *errorMsg )
+{
+  sfcgal::primitive *result = sfcgal_primitive_create( SFCGAL_TYPE_CUBE );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  sfcgal_primitive_set_parameter_double( result, "size", size );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+sfcgal::shared_geom QgsSfcgalEngine::primitiveAsPolyhedral( const sfcgal::primitive *prim, const QMatrix4x4 &mat, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, nullptr );
+
+  sfcgal::geometry *result = sfcgal_primitive_as_polyhedral_surface( prim );
+  CHECK_SUCCESS( errorMsg, nullptr );
+
+  if ( !mat.isIdentity() )
+  {
+    sfcgal::geometry *result2 = sfcgal_geometry_transform( result, mat.constData() );
+    sfcgal_geometry_delete( result );
+    result = result2;
+    CHECK_SUCCESS( errorMsg, nullptr );
+  }
+
+  return sfcgal::make_shared_geom( result );
+}
+
+bool QgsSfcgalEngine::primitiveIsEqual( const sfcgal::primitive *primA, const sfcgal::primitive *primB, double tolerance, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( primA, false );
+  CHECK_NOT_NULL( primB, false );
+
+  bool result = sfcgal_primitive_is_almost_equals( primA, primB, tolerance );
+  CHECK_SUCCESS( errorMsg, false );
+
+  return result;
+}
+
+sfcgal::shared_prim QgsSfcgalEngine::primitiveClone( const sfcgal::primitive *prim, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, nullptr );
+
+  sfcgal::primitive *result = sfcgal_primitive_clone( prim );
+
+  CHECK_SUCCESS( errorMsg, nullptr );
+  CHECK_NOT_NULL( result, nullptr );
+
+  return sfcgal::make_shared_prim( result );
+}
+
+double QgsSfcgalEngine::primitiveArea( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
+
+  double out = sfcgal_primitive_area( prim, withDiscretization );
+  CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
+  return out;
+}
+
+double QgsSfcgalEngine::primitiveVolume( const sfcgal::primitive *prim, bool withDiscretization, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, std::numeric_limits<double>::quiet_NaN() );
+
+  double out = sfcgal_primitive_volume( prim, withDiscretization );
+  CHECK_SUCCESS( errorMsg, std::numeric_limits<double>::quiet_NaN() );
+  return out;
+}
+
+void sfcgal::to_json( json &j, const sfcgal::PrimitiveParameterDesc &p )
+{
+  j["name"] = p.name;
+  j["type"] = p.type;
+
+  if ( std::holds_alternative<int>( p.value ) )
+  {
+    j["value"] = std::get<int>( p.value );
+  }
+  else if ( std::holds_alternative<double>( p.value ) )
+  {
+    j["value"] = std::get<double>( p.value );
+  }
+  else if ( std::holds_alternative<QgsPoint>( p.value ) )
+  {
+    QgsPoint point = std::get<QgsPoint>( p.value );
+    double z = std::numeric_limits<double>::quiet_NaN();
+    double m = std::numeric_limits<double>::quiet_NaN();
+    if ( point.is3D() )
+      z = point.z();
+    if ( point.isMeasure() )
+      m = point.m();
+    j["value"] = std::vector<double> { point.x(), point.y(), z, m };
+  }
+  else if ( std::holds_alternative<QgsVector3D>( p.value ) )
+  {
+    QgsVector3D vect = std::get<QgsVector3D>( p.value );
+    j["value"] = std::vector<double> { vect.x(), vect.y(), vect.z() };
+  }
+  else
+    throw json::type_error::create( 306, QStringLiteral( "Unknown type '%1'." ).arg( p.type.c_str() ).toStdString(), nullptr );
+}
+
+void sfcgal::from_json( const json &j, sfcgal::PrimitiveParameterDesc &p )
+{
+  j.at( "name" ).get_to( p.name );
+  j.at( "type" ).get_to( p.type );
+  if ( j.contains( "value" ) )
+  {
+    json value = j.at( "value" );
+    if ( p.type == "int" )
+    {
+      p.value = value.get<int>();
+    }
+    else if ( p.type == "double" )
+    {
+      p.value = value.get<double>();
+    }
+    else if ( p.type == "point3" )
+    {
+      std::vector<double> vect;
+      vect = value.get<std::vector<double>>();
+      QgsPoint point( vect[0], vect[1],                                                         //
+                      ( vect.size() > 2 ? vect[2] : std::numeric_limits<double>::quiet_NaN() ), //
+                      ( vect.size() > 3 ? vect[3] : std::numeric_limits<double>::quiet_NaN() ) );
+      p.value = point;
+    }
+    else if ( p.type == "vector3" )
+    {
+      std::vector<double> vect;
+      vect = value.get<std::vector<double>>();
+      QgsPoint point( vect[0], vect[1],                                                         //
+                      ( vect.size() > 2 ? vect[2] : std::numeric_limits<double>::quiet_NaN() ), //
+                      ( vect.size() > 3 ? vect[3] : std::numeric_limits<double>::quiet_NaN() ) );
+      p.value = point;
+    }
+    else
+      throw json::type_error::create( 306, QStringLiteral( "Unknown type '%1'." ).arg( p.type.c_str() ).toStdString(), nullptr );
+  }
+}
+
+QVector<sfcgal::PrimitiveParameterDesc> QgsSfcgalEngine::primitiveParameters( const sfcgal::primitive *prim, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, QVector<sfcgal::PrimitiveParameterDesc>() );
+
+  char *jsonChars = nullptr;
+  size_t len = 0;
+  sfcgal_primitive_parameters( prim, &jsonChars, &len );
+  CHECK_SUCCESS( errorMsg, QVector<sfcgal::PrimitiveParameterDesc>() );
+
+  std::string jsonString( jsonChars, len );
+  sfcgal_free_buffer( jsonChars );
+
+  QVector<sfcgal::PrimitiveParameterDesc> result;
+  try
+  {
+    const auto jParams = json::parse( jsonString );
+    for ( const auto &jParam : jParams )
+    {
+      result.append( jParam.get<sfcgal::PrimitiveParameterDesc>() );
+    }
+  }
+  catch ( json::exception &e )
+  {
+    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception for json: %1. Error: %2" ).arg( jsonString.c_str() ).arg( e.what() ) );
+  }
+
+  return result;
+}
+
+QVariant QgsSfcgalEngine::primitiveParameter( const sfcgal::primitive *prim, const QString &name, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, QVariant() );
+
+  char *jsonChars = nullptr;
+  size_t len = 0;
+  sfcgal_primitive_parameter( prim, name.toStdString().c_str(), &jsonChars, &len );
+  CHECK_SUCCESS( errorMsg, QVariant() );
+
+  std::string jsonString( jsonChars, len );
+  sfcgal_free_buffer( jsonChars );
+
+  QVariant result;
+  try
+  {
+    const auto jParam = json::parse( jsonString );
+    sfcgal::PrimitiveParameterDesc param = jParam.get<sfcgal::PrimitiveParameterDesc>();
+    result = QVariant::fromStdVariant( param.value );
+  }
+  catch ( json::exception &e )
+  {
+    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception for json: %1. Error: %2" ).arg( jsonString.c_str() ).arg( e.what() ) );
+  }
+
+  return result;
+}
+
+void QgsSfcgalEngine::primitiveSetParameter( sfcgal::primitive *prim, const QString &name, const QVariant &value, QString *errorMsg )
+{
+  sfcgal::errorHandler()->clearText( errorMsg );
+  CHECK_NOT_NULL( prim, void() );
+
+  try
+  {
+    json jParam;
+    sfcgal::PrimitiveParameterDesc paramDesc;
+    paramDesc.name = name.toStdString();
+    paramDesc.type = value.typeName();
+    if ( paramDesc.type == "int" )
+      paramDesc.value = value.toInt();
+    else if ( paramDesc.type == "double" )
+      paramDesc.value = value.toDouble();
+    else if ( value.canConvert<QgsPoint>() )
+      paramDesc.value = value.value<QgsPoint>();
+    else if ( value.canConvert<QgsVector3D>() )
+      paramDesc.value = value.value<QgsVector3D>();
+
+    sfcgal::to_json( jParam, paramDesc );
+    std::string jsonStr = jParam.dump();
+    sfcgal_primitive_set_parameter( prim, name.toStdString().c_str(), jsonStr.c_str() );
+    CHECK_SUCCESS( errorMsg, void() );
+  }
+  catch ( ... )
+  {
+    sfcgal::errorHandler()->addText( QStringLiteral( "Caught json exception" ) );
+  }
+}
+
+#endif
+
 
 #endif // #ifdef WITH_SFCGAL

@@ -453,8 +453,8 @@ QgsPGProjectItem::QgsPGProjectItem( QgsDataItem *parent, const QString name, con
                                   .arg( tr( "Last modified time" ), res.PQgetvalue( 0, 0 ), tr( "Last modified user" ), res.PQgetvalue( 0, 1 ), tr( "Comment" ), commentColumn.isEmpty() ? QString() : res.PQgetvalue( 0, 2 ) );
         setToolTip( tooltip );
       }
+      conn->unref();
     }
-    conn->unref();
   }
 }
 
