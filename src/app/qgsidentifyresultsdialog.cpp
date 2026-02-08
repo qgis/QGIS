@@ -2958,7 +2958,7 @@ void QgsIdentifyResultsDialog::updateTextDisplay()
 QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
 {
   QLabel *valueLabel = new QLabel();
-  valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignVCenter );
+  valueLabel->setAlignment( Qt::AlignLeft | Qt::AlignTop );
   valueLabel->setStyleSheet( QStringLiteral( "QLabel { background: transparent; padding-left: 2px; }" ) );
   valueLabel->setContentsMargins( 0, 0, 0, 0 );
   valueLabel->setMargin( 0 );
@@ -2974,13 +2974,7 @@ QLabel *QgsIdentifyResultsDialog::createStyledLabel( const QString &text )
   wrapped.replace( QStringLiteral( "\\" ), QStringLiteral( "\\\u00AD" ) );
 
   valueLabel->setText( wrapped );
-
-  const int maxTotalChars = 2000;
-  if ( wrapped.length() > maxTotalChars )
-  {
-    QString truncated = wrapped.left( maxTotalChars - 1 ) + QStringLiteral( "…" );
-    valueLabel->setText( truncated );
-  }
+  valueLabel->setTextFormat( Qt::PlainText );
 
   return valueLabel;
 }
