@@ -30,7 +30,7 @@ from the screen, and selecting colors from color swatch grids.
       sipType = NULL;
 %End
   public:
-    enum Behavior
+    enum Behavior /BaseType=IntEnum/
     {
       ShowDialog,
       SignalOnly
