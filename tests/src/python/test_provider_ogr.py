@@ -146,6 +146,27 @@ class PyQgsOGRProvider(QgisTestCase):
         super().tearDownClass()
         cls.temp_dir.cleanup()
 
+    def test_querySublayers_directory_returns_file_paths(self):
+        """Ensure directory scans do not yield directory-only URIs (see GH #64850)."""
+
+        tmp_dir = tempfile.mkdtemp()
+        try:
+            src_dir = os.path.join(TEST_DATA_DIR, "3d")
+            base = "buildings"
+            for ext in (".shp", ".dbf", ".shx", ".prj", ".qpj"):
+                src = os.path.join(src_dir, base + ext)
+                if os.path.exists(src):
+                    shutil.copy(src, tmp_dir)
+
+            metadata = QgsProviderRegistry.instance().providerMetadata("ogr")
+            sublayers = metadata.querySublayers(tmp_dir)
+            self.assertTrue(sublayers)
+            for sl in sublayers:
+                parts = metadata.decodeUri(sl.uri())
+                self.assertTrue(os.path.isfile(parts["path"]))
+        finally:
+            shutil.rmtree(tmp_dir, True)
+
     def testUpdateMode(self):
 
         vl = QgsVectorLayer(f"{self.datasource}|layerid=0", "test", "ogr")

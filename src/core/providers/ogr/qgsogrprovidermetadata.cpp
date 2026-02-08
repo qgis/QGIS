@@ -873,6 +873,46 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
   bool isOgrSupportedDirectory = pathInfo.isDir() && dirExtensions.contains( suffix );
   const Qgis::VsiHandlerType vsiHandlerType = QgsGdalUtils::vsiHandlerType( uriParts.value( u"vsiPrefix"_s ).toString() );
 
+  if ( pathInfo.isDir() && !isOgrSupportedDirectory
+       && uriParts.value( u"vsiPrefix"_s ).toString().isEmpty()
+       && uriParts.value( u"vsiSuffix"_s ).toString().isEmpty() )
+  {
+    QDir dir( path );
+    const QFileInfoList files = dir.entryInfoList( QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot );
+
+    QStringList fileNames;
+    fileNames.reserve( files.size() );
+    for ( const QFileInfo &info : files )
+      fileNames << info.fileName();
+
+    QList<QgsProviderSublayerDetails> res;
+    for ( const QFileInfo &info : files )
+    {
+      if ( feedback && feedback->isCanceled() )
+        break;
+
+      // avoid duplicate layers from shapefile sidecar files
+      if ( info.suffix().compare( "dbf"_L1, Qt::CaseInsensitive ) == 0 )
+      {
+        if ( fileNames.contains( info.fileName().left( info.fileName().size() - 4 ) + ".shp" ) )
+          continue;
+      }
+      if ( info.completeSuffix().compare( "shp.xml"_L1, Qt::CaseInsensitive ) == 0
+           || info.completeSuffix().compare( "shx"_L1, Qt::CaseInsensitive ) == 0 )
+      {
+        continue;
+      }
+
+      QVariantMap fileParts = uriParts;
+      fileParts.insert( u"path"_s, info.filePath() );
+      fileParts.remove( u"layerName"_s );
+      fileParts.remove( u"layerId"_s );
+      fileParts.remove( u"geometryType"_s );
+      res << querySublayers( encodeUri( fileParts ), flags, feedback );
+    }
+    return res;
+  }
+
   bool forceDeepScanDir = false;
   if ( pathInfo.isDir() && !isOgrSupportedDirectory )
   {
