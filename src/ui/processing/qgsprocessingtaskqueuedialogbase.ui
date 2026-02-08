@@ -27,11 +27,6 @@
      </property>
      <column>
       <property name="text">
-       <string>#</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
        <string>Algorithm</string>
       </property>
      </column>
@@ -52,6 +47,10 @@
        <property name="text">
         <string/>
        </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+       </property>
       </widget>
      </item>
      <item>
@@ -62,6 +61,10 @@
        <property name="text">
         <string/>
        </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/images/themes/default/mActionArrowUp.svg</normaloff>:/images/themes/default/mActionArrowUp.svg</iconset>
+       </property>
       </widget>
      </item>
      <item>
@@ -71,6 +74,10 @@
        </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/images/themes/default/mActionArrowDown.svg</normaloff>:/images/themes/default/mActionArrowDown.svg</iconset>
        </property>
       </widget>
      </item>

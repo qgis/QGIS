@@ -72,10 +72,6 @@ void QgsProcessingTaskQueueDialog::refresh()
     const QgsProcessingQueuedTask &task = tasks.at( i );
     mTableWidget->insertRow( i );
 
-    QTableWidgetItem *indexItem = new QTableWidgetItem( QString::number( i + 1 ) );
-    indexItem->setFlags( indexItem->flags() & ~Qt::ItemIsEditable );
-    mTableWidget->setItem( i, 0, indexItem );
-
     const QgsProcessingAlgorithm *alg = QgsApplication::processingRegistry()->algorithmById( task.algorithmId() );
     QString algName = task.algorithmId();
     if ( alg )
@@ -85,11 +81,11 @@ void QgsProcessingTaskQueueDialog::refresh()
 
     QTableWidgetItem *algItem = new QTableWidgetItem( algName );
     algItem->setFlags( algItem->flags() & ~Qt::ItemIsEditable );
-    mTableWidget->setItem( i, 1, algItem );
+    mTableWidget->setItem( i, 0, algItem );
 
     QTableWidgetItem *descItem = new QTableWidgetItem( task.description() );
     descItem->setFlags( descItem->flags() & ~Qt::ItemIsEditable );
-    mTableWidget->setItem( i, 2, descItem );
+    mTableWidget->setItem( i, 1, descItem );
   }
 
   mTableWidget->resizeColumnsToContents();
@@ -189,6 +185,7 @@ void QgsProcessingTaskQueueDialog::executeNextTask()
 
   auto context = std::make_unique<QgsProcessingContext>();
   context->setProject( QgsProject::instance() );
+  context->setLoadLayerOnCompletion( true );
 
   auto feedback = std::make_unique<QgsProcessingFeedback>();
 
