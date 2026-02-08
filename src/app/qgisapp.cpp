@@ -9060,15 +9060,18 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   QString newTitle = QString( currentTitle );
 
   QString typeString;
+  QString conflictingNameWarning;
   QString helpPage;
   switch ( type )
   {
     case QgsMasterLayoutInterface::PrintLayout:
       typeString = tr( "print layout" );
+      conflictingNameWarning = tr( "A print layout with this title already exists." );
       helpPage = u"print_composer/index.html"_s;
       break;
     case QgsMasterLayoutInterface::Report:
       typeString = tr( "report" );
+      conflictingNameWarning = tr( "A report with this title already exists." );
       helpPage = u"print_composer/create_reports.html"_s;
       break;
   }
@@ -9097,7 +9100,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
     dlg.setHintString( titleMsg );
     dlg.setOverwriteEnabled( false );
     dlg.setAllowEmptyName( true );
-    dlg.setConflictingNameWarning( tr( "A %1 with this title already exists." ).arg( typeString ) );
+    dlg.setConflictingNameWarning( conflictingNameWarning );
 
     dlg.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dlg.buttonBox(), &QDialogButtonBox::helpRequested, this, [helpPage] {
