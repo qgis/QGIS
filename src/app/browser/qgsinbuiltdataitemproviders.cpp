@@ -2516,8 +2516,18 @@ void QgsFieldDomainItemGuiProvider::populateContextMenu( QgsDataItem *item, QMen
       connectionUri = fileItem->path();
     }
 
-    QFileInfo itemFileInfo( item->path() );
-    bool policiesEditable = itemFileInfo.isDir() && item->name().endsWith( u".gdb"_s, Qt::CaseInsensitive );
+    bool policiesEditable = false;
+    QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( providerKey, item->path() );
+    if ( provider->isValid() )
+    {
+      if ( QgsVectorDataProvider *vectorProvider = qobject_cast<QgsVectorDataProvider *>( provider ) )
+      {
+        if ( vectorProvider->storageType() == "OpenFileGDB"_L1 )
+        {
+          policiesEditable = true;
+        }
+      }
+    }
 
     // Check if domain creation is supported
     QgsProviderMetadata *md { QgsProviderRegistry::instance()->providerMetadata( providerKey ) };
