@@ -42,46 +42,10 @@
       </property>
       <addaction name="mActionAddLayers"/>
       <addaction name="mActionRefresh"/>
+      <addaction name="mActionOpenPath"/>
       <addaction name="mActionShowFilter"/>
       <addaction name="mActionCollapse"/>
       <addaction name="mActionPropertiesWidget"/>
-     </widget>
-    </item>
-    <item>
-     <widget class="QWidget" name="mWidgetLocationBar" native="true">
-      <layout class="QHBoxLayout" name="horizontalLayoutLocationBar">
-       <property name="spacing">
-        <number>6</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>3</number>
-       </property>
-       <property name="rightMargin">
-        <number>6</number>
-       </property>
-       <property name="bottomMargin">
-        <number>3</number>
-       </property>
-       <item>
-        <widget class="QLineEdit" name="mLeLocationBar">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="toolTip">
-          <string>Enter a file path to navigate directly to that location</string>
-         </property>
-         <property name="placeholderText">
-          <string>Enter path...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </item>
     <item>
@@ -289,6 +253,18 @@
    </property>
    <property name="toolTip">
     <string>Enable/disable properties widget</string>
+   </property>
+  </action>
+  <action name="mActionOpenPath">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Open Path</string>
+   </property>
+   <property name="toolTip">
+    <string>Navigate to a specific path</string>
    </property>
   </action>
  </widget>

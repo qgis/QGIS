@@ -159,18 +159,8 @@ class GUI_EXPORT QgsBrowserWidget : public QgsPanelWidget, private Ui::QgsBrowse
     //! Hide current item
     void hideItem();
 
-    //! Navigate to the path entered in the location bar
-    void navigateToPath();
-    //! Update the location bar with the selected item's path
-    void updateLocationBar();
-    //! Efficiently populate the model hierarchy for the given path
-    bool ensurePathInModel( const QString &targetPath );
-    //! Generate cross-platform path variants for browser model lookup
-    QStringList generatePathVariants( const QString &path );
-    //! Resolve case-insensitive path for cross-platform compatibility
-    QString resolveCaseInsensitivePath( const QString &inputPath );
-    //! Navigate to target path with optional file selection
-    bool navigateToTarget( const QString &targetPath, const QString &selectFile = QString() );
+    //! Open path dialog to navigate to a specific location
+    void openPath();
 
   private:
     //! Selection has changed
