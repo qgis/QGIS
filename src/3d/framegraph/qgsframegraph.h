@@ -43,12 +43,13 @@ class QgsAbstractRenderView;
 class QgsAmbientOcclusionRenderView;
 class QgsAmbientOcclusionSettings;
 class QgsCameraController;
-class QgsDebugTextureEntity;
 class QgsDepthRenderView;
 class QgsDirectionalLightSettings;
 class QgsForwardRenderView;
 class QgsHighlightsRenderView;
 class QgsLightSource;
+class QgsOverlayTextureEntity;
+class QgsOverlayTextureRenderView;
 class QgsPostprocessingEntity;
 class QgsRectangle;
 class QgsShadowRenderView;
@@ -194,6 +195,12 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     QgsAmbientOcclusionRenderView &ambientOcclusionRenderView();
 
     /**
+     * Returns overlay texture renderview
+     * \since QGIS 4.0
+     */
+    QgsOverlayTextureRenderView &overlayTextureRenderView();
+
+    /**
      * Returns the highlights renderview, used for rendering highlight overlays of identified features
      * \since QGIS 4.0
      */
@@ -233,7 +240,7 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     static const QString SHADOW_RENDERVIEW;
     static const QString AXIS3D_RENDERVIEW;
     static const QString DEPTH_RENDERVIEW;
-    static const QString DEBUG_RENDERVIEW;
+    static const QString OVERLAY_RENDERVIEW;
     //! Ambient occlusion render view name
     static const QString AMBIENT_OCCLUSION_RENDERVIEW;
     static const QString HIGHLIGHTS_RENDERVIEW;
@@ -270,14 +277,14 @@ class QgsFrameGraph : public Qt3DCore::QEntity
     Qt3DCore::QEntity *mRubberBandsRootEntity = nullptr;
 
     //! shadow texture debugging
-    QgsDebugTextureEntity *mShadowTextureDebugging = nullptr;
+    QgsOverlayTextureEntity *mShadowTextureDebugging = nullptr;
     //! depth texture debugging
-    QgsDebugTextureEntity *mDepthTextureDebugging = nullptr;
+    QgsOverlayTextureEntity *mDepthTextureDebugging = nullptr;
 
     void constructShadowRenderPass();
     void constructForwardRenderPass();
     void constructHighlightsPass();
-    void constructDebugTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
+    void constructOverlayTexturePass( Qt3DRender::QFrameGraphNode *topNode = nullptr );
     Qt3DRender::QFrameGraphNode *constructPostprocessingPass();
     void constructDepthRenderPass();
     void constructAmbientOcclusionRenderPass();
