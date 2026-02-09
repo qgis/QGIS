@@ -73,6 +73,11 @@ void QgsRasterDataProviderTemporalCapabilities::setRequestedTemporalRange( const
   mRequestedRange = dateTimeRange;
 }
 
+void QgsRasterDataProviderTemporalCapabilities::setTemporalFormat( const QString &format )
+{
+  mTimeFormat = format;
+}
+
 QgsInterval QgsRasterDataProviderTemporalCapabilities::defaultInterval() const
 {
   return mDefaultInterval;
@@ -86,6 +91,11 @@ void QgsRasterDataProviderTemporalCapabilities::setDefaultInterval( const QgsInt
 const QgsDateTimeRange &QgsRasterDataProviderTemporalCapabilities::requestedTemporalRange() const
 {
   return mRequestedRange;
+}
+
+const QString &QgsRasterDataProviderTemporalCapabilities::temporalFormat() const
+{
+  return mTimeFormat;
 }
 
 Qgis::TemporalIntervalMatchMethod QgsRasterDataProviderTemporalCapabilities::intervalHandlingMethod() const

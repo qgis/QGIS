@@ -105,6 +105,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mIsTemporal = true;
     mTemporalExtent = uri.param( u"timeDimensionExtent"_s );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
+    mTimeFormat = parseTemporalFormat( mTemporalExtent );
 
     if ( !mTimeDimensionExtent.datesResolutionList.isEmpty() && !mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.empty() )
     {
@@ -277,6 +278,51 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mFeatureCount = uri.param( u"featureCount"_s ).toInt(); // default to 0
 
   return true;
+}
+
+QString QgsWmsSettings::parseTemporalFormat( const QString &extent )
+{
+  if ( extent.isEmpty() )
+    return u""_s;
+
+  const QString item = extent.split( ',' ).first().trimmed();
+
+  // Date-only formats (no 'T')
+  if ( !item.contains( 'T' ) )
+  {
+    switch ( item.size() )
+    {
+      case 4:
+        return u"yyyy"_s; // 2020
+      case 7:
+        return u"yyyy-MM"_s; // 2020-06
+      case 10:
+        return u"yyyy-MM-dd"_s; // 2020-06-15
+      default:
+        return u"yyyy-MM-dd"_s;
+    }
+  }
+
+  // DateTime formats (with 'T')
+  const bool hasTimezone = item.endsWith( 'Z' );
+
+  switch ( item.size() )
+  {
+    case 20:
+      return hasTimezone ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u""_s;
+    case 19:
+      return !hasTimezone ? u"yyyy-MM-ddTHH:mm:ss"_s : u""_s;
+    case 17:
+      return hasTimezone ? u"yyyy-MM-ddTHH:mmZ"_s : u""_s;
+    case 16:
+      return !hasTimezone ? u"yyyy-MM-ddTHH:mm"_s : u""_s;
+    case 14:
+      return hasTimezone ? u"yyyy-MM-ddTHHZ"_s : u""_s;
+    case 13:
+      return !hasTimezone ? u"yyyy-MM-ddTHH"_s : u""_s;
+    default:
+      return hasTimezone ? u"yyyy-MM-ddTHH:mm:ssZ"_s : u"yyyy-MM-ddTHH:mm:ss"_s;
+  }
 }
 
 QgsWmstDimensionExtent QgsWmsSettings::parseTemporalExtent( const QString &extent )

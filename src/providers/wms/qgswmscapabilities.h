@@ -710,6 +710,8 @@ class QgsWmsSettings
      */
     QgsWmstDimensionExtent parseTemporalExtent( const QString &extent );
 
+    QString parseTemporalFormat( const QString &format );
+
     /**
      * Sets the dimension extent property
      *
@@ -787,6 +789,8 @@ class QgsWmsSettings
 
     //! Stores WMS-T time dimension extent dates
     QgsWmstDimensionExtent mTimeDimensionExtent;
+
+    QString mTimeFormat;
 
     //! Stores WMS-T reference dimension extent dates
     QgsWmstDimensionExtent mReferenceTimeDimensionExtent;

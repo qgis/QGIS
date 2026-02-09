@@ -166,6 +166,10 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
     */
     void setRequestedTemporalRange( const QgsDateTimeRange &range ) SIP_SKIP;
 
+    void setTemporalFormat( const QString &format ) SIP_SKIP;
+
+    const QString &temporalFormat() const SIP_SKIP;
+
   private:
 
     /**
@@ -186,6 +190,8 @@ class CORE_EXPORT QgsRasterDataProviderTemporalCapabilities : public QgsDataProv
 
     //! Represents the requested temporal range.
     QgsDateTimeRange mRequestedRange;
+
+    QString mTimeFormat;
 
     /**
      * Stores the available reference temporal range
