@@ -34,6 +34,12 @@ class QgsMapLayerConfigWidget;
 class QgsLayerPropertiesGuiUtils;
 
 #ifndef SIP_RUN
+/**
+ * \ingroup gui
+ * \class QgsPointCloudAttributeStatisticsModel
+ * \brief Model for point cloud attribute statistics
+ * \since QGIS 4.0 in the GUI API
+ */
 class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -59,6 +65,12 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     QgsPointCloudAttributeCollection mAttributes;
 };
 
+/**
+ * \ingroup gui
+ * \class QgsPointCloudClassificationStatisticsModel
+ * \brief Model for point cloud Classification statistics.
+ * \since QGIS 4.0 in the GUI API
+ */
 class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -98,9 +110,11 @@ class GUI_EXPORT QgsPointCloudLayerProperties : public QgsLayerPropertiesDialog,
     //! Constructor
     QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-  private slots:
+  protected slots:
     void apply() final;
     void rollback() final;
+
+  private slots:
 
     void aboutToShowStyleMenu();
     void showHelp();

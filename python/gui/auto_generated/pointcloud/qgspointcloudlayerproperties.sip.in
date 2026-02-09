@@ -29,6 +29,10 @@ Layer properties dialog for point cloud layers.
 Constructor
 %End
 
+  protected slots:
+    void apply() final;
+    void rollback() final;
+
 };
 
 /************************************************************************
