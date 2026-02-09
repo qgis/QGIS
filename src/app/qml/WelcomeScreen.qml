@@ -109,12 +109,14 @@ Item {
                 font.bold: true
                 visible: recentProjectsListView.count > 0
                 width: recentProjectsListView.count > 0 ? implicitWidth : 0
+                background: null
               }
               TabButton {
                 text: qsTr("Templates")
                 width: implicitWidth
                 font.pointSize: Application.font.pointSize * 1.1
                 font.bold: true
+                background: null
               }
             }
           }
@@ -135,7 +137,9 @@ Item {
               delegate: ProjectCard {
                 width: recentProjectsListView.width - 12
                 title: Title || ""
-                subtitle: ProjectNativePath || ProjectPath || ""
+                // Add invisible spaces after slash and backslash characters to help wrapping paths
+                subtitle: (ProjectNativePath || ProjectPath || "").replace(/([\\\/])/g,"$1\u200b")
+                crs: Crs
                 imageSource: PreviewImagePath || ""
                 isPinned: Pinned
                 isSelected: recentProjectsListView.currentIndex === index
@@ -149,7 +153,9 @@ Item {
                                recentProjectsMenu.projectPinned = Pinned;
                                recentProjectsMenu.projectExists = Exists;
                                recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
-                               recentProjectsMenu.popup(mouse.x, mouse.y);
+                               
+                               const point = mapToItem(recentProjectsListView, mouse.x, mouse.y);
+                               recentProjectsMenu.popup(point.x, point.y);
                              }
                            }
               }
@@ -172,6 +178,8 @@ Item {
                 property bool projectExists: false
                 property bool projectHasNativePath: false
 
+                background.layer.enabled: false
+                
                 MenuItem {
                   text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
                   onClicked: {
@@ -180,6 +188,11 @@ Item {
                     } else {
                       recentProjectsModel.pinProject(recentProjectsMenu.projectIndex);
                     }
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
                 MenuItem {
@@ -190,6 +203,11 @@ Item {
                   onClicked: {
                     recentProjectsModel.recheckProject(recentProjectsMenu.projectIndex);
                   }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
                 }
                 MenuItem {
                   text: qsTr("Open Directory…")
@@ -199,11 +217,21 @@ Item {
                   onClicked: {
                     recentProjectsModel.openProject(recentProjectsMenu.projectIndex);
                   }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
                 }
                 MenuItem {
                   text: qsTr("Remove from List")
                   onClicked: {
                     recentProjectsModel.removeProject(recentProjectsMenu.projectIndex);
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
                 MenuSeparator {}
@@ -211,6 +239,11 @@ Item {
                   text: qsTr("Clear List")
                   onClicked: {
                     welcomeScreenController.clearRecentProjects();
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
               }
@@ -247,7 +280,7 @@ Item {
                   case TemplateProjectsModel.TemplateType.Blank:
                     welcomeScreenController.createBlankProject(); //#spellok
                     return;
-                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                  case TemplateProjectsModel.TemplateType.Basemap:
                     welcomeScreenController.createProjectFromBasemap();
                     return;
                   default:

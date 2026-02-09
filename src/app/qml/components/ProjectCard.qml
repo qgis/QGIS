@@ -7,11 +7,12 @@ import QtQuick.Effects
 Rectangle {
   id: root
   implicitWidth: 280
-  implicitHeight: 100
+  implicitHeight: 120
   radius: 6
 
   property string title: ""
   property string subtitle: ""
+  property string crs: ""
   property string imageSource: ""
   property bool isPinned: false
   property bool isSelected: false
@@ -75,20 +76,30 @@ Rectangle {
       font.pointSize: Application.font.pointSize
       font.bold: true
       color: "#2d3748"
-      wrapMode: Text.WordWrap
+      wrapMode: Text.Wrap
       elide: Text.ElideRight
-      maximumLineCount: 1
+    }
+    
+    Text {
+      Layout.fillWidth: true
+      Layout.rightMargin: 40
+      visible: root.crs != ""
+      text: root.crs
+      font.pointSize: Application.font.pointSize * 0.9
+      color: "#4a5568"
+      wrapMode: Text.NoWrap
+      elide: Text.ElideRight
     }
 
     Text {
-      Layout.preferredWidth: parent.width / 3 * 2
+      Layout.fillWidth: true
+      Layout.rightMargin: 40
       Layout.fillHeight: true
       text: root.subtitle
       font.pointSize: Application.font.pointSize * 0.9
       color: "#4a5568"
-      wrapMode: Text.WordWrap
+      wrapMode: Text.Wrap
       elide: Text.ElideRight
-      maximumLineCount: 2
     }
   }
 

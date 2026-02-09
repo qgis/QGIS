@@ -12536,7 +12536,7 @@ void QgisApp::showPluginManager( int tabIndex )
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     // Call pluginManagerInterface()->showPluginManager() as soon as the plugin installer says the remote data is fetched.
-    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady()"_s.arg( tabIndex ) );
+    QgsPythonRunner::run( u"pyplugin_installer.instance().showPluginManagerWhenReady(%1)"_s.arg( tabIndex ) );
   }
   else
 #endif
