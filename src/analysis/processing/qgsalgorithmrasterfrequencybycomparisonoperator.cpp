@@ -20,6 +20,7 @@
 #include "qgsrasteranalysisutils.h"
 #include "qgsrasterfilewriter.h"
 #include "qgsrasterprojector.h"
+#include "qgsreferencedgeometry.h"
 
 #include <QString>
 
@@ -245,7 +246,7 @@ QVariantMap QgsRasterFrequencyByComparisonOperatorBase::processAlgorithm( const 
   outputs.insert( u"OCCURRENCE_COUNT"_s, occurrenceCount );
   outputs.insert( u"FOUND_LOCATIONS_COUNT"_s, foundLocationsCount );
   outputs.insert( u"MEAN_FREQUENCY_PER_LOCATION"_s, meanEqualCountPerValidLocation );
-  outputs.insert( u"EXTENT"_s, mExtent.toString() );
+  outputs.insert( u"EXTENT"_s, QgsReferencedRectangle( mExtent, mCrs ).toString() );
   outputs.insert( u"CRS_AUTHID"_s, mCrs.authid() );
   outputs.insert( u"WIDTH_IN_PIXELS"_s, mLayerWidth );
   outputs.insert( u"HEIGHT_IN_PIXELS"_s, mLayerHeight );

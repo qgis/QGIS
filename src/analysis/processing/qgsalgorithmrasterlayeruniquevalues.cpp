@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 
+#include "qgsreferencedgeometry.h"
 #include "qgsstringutils.h"
 #include "qgsunittypes.h"
 
@@ -172,7 +173,7 @@ QVariantMap QgsRasterLayerUniqueValuesReportAlgorithm::processAlgorithm( const Q
   }
 
   QVariantMap outputs;
-  outputs.insert( u"EXTENT"_s, mExtent.toString() );
+  outputs.insert( u"EXTENT"_s, QgsReferencedRectangle( mExtent, mCrs ).toString() );
   outputs.insert( u"CRS_AUTHID"_s, mCrs.authid() );
   outputs.insert( u"WIDTH_IN_PIXELS"_s, mLayerWidth );
   outputs.insert( u"HEIGHT_IN_PIXELS"_s, mLayerHeight );

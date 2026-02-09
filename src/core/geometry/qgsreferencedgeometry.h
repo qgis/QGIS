@@ -86,6 +86,16 @@ class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsRefere
 
     QgsReferencedRectangle() = default;
 
+    /**
+     * Returns a string representation of form "xmin, xmax, ymin, ymax [EPSG:code]"
+     * Coordinates will be truncated to the specified precision.
+     * If the specified precision is less than 0, a suitable minimum precision is used.
+     *
+     * \since QGIS 4.0
+     */
+    Q_INVOKABLE QString toString( int precision = 16 ) const;
+
+
     //! Allows direct construction of QVariants from rectangle.
     operator QVariant() const // cppcheck-suppress duplInheritedMember
     {

@@ -383,6 +383,7 @@ void TestQgsRectangle::referenced()
 {
   QgsReferencedRectangle rect1 = QgsReferencedRectangle( QgsRectangle( 10.0, 20.0, 110.0, 220.0 ), QgsCoordinateReferenceSystem( u"EPSG:3111"_s ) );
   QCOMPARE( rect1.crs().authid(), u"EPSG:3111"_s );
+  QCOMPARE( rect1.toString( 4 ), u"10.0000,110.0000,20.0000,220.0000 [EPSG:3111]"_s );
   rect1.setCrs( QgsCoordinateReferenceSystem( u"EPSG:28356"_s ) );
   QCOMPARE( rect1.crs().authid(), u"EPSG:28356"_s );
 
