@@ -17,6 +17,7 @@
 #ifndef QGSMESSAGEOUTPUT_H
 #define QGSMESSAGEOUTPUT_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
