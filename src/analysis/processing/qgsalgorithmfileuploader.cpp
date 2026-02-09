@@ -66,8 +66,8 @@ QString QgsFileUploaderAlgorithm::groupId() const
 
 QString QgsFileUploaderAlgorithm::shortHelpString() const
 {
-  return tr( "This algorithm upload a file to the URL with an HTTP(S) request\n\n"
-             "The optional form name field parameter emulate a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when url end point require a form name key" );
+  return tr( "This algorithm uploads a file to the URL with an HTTP(S) request\n\n"
+             "The optional form name field parameter emulates a filled-in form in which a user has pressed the submit button. This enables uploading of binary files when the URL endpoint requires a form name key" );
 }
 
 QgsFileUploaderAlgorithm *QgsFileUploaderAlgorithm::createInstance() const
