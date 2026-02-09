@@ -181,10 +181,11 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
   sql += QString::fromLatin1( content.toHex() );
   sql += "') ON CONFLICT (name) DO UPDATE SET content = EXCLUDED.content, metadata = EXCLUDED.metadata;";
 
+  const QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
+
   QgsPostgresResult res( conn->PQexec( sql ) );
   if ( res.PQresultStatus() != PGRES_COMMAND_OK )
   {
-    QString errCause = QObject::tr( "Unable to insert or update project (project=%1) in the destination table on the database. Maybe this is due to table permissions (user=%2). Please contact your database admin." ).arg( projectUri.projectName, projectUri.connInfo.username() );
     context.pushMessage( errCause, Qgis::MessageLevel::Critical );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
     return false;
