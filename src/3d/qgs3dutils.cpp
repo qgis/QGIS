@@ -293,7 +293,7 @@ int Qgs3DUtils::maxZoomLevel( double tile0width, double tileResolution, double m
   // tile error [map units] = tile width / tile resolution
   // + re-arranging to get zoom level if we know tile error we want to get
   const double zoomLevel = -log( tileResolution * maxError / tile0width ) / log( 2 );
-  return round( zoomLevel ); // we could use ceil() here if we wanted to always get to the desired error
+  return std::max<int>( 0, round( zoomLevel ) ); // we could use ceil() here if we wanted to always get to the desired error
 }
 
 QString Qgs3DUtils::altClampingToString( Qgis::AltitudeClamping altClamp )
