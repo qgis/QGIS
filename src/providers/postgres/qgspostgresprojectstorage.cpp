@@ -191,6 +191,25 @@ bool QgsPostgresProjectStorage::writeProject( const QString &uri, QIODevice *dev
     return false;
   }
 
+  // if project was loaded from older version (isVersion is True and dateSaved is not empty), it is necessary to update comment qgis_projects in from the older version
+  // the comment is stored only in PG DB and project does not have access to it
+  if ( projectUri.isVersion && !projectUri.dateSaved.isEmpty() )
+  {
+    const QString sqlSetComment = u"UPDATE %1.qgis_projects SET comment = (SELECT comment FROM %1.qgis_projects_versions WHERE name = %2 AND date_saved = %3 ) WHERE name = %2"_s.arg(
+      QgsPostgresConn::quotedIdentifier( projectUri.schemaName ),
+      QgsPostgresConn::quotedValue( projectUri.projectName ),
+      QgsPostgresConn::quotedValue( projectUri.dateSaved )
+    );
+
+    QgsPostgresResult resComment( conn->PQexec( sqlSetComment ) );
+    if ( resComment.PQresultStatus() != PGRES_COMMAND_OK )
+    {
+      context.pushMessage( errCause, Qgis::MessageLevel::Critical );
+      QgsPostgresConnPool::instance()->releaseConnection( conn );
+      return false;
+    }
+  }
+
   QgsPostgresConnPool::instance()->releaseConnection( conn );
   return true;
 }
