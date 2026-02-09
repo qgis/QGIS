@@ -123,12 +123,17 @@ void Qgs3DMapExportWidget::exportFormatChanged()
     ui->smoothEdgesCheckBox->setToolTip( "" );
     ui->exportTexturesCheckBox->setToolTip( "" );
     ui->exportNormalsCheckBox->setToolTip( "" );
+    ui->mInfosLabel->setText( "" );
   }
   else
   {
     ui->smoothEdgesCheckBox->setToolTip( tr( "This option is only available for OBJ export." ) );
     ui->exportTexturesCheckBox->setToolTip( tr( "This option is only available for OBJ export." ) );
     ui->exportNormalsCheckBox->setToolTip( tr( "This option is only available for OBJ export." ) );
+    ui->mInfosLabel->setText( tr( "STL export is often used for 3D printing, which requires objects to be completely closed:"
+                                  "<br> * The exported terrain does not meet this requirement. It needs to be edited to close it before printing. "
+                                  "Alternatively, it can be disabled from export."
+                                  "<br> * For polygon vector objects, the \"Walls, Roof and Floor\" option in the 3D symbology settings should be enabled to ensure they are closed." ) );
   }
 
   updateTerrainResolutionWidget();
