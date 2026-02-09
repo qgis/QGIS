@@ -137,7 +137,8 @@ Item {
               delegate: ProjectCard {
                 width: recentProjectsListView.width - 12
                 title: Title || ""
-                subtitle: ProjectNativePath || ProjectPath || ""
+                // Add invisible spaces after slash and backslash characters to help wrapping paths
+                subtitle: (ProjectNativePath || ProjectPath || "").replace(/([\\\/])/g,"$1\u200b")
                 crs: Crs
                 imageSource: PreviewImagePath || ""
                 isPinned: Pinned
