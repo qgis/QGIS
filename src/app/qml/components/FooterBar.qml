@@ -47,6 +47,7 @@ Rectangle {
       radius: 20
       Layout.preferredHeight: 50
       Layout.preferredWidth: implicitWidth * 1.2
+      visible: root.width >= 310
       highlighted: true
       Material.accent: "#8c8c8c"
       text: qsTr("Go to qgis.org")
