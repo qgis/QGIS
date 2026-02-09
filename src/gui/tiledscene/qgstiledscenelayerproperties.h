@@ -18,14 +18,14 @@
 
 #include "ui_qgstiledscenelayerpropertiesbase.h"
 
-#include "qgis_app.h"
+#include "qgis_gui.h"
 #include "qgslayerpropertiesdialog.h"
 
 class QgsTiledSceneLayer;
 class QgsMessageBar;
 class QgsMetadataWidget;
 
-class APP_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsTiledSceneLayerPropertiesBase
+class GUI_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsTiledSceneLayerPropertiesBase
 {
     Q_OBJECT
   public:

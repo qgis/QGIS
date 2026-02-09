@@ -134,13 +134,11 @@ set(QGIS_APP_SRCS
   decorations/qgsdecorationoverlay.cpp
 
   pointcloud/qgspointcloudelevationpropertieswidget.cpp
-  pointcloud/qgspointcloudlayerproperties.cpp
   pointcloud/qgspointcloudlayerstylewidget.cpp
 
   raster/qgsrasterelevationpropertieswidget.cpp
 
   tiledscene/qgstiledsceneelevationpropertieswidget.cpp
-  tiledscene/qgstiledscenelayerproperties.cpp
   tiledscene/qgstiledscenelayerstylewidget.cpp
 
   vertextool/qgslockedfeature.cpp
