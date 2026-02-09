@@ -95,6 +95,8 @@ class TestQgsWmsProvider : public QgsTest
 
     void testMaxTileSize();
 
+    void testWmstTemporalCapabilities();
+
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
 };
@@ -642,6 +644,145 @@ void TestQgsWmsProvider::testMaxTileSize()
   const QSize maxTileSize6 = provider6.maximumTileSize();
   QCOMPARE( maxTileSize6.width(), 4000 );
   QCOMPARE( maxTileSize6.height(), 4000 );
+}
+
+void TestQgsWmsProvider::testWmstTemporalCapabilities()
+{
+  // Load WMS-T capabilities with various time formats
+  QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilitiesWmst.xml" );
+  QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
+  const QByteArray content = file.readAll();
+  QVERIFY( content.size() > 0 );
+
+  const QgsWmsParserSettings config;
+  QgsWmsCapabilities capabilities;
+  QVERIFY( capabilities.parseResponse( content, config ) );
+
+  // Full timestamp with Z (yyyy-MM-ddThh:mm:ssZ)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_full_z&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:00:00Z&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODateWithMs ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00%3A00Z" ) );
+  }
+
+  // Full timestamp without Z (yyyy-MM-ddThh:mm:ss)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_full_noz&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:00:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00%3A00" ) );
+  }
+
+  // Minute precision (yyyy-MM-ddThh:mm)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_minute&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12:00&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12%3A00" ) );
+  }
+
+  // Hour precision (yyyy-MM-ddThh)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_hour&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15T12&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T12:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15T12" ) );
+  }
+
+  // Day precision (yyyy-MM-dd)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_day&styles=&temporalSource=provider&timeDimensionExtent=2020-06-15&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-15T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06-15" ) );
+  }
+
+  // Month precision (yyyy-MM)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_month&styles=&temporalSource=provider&timeDimensionExtent=2020-06&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-06-01T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-06-01T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020-06" ) );
+  }
+
+  // Year precision (yyyy)
+  {
+    QgsWmsProvider provider(
+      u"allowTemporalUpdates=true&crs=EPSG:4326&format=image/png&layers=time_year&styles=&temporalSource=provider&timeDimensionExtent=2020&type=wmst&url=http://localhost:8380/mapserv"_s,
+      QgsDataProvider::ProviderOptions(),
+      &capabilities
+    );
+    QVERIFY( provider.isValid() );
+
+    QgsDateTimeRange range( QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ), QDateTime::fromString( "2020-01-01T00:00:00Z", Qt::ISODate ) );
+    provider.temporalCapabilities()->setRequestedTemporalRange( range );
+
+    QUrl url = provider.createRequestUrlWMS( QgsRectangle( -180, -90, 180, 90 ), 256, 256 );
+    QUrlQuery query( url );
+    QVERIFY( query.hasQueryItem( "TIME" ) );
+    QCOMPARE( query.queryItemValue( "TIME" ), QString( "2020" ) );
+  }
 }
 
 QGSTEST_MAIN( TestQgsWmsProvider )

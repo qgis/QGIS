@@ -638,6 +638,31 @@ class TestQgsWmsCapabilities : public QObject
       QgsWmtsTileLayer layer = capabilities.supportedTileLayers().at( 0 );
       QCOMPARE( layer.boundingBoxes.first().box, QgsRectangle( 109.999, -45.081, 155.005, -9.978 ) );
     }
+
+    void wmstTemporalFormat_data()
+    {
+      QTest::addColumn<QString>( "extent" );
+      QTest::addColumn<QString>( "expectedFormat" );
+
+      QTest::newRow( "year only" ) << "2014" << "yyyy";
+      QTest::newRow( "year-month" ) << "2014-01" << "yyyy-MM";
+      QTest::newRow( "year-month-day" ) << "2020-01-01" << "yyyy-MM-dd";
+      QTest::newRow( "full datetime with Z" ) << "2020-01-01T12:30:45Z" << "yyyy-MM-ddTHH:mm:ssZ";
+      QTest::newRow( "interval with dates" ) << "2020-01-01,2020-12-31" << "yyyy-MM-dd";
+      QTest::newRow( "interval with datetime" ) << "2020-01-01T00:00:00Z,2020-12-31T23:59:59Z" << "yyyy-MM-ddTHH:mm:ssZ";
+      QTest::newRow( "empty string" ) << "" << "";
+    }
+
+    void wmstTemporalFormat()
+    {
+      QFETCH( QString, extent );
+      QFETCH( QString, expectedFormat );
+
+      QgsWmsSettings settings;
+      QString format = settings.parseTemporalFormat( extent );
+
+      QCOMPARE( format, expectedFormat );
+    }
 };
 
 QGSTEST_MAIN( TestQgsWmsCapabilities )

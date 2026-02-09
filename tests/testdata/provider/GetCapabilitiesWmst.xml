@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WMS_Capabilities version="1.3.0">
+  <Service>
+    <Name>WMS</Name>
+    <Title>Test WMS-T Service (All Time Formats)</Title>
+  </Service>
+
+  <Capability>
+    <Layer>
+      <Title>Temporal Test Layers</Title>
+      <CRS>EPSG:4326</CRS>
+
+      <!-- yyyy-MM-ddThh:mm:ssZ -->
+      <Layer>
+        <Name>time_full_z</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ssZ</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00:00Z">
+          2020-01-01T00:00:00Z/2020-12-31T23:59:59Z/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mm:ss -->
+      <Layer>
+        <Name>time_full_noz</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ss</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00:00">
+          2020-01-01T00:00:00/2020-12-31T23:59:59/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mm -->
+      <Layer>
+        <Name>time_minute</Name>
+        <Title>Time yyyy-MM-ddThh:mm</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00">
+          2020-01-01T00:00/2020-12-31T23:59/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh -->
+      <Layer>
+        <Name>time_hour</Name>
+        <Title>Time yyyy-MM-ddThh</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12">
+          2020-01-01T00/2020-12-31T23/PT1H
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-dd -->
+      <Layer>
+        <Name>time_day</Name>
+        <Title>Time yyyy-MM-dd</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15">
+          2020-01-01/2020-12-31/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM -->
+      <Layer>
+        <Name>time_month</Name>
+        <Title>Time yyyy-MM</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06">
+          2020-01/2020-12/P1M
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy -->
+      <Layer>
+        <Name>time_year</Name>
+        <Title>Time yyyy</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020">
+          2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+    </Layer>
+  </Capability>
+</WMS_Capabilities>
