@@ -33,6 +33,7 @@ email                : nyall dot dawson at gmail dot com
 #include "qgsprovidersublayerdetails.h"
 #include "qgsproviderutils.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsfileutils.h"
 
 #include <QString>
 
@@ -880,10 +881,11 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
     QDir dir( path );
     const QFileInfoList files = dir.entryInfoList( QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot );
 
-    QStringList fileNames;
-    fileNames.reserve( files.size() );
+    QSet< QString > sidecarFiles;
     for ( const QFileInfo &info : files )
-      fileNames << info.fileName();
+    {
+      sidecarFiles.unite( QgsFileUtils::sidecarFilesForPath( info.filePath() ) );
+    }
 
     QList<QgsProviderSublayerDetails> res;
     for ( const QFileInfo &info : files )
@@ -891,17 +893,9 @@ QList<QgsProviderSublayerDetails> QgsOgrProviderMetadata::querySublayers( const 
       if ( feedback && feedback->isCanceled() )
         break;
 
-      // avoid duplicate layers from shapefile sidecar files
-      if ( info.suffix().compare( "dbf"_L1, Qt::CaseInsensitive ) == 0 )
-      {
-        if ( fileNames.contains( info.fileName().left( info.fileName().size() - 4 ) + ".shp" ) )
-          continue;
-      }
-      if ( info.completeSuffix().compare( "shp.xml"_L1, Qt::CaseInsensitive ) == 0
-           || info.completeSuffix().compare( "shx"_L1, Qt::CaseInsensitive ) == 0 )
-      {
+      // avoid duplicate layers from dataset sidecar files (e.g. .dbf for .shp)
+      if ( sidecarFiles.contains( info.filePath() ) )
         continue;
-      }
 
       QVariantMap fileParts = uriParts;
       fileParts.insert( u"path"_s, info.filePath() );
