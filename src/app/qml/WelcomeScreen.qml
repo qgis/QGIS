@@ -109,12 +109,14 @@ Item {
                 font.bold: true
                 visible: recentProjectsListView.count > 0
                 width: recentProjectsListView.count > 0 ? implicitWidth : 0
+                background: null
               }
               TabButton {
                 text: qsTr("Templates")
                 width: implicitWidth
                 font.pointSize: Application.font.pointSize * 1.1
                 font.bold: true
+                background: null
               }
             }
           }
