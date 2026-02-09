@@ -247,7 +247,7 @@ Item {
                   case TemplateProjectsModel.TemplateType.Blank:
                     welcomeScreenController.createBlankProject(); //#spellok
                     return;
-                  case TemplateProjectsModel.TemplateType.OpenStreetMap:
+                  case TemplateProjectsModel.TemplateType.Basemap:
                     welcomeScreenController.createProjectFromBasemap();
                     return;
                   default:
