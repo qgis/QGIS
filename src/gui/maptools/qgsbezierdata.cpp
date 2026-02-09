@@ -185,8 +185,8 @@ QgsPointSequence QgsBezierData::interpolateLine() const
 
 std::unique_ptr<QgsNurbsCurve> QgsBezierData::asNurbsCurve() const
 {
-  const int n = mData.count();
-  if ( n < 2 )
+  const int anchorCount = mData.count();
+  if ( anchorCount < 2 )
     return nullptr;
 
   // Build control points: anchor, handle_right, handle_left, anchor, ...
@@ -195,14 +195,14 @@ std::unique_ptr<QgsNurbsCurve> QgsBezierData::asNurbsCurve() const
   QVector<QgsPoint> ctrlPts;
   ctrlPts.append( mData[0].anchor );
 
-  for ( int i = 0; i < n - 1; ++i )
+  for ( int i = 0; i < anchorCount - 1; ++i )
   {
     ctrlPts.append( mData[i].rightHandle );
     ctrlPts.append( mData[i + 1].leftHandle );
     ctrlPts.append( mData[i + 1].anchor );
   }
 
-  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( n );
+  QVector<double> knots = QgsNurbsCurve::generateKnotsForBezierConversion( anchorCount );
 
   // Uniform weights (non-rational B-spline)
   QVector<double> weights( ctrlPts.count(), 1.0 );

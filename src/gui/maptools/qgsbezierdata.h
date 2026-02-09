@@ -53,8 +53,8 @@ struct GUI_EXPORT QgsAnchorWithHandles
       : anchor( point ), leftHandle( point ), rightHandle( point ) {}
 
     //! Constructor with all points specified
-    QgsAnchorWithHandles( const QgsPoint &a, const QgsPoint &left, const QgsPoint &right )
-      : anchor( a ), leftHandle( left ), rightHandle( right ) {}
+    QgsAnchorWithHandles( const QgsPoint &point, const QgsPoint &left, const QgsPoint &right )
+      : anchor( point ), leftHandle( left ), rightHandle( right ) {}
 };
 
 /**
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsBezierData
     void addAnchor( const QgsPoint &point );
 
     /**
-     * Moves the anchor at index \a index to the new position \a pt.
+     * Moves the anchor at index \a index to the new position \a point.
      * Handles are moved relative to the anchor.
      * \param index anchor index (0-based)
      * \param point new position
@@ -95,7 +95,7 @@ class GUI_EXPORT QgsBezierData
     void moveAnchor( int index, const QgsPoint &point );
 
     /**
-     * Moves the handle at index \a index to the new position \a pt.
+     * Moves the handle at index \a index to the new position \a point.
      * \param index handle index (0-based, 2 handles per anchor)
      * \param point new position
      */
