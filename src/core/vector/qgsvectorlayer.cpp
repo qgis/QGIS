@@ -6021,7 +6021,7 @@ QString QgsVectorLayer::htmlMetadata() const
     }
 
     // geom column name
-    if ( const QgsVectorDataProvider *provider = dataProvider(); !provider->geometryColumnName().isEmpty() )
+    if ( const QgsVectorDataProvider *provider = dataProvider(); provider && !provider->geometryColumnName().isEmpty() )
     {
       myMetadata += u"<tr><td class=\"highlight\">"_s + tr( "Geometry column" ) + u"</td><td>"_s + provider->geometryColumnName() + u"</td></tr>\n"_s;
     }
