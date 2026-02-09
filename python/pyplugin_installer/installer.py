@@ -757,7 +757,7 @@ class QgsPluginInstaller(QObject):
 
     def installFromZipFile(self, filePath):
         if not os.path.isfile(filePath):
-            return
+            return False
 
         QgsSettingsTree.node("plugin-manager").childSetting(
             "last-zip-directory"
@@ -793,7 +793,7 @@ class QgsPluginInstaller(QObject):
             msg_box.exec()
             if msg_box.clickedButton() == more_info_btn:
                 QgsHelp.openHelp("plugins/plugins.html#the-install-from-zip-tab")
-            return
+            return False
 
         pluginsDirectory = HOME_PLUGIN_PATH
         if not QDir(pluginsDirectory).exists():
@@ -891,6 +891,7 @@ class QgsPluginInstaller(QObject):
 
         level = Qgis.MessageLevel.Success if success else Qgis.MessageLevel.Critical
         iface.pluginManagerInterface().pushMessage(msg, level)
+        return success
 
     def processDependencies(self, plugin_id):
         """Processes plugin dependencies
