@@ -381,7 +381,7 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                     tokens[start_index + 3] = tokens[start_index + 3]._replace(src="")
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = (
-                    _replace_qvariant_type
+                    _replace_qvariant_type, "QVariant.Type.XXX doesn't exist, it should be QVariant.XXX"
                 )
             if object_types.get(_node.value.id) in ("QFontMetrics", "QFontMetricsF"):
                 if _node.attr == "width":
