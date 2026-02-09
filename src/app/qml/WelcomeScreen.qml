@@ -152,7 +152,9 @@ Item {
                                recentProjectsMenu.projectPinned = Pinned;
                                recentProjectsMenu.projectExists = Exists;
                                recentProjectsMenu.projectHasNativePath = ProjectNativePath != "";
-                               recentProjectsMenu.popup(mouse.x, mouse.y);
+                               
+                               const point = mapToItem(recentProjectsListView, mouse.x, mouse.y);
+                               recentProjectsMenu.popup(point.x, point.y);
                              }
                            }
               }
@@ -175,6 +177,8 @@ Item {
                 property bool projectExists: false
                 property bool projectHasNativePath: false
 
+                background.layer.enabled: false
+                
                 MenuItem {
                   text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
                   onClicked: {
@@ -183,6 +187,11 @@ Item {
                     } else {
                       recentProjectsModel.pinProject(recentProjectsMenu.projectIndex);
                     }
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
                 MenuItem {
@@ -193,6 +202,11 @@ Item {
                   onClicked: {
                     recentProjectsModel.recheckProject(recentProjectsMenu.projectIndex);
                   }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
                 }
                 MenuItem {
                   text: qsTr("Open Directory…")
@@ -202,11 +216,21 @@ Item {
                   onClicked: {
                     recentProjectsModel.openProject(recentProjectsMenu.projectIndex);
                   }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
                 }
                 MenuItem {
                   text: qsTr("Remove from List")
                   onClicked: {
                     recentProjectsModel.removeProject(recentProjectsMenu.projectIndex);
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
                 MenuSeparator {}
@@ -214,6 +238,11 @@ Item {
                   text: qsTr("Clear List")
                   onClicked: {
                     welcomeScreenController.clearRecentProjects();
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
                   }
                 }
               }
