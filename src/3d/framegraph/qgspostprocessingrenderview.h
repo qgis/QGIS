@@ -64,7 +64,7 @@ class QgsPostprocessingRenderView : public QgsAbstractRenderView
                                  Qt3DCore::QEntity *rootSceneEntity );
 
     //! Default destructor
-    virtual ~QgsPostprocessingRenderView();
+    virtual ~QgsPostprocessingRenderView() override;
 
     virtual void updateWindowResize( int width, int height ) override;
 

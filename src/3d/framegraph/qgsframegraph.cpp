@@ -25,6 +25,7 @@
 #include "qgsforwardrenderview.h"
 #include "qgsframegraphutils.h"
 #include "qgshighlightsrenderview.h"
+#include "qgspostprocessingentity.h"
 #include "qgspostprocessingrenderview.h"
 #include "qgsshadowrenderview.h"
 
