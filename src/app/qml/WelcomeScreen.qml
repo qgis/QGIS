@@ -138,6 +138,7 @@ Item {
                 width: recentProjectsListView.width - 12
                 title: Title || ""
                 subtitle: ProjectNativePath || ProjectPath || ""
+                crs: Crs
                 imageSource: PreviewImagePath || ""
                 isPinned: Pinned
                 isSelected: recentProjectsListView.currentIndex === index
