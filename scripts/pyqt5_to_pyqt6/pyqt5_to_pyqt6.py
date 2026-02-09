@@ -375,13 +375,19 @@ def fix_file(filename: str, qgis3_compat: bool, dry_run: bool = False) -> int:
                     assert tokens[start_index].src == "QVariant"
                     assert tokens[start_index + 1].src == "."
                     assert tokens[start_index + 2].src == "Type"
-                    assert tokens[start_index + 3].src == "."
-
-                    tokens[start_index + 2] = tokens[start_index + 2]._replace(src="")
-                    tokens[start_index + 3] = tokens[start_index + 3]._replace(src="")
+                    # We may hit a return type annotation "-> QVariant.Type:"
+                    # which is OK. So only add the update if we detect "QVariant.Type."
+                    if tokens[start_index + 3].src == ".":
+                        tokens[start_index + 2] = tokens[start_index + 2]._replace(
+                            src=""
+                        )
+                        tokens[start_index + 3] = tokens[start_index + 3]._replace(
+                            src=""
+                        )
 
                 custom_updates[Offset(node.lineno, node.col_offset)] = (
-                    _replace_qvariant_type, "QVariant.Type.XXX doesn't exist, it should be QVariant.XXX"
+                    _replace_qvariant_type,
+                    "QVariant.Type.XXX doesn't exist, it should be QVariant.XXX",
                 )
             if object_types.get(_node.value.id) in ("QFontMetrics", "QFontMetricsF"):
                 if _node.attr == "width":
