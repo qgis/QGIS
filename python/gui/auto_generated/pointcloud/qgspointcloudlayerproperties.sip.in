@@ -1,0 +1,40 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/pointcloud/qgspointcloudlayerproperties.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsPointCloudLayerProperties : QgsLayerPropertiesDialog
+{
+%Docstring(signature="appended")
+Layer properties dialog for point cloud layers.
+
+.. versionadded:: 4.0
+%End
+
+%TypeHeaderCode
+#include "qgspointcloudlayerproperties.h"
+%End
+  public:
+    QgsPointCloudLayerProperties( QgsPointCloudLayer *lyr, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/pointcloud/qgspointcloudlayerproperties.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

@@ -25,10 +25,17 @@ class QgsTiledSceneLayer;
 class QgsMessageBar;
 class QgsMetadataWidget;
 
+/**
+ * \ingroup gui
+ * \class QgsTiledSceneLayerProperties
+ * \brief Layer properties dialog for tiled scene layers.
+ * \since QGIS 4.0 in the GUI API
+ */
 class GUI_EXPORT QgsTiledSceneLayerProperties : public QgsLayerPropertiesDialog, private Ui::QgsTiledSceneLayerPropertiesBase
 {
     Q_OBJECT
   public:
+    //! Constructor
     QgsTiledSceneLayerProperties( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
   protected slots:
