@@ -210,6 +210,13 @@ void QgsBezierMarker::updateHandleLines( const QgsBezierData &data )
   {
     mHandleLines[i]->reset( Qgis::GeometryType::Line );
 
+    // Reapply style properties after reset
+    QColor lineColor = QgsSettingsRegistryCore::settingsDigitizingLineColor->value();
+    lineColor.setAlpha( MarkerConfig::HandleLineAlpha );
+    mHandleLines[i]->setColor( lineColor );
+    mHandleLines[i]->setWidth( MarkerConfig::HandleLineWidth );
+    mHandleLines[i]->setLineStyle( Qt::DashLine );
+
     const QgsPoint &handle = data.handle( i );
     const int anchorIndex = i / 2;
     if ( anchorIndex >= data.anchorCount() )
@@ -221,11 +228,10 @@ void QgsBezierMarker::updateHandleLines( const QgsBezierData &data )
 
     const bool isRetracted = qgsDoubleNear( handle.x(), anchor.x() ) && qgsDoubleNear( handle.y(), anchor.y() );
 
-    if ( !isRetracted && mVisible && mHandlesVisible )
+    if ( !isRetracted )
     {
       mHandleLines[i]->addPoint( QgsPointXY( anchor ) );
       mHandleLines[i]->addPoint( QgsPointXY( handle ) );
-      mHandleLines[i]->setVisible( true );
     }
   }
 }
@@ -241,7 +247,12 @@ void QgsBezierMarker::setVisible( bool visible )
     marker->setVisible( visible && mHandlesVisible );
 
   for ( const auto &rb : mHandleLines )
-    rb->setVisible( visible && mHandlesVisible );
+  {
+    if ( rb->numberOfVertices() > 0 )
+      rb->setVisible( visible && mHandlesVisible );
+    else
+      rb->setVisible( false );
+  }
 
   mCurveRubberBand->setVisible( visible );
 }
@@ -254,7 +265,12 @@ void QgsBezierMarker::setHandlesVisible( bool visible )
     marker->setVisible( mVisible && visible );
 
   for ( const auto &rb : mHandleLines )
-    rb->setVisible( mVisible && visible );
+  {
+    if ( rb->numberOfVertices() > 0 )
+      rb->setVisible( mVisible && visible );
+    else
+      rb->setVisible( false );
+  }
 }
 
 void QgsBezierMarker::clear()
