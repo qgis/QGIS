@@ -782,6 +782,7 @@ not exist yet in the layer
 
 
 
+
   private:
     QgsVectorFileWriter( const QgsVectorFileWriter &rh );
 };
