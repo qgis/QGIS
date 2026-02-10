@@ -654,6 +654,28 @@ void QgsMapToolCapture::cadCanvasMoveEvent( QgsMapMouseEvent *e )
     // Poly-Bézier mode handling
     const QgsPoint mapPoint = QgsPoint( point );
 
+    // Check if we are hovering over a handle or anchor to change cursor
+    if ( mBezierData )
+    {
+      const double tolerance = searchRadiusMU( mCanvas );
+
+      // Check if mouse is near any handle
+      const int handleIdx = mBezierData->findClosestHandle( mapPoint, tolerance );
+      // Check if mouse is near any anchor
+      const int anchorIdx = mBezierData->findClosestAnchor( mapPoint, tolerance );
+
+      if ( handleIdx >= 0 || anchorIdx >= 0 )
+      {
+        // Change cursor to hand pointer when hovering over a handle or anchor
+        setCursor( Qt::PointingHandCursor );
+      }
+      else
+      {
+        // Reset cursor to the default CapturePoint
+        setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
+      }
+    }
+
     if ( mBezierDragging && mBezierData )
     {
       if ( mBezierDragHandleIndex >= 0 )
