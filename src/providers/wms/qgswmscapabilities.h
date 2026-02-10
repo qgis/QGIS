@@ -710,6 +710,12 @@ class QgsWmsSettings
      */
     QgsWmstDimensionExtent parseTemporalExtent( const QString &extent );
 
+    /**
+     * Parses a temporal format string from WMS-T dimension capabilities and returns
+     * the appropriate format string for formatting datetime values.
+     *
+     * \since QGIS 4.0
+     */
     QString parseTemporalFormat( const QString &format );
 
     /**
