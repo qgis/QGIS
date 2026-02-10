@@ -16,11 +16,11 @@
 #ifndef QGSMAPLAYERACTIONCONTEXT_H
 #define QGSMAPLAYERACTIONCONTEXT_H
 
-#include "qgis_sip.h"
-#include <QPointer>
-
 #include "qgis.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QPointer>
 
 class QgsAttributeDialog;
 class QgsMessageBar;

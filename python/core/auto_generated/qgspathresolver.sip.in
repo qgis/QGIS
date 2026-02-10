@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsPathResolver
 {
 %Docstring(signature="appended")

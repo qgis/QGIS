@@ -14,16 +14,21 @@
  ***************************************************************************/
 
 #include "qgslegendpatchshapebutton.h"
-#include "moc_qgslegendpatchshapebutton.cpp"
-#include "qgslegendpatchshapewidget.h"
-#include "qgis.h"
-#include "qgsguiutils.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgslinesymbol.h"
 
-#include <QMenu>
+#include "qgis.h"
+#include "qgsfillsymbol.h"
+#include "qgsguiutils.h"
+#include "qgslegendpatchshapewidget.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
+
 #include <QBuffer>
+#include <QMenu>
+#include <QString>
+
+#include "moc_qgslegendpatchshapebutton.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QString &dialogTitle )
   : QToolButton( parent )
@@ -300,7 +305,7 @@ void QgsLegendPatchShapeButton::updatePreview()
   QByteArray data;
   QBuffer buffer( &data );
   pm.save( &buffer, "PNG", 100 );
-  setToolTip( QStringLiteral( "<img src='data:image/png;base64, %3' width=\"%4\">" ).arg( QString( data.toBase64() ) ).arg( width ) );
+  setToolTip( u"<img src='data:image/png;base64, %3' width=\"%4\">"_s.arg( QString( data.toBase64() ) ).arg( width ) );
 }
 
 void QgsLegendPatchShapeButton::setDialogTitle( const QString &title )

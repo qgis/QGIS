@@ -14,15 +14,22 @@
  ***************************************************************************/
 
 #include "qgsmaprendererstagedrenderjob.h"
-#include "moc_qgsmaprendererstagedrenderjob.cpp"
+
+#include <memory>
 
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
-#include "qgsproject.h"
-#include "qgsmaplayerrenderer.h"
 #include "qgsmaplayerlistutils_p.h"
+#include "qgsmaplayerrenderer.h"
+#include "qgsproject.h"
 #include "qgsrendereditemresults.h"
+
+#include <QString>
+
+#include "moc_qgsmaprendererstagedrenderjob.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapRendererStagedRenderJob::QgsMapRendererStagedRenderJob( const QgsMapSettings &settings, Flags flags )
   : QgsMapRendererAbstractCustomPainterJob( settings )
@@ -43,7 +50,7 @@ void QgsMapRendererStagedRenderJob::startPrivate()
   mRenderingStart.start();
   mErrors.clear();
 
-  QgsDebugMsgLevel( QStringLiteral( "Preparing list of layer jobs for rendering" ), 5 );
+  QgsDebugMsgLevel( u"Preparing list of layer jobs for rendering"_s, 5 );
   QElapsedTimer prepareTime;
   prepareTime.start();
 
@@ -52,9 +59,9 @@ void QgsMapRendererStagedRenderJob::startPrivate()
   if ( mSettings.testFlag( Qgis::MapSettingsFlag::DrawLabeling ) )
   {
     if ( mFlags & RenderLabelsByMapLayer )
-      mLabelingEngineV2.reset( new QgsStagedRenderLabelingEngine() );
+      mLabelingEngineV2 = std::make_unique<QgsStagedRenderLabelingEngine>( );
     else
-      mLabelingEngineV2.reset( new QgsDefaultLabelingEngine() );
+      mLabelingEngineV2 = std::make_unique<QgsDefaultLabelingEngine>( );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 

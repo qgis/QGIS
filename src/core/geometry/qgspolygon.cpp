@@ -16,11 +16,16 @@
  ***************************************************************************/
 
 #include "qgspolygon.h"
+
 #include "qgsapplication.h"
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgsmultilinestring.h"
 #include "qgswkbptr.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPolygon::QgsPolygon()
 {
@@ -41,7 +46,7 @@ QgsPolygon::QgsPolygon( QgsLineString *exterior, const QList<QgsLineString *> &r
 
 QString QgsPolygon::geometryType() const
 {
-  return QStringLiteral( "Polygon" );
+  return u"Polygon"_s;
 }
 
 QgsPolygon *QgsPolygon::createEmptyWithSameType() const
@@ -190,10 +195,10 @@ QString QgsPolygon::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
   {
-    wkt += QLatin1String( " (" );
+    wkt += " ("_L1;
     if ( mExteriorRing )
     {
       QString childWkt = mExteriorRing->asWkt( precision );

@@ -15,20 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterlayerprofilegenerator.h"
-#include "qgsprofilerequest.h"
+
 #include "qgscurve.h"
-#include "qgsrasterlayer.h"
-#include "qgsrasterlayerelevationproperties.h"
-#include "qgsrasteriterator.h"
+#include "qgsfillsymbol.h"
 #include "qgsgeometryengine.h"
 #include "qgsgeos.h"
 #include "qgslinesymbol.h"
 #include "qgsprofilepoint.h"
-#include "qgsfillsymbol.h"
+#include "qgsprofilerequest.h"
+#include "qgsrasteriterator.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterlayerelevationproperties.h"
 #include "qgsthreadingutils.h"
 
 #include <QPolygonF>
+#include <QString>
 #include <QThread>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsRasterLayerProfileResults
@@ -36,7 +40,7 @@
 
 QString QgsRasterLayerProfileResults::type() const
 {
-  return QStringLiteral( "raster" );
+  return u"raster"_s;
 }
 
 QVector<QgsProfileIdentifyResults> QgsRasterLayerProfileResults::identify( const QgsProfilePoint &point, const QgsProfileIdentifyContext &context )
@@ -89,6 +93,11 @@ QString QgsRasterLayerProfileGenerator::sourceId() const
   return mId;
 }
 
+QString QgsRasterLayerProfileGenerator::type() const
+{
+  return u"raster"_s;
+}
+
 Qgis::ProfileGeneratorFlags QgsRasterLayerProfileGenerator::flags() const
 {
   return Qgis::ProfileGeneratorFlag::RespectsDistanceRange | Qgis::ProfileGeneratorFlag::RespectsMaximumErrorMapUnit;
@@ -127,7 +136,7 @@ bool QgsRasterLayerProfileGenerator::generateProfile( const QgsProfileGeneration
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Error transforming profile line to raster CRS" ) );
+    QgsDebugError( u"Error transforming profile line to raster CRS"_s );
     return false;
   }
 

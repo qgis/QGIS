@@ -14,13 +14,20 @@
  ***************************************************************************/
 
 #include "qgsexpressionutils.h"
-#include "qgsvectorlayer.h"
+
+#include <memory>
+
 #include "qgscolorrampimpl.h"
-#include "qgsproviderregistry.h"
-#include "qgsvariantutils.h"
 #include "qgsproject.h"
-#include "qgsvectorlayerfeatureiterator.h"
+#include "qgsproviderregistry.h"
 #include "qgssymbollayerutils.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerfeatureiterator.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -358,7 +365,7 @@ std::unique_ptr<QgsVectorLayerFeatureSource> QgsExpressionUtils::getFeatureSourc
   {
     if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      featureSource.reset( new QgsVectorLayerFeatureSource( vl ) );
+      featureSource = std::make_unique<QgsVectorLayerFeatureSource>( vl );
     }
   }, foundLayer );
 
@@ -378,7 +385,7 @@ QString QgsExpressionUtils::getFilePathValue( const QVariant &value, const QgsEx
   if ( QgsMapLayer *layer = getMapLayer( value, context, parent ) )
   {
     const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( layer->providerType(), layer->source() );
-    res = parts.value( QStringLiteral( "path" ) ).toString();
+    res = parts.value( u"path"_s ).toString();
   }
   Q_NOWARN_DEPRECATED_POP
 

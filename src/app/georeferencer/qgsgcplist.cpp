@@ -13,15 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspointxy.h"
-#include "qgsgeorefdatapoint.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgsproject.h"
-#include "qgsgeoreftransform.h"
-
 #include "qgsgcplist.h"
+
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgeorefdatapoint.h"
+#include "qgsgeoreftransform.h"
+#include "qgspointxy.h"
+#include "qgsproject.h"
+
 #include <QDir>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 void QgsGCPList::createGCPVectors( QVector<QgsPointXY> &sourcePoints, QVector<QgsPointXY> &destinationPoints, const QgsCoordinateReferenceSystem &targetCrs, const QgsCoordinateTransformContext &context ) const
 {
@@ -141,7 +145,7 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
     QTextStream points( &pointFile );
     if ( targetCrs.isValid() )
     {
-      points << QStringLiteral( "#CRS: %1" ).arg( targetCrs.toWkt( Qgis::CrsWktVariant::Preferred ) );
+      points << u"#CRS: %1"_s.arg( targetCrs.toWkt( Qgis::CrsWktVariant::Preferred ) );
       points << Qt::endl;
     }
 
@@ -151,7 +155,7 @@ bool QgsGCPList::saveGcps( const QString &filePath, const QgsCoordinateReference
     for ( QgsGeorefDataPoint *pt : *this )
     {
       const QgsPointXY transformedDestinationPoint = pt->transformedDestinationPoint( targetCrs, context );
-      points << QStringLiteral( "%1,%2,%3,%4,%5,%6,%7,%8" )
+      points << u"%1,%2,%3,%4,%5,%6,%7,%8"_s
                   .arg( qgsDoubleToString( transformedDestinationPoint.x() ), qgsDoubleToString( transformedDestinationPoint.y() ), qgsDoubleToString( pt->sourcePoint().x() ), qgsDoubleToString( pt->sourcePoint().y() ) )
                   .arg( pt->isEnabled() )
                   .arg( qgsDoubleToString( pt->residual().x() ), qgsDoubleToString( pt->residual().y() ), qgsDoubleToString( std::sqrt( pt->residual().x() * pt->residual().x() + pt->residual().y() * pt->residual().y() ) ) );
@@ -181,9 +185,9 @@ QList<QgsGcpPoint> QgsGCPList::loadGcps( const QString &filePath, const QgsCoord
   QString line = points.readLine();
   lineNumber++;
 
-  if ( line.contains( QLatin1String( "#CRS: " ) ) )
+  if ( line.contains( "#CRS: "_L1 ) )
   {
-    const QString crsDef = line.remove( QStringLiteral( "#CRS: " ) );
+    const QString crsDef = line.remove( u"#CRS: "_s );
     if ( !crsDef.trimmed().isEmpty() )
     {
       actualDestinationCrs = QgsCoordinateReferenceSystem( crsDef );

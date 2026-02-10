@@ -18,10 +18,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
-#include <QAbstractListModel>
-#include <QSortFilterProxyModel>
 #include "qgsprojectstoredobjectmanager.h"
+
+#include <QAbstractListModel>
+#include <QObject>
+#include <QSortFilterProxyModel>
 
 /**
  * \ingroup core
@@ -46,6 +47,7 @@ class CORE_EXPORT QgsProjectStoredObjectManagerModelBase : public QAbstractListM
     enum class CustomRole : int
     {
       Object = Qt::UserRole + 1, //!< Object
+      IsEmptyObject, //!< TRUE if row represents the empty object \since QGIS 4.0
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*

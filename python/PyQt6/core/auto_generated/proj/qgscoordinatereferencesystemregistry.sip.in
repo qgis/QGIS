@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCoordinateReferenceSystemRegistry : QObject
 {
 %Docstring(signature="appended")
@@ -39,16 +40,13 @@ Constructor for QgsCoordinateReferenceSystemRegistry, with the specified
     ~QgsCoordinateReferenceSystemRegistry();
 
     class UserCrsDetails
-{
+    {
 %Docstring(signature="appended")
 Contains details of a custom (user defined) CRS.
 
 .. versionadded:: 3.18
 %End
 
-%TypeHeaderCode
-#include "qgscoordinatereferencesystemregistry.h"
-%End
       public:
 
         long id;

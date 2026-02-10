@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include "qgsabstractgeometry.h"
 #include "qgsbox3d.h"
+
 #include <QPainterPath>
 
 class QgsLineString;
@@ -135,6 +136,13 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
      * Sums up the area of the curve by iterating over the vertices (shoelace formula).
      */
     virtual void sumUpArea( double &sum SIP_OUT ) const = 0;
+
+    /**
+     * Sums up the 3d area of the curve by iterating over the vertices (shoelace formula).
+     *
+     * \since QGIS 4.0
+     */
+    virtual void sumUpArea3D( double &sum SIP_OUT ) const = 0;
 
     QgsCoordinateSequence coordinateSequence() const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
@@ -392,6 +400,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry SIP_ABSTRACT
 
     mutable bool mHasCachedSummedUpArea = false;
     mutable double mSummedUpArea = 0;
+    mutable bool mHasCachedSummedUpArea3D = false;
+    mutable double mSummedUpArea3D = 0;
 
   private:
 

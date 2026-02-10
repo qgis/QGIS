@@ -16,17 +16,17 @@
 #ifndef QGS3DSCENEEXPORTER_H
 #define QGS3DSCENEEXPORTER_H
 
-#include <Qt3DCore/QEntity>
-#include <Qt3DExtras/QPlaneGeometry>
-#include <Qt3DRender/QSceneLoader>
-#include <Qt3DRender/QMesh>
-#include <QMap>
-#include <QFile>
-#include <QVector3D>
-#include <QMatrix4x4>
-
 #include "qgs3dexportobject.h"
 #include "qgsfeatureid.h"
+
+#include <QFile>
+#include <QMap>
+#include <QMatrix4x4>
+#include <QVector3D>
+#include <Qt3DCore/QEntity>
+#include <Qt3DExtras/QPlaneGeometry>
+#include <Qt3DRender/QMesh>
+#include <Qt3DRender/QSceneLoader>
 
 class QgsTessellatedPolygonGeometry;
 class QgsTerrainTileEntity;
@@ -62,7 +62,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
   public:
     Qgs3DSceneExporter() {}
 
-    ~Qgs3DSceneExporter()
+    ~Qgs3DSceneExporter() override
     {
       for ( Qgs3DExportObject *obj : mObjects )
         delete obj;
@@ -112,6 +112,24 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     //! Returns the scale of the exported 3D model
     float scale() const { return mScale; }
 
+    /**
+     * Returns whether terrain export is enabled.
+     * It terrain export is disabled, the terrain resolution and terrain texture resolution
+     * parameters have no effect.
+     *
+     * \see setTerrainExportEnabled()
+     * \since QGIS 4.0
+     */
+    bool terrainExportEnabled() const { return mTerrainExportEnabled; }
+
+    /**
+     * Sets whether terrain export is enabled.
+     *
+     * \see terrainExportEnabled()
+     * \since QGIS 4.0
+     */
+    void setTerrainExportEnabled( bool enabled ) { mTerrainExportEnabled = enabled; }
+
   private:
     //! Constructs Qgs3DExportObject from instanced point geometry
     QVector<Qgs3DExportObject *> processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QString &objectNamePrefix );
@@ -152,6 +170,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     bool mExportTextures = false;
     int mTerrainTextureResolution = 512;
     float mScale = 1.0f;
+    bool mTerrainExportEnabled = true;
 
     QSet<QgsFeatureId> mExportedFeatureIds;
 

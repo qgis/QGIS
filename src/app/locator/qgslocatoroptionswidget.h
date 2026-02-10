@@ -18,11 +18,11 @@
 #ifndef QGSLOCATOROPTIONSWIDGET_H
 #define QGSLOCATOROPTIONSWIDGET_H
 
+#include "qgslocator.h"
+#include "qgslocatorfilter.h"
+
 #include <QItemDelegate>
 #include <QTreeView>
-
-#include "qgslocatorfilter.h"
-#include "qgslocator.h"
 
 class QToolButton;
 

@@ -14,8 +14,13 @@
  ***************************************************************************/
 
 #include "qgsadvanceddigitizingtoolsregistry.h"
+
 #include "qgsadvanceddigitizingtools.h"
 #include "qgsapplication.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsAdvancedDigitizingTool *QgsAdvancedDigitizingToolAbstractMetadata::createTool( QgsMapCanvas *, QgsAdvancedDigitizingDockWidget * )
 {
@@ -34,7 +39,7 @@ QgsAdvancedDigitizingToolsRegistry::~QgsAdvancedDigitizingToolsRegistry()
 
 void QgsAdvancedDigitizingToolsRegistry::addDefaultTools()
 {
-  addTool( new QgsAdvancedDigitizingToolMetadata( QStringLiteral( "circlesintersection" ), QObject::tr( "2-Circle Point Intersection" ), QgsApplication::getThemeIcon( QStringLiteral( "/cadtools/circlesintersection.svg" ) ), []( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) -> QgsAdvancedDigitizingTool * {
+  addTool( new QgsAdvancedDigitizingToolMetadata( u"circlesintersection"_s, QObject::tr( "2-Circle Point Intersection" ), QgsApplication::getThemeIcon( u"/cadtools/circlesintersection.svg"_s ), []( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget ) -> QgsAdvancedDigitizingTool * {
     return new QgsAdvancedDigitizingCirclesIntersectionTool( canvas, cadDockWidget );
   } ) );
 }

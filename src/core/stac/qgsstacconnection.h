@@ -18,13 +18,15 @@
 
 
 #include "qgis_core.h"
+#include "qgsabstractproviderconnection.h"
+#include "qgshttpheaders.h"
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
 
+#include <QString>
 #include <QStringList>
 
-#include "qgsabstractproviderconnection.h"
-#include "qgshttpheaders.h"
+using namespace Qt::StringLiterals;
 
 class QgsSettingsEntryString;
 class QgsSettingsEntryVariantMap;
@@ -44,7 +46,7 @@ class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
 #ifndef SIP_RUN
 
     ///@cond PRIVATE
-    static inline QgsSettingsTreeNamedListNode *sTreeConnectionStac = QgsSettingsTree::sTreeConnections->createNamedListNode( QStringLiteral( "stac" ), Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
+    static inline QgsSettingsTreeNamedListNode *sTreeConnectionStac = QgsSettingsTree::sTreeConnections->createNamedListNode( u"stac"_s, Qgis::SettingsTreeNodeOption::NamedListSelectedItemSetting );
 
     static const QgsSettingsEntryString *settingsUrl;
     static const QgsSettingsEntryString *settingsAuthcfg;

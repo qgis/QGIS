@@ -14,10 +14,11 @@
  ***************************************************************************/
 
 #include "qgsappwindowmanager.h"
-#include "qgsstylemanagerdialog.h"
+
+#include "elevation/qgselevationprofilemanagerdialog.h"
 #include "qgisapp.h"
 #include "qgslayoutmanagerdialog.h"
-#include "elevation/qgselevationprofilemanagerdialog.h"
+#include "qgsstylemanagerdialog.h"
 
 #ifdef HAVE_3D
 #include "qgs3dviewsmanagerdialog.h"
@@ -54,8 +55,6 @@ QWidget *QgsAppWindowManager::openStandardDialog( QgsWindowManagerInterface::Sta
 
 QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::ApplicationDialog dialog )
 {
-  // clang-tidy false positive
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( dialog )
   {
     case ApplicationDialog::LayoutManager:
@@ -97,6 +96,5 @@ QWidget *QgsAppWindowManager::openApplicationDialog( QgsAppWindowManager::Applic
       return mElevationProfileManagerDialog;
     }
   }
-  // NOLINTEND(bugprone-branch-clone)
   return nullptr;
 }

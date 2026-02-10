@@ -17,9 +17,15 @@
  ***************************************************************************/
 
 #include "qgsunitselectionwidget.h"
-#include "moc_qgsunitselectionwidget.cpp"
+
 #include "qgshelp.h"
+
 #include <QDialogButtonBox>
+#include <QString>
+
+#include "moc_qgsunitselectionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapUnitScaleWidget::QgsMapUnitScaleWidget( QWidget *parent )
   : QgsPanelWidget( parent )
@@ -310,5 +316,5 @@ void QgsMapUnitScaleDialog::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsMapUnitScaleDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#unit-selector" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#unit-selector"_s );
 }

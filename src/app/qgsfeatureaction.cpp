@@ -15,24 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsfeatureaction.h"
+
 #include "qgisapp.h"
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
 #include "qgsattributedialog.h"
 #include "qgsdistancearea.h"
-#include "qgsfeatureaction.h"
-#include "moc_qgsfeatureaction.cpp"
-#include "qgslogger.h"
 #include "qgshighlight.h"
+#include "qgslogger.h"
 #include "qgsproject.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsactionmanager.h"
-#include "qgsaction.h"
 #include "qgsvectorlayerutils.h"
-#include "qgssettingsregistrycore.h"
-#include "qgssettingsentryimpl.h"
 
 #include <QPushButton>
+#include <QString>
 
+#include "moc_qgsfeatureaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, QUuid actionId, int defaultAttr, QObject *parent )
   : QAction( name, parent )
@@ -40,7 +44,6 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVecto
   , mFeature( &f )
   , mActionId( actionId )
   , mIdx( defaultAttr )
-  , mFeatureSaved( false )
 {
 }
 
@@ -74,9 +77,9 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
     dialog->setWindowFlag( Qt::WindowStaysOnTopHint );
 #endif
 
-  dialog->setObjectName( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( f->id() ) );
+  dialog->setObjectName( u"featureactiondlg:%1:%2"_s.arg( mLayer->id() ).arg( f->id() ) );
 
-  const QList<QgsAction> actions = mLayer->actions()->actions( QStringLiteral( "Feature" ) );
+  const QList<QgsAction> actions = mLayer->actions()->actions( u"Feature"_s );
   if ( !actions.isEmpty() )
   {
     dialog->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -111,7 +114,7 @@ bool QgsFeatureAction::viewFeatureForm( QgsHighlight *h )
   if ( !mLayer || !mFeature )
     return false;
 
-  const QString name( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
+  const QString name( u"featureactiondlg:%1:%2"_s.arg( mLayer->id() ).arg( mFeature->id() ) );
 
   QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
   if ( dialog )
@@ -149,7 +152,7 @@ bool QgsFeatureAction::editFeature( bool showModal )
   }
   else
   {
-    const QString name( QStringLiteral( "featureactiondlg:%1:%2" ).arg( mLayer->id() ).arg( mFeature->id() ) );
+    const QString name( u"featureactiondlg:%1:%2"_s.arg( mLayer->id() ).arg( mFeature->id() ) );
 
     QgsAttributeDialog *dialog = QgisApp::instance()->findChild<QgsAttributeDialog *>( name );
     if ( dialog )
@@ -297,7 +300,7 @@ void QgsFeatureAction::hideParentWidget()
   if ( dialog )
   {
     QWidget *triggerWidget = dialog->parentWidget();
-    if ( triggerWidget && triggerWidget->window()->objectName() != QLatin1String( "QgisApp" ) )
+    if ( triggerWidget && triggerWidget->window()->objectName() != "QgisApp"_L1 )
       triggerWidget->window()->setVisible( false );
   }
 }

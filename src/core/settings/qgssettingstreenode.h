@@ -16,11 +16,14 @@
 #ifndef QGSSETTINGSTREENODE_H
 #define QGSSETTINGSTREENODE_H
 
-#include <QObject>
-
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
+
+#include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsSettingsTreeNamedListNode;
 class QgsSettingsEntryBase;
@@ -134,7 +137,7 @@ class CORE_EXPORT QgsSettingsTreeNode
     % MethodCode
     const QMetaEnum metaEnum = QMetaEnum::fromType<Qgis::SettingsTreeNodeType>();
 
-    QString str = QStringLiteral( "<QgsSettingsTreeNode (%1): %2>" ).arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
+    QString str = u"<QgsSettingsTreeNode (%1): %2>"_s.arg( metaEnum.valueToKey( static_cast<int>( sipCpp->type() ) ), sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

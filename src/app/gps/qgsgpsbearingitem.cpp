@@ -14,24 +14,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QPainter>
-#include <QObject>
-
 #include "qgsgpsbearingitem.h"
-#include "moc_qgsgpsbearingitem.cpp"
+
 #include "qgscoordinatetransform.h"
-#include "qgsmapcanvas.h"
 #include "qgsexception.h"
-#include "qgsproject.h"
-#include "qgsmessagelog.h"
-#include "qgssymbol.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
+#include "qgsmessagelog.h"
+#include "qgsproject.h"
+#include "qgssymbol.h"
+
+#include <QObject>
+#include <QPainter>
+#include <QString>
+
+#include "moc_qgsgpsbearingitem.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGpsBearingItem::QgsGpsBearingItem( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasLineSymbolItem( mapCanvas )
 {
   mSymbol->setColor( QColor( 255, 0, 0 ) );
-  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( u"EPSG:4326"_s );
 
   setZValue( 199 );
 
@@ -52,7 +57,7 @@ void QgsGpsBearingItem::setGpsPosition( const QgsPointXY &point )
     }
     catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
-      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), QStringLiteral( "GPS" ), Qgis::MessageLevel::Warning );
+      QgsMessageLog::logMessage( QObject::tr( "Error transforming the map center point: %1" ).arg( e.what() ), u"GPS"_s, Qgis::MessageLevel::Warning );
       return;
     }
   }
@@ -96,7 +101,7 @@ void QgsGpsBearingItem::updateLine()
     catch ( QgsCsException & )
     {
       // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      QgsDebugError( u"An error occurred while calculating length"_s );
     }
 
     QgsDistanceArea da;
@@ -112,7 +117,7 @@ void QgsGpsBearingItem::updateLine()
   }
   catch ( QgsCsException & )
   {
-    QgsDebugError( QStringLiteral( "Coordinate exception encountered while drawing GPS bearing line" ) );
+    QgsDebugError( u"Coordinate exception encountered while drawing GPS bearing line"_s );
     bearingLine.clear();
   }
 

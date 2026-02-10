@@ -14,21 +14,27 @@
 ***************************************************************************/
 
 #include "qgsexpressionlineedit.h"
-#include "moc_qgsexpressionlineedit.cpp"
-#include "qgsfilterlineedit.h"
-#include "qgsexpressioncontext.h"
+
+#include <memory>
+
 #include "qgsapplication.h"
+#include "qgscodeeditorexpression.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontext.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfilterlineedit.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgscodeeditorexpression.h"
 
 #include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QString>
 #include <QToolButton>
+#include <QVBoxLayout>
 
+#include "moc_qgsexpressionlineedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )
@@ -36,7 +42,7 @@ QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
 {
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
   connect( mButton, &QAbstractButton::clicked, this, &QgsExpressionLineEdit::editExpression );
 
   //sets up layout
@@ -120,7 +126,7 @@ void QgsExpressionLineEdit::setExpectedOutputFormat( const QString &expected )
 
 void QgsExpressionLineEdit::setGeomCalculator( const QgsDistanceArea &da )
 {
-  mDa.reset( new QgsDistanceArea( da ) );
+  mDa = std::make_unique<QgsDistanceArea>( da );
 }
 
 void QgsExpressionLineEdit::setLayer( QgsVectorLayer *layer )
@@ -166,7 +172,7 @@ void QgsExpressionLineEdit::editExpression()
 
   const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
-  QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( mLayer, currentExpression, this, u"generic"_s, context );
   dlg.setExpectedOutputFormat( mExpectedOutputFormat );
   if ( mDa )
   {

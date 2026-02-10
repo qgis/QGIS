@@ -17,11 +17,10 @@
 #ifndef QGSCADUTILS_H
 #define QGSCADUTILS_H
 
-#include <QQueue>
-
 #include "qgis_core.h"
 #include "qgspointlocator.h"
 
+#include <QQueue>
 
 class QgsSnappingUtils;
 
@@ -80,7 +79,7 @@ class CORE_EXPORT QgsCadUtils
 
         /**
          * Snapped segment - only valid if actually used for something
-         * \deprecated QGIS 3.40. Will be removed in QGIS 4.0 - use snapMatch() instead.
+         * \deprecated QGIS 3.40. Will be removed in QGIS 5.0 - use snapMatch() instead.
          */
         QgsPointLocator::Match edgeMatch;
 

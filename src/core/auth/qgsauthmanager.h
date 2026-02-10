@@ -19,10 +19,11 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QObject>
-#include <QRecursiveMutex>
+
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QObject>
+#include <QRecursiveMutex>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -38,17 +39,15 @@
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <qt6keychain/keychain.h>
-#else
-#include <qt5keychain/keychain.h>
-#endif
 
 #ifndef SIP_RUN
+#ifdef HAVE_AUTH
 namespace QCA
 {
   class Initializer;
 }
+#endif
 #endif
 class QgsAuthMethod;
 class QgsAuthMethodEdit;
@@ -804,7 +803,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool verifyStoredPasswordHelperPassword() SIP_SKIP;
 
-    // TODO QGIS 4.0 -- remove
+    // TODO QGIS 5.0 -- remove
 
     /**
      * The display name of the password helper (platform dependent).
@@ -1026,8 +1025,9 @@ class CORE_EXPORT QgsAuthManager : public QObject
     bool mAuthInit = false;
 
     mutable std::unique_ptr<QgsAuthConfigurationStorageRegistry> mAuthConfigurationStorageRegistry;
-
+#ifdef HAVE_AUTH
     std::unique_ptr<QCA::Initializer> mQcaInitializer;
+#endif
 
     QHash<QString, QString> mConfigAuthMethods;
     QHash<QString, QgsAuthMethod *> mAuthMethods;

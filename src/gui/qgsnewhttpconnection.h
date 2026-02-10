@@ -18,12 +18,17 @@
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 
-#include "qgis_sip.h"
 #include "ui_qgsnewhttpconnectionbase.h"
-#include "qgsguiutils.h"
-#include "qgsauthorizationsettings.h"
+
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgsauthorizationsettings.h"
+#include "qgsguiutils.h"
 #include "qgssettingstree.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsAuthSettingsWidget;
 class QgsSettingsEntryBool;
@@ -39,7 +44,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   public:
 #ifndef SIP_RUN
-    static inline QgsSettingsTreeNode *sTreeHttpConnectionDialog = QgsSettingsTree::sTreeConnections->createChildNode( QStringLiteral( "http-connection-dialog" ) );
+    static inline QgsSettingsTreeNode *sTreeHttpConnectionDialog = QgsSettingsTree::sTreeConnections->createChildNode( u"http-connection-dialog"_s );
 
     static const QgsSettingsEntryBool *settingsIgnoreReportedLayerExtentsDefault;
 #endif
@@ -77,7 +82,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * and appearance.
      */
     QgsNewHttpConnection( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
-                          const QString &serviceName SIP_PYARGRENAME( settingsKey ) = "WMS", // TODO QGIS 4 remove arg rename
+                          const QString &serviceName SIP_PYARGRENAME( settingsKey ) = "WMS", // TODO QGIS 5 remove arg rename
                           const QString &connectionName = QString(), QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /**
@@ -107,6 +112,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void updateOkButtonState();
     void wfsVersionCurrentIndexChanged( int index );
     void wfsFeaturePagingCurrentIndexChanged( int index );
+    void featureFormatCurrentIndexChanged( int index );
 
   protected:
     //! Index of wfsVersionComboBox

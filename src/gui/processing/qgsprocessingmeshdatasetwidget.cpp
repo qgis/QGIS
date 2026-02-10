@@ -14,23 +14,28 @@
  ***************************************************************************/
 
 #include "qgsprocessingmeshdatasetwidget.h"
-#include "moc_qgsprocessingmeshdatasetwidget.cpp"
+
 #include "qgsdatetimeedit.h"
+#include "qgsmapcanvas.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayertemporalproperties.h"
+#include "qgsmeshlayerutils.h"
+#include "qgspanelwidget.h"
+#include "qgsprocessingmodelalgorithm.h"
+#include "qgsprocessingmodelparameter.h"
 #include "qgsprocessingmultipleselectiondialog.h"
 #include "qgsprocessingoutputs.h"
-#include "qgsmeshlayer.h"
-#include "qgsmeshlayerutils.h"
-#include "qgsmeshlayertemporalproperties.h"
-#include "qgspanelwidget.h"
-#include "qgsmapcanvas.h"
-#include "qgsprocessingmodelparameter.h"
-#include "qgsprocessingmodelalgorithm.h"
 
-#include <QLineEdit>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
+#include <QString>
 #include <QToolButton>
 #include <QVBoxLayout>
+
+#include "moc_qgsprocessingmeshdatasetwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -444,7 +449,7 @@ QgsProcessingMeshDatasetTimeWidget::QgsProcessingMeshDatasetTimeWidget( QWidget 
 {
   setupUi( this );
 
-  mValue.insert( QStringLiteral( "type" ), QStringLiteral( "static" ) );
+  mValue.insert( u"type"_s, u"static"_s );
 
   dateTimeEdit->setDisplayFormat( "yyyy-MM-dd HH:mm:ss" );
 
@@ -504,34 +509,34 @@ void QgsProcessingMeshDatasetTimeWidget::setValue( const QVariant &value )
   {
     QDateTime dateTime = value.toDateTime();
     dateTime.setTimeSpec( Qt::UTC );
-    mValue.insert( QStringLiteral( "type" ), QStringLiteral( "defined-date-time" ) );
-    mValue.insert( QStringLiteral( "value" ), dateTime );
+    mValue.insert( u"type"_s, u"defined-date-time"_s );
+    mValue.insert( u"value"_s, dateTime );
   }
   else
     mValue = value.toMap();
 
-  if ( !mValue.contains( QStringLiteral( "type" ) ) || !mValue.contains( QStringLiteral( "value" ) ) )
+  if ( !mValue.contains( u"type"_s ) || !mValue.contains( u"value"_s ) )
     return;
 
-  QString type = mValue.value( QStringLiteral( "type" ) ).toString();
+  QString type = mValue.value( u"type"_s ).toString();
 
   setEnabled( true );
-  if ( type == QLatin1String( "static" ) )
+  if ( type == "static"_L1 )
   {
     setEnabled( false );
   }
-  else if ( type == QLatin1String( "dataset-time-step" ) )
+  else if ( type == "dataset-time-step"_L1 )
   {
-    QVariantList dataset = mValue.value( QStringLiteral( "value" ) ).toList();
+    QVariantList dataset = mValue.value( u"value"_s ).toList();
     whileBlocking( comboBoxDatasetTimeStep )->setCurrentIndex( comboBoxDatasetTimeStep->findData( dataset ) );
     whileBlocking( radioButtonDatasetGroupTimeStep )->setChecked( true );
   }
-  else if ( type == QLatin1String( "defined-date-time" ) )
+  else if ( type == "defined-date-time"_L1 )
   {
-    whileBlocking( dateTimeEdit )->setDateTime( mValue.value( QStringLiteral( "value" ) ).toDateTime() );
+    whileBlocking( dateTimeEdit )->setDateTime( mValue.value( u"value"_s ).toDateTime() );
     whileBlocking( radioButtonDefinedDateTime )->setChecked( true );
   }
-  else if ( type == QLatin1String( "current-context-time" ) )
+  else if ( type == "current-context-time"_L1 )
   {
     whileBlocking( radioButtonCurrentCanvasTime )->setChecked( true );
   }
@@ -680,21 +685,21 @@ void QgsProcessingMeshDatasetTimeWidget::buildValue()
 
   if ( !isEnabled() )
   {
-    mValue[QStringLiteral( "type" )] = QStringLiteral( "static" );
+    mValue[u"type"_s] = u"static"_s;
   }
   else if ( radioButtonDatasetGroupTimeStep->isChecked() )
   {
-    mValue[QStringLiteral( "type" )] = QStringLiteral( "dataset-time-step" );
-    mValue[QStringLiteral( "value" )] = comboBoxDatasetTimeStep->currentData();
+    mValue[u"type"_s] = u"dataset-time-step"_s;
+    mValue[u"value"_s] = comboBoxDatasetTimeStep->currentData();
   }
   else if ( radioButtonDefinedDateTime->isChecked() )
   {
-    mValue[QStringLiteral( "type" )] = QStringLiteral( "defined-date-time" );
-    mValue[QStringLiteral( "value" )] = dateTimeEdit->dateTime();
+    mValue[u"type"_s] = u"defined-date-time"_s;
+    mValue[u"value"_s] = dateTimeEdit->dateTime();
   }
   else if ( radioButtonCurrentCanvasTime->isChecked() && mCanvas )
   {
-    mValue[QStringLiteral( "type" )] = QStringLiteral( "current-context-time" );
+    mValue[u"type"_s] = u"current-context-time"_s;
   }
 
   emit changed();

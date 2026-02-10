@@ -10,6 +10,7 @@
 
 
 
+
 %ModuleHeaderCode
 #include <qgsprocessingmodelalgorithm.h>
 %End
@@ -136,7 +137,7 @@ parameters and outputs associated with it.
 .. seealso:: :py:func:`helpUrl`
 %End
 
- virtual QString helpString() const /HoldGIL,Deprecated="Since 3.40. Unused, will be removed in QGIS 4.0."/;
+ virtual QString helpString() const /HoldGIL,Deprecated="Since 3.40. Unused, will be removed in QGIS 5.0."/;
 %Docstring
 Returns a localised help string for the algorithm. Algorithm subclasses
 should implement either :py:func:`~QgsProcessingAlgorithm.helpString` or
@@ -148,7 +149,7 @@ should implement either :py:func:`~QgsProcessingAlgorithm.helpString` or
 
 .. deprecated:: 3.40
 
-   Unused, will be removed in QGIS 4.0.
+   Unused, will be removed in QGIS 5.0.
 %End
 
     virtual QString helpUrl() const /HoldGIL/;
@@ -955,6 +956,25 @@ layer.
 %Docstring
 Evaluates the parameter with matching ``name`` to a output layer
 destination.
+%End
+
+    QString parameterAsOutputFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a output format
+
+Output format may be empty.
+
+.. versionadded:: 4.0
+%End
+
+    QString parameterAsOutputRasterFormat( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;
+%Docstring
+Evaluates the parameter with matching ``name`` to a output format
+
+If no explicit output format is attached to the parameter, one will be
+attempted to be guessed from the file name extension.
+
+.. versionadded:: 4.0
 %End
 
     QString parameterAsFileOutput( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgstemporalmapsettingswidget.h"
-#include "moc_qgstemporalmapsettingswidget.cpp"
-#include "qgsgui.h"
+
 #include "qgis.h"
+#include "qgsgui.h"
+
+#include "moc_qgstemporalmapsettingswidget.cpp"
 
 ///@cond PRIVATE
 QgsTemporalMapSettingsWidget::QgsTemporalMapSettingsWidget( QWidget *parent )

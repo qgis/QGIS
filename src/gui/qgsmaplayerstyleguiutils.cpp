@@ -14,18 +14,21 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstyleguiutils.h"
-#include "moc_qgsmaplayerstyleguiutils.cpp"
-
-#include <QAction>
-#include <QInputDialog>
-#include <QMenu>
-#include <QActionGroup>
 
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstylemanager.h"
 
+#include <QAction>
+#include <QActionGroup>
+#include <QInputDialog>
+#include <QMenu>
+#include <QString>
+
+#include "moc_qgsmaplayerstyleguiutils.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleGuiUtils *QgsMapLayerStyleGuiUtils::instance()
 {
@@ -131,7 +134,7 @@ void QgsMapLayerStyleGuiUtils::addStyle()
     return;
 
   bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, QStringLiteral( "new style" ), &ok );
+  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, u"new style"_s, &ok );
   if ( !ok || text.isEmpty() )
     return;
 
@@ -177,7 +180,7 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   const bool res = layer->styleManager()->removeStyle( layer->styleManager()->currentStyle() );
   if ( !res )
   {
-    QgsDebugError( QStringLiteral( "Failed to remove current style" ) );
+    QgsDebugError( u"Failed to remove current style"_s );
   }
 }
 

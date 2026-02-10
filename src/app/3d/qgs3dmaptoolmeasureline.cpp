@@ -13,22 +13,28 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QKeyEvent>
-
 #include "qgs3dmaptoolmeasureline.h"
-#include "moc_qgs3dmaptoolmeasureline.cpp"
-#include "qgs3dutils.h"
-#include "qgs3dmapscene.h"
+
+#include <memory>
+
 #include "qgs3dmapcanvas.h"
-#include "qgspoint.h"
-#include "qgsmaplayer.h"
+#include "qgs3dmapscene.h"
 #include "qgs3dmeasuredialog.h"
+#include "qgs3dutils.h"
+#include "qgsabstractterrainsettings.h"
+#include "qgsframegraph.h"
+#include "qgsmaplayer.h"
+#include "qgspoint.h"
+#include "qgsraycastcontext.h"
 #include "qgsrubberband3d.h"
 #include "qgswindow3dengine.h"
-#include "qgsframegraph.h"
-#include "qgsabstractterrainsettings.h"
-#include "qgsraycastcontext.h"
 
+#include <QKeyEvent>
+#include <QString>
+
+#include "moc_qgs3dmaptoolmeasureline.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DMapToolMeasureLine::Qgs3DMapToolMeasureLine( Qgs3DMapCanvas *canvas )
   : Qgs3DMapTool( canvas )
@@ -43,7 +49,7 @@ Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
 
 void Qgs3DMapToolMeasureLine::activate()
 {
-  mRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() ) );
+  mRubberBand = std::make_unique<QgsRubberBand3D>( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() );
 
   restart();
   updateSettings();
@@ -103,9 +109,9 @@ void Qgs3DMapToolMeasureLine::updateSettings()
   if ( mRubberBand )
   {
     const QgsSettings settings;
-    const int myRed = settings.value( QStringLiteral( "qgis/default_measure_color_red" ), 222 ).toInt();
-    const int myGreen = settings.value( QStringLiteral( "qgis/default_measure_color_green" ), 155 ).toInt();
-    const int myBlue = settings.value( QStringLiteral( "qgis/default_measure_color_blue" ), 67 ).toInt();
+    const int myRed = settings.value( u"qgis/default_measure_color_red"_s, 222 ).toInt();
+    const int myGreen = settings.value( u"qgis/default_measure_color_green"_s, 155 ).toInt();
+    const int myBlue = settings.value( u"qgis/default_measure_color_blue"_s, 67 ).toInt();
 
     mRubberBand->setWidth( 3 );
     mRubberBand->setColor( QColor( myRed, myGreen, myBlue ) );

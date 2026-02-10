@@ -18,13 +18,12 @@
 #ifndef QGSBILINEARRASTERRESAMPLER_H
 #define QGSBILINEARRASTERRESAMPLER_H
 
-#include "qgsrasterresampler.h"
-#include "qgis_sip.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsrasterresampler.h"
 
 #include <QColor>
-
-#include "qgis_core.h"
 
 /**
  * \ingroup core

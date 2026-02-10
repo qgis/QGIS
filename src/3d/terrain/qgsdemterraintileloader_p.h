@@ -29,16 +29,15 @@
 
 #define SIP_NO_FILE
 
-#include <QtConcurrent/QtConcurrentRun>
-#include <QFutureWatcher>
-#include <QElapsedTimer>
-#include <QMutex>
-
 #include "qgschunknode.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsrectangle.h"
 #include "qgsterraintileloader.h"
 #include "qgstilingscheme.h"
+
+#include <QElapsedTimer>
+#include <QFutureWatcher>
+#include <QMutex>
 
 class QgsRasterDataProvider;
 class QgsRasterLayer;
@@ -119,7 +118,7 @@ class QgsDemHeightMapGenerator : public QObject
 
     int mResolution;
 
-    int mLastJobId;
+    int mLastJobId = 0;
 
     std::unique_ptr<QgsTerrainDownloader> mDownloader;
 

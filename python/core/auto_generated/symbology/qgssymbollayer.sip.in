@@ -703,6 +703,32 @@ layers of other layers that should be occluded.
 .. versionadded:: 3.12
 %End
 
+    QString selectiveMaskingSourceSetId() const;
+%Docstring
+Returns the selective masking source set ID for this symbol layer.
+
+If non-empty, the symbols from this symbol layer will be masked by
+objects from the matching selective masking source set (see
+:py:class:`QgsSelectiveMaskingSourceSetManager`).
+
+.. seealso:: :py:func:`setSelectiveMaskingSourceSetId`
+
+.. versionadded:: 4.0
+%End
+
+    void setSelectiveMaskingSourceSetId( const QString &id );
+%Docstring
+Sets the selective masking source set ``id`` for this symbol layer.
+
+If non-empty, the symbols from this symbol layer will be masked by
+objects from the matching selective masking source set (see
+:py:class:`QgsSelectiveMaskingSourceSetManager`).
+
+.. seealso:: :py:func:`selectiveMaskingSourceSetId`
+
+.. versionadded:: 4.0
+%End
+
     virtual void prepareMasks( const QgsSymbolRenderContext &context );
 %Docstring
 Prepares all mask internal objects according to what is defined in
@@ -769,9 +795,20 @@ Constructor for QgsSymbolLayer.
 
 
 
+
     void restoreOldDataDefinedProperties( const QVariantMap &stringMap );
 %Docstring
 Restores older data defined properties from string map.
+%End
+
+    void copyCommonProperties( QgsSymbolLayer *destLayer ) const;
+%Docstring
+Copies all common base class properties from this layer to another
+symbol layer.
+
+Includes data defined properties and paint effects.
+
+.. versionadded:: 4.0
 %End
 
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
@@ -780,6 +817,8 @@ Copies all data defined properties of this layer to another symbol
 layer.
 
 :param destLayer: destination layer
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
@@ -787,6 +826,8 @@ layer.
 Copies paint effect of this layer to another symbol layer
 
 :param destLayer: destination layer
+
+.. seealso:: :py:func:`copyCommonProperties`
 %End
 
     void removeMasks( QgsRenderContext &context, bool recursive );
@@ -1130,7 +1171,9 @@ Writes the symbol layer definition as a SLD XML element.
     virtual QgsMapUnitScale mapUnitScale() const;
 
     virtual double dxfSize( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
+
 
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 %Docstring

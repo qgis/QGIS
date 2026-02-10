@@ -17,6 +17,7 @@ email                : ersts@amnh.org
  ***************************************************************************/
 
 #include "qgscontrastenhancementfunction.h"
+
 #include "qgscontrastenhancement.h"
 
 QgsContrastEnhancementFunction::QgsContrastEnhancementFunction( Qgis::DataType dataType, double minimumValue, double maximumValue )

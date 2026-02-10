@@ -16,11 +16,11 @@
 #ifndef QGSQUICKMAPTOSCREEN_H
 #define QGSQUICKMAPTOSCREEN_H
 
+#include "qgspoint.h"
 #include "qgsquickmapsettings.h"
 
 #include <QObject>
 #include <QPointF>
-#include <qgspoint.h>
 
 /**
  * \ingroup quick

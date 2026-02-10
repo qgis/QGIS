@@ -15,14 +15,19 @@
 
 
 #include "qgsrelationaggregatesearchwidgetwrapper.h"
-#include "moc_qgsrelationaggregatesearchwidgetwrapper.cpp"
-#include "qgsattributeform.h"
-#include "qgsrelationwidgetwrapper.h"
-#include "qgslogger.h"
-#include "qgscollapsiblegroupbox.h"
 
-#include <QLabel>
+#include "qgsattributeform.h"
+#include "qgscollapsiblegroupbox.h"
+#include "qgslogger.h"
+#include "qgsrelationwidgetwrapper.h"
+
 #include <QGridLayout>
+#include <QLabel>
+#include <QString>
+
+#include "moc_qgsrelationaggregatesearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRelationAggregateSearchWidgetWrapper::QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *vl, QgsRelationWidgetWrapper *wrapper, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, -1, parent )
@@ -39,7 +44,7 @@ QString QgsRelationAggregateSearchWidgetWrapper::expression() const
     aggregateFilter = mAttributeForm->aggregateFilter();
 
   if ( aggregateFilter.isEmpty() )
-    return QStringLiteral( "TRUE" );
+    return u"TRUE"_s;
   else
     return aggregateFilter;
 }
@@ -81,7 +86,7 @@ bool QgsRelationAggregateSearchWidgetWrapper::applyDirectly()
 void QgsRelationAggregateSearchWidgetWrapper::setExpression( const QString &value )
 {
   Q_UNUSED( value )
-  QgsDebugError( QStringLiteral( "Not supported" ) );
+  QgsDebugError( u"Not supported"_s );
 }
 
 bool QgsRelationAggregateSearchWidgetWrapper::eventFilter( QObject *watched, QEvent *event )

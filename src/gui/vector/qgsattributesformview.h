@@ -33,7 +33,7 @@ class QgsAttributesFormTreeViewIndicator;
  * \ingroup gui
  * \since QGIS 3.44
  */
-class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpressionContextGenerator
+class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, public QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -98,6 +98,7 @@ class GUI_EXPORT QgsAttributesFormBaseView : public QTreeView, protected QgsExpr
     QgsAttributesFormModel *sourceModel() const;
 
   public slots:
+
     /**
      * Selects the first item that matches a \a itemType and a \a itemId.
      *

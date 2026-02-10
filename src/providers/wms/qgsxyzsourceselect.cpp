@@ -15,19 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgshelp.h"
-#include "qgsgui.h"
-#include "qgsmanageconnectionsdialog.h"
 #include "qgsxyzsourceselect.h"
-#include "moc_qgsxyzsourceselect.cpp"
+
+#include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgsmanageconnectionsdialog.h"
+#include "qgsowsconnection.h"
 #include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
-#include "qgsowsconnection.h"
 #include "qgsxyzsourcewidget.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgsxyzsourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
   : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
@@ -49,7 +54,7 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
       return;
 
     mBlockChanges++;
-    cmbConnections->setCurrentIndex( cmbConnections->findData( QStringLiteral( "~~custom~~" ) ) );
+    cmbConnections->setCurrentIndex( cmbConnections->findData( u"~~custom~~"_s ) );
     mBlockChanges--;
   } );
 
@@ -68,7 +73,7 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
 
 void QgsXyzSourceSelect::btnNew_clicked()
 {
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
 
   QgsXyzConnectionDialog nc( this );
   if ( isCustom )
@@ -132,18 +137,18 @@ void QgsXyzSourceSelect::btnLoad_clicked()
 
 void QgsXyzSourceSelect::addButtonClicked()
 {
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
   Q_NOWARN_DEPRECATED_PUSH
-  emit addRasterLayer( mSourceWidget->sourceUri(), isCustom ? tr( "XYZ Layer" ) : cmbConnections->currentText(), QStringLiteral( "wms" ) );
+  emit addRasterLayer( mSourceWidget->sourceUri(), isCustom ? tr( "XYZ Layer" ) : cmbConnections->currentText(), u"wms"_s );
   Q_NOWARN_DEPRECATED_POP
-  emit addLayer( Qgis::LayerType::Raster, mSourceWidget->sourceUri(), isCustom ? tr( "XYZ Layer" ) : cmbConnections->currentText(), QStringLiteral( "wms" ) );
+  emit addLayer( Qgis::LayerType::Raster, mSourceWidget->sourceUri(), isCustom ? tr( "XYZ Layer" ) : cmbConnections->currentText(), u"wms"_s );
 }
 
 void QgsXyzSourceSelect::populateConnectionList()
 {
   cmbConnections->blockSignals( true );
   cmbConnections->clear();
-  cmbConnections->addItem( tr( "Custom" ), QStringLiteral( "~~custom~~" ) );
+  cmbConnections->addItem( tr( "Custom" ), u"~~custom~~"_s );
   cmbConnections->addItems( QgsXyzConnectionUtils::connectionList() );
   cmbConnections->blockSignals( false );
 
@@ -166,7 +171,7 @@ void QgsXyzSourceSelect::setConnectionListPosition()
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
 
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
   btnEdit->setDisabled( isCustom );
   btnDelete->setDisabled( isCustom );
 }
@@ -175,7 +180,7 @@ void QgsXyzSourceSelect::cmbConnections_currentTextChanged( const QString &text 
 {
   QgsXyzConnectionSettings::sTreeXyzConnections->setSelectedItem( text );
 
-  const bool isCustom = cmbConnections->currentData().toString() == QLatin1String( "~~custom~~" );
+  const bool isCustom = cmbConnections->currentData().toString() == "~~custom~~"_L1;
   btnEdit->setDisabled( isCustom );
   btnDelete->setDisabled( isCustom );
 
@@ -196,5 +201,5 @@ void QgsXyzSourceSelect::cmbConnections_currentTextChanged( const QString &text 
 
 void QgsXyzSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#using-xyz-tile-services" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#using-xyz-tile-services"_s );
 }

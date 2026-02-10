@@ -14,21 +14,25 @@
  ***************************************************************************/
 
 #include "qgsoraclefeatureiterator.h"
-#include "qgsoracleprovider.h"
-#include "qgsoracleconnpool.h"
-#include "qgsoracleexpressioncompiler.h"
-#include "qgsoracletransaction.h"
-#include "qgsdbquerylog.h"
-#include "qgsdbquerylog_p.h"
-#include "qgslogger.h"
-#include "qgsmessagelog.h"
-#include "qgsgeometry.h"
-#include "qgsexception.h"
-#include "qgsgeometryengine.h"
-
-#include <QObject>
 
 #include <algorithm>
+
+#include "qgsdbquerylog.h"
+#include "qgsdbquerylog_p.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
+#include "qgsgeometryengine.h"
+#include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgsoracleconnpool.h"
+#include "qgsoracleexpressioncompiler.h"
+#include "qgsoracleprovider.h"
+#include "qgsoracletransaction.h"
+
+#include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>( source, ownSource, request )
@@ -133,7 +137,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
                                        "mdsys.sdo_ordinate_array(?,?,?,?)"
                                        ")" );
 
-        whereClause = QStringLiteral( "sdo_filter(%1,%2)='TRUE'" )
+        whereClause = u"sdo_filter(%1,%2)='TRUE'"_s
                         .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
 
         args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
@@ -144,7 +148,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
           // sdo_relate requires Spatial
           if ( mConnection->hasSpatial() )
           {
-            whereClause += QStringLiteral( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
+            whereClause += u" AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'"_s
                              .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ), bbox );
             args << ( mSource->mSrid < 1 ? QgsVariantUtils::createNullVariant( QMetaType::Type::Int ) : mSource->mSrid ) << mFilterRect.xMinimum() << mFilterRect.yMinimum() << mFilterRect.xMaximum() << mFilterRect.yMaximum();
           }
@@ -164,7 +168,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   }
   else if ( !mFilterRect.isNull() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "filterRect without geometry ignored" ), 2 );
+    QgsDebugMsgLevel( u"filterRect without geometry ignored"_s, 2 );
   }
 
   switch ( mRequest.filterType() )
@@ -194,21 +198,21 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( mSource->mRequestedGeomType != Qgis::WkbType::Unknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
     if ( !whereClause.isEmpty() )
-      whereClause += QLatin1String( " AND " );
+      whereClause += " AND "_L1;
 
     whereClause += '(';
 
-    whereClause += QgsOracleConn::databaseTypeFilter( QStringLiteral( "FEATUREREQUEST" ), mSource->mGeometryColumn, mSource->mRequestedGeomType );
+    whereClause += QgsOracleConn::databaseTypeFilter( u"FEATUREREQUEST"_s, mSource->mGeometryColumn, mSource->mRequestedGeomType );
 
     if ( mFilterRect.isNull() )
-      whereClause += QStringLiteral( " OR %1 IS NULL" ).arg( mSource->mGeometryColumn );
+      whereClause += u" OR %1 IS NULL"_s.arg( mSource->mGeometryColumn );
     whereClause += ')';
   }
 
   if ( !mSource->mSqlWhereClause.isEmpty() )
   {
     if ( !whereClause.isEmpty() )
-      whereClause += QLatin1String( " AND " );
+      whereClause += " AND "_L1;
     whereClause += '(' + mSource->mSqlWhereClause + ')';
   }
 
@@ -246,10 +250,10 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource *sour
   if ( mRequest.limit() >= 0 && limitAtProvider )
   {
     if ( !whereClause.isEmpty() )
-      whereClause += QLatin1String( " AND " );
+      whereClause += " AND "_L1;
 
-    whereClause += QLatin1String( "rownum<=?" );
-    fallbackStatement += QLatin1String( "rownum<=?" );
+    whereClause += "rownum<=?"_L1;
+    fallbackStatement += "rownum<=?"_L1;
     args << QVariant::fromValue( mRequest.limit() );
   }
 
@@ -327,7 +331,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       {
         if ( !feature.hasGeometry() )
         {
-          QgsDebugMsgLevel( QStringLiteral( "no geometry to intersect" ), 4 );
+          QgsDebugMsgLevel( u"no geometry to intersect"_s, 4 );
           continue;
         }
 
@@ -341,7 +345,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
           if ( !feature.geometry().boundingBox().intersects( mFilterRect ) )
           {
             // skip feature that don't intersect with our rectangle
-            QgsDebugMsgLevel( QStringLiteral( "no bbox intersect" ), 4 );
+            QgsDebugMsgLevel( u"no bbox intersect"_s, 4 );
             continue;
           }
         }
@@ -351,7 +355,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
           if ( !feature.geometry().intersects( mFilterRect ) )
           {
             // skip feature that don't intersect with our rectangle
-            QgsDebugMsgLevel( QStringLiteral( "no exact intersect" ), 4 );
+            QgsDebugMsgLevel( u"no exact intersect"_s, 4 );
             continue;
           }
         }
@@ -405,7 +409,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
     }
 
     feature.setId( fid );
-    QgsDebugMsgLevel( QStringLiteral( "fid=%1" ).arg( fid ), 5 );
+    QgsDebugMsgLevel( u"fid=%1"_s.arg( fid ), 5 );
 
     // iterate attributes
     const auto constMAttributeList = mAttributeList;
@@ -417,7 +421,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       QgsField fld = mSource->mFields.at( idx );
 
       QVariant v = mQry.value( col );
-      if ( fld.type() == QMetaType::Type::QByteArray && fld.typeName().endsWith( QLatin1String( ".SDO_GEOMETRY" ) ) )
+      if ( fld.type() == QMetaType::Type::QByteArray && fld.typeName().endsWith( ".SDO_GEOMETRY"_L1 ) )
       {
         QByteArray ba( v.toByteArray() );
         if ( ba.size() > 0 )
@@ -479,7 +483,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
 {
   try
   {
-    QString query = QStringLiteral( "SELECT " );
+    QString query = u"SELECT "_s;
     QString delim;
 
     if ( mFetchGeometry )
@@ -491,7 +495,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
     switch ( mSource->mPrimaryKeyType )
     {
       case PktRowId:
-        query += delim + QgsOracleProvider::quotedIdentifier( QStringLiteral( "ROWID" ) );
+        query += delim + QgsOracleProvider::quotedIdentifier( u"ROWID"_s );
         delim = ',';
         break;
 
@@ -509,7 +513,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
         break;
 
       case PktUnknown:
-        QgsDebugError( QStringLiteral( "Cannot query without primary key." ) );
+        QgsDebugError( u"Cannot query without primary key."_s );
         return false;
     }
 
@@ -522,12 +526,12 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
       query += delim + mConnection->fieldExpression( mSource->mFields.at( idx ) );
     }
 
-    query += QStringLiteral( " FROM %1 \"FEATUREREQUEST\"" ).arg( mSource->mQuery );
+    query += u" FROM %1 \"FEATUREREQUEST\""_s.arg( mSource->mQuery );
 
     if ( !whereClause.isEmpty() )
-      query += QStringLiteral( " WHERE %1" ).arg( whereClause );
+      query += u" WHERE %1"_s.arg( whereClause );
 
-    QgsDebugMsgLevel( QStringLiteral( "Fetch features: %1" ).arg( query ), 2 );
+    QgsDebugMsgLevel( u"Fetch features: %1"_s.arg( query ), 2 );
     mSql = query;
     mArgs = args;
 
@@ -553,7 +557,7 @@ bool QgsOracleFeatureIterator::openQuery( const QString &whereClause, const QVar
 bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantList &args, int retryCount )
 {
   lock();
-  if ( !QgsOracleProvider::execLoggedStatic( mQry, query, args, mSource->mUri.uri(), QStringLiteral( "QgsOracleFeatureIterator" ), QGS_QUERY_LOG_ORIGIN ) )
+  if ( !QgsOracleProvider::execLoggedStatic( mQry, query, args, mSource->mUri.uri(), u"QgsOracleFeatureIterator"_s, QGS_QUERY_LOG_ORIGIN ) )
   {
     unlock();
     if ( retryCount != 0 )
@@ -562,7 +566,7 @@ bool QgsOracleFeatureIterator::execQuery( const QString &query, const QVariantLi
       // ORA-12170: TNS:Connect timeout occurred
       // Or if  there is a problem with the network connectivity try again N times
       // ORA-03114: Not Connected to Oracle
-      if ( mQry.lastError().nativeErrorCode() == QLatin1String( "12170" ) || mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-12170" ), Qt::CaseInsensitive ) == 0 || mQry.lastError().nativeErrorCode() == QLatin1String( "3114" ) || mQry.lastError().nativeErrorCode().compare( QLatin1String( "ORA-3114" ), Qt::CaseInsensitive ) == 0 )
+      if ( mQry.lastError().nativeErrorCode() == "12170"_L1 || mQry.lastError().nativeErrorCode().compare( "ORA-12170"_L1, Qt::CaseInsensitive ) == 0 || mQry.lastError().nativeErrorCode() == "3114"_L1 || mQry.lastError().nativeErrorCode().compare( "ORA-3114"_L1, Qt::CaseInsensitive ) == 0 )
       {
         // restart connection
         mConnection->reconnect();

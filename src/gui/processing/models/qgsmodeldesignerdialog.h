@@ -16,12 +16,12 @@
 #ifndef QGSMODELDESIGNERDIALOG_H
 #define QGSMODELDESIGNERDIALOG_H
 
-#include "qgis.h"
-#include "qgis_gui.h"
 #include "ui_qgsmodeldesignerdialogbase.h"
 
-#include "qgsprocessingtoolboxmodel.h"
+#include "qgis.h"
+#include "qgis_gui.h"
 #include "qgsprocessingmodelchilddependency.h"
+#include "qgsprocessingtoolboxmodel.h"
 
 class QgsMessageBar;
 class QgsProcessingModelAlgorithm;
@@ -179,6 +179,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void exportToSvg();
     void exportAsPython();
     void toggleComments( bool show );
+    void toggleFeatureCount( bool show );
     void updateWindowTitle();
     void deleteSelected();
     void populateZoomToMenu();

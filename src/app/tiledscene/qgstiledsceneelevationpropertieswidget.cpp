@@ -14,18 +14,24 @@
  ***************************************************************************/
 
 #include "qgstiledsceneelevationpropertieswidget.h"
-#include "moc_qgstiledsceneelevationpropertieswidget.cpp"
-#include "qgstiledscenerendererpropertieswidget.h"
+
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayerelevationproperties.h"
+#include "qgstiledscenerendererpropertieswidget.h"
+
+#include <QString>
+
+#include "moc_qgstiledsceneelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTiledSceneElevationPropertiesWidget::QgsTiledSceneElevationPropertiesWidget( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+  setObjectName( u"mOptsPage_Elevation"_s );
 
   mOffsetZSpinBox->setClearValue( 0 );
   mScaleZSpinBox->setClearValue( 1 );
@@ -36,7 +42,7 @@ QgsTiledSceneElevationPropertiesWidget::QgsTiledSceneElevationPropertiesWidget( 
   connect( mScaleZSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsTiledSceneElevationPropertiesWidget::onChanged );
   connect( mShiftZAxisButton, &QPushButton::clicked, this, &QgsTiledSceneElevationPropertiesWidget::shiftSceneZAxis );
 
-  // setProperty( "helpPage", QStringLiteral( "working_with_point_clouds/point_clouds.html#elevation-properties" ) );
+  // setProperty( "helpPage", u"working_with_point_clouds/point_clouds.html#elevation-properties"_s );
 }
 
 void QgsTiledSceneElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -93,7 +99,7 @@ void QgsTiledSceneElevationPropertiesWidget::shiftSceneZAxis()
 QgsTiledSceneElevationPropertiesWidgetFactory::QgsTiledSceneElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s ) );
   setTitle( tr( "Elevation" ) );
 }
 
@@ -119,5 +125,5 @@ bool QgsTiledSceneElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *
 
 QString QgsTiledSceneElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return u"mOptsPage_Metadata"_s;
 }

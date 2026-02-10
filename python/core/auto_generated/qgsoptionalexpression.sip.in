@@ -11,8 +11,6 @@
 
 
 
-
-
 typedef QgsOptional<QgsExpression> QgsOptionalQgsExpressionBase /NoTypeName/;
 
 class QgsOptionalExpression : QgsOptionalQgsExpressionBase

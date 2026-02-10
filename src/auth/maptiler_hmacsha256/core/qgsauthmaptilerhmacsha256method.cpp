@@ -15,22 +15,26 @@
  ***************************************************************************/
 
 #include "qgsauthmaptilerhmacsha256method.h"
-#include "moc_qgsauthmaptilerhmacsha256method.cpp"
 
-#include <QMessageAuthenticationCode>
-#include <QUrlQuery>
-
+#include "qgsapplication.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-#include "qgsapplication.h"
+
+#include <QMessageAuthenticationCode>
+#include <QString>
+#include <QUrlQuery>
+
+#include "moc_qgsauthmaptilerhmacsha256method.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef HAVE_GUI
 #include "qgsauthmaptilerhmacsha256edit.h"
 #endif
 
 
-const QString QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_KEY = QStringLiteral( "MapTilerHmacSha256" );
-const QString QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_DESCRIPTION = QStringLiteral( "MapTiler HMAC-SHA256" );
+const QString QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_KEY = u"MapTilerHmacSha256"_s;
+const QString QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_DESCRIPTION = u"MapTiler HMAC-SHA256"_s;
 const QString QgsAuthMapTilerHmacSha256Method::AUTH_METHOD_DISPLAY_DESCRIPTION = tr( "MapTiler HMAC SHA256-Signature" );
 
 QMap<QString, QgsAuthMethodConfig> QgsAuthMapTilerHmacSha256Method::sAuthConfigCache = QMap<QString, QgsAuthMethodConfig>();
@@ -40,7 +44,7 @@ QgsAuthMapTilerHmacSha256Method::QgsAuthMapTilerHmacSha256Method()
 {
   setVersion( 1 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList() << QStringLiteral( "wms" ) << QStringLiteral( "vectortile" ) << QStringLiteral( "xyzvectortiles" ) );
+  setDataProviders( QStringList() << u"wms"_s << u"vectortile"_s << u"xyzvectortiles"_s );
 }
 
 QString QgsAuthMapTilerHmacSha256Method::key() const
@@ -64,16 +68,16 @@ bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &req
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
   if ( !config.isValid() )
   {
-    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
     return false;
   }
 
-  const QString token = config.config( QStringLiteral( "token" ) );
+  const QString token = config.config( u"token"_s );
   const QStringList splitToken = token.split( '_' );
 
   if ( splitToken.count() != 2 )
   {
-    QgsDebugError( QStringLiteral( "Update request config FAILED for authcfg: %1: config invalid" ).arg( authcfg ) );
+    QgsDebugError( u"Update request config FAILED for authcfg: %1: config invalid"_s.arg( authcfg ) );
     return false;
   }
 
@@ -82,17 +86,17 @@ bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &req
 
   QUrl url = request.url();
   QUrlQuery query( url.query() );
-  query.removeQueryItem( QStringLiteral( "key" ) );
+  query.removeQueryItem( u"key"_s );
 
   QList<QPair<QString, QString>> queryItems = query.queryItems();
 
-  queryItems.append( { QStringLiteral( "key" ), key } );
+  queryItems.append( { u"key"_s, key } );
 
   query.setQueryItems( queryItems );
   url.setQuery( query );
 
   QString signature = calculateSignature( secret, url.toEncoded() );
-  request.setUrl( QString( url.url() + QStringLiteral( "&signature=" ) + signature ) );
+  request.setUrl( QString( url.url() + u"&signature="_s + signature ) );
 
   return true;
 }
@@ -104,9 +108,9 @@ void QgsAuthMapTilerHmacSha256Method::clearCachedConfig( const QString &authcfg 
 
 void QgsAuthMapTilerHmacSha256Method::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
-  if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
+  if ( mconfig.hasConfig( u"oldconfigstyle"_s ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Updating old style auth method config" ), 2 );
+    QgsDebugMsgLevel( u"Updating old style auth method config"_s, 2 );
   }
 
   // NOTE: add updates as method version() increases due to config storage changes
@@ -121,14 +125,14 @@ QgsAuthMethodConfig QgsAuthMapTilerHmacSha256Method::getMethodConfig( const QStr
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     config = sAuthConfigCache.value( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Retrieved config for authcfg: %1"_s.arg( authcfg ), 2 );
     return config;
   }
 
   // else build basic bundle
   if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, config, fullconfig ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Retrieved config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Retrieved config for authcfg: %1"_s.arg( authcfg ), 2 );
     return QgsAuthMethodConfig();
   }
 
@@ -141,7 +145,7 @@ QgsAuthMethodConfig QgsAuthMapTilerHmacSha256Method::getMethodConfig( const QStr
 void QgsAuthMapTilerHmacSha256Method::putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig )
 {
   const QMutexLocker locker( &mMutex );
-  QgsDebugMsgLevel( QStringLiteral( "Putting token config for authcfg: %1" ).arg( authcfg ), 2 );
+  QgsDebugMsgLevel( u"Putting token config for authcfg: %1"_s.arg( authcfg ), 2 );
   sAuthConfigCache.insert( authcfg, mconfig );
 }
 
@@ -151,7 +155,7 @@ void QgsAuthMapTilerHmacSha256Method::removeMethodConfig( const QString &authcfg
   if ( sAuthConfigCache.contains( authcfg ) )
   {
     sAuthConfigCache.remove( authcfg );
-    QgsDebugMsgLevel( QStringLiteral( "Removed token config for authcfg: %1" ).arg( authcfg ), 2 );
+    QgsDebugMsgLevel( u"Removed token config for authcfg: %1"_s.arg( authcfg ), 2 );
   }
 }
 

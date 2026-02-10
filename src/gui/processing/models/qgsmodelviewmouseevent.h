@@ -16,9 +16,9 @@
 #ifndef QGSMODELVIEWMOUSEEVENT_H
 #define QGSMODELVIEWMOUSEEVENT_H
 
-#include <QMouseEvent>
-
 #include "qgis_gui.h"
+
+#include <QMouseEvent>
 
 #define SIP_NO_FILE
 

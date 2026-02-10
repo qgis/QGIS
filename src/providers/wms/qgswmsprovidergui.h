@@ -16,11 +16,12 @@
 #ifndef QGSWMSPROVIDERGUI_H
 #define QGSWMSPROVIDERGUI_H
 
-#include <QList>
-#include <QMainWindow>
+#include <memory>
 
 #include "qgsproviderguimetadata.h"
-#include <memory>
+
+#include <QList>
+#include <QMainWindow>
 
 class QgsWmsProviderGuiMetadata : public QgsProviderGuiMetadata
 {

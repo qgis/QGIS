@@ -14,34 +14,37 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthconfigurationstoragedb.h"
+
+#include "qgsauthcertutils.h"
+#include "qgslogger.h"
+
+#include <QCoreApplication>
+#include <QSqlDriver>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QString>
+#include <QThread>
+#include <QUrlQuery>
+#include <qurl.h>
+
 #include "moc_qgsauthconfigurationstoragedb.cpp"
 
-#include "qgslogger.h"
-#include "qgsauthcertutils.h"
-#include "qurl.h"
-
-#include <QSqlError>
-#include <QSqlDriver>
-#include <QSqlQuery>
-#include <QThread>
-#include <QCoreApplication>
-#include <QUrlQuery>
-
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigurationStorageDb::QgsAuthConfigurationStorageDb( const QMap<QString, QVariant> &settings )
   : QgsAuthConfigurationStorage( settings )
 {
   // Parse settings
-  mDriver = mConfiguration.value( QStringLiteral( "driver" ), QStringLiteral( "QSQLITE" ) ).toString();
-  mDatabase = mConfiguration.value( QStringLiteral( "database" ) ).toString();
-  mHost = mConfiguration.value( QStringLiteral( "host" ) ).toString();
-  mPort = mConfiguration.value( QStringLiteral( "port" ) ).toInt();
-  mUser = mConfiguration.value( QStringLiteral( "user" ) ).toString();
-  mPassword = mConfiguration.value( QStringLiteral( "password" ) ).toString();
-  mConnectOptions = mConfiguration.value( QStringLiteral( "options" ) ).toString();
+  mDriver = mConfiguration.value( u"driver"_s, u"QSQLITE"_s ).toString();
+  mDatabase = mConfiguration.value( u"database"_s ).toString();
+  mHost = mConfiguration.value( u"host"_s ).toString();
+  mPort = mConfiguration.value( u"port"_s ).toInt();
+  mUser = mConfiguration.value( u"user"_s ).toString();
+  mPassword = mConfiguration.value( u"password"_s ).toString();
+  mConnectOptions = mConfiguration.value( u"options"_s ).toString();
   // Debug print all connection settings
-  QgsDebugMsgLevel( QStringLiteral( "Auth db connection settings: driver=%1, database='%2', host=%3, port=%4, user='%5', schema=%6, options=%7" )
-                    .arg( mDriver, mDatabase, mHost, QString::number( mPort ), mUser, mConnectOptions, mConfiguration.value( QStringLiteral( "schema" ) ).toString() ), 2 );
+  QgsDebugMsgLevel( u"Auth db connection settings: driver=%1, database='%2', host=%3, port=%4, user='%5', schema=%6, options=%7"_s
+                    .arg( mDriver, mDatabase, mHost, QString::number( mPort ), mUser, mConnectOptions, mConfiguration.value( u"schema"_s ).toString() ), 2 );
 
 }
 
@@ -68,11 +71,11 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
 
   QMutexLocker locker( &mMutex );
 
-  const QString connectionName = QStringLiteral( "authentication.configs:0x%1" ).arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, QLatin1Char( '0' ) );
-  QgsDebugMsgLevel( QStringLiteral( "Using auth db connection name: %1 " ).arg( connectionName ), 3 );
+  const QString connectionName = u"authentication.configs:0x%1"_s.arg( reinterpret_cast<quintptr>( QThread::currentThread() ), 2 * QT_POINTER_SIZE, 16, '0'_L1 );
+  QgsDebugMsgLevel( u"Using auth db connection name: %1 "_s.arg( connectionName ), 3 );
   if ( !QSqlDatabase::contains( connectionName ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "No existing connection, creating a new one" ), 3 );
+    QgsDebugMsgLevel( u"No existing connection, creating a new one"_s, 3 );
     authdb = QSqlDatabase::addDatabase( mDriver, connectionName );
 
 
@@ -100,7 +103,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
     // for background threads, remove database when current thread finishes
     if ( QCoreApplication::instance() && QThread::currentThread() != QCoreApplication::instance()->thread() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Scheduled auth db remove on thread close" ), 4 );
+      QgsDebugMsgLevel( u"Scheduled auth db remove on thread close"_s, 4 );
 
       // IMPORTANT - we use a direct connection here, because the database removal must happen immediately
       // when the thread finishes, and we cannot let this get queued on the main thread's event loop (where
@@ -123,7 +126,7 @@ QSqlDatabase QgsAuthConfigurationStorageDb::authDatabaseConnection() const
   }
   else
   {
-    QgsDebugMsgLevel( QStringLiteral( "Reusing existing connection" ), 4 );
+    QgsDebugMsgLevel( u"Reusing existing connection"_s, 4 );
     authdb = QSqlDatabase::database( connectionName, false );
   }
 
@@ -171,9 +174,6 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
   auto boundQuery = []( const QSqlQuery * query ) -> QString
   {
     QString str = query->lastQuery();
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    QMapIterator<QString, QVariant> it( query->boundValues() );
-#else
     const QStringList keys = query->boundValueNames();
     const QVariantList values = query->boundValues();
     QMap<QString, QVariant> boundValues;
@@ -182,7 +182,6 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
       boundValues.insert( keys.at( i ), values.at( i ).toString() );
     }
     QMapIterator<QString, QVariant> it = QMapIterator<QString, QVariant>( boundValues );
-#endif
     while ( it.hasNext() )
     {
       it.next();
@@ -198,13 +197,13 @@ bool QgsAuthConfigurationStorageDb::authDbQuery( QSqlQuery *query, const QString
       const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db query FAILED: %1\nError: %2" )
           .arg( sql.isEmpty() ? boundQuery( query ) : sql,
                 query->lastError().text() ), Qgis::MessageLevel::Warning );
-      QgsDebugMsgLevel( QStringLiteral( "Auth db query FAILED: %1" ).arg( sql.isEmpty() ? boundQuery( query ) : sql ), 2 );
+      QgsDebugMsgLevel( u"Auth db query FAILED: %1"_s.arg( sql.isEmpty() ? boundQuery( query ) : sql ), 2 );
       return false;
     }
     else
     {
       const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Auth db query exec() FAILED: %1" ).arg( sql.isEmpty() ? boundQuery( query ) : sql ), Qgis::MessageLevel::Warning );
-      QgsDebugMsgLevel( QStringLiteral( "Auth db query FAILED: %1" ).arg( sql.isEmpty() ? boundQuery( query ) : sql ), 2 );
+      QgsDebugMsgLevel( u"Auth db query FAILED: %1"_s.arg( sql.isEmpty() ? boundQuery( query ) : sql ), 2 );
       return false;
     }
   }
@@ -268,14 +267,14 @@ QList<QgsAuthConfigurationStorage::SettingParameter> QgsAuthConfigurationStorage
 {
   return
   {
-    { QStringLiteral( "driver" ), tr( "SQL Driver (see https://doc.qt.io/qt/sql-driver.html)" ), QVariant::String },
-    { QStringLiteral( "database" ), tr( "Database" ), QVariant::String },
-    { QStringLiteral( "schema" ), tr( "Schema for all tables" ), QVariant::String },
-    { QStringLiteral( "host" ), tr( "Host" ), QVariant::String },
-    { QStringLiteral( "port" ), tr( "Port" ), QVariant::Int },
-    { QStringLiteral( "user" ), tr( "User" ), QVariant::String },
-    { QStringLiteral( "password" ), tr( "Password" ), QVariant::String },
-    { QStringLiteral( "options" ), tr( "Connection options" ), QVariant::String },
+    { u"driver"_s, tr( "SQL Driver (see https://doc.qt.io/qt/sql-driver.html)" ), QVariant::String },
+    { u"database"_s, tr( "Database" ), QVariant::String },
+    { u"schema"_s, tr( "Schema for all tables" ), QVariant::String },
+    { u"host"_s, tr( "Host" ), QVariant::String },
+    { u"port"_s, tr( "Port" ), QVariant::Int },
+    { u"user"_s, tr( "User" ), QVariant::String },
+    { u"password"_s, tr( "Password" ), QVariant::String },
+    { u"options"_s, tr( "Connection options" ), QVariant::String },
   };
 }
 
@@ -312,10 +311,10 @@ bool QgsAuthConfigurationStorageDb::storeCertIdentity( const QSslCertificate &ce
   QSqlQuery query( authDatabaseConnection() );
   const QString certPem{ cert.toPem() };
 
-  query.prepare( QStringLiteral( "INSERT INTO %1 (id, key, cert) VALUES (:id, :key, :cert)" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
-  query.bindValue( QStringLiteral( ":key" ), keyPem );
-  query.bindValue( QStringLiteral( ":cert" ), certPem );
+  query.prepare( u"INSERT INTO %1 (id, key, cert) VALUES (:id, :key, :cert)"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.bindValue( u":id"_s, id );
+  query.bindValue( u":key"_s, keyPem );
+  query.bindValue( u":cert"_s, certPem );
 
   if ( !authDbQuery( &query ) )
     return false;
@@ -339,8 +338,8 @@ bool QgsAuthConfigurationStorageDb::removeCertIdentity( const QSslCertificate &c
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "DELETE FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), cert.digest().toHex() );
+  query.prepare( u"DELETE FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.bindValue( u":id"_s, cert.digest().toHex() );
 
   if ( !authDbQuery( &query ) )
   {
@@ -372,8 +371,8 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertIdentity( const QSt
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT cert FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"SELECT cert FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
     return emptycert;
@@ -385,7 +384,7 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertIdentity( const QSt
     if ( query.first() )
     {
       cert = QSslCertificate( query.value( 0 ).toByteArray(), QSsl::Pem );
-      QgsDebugMsgLevel( QStringLiteral( "Certificate identity retrieved for id: %1" ).arg( id ), 2 );
+      QgsDebugMsgLevel( u"Certificate identity retrieved for id: %1"_s.arg( id ), 2 );
       if ( cert.isNull() )
       {
         const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Failed to retrieve certificate identity for id: %1: certificate is NULL" ).arg( id ), Qgis::MessageLevel::Warning );
@@ -420,9 +419,9 @@ const QPair<QSslCertificate, QString> QgsAuthConfigurationStorageDb::loadCertIde
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT key, cert FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.prepare( u"SELECT key, cert FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
 
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
     return bundle;
@@ -445,7 +444,7 @@ const QPair<QSslCertificate, QString> QgsAuthConfigurationStorageDb::loadCertIde
         const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Retrieve certificate identity bundle: FAILED to create certificate" ), Qgis::MessageLevel::Warning );
         return bundle;
       }
-      QgsDebugMsgLevel( QStringLiteral( "Certificate identity bundle retrieved for id: %1" ).arg( id ), 2 );
+      QgsDebugMsgLevel( u"Certificate identity bundle retrieved for id: %1"_s.arg( id ), 2 );
     }
     if ( query.next() )
     {
@@ -473,7 +472,7 @@ const QList<QSslCertificate> QgsAuthConfigurationStorageDb::certIdentities() con
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT cert FROM %1" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.prepare( u"SELECT cert FROM %1"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return certs;
@@ -506,7 +505,7 @@ QStringList QgsAuthConfigurationStorageDb::certIdentityIds() const
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id FROM %1" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.prepare( u"SELECT id FROM %1"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return {};
@@ -539,8 +538,8 @@ bool QgsAuthConfigurationStorageDb::certIdentityExists( const QString &id ) cons
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT cert FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"SELECT cert FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   bool ret { false };
 
@@ -576,8 +575,8 @@ bool QgsAuthConfigurationStorageDb::removeCertIdentity( const QString &id )
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "DELETE FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"DELETE FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certIdentityTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
   {
@@ -628,17 +627,17 @@ bool QgsAuthConfigurationStorageDb::storeSslCertCustomConfig( const QgsAuthConfi
   QString certpem( cert.toPem() );
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "INSERT INTO %1 (id, host, cert, config) VALUES (:id, :host, :cert, :config)" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
+  query.prepare( u"INSERT INTO %1 (id, host, cert, config) VALUES (:id, :host, :cert, :config)"_s.arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
 
-  query.bindValue( QStringLiteral( ":id" ), id );
-  query.bindValue( QStringLiteral( ":host" ), config.sslHostPort().trimmed() );
-  query.bindValue( QStringLiteral( ":cert" ), certpem );
-  query.bindValue( QStringLiteral( ":config" ), config.configString() );
+  query.bindValue( u":id"_s, id );
+  query.bindValue( u":host"_s, config.sslHostPort().trimmed() );
+  query.bindValue( u":cert"_s, certpem );
+  query.bindValue( u":config"_s, config.configString() );
 
   if ( !authDbQuery( &query ) )
     return false;
 
-  QgsDebugMsgLevel( QStringLiteral( "Store SSL cert custom config SUCCESS for host:port, id: %1, %2" )
+  QgsDebugMsgLevel( u"Store SSL cert custom config SUCCESS for host:port, id: %1, %2"_s
                     .arg( config.sslHostPort().trimmed(), id ), 2 );
 
   emit sslCertCustomConfigChanged();
@@ -660,7 +659,7 @@ QStringList QgsAuthConfigurationStorageDb::sslCertCustomConfigIds() const
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id FROM %1" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
+  query.prepare( u"SELECT id FROM %1"_s.arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return {};
@@ -687,7 +686,7 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
 
   if ( id.isEmpty() || hostport.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Passed config ID or host:port is empty" ) );
+    QgsDebugError( u"Passed config ID or host:port is empty"_s );
     return config;
   }
 
@@ -698,9 +697,9 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "SELECT host, cert, config FROM %1 WHERE id = :id AND host = :host" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
-  query.bindValue( QStringLiteral( ":host" ), hostport.trimmed() );
+  query.prepare( u"SELECT host, cert, config FROM %1 WHERE id = :id AND host = :host"_s.arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
+  query.bindValue( u":id"_s, id );
+  query.bindValue( u":host"_s, hostport.trimmed() );
 
   if ( !authDbQuery( &query ) )
     return config;
@@ -712,7 +711,7 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
       config.setSslCertificate( QSslCertificate( query.value( 1 ).toByteArray(), QSsl::Pem ) );
       config.setSslHostPort( query.value( 0 ).toString().trimmed() );
       config.loadConfigString( query.value( 2 ).toString() );
-      QgsDebugMsgLevel( QStringLiteral( "SSL cert custom config retrieved for host:port, id: %1, %2" ).arg( hostport, id ), 2 );
+      QgsDebugMsgLevel( u"SSL cert custom config retrieved for host:port, id: %1, %2"_s.arg( hostport, id ), 2 );
     }
     if ( query.next() )
     {
@@ -741,9 +740,9 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id, cert, config FROM %1 WHERE host = :host" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
+  query.prepare( u"SELECT id, cert, config FROM %1 WHERE host = :host"_s.arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
 
-  query.bindValue( QStringLiteral( ":host" ), hostport.trimmed() );
+  query.bindValue( u":host"_s, hostport.trimmed() );
 
   if ( !authDbQuery( &query ) )
     return config;
@@ -755,7 +754,7 @@ const QgsAuthConfigSslServer QgsAuthConfigurationStorageDb::loadSslCertCustomCon
       config.setSslCertificate( QSslCertificate( query.value( 1 ).toByteArray(), QSsl::Pem ) );
       config.setSslHostPort( hostport );
       config.loadConfigString( query.value( 2 ).toString() );
-      QgsDebugMsgLevel( QStringLiteral( "SSL cert custom config retrieved for host:port %1" ).arg( hostport ), 2 );
+      QgsDebugMsgLevel( u"SSL cert custom config retrieved for host:port %1"_s.arg( hostport ), 2 );
     }
     if ( query.next() )
     {
@@ -783,7 +782,7 @@ const QList<QgsAuthConfigSslServer> QgsAuthConfigurationStorageDb::sslCertCustom
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id, host, cert, config FROM %1" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
+  query.prepare( u"SELECT id, host, cert, config FROM %1"_s.arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return configs;
@@ -810,7 +809,7 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
 
   if ( id.isEmpty() || hostport.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Passed config ID or host:port is empty" ) );
+    QgsDebugError( u"Passed config ID or host:port is empty"_s );
     return false;
   }
 
@@ -822,9 +821,9 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id FROM %1 WHERE id = :id AND host = :host" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
-  query.bindValue( QStringLiteral( ":host" ), hostport.trimmed() );
+  query.prepare( u"SELECT id FROM %1 WHERE id = :id AND host = :host"_s.arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
+  query.bindValue( u":id"_s, id );
+  query.bindValue( u":host"_s, hostport.trimmed() );
 
   if ( !authDbQuery( &query ) )
     return false;
@@ -834,12 +833,12 @@ bool QgsAuthConfigurationStorageDb::sslCertCustomConfigExists( const QString &id
   {
     if ( query.first() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "SSL cert custom config exists for host:port, id: %1, %2" ).arg( hostport, id ), 2 );
+      QgsDebugMsgLevel( u"SSL cert custom config exists for host:port, id: %1, %2"_s.arg( hostport, id ), 2 );
       res = true;
     }
     if ( query.next() )
     {
-      QgsDebugError( QStringLiteral( "Retrieved more than one SSL cert custom config for host:port, id: %1, %2" ).arg( hostport, id ) );
+      QgsDebugError( u"Retrieved more than one SSL cert custom config for host:port, id: %1, %2"_s.arg( hostport, id ) );
       emit messageLog( tr( "Authentication database contains more than one SSL cert custom configs for host:port, id: %1, %2" )
                        .arg( hostport, id ), loggerTag(), Qgis::MessageLevel::Warning );
       return false;
@@ -856,7 +855,7 @@ bool QgsAuthConfigurationStorageDb::removeSslCertCustomConfig( const QString &id
 
   if ( id.isEmpty() || hostport.isEmpty() )
   {
-    QgsDebugError( QStringLiteral( "Passed config ID or host:port is empty" ) );
+    QgsDebugError( u"Passed config ID or host:port is empty"_s );
     return false;
   }
 
@@ -870,9 +869,9 @@ bool QgsAuthConfigurationStorageDb::removeSslCertCustomConfig( const QString &id
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "DELETE FROM %1 WHERE id = :id AND host = :host" ).arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
-  query.bindValue( QStringLiteral( ":host" ), hostport.trimmed() );
+  query.prepare( u"DELETE FROM %1 WHERE id = :id AND host = :host"_s.arg( quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) ) );
+  query.bindValue( u":id"_s, id );
+  query.bindValue( u":host"_s, hostport.trimmed() );
 
   if ( !authDbQuery( &query ) )
   {
@@ -905,7 +904,7 @@ QStringList QgsAuthConfigurationStorageDb::certAuthorityIds() const
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id FROM %1" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
+  query.prepare( u"SELECT id FROM %1"_s.arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return {};
@@ -939,7 +938,7 @@ bool QgsAuthConfigurationStorageDb::storeCertAuthority( const QSslCertificate &c
   // as user may want to ignore that SSL connection error
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
+    QgsDebugError( u"Passed certificate is null"_s );
     return false;
   }
 
@@ -954,15 +953,15 @@ bool QgsAuthConfigurationStorageDb::storeCertAuthority( const QSslCertificate &c
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "INSERT INTO %1 (id, cert) VALUES (:id, :cert)" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
+  query.prepare( u"INSERT INTO %1 (id, cert) VALUES (:id, :cert)"_s.arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
 
-  query.bindValue( QStringLiteral( ":id" ), id );
-  query.bindValue( QStringLiteral( ":cert" ), pem );
+  query.bindValue( u":id"_s, id );
+  query.bindValue( u":cert"_s, pem );
 
   if ( !authDbQuery( &query ) )
     return false;
 
-  QgsDebugMsgLevel( QStringLiteral( "Store certificate authority SUCCESS for id: %1" ).arg( id ), 2 );
+  QgsDebugMsgLevel( u"Store certificate authority SUCCESS for id: %1"_s.arg( id ), 2 );
   emit certAuthorityChanged();
 
   return true;
@@ -987,8 +986,8 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertAuthority( const QS
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT cert FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"SELECT cert FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
     return emptycert;
@@ -1000,7 +999,7 @@ const QSslCertificate QgsAuthConfigurationStorageDb::loadCertAuthority( const QS
     if ( query.first() )
     {
       cert = QSslCertificate( query.value( 0 ).toByteArray(), QSsl::Pem );
-      QgsDebugMsgLevel( QStringLiteral( "Certificate authority retrieved for id: %1" ).arg( id ), 2 );
+      QgsDebugMsgLevel( u"Certificate authority retrieved for id: %1"_s.arg( id ), 2 );
     }
     if ( query.next() )
     {
@@ -1019,7 +1018,7 @@ bool QgsAuthConfigurationStorageDb::certAuthorityExists( const QSslCertificate &
 
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
+    QgsDebugError( u"Passed certificate is null"_s );
     return false;
   }
 
@@ -1033,8 +1032,8 @@ bool QgsAuthConfigurationStorageDb::certAuthorityExists( const QSslCertificate &
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"SELECT id FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
     return false;
@@ -1044,7 +1043,7 @@ bool QgsAuthConfigurationStorageDb::certAuthorityExists( const QSslCertificate &
   {
     if ( query.first() )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Certificate authority exists for id: %1" ).arg( id ), 2 );
+      QgsDebugMsgLevel( u"Certificate authority exists for id: %1"_s.arg( id ), 2 );
       res = true;
     }
     if ( query.next() )
@@ -1065,7 +1064,7 @@ bool QgsAuthConfigurationStorageDb::removeCertAuthority( const QSslCertificate &
 
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
+    QgsDebugError( u"Passed certificate is null"_s );
     return false;
   }
 
@@ -1079,9 +1078,9 @@ bool QgsAuthConfigurationStorageDb::removeCertAuthority( const QSslCertificate &
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "DELETE FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
+  query.prepare( u"DELETE FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
 
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
   {
@@ -1116,7 +1115,7 @@ const  QMap<QString, QgsAuthCertUtils::CertTrustPolicy> QgsAuthConfigurationStor
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id, policy FROM %1" ).arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
+  query.prepare( u"SELECT id, policy FROM %1"_s.arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return trustedCerts;
@@ -1151,7 +1150,7 @@ const QList<QSslCertificate> QgsAuthConfigurationStorageDb::caCerts() const
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT id, cert FROM %1" ).arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
+  query.prepare( u"SELECT id, cert FROM %1"_s.arg( quotedQualifiedIdentifier( certAuthorityTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return authorities;
@@ -1192,7 +1191,7 @@ bool QgsAuthConfigurationStorageDb::storeCertTrustPolicy( const QSslCertificate 
 
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
+    QgsDebugError( u"Passed certificate is null"_s );
     return false;
   }
 
@@ -1209,7 +1208,7 @@ bool QgsAuthConfigurationStorageDb::storeCertTrustPolicy( const QSslCertificate 
   {
     if ( !policyExisted )
     {
-      QgsDebugMsgLevel( QStringLiteral( "Passed policy was default, no cert records in database for id: %1" ).arg( id ), 2 );
+      QgsDebugMsgLevel( u"Passed policy was default, no cert records in database for id: %1"_s.arg( id ), 2 );
       return true;
     }
 
@@ -1219,7 +1218,7 @@ bool QgsAuthConfigurationStorageDb::storeCertTrustPolicy( const QSslCertificate 
       return false;
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "Passed policy was default, all cert records in database were removed for id: %1" ).arg( id ), 2 );
+    QgsDebugMsgLevel( u"Passed policy was default, all cert records in database were removed for id: %1"_s.arg( id ), 2 );
 
     emit certAuthorityChanged();
 
@@ -1235,15 +1234,15 @@ bool QgsAuthConfigurationStorageDb::storeCertTrustPolicy( const QSslCertificate 
 
   // Insert new policy
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "INSERT INTO %1 (id, policy) VALUES (:id, :policy)" ).arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
+  query.prepare( u"INSERT INTO %1 (id, policy) VALUES (:id, :policy)"_s.arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
 
-  query.bindValue( QStringLiteral( ":id" ), id );
-  query.bindValue( QStringLiteral( ":policy" ), static_cast< int >( policy ) );
+  query.bindValue( u":id"_s, id );
+  query.bindValue( u":policy"_s, static_cast< int >( policy ) );
 
   if ( !authDbQuery( &query ) )
     return false;
 
-  QgsDebugMsgLevel( QStringLiteral( "Store certificate trust policy SUCCESS for id: %1" ).arg( id ), 2 );
+  QgsDebugMsgLevel( u"Store certificate trust policy SUCCESS for id: %1"_s.arg( id ), 2 );
   emit certAuthorityChanged();
 
   return true;
@@ -1257,7 +1256,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthConfigurationStorageDb::loadCertTrustPo
 
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
+    QgsDebugError( u"Passed certificate is null"_s );
     return QgsAuthCertUtils::DefaultTrust;
   }
 
@@ -1271,8 +1270,8 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthConfigurationStorageDb::loadCertTrustPo
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT policy FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"SELECT policy FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
     return QgsAuthCertUtils::DefaultTrust;
@@ -1282,7 +1281,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthConfigurationStorageDb::loadCertTrustPo
     if ( query.first() )
     {
       int policy = query.value( 0 ).toInt();
-      QgsDebugMsgLevel( QStringLiteral( "Certificate trust policy retrieved for id: %1" ).arg( id ), 2 );
+      QgsDebugMsgLevel( u"Certificate trust policy retrieved for id: %1"_s.arg( id ), 2 );
       return static_cast< QgsAuthCertUtils::CertTrustPolicy >( policy );
     }
     if ( query.next() )
@@ -1302,7 +1301,7 @@ bool QgsAuthConfigurationStorageDb::removeCertTrustPolicy( const QSslCertificate
 
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
+    QgsDebugError( u"Passed certificate is null"_s );
     return QgsAuthCertUtils::DefaultTrust;
   }
 
@@ -1316,8 +1315,8 @@ bool QgsAuthConfigurationStorageDb::removeCertTrustPolicy( const QSslCertificate
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "DELETE FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"DELETE FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
   {
@@ -1344,7 +1343,7 @@ bool QgsAuthConfigurationStorageDb::certTrustPolicyExists( const QSslCertificate
 
   if ( cert.isNull() )
   {
-    QgsDebugError( QStringLiteral( "Passed certificate is null" ) );
+    QgsDebugError( u"Passed certificate is null"_s );
     return QgsAuthCertUtils::DefaultTrust;
   }
 
@@ -1358,8 +1357,8 @@ bool QgsAuthConfigurationStorageDb::certTrustPolicyExists( const QSslCertificate
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT COUNT(id) FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"SELECT COUNT(id) FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( certTrustPolicyTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
     return false;
@@ -1391,7 +1390,7 @@ const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> QgsAuthConfigurat
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "SELECT salt, civ, hash FROM %1" ).arg( quotedQualifiedIdentifier( masterPasswordTableName() ) ) );
+  query.prepare( u"SELECT salt, civ, hash FROM %1"_s.arg( quotedQualifiedIdentifier( masterPasswordTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
     return passwords;
@@ -1422,11 +1421,11 @@ bool QgsAuthConfigurationStorageDb::storeMasterPassword( const QgsAuthConfigurat
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "INSERT INTO %1 (salt, civ, hash) VALUES (:salt, :civ, :hash)" ).arg( quotedQualifiedIdentifier( masterPasswordTableName() ) ) );
+  query.prepare( u"INSERT INTO %1 (salt, civ, hash) VALUES (:salt, :civ, :hash)"_s.arg( quotedQualifiedIdentifier( masterPasswordTableName() ) ) );
 
-  query.bindValue( QStringLiteral( ":salt" ), config.salt );
-  query.bindValue( QStringLiteral( ":civ" ), config.civ );
-  query.bindValue( QStringLiteral( ":hash" ), config.hash );
+  query.bindValue( u":salt"_s, config.salt );
+  query.bindValue( u":civ"_s, config.civ );
+  query.bindValue( u":hash"_s, config.hash );
 
   if ( !authDbQuery( &query ) )
     return false;
@@ -1454,42 +1453,42 @@ bool QgsAuthConfigurationStorageDb::clearMasterPasswords()
 
 QString QgsAuthConfigurationStorageDb::methodConfigTableName() const
 {
-  return QStringLiteral( "auth_configs" );
+  return u"auth_configs"_s;
 }
 
 QString QgsAuthConfigurationStorageDb::authSettingsTableName() const
 {
-  return QStringLiteral( "auth_settings" );
+  return u"auth_settings"_s;
 }
 
 QString QgsAuthConfigurationStorageDb::certIdentityTableName() const
 {
-  return QStringLiteral( "auth_identities" );
+  return u"auth_identities"_s;
 }
 
 QString QgsAuthConfigurationStorageDb::sslCertCustomConfigTableName() const
 {
-  return QStringLiteral( "auth_servers" );
+  return u"auth_servers"_s;
 }
 
 QString QgsAuthConfigurationStorageDb::certAuthorityTableName() const
 {
-  return QStringLiteral( "auth_authorities" );
+  return u"auth_authorities"_s;
 }
 
 QString QgsAuthConfigurationStorageDb::certTrustPolicyTableName() const
 {
-  return QStringLiteral( "auth_trust" );
+  return u"auth_trust"_s;
 }
 
 QString QgsAuthConfigurationStorageDb::masterPasswordTableName() const
 {
-  return QStringLiteral( "auth_pass" );
+  return u"auth_pass"_s;
 }
 
 QString QgsAuthConfigurationStorageDb::quotedQualifiedIdentifier( const QString &name, bool isIndex ) const
 {
-  const QString schema { mConfiguration.value( QStringLiteral( "schema" ) ).toString() };
+  const QString schema { mConfiguration.value( u"schema"_s ).toString() };
   if ( schema.isEmpty() )
   {
     return authDatabaseConnection().driver()->escapeIdentifier( name, QSqlDriver::TableName );
@@ -1498,23 +1497,23 @@ QString QgsAuthConfigurationStorageDb::quotedQualifiedIdentifier( const QString 
   {
     if ( isIndex )
     {
-      return authDatabaseConnection().driver()->escapeIdentifier( schema + QStringLiteral( "_" ) + name, QSqlDriver::TableName );
+      return authDatabaseConnection().driver()->escapeIdentifier( schema + u"_"_s + name, QSqlDriver::TableName );
     }
     else
     {
-      return authDatabaseConnection().driver()->escapeIdentifier( schema, QSqlDriver::TableName ) + QStringLiteral( "." ) + authDatabaseConnection().driver()->escapeIdentifier( name, QSqlDriver::TableName );
+      return authDatabaseConnection().driver()->escapeIdentifier( schema, QSqlDriver::TableName ) + u"."_s + authDatabaseConnection().driver()->escapeIdentifier( name, QSqlDriver::TableName );
     }
   }
 }
 
 QString QgsAuthConfigurationStorageDb::name() const
 {
-  return QStringLiteral( "%1:%2" ).arg( mDriver, mDatabase );
+  return u"%1:%2"_s.arg( mDriver, mDatabase );
 }
 
 QString QgsAuthConfigurationStorageDb::type() const
 {
-  return QStringLiteral( "DB-%2" ).arg( mDriver );
+  return u"DB-%2"_s.arg( mDriver );
 }
 
 QString QgsAuthConfigurationStorageDb::description() const
@@ -1577,15 +1576,15 @@ bool QgsAuthConfigurationStorageDb::createConfigTables()
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);" ).arg( quotedQualifiedIdentifier( QStringLiteral( "config_id_index" ), true ), quotedQualifiedIdentifier( methodConfigTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s.arg( quotedQualifiedIdentifier( u"config_id_index"_s, true ), quotedQualifiedIdentifier( methodConfigTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE INDEX IF NOT EXISTS %1 ON %2 (uri ASC);" )
-         .arg( quotedQualifiedIdentifier( QStringLiteral( "uri_index" ), true ),
+  qstr = u"CREATE INDEX IF NOT EXISTS %1 ON %2 (uri ASC);"_s
+         .arg( quotedQualifiedIdentifier( u"uri_index"_s, true ),
                quotedQualifiedIdentifier( methodConfigTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1604,7 +1603,7 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
     return false;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Creating cert tables in auth db" ), 2 );
+  QgsDebugMsgLevel( u"Creating cert tables in auth db"_s, 2 );
 
   QSqlQuery query( authDatabaseConnection() );
 
@@ -1631,8 +1630,8 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);" )
-         .arg( quotedQualifiedIdentifier( QStringLiteral( "cert_ident_id_index" ), true ), quotedQualifiedIdentifier( certIdentityTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s
+         .arg( quotedQualifiedIdentifier( u"cert_ident_id_index"_s, true ), quotedQualifiedIdentifier( certIdentityTableName() ) );
 
   if ( !authDbQuery( &query, qstr ) )
     return false;
@@ -1651,7 +1650,7 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (host ASC);" ).arg( quotedQualifiedIdentifier( QStringLiteral( "host_index" ), true ), quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (host ASC);"_s.arg( quotedQualifiedIdentifier( u"host_index"_s, true ), quotedQualifiedIdentifier( sslCertCustomConfigTableName() ) );
 
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1670,8 +1669,8 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);" )
-         .arg( quotedQualifiedIdentifier( QStringLiteral( "ca_id_index" ), true ), quotedQualifiedIdentifier( certAuthorityTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s
+         .arg( quotedQualifiedIdentifier( u"ca_id_index"_s, true ), quotedQualifiedIdentifier( certAuthorityTableName() ) );
 
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1688,8 +1687,8 @@ bool QgsAuthConfigurationStorageDb::createCertTables()
 
   query.clear();
 
-  qstr = QStringLiteral( "CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);" )
-         .arg( quotedQualifiedIdentifier( QStringLiteral( "trust_id_index" ), true ), quotedQualifiedIdentifier( certTrustPolicyTableName() ) );
+  qstr = u"CREATE UNIQUE INDEX IF NOT EXISTS %1 ON %2 (id ASC);"_s
+         .arg( quotedQualifiedIdentifier( u"trust_id_index"_s, true ), quotedQualifiedIdentifier( certTrustPolicyTableName() ) );
 
 
   if ( !authDbQuery( &query, qstr ) )
@@ -1719,7 +1718,7 @@ QgsAuthMethodConfigsMap QgsAuthConfigurationStorageDb::authMethodConfigs( const 
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "SELECT id, name, uri, type, version FROM %1" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+  query.prepare( u"SELECT id, name, uri, type, version FROM %1"_s.arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
   {
@@ -1769,7 +1768,7 @@ QgsAuthMethodConfigsMap QgsAuthConfigurationStorageDb::authMethodConfigsWithPayl
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "SELECT id, name, uri, type, version, config FROM %1" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+  query.prepare( u"SELECT id, name, uri, type, version, config FROM %1"_s.arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
 
   if ( !authDbQuery( &query ) )
   {
@@ -1787,7 +1786,7 @@ QgsAuthMethodConfigsMap QgsAuthConfigurationStorageDb::authMethodConfigsWithPayl
       config.setUri( query.value( 2 ).toString() );
       config.setMethod( query.value( 3 ).toString() );
       config.setVersion( query.value( 4 ).toInt() );
-      config.setConfig( QStringLiteral( "encrypted_payload" ), query.value( 5 ).toString() );
+      config.setConfig( u"encrypted_payload"_s, query.value( 5 ).toString() );
       baseConfigs.insert( authcfg, config );
     }
   }
@@ -1812,7 +1811,7 @@ void QgsAuthConfigurationStorageDb::checkCapabilities()
   // Check if each table exist and set capabilities
 
   static const QStringList existingTables = authDatabaseConnection().tables();
-  QString schema { mConfiguration.value( QStringLiteral( "schema" ) ).toString() };
+  QString schema { mConfiguration.value( u"schema"_s ).toString() };
   if ( ! schema.isEmpty() )
   {
     schema += '.';
@@ -1927,14 +1926,14 @@ QgsAuthMethodConfig QgsAuthConfigurationStorageDb::loadMethodConfig( const QStri
 
   if ( full )
   {
-    query.prepare( QStringLiteral( "SELECT name, uri, type, version, config FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+    query.prepare( u"SELECT name, uri, type, version, config FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
   }
   else
   {
-    query.prepare( QStringLiteral( "SELECT name, uri, type, version FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+    query.prepare( u"SELECT name, uri, type, version FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
   }
 
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2001,13 +2000,13 @@ bool QgsAuthConfigurationStorageDb::storeMethodConfig( const QgsAuthMethodConfig
   }
 
   QSqlQuery query( authDatabaseConnection() );
-  query.prepare( QStringLiteral( "INSERT INTO %1 (id, name, uri, type, version, config) VALUES (:id, :name, :uri, :type, :version, :config)" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), config.id() );
-  query.bindValue( QStringLiteral( ":name" ), config.name() );
-  query.bindValue( QStringLiteral( ":uri" ), config.uri() );
-  query.bindValue( QStringLiteral( ":type" ), config.method() );
-  query.bindValue( QStringLiteral( ":version" ), config.version() );
-  query.bindValue( QStringLiteral( ":config" ), payload );
+  query.prepare( u"INSERT INTO %1 (id, name, uri, type, version, config) VALUES (:id, :name, :uri, :type, :version, :config)"_s.arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+  query.bindValue( u":id"_s, config.id() );
+  query.bindValue( u":name"_s, config.name() );
+  query.bindValue( u":uri"_s, config.uri() );
+  query.bindValue( u":type"_s, config.method() );
+  query.bindValue( u":version"_s, config.version() );
+  query.bindValue( u":config"_s, payload );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2034,8 +2033,8 @@ bool QgsAuthConfigurationStorageDb::removeMethodConfig( const QString &id )
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "DELETE FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"DELETE FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2068,8 +2067,8 @@ bool QgsAuthConfigurationStorageDb::methodConfigExists( const QString &id ) cons
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT COUNT( id ) FROM %1 WHERE id = :id" ).arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
-  query.bindValue( QStringLiteral( ":id" ), id );
+  query.prepare( u"SELECT COUNT( id ) FROM %1 WHERE id = :id"_s.arg( quotedQualifiedIdentifier( methodConfigTableName() ) ) );
+  query.bindValue( u":id"_s, id );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2107,10 +2106,10 @@ bool QgsAuthConfigurationStorageDb::storeAuthSetting( const QString &key, const 
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "INSERT INTO %1 (setting, value) VALUES (:setting, :value)" )
+  query.prepare( u"INSERT INTO %1 (setting, value) VALUES (:setting, :value)"_s
                  .arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
-  query.bindValue( QStringLiteral( ":setting" ), key );
-  query.bindValue( QStringLiteral( ":value" ), value );
+  query.bindValue( u":setting"_s, key );
+  query.bindValue( u":value"_s, value );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2138,8 +2137,8 @@ QString QgsAuthConfigurationStorageDb::loadAuthSetting( const QString &key ) con
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT value FROM %1 WHERE setting = :setting" ).arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
-  query.bindValue( QStringLiteral( ":setting" ), key );
+  query.prepare( u"SELECT value FROM %1 WHERE setting = :setting"_s.arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
+  query.bindValue( u":setting"_s, key );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2154,7 +2153,7 @@ QString QgsAuthConfigurationStorageDb::loadAuthSetting( const QString &key ) con
 
   // Not sure we need this warning, as it's not necessarily an error if the setting doesn't exist
   // const_cast< QgsAuthConfigurationStorageDb * >( this )->setError( tr( "Setting '%1' does not exist" ).arg( key ), Qgis::MessageLevel::Warning );
-  QgsDebugMsgLevel( QStringLiteral( "Setting '%1' does not exist" ).arg( key ), 2 );
+  QgsDebugMsgLevel( u"Setting '%1' does not exist"_s.arg( key ), 2 );
 
   return QString();
 }
@@ -2174,8 +2173,8 @@ bool QgsAuthConfigurationStorageDb::removeAuthSetting( const QString &key )
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "DELETE FROM %1 WHERE setting = :setting" ).arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
-  query.bindValue( QStringLiteral( ":setting" ), key );
+  query.prepare( u"DELETE FROM %1 WHERE setting = :setting"_s.arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
+  query.bindValue( u":setting"_s, key );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2208,8 +2207,8 @@ bool QgsAuthConfigurationStorageDb::authSettingExists( const QString &key ) cons
 
   QSqlQuery query( authDatabaseConnection() );
 
-  query.prepare( QStringLiteral( "SELECT COUNT(value) FROM %1 WHERE setting = :setting" ).arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
-  query.bindValue( QStringLiteral( ":setting" ), key );
+  query.prepare( u"SELECT COUNT(value) FROM %1 WHERE setting = :setting"_s.arg( quotedQualifiedIdentifier( authSettingsTableName() ) ) );
+  query.bindValue( u":setting"_s, key );
 
   if ( !authDbQuery( &query ) )
   {
@@ -2284,7 +2283,7 @@ bool QgsAuthConfigurationStorageDb::clearTables( const QStringList &tables )
       throw QgsNotSupportedException( tr( "Failed to empty table '%1': unsupported table" ).arg( table ) );
     }
 
-    query.prepare( QStringLiteral( "DELETE FROM %1" ).arg( quotedQualifiedIdentifier( table ) ) );
+    query.prepare( u"DELETE FROM %1"_s.arg( quotedQualifiedIdentifier( table ) ) );
 
     if ( !authDbQuery( &query ) )
     {
@@ -2297,7 +2296,7 @@ bool QgsAuthConfigurationStorageDb::clearTables( const QStringList &tables )
 
 bool QgsAuthConfigurationStorageDb::tableExists( const QString &table ) const
 {
-  QString schema { mConfiguration.value( QStringLiteral( "schema" ) ).toString() };
+  QString schema { mConfiguration.value( u"schema"_s ).toString() };
   if ( ! schema.isEmpty() )
   {
     schema += '.';
@@ -2312,37 +2311,37 @@ const QMap<QString, QVariant> QgsAuthConfigurationStorageDb::uriToSettings( cons
 
   if ( url.isValid() )
   {
-    settings.insert( QStringLiteral( "driver" ), url.scheme().toUpper() );
-    settings.insert( QStringLiteral( "host" ), url.host() );
-    settings.insert( QStringLiteral( "port" ), QString::number( url.port() ) );
+    settings.insert( u"driver"_s, url.scheme().toUpper() );
+    settings.insert( u"host"_s, url.host() );
+    settings.insert( u"port"_s, QString::number( url.port() ) );
     QString path { url.path() };
     // Remove leading slash from the path unless the driver is QSQLITE or QSPATIALITE
-    if ( path.startsWith( QLatin1Char( '/' ) ) &&
-         !( settings.value( QStringLiteral( "driver" ) ) == QLatin1String( "QSQLITE" ) ||
-            settings.value( QStringLiteral( "driver" ) ) == QLatin1String( "QSPATIALITE" ) ) )
+    if ( path.startsWith( '/'_L1 ) &&
+         !( settings.value( u"driver"_s ) == "QSQLITE"_L1 ||
+            settings.value( u"driver"_s ) == "QSPATIALITE"_L1 ) )
     {
       path = path.mid( 1 );
     }
-    settings.insert( QStringLiteral( "database" ), path );
-    settings.insert( QStringLiteral( "user" ), url.userName() );
-    settings.insert( QStringLiteral( "password" ), url.password() );
+    settings.insert( u"database"_s, path );
+    settings.insert( u"user"_s, url.userName() );
+    settings.insert( u"password"_s, url.password() );
     QUrlQuery query{ url };
 
     // Extract the schema from the query string
-    QString schemaName { query.queryItemValue( QStringLiteral( "schema" ) ) };
+    QString schemaName { query.queryItemValue( u"schema"_s ) };
     if ( schemaName.isEmpty() )
     {
-      schemaName = query.queryItemValue( QStringLiteral( "SCHEMA" ) );
+      schemaName = query.queryItemValue( u"SCHEMA"_s );
     }
 
     if ( ! schemaName.isEmpty() )
     {
-      settings.insert( QStringLiteral( "schema" ), schemaName );
-      query.removeAllQueryItems( QStringLiteral( "schema" ) );
-      query.removeAllQueryItems( QStringLiteral( "SCHEMA" ) );
+      settings.insert( u"schema"_s, schemaName );
+      query.removeAllQueryItems( u"schema"_s );
+      query.removeAllQueryItems( u"SCHEMA"_s );
     }
 
-    settings.insert( QStringLiteral( "options" ), query.toString() );
+    settings.insert( u"options"_s, query.toString() );
   }
   return settings;
 }

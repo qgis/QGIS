@@ -14,20 +14,24 @@
  ***************************************************************************/
 #ifdef WITH_SFCGAL
 
-#include "qgstest.h"
 #include <cmath>
 #include <memory>
+
+#include "qgstest.h"
+
+#include <QApplication>
+#include <QDesktopServices>
+#include <QDir>
+#include <QFileInfo>
+#include <QImage>
 #include <QObject>
+#include <QPainter>
+#include <QPointF>
 #include <QString>
 #include <QStringList>
-#include <QApplication>
-#include <QFileInfo>
-#include <QDir>
-#include <QDesktopServices>
 #include <QVector>
-#include <QPointF>
-#include <QImage>
-#include <QPainter>
+
+using namespace Qt::StringLiterals;
 
 // qgis includes...
 #include <qgsapplication.h>
@@ -172,7 +176,7 @@ class TestQgsSfcgal : public QgsTest
 };
 
 TestQgsSfcgal::TestQgsSfcgal()
-  : QgsTest( QStringLiteral( "Geometry Tests" ) )
+  : QgsTest( u"Geometry Tests"_s )
   , mpPolygonGeometryA( nullptr )
   , mpPolygonGeometryB( nullptr )
   , mpPolygonGeometryC( nullptr )
@@ -428,7 +432,7 @@ void TestQgsSfcgal::isEqual()
   QVERIFY2( cloneGeomA, "QgsSfcgalGeometry::clone failure" );
   QCOMPARE( geomA.wkbType(), cloneGeomA->wkbType() );
 
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( { bool res = (geomA == *cloneGeomA.get()); Q_UNUSED(res); }, QgsNotSupportedException );
 #else
   QVERIFY2( geomA == *cloneGeomA.get(), "Should be equals" );
@@ -437,7 +441,7 @@ void TestQgsSfcgal::isEqual()
 
   // test with offset geometry
   QgsVector3D vector( 1.0, 1.0, 0 );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( geomA.translate( vector ), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> geomB( geomA.translate( vector ) );
@@ -454,7 +458,7 @@ void TestQgsSfcgal::boundary()
 {
   // 2D line
   auto sfcgalLine2D = std::make_unique<QgsSfcgalGeometry>( mpPolylineGeometryD );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalLine2D->boundary(), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> sfcgalLine2DBoundary( sfcgalLine2D->boundary() );
@@ -464,7 +468,7 @@ void TestQgsSfcgal::boundary()
 
   // 3D polygon
   auto sfcgalPolygon3D = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPolygon3D->boundary(), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> sfcgalPolygon3DBoundary( sfcgalPolygon3D->boundary() );
@@ -480,19 +484,19 @@ void TestQgsSfcgal::centroid()
   auto geomZB = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZB );
   auto geomZC = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZC );
 
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( geomZA->centroid(), QgsNotSupportedException );
   QVERIFY_EXCEPTION_THROWN( geomZB->centroid(), QgsNotSupportedException );
   QVERIFY_EXCEPTION_THROWN( geomZC->centroid(), QgsNotSupportedException );
 #else
   auto res = std::make_unique<QgsPoint>( geomZA->centroid() );
-  QCOMPARE( res->asWkt( 2 ), QStringLiteral( "Point Z (-5673.79 3594.8 20)" ) );
+  QCOMPARE( res->asWkt( 2 ), u"Point Z (-5673.79 3594.8 20)"_s );
 
   res = std::make_unique<QgsPoint>( geomZB->centroid() );
-  QCOMPARE( res->asWkt( 2 ), QStringLiteral( "Point Z (-5150.77 3351.12 0)" ) );
+  QCOMPARE( res->asWkt( 2 ), u"Point Z (-5150.77 3351.12 0)"_s );
 
   res = std::make_unique<QgsPoint>( geomZC->centroid() );
-  QCOMPARE( res->asWkt( 2 ), QStringLiteral( "Point Z (-6734.85 4471.67 -28.34)" ) );
+  QCOMPARE( res->asWkt( 2 ), u"Point Z (-6734.85 4471.67 -28.34)"_s );
 #endif
 }
 
@@ -501,7 +505,7 @@ void TestQgsSfcgal::dropZ()
   // PolygonZ
   auto sfcgalPolygonZ = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
   QCOMPARE( sfcgalPolygonZ->wkbType(), Qgis::WkbType::PolygonZ );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPolygonZ->dropZValue(), QgsNotSupportedException );
 #else
   QVERIFY( sfcgalPolygonZ->dropZValue() );
@@ -536,7 +540,7 @@ void TestQgsSfcgal::dropM()
   // PolygonZ
   auto sfcgalPolygonZ = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
   QCOMPARE( sfcgalPolygonZ->wkbType(), Qgis::WkbType::PolygonZ );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPolygonZ->dropMValue(), QgsNotSupportedException );
 #else
   QVERIFY( !sfcgalPolygonZ->dropMValue() );
@@ -570,7 +574,7 @@ void TestQgsSfcgal::addZValue()
   // 2D Point
   QgsSfcgalGeometry sfcgalPoint2D( "POINT (4 2)" );
   QCOMPARE( sfcgalPoint2D.wkbType(), Qgis::WkbType::Point );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint2D.addZValue(), QgsNotSupportedException );
 #else
   QVERIFY( sfcgalPoint2D.addZValue( 4 ) );
@@ -598,7 +602,7 @@ void TestQgsSfcgal::addMValue()
   // 2D Point
   QgsSfcgalGeometry sfcgalPoint2D( "POINT (4 2)" );
   QCOMPARE( sfcgalPoint2D.wkbType(), Qgis::WkbType::Point );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint2D.addMValue( 5 ), QgsNotSupportedException );
 #else
   QVERIFY( sfcgalPoint2D.addMValue( 5 ) );
@@ -626,7 +630,7 @@ void TestQgsSfcgal::swapXY()
   // 2D Point
   QgsSfcgalGeometry sfcgalPoint2D( "POINT (4 2)" );
   QCOMPARE( sfcgalPoint2D.wkbType(), Qgis::WkbType::Point );
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalPoint2D.swapXy();, QgsNotSupportedException );
 #else
   sfcgalPoint2D.swapXy();
@@ -660,20 +664,20 @@ void TestQgsSfcgal::scale()
   // simple 2D Point
   QgsSfcgalGeometry sfcgalPoint( "POINT (4 3)" );
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint( sfcgalPoint.scale( QgsVector3D( 2, 3, 0 ), QgsPoint() ) );
-  QCOMPARE( sfcgalScalePoint->asWkt( 0 ), QStringLiteral( "POINT (8 9)" ) );
+  QCOMPARE( sfcgalScalePoint->asWkt( 0 ), u"POINT (8 9)"_s );
 
   // simple 2D Point with center
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePointCenter( sfcgalPoint.scale( QgsVector3D( 2, 3, 0 ), QgsPoint( 1, 1 ) ) );
-  QCOMPARE( sfcgalScalePointCenter->asWkt( 0 ), QStringLiteral( "POINT (7 7)" ) );
+  QCOMPARE( sfcgalScalePointCenter->asWkt( 0 ), u"POINT (7 7)"_s );
 
   // simple 3D Point
   QgsSfcgalGeometry sfcgalPoint3D( "POINT Z (4 3 2)" );
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3D( sfcgalPoint3D.scale( QgsVector3D( 2, 3, 4 ), QgsPoint() ) );
-  QCOMPARE( sfcgalScalePoint3D->asWkt( 0 ), QStringLiteral( "POINT Z (8 9 8)" ) );
+  QCOMPARE( sfcgalScalePoint3D->asWkt( 0 ), u"POINT Z (8 9 8)"_s );
 
   // simple 3D Point with center
   std::unique_ptr<QgsSfcgalGeometry> sfcgalScalePoint3DCenter( sfcgalPoint3D.scale( QgsVector3D( 2, 3, 4 ), QgsPoint( 1, 1, 2 ) ) );
-  QCOMPARE( sfcgalScalePoint3DCenter->asWkt( 0 ), QStringLiteral( "POINT Z (7 7 2)" ) );
+  QCOMPARE( sfcgalScalePoint3DCenter->asWkt( 0 ), u"POINT Z (7 7 2)"_s );
 
   // 3D Polygon - no center
   auto sfcgalPolygonA = std::make_unique<QgsSfcgalGeometry>( mSfcgalPolygonZA );
@@ -723,7 +727,7 @@ void TestQgsSfcgal::intersection()
   const QgsPolygon *intersectionPoly = qgsgeometry_cast<const QgsPolygon *>( intersectionGeom->asQgisGeometry().release() );
   QVERIFY( intersectionPoly );                               // check that the union created a feature
   QVERIFY( intersectionPoly->exteriorRing()->length() > 0 ); // check that the union created a feature
-  QCOMPARE( intersectionPoly->exteriorRing()->asWkt(), QStringLiteral( "LineString (40 80, 40 40, 80 40, 80 80, 40 80)" ) );
+  QCOMPARE( intersectionPoly->exteriorRing()->asWkt(), u"LineString (40 80, 40 40, 80 40, 80 80, 40 80)"_s );
 
   paintPolygon( intersectionPoly );
   QGSVERIFYIMAGECHECK( "Checking if A intersects B (SFCGAL)", "geometry_intersectionCheck1", mImage, QString(), 0 );
@@ -759,8 +763,8 @@ void TestQgsSfcgal::intersection3d()
 
     const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry().release() );
     QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
-    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5863.79 3335.64 20, -5551.89 3559.33 20)" ) );
-    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5520.8 3581.62 20, -5551.89 3559.33 20)" ) );
+    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), u"LineString Z (-5863.79 3335.64 20, -5551.89 3559.33 20)"_s );
+    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), u"LineString Z (-5520.8 3581.62 20, -5551.89 3559.33 20)"_s );
   }
 
   {
@@ -777,8 +781,8 @@ void TestQgsSfcgal::intersection3d()
 
     const QgsMultiCurve *interCurve = qgsgeometry_cast<const QgsMultiCurve *>( scInterGeom->asQgisGeometry().release() );
     QCOMPARE( interCurve->partCount(), 2 ); // check that the operation created 2 features
-    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), QStringLiteral( "LineString Z (-6321.91 3651.67 0, -6229.56 3717.9 0)" ) );
-    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), QStringLiteral( "LineString Z (-5814.13 4015.84 0, -6229.56 3717.9 0)" ) );
+    QCOMPARE( interCurve->curveN( 0 )->asWkt( 2 ), u"LineString Z (-6321.91 3651.67 0, -6229.56 3717.9 0)"_s );
+    QCOMPARE( interCurve->curveN( 1 )->asWkt( 2 ), u"LineString Z (-5814.13 4015.84 0, -6229.56 3717.9 0)"_s );
   }
 
   {
@@ -802,7 +806,7 @@ void TestQgsSfcgal::intersection3d()
     QVERIFY2( readGeom, "readGeom geometry is NULL." );
 
     // 4th: check coverage between actual and expected geometry
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
     QVERIFY2( readGeom->fuzzyEqual( *resultGeom, 0.1 ), "result geom does not match expected from file" );
 #endif
   }
@@ -985,7 +989,7 @@ void TestQgsSfcgal::buffer3DCheck()
     QVERIFY2( !isOK, "buffer3D geom matches expected from file, but should not!" );
 
     // isEquals passes with decimal dump
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 1, 0 )
     isOK = QgsSfcgalEngine::isEqual( expectedBuffer->sfcgalGeometry().get(), sfcgalBuffer3D->sfcgalGeometry().get(), 0.001 );
     QVERIFY2( isOK, "buffer3D geom does not match expected from file" );
 #endif
@@ -1023,7 +1027,7 @@ void TestQgsSfcgal::simplify()
   QVERIFY2( sfcgalLinestring2D.sfcgalGeometry() != nullptr, "Simplify - input geom is NULL." );
   QCOMPARE( sfcgalLinestring2D.wkbType(), Qgis::WkbType::LineString );
 
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   QVERIFY_EXCEPTION_THROWN( sfcgalLinestring2D.simplify( 5, false ), QgsNotSupportedException );
 #else
   std::unique_ptr<QgsSfcgalGeometry> simplifiedGeom( sfcgalLinestring2D.simplify( 5, false ) );
@@ -1052,7 +1056,7 @@ void TestQgsSfcgal::approximateMedialAxis()
 
 void TestQgsSfcgal::primitiveCube()
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   std::unique_ptr<QgsSfcgalGeometry> cube = QgsSfcgalGeometry::createCube( 5 );
   QCOMPARE( cube->wkbType(), Qgis::WkbType::PolyhedralSurfaceZ );
   QCOMPARE( cube->geometryType(), "cube" );

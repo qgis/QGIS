@@ -27,23 +27,18 @@
 // version without notice, or even be removed.
 //
 
-#include "qgschunkloader.h"
+#include <memory>
+
 #include "qgschunkedentity.h"
+#include "qgschunkloader.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloud3dsymbol_p.h"
 #include "qgspointcloudlayer3drenderer.h"
 
-#include <memory>
-
 #include <QFutureWatcher>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-#include <Qt3DRender/QGeometry>
-#include <Qt3DRender/QBuffer>
-#else
-#include <Qt3DCore/QGeometry>
-#include <Qt3DCore/QBuffer>
-#endif
 #include <QVector3D>
+#include <Qt3DCore/QBuffer>
+#include <Qt3DCore/QGeometry>
 
 #define SIP_NO_FILE
 
@@ -66,10 +61,10 @@ class QgsPointCloudLayerChunkLoaderFactory : public QgsChunkLoaderFactory
     QgsPointCloudLayerChunkLoaderFactory( const Qgs3DRenderContext &context, const QgsCoordinateTransform &coordinateTransform, QgsPointCloudIndex pc, QgsPointCloud3DSymbol *symbol, double zValueScale, double zValueOffset, int pointBudget );
 
     //! Creates loader for the given chunk node. Ownership of the returned is passed to the caller.
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
-    virtual QgsChunkNode *createRootNode() const override;
-    virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
-    virtual int primitivesCount( QgsChunkNode *node ) const override;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
+    QgsChunkNode *createRootNode() const override;
+    QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
+    int primitivesCount( QgsChunkNode *node ) const override;
     Qgs3DRenderContext mRenderContext;
     QgsCoordinateTransform mCoordinateTransform;
     QgsPointCloudIndex mPointCloudIndex;
@@ -103,8 +98,8 @@ class QgsPointCloudLayerChunkLoader : public QgsChunkLoader
     ~QgsPointCloudLayerChunkLoader() override;
 
     void start() override;
-    virtual void cancel() override;
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    void cancel() override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     const QgsPointCloudLayerChunkLoaderFactory *mFactory;
@@ -128,18 +123,21 @@ class QgsPointCloudLayerChunkedEntity : public QgsChunkedEntity
 {
     Q_OBJECT
   public:
-    explicit QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, QgsPointCloudIndex index, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
+    explicit QgsPointCloudLayerChunkedEntity( Qgs3DMapSettings *map, QgsPointCloudLayer *pcl, const int indexPosition, const QgsCoordinateTransform &coordinateTransform, QgsPointCloud3DSymbol *symbol, float maxScreenError, bool showBoundingBoxes, double zValueScale, double zValueOffset, int pointBudget );
 
     QList<QgsRayCastHit> rayIntersection( const QgsRay3D &ray, const QgsRayCastContext &context ) const override;
 
-    ~QgsPointCloudLayerChunkedEntity();
+    ~QgsPointCloudLayerChunkedEntity() override;
 
   private slots:
     void updateIndex();
 
   private:
+    static QgsPointCloudIndex resolveIndex( const QgsPointCloudLayer *pcl, int indexPosition );
+
     QgsPointCloudLayer *mLayer = nullptr;
     std::unique_ptr<QgsChunkUpdaterFactory> mChunkUpdaterFactory;
+    int mIndexPosition;
 };
 
 /// @endcond

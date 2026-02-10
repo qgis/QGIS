@@ -13,29 +13,34 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsannotationitemwidget_impl.h"
+
+#include "qgsannotationlineitem.h"
+#include "qgsannotationlinetextitem.h"
+#include "qgsannotationmarkeritem.h"
+#include "qgsannotationpictureitem.h"
+#include "qgsannotationpointtextitem.h"
+#include "qgsannotationpolygonitem.h"
+#include "qgsannotationrectangletextitem.h"
+#include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressionfinder.h"
+#include "qgsfillsymbol.h"
+#include "qgsimagecache.h"
+#include "qgslinesymbol.h"
+#include "qgsmapcanvas.h"
+#include "qgsmarkersymbol.h"
+#include "qgsrecentstylehandler.h"
+#include "qgsrenderedannotationitemdetails.h"
+#include "qgsstyle.h"
+#include "qgssvgcache.h"
+#include "qgssymbolselectordialog.h"
+#include "qgstextformatwidget.h"
+
+#include <QString>
+
 #include "moc_qgsannotationitemwidget_impl.cpp"
 
-#include "qgssymbolselectordialog.h"
-#include "qgsstyle.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
-#include "qgsmarkersymbol.h"
-#include "qgsannotationpolygonitem.h"
-#include "qgsannotationlineitem.h"
-#include "qgsannotationmarkeritem.h"
-#include "qgsannotationpointtextitem.h"
-#include "qgsannotationlinetextitem.h"
-#include "qgsannotationrectangletextitem.h"
-#include "qgsannotationpictureitem.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgstextformatwidget.h"
-#include "qgsapplication.h"
-#include "qgsrecentstylehandler.h"
-#include "qgsexpressionfinder.h"
-#include "qgsimagecache.h"
-#include "qgssvgcache.h"
-#include "qgsrenderedannotationitemdetails.h"
-#include "qgsmapcanvas.h"
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -50,7 +55,7 @@ QgsAnnotationPolygonItemWidget::QgsAnnotationPolygonItemWidget( QWidget *parent 
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "polygon_annotation_item" ), qgis::down_cast<QgsFillSymbol *>( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( u"polygon_annotation_item"_s, qgis::down_cast<QgsFillSymbol *>( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -140,7 +145,7 @@ QgsAnnotationLineItemWidget::QgsAnnotationLineItemWidget( QWidget *parent )
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "line_annotation_item" ), qgis::down_cast<QgsLineSymbol *>( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( u"line_annotation_item"_s, qgis::down_cast<QgsLineSymbol *>( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -230,7 +235,7 @@ QgsAnnotationMarkerItemWidget::QgsAnnotationMarkerItemWidget( QWidget *parent )
     if ( !mBlockChangedSignal )
     {
       emit itemChanged();
-      QgsApplication::recentStyleHandler()->pushRecentSymbol( QStringLiteral( "marker_annotation_item" ), qgis::down_cast<QgsMarkerSymbol *>( mSelector->symbol()->clone() ) );
+      QgsApplication::recentStyleHandler()->pushRecentSymbol( u"marker_annotation_item"_s, qgis::down_cast<QgsMarkerSymbol *>( mSelector->symbol()->clone() ) );
     }
   } );
   connect( mSelector, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -431,7 +436,7 @@ void QgsAnnotationPointTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -565,7 +570,7 @@ void QgsAnnotationLineTextItemWidget::mInsertExpressionButton_clicked()
   else
     expressionContext = QgsProject::instance()->createExpressionContext();
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, expressionContext );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -840,7 +845,7 @@ void QgsAnnotationRectangleTextItemWidget::mInsertExpressionButton_clicked()
 {
   QString expression = QgsExpressionFinder::findAndSelectActiveExpression( mTextEdit->textEdit() );
 
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), createExpressionContext() );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, createExpressionContext() );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -888,7 +893,7 @@ QgsAnnotationPictureItemWidget::QgsAnnotationPictureItemWidget( QWidget *parent 
   connect( mRadioSVG, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mRadioRaster, &QRadioButton::toggled, this, &QgsAnnotationPictureItemWidget::modeChanged );
   connect( mSourceLineEdit, &QgsPictureSourceLineEditBase::sourceChanged, this, [this]( const QString &source ) {
-    if ( !mRadioSVG->isChecked() && QFileInfo( source ).suffix().compare( QLatin1String( "svg" ), Qt::CaseInsensitive ) == 0 )
+    if ( !mRadioSVG->isChecked() && QFileInfo( source ).suffix().compare( "svg"_L1, Qt::CaseInsensitive ) == 0 )
     {
       mRadioSVG->setChecked( true );
     }

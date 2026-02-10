@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 #include "qgstextcharacterformat.h"
-#include "qgsrendercontext.h"
+
 #include "qgsfontutils.h"
+#include "qgsrendercontext.h"
 
 #include <QTextCharFormat>
 
@@ -217,9 +218,6 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
 
   if ( mFontWeight != - 1 )
   {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    font.setWeight( mFontWeight );
-#else
     if ( mFontWeight <= 150 )
       font.setWeight( QFont::Thin );
     else if ( mFontWeight <= 250 )
@@ -238,7 +236,6 @@ void QgsTextCharacterFormat::updateFontForFormat( QFont &font, const QgsRenderCo
       font.setWeight( QFont::ExtraBold );
     else
       font.setWeight( QFont::Black );
-#endif
 
     // depending on the font, platform, and the phase of the moon, we need to both set the font weight AND the style name
     // in order to get correct rendering!

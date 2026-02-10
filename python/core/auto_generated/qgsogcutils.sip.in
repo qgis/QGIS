@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsOgcUtils
 {
 %Docstring(signature="appended")
@@ -211,6 +213,7 @@ Creates an OGC expression XML element from the ``exp`` expression.
          \verbatim <Filter> \endverbatim QDomElement when
          ``requiresFilterElement`` is set. otherwise null QDomElement
 %End
+
 
 
 

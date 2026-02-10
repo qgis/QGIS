@@ -14,15 +14,10 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerlegendwidget.h"
-#include "moc_qgsvectorlayerlegendwidget.cpp"
-
-#include <QBoxLayout>
-#include <QStandardItemModel>
-#include <QTreeView>
-#include <QTreeWidget>
 
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfilecontentsourcelineedit.h"
+#include "qgsfontbutton.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerlegend.h"
 #include "qgsrenderer.h"
@@ -30,7 +25,16 @@
 #include "qgssymbollayerutils.h"
 #include "qgstextformatwidget.h"
 #include "qgsvectorlayer.h"
-#include "qgsfontbutton.h"
+
+#include <QBoxLayout>
+#include <QStandardItemModel>
+#include <QString>
+#include <QTreeView>
+#include <QTreeWidget>
+
+#include "moc_qgsvectorlayerlegendwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
   : QWidget( parent )
@@ -75,7 +79,7 @@ QgsVectorLayerLegendWidget::QgsVectorLayerLegendWidget( QWidget *parent )
 
   mPlaceholderImageLabel = new QLabel( tr( "Legend placeholder image" ) );
   mImageSourceLineEdit = new QgsImageSourceLineEdit();
-  mImageSourceLineEdit->setLastPathSettingsKey( QStringLiteral( "lastLegendPlaceholderDir" ) );
+  mImageSourceLineEdit->setLastPathSettingsKey( u"lastLegendPlaceholderDir"_s );
   if ( mLayer )
   {
     mImageSourceLineEdit->setSource( mLayer->legendPlaceholderImage() );

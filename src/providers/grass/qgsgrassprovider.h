@@ -16,12 +16,11 @@
 #ifndef QGSGRASSPROVIDER_H
 #define QGSGRASSPROVIDER_H
 
-#include <QDateTime>
-
-#include "qgsvectordataprovider.h"
-
 #include "qgsgrassvectormap.h"
 #include "qgsgrassvectormaplayer.h"
+#include "qgsvectordataprovider.h"
+
+#include <QDateTime>
 
 class QgsFeature;
 class QgsField;
@@ -100,6 +99,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     QgsCoordinateReferenceSystem crs() const override;
 
+    using QgsVectorDataProvider::addFeatures;
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
     // TODO: implement also these functions but disable during manual layer editing

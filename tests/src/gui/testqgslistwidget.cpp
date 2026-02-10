@@ -14,15 +14,20 @@
  ***************************************************************************/
 
 
-#include "qgstest.h"
 #include "qgsconfig.h"
-#include <editorwidgets/qgslistwidgetfactory.h>
-#include <qgslistwidget.h>
-#include <editorwidgets/core/qgseditorwidgetwrapper.h>
-#include <qgsapplication.h>
-#include <qgsvectorlayer.h>
-#include <editorwidgets/qgslistwidgetwrapper.h>
+
+#include "editorwidgets/core/qgseditorwidgetwrapper.h"
+#include "editorwidgets/qgslistwidgetfactory.h"
+#include "editorwidgets/qgslistwidgetwrapper.h"
+#include "qgsapplication.h"
+#include "qgslistwidget.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+
 #include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsListWidget : public QObject
 {
@@ -50,12 +55,12 @@ class TestQgsListWidget : public QObject
     {
 #ifdef ENABLE_PGTEST
       // delete new features in db from postgres test
-      QgsVectorLayer *vl_array_int = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"array_tbl\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
+      QgsVectorLayer *vl_array_int = new QgsVectorLayer( u"%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"array_tbl\" sql="_s.arg( dbConn ), u"json"_s, u"postgres"_s );
       vl_array_int->startEditing();
       const QgsFeatureIds delete_ids = QSet<QgsFeatureId>() << Q_INT64_C( 997 ) << Q_INT64_C( 998 ) << Q_INT64_C( 999 );
       vl_array_int->deleteFeatures( delete_ids );
       vl_array_int->commitChanges( false );
-      QgsVectorLayer *vl_array_str = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"string_array\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
+      QgsVectorLayer *vl_array_str = new QgsVectorLayer( u"%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"string_array\" sql="_s.arg( dbConn ), u"json"_s, u"postgres"_s );
       vl_array_str->startEditing();
       vl_array_str->deleteFeatures( delete_ids );
       vl_array_str->commitChanges( false );
@@ -65,8 +70,8 @@ class TestQgsListWidget : public QObject
 
     void testStringUpdate()
     {
-      const QgsListWidgetFactory factory( QStringLiteral( "testList" ) );
-      QgsVectorLayer vl( QStringLiteral( "Point?field=fld:string[]" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      const QgsListWidgetFactory factory( u"testList"_s );
+      QgsVectorLayer vl( u"Point?field=fld:string[]"_s, u"test"_s, u"memory"_s );
       QgsEditorWidgetWrapper *wrapper = factory.create( &vl, 0, nullptr, nullptr );
       QVERIFY( wrapper );
       const QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
@@ -75,7 +80,7 @@ class TestQgsListWidget : public QObject
       QVERIFY( widget );
 
       QStringList initial;
-      initial << QStringLiteral( "one" ) << QStringLiteral( "two" );
+      initial << u"one"_s << u"two"_s;
       wrapper->setValues( initial, QVariantList() );
 
       const QVariant value = wrapper->value();
@@ -89,7 +94,7 @@ class TestQgsListWidget : public QObject
       QVERIFY( widget->valid() );
 
       QStringList expected = initial;
-      expected[0] = QStringLiteral( "hello" );
+      expected[0] = u"hello"_s;
       const QVariant eventValue = spy.at( 0 ).at( 0 ).value<QVariant>();
       QCOMPARE( int( static_cast<QMetaType::Type>( eventValue.userType() ) ), int( QMetaType::Type::QStringList ) );
       QCOMPARE( eventValue.toStringList(), expected );
@@ -100,8 +105,8 @@ class TestQgsListWidget : public QObject
 
     void testIntUpdate()
     {
-      const QgsListWidgetFactory factory( QStringLiteral( "testList" ) );
-      QgsVectorLayer vl( QStringLiteral( "Point?field=fld:int[]" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
+      const QgsListWidgetFactory factory( u"testList"_s );
+      QgsVectorLayer vl( u"Point?field=fld:int[]"_s, u"test"_s, u"memory"_s );
       QgsEditorWidgetWrapper *wrapper = factory.create( &vl, 0, nullptr, nullptr );
       QVERIFY( wrapper );
       QSignalSpy spy( wrapper, SIGNAL( valueChanged( const QVariant & ) ) );
@@ -152,17 +157,17 @@ class TestQgsListWidget : public QObject
     void testPostgres()
     {
       //create pg layers
-      QgsVectorLayer *vl_array_int = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"array_tbl\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
+      QgsVectorLayer *vl_array_int = new QgsVectorLayer( u"%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"array_tbl\" sql="_s.arg( dbConn ), u"json"_s, u"postgres"_s );
 
       connect( vl_array_int, &QgsVectorLayer::raiseError, this, []( const QString &msg ) { qWarning() << msg; } );
       QVERIFY( vl_array_int->isValid() );
 
-      QgsListWidgetWrapper w_array_int( vl_array_int, vl_array_int->fields().indexOf( QLatin1String( "location" ) ), nullptr, nullptr );
+      QgsListWidgetWrapper w_array_int( vl_array_int, vl_array_int->fields().indexOf( "location"_L1 ), nullptr, nullptr );
       QgsListWidget *widget = w_array_int.widget()->findChild<QgsListWidget *>();
 
       vl_array_int->startEditing();
       QVariantList newList;
-      newList.append( QStringLiteral( "100" ) );
+      newList.append( u"100"_s );
       widget->setList( QList<QVariant>() << 100 );
       QVERIFY( w_array_int.value().isValid() );
       QCOMPARE( widget->list(), QList<QVariant>() << 100 );
@@ -198,19 +203,19 @@ class TestQgsListWidget : public QObject
       QCOMPARE( widget->list(), QList<QVariant>() << 10 << 11 << 12 );
 
       // do similar for array of strings
-      QgsVectorLayer *vl_array_str = new QgsVectorLayer( QStringLiteral( "%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"string_array\" sql=" ).arg( dbConn ), QStringLiteral( "json" ), QStringLiteral( "postgres" ) );
+      QgsVectorLayer *vl_array_str = new QgsVectorLayer( u"%1 sslmode=disable key=\"pk\" table=\"qgis_test\".\"string_array\" sql="_s.arg( dbConn ), u"json"_s, u"postgres"_s );
       QVERIFY( vl_array_str->isValid() );
 
-      QgsListWidgetWrapper w_array_str( vl_array_str, vl_array_str->fields().indexOf( QLatin1String( "value" ) ), nullptr, nullptr );
+      QgsListWidgetWrapper w_array_str( vl_array_str, vl_array_str->fields().indexOf( "value"_L1 ), nullptr, nullptr );
       widget = w_array_str.widget()->findChild<QgsListWidget *>();
       vl_array_str->startEditing();
       QVariantList newListStr;
 
       // test quotes
-      newListStr.append( QStringLiteral( "10\"0" ) );
+      newListStr.append( u"10\"0"_s );
       widget->setList( newListStr );
       QVERIFY( w_array_str.value().isValid() );
-      QCOMPARE( widget->list(), QList<QVariant>() << QStringLiteral( "10\"0" ) );
+      QCOMPARE( widget->list(), QList<QVariant>() << u"10\"0"_s );
       // save value and check it is saved properly in postges
       QgsFeature new_rec_997_str { vl_array_str->fields(), 997 };
       new_rec_997_str.setAttribute( 0, QVariant( 997 ) );
@@ -220,16 +225,16 @@ class TestQgsListWidget : public QObject
       QVERIFY( vl_array_str->commitChanges( false ) );
 
       w_array_str.setFeature( vl_array_str->getFeature( 997 ) );
-      QCOMPARE( widget->list(), QList<QVariant>() << QStringLiteral( "10\"0" ) );
+      QCOMPARE( widget->list(), QList<QVariant>() << u"10\"0"_s );
 
       // alter two values at a time which triggered old bug (#38784)
-      widget->setList( QList<QVariant>() << QStringLiteral( "four" ) << QStringLiteral( "five" ) << QStringLiteral( "six" ) );
+      widget->setList( QList<QVariant>() << u"four"_s << u"five"_s << u"six"_s );
       QgsFeature new_rec_998_str { vl_array_str->fields(), 998 };
       new_rec_998_str.setAttribute( 0, QVariant( 998 ) );
       new_rec_998_str.setAttribute( 1, w_array_str.value() );
       vl_array_str->addFeature( new_rec_998_str, QgsFeatureSink::RollBackOnErrors );
 
-      widget->setList( QList<QVariant>() << QStringLiteral( "ten" ) << QStringLiteral( "eleven" ) << QStringLiteral( "twelve" ) );
+      widget->setList( QList<QVariant>() << u"ten"_s << u"eleven"_s << u"twelve"_s );
       QgsFeature new_rec_999_str { vl_array_str->fields(), 999 };
       new_rec_999_str.setAttribute( 0, QVariant( 999 ) );
       new_rec_999_str.setAttribute( 1, w_array_str.value() );
@@ -237,10 +242,10 @@ class TestQgsListWidget : public QObject
       vl_array_str->commitChanges( false );
 
       w_array_str.setFeature( vl_array_str->getFeature( 998 ) );
-      QCOMPARE( widget->list(), QList<QVariant>() << QStringLiteral( "four" ) << QStringLiteral( "five" ) << QStringLiteral( "six" ) );
+      QCOMPARE( widget->list(), QList<QVariant>() << u"four"_s << u"five"_s << u"six"_s );
 
       w_array_str.setFeature( vl_array_str->getFeature( 999 ) );
-      QCOMPARE( widget->list(), QList<QVariant>() << QStringLiteral( "ten" ) << QStringLiteral( "eleven" ) << QStringLiteral( "twelve" ) );
+      QCOMPARE( widget->list(), QList<QVariant>() << u"ten"_s << u"eleven"_s << u"twelve"_s );
     }
 #endif
 };

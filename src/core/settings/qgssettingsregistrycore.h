@@ -17,10 +17,9 @@
 #ifndef QGSSETTINGSREGISTRYCORE_H
 #define QGSSETTINGSREGISTRYCORE_H
 
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgssettingsregistry.h"
-
-#include "qgis.h"
 
 class QgsSettingsEntryBool;
 class QgsSettingsEntryColor;
@@ -43,7 +42,7 @@ Q_NOWARN_DEPRECATED_PUSH
 class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 {
     Q_NOWARN_DEPRECATED_POP
-    // TODO QGIS 4 do not inherit QgsSettingsRegistry
+    // TODO QGIS 5 do not inherit QgsSettingsRegistry
   public:
 
     QgsSettingsRegistryCore();
@@ -52,6 +51,18 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 #ifndef SIP_RUN
     //! Settings entry digitizing stream tolerance
     static const QgsSettingsEntryInteger *settingsDigitizingStreamTolerance;
+
+    /**
+     * Settings entry digitizing NURBS curve degree
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryInteger *settingsDigitizingNurbsDegree;
+
+    /**
+     * Settings entry digitizing NURBS mode
+     * \since QGIS 4.0
+     */
+    static const QgsSettingsEntryEnumFlag<Qgis::NurbsMode> *settingsDigitizingNurbsMode;
 
     //! Settings entry digitizing line width
     static const QgsSettingsEntryInteger *settingsDigitizingLineWidth;
@@ -148,6 +159,12 @@ class CORE_EXPORT QgsSettingsRegistryCore : public QgsSettingsRegistry
 
     //! Settings entry digitizing tracing max feature count
     static const QgsSettingsEntryInteger *settingsDigitizingTracingMaxFeatureCount;
+
+    //! Settings entry digitizing status bar area display
+    static const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *settingsDigitizingStatusBarAreaDisplay;
+
+    //! Settings entry digitizing status bar perimeter/total length display
+    static const QgsSettingsEntryEnumFlag< Qgis::CadMeasurementDisplayType > *settingsDigitizingStatusBarTotalLengthDisplay;
 
     //! Settings entry path to GPSBabel executable.
     static const QgsSettingsEntryString *settingsGpsBabelPath;

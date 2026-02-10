@@ -16,10 +16,14 @@
  ***************************************************************************/
 
 #include "qgsprojectmetadata.h"
+
 #include "qgstranslationcontext.h"
 
-#include <QDomNode>
 #include <QDomDocument>
+#include <QDomNode>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement, const QgsReadWriteContext &context )
 {
@@ -28,13 +32,13 @@ bool QgsProjectMetadata::readMetadataXml( const QDomElement &metadataElement, co
   QDomNode mnl;
 
   // set author
-  mnl = metadataElement.namedItem( QStringLiteral( "author" ) );
+  mnl = metadataElement.namedItem( u"author"_s );
   mAuthor = context.projectTranslator()->translate( "metadata", mnl.toElement().text() );
 
   if ( !mDates.contains( Qgis::MetadataDateType::Created ) )
   {
     // creation datetime -- old format
-    mnl = metadataElement.namedItem( QStringLiteral( "creation" ) );
+    mnl = metadataElement.namedItem( u"creation"_s );
     const QDateTime creationDateTime = QDateTime::fromString( mnl.toElement().text(), Qt::ISODate );
     mDates.insert( Qgis::MetadataDateType::Created, creationDateTime );
   }
@@ -47,13 +51,13 @@ bool QgsProjectMetadata::writeMetadataXml( QDomElement &metadataElement, QDomDoc
   QgsAbstractMetadataBase::writeMetadataXml( metadataElement, document, context );
 
   // author
-  QDomElement author = document.createElement( QStringLiteral( "author" ) );
+  QDomElement author = document.createElement( u"author"_s );
   const QDomText authorText = document.createTextNode( mAuthor );
   author.appendChild( authorText );
   metadataElement.appendChild( author );
 
   // creation datetime
-  QDomElement creation = document.createElement( QStringLiteral( "creation" ) );
+  QDomElement creation = document.createElement( u"creation"_s );
   const QDomText creationText = document.createTextNode( mDates.value( Qgis::MetadataDateType::Created ).toString( Qt::ISODate ) );
   creation.appendChild( creationText );
   metadataElement.appendChild( creation );
@@ -65,7 +69,7 @@ void QgsProjectMetadata::registerTranslations( QgsTranslationContext *translatio
 {
   QgsAbstractMetadataBase::registerTranslations( translationContext );
 
-  translationContext->registerTranslation( QStringLiteral( "metadata" ), mAuthor );
+  translationContext->registerTranslation( u"metadata"_s, mAuthor );
 }
 
 void QgsProjectMetadata::combine( const QgsAbstractMetadataBase *other )

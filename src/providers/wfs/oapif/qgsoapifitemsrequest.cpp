@@ -14,17 +14,24 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifitemsrequest.h"
 #include "moc_qgsoapifitemsrequest.cpp"
+#include "qgsoapifshareddata.h"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
+#include "qgsvectordataprovider.h"
 
+#include "cpl_conv.h"
 #include "cpl_vsi.h"
 
-#include <QRegularExpression>
 #include <QTextCodec>
 
 QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url, const QString &featureFormat )
@@ -39,14 +46,14 @@ QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, con
 
 bool QgsOapifItemsRequest::request( bool synchronous, bool forceRefresh )
 {
-  QString acceptHeader = QStringLiteral( "application/geo+json, application/json" );
+  QString acceptHeader = u"application/geo+json, application/json"_s;
   if ( !mFeatureFormat.isEmpty() )
   {
     acceptHeader = mFeatureFormat;
   }
-  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QStringLiteral( "application/geo+json" );
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == "application/geo+json"_L1;
   mFakeResponseHasHeaders = !isGeoJSON;
-  QgsDebugMsgLevel( QStringLiteral( " QgsOapifItemsRequest::request() start time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u" QgsOapifItemsRequest::request() start time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( !sendGET( QUrl::fromEncoded( mUrl.toLatin1() ), acceptHeader, synchronous, forceRefresh ) )
   {
     emit gotResponse();
@@ -101,7 +108,7 @@ static void removeUselessSpacesFromJSONBuffer( QByteArray &buffer )
 
 void QgsOapifItemsRequest::processReply()
 {
-  QgsDebugMsgLevel( QStringLiteral( "processReply start time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"processReply start time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( mErrorCode != QgsBaseNetworkRequest::NoError )
   {
     emit gotResponse();
@@ -116,38 +123,48 @@ void QgsOapifItemsRequest::processReply()
     return;
   }
 
-  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == QStringLiteral( "application/geo+json" );
+  const bool isGeoJSON = mFeatureFormat.isEmpty() || mFeatureFormat == "application/geo+json"_L1;
+  const bool isGML = mFeatureFormat.startsWith( "application/gml+xml"_L1 );
 
   if ( isGeoJSON )
   {
     if ( buffer.size() <= 200 )
     {
-      QgsDebugMsgLevel( QStringLiteral( "parsing items response: " ) + buffer, 4 );
+      QgsDebugMsgLevel( u"parsing items response: "_s + buffer, 4 );
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "parsing items response: " ) + buffer.left( 100 ) + QStringLiteral( "[... snip ...]" ) + buffer.right( 100 ), 4 );
+      QgsDebugMsgLevel( u"parsing items response: "_s + buffer.left( 100 ) + u"[... snip ...]"_s + buffer.right( 100 ), 4 );
     }
 
     // Remove extraneous indentation spaces from the string. This helps a bit
     // improving JSON parsing performance afterwards
-    QgsDebugMsgLevel( QStringLiteral( "JSON compaction start time: %1" ).arg( time( nullptr ) ), 5 );
+    QgsDebugMsgLevel( u"JSON compaction start time: %1"_s.arg( time( nullptr ) ), 5 );
     removeUselessSpacesFromJSONBuffer( buffer );
-    QgsDebugMsgLevel( QStringLiteral( "JSON compaction end time: %1" ).arg( time( nullptr ) ), 5 );
+    QgsDebugMsgLevel( u"JSON compaction end time: %1"_s.arg( time( nullptr ) ), 5 );
   }
 
-  const QString vsimemFilename = mFeatureFormat == QStringLiteral( "application/flatgeobuf" ) ? QStringLiteral( "/vsimem/oaipf_%1.fgb" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) ) : QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  QString extension;
+  if ( mFeatureFormat == "application/flatgeobuf"_L1 )
+    extension = u"fgb"_s;
+  else if ( isGML )
+    extension = u"gml"_s;
+  else
+    extension = u"json"_s;
+  const QString vsimemFilename = u"/vsimem/oaipf_%1.%2"_s.arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, '0'_L1 ).arg( extension );
+
   VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
-  QgsDebugMsgLevel( QStringLiteral( "OGR data source open start time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"OGR data source open start time: %1"_s.arg( time( nullptr ) ), 5 );
   auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>(
     qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) )
   );
-  QgsDebugMsgLevel( QStringLiteral( "OGR data source open end time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"OGR data source open end time: %1"_s.arg( time( nullptr ) ), 5 );
   if ( !vectorProvider || !vectorProvider->isValid() )
   {
     VSIUnlink( vsimemFilename.toUtf8().constData() );
+    VSIUnlink( CPLResetExtension( vsimemFilename.toUtf8().constData(), "gfs" ) );
     mErrorCode = QgsBaseNetworkRequest::ApplicationLevelError;
     mAppLevelError = ApplicationLevelError::JsonError;
     mErrorMessage = errorMessageWithReason( tr( "Loading of items failed" ) );
@@ -155,21 +172,34 @@ void QgsOapifItemsRequest::processReply()
     return;
   }
 
+  mGeometryAttribute = vectorProvider->geometryColumnName();
   mFields = vectorProvider->fields();
+  if ( isGML )
+  {
+    if ( mGeometryAttribute.isEmpty() && buffer.contains( QByteArray( "bml:boreholePath" ) ) )
+    {
+      // Hack needed before https://github.com/OSGeo/gdal/commit/5f5f34b60a208bfe4b7c4b1ada0c0a702ddb2d28 (GDAL 3.12.1)
+      mGeometryAttribute = u"boreholePath"_s;
+    }
+
+    // Field length guessed from a GML sample is not reliable
+    for ( QgsField &field : mFields )
+      field.setLength( 0 );
+  }
   mWKBType = vectorProvider->wkbType();
   if ( mComputeBbox )
   {
     mBbox = vectorProvider->extent();
   }
-  QgsDebugMsgLevel( QStringLiteral( "OGR feature iteration start time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"OGR feature iteration start time: %1"_s.arg( time( nullptr ) ), 5 );
   auto iter = vectorProvider->getFeatures();
 
   int idField = -1;
   if ( !isGeoJSON )
   {
-    idField = mFields.indexOf( QStringLiteral( "id" ) );
+    idField = mFields.indexOf( "id"_L1 );
     // If no "id" field, then use the first field if it contains "id" in it.
-    if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( QLatin1String( "id" ), 0, Qt::CaseInsensitive ) )
+    if ( idField < 0 && mFields.size() >= 1 && mFields[0].name().indexOf( "id"_L1, 0, Qt::CaseInsensitive ) )
     {
       idField = 0;
     }
@@ -187,17 +217,18 @@ void QgsOapifItemsRequest::processReply()
     }
     mFeatures.push_back( QgsFeatureUniqueIdPair( f, id ) );
   }
-  QgsDebugMsgLevel( QStringLiteral( "OGR feature iteration end time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"OGR feature iteration end time: %1"_s.arg( time( nullptr ) ), 5 );
   vectorProvider.reset();
   VSIUnlink( vsimemFilename.toUtf8().constData() );
+  VSIUnlink( CPLResetExtension( vsimemFilename.toUtf8().constData(), "gfs" ) );
 
   if ( isGeoJSON )
   {
     try
     {
-      QgsDebugMsgLevel( QStringLiteral( "json::parse() start time: %1" ).arg( time( nullptr ) ), 5 );
+      QgsDebugMsgLevel( u"json::parse() start time: %1"_s.arg( time( nullptr ) ), 5 );
       const json j = json::parse( buffer.constData(), buffer.constData() + buffer.size() );
-      QgsDebugMsgLevel( QStringLiteral( "json::parse() end time: %1" ).arg( time( nullptr ) ), 5 );
+      QgsDebugMsgLevel( u"json::parse() end time: %1"_s.arg( time( nullptr ) ), 5 );
       if ( j.is_object() && j.contains( "features" ) )
       {
         const json &features = j["features"];
@@ -232,7 +263,7 @@ void QgsOapifItemsRequest::processReply()
       }
 
       const auto links = QgsOAPIFJson::parseLinks( j );
-      mNextUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "next" ), { QStringLiteral( "application/geo+json" ) } );
+      mNextUrl = QgsOAPIFJson::findLink( links, u"next"_s, { u"application/geo+json"_s } );
 
       if ( j.is_object() && j.contains( "numberMatched" ) )
       {
@@ -264,61 +295,10 @@ void QgsOapifItemsRequest::processReply()
         if ( ok )
           mNumberMatched = val;
       }
-      else if ( headerKeyValue.first.compare( QByteArray( "Link" ), Qt::CaseSensitivity::CaseInsensitive ) == 0 )
-      {
-        // Parse stuff like:
-        //  <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=html>; rel="alternate"; title="This document as HTML"; type="text/html", <https://ogc-api.nrw.de/lika/v1/collections/flurstueck/items?f=fgb&offset=10>; rel="next"; title="Next page"; type="application/flatgeobuf"
-
-        // Split on commas, except when they are in double quotes or between <...>, and skip padding space before/after separator
-        const thread_local QRegularExpression splitOnComma( R"(\s*,\s*(?=(?:[^"<]|"[^"]*"|<[^>]*>)*$))" );
-        const QStringList links = QString::fromUtf8( headerKeyValue.second ).split( splitOnComma );
-        for ( const QString &link : std::as_const( links ) )
-        {
-          if ( link.isEmpty() || link[0] != QLatin1Char( '<' ) )
-            continue;
-          const int idxClosingBracket = static_cast<int>( link.indexOf( QLatin1Char( '>' ) ) );
-          if ( idxClosingBracket < 0 )
-            continue;
-          const QString href = link.mid( 1, idxClosingBracket - 1 );
-          const int idxSemiColon = static_cast<int>( link.indexOf( QLatin1Char( ';' ), idxClosingBracket ) );
-          if ( idxSemiColon < 0 )
-            continue;
-          // Split on semi-colon, except when they are in double quotes, and skip padding space before/after separator
-          const thread_local QRegularExpression splitOnSemiColon( R"(\s*;\s*(?=(?:[^"]*"[^"]*")*[^"]*$))" );
-          const QStringList linkParts = link.mid( idxSemiColon + 1 ).split( splitOnSemiColon );
-          QString rel, type;
-          for ( const QString &linkPart : std::as_const( linkParts ) )
-          {
-            // Split on equal, except when they are in double quotes, and skip padding space before/after separator
-            const thread_local QRegularExpression splitOnEqual( R"(\s*\=\s*(?=(?:[^"]*"[^"]*")*[^"]*$))" );
-            const QStringList keyValue = linkPart.split( splitOnEqual );
-            if ( keyValue.size() == 2 )
-            {
-              const QString key = keyValue[0].trimmed();
-              QString value = keyValue[1].trimmed();
-              if ( !value.isEmpty() && value[0] == QLatin1Char( '"' ) && value.back() == QLatin1Char( '"' ) )
-              {
-                value = value.mid( 1, value.size() - 2 );
-              }
-              if ( key == QLatin1String( "rel" ) )
-              {
-                rel = value;
-              }
-              else if ( key == QLatin1String( "type" ) )
-              {
-                type = value;
-              }
-            }
-          }
-          if ( rel == QLatin1String( "next" ) && type == mFeatureFormat )
-          {
-            mNextUrl = href;
-          }
-        }
-      }
     }
+    mNextUrl = QgsOAPIFGetNextLinkFromResponseHeader( mResponseHeaders, mFeatureFormat );
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "processReply end time: %1" ).arg( time( nullptr ) ), 5 );
+  QgsDebugMsgLevel( u"processReply end time: %1"_s.arg( time( nullptr ) ), 5 );
   emit gotResponse();
 }

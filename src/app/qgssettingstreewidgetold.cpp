@@ -38,19 +38,23 @@
 **
 ****************************************************************************/
 
-#include <QHeaderView>
-#include <QEvent>
-
 #include "qgssettingstreewidgetold.h"
-#include "moc_qgssettingstreewidgetold.cpp"
-#include "qgsvariantdelegate.h"
-#include "qgslogger.h"
-#include "qgssettings.h"
+
 #include "qgsapplication.h"
 #include "qgsguiutils.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
+#include "qgsvariantdelegate.h"
 
+#include <QEvent>
+#include <QHeaderView>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
+
+#include "moc_qgssettingstreewidgetold.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSettingsTreeWidgetOld::QgsSettingsTreeWidgetOld( QWidget *parent )
   : QTreeWidget( parent )
@@ -68,8 +72,8 @@ QgsSettingsTreeWidgetOld::QgsSettingsTreeWidgetOld( QWidget *parent )
 
   mRefreshTimer.setInterval( 2000 );
 
-  mGroupIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconFolderOpen.svg" ) );
-  mKeyIcon = QgsApplication::getThemeIcon( QStringLiteral( "mIconDeselected.svg" ) );
+  mGroupIcon = QgsApplication::getThemeIcon( u"mIconFolderOpen.svg"_s );
+  mKeyIcon = QgsApplication::getThemeIcon( u"mIconDeselected.svg"_s );
 
   setEditTriggers( QAbstractItemView::AllEditTriggers );
 
@@ -260,7 +264,7 @@ void QgsSettingsTreeWidgetOld::updateChildItems( QTreeWidgetItem *parent )
     const QVariant value = mSettings.value( key );
     if ( value.userType() == QMetaType::Type::UnknownType )
     {
-      child->setText( ColumnType, QStringLiteral( "Invalid" ) );
+      child->setText( ColumnType, u"Invalid"_s );
     }
     else
     {
@@ -299,7 +303,7 @@ QTreeWidgetItem *QgsSettingsTreeWidgetOld::createItem( const QString &text, QTre
   QgsDebugMsgLevel( key, 4 );
   if ( mSettingsMap.contains( key ) )
   {
-    QgsDebugMsgLevel( QStringLiteral( "contains!!!!" ), 4 );
+    QgsDebugMsgLevel( u"contains!!!!"_s, 4 );
     const QStringList values = mSettingsMap[key];
     item->setText( ColumnDescription, values.at( 0 ) );
     item->setToolTip( ColumnDescription, values.at( 0 ) );

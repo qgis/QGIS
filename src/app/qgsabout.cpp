@@ -16,21 +16,26 @@
  ***************************************************************************/
 
 #include "qgsabout.h"
-#include "moc_qgsabout.cpp"
+
 #include "qgsapplication.h"
-#include "qgscontributorsmapcanvas.h"
 #include "qgsauthmethodregistry.h"
-#include "qgsproviderregistry.h"
+#include "qgscontributorsmapcanvas.h"
 #include "qgslogger.h"
+#include "qgsproviderregistry.h"
 
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QFile>
-#include <QTextStream>
 #include <QImageReader>
-#include <QSqlDatabase>
-#include <QUrl>
 #include <QRegularExpression>
+#include <QSqlDatabase>
+#include <QString>
+#include <QTextStream>
+#include <QUrl>
+
+#include "moc_qgsabout.cpp"
+
+using namespace Qt::StringLiterals;
 
 #ifdef Q_OS_MACOS
 // Modeless dialog with close button only
@@ -41,7 +46,7 @@ constexpr Qt::WindowFlags kAboutWindowFlags = Qt::WindowFlags();
 #endif
 
 QgsAbout::QgsAbout( QWidget *parent )
-  : QgsOptionsDialogBase( QStringLiteral( "about" ), parent, kAboutWindowFlags )
+  : QgsOptionsDialogBase( u"about"_s, parent, kAboutWindowFlags )
 {
   setupUi( this );
   connect( btnQgisUser, &QPushButton::clicked, this, &QgsAbout::btnQgisUser_clicked );
@@ -73,10 +78,6 @@ void QgsAbout::init()
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    // Always use UTF-8
-    stream.setCodec( "UTF-8" );
-#endif
     QString line;
     while ( !stream.atEnd() )
     {
@@ -105,10 +106,6 @@ void QgsAbout::init()
   if ( file2.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file2 );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    // Always use UTF-8
-    stream.setCodec( "UTF-8" );
-#endif
     QString line;
     while ( !stream.atEnd() )
     {
@@ -167,7 +164,7 @@ void QgsAbout::init()
     txtDonors->clear();
     txtDonors->document()->setDefaultStyleSheet( QgsApplication::reportStyleSheet() );
     txtDonors->setHtml( donorsHTML );
-    QgsDebugMsgLevel( QStringLiteral( "donorsHTML:%1" ).arg( donorsHTML.toLatin1().constData() ), 2 );
+    QgsDebugMsgLevel( u"donorsHTML:%1"_s.arg( donorsHTML.toLatin1().constData() ), 2 );
   }
 
   // read the TRANSLATORS file and populate the text widget
@@ -177,9 +174,6 @@ void QgsAbout::init()
     QString translatorHTML;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
-    translatorStream.setCodec( "UTF-8" );
-#endif
     const QString myStyle = QgsApplication::reportStyleSheet();
     translatorHTML += "<style>" + myStyle + "</style>";
     while ( !translatorStream.atEnd() )
@@ -187,7 +181,7 @@ void QgsAbout::init()
       translatorHTML += translatorStream.readLine();
     }
     txtTranslators->setHtml( translatorHTML );
-    QgsDebugMsgLevel( QStringLiteral( "translatorHTML:%1" ).arg( translatorHTML.toLatin1().constData() ), 2 );
+    QgsDebugMsgLevel( u"translatorHTML:%1"_s.arg( translatorHTML.toLatin1().constData() ), 2 );
   }
   setWhatsNew();
   setLicence();
@@ -197,7 +191,7 @@ void QgsAbout::setLicence()
 {
   // read the DONORS file and populate the text widget
   QFile licenceFile( QgsApplication::licenceFilePath() );
-  QgsDebugMsgLevel( QStringLiteral( "Reading licence file %1" ).arg( licenceFile.fileName() ), 2 );
+  QgsDebugMsgLevel( u"Reading licence file %1"_s.arg( licenceFile.fileName() ), 2 );
   if ( licenceFile.open( QIODevice::ReadOnly ) )
   {
     txtLicense->setText( licenceFile.readAll() );
@@ -232,15 +226,15 @@ void QgsAbout::setPluginInfo()
   myString += QgsAuthMethodRegistry::instance()->pluginList( true );
   //qt database plugins
   myString += "<b>" + tr( "Available Qt Database Plugins" ) + "</b><br>";
-  myString += QLatin1String( "<ol>\n<li>\n" );
+  myString += "<ol>\n<li>\n"_L1;
   const QStringList myDbDriverList = QSqlDatabase::drivers();
-  myString += myDbDriverList.join( QLatin1String( "</li>\n<li>" ) );
-  myString += QLatin1String( "</li>\n</ol>\n" );
+  myString += myDbDriverList.join( "</li>\n<li>"_L1 );
+  myString += "</li>\n</ol>\n"_L1;
   //qt image plugins
   myString += "<b>" + tr( "Available Qt Image Plugins" ) + "</b><br>";
   myString += tr( "Qt Image Plugin Search Paths <br>" );
-  myString += QApplication::libraryPaths().join( QLatin1String( "<br>" ) );
-  myString += QLatin1String( "<ol>\n<li>\n" );
+  myString += QApplication::libraryPaths().join( "<br>"_L1 );
+  myString += "<ol>\n<li>\n"_L1;
   const QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
   QList<QByteArray>::const_iterator myIterator = myImageFormats.constBegin();
   while ( myIterator != myImageFormats.constEnd() )
@@ -249,7 +243,7 @@ void QgsAbout::setPluginInfo()
     myString += myFormat + "</li>\n<li>";
     ++myIterator;
   }
-  myString += QLatin1String( "</li>\n</ol>\n" );
+  myString += "</li>\n</ol>\n"_L1;
 
   const QString myStyle = QgsApplication::reportStyleSheet();
   txtProviders->clear();
@@ -264,12 +258,12 @@ void QgsAbout::btnCopyToClipboard_clicked()
 
 void QgsAbout::btnQgisUser_clicked()
 {
-  openUrl( QStringLiteral( "https://lists.osgeo.org/mailman/listinfo/qgis-user" ) );
+  openUrl( u"https://lists.osgeo.org/mailman/listinfo/qgis-user"_s );
 }
 
 void QgsAbout::btnQgisHome_clicked()
 {
-  openUrl( QStringLiteral( "https://qgis.org" ) );
+  openUrl( u"https://qgis.org"_s );
 }
 
 void QgsAbout::openUrl( const QUrl &url )
@@ -295,7 +289,7 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
 
     if ( c > 0x7f )
     {
-      result = result + QStringLiteral( "%1" ).arg( c, 2, 16, QChar( '0' ) );
+      result = result + u"%1"_s.arg( c, 2, 16, QChar( '0' ) );
     }
     else
     {
@@ -303,8 +297,8 @@ QString QgsAbout::fileSystemSafe( const QString &fileName )
     }
   }
 
-  const thread_local QRegularExpression sNonAlphaNumericRx( QStringLiteral( "[^a-zA-Z0-9]" ) );
-  result.replace( sNonAlphaNumericRx, QStringLiteral( "_" ) );
+  const thread_local QRegularExpression sNonAlphaNumericRx( u"[^a-zA-Z0-9]"_s );
+  result.replace( sNonAlphaNumericRx, u"_"_s );
   QgsDebugMsgLevel( result, 3 );
 
   return result;

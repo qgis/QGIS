@@ -2,8 +2,8 @@
                          qgscircle.h
                          --------------
     begin                : March 2017
-    copyright            : (C) 2017 by Loîc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    copyright            : (C) 2017 by Loïc Bartoletti
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -18,16 +18,17 @@
 #ifndef QGSCIRCLE_H
 #define QGSCIRCLE_H
 
-#include <QString>
-
 #include <cmath>
 
 #include "qgis_core.h"
+#include "qgscircularstring.h"
 #include "qgsellipse.h"
 #include "qgspolygon.h"
 #include "qgsrectangle.h"
-#include "qgscircularstring.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsPoint;
 
@@ -379,7 +380,7 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
     SIP_PYOBJECT __repr__();
     % MethodCode
     QString str
-      = QStringLiteral( "<QgsCircle: %1>" ).arg( sipCpp->toString() );
+      = u"<QgsCircle: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

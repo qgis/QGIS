@@ -16,11 +16,11 @@
 #ifndef QGSMAPLAYERSTYLECATEGORIESMODEL_H
 #define QGSMAPLAYERSTYLECATEGORIESMODEL_H
 
-#include <QAbstractListModel>
-
 #include "qgis.h"
-#include "qgsmaplayer.h"
 #include "qgis_gui.h"
+#include "qgsmaplayer.h"
+
+#include <QAbstractListModel>
 #include <QItemDelegate>
 #include <QLabel>
 

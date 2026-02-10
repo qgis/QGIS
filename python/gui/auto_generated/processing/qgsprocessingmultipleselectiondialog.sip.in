@@ -10,6 +10,8 @@
 
 
 
+
+
 class QgsProcessingMultipleSelectionPanelWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -92,11 +94,12 @@ Emitted when the selection changes in the widget.
 %End
 
   protected:
-    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false );
+    void addOption( const QVariant &value, const QString &title, bool selected, bool updateExistingTitle = false, QIcon optionalIconDecoration = QIcon() );
 %Docstring
 Adds a new option to the widget.
-%End
 
+``icon`` added in QGIS 4.0
+%End
     QListView *listView() const;
 %Docstring
 Returns pointer to the list view

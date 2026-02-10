@@ -18,14 +18,14 @@
 #ifndef QGSLAYOUTMEASUREMENTCONVERTER_H
 #define QGSLAYOUTMEASUREMENTCONVERTER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgslayoutmeasurement.h"
-#include "qgslayoutsize.h"
 #include "qgslayoutpoint.h"
-#include <QSizeF>
-#include <QPointF>
+#include "qgslayoutsize.h"
 
+#include <QPointF>
+#include <QSizeF>
 
 /**
  * \ingroup core

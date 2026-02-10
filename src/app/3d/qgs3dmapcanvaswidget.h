@@ -18,13 +18,16 @@
 
 #include "qgis_app.h"
 #include "qgscamerapose.h"
-#include "qobjectuniqueptr.h"
+#include "qgsgeometry.h"
 #include "qgsrectangle.h"
+#include "qobjectuniqueptr.h"
 
 #include <QComboBox>
 #include <QMenu>
 #include <QPointer>
 #include <QToolBar>
+#include <QToolButton>
+#include <QWidgetAction>
 
 #define SIP_NO_FILE
 
@@ -50,6 +53,10 @@ class QgsDockableWidgetHelper;
 class QgsMessageBar;
 class QgsRubberBand;
 class QgsDoubleSpinBox;
+class Qgs3DMapClippingToleranceWidgetSettingsAction;
+class QgsSettingsEntryDouble;
+class QgsSettingsEntryBool;
+class QgsGeometry;
 
 //! Helper validator for classification classes
 class ClassValidator : public QValidator
@@ -71,6 +78,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Q_OBJECT
 
   public:
+    static const QgsSettingsEntryDouble *settingClippingTolerance;
+    static const QgsSettingsEntryBool *settingCrossSectionToleranceLocked;
+
     Qgs3DMapCanvasWidget( const QString &name, bool isDocked );
     ~Qgs3DMapCanvasWidget() override;
 
@@ -96,6 +106,12 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
+    void nudgeLeft();
+
+    void nudgeRight();
+
+    void nudgeCurve( Qgis::BufferSide side );
+
   private slots:
     void resetView();
     void configure();
@@ -118,7 +134,7 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     void setSceneExtentOn2DCanvas();
     void setSceneExtent( const QgsRectangle &extent );
     void setClippingPlanesOn2DCanvas();
-    void disableCrossSection() const;
+    void disableCrossSection();
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
@@ -141,6 +157,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
 
   private:
     void updateCheckedActionsFromMapSettings( const Qgs3DMapSettings *mapSettings ) const;
+    void setClippingTolerance( double tolerance );
+    void lockCrossSectionTolerance( bool enabled );
+    void updateClippingRubberBand();
 
     QString mCanvasName;
     Qgs3DMapCanvas *mCanvas = nullptr;
@@ -154,12 +173,15 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     Qgs3DMapToolIdentify *mMapToolIdentify = nullptr;
     Qgs3DMapToolMeasureLine *mMapToolMeasureLine = nullptr;
     Qgs3DMapToolPointCloudChangeAttribute *mMapToolChangeAttribute = nullptr;
+    QgsGeometry mCrossSectionLine;
+    QObjectUniquePtr<QgsRubberBand> mCrossSectionRubberBand;
     std::unique_ptr<QgsMapToolExtent> mMapToolExtent;
     std::unique_ptr<QgsMapToolClippingPlanes> mMapToolClippingPlanes;
     QgsMapTool *mMapToolPrevious = nullptr;
     QMenu *mExportMenu = nullptr;
     QMenu *mMapThemeMenu = nullptr;
     QMenu *mCameraMenu = nullptr;
+    QMenu *mCrossSectionMenu = nullptr;
     QMenu *mEffectsMenu = nullptr;
     QMenu *mEditingToolsMenu = nullptr;
     QList<QAction *> mMapThemeMenuPresetActions;
@@ -169,10 +191,12 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionSync2DNavTo3D = nullptr;
     QAction *mActionSync3DNavTo2D = nullptr;
     QAction *mShowFrustumPolygon = nullptr;
+    QAction *mActionShow2DMapOverlay = nullptr;
     QAction *mActionAnim = nullptr;
     QAction *mActionExport = nullptr;
     QAction *mActionMapThemes = nullptr;
     QAction *mActionCamera = nullptr;
+    QAction *mActionCrossSection = nullptr;
     QAction *mActionEffects = nullptr;
     QAction *mActionSetSceneExtent = nullptr;
     QAction *mActionSetClippingPlanes = nullptr;
@@ -181,6 +205,9 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mActionUndo = nullptr;
     QAction *mActionRedo = nullptr;
     QAction *mEditingToolsAction = nullptr;
+    QAction *mActionNudgeLeft = nullptr;
+    QAction *mActionNudgeRight = nullptr;
+    QAction *mActionDynamicClipping = nullptr;
     QToolBar *mPointCloudEditingToolbar = nullptr;
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QObjectUniquePtr<QgsRubberBand> mViewFrustumHighlight;
@@ -205,7 +232,27 @@ class APP_EXPORT Qgs3DMapCanvasWidget : public QWidget
     QAction *mSpinChangeAttributeValueAction = nullptr;
     QString mChangeAttributePointFilter;
 
+    Qgs3DMapClippingToleranceWidgetSettingsAction *mClippingToleranceAction = nullptr;
+
     QMenu *mToolbarMenu = nullptr;
+};
+
+class Qgs3DMapClippingToleranceWidgetSettingsAction : public QWidgetAction
+{
+    Q_OBJECT
+
+  public:
+    Qgs3DMapClippingToleranceWidgetSettingsAction( QWidget *parent = nullptr );
+
+    QgsDoubleSpinBox *toleranceSpinBox() { return mToleranceWidget; }
+    bool isLocked() const { return mLockButton && mLockButton->isChecked(); }
+
+  signals:
+    void lockStateChanged( bool locked );
+
+  private:
+    QgsDoubleSpinBox *mToleranceWidget = nullptr;
+    QToolButton *mLockButton = nullptr;
 };
 
 #endif // QGS3DMAPCANVASWIDGET_H

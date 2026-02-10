@@ -14,9 +14,13 @@
  ***************************************************************************/
 
 #include "qgspainting.h"
+
 #include "qgslogger.h"
 
+#include <QString>
 #include <QTransform>
+
+using namespace Qt::StringLiterals;
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
@@ -75,7 +79,7 @@ QPainter::CompositionMode QgsPainting::getCompositionMode( Qgis::BlendMode blend
     case Qgis::BlendMode::Xor:
       return QPainter::CompositionMode_Xor;
     default:
-      QgsDebugError( QStringLiteral( "Blend mode %1 mapped to SourceOver" ).arg( qgsEnumValueToKey( blendMode ) ) );
+      QgsDebugError( u"Blend mode %1 mapped to SourceOver"_s.arg( qgsEnumValueToKey( blendMode ) ) );
       return QPainter::CompositionMode_SourceOver;
   }
 }
@@ -135,7 +139,7 @@ Qgis::BlendMode QgsPainting::getBlendModeEnum( QPainter::CompositionMode blendMo
     case QPainter::CompositionMode_Xor:
       return Qgis::BlendMode::Xor;
     default:
-      QgsDebugError( QStringLiteral( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
+      QgsDebugError( u"Composition mode %1 mapped to Normal"_s.arg( blendMode ) );
       return Qgis::BlendMode::Normal;
   }
 }

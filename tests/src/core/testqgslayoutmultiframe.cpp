@@ -15,21 +15,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutframe.h"
-#include "qgslayoutmultiframe.h"
-#include "qgslayoutitemlabel.h"
 #include "qgsapplication.h"
-#include "qgsproject.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutmultiframe.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgsproject.h"
 #include "qgsreadwritecontext.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgstest.h"
 
 #include <QObject>
 #include <QSignalSpy>
+#include <QString>
 
-#include "qgstest.h"
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutMultiFrame : public QgsTest
 {
@@ -37,7 +39,7 @@ class TestQgsLayoutMultiFrame : public QgsTest
 
   public:
     TestQgsLayoutMultiFrame()
-      : QgsTest( QStringLiteral( "Layout MultiFrame Tests" ) ) {}
+      : QgsTest( u"Layout MultiFrame Tests"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.
@@ -45,14 +47,7 @@ class TestQgsLayoutMultiFrame : public QgsTest
     void layoutMethods();
     void addFrame(); //test creating new frame inherits all properties of existing frame
     void displayName();
-#ifdef WITH_QTWEBKIT
-    void frameIsEmpty();  //test if frame is empty works
-    void addRemovePage(); //test if page is added and removed for RepeatUntilFinished mode
-#endif
     void undoRedo(); //test that combinations of frame/multiframe undo/redo don't crash
-#ifdef WITH_QTWEBKIT
-    void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
-#endif
     void undoRedoRemovedFrame2();
     void registry();
     void deleteFrame();
@@ -222,109 +217,15 @@ void TestQgsLayoutMultiFrame::addFrame()
 void TestQgsLayoutMultiFrame::displayName()
 {
   TestMultiFrame *multiframe = new TestMultiFrame( mLayout );
-  QCOMPARE( multiframe->displayName(), QStringLiteral( "<Multiframe>" ) );
+  QCOMPARE( multiframe->displayName(), u"<Multiframe>"_s );
 
   QgsLayoutFrame *frame1 = new QgsLayoutFrame( mLayout, nullptr );
-  QCOMPARE( frame1->displayName(), QStringLiteral( "<Frame>" ) );
+  QCOMPARE( frame1->displayName(), u"<Frame>"_s );
   multiframe->addFrame( frame1 );
-  QCOMPARE( frame1->displayName(), QStringLiteral( "<Multiframe>" ) );
+  QCOMPARE( frame1->displayName(), u"<Multiframe>"_s );
   frame1->setId( "my frame" );
-  QCOMPARE( frame1->displayName(), QStringLiteral( "my frame" ) );
+  QCOMPARE( frame1->displayName(), u"my frame"_s );
 }
-
-#ifdef WITH_QTWEBKIT
-void TestQgsLayoutMultiFrame::frameIsEmpty()
-{
-  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
-  QgsLayoutFrame *frame1 = new QgsLayoutFrame( mLayout, htmlItem );
-  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
-  QgsLayoutFrame *frame2 = new QgsLayoutFrame( mLayout, htmlItem );
-  frame2->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
-  htmlItem->addFrame( frame1 );
-  htmlItem->addFrame( frame2 );
-  htmlItem->setContentMode( QgsLayoutItemHtml::ManualHtml );
-  //short content, so frame 2 should be empty
-  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QCOMPARE( frame1->isEmpty(), false );
-  QCOMPARE( frame2->isEmpty(), true );
-
-  //long content, so frame 2 should not be empty
-  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 10000px\"><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QCOMPARE( frame1->isEmpty(), false );
-  QCOMPARE( frame2->isEmpty(), false );
-
-  //..and back again..
-  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QCOMPARE( frame1->isEmpty(), false );
-  QCOMPARE( frame2->isEmpty(), true );
-
-  mLayout->removeMultiFrame( htmlItem );
-  delete htmlItem;
-}
-
-void TestQgsLayoutMultiFrame::addRemovePage()
-{
-  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
-  QgsLayoutFrame *frame1 = new QgsLayoutFrame( mLayout, htmlItem );
-  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
-  htmlItem->addFrame( frame1 );
-  htmlItem->setContentMode( QgsLayoutItemHtml::ManualHtml );
-  htmlItem->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
-
-  //short content, so should fit in one frame
-  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  //should be one page
-  QCOMPARE( htmlItem->frameCount(), 1 );
-  QCOMPARE( mLayout->pageCollection()->pageCount(), 1 );
-
-  //long content, so we require 3 frames
-  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 2000px\"><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QCOMPARE( htmlItem->frameCount(), 3 );
-  QCOMPARE( mLayout->pageCollection()->pageCount(), 3 );
-
-  //..and back again..
-  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QCOMPARE( htmlItem->frameCount(), 1 );
-  QCOMPARE( mLayout->pageCollection()->pageCount(), 1 );
-
-
-  //get a bit more complicated - add another item to page 3
-  QgsLayoutItemLabel *label1 = new QgsLayoutItemLabel( mLayout );
-  mLayout->addLayoutItem( label1 );
-  label1->attemptResize( QgsLayoutSize( 50, 50 ), false );
-
-  //long content, so we require 4 pages
-  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 3000px\"><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QCOMPARE( htmlItem->frameCount(), 4 );
-  QCOMPARE( mLayout->pageCollection()->pageCount(), 4 );
-
-  label1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
-
-  //..and back again. Since there's an item on page 3, only page 4 should be removed
-  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
-  htmlItem->loadHtml();
-
-  QCOMPARE( htmlItem->frameCount(), 1 );
-  QCOMPARE( mLayout->pageCollection()->pageCount(), 3 );
-
-  mLayout->removeMultiFrame( htmlItem );
-  delete htmlItem;
-}
-#endif
 
 void TestQgsLayoutMultiFrame::undoRedo()
 {
@@ -336,31 +237,31 @@ void TestQgsLayoutMultiFrame::undoRedo()
   htmlItem->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
 
   //short content, so should fit in one frame
-  htmlItem->setHtml( QStringLiteral( "<p>Test content</p>" ) );
+  htmlItem->setHtml( u"<p>Test content</p>"_s );
   htmlItem->loadHtml();
 
   //do some combinations of undo/redo commands for both the frame and multiframe
   //to try to trigger a crash
-  frame1->beginCommand( QStringLiteral( "move" ) );
+  frame1->beginCommand( u"move"_s );
   frame1->attemptSetSceneRect( QRectF( 10, 10, 20, 20 ) );
   frame1->endCommand();
-  frame1->beginCommand( QStringLiteral( "stroke" ), QgsLayoutItem::UndoStrokeWidth );
+  frame1->beginCommand( u"stroke"_s, QgsLayoutItem::UndoStrokeWidth );
   frame1->setFrameStrokeWidth( QgsLayoutMeasurement( 4.0 ) );
   frame1->endCommand();
-  frame1->beginCommand( QStringLiteral( "stroke" ), QgsLayoutItem::UndoStrokeWidth );
+  frame1->beginCommand( u"stroke"_s, QgsLayoutItem::UndoStrokeWidth );
   frame1->setFrameStrokeWidth( QgsLayoutMeasurement( 7.0 ) );
   frame1->endCommand();
 
   //multiframe commands
-  htmlItem->beginCommand( QStringLiteral( "maxbreak" ) );
+  htmlItem->beginCommand( u"maxbreak"_s );
   htmlItem->setMaxBreakDistance( 100 );
   htmlItem->endCommand();
 
   //another frame command
-  frame1->beginCommand( QStringLiteral( "bgcolor" ), QgsLayoutItem::UndoOpacity );
+  frame1->beginCommand( u"bgcolor"_s, QgsLayoutItem::UndoOpacity );
   frame1->setBackgroundColor( QColor( 255, 255, 0 ) );
   frame1->endCommand();
-  frame1->beginCommand( QStringLiteral( "bgcolor" ), QgsLayoutItem::UndoOpacity );
+  frame1->beginCommand( u"bgcolor"_s, QgsLayoutItem::UndoOpacity );
   frame1->setBackgroundColor( QColor( 255, 0, 0 ) );
   frame1->endCommand();
 
@@ -402,91 +303,6 @@ void TestQgsLayoutMultiFrame::undoRedo()
   delete htmlItem;
 }
 
-#ifdef WITH_QTWEBKIT
-void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
-{
-  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
-  QgsLayoutFrame *frame1 = new QgsLayoutFrame( mLayout, htmlItem );
-  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
-  htmlItem->addFrame( frame1 );
-  htmlItem->setContentMode( QgsLayoutItemHtml::ManualHtml );
-  htmlItem->setResizeMode( QgsLayoutMultiFrame::RepeatUntilFinished );
-
-  //long content, so should require multiple frames
-  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 2000px\">Test content</p>" ) );
-  htmlItem->loadHtml();
-
-  QVERIFY( htmlItem->frameCount() > 1 );
-
-  //do a command on the first frame
-  htmlItem->frame( 0 )->beginCommand( QStringLiteral( "stroke" ), QgsLayoutItem::UndoStrokeWidth );
-  htmlItem->frame( 0 )->setFrameStrokeWidth( QgsLayoutMeasurement( 4.0 ) );
-  htmlItem->frame( 0 )->endCommand();
-  //do a command on the second frame
-  htmlItem->frame( 1 )->beginCommand( QStringLiteral( "stroke" ), QgsLayoutItem::UndoStrokeWidth );
-  htmlItem->frame( 1 )->setFrameStrokeWidth( QgsLayoutMeasurement( 8.0 ) );
-  htmlItem->frame( 1 )->endCommand();
-
-  //do a multiframe command which removes extra frames
-  htmlItem->beginCommand( QStringLiteral( "source" ) );
-  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 20px\">Test content</p>" ) );
-  htmlItem->endCommand();
-
-  //wipes the second frame
-  htmlItem->loadHtml();
-
-  QCOMPARE( htmlItem->frameCount(), 1 );
-
-  auto dumpStack = [] {
-#if 0 // for debugging
-    // dump stack
-    for ( int i = 0; i < mLayout->undoStack()->stack()->count(); ++i )
-    {
-      QgsDebugMsgLevel( QStringLiteral( "%1: %2 %3" ).arg( i ).arg( mLayout->undoStack()->stack()->command( i )->text(), i + 1 == mLayout->undoStack()->stack()->index() ? QString( "<---" ) : QString() ), 1 );
-    }
-#endif
-  };
-  dumpStack();
-  //undo changes
-
-  //multiframe command
-  mLayout->undoStack()->stack()->undo();
-  dumpStack();
-  //frame 2 command
-  mLayout->undoStack()->stack()->undo();
-  dumpStack();
-  //frame 1 command
-  mLayout->undoStack()->stack()->undo();
-  dumpStack();
-  //check result
-  QVERIFY( htmlItem->frameCount() > 1 );
-  QCOMPARE( htmlItem->frame( 0 )->frameStrokeWidth().length(), 0.3 );
-  QCOMPARE( htmlItem->frame( 1 )->frameStrokeWidth().length(), 0.3 );
-
-  //now redo
-
-  //frame 1 command
-  mLayout->undoStack()->stack()->redo();
-  dumpStack();
-  //frame 2 command
-  mLayout->undoStack()->stack()->redo();
-  dumpStack();
-
-  //check result
-  QVERIFY( htmlItem->frameCount() > 1 );
-  QCOMPARE( htmlItem->frame( 0 )->frameStrokeWidth().length(), 4.0 );
-  QCOMPARE( htmlItem->frame( 1 )->frameStrokeWidth().length(), 8.0 );
-
-  //multiframe command
-  mLayout->undoStack()->stack()->redo();
-  QCOMPARE( htmlItem->frameCount(), 1 );
-
-  mLayout->removeMultiFrame( htmlItem );
-  delete htmlItem;
-}
-
-#endif
-
 void TestQgsLayoutMultiFrame::undoRedoRemovedFrame2()
 {
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
@@ -514,33 +330,33 @@ void TestQgsLayoutMultiFrame::registry()
 
   const QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::multiFrameTypeAdded );
 
-  QgsLayoutMultiFrameMetadata *metadata = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1, QStringLiteral( "TestMultiFrame" ), create, resolve );
+  QgsLayoutMultiFrameMetadata *metadata = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1, u"TestMultiFrame"_s, create, resolve );
   QVERIFY( registry.addLayoutMultiFrameType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), QgsLayoutItemRegistry::PluginItem + 1 );
-  QCOMPARE( spyTypeAdded.value( 0 ).at( 1 ).toString(), QStringLiteral( "TestMultiFrame" ) );
+  QCOMPARE( spyTypeAdded.value( 0 ).at( 1 ).toString(), u"TestMultiFrame"_s );
   // duplicate type id
   QVERIFY( !registry.addLayoutMultiFrameType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
 
   //retrieve metadata
   QVERIFY( !registry.multiFrameMetadata( -1 ) );
-  QCOMPARE( registry.multiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1 )->visibleName(), QStringLiteral( "TestMultiFrame" ) );
+  QCOMPARE( registry.multiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1 )->visibleName(), u"TestMultiFrame"_s );
   QCOMPARE( registry.itemTypes().count(), 1 );
-  QCOMPARE( registry.itemTypes().value( QgsLayoutItemRegistry::PluginItem + 1 ), QStringLiteral( "TestMultiFrame" ) );
+  QCOMPARE( registry.itemTypes().value( QgsLayoutItemRegistry::PluginItem + 1 ), u"TestMultiFrame"_s );
   QgsLayout l( QgsProject::instance() );
   QgsLayoutMultiFrame *item = registry.createMultiFrame( QgsLayoutItemRegistry::PluginItem + 1, &l );
   QVERIFY( item );
   QVERIFY( dynamic_cast<TestMultiFrame *>( item ) );
   QVariantMap props;
-  props.insert( QStringLiteral( "a" ), 5 );
+  props.insert( u"a"_s, 5 );
   registry.resolvePaths( 1, props, QgsPathResolver(), true );
   QCOMPARE( props.size(), 1 );
   registry.resolvePaths( QgsLayoutItemRegistry::PluginItem + 1, props, QgsPathResolver(), true );
   QVERIFY( props.isEmpty() );
 
   // Test remove multi frame type
-  QgsLayoutMultiFrameMetadata *metadata_42 = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 42, QStringLiteral( "TestMultiFrame42" ), create, resolve );
+  QgsLayoutMultiFrameMetadata *metadata_42 = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 42, u"TestMultiFrame42"_s, create, resolve );
   QVERIFY( registry.addLayoutMultiFrameType( metadata_42 ) );
   QCOMPARE( registry.itemTypes().count(), 2 );
   QCOMPARE( spyTypeAdded.value( 1 ).at( 0 ).toInt(), QgsLayoutItemRegistry::PluginItem + 42 );
@@ -589,7 +405,7 @@ void TestQgsLayoutMultiFrame::writeReadXml()
   // add an multiframe
   QgsLayoutItemHtml *html = new QgsLayoutItemHtml( &c );
   c.addMultiFrame( html );
-  html->setHtml( QStringLiteral( "<blink>hi</blink>" ) );
+  html->setHtml( u"<blink>hi</blink>"_s );
   QgsLayoutFrame *frame = new QgsLayoutFrame( &c, html );
   frame->attemptSetSceneRect( QRectF( 1, 1, 10, 10 ) );
   c.addLayoutItem( frame );
@@ -614,7 +430,7 @@ void TestQgsLayoutMultiFrame::writeReadXml()
 
   QgsLayoutItemHtml *html2 = static_cast<QgsLayoutItemHtml *>( frame2->multiFrame() );
   QVERIFY( html2 );
-  QCOMPARE( html2->html(), QStringLiteral( "<blink>hi</blink>" ) );
+  QCOMPARE( html2->html(), u"<blink>hi</blink>"_s );
   QCOMPARE( html2->frameCount(), 1 );
   QCOMPARE( html2->frames(), QList<QgsLayoutFrame *>() << frame2 );
 }
@@ -629,7 +445,7 @@ void TestQgsLayoutMultiFrame::noPageNoCrash()
   QgsLayoutItemHtml *html = new QgsLayoutItemHtml( &c );
   c.addMultiFrame( html );
   html->setContentMode( QgsLayoutItemHtml::ManualHtml );
-  html->setHtml( QStringLiteral( "<div style=\"height: 2000px\">hi</div>" ) );
+  html->setHtml( u"<div style=\"height: 2000px\">hi</div>"_s );
   QgsLayoutFrame *frame = new QgsLayoutFrame( &c, html );
   frame->attemptSetSceneRect( QRectF( 1, 1, 10, 1 ) );
   c.addLayoutItem( frame );
@@ -657,21 +473,21 @@ void TestQgsLayoutMultiFrame::variables()
   std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::multiFrameScope( html ) );
   const int before = scope->variableCount();
 
-  QgsExpressionContextUtils::setLayoutMultiFrameVariable( html, QStringLiteral( "var" ), 5 );
+  QgsExpressionContextUtils::setLayoutMultiFrameVariable( html, u"var"_s, 5 );
   scope.reset( QgsExpressionContextUtils::multiFrameScope( html ) );
   QCOMPARE( scope->variableCount(), before + 1 );
-  QCOMPARE( scope->variable( QStringLiteral( "var" ) ).toInt(), 5 );
+  QCOMPARE( scope->variable( u"var"_s ).toInt(), 5 );
 
   QVariantMap vars;
-  vars.insert( QStringLiteral( "var2" ), 7 );
+  vars.insert( u"var2"_s, 7 );
   QgsExpressionContextUtils::setLayoutMultiFrameVariables( html, vars );
   scope.reset( QgsExpressionContextUtils::multiFrameScope( html ) );
   QCOMPARE( scope->variableCount(), before + 1 );
-  QVERIFY( !scope->hasVariable( QStringLiteral( "var" ) ) );
-  QCOMPARE( scope->variable( QStringLiteral( "var2" ) ).toInt(), 7 );
+  QVERIFY( !scope->hasVariable( u"var"_s ) );
+  QCOMPARE( scope->variable( u"var2"_s ).toInt(), 7 );
 
   const QgsExpressionContext context = html->createExpressionContext();
-  QCOMPARE( context.variable( QStringLiteral( "var2" ) ).toInt(), 7 );
+  QCOMPARE( context.variable( u"var2"_s ).toInt(), 7 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMultiFrame )

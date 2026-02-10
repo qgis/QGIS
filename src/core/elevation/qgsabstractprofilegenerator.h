@@ -19,10 +19,9 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include <QList>
-
 #include "qgsrendercontext.h"
 
+#include <QList>
 #include <QTransform>
 
 class QgsProfileSnapResult;
@@ -451,6 +450,11 @@ class CORE_EXPORT QgsAbstractProfileGenerator
      * Ownership is transferred to the caller.
      */
     virtual QgsAbstractProfileResults *takeResults() = 0 SIP_TRANSFERBACK;
+
+    /**
+     * Returns the unique string identifier for the results type.
+     */
+    virtual QString type() const = 0;
 
 };
 

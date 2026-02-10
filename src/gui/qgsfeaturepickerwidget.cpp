@@ -13,14 +13,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QKeyEvent>
-
 #include "qgsfeaturepickerwidget.h"
-#include "qgsfilterlineedit.h"
+
 #include "qgsfeaturepickermodel.h"
+#include "qgsfilterlineedit.h"
+
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QString>
+#include <QToolButton>
+
 #include "moc_qgsfeaturepickerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   : QWidget( parent )
@@ -33,13 +38,13 @@ QgsFeaturePickerWidget::QgsFeaturePickerWidget( QWidget *parent )
   layout->addWidget( mComboBox );
 
   mPreviousButton = new QToolButton( this );
-  mPreviousButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowLeft.svg" ) ) );
+  mPreviousButton->setIcon( QgsApplication::getThemeIcon( u"/mActionArrowLeft.svg"_s ) );
   mPreviousButton->setEnabled( false );
   mPreviousButton->setVisible( mShowBrowserButtons );
   layout->addWidget( mPreviousButton );
 
   mNextButton = new QToolButton( this );
-  mNextButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionArrowRight.svg" ) ) );
+  mNextButton->setIcon( QgsApplication::getThemeIcon( u"/mActionArrowRight.svg"_s ) );
   mNextButton->setEnabled( false );
   mNextButton->setVisible( mShowBrowserButtons );
   layout->addWidget( mNextButton );

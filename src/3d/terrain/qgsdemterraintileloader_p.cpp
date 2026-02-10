@@ -14,9 +14,9 @@
  ***************************************************************************/
 
 #include "qgsdemterraintileloader_p.h"
-#include "moc_qgsdemterraintileloader_p.cpp"
 
 #include "qgs3dmapsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
 #include "qgsdemterraingenerator.h"
 #include "qgsdemterraintilegeometry_p.h"
@@ -24,14 +24,18 @@
 #include "qgsgeotransform.h"
 #include "qgsonlineterraingenerator.h"
 #include "qgsterrainentity.h"
+#include "qgsterraingenerator.h"
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
-#include "qgsterraingenerator.h"
-#include "qgsabstractterrainsettings.h"
 
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DCore/QTransform>
 #include <QMutexLocker>
+#include <QString>
+#include <Qt3DCore/QTransform>
+#include <Qt3DRender/QGeometryRenderer>
+
+#include "moc_qgsdemterraintileloader_p.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -146,8 +150,9 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
-#include <QtConcurrent/QtConcurrentRun>
+#include <QtConcurrentRun>
 #include <QFutureWatcher>
+#include <memory>
 #include "qgsterraindownloader.h"
 
 QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution, const QgsCoordinateTransformContext &transformContext )
@@ -155,7 +160,6 @@ QgsDemHeightMapGenerator::QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const Q
   , mClonedProvider( dtm ? qgis::down_cast<QgsRasterDataProvider *>( dtm->dataProvider()->clone() ) : nullptr )
   , mTilingScheme( tilingScheme )
   , mResolution( resolution )
-  , mLastJobId( 0 )
   , mDownloader( dtm ? nullptr : new QgsTerrainDownloader( transformContext ) )
   , mTransformContext( transformContext )
 {
@@ -171,14 +175,14 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
 {
   provider->moveToThread( QThread::currentThread() );
 
-  QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "DEM" ) );
+  QgsEventTracing::ScopedEvent e( u"3D"_s, u"DEM"_s );
 
   // TODO: use feedback object? (but GDAL currently does not support cancellation anyway)
   QgsRasterInterface *input = provider;
   std::unique_ptr<QgsRasterProjector> projector;
   if ( provider->crs() != destCrs )
   {
-    projector.reset( new QgsRasterProjector );
+    projector = std::make_unique<QgsRasterProjector>();
     projector->setCrs( provider->crs(), destCrs, provider->transformContext() );
     projector->setInput( provider );
     input = projector.get();
@@ -228,7 +232,7 @@ static QByteArray _readOnlineDtm( QgsTerrainDownloader *downloader, const QgsRec
 
 int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
 {
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), nodeId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncBegin, u"3D"_s, u"DEM"_s, nodeId.text() );
 
   // extend the rect by half-pixel on each side? to get the values in "corners"
   QgsRectangle extent = mTilingScheme.tileToExtent( nodeId );
@@ -332,7 +336,7 @@ void QgsDemHeightMapGenerator::onFutureFinished()
   mJobs.remove( fw );
   fw->deleteLater();
 
-  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, QStringLiteral( "3D" ), QStringLiteral( "DEM" ), jobData.tileId.text() );
+  QgsEventTracing::addEvent( QgsEventTracing::AsyncEnd, u"3D"_s, u"DEM"_s, jobData.tileId.text() );
 
   QByteArray data = jobData.future.result();
   emit heightMapReady( jobData.jobId, data );

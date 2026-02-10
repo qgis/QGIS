@@ -13,22 +13,27 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectlayergroupdialog.h"
-#include "moc_qgsprojectlayergroupdialog.cpp"
-#include "qgsproject.h"
+
 #include "qgisapp.h"
 #include "qgsapplication.h"
+#include "qgsgui.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsziputils.h"
-#include "qgsgui.h"
 
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgsprojectlayergroupdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsEmbeddedLayerTreeModel::QgsEmbeddedLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
@@ -57,9 +62,9 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const Q
   const QgsSettings settings;
 
   mProjectFileWidget->setStorageMode( QgsFileWidget::GetFile );
-  mProjectFileWidget->setFilter( tr( "QGIS files" ) + QStringLiteral( " (*.qgs *.QGS *.qgz *.QGZ)" ) );
+  mProjectFileWidget->setFilter( tr( "QGIS files" ) + u" (*.qgs *.QGS *.qgz *.QGZ)"_s );
   mProjectFileWidget->setDialogTitle( tr( "Select Project File" ) );
-  mProjectFileWidget->setDefaultRoot( settings.value( QStringLiteral( "/qgis/last_embedded_project_path" ), QDir::homePath() ).toString() );
+  mProjectFileWidget->setDefaultRoot( settings.value( u"/qgis/last_embedded_project_path"_s, QDir::homePath() ).toString() );
   if ( !projectFile.isEmpty() )
   {
     mProjectFileWidget->setFilePath( projectFile );
@@ -216,7 +221,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   int errorLine;
   if ( !projectDom.setContent( &projectFile, &errorMessage, &errorLine ) )
   {
-    QgsDebugError( QStringLiteral( "Error reading the project file %1 at line %2: %3" )
+    QgsDebugError( u"Error reading the project file %1 at line %2: %3"_s
                      .arg( projectFile.fileName() )
                      .arg( errorLine )
                      .arg( errorMessage ) );
@@ -225,7 +230,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
 
   mRootGroup->removeAllChildren();
 
-  QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
+  QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( u"layer-tree-group"_s );
   if ( !layerTreeElem.isNull() )
   {
     // Use a temporary tree to read the nodes to prevent signals being delivered to the models
@@ -235,7 +240,7 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
   }
   else
   {
-    QgsLayerTreeUtils::readOldLegend( mRootGroup, projectDom.documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
+    QgsLayerTreeUtils::readOldLegend( mRootGroup, projectDom.documentElement().firstChildElement( u"legend"_s ) );
   }
 
   if ( !mShowEmbeddedContent )
@@ -253,7 +258,7 @@ void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup *node )
   const auto constChildren = node->children();
   for ( QgsLayerTreeNode *child : constChildren )
   {
-    if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
+    if ( child->customProperty( u"embedded"_s ).toInt() )
       childrenToRemove << child;
     else if ( QgsLayerTree::isGroup( child ) )
       removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );
@@ -296,12 +301,12 @@ void QgsProjectLayerGroupDialog::mButtonBox_accepted()
   const QFileInfo fi( mProjectPath );
   if ( fi.exists() )
   {
-    s.setValue( QStringLiteral( "/qgis/last_embedded_project_path" ), fi.absolutePath() );
+    s.setValue( u"/qgis/last_embedded_project_path"_s, fi.absolutePath() );
   }
   accept();
 }
 
 void QgsProjectLayerGroupDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#nesting-projects" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#nesting-projects"_s );
 }

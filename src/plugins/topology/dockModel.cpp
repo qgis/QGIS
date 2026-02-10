@@ -16,10 +16,16 @@
  ***************************************************************************/
 
 #include "dockModel.h"
-#include "moc_dockModel.cpp"
-#include "topolError.h"
+
 #include "qgsvectorlayer.h"
+#include "topolError.h"
+
+#include <QString>
 #include <qlogging.h>
+
+#include "moc_dockModel.cpp"
+
+using namespace Qt::StringLiterals;
 
 DockModel::DockModel( QObject *parent )
 {
@@ -91,7 +97,7 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
       break;
     case 1:
       if ( !mErrorlist[row]->featurePairs().first().layer )
-        val = QStringLiteral( "Unknown" );
+        val = u"Unknown"_s;
       else
         val = mErrorlist[row]->featurePairs().first().layer->name();
       break;

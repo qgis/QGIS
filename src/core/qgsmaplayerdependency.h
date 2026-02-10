@@ -20,6 +20,7 @@
 #define QGSMAPLAYERDEPENDENCY_H
 
 #include "qgis_core.h"
+
 #include <QString>
 
 /**

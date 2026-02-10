@@ -18,9 +18,11 @@
 #ifndef QGSWFSSERVICEEXCEPTION_H
 #define QGSWFSSERVICEEXCEPTION_H
 
+#include "qgsserverexception.h"
+
 #include <QString>
 
-#include "qgsserverexception.h"
+using namespace Qt::StringLiterals;
 
 namespace QgsWfs
 {
@@ -40,7 +42,7 @@ namespace QgsWfs
        * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, int responseCode = 200 )
-        : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.2.0" ) )
+        : QgsOgcServiceException( code, message, QString(), responseCode, u"1.2.0"_s )
       {}
 
       /**
@@ -51,7 +53,7 @@ namespace QgsWfs
        * \param responseCode HTTP error code
        */
       QgsServiceException( const QString &code, const QString &message, const QString &locator, int responseCode = 200 )
-        : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
+        : QgsOgcServiceException( code, message, locator, responseCode, u"1.2.0"_s )
       {}
   };
 
@@ -70,7 +72,7 @@ namespace QgsWfs
        * \param locator Locator attribute according to OGC specifications
        */
       QgsSecurityAccessException( const QString &message, const QString &locator = QString() )
-        : QgsServiceException( QStringLiteral( "Security" ), message, locator, 403 )
+        : QgsServiceException( u"Security"_s, message, locator, 403 )
       {}
   };
 
@@ -89,7 +91,7 @@ namespace QgsWfs
        * \param locator Locator attribute according to OGC specifications
        */
       QgsRequestNotWellFormedException( const QString &message, const QString &locator = QString() )
-        : QgsServiceException( QStringLiteral( "RequestNotWellFormed" ), message, locator, 400 )
+        : QgsServiceException( u"RequestNotWellFormed"_s, message, locator, 400 )
       {}
   };
 

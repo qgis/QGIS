@@ -19,8 +19,12 @@
 #define QGS_GEOMETRY_COVER_CHECK_H
 
 #include "qgsgeometrycheck.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
+#include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis
@@ -46,8 +50,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheckError : public QgsGeometryCheckEr
 
 /**
  * \ingroup analysis
- * \brief A contained check.  QMap<QString, QSet<QVariant>> uniqueIds;
-  const QString uniqueIdFieldName = context()->uniqueIdFieldName;
+ * \brief A contained check.
  */
 class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
 {
@@ -72,7 +75,7 @@ class ANALYSIS_EXPORT QgsGeometryContainedCheck : public QgsGeometryCheck
     static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Within" ); }
-    static QString factoryId() { return QStringLiteral( "QgsGeometryContainedCheck" ); }
+    static QString factoryId() { return u"QgsGeometryContainedCheck"_s; }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 };
 

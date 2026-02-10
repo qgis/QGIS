@@ -22,19 +22,23 @@ class QgsRenderContext;
 class QgsRectangle;
 class QgsVectorLayerFeatureSource;
 
+#include <memory>
+
 #include "qgis_core.h"
-#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 #include "qgsfeatureid.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryutils.h"
-#include "qgsvectorlayer.h"
 #include "qgslinestring.h"
 #include "qgspointlocatorinittask.h"
-#include <memory>
+#include "qgspointxy.h"
+#include "qgsvectorlayer.h"
 
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -278,7 +282,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugError( QStringLiteral( "transformation to layer coordinate failed" ) );
+                QgsDebugError( u"transformation to layer coordinate failed"_s );
               }
             }
 
@@ -306,7 +310,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
               }
               catch ( QgsCsException & )
               {
-                QgsDebugError( QStringLiteral( "transformation to destination coordinate failed" ) );
+                QgsDebugError( u"transformation to destination coordinate failed"_s );
               }
             }
           }

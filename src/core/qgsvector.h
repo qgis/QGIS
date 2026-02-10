@@ -18,7 +18,11 @@
 
 #include "qgis.h"
 #include "qgis_core.h"
+
+#include <QString>
 #include <QtGlobal>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -230,7 +234,7 @@ class CORE_EXPORT QgsVector
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVector: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsVector: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

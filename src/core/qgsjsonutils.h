@@ -17,13 +17,13 @@
 #define QGSJSONUTILS_H
 
 #include "qgis_core.h"
-#include "qgsfeature.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsfeature.h"
 #include "qgsfields.h"
 
-#include <QPointer>
 #include <QJsonObject>
+#include <QPointer>
 
 #ifndef SIP_RUN
 #include <nlohmann/json_fwd.hpp>

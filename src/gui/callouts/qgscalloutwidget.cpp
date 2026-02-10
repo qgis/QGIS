@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgscalloutwidget.h"
-#include "moc_qgscalloutwidget.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsunitselectionwidget.h"
+
+#include "qgsauxiliarystorage.h"
 #include "qgscallout.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
+#include "qgsmarkersymbol.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsnewauxiliarylayerdialog.h"
-#include "qgsauxiliarystorage.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsmarkersymbol.h"
+#include "qgsunitselectionwidget.h"
+#include "qgsvectorlayer.h"
+
+#include "moc_qgscalloutwidget.cpp"
 
 QgsExpressionContext QgsCalloutWidget::createExpressionContext() const
 {

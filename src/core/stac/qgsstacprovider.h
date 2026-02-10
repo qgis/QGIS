@@ -17,6 +17,7 @@
 #define QGSSTACPROVIDER_H
 
 #include "qgis.h"
+
 #include <QString>
 #include <QStringList>
 

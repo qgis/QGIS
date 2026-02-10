@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsNumericFormatWidget : QgsPanelWidget, QgsExpressionContextGenerator
 {
 %Docstring(signature="appended")

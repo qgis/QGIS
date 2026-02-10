@@ -14,20 +14,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-#include <QObject>
+#include <memory>
 
 #include "qgis.h"
-#include "qgstriangularmesh.h"
-#include "qgsmeshlayer.h"
-#include "qgsmesheditor.h"
-#include "qgsmeshadvancedediting.h"
-#include "qgstransformeffect.h"
-#include "qgsmeshforcebypolylines.h"
 #include "qgslinestring.h"
+#include "qgsmeshadvancedediting.h"
+#include "qgsmesheditor.h"
+#include "qgsmeshforcebypolylines.h"
+#include "qgsmeshlayer.h"
+#include "qgsprojectelevationproperties.h"
 #include "qgsrasterlayer.h"
 #include "qgsterrainprovider.h"
-#include "qgsprojectelevationproperties.h"
+#include "qgstest.h"
+#include "qgstransformeffect.h"
+#include "qgstriangularmesh.h"
+
+#include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMeshEditor : public QObject
 {
@@ -100,12 +105,12 @@ void TestQgsMeshEditor::init()
   mDataDir = QString( TEST_DATA_DIR ); //defined in CmakeLists.txt
   mDataDir += "/mesh";
   QString uri( mDataDir + "/quad_and_triangle.2dm" );
-  meshLayerQuadTriangle.reset( new QgsMeshLayer( uri, "Triangle and Quad", "mdal" ) );
+  meshLayerQuadTriangle = std::make_unique<QgsMeshLayer>( uri, "Triangle and Quad", "mdal" );
   QVERIFY( meshLayerQuadTriangle );
   QCOMPARE( meshLayerQuadTriangle->datasetGroupCount(), 1 );
 
   uri = QString( mDataDir + "/quad_flower_to_edit.2dm" );
-  meshLayerQuadFlower.reset( new QgsMeshLayer( uri, "Quad Flower", "mdal" ) );
+  meshLayerQuadFlower = std::make_unique<QgsMeshLayer>( uri, "Quad Flower", "mdal" );
   QVERIFY( meshLayerQuadFlower );
   QCOMPARE( meshLayerQuadFlower->datasetGroupCount(), 1 );
 }
@@ -116,7 +121,7 @@ void TestQgsMeshEditor::startStopEditing()
   QCOMPARE( meshLayerQuadTriangle->datasetGroupCount(), 2 );
   int datasetGroupIndex = meshLayerQuadTriangle->datasetGroupsIndexes().at( 0 );
   QgsMeshDatasetGroupMetadata meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
-  QCOMPARE( meta.name(), QStringLiteral( "Bed Elevation" ) );
+  QCOMPARE( meta.name(), u"Bed Elevation"_s );
 
   const QgsCoordinateTransform transform;
   QgsMeshEditingError error;
@@ -129,7 +134,7 @@ void TestQgsMeshEditor::startStopEditing()
   datasetGroupIndex = meshLayerQuadTriangle->datasetGroupsIndexes().at( 0 );
   meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
-  QVERIFY( meta.name() == QLatin1String( "vertices Z value" ) );
+  QVERIFY( meta.name() == "vertices Z value"_L1 );
   QCOMPARE( meta.isTemporal(), false );
   QCOMPARE( meta.isScalar(), true );
   QCOMPARE( meta.minimum(), 10.0 );
@@ -159,7 +164,7 @@ void TestQgsMeshEditor::startStopEditing()
   datasetGroupIndex = meshLayerQuadTriangle->datasetGroupsIndexes().at( 0 );
   meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
-  QVERIFY( meta.name() == QLatin1String( "vertices Z value" ) );
+  QVERIFY( meta.name() == "vertices Z value"_L1 );
   QCOMPARE( meta.isTemporal(), false );
   QCOMPARE( meta.isScalar(), true );
   QCOMPARE( meta.minimum(), 10.0 );
@@ -181,7 +186,7 @@ void TestQgsMeshEditor::startStopEditing()
   datasetGroupIndex = meshLayerQuadTriangle->datasetGroupsIndexes().at( 0 );
   meta = meshLayerQuadTriangle->datasetGroupMetadata( datasetGroupIndex );
   QVERIFY( meta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices );
-  QVERIFY( meta.name() == QLatin1String( "Bed Elevation" ) );
+  QVERIFY( meta.name() == "Bed Elevation"_L1 );
   QCOMPARE( meta.isTemporal(), false );
   QCOMPARE( meta.isScalar(), true );
   QCOMPARE( meta.minimum(), 10.0 );
@@ -195,8 +200,8 @@ void TestQgsMeshEditor::startEditingWithErrors()
 {
   const QgsCoordinateTransform transform;
 
-  QString uri( mDataDir + QStringLiteral( "/with_flat_face.2dm" ) );
-  auto mesh = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "With flat face" ), QStringLiteral( "mdal" ) );
+  QString uri( mDataDir + u"/with_flat_face.2dm"_s );
+  auto mesh = std::make_unique<QgsMeshLayer>( uri, u"With flat face"_s, u"mdal"_s );
   QVERIFY( mesh->isValid() );
   QCOMPARE( mesh->meshFaceCount(), 3 );
   QCOMPARE( mesh->meshVertexCount(), 5 );
@@ -211,8 +216,8 @@ void TestQgsMeshEditor::startEditingWithErrors()
   QCOMPARE( mesh->meshFaceCount(), 2 );
   QCOMPARE( mesh->meshVertexCount(), 5 );
 
-  uri = mDataDir + QStringLiteral( "/with_manifold_face.2dm" );
-  mesh = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "With manifold face" ), QStringLiteral( "mdal" ) );
+  uri = mDataDir + u"/with_manifold_face.2dm"_s;
+  mesh = std::make_unique<QgsMeshLayer>( uri, u"With manifold face"_s, u"mdal"_s );
   QVERIFY( mesh->isValid() );
   QCOMPARE( mesh->meshFaceCount(), 3 );
   QCOMPARE( mesh->meshVertexCount(), 5 );
@@ -226,8 +231,8 @@ void TestQgsMeshEditor::startEditingWithErrors()
   QCOMPARE( mesh->meshFaceCount(), 2 );
   QCOMPARE( mesh->meshVertexCount(), 5 );
 
-  uri = mDataDir + QStringLiteral( "/with_free_vertex_in_mesh.2dm" );
-  mesh = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "With free vertex in mesh" ), QStringLiteral( "mdal" ) );
+  uri = mDataDir + u"/with_free_vertex_in_mesh.2dm"_s;
+  mesh = std::make_unique<QgsMeshLayer>( uri, u"With free vertex in mesh"_s, u"mdal"_s );
   QVERIFY( mesh->isValid() );
   QCOMPARE( mesh->meshFaceCount(), 2 );
   QCOMPARE( mesh->meshVertexCount(), 6 );
@@ -241,8 +246,8 @@ void TestQgsMeshEditor::startEditingWithErrors()
   QCOMPARE( mesh->meshFaceCount(), 2 );
   QCOMPARE( mesh->meshVertexCount(), 5 );
 
-  uri = mDataDir + QStringLiteral( "/with_unique_shared_vertex.2dm" );
-  mesh = std::make_unique<QgsMeshLayer>( uri, QStringLiteral( "With unique shared vertex" ), QStringLiteral( "mdal" ) );
+  uri = mDataDir + u"/with_unique_shared_vertex.2dm"_s;
+  mesh = std::make_unique<QgsMeshLayer>( uri, u"With unique shared vertex"_s, u"mdal"_s );
   QVERIFY( mesh->isValid() );
   QCOMPARE( mesh->meshFaceCount(), 3 );
   QCOMPARE( mesh->meshVertexCount(), 7 );
@@ -2154,7 +2159,7 @@ void TestQgsMeshEditor::transformByExpression()
 
   QgsMeshTransformVerticesByExpression transformVertex;
 
-  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 50" ), QStringLiteral( "$vertex_y - 50" ), QStringLiteral( "$vertex_z + 100" ) );
+  transformVertex.setExpressions( u"$vertex_x + 50"_s, u"$vertex_y - 50"_s, u"$vertex_z + 100"_s );
 
   // no input set
   QVERIFY( !transformVertex.calculate( layer.get() ) );
@@ -2219,14 +2224,14 @@ void TestQgsMeshEditor::transformByExpression()
   // leads to an invalid mesh
   transformVertex.clear();
   transformVertex.setInputVertices( { 1, 3 } );
-  transformVertex.setExpressions( QStringLiteral( "$vertex_x -1500" ), QStringLiteral( "$vertex_y - 1500" ), QString() );
+  transformVertex.setExpressions( u"$vertex_x -1500"_s, u"$vertex_y - 1500"_s, QString() );
 
   QVERIFY( !transformVertex.calculate( layer.get() ) );
 
   // transforme with intersecting existing faces
   transformVertex.clear();
   transformVertex.setInputVertices( { 2, 3, 7 } );
-  transformVertex.setExpressions( QStringLiteral( "$vertex_x+700" ), QStringLiteral( "$vertex_y + 700" ), QString() );
+  transformVertex.setExpressions( u"$vertex_x+700"_s, u"$vertex_y + 700"_s, QString() );
 
   QVERIFY( transformVertex.calculate( layer.get() ) );
 
@@ -2254,7 +2259,7 @@ void TestQgsMeshEditor::transformByExpression()
   // composed expression
   transformVertex.clear();
   transformVertex.setInputVertices( { 0, 1, 2, 3, 4, 5, 6, 7 } );
-  transformVertex.setExpressions( QStringLiteral( "$vertex_y + 50" ), QStringLiteral( "-$vertex_x" ), QStringLiteral( "if( $vertex_x <= 1500 , $vertex_z + 80 , $vertex_z - 150)" ) );
+  transformVertex.setExpressions( u"$vertex_y + 50"_s, u"-$vertex_x"_s, u"if( $vertex_x <= 1500 , $vertex_z + 80 , $vertex_z - 150)"_s );
 
   QVERIFY( transformVertex.calculate( layer.get() ) );
   layer->meshEditor()->advancedEdit( &transformVertex );
@@ -2279,14 +2284,14 @@ void TestQgsMeshEditor::transformByExpression()
 
   transformVertex.clear();
   transformVertex.setInputVertices( { 8 } );
-  transformVertex.setExpressions( QStringLiteral( "$vertex_x - 1000" ), QStringLiteral( "$vertex_y - 1000" ), QLatin1String( "" ) );
+  transformVertex.setExpressions( u"$vertex_x - 1000"_s, u"$vertex_y - 1000"_s, QString() );
 
   QVERIFY( !transformVertex.calculate( layer.get() ) );
 
   transformVertex.clear();
   transformVertex.setInputVertices( { 8 } );
 
-  transformVertex.setExpressions( QStringLiteral( "$vertex_x + 1000" ), QStringLiteral( "$vertex_y + 1000" ), QLatin1String( "" ) );
+  transformVertex.setExpressions( u"$vertex_x + 1000"_s, u"$vertex_y + 1000"_s, QString() );
 
   QVERIFY( transformVertex.calculate( layer.get() ) );
 }

@@ -20,9 +20,9 @@
 
 #include "qgis_3d.h"
 
-#include <Qt3DRender/QMaterial>
 #include <QList>
 #include <QVector4D>
+#include <Qt3DRender/QMaterial>
 
 namespace Qt3DRender
 {
@@ -72,7 +72,7 @@ class _3D_EXPORT QgsMaterial : public Qt3DRender::QMaterial
 
     bool mClippingEnabled = false;
 
-    friend class TestQgs3dMaterial;
+    friend class TestQgs3DMaterial;
 };
 
 #endif // QGSMATERIAL_H

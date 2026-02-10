@@ -18,9 +18,8 @@
 #ifndef QGSPROCESSINGBATCH_H
 #define QGSPROCESSINGBATCH_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-
+#include "qgis_core.h"
 #include "qgsprocessingfeedback.h"
 
 /**

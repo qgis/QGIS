@@ -20,38 +20,40 @@ email                : sbr00pwb@users.sourceforge.net
  ***************************************************************************/
 
 #include "qgsdecorationscalebar.h"
-#include "moc_qgsdecorationscalebar.cpp"
-
-#include "qgsdecorationscalebardialog.h"
 
 #include "qgis.h"
 #include "qgisapp.h"
+#include "qgscolorutils.h"
+#include "qgsdecorationscalebardialog.h"
+#include "qgsfillsymbol.h"
+#include "qgsfillsymbollayer.h"
 #include "qgsfontutils.h"
+#include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgsunittypes.h"
 #include "qgssettings.h"
-#include "qgscolorutils.h"
-#include "qgsfillsymbollayer.h"
-#include "qgsfillsymbol.h"
-#include "qgslinesymbol.h"
 #include "qgssingleboxscalebarrenderer.h"
 #include "qgsticksscalebarrenderer.h"
+#include "qgsunittypes.h"
 
-#include <QPainter>
 #include <QAction>
+#include <QColor>
+#include <QFile>
+#include <QFont>
+#include <QFontMetrics>
+#include <QLocale>
+#include <QMenu>
+#include <QPainter>
 #include <QPen>
 #include <QPolygon>
 #include <QString>
-#include <QFontMetrics>
-#include <QFont>
-#include <QColor>
-#include <QMenu>
-#include <QFile>
-#include <QLocale>
+
+#include "moc_qgsdecorationscalebar.cpp"
+
+using namespace Qt::StringLiterals;
 
 //non qt includes
 #include <cmath>
@@ -66,7 +68,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
                << tr( "Bar" ) << tr( "Box" );
 
   setDisplayName( tr( "Scale Bar" ) );
-  mConfigurationName = QStringLiteral( "ScaleBar" );
+  mConfigurationName = u"ScaleBar"_s;
 
   projectRead();
   mSettings.setNumberOfSegments( 1 );
@@ -76,17 +78,17 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject *parent )
 void QgsDecorationScaleBar::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mPreferredSize = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), 30 );
-  mStyleIndex = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/Style" ), 0 );
-  mSnapping = QgsProject::instance()->readBoolEntry( mConfigurationName, QStringLiteral( "/Snapping" ), true );
-  mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
-  mOutlineColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
-  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginH" ), 0 );
-  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, QStringLiteral( "/MarginV" ), 0 );
+  mPreferredSize = QgsProject::instance()->readNumEntry( mConfigurationName, u"/PreferredSize"_s, 30 );
+  mStyleIndex = QgsProject::instance()->readNumEntry( mConfigurationName, u"/Style"_s, 0 );
+  mSnapping = QgsProject::instance()->readBoolEntry( mConfigurationName, u"/Snapping"_s, true );
+  mColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/Color"_s, u"#000000"_s ) );
+  mOutlineColor = QgsColorUtils::colorFromString( QgsProject::instance()->readEntry( mConfigurationName, u"/OutlineColor"_s, u"#FFFFFF"_s ) );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginH"_s, 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mConfigurationName, u"/MarginV"_s, 0 );
 
   QDomDocument doc;
   QDomElement elem;
-  const QString textFormatXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/TextFormat" ) );
+  const QString textFormatXml = QgsProject::instance()->readEntry( mConfigurationName, u"/TextFormat"_s );
   if ( !textFormatXml.isEmpty() )
   {
     doc.setContent( textFormatXml );
@@ -97,7 +99,7 @@ void QgsDecorationScaleBar::projectRead()
   }
   else
   {
-    const QString fontXml = QgsProject::instance()->readEntry( mConfigurationName, QStringLiteral( "/Font" ) );
+    const QString fontXml = QgsProject::instance()->readEntry( mConfigurationName, u"/Font"_s );
     if ( !fontXml.isEmpty() )
     {
       doc.setContent( fontXml );
@@ -119,13 +121,13 @@ void QgsDecorationScaleBar::projectRead()
 void QgsDecorationScaleBar::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/PreferredSize" ), mPreferredSize );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Snapping" ), mSnapping );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Style" ), mStyleIndex );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/Color" ), QgsColorUtils::colorToString( mColor ) );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/OutlineColor" ), QgsColorUtils::colorToString( mOutlineColor ) );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginH" ), mMarginHorizontal );
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/MarginV" ), mMarginVertical );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/PreferredSize"_s, mPreferredSize );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Snapping"_s, mSnapping );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Style"_s, mStyleIndex );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/Color"_s, QgsColorUtils::colorToString( mColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/OutlineColor"_s, QgsColorUtils::colorToString( mOutlineColor ) );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginH"_s, mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/MarginV"_s, mMarginVertical );
 
   QDomDocument fontDoc;
   QgsReadWriteContext context;
@@ -133,7 +135,7 @@ void QgsDecorationScaleBar::saveToProject()
   const QDomElement textElem = mTextFormat.writeXml( fontDoc, context );
   fontDoc.appendChild( textElem );
 
-  QgsProject::instance()->writeEntry( mConfigurationName, QStringLiteral( "/TextFormat" ), fontDoc.toString() );
+  QgsProject::instance()->writeEntry( mConfigurationName, u"/TextFormat"_s, fontDoc.toString() );
 }
 
 
@@ -234,7 +236,7 @@ double QgsDecorationScaleBar::mapWidth( const QgsMapSettings &settings ) const
     catch ( QgsCsException & )
     {
       // TODO report errors to user
-      QgsDebugError( QStringLiteral( "An error occurred while calculating length" ) );
+      QgsDebugError( u"An error occurred while calculating length"_s );
     }
 
     measure /= QgsUnitTypes::fromUnitToUnitFactor( mSettings.units(), units );
@@ -479,7 +481,7 @@ void QgsDecorationScaleBar::render( const QgsMapSettings &mapSettings, QgsRender
       originY = deviceHeight - originY - size.height();
       break;
     default:
-      QgsDebugError( QStringLiteral( "Unsupported placement index of %1" ).arg( static_cast<int>( mPlacement ) ) );
+      QgsDebugError( u"Unsupported placement index of %1"_s.arg( static_cast<int>( mPlacement ) ) );
   }
 
   const QgsScopedQPainterState painterState( context.painter() );

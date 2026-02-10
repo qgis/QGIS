@@ -16,16 +16,17 @@
  ***************************************************************************/
 ///@cond PRIVATE
 
-#include <QFileInfo>
-
-#include "qgsmeshcalcnode.h"
 #include "qgsmeshcalcutils.h"
-#include "qgsmeshmemorydataprovider.h"
-#include "qgstriangularmesh.h"
+
 #include "qgsmapsettings.h"
-#include "qgsmeshlayerutils.h"
+#include "qgsmeshcalcnode.h"
 #include "qgsmeshlayerrenderer.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmeshmemorydataprovider.h"
 #include "qgsproject.h"
+#include "qgstriangularmesh.h"
+
+#include <QFileInfo>
 
 const double D_TRUE = 1.0;
 const double D_FALSE = 0.0;

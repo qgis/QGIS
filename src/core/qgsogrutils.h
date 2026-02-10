@@ -18,15 +18,15 @@
 
 #define SIP_NO_FILE
 
+#include <cpl_conv.h>
+#include <cpl_string.h>
+#include <gdal.h>
+#include <gdalwarper.h>
+#include <ogr_api.h>
+
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsvectordataprovider.h"
-
-#include <ogr_api.h>
-#include <gdal.h>
-#include <gdalwarper.h>
-#include "cpl_conv.h"
-#include "cpl_string.h"
 
 class QgsCoordinateReferenceSystem;
 class QgsFieldDomain;
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsOgrUtils
      *
      * \since QGIS 3.2
      */
-    static QStringList cStringListToQStringList( char **stringList );
+    static QStringList cStringListToQStringList( const char *const *stringList );
 
     /**
      * Converts a OGRwkbGeometryType to QgsWkbTypes::Type

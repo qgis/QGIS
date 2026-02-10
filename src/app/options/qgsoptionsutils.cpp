@@ -14,8 +14,8 @@
  ***************************************************************************/
 #include "qgsoptionsutils.h"
 
-#include "qgisapp.h"
 #include "qgis.h"
+#include "qgisapp.h"
 #include "qgsoptionswidgetfactory.h"
 
 QgsScopedOptionsWidgetFactory::QgsScopedOptionsWidgetFactory( std::unique_ptr<QgsOptionsWidgetFactory> &&factory )

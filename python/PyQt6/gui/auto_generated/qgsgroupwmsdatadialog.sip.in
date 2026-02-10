@@ -8,6 +8,7 @@
 
 
 
+
 class QgsGroupWmsDataDialog : QDialog
 {
 %Docstring(signature="appended")

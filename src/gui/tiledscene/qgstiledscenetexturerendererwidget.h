@@ -18,9 +18,10 @@
 #ifndef QGSTILEDSCENETEXTURERENDERERWIDGET_H
 #define QGSTILEDSCENETEXTURERENDERERWIDGET_H
 
-#include "qgstiledscenerendererwidget.h"
 #include "ui_qgstiledscenetexturerendererwidgetbase.h"
+
 #include "qgis_gui.h"
+#include "qgstiledscenerendererwidget.h"
 
 class QgsTiledSceneLayer;
 class QgsStyle;

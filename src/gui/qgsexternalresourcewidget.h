@@ -24,14 +24,13 @@ class QgsMessageBar;
 class QgsExternalStorageFileWidget;
 class QgsExternalStorageFetchedContent;
 
-#include <QWidget>
-#include <QVariant>
-#include <QPointer>
-
-#include "qgsfilewidget.h"
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgsfilewidget.h"
 
+#include <QPointer>
+#include <QVariant>
+#include <QWidget>
 
 #ifdef SIP_RUN
 //%ModuleHeaderCode
@@ -238,10 +237,6 @@ class GUI_EXPORT QgsExternalResourceWidget : public QWidget
     //! UI objects
     QgsExternalStorageFileWidget *mFileWidget = nullptr;
     QgsPixmapLabel *mPixmapLabel = nullptr;
-#ifdef WITH_QTWEBKIT
-    //! This webview is used as a container to display the picture
-    QWebView *mWebView = nullptr;
-#endif
     QgsMediaWidget *mMediaWidget = nullptr;
 
     QLabel *mLoadingLabel = nullptr;

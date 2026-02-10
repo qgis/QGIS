@@ -21,17 +21,19 @@
 
 #define SIP_NO_FILE
 
-#include <QVector>
-#include <QVector3D>
-#include <QSet>
-#include <QList>
 #include <memory>
+
 #include "qgis_core.h"
-#include "qgsmeshdataprovider.h"
+#include "qgscoordinatetransform.h"
 #include "qgsgeometry.h"
+#include "qgsmeshdataprovider.h"
 #include "qgsmeshspatialindex.h"
 #include "qgstopologicalmesh.h"
-#include "qgscoordinatetransform.h"
+
+#include <QList>
+#include <QSet>
+#include <QVector>
+#include <QVector3D>
 
 class QgsRenderContext;
 class QgsRectangle;
@@ -48,7 +50,7 @@ class QgsRectangle;
  *
  * \since QGIS 3.2
  */
-class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 4
+class CORE_EXPORT QgsTriangularMesh // TODO rename to QgsRendererMesh in QGIS 5
 {
   public:
 

@@ -14,20 +14,25 @@
  ***************************************************************************/
 
 #include "qgsrubberband.h"
-#include "moc_qgsrubberband.cpp"
+
+#include "qgsfillsymbol.h"
 #include "qgsgeometry.h"
+#include "qgsguiutils.h"
+#include "qgslinesymbol.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
-#include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
-#include "qgssymbol.h"
 #include "qgsrendercontext.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsguiutils.h"
+#include "qgssymbol.h"
+#include "qgsvectorlayer.h"
 
 #include <QPainter>
+#include <QString>
+
+#include "moc_qgsrubberband.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geometryType )
   : QObject( nullptr )
@@ -311,7 +316,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     }
     catch ( QgsCsException & )
     {
-      QgsDebugError( QStringLiteral( "Could not transform rubber band geometry to map CRS" ) );
+      QgsDebugError( u"Could not transform rubber band geometry to map CRS"_s );
       return;
     }
   }

@@ -16,11 +16,11 @@
 #ifndef QGSMAPLAYERRENDERER_H
 #define QGSMAPLAYERRENDERER_H
 
-#include <QStringList>
-
+#include "qgis.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgis.h"
+
+#include <QStringList>
 
 class QgsFeedback;
 class QgsRenderContext;
@@ -155,7 +155,7 @@ class CORE_EXPORT QgsMapLayerRenderer
     QStringList mErrors;
     QString mLayerID;
 
-    // TODO QGIS 4.0 - make false as default
+    // TODO QGIS 5.0 - make false as default
 
     /**
      * The flag must be set to false in renderer's constructor
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsMapLayerRenderer
 
   private:
 
-    // TODO QGIS 4.0 - make reference instead of pointer!
+    // TODO QGIS 5.0 - make reference instead of pointer!
 
     /**
      * Associated render context.

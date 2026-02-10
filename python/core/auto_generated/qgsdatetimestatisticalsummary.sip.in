@@ -10,6 +10,7 @@
 
 
 
+
 class QgsDateTimeStatisticalSummary
 {
 %Docstring(signature="appended")

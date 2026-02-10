@@ -12,18 +12,21 @@
 #define QGSGEOREFMAINWINDOW_H
 
 #include "ui_qgsgeorefpluginguibase.h"
-#include "qgsgeoreftransform.h"
-
-#include "qgsgcplist.h"
-#include "qgsgcppoint.h"
-#include "qgsmapcoordsdialog.h"
-#include "qgsimagewarper.h"
-#include "qgscoordinatereferencesystem.h"
-#include "qgssettingstree.h"
 
 #include <memory>
 
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgcplist.h"
+#include "qgsgcppoint.h"
+#include "qgsgeoreftransform.h"
+#include "qgsimagewarper.h"
+#include "qgsmapcoordsdialog.h"
+#include "qgssettingstree.h"
+
 #include <QPointer>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QAction;
 class QActionGroup;
@@ -69,7 +72,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "georeferencer" ) );
+    static inline QgsSettingsTreeNode *sTreeGeoreferencer = QgsSettingsTree::sTreeApp->createChildNode( u"georeferencer"_s );
 
     static const QgsSettingsEntryEnumFlag<QgsImageWarper::ResamplingMethod> *settingResamplingMethod;
     static const QgsSettingsEntryStringList *settingCreationOptions;

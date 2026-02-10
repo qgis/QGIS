@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsmap3dexportwidget.h"
-#include "moc_qgsmap3dexportwidget.cpp"
 #include "ui_map3dexportwidget.h"
-
-#include <QPushButton>
-#include <QFileDialog>
-#include <QtGlobal>
+#include "qgsmap3dexportwidget.h"
 
 #include "qgis.h"
-#include "qgs3dmapscene.h"
-#include "qgssettings.h"
 #include "qgs3dmapexportsettings.h"
+#include "qgs3dmapscene.h"
+#include "qgs3dmapsettings.h"
+#include "qgssettings.h"
+
+#include <QFileDialog>
+#include <QPushButton>
+#include <QtGlobal>
+
+#include "moc_qgsmap3dexportwidget.cpp"
 
 QgsMap3DExportWidget::QgsMap3DExportWidget( Qgs3DMapScene *scene, Qgs3DMapExportSettings *exportSettings, QWidget *parent )
   : QWidget( parent ), ui( new Ui::Map3DExportWidget ), mScene( scene ), mExportSettings( exportSettings )
@@ -66,6 +68,35 @@ void QgsMap3DExportWidget::loadSettings()
   ui->exportNormalsCheckBox->setChecked( mExportSettings->exportNormals() );
   ui->exportTexturesCheckBox->setChecked( mExportSettings->exportTextures() );
   ui->scaleSpinBox->setValue( mExportSettings->scale() );
+
+  // Do not enable terrain options if terrain rendering is disabled
+  if ( mScene->mapSettings()->terrainRenderingEnabled() )
+  {
+    ui->terrainGroup->setEnabled( true );
+    ui->terrainGroup->setChecked( true );
+    ui->terrainTextureResolutionLabel->setEnabled( true );
+    ui->terrainTextureResolutionSpinBox->setEnabled( true );
+
+    // Only Dem and Online types handle terrain resolution
+    const QgsTerrainGenerator *terrainGenerator = mScene->mapSettings()->terrainGenerator();
+    if ( terrainGenerator->capabilities().testFlag( QgsTerrainGenerator::Capability::SupportsTileResolution ) )
+    {
+      ui->terrainResolutionLabel->setEnabled( true );
+      ui->terrainResolutionSpinBox->setEnabled( true );
+    }
+    else
+    {
+      ui->terrainResolutionLabel->setEnabled( false );
+      ui->terrainResolutionSpinBox->setEnabled( false );
+      ui->terrainResolutionSpinBox->setToolTip( tr( "This option is unavailable for the %1 terrain type." ).arg( terrainGenerator->typeToString( terrainGenerator->type() ) ) );
+    }
+  }
+  else
+  {
+    ui->terrainGroup->setEnabled( false );
+    ui->terrainGroup->setChecked( false );
+    ui->terrainGroup->setToolTip( tr( "Enable terrain rendering to use this option." ) );
+  }
 }
 
 void QgsMap3DExportWidget::settingsChanged()
@@ -78,6 +109,7 @@ void QgsMap3DExportWidget::settingsChanged()
   mExportSettings->setExportTextures( ui->exportTexturesCheckBox->isChecked() );
   mExportSettings->setTerrainTextureResolution( ui->terrainTextureResolutionSpinBox->value() );
   mExportSettings->setScale( ui->scaleSpinBox->value() );
+  mExportSettings->setTerrainExportEnabled( ui->terrainGroup->isEnabled() && ui->terrainGroup->isChecked() );
 }
 
 bool QgsMap3DExportWidget::exportScene()

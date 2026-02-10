@@ -19,6 +19,10 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \brief A parameter for processing algorithms that need a list of input vector layers to construct a TIN.
  *
@@ -60,7 +64,7 @@ class CORE_EXPORT QgsProcessingParameterTinInputLayers: public QgsProcessingPara
     QString asPythonString( QgsProcessing::PythonOutputType outputType = QgsProcessing::PythonOutputType::PythonQgsProcessingAlgorithmSubclass ) const override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "tininputlayers" ); }
+    static QString typeName() { return u"tininputlayers"_s; }
 };
 
 #ifndef SIP_RUN
@@ -98,12 +102,12 @@ class CORE_EXPORT QgsProcessingParameterTypeTinInputLayers : public QgsProcessin
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterTinInputLayers" );
+      return u"from qgis.core import QgsProcessingParameterTinInputLayers"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterTinInputLayers" );
+      return u"QgsProcessingParameterTinInputLayers"_s;
     }
 
     QStringList acceptedPythonTypes() const override

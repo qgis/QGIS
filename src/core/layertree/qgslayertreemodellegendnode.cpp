@@ -17,37 +17,42 @@
  ***************************************************************************/
 
 #include "qgslayertreemodellegendnode.h"
-#include "moc_qgslayertreemodellegendnode.cpp"
+
+#include <memory>
+#include <optional>
 
 #include "qgsdatadefinedsizelegend.h"
+#include "qgsexpression.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfileutils.h"
+#include "qgsimageoperation.h"
+#include "qgslayertreelayer.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
-#include "qgsrasterlayer.h"
-#include "qgsrenderer.h"
-#include "qgssymbollayerutils.h"
-#include "qgsimageoperation.h"
-#include "qgsvectorlayer.h"
+#include "qgsmarkersymbol.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudrenderer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterrenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpression.h"
-#include "qgstextrenderer.h"
+#include "qgsrenderer.h"
 #include "qgssettings.h"
-#include "qgsfileutils.h"
-#include "qgsmarkersymbol.h"
-#include "qgsvariantutils.h"
-#include "qgslayertreelayer.h"
+#include "qgssymbollayerutils.h"
 #include "qgstextdocument.h"
 #include "qgstextdocumentmetrics.h"
+#include "qgstextrenderer.h"
+#include "qgsvariantutils.h"
+#include "qgsvectorlayer.h"
 
 #include <QBuffer>
-#include <optional>
+#include <QString>
+
+#include "moc_qgslayertreemodellegendnode.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeModelLegendNode::QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent )
   : QObject( parent )
   , mLayerNode( nodeL )
-  , mEmbeddedInParent( false )
 {
 }
 
@@ -132,7 +137,7 @@ QJsonObject QgsLayerTreeModelLegendNode::exportToJson( const QgsLegendSettings &
 {
   QJsonObject json = exportSymbolToJson( settings, context );
   const QString text = data( Qt::DisplayRole ).toString();
-  json[ QStringLiteral( "title" ) ] = text;
+  json[ u"title"_s ] = text;
   return json;
 }
 
@@ -188,7 +193,7 @@ QJsonObject QgsLayerTreeModelLegendNode::exportSymbolToJson( const QgsLegendSett
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -199,13 +204,13 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   QgsRenderContext *context = ctx ? ctx->context : nullptr;
   if ( !context )
   {
-    tempContext.reset( new QgsRenderContext( QgsRenderContext::fromQPainter( ctx ? ctx->painter : nullptr ) ) );
+    tempContext = std::make_unique<QgsRenderContext>( QgsRenderContext::fromQPainter( ctx ? ctx->painter : nullptr ) );
     context = tempContext.get();
   }
 
   const QgsTextFormat format = settings.style( Qgis::LegendComponent::SymbolLabel ).textFormat();
 
-  // TODO QGIS 4.0 -- make these all mandatory
+  // TODO QGIS 5.0 -- make these all mandatory
   std::optional< QgsTextDocument > tempDocument;
   const QgsTextDocument *document = ctx ? ctx->textDocument : nullptr;
   if ( !document )
@@ -330,7 +335,6 @@ double QgsSymbolLegendNode::MAXIMUM_SIZE = -1.0;
 QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
   , mItem( item )
-  , mSymbolUsesMapUnits( false )
 {
   const int iconSize = QgsLayerTreeModel::scaleIconSize( 16 );
   mIconSize = QSize( iconSize, iconSize );
@@ -431,7 +435,7 @@ QString QgsSymbolLegendNode::symbolLabel() const
   QString label;
   if ( mEmbeddedInParent )
   {
-    const QVariant legendlabel = mLayerNode->customProperty( QStringLiteral( "legend/title-label" ) );
+    const QVariant legendlabel = mLayerNode->customProperty( u"legend/title-label"_s );
     const QString layerName = QgsVariantUtils::isNull( legendlabel ) ? mLayerNode->name() : legendlabel.toString();
     label = mUserLabel.isEmpty() ? layerName : mUserLabel;
   }
@@ -673,7 +677,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
@@ -769,7 +773,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
     p->scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
     Q_NOWARN_DEPRECATED_PUSH
-    // QGIS 4.0 -- ctx->context will be mandatory
+    // QGIS 5.0 -- ctx->context will be mandatory
     const bool forceVector = ctx->context ? ctx->context->rasterizedRenderingPolicy() == Qgis::RasterizedRenderingPolicy::ForceVector : !settings.useAdvancedEffects();
     Q_NOWARN_DEPRECATED_POP
 
@@ -838,11 +842,11 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   QJsonObject json;
   if ( mItem.scaleMaxDenom() > 0 )
   {
-    json[ QStringLiteral( "scaleMaxDenom" ) ] = mItem.scaleMaxDenom();
+    json[ u"scaleMaxDenom"_s ] = mItem.scaleMaxDenom();
   }
   if ( mItem.scaleMinDenom() > 0 )
   {
-    json[ QStringLiteral( "scaleMinDenom" ) ] = mItem.scaleMinDenom();
+    json[ u"scaleMinDenom"_s ] = mItem.scaleMinDenom();
   }
 
   const QgsSymbol *s = mCustomSymbol ? mCustomSymbol.get() : mItem.symbol();
@@ -853,7 +857,7 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
 
 
   QgsRenderContext ctx;
-  // QGIS 4.0 - use render context directly here, and note in the dox that the context must be correctly setup
+  // QGIS 5.0 - use render context directly here, and note in the dox that the context must be correctly setup
   Q_NOWARN_DEPRECATED_PUSH
   ctx.setScaleFactor( settings.dpi() / 25.4 );
   ctx.setRendererScale( settings.mapScale() );
@@ -890,7 +894,7 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   img.save( &buffer, "PNG" );
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -925,7 +929,7 @@ void QgsSymbolLegendNode::updateLabel()
   if ( !mLayerNode )
     return;
 
-  const bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
+  const bool showFeatureCount = mLayerNode->customProperty( u"showFeatureCount"_s, 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
   if ( !mLayerNode->labelExpression().isEmpty() )
     mLabel = "[%" + mLayerNode->labelExpression() + "%]";
@@ -938,8 +942,8 @@ void QgsSymbolLegendNode::updateLabel()
     const qlonglong count = mEmbeddedInParent ? vl->featureCount() : vl->featureCount( mItem.ruleKey() ) ;
 
     // if you modify this line, please update QgsLayerTreeModel::data (DisplayRole)
-    mLabel += QStringLiteral( " [%1%2]" ).arg(
-                estimatedCount ? QStringLiteral( "≈" ) : QString(),
+    mLabel += u" [%1%2]"_s.arg(
+                estimatedCount ? u"≈"_s : QString(),
                 count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
   }
 
@@ -987,11 +991,11 @@ QgsExpressionContextScope *QgsSymbolLegendNode::createSymbolScope() const
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( tr( "Symbol scope" ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_label" ), symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_id" ), mItem.ruleKey(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_label"_s, symbolLabel().remove( "[%" ).remove( "%]" ), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_id"_s, mItem.ruleKey(), true ) );
   if ( vl )
   {
-    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "symbol_count" ), QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( u"symbol_count"_s, QVariant::fromValue( vl->featureCount( mItem.ruleKey() ) ), true ) );
   }
   return scope;
 }
@@ -1082,7 +1086,7 @@ QJsonObject QgsImageLegendNode::exportSymbolToJson( const QgsLegendSettings &, c
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -1278,7 +1282,7 @@ QJsonObject QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettin
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -1286,7 +1290,6 @@ QJsonObject QgsRasterSymbolLegendNode::exportSymbolToJson( const QgsLegendSettin
 
 QgsWmsLegendNode::QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent )
   : QgsLayerTreeModelLegendNode( nodeLayer, parent )
-  , mValid( false )
 {
 }
 
@@ -1331,7 +1334,7 @@ QImage QgsWmsLegendNode::getLegendGraphic( bool synchronous ) const
     }
     else
     {
-      QgsDebugError( QStringLiteral( "Failed to download legend graphics: layer is not valid." ) );
+      QgsDebugError( u"Failed to download legend graphics: layer is not valid."_s );
     }
   }
 
@@ -1414,7 +1417,7 @@ QJsonObject QgsWmsLegendNode::exportSymbolToJson( const QgsLegendSettings &, con
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 
@@ -1429,7 +1432,7 @@ QImage QgsWmsLegendNode::renderMessage( const QString &msg ) const
   QPainter painter;
   painter.begin( &image );
   painter.setPen( QColor( 255, 0, 0 ) );
-  painter.setFont( QFont( QStringLiteral( "Chicago" ), fontHeight ) );
+  painter.setFont( QFont( u"Chicago"_s, fontHeight ) );
   painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
   painter.drawText( 0, margin + fontHeight, msg );
   //painter.drawText(0,2*(margin+fontHeight),tr("retrying in 5 seconds…"));
@@ -1531,7 +1534,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( con
   else
   {
     tempRenderContext = std::make_unique< QgsRenderContext >();
-    // QGIS 4.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
+    // QGIS 5.0 - make ItemContext compulsory, so we don't have to construct temporary render contexts here
     Q_NOWARN_DEPRECATED_PUSH
     tempRenderContext->setScaleFactor( settings.dpi() / 25.4 );
     tempRenderContext->setRendererScale( settings.mapScale() );
@@ -1583,7 +1586,7 @@ void QgsDataDefinedSizeLegendNode::cacheImage() const
     std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
     if ( !context )
     {
-      context.reset( new QgsRenderContext );
+      context = std::make_unique<QgsRenderContext>( );
       Q_ASSERT( context ); // to make cppcheck happy
       context->setScaleFactor( 96 / 25.4 );
     }
@@ -1670,7 +1673,7 @@ QJsonObject QgsVectorLabelLegendNode::exportSymbolToJson( const QgsLegendSetting
   const QString base64 = QString::fromLatin1( byteArray.toBase64().data() );
 
   QJsonObject json;
-  json[ QStringLiteral( "icon" ) ] = base64;
+  json[ u"icon"_s ] = base64;
   return json;
 }
 

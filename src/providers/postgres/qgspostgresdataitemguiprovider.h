@@ -19,6 +19,10 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPGSchemaItem;
 class QgsPGLayerItem;
 class QgsPGConnectionItem;
@@ -31,7 +35,7 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "PostGIS" ); }
+    QString name() override { return u"PostGIS"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
@@ -67,6 +71,7 @@ class QgsPostgresDataItemGuiProvider : public QObject, public QgsDataItemGuiProv
     static void saveCurrentProject( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void saveProjects( QgsPGSchemaItem *schemaItem, QgsDataItemGuiContext context );
     static void setProjectComment( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context );
+    static bool enableProjectsVersioning( const QString connectionName, const QString &schemaName, QgsDataItemGuiContext context );
 };
 
 #endif // QGSPOSTGRESDATAITEMGUIPROVIDER_H

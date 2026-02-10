@@ -16,12 +16,15 @@
 #ifndef QGSMESHELEVATIONPROPERTIESWIDGET_H
 #define QGSMESHELEVATIONPROPERTIESWIDGET_H
 
+#include "ui_qgsmeshelevationpropertieswidgetbase.h"
+
 #include "qgsmaplayerconfigwidget.h"
 #include "qgsmaplayerconfigwidgetfactory.h"
 
+#include <QString>
 #include <QStyledItemDelegate>
 
-#include "ui_qgsmeshelevationpropertieswidgetbase.h"
+using namespace Qt::StringLiterals;
 
 class QgsMeshLayer;
 
@@ -84,8 +87,8 @@ class QgsMeshElevationPropertiesWidget : public QgsMapLayerConfigWidget, private
     QgsMeshLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
     QgsMeshGroupFixedElevationRangeModel *mFixedRangePerGroupModel = nullptr;
-    QString mFixedRangeLowerExpression = QStringLiteral( "@group" );
-    QString mFixedRangeUpperExpression = QStringLiteral( "@group" );
+    QString mFixedRangeLowerExpression = u"@group"_s;
+    QString mFixedRangeUpperExpression = u"@group"_s;
 };
 
 

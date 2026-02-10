@@ -24,12 +24,12 @@ class QProgressBar;
 class QgsExternalStorage;
 class QgsMessageBar;
 
-#include <QWidget>
-#include <QFileDialog>
-
-#include "qgsfilewidget.h"
-#include "qgsexpressioncontext.h"
 #include "qgsexpression.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfilewidget.h"
+
+#include <QFileDialog>
+#include <QWidget>
 
 /**
  * \ingroup gui

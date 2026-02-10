@@ -16,28 +16,33 @@
  ***************************************************************************/
 
 #include "qgslabelinggui.h"
-#include "moc_qgslabelinggui.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsmapcanvas.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgshelp.h"
-#include "qgsstylesavedialog.h"
-#include "qgscallout.h"
-#include "qgsapplication.h"
-#include "qgscalloutsregistry.h"
+
 #include "callouts/qgscalloutwidget.h"
-#include "qgslabelobstaclesettingswidget.h"
-#include "qgslabellineanchorwidget.h"
-#include "qgslabelremoveduplicatesettingswidget.h"
-#include "qgsprojectstylesettings.h"
+#include "qgsapplication.h"
+#include "qgscallout.h"
+#include "qgscalloutsregistry.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
+#include "qgslabellineanchorwidget.h"
+#include "qgslabelobstaclesettingswidget.h"
+#include "qgslabelremoveduplicatesettingswidget.h"
+#include "qgsmapcanvas.h"
 #include "qgsmeshlayer.h"
+#include "qgsproject.h"
+#include "qgsprojectstylesettings.h"
+#include "qgsstylesavedialog.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectortilelayer.h"
 
 #include <QButtonGroup>
 #include <QMessageBox>
+#include <QString>
+
+#include "moc_qgslabelinggui.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -163,7 +168,7 @@ void QgsLabelingGui::showObstacleSettings()
 
     dialog.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#obstacles" ) );
+      QgsHelp::openHelp( u"style_library/label_settings.html#obstacles"_s );
     } );
 
     if ( dialog.exec() )
@@ -220,7 +225,7 @@ void QgsLabelingGui::showLineAnchorSettings()
 
     dialog.buttonBox()->addButton( QDialogButtonBox::Help );
     connect( dialog.buttonBox(), &QDialogButtonBox::helpRequested, this, [] {
-      QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html#placement-for-line-layers" ) );
+      QgsHelp::openHelp( u"style_library/label_settings.html#placement-for-line-layers"_s );
     } );
 
     if ( dialog.exec() )
@@ -377,7 +382,7 @@ void QgsLabelingGui::init()
   mMaxScaleWidget->setShowCurrentScaleButton( true );
 
   mGeometryGeneratorExpressionButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mGeometryGeneratorExpressionButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mGeometryGeneratorExpressionButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
 
   const QStringList calloutTypes = QgsApplication::calloutRegistry()->calloutTypes();
   for ( const QString &type : calloutTypes )
@@ -385,10 +390,10 @@ void QgsLabelingGui::init()
     mCalloutStyleComboBox->addItem( QgsApplication::calloutRegistry()->calloutMetadata( type )->icon(), QgsApplication::calloutRegistry()->calloutMetadata( type )->visibleName(), type );
   }
 
-  mGeometryGeneratorWarningLabel->setStyleSheet( QStringLiteral( "color: #FFC107;" ) );
+  mGeometryGeneratorWarningLabel->setStyleSheet( u"color: #FFC107;"_s );
   mGeometryGeneratorWarningLabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
   connect( mGeometryGeneratorWarningLabel, &QLabel::linkActivated, this, [this]( const QString &link ) {
-    if ( link == QLatin1String( "#determineGeometryGeneratorType" ) )
+    if ( link == "#determineGeometryGeneratorType"_L1 )
       determineGeometryGeneratorType();
   } );
 
@@ -505,11 +510,15 @@ void QgsLabelingGui::setLayer( QgsMapLayer *mapLayer )
 
   mLineSettings = mSettings.lineSettings();
 
-  chkLabelPerFeaturePart->setChecked( mSettings.labelPerPart );
+  mComboMultipartBehavior->setCurrentIndex( mComboMultipartBehavior->findData( QVariant::fromValue( mSettings.placementSettings().multiPartBehavior() ) ) );
 
   mComboOverlapHandling->setCurrentIndex( mComboOverlapHandling->findData( static_cast<int>( mSettings.placementSettings().overlapHandling() ) ) );
   mCheckAllowDegradedPlacement->setChecked( mSettings.placementSettings().allowDegradedPlacement() );
   mPrioritizationComboBox->setCurrentIndex( mPrioritizationComboBox->findData( QVariant::fromValue( mSettings.placementSettings().prioritization() ) ) );
+
+  mComboCurvedLabelMode->setCurrentIndex( mComboCurvedLabelMode->findData( QVariant::fromValue( mSettings.lineSettings().curvedLabelMode() ) ) );
+
+  mCheckWhitespaceIsNotACollision->setChecked( mSettings.placementSettings().whitespaceCollisionHandling() == Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions );
 
   chkMergeLines->setChecked( mSettings.lineSettings().mergeLines() );
   mMinSizeSpinBox->setValue( mThinningSettings.minimumFeatureSize() );
@@ -697,12 +706,14 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   mThinningSettings.setAllowDuplicateRemoval( mChkNoDuplicates->isChecked() );
 
-  lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
+  lyr.placementSettings().setMultiPartBehavior( mComboMultipartBehavior->currentData().value< Qgis::MultiPartLabelingBehavior >() );
   lyr.placementSettings().setOverlapHandling( static_cast<Qgis::LabelOverlapHandling>( mComboOverlapHandling->currentData().toInt() ) );
   lyr.placementSettings().setAllowDegradedPlacement( mCheckAllowDegradedPlacement->isChecked() );
   lyr.placementSettings().setPrioritization( mPrioritizationComboBox->currentData().value<Qgis::LabelPrioritization>() );
+  lyr.placementSettings().setWhitespaceCollisionHandling( mCheckWhitespaceIsNotACollision->isChecked() ? Qgis::LabelWhitespaceCollisionHandling::IgnoreWhitespaceCollisions : Qgis::LabelWhitespaceCollisionHandling::TreatWhitespaceAsCollision );
 
   lyr.lineSettings().setMergeLines( chkMergeLines->isChecked() );
+  lyr.lineSettings().setCurvedLabelMode( mComboCurvedLabelMode->currentData().value< Qgis::CurvedLabelMode >() );
 
   lyr.scaleVisibility = mScaleBasedVisibilityChkBx->isChecked();
   lyr.minimumScale = mMinScaleWidget->scale();
@@ -1059,7 +1070,7 @@ void QgsLabelingGui::validateGeometryGeneratorExpression()
       }
       else if ( geometry.type() != configuredGeometryType )
       {
-        mGeometryGeneratorWarningLabel->setText( QStringLiteral( "<p>%1</p><p><a href=\"#determineGeometryGeneratorType\">%2</a></p>" ).arg( tr( "Result of the expression does not match configured geometry type." ), tr( "Change to %1" ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ) ) ) );
+        mGeometryGeneratorWarningLabel->setText( u"<p>%1</p><p><a href=\"#determineGeometryGeneratorType\">%2</a></p>"_s.arg( tr( "Result of the expression does not match configured geometry type." ), tr( "Change to %1" ).arg( QgsWkbTypes::geometryDisplayString( geometry.type() ) ) ) );
         valid = false;
       }
     }
@@ -1144,7 +1155,7 @@ QDialogButtonBox *QgsLabelSettingsDialog::buttonBox() const
 
 void QgsLabelSettingsDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "style_library/label_settings.html" ) );
+  QgsHelp::openHelp( u"style_library/label_settings.html"_s );
 }
 
 

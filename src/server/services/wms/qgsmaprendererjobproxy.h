@@ -18,8 +18,8 @@
 #ifndef QGSMAPRENDERERJOBPROXY_H
 #define QGSMAPRENDERERJOBPROXY_H
 
-#include "qgsmapsettings.h"
 #include "qgsmaprendererjob.h"
+#include "qgsmapsettings.h"
 
 class QgsFeatureFilterProvider;
 

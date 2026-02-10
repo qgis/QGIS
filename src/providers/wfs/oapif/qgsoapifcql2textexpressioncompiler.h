@@ -17,9 +17,8 @@
 #define QGSOAPIFCQL2TEXTEXPRESSIONCOMPILER_H
 
 #include "qgis_core.h"
-#include "qgsfields.h"
 #include "qgsexpressionnodeimpl.h"
-
+#include "qgsfields.h"
 #include "qgsoapifqueryablesrequest.h"
 
 class QgsExpression;

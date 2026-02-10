@@ -10,7 +10,6 @@
 
 
 
-
 class QgsProfileRenderContext
 {
 %Docstring(signature="appended")
@@ -436,6 +435,11 @@ Access to feedback object of the generator (may be ``None``)
 Takes results from the generator.
 
 Ownership is transferred to the caller.
+%End
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the unique string identifier for the results type.
 %End
 
 };

@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "qgsnative.h"
-#include "moc_qgsnative.cpp"
-#include <QString>
+
 #include <QDesktopServices>
-#include <QUrl>
 #include <QFileInfo>
+#include <QString>
+#include <QUrl>
+
+#include "moc_qgsnative.cpp"
 
 void QgsNative::cleanup()
 {}

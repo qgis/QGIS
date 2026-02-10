@@ -14,13 +14,19 @@
  ***************************************************************************/
 
 #include "qgsnetworklogger.h"
-#include "moc_qgsnetworklogger.cpp"
+
+#include "qgis.h"
 #include "qgsnetworkloggernode.h"
 #include "qgssettings.h"
-#include "qgis.h"
-#include <QThread>
+
 #include <QApplication>
+#include <QString>
+#include <QThread>
 #include <QUrlQuery>
+
+#include "moc_qgsnetworklogger.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent )
   : QAbstractItemModel( parent )
@@ -31,7 +37,7 @@ QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *p
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
   Q_ASSERT( mNam->thread() == QApplication::instance()->thread() );
 
-  if ( QgsSettings().value( QStringLiteral( "logNetworkRequests" ), false, QgsSettings::App ).toBool() )
+  if ( QgsSettings().value( u"logNetworkRequests"_s, false, QgsSettings::App ).toBool() )
     enableLogging( true );
 }
 

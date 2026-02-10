@@ -16,9 +16,10 @@
 #ifndef QGSDATETIMEEDITCONFIG_H
 #define QGSDATETIMEEDITCONFIG_H
 
-#include "qgseditorconfigwidget.h"
 #include "ui_qgsdatetimeeditconfig.h"
+
 #include "qgis_gui.h"
+#include "qgseditorconfigwidget.h"
 
 SIP_NO_FILE
 

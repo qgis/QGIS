@@ -406,6 +406,25 @@ class TestQgsServerWMSGetFeatureInfo(TestQgsServerWMSTestBase):
             "test_project_values.qgz",
         )
 
+    def testMeshGetFeatureInfo(self):
+        """Test GetFeatureInfo for mesh layers"""
+        mypath = self.testdata_path + "test_project_mesh_getfeatureinfo.qgz"
+        self.wms_request_compare(
+            "GetFeatureInfo",
+            "&layers=landsat&styles=&"
+            + "VERSION=1.3.0&"
+            + "info_format=application%2Fjson&"
+            + "width=500&height=500"
+            + "&bbox=30.18983,17.95269,30.23169,18.0057"
+            + "&CRS=EPSG:4326"
+            + "&FEATURE_COUNT=10"
+            + "&WITH_GEOMETRY=True"
+            + "&QUERY_LAYERS=landsat"
+            + "&I=0&J=0",
+            "wms_getfeatureinfo-mesh-json",
+            "test_project_mesh_getfeatureinfo.qgz",
+        )
+
     # TODO make GetFeatureInfo show what's in the display expression and
     # enable test
     @QgisTestCase.expectedFailure

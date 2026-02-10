@@ -16,14 +16,14 @@
 #ifndef QGSTEXTRENDERER_H
 #define QGSTEXTRENDERER_H
 
-#include "qgis_sip.h"
-#include "qgis_core.h"
-#include "qgstextblock.h"
-#include "qgsmapunitscale.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgis_sip.h"
+#include "qgsmapunitscale.h"
+#include "qgstextblock.h"
 
-#include <QPicture>
 #include <QPainterPath>
+#include <QPicture>
 
 class QgsTextDocument;
 class QgsTextDocumentMetrics;
@@ -68,7 +68,7 @@ class CORE_EXPORT QgsTextRenderer
      */
     static int sizeToPixel( double size, const QgsRenderContext &c, Qgis::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 
-    // TODO QGIS 4.0 -- remove drawAsOutlines from below methods!
+    // TODO QGIS 5.0 -- remove drawAsOutlines from below methods!
 
     /**
      * Draws text within a rectangle using the specified settings.

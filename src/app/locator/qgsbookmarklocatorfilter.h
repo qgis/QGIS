@@ -21,6 +21,9 @@
 #include "qgis_app.h"
 #include "qgslocatorfilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class APP_EXPORT QgsBookmarkLocatorFilter : public QgsLocatorFilter
 {
@@ -29,10 +32,10 @@ class APP_EXPORT QgsBookmarkLocatorFilter : public QgsLocatorFilter
   public:
     QgsBookmarkLocatorFilter( QObject *parent = nullptr );
     QgsBookmarkLocatorFilter *clone() const override;
-    QString name() const override { return QStringLiteral( "bookmarks" ); }
+    QString name() const override { return u"bookmarks"_s; }
     QString displayName() const override { return tr( "Spatial Bookmarks" ); }
     Priority priority() const override { return Highest; }
-    QString prefix() const override { return QStringLiteral( "b" ); }
+    QString prefix() const override { return u"b"_s; }
     QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

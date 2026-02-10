@@ -14,16 +14,23 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswmsnewconnection.h"
-#include "qgsowsconnection.h"
-#include "qgswmsprovider.h"
-#include "moc_qgswmsnewconnection.cpp"
-#include "qgsproject.h"
+
+#include <memory>
+
 #include "qgsguiutils.h"
+#include "qgsowsconnection.h"
+#include "qgsproject.h"
+#include "qgswmsprovider.h"
 
 #include <QMessageBox>
+#include <QString>
 
-QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName )
-  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, QStringLiteral( "WMS" ), connName )
+#include "moc_qgswmsnewconnection.cpp"
+
+using namespace Qt::StringLiterals;
+
+QgsWmsNewConnection::QgsWmsNewConnection( QWidget *parent, const QString &connName, QgsNewHttpConnection::Flags flags )
+  : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWms, u"WMS"_s, connName, flags )
 {
   connect( wmsFormatDetectButton(), &QPushButton::clicked, this, &QgsWmsNewConnection::detectFormat );
   initWmsSpecificSettings();
@@ -49,7 +56,7 @@ void QgsWmsNewConnection::detectFormat()
   }
 
   const QgsWmsParserSettings wmsParserSettings { ignoreAxisOrientation(), invertAxisOrientation() };
-  mCapabilities.reset( new QgsWmsCapabilities { QgsProject::instance()->transformContext(), preparedUrl } );
+  mCapabilities = std::make_unique<QgsWmsCapabilities>( QgsProject::instance()->transformContext(), preparedUrl );
   if ( !mCapabilities->parseResponse( capDownload.response(), wmsParserSettings ) )
   {
     QMessageBox msgBox( QMessageBox::Warning, tr( "WMS Provider" ), tr( "The server you are trying to connect to does not seem to be a WMS server. Please check the URL." ), QMessageBox::Ok, this );
@@ -62,7 +69,7 @@ void QgsWmsNewConnection::detectFormat()
   QString currentFormat { wmsPreferredFormatCombo()->currentData().toString() };
   if ( currentFormat.isEmpty() )
   {
-    currentFormat = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), "image/png" ).toString();
+    currentFormat = QgsSettings().value( u"qgis/lastWmsImageEncoding"_s, "image/png" ).toString();
   }
 
   wmsPreferredFormatCombo()->clear();
@@ -87,7 +94,7 @@ void QgsWmsNewConnection::detectFormat()
 
 void QgsWmsNewConnection::initWmsSpecificSettings()
 {
-  QStringList detailsParameters = { QStringLiteral( "wms" ), originalConnectionName() };
+  QStringList detailsParameters = { u"wms"_s, originalConnectionName() };
   QString imageFormat = QgsOwsConnection::settingsDefaultImageFormat->value( detailsParameters );
 
   wmsPreferredFormatCombo()->clear();
@@ -95,7 +102,7 @@ void QgsWmsNewConnection::initWmsSpecificSettings()
   if ( imageFormat.isEmpty() )
   {
     // Read from global default setting
-    imageFormat = QgsSettings().value( QStringLiteral( "qgis/lastWmsImageEncoding" ), QStringLiteral( "image/png" ) ).toString();
+    imageFormat = QgsSettings().value( u"qgis/lastWmsImageEncoding"_s, u"image/png"_s ).toString();
   }
 
 

@@ -14,13 +14,18 @@
  ***************************************************************************/
 
 #include "qgslabelingenginerulewidget.h"
-#include "moc_qgslabelingenginerulewidget.cpp"
-#include "qgslabelingenginerule_impl.h"
+
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgslabelingenginerule_impl.h"
 
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgslabelingenginerulewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsLabelingEngineRuleDialog
@@ -32,7 +37,7 @@ QgsLabelingEngineRuleDialog::QgsLabelingEngineRuleDialog( QgsLabelingEngineRuleW
 {
   Q_ASSERT( mWidget );
   setWindowTitle( tr( "Configure Rule" ) );
-  setObjectName( QStringLiteral( "QgsLabelingEngineRuleDialog" ) );
+  setObjectName( u"QgsLabelingEngineRuleDialog"_s );
 
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->addWidget( mWidget );
@@ -46,7 +51,7 @@ QgsLabelingEngineRuleDialog::QgsLabelingEngineRuleDialog( QgsLabelingEngineRuleW
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#labeling-rules" ) );
+    QgsHelp::openHelp( u"working_with_vector/vector_properties.html#labeling-rules"_s );
   } );
 }
 

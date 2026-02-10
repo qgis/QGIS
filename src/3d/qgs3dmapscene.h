@@ -17,12 +17,13 @@
 #define QGS3DMAPSCENE_H
 
 #include "qgis_3d.h"
-
-#include <Qt3DCore/QEntity>
-
-#include "qgsrectangle.h"
 #include "qgscameracontroller.h"
+#include "qgsmapoverlayentity.h"
+#include "qgsrectangle.h"
+#include "qobjectuniqueptr.h"
+
 #include <QVector4D>
+#include <Qt3DCore/QEntity>
 
 #ifndef SIP_RUN
 namespace Qt3DRender
@@ -365,10 +366,13 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
     void onDebugOverlayEnabledChanged();
     void onStopUpdatesChanged();
     void on3DAxisSettingsChanged();
+    void onShowMapOverlayChanged();
 
     void onOriginChanged();
 
     bool updateCameraNearFarPlanes();
+
+    void applyPendingOverlayUpdate();
 
   private:
 #ifdef SIP_RUN
@@ -389,6 +393,9 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     void handleClippingOnEntity( QEntity *entity ) const;
     void handleClippingOnAllEntities() const;
+
+    void schedule2DMapOverlayUpdate();
+    void update2DMapOverlay( const QVector<QgsPointXY> &extent2DAsPoints );
 
   private:
     Qgs3DMapSettings &mMap;
@@ -420,6 +427,10 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
 
     QList<QVector4D> mClipPlanesEquations;
     int mMaxClipPlanes = 6;
+
+    //! 2d map overlay
+    QObjectUniquePtr<QgsMapOverlayEntity> mMapOverlayEntity = nullptr;
+    QTimer *mOverlayUpdateTimer = nullptr;
 
     friend class TestQgs3DRendering;
 };

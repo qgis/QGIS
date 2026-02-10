@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsprojectsensorsettingswidget.h"
-#include "moc_qgsprojectsensorsettingswidget.cpp"
 
 #include "qgis.h"
 #include "qgsabstractsensor.h"
@@ -22,6 +21,12 @@
 #include "qgsproject.h"
 #include "qgssensormanager.h"
 #include "qgssensortablewidget.h"
+
+#include <QString>
+
+#include "moc_qgsprojectsensorsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent )
   : QgsOptionsPageWidget( parent )
@@ -50,7 +55,7 @@ QgsProjectSensorSettingsWidget::QgsProjectSensorSettingsWidget( QWidget *parent 
   connect( QgsProject::instance()->sensorManager(), &QgsSensorManager::sensorErrorOccurred, this, [this]( const QString &id ) {
     if ( QgsAbstractSensor *sensor = QgsProject::instance()->sensorManager()->sensor( id ) )
     {
-      mMessageBar->pushCritical( tr( "Sensor Error" ), QStringLiteral( "%1: %2" ).arg( sensor->name(), sensor->errorString() ) );
+      mMessageBar->pushCritical( tr( "Sensor Error" ), u"%1: %2"_s.arg( sensor->name(), sensor->errorString() ) );
     }
   } );
 }
@@ -117,7 +122,7 @@ bool QgsProjectSensorSettingsWidget::isValid()
 //
 
 QgsProjectSensorSettingsWidgetFactory::QgsProjectSensorSettingsWidgetFactory( QObject *parent )
-  : QgsOptionsWidgetFactory( tr( "Sensors" ), QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/sensor.svg" ) ), QStringLiteral( "sensor" ) )
+  : QgsOptionsWidgetFactory( tr( "Sensors" ), QgsApplication::getThemeIcon( u"propertyicons/sensor.svg"_s ), u"sensor"_s )
 {
   setParent( parent );
 }

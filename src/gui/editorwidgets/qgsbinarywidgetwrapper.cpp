@@ -14,22 +14,28 @@
  ***************************************************************************/
 
 #include "qgsbinarywidgetwrapper.h"
-#include "moc_qgsbinarywidgetwrapper.cpp"
-#include "qgsvectorlayer.h"
-#include "qgsvectordataprovider.h"
+
+#include "qgsapplication.h"
 #include "qgsfileutils.h"
 #include "qgsfocuskeeper.h"
-#include "qgssettings.h"
 #include "qgsmessagebar.h"
-#include "qgsapplication.h"
-#include <QHBoxLayout>
-#include <QFileDialog>
-#include <QLabel>
-#include <QToolButton>
+#include "qgssettings.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
+
 #include <QAction>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QMenu>
 #include <QMessageBox>
+#include <QString>
+#include <QToolButton>
 #include <QUrl>
+
+#include "moc_qgsbinarywidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsBinaryWidgetWrapper::QgsBinaryWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent, QgsMessageBar *messageBar )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -150,7 +156,7 @@ void QgsBinaryWidgetWrapper::saveContent()
   }
 
   const QFileInfo fi( file );
-  s.setValue( QStringLiteral( "/UI/lastBinaryDir" ), fi.absolutePath() );
+  s.setValue( u"/UI/lastBinaryDir"_s, fi.absolutePath() );
 
   QFile fileOut( file );
   if ( fileOut.open( QIODevice::WriteOnly ) )
@@ -184,7 +190,7 @@ void QgsBinaryWidgetWrapper::setContent()
     return;
   }
 
-  s.setValue( QStringLiteral( "/UI/lastBinaryDir" ), fi.absolutePath() );
+  s.setValue( u"/UI/lastBinaryDir"_s, fi.absolutePath() );
 
   QFile fileSource( file );
   if ( !fileSource.open( QIODevice::ReadOnly ) )
@@ -210,5 +216,5 @@ void QgsBinaryWidgetWrapper::clear()
 
 QString QgsBinaryWidgetWrapper::defaultPath()
 {
-  return QgsSettings().value( QStringLiteral( "/UI/lastBinaryDir" ), QDir::homePath() ).toString();
+  return QgsSettings().value( u"/UI/lastBinaryDir"_s, QDir::homePath() ).toString();
 }

@@ -17,20 +17,22 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgscoordinatetransform.h"
+#include "qgsdiagram.h"
+#include "qgsexpressioncontext.h"
+#include "qgsmapunitscale.h"
+#include "qgspropertycollection.h"
+#include "qgsreadwritecontext.h"
+
 #include <QColor>
+#include <QDomDocument>
 #include <QFont>
 #include <QList>
 #include <QPointF>
 #include <QSizeF>
-#include <QDomDocument>
+#include <QString>
 
-#include "qgsexpressioncontext.h"
-#include "qgscoordinatetransform.h"
-#include "qgspropertycollection.h"
-
-#include "qgsdiagram.h"
-#include "qgsreadwritecontext.h"
-#include "qgsmapunitscale.h"
+using namespace Qt::StringLiterals;
 
 class QgsDiagramRenderer;
 class QgsFeature;
@@ -742,11 +744,11 @@ class CORE_EXPORT QgsDiagramRenderer
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->rendererName() == QLatin1String( "SingleCategory" ) )
+    if ( sipCpp->rendererName() == "SingleCategory"_L1 )
       sipType = sipType_QgsSingleCategoryDiagramRenderer;
-    else if ( sipCpp->rendererName() == QLatin1String( "LinearlyInterpolated" ) )
+    else if ( sipCpp->rendererName() == "LinearlyInterpolated"_L1 )
       sipType = sipType_QgsLinearlyInterpolatedDiagramRenderer;
-    else if ( sipCpp->rendererName() == QLatin1String( "Stacked" ) )
+    else if ( sipCpp->rendererName() == "Stacked"_L1 )
       sipType = sipType_QgsStackedDiagramRenderer;
     else
       sipType = NULL;
@@ -1015,14 +1017,14 @@ class CORE_EXPORT QgsStackedDiagramRenderer : public QgsDiagramRenderer
     QgsStackedDiagramRenderer *clone() const override SIP_FACTORY;
 
     //! Returns size of the diagram for a feature in map units. Returns an invalid QSizeF in case of error
-    virtual QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
+    QSizeF sizeMapUnits( const QgsFeature &feature, const QgsRenderContext &c ) const override;
 
     /**
      * Renders the diagram for a specified feature at a specific position in the
      * passed render context, taking all renderers and their own diagrams into account.
      * Diagram rendering is delegated to renderer's diagram.
      */
-    virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, QPointF pos, const QgsPropertyCollection &properties = QgsPropertyCollection() ) const override;
 
     //! Returns list with all diagram settings in the renderer
     QList<QgsDiagramSettings> diagramSettings() const override;

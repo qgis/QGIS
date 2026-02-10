@@ -16,8 +16,8 @@
 #ifndef QGSARROWSYMBOLLAYER_H
 #define QGSARROWSYMBOLLAYER_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgssymbollayer.h"
 
 class QgsFillSymbol;
@@ -187,6 +187,15 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     double mScaledOffset = 0.0;
     HeadType mComputedHeadType = HeadSingle;
     ArrowType mComputedArrowType = ArrowPlain;
+
+    // Store all default values in case we have DD and NULL values
+    double mDefaultScaledArrowWidth = 1.0;
+    double mDefaultScaledArrowStartWidth = 1.0;
+    double mDefaultScaledHeadLength = 1.5;
+    double mDefaultScaledHeadThickness = 1.5;
+    double mDefaultScaledOffset = 0.0;
+    HeadType mDefaultComputedHeadType = HeadSingle;
+    ArrowType mDefaultComputedArrowType = ArrowPlain;
 
     std::unique_ptr<QgsExpressionContextScope> mExpressionScope;
 

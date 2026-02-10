@@ -15,11 +15,15 @@
 #ifndef QGSDIAGRAM_H
 #define QGSDIAGRAM_H
 
-#include "qgis_core.h"
 #include "qgis.h"
-#include <QPen>
+#include "qgis_core.h"
+#include "qgsexpression.h"
+
 #include <QBrush>
-#include "qgsexpression.h" //for QMap with QgsExpression
+#include <QPen>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QPainter;
 class QPointF;
@@ -42,15 +46,15 @@ class CORE_EXPORT QgsDiagram SIP_NODEFAULTCTORS
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( sipCpp->diagramName() == QLatin1String( "Pie" ) )
+    if ( sipCpp->diagramName() == "Pie"_L1 )
       sipType = sipType_QgsPieDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "Histogram" ) )
+    else if ( sipCpp->diagramName() == "Histogram"_L1 )
       sipType = sipType_QgsHistogramDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "Text" ) )
+    else if ( sipCpp->diagramName() == "Text"_L1 )
       sipType = sipType_QgsTextDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "Stacked" ) )
+    else if ( sipCpp->diagramName() == "Stacked"_L1 )
       sipType = sipType_QgsStackedBarDiagram;
-    else if ( sipCpp->diagramName() == QLatin1String( "StackedDiagram" ) )
+    else if ( sipCpp->diagramName() == "StackedDiagram"_L1 )
       sipType = sipType_QgsStackedDiagram;
     else
       sipType = NULL;

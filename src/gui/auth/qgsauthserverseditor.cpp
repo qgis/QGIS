@@ -14,22 +14,26 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsauthserverseditor.h"
-#include "moc_qgsauthserverseditor.cpp"
 #include "ui_qgsauthserverseditor.h"
-#include "qgsauthsslimportdialog.h"
+#include "qgsauthserverseditor.h"
 
-#include <QMenu>
-#include <QMessageBox>
-
-#include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsauthcertificateinfo.h"
 #include "qgsauthcertutils.h"
-#include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
+#include "qgsauthmanager.h"
+#include "qgsauthsslimportdialog.h"
 #include "qgslogger.h"
+#include "qgssettings.h"
 #include "qgsvariantutils.h"
+
+#include <QMenu>
+#include <QMessageBox>
+#include <QString>
+
+#include "moc_qgsauthserverseditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
   : QWidget( parent )
@@ -63,7 +67,7 @@ QgsAuthServersEditor::QgsAuthServersEditor( QWidget *parent )
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthServersEditor::refreshSslConfigsView );
 
     btnGroupByOrg->setChecked( false );
-    const QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "serverssortby" ), QVariant( false ) );
+    const QVariant sortbyval = QgsApplication::authManager()->authSetting( u"serverssortby"_s, QVariant( false ) );
     if ( !QgsVariantUtils::isNull( sortbyval ) )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
@@ -181,11 +185,11 @@ void QgsAuthServersEditor::appendSslConfigsToItem( const QList<QgsAuthConfigSslS
 
     QTreeWidgetItem *item( new QTreeWidgetItem( parent, coltxts, static_cast<int>( conftype ) ) );
 
-    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificate.svg"_s ) );
     if ( !QgsAuthCertUtils::certIsViable( cert ) )
     {
       item->setForeground( 2, redb );
-      item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificateUntrusted.svg" ) ) );
+      item->setIcon( 0, QgsApplication::getThemeIcon( u"/mIconCertificateUntrusted.svg"_s ) );
     }
 
     item->setData( 0, Qt::UserRole, id );
@@ -263,7 +267,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Current tree widget item not set" ), 2 );
+    QgsDebugMsgLevel( u"Current tree widget item not set"_s, 2 );
     return;
   }
 
@@ -283,7 +287,7 @@ void QgsAuthServersEditor::btnRemoveServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugError( QStringLiteral( "SSL custom config does not exist in database for host:port, id %1:" )
+    QgsDebugError( u"SSL custom config does not exist in database for host:port, id %1:"_s
                      .arg( hostport, digest ) );
     return;
   }
@@ -317,7 +321,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !item )
   {
-    QgsDebugMsgLevel( QStringLiteral( "Current tree widget item not set" ), 2 );
+    QgsDebugMsgLevel( u"Current tree widget item not set"_s, 2 );
     return;
   }
 
@@ -337,7 +341,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
   if ( !QgsApplication::authManager()->existsSslCertCustomConfig( digest, hostport ) )
   {
-    QgsDebugError( QStringLiteral( "SSL custom config does not exist in database" ) );
+    QgsDebugError( u"SSL custom config does not exist in database"_s );
     return;
   }
 
@@ -357,7 +361,7 @@ void QgsAuthServersEditor::btnEditServer_clicked()
 
 void QgsAuthServersEditor::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "serverssortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( u"serverssortby"_s, QVariant( checked ) ) )
   {
     authMessageLog( QObject::tr( "Could not store sort by preference." ), QObject::tr( "Authentication SSL Configs" ), Qgis::MessageLevel::Warning );
   }
@@ -386,5 +390,5 @@ QgsMessageBar *QgsAuthServersEditor::messageBar()
 int QgsAuthServersEditor::messageTimeout()
 {
   const QgsSettings settings;
-  return settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+  return settings.value( u"qgis/messageTimeout"_s, 5 ).toInt();
 }

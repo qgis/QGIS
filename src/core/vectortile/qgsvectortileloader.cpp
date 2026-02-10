@@ -14,16 +14,20 @@
  ***************************************************************************/
 
 #include "qgsvectortileloader.h"
-#include "moc_qgsvectortileloader.cpp"
-#include "qgslogger.h"
-#include "qgsvectortileutils.h"
+
 #include "qgsapplication.h"
-#include "qgsvectortiledataprovider.h"
 #include "qgsfeedback.h"
+#include "qgslogger.h"
 #include "qgstiledownloadmanager.h"
+#include "qgsvectortiledataprovider.h"
+#include "qgsvectortileutils.h"
 
 #include <QEventLoop>
+#include <QString>
 
+#include "moc_qgsvectortileloader.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provider, const QgsTileMatrixSet &tileMatrixSet, const QgsTileRange &range, int zoomLevel, const QPointF &viewCenter, QgsFeedback *feedback, Qgis::RendererUsage usage )
   : mEventLoop( new QEventLoop )
@@ -39,7 +43,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provi
       return;
   }
 
-  QgsDebugMsgLevel( QStringLiteral( "Starting network loader" ), 2 );
+  QgsDebugMsgLevel( u"Starting network loader"_s, 2 );
   QVector<QgsTileXYZ> tiles = tileMatrixSet.tilesInRange( range, zoomLevel );
   QgsVectorTileUtils::sortTilesByDistanceFromCenter( tiles, viewCenter );
   for ( QgsTileXYZ id : std::as_const( tiles ) )
@@ -50,7 +54,7 @@ QgsVectorTileLoader::QgsVectorTileLoader( const QgsVectorTileDataProvider *provi
 
 QgsVectorTileLoader::~QgsVectorTileLoader()
 {
-  QgsDebugMsgLevel( QStringLiteral( "Terminating network loader" ), 2 );
+  QgsDebugMsgLevel( u"Terminating network loader"_s, 2 );
 
   if ( !mReplies.isEmpty() )
   {
@@ -64,17 +68,17 @@ void QgsVectorTileLoader::downloadBlocking()
 {
   if ( mFeedback && mFeedback->isCanceled() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "downloadBlocking - not staring event loop - canceled" ), 2 );
+    QgsDebugMsgLevel( u"downloadBlocking - not staring event loop - canceled"_s, 2 );
     return; // nothing to do
   }
 
   int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
   Q_UNUSED( repliesCount )
-  QgsDebugMsgLevel( QStringLiteral( "Starting event loop with %1 requests" ).arg( repliesCount ), 2 );
+  QgsDebugMsgLevel( u"Starting event loop with %1 requests"_s.arg( repliesCount ), 2 );
 
   mEventLoop->exec( QEventLoop::ExcludeUserInputEvents );
 
-  QgsDebugMsgLevel( QStringLiteral( "downloadBlocking finished" ), 2 );
+  QgsDebugMsgLevel( u"downloadBlocking finished"_s, 2 );
 
   Q_ASSERT( mReplies.isEmpty() );
 }
@@ -106,7 +110,7 @@ void QgsVectorTileLoader::tileReplyFinished()
   {
     // TODO: handle redirections?
 
-    QgsDebugMsgLevel( QStringLiteral( "Tile download successful: " ) + tileID.toString(), 2 );
+    QgsDebugMsgLevel( u"Tile download successful: "_s + tileID.toString(), 2 );
     QByteArray rawData = reply->data();
     mReplies[tileID].removeOne( reply );
     mPendingRawData[tileID][sourceId] = rawData;
@@ -128,7 +132,7 @@ void QgsVectorTileLoader::tileReplyFinished()
         mError = tr( "Access denied: %1" ).arg( QString( reply->data() ) );
     }
 
-    QgsDebugError( QStringLiteral( "Tile download failed! " ) + reply->errorString() );
+    QgsDebugError( u"Tile download failed! "_s + reply->errorString() );
     mReplies[tileID].removeOne( reply );
     reply->deleteLater();
 
@@ -150,7 +154,7 @@ void QgsVectorTileLoader::canceled()
 {
   int repliesCount = std::accumulate( mReplies.constBegin(), mReplies.constEnd(), 0, []( int count, QList<QgsTileDownloadManagerReply *> replies ) {return count + replies.count();} );
   Q_UNUSED( repliesCount )
-  QgsDebugMsgLevel( QStringLiteral( "Canceling %1 pending requests" ).arg( repliesCount ), 2 );
+  QgsDebugMsgLevel( u"Canceling %1 pending requests"_s.arg( repliesCount ), 2 );
   QHash<QgsTileXYZ, QList<QgsTileDownloadManagerReply *>>::iterator it = mReplies.begin();
   for ( ; it != mReplies.end(); ++it )
     qDeleteAll( it.value() );

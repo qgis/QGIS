@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircleabstract.h"
-#include "moc_qgsmaptoolshapecircleabstract.cpp"
-#include "qgsmaptoolcapture.h"
+
 #include "qgsmapcanvas.h"
+#include "qgsmaptoolcapture.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingsregistrycore.h"
+
+#include "moc_qgsmaptoolshapecircleabstract.cpp"
 
 void QgsMapToolShapeCircleAbstract::clean()
 {

@@ -3,6 +3,11 @@ QWidget
     background: transparent;
 }
 
+QWidget[autoFillBackground=true]
+{
+    background-color: @background;
+}
+
 QLabel, QCheckBox, QRadioButton, QMenu::item
 {
     color: @text;
@@ -109,11 +114,19 @@ QAbstractSpinBox::up-arrow
     height: 1.2em;
 }
 
+QAbstractSpinBox::up-arrow:disabled {
+    image: url(@theme_path/icons/arrow-up-disabled.svg);
+}
+
 QAbstractSpinBox::down-arrow
 {
     image: url(@theme_path/icons/arrow-down.svg);
     width: 0.8em;
     height: 1.2em;
+}
+
+QAbstractSpinBox::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
 }
 
 QAbstractSpinBox::up-button:hover, QAbstractSpinBox::down-button:hover {
@@ -427,6 +440,10 @@ QComboBox::down-arrow
     image: url(@theme_path/icons/arrow-down.svg);
     width: 0.8em;
     height: 1.2em;
+}
+
+QComboBox::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
 }
 
 QComboBox:item {
@@ -1095,20 +1112,21 @@ QTableView QTableCornerButton::section {
 }
 
 QHeaderView {
-    background-color:transparent;
-    border:0;
+    background-color: transparent;
+    border: 0;
+    color: @text;
 }
 
 QHeaderView:disabled {
-    background-color:transparent;
-    border:0;
+    background-color: transparent;
+    border: 0;
+    color: @itemdarkbackground;
 }
 
 QHeaderView::section, QHeaderView::section:vertical {
     padding: 0.1m 0.2em 0.1em 0.2em;
     background: transparent;
     background-color: @background;
-    color: @text;
     border: 1px solid @itemdarkbackground;
     border-left: 0;
     border-top: 0;
@@ -1133,9 +1151,17 @@ QHeaderView::down-arrow {
     image: url(@theme_path/icons/arrow-down.svg);
 }
 
+QHeaderView::down-arrow:disabled {
+    image: url(@theme_path/icons/arrow-down-disabled.svg);
+}
+
 QHeaderView::up-arrow {
     width: 1.2em;
     image: url(@theme_path/icons/arrow-up.svg);
+}
+
+QHeaderView::up-arrow:disabled {
+    image: url(@theme_path/icons/up-down-disabled.svg);
 }
 
 /* ==================================================================================== */
@@ -1278,4 +1304,8 @@ QgsAttributeFormWidget QComboBox:disabled {
 
 QgsAttributeFormWidget QComboBox::down-arrow:disabled {
      image: none;
+}
+
+QgsLocatorResultsView::item:disabled {
+    color: @itemdarkbackground;
 }

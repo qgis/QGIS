@@ -18,8 +18,9 @@
 #ifndef QGSLAYERMETADATAVALIDATOR_H
 #define QGSLAYERMETADATAVALIDATOR_H
 
-#include "qgis_sip.h"
 #include "qgis_core.h"
+#include "qgis_sip.h"
+
 #include <QString>
 #include <QVariant>
 
@@ -58,7 +59,7 @@ class CORE_EXPORT QgsAbstractMetadataBaseValidator
         //! Metadata section which failed the validation
         QString section;
 
-        // TODO QGIS 4.0 - remove compatibility code
+        // TODO QGIS 5.0 - remove compatibility code
 
         /**
          * Returns the optional identifier for the failed metadata item.

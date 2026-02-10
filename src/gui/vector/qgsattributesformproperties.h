@@ -20,29 +20,33 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsattributesformproperties.h"
+
 #include "qgis_gui.h"
 #include "qgsaction.h"
 #include "qgsattributesformmodel.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsmessagebar.h"
 #include "qgspropertycollection.h"
 #include "qgssettingstree.h"
 #include "qgssettingstreenode.h"
-#include "qgsmessagebar.h"
 
-#include <QMimeData>
-#include <QPushButton>
-#include <QWidget>
-#include <QTreeView>
-#include <QSpinBox>
-#include <QDropEvent>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QFormLayout>
-#include <QPlainTextEdit>
 #include <QAction>
-#include <QMenu>
 #include <QClipboard>
+#include <QDropEvent>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QMenu>
+#include <QMessageBox>
+#include <QMimeData>
+#include <QPlainTextEdit>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QString>
+#include <QTreeView>
+#include <QWidget>
+
+using namespace Qt::StringLiterals;
 
 class QgsAttributeFormContainerEdit;
 class QgsAttributeTypeDialog;
@@ -50,6 +54,7 @@ class QgsAttributeWidgetEdit;
 class QgsAttributesFormBaseView;
 class QgsFieldConstraintIndicatorProvider;
 class QgsFieldDefaultValueIndicatorProvider;
+class QgsSourceFieldsProperties;
 
 /**
  * \brief Creates panels to configure attributes forms.
@@ -63,10 +68,16 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     Q_OBJECT
 
   public:
-    static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "attributes-form" ) );
+    static inline QgsSettingsTreeNode *sTreeAttributesForm = QgsSettingsTree::sTreeApp->createChildNode( u"attributes-form"_s );
     static const QgsSettingsEntryBool *settingShowAliases;
 
-    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    /**
+     * The QgsAttributesFormProperties constructor.
+     * \param layer The vector layer being configured
+     * \param parent The parent QObject
+     * \param sourceFieldsProperties The source fields properties widget, an optional parameter used to generate preview forms (since QGIS 4.0)
+     */
+    explicit QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent = nullptr, QgsSourceFieldsProperties *sourceFieldsProperties = nullptr );
 
     void init();
 
@@ -143,6 +154,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
 
     void updateFilteredItems( const QString &filterText );
 
+    void previewForm();
+
   private:
     //! this will clean the right panel
     void clearAttributeTypeFrame();
@@ -177,6 +190,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     void setAvailableWidgetsIndicatorProvidersEnabled( bool enabled );
     void setFormLayoutIndicatorProvidersEnabled( bool enabled );
 
+    void applyToLayer( QgsVectorLayer *layer );
+
     QgsAttributesAvailableWidgetsModel *mAvailableWidgetsModel = nullptr;
     QgsAttributesFormLayoutModel *mFormLayoutModel = nullptr;
     QgsAttributesFormProxyModel *mAvailableWidgetsProxyModel = nullptr;
@@ -200,6 +215,8 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderAvailableWidgets = nullptr;
     QgsFieldConstraintIndicatorProvider *mConstraintIndicatorProviderFormLayout = nullptr;
     QgsFieldDefaultValueIndicatorProvider *mDefaultValueIndicatorProviderFormLayout = nullptr;
+
+    QgsSourceFieldsProperties *mSourceFieldsProperties = nullptr;
 
     friend class TestQgsAttributesFormProperties;
 };

@@ -16,10 +16,14 @@
 #ifndef QGSBABELFORMATREGISTRY_H
 #define QGSBABELFORMATREGISTRY_H
 
-#include "qgis_core.h"
-#include "qgssettingstree.h"
-#include "qgssettingsentryimpl.h"
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgssettingsentryimpl.h"
+#include "qgssettingstree.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsBabelSimpleImportFormat;
 class QgsBabelGpsDeviceFormat;
@@ -40,7 +44,7 @@ class CORE_EXPORT QgsBabelFormatRegistry
 
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNamedListNode *sTreeBabelDevices = QgsSettingsTree::sTreeGps->createNamedListNode( QStringLiteral( "babel-devices" ) );
+    static inline QgsSettingsTreeNamedListNode *sTreeBabelDevices = QgsSettingsTree::sTreeGps->createNamedListNode( u"babel-devices"_s );
 
     static const QgsSettingsEntryString *settingsBabelWptDownload;
     static const QgsSettingsEntryString *settingsBabelWptUpload;

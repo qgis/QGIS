@@ -13,13 +13,17 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstextdiagram.h"
+
 #include "qgsdiagramrenderer.h"
-#include "qgsrendercontext.h"
 #include "qgsexpression.h"
+#include "qgsrendercontext.h"
 
 #include <QPainter>
+#include <QString>
 
-const QString QgsTextDiagram::DIAGRAM_NAME_TEXT = QStringLiteral( "Text" );
+using namespace Qt::StringLiterals;
+
+const QString QgsTextDiagram::DIAGRAM_NAME_TEXT = u"Text"_s;
 
 QgsTextDiagram::QgsTextDiagram()
 {

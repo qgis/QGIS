@@ -13,17 +13,21 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsuserprofileselectiondialog.h"
+
+#include "qgsapplication.h"
+#include "qgsnewnamedialog.h"
+#include "qgsuserprofilemanager.h"
+
 #include <QListWidgetItem>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSettings>
+#include <QString>
 
-#include "qgsapplication.h"
-#include "qgsuserprofilemanager.h"
-#include "qgsnewnamedialog.h"
-
-#include "qgsuserprofileselectiondialog.h"
 #include "moc_qgsuserprofileselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileManager *manager, QWidget *parent )
   : QDialog( parent ), mManager( manager )
@@ -38,7 +42,7 @@ QgsUserProfileSelectionDialog::QgsUserProfileSelectionDialog( QgsUserProfileMana
   // Add a new profile on button click
   connect( mAddProfileButton, &QPushButton::clicked, this, &QgsUserProfileSelectionDialog::onAddProfile );
 
-  const int iconSize = mManager->settings()->value( QStringLiteral( "/selector/iconSize" ), 24 ).toInt();
+  const int iconSize = mManager->settings()->value( u"/selector/iconSize"_s, 24 ).toInt();
   mProfileListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   // Fill the list of profiles
@@ -75,7 +79,7 @@ void QgsUserProfileSelectionDialog::onAddProfile()
 {
   // Ask for a new profile name
   QgsNewNameDialog dlg( QString(), QString(), QStringList(), mManager->allProfiles(), Qt::CaseInsensitive, this );
-  dlg.setConflictingNameWarning( tr( "A profile with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A user profile with this name already exists." ) );
   dlg.setOverwriteEnabled( false );
   dlg.setHintString( tr( "New profile name" ) );
   dlg.setWindowTitle( tr( "New Profile Name" ) );

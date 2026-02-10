@@ -13,18 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgstest.h"
-
 #include "qgisapp.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgssettingsregistrycore.h"
-#include "qgsvectorlayer.h"
 #include "qgsmaptooladdfeature.h"
-
-#include "testqgsmaptoolutils.h"
 #include "qgsmaptoolshapecircularstringradius.h"
+#include "qgssettingsregistrycore.h"
+#include "qgstest.h"
+#include "qgsvectorlayer.h"
+#include "testqgsmaptoolutils.h"
 
+#include <QSignalSpy>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsMapToolCircularString : public QObject
 {
@@ -43,6 +45,7 @@ class TestQgsMapToolCircularString : public QObject
     void testAddCircularStringRadiusWithDeletedVertex();
     void testAddCircularStringRadiusNotEnoughPoints();
     void testAddCircularStringAfterClassicDigitizing();
+    void testTransientGeometrySignal();
 
   private:
     void resetMapTool( QgsMapToolShapeMetadata *metadata );
@@ -65,10 +68,10 @@ void TestQgsMapToolCircularString::initTestCase()
   mQgisApp = new QgisApp();
 
   mCanvas = new QgsMapCanvas();
-  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:27700" ) ) );
+  mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( u"EPSG:27700"_s ) );
 
   // make testing layers
-  mLayer = new QgsVectorLayer( QStringLiteral( "CompoundCurveZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  mLayer = new QgsVectorLayer( u"CompoundCurveZ?crs=EPSG:27700"_s, u"layer line Z"_s, u"memory"_s );
   QVERIFY( mLayer->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayer );
 
@@ -240,5 +243,47 @@ void TestQgsMapToolCircularString::testAddCircularStringAfterClassicDigitizing()
   mLayer->rollBack();
   QgsSettingsRegistryCore::settingsDigitizingDefaultZValue->setValue( 0 );
 }
+
+void TestQgsMapToolCircularString::testTransientGeometrySignal()
+{
+  mLayer->startEditing();
+
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::StraightSegments );
+
+  QSignalSpy spy( mMapTool, &QgsMapToolCapture::transientGeometryChanged );
+
+  TestQgsMapToolAdvancedDigitizingUtils utilsClassic( mMapTool );
+  utilsClassic.mouseClick( 2, 1, Qt::LeftButton );
+  utilsClassic.mouseClick( 2, 0, Qt::LeftButton );
+  utilsClassic.mouseMove( 3, 2 );
+
+  QCOMPARE( spy.count(), 1 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),(2 0 0, 3 2 nan))"_s );
+
+  mMapTool->setCurrentCaptureTechnique( Qgis::CaptureTechnique::CircularString );
+
+  TestQgsMapToolAdvancedDigitizingUtils utilsCircular( mMapTool );
+  utilsCircular.mouseMove( 5, 5 );
+  QCOMPARE( spy.count(), 2 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),(2 0 0, 5 5 nan))"_s );
+
+  utilsCircular.mouseClick( 5, 5, Qt::LeftButton );
+  QCOMPARE( spy.count(), 2 );
+
+  utilsCircular.mouseMove( 5, 6 );
+  QCOMPARE( spy.count(), 3 );
+  QCOMPARE( spy.at( 2 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),(2 0 0, 5 6 nan))"_s );
+
+  utilsCircular.mouseClick( 5, 6, Qt::LeftButton );
+  QCOMPARE( spy.count(), 3 );
+
+  utilsCircular.mouseMove( 6, 7 );
+  QCOMPARE( spy.count(), 4 );
+  QCOMPARE( spy.at( 3 ).at( 0 ).value< QgsReferencedGeometry >().asWkt( 1 ), u"CompoundCurve Z ((2 1 0, 2 0 0),CircularString Z (2 0 0, 5 5 0, 5 6 0),(5 6 0, 6 7 nan))"_s );
+
+  utilsClassic.mouseClick( 2, 1, Qt::RightButton );
+  mLayer->rollBack();
+}
+
 QGSTEST_MAIN( TestQgsMapToolCircularString )
 #include "testqgsmaptoolcircularstring.moc"

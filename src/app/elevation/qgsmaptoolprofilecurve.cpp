@@ -15,10 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmaptoolprofilecurve.h"
-#include "moc_qgsmaptoolprofilecurve.cpp"
+
 #include "qgsmapcanvas.h"
-#include "qgsrubberband.h"
 #include "qgsmaptoolcapturerubberband.h"
+#include "qgsrubberband.h"
+
+#include "moc_qgsmaptoolprofilecurve.cpp"
 
 QgsMapToolProfileCurve::QgsMapToolProfileCurve( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolCapture( canvas, cadDockWidget, CaptureMode::CaptureLine )
@@ -44,6 +46,7 @@ bool QgsMapToolProfileCurve::supportsTechnique( Qgis::CaptureTechnique technique
     case Qgis::CaptureTechnique::StraightSegments:
     case Qgis::CaptureTechnique::CircularString:
     case Qgis::CaptureTechnique::Streaming:
+    case Qgis::CaptureTechnique::NurbsCurve:
       return true;
 
     case Qgis::CaptureTechnique::Shape:

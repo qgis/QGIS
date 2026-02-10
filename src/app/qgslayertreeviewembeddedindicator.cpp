@@ -14,17 +14,23 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewembeddedindicator.h"
-#include "moc_qgslayertreeviewembeddedindicator.cpp"
+
+#include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeview.h"
-#include "qgsapplication.h"
+
+#include <QString>
+
+#include "moc_qgslayertreeviewembeddedindicator.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsLayerTreeViewEmbeddedIndicatorProvider::QgsLayerTreeViewEmbeddedIndicatorProvider( QgsLayerTreeView *view )
   : QObject( view )
   , mLayerTreeView( view )
 {
-  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIndicatorEmbedded.svg" ) );
+  mIcon = QgsApplication::getThemeIcon( u"/mIndicatorEmbedded.svg"_s );
 
   QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
   onAddedChildren( tree, 0, tree->children().count() - 1 );
@@ -43,12 +49,12 @@ void QgsLayerTreeViewEmbeddedIndicatorProvider::onAddedChildren( QgsLayerTreeNod
     if ( QgsLayerTree::isGroup( childNode ) )
     {
       onAddedChildren( childNode, 0, childNode->children().count() - 1 );
-      if ( childNode->customProperty( QStringLiteral( "embedded" ) ).toInt() )
+      if ( childNode->customProperty( u"embedded"_s ).toInt() )
       {
         addIndicatorForEmbeddedLayer( childNode );
       }
     }
-    else if ( QgsLayerTree::isLayer( childNode ) && childNode->customProperty( QStringLiteral( "embedded" ) ).toInt() )
+    else if ( QgsLayerTree::isLayer( childNode ) && childNode->customProperty( u"embedded"_s ).toInt() )
     {
       addIndicatorForEmbeddedLayer( childNode );
     }
@@ -66,13 +72,13 @@ std::unique_ptr<QgsLayerTreeViewIndicator> QgsLayerTreeViewEmbeddedIndicatorProv
 
 void QgsLayerTreeViewEmbeddedIndicatorProvider::addIndicatorForEmbeddedLayer( QgsLayerTreeNode *node )
 {
-  QString project = node->customProperty( QStringLiteral( "embedded_project" ) ).toString();
+  QString project = node->customProperty( u"embedded_project"_s ).toString();
   QgsLayerTreeNode *nextNode = node;
   while ( project.isEmpty() && nextNode )
   {
     nextNode = nextNode->parent();
     if ( nextNode )
-      project = nextNode->customProperty( QStringLiteral( "embedded_project" ) ).toString();
+      project = nextNode->customProperty( u"embedded_project"_s ).toString();
   }
 
   const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );

@@ -20,10 +20,10 @@
 #ifndef QGSBABELGPSDEVICE_H
 #define QGSBABELGPSDEVICE_H
 
+#include "qgsbabelformat.h"
+
 #include <QString>
 #include <QStringList>
-
-#include "qgsbabelformat.h"
 
 /**
  * \ingroup core

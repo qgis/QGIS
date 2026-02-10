@@ -18,17 +18,19 @@
 #ifndef QGSPOINTXY_H
 #define QGSPOINTXY_H
 
-#include "qgis_core.h"
-#include "qgsvector.h"
-#include "qgsgeometryutils_base.h"
+#include <iostream>
 
 #include "qgis.h"
+#include "qgis_core.h"
+#include "qgsgeometryutils_base.h"
+#include "qgsvector.h"
 
-#include <iostream>
-#include <QString>
-#include <QPoint>
 #include <QObject>
+#include <QPoint>
+#include <QString>
 #include <qglobal.h>
+
+using namespace Qt::StringLiterals;
 
 class QgsPoint;
 
@@ -349,7 +351,7 @@ class CORE_EXPORT QgsPointXY
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsPointXY: %1>" ).arg( sipCpp->asWkt() );
+    QString str = u"<QgsPointXY: %1>"_s.arg( sipCpp->asWkt() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 

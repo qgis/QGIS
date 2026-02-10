@@ -18,13 +18,17 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
+#include "qgsapplication.h"
 #include "qgslayoutobject.h"
 #include "qgslayoutundocommand.h"
-#include "qgsapplication.h"
+
 #include <QIcon>
 #include <QObject>
-#include <QSizeF>
 #include <QPointF>
+#include <QSizeF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsLayoutFrame;
 class QgsLayoutItem;
@@ -147,7 +151,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     /**
      * Returns the item's icon.
      */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) ); }
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( u"/mLayoutItem.svg"_s ); }
 
     /**
      * Returns the fixed size for a frame, if desired. If the fixed frame size changes,

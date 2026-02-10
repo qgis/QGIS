@@ -14,11 +14,18 @@
  ***************************************************************************/
 
 #include "qgsmodeloutputreorderwidget.h"
-#include "moc_qgsmodeloutputreorderwidget.cpp"
+
 #include "qgsgui.h"
 #include "qgsprocessingmodelalgorithm.h"
+
 #include <QDialogButtonBox>
 #include <QStandardItemModel>
+#include <QString>
+
+#include "moc_qgsmodeloutputreorderwidget.cpp"
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 QgsModelOutputReorderWidget::QgsModelOutputReorderWidget( QWidget *parent )
@@ -61,7 +68,7 @@ void QgsModelOutputReorderWidget::setModel( QgsProcessingModelAlgorithm *model )
   for ( const QgsProcessingModelOutput &output : std::as_const( mOutputs ) )
   {
     QStandardItem *item = new QStandardItem( output.name() );
-    item->setData( QStringLiteral( "%1:%2" ).arg( output.childId(), output.childOutputName() ), Qt::UserRole + 1 );
+    item->setData( u"%1:%2"_s.arg( output.childId(), output.childOutputName() ), Qt::UserRole + 1 );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
     // we show the outputs list reversed in the gui, because we want the "higher" outputs to be at the top of the list
     mItemModel->insertRow( 0, item );

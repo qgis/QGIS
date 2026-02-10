@@ -16,7 +16,6 @@
 #include "qgstest.h"
 #include "qobjectuniqueptr.h"
 
-#include "qgstest.h"
 #include <QPointer>
 
 class TestQObjectChild;

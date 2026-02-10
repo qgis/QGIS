@@ -16,20 +16,25 @@
  ***************************************************************************/
 
 #include "qgssvgannotationdialog.h"
-#include "moc_qgssvgannotationdialog.cpp"
-#include "qgsannotationwidget.h"
-#include "qgssvgannotation.h"
-#include "qgsmapcanvasannotationitem.h"
-#include "qgsproject.h"
+
 #include "qgsannotationmanager.h"
+#include "qgsannotationwidget.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssvgannotation.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
 #include <QPushButton>
+#include <QString>
+
+#include "moc_qgssvgannotationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -123,7 +128,7 @@ void QgsSvgAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
 
 void QgsSvgAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-annotations"_s );
 }
 
 void QgsSvgAnnotationDialog::onSettingsChanged()

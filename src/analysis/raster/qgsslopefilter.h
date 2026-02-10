@@ -18,8 +18,12 @@
 #ifndef QGSSLOPEFILTER_H
 #define QGSSLOPEFILTER_H
 
-#include "qgsderivativefilter.h"
 #include "qgis_analysis.h"
+#include "qgsderivativefilter.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup analysis
@@ -35,9 +39,9 @@ class ANALYSIS_EXPORT QgsSlopeFilter : public QgsDerivativeFilter
 
 #ifdef HAVE_OPENCL
   private:
-    virtual const QString openClProgramBaseName() const override
+    const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "slope" );
+      return u"slope"_s;
     }
 #endif
 };

@@ -14,21 +14,26 @@
 *                                                                         *
 ***************************************************************************/
 
-#include <QHBoxLayout>
-#include <QObject>
-#include <QKeyEvent>
+#include "qgsfieldexpressionwidget.h"
 
 #include "qgsapplication.h"
-#include "qgsfieldexpressionwidget.h"
-#include "moc_qgsfieldexpressionwidget.cpp"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsfieldproxymodel.h"
 #include "qgsdistancearea.h"
-#include "qgsfieldmodel.h"
-#include "qgsvectorlayer.h"
-#include "qgsproject.h"
-#include "qgsexpressioncontextutils.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfieldmodel.h"
+#include "qgsfieldproxymodel.h"
+#include "qgsproject.h"
+#include "qgsvectorlayer.h"
+
+#include <QHBoxLayout>
+#include <QKeyEvent>
+#include <QObject>
+#include <QString>
+
+#include "moc_qgsfieldexpressionwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
   : QWidget( parent )
@@ -51,7 +56,7 @@ QgsFieldExpressionWidget::QgsFieldExpressionWidget( QWidget *parent )
 
   mButton = new QToolButton( this );
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( u"/mIconExpression.svg"_s ) );
 
   layout->addWidget( mCombo );
   layout->addWidget( mButton );
@@ -243,7 +248,7 @@ void QgsFieldExpressionWidget::editExpression()
 
   const QgsExpressionContext context = mExpressionContextGenerator ? mExpressionContextGenerator->createExpressionContext() : mExpressionContext;
 
-  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog dlg( vl, currentExpression, this, u"generic"_s, context );
   if ( mDistanceArea )
   {
     dlg.setGeomCalculator( *mDistanceArea );
@@ -377,7 +382,7 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
   QString stylesheet;
   if ( !isEnabled() )
   {
-    stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::gray ).name() );
+    stylesheet = u"QLineEdit { color: %1; }"_s.arg( QColor( Qt::gray ).name() );
   }
   else
   {
@@ -398,7 +403,7 @@ void QgsFieldExpressionWidget::updateLineEditStyle( const QString &expression )
 
     if ( isExpression && !isValid )
     {
-      stylesheet = QStringLiteral( "QLineEdit { color: %1; }" ).arg( QColor( Qt::red ).name() );
+      stylesheet = u"QLineEdit { color: %1; }"_s.arg( QColor( Qt::red ).name() );
     }
   }
   mCombo->lineEdit()->setStyleSheet( stylesheet );

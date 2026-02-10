@@ -17,10 +17,11 @@
 #define QGSLABELOBSTACLESETTINGSWIDGET_H
 
 #include "ui_qgslabelobstaclesettingswidgetbase.h"
-#include "qgslabelsettingswidgetbase.h"
-#include "qgspallabeling.h"
+
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include "qgslabelsettingswidgetbase.h"
+#include "qgspallabeling.h"
 
 /**
  * \ingroup gui

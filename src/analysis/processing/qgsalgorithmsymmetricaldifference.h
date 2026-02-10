@@ -18,8 +18,12 @@
 
 #define SIP_NO_FILE
 
-#include "qgsprocessingalgorithm.h"
 #include "qgsapplication.h"
+#include "qgsprocessingalgorithm.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -27,8 +31,8 @@ class QgsSymmetricalDifferenceAlgorithm : public QgsProcessingAlgorithm
 {
   public:
     QgsSymmetricalDifferenceAlgorithm() = default;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSymmetricalDifference.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSymmetricalDifference.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmSymmetricalDifference.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmSymmetricalDifference.svg"_s ); }
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

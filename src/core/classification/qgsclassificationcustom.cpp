@@ -15,7 +15,11 @@
 
 #include "qgsclassificationcustom.h"
 
-const QString QgsClassificationCustom::METHOD_ID = QStringLiteral( "Custom" );
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
+const QString QgsClassificationCustom::METHOD_ID = u"Custom"_s;
 
 
 QgsClassificationCustom::QgsClassificationCustom()

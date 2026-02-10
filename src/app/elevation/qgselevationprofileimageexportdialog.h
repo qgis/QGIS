@@ -18,6 +18,7 @@
 #define QGSELEVATIONPROFILEIMAGEEXPORTDIALOG_H
 
 #include "ui_qgselevationprofileimageexportoptionsdialog.h"
+
 #include "qgslayoutmeasurementconverter.h"
 
 #include <QDialog>

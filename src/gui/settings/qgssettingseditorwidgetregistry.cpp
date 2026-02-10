@@ -19,8 +19,12 @@
 #include "qgslogger.h"
 #include "qgssettingseditorwidgetwrapper.h"
 #include "qgssettingseditorwidgetwrapperimpl.h"
-#include "qgssettingsenumflageditorwidgetwrapper.h"
 #include "qgssettingsentry.h"
+#include "qgssettingsenumflageditorwidgetwrapper.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 #if defined( HAVE_QTSERIALPORT )
 #include <QSerialPort>
@@ -94,7 +98,7 @@ QgsSettingsEditorWidgetWrapper *QgsSettingsEditorWidgetRegistry::createWrapper( 
   }
   else
   {
-    QgsDebugError( QStringLiteral( "Setting factory was not found for '%1', returning the default string factory" ).arg( id ) );
+    QgsDebugError( u"Setting factory was not found for '%1', returning the default string factory"_s.arg( id ) );
     return nullptr;
   }
 }

@@ -4,7 +4,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -15,14 +15,20 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecirclecenterpoint.h"
-#include "moc_qgsmaptoolshapecirclecenterpoint.cpp"
+
+#include "qgsapplication.h"
 #include "qgsgeometryrubberband.h"
-#include "qgspoint.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
-#include "qgsapplication.h"
+#include "qgspoint.h"
 
-const QString QgsMapToolShapeCircleCenterPointMetadata::TOOL_ID = QStringLiteral( "circle-by-a-center-point-and-another-point" );
+#include <QString>
+
+#include "moc_qgsmaptoolshapecirclecenterpoint.cpp"
+
+using namespace Qt::StringLiterals;
+
+const QString QgsMapToolShapeCircleCenterPointMetadata::TOOL_ID = u"circle-by-a-center-point-and-another-point"_s;
 
 QString QgsMapToolShapeCircleCenterPointMetadata::id() const
 {
@@ -36,7 +42,7 @@ QString QgsMapToolShapeCircleCenterPointMetadata::name() const
 
 QIcon QgsMapToolShapeCircleCenterPointMetadata::icon() const
 {
-  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionCircleCenterPoint.svg" ) );
+  return QgsApplication::getThemeIcon( u"/mActionCircleCenterPoint.svg"_s );
 }
 
 QgsMapToolShapeAbstract::ShapeCategory QgsMapToolShapeCircleCenterPointMetadata::category() const
@@ -87,6 +93,11 @@ void QgsMapToolShapeCircleCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e, 
   if ( mTempRubberBand && !mPoints.isEmpty() )
   {
     mCircle = QgsCircle::fromCenterPoint( mPoints.at( 0 ), point );
-    mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
+    const QgsGeometry newGeometry( mCircle.toCircularString( true ) );
+    if ( !newGeometry.isEmpty() )
+    {
+      mTempRubberBand->setGeometry( newGeometry.constGet()->clone() );
+      setTransientGeometry( newGeometry );
+    }
   }
 }

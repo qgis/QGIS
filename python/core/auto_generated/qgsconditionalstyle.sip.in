@@ -9,6 +9,8 @@
 
 
 
+
+
 typedef QList<QgsConditionalStyle> QgsConditionalStyles;
 
 class QgsConditionalLayerStyles : QObject

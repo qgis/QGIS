@@ -13,17 +13,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslogger.h"
 #include "qgsmaptool.h"
-#include "moc_qgsmaptool.cpp"
+
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include "qgssettings.h"
-#include "qgsmapmouseevent.h"
 
-#include <QAction>
 #include <QAbstractButton>
+#include <QAction>
+#include <QString>
+
+#include "moc_qgsmaptool.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapTool::QgsMapTool( QgsMapCanvas *canvas )
   : QObject( canvas )
@@ -102,7 +107,7 @@ void QgsMapTool::activate()
 
   // set cursor (map tools usually set it in constructor)
   mCanvas->setCursor( mCursor );
-  QgsDebugMsgLevel( QStringLiteral( "Cursor has been set" ), 4 );
+  QgsDebugMsgLevel( u"Cursor has been set"_s, 4 );
 
   emit activated();
 }
@@ -218,6 +223,12 @@ bool QgsMapTool::canvasToolTipEvent( QHelpEvent *e )
   return false;
 }
 
+bool QgsMapTool::shortcutEvent( QKeyEvent *e )
+{
+  Q_UNUSED( e )
+  return false;
+}
+
 QgsMapCanvas *QgsMapTool::canvas() const
 {
   return mCanvas;
@@ -226,7 +237,7 @@ QgsMapCanvas *QgsMapTool::canvas() const
 double QgsMapTool::searchRadiusMM()
 {
   const QgsSettings settings;
-  const double radius = settings.value( QStringLiteral( "Map/searchRadiusMM" ), Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
+  const double radius = settings.value( u"Map/searchRadiusMM"_s, Qgis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
 
   if ( radius > 0 )
   {

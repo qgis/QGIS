@@ -15,23 +15,19 @@ on:
 permissions:
   contents: read
 
-env:
-  DOXYGEN_VERSION: 1.9.8
-
 jobs:
   documentation_checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.13'
       - name: Install requirements
         run: |
-          wget https://www.doxygen.nl/files/doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
-          tar -xzf doxygen-${DOXYGEN_VERSION}.linux.bin.tar.gz
+          sudo apt install -y doxygen
           python -m pip install --upgrade pip
           pip install autopep8 nose2 mock termcolor
       - name: Make
@@ -39,7 +35,7 @@ jobs:
           mkdir build
           cd build
           cmake -DUSE_CCACHE=OFF -DWITH_CORE=OFF -DWITH_APIDOC=ON -DWITH_ASTYLE=ON -DENABLE_TESTS=ON \
-                -DWITH_DOT=NO -DWERROR=ON -DDOXYGEN_EXECUTABLE=../doxygen-${DOXYGEN_VERSION}/bin/doxygen ..
+                -DWITH_DOT=NO -DWERROR=ON ..
           make -j3 apidoc
       - name: Run Tests
         run: cd build && ctest -V -R PyQgsDocCoverage
@@ -48,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Install Requirements
         run: |
           sudo apt install -y \
@@ -58,40 +54,11 @@ jobs:
       - name: Run License Check
         run: ./tests/code_layout/test_licenses.sh
 
-  shell_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Install Requirements
-        run: |
-            sudo apt install -y \
-              shellcheck
-
-      - name: Run Shellcheck
-        run: ./tests/code_layout/test_shellcheck.sh
-
-  banned_keywords_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Run Banned Keywords Test
-        run: ./tests/code_layout/test_banned_keywords.sh
-
-  class_name_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Run class naming conventions check
-        run: ./tests/code_layout/test_class_names.sh
-
   def_window_title_check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Def Window Title Test
         run: ./tests/code_layout/test_defwindowtitle.sh
 
@@ -99,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Run QgsScrollArea check
         run: ./tests/code_layout/test_qgsscrollarea.sh
 
@@ -107,7 +74,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: No brace initialization of QVariant variables
         run: ./tests/code_layout/test_qvariant_no_brace_init.sh
 
@@ -115,63 +82,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: No module-wide imports of Qt modules
         run: ./tests/code_layout/test_qt_imports.sh
-
-  doxygen_layout_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-      - name: Install Requirements
-        run: |
-          sudo apt install -y \
-              expect \
-              silversearcher-ag
-      - name: Doxygen Layout Test
-        run: ./tests/code_layout/test_doxygen_layout.sh
-
-  indentation_check:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 100
-      - name: Install Requirements
-        run: |
-          sudo apt install -y \
-              astyle \
-              python3-autopep8 \
-              flip
-      - name: Indentation Test
-        run: ./scripts/verify_indentation.sh HEAD~1
-
-  spell_check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Install Requirements
-        run: |
-          sudo apt install -y \
-              expect \
-              silversearcher-ag
-
-      - name: Retrieve changed files
-        uses: tj-actions/changed-files@24d32ffd492484c1d75e0c0b894501ddb9d30d62 #v46
-        id: changed_files
-        with:
-          separator: " "
-
-      - name: Spell Test
-        if: steps.changed_files.outputs.any_changed == 'true'
-        env:
-          ALL_CHANGED_FILES: ${{ steps.changed_files.outputs.all_changed_files }}
-        run: ./scripts/spell_check/check_spelling.sh
 
   sip_check:
     runs-on: ubuntu-latest
@@ -185,9 +98,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install autopep8 nose2 mock termcolor pyyaml
       - name: Checkout
-        uses: actions/checkout@v5
-      - name: Sip Checks
-        run: ./tests/code_layout/sipify/test_sipify.sh
+        uses: actions/checkout@v6
       - name: Sip Include Test
         run: ./tests/code_layout/sipify/test_sip_include.sh
       - name: Sip Files Up To Date
@@ -197,7 +108,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Install Requirements
         run: |
@@ -210,7 +121,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Set up Python
         uses: actions/setup-python@v6
         with:

@@ -13,12 +13,18 @@
 *                                                                         *
 ***************************************************************************/
 #include "qgsdatabasetablemodel.h"
-#include "moc_qgsdatabasetablemodel.cpp"
-#include "qgsproviderregistry.h"
-#include "qgsprovidermetadata.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
 #include "qgsiconutils.h"
+#include "qgsprovidermetadata.h"
+#include "qgsproviderregistry.h"
+
 #include <QIcon>
+#include <QString>
+
+#include "moc_qgsdatabasetablemodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatabaseTableModel::QgsDatabaseTableModel( const QString &provider, const QString &connection, const QString &schema, QObject *parent )
   : QAbstractItemModel( parent )
@@ -95,7 +101,7 @@ QVariant QgsDatabaseTableModel::data( const QModelIndex &index, int role ) const
     case Qt::ToolTipRole:
     case Qt::EditRole:
     {
-      return mSchema.isEmpty() && !table.schema().isEmpty() ? QStringLiteral( "%1.%2" ).arg( table.schema(), table.tableName() ) : table.tableName();
+      return mSchema.isEmpty() && !table.schema().isEmpty() ? u"%1.%2"_s.arg( table.schema(), table.tableName() ) : table.tableName();
     }
 
     case static_cast< int >( CustomRole::TableName ):

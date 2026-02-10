@@ -14,19 +14,24 @@
  ***************************************************************************/
 
 #include "qgsstacdownloadassetsdialog.h"
-#include "moc_qgsstacdownloadassetsdialog.cpp"
-#include "qgsgui.h"
-#include "qgsnetworkcontentfetchertask.h"
-#include "qgssettings.h"
-#include "qgsproject.h"
-#include "qgsmessagebar.h"
-#include "qgsapplication.h"
 
-#include <QTreeWidget>
-#include <QPushButton>
+#include "qgsapplication.h"
+#include "qgsgui.h"
+#include "qgsmessagebar.h"
+#include "qgsnetworkcontentfetchertask.h"
+#include "qgsproject.h"
+#include "qgssettings.h"
+
 #include <QAction>
-#include <QMenu>
 #include <QClipboard>
+#include <QMenu>
+#include <QPushButton>
+#include <QString>
+#include <QTreeWidget>
+
+#include "moc_qgsstacdownloadassetsdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
@@ -38,7 +43,7 @@ QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent )
   mFileWidget->setStorageMode( QgsFileWidget::StorageMode::GetDirectory );
 
   QString defPath = QDir::cleanPath( QFileInfo( QgsProject::instance()->absoluteFilePath() ).path() );
-  defPath = QgsSettings().value( QStringLiteral( "UI/lastFileNameWidgetDir" ), defPath ).toString();
+  defPath = QgsSettings().value( u"UI/lastFileNameWidgetDir"_s, defPath ).toString();
   if ( defPath.isEmpty() )
     defPath = QDir::homePath();
   mFileWidget->setFilePath( defPath );
@@ -81,13 +86,13 @@ void QgsStacDownloadAssetsDialog::accept()
       {
         const QString fileName = fetcher->contentDispositionFilename().isEmpty() ? reply->url().fileName() : fetcher->contentDispositionFilename();
         QFileInfo fi( fileName );
-        QFile file( QStringLiteral( "%1/%2" ).arg( folder, fileName ) );
+        QFile file( u"%1/%2"_s.arg( folder, fileName ) );
         int i = 1;
         while ( file.exists() )
         {
-          QString uniqueName = QStringLiteral( "%1/%2(%3)" ).arg( folder, fi.baseName() ).arg( i++ );
+          QString uniqueName = u"%1/%2(%3)"_s.arg( folder, fi.baseName() ).arg( i++ );
           if ( !fi.completeSuffix().isEmpty() )
-            uniqueName.append( QStringLiteral( ".%1" ).arg( fi.completeSuffix() ) );
+            uniqueName.append( u".%1"_s.arg( fi.completeSuffix() ) );
           file.setFileName( uniqueName );
         }
 

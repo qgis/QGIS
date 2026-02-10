@@ -17,14 +17,16 @@
 #ifndef QGSSENSORTHINGSSOURCEWIDGET_H
 #define QGSSENSORTHINGSSOURCEWIDGET_H
 
+#include "ui_qgssensorthingssourcewidgetbase.h"
+
+#include "qgis.h"
 #include "qgsprovidersourcewidget.h"
 #include "qgssensorthingsutils.h"
-#include "qgis.h"
-#include "ui_qgssensorthingssourcewidgetbase.h"
+
 #include <QDialog>
-#include <QVariantMap>
 #include <QPointer>
 #include <QStyledItemDelegate>
+#include <QVariantMap>
 
 class QgsExtentWidget;
 class QgsSensorThingsConnectionPropertiesTask;
@@ -127,7 +129,7 @@ class QgsSensorThingsRemoveExpansionDelegate : public QStyledItemDelegate SIP_SK
 };
 
 
-class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, protected Ui::QgsSensorThingsSourceWidgetBase
+class QgsSensorThingsSourceWidget : public QgsProviderSourceWidget, private Ui::QgsSensorThingsSourceWidgetBase
 {
     Q_OBJECT
 

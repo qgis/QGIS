@@ -23,8 +23,9 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsaddtaborgroupbase.h"
-#include "qgsguiutils.h"
+
 #include "qgis_gui.h"
+#include "qgsguiutils.h"
 
 class QgsVectorLayer;
 

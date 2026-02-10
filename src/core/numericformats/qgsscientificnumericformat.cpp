@@ -15,8 +15,12 @@
  ***************************************************************************/
 
 #include "qgsscientificnumericformat.h"
+
 #include "qgis.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsScientificNumericFormat::QgsScientificNumericFormat()
 {
@@ -25,7 +29,7 @@ QgsScientificNumericFormat::QgsScientificNumericFormat()
 
 QString QgsScientificNumericFormat::id() const
 {
-  return QStringLiteral( "scientific" );
+  return u"scientific"_s;
 }
 
 QString QgsScientificNumericFormat::visibleName() const

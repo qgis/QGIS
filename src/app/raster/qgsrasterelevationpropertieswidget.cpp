@@ -14,25 +14,31 @@
  ***************************************************************************/
 
 #include "qgsrasterelevationpropertieswidget.h"
-#include "moc_qgsrasterelevationpropertieswidget.cpp"
+
 #include "qgsapplication.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpressioncontextutils.h"
+#include "qgsfillsymbol.h"
+#include "qgslinesymbol.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterlayerelevationproperties.h"
-#include "qgslinesymbol.h"
-#include "qgsfillsymbol.h"
-#include "qgsexpressionbuilderdialog.h"
-#include "qgsrasterrendererregistry.h"
 #include "qgsrasterrenderer.h"
-#include "qgsexpressioncontextutils.h"
-#include <QMenu>
+#include "qgsrasterrendererregistry.h"
+
 #include <QAction>
+#include <QMenu>
+#include <QString>
+
+#include "moc_qgsrasterelevationpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
 {
   setupUi( this );
-  setObjectName( QStringLiteral( "mOptsPage_Elevation" ) );
+  setObjectName( u"mOptsPage_Elevation"_s );
 
   mModeComboBox->addItem( tr( "Disabled" ) );
   mModeComboBox->addItem( tr( "Represents Elevation Surface" ), QVariant::fromValue( Qgis::RasterElevationMode::RepresentsElevationSurface ) );
@@ -60,9 +66,9 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
 
   mLineStyleButton->setSymbolType( Qgis::SymbolType::Line );
   mFillStyleButton->setSymbolType( Qgis::SymbolType::Fill );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationLine.svg" ) ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillBelow.svg" ) ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
-  mStyleComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "mIconSurfaceElevationFillAbove.svg" ) ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationLine.svg"_s ), tr( "Line" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::Line ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillBelow.svg"_s ), tr( "Fill Below" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillBelow ) );
+  mStyleComboBox->addItem( QgsApplication::getThemeIcon( u"mIconSurfaceElevationFillAbove.svg"_s ), tr( "Fill Above" ), static_cast<int>( Qgis::ProfileSurfaceSymbology::FillAbove ) );
   mElevationLimitSpinBox->setClearValue( mElevationLimitSpinBox->minimum(), tr( "Not set" ) );
 
   // NOTE -- this doesn't work, there's something broken in QgsStackedWidget which breaks the height calculations
@@ -126,7 +132,7 @@ QgsRasterElevationPropertiesWidget::QgsRasterElevationPropertiesWidget( QgsRaste
       mDynamicRangePerBandModel->setUpperExpression( expression );
   } );
 
-  setProperty( "helpPage", QStringLiteral( "working_with_raster/raster_properties.html#elevation-properties" ) );
+  setProperty( "helpPage", u"working_with_raster/raster_properties.html#elevation-properties"_s );
 }
 
 void QgsRasterElevationPropertiesWidget::syncToLayer( QgsMapLayer *layer )
@@ -331,14 +337,14 @@ void QgsRasterElevationPropertiesWidget::calculateRangeByExpression( bool isUppe
 {
   QgsExpressionContext expressionContext;
   QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), 1, true, false, tr( "Band number" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), mLayer->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), mLayer->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, 1, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, mLayer->dataProvider()->displayBandName( 1 ), true, false, tr( "Band name" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, mLayer->dataProvider()->bandDescription( 1 ), true, false, tr( "Band description" ) ) );
 
   expressionContext.appendScope( bandScope );
-  expressionContext.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" ) } );
+  expressionContext.setHighlightedVariables( { u"band"_s, u"band_name"_s, u"band_description"_s } );
 
-  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, QStringLiteral( "generic" ), expressionContext );
+  QgsExpressionBuilderDialog dlg = QgsExpressionBuilderDialog( nullptr, isUpper ? mFixedRangeUpperExpression : mFixedRangeLowerExpression, this, u"generic"_s, expressionContext );
 
   QList<QPair<QString, QVariant>> bandChoices;
   for ( int band = 1; band <= mLayer->bandCount(); ++band )
@@ -360,9 +366,9 @@ void QgsRasterElevationPropertiesWidget::calculateRangeByExpression( bool isUppe
     exp.prepare( &expressionContext );
     for ( int band = 1; band <= mLayer->bandCount(); ++band )
     {
-      bandScope->setVariable( QStringLiteral( "band" ), band );
-      bandScope->setVariable( QStringLiteral( "band_name" ), mLayer->dataProvider()->displayBandName( band ) );
-      bandScope->setVariable( QStringLiteral( "band_description" ), mLayer->dataProvider()->bandDescription( band ) );
+      bandScope->setVariable( u"band"_s, band );
+      bandScope->setVariable( u"band_name"_s, mLayer->dataProvider()->displayBandName( band ) );
+      bandScope->setVariable( u"band_description"_s, mLayer->dataProvider()->bandDescription( band ) );
 
       const QVariant res = exp.evaluate( &expressionContext );
       mFixedRangePerBandModel->setData( mFixedRangePerBandModel->index( band - 1, isUpper ? 2 : 1 ), res, Qt::EditRole );
@@ -375,11 +381,11 @@ QgsExpressionContext QgsRasterElevationPropertiesWidget::createExpressionContext
   QgsExpressionContext context;
   context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
   QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
-  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
+  bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
   context.appendScope( bandScope );
-  context.setHighlightedVariables( { QStringLiteral( "band" ), QStringLiteral( "band_name" ), QStringLiteral( "band_description" ) } );
+  context.setHighlightedVariables( { u"band"_s, u"band_name"_s, u"band_description"_s } );
   return context;
 }
 
@@ -391,7 +397,7 @@ QgsExpressionContext QgsRasterElevationPropertiesWidget::createExpressionContext
 QgsRasterElevationPropertiesWidgetFactory::QgsRasterElevationPropertiesWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/elevationscale.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"propertyicons/elevationscale.svg"_s ) );
   setTitle( tr( "Elevation" ) );
 }
 
@@ -417,7 +423,7 @@ bool QgsRasterElevationPropertiesWidgetFactory::supportsLayer( QgsMapLayer *laye
 
 QString QgsRasterElevationPropertiesWidgetFactory::layerPropertiesPagePositionHint() const
 {
-  return QStringLiteral( "mOptsPage_Metadata" );
+  return u"mOptsPage_Metadata"_s;
 }
 
 //
@@ -707,9 +713,9 @@ QVariant QgsRasterBandDynamicElevationRangeModel::data( const QModelIndex &index
           QgsExpressionContext context;
           context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
           QgsExpressionContextScope *bandScope = new QgsExpressionContextScope();
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band" ), band, true, false, tr( "Band number" ) ) );
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_name" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
-          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "band_description" ), ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band"_s, band, true, false, tr( "Band number" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_name"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->displayBandName( band ) : QString(), true, false, tr( "Band name" ) ) );
+          bandScope->addVariable( QgsExpressionContextScope::StaticVariable( u"band_description"_s, ( mLayer && mLayer->dataProvider() ) ? mLayer->dataProvider()->bandDescription( band ) : QString(), true, false, tr( "Band description" ) ) );
           context.appendScope( bandScope );
 
           return expression.evaluate( &context );

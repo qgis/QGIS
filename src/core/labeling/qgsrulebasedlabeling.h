@@ -16,12 +16,12 @@
 #define QGSRULEBASEDLABELING_H
 
 #include "qgis_core.h"
-#include <QStringList>
-#include <QMap>
-#include <QUuid>
-
 #include "qgsvectorlayerlabeling.h"
 #include "qgsvectorlayerlabelprovider.h"
+
+#include <QMap>
+#include <QStringList>
+#include <QUuid>
 
 class QDomDocument;
 class QDomElement;

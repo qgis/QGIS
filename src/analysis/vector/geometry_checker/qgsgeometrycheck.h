@@ -16,18 +16,19 @@
 #ifndef QGS_GEOMETRY_CHECK_H
 #define QGS_GEOMETRY_CHECK_H
 
-#include <QApplication>
 #include <limits>
-#include <QStringList>
-#include <QPointer>
 
 #include "qgis_analysis.h"
 #include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 #include "qgsgeometrycheckerutils.h"
 #include "qgsgeometrycheckresolutionmethod.h"
 #include "qgssettings.h"
+#include "qgsvectorlayer.h"
+
+#include <QApplication>
+#include <QPointer>
+#include <QStringList>
 
 class QgsGeometryCheckError;
 class QgsFeaturePool;
@@ -172,7 +173,7 @@ class ANALYSIS_EXPORT QgsGeometryCheck
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      AvailableInValidation = 1 << 1 //!< This geometry check should be available in layer validation on the vector layer peroperties
+      AvailableInValidation = 1 << 1 //!< This geometry check should be available in layer validation on the vector layer properties
     };
     Q_DECLARE_FLAGS( Flags, Flag )
     Q_FLAG( Flags )

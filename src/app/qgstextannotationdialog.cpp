@@ -16,20 +16,25 @@
  ***************************************************************************/
 
 #include "qgstextannotationdialog.h"
-#include "moc_qgstextannotationdialog.cpp"
-#include "qgsannotationwidget.h"
-#include "qgstextannotation.h"
-#include "qgsmapcanvasannotationitem.h"
+
 #include "qgsannotationmanager.h"
-#include "qgsproject.h"
+#include "qgsannotationwidget.h"
+#include "qgsfillsymbol.h"
+#include "qgsfontutils.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include "qgsfillsymbol.h"
+#include "qgsmapcanvasannotationitem.h"
+#include "qgsproject.h"
 #include "qgssettingsentryimpl.h"
-#include "qgsfontutils.h"
+#include "qgstextannotation.h"
 
 #include <QColorDialog>
 #include <QGraphicsScene>
+#include <QString>
+
+#include "moc_qgstextannotationdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
@@ -55,7 +60,7 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setAllowOpacity( true );
-  mFontColorButton->setContext( QStringLiteral( "symbology" ) );
+  mFontColorButton->setContext( u"symbology"_s );
 
   setCurrentFontPropertiesToGui();
   backgroundColorChanged( mEmbeddedWidget->backgroundColor() );
@@ -99,7 +104,7 @@ void QgsTextAnnotationDialog::backgroundColorChanged( const QColor &color )
   QPalette p = mTextEdit->viewport()->palette();
   p.setColor( QPalette::Base, color );
   mTextEdit->viewport()->setPalette( p );
-  mTextEdit->setStyleSheet( QStringLiteral( "QTextEdit { background-color: %1; }" ).arg( color.name() ) );
+  mTextEdit->setStyleSheet( u"QTextEdit { background-color: %1; }"_s.arg( color.name() ) );
 }
 
 void QgsTextAnnotationDialog::applyTextToItem()
@@ -187,7 +192,7 @@ void QgsTextAnnotationDialog::deleteItem()
 
 void QgsTextAnnotationDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#sec-annotations" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#sec-annotations"_s );
 }
 
 void QgsTextAnnotationDialog::onSettingsChanged()

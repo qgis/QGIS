@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsManageConnectionsDialog : QDialog
 {
 %Docstring(signature="appended")

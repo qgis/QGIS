@@ -10,6 +10,7 @@
 
 
 
+
 class QgsRasterPyramidsOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -37,6 +38,13 @@ Returns the selected pyramid format.
     QString resamplingMethod() const;
     void setRasterLayer( QgsRasterLayer *rasterLayer );
     void setRasterFileName( const QString &file );
+
+    void tuneForFormat( const QString &driverName );
+%Docstring
+Tune settings of the widget for the given format (in particular for COG)
+
+.. versionadded:: 4.0
+%End
 
   public slots:
 

@@ -17,11 +17,11 @@
 #ifndef QGSPLOTMOUSEEVENT_H
 #define QGSPLOTMOUSEEVENT_H
 
-#include <QMouseEvent>
-
-#include "qgspointxy.h"
-#include "qgspointlocator.h"
 #include "qgis_gui.h"
+#include "qgspointlocator.h"
+#include "qgspointxy.h"
+
+#include <QMouseEvent>
 
 class QgsPlotCanvas;
 

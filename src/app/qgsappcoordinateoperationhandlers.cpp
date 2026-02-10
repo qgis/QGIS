@@ -13,14 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsappcoordinateoperationhandlers.h"
-#include "moc_qgsappcoordinateoperationhandlers.cpp"
-#include "qgscoordinatetransform.h"
+
 #include "qgisapp.h"
+#include "qgscoordinatetransform.h"
+#include "qgsinstallgridshiftdialog.h"
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessageoutput.h"
 #include "qgsproject.h"
-#include "qgsinstallgridshiftdialog.h"
+
+#include <QString>
+
+#include "moc_qgsappcoordinateoperationhandlers.cpp"
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAppMissingRequiredGridHandler
@@ -136,7 +142,7 @@ void QgsAppMissingGridHandler::onMissingPreferredGrid( const QgsCoordinateRefere
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )
@@ -222,7 +228,7 @@ void QgsAppMissingGridHandler::onMissingGridUsedByContextHandler( const QgsCoord
           downloadMessage = tr( "This grid is available for download from <a href=\"%1\">%1</a>." ).arg( grid.url );
         }
       }
-      gridMessage += QStringLiteral( "<li>%1</li>" ).arg( m );
+      gridMessage += u"<li>%1</li>"_s.arg( m );
     }
   }
   if ( !gridMessage.isEmpty() )

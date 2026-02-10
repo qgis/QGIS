@@ -16,12 +16,17 @@
 
 
 #include "qgsauthconfigurationstorageregistry.h"
-#include "moc_qgsauthconfigurationstorageregistry.cpp"
+
 #include "qgsauthconfigurationstorage.h"
 #include "qgslogger.h"
 #include "qgsthreadingutils.h"
 
 #include <QMutexLocker>
+#include <QString>
+
+#include "moc_qgsauthconfigurationstorageregistry.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAuthConfigurationStorageRegistry::QgsAuthConfigurationStorageRegistry()
 {
@@ -52,7 +57,7 @@ bool QgsAuthConfigurationStorageRegistry::addStorage( QgsAuthConfigurationStorag
 
     if ( s->id() == storage->id() )
     {
-      QgsDebugError( QStringLiteral( "A storage with the same ID (%1) already exists" ).arg( storage->id() ) );
+      QgsDebugError( u"A storage with the same ID (%1) already exists"_s.arg( storage->id() ) );
       return false;
     }
   }

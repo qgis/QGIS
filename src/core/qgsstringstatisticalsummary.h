@@ -16,11 +16,11 @@
 #ifndef QGSSTRINGSTATISTICALSUMMARY_H
 #define QGSSTRINGSTATISTICALSUMMARY_H
 
+#include "qgis.h"
+#include "qgis_core.h"
+
 #include <QSet>
 #include <QVariantList>
-
-#include "qgis_core.h"
-#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with

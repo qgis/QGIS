@@ -16,15 +16,21 @@
  ***************************************************************************/
 
 #include "qgspointdisplacementrendererwidget.h"
-#include "moc_qgspointdisplacementrendererwidget.cpp"
+
+#include "qgsapplication.h"
+#include "qgsfields.h"
+#include "qgsmarkersymbol.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsrendererregistry.h"
-#include "qgsfields.h"
 #include "qgsstyle.h"
 #include "qgssymbolselectordialog.h"
 #include "qgsvectorlayer.h"
-#include "qgsapplication.h"
-#include "qgsmarkersymbol.h"
+
+#include <QString>
+
+#include "moc_qgspointdisplacementrendererwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRendererWidget *QgsPointDisplacementRendererWidget::create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer )
 {
@@ -110,7 +116,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   QStringList::const_iterator it = rendererList.constBegin();
   for ( ; it != rendererList.constEnd(); ++it )
   {
-    if ( *it != QLatin1String( "pointDisplacement" ) && *it != QLatin1String( "pointCluster" ) && *it != QLatin1String( "heatmapRenderer" ) )
+    if ( *it != "pointDisplacement"_L1 && *it != "pointCluster"_L1 && *it != "heatmapRenderer"_L1 )
     {
       QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( *it );
       mRendererComboBox->addItem( m->icon(), m->visibleName(), *it );
@@ -118,11 +124,11 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   }
 
   mCircleColorButton->setColorDialogTitle( tr( "Select Color" ) );
-  mCircleColorButton->setContext( QStringLiteral( "symbology" ) );
+  mCircleColorButton->setContext( u"symbology"_s );
   mCircleColorButton->setAllowOpacity( true );
   mCircleColorButton->setShowNoColor( true );
   mCircleColorButton->setNoColorString( tr( "Transparent Stroke" ) );
-  mLabelColorButton->setContext( QStringLiteral( "symbology" ) );
+  mLabelColorButton->setContext( u"symbology"_s );
   mLabelColorButton->setColorDialogTitle( tr( "Select Color" ) );
   mLabelColorButton->setAllowOpacity( true );
 

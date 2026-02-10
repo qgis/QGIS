@@ -18,9 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgstaskmanager.h"
-
 #include "qgsexternalstorage.h"
+#include "qgstaskmanager.h"
 
 #include <QPointer>
 #include <QUrl>
@@ -141,6 +140,8 @@ class QgsHttpExternalStorageStoreTask : public QgsTask
   public:
 
     QgsHttpExternalStorageStoreTask( const QUrl &url, const QString &filePath, const QString &authCfg );
+
+    ~QgsHttpExternalStorageStoreTask() override;
 
     bool run() override;
 

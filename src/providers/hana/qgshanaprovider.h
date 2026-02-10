@@ -17,15 +17,15 @@
 #ifndef QGSHANAPROVIDER_H
 #define QGSHANAPROVIDER_H
 
+#include <odbc/Forwards.h>
+
 #include "qgsfields.h"
-#include "qgsprovidermetadata.h"
 #include "qgshanaconnection.h"
 #include "qgshanaprimarykeys.h"
+#include "qgsprovidermetadata.h"
 #include "qgsvectordataprovider.h"
 
 #include <QVersionNumber>
-
-#include "odbc/Forwards.h"
 
 class QgsFeature;
 class QgsField;
@@ -68,6 +68,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     bool supportsSubsetString() const override;
     QString subsetStringDialect() const override;
     QString subsetStringHelpUrl() const override;
+    using QgsVectorDataProvider::addFeatures;
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;

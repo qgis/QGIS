@@ -15,24 +15,20 @@
  ***************************************************************************/
 
 #include "qgsnumericformat.h"
-#include "moc_qgsnumericformat.cpp"
-#include "qgsxmlutils.h"
+
 #include "qgsreadwritecontext.h"
+#include "qgsxmlutils.h"
 
 #include <QLocale>
+#include <QString>
+
+#include "moc_qgsnumericformat.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNumericFormatContext::QgsNumericFormatContext()
 {
   const QLocale l;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-  mThousandsSep = l.groupSeparator();
-  mDecimalSep = l.decimalPoint();
-  mPercent = l.percent();
-  mZeroDigit = l.zeroDigit();
-  mNegativeSign = l.negativeSign();
-  mPositiveSign = l.positiveSign();
-  mExponential = l.exponential();
-#else
   // With Qt6, these methods return strings to be prepared
   // for utf-16 surrogates
   // Do we care? If yes, we need to switch all members of QgsNumericFormatContext to QString
@@ -43,7 +39,6 @@ QgsNumericFormatContext::QgsNumericFormatContext()
   mNegativeSign = l.negativeSign().at( 0 );
   mPositiveSign = l.positiveSign().at( 0 );
   mExponential = l.exponential().at( 0 );
-#endif
 }
 
 QgsExpressionContext QgsNumericFormatContext::expressionContext() const
@@ -71,7 +66,7 @@ void QgsNumericFormat::writeXml( QDomElement &element, QDomDocument &document, c
   const QVariantMap config = configuration( context );
   const QDomElement configElement = QgsXmlUtils::writeVariant( config, document );
   element.appendChild( configElement );
-  element.setAttribute( QStringLiteral( "id" ), id() );
+  element.setAttribute( u"id"_s, id() );
 }
 
 bool QgsNumericFormat::operator==( const QgsNumericFormat &other ) const

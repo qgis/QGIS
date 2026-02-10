@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLabelRemoveDuplicatesSettingsWidget : QgsLabelSettingsWidgetBase
 {
 %Docstring(signature="appended")

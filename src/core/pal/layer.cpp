@@ -27,17 +27,22 @@
  *
  */
 
-#include "pal.h"
 #include "layer.h"
-#include "internalexception.h"
-#include "feature.h"
-#include "geomfunction.h"
-#include "util.h"
-#include "qgslabelingengine.h"
-#include "qgslogger.h"
 
 #include <cmath>
 #include <vector>
+
+#include "feature.h"
+#include "geomfunction.h"
+#include "internalexception.h"
+#include "pal.h"
+#include "qgslabelingengine.h"
+#include "qgslogger.h"
+#include "util.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 using namespace pal;
 
@@ -83,7 +88,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   QMutexLocker locker( &mMutex );
 
-  if ( mHashtable.contains( lf->id() ) )
+  if ( mHashtable.contains( qMakePair( lf->id(), lf->subPartId() ) ) )
   {
     //A feature with this id already exists. Don't throw an exception as sometimes,
     //the same feature is added twice (dateline split with otf-reprojection)
@@ -101,8 +106,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   std::unique_ptr<FeaturePart> biggestPart;
 
   // break the (possibly multi-part) geometry into simple geometries
-  std::unique_ptr<QLinkedList<const GEOSGeometry *>> simpleGeometries( Util::unmulti( lf->geometry() ) );
-  if ( !simpleGeometries ) // unmulti() failed?
+  const std::optional<QVector<const GEOSGeometry *>> simpleGeometries = Util::unmulti( lf->geometry() );
+  if ( !simpleGeometries.has_value() ) // unmulti() failed?
   {
     throw InternalException::UnknownGeometry();
   }
@@ -111,10 +116,8 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
   const bool featureGeomIsObstacleGeom = lf->obstacleSettings().obstacleGeometry().isNull();
 
-  while ( !simpleGeometries->isEmpty() )
+  for ( const GEOSGeometry *geom : simpleGeometries.value() )
   {
-    const GEOSGeometry *geom = simpleGeometries->takeFirst();
-
     // ignore invalid geometries (e.g. polygons with self-intersecting rings)
     if ( GEOSisValid_r( geosctxt, geom ) != 1 ) // 0=invalid, 1=valid, 2=exception
     {
@@ -167,25 +170,35 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       continue;
     }
 
-    if ( !lf->labelAllParts() && ( type == GEOS_POLYGON || type == GEOS_LINESTRING ) )
+    switch ( lf->multiPartBehavior() )
     {
-      if ( type == GEOS_LINESTRING )
-        geom_size = fpart->length();
-      else if ( type == GEOS_POLYGON )
-        geom_size = fpart->area();
+      case Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly:
+        if ( type == GEOS_POLYGON || type == GEOS_LINESTRING )
+        {
+          if ( type == GEOS_LINESTRING )
+            geom_size = fpart->length();
+          else if ( type == GEOS_POLYGON )
+            geom_size = fpart->area();
 
-      if ( geom_size > biggest_size )
+          if ( geom_size > biggest_size )
+          {
+            biggest_size = geom_size;
+            biggestPart = std::move( fpart );
+          }
+          // don't add the feature part now, do it later
+          break;
+        }
+        // fallthrough to default for point geometries
+        [[fallthrough]];
+
+      case Qgis::MultiPartLabelingBehavior::LabelEveryPartWithEntireLabel:
+      case Qgis::MultiPartLabelingBehavior::SplitLabelTextLinesOverParts:
       {
-        biggest_size = geom_size;
-        biggestPart = std::move( fpart );
+        // feature part is ready!
+        addFeaturePart( std::move( fpart ), lf->labelText() );
+        addedFeature = true;
+        break;
       }
-      // don't add the feature part now, do it later
-    }
-    else
-    {
-      // feature part is ready!
-      addFeaturePart( std::move( fpart ), lf->labelText() );
-      addedFeature = true;
     }
   }
 
@@ -199,7 +212,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
 
       if ( !geom )
       {
-        QgsDebugError( QStringLiteral( "Obstacle geometry passed to PAL labeling engine could not be converted to GEOS! %1" ).arg( ( *it )->asWkt() ) );
+        QgsDebugError( u"Obstacle geometry passed to PAL labeling engine could not be converted to GEOS! %1"_s.arg( ( *it )->asWkt() ) );
         continue;
       }
 
@@ -207,7 +220,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
       if ( GEOSisValid_r( geosctxt, geom.get() ) != 1 ) // 0=invalid, 1=valid, 2=exception
       {
         // this shouldn't happen -- we have already checked this while registering the feature
-        QgsDebugError( QStringLiteral( "Obstacle geometry passed to PAL labeling engine is not valid! %1" ).arg( ( *it )->asWkt() ) );
+        QgsDebugError( u"Obstacle geometry passed to PAL labeling engine is not valid! %1"_s.arg( ( *it )->asWkt() ) );
         continue;
       }
 
@@ -243,7 +256,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   locker.unlock();
 
   // if using only biggest parts...
-  if ( ( !lf->labelAllParts() || lf->hasFixedPosition() ) && biggestPart )
+  if ( ( lf->multiPartBehavior() == Qgis::MultiPartLabelingBehavior::LabelLargestPartOnly || lf->hasFixedPosition() ) && biggestPart )
   {
     addFeaturePart( std::move( biggestPart ), lf->labelText() );
     addedFeature = true;
@@ -252,7 +265,7 @@ bool Layer::registerFeature( QgsLabelFeature *lf )
   // add feature to layer if we have added something
   if ( addedFeature )
   {
-    mHashtable.insert( lf->id(), lf );
+    mHashtable.insert( qMakePair( lf->id(), lf->subPartId() ), lf );
   }
 
   return addedFeature; // true if we've added something

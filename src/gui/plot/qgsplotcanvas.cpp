@@ -17,21 +17,26 @@
  ***************************************************************************/
 
 #include "qgsplotcanvas.h"
-#include "moc_qgsplotcanvas.cpp"
+
+#include "qgslogger.h"
 #include "qgsplotmouseevent.h"
 #include "qgsplottool.h"
-#include "qgslogger.h"
 #include "qgsplottransienttools.h"
 #include "qgssettings.h"
 
-#include <QMenu>
-#include <QKeyEvent>
 #include <QGestureEvent>
+#include <QKeyEvent>
+#include <QMenu>
+#include <QString>
+
+#include "moc_qgsplotcanvas.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsPlotCanvas::QgsPlotCanvas( QWidget *parent )
   : QGraphicsView( parent )
 {
-  setObjectName( QStringLiteral( "PlotCanvas" ) );
+  setObjectName( u"PlotCanvas"_s );
   mScene = new QGraphicsScene( this );
   setScene( mScene );
 

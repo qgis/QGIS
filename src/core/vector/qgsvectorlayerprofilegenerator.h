@@ -17,18 +17,18 @@
 #ifndef QGSVECTORLAYERPROFILEGENERATOR_H
 #define QGSVECTORLAYERPROFILEGENERATOR_H
 
+#include <memory>
+
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgsabstractprofilesurfacegenerator.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmarkersymbol.h"
+#include "qgscoordinatetransformcontext.h"
+#include "qgsfeatureid.h"
 #include "qgsfillsymbol.h"
 #include "qgslinesymbol.h"
-#include "qgsfeatureid.h"
-
-#include <memory>
+#include "qgsmarkersymbol.h"
 
 class QgsProfileRequest;
 class QgsCurve;
@@ -117,6 +117,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     bool generateProfile( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() ) override;
     QgsAbstractProfileResults *takeResults() override;
     QgsFeedback *feedback() const override;
+    QString type() const override;
 
   private:
 
@@ -185,6 +186,7 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
     QgsCoordinateTransform mTargetToTerrainProviderTransform;
 
     std::unique_ptr< QgsVectorLayerProfileResults > mResults;
+    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
 
     bool mRespectLayerSymbology = true;
     std::unique_ptr< QgsMarkerSymbol > mProfileMarkerSymbol;

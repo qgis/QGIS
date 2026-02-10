@@ -16,10 +16,10 @@
 #ifndef QGSESRII3SDATAPROVIDER_H
 #define QGSESRII3SDATAPROVIDER_H
 
-#include "qgis_core.h"
-#include "qgstiledscenedataprovider.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsprovidermetadata.h"
+#include "qgstiledscenedataprovider.h"
 
 #define SIP_NO_FILE
 

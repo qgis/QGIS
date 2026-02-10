@@ -18,13 +18,16 @@
 #ifndef QGSPOINTCLOUDRENDERER_H
 #define QGSPOINTCLOUDRENDERER_H
 
-#include "qgsrendercontext.h"
-
 #include "qgis_core.h"
 #include "qgis_sip.h"
-#include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgsrendercontext.h"
 #include "qgsstyle.h"
+#include "qgsvector3d.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
@@ -326,13 +329,13 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "rgb" ) )
+    if ( type == "rgb"_L1 )
       sipType = sipType_QgsPointCloudRgbRenderer;
-    else if ( type == QLatin1String( "ramp" ) )
+    else if ( type == "ramp"_L1 )
       sipType = sipType_QgsPointCloudAttributeByRampRenderer;
-    else if ( type == QLatin1String( "classified" ) )
+    else if ( type == "classified"_L1 )
       sipType = sipType_QgsPointCloudClassifiedRenderer;
-    else if ( type == QLatin1String( "extent" ) )
+    else if ( type == "extent"_L1 )
       sipType = sipType_QgsPointCloudExtentRenderer;
     else
       sipType = 0;
@@ -713,6 +716,23 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const { return mZoomOutBehavior; }
 
+    /**
+      * Sets the overview switching scale
+      *
+      * Point clouds whose extents intersect the map extent are considered visible.
+      * When zoomed out beyond the overview switching scale (render extent exceeds average
+      * point cloud dimensions by the scale factor), and overview zoom-out behavior is enabled,
+      * the overview is rendered instead of an individual point cloud.
+      * \since QGIS 4.0
+      */
+    void setOverviewSwitchingScale( const double value );
+
+    /**
+      * Returns the overview switching scale
+      * \since QGIS 4.0
+      */
+    double overviewSwitchingScale() const { return mOverviewSwitchingScale; }
+
   protected:
 
     /**
@@ -856,6 +876,7 @@ class CORE_EXPORT QgsPointCloudRenderer
     QgsTextFormat mLabelTextFormat;
 
     Qgis::PointCloudZoomOutRenderBehavior mZoomOutBehavior = Qgis::PointCloudZoomOutRenderBehavior::RenderExtents;
+    double mOverviewSwitchingScale = 1.0;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

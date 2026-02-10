@@ -16,16 +16,16 @@
 #ifndef QGSAUTHOAUTH2METHOD_H
 #define QGSAUTHOAUTH2METHOD_H
 
-#include <QObject>
-#include <QDialog>
-#include <QEventLoop>
-#include <QTimer>
-#include <QMutex>
-#include <QReadWriteLock>
-#include <QThread>
-
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
+
+#include <QDialog>
+#include <QEventLoop>
+#include <QMutex>
+#include <QObject>
+#include <QReadWriteLock>
+#include <QThread>
+#include <QTimer>
 
 class QgsO2;
 class QgsAuthOAuth2Config;

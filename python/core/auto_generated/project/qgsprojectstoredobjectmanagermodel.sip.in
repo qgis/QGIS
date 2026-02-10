@@ -8,6 +8,7 @@
 
 
 
+
 class QgsProjectStoredObjectManagerModelBase : QAbstractListModel
 {
 %Docstring(signature="appended")
@@ -26,6 +27,7 @@ Base class for list models representing the objects available in a
     enum class CustomRole
     {
       Object,
+      IsEmptyObject,
     };
 
     QgsProjectStoredObjectManagerModelBase( QObject *parent /TransferThis/ = 0 );

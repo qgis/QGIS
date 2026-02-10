@@ -3,7 +3,7 @@
     ---------------------
     begin                : July 2017
     copyright            : (C) 2017
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,11 +16,11 @@
 #ifndef QGSMAPTOOLSHAPEELLIPSEABSTRACT_H
 #define QGSMAPTOOLSHAPEELLIPSEABSTRACT_H
 
-#include "qgsmaptoolshapeabstract.h"
-#include "qgsellipse.h"
-#include "qgssettingsregistrycore.h"
 #include "qgis_app.h"
+#include "qgsellipse.h"
+#include "qgsmaptoolshapeabstract.h"
 #include "qgssettingsentryimpl.h"
+#include "qgssettingsregistrycore.h"
 
 class QgsGeometryRubberBand;
 class QgsSnapIndicator;

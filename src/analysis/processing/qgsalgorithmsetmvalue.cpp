@@ -16,13 +16,18 @@
  ***************************************************************************/
 
 #include "qgsalgorithmsetmvalue.h"
+
 #include "qgsvectorlayer.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsSetMValueAlgorithm::name() const
 {
-  return QStringLiteral( "setmvalue" );
+  return u"setmvalue"_s;
 }
 
 QString QgsSetMValueAlgorithm::displayName() const
@@ -42,7 +47,7 @@ QString QgsSetMValueAlgorithm::group() const
 
 QString QgsSetMValueAlgorithm::groupId() const
 {
-  return QStringLiteral( "vectorgeometry" );
+  return u"vectorgeometry"_s;
 }
 
 QString QgsSetMValueAlgorithm::shortHelpString() const
@@ -90,19 +95,19 @@ Qgis::WkbType QgsSetMValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 
 void QgsSetMValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto mValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto mValueParam = std::make_unique<QgsProcessingParameterNumber>( u"M_VALUE"_s, QObject::tr( "M Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   mValueParam->setIsDynamic( true );
-  mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
-  mValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
+  mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( u"M_VALUE"_s, QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
+  mValueParam->setDynamicLayerParameterName( u"INPUT"_s );
   addParameter( mValueParam.release() );
 }
 
 bool QgsSetMValueAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  mMValue = parameterAsDouble( parameters, QStringLiteral( "M_VALUE" ), context );
-  mDynamicMValue = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "M_VALUE" ) );
+  mMValue = parameterAsDouble( parameters, u"M_VALUE"_s, context );
+  mDynamicMValue = QgsProcessingParameters::isDynamic( parameters, u"M_VALUE"_s );
   if ( mDynamicMValue )
-    mMValueProperty = parameters.value( QStringLiteral( "M_VALUE" ) ).value<QgsProperty>();
+    mMValueProperty = parameters.value( u"M_VALUE"_s ).value<QgsProperty>();
 
   return true;
 }

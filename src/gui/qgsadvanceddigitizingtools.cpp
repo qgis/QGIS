@@ -13,15 +13,20 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QMouseEvent>
-#include <QEnterEvent>
-#include <QLocale>
-
 #include "qgsadvanceddigitizingtools.h"
-#include "moc_qgsadvanceddigitizingtools.cpp"
+
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
 #include "qgsmapcanvas.h"
+
+#include <QEnterEvent>
+#include <QLocale>
+#include <QMouseEvent>
+#include <QString>
+
+#include "moc_qgsadvanceddigitizingtools.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsAdvancedDigitizingTool::QgsAdvancedDigitizingTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QObject( canvas ? canvas->viewport() : nullptr )
@@ -57,7 +62,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle1Digitize = new QToolButton( toolWidget );
   mCircle1Digitize->setCheckable( true );
   mCircle1Digitize->setChecked( false );
-  mCircle1Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  mCircle1Digitize->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
   connect( mCircle1Digitize, &QAbstractButton::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
@@ -66,7 +71,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   } );
   layout->addWidget( mCircle1Digitize, 1, 2, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "x" ), toolWidget );
+  label = new QLabel( u"x"_s, toolWidget );
   layout->addWidget( label, 1, 0 );
 
   mCircle1X = new QgsDoubleSpinBox( toolWidget );
@@ -78,7 +83,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   connect( mCircle1X, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1X, 1, 1 );
 
-  label = new QLabel( QStringLiteral( "y" ), toolWidget );
+  label = new QLabel( u"y"_s, toolWidget );
   layout->addWidget( label, 2, 0 );
 
   mCircle1Y = new QgsDoubleSpinBox( toolWidget );
@@ -90,7 +95,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   connect( mCircle1Y, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle1Digitize->setChecked( false ); } );
   layout->addWidget( mCircle1Y, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "d" ), toolWidget );
+  label = new QLabel( u"d"_s, toolWidget );
   layout->addWidget( label, 3, 0 );
 
   mCircle1Distance = new QgsDoubleSpinBox( toolWidget );
@@ -107,7 +112,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   mCircle2Digitize = new QToolButton( toolWidget );
   mCircle2Digitize->setCheckable( true );
   mCircle2Digitize->setChecked( false );
-  mCircle2Digitize->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionMapIdentification.svg" ) ) );
+  mCircle2Digitize->setIcon( QgsApplication::getThemeIcon( u"/mActionMapIdentification.svg"_s ) );
   connect( mCircle2Digitize, &QAbstractButton::toggled, this, [this]( bool checked ) {
     if ( checked )
     {
@@ -116,7 +121,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   } );
   layout->addWidget( mCircle2Digitize, 5, 2, 2, 1 );
 
-  label = new QLabel( QStringLiteral( "x" ), toolWidget );
+  label = new QLabel( u"x"_s, toolWidget );
   layout->addWidget( label, 5, 0 );
 
   mCircle2X = new QgsDoubleSpinBox( toolWidget );
@@ -128,7 +133,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   connect( mCircle2X, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2X, 5, 1 );
 
-  label = new QLabel( QStringLiteral( "y" ), toolWidget );
+  label = new QLabel( u"y"_s, toolWidget );
   layout->addWidget( label, 6, 0 );
 
   mCircle2Y = new QgsDoubleSpinBox( toolWidget );
@@ -140,7 +145,7 @@ QWidget *QgsAdvancedDigitizingCirclesIntersectionTool::createWidget()
   connect( mCircle2Y, &QgsDoubleSpinBox::textEdited, this, [this]() { mCircle2Digitize->setChecked( false ); } );
   layout->addWidget( mCircle2Y, 6, 1 );
 
-  label = new QLabel( QStringLiteral( "d" ), toolWidget );
+  label = new QLabel( u"d"_s, toolWidget );
   layout->addWidget( label, 7, 0 );
 
   mCircle2Distance = new QgsDoubleSpinBox( toolWidget );

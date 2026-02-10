@@ -18,8 +18,9 @@
 #ifndef QGSPROCESSINGMODELRESULT_H
 #define QGSPROCESSINGMODELRESULT_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
+
 #include <QSet>
 
 /**

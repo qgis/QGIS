@@ -14,13 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmesh3dsymbolwidget.h"
-#include "moc_qgsmesh3dsymbolwidget.cpp"
+
 #include "qgs3dtypes.h"
-#include "qgsmeshlayer.h"
-#include "qgstriangularmesh.h"
 #include "qgsmesh3dsymbol.h"
-#include "qgsmeshlayer3drenderer.h"
 #include "qgsmeshdatasetgrouptreeview.h"
+#include "qgsmeshlayer.h"
+#include "qgsmeshlayer3drenderer.h"
+#include "qgstriangularmesh.h"
+
+#include <QString>
+
+#include "moc_qgsmesh3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMesh3DSymbolWidget::QgsMesh3DSymbolWidget( QgsMeshLayer *meshLayer, QWidget *parent )
   : QWidget( parent )
@@ -151,9 +157,9 @@ void QgsMesh3DSymbolWidget::setLayer( QgsMeshLayer *meshLayer, bool updateSymbol
   {
     mDatasetGroupListModel->syncToLayer( meshLayer );
     QgsMeshLayer3DRenderer *renderer = static_cast<QgsMeshLayer3DRenderer *>( meshLayer->renderer3D() );
-    if ( renderer && renderer->type() == QLatin1String( "mesh" ) )
+    if ( renderer && renderer->type() == "mesh"_L1 )
     {
-      if ( renderer->symbol() && renderer->symbol()->type() == QLatin1String( "mesh" ) )
+      if ( renderer->symbol() && renderer->symbol()->type() == "mesh"_L1 )
       {
         setSymbol( static_cast<const QgsMesh3DSymbol *>( renderer->symbol() ) );
         return;

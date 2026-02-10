@@ -14,9 +14,15 @@
  ***************************************************************************/
 
 #include "qgsprocessingtininputlayerswidget.h"
-#include "moc_qgsprocessingtininputlayerswidget.cpp"
-#include "qgsproject.h"
+
 #include "qgsprocessingcontext.h"
+#include "qgsproject.h"
+
+#include <QString>
+
+#include "moc_qgsprocessingtininputlayerswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond PRIVATE
 
@@ -45,9 +51,9 @@ QVariant QgsProcessingTinInputLayersWidget::value() const
   for ( const QgsProcessingParameterTinInputLayers::InputLayer &layer : layers )
   {
     QVariantMap layerMap;
-    layerMap[QStringLiteral( "source" )] = layer.source;
-    layerMap[QStringLiteral( "type" )] = static_cast<int>( layer.type );
-    layerMap[QStringLiteral( "attributeIndex" )] = layer.attributeIndex;
+    layerMap[u"source"_s] = layer.source;
+    layerMap[u"type"_s] = static_cast<int>( layer.type );
+    layerMap[u"attributeIndex"_s] = layer.attributeIndex;
     list.append( layerMap );
   }
 
@@ -68,9 +74,9 @@ void QgsProcessingTinInputLayersWidget::setValue( const QVariant &value )
       continue;
     const QVariantMap layerMap = layerValue.toMap();
     QgsProcessingParameterTinInputLayers::InputLayer layer;
-    layer.source = layerMap.value( QStringLiteral( "source" ) ).toString();
-    layer.type = static_cast<Qgis::ProcessingTinInputLayerType>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
-    layer.attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
+    layer.source = layerMap.value( u"source"_s ).toString();
+    layer.type = static_cast<Qgis::ProcessingTinInputLayerType>( layerMap.value( u"type"_s ).toInt() );
+    layer.attributeIndex = layerMap.value( u"attributeIndex"_s ).toInt();
     mInputLayersModel.addLayer( layer );
   }
 
@@ -346,7 +352,7 @@ QgsProcessingTinInputLayersWidgetWrapper::QgsProcessingTinInputLayersWidgetWrapp
 
 QString QgsProcessingTinInputLayersWidgetWrapper::parameterType() const
 {
-  return QStringLiteral( "tininputlayers" );
+  return u"tininputlayers"_s;
 }
 
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingTinInputLayersWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )

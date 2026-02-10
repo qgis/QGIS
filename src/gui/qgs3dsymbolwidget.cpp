@@ -14,14 +14,20 @@
  ***************************************************************************/
 
 #include "qgs3dsymbolwidget.h"
-#include "moc_qgs3dsymbolwidget.cpp"
-#include "qgsapplication.h"
+
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
+#include "qgsapplication.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
-#include <QVBoxLayout>
+
 #include <QDialogButtonBox>
+#include <QString>
+#include <QVBoxLayout>
+
+#include "moc_qgs3dsymbolwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 Qgs3DSymbolWidget::Qgs3DSymbolWidget( QWidget *parent )
   : QWidget( parent )
@@ -47,7 +53,7 @@ Qgs3DSymbolDialog::Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [] {
-    QgsHelp::openHelp( QStringLiteral( "style_library/3d_symbols.html" ) );
+    QgsHelp::openHelp( u"style_library/3d_symbols.html"_s );
   } );
   vLayout->addStretch();
   vLayout->addWidget( mButtonBox );

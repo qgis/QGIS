@@ -14,13 +14,18 @@
  ***************************************************************************/
 
 #include <nlohmann/json.hpp>
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 using namespace nlohmann;
 
 #include "qgsjsonutils.h"
 
 #include "qgsoapifpatchfeaturerequest.h"
 #include "moc_qgsoapifpatchfeaturerequest.cpp"
-#include "qgsoapifprovider.h"
+#include "qgsoapifshareddata.h"
 
 QgsOapifPatchFeatureRequest::QgsOapifPatchFeatureRequest( const QgsDataSourceUri &uri )
   : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), QgsHttpHeaders(), uri.authConfigId() ), "OAPIF" )
@@ -42,7 +47,7 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
     extraHeaders.append( QNetworkReply::RawHeaderPair( QByteArray( "Content-Crs" ), contentCrs.toUtf8() ) );
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
-  QUrl url( sharedData->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );
+  QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
   return sendPATCH( url, "application/merge-patch+json", QString::fromStdString( j.dump() ).toUtf8(), extraHeaders );
 }
 
@@ -59,7 +64,7 @@ bool QgsOapifPatchFeatureRequest::patchFeature( const QgsOapifSharedData *shared
   j["properties"] = properties;
   mEmptyResponseIsValid = true;
   mFakeURLIncludesContentType = true;
-  QUrl url( sharedData->mItemsUrl + QString( QStringLiteral( "/" ) + jsonId ) );
+  QUrl url( sharedData->mItemsUrl + QString( u"/"_s + jsonId ) );
   return sendPATCH( url, "application/merge-patch+json", QString::fromStdString( j.dump() ).toUtf8() );
 }
 

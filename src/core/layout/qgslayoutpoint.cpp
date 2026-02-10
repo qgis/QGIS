@@ -16,10 +16,14 @@
  ***************************************************************************/
 
 #include "qgslayoutpoint.h"
+
 #include "qgis.h"
 #include "qgsunittypes.h"
 
+#include <QString>
 #include <QStringList>
+
+using namespace Qt::StringLiterals;
 
 QgsLayoutPoint::QgsLayoutPoint( const double x, const double y, const Qgis::LayoutUnit units )
   : mX( x )
@@ -57,7 +61,7 @@ QPointF QgsLayoutPoint::toQPointF() const
 
 QString QgsLayoutPoint::encodePoint() const
 {
-  return QStringLiteral( "%1,%2,%3" ).arg( mX ).arg( mY ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
+  return u"%1,%2,%3"_s.arg( mX ).arg( mY ).arg( QgsUnitTypes::encodeUnit( mUnits ) );
 }
 
 QgsLayoutPoint QgsLayoutPoint::decodePoint( const QString &string )

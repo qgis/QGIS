@@ -8,6 +8,8 @@
 
 
 
+
+
 class QgsEditorWidgetAutoConfPlugin
 {
 %Docstring(signature="appended")

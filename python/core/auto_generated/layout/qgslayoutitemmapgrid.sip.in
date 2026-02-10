@@ -10,6 +10,7 @@
 
 
 
+
 class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
 {
 %Docstring(signature="appended")
@@ -139,102 +140,6 @@ An individual grid which is drawn above the map content in a
 %End
   public:
 
-    enum GridUnit
-    {
-      MapUnit,
-      MM,
-      CM,
-      DynamicPageSizeBased,
-    };
-
-    enum GridStyle
-    {
-      Solid,
-      Cross,
-      Markers,
-      FrameAnnotationsOnly
-    };
-
-    enum DisplayMode
-    {
-      ShowAll,
-      LatitudeOnly,
-      LongitudeOnly,
-      HideAll
-    };
-
-    enum AnnotationPosition
-    {
-      InsideMapFrame,
-      OutsideMapFrame,
-    };
-
-    enum AnnotationDirection
-    {
-      Horizontal,
-      Vertical,
-      VerticalDescending,
-      BoundaryDirection,
-      AboveTick,
-      OnTick,
-      UnderTick,
-    };
-
-    enum AnnotationFormat
-    {
-      Decimal,
-      DegreeMinute,
-      DegreeMinuteSecond,
-      DecimalWithSuffix,
-      DegreeMinuteNoSuffix,
-      DegreeMinutePadded,
-      DegreeMinuteSecondNoSuffix,
-      DegreeMinuteSecondPadded,
-      CustomFormat
-    };
-
-    enum BorderSide
-    {
-      Left,
-      Right,
-      Bottom,
-      Top,
-    };
-
-    enum FrameStyle
-    {
-      NoFrame,
-      Zebra,
-      InteriorTicks,
-      ExteriorTicks,
-      InteriorExteriorTicks,
-      LineBorder,
-      LineBorderNautical,
-      ZebraNautical,
-    };
-
-    enum TickLengthMode
-    {
-      OrthogonalTicks,
-      NormalizedTicks,
-    };
-
-    enum FrameSideFlag
-    {
-      FrameLeft,
-      FrameRight,
-      FrameTop,
-      FrameBottom
-    };
-    typedef QFlags<QgsLayoutItemMapGrid::FrameSideFlag> FrameSideFlags;
-
-
-    enum AnnotationCoordinate
-    {
-      Longitude,
-      Latitude
-    };
-
     QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapGrid.
@@ -301,7 +206,7 @@ distance for each side of the map item separately.
 
 
 
-    void setUnits( GridUnit unit );
+    void setUnits( Qgis::MapGridUnit unit );
 %Docstring
 Sets the ``unit`` to use for grid measurements such as the interval and
 offset for grid lines.
@@ -309,7 +214,7 @@ offset for grid lines.
 .. seealso:: :py:func:`units`
 %End
 
-    GridUnit units() const;
+    Qgis::MapGridUnit units() const;
 %Docstring
 Returns the units used for grid measurements such as the interval and
 offset for grid lines.
@@ -458,7 +363,7 @@ is set to DynamicPageSizeBased.
 %End
 
 
-    void setStyle( GridStyle style );
+    void setStyle( Qgis::MapGridStyle style );
 %Docstring
 Sets the grid ``style``, which controls how the grid is drawn over the
 map's contents.
@@ -466,7 +371,7 @@ map's contents.
 .. seealso:: :py:func:`style`
 %End
 
-    GridStyle style() const;
+    Qgis::MapGridStyle style() const;
 %Docstring
 Returns the grid's style, which controls how the grid is drawn over the
 map's contents.
@@ -666,7 +571,7 @@ number of decimal places shown when drawing grid annotations.
 .. seealso:: :py:func:`setAnnotationPrecision`
 %End
 
-    void setAnnotationDisplay( DisplayMode display, BorderSide border );
+    void setAnnotationDisplay( Qgis::MapGridComponentVisibility display, Qgis::MapGridBorderSide border );
 %Docstring
 Sets what types of grid annotations should be drawn for a specified side
 of the map frame, or whether grid annotations should be disabled for the
@@ -678,7 +583,7 @@ side.
 .. seealso:: :py:func:`annotationDisplay`
 %End
 
-    DisplayMode annotationDisplay( BorderSide border ) const;
+    Qgis::MapGridComponentVisibility annotationDisplay( Qgis::MapGridBorderSide border ) const;
 %Docstring
 Returns the display mode for the grid annotations on a specified side of
 the map frame. This property also specifies whether annotations have
@@ -691,7 +596,7 @@ been disabled from a side of the map frame.
 .. seealso:: :py:func:`setAnnotationDisplay`
 %End
 
-    void setAnnotationPosition( AnnotationPosition position, BorderSide side );
+    void setAnnotationPosition( Qgis::MapGridAnnotationPosition position, Qgis::MapGridBorderSide side );
 %Docstring
 Sets the ``position`` for the grid annotations on a specified ``side``
 of the map frame.
@@ -699,7 +604,7 @@ of the map frame.
 .. seealso:: :py:func:`annotationPosition`
 %End
 
-    AnnotationPosition annotationPosition( BorderSide side ) const;
+    Qgis::MapGridAnnotationPosition annotationPosition( Qgis::MapGridBorderSide side ) const;
 %Docstring
 Returns the position for the grid annotations on a specified ``side`` of
 the map frame.
@@ -723,7 +628,7 @@ layout units.
 .. seealso:: :py:func:`setAnnotationFrameDistance`
 %End
 
-    void setAnnotationDirection( AnnotationDirection direction, BorderSide side );
+    void setAnnotationDirection( Qgis::MapGridAnnotationDirection direction, Qgis::MapGridBorderSide side );
 %Docstring
 Sets the ``direction`` for drawing frame annotations for the specified
 map ``side``.
@@ -731,14 +636,14 @@ map ``side``.
 .. seealso:: :py:func:`annotationDirection`
 %End
 
-    void setAnnotationDirection( AnnotationDirection direction );
+    void setAnnotationDirection( Qgis::MapGridAnnotationDirection direction );
 %Docstring
 Sets the ``direction`` for drawing all frame annotations.
 
 .. seealso:: :py:func:`annotationDirection`
 %End
 
-    AnnotationDirection annotationDirection( BorderSide border ) const;
+    Qgis::MapGridAnnotationDirection annotationDirection( Qgis::MapGridBorderSide border ) const;
 %Docstring
 Returns the direction for drawing frame annotations, on the specified
 ``side`` of the map.
@@ -746,14 +651,14 @@ Returns the direction for drawing frame annotations, on the specified
 .. seealso:: :py:func:`setAnnotationDirection`
 %End
 
-    void setAnnotationFormat( const AnnotationFormat format );
+    void setAnnotationFormat( const Qgis::MapGridAnnotationFormat format );
 %Docstring
 Sets the ``format`` for drawing grid annotations.
 
 .. seealso:: :py:func:`annotationFormat`
 %End
 
-    AnnotationFormat annotationFormat() const;
+    Qgis::MapGridAnnotationFormat annotationFormat() const;
 %Docstring
 Returns the format for drawing grid annotations.
 
@@ -779,21 +684,21 @@ QgsLayoutItemMapGrid.CustomFormat.
 %End
 
 
-    void setFrameStyle( const FrameStyle style );
+    void setFrameStyle( const Qgis::MapGridFrameStyle style );
 %Docstring
 Sets the grid frame ``style``.
 
 .. seealso:: :py:func:`frameStyle`
 %End
 
-    FrameStyle frameStyle() const;
+    Qgis::MapGridFrameStyle frameStyle() const;
 %Docstring
 Returns the grid frame style.
 
 .. seealso:: :py:func:`setFrameStyle`
 %End
 
-    void setFrameDivisions( DisplayMode divisions, BorderSide side );
+    void setFrameDivisions( Qgis::MapGridComponentVisibility divisions, Qgis::MapGridBorderSide side );
 %Docstring
 Sets what type of grid ``divisions`` should be used for frames on a
 specified ``side`` of the map.
@@ -801,7 +706,7 @@ specified ``side`` of the map.
 .. seealso:: :py:func:`frameDivisions`
 %End
 
-    DisplayMode frameDivisions( BorderSide side ) const;
+    Qgis::MapGridComponentVisibility frameDivisions( Qgis::MapGridBorderSide side ) const;
 %Docstring
 Returns the type of grid divisions which are used for frames on a
 specified ``side`` of the map.
@@ -809,7 +714,7 @@ specified ``side`` of the map.
 .. seealso:: :py:func:`setFrameDivisions`
 %End
 
-    void setFrameSideFlags( QgsLayoutItemMapGrid::FrameSideFlags flags );
+    void setFrameSideFlags( Qgis::MapGridFrameSideFlags flags );
 %Docstring
 Sets ``flags`` for grid frame sides. Setting these flags controls which
 sides of the map item the grid frame is drawn on.
@@ -821,7 +726,7 @@ sides of the map item the grid frame is drawn on.
 .. seealso:: :py:func:`testFrameSideFlag`
 %End
 
-    void setFrameSideFlag( QgsLayoutItemMapGrid::FrameSideFlag flag, bool on = true );
+    void setFrameSideFlag( Qgis::MapGridFrameSideFlag flag, bool on = true );
 %Docstring
 Sets whether the grid frame is drawn for a certain side of the map item.
 
@@ -835,7 +740,7 @@ Sets whether the grid frame is drawn for a certain side of the map item.
 .. seealso:: :py:func:`testFrameSideFlag`
 %End
 
-    QgsLayoutItemMapGrid::FrameSideFlags frameSideFlags() const;
+    Qgis::MapGridFrameSideFlags frameSideFlags() const;
 %Docstring
 Returns the flags which control which sides of the map item the grid
 frame is drawn on.
@@ -847,7 +752,7 @@ frame is drawn on.
 .. seealso:: :py:func:`testFrameSideFlag`
 %End
 
-    bool testFrameSideFlag( FrameSideFlag flag ) const;
+    bool testFrameSideFlag( Qgis::MapGridFrameSideFlag flag ) const;
 %Docstring
 Tests whether the grid frame should be drawn on a specified side of the
 map item.
@@ -899,7 +804,7 @@ Gets whether ticks rotation for rotated or reprojected grids is enabled.
 .. versionadded:: 3.16
 %End
 
-    void setRotatedTicksLengthMode( const TickLengthMode mode );
+    void setRotatedTicksLengthMode( const Qgis::MapGridTickLengthMode mode );
 %Docstring
 Sets the tick length calculation mode.
 
@@ -908,7 +813,7 @@ Sets the tick length calculation mode.
 .. versionadded:: 3.16
 %End
 
-    TickLengthMode rotatedTicksLengthMode() const;
+    Qgis::MapGridTickLengthMode rotatedTicksLengthMode() const;
 %Docstring
 Returns the grid frame style.
 
@@ -974,7 +879,7 @@ enabled.
 .. versionadded:: 3.16
 %End
 
-    void setRotatedAnnotationsLengthMode( const TickLengthMode mode );
+    void setRotatedAnnotationsLengthMode( const Qgis::MapGridTickLengthMode mode );
 %Docstring
 Sets the annotation length calculation mode.
 
@@ -983,7 +888,7 @@ Sets the annotation length calculation mode.
 .. versionadded:: 3.16
 %End
 
-    TickLengthMode rotatedAnnotationsLengthMode() const;
+    Qgis::MapGridTickLengthMode rotatedAnnotationsLengthMode() const;
 %Docstring
 Returns the annotation length calculation mode.
 
@@ -1140,6 +1045,24 @@ Retrieves the second fill color for the grid frame.
 .. seealso:: :py:func:`frameFillColor1`
 %End
 
+    Qgis::TextHorizontalAlignment horizontalAlignment() const;
+%Docstring
+Returns the horizontal alignment for annotation text.
+
+.. seealso:: :py:func:`setHorizontalAlignment`
+
+.. versionadded:: 4.0
+%End
+
+    void setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment );
+%Docstring
+Sets the horizontal ``alignment`` for annotation text.
+
+.. seealso:: :py:func:`horizontalAlignment`
+
+.. versionadded:: 4.0
+%End
+
     virtual QgsExpressionContext createExpressionContext() const;
 
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
@@ -1164,8 +1087,6 @@ Emitted whenever the grid's CRS is changed.
 %End
 
 };
-
-QFlags<QgsLayoutItemMapGrid::FrameSideFlag> operator|(QgsLayoutItemMapGrid::FrameSideFlag f1, QFlags<QgsLayoutItemMapGrid::FrameSideFlag> f2);
 
 
 /************************************************************************

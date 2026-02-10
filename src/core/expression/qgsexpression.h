@@ -16,21 +16,24 @@
 #ifndef QGSEXPRESSION_H
 #define QGSEXPRESSION_H
 
-#include "qgis_core.h"
-#include <QMetaType>
-#include <QStringList>
-#include <QVariant>
-#include <QList>
-#include <QDomDocument>
-#include <QCoreApplication>
-#include <QSet>
-#include <QRecursiveMutex>
-
 #include <functional>
 
 #include "qgis.h"
-#include "qgsinterval.h"
+#include "qgis_core.h"
 #include "qgsexpressionnode.h"
+#include "qgsinterval.h"
+
+#include <QCoreApplication>
+#include <QDomDocument>
+#include <QList>
+#include <QMetaType>
+#include <QRecursiveMutex>
+#include <QSet>
+#include <QString>
+#include <QStringList>
+#include <QVariant>
+
+using namespace Qt::StringLiterals;
 
 class QgsFeature;
 class QgsGeometry;
@@ -798,7 +801,7 @@ class CORE_EXPORT QgsExpression
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsExpression: '%1'>" ).arg( sipCpp->expression() );
+    QString str = u"<QgsExpression: '%1'>"_s.arg( sipCpp->expression() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

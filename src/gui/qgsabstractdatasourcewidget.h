@@ -19,11 +19,11 @@
 #ifndef QGSABSTRACTDATASOURCEWIDGET_H
 #define QGSABSTRACTDATASOURCEWIDGET_H
 
-#include "qgis_sip.h"
 #include "qgis_gui.h"
-
-#include "qgsproviderregistry.h"
+#include "qgis_sip.h"
 #include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
+
 #include <QDialog>
 #include <QDialogButtonBox>
 

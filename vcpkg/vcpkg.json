@@ -2,15 +2,16 @@
   "vcpkg-configuration": {
     "default-registry": {
       "kind": "git",
-      "baseline": "edffab1bcd2cb5b8c17d6ba34d5651ea0bf82979",
+      "baseline": "5d57f5a0a5469a23e005fc79a7c1814ab4fc967e",
       "repository": "https://github.com/microsoft/vcpkg"
     },
     "registries": [
       {
         "kind": "git",
-        "baseline": "4e73518faee954f3469342cd8c28389ea9a97de3",
+        "baseline": "7aaf1fda3fd1d86e6230b9a6d5ef686f353aa061",
         "repository": "https://github.com/open-vcpkg/python-registry",
         "packages": [
+          "arrow",
           "python3",
           "py-*",
           "gdal",
@@ -33,31 +34,18 @@
   "description": "QGIS is a free, open source, cross platform (lin/win/mac) geographical information system (GIS)",
   "homepage": "https://qgis.org",
   "dependencies": [
-    "duckdb",
-    {
-      "name": "exiv2",
-      "features": [
-        "xmp"
-      ]
-    },
     "expat",
     {
       "name": "gdal",
+      "default-features": false,
       "features": [
-        "arrow-adbc",
-        "freexl",
-        "kea",
-        "parquet",
-        "poppler",
-        "tools"
+        "freexl"
       ]
     },
     "geos",
     "gsl",
     "jhasse-poly2tri",
-    "libpq",
     "libspatialindex",
-    "libspatialite",
     {
       "name": "libtasn1",
       "platform": "ios | osx"
@@ -67,31 +55,41 @@
     "meshoptimizer",
     "nlohmann-json",
     "o2",
-    "opencl",
-    "pdal",
     "proj",
     "protobuf",
     {
-      "name": "qca",
+      "name": "qtbase",
       "default-features": false,
       "features": [
-        "ossl"
+        "opengl",
+        {
+          "name": "gles3",
+          "platform": "emscripten"
+        },
+        "concurrent",
+        "freetype",
+        "gui",
+        "jpeg",
+        "network",
+        "widgets",
+        "sql-sqlite",
+        "testlib"
       ]
     },
     {
       "name": "qtbase",
-      "features": [
-        "sql-odbc"
-      ]
+      "default-features": false,
+      "host": true
     },
-    "qtdeclarative",
-    "qtimageformats",
-    "qtkeychain-qt6",
-    "qtlocation",
-    "qtquickcontrols2",
     "qtsvg",
-    "qttools",
-    "zlib"
+    "qtmultimedia",
+    "qt5compat",
+    "qtkeychain-qt6",
+    "zlib",
+    "zstd"
+  ],
+  "default-features": [
+    "recommended-features"
   ],
   "features": {
     "3d": {
@@ -100,20 +98,59 @@
         "qt3d"
       ]
     },
+    "auth": {
+      "description": "Build with Auth (QCA) support",
+      "dependencies": [
+        {
+          "name": "qca",
+          "default-features": false,
+          "features": [
+            "ossl"
+          ]
+        }
+      ]
+    },
     "bindings": {
       "description": "Determines whether Python bindings should be built",
       "dependencies": [
+        {
+          "name": "arrow",
+          "features": [
+            "python"
+          ],
+          "platform": "!windows"
+        },
+        {
+          "name": "arrow",
+          "platform": "windows"
+        },
         {
           "name": "gdal",
           "features": [
             "python"
           ]
         },
+        {
+          "name": "py-adbc-postgresql",
+          "platform": "!windows"
+        },
+        {
+          "name": "py-adbc-sqlite",
+          "platform": "!windows"
+        },
         "py-attrs",
         "py-autopep8",
         "py-beautifulsoup4",
         "py-dateutil",
         "py-duckdb",
+        {
+          "name": "py-geopandas",
+          "features": [
+            "fiona",
+            "arrow"
+          ],
+          "platform": "!windows"
+        },
         "py-isort",
         "py-jinja2",
         {
@@ -128,7 +165,10 @@
         "py-pip",
         "py-psycopg",
         "py-psycopg2",
-        "py-pydantic",
+        {
+          "name": "py-pydantic",
+          "platform": "!windows"
+        },
         "py-pyproj",
         {
           "name": "py-pyqt6",
@@ -136,7 +176,9 @@
             "qt3d",
             "qt5compat",
             "qtcharts",
-            "qtdeclarative"
+            "qtdeclarative",
+            "qtpositioning",
+            "qtserialport"
           ]
         },
         "py-pysal",
@@ -151,8 +193,56 @@
         "python3"
       ]
     },
+    "recommended-features": {
+      "description": "Enable a recommended QGIS build",
+      "dependencies": [
+        "duckdb",
+        "libpq",
+        "libspatialite",
+        {
+          "name": "gdal",
+          "default-features": true,
+          "features": [
+            "arrow-adbc",
+            "kea",
+            "parquet",
+            "poppler",
+            "tools"
+          ]
+        },
+        {
+          "name": "qtbase",
+          "features": [
+            "sql-odbc"
+          ]
+        },
+        "opencl",
+        "qtdeclarative",
+        {
+          "name": "qtcharts",
+          "features": [
+            "qml"
+          ]
+        },
+        "qtimageformats",
+        "qtquickcontrols2",
+        "qttools",
+        "qtpositioning"
+      ]
+    },
+    "exiv2": {
+      "description": "Determines whether EXIV2 should be built",
+      "dependencies": [
+        {
+          "name": "exiv2",
+          "features": [
+            "xmp"
+          ]
+        }
+      ]
+    },
     "gui": {
-      "description": "Determines whether the QGIS gui should be built",
+      "description": "Determines whether QGIS gui should be built",
       "dependencies": [
         "qscintilla",
         "qtmultimedia",
@@ -169,6 +259,18 @@
       "description": "Build with oracle support",
       "dependencies": [
         "oracle-instantclient"
+      ]
+    },
+    "pdal": {
+      "description": "Build with PDAL support",
+      "dependencies": [
+        "pdal"
+      ]
+    },
+    "qtpositioning": {
+      "description": "Build with QtPositioning support",
+      "dependencies": [
+        "qtpositioning"
       ]
     },
     "server": {

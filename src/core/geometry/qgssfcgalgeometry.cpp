@@ -18,10 +18,14 @@
 #ifdef WITH_SFCGAL
 
 #include "qgssfcgalgeometry.h"
+
 #include "qgsvector3d.h"
 #include "qgswkbptr.h"
 
 #include <QByteArray>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsSfcgalGeometry::QgsSfcgalGeometry()
   : mIsPrimitive( false )
@@ -57,7 +61,7 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_geom sfcgalGeom )
 QgsSfcgalGeometry::QgsSfcgalGeometry( sfcgal::shared_prim sfcgalPrim, sfcgal::primitiveType type )
   : mIsPrimitive( true )
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   mSfcgalPrim = sfcgalPrim;
   mPrimType = type;
 #else
@@ -80,7 +84,7 @@ QgsSfcgalGeometry::QgsSfcgalGeometry( const QgsSfcgalGeometry &otherGeom )
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
   mIsPrimitive = otherGeom.mIsPrimitive;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   mPrimType = otherGeom.mPrimType;
   if ( mIsPrimitive )
     mSfcgalPrim = QgsSfcgalEngine::primitiveClone( otherGeom.mSfcgalPrim.get(), &errorMsg );
@@ -102,7 +106,7 @@ sfcgal::shared_geom QgsSfcgalGeometry::workingGeom() const
 {
   sfcgal::shared_geom geom;
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
     QString errorMsg;
@@ -122,7 +126,7 @@ Qgis::WkbType QgsSfcgalGeometry::wkbType() const
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
     return Qgis::WkbType::PolyhedralSurfaceZ;
 #endif
@@ -138,7 +142,7 @@ QString QgsSfcgalGeometry::geometryType() const
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   QString out;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
     switch ( mPrimType )
@@ -162,7 +166,7 @@ QString QgsSfcgalGeometry::geometryType() const
         out = "cone";
         break;
       default:
-        sfcgal::errorHandler()->addText( QStringLiteral( "Type '%1' is unknown." ).arg( mPrimType ) );
+        sfcgal::errorHandler()->addText( u"Type '%1' is unknown."_s.arg( mPrimType ) );
     }
   }
   else
@@ -245,14 +249,14 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::boundary() const
 
 bool QgsSfcgalGeometry::operator==( const QgsSfcgalGeometry &other ) const
 {
-#if SFCGAL_VERSION < SFCGAL_MAKE_VERSION( 2, 1, 0 )
+#if SFCGAL_VERSION_NUM < SFCGAL_MAKE_VERSION( 2, 1, 0 )
   ( void )other;
   throw QgsNotSupportedException( QObject::tr( "This operation requires a QGIS build based on SFCGAL 2.1 or later" ) );
 #else
   QString errorMsg;
   bool out;
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive != other.mIsPrimitive )
     return false;
 
@@ -282,7 +286,7 @@ bool QgsSfcgalGeometry::fuzzyEqual( const QgsSfcgalGeometry &other, double epsil
 
   bool out;
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive != other.mIsPrimitive )
     return false;
 
@@ -475,7 +479,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::translate( const QgsVector
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   std::unique_ptr<QgsSfcgalGeometry> resultGeom;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
     sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
@@ -500,7 +504,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::scale( const QgsVector3D &
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   std::unique_ptr<QgsSfcgalGeometry> resultGeom;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
     sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
@@ -525,7 +529,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate2D( double angle, co
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   std::unique_ptr<QgsSfcgalGeometry> resultGeom;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
     sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
@@ -550,7 +554,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::transform( const QMatrix4x
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   sfcgal::shared_geom geom = workingGeom();
 
   sfcgal::shared_geom result = QgsSfcgalEngine::transform( geom.get(), mat );
@@ -571,7 +575,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::rotate3D( double angle, co
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   std::unique_ptr<QgsSfcgalGeometry> resultGeom;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
     sfcgal::shared_prim prim = QgsSfcgalEngine::primitiveClone( mSfcgalPrim.get(), &errorMsg );
@@ -597,7 +601,7 @@ double QgsSfcgalGeometry::area( bool withDiscretization ) const
   sfcgal::errorHandler()->clearText( &errorMsg );
 
   double result;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( mIsPrimitive )
   {
     result = QgsSfcgalEngine::primitiveArea( mSfcgalPrim.get(), withDiscretization, &errorMsg );
@@ -636,7 +640,7 @@ double QgsSfcgalGeometry::volume( bool withDiscretization ) const
     throw QgsNotSupportedException( QObject::tr( "Operation '%1' does not apply to geometry." ).arg( "volume" ) );
 
   double result;
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   result = QgsSfcgalEngine::primitiveVolume( mSfcgalPrim.get(), withDiscretization, &errorMsg );
 #else
   ( void ) withDiscretization;
@@ -879,7 +883,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::approximateMedialAxis() co
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   QString errorMsg;
   sfcgal::errorHandler()->clearText( &errorMsg );
   sfcgal::shared_prim result = QgsSfcgalEngine::createCube( size, &errorMsg );
@@ -896,7 +900,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::createCube( double size )
 
 std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurface() const
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( !mIsPrimitive )
     throw QgsSfcgalException( "Need primitive geometry to operate." );
 
@@ -915,7 +919,7 @@ std::unique_ptr<QgsSfcgalGeometry> QgsSfcgalGeometry::primitiveAsPolyhedralSurfa
 
 QMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( !mIsPrimitive )
     throw QgsSfcgalException( "Need primitive geometry to operate." );
 
@@ -927,7 +931,7 @@ QMatrix4x4 QgsSfcgalGeometry::primitiveTransform() const
 
 QList<std::pair<QString, QString>> QgsSfcgalGeometry::primitiveParameters() const
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( !mIsPrimitive )
     throw QgsSfcgalException( "Need primitive geometry to operate." );
 
@@ -950,7 +954,7 @@ QList<std::pair<QString, QString>> QgsSfcgalGeometry::primitiveParameters() cons
 
 QVariant QgsSfcgalGeometry::primitiveParameter( const QString &name ) const
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( !mIsPrimitive )
     throw QgsSfcgalException( "Need primitive geometry to operate." );
 
@@ -968,7 +972,7 @@ QVariant QgsSfcgalGeometry::primitiveParameter( const QString &name ) const
 
 void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVariant &value )
 {
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
   if ( !mIsPrimitive )
     throw QgsSfcgalException( "Need primitive geometry to operate." );
 
@@ -985,7 +989,7 @@ void QgsSfcgalGeometry::primitiveSetParameter( const QString &name, const QVaria
 }
 
 
-#if SFCGAL_VERSION >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
+#if SFCGAL_VERSION_NUM >= SFCGAL_MAKE_VERSION( 2, 3, 0 )
 void QgsSfcgalGeometry::setPrimitiveTranslate( const QgsVector3D &translation )
 {
   mPrimTransform.translate( mPrimTransform.column( 3 ).toVector3D() + translation.toVector3D() );

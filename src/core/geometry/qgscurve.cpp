@@ -15,13 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscurve.h"
+
 #include <memory>
 
-#include "qgscurve.h"
-#include "qgslinestring.h"
-#include "qgspoint.h"
-#include "qgsmultipoint.h"
 #include "qgsgeos.h"
+#include "qgslinestring.h"
+#include "qgsmultipoint.h"
+#include "qgspoint.h"
 #include "qgsvertexid.h"
 
 bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
@@ -296,6 +297,7 @@ void QgsCurve::clearCache() const
   mHasCachedValidity = false;
   mValidityFailureReason.clear();
   mHasCachedSummedUpArea = false;
+  mHasCachedSummedUpArea3D = false;
   QgsAbstractGeometry::clearCache();
 }
 

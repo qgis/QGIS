@@ -14,12 +14,18 @@
 ***************************************************************************/
 
 #include "qgsdatabasetablecombobox.h"
-#include "moc_qgsdatabasetablecombobox.cpp"
-#include "qgsdatabasetablemodel.h"
-#include "qgsapplication.h"
+
 #include "qgsabstractdatabaseproviderconnection.h"
+#include "qgsapplication.h"
+#include "qgsdatabasetablemodel.h"
+
 #include <QHBoxLayout>
+#include <QString>
 #include <QToolButton>
+
+#include "moc_qgsdatabasetablecombobox.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatabaseTableComboBox::QgsDatabaseTableComboBox( const QString &provider, const QString &connection, const QString &schema, QWidget *parent )
   : QWidget( parent )
@@ -74,7 +80,7 @@ void QgsDatabaseTableComboBox::init()
   QToolButton *refreshButton = new QToolButton();
   refreshButton->setAutoRaise( true );
   refreshButton->setToolTip( tr( "Refresh tables" ) );
-  refreshButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionRefresh.svg" ) ) );
+  refreshButton->setIcon( QgsApplication::getThemeIcon( u"mActionRefresh.svg"_s ) );
   l->addWidget( refreshButton );
   setLayout( l );
 

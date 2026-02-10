@@ -14,20 +14,23 @@
  ***************************************************************************/
 
 #include "qgswfsdataitemguiprovider.h"
-#include "moc_qgswfsdataitemguiprovider.cpp"
 
 #include "qgsapplication.h"
+#include "qgsdataitemguiproviderutils.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "qgswfsnewconnection.h"
+#include "qgssettingsentryenumflag.h"
 #include "qgswfsconnection.h"
 #include "qgswfsconstants.h"
 #include "qgswfsdataitems.h"
-#include "qgsdataitemguiproviderutils.h"
-#include "qgssettingsentryenumflag.h"
+#include "qgswfsnewconnection.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QString>
 
+#include "moc_qgswfsdataitemguiprovider.cpp"
+
+using namespace Qt::StringLiterals;
 
 void QgsWfsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
@@ -101,12 +104,12 @@ void QgsWfsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWfsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wfs" ) } );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { u"wfs"_s } );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
-  const QStringList detailsParameters { QStringLiteral( "wfs" ), connectionName };
-  const QStringList newDetailsParameters { QStringLiteral( "wfs" ), newConnectionName };
+  const QStringList detailsParameters { u"wfs"_s, connectionName };
+  const QStringList newDetailsParameters { u"wfs"_s, newConnectionName };
 
   QgsOwsConnection::settingsUrl->setValue( QgsOwsConnection::settingsUrl->value( detailsParameters ), newDetailsParameters );
 

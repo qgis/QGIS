@@ -14,17 +14,21 @@
  ***************************************************************************/
 
 #include "qgsdatetimesearchwidgetwrapper.h"
-#include "moc_qgsdatetimesearchwidgetwrapper.cpp"
 
-#include "qgsfields.h"
-#include "qgsdatetimeeditfactory.h"
-#include "qgsvectorlayer.h"
 #include "qgsdatetimeedit.h"
-#include "qcalendarwidget.h"
 #include "qgsdatetimeeditconfig.h"
+#include "qgsdatetimeeditfactory.h"
 #include "qgsdatetimefieldformatter.h"
+#include "qgsfields.h"
+#include "qgsvectorlayer.h"
 
 #include <QSettings>
+#include <QString>
+#include <qcalendarwidget.h>
+
+#include "moc_qgsdatetimesearchwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
@@ -47,8 +51,8 @@ QVariant QgsDateTimeSearchWidgetWrapper::value() const
   if ( !mDateTimeEdit )
     return QDateTime();
 
-  const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
+  const bool fieldIsoFormat = config( u"field_iso_format"_s, false ).toBool();
+  const QString fieldFormat = config( u"field_format"_s, QgsDateTimeFieldFormatter::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
   if ( fieldIsoFormat )
   {
     return mDateTimeEdit->dateTime().toString( Qt::ISODate );
@@ -126,8 +130,8 @@ void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
   QString exp = expression;
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
-  const QString str = QStringLiteral( "%1 = '%3'" )
-                        .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+  const QString str = u"%1 = '%3'"_s
+                        .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', "''"_L1 ) );
   mExpression = str;
 }
 
@@ -160,10 +164,10 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget *editor )
   {
     mDateTimeEdit->setAllowNull( false );
 
-    const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
+    const QString displayFormat = config( u"display_format"_s, QgsDateTimeFieldFormatter::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
     mDateTimeEdit->setDisplayFormat( displayFormat );
 
-    const bool calendar = config( QStringLiteral( "calendar_popup" ), false ).toBool();
+    const bool calendar = config( u"calendar_popup"_s, false ).toBool();
     mDateTimeEdit->setCalendarPopup( calendar );
     if ( calendar && mDateTimeEdit->calendarWidget() )
     {

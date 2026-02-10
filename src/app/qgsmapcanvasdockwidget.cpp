@@ -13,33 +13,37 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
-#include "moc_qgsmapcanvasdockwidget.cpp"
-#include "qgsmapcanvas.h"
-#include "qgsexception.h"
-#include "qgsprojectionselectiondialog.h"
-#include "qgsscalecombobox.h"
-#include "qgsdoublespinbox.h"
-#include "qgssettings.h"
-#include "qgsmaptoolpan.h"
-#include "qgsmapthemecollection.h"
-#include "qgsproject.h"
-#include "qgslayertreeview.h"
-#include "qgslayertreeviewdefaultactions.h"
+
+#include "canvas/qgsappcanvasfiltering.h"
 #include "qgisapp.h"
-#include "qgsvertexmarker.h"
-#include "qgsrubberband.h"
-#include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgsdockablewidgethelper.h"
+#include "qgsdoublespinbox.h"
+#include "qgsexception.h"
+#include "qgslayertreeview.h"
+#include "qgslayertreeviewdefaultactions.h"
+#include "qgsmapcanvas.h"
+#include "qgsmapthemecollection.h"
+#include "qgsmaptoolpan.h"
+#include "qgsproject.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgsprojectviewsettings.h"
-#include "canvas/qgsappcanvasfiltering.h"
+#include "qgsrubberband.h"
+#include "qgsscalecombobox.h"
+#include "qgssettings.h"
+#include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
 
-#include <QMessageBox>
 #include <QMenu>
+#include <QMessageBox>
+#include <QRadioButton>
+#include <QString>
 #include <QToolBar>
 #include <QToolButton>
-#include <QRadioButton>
 
+#include "moc_qgsmapcanvasdockwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *parent, bool isDocked )
   : QWidget( parent )
@@ -83,7 +87,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   QToolButton *btnMapThemes = new QToolButton;
   btnMapThemes->setAutoRaise( true );
   btnMapThemes->setToolTip( tr( "Set View Theme" ) );
-  btnMapThemes->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionShowAllLayers.svg" ) ) );
+  btnMapThemes->setIcon( QgsApplication::getThemeIcon( u"/mActionShowAllLayers.svg"_s ) );
   btnMapThemes->setPopupMode( QToolButton::InstantPopup );
   btnMapThemes->setMenu( mMenu );
   mToolbar->addWidget( btnMapThemes );
@@ -94,7 +98,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   settingsButton->setToolTip( tr( "View Settings" ) );
   settingsButton->setMenu( settingsMenu );
   settingsButton->setPopupMode( QToolButton::InstantPopup );
-  settingsButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) ) );
+  settingsButton->setIcon( QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s ) );
   mToolbar->addWidget( settingsButton );
 
   connect( mActionSetCrs, &QAction::triggered, this, &QgsMapCanvasDockWidget::setMapCrs );
@@ -611,10 +615,10 @@ QgsMapSettingsAction::QgsMapSettingsAction( QWidget *parent )
   const QgsSettings settings;
   const int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
   const int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
-  const int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+  const int defaultFactor = 100 * settings.value( u"/qgis/magnifier_factor_default"_s, 1.0 ).toDouble();
 
   mMagnifierWidget = new QgsDoubleSpinBox();
-  mMagnifierWidget->setSuffix( QStringLiteral( "%" ) );
+  mMagnifierWidget->setSuffix( u"%"_s );
   mMagnifierWidget->setKeyboardTracking( false );
   mMagnifierWidget->setDecimals( 0 );
   mMagnifierWidget->setRange( minimumFactor, maximumFactor );

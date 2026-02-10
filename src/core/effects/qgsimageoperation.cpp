@@ -16,13 +16,18 @@
  ***************************************************************************/
 
 #include "qgsimageoperation.h"
+
 #include "qgis.h"
 #include "qgscolorramp.h"
-#include "qgslogger.h"
 #include "qgsfeedback.h"
-#include <QtConcurrentMap>
+#include "qgslogger.h"
+
 #include <QColor>
 #include <QPainter>
+#include <QString>
+#include <QtConcurrentMap>
+
+using namespace Qt::StringLiterals;
 
 //determined via trial-and-error. Could possibly be optimised, or varied
 //depending on the image size.
@@ -392,7 +397,7 @@ void QgsImageOperation::distanceTransform( QImage &image, const DistanceTransfor
 {
   if ( ! properties.ramp )
   {
-    QgsDebugError( QStringLiteral( "no color ramp specified for distance transform" ) );
+    QgsDebugError( u"no color ramp specified for distance transform"_s );
     return;
   }
 

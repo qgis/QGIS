@@ -30,6 +30,7 @@ from qgis.PyQt.QtCore import (
     QTime,
     QTimeZone,
 )
+from qgis.PyQt.QtCore import QPointF
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer
@@ -63,6 +64,10 @@ from qgis.core import (
     QgsUnitTypes,
     QgsVectorLayer,
     QgsVectorLayerSimpleLabeling,
+    QgsRasterLayer,
+    QgsLayoutItemLegend,
+    QgsColorRampLegendNode,
+    QgsFontUtils,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -1822,6 +1827,117 @@ class TestQgsLayoutExporter(QgisTestCase):
         labels = results[map.uuid()].allLabels()
         self.assertEqual(len(labels), 3)
         self.assertCountEqual([l.labelText for l in labels], ["1", "33333", "8888"])
+
+    def testHitTestLegendUpdate(self):
+        """
+        Test QgsLayoutExporter updating legend with UpdatedCanvas min/max origin
+        """
+        path_dem = os.path.join(TEST_DATA_DIR, "raster/dem.tif")
+        rl_1 = QgsRasterLayer(path_dem, "dem1", "gdal")
+
+        # set render min/max origin to UpdatedCanvas so that it can update legend on map zoom
+        renderer = rl_1.renderer().clone()
+        min_max_origin = renderer.minMaxOrigin()
+        min_max_origin.setExtent(Qgis.RasterRangeExtent.UpdatedCanvas)
+        renderer.setMinMaxOrigin(min_max_origin)
+        rl_1.setRenderer(renderer)
+
+        # project and layout setup
+        p = QgsProject()
+        p.addMapLayer(rl_1)
+
+        l = QgsLayout(p)
+        l.initializeDefaults()
+
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(10, 10, 180, 180))
+        map.setFrameEnabled(False)
+        map.setBackgroundEnabled(False)
+        map.setCrs(rl_1.crs())
+        map.zoomToExtent(rl_1.extent())
+        map.setLayers([rl_1])
+        l.addLayoutItem(map)
+
+        legend = QgsLayoutItemLegend(l)
+        legend.setTitle("Legend")
+        legend.attemptSetSceneRect(QRectF(220, 10, 80, 80))
+        l.addLayoutItem(legend)
+        legend.setLinkedMap(map)
+
+        for component in [
+            Qgis.LegendComponent.Title,
+            Qgis.LegendComponent.Group,
+            Qgis.LegendComponent.Subgroup,
+            Qgis.LegendComponent.SymbolLabel,
+        ]:
+            font = QgsFontUtils.getStandardTestFont("Bold", 14)
+            style = legend.style(component)
+            style.setFont(font)
+            legend.setStyle(component, style)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.ImageExportSettings()
+        settings.dpi = 80
+
+        rendered_file_path = os.path.join(self.basetestpath, "test_exportlegend1.png")
+        self.assertEqual(
+            exporter.exportToImage(rendered_file_path, settings),
+            QgsLayoutExporter.ExportResult.Success,
+        )
+
+        # image check on full extent of raster
+        image = QImage(rendered_file_path)
+        self.assertTrue(
+            self.image_check(
+                "layoutexporter_exporthittestlegendupdate_1",
+                "layoutexporter_exporthittestlegendupdate_1",
+                image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # check also values in legend
+        tree_layers = legend.model().rootGroup().findLayers()
+        for layer_tree_layer in tree_layers:
+            legend_nodes = legend.model().layerLegendNodes(layer_tree_layer)
+            if layer_tree_layer.layerId() == rl_1.id():
+                for legend_node in legend_nodes:
+                    if isinstance(legend_node, QgsColorRampLegendNode):
+                        self.assertEqual(legend_node.minimum(), 85.0)
+                        self.assertEqual(legend_node.maximum(), 243)
+
+        # zoom in map to change values in legend
+        map.zoomContent(10.0, QPointF(100, 100))
+
+        rendered_file_path = os.path.join(self.basetestpath, "test_exportlegend2.png")
+        self.assertEqual(
+            exporter.exportToImage(rendered_file_path, settings),
+            QgsLayoutExporter.ExportResult.Success,
+        )
+
+        # image check on zoomed extent of raster
+        image = QImage(rendered_file_path)
+        self.assertTrue(
+            self.image_check(
+                "layoutexporter_exporthittestlegendupdate_2",
+                "layoutexporter_exporthittestlegendupdate_2",
+                image,
+                color_tolerance=2,
+                allowed_mismatch=20,
+            )
+        )
+
+        # check also values in legend
+        tree_layers = legend.model().rootGroup().findLayers()
+        for layer_tree_layer in tree_layers:
+            legend_nodes = legend.model().layerLegendNodes(layer_tree_layer)
+            if layer_tree_layer.layerId() == rl_1.id():
+                for legend_node in legend_nodes:
+                    if isinstance(legend_node, QgsColorRampLegendNode):
+                        self.assertAlmostEqual(legend_node.minimum(), 114.90, places=2)
+                        self.assertEqual(legend_node.maximum(), 165)
 
 
 if __name__ == "__main__":

@@ -14,8 +14,14 @@
  ***************************************************************************/
 
 #include "qgsmaplayerstylecategoriesmodel.h"
-#include "moc_qgsmaplayerstylecategoriesmodel.cpp"
+
 #include "qgsapplication.h"
+
+#include <QString>
+
+#include "moc_qgsmaplayerstylecategoriesmodel.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyleCategoriesModel::QgsMapLayerStyleCategoriesModel( Qgis::LayerType type, QObject *parent )
   : QAbstractListModel( parent )
@@ -153,7 +159,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
     return mCategories.testFlag( category ) ? Qt::Checked : Qt::Unchecked;
   }
 
-  QString htmlStylePattern = QStringLiteral( "<p><b>%1</b><br/><span style='color:gray;'>%2</span></p>" );
+  QString htmlStylePattern = u"<p><b>%1</b><br/><span style='color:gray;'>%2</span></p>"_s;
   switch ( category )
   {
     case QgsMapLayer::StyleCategory::LayerConfiguration:
@@ -169,7 +175,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/layerconfiguration.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/layerconfiguration.svg"_s );
       }
       break;
     }
@@ -187,7 +193,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/symbology.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/symbology.svg"_s );
       }
       break;
     }
@@ -205,7 +211,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/3d.svg" ) );
+          return QgsApplication::getThemeIcon( u"/3d.svg"_s );
       }
       break;
     }
@@ -223,7 +229,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/labels.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/labels.svg"_s );
       }
       break;
     }
@@ -241,7 +247,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/sourcefieldsandforms.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/sourcefieldsandforms.svg"_s );
       }
       break;
     }
@@ -259,7 +265,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mActionFormView.svg" ) );
+          return QgsApplication::getThemeIcon( u"/mActionFormView.svg"_s );
       }
       break;
     }
@@ -277,7 +283,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/action.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/action.svg"_s );
       }
       break;
     }
@@ -295,7 +301,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/display.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/display.svg"_s );
       }
       break;
     }
@@ -313,7 +319,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/diagram.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/diagram.svg"_s );
       }
       break;
     }
@@ -331,7 +337,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) );
+          return QgsApplication::getThemeIcon( u"/mActionOpenTable.svg"_s );
       }
       break;
     }
@@ -349,7 +355,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/rendering.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/rendering.svg"_s );
       }
       break;
     }
@@ -367,7 +373,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/mActionOptions.svg" ) );
+          return QgsApplication::getThemeIcon( u"/mActionOptions.svg"_s );
       }
       break;
     }
@@ -385,7 +391,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/digitizing.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/digitizing.svg"_s );
       }
       break;
     }
@@ -403,7 +409,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/relations.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/relations.svg"_s );
       }
       break;
     }
@@ -421,7 +427,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/temporal.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/temporal.svg"_s );
       }
       break;
     }
@@ -439,7 +445,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/legend.svg" ) );
+          return QgsApplication::getThemeIcon( u"/legend.svg"_s );
       }
       break;
     }
@@ -457,7 +463,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/elevationscale.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/elevationscale.svg"_s );
       }
       break;
     }
@@ -475,7 +481,7 @@ QVariant QgsMapLayerStyleCategoriesModel::data( const QModelIndex &index, int ro
         case Qt::ToolTipRole:
           return description;
         case Qt::DecorationRole:
-          return QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/notes.svg" ) );
+          return QgsApplication::getThemeIcon( u"/propertyicons/notes.svg"_s );
       }
       break;
     }

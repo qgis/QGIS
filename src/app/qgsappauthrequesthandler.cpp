@@ -14,15 +14,19 @@
  ***************************************************************************/
 
 #include "qgsappauthrequesthandler.h"
-#include "qgslogger.h"
-#include "qgsauthcertutils.h"
-#include "qgsapplication.h"
-#include "qgsauthmanager.h"
+
 #include "qgisapp.h"
+#include "qgsapplication.h"
+#include "qgsauthcertutils.h"
+#include "qgsauthmanager.h"
 #include "qgscredentials.h"
+#include "qgslogger.h"
 
 #include <QAuthenticator>
 #include <QDesktopServices>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthenticator *auth )
 {
@@ -49,7 +53,7 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
   for ( ;; )
   {
     const bool ok = QgsCredentials::instance()->get(
-      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+      u"%1 at %2"_s.arg( auth->realm(), reply->url().host() ),
       username, password,
       QObject::tr( "Authentication required" )
     );
@@ -60,7 +64,7 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
     {
       // save credentials
       QgsCredentials::instance()->put(
-        QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+        u"%1 at %2"_s.arg( auth->realm(), reply->url().host() ),
         username, password
       );
       break;
@@ -69,7 +73,7 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
     {
       // credentials didn't change - stored ones probably wrong? clear password and retry
       QgsCredentials::instance()->put(
-        QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+        u"%1 at %2"_s.arg( auth->realm(), reply->url().host() ),
         username, QString()
       );
     }
@@ -92,7 +96,7 @@ void QgsAppAuthRequestHandler::handleAuthRequestCloseBrowser()
     const QList<QWidget *> topWidgets = QgsApplication::topLevelWidgets();
     for ( QWidget *topWidget : topWidgets )
     {
-      if ( topWidget->objectName() == QLatin1String( "MainWindow" ) )
+      if ( topWidget->objectName() == "MainWindow"_L1 )
       {
         topWidget->raise();
         topWidget->activateWindow();

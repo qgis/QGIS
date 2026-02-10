@@ -14,17 +14,19 @@
  ***************************************************************************/
 
 #include "qgsmssqltransaction.h"
-#include "moc_qgsmssqltransaction.cpp"
-
-#include "qgsmssqldatabase.h"
 
 #include "qgsexpression.h"
 #include "qgsmessagelog.h"
+#include "qgsmssqldatabase.h"
 
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QString>
 #include <QtDebug>
 
+#include "moc_qgsmssqltransaction.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMssqlTransaction::QgsMssqlTransaction( const QString &connString )
   : QgsTransaction( connString )
@@ -62,7 +64,7 @@ bool QgsMssqlTransaction::executeSql( const QString &sql, QString &error, bool i
     if ( error.isEmpty() )
       error = msg;
     else
-      error = QStringLiteral( "%1\n%2" ).arg( error, msg );
+      error = u"%1\n%2"_s.arg( error, msg );
 
     return false;
   }
@@ -82,7 +84,7 @@ QString QgsMssqlTransaction::createSavepoint( const QString &savePointId, QStrin
   if ( !mTransactionActive )
     return QString();
 
-  if ( !executeSql( QStringLiteral( "SAVE TRAN %1" ).arg( QgsExpression::quotedColumnRef( savePointId ) ), error ) )
+  if ( !executeSql( u"SAVE TRAN %1"_s.arg( QgsExpression::quotedColumnRef( savePointId ) ), error ) )
   {
     QgsMessageLog::logMessage( tr( "Could not create savepoint (%1)" ).arg( error ) );
     return QString();
@@ -109,7 +111,7 @@ bool QgsMssqlTransaction::rollbackToSavepoint( const QString &name, QString &err
   // the status of the DB has changed between the previous savepoint and the
   // one we are rolling back to.
   mLastSavePointIsDirty = true;
-  return executeSql( QStringLiteral( "ROLLBACK TRANSACTION %1" ).arg( QgsExpression::quotedColumnRef( name ) ), error );
+  return executeSql( u"ROLLBACK TRANSACTION %1"_s.arg( QgsExpression::quotedColumnRef( name ) ), error );
 }
 
 

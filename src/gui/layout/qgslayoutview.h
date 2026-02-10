@@ -17,16 +17,18 @@
 #ifndef QGSLAYOUTVIEW_H
 #define QGSLAYOUTVIEW_H
 
-#include "qgis_sip.h"
-#include "qgsprevieweffect.h" // for QgsPreviewEffect::PreviewMode
-#include "qgis_gui.h"
-#include "qgslayoutitempage.h"
-#include "qgslayoutaligner.h"
-#include "qgslayoutviewtool.h"
-#include <QPointer>
-#include <QGraphicsView>
-#include <QGraphicsRectItem>
 #include <memory>
+
+#include "qgis_gui.h"
+#include "qgis_sip.h"
+#include "qgslayoutaligner.h"
+#include "qgslayoutitempage.h"
+#include "qgslayoutviewtool.h"
+#include "qgsprevieweffect.h"
+
+#include <QGraphicsRectItem>
+#include <QGraphicsView>
+#include <QPointer>
 
 class QMenu;
 class QgsLayout;

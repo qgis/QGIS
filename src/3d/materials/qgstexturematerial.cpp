@@ -13,8 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QUrl>
+#include "qgstexturematerial.h"
 
+#include <QString>
+#include <QUrl>
 #include <Qt3DRender/QEffect>
 #include <Qt3DRender/QGraphicsApiFilter>
 #include <Qt3DRender/QParameter>
@@ -23,13 +25,14 @@
 #include <Qt3DRender/QTechnique>
 #include <Qt3DRender/QTexture>
 
-#include "qgstexturematerial.h"
 #include "moc_qgstexturematerial.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 QgsTextureMaterial::QgsTextureMaterial( QNode *parent )
   : QgsMaterial( parent )
-  , mTextureParameter( new Qt3DRender::QParameter( QStringLiteral( "diffuseTexture" ), new Qt3DRender::QTexture2D ) )
+  , mTextureParameter( new Qt3DRender::QParameter( u"diffuseTexture"_s, new Qt3DRender::QTexture2D ) )
   , mGL3Technique( new Qt3DRender::QTechnique( this ) )
   , mGL3RenderPass( new Qt3DRender::QRenderPass( this ) )
   , mGL3Shader( new Qt3DRender::QShaderProgram( this ) )
@@ -49,8 +52,8 @@ void QgsTextureMaterial::init()
 
   effect->addParameter( mTextureParameter );
 
-  mGL3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/texture.frag" ) ) ) );
-  mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/texture.vert" ) ) ) );
+  mGL3Shader->setFragmentShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.frag"_s ) ) );
+  mGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( u"qrc:/shaders/texture.vert"_s ) ) );
 
   mGL3Technique->graphicsApiFilter()->setApi( Qt3DRender::QGraphicsApiFilter::OpenGL );
   mGL3Technique->graphicsApiFilter()->setMajorVersion( 3 );
@@ -58,8 +61,8 @@ void QgsTextureMaterial::init()
   mGL3Technique->graphicsApiFilter()->setProfile( Qt3DRender::QGraphicsApiFilter::CoreProfile );
 
   mFilterKey->setParent( this );
-  mFilterKey->setName( QStringLiteral( "renderingStyle" ) );
-  mFilterKey->setValue( QStringLiteral( "forward" ) );
+  mFilterKey->setName( u"renderingStyle"_s );
+  mFilterKey->setValue( u"forward"_s );
 
   mGL3Technique->addFilterKey( mFilterKey );
   mGL3RenderPass->setShaderProgram( mGL3Shader );

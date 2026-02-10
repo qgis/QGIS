@@ -16,10 +16,13 @@
 #ifndef QGSVECTOR3D_H
 #define QGSVECTOR3D_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 
+#include <QString>
 #include <QVector3D>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -92,6 +95,19 @@ class CORE_EXPORT QgsVector3D
       return QgsVector3D( mX + other.mX, mY + other.mY, mZ + other.mZ );
     }
 
+    /**
+     * Adds another vector to this vector in place.
+     *
+     * \since QGIS 4.0
+     */
+    QgsVector3D &operator+=( const QgsVector3D &other ) SIP_HOLDGIL
+    {
+      mX += other.mX;
+      mY += other.mY;
+      mZ += other.mZ;
+      return *this;
+    }
+
     //! Returns difference of two vectors
     QgsVector3D operator-( const QgsVector3D &other ) const SIP_HOLDGIL
     {
@@ -135,10 +151,24 @@ class CORE_EXPORT QgsVector3D
                           v1.x() * v2.y() - v1.y() * v2.x() );
     }
 
-    //! Returns the length of the vector
+    /**
+     * Returns the length of the vector.
+     * \see lengthSquared()
+     */
     double length() const SIP_HOLDGIL
     {
       return sqrt( mX * mX + mY * mY + mZ * mZ );
+    }
+
+    /**
+     * Returns the squared length of the vector.
+     * \see length()
+     *
+     * \since QGIS 4.0
+     */
+    double lengthSquared() const SIP_HOLDGIL
+    {
+      return mX * mX + mY * mY + mZ * mZ;
     }
 
     //! Normalizes the current vector in place.
@@ -197,7 +227,7 @@ class CORE_EXPORT QgsVector3D
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsVector3D: %1>" ).arg( sipCpp->toString() );
+    QString str = u"<QgsVector3D: %1>"_s.arg( sipCpp->toString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

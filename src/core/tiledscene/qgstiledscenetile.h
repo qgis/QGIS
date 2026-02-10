@@ -19,8 +19,8 @@
 #ifndef QGSTILEDSCENETILE_H
 #define QGSTILEDSCENETILE_H
 
-#include "qgis_core.h"
 #include "qgis.h"
+#include "qgis_core.h"
 #include "qgsmatrix4x4.h"
 #include "qgstiledsceneboundingvolume.h"
 

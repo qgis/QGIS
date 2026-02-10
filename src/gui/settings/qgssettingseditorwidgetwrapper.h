@@ -16,10 +16,10 @@
 #ifndef QGSSETTINGSEDITORWIDGETWRAPPER_H
 #define QGSSETTINGSEDITORWIDGETWRAPPER_H
 
-#include <QVariant>
-
-#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
+
+#include <QVariant>
 
 class QgsSettingsEntryBase;
 
@@ -41,7 +41,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     //! Constructor
     QgsSettingsEditorWidgetWrapper( QObject *parent = nullptr );
 
-    virtual ~QgsSettingsEditorWidgetWrapper() = default;
+    ~QgsSettingsEditorWidgetWrapper() override = default;
 
     /**
      * This id of the type of settings it handles

@@ -21,9 +21,9 @@
 #define SIP_NO_FILE
 
 #include "ui_qgsnewogrconnectionbase.h"
-#include "qgsguiutils.h"
-#include "qgis_gui.h"
 
+#include "qgis_gui.h"
+#include "qgsguiutils.h"
 
 /**
  * \class QgsNewOgrConnection
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
 
     /**
      * Show the help
-     * \deprecated QGIS 3.40. Will be made private with QGIS 4.
+     * \deprecated QGIS 3.40. Will be made private with QGIS 5.
      */
     Q_DECL_DEPRECATED void showHelp() SIP_DEPRECATED;
 

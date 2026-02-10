@@ -10,7 +10,6 @@
 
 
 
-
 class QgsAdvancedDigitizingTool : QObject
 {
 %Docstring(signature="appended")

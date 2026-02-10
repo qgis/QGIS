@@ -19,8 +19,9 @@
 
 #include "ui_qgsauthconfigidedit.h"
 
-#include <QWidget>
 #include "qgis_gui.h"
+
+#include <QWidget>
 
 #define SIP_NO_FILE
 
