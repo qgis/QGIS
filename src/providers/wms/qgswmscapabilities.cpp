@@ -285,7 +285,12 @@ QString QgsWmsSettings::parseTemporalFormat( const QString &extent )
   if ( extent.isEmpty() )
     return u""_s;
 
-  const QString item = extent.split( ',' ).first().trimmed();
+  QString item = extent.split( ',' ).first().trimmed();
+
+  if ( item.contains( '/' ) )
+  {
+    item = item.split( '/' ).first().trimmed();
+  }
 
   // Date-only formats (no 'T')
   if ( !item.contains( 'T' ) )
