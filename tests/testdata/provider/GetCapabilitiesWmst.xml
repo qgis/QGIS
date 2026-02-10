@@ -87,6 +87,204 @@
         <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
       </Layer>
 
+      <!-- yyyy-MM-ddThh:mm:ssZ with interval notation -->
+      <Layer>
+        <Name>time_full_z_interval</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ssZ (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00:00Z">
+          2020-01-01T00:00:00Z/2020-12-31T23:59:59Z/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mm:ss with interval notation -->
+      <Layer>
+        <Name>time_full_noz_interval</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ss (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00:00">
+          2020-01-01T00:00:00/2020-12-31T23:59:59/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh:mm with interval notation -->
+      <Layer>
+        <Name>time_minute_interval</Name>
+        <Title>Time yyyy-MM-ddThh:mm (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00">
+          2020-01-01T00:00/2020-12-31T23:59/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-ddThh with interval notation -->
+      <Layer>
+        <Name>time_hour_interval</Name>
+        <Title>Time yyyy-MM-ddThh (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12">
+          2020-01-01T00/2020-12-31T23/PT1H
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM-dd with interval notation -->
+      <Layer>
+        <Name>time_day_interval</Name>
+        <Title>Time yyyy-MM-dd (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15">
+          2020-01-01/2020-12-31/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy-MM with interval notation -->
+      <Layer>
+        <Name>time_month_interval</Name>
+        <Title>Time yyyy-MM (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06">
+          2020-01/2020-12/P1M
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy with interval notation -->
+      <Layer>
+        <Name>time_year_interval</Name>
+        <Title>Time yyyy (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020">
+          1952/2025/P1Y
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- yyyy with discrete values -->
+      <Layer>
+        <Name>time_year_discrete</Name>
+        <Title>Time yyyy (discrete)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020">
+          2012,2013,2014,2015,2016,2017,2018,2019,2020
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Mixed: interval + discrete values (years) -->
+      <Layer>
+        <Name>time_mixed_year</Name>
+        <Title>Time yyyy (mixed interval + discrete)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020">
+          1990/2000/P1Y,2005,2010,2015/2020/P1Y,2022,2024
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Mixed: interval + discrete values (full datetime with Z) -->
+      <Layer>
+        <Name>time_mixed_full_z</Name>
+        <Title>Time yyyy-MM-ddThh:mm:ssZ (mixed)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00:00Z">
+          2020-01-01T00:00:00Z/2020-01-31T23:59:59Z/P1D,2020-03-15T12:00:00Z,2020-06-01T00:00:00Z/2020-06-30T23:59:59Z/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Mixed: interval + discrete values (days) -->
+      <Layer>
+        <Name>time_mixed_day</Name>
+        <Title>Time yyyy-MM-dd (mixed)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15">
+          2020-01-01/2020-01-31/P1D,2020-03-15,2020-05-01,2020-06-01/2020-06-30/P1D,2020-12-25
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Mixed: multiple intervals only -->
+      <Layer>
+        <Name>time_multiple_intervals</Name>
+        <Title>Time yyyy-MM-dd (multiple intervals)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15">
+          2020-01-01/2020-02-28/P1D,2020-04-01/2020-05-31/P1D,2020-07-01/2020-08-31/P1D
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Mixed: hours with interval and discrete -->
+      <Layer>
+        <Name>time_mixed_hour</Name>
+        <Title>Time yyyy-MM-ddThh (mixed)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12">
+          2020-01-01T00/2020-01-01T12/PT1H,2020-01-02T06,2020-01-03T00/2020-01-03T18/PT3H
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Mixed: months with gaps -->
+      <Layer>
+        <Name>time_mixed_month</Name>
+        <Title>Time yyyy-MM (mixed)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06">
+          2019-01/2019-06/P1M,2019-09,2019-12,2020-01/2020-12/P1M
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- Edge case: single discrete value -->
+      <Layer>
+        <Name>time_single_value</Name>
+        <Title>Time single value</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020-06-15T12:00:00Z">
+          2020-06-15T12:00:00Z
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+            <!-- Edge case: discrete values with spaces -->
+      <Layer>
+        <Name>time_discrete_spaces</Name>
+        <Title>Time discrete with spaces</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2020">
+          2018, 2019, 2020, 2021, 2022
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- 10-year period (decade) - discrete values -->
+      <Layer>
+        <Name>time_decade_discrete</Name>
+        <Title>Time 10-year period (discrete)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2010">
+          1980,1990,2000,2010,2020
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
+      <!-- 10-year period (decade) - interval notation -->
+      <Layer>
+        <Name>time_decade_interval</Name>
+        <Title>Time 10-year period (interval)</Title>
+        <CRS>EPSG:4326</CRS>
+        <Dimension name="time" units="ISO8601" default="2010">
+          1950/2020/P10Y
+        </Dimension>
+        <BoundingBox CRS="EPSG:4326" minx="-180" miny="-90" maxx="180" maxy="90"/>
+      </Layer>
+
     </Layer>
   </Capability>
 </WMS_Capabilities>
