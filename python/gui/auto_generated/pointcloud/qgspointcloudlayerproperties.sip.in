@@ -12,6 +12,8 @@
 
 
 
+
+
 class QgsPointCloudLayerProperties : QgsLayerPropertiesDialog
 {
 %Docstring(signature="appended")

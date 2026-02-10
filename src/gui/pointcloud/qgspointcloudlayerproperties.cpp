@@ -254,6 +254,8 @@ void QgsPointCloudLayerProperties::crsChanged( const QgsCoordinateReferenceSyste
   mMetadataWidget->crsChanged();
 }
 
+///@cond private
+
 //
 // QgsPointCloudAttributeStatisticsModel
 //
@@ -470,3 +472,5 @@ QVariant QgsPointCloudClassificationStatisticsModel::headerData( int section, Qt
   }
   return QVariant();
 }
+
+///@endcond private

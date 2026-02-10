@@ -33,13 +33,9 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsLayerPropertiesGuiUtils;
 
+///@cond private
+
 #ifndef SIP_RUN
-/**
- * \ingroup gui
- * \class QgsPointCloudAttributeStatisticsModel
- * \brief Model for point cloud attribute statistics
- * \since QGIS 4.0 in the GUI API
- */
 class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -65,12 +61,6 @@ class QgsPointCloudAttributeStatisticsModel : public QAbstractTableModel
     QgsPointCloudAttributeCollection mAttributes;
 };
 
-/**
- * \ingroup gui
- * \class QgsPointCloudClassificationStatisticsModel
- * \brief Model for point cloud Classification statistics.
- * \since QGIS 4.0 in the GUI API
- */
 class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -96,6 +86,8 @@ class QgsPointCloudClassificationStatisticsModel : public QAbstractTableModel
     QList<int> mClassifications;
 };
 #endif
+
+///@endcond private
 
 /**
  * \ingroup gui
