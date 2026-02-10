@@ -350,15 +350,6 @@ void QgsFieldMappingModel::setSourceFields( const QgsFields &sourceFields )
       usedFields.push_back( f.expression.mid( 1, f.expression.length() - 2 ) );
     }
   }
-  for ( auto it = mMapping.begin(); it != mMapping.end(); ++it )
-  {
-    if ( it->expression.isEmpty() )
-    {
-      const QString expression { findExpressionForDestinationField( *it, usedFields ) };
-      if ( !expression.isEmpty() )
-        it->expression = expression;
-    }
-  }
   endResetModel();
 }
 
@@ -396,13 +387,59 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
     }
     else
     {
-      const QString expression { findExpressionForDestinationField( f, usedFields ) };
-      if ( !expression.isEmpty() )
-        f.expression = expression;
+      f.expression = findExpressionForDestinationField( f, usedFields );
     }
     mMapping.push_back( f );
   }
   endResetModel();
+}
+
+void QgsFieldMappingModel::appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
+{
+  QStringList usedFields;
+  for ( const Field &existingField : mMapping )
+  {
+    const QgsExpression exp { existingField.expression };
+    if ( exp.isField() )
+    {
+      const QStringList referencedCols = qgis::setToList( exp.referencedColumns() );
+      if ( !referencedCols.isEmpty() && mSourceFields.names().contains( referencedCols.constFirst() ) )
+      {
+        usedFields.push_back( referencedCols.constFirst() );
+      }
+    }
+  }
+
+  const int startRow = mMapping.count();
+  beginInsertRows( QModelIndex(), startRow, startRow + destinationFields.count() - 1 );
+
+  for ( const QgsField &df : destinationFields )
+  {
+    Field f;
+    f.field = df;
+    f.field.setTypeName( qgsFieldToTypeName( df ) );
+    f.originalName = df.name();
+    if ( expressions.contains( f.field.name() ) )
+    {
+      f.expression = expressions.value( f.field.name() );
+      const QgsExpression exp { f.expression };
+      if ( exp.isField() )
+      {
+        const QStringList referencedCols = qgis::setToList( exp.referencedColumns() );
+        if ( !referencedCols.isEmpty() && mSourceFields.names().contains( referencedCols.constFirst() ) )
+        {
+          usedFields.push_back( referencedCols.constFirst() );
+        }
+      }
+    }
+    else
+    {
+      f.expression = findExpressionForDestinationField( f, usedFields );
+    }
+    mMapping.push_back( f );
+  }
+
+  endInsertRows();
 }
 
 bool QgsFieldMappingModel::destinationEditable() const

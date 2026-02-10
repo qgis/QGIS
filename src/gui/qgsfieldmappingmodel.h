@@ -163,6 +163,14 @@ class GUI_EXPORT QgsFieldMappingModel : public QAbstractTableModel
      */
     void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
+    /**
+     * Appends destination fields from \a destinationFields to the existing fields, initial values for the expressions can be
+     * optionally specified through \a expressions which is a map from the original
+     * field name to the corresponding expression.
+     * \since QGIS 3.42
+     */
+    void appendDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+
 
     // QAbstractItemModel interface
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
