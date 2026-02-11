@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "qgis_app.h"
+#include "qgsbeziermarker.h"
 #include "qgsgeometry.h"
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgspointlocator.h"
@@ -29,6 +30,7 @@
 class QRubberBand;
 
 class QgsGeometryValidator;
+class QgsNurbsCurve;
 class QgsVertexEditor;
 class QgsLockedFeature;
 class QgsSnapIndicator;
@@ -133,6 +135,16 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     void addDragStraightBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, bool moving0, bool moving1, const QgsPointXY &mapPoint );
 
     void addDragCircularBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, QgsPointXY v2, bool moving0, bool moving1, bool moving2, const QgsPointXY &mapPoint );
+
+    /**
+     * Adds a temporary rubber band for visualizing a NURBS curve being dragged.
+     * \param layer The vector layer containing the curve.
+     * \param nurbs The NURBS curve being dragged.
+     * \param localIdx The index of the control point being moved.
+     * \param mapPoint The current map position of the mouse.
+     * \since QGIS 4.0
+     */
+    void addDragNurbsBand( QgsVectorLayer *layer, const QgsNurbsCurve *nurbs, int localIdx, const QgsPointXY &mapPoint );
 
     void moveDragBands( const QgsPointXY &mapPoint );
 
@@ -310,6 +322,22 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! update the highlight of vertices from the locked feature
     void updateLockedFeatureVertices();
 
+    /**
+     * Applies the visual style to the control polygon rubber band.
+     * \param band The rubber band on which to apply the style.
+     * \since QGIS 4.0
+     */
+    void applyNurbsControlPolygonStyle( QgsRubberBand *band );
+
+    /**
+     * Transforms NURBS control points from layer to map coordinates.
+     * \param layer The vector layer
+     * \param controlPoints The control points to transform
+     * \returns Control points in map coordinates
+     * \since QGIS 4.0
+     */
+    QVector<QgsPointXY> transformNurbsControlPointsToMap( QgsVectorLayer *layer, const QgsPointSequence &controlPoints );
+
   private:
     QgsVertexEditor *vertexEditor();
 
@@ -381,16 +409,54 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
         void updateRubberBand( const QgsPointXY &mapPoint );
     };
 
+    //! structure to keep information about a rubber band used for dragging of a NURBS curve \since QGIS 4.0
+    struct NurbsBand
+    {
+        const QgsNurbsCurve *nurbs = nullptr; //!< NURBS curve pointer for identification
+        QgsRubberBand *curveBand = nullptr;   //!< Evaluated NURBS curve visualization
+        QgsRubberBand *controlBand = nullptr; //!< Control polygon
+        QVector<QgsPointXY> controlPoints;    //!< Control points in map coordinates
+        QVector<int> movingIndices;           //!< Indices of control points being dragged
+        QVector<QgsVector> offsets;           //!< Offset vectors from mouse cursor to each moving control point
+        int degree = 3;                       //!< NURBS curve degree
+        QVector<double> knots;                //!< Knot vector
+        QVector<double> weights;              //!< Weight vector for rational curves
+
+        //! Update geometry of the rubber bands on the current mouse cursor position (in map units)
+        void updateRubberBand( const QgsPointXY &mapPoint );
+
+        /**
+         * Update geometry of the rubber bands from pre-calculated control points.
+         * \param updatedControlPoints The control points to render
+         * \param customKnots Optional custom knot vector
+         * \param customWeights Optional custom weight vector
+         */
+        void updateRubberBandFromPoints( const QgsPointSequence &updatedControlPoints, const QVector<double> &customKnots = QVector<double>(), const QVector<double> &customWeights = QVector<double>() );
+    };
+
     //! list of active straight line rubber bands
     QList<StraightBand> mDragStraightBands;
     //! list of active rubber bands for circular segments
     QList<CircularBand> mDragCircularBands;
+    //! list of active rubber bands for NURBS curves \since QGIS 4.0
+    QList<NurbsBand> mDragNurbsBands;
+
+    //! rubber band for displaying NURBS control polygon in edit mode \since QGIS 4.0
+    QObjectUniquePtr<QgsRubberBand> mNurbsControlPolygonBand;
+    //! Visualization for Poly-Bézier curves \since QGIS 4.0
+    QObjectUniquePtr<QgsBezierMarker> mBezierMarker;
+
     //! instance of Vertex that is being currently moved or nothing
     std::unique_ptr<Vertex> mDraggingVertex;
     //! whether moving a vertex or adding one
     DraggingVertexType mDraggingVertexType = NotDragging;
     //! whether we are currently dragging an edge
     bool mDraggingEdge = false;
+
+    //! True when Alt+dragging a Poly-Bézier anchor for symmetric handle extension \since QGIS 4.0
+    bool mAltDragPolyBezierAnchor = false;
+    //! Index of the Poly-Bézier anchor being Alt+dragged (-1 if none) \since QGIS 4.0
+    int mAltDragAnchorIndex = -1;
 
     /**
      * list of Vertex instances of further vertices that are dragged together with
