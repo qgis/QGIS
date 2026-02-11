@@ -35,7 +35,7 @@ class QgsMessageBar;
  *
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsPointCloudRendererPropsDialogBase
+class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfigWidget, public QgsExpressionContextGenerator, private Ui::QgsPointCloudRendererPropsDialogBase
 {
     Q_OBJECT
 
@@ -52,6 +52,7 @@ class GUI_EXPORT QgsPointCloudRendererPropertiesWidget : public QgsMapLayerConfi
 
     void syncToLayer( QgsMapLayer *layer ) final;
     void setDockMode( bool dockMode ) final;
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 
