@@ -284,7 +284,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 QString QgsWmsSettings::parseTemporalFormat( const QString &extent )
 {
   if ( extent.isEmpty() )
-    return u""_s;
+    return QString();
 
   QString item = extent.split( ',' ).first().trimmed();
 
