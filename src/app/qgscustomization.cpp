@@ -46,6 +46,8 @@
 using namespace Qt::StringLiterals;
 
 #define CUSTOMIZATION_CURRENT_VERSION "1"
+#define USER_MENU_PROPERTY "__usermenu__"
+#define USER_TOOLBAR_PROPERTY "__usertoolbar__"
 
 QgsCustomization::QgsItem::QgsItem( QgsCustomization::QgsItem *parent )
   : mParent( parent )
@@ -1288,7 +1290,7 @@ void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *pa
   for ( QAction *action : widgetActions )
   {
     const QMenu *menu = action->menu();
-    if ( menu && menu->property( "__usermenu__" ).toBool() )
+    if ( menu && menu->property( USER_MENU_PROPERTY ).toBool() )
     {
       parentWidget->removeAction( action );
     }
@@ -1306,7 +1308,7 @@ void QgsCustomization::updateMenuActionVisibility( QgsCustomization::QgsItem *pa
     if ( QgsCustomization::QgsUserMenuItem *userMenu = dynamic_cast<QgsCustomization::QgsUserMenuItem *>( childItem.get() ) )
     {
       QMenu *menu = new QMenu( userMenu->title(), parentWidget );
-      menu->setProperty( "__usermenu__", true );
+      menu->setProperty( USER_MENU_PROPERTY, true );
       menu->setObjectName( userMenu->name() );
       parentWidget->addMenu( menu );
 
@@ -1415,7 +1417,7 @@ void QgsCustomization::applyToToolBars() const
     if ( !tb )
       continue;
 
-    if ( tb->property( "__usertoolbar__" ).toBool() )
+    if ( tb->property( USER_TOOLBAR_PROPERTY ).toBool() )
     {
       // delete old toolbar, will recreate it later
       QgisApp::instance()->removeToolBar( tb );
@@ -1431,10 +1433,11 @@ void QgsCustomization::applyToToolBars() const
 
   for ( const std::unique_ptr<QgsCustomization::QgsItem> &childItem : toolBarsItem()->childItemList() )
   {
-    if ( QgsCustomization::QgsUserToolBarItem *userToolBar = dynamic_cast<QgsCustomization::QgsUserToolBarItem *>( childItem.get() ) )
+    if ( QgsCustomization::QgsUserToolBarItem *userToolBar = dynamic_cast<QgsCustomization::QgsUserToolBarItem *>( childItem.get() );
+         userToolBar && userToolBar->isVisible() )
     {
       QToolBar *toolBar = new QToolBar( userToolBar->title(), QgisApp::instance() );
-      toolBar->setProperty( "__usertoolBar__", true );
+      toolBar->setProperty( USER_TOOLBAR_PROPERTY, true );
       toolBar->setObjectName( userToolBar->name() );
       QgisApp::instance()->addToolBar( toolBar );
 

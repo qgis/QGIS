@@ -43,7 +43,7 @@ using namespace Qt::StringLiterals;
 #include <QAbstractItemModelTester>
 #endif
 
-constexpr int TOOLBAR_COLUMN = 4;
+constexpr int TOOLBAR_ROW = 4;
 
 const QgsSettingsEntryString *QgsCustomizationDialog::sSettingLastSaveDir = new QgsSettingsEntryString( u"last-save-directory"_s, sTreeCustomization, QDir::homePath(), u"Last directory used when saving a customization XML file"_s );
 
@@ -732,7 +732,7 @@ bool QgsCustomizationDialog::selectWidget( QWidget *widget )
   }
 
   QModelIndexList items = mItemsVisibilityModel->match(
-    mItemsVisibilityModel->index( TOOLBAR_COLUMN, 0 ),
+    mItemsVisibilityModel->index( TOOLBAR_ROW, 0 ),
     Qt::DisplayRole,
     widgetName,
     2,
