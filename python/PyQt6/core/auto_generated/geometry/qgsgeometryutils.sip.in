@@ -1495,6 +1495,26 @@ triangle defined by points a, b, and c.
 :return: The interpolated Z value at the specified (x, y) location.
 %End
 
+    static bool isGeometryCoplanar( const QgsAbstractGeometry *geom, double tolerance = 1e-8 );
+%Docstring
+Returns whether a 3D geometry is coplanar.
+
+Empty, 2D geometries or geometries with fewer than three vertices are
+not considered coplanar.
+
+:param geom: geometry to test
+:param tolerance: numerical tolerance used for the point-to-plane
+                  distance check
+
+:return: true if all vertices are coplanar, false otherwise
+
+.. note::
+
+   This function does not handle geometry collections.
+
+.. versionadded:: 4.0
+%End
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

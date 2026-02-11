@@ -28,6 +28,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestring.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
+#include "qgsvector3d.h"
 #include "qgsvertexid.h"
 #include "qgswkbptr.h"
 
@@ -1897,3 +1898,47 @@ double QgsGeometryUtils::interpolateZ( const QgsPoint &a, const QgsPoint &b, con
 
   return w1 * z1 + w2 * z2 + w3 * z3;
 };
+
+bool QgsGeometryUtils::isGeometryCoplanar( const QgsAbstractGeometry *geom, double tolerance )
+{
+  if ( !geom || !geom->is3D() || geom->nCoordinates() < 3  || qgsgeometry_cast< const QgsGeometryCollection * >( geom ) )
+  {
+    return false;
+  }
+
+  if ( geom->nCoordinates() == 3 )
+  {
+    return true;
+  }
+
+  // look for a plane
+  QgsPoint pt1;
+  QgsPoint pt2;
+  QgsPoint pt3;
+  const bool planeFound = QgsGeometryUtils::checkWeaklyFor3DPlane( geom, pt1, pt2, pt3, tolerance );
+  if ( !planeFound )
+  {
+    return false;
+  }
+
+  // Compute the plane equation
+  const QgsVector3D v1 = QgsVector3D( pt2.x() - pt1.x(), pt2.y() - pt1.y(),  pt2.z() - pt1.z() );
+  const QgsVector3D v2 = QgsVector3D( pt3.x() - pt1.x(), pt3.y() - pt1.y(),  pt3.z() - pt1.z() );
+  QgsVector3D normal = QgsVector3D::crossProduct( v1, v2 );
+  normal.normalize();
+  const double d = -QgsVector3D::dotProduct( normal, QgsVector3D( pt1.x(), pt1.y(), pt1.z() ) );
+
+  // check that the points belong to the plane
+  QgsVertexIterator vertexIt = geom->vertices();
+  while ( vertexIt.hasNext() )
+  {
+    const QgsPoint currentPoint = vertexIt.next();
+    const double distance = std::abs( QgsVector3D::dotProduct( normal, QgsVector3D( currentPoint.x(), currentPoint.y(), currentPoint.z() ) ) + d );
+    if ( distance > tolerance )
+    {
+      return false;
+    }
+  }
+
+  return true;
+}

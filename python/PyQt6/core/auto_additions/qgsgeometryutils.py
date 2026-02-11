@@ -75,6 +75,7 @@ try:
     QgsGeometryUtils.filletVertex = staticmethod(QgsGeometryUtils.filletVertex)
     QgsGeometryUtils.checkWeaklyFor3DPlane = staticmethod(QgsGeometryUtils.checkWeaklyFor3DPlane)
     QgsGeometryUtils.interpolateZ = staticmethod(QgsGeometryUtils.interpolateZ)
+    QgsGeometryUtils.isGeometryCoplanar = staticmethod(QgsGeometryUtils.isGeometryCoplanar)
     QgsGeometryUtils.__group__ = ['geometry']
 except (NameError, AttributeError):
     pass
