@@ -172,6 +172,33 @@ Item {
               }
 
               Menu {
+                id: templateProjectsMenu
+                
+                property int projectIndex: 0
+                
+                background: Rectangle {
+                  implicitWidth: 200
+                  implicitHeight: templateProjectsMenu.Material.menuItemHeight
+                  radius: templateProjectsMenu.Material.roundedScale
+                  color: templateProjectsMenu.Material.dialogColor
+                  border.color: templateProjectsMenu.Material.listHighlightColor
+                  border.width: 1
+                }
+                
+                MenuItem {
+                  text: qsTr("Delete Template…")
+                  onClicked: {
+                    welcomeScreenController.removeTemplateProject(templateProjectsMenu.projectIndex)
+                  }
+                  background: Rectangle {
+                    implicitWidth: 200
+                    implicitHeight: parent.Material.menuItemHeight
+                    color: parent.highlighted ? parent.Material.listHighlightColor : "transparent"
+                  }
+                }
+              }
+
+              Menu {
                 id: recentProjectsMenu
 
                 property int projectIndex: 0
@@ -179,7 +206,14 @@ Item {
                 property bool projectExists: false
                 property bool projectHasNativePath: false
 
-                background.layer.enabled: false
+                background: Rectangle {
+                  implicitWidth: 200
+                  implicitHeight: templateProjectsMenu.Material.menuItemHeight
+                  radius: templateProjectsMenu.Material.roundedScale
+                  color: templateProjectsMenu.Material.dialogColor
+                  border.color: templateProjectsMenu.Material.listHighlightColor
+                  border.width: 1
+                }
                 
                 MenuItem {
                   text: recentProjectsMenu.projectPinned? qsTr("Unpin from List") : qsTr("Pin to List")
@@ -276,17 +310,26 @@ Item {
                 isSelected: templatesListView.currentIndex === index
                 radius: 6
 
-                onClicked: {
-                  switch (Type) {
-                  case TemplateProjectsModel.TemplateType.Blank:
-                    welcomeScreenController.createBlankProject(); //#spellok
-                    return;
-                  case TemplateProjectsModel.TemplateType.Basemap:
-                    welcomeScreenController.createProjectFromBasemap();
-                    return;
-                  default:
-                    welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
-                    return;
+                onClicked: (mouse) => {
+                  if (mouse.button == Qt.LeftButton) {
+                    switch (Type) {
+                    case TemplateProjectsModel.TemplateType.Blank:
+                      welcomeScreenController.createBlankProject(); //#spellok
+                      return;
+                    case TemplateProjectsModel.TemplateType.Basemap:
+                      welcomeScreenController.createProjectFromBasemap();
+                      return;
+                    default:
+                      welcomeScreenController.createProjectFromTemplate(TemplateNativePath || ""); //#spellok
+                      return;
+                    }
+                  } else if (mouse.button == Qt.RightButton) {
+                    if (Type == TemplateProjectsModel.TemplateType.File && Writable) {
+                      templateProjectsMenu.projectIndex = index;
+                      
+                      const point = mapToItem(templatesListView, mouse.x, mouse.y);
+                      templateProjectsMenu.popup(point.x, point.y);
+                    }
                   }
                 }
               }

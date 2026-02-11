@@ -54,6 +54,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   setColumnCount( 1 );
 
   QStandardItem *emptyProjectItem = new QStandardItem();
+  emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Blank ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "Blank" ), static_cast<int>( CustomRole::TitleRole ) );
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, [emptyProjectItem]() { emptyProjectItem->setData( QgsProject::instance()->crs().userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) ); } );
@@ -62,6 +63,7 @@ QgsTemplateProjectsModel::QgsTemplateProjectsModel( QObject *parent )
   appendRow( emptyProjectItem );
 
   emptyProjectItem = new QStandardItem();
+  emptyProjectItem->setData( false, static_cast<int>( CustomRole::WritableRole ) );
   emptyProjectItem->setData( static_cast<int>( TemplateType::Basemap ), static_cast<int>( CustomRole::TypeRole ) );
   emptyProjectItem->setData( tr( "OpenStreetMap Basemap" ), static_cast<int>( CustomRole::TitleRole ) );
   emptyProjectItem->setData( QgsCoordinateReferenceSystem( u"EPSG:3857"_s ).userFriendlyIdentifier(), static_cast<int>( CustomRole::CrsRole ) );
@@ -78,6 +80,7 @@ QHash<int, QByteArray> QgsTemplateProjectsModel::roleNames() const
   roles[static_cast<int>( CustomRole::NativePathRole )] = "TemplateNativePath"; //#spellok
   roles[static_cast<int>( CustomRole::CrsRole )] = "Crs";
   roles[static_cast<int>( CustomRole::PreviewImagePathRole )] = "PreviewImagePath";
+  roles[static_cast<int>( CustomRole::WritableRole )] = "Writable";
   return roles;
 }
 
@@ -108,6 +111,7 @@ void QgsTemplateProjectsModel::scanDirectory( const QString &path )
   for ( const QFileInfo &file : files )
   {
     auto item = std::make_unique<QStandardItem>( file.fileName() );
+    item->setData( file.isWritable(), static_cast<int>( CustomRole::WritableRole ) );
     item->setData( static_cast<int>( TemplateType::File ), static_cast<int>( CustomRole::TypeRole ) );
 
     const QString fileId = QCryptographicHash::hash( file.filePath().toUtf8(), QCryptographicHash::Sha224 ).toHex();

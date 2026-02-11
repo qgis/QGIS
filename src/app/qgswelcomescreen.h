@@ -45,6 +45,8 @@ class QgsWelcomeScreenController : public QObject
 
     Q_INVOKABLE void clearRecentProjects();
 
+    Q_INVOKABLE void removeTemplateProject( int row );
+
     Q_INVOKABLE void showPluginManager();
 
     Q_INVOKABLE void hideScene();
@@ -106,6 +108,7 @@ class QgsWelcomeScreen : public QQuickWidget
 
   public slots:
     void clearRecentProjects();
+    void removeTemplateProject( int row );
     void pluginUpdatesAvailableReceived( const QStringList &plugins );
 
   signals:
