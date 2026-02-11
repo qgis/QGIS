@@ -113,6 +113,10 @@ class GUI_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
 
     void attributesListCellChanged( int row, int column );
     void attributesListCellPressed( int row, int column );
+
+    void applyToLayer( QgsVectorLayer *layer );
+
+    friend class QgsAttributesFormProperties;
 };
 
 #endif // QGSSOURCEFIELDSPROPERTIES_H

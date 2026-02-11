@@ -16,15 +16,19 @@
 
 #include "qgsvectortileconnection.h"
 
+#include <QString>
+
 #include "moc_qgsvectortiledataitems.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QgsVectorTileRootItem::QgsVectorTileRootItem( QgsDataItem *parent, QString name, QString path )
-  : QgsConnectionsRootItem( parent, name, path, QStringLiteral( "vectortile" ) )
+  : QgsConnectionsRootItem( parent, name, path, u"vectortile"_s )
 {
   mCapabilities |= Qgis::BrowserItemCapability::Fast;
-  mIconName = QStringLiteral( "mIconVectorTileLayer.svg" );
+  mIconName = u"mIconVectorTileLayer.svg"_s;
   populate();
 }
 
@@ -49,7 +53,7 @@ QgsVectorTileLayerItem::QgsVectorTileLayerItem( QgsDataItem *parent, QString nam
   : QgsLayerItem( parent, name, path, encodedUri, Qgis::BrowserLayerType::VectorTile, QString() )
 {
   setState( Qgis::BrowserItemState::Populated );
-  mIconName = QStringLiteral( "mIconVectorTileLayer.svg" );
+  mIconName = u"mIconVectorTileLayer.svg"_s;
 }
 
 
@@ -57,12 +61,12 @@ QgsVectorTileLayerItem::QgsVectorTileLayerItem( QgsDataItem *parent, QString nam
 
 QString QgsVectorTileDataItemProvider::name()
 {
-  return QStringLiteral( "Vector Tiles" );
+  return u"Vector Tiles"_s;
 }
 
 QString QgsVectorTileDataItemProvider::dataProviderKey() const
 {
-  return QStringLiteral( "vectortile" );
+  return u"vectortile"_s;
 }
 
 Qgis::DataItemProviderCapabilities QgsVectorTileDataItemProvider::capabilities() const
@@ -73,7 +77,7 @@ Qgis::DataItemProviderCapabilities QgsVectorTileDataItemProvider::capabilities()
 QgsDataItem *QgsVectorTileDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
-    return new QgsVectorTileRootItem( parentItem, QObject::tr( "Vector Tiles" ), QStringLiteral( "vectortile:" ) );
+    return new QgsVectorTileRootItem( parentItem, QObject::tr( "Vector Tiles" ), u"vectortile:"_s );
   return nullptr;
 }
 

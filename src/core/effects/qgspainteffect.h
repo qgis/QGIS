@@ -25,6 +25,9 @@
 #include <QDomElement>
 #include <QPainter>
 #include <QPicture>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsRenderContext;
 
@@ -344,7 +347,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     static QgsPaintEffect *create( const QVariantMap &map ) SIP_FACTORY;
 
     Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "drawSource" ); }
+    QString type() const override { return u"drawSource"_s; }
     QgsDrawSourceEffect *clone() const override SIP_FACTORY;
     QVariantMap properties() const override;
 

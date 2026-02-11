@@ -24,6 +24,10 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsPoint;
 class QgsCircle;
 class QgsBox3D;
@@ -179,11 +183,11 @@ class CORE_EXPORT QgsSphere
     QString str;
     if ( sipCpp->isNull() )
     {
-      str = QStringLiteral( "<QgsSphere: null>" ).arg( sipCpp->centerX() ).arg( sipCpp->centerY() ).arg( sipCpp->centerZ() ).arg( sipCpp->radius() );
+      str = u"<QgsSphere: null>"_s.arg( sipCpp->centerX() ).arg( sipCpp->centerY() ).arg( sipCpp->centerZ() ).arg( sipCpp->radius() );
     }
     else
     {
-      str = QStringLiteral( "<QgsSphere: (%1, %2, %3) radius %4>" ).arg( sipCpp->centerX() ).arg( sipCpp->centerY() ).arg( sipCpp->centerZ() ).arg( sipCpp->radius() );
+      str = u"<QgsSphere: (%1, %2, %3) radius %4>"_s.arg( sipCpp->centerX() ).arg( sipCpp->centerY() ).arg( sipCpp->centerZ() ).arg( sipCpp->radius() );
     }
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End

@@ -21,6 +21,9 @@
 
 #include <QLocale>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   : QgsMapCanvasItem( canvas )
@@ -108,7 +111,7 @@ void QgsPointRotationItem::setSymbol( const QImage &symbolImage )
   const QFontMetricsF fm( mFont );
 
   //set item size: 6283 millirad arcseconds = 360°
-  mItemSize.setWidth( mPixmap.width() + fm.horizontalAdvance( QStringLiteral( "6283 millirad" ) ) );
+  mItemSize.setWidth( mPixmap.width() + fm.horizontalAdvance( u"6283 millirad"_s ) );
   const double pixmapHeight = mPixmap.height();
   const double fontHeight = fm.height();
   if ( pixmapHeight >= fontHeight )

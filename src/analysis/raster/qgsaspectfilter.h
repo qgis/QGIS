@@ -21,6 +21,10 @@
 #include "qgis_analysis.h"
 #include "qgsderivativefilter.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup analysis
  * \brief Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
@@ -39,7 +43,7 @@ class ANALYSIS_EXPORT QgsAspectFilter : public QgsDerivativeFilter
   private:
     const QString openClProgramBaseName() const override
     {
-      return QStringLiteral( "aspect" );
+      return u"aspect"_s;
     }
 #endif
 };

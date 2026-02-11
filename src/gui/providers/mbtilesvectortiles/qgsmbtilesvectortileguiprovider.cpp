@@ -17,6 +17,10 @@
 
 #include "qgsmbtilesvectortileguiprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 #include <QList>
@@ -53,7 +57,7 @@ bool QgsMbtilesVectorTileSourceWidgetProvider::canHandleLayer( QgsMapLayer *laye
     QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
     layer->source()
   );
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return false;
 
   return true;
@@ -69,7 +73,7 @@ QgsProviderSourceWidget *QgsMbtilesVectorTileSourceWidgetProvider::createWidget(
     layer->source()
   );
 
-  if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
+  if ( parts.value( u"path"_s ).toString().isEmpty() )
     return nullptr;
 
   return new QgsMbtilesVectorTileSourceWidget( parent );

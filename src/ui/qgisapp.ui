@@ -382,6 +382,7 @@
      </property>
      <addaction name="mActionMoveFeature"/>
      <addaction name="mActionMoveFeatureCopy"/>
+     <addaction name="mActionFeatureArray"/>
      <addaction name="mActionRotateFeature"/>
      <addaction name="mActionScaleFeature"/>
      <addaction name="mActionSimplifyFeature"/>
@@ -806,6 +807,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionSelectAnnotation"/>
    <addaction name="mActionModifyAnnotation"/>
   </widget>
   <action name="mActionNewProject">
@@ -3307,13 +3309,28 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>New Annotation Layer</string>
    </property>
   </action>
-  <action name="mActionModifyAnnotation">
+  <action name="mActionSelectAnnotation">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionSelect.svg</normaloff>:/images/themes/default/mActionSelect.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Select Annotations</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Annotations</string>
+   </property>
+  </action>
+  <action name="mActionModifyAnnotation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionEditNodesItem.svg</normaloff>:/images/themes/default/mActionEditNodesItem.svg</iconset>
    </property>
    <property name="text">
     <string>Modify Annotations</string>
@@ -3371,6 +3388,21 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
     <string>Digitize Shape</string>
    </property>
   </action>
+  <action name="mActionDigitizeWithNurbs">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDigitizeWithNURBS.svg</normaloff>:/images/themes/default/mActionDigitizeWithNURBS.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Digitize with NURBS Curve</string>
+   </property>
+   <property name="toolTip">
+    <string>Digitizes NURBS curves with control points</string>
+   </property>
+  </action>
   <action name="mActionElevationProfile">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
@@ -3381,6 +3413,9 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Create a new interactive elevation profile chart</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+E</string>
    </property>
   </action>
   <action name="mActionDonate">
@@ -3445,6 +3480,17 @@ Shows placeholders for labels which could not be placed, e.g. due to overlaps wi
    </property>
    <property name="toolTip">
     <string>Manage Elevation Profiles</string>
+   </property>
+  </action>
+  <action name="mActionFeatureArray">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Copy features in an array</string>
+   </property>
+   <property name="toolTip">
+    <string>Copies a feature and distributes the copies at regular intervals along a reference line</string>
    </property>
   </action>
  </widget>

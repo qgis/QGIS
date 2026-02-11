@@ -17,6 +17,9 @@
 
 struct QgsInterpolatorVertexData
 {
+%TypeHeaderCode
+#include "qgsinterpolator.h"
+%End
     QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
 Constructor for QgsInterpolatorVertexData with the specified ``x``,

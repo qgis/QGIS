@@ -30,8 +30,11 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QString>
 
 #include "moc_qgsmapthemes.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapThemes *QgsMapThemes::sInstance;
 
@@ -223,5 +226,5 @@ void QgsMapThemes::menuAboutToShow()
 
 void QgsMapThemes::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#configuring-map-themes" ) );
+  QgsHelp::openHelp( u"introduction/general_tools.html#configuring-map-themes"_s );
 }

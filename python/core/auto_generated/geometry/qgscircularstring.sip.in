@@ -10,6 +10,7 @@
 
 
 
+
 class QgsCircularString: QgsCurve
 {
 %Docstring(signature="appended")
@@ -180,6 +181,8 @@ circular string.
     virtual bool pointAt( int node, QgsPoint &point, Qgis::VertexType &type ) const;
 
     virtual void sumUpArea( double &sum /Out/ ) const;
+
+    virtual void sumUpArea3D( double &sum /Out/ ) const;
 
     virtual bool hasCurvedSegments() const;
 

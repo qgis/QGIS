@@ -29,13 +29,16 @@ jobs:
             osx-architecture: "arm64"
     name: build (macos)
     runs-on: ${{ matrix.os }}
+    env:
+      FC: gfortran
+      GCC_VERSION: 15
 
     steps:
       - name: 🐣 Checkout
         uses: actions/checkout@v6
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1 # latest
+        uses: lukka/get-cmake@f176ccd3f28bda569c43aae4894f06b2435a3375 # latest
         with:
           # Pin to specific version to avoid rebuilding too often
           # Also helps to avoid spurious build failures like https://github.com/qgis/QGIS/pull/47098
@@ -55,6 +58,28 @@ jobs:
           echo $(brew --prefix bison)/bin >> $GITHUB_PATH
           echo $(brew --prefix flex)/bin >> $GITHUB_PATH
           echo $(brew --prefix libtool)/bin >> $GITHUB_PATH
+
+      - name: Symlink gfortran (macOS)
+        if: matrix.os == 'macos-14'
+        run: |
+          # make sure gfortran is available
+          # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+          # https://github.com/actions/runner-images/issues/3371
+          # ln version - new path 'MacOS14'
+          sudo ln -fs /opt/homebrew/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
+          sudo mkdir -p /usr/local/gfortran
+          sudo ln -sf /opt/homebrew/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
+
+      - name: Symlink gfortran (macOS-intel)
+        if: matrix.os == 'macos-14-intel'
+        run: |
+          # make sure gfortran is available
+          # https://github.com/actions/runner-images/blob/main/images/macos/macos-14-Readme.md
+          # https://github.com/actions/runner-images/issues/3371
+          # ln version - new path 'MacOS14'
+          sudo ln -fs /usr/local/bin/gfortran-${GCC_VERSION} /usr/local/bin/gfortran
+          sudo mkdir -p /usr/local/gfortran
+          sudo ln -sf /usr/local/Cellar/gcc@${GCC_VERSION}/*/lib/gcc/${GCC_VERSION} /usr/local/gfortran/lib
 
       - uses: actions/setup-python@v6
         with:
@@ -111,7 +136,7 @@ jobs:
                 cmake -D VCPKG_INSTALL_OPTIONS="" build
 
       - name: 📑 Upload vcpkg build logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: build-logs-${{ matrix.triplet }}
@@ -125,7 +150,7 @@ jobs:
 
       - name: 📤 Upload sdk
         if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: qgis-sdk-${{ matrix.triplet }}
           path: |
@@ -143,7 +168,7 @@ jobs:
           gtar -cpvzf qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}.tar.gz ./build/_CPack_Packages/Darwin/External/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-${{ matrix.triplet }}
           path: |
@@ -167,7 +192,7 @@ jobs:
         uses: ./.github/actions/get-workflow-artifact-ids
 
       - name: 📤 Download app
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: qgis-app-${{steps.workflow-artifact-ids.outputs.filename}}-*
           path: |
@@ -199,7 +224,7 @@ jobs:
             universal/*/*.app
 
       - name: 📤 Upload app
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         id: artifact-mac-qt6
         with:
           name: qgis-${{steps.workflow-artifact-ids.outputs.filename}}-dmg

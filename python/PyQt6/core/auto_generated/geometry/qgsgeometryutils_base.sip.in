@@ -14,6 +14,11 @@ class QgsGeometryUtilsBase
 %Docstring(signature="appended")
 Convenience functions for geometry utils.
 
+.. note::
+
+   This class contains the low-level mathematical implementations using primitive types (like double),
+   avoiding the use of QGIS geometry classes (like :py:class:`QgsPoint`).
+
 .. versionadded:: 3.34
 %End
 
@@ -82,6 +87,7 @@ If the return value is 0, then the test was unsuccessful (e.g. due to
 testing a point exactly on the line, or exactly in line with the
 segment) and the result is undefined.
 %End
+
 
 
     static void perpendicularOffsetPointAlongSegment( double x1, double y1, double x2, double y2, double proportion, double offset, double *x /Out/, double *y /Out/ );
@@ -545,6 +551,37 @@ and is retrieved from the first 3D point amongst ``p1`` and ``p2``.
 :return: - Whether the lines intersect
          - intersectionX: x-coordinate of the intersection point
          - intersectionY: y-coordinate of the intersection point
+%End
+
+    static bool intersectionPointOfLinesByBearing( double x1, double y1, double bearing1,
+        double x2, double y2, double bearing2,
+        double &intersectionX /Out/, double &intersectionY /Out/ ) /HoldGIL/;
+%Docstring
+Calculates the intersection point of two lines defined by point and
+bearing.
+
+Each line is defined by a point and a bearing (azimuth). The bearing is
+measured clockwise from north in radians.
+
+:param x1: x-coordinate of the first point
+:param y1: y-coordinate of the first point
+:param bearing1: bearing from the first point in radians (clockwise from
+                 north)
+:param x2: x-coordinate of the second point
+:param y2: y-coordinate of the second point
+:param bearing2: bearing from the second point in radians (clockwise
+                 from north)
+
+:return: - ``True`` if an intersection was found, ``False`` if the lines
+           are parallel
+         - intersectionX: the X coordinate of the intersection point
+         - intersectionY: the Y coordinate of the intersection point
+
+.. seealso:: :py:func:`lineIntersection`
+
+.. seealso:: :py:func:`azimuth`
+
+.. versionadded:: 4.0
 %End
 
     static bool segmentIntersection( double p1x, double p1y, double p2x, double p2y, double q1x, double q1y, double q2x, double q2y, double &intersectionPointX /Out/, double &intersectionPointY /Out/, bool &isIntersection /Out/, double tolerance = 1e-8, bool acceptImproperIntersection = false ) /HoldGIL/;

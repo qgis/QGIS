@@ -35,10 +35,13 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QString>
 #include <QStringList>
 #include <QStyledItemDelegate>
 
 #include "moc_qgshanasourceselect.cpp"
+
+using namespace Qt::StringLiterals;
 
 //! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsHanaSourceSelectDelegate::createEditor(
@@ -140,7 +143,7 @@ void QgsHanaSourceSelectDelegate::setModelData(
           cols << item->text();
       }
 
-      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( QLatin1String( ", " ) ) );
+      model->setData( index, cols.isEmpty() ? tr( "Select…" ) : cols.join( ", "_L1 ) );
       model->setData( index, cols, Qt::UserRole + 2 );
     }
   }
@@ -231,14 +234,14 @@ QgsHanaSourceSelect::QgsHanaSourceSelect(
   connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsHanaSourceSelect::treeWidgetSelectionChanged );
 
   const QgsSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( QStringLiteral( "qgis/addHanaDC" ), false ).toBool() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
+  mTablesTreeView->setSelectionMode( settings.value( u"qgis/addHanaDC"_s, false ).toBool() ? QAbstractItemView::ExtendedSelection : QAbstractItemView::MultiSelection );
 
-  restoreGeometry( settings.value( QStringLiteral( "Windows/HanaSourceSelect/geometry" ) ).toByteArray() );
-  mHoldDialogOpen->setChecked( settings.value( QStringLiteral( "Windows/HanaSourceSelect/HoldDialogOpen" ), false ).toBool() );
+  restoreGeometry( settings.value( u"Windows/HanaSourceSelect/geometry"_s ).toByteArray() );
+  mHoldDialogOpen->setChecked( settings.value( u"Windows/HanaSourceSelect/HoldDialogOpen"_s, false ).toBool() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    mTablesTreeView->setColumnWidth( i, settings.value( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+    mTablesTreeView->setColumnWidth( i, settings.value( u"Windows/HanaSourceSelect/columnWidths/%1"_s.arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
 
   cbxAllowGeometrylessTables->setDisabled( true );
@@ -326,7 +329,7 @@ void QgsHanaSourceSelect::cbxAllowGeometrylessTables_stateChanged( int )
 void QgsHanaSourceSelect::treeviewDoubleClicked( const QModelIndex &index )
 {
   const QgsSettings settings;
-  if ( settings.value( QStringLiteral( "qgis/addHANADC" ), false ).toBool() )
+  if ( settings.value( u"qgis/addHANADC"_s, false ).toBool() )
     addButtonClicked();
   else
     setSql( index );
@@ -347,12 +350,12 @@ QgsHanaSourceSelect::~QgsHanaSourceSelect()
   }
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
+  settings.setValue( u"Windows/HanaSourceSelect/geometry"_s, saveGeometry() );
+  settings.setValue( u"Windows/HanaSourceSelect/HoldDialogOpen"_s, mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel->columnCount(); i++ )
   {
-    settings.setValue( QStringLiteral( "Windows/HanaSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( u"Windows/HanaSourceSelect/columnWidths/%1"_s.arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -405,7 +408,7 @@ void QgsHanaSourceSelect::addButtonClicked()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "hana" ) );
+    emit addDatabaseLayers( mSelectedTables, u"hana"_s );
     if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::Standalone )
       accept();
   }
@@ -509,7 +512,7 @@ void QgsHanaSourceSelect::setSql( const QModelIndex &index )
 
   const QString tableName = mTableModel->itemFromIndex( index.sibling( index.row(), QgsHanaTableModel::DbtmTable ) )->text();
 
-  QgsVectorLayer vlayer( uri, tableName, QStringLiteral( "hana" ) );
+  QgsVectorLayer vlayer( uri, tableName, u"hana"_s );
   if ( !vlayer.isValid() )
     return;
 
@@ -547,5 +550,5 @@ void QgsHanaSourceSelect::treeWidgetSelectionChanged(
 
 void QgsHanaSourceSelect::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
+  QgsHelp::openHelp( u"managing_data_source/opening_data.html#loading-a-database-layer"_s );
 }

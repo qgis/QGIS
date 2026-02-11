@@ -29,8 +29,11 @@
 #include <QMap>
 #include <QNetworkRequest>
 #include <QSet>
+#include <QString>
 #include <QStringList>
 #include <QVector>
+
+using namespace Qt::StringLiterals;
 
 class QNetworkReply;
 
@@ -384,7 +387,7 @@ struct QgsWmsLayerProperty
    */
     QString preferredAvailableCrs() const
     {
-      static QSet<QString> sSkipList { QStringLiteral( "EPSG:900913" ) };
+      static QSet<QString> sSkipList { u"EPSG:900913"_s };
       for ( const QString &candidate : crs )
       {
         if ( sSkipList.contains( candidate ) )

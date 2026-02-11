@@ -166,7 +166,8 @@ CMAKE_OPTS := \
 	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
 	-DPUSH_TO_CDASH=TRUE \
 	-DQT_PLUGINS_DIR=lib/$(DEB_BUILD_MULTIARCH)/qt6/plugins \
-	-DWITH_SFCGAL=TRUE
+	-DWITH_SFCGAL=TRUE \
+	-DWITH_GEOGRAPHICLIB=TRUE
 
 ifneq (,$(filter $(DISTRIBUTION),trixie plucky questing sid))
 	CMAKE_OPTS += -DWITH_INTERNAL_SPATIALINDEX=TRUE
@@ -178,7 +179,6 @@ endif
 
 ifneq (,$(filter $(GRASSVER),7 8))
 	CMAKE_OPTS += \
-		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS$(GRASSVER)=TRUE \
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
@@ -274,7 +274,7 @@ else
 endif
 
 ifneq (,$(filter apidoc,$(CONTROL_EXPRESSIONS)))
-	ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
+	PATH=/usr/lib/qt6/libexec:$(PATH) ninja $(NINJA_OPTS) -C $(QGIS_BUILDDIR) apidoc
 endif
 
 override_dh_auto_test: test-stamp

@@ -29,6 +29,9 @@
 #include "qgsmeshvirtualdatasetgroup.h"
 
 #include <QFileInfo>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       const QString &outputFile,
@@ -37,7 +40,7 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       double endTime,
                                       QgsMeshLayer *layer )
   : mFormulaString( formulaString )
-  , mOutputDriver( QStringLiteral( "DAT" ) )
+  , mOutputDriver( u"DAT"_s )
   , mOutputFile( outputFile )
   , mOutputExtent( outputExtent )
   , mStartTime( startTime )
@@ -55,7 +58,7 @@ QgsMeshCalculator::QgsMeshCalculator( const QString &formulaString,
                                       double endTime,
                                       QgsMeshLayer *layer )
   : mFormulaString( formulaString )
-  , mOutputDriver( QStringLiteral( "DAT" ) )
+  , mOutputDriver( u"DAT"_s )
   , mOutputFile( outputFile )
   , mOutputMask( outputMask )
   , mUseMask( true )
@@ -181,7 +184,7 @@ QgsMeshCalculator::Result QgsMeshCalculator::processCalculation( QgsFeedback *fe
 
   if ( !mMeshLayer ||
        !mMeshLayer->dataProvider() ||
-       mMeshLayer->providerType() != QStringLiteral( "mdal" )
+       mMeshLayer->providerType() != u"mdal"_s
      )
   {
     return CreateOutputError;

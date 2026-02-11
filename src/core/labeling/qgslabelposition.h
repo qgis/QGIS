@@ -23,6 +23,9 @@
 #include "qgsrectangle.h"
 
 #include <QFont>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -76,7 +79,7 @@ class CORE_EXPORT QgsLabelPosition
     SIP_PYOBJECT __repr__();
     % MethodCode
     const QString text = sipCpp->labelText;
-    QString str = QStringLiteral( "<QgsLabelPosition: \"%1\"%2>" ).arg( text, sipCpp->isUnplaced ? QStringLiteral( " (unplaced)" ) : QString() );
+    QString str = u"<QgsLabelPosition: \"%1\"%2>"_s.arg( text, sipCpp->isUnplaced ? u" (unplaced)"_s : QString() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

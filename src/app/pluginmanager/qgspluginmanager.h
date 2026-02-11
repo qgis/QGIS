@@ -32,21 +32,14 @@
 #include <QStandardItemModel>
 #include <QString>
 
+using namespace Qt::StringLiterals;
+
 class QgsPluginSortFilterProxyModel;
 class QgsPythonUtils;
 class QgsMessageBar;
 class QgsSettingsEntryBool;
 class QgsSettingsEntryVariant;
 class QgsSettingsEntryStringList;
-
-const int PLUGMAN_TAB_ALL = 0;
-const int PLUGMAN_TAB_INSTALLED = 1;
-const int PLUGMAN_TAB_NOT_INSTALLED = 2;
-const int PLUGMAN_TAB_UPGRADEABLE = 3;
-const int PLUGMAN_TAB_NEW = 4;
-const int PLUGMAN_TAB_INVALID = 5;
-const int PLUGMAN_TAB_INSTALL_FROM_ZIP = 6;
-const int PLUGMAN_TAB_SETTINGS = 7;
 
 /**
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
@@ -55,7 +48,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
-    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( QStringLiteral( "plugin-manager" ) );
+    static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( u"plugin-manager"_s );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
     static const QgsSettingsEntryBool *settingsAllowExperimental;
@@ -63,9 +56,21 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     static const QgsSettingsEntryVariant *settingsCheckOnStartLastDate;
     static const QgsSettingsEntryStringList *settingsSeenPlugins;
 
-    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( QStringLiteral( "UI" ) );
+    static inline QgsSettingsTreeNode *sTreeUi = sTreePluginManager->createChildNode( u"UI"_s );
     static const QgsSettingsEntryString *settingsLastZipDirectory;
     static const QgsSettingsEntryBool *settingsShowInstallFromZipWarning;
+
+    enum class Tabs : int
+    {
+      AllPlugins = 0,
+      InstalledPlugins,
+      NotInstalledPlugins,
+      UpgradeablePlugins,
+      NewPlugins,
+      InvalidPlugins,
+      InstallFromZip,
+      Settings
+    };
 
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
     QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );

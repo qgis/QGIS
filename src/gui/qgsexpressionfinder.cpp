@@ -18,9 +18,12 @@
 
 #include <QPlainTextEdit>
 #include <QRegularExpression>
+#include <QString>
 #include <QTextEdit>
 
-static const QString EXPRESSION_PATTERN = QStringLiteral( "\\[%\\s*(.*?)\\s*%\\]" );
+using namespace Qt::StringLiterals;
+
+static const QString EXPRESSION_PATTERN = u"\\[%\\s*(.*?)\\s*%\\]"_s;
 
 
 void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSelectionPos, int endSelectionPos, int &start, int &end, QString &expression, const QString &pattern )

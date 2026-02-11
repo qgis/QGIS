@@ -30,9 +30,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
+#include <QString>
 #include <QToolBar>
 
 #include "moc_qgsrasterattributetablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsRasterAttributeTableWidget::QgsRasterAttributeTableWidget( QWidget *parent, QgsRasterLayer *rasterLayer, const int bandNumber )
   : QgsPanelWidget( parent )
@@ -248,7 +251,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
     QgsRasterAttributeTable *attributeTable { mRasterLayer->dataProvider()->attributeTable( mCurrentBand ) };
     if ( !attributeTable )
     {
-      QgsDebugError( QStringLiteral( "Error saving RAT: RAT for band %1 is unexpectedly gone!" ).arg( mCurrentBand ) );
+      QgsDebugError( u"Error saving RAT: RAT for band %1 is unexpectedly gone!"_s.arg( mCurrentBand ) );
     }
     else
     {
@@ -260,7 +263,7 @@ void QgsRasterAttributeTableWidget::saveChanges()
 
       if ( newPath.isEmpty() && !nativeRatSupported )
       {
-        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) ? mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" : QString(), QStringLiteral( "VAT DBF Files (*.vat.dbf)" ) );
+        newPath = QFileDialog::getOpenFileName( nullptr, tr( "Save Raster Attribute Table (band %1) To File" ).arg( mCurrentBand ), QFile::exists( mRasterLayer->dataProvider()->dataSourceUri() ) ? mRasterLayer->dataProvider()->dataSourceUri() + ".vat.dbf" : QString(), u"VAT DBF Files (*.vat.dbf)"_s );
         if ( newPath.isEmpty() )
         {
           // Aborted by user

@@ -35,6 +35,8 @@
 #include <QString>
 #include <QVariantMap>
 
+using namespace Qt::StringLiterals;
+
 class QgsDataItem;
 class QgsDataItemProvider;
 class QgsTransaction;
@@ -817,7 +819,7 @@ class CORE_EXPORT QgsProviderMetadata : public QObject
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsProviderMetadata: %1>" ).arg( sipCpp->key() );
+    QString str = u"<QgsProviderMetadata: %1>"_s.arg( sipCpp->key() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

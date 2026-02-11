@@ -33,10 +33,13 @@
 #include <QMimeType>
 #include <QMovie>
 #include <QSettings>
+#include <QString>
 #include <QToolButton>
 #include <QVariant>
 
 #include "moc_qgsexternalresourcewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )
@@ -59,13 +62,13 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   mLoadingLabel = new QLabel( this );
   layout->addWidget( mLoadingLabel, 4, 0 );
-  mLoadingMovie = new QMovie( QgsApplication::iconPath( QStringLiteral( "/mIconLoading.gif" ) ), QByteArray(), this );
+  mLoadingMovie = new QMovie( QgsApplication::iconPath( u"/mIconLoading.gif"_s ), QByteArray(), this );
   mLoadingMovie->setScaledSize( QSize( 32, 32 ) );
   mLoadingLabel->setMovie( mLoadingMovie );
 
   mErrorLabel = new QLabel( this );
   layout->addWidget( mErrorLabel, 5, 0 );
-  mErrorLabel->setPixmap( QPixmap( QgsApplication::iconPath( QStringLiteral( "/mIconWarning.svg" ) ) ) );
+  mErrorLabel->setPixmap( QPixmap( QgsApplication::iconPath( u"/mIconWarning.svg"_s ) ) );
 
   updateDocumentViewer();
 

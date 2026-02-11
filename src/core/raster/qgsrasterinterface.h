@@ -32,6 +32,9 @@
 
 #include <QCoreApplication>
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -308,7 +311,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual const QgsRasterInterface *sourceInput() const SIP_SKIP
     {
-      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+      QgsDebugMsgLevel( u"Entered"_s, 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 
@@ -319,7 +322,7 @@ class CORE_EXPORT QgsRasterInterface
      */
     virtual QgsRasterInterface *sourceInput()
     {
-      QgsDebugMsgLevel( QStringLiteral( "Entered" ), 4 );
+      QgsDebugMsgLevel( u"Entered"_s, 4 );
       return mInput ? mInput->sourceInput() : this;
     }
 

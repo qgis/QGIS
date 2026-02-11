@@ -18,11 +18,14 @@
 #include "qgstest.h"
 #include "qgstexturematerial.h"
 
+#include <QString>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup UnitTests
@@ -33,7 +36,7 @@ class TestQgsGltf3DUtils : public QgsTest
     Q_OBJECT
   public:
     TestQgsGltf3DUtils()
-      : QgsTest( QStringLiteral( "GLTF 3D Utils" ) ) {}
+      : QgsTest( u"GLTF 3D Utils"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

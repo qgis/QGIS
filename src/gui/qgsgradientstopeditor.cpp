@@ -20,9 +20,12 @@
 
 #include <QMouseEvent>
 #include <QPainter>
+#include <QString>
 #include <QStyleOptionFrame>
 
 #include "moc_qgsgradientstopeditor.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )
@@ -410,7 +413,7 @@ QPixmap QgsGradientStopEditor::transparentBackground()
   static QPixmap sTranspBkgrd;
 
   if ( sTranspBkgrd.isNull() )
-    sTranspBkgrd = QgsApplication::getThemePixmap( QStringLiteral( "/transp-background_8x8.png" ) );
+    sTranspBkgrd = QgsApplication::getThemePixmap( u"/transp-background_8x8.png"_s );
 
   return sTranspBkgrd;
 }

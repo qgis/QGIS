@@ -34,8 +34,11 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSpinBox>
+#include <QString>
 
 #include "moc_qgslayoutattributeselectiondialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 // QgsLayoutAttributeTableColumnModelBase
 
@@ -430,8 +433,8 @@ QgsExpressionContext QgsLayoutColumnSourceDelegate::createExpressionContext() co
   }
 
   QgsExpressionContext expContext = mLayoutObject->createExpressionContext();
-  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "row_number" ), 1, true ) );
-  expContext.setHighlightedVariables( QStringList() << QStringLiteral( "row_number" ) );
+  expContext.lastScope()->addVariable( QgsExpressionContextScope::StaticVariable( u"row_number"_s, 1, true ) );
+  expContext.setHighlightedVariables( QStringList() << u"row_number"_s );
   return expContext;
 }
 
@@ -702,7 +705,7 @@ void QgsLayoutAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked()
 
 void QgsLayoutAttributeSelectionDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "print_composer/composer_items/composer_attribute_table.html" ) );
+  QgsHelp::openHelp( u"print_composer/composer_items/composer_attribute_table.html"_s );
 }
 
 void QgsLayoutAttributeSelectionDialog::mSortColumnDownPushButton_clicked()

@@ -20,7 +20,11 @@
 #include "qgsdatumtransformdialog.h"
 #include "qgssettings.h"
 
+#include <QString>
+
 #include "moc_qgsdatumtransformtablewidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -172,7 +176,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   mTableView->setAlternatingRowColors( true );
 
   const QgsSettings settings;
-  mTableView->horizontalHeader()->restoreState( settings.value( QStringLiteral( "Windows/DatumTransformTable/headerState" ) ).toByteArray() );
+  mTableView->horizontalHeader()->restoreState( settings.value( u"Windows/DatumTransformTable/headerState"_s ).toByteArray() );
 
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
@@ -195,7 +199,7 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
 QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/DatumTransformTable/headerState" ), mTableView->horizontalHeader()->saveState() );
+  settings.setValue( u"Windows/DatumTransformTable/headerState"_s, mTableView->horizontalHeader()->saveState() );
 }
 
 void QgsDatumTransformTableWidget::addDatumTransform()

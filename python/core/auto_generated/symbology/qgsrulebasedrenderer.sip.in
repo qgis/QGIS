@@ -77,7 +77,7 @@ symbol.
     typedef QList<QgsRuleBasedRenderer::Rule *> RuleList;
 
     class Rule
-{
+    {
 %Docstring(signature="appended")
 Represents an individual rule for a rule-based renderer.
 
@@ -88,9 +88,6 @@ zero, there is no lower/upper bound for scales. A rule matches if both
 filter and scale range match.
 %End
 
-%TypeHeaderCode
-#include "qgsrulebasedrenderer.h"
-%End
       public:
         enum RenderResult
         {
@@ -377,7 +374,7 @@ rule
 :param context: The rendering context
 %End
 
-        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true ) /Factory/;
+        static QgsRuleBasedRenderer::Rule *create( QDomElement &ruleElem, QgsSymbolMap &symbolMap, bool reuseId = true, const QgsReadWriteContext &context = QgsReadWriteContext() ) /Factory/;
 %Docstring
 Create a rule from an XML definition
 
@@ -387,6 +384,7 @@ Create a rule from an XML definition
                 symbol or ``False`` to create a new rule with the same
                 parameters as the original but a new unique
                 :py:func:`~Rule.ruleKey`. (Since QGIS 3.30)
+:param context: The rendering context (Since QGIS 4.0)
 
 :return: A new rule
 %End

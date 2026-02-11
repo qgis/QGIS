@@ -25,6 +25,9 @@
 #include "qgsprofilesnapping.h"
 
 #include <QPainterPath>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 //
 // QgsAbstractProfileSurfaceResults
@@ -153,8 +156,8 @@ QVector<QgsAbstractProfileResults::Feature> QgsAbstractProfileSurfaceResults::as
         f.layerIdentifier = mId;
         f.attributes =
         {
-          { QStringLiteral( "distance" ),  pointIt.key() },
-          { QStringLiteral( "elevation" ),  pointIt.value() }
+          { u"distance"_s,  pointIt.key() },
+          { u"elevation"_s,  pointIt.value() }
         };
         std::unique_ptr< QgsPoint>  point( mProfileCurve->interpolatePoint( pointIt.key() ) );
         if ( point->is3D() )
@@ -223,8 +226,8 @@ QVector<QgsProfileIdentifyResults> QgsAbstractProfileSurfaceResults::identify( c
       {
         QVariantMap(
         {
-          {QStringLiteral( "distance" ),  point.distance() },
-          {QStringLiteral( "elevation" ), snappedZ }
+          {u"distance"_s,  point.distance() },
+          {u"elevation"_s, snappedZ }
         } )
       } );
       break;

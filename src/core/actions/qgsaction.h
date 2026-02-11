@@ -21,6 +21,7 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgsexpressioncontext.h"
+#include "qgsreadwritecontext.h"
 
 #include <QIcon>
 #include <QSet>
@@ -202,9 +203,10 @@ class CORE_EXPORT QgsAction
     /**
      * Reads an XML definition from actionNode
      * into this object.
-     *
+     * \param actionNode the action's xml node
+     * \param context The readwrite context (Since QGIS 4.0)
      */
-    void readXml( const QDomNode &actionNode );
+    void readXml( const QDomNode &actionNode, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
     /**
      * Appends an XML definition for this action as a new

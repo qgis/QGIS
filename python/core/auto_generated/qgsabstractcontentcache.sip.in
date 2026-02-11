@@ -10,6 +10,7 @@
 
 
 
+
 class QgsAbstractContentCacheEntry
 {
 %Docstring(signature="appended")

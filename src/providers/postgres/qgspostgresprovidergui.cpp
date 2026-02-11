@@ -26,14 +26,18 @@
 #include "qgssourceselectprovider.h"
 #include "raster/qgspostgresrastertemporalsettingswidget.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 //! Provider for postgres source select
 class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider //#spellok
 {
   public:
-    QString providerKey() const override { return QStringLiteral( "postgres" ); }
+    QString providerKey() const override { return u"postgres"_s; }
     QString text() const override { return QObject::tr( "PostgreSQL" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/mActionAddPostgisLayer.svg"_s ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsPgSourceSelect( parent, fl, widgetMode );
@@ -44,7 +48,7 @@ class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider //#spello
 class QgsPostgresProjectStorageGuiProvider : public QgsProjectStorageGuiProvider
 {
   public:
-    QString type() override { return QStringLiteral( "postgresql" ); }
+    QString type() override { return u"postgresql"_s; }
     QString visibleName() override
     {
       return QObject::tr( "PostgreSQL" );

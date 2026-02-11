@@ -37,11 +37,16 @@ for root_dir in python python/PyQt6; do
           code=1
         fi
         if [[ -f $root_dir/${module}/auto_additions/${pyfile}.temp ]]; then
-          outdiff2=$(diff $root_dir/${module}/auto_additions/${pyfile} $root_dir/${module}/auto_additions/${pyfile}.temp)
-          if [[ -n "$outdiff2" ]]; then
-            echo " *** Python addition file not up to date: $root_dir/$pyfile"
-            echo " $outdiff2 "
+          if [[ ! -f $root_dir/${module}/auto_additions/${pyfile} ]]; then
+            echo " *** Python addition file missing: $root_dir/$pyfile"
             code=1
+          else
+            outdiff2=$(diff $root_dir/${module}/auto_additions/${pyfile} $root_dir/${module}/auto_additions/${pyfile}.temp)
+            if [[ -n "$outdiff2" ]]; then
+              echo " *** Python addition file not up to date: $root_dir/$pyfile"
+              echo " $outdiff2 "
+              code=1
+            fi
           fi
         fi
       fi

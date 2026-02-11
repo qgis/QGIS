@@ -19,7 +19,11 @@
 
 #include "qgsmaplayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaplayerrefreshsettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerRefreshSettingsWidget::QgsMapLayerRefreshSettingsWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent )
@@ -93,5 +97,5 @@ void QgsMapLayerRefreshSettingsWidget::updateHelp()
       break;
   }
 
-  mHelpLabel->setText( QStringLiteral( "<b>%1</b><p>%2" ).arg( title, help ) );
+  mHelpLabel->setText( u"<b>%1</b><p>%2"_s.arg( title, help ) );
 }

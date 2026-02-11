@@ -30,6 +30,10 @@
 #include "qgsmeshsimplificationsettings.h"
 #include "qgsmeshtimesettings.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayerRenderer;
 struct QgsMeshLayerRendererCache;
 class QgsSymbol;
@@ -156,7 +160,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \param providerLib  The name of the data provider, e.g., "mesh_memory", "mdal"
      * \param options general mesh layer options
      */
-    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = QStringLiteral( "mesh_memory" ),
+    explicit QgsMeshLayer( const QString &path = QString(), const QString &baseName = QString(), const QString &providerLib = u"mesh_memory"_s,
                            const QgsMeshLayer::LayerOptions &options = QgsMeshLayer::LayerOptions() );
 
     ~QgsMeshLayer() override;
@@ -167,7 +171,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsMeshLayer: '%1' (%2)>" ).arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : QStringLiteral( "Invalid" ) );
+    QString str = u"<QgsMeshLayer: '%1' (%2)>"_s.arg( sipCpp->name(), sipCpp->dataProvider() ? sipCpp->dataProvider()->name() : u"Invalid"_s );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -1004,6 +1008,13 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \since QGIS 3.42
      */
     bool datasetsPathUnique( const QString &path );
+
+    /**
+     * Returns the list of extra dataset URIs associated with this layer
+     *
+     * \since QGIS 4.0
+     */
+    QStringList extraDatasetUris() const { return mExtraDatasetUri; }
 
   public slots:
 

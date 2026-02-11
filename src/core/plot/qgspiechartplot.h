@@ -24,6 +24,10 @@
 #include "qgsnumericformat.h"
 #include "qgsplot.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorLayerAbstractPlotDataGatherer;
 
 
@@ -42,7 +46,7 @@ class CORE_EXPORT QgsPieChartPlot : public Qgs2DPlot
     QgsPieChartPlot();
     ~QgsPieChartPlot() override = default;
 
-    QString type() const override { return QStringLiteral( "pie" ); }
+    QString type() const override { return u"pie"_s; }
 
     void renderContent( QgsRenderContext &context, QgsPlotRenderContext &plotContext, const QRectF &plotArea, const QgsPlotData &plotData = QgsPlotData() ) override;
 

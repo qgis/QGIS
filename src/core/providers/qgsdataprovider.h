@@ -29,6 +29,8 @@
 #include <QString>
 #include <QStringList>
 
+using namespace Qt::StringLiterals;
+
 class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 class QgsDataProviderTemporalCapabilities;
@@ -136,7 +138,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QString dataSourceUri( bool expandAuthConfig = false ) const
     {
-      if ( expandAuthConfig && mDataSourceURI.contains( QLatin1String( "authcfg" ) ) )
+      if ( expandAuthConfig && mDataSourceURI.contains( "authcfg"_L1 ) )
       {
         const QgsDataSourceUri uri( mDataSourceURI );
         return uri.uri( expandAuthConfig );

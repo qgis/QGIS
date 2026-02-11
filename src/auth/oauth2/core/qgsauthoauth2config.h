@@ -20,7 +20,10 @@
 #include "qgis.h"
 
 #include <QObject>
+#include <QString>
 #include <QVariantMap>
+
+using namespace Qt::StringLiterals;
 
 /**
  * The QgsAuthOAuth2Config class stores the configuration for OAuth2 authentication plugin
@@ -423,7 +426,7 @@ class QgsAuthOAuth2Config : public QObject
     QString mRequestUrl;
     QString mTokenUrl;
     QString mRefreshTokenUrl;
-    QString mRedirectHost = QStringLiteral( "127.0.0.1" );
+    QString mRedirectHost = u"127.0.0.1"_s;
     QString mRedirectURL;
     int mRedirectPort = 7070;
     QString mClientId;

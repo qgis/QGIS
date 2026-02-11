@@ -27,6 +27,9 @@
 #include <QDialog>
 #include <QMenu>
 #include <QStandardItem>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QgsStyle;
 class QgsTemporaryCursorOverride;
@@ -72,7 +75,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
   public:
 #ifndef SIP_RUN
 
-    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettingsTree::sTreeApp->createChildNode( QStringLiteral( "style-manager" ) );
+    static inline QgsSettingsTreeNode *sTtreeStyleManager = QgsSettingsTree::sTreeApp->createChildNode( u"style-manager"_s );
 
     /**
      * Last used folder for generic style database actions.

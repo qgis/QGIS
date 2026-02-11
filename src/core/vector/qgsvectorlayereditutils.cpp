@@ -32,6 +32,10 @@
 #include "qgsvectorlayerutils.h"
 #include "qgswkbtypes.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsVectorLayerEditUtils::QgsVectorLayerEditUtils( QgsVectorLayer *layer )
   : mLayer( layer )
 {
@@ -253,7 +257,7 @@ void QgsVectorLayerEditUtils::addTopologicalPointsToLayers( const QgsGeometry &g
         }
         catch ( QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "Bounding box transformation failed, skipping topological points for layer %1" ).arg( vlayer->id() ) );
+          QgsDebugError( u"Bounding box transformation failed, skipping topological points for layer %1"_s.arg( vlayer->id() ) );
           continue;
         }
       }
@@ -278,7 +282,7 @@ void QgsVectorLayerEditUtils::addTopologicalPointsToLayers( const QgsGeometry &g
         }
         catch ( QgsCsException & )
         {
-          QgsDebugError( QStringLiteral( "transformation to vectorLayer coordinate failed" ) );
+          QgsDebugError( u"transformation to vectorLayer coordinate failed"_s );
         }
       }
       else

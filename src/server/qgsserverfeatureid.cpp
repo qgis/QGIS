@@ -22,6 +22,10 @@
 #include "qgsfeaturerequest.h"
 #include "qgsvectordataprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QString QgsServerFeatureId::getServerFid( const QgsFeature &feature, const QgsAttributeList &pkAttributes )
 {
   if ( pkAttributes.isEmpty() )
@@ -69,11 +73,11 @@ QgsFeatureRequest QgsServerFeatureId::updateFeatureRequestFromServerFids( QgsFea
     {
       if ( !fullExpression.isEmpty() )
       {
-        fullExpression.append( QStringLiteral( " OR " ) );
+        fullExpression.append( u" OR "_s );
       }
-      fullExpression.append( QStringLiteral( "( " ) );
+      fullExpression.append( u"( "_s );
       fullExpression.append( exp );
-      fullExpression.append( QStringLiteral( " )" ) );
+      fullExpression.append( u" )"_s );
     }
     featureRequest.combineFilterExpression( fullExpression );
   }
@@ -99,7 +103,7 @@ QString QgsServerFeatureId::getExpressionFromServerFid( const QString &serverFid
   {
     if ( i > 0 )
     {
-      expressionString.append( QStringLiteral( " AND " ) );
+      expressionString.append( u" AND "_s );
     }
 
     QString fieldName = fields[pkAttributes.at( i )].name();
@@ -111,5 +115,5 @@ QString QgsServerFeatureId::getExpressionFromServerFid( const QString &serverFid
 
 QString QgsServerFeatureId::pkSeparator()
 {
-  return QStringLiteral( "@@" );
+  return u"@@"_s;
 }

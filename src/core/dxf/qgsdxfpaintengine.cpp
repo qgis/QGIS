@@ -21,6 +21,10 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgslogger.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice *dxfDevice, QgsDxfExport *dxf )
   : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
   , mPaintDevice( dxfDevice )
@@ -88,12 +92,12 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
   if ( mode == QPaintEngine::PolylineMode )
   {
     if ( mPen.style() != Qt::NoPen && mPen.brush().style() != Qt::NoBrush )
-      mDxf->writePolyline( polygon.at( 0 ), mLayer, QStringLiteral( "CONTINUOUS" ), penColor(), currentWidth() );
+      mDxf->writePolyline( polygon.at( 0 ), mLayer, u"CONTINUOUS"_s, penColor(), currentWidth() );
   }
   else
   {
     if ( mBrush.style() != Qt::NoBrush )
-      mDxf->writePolygon( polygon, mLayer, QStringLiteral( "SOLID" ), brushColor() );
+      mDxf->writePolygon( polygon, mLayer, u"SOLID"_s, brushColor() );
   }
 }
 
@@ -124,7 +128,7 @@ void QgsDxfPaintEngine::drawPath( const QPainterPath &path )
   endPolygon();
 
   if ( !mPolygon.isEmpty() && mBrush.style() != Qt::NoBrush )
-    mDxf->writePolygon( mPolygon, mLayer, QStringLiteral( "SOLID" ), brushColor() );
+    mDxf->writePolygon( mPolygon, mLayer, u"SOLID"_s, brushColor() );
 
   mPolygon.clear();
 }
@@ -200,7 +204,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF *lines, int lineCount )
   {
     mDxf->writeLine( toDxfCoordinates( lines[i].p1() ),
                      toDxfCoordinates( lines[i].p2() ),
-                     mLayer, QStringLiteral( "CONTINUOUS" ), penColor(), currentWidth() );
+                     mLayer, u"CONTINUOUS"_s, penColor(), currentWidth() );
   }
 }
 

@@ -33,7 +33,7 @@ jobs:
           choco uninstall cmake.install
 
       - name: 🐩 Install CMake and Ninja
-        uses: lukka/get-cmake@bb2faa721a800324b726fec00f7c1ff7641964d1
+        uses: lukka/get-cmake@f176ccd3f28bda569c43aae4894f06b2435a3375
         with:
           cmakeVersion: 3.31.6
 
@@ -87,7 +87,7 @@ jobs:
                 -D WITH_SFCGAL=ON \
                 -D ENABLE_TESTS=OFF \
                 -D USE_CCACHE=ON \
-                -D ENABLE_UNITY_BUILDS=ON \
+                -D ENABLE_UNITY_BUILDS=OFF \
                 -D FLEX_EXECUTABLE="${SOURCE_DIR}/win_flex.exe" \
                 -D BISON_EXECUTABLE="${SOURCE_DIR}/win_bison.exe" \
                 -D USE_CCACHE=ON \
@@ -116,14 +116,14 @@ jobs:
 
       - name: 📤 Upload sdk
 #        if: github.event_name == 'workflow_dispatch' || github.event_name == 'release'
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: qgis-sdk-x64-windows
           path: |
             sdk/vcpkg-export-*.zip
 
       - name: 📑 Upload dep build logs
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: failure()
         with:
           name: build-logs-x64-windows
@@ -131,7 +131,7 @@ jobs:
             C:/src/**/*.log
 
       - name: 📤 Upload bundle
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         id: artifact-win64-qt6
         with:
           name: qgis-windows-qt6

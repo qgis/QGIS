@@ -21,15 +21,18 @@
 #include "qgsprocessingparameters.h"
 
 #include <QDesktopServices>
+#include <QString>
 #include <QUrl>
 
 #include "moc_qgsalgorithmurlopener.cpp"
+
+using namespace Qt::StringLiterals;
 
 ///@cond PRIVATE
 
 QString QgsOpenUrlAlgorithm::name() const
 {
-  return QStringLiteral( "openurl" );
+  return u"openurl"_s;
 }
 
 QString QgsOpenUrlAlgorithm::displayName() const
@@ -54,7 +57,7 @@ QString QgsOpenUrlAlgorithm::group() const
 
 QString QgsOpenUrlAlgorithm::groupId() const
 {
-  return QStringLiteral( "filetools" );
+  return u"filetools"_s;
 }
 
 QString QgsOpenUrlAlgorithm::shortHelpString() const
@@ -69,13 +72,13 @@ QgsOpenUrlAlgorithm *QgsOpenUrlAlgorithm::createInstance() const
 
 void QgsOpenUrlAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL or file path" ), QVariant(), false, false ) );
-  addOutput( new QgsProcessingOutputBoolean( QStringLiteral( "SUCCESS" ), QObject::tr( "Successfully performed opening file or URL" ) ) );
+  addParameter( new QgsProcessingParameterString( u"URL"_s, tr( "URL or file path" ), QVariant(), false, false ) );
+  addOutput( new QgsProcessingOutputBoolean( u"SUCCESS"_s, QObject::tr( "Successfully performed opening file or URL" ) ) );
 }
 
 QVariantMap QgsOpenUrlAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QString url = parameterAsString( parameters, QStringLiteral( "URL" ), context );
+  const QString url = parameterAsString( parameters, u"URL"_s, context );
   if ( url.isEmpty() )
     throw QgsProcessingException( tr( "No URL or file path specified" ) );
   const QUrl qurl = QUrl::fromUserInput( url );
@@ -88,7 +91,7 @@ QVariantMap QgsOpenUrlAlgorithm::processAlgorithm( const QVariantMap &parameters
     feedback->reportError( QObject::tr( "Failed opening %1" ).arg( url ) );
 
   QVariantMap outputs;
-  outputs.insert( QStringLiteral( "SUCCESS" ), result );
+  outputs.insert( u"SUCCESS"_s, result );
   return outputs;
 }
 

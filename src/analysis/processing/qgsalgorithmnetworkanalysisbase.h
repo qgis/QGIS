@@ -27,6 +27,10 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerdirector.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond PRIVATE
 
 /**
@@ -37,8 +41,8 @@ class QgsNetworkAnalysisAlgorithmBase : public QgsProcessingAlgorithm
   public:
     QString group() const final;
     QString groupId() const final;
-    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
-    QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmNetworkAnalysis.svg" ) ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( u"/algorithms/mAlgorithmNetworkAnalysis.svg"_s ); }
+    QString svgIconPath() const override { return QgsApplication::iconPath( u"/algorithms/mAlgorithmNetworkAnalysis.svg"_s ); }
     Qgis::ProcessingAlgorithmDocumentationFlags documentationFlags() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
 

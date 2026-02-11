@@ -27,7 +27,11 @@
 #include "qgstiledscenetexturerendererwidget.h"
 #include "qgstiledscenewireframerendererwidget.h"
 
+#include <QString>
+
 #include "moc_qgstiledscenerendererpropertieswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 static bool initTiledSceneRenderer( const QString &name, QgsTiledSceneRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -55,8 +59,8 @@ void QgsTiledSceneRendererPropertiesWidget::initRendererWidgetFunctions()
   if ( sInitialized )
     return;
 
-  initTiledSceneRenderer( QStringLiteral( "texture" ), QgsTiledSceneTextureRendererWidget::create, QStringLiteral( "styleicons/tiledscenetexture.svg" ) );
-  initTiledSceneRenderer( QStringLiteral( "wireframe" ), QgsTiledSceneWireframeRendererWidget::create, QStringLiteral( "styleicons/tiledscenewireframe.svg" ) );
+  initTiledSceneRenderer( u"texture"_s, QgsTiledSceneTextureRendererWidget::create, u"styleicons/tiledscenetexture.svg"_s );
+  initTiledSceneRenderer( u"wireframe"_s, QgsTiledSceneWireframeRendererWidget::create, u"styleicons/tiledscenewireframe.svg"_s );
 
   sInitialized = true;
 }
@@ -165,7 +169,7 @@ void QgsTiledSceneRendererPropertiesWidget::rendererChanged()
 {
   if ( cboRenderers->currentIndex() == -1 )
   {
-    QgsDebugError( QStringLiteral( "No current item -- this should never happen!" ) );
+    QgsDebugError( u"No current item -- this should never happen!"_s );
     return;
   }
 

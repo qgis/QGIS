@@ -24,7 +24,10 @@
 #include <QPointer>
 #include <QSortFilterProxyModel>
 #include <QStandardItemModel>
+#include <QString>
 #include <QTreeView>
+
+using namespace Qt::StringLiterals;
 
 class QgsVectorLayer;
 
@@ -233,7 +236,7 @@ class GUI_EXPORT QgsExpressionTreeView : public QTreeView
      * Loads the recent expressions from the given \a collection.
      * By default it is loaded from the collection "generic".
      */
-    void loadRecent( const QString &collection = QStringLiteral( "generic" ) );
+    void loadRecent( const QString &collection = u"generic"_s );
 
     /**
      * Adds the current expression to the given \a collection.

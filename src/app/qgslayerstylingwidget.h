@@ -141,7 +141,7 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
     /**
      * Sets an annotation item to show in the widget.
      */
-    void setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId );
+    void setAnnotationItem( QgsAnnotationLayer *layer, const QString &itemId, bool multipleItems = false );
 
     /**
      * Sets a layer tree group to show in the widget.

@@ -24,6 +24,8 @@
 #include "qgspointlocator.h"
 #include "qobjectuniqueptr.h"
 
+class QgsAdvancedDigitizingFloater;
+
 #include <QList>
 #include <QPoint>
 
@@ -146,6 +148,20 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * \param e key event
      */
     void keyPressEvent( QKeyEvent *e ) override;
+
+    /**
+     * Handles key release events for NURBS weight editing mode.
+     * \param e key event
+     * \since QGIS 4.0
+     */
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
+    /**
+     * Handles wheel events for NURBS weight editing.
+     * \param e wheel event
+     * \since QGIS 4.0
+     */
+    void wheelEvent( QWheelEvent *e ) override;
 
     /**
      * Clean a temporary rubberband
@@ -389,6 +405,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! Reset the
     void resetRubberBand();
 
+    void setCurrentShapeMapToolIsActivated( bool activated );
+
     //! The capture mode in which this tool operates
     CaptureMode mCaptureMode;
 
@@ -447,6 +465,11 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mStartNewCurve = false;
 
     bool mIgnoreSubsequentAutoRepeatUndo = false;
+
+    //! Flag for NURBS weight editing mode (activated with W key)
+    bool mWeightEditMode = false;
+    //! Index of control point being edited for NURBS weight
+    int mWeightEditControlPointIndex = -1;
 
     friend class TestQgsMapToolCapture;
 };

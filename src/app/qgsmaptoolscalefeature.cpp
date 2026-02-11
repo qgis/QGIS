@@ -38,8 +38,11 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QSettings>
+#include <QString>
 
 #include "moc_qgsmaptoolscalefeature.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsScaleMagnetWidget::QgsScaleMagnetWidget( const QString &label, QWidget *parent )
   : QWidget( parent )
@@ -481,7 +484,7 @@ void QgsMapToolScaleFeature::createScalingWidget()
 
   deleteScalingWidget();
 
-  mScalingWidget = new QgsScaleMagnetWidget( QStringLiteral( "Scaling:" ) );
+  mScalingWidget = new QgsScaleMagnetWidget( u"Scaling:"_s );
   QgisApp::instance()->addUserInputWidget( mScalingWidget );
   mScalingWidget->setFocus( Qt::TabFocusReason );
 

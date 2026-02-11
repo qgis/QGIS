@@ -11,6 +11,7 @@
 
 
 
+
 class QgsExpressionItem : QStandardItem
 {
 %Docstring(signature="appended")
@@ -115,7 +116,7 @@ can be used in an expression.
 %End
   public:
     class MenuProvider
-{
+    {
 %Docstring(signature="appended")
 Implementation of this interface can be implemented to allow
 QgsExpressionTreeView instance to provide custom context menus (opened
@@ -124,9 +125,6 @@ upon right-click).
 .. versionadded:: 3.14
 %End
 
-%TypeHeaderCode
-#include "qgsexpressiontreeview.h"
-%End
       public:
         explicit MenuProvider();
         virtual ~MenuProvider();

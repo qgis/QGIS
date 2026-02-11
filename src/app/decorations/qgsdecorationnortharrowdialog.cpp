@@ -25,9 +25,12 @@
 #include <QDialogButtonBox>
 #include <QPainter>
 #include <QPushButton>
+#include <QString>
 #include <QSvgRenderer>
 
 #include "moc_qgsdecorationnortharrowdialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
   : QDialog( parent )
@@ -106,11 +109,11 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setContext( u"gui"_s );
   pbnChangeColor->setColorDialogTitle( tr( "Select North Arrow Fill Color" ) );
   pbnChangeOutlineColor->setAllowOpacity( true );
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
-  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setContext( u"gui"_s );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
   connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawNorthArrow(); } );
   connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [this]( QColor ) { drawNorthArrow(); } );
@@ -120,7 +123,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
 void QgsDecorationNorthArrowDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#northarrow-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#northarrow-decoration"_s );
 }
 
 void QgsDecorationNorthArrowDialog::buttonBox_accepted()
@@ -240,7 +243,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     myPainterPixmap.fill( Qt::transparent );
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
-    const QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
+    const QFont myQFont( u"time"_s, 12, QFont::Bold );
     myQPainter.setFont( myQFont );
     myQPainter.setPen( Qt::red );
     myQPainter.drawText( 10, 20, tr( "Pixmap not found" ) );

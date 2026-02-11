@@ -21,9 +21,12 @@
 #include <QDir>
 #include <QImage>
 #include <QMatrix4x4>
+#include <QString>
 #include <QVector3D>
 #include <Qt3DCore/QAttribute>
 #include <Qt3DCore/QBuffer>
+
+using namespace Qt::StringLiterals;
 
 void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
 {
@@ -177,11 +180,11 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
   auto getVertexIndex = [&]( unsigned int i ) -> QString {
     const int negativeIndex = static_cast<int>( i - verticesCount );
     if ( hasNormals && !hasTextures )
-      return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1//%2"_s.arg( negativeIndex ).arg( negativeIndex );
     if ( !hasNormals && hasTextures )
-      return QStringLiteral( "%1/%2" ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1/%2"_s.arg( negativeIndex ).arg( negativeIndex );
     if ( hasNormals && hasTextures )
-      return QStringLiteral( "%1/%2/%3" ).arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
+      return u"%1/%2/%3"_s.arg( negativeIndex ).arg( negativeIndex ).arg( negativeIndex );
     return QString::number( negativeIndex );
   };
 

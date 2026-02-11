@@ -20,7 +20,11 @@
 #include "qgselevationshadingrenderer.h"
 #include "qgsproject.h"
 
+#include <QString>
+
 #include "moc_qgselevationshadingrenderersettingswidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsElevationShadingRendererSettingsWidget::QgsElevationShadingRendererSettingsWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent )
   : QgsMapLayerConfigWidget( layer, canvas, parent )
@@ -115,7 +119,7 @@ void QgsElevationShadingRendererSettingsWidget::onChanged()
 QgsElevationShadingRendererSettingsWidgetFactory::QgsElevationShadingRendererSettingsWidgetFactory( QObject *parent )
   : QObject( parent )
 {
-  setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mShadingRenderer.svg" ) ) );
+  setIcon( QgsApplication::getThemeIcon( u"mShadingRenderer.svg"_s ) );
   setTitle( tr( "Shading Renderer" ) );
 }
 

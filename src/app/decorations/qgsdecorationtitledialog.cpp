@@ -29,8 +29,11 @@
 #include <QDialogButtonBox>
 #include <QFont>
 #include <QPushButton>
+#include <QString>
 
 #include "moc_qgsdecorationtitledialog.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QWidget *parent )
   : QDialog( parent )
@@ -65,7 +68,7 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   // background bar color
   pbnBackgroundColor->setAllowOpacity( true );
   pbnBackgroundColor->setColor( mDeco.mBackgroundColor );
-  pbnBackgroundColor->setContext( QStringLiteral( "gui" ) );
+  pbnBackgroundColor->setContext( u"gui"_s );
   pbnBackgroundColor->setColorDialogTitle( tr( "Select Background Bar Color" ) );
 
   // placement
@@ -111,7 +114,7 @@ void QgsDecorationTitleDialog::buttonBox_rejected()
 void QgsDecorationTitleDialog::mInsertExpressionButton_clicked()
 {
   QString expression = QgsExpressionFinder::findAndSelectActiveExpression( txtTitleText );
-  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, QStringLiteral( "generic" ), QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
+  QgsExpressionBuilderDialog exprDlg( nullptr, expression, this, u"generic"_s, QgisApp::instance()->mapCanvas()->mapSettings().expressionContext() );
 
   exprDlg.setWindowTitle( QObject::tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
@@ -139,5 +142,5 @@ void QgsDecorationTitleDialog::apply()
 
 void QgsDecorationTitleDialog::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "map_views/map_view.html#titlelabel-decoration" ) );
+  QgsHelp::openHelp( u"map_views/map_view.html#titlelabel-decoration"_s );
 }

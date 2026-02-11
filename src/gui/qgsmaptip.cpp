@@ -30,6 +30,10 @@
 #include "qgswebframe.h"
 #include "qgswebview.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 // Qt includes
 #include <QPoint>
 #include <QToolTip>
@@ -284,7 +288,7 @@ QString QgsMapTip::fetchFeature( QgsMapLayer *layer, QgsPointXY &mapPosition, Qg
   context.appendScope( QgsExpressionContextUtils::mapLayerPositionScope( r.center() ) );
 
   const QString canvasFilter = QgsMapCanvasUtils::filterForLayer( mapCanvas, vlayer );
-  if ( canvasFilter == QLatin1String( "FALSE" ) )
+  if ( canvasFilter == "FALSE"_L1 )
   {
     return QString();
   }

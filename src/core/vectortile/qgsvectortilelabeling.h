@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgsvectorlayerlabelprovider.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsVectorTileLayer;
 class QgsVectorTileRendererData;
 
@@ -74,7 +78,7 @@ class CORE_EXPORT QgsVectorTileLabeling
 
     const QString type = sipCpp->type();
 
-    if ( type == QLatin1String( "basic" ) )
+    if ( type == "basic"_L1 )
       sipType = sipType_QgsVectorTileBasicLabeling;
     else
       sipType = 0;

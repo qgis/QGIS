@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsVectorFileWriter : QgsFeatureSink
 {
 %Docstring(signature="appended")
@@ -36,15 +38,12 @@ There are two possibilities how to use this class:
     };
 
     class Option
-{
+    {
 %Docstring(signature="appended")
 Describes an available option for configuring file writing for a
 particular output format.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
         Option( const QString &docString, QgsVectorFileWriter::OptionType type );
 
@@ -53,15 +52,12 @@ particular output format.
     };
 
     class SetOption : QgsVectorFileWriter::Option
-{
+    {
 %Docstring(signature="appended")
 An available option for configuring file writing for a particular output
 format, presenting a choice of preset values.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
         SetOption( const QString &docString, const QStringList &values, const QString &defaultValue, bool allowNone = false );
 
@@ -71,15 +67,12 @@ format, presenting a choice of preset values.
     };
 
     class StringOption: QgsVectorFileWriter::Option
-{
+    {
 %Docstring(signature="appended")
 An available option for configuring file writing for a particular output
 format, presenting a freeform string option.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
         StringOption( const QString &docString, const QString &defaultValue = QString() );
 
@@ -87,15 +80,12 @@ format, presenting a freeform string option.
     };
 
     class IntOption: QgsVectorFileWriter::Option
-{
+    {
 %Docstring(signature="appended")
 An available option for configuring file writing for a particular output
 format, presenting an integer option.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
         IntOption( const QString &docString, int defaultValue );
 
@@ -103,28 +93,22 @@ format, presenting an integer option.
     };
 
     class BoolOption : QgsVectorFileWriter::SetOption
-{
+    {
 %Docstring(signature="appended")
 An available option for configuring file writing for a particular output
 format, presenting an boolean option.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
         BoolOption( const QString &docString, bool defaultValue );
     };
 
     class HiddenOption : QgsVectorFileWriter::Option
-{
+    {
 %Docstring(signature="appended")
 A hidden option for file writing for a particular output format.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
         explicit HiddenOption( const QString &value );
 
@@ -178,14 +162,11 @@ A hidden option for file writing for a particular output format.
 
 
     class FieldValueConverter
-{
+    {
 %Docstring(signature="appended")
 Interface to convert raw field values to their user-friendly values.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
 
         FieldValueConverter();
@@ -381,14 +362,11 @@ Writes a layer out to a vector file.
 %End
 
     class SaveVectorOptions
-{
+    {
 %Docstring(signature="appended")
 Options to pass to :py:func:`QgsVectorFileWriter.writeAsVectorFormat()`.
 %End
 
-%TypeHeaderCode
-#include "qgsvectorfilewriter.h"
-%End
       public:
 
         SaveVectorOptions();

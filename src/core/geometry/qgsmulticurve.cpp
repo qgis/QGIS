@@ -27,6 +27,9 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgsmultipoint.h"
 
 #include <QJsonObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsMultiCurve::QgsMultiCurve()
 {
@@ -45,7 +48,7 @@ const QgsCurve *QgsMultiCurve::curveN( int index ) const
 
 QString QgsMultiCurve::geometryType() const
 {
-  return QStringLiteral( "MultiCurve" );
+  return u"MultiCurve"_s;
 }
 
 QgsMultiCurve *QgsMultiCurve::createEmptyWithSameType() const
@@ -75,13 +78,13 @@ bool QgsMultiCurve::fromWkt( const QString &wkt )
 {
   return fromCollectionWkt( wkt,
   {Qgis::WkbType::LineString, Qgis::WkbType::CircularString, Qgis::WkbType::CompoundCurve },
-  QStringLiteral( "LineString" ) );
+  u"LineString"_s );
 }
 
 QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QString &ns, const  AxisOrder axisOrder ) const
 {
   // GML2 does not support curves
-  QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
+  QDomElement elemMultiLineString = doc.createElementNS( ns, u"MultiLineString"_s );
 
   if ( isEmpty() )
     return elemMultiLineString;
@@ -92,7 +95,7 @@ QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QStri
     {
       std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
 
-      QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
+      QDomElement elemLineStringMember = doc.createElementNS( ns, u"lineStringMember"_s );
       elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns, axisOrder ) );
       elemMultiLineString.appendChild( elemLineStringMember );
     }
@@ -103,7 +106,7 @@ QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QStri
 
 QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
+  QDomElement elemMultiCurve = doc.createElementNS( ns, u"MultiCurve"_s );
 
   if ( isEmpty() )
     return elemMultiCurve;
@@ -114,7 +117,7 @@ QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QStri
     {
       const QgsCurve *curve = static_cast<const QgsCurve *>( geom );
 
-      QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
+      QDomElement elemCurveMember = doc.createElementNS( ns, u"curveMember"_s );
       elemCurveMember.appendChild( curve->asGml3( doc, precision, ns, axisOrder ) );
       elemMultiCurve.appendChild( elemCurveMember );
     }

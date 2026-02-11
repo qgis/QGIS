@@ -18,7 +18,11 @@
 #include "qgsattributeform.h"
 #include "qgslistwidget.h"
 
+#include <QString>
+
 #include "moc_qgslistwidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
@@ -82,7 +86,7 @@ QVariant QgsListWidgetWrapper::value() const
   if ( !mWidget )
     return QgsVariantUtils::createNullVariant( type );
   const QVariantList list = mWidget->list();
-  if ( list.size() == 0 && config( QStringLiteral( "EmptyIsNull" ) ).toBool() )
+  if ( list.size() == 0 && config( u"EmptyIsNull"_s ).toBool() )
   {
     return QVariant();
   }

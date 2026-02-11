@@ -9,6 +9,8 @@
 
 
 
+
+
 class QgsPointCloudCategory
 {
 %Docstring(signature="appended")

@@ -19,6 +19,10 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingparametertype.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief A parameter for "aggregate" configurations, which consist of a definition
@@ -44,7 +48,7 @@ class CORE_EXPORT QgsProcessingParameterAggregate : public QgsProcessingParamete
     QStringList dependsOnOtherParameters() const override;
 
     //! Returns the type name for the parameter class.
-    static QString typeName() { return QStringLiteral( "aggregates" ); }
+    static QString typeName() { return u"aggregates"_s; }
 
     /**
      * Returns the name of the parent layer parameter, or an empty string if this is not set.
@@ -98,12 +102,12 @@ class CORE_EXPORT QgsProcessingParameterTypeAggregate : public QgsProcessingPara
 
     QString pythonImportString() const override
     {
-      return QStringLiteral( "from qgis.core import QgsProcessingParameterAggregate" );
+      return u"from qgis.core import QgsProcessingParameterAggregate"_s;
     }
 
     QString className() const override
     {
-      return QStringLiteral( "QgsProcessingParameterAggregate" );
+      return u"QgsProcessingParameterAggregate"_s;
     }
 
     QStringList acceptedPythonTypes() const override

@@ -19,6 +19,10 @@
 #include "qgis_core.h"
 #include "qgsabstractreportsection.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 ///@cond NOT_STABLE
 
 // This is not considered stable API - it is exposed to python bindings only for unit testing!
@@ -40,7 +44,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
      */
     QgsReportSectionLayout( QgsAbstractReportSection *parentSection = nullptr );
 
-    QString type() const override { return QStringLiteral( "SectionLayout" ); }
+    QString type() const override { return u"SectionLayout"_s; }
     QString description() const override { return QObject::tr( "Section" ); }
     QIcon icon() const override;
 

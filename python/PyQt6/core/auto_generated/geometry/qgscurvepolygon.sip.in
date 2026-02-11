@@ -11,6 +11,8 @@
 
 
 
+
+
 class QgsCurvePolygon: QgsSurface
 {
 %Docstring(signature="appended")
@@ -68,6 +70,8 @@ to the caller.
 %End
 
     virtual double area() const /HoldGIL/;
+
+    virtual double area3D() const /HoldGIL/;
 
     virtual double perimeter() const /HoldGIL/;
 

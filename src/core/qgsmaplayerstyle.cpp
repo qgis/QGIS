@@ -21,7 +21,10 @@
 #include "qgsreadwritecontext.h"
 
 #include <QDomElement>
+#include <QString>
 #include <QTextStream>
+
+using namespace Qt::StringLiterals;
 
 QgsMapLayerStyle::QgsMapLayerStyle( const QString &xmlData )
   : mXmlData( xmlData )
@@ -67,10 +70,10 @@ void QgsMapLayerStyle::writeToLayer( QgsMapLayer *layer ) const
     return;
   }
 
-  QDomDocument doc( QStringLiteral( "qgis" ) );
+  QDomDocument doc( u"qgis"_s );
   if ( !doc.setContent( mXmlData ) )
   {
-    QgsDebugError( QStringLiteral( "Failed to parse XML of previously stored XML data - this should not happen!" ) );
+    QgsDebugError( u"Failed to parse XML of previously stored XML data - this should not happen!"_s );
     return;
   }
 

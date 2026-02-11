@@ -19,6 +19,10 @@
 #include "qgsdataitemguiprovider.h"
 #include "qgsmimedatautils.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsSLConnectionItem;
 
 
@@ -26,7 +30,7 @@ class QgsSpatiaLiteDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 {
     Q_OBJECT
   public:
-    QString name() override { return QStringLiteral( "spatialite" ); }
+    QString name() override { return u"spatialite"_s; }
 
     void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 

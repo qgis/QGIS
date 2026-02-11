@@ -86,14 +86,11 @@ Constructor for NamedNode
     };
 
     class NodeList
-{
+    {
 %Docstring(signature="appended")
 A list of expression nodes.
 %End
 
-%TypeHeaderCode
-#include "qgsexpressionnode.h"
-%End
       public:
         virtual ~NodeList();
         void append( QgsExpressionNode *node /Transfer/ );

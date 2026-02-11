@@ -25,7 +25,11 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsmaptoolchangelabelproperties.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolLabel( canvas, cadDock )
@@ -158,7 +162,7 @@ void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &chang
       }
     }
 
-    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+    vlayer->beginEditCommand( tr( "Changed properties for label" ) + u" '%1'"_s.arg( currentLabelText( 24 ) ) );
 
     QgsAttributeMap::const_iterator changeIt = changes.constBegin();
     for ( ; changeIt != changes.constEnd(); ++changeIt )

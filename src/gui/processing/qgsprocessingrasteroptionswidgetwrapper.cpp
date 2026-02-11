@@ -23,8 +23,11 @@
 
 #include <QComboBox>
 #include <QLineEdit>
+#include <QString>
 
 #include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
+
+using namespace Qt::StringLiterals;
 
 /// @cond private
 
@@ -35,7 +38,7 @@ QgsProcessingRasterOptionsWidgetWrapper::QgsProcessingRasterOptionsWidgetWrapper
 
 QString QgsProcessingRasterOptionsWidgetWrapper::parameterType() const
 {
-  return QStringLiteral( "rasteroptions" );
+  return u"rasteroptions"_s;
 }
 
 QgsAbstractProcessingParameterWidgetWrapper *QgsProcessingRasterOptionsWidgetWrapper::createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, Qgis::ProcessingMode type )

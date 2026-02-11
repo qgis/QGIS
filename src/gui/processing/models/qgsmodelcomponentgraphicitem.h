@@ -490,6 +490,14 @@ class GUI_EXPORT QgsModelChildAlgorithmGraphicItem : public QgsModelComponentGra
      */
     void setResults( const QgsProcessingModelChildAlgorithmResult &results );
 
+    /**
+     * Returns the \a results for this child algorithm for the last model execution through the dialog.
+     *
+     * \since QGIS 4.0
+     */
+    QgsProcessingModelChildAlgorithmResult results() { return mResults; };
+
+
   signals:
 
     /**

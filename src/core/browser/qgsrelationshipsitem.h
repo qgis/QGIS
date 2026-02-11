@@ -22,6 +22,10 @@
 #include "qgsdataitem.h"
 #include "qgsweakrelation.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 /**
  * \ingroup core
  * \brief Contains a collection of relationship items.
@@ -57,7 +61,7 @@ class CORE_EXPORT QgsRelationshipsItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRelationshipsItem: %1>" ).arg( sipCpp->path() );
+    QString str = u"<QgsRelationshipsItem: %1>"_s.arg( sipCpp->path() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif
@@ -118,7 +122,7 @@ class CORE_EXPORT QgsRelationshipItem : public QgsDataItem
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsRelationshipItem: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsRelationshipItem: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

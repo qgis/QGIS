@@ -21,8 +21,11 @@
 #include "qgssymbollayerutils.h"
 
 #include <QPainter>
+#include <QString>
 
-const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = QStringLiteral( "Histogram" );
+using namespace Qt::StringLiterals;
+
+const QString QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM = u"Histogram"_s;
 
 QgsHistogramDiagram::QgsHistogramDiagram()
 {

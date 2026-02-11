@@ -28,14 +28,18 @@
 #include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsquickmapsettings.h"
+#include "qgsselectivemaskingsourcesetmanager.h"
 #include "qgssymbollayerutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QQuickWindow>
 #include <QSGSimpleTextureNode>
 #include <QScreen>
+#include <QString>
 
 #include "moc_qgsquickmapcanvasmap.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   : QQuickItem( parent )
@@ -130,6 +134,7 @@ void QgsQuickMapCanvasMap::refreshMap()
     expressionContext << QgsExpressionContextUtils::projectScope( project );
 
     mapSettings.setLabelingEngineSettings( project->labelingEngineSettings() );
+    mapSettings.setSelectiveMaskingSourceSets( project->selectiveMaskingSourceSetManager()->sets() );
 
     // render main annotation layer above all other layers
     QList<QgsMapLayer *> allLayers = mapSettings.layers();
@@ -188,7 +193,7 @@ void QgsQuickMapCanvasMap::renderJobFinished()
   const QgsMapRendererJob::Errors errors = mJob->errors();
   for ( const QgsMapRendererJob::Error &error : errors )
   {
-    QgsMessageLog::logMessage( QStringLiteral( "%1 :: %2" ).arg( error.layerID, error.message ), tr( "Rendering" ) );
+    QgsMessageLog::logMessage( u"%1 :: %2"_s.arg( error.layerID, error.message ), tr( "Rendering" ) );
   }
 
   // take labeling results before emitting renderComplete, so labeling map tools
@@ -566,8 +571,8 @@ void QgsQuickMapCanvasMap::clearTemporalCache()
 
     if ( invalidateLabels )
     {
-      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
-      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
+      mCache->clearCacheImage( u"_labels_"_s );
+      mCache->clearCacheImage( u"_preview_labels_"_s );
     }
   }
 }
@@ -612,8 +617,8 @@ void QgsQuickMapCanvasMap::clearElevationCache()
 
     if ( invalidateLabels )
     {
-      mCache->clearCacheImage( QStringLiteral( "_labels_" ) );
-      mCache->clearCacheImage( QStringLiteral( "_preview_labels_" ) );
+      mCache->clearCacheImage( u"_labels_"_s );
+      mCache->clearCacheImage( u"_preview_labels_"_s );
     }
   }
 }

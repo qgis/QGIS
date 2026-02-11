@@ -23,6 +23,9 @@
 #include "qgspainteffect.h"
 
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 /**
  * \ingroup core
@@ -47,7 +50,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect SIP_NODEFAULTCTORS
     QgsColorEffect();
 
     Qgis::PaintEffectFlags flags() const override;
-    QString type() const override { return QStringLiteral( "color" ); }
+    QString type() const override { return u"color"_s; }
     QVariantMap properties() const override;
 
     using QgsPaintEffect::readProperties;

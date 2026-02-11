@@ -284,13 +284,13 @@ class BooleanWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "BooleanWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "BooleanWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -340,13 +340,13 @@ class CrsWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "CrsWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "CrsWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -457,13 +457,13 @@ class ExtentWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.14
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "ExtentWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "ExtentWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -547,13 +547,13 @@ class PointWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "PointWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "PointWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -617,13 +617,13 @@ class FileWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "FileWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "FileWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -717,13 +717,13 @@ class FixedTableWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "FixedTableWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "FixedTableWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1123,13 +1123,13 @@ class NumberWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "NumberWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "NumberWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1174,13 +1174,13 @@ class DistanceWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "DistanceWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "DistanceWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1230,13 +1230,13 @@ class RangeWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "RangeWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "RangeWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1261,13 +1261,13 @@ class MapLayerWidgetWrapper(WidgetWrapper):
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.14
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "MapLayerWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "MapLayerWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1404,13 +1404,13 @@ class RasterWidgetWrapper(MapLayerWidgetWrapper):
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.14
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "RasterWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "RasterWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1449,13 +1449,13 @@ class MeshWidgetWrapper(MapLayerWidgetWrapper):
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.14
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "MeshWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "MeshWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1488,13 +1488,13 @@ class EnumWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "EnumWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "EnumWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1565,13 +1565,13 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
     def __init__(self, *args, **kwargs):
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "FeatureSourceWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "FeatureSourceWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
         self.map_layer_combo = None
@@ -1703,13 +1703,13 @@ class StringWidgetWrapper(WidgetWrapper):
         super().__init__(*args, **kwargs)
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "StringWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "StringWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1826,13 +1826,13 @@ class ExpressionWidgetWrapper(WidgetWrapper):
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.4
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "StringWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "StringWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -1919,13 +1919,13 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.14
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "VectorLayerWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "VectorLayerWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -2043,13 +2043,13 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         super().__init__(param, dialog, row, col, **kwargs)
         """
         .. deprecated:: 3.12
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "TableFieldWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "TableFieldWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -2257,13 +2257,13 @@ class BandWidgetWrapper(WidgetWrapper):
     def __init__(self, param, dialog, row=0, col=0, **kwargs):
         """
         .. deprecated:: 3.14
-        Do not use, will be removed in QGIS 4.0
+        Do not use, will be removed in QGIS 5.0
         """
 
         from warnings import warn
 
         warn(
-            "BandWidgetWrapper is deprecated and will be removed in QGIS 4.0",
+            "BandWidgetWrapper is deprecated and will be removed in QGIS 5.0",
             DeprecationWarning,
         )
 
@@ -2411,7 +2411,7 @@ class WidgetWrapperFactory:
         wrapper_metadata = param.metadata().get("widget_wrapper", None)
         # VERY messy logic here to avoid breaking 3.0 API which allowed metadata "widget_wrapper" value to be either
         # a string name of a class OR a dict.
-        # TODO QGIS 4.0 -- require widget_wrapper to be a dict.
+        # TODO QGIS 5.0 -- require widget_wrapper to be a dict.
         if wrapper_metadata and (
             not isinstance(wrapper_metadata, dict)
             or wrapper_metadata.get("class", None) is not None

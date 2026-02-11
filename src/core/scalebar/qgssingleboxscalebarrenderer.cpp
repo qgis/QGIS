@@ -25,10 +25,13 @@
 
 #include <QList>
 #include <QPainter>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QString QgsSingleBoxScaleBarRenderer::id() const
 {
-  return QStringLiteral( "Single Box" );
+  return u"Single Box"_s;
 }
 
 QString QgsSingleBoxScaleBarRenderer::visibleName() const

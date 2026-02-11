@@ -18,7 +18,11 @@
 #include "qgsdoublevalidator.h"
 #include "qgsvectorlayer.h"
 
+#include <QString>
+
 #include "moc_qgsinterpolatedlinesymbollayerwidget.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent )
   : QgsSymbolLayerWidget( parent, layer )
@@ -107,7 +111,7 @@ QgsInterpolatedLineSymbolLayerWidget::QgsInterpolatedLineSymbolLayerWidget( QgsV
 
 void QgsInterpolatedLineSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 {
-  if ( !layer || layer->layerType() != QLatin1String( "InterpolatedLine" ) )
+  if ( !layer || layer->layerType() != "InterpolatedLine"_L1 )
     return;
 
   mLayer = static_cast<QgsInterpolatedLineSymbolLayer *>( layer );

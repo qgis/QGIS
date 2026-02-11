@@ -20,9 +20,10 @@
 #include <memory>
 
 #include "qgis_gui.h"
+#include "qgsmapmouseevent.h"
 #include "qgsmaptooledit.h"
+#include "qgsreferencedgeometry.h"
 
-class QgsMapMouseEvent;
 class QgsAdvancedDigitizingDockWidget;
 class QgsSnapToGridCanvasItem;
 class QgsSnapIndicator;
@@ -116,6 +117,14 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     bool useSnappingIndicator() const;
 
+    /**
+     * Calculates geometry measures for a \a geometry, including area and total length (or perimeter).
+     *
+     * \note Not available in Python bindings.
+     * \since QGIS 4.0
+     */
+    SIP_SKIP static void calculateGeometryMeasures( const QgsReferencedGeometry &geometry, const QgsCoordinateReferenceSystem &destinationCrs, Qgis::CadMeasurementDisplayType areaType, Qgis::CadMeasurementDisplayType totalLengthType, QString &areaString, QString &totalLengthString );
+
   protected:
     /**
      * Sets whether functionality of advanced digitizing dock widget is currently allowed.
@@ -199,6 +208,23 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      */
     void setSnapToLayerGridEnabled( bool snapToLayerGridEnabled );
 
+  signals:
+
+    //NOTE -- we use QgsReferencedGeometry here, as we'd like to defer the transformation of geometry to a particular
+    //desired destination CRS (eg layer CRS or map canvas CRS) as the caller's responsibility. That's because we don't want
+    //to waste cycles doing that transformation with every mouse move, when potentially NOTHING is even connected to this signal!
+    //By using QgsReferencedGeometry we allows the emitters to just use the geometries they've already calculated for the rubber
+    //bands, regardless of what CRS they are in
+    /**
+     * Emitted whenever the \a geometry associated with the tool is changed, including transient (i.e. non-finalized, hover state) changes.
+     *
+     * Connections to this signal should take care to check the CRS of \a geometry, as it may be either in the
+     * canvas CRS or an associated layer's CRS.
+     *
+     * \since QGIS 4.0
+     */
+    void transientGeometryChanged( const QgsReferencedGeometry &geometry );
+
   private slots:
 
     /**
@@ -212,6 +238,8 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
     void cadPointChanged( const QgsPointXY &point );
 
     void onCurrentLayerChanged();
+
+    void onTransientGeometryChanged( const QgsReferencedGeometry &geometry );
 
   private:
     //! Whether to allow use of advanced digitizing dock at this point

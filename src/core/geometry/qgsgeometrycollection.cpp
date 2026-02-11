@@ -31,6 +31,10 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspoint.h"
 #include "qgswkbptr.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QgsGeometryCollection::QgsGeometryCollection()
 {
   mWkbType = Qgis::WkbType::GeometryCollection;
@@ -297,7 +301,7 @@ int QgsGeometryCollection::dimension() const
 
 QString QgsGeometryCollection::geometryType() const
 {
-  return QStringLiteral( "GeometryCollection" );
+  return u"GeometryCollection"_s;
 }
 
 void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d, bool transformZ )
@@ -396,7 +400,7 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
                                    Qgis::WkbType::PolyhedralSurface,
                                    Qgis::WkbType::TIN
                                  },
-                            QStringLiteral( "GeometryCollection" ) );
+                            u"GeometryCollection"_s );
 }
 
 int QgsGeometryCollection::wkbSize( QgsAbstractGeometry::WkbFlags flags ) const
@@ -445,10 +449,10 @@ QString QgsGeometryCollection::asWkt( int precision ) const
   QString wkt = wktTypeStr();
 
   if ( isEmpty() )
-    wkt += QLatin1String( " EMPTY" );
+    wkt += " EMPTY"_L1;
   else
   {
-    wkt += QLatin1String( " (" );
+    wkt += " ("_L1;
     for ( const QgsAbstractGeometry *geom : mGeometries )
     {
       QString childWkt = geom->asWkt( precision );
@@ -469,10 +473,10 @@ QString QgsGeometryCollection::asWkt( int precision ) const
 
 QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
+  QDomElement elemMultiGeometry = doc.createElementNS( ns, u"MultiGeometry"_s );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
+    QDomElement elemGeometryMember = doc.createElementNS( ns, u"geometryMember"_s );
     elemGeometryMember.appendChild( geom->asGml2( doc, precision, ns, axisOrder ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
@@ -481,10 +485,10 @@ QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, con
 
 QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, const QString &ns, const QgsAbstractGeometry::AxisOrder axisOrder ) const
 {
-  QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
+  QDomElement elemMultiGeometry = doc.createElementNS( ns, u"MultiGeometry"_s );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
+    QDomElement elemGeometryMember = doc.createElementNS( ns, u"geometryMember"_s );
     elemGeometryMember.appendChild( geom->asGml3( doc, precision, ns, axisOrder ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
@@ -508,13 +512,13 @@ json QgsGeometryCollection::asJsonObject( int precision ) const
 QString QgsGeometryCollection::asKml( int precision ) const
 {
   QString kml;
-  kml.append( QLatin1String( "<MultiGeometry>" ) );
+  kml.append( "<MultiGeometry>"_L1 );
   const QVector< QgsAbstractGeometry * > &geometries = mGeometries;
   for ( const QgsAbstractGeometry *geometry : geometries )
   {
     kml.append( geometry->asKml( precision ) );
   }
-  kml.append( QLatin1String( "</MultiGeometry>" ) );
+  kml.append( "</MultiGeometry>"_L1 );
   return kml;
 }
 
@@ -701,6 +705,17 @@ double QgsGeometryCollection::area() const
   return area;
 }
 
+double QgsGeometryCollection::area3D() const
+{
+  double area3D = 0.0;
+  QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
+  for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
+  {
+    area3D += ( *geomIt )->area3D();
+  }
+  return area3D;
+}
+
 double QgsGeometryCollection::perimeter() const
 {
   double perimeter = 0.0;
@@ -726,13 +741,13 @@ bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.remove( '(' ).remove( ')' ).simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
   {
     return true;
   }
 
-  QString defChildWkbType = QStringLiteral( "%1%2%3 " ).arg( defaultChildWkbType, is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  QString defChildWkbType = u"%1%2%3 "_s.arg( defaultChildWkbType, is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defChildWkbType );
   for ( const QString &childWkt : blocks )

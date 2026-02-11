@@ -22,6 +22,9 @@
 #include "qgsgdalutils.h"
 
 #include <QImage>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsBilinearRasterResampler *QgsBilinearRasterResampler::clone() const
 {
@@ -47,5 +50,5 @@ QImage QgsBilinearRasterResampler::resampleV2( const QImage &source, const QSize
 
 QString QgsBilinearRasterResampler::type() const
 {
-  return QStringLiteral( "bilinear" );
+  return u"bilinear"_s;
 }

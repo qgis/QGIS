@@ -22,6 +22,10 @@
 #include "qgsmultipoint.h"
 #include "qgsmultipolygon.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 QList<QgsSingleGeometryCheckError *> QgsGeometryTypeCheck::processGeometry( const QgsGeometry &geometry ) const
 {
   QList<QgsSingleGeometryCheckError *> errors;
@@ -166,7 +170,7 @@ QString QgsGeometryTypeCheck::description() const
 
 QString QgsGeometryTypeCheck::factoryId()
 {
-  return QStringLiteral( "QgsGeometryTypeCheck" );
+  return u"QgsGeometryTypeCheck"_s;
 }
 
 QgsGeometryCheck::CheckType QgsGeometryTypeCheck::factoryCheckType()
@@ -191,5 +195,5 @@ bool QgsGeometryTypeCheckError::isEqual( const QgsSingleGeometryCheckError *othe
 
 QString QgsGeometryTypeCheckError::description() const
 {
-  return QStringLiteral( "%1 (%2)" ).arg( mCheck->description(), QgsWkbTypes::displayString( mFlatType ) );
+  return u"%1 (%2)"_s.arg( mCheck->description(), QgsWkbTypes::displayString( mFlatType ) );
 }

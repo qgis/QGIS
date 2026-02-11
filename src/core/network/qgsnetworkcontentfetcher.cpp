@@ -26,9 +26,12 @@
 #include "qgsvariantutils.h"
 
 #include <QNetworkReply>
+#include <QString>
 #include <QTextCodec>
 
 #include "moc_qgsnetworkcontentfetcher.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 {
@@ -40,10 +43,13 @@ QgsNetworkContentFetcher::~QgsNetworkContentFetcher()
 
 }
 
-void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg )
+void QgsNetworkContentFetcher::fetchContent( const QUrl &url, const QString &authcfg, const QgsHttpHeaders &headers )
 {
   QNetworkRequest req( url );
-  QgsSetRequestInitiatorClass( req, QStringLiteral( "QgsNetworkContentFetcher" ) );
+  QgsSetRequestInitiatorClass( req, u"QgsNetworkContentFetcher"_s );
+
+  // Apply custom headers
+  headers.updateNetworkRequest( req );
 
   fetchContent( req, authcfg );
 }

@@ -20,8 +20,11 @@
 #include "qgslogger.h"
 
 #include <QFileInfo>
+#include <QString>
 
 #include "moc_qgsgrassvector.cpp"
+
+using namespace Qt::StringLiterals;
 
 extern "C"
 {
@@ -154,19 +157,19 @@ QgsFields QgsGrassVectorLayer::fields()
           switch ( ctype )
           {
             case DB_C_TYPE_INT:
-              type = QStringLiteral( "int" );
+              type = u"int"_s;
               qtype = QMetaType::Type::Int;
               break;
             case DB_C_TYPE_DOUBLE:
-              type = QStringLiteral( "double" );
+              type = u"double"_s;
               qtype = QMetaType::Type::Double;
               break;
             case DB_C_TYPE_STRING:
-              type = QStringLiteral( "string" );
+              type = u"string"_s;
               qtype = QMetaType::Type::QString;
               break;
             case DB_C_TYPE_DATETIME:
-              type = QStringLiteral( "datetime" );
+              type = u"datetime"_s;
               qtype = QMetaType::Type::QString;
               break;
           }

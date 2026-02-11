@@ -22,10 +22,13 @@
 #include <QCalendarWidget>
 #include <QLineEdit>
 #include <QMouseEvent>
+#include <QString>
 #include <QStyle>
 #include <QStyleOptionSpinBox>
 
 #include "moc_qgsdatetimeedit.cpp"
+
+using namespace Qt::StringLiterals;
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QgsDateTimeEdit( QDateTime(), QMetaType::QDateTime, parent )
@@ -242,7 +245,7 @@ void QgsDateTimeEdit::changed( const QVariant &dateTime )
       {
         mOriginalStyleSheet = lineEdit()->styleSheet();
       }
-      lineEdit()->setStyleSheet( QStringLiteral( "QLineEdit { font-style: italic; color: grey; }" ) );
+      lineEdit()->setStyleSheet( u"QLineEdit { font-style: italic; color: grey; }"_s );
     }
     else
     {

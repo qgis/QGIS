@@ -3,7 +3,7 @@
                          -------------------
     begin                : January 2017
     copyright            : (C) 2017 by Loïc Bartoletti
-    email                : lbartoletti at tuxfamily dot org
+    email                : lituus at free dot fr
  ***************************************************************************/
 
 /***************************************************************************
@@ -22,6 +22,10 @@
 #include "qgsgeometryutils.h"
 #include "qgslinestring.h"
 #include "qgswkbptr.h"
+
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 QgsTriangle::QgsTriangle()
 {
@@ -94,7 +98,7 @@ bool QgsTriangle::operator!=( const QgsAbstractGeometry &other ) const
 
 QString QgsTriangle::geometryType() const
 {
-  return QStringLiteral( "Triangle" );
+  return u"Triangle"_s;
 }
 
 QgsTriangle *QgsTriangle::createEmptyWithSameType() const
@@ -174,11 +178,11 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 
   QString secondWithoutParentheses = parts.second;
   secondWithoutParentheses = secondWithoutParentheses.simplified().remove( ' ' );
-  if ( ( parts.second.compare( QLatin1String( "EMPTY" ), Qt::CaseInsensitive ) == 0 ) ||
+  if ( ( parts.second.compare( "EMPTY"_L1, Qt::CaseInsensitive ) == 0 ) ||
        secondWithoutParentheses.isEmpty() )
     return true;
 
-  const QString defaultChildWkbType = QStringLiteral( "LineString%1%2" ).arg( is3D() ? QStringLiteral( "Z" ) : QString(), isMeasure() ? QStringLiteral( "M" ) : QString() );
+  const QString defaultChildWkbType = u"LineString%1%2"_s.arg( is3D() ? u"Z"_s : QString(), isMeasure() ? u"M"_s : QString() );
 
   const QStringList blocks = QgsGeometryUtils::wktGetChildBlocks( parts.second, defaultChildWkbType );
   for ( const QString &childWkt : blocks )
@@ -221,16 +225,16 @@ bool QgsTriangle::fromWkt( const QString &wkt )
 QDomElement QgsTriangle::asGml3( QDomDocument &doc, int precision, const QString &ns, const AxisOrder axisOrder ) const
 {
 
-  QDomElement elemTriangle = doc.createElementNS( ns, QStringLiteral( "Triangle" ) );
+  QDomElement elemTriangle = doc.createElementNS( ns, u"Triangle"_s );
 
   if ( isEmpty() )
     return elemTriangle;
 
-  QDomElement elemExterior = doc.createElementNS( ns, QStringLiteral( "exterior" ) );
+  QDomElement elemExterior = doc.createElementNS( ns, u"exterior"_s );
   QDomElement curveElem = exteriorRing()->asGml3( doc, precision, ns, axisOrder );
-  if ( curveElem.tagName() == QLatin1String( "LineString" ) )
+  if ( curveElem.tagName() == "LineString"_L1 )
   {
-    curveElem.setTagName( QStringLiteral( "LinearRing" ) );
+    curveElem.setTagName( u"LinearRing"_s );
   }
   elemExterior.appendChild( curveElem );
   elemTriangle.appendChild( elemExterior );

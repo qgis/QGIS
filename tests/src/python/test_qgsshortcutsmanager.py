@@ -10,6 +10,7 @@ __author__ = "Nyall Dawson"
 __date__ = "28/05/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+import os
 from typing import List
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, QEvent
@@ -508,9 +509,19 @@ class TestQgsShortcutsManager(QgisTestCase):
             == QgsShortcutsManager.CommonAction.CodeToggleComment.value
         ][0]
         self.assertEqual(toggle_code_comment_action.text(), "Toggle Comment")
-        self.assertEqual(toggle_code_comment_action.shortcut().toString(), "Ctrl+/")
+
+        # on Windows Ctrl+/ does not work, so we stick with original Ctrl+:
+        # see https://github.com/qgis/QGIS/issues/63429
+        toggle_comment_shortcut = "Ctrl+/"
+        if os.name == "nt":
+            toggle_comment_shortcut = "Ctrl+:"
+
         self.assertEqual(
-            toggle_code_comment_action.toolTip(), "<b>Toggle comment</b> (Ctrl+/)"
+            toggle_code_comment_action.shortcut().toString(), toggle_comment_shortcut
+        )
+        self.assertEqual(
+            toggle_code_comment_action.toolTip(),
+            f"<b>Toggle comment</b> ({toggle_comment_shortcut})",
         )
 
         self.assertEqual(
@@ -523,7 +534,7 @@ class TestQgsShortcutsManager(QgisTestCase):
             s.sequenceForCommonAction(
                 QgsShortcutsManager.CommonAction.CodeToggleComment
             ).toString(),
-            "Ctrl+/",
+            toggle_comment_shortcut,
         )
 
         # link an action to a common action
@@ -552,9 +563,12 @@ class TestQgsShortcutsManager(QgisTestCase):
             my_toggle_comment_action, QgsShortcutsManager.CommonAction.CodeToggleComment
         )
         self.assertEqual(my_toggle_comment_action.text(), "Toggle Comment")
-        self.assertEqual(my_toggle_comment_action.shortcut().toString(), "Ctrl+/")
         self.assertEqual(
-            my_toggle_comment_action.toolTip(), "<b>Toggle comment</b> (Ctrl+/)"
+            my_toggle_comment_action.shortcut().toString(), toggle_comment_shortcut
+        )
+        self.assertEqual(
+            my_toggle_comment_action.toolTip(),
+            f"<b>Toggle comment</b> ({toggle_comment_shortcut})",
         )
 
         # change shortcut
@@ -563,7 +577,9 @@ class TestQgsShortcutsManager(QgisTestCase):
         self.assertEqual(my_reformat_action1.toolTip(), "<b>Reformat code</b> (B)")
         self.assertEqual(my_reformat_action2.shortcut().toString(), "B")
         self.assertEqual(my_reformat_action2.toolTip(), "<b>Reformat code</b> (B)")
-        self.assertEqual(my_toggle_comment_action.shortcut().toString(), "Ctrl+/")
+        self.assertEqual(
+            my_toggle_comment_action.shortcut().toString(), toggle_comment_shortcut
+        )
 
         self.assertEqual(
             s.sequenceForCommonAction(
@@ -575,7 +591,7 @@ class TestQgsShortcutsManager(QgisTestCase):
             s.sequenceForCommonAction(
                 QgsShortcutsManager.CommonAction.CodeToggleComment
             ).toString(),
-            "Ctrl+/",
+            toggle_comment_shortcut,
         )
 
         s.setKeySequence(toggle_code_comment_action, "C")

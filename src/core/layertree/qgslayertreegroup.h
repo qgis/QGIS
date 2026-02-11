@@ -22,6 +22,10 @@
 #include "qgslayertreenode.h"
 #include "qgsmaplayerref.h"
 
+#include <QString>
+
+using namespace Qt::StringLiterals;
+
 class QgsMapLayer;
 class QgsLayerTreeLayer;
 class QgsLayerTreeCustomNode;
@@ -54,7 +58,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
 #ifdef SIP_RUN
     SIP_PYOBJECT __repr__();
     % MethodCode
-    QString str = QStringLiteral( "<QgsLayerTreeGroup: %1>" ).arg( sipCpp->name() );
+    QString str = u"<QgsLayerTreeGroup: %1>"_s.arg( sipCpp->name() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

@@ -22,6 +22,9 @@
 
 #include <QLocale>
 #include <QObject>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class TestQgsLayoutPolyline : public QgsTest
 {
@@ -29,7 +32,7 @@ class TestQgsLayoutPolyline : public QgsTest
 
   public:
     TestQgsLayoutPolyline()
-      : QgsTest( QStringLiteral( "Layout Polyline Tests" ), QStringLiteral( "composer_utils" ) ) {}
+      : QgsTest( u"Layout Polyline Tests"_s, u"composer_utils"_s ) {}
 
   private slots:
     void initTestCase();    // will be called before the first testfunction is executed.

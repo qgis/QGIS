@@ -26,6 +26,9 @@
 
 #include <QDomDocument>
 #include <QRectF>
+#include <QString>
+
+using namespace Qt::StringLiterals;
 
 class QString;
 class QRectF;
@@ -685,9 +688,9 @@ class CORE_EXPORT QgsRectangle
     % MethodCode
     QString str;
     if ( sipCpp->isNull() )
-      str = QStringLiteral( "<QgsRectangle()>" );
+      str = u"<QgsRectangle()>"_s;
     else
-      str = QStringLiteral( "<QgsRectangle: %1>" ).arg( sipCpp->asWktCoordinates() );
+      str = u"<QgsRectangle: %1>"_s.arg( sipCpp->asWktCoordinates() );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
     % End
 #endif

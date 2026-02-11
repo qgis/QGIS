@@ -582,6 +582,8 @@ if(WITH_CORE)
   set(QT_VERSION_BASE "Qt6")
   set(QT_VERSION_BASE_LOWER "qt6")
 
+  find_package(${QT_VERSION_BASE} ${QT_MIN_VERSION} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
+
   # Use QtSerialPort optionally for GPS
   set (WITH_QTSERIALPORT TRUE CACHE BOOL "Determines whether QtSerialPort should be tried for GPS positioning")
   if (WITH_QTSERIALPORT)
@@ -606,12 +608,12 @@ if(WITH_CORE)
     message(STATUS "PDF4Qt disabled")
   endif()
 
-  find_package(${QT_VERSION_BASE} COMPONENTS Core Gui Widgets Network Xml Svg Concurrent Test Sql REQUIRED)
   if(WITH_QTPOSITIONING)
     find_package(${QT_VERSION_BASE} COMPONENTS Positioning REQUIRED)
   endif()
   find_package(${QT_VERSION_BASE} COMPONENTS Core5Compat REQUIRED)
   if(Qt6Core_VERSION VERSION_GREATER_EQUAL 6.9)
+    set(QT_NO_PRIVATE_MODULE_WARNING ON)
     find_package(${QT_VERSION_BASE} COMPONENTS SqlPrivate REQUIRED)
   endif()
 
@@ -649,8 +651,8 @@ if(WITH_CORE)
 
   message(STATUS "Found Qt version: ${Qt6Core_VERSION}")
 
-  if (WITH_QUICK)
-    find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick REQUIRED)
+  if (WITH_DESKTOP OR WITH_QUICK)
+    find_package(${QT_VERSION_BASE} COMPONENTS Qml Quick QuickControls2 REQUIRED)
     # following variable is used in qgsconfig.h
     set (HAVE_QUICK TRUE)
   endif()
@@ -680,6 +682,7 @@ if(WITH_CORE)
 
   # Master password hash and authentication encryption
   if(WITH_AUTH)
+    set(HAVE_AUTH TRUE)
     find_package(QCA REQUIRED)
   endif()
   # Check for runtime dependency of qca-ossl plugin
@@ -707,18 +710,19 @@ set (WITH_ASTYLE FALSE CACHE BOOL "Deprecated. Should be OFF. If you plan to con
 # QML
 set(QML_IMPORT_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" CACHE PATH "QML directory for QML autocomplete")
 
+set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
+if (PUSH_TO_CDASH)
+  # Adds some testing specific build targets e.g. make Experimental
+  include(Dart)
+endif()
+
 #############################################################
 # testing
 # whether unit tests should be build
 set (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 if (ENABLE_TESTS)
-  set (PUSH_TO_CDASH FALSE CACHE BOOL "Determines whether test results should be pushed to CDASH site")
   set(QT_USE_QTTEST TRUE)
   enable_testing()
-  if (PUSH_TO_CDASH)
-    # Adds some testing specific build targets e.g. make Experimental
-    include(Dart)
-  endif()
   # Additional test configuration options e.g. max upload size of test report
   configure_file(
     "${CMAKE_SOURCE_DIR}/cmake_templates/CTestCustom.cmake.in"
