@@ -928,17 +928,17 @@ void QgsPostgresDataItemGuiProvider::exportProjectToFile( QgsPGProjectItem *proj
 
 void QgsPostgresDataItemGuiProvider::renameProject( QgsPGProjectItem *projectItem, QgsDataItemGuiContext context )
 {
-  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name() );
-  dlg.setWindowTitle( tr( "Rename Project" ) );
-  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
-    return;
-
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( projectItem->postgresProjectUri().connInfo, false );
   if ( !conn )
   {
     notify( tr( "Rename Project" ), tr( "Unable to rename project." ), context, Qgis::MessageLevel::Warning );
     return;
   }
+
+  QgsNewNameDialog dlg( tr( "project “%1”" ).arg( projectItem->name() ), projectItem->name(), QStringList(), QgsPostgresUtils::projectNamesInSchema( conn, projectItem->schemaName() ) );
+  dlg.setWindowTitle( tr( "Rename Project" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == projectItem->name() )
+    return;
 
   const QString newUri = projectItem->uriWithNewName( dlg.name() );
 
