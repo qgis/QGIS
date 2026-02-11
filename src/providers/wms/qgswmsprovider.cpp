@@ -189,7 +189,6 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri, const ProviderOptions &optio
       lTemporalCapabilities->setAvailableTemporalRange( mSettings.mFixedRange );
       lTemporalCapabilities->setAllAvailableTemporalRanges( mSettings.mAllRanges );
       lTemporalCapabilities->setDefaultInterval( mSettings.mDefaultInterval );
-      lTemporalCapabilities->setTemporalFormat( mSettings.mTimeFormat );
 
       lTemporalCapabilities->setIntervalHandlingMethod( Qgis::TemporalIntervalMatchMethod::MatchExactUsingStartOfRange );
 
@@ -1318,7 +1317,7 @@ void QgsWmsProvider::addWmstParameters( QUrlQuery &query )
 {
   QgsDateTimeRange range = temporalCapabilities()->requestedTemporalRange();
 
-  QString format = temporalCapabilities()->temporalFormat();
+  QString format = mSettings.mTimeFormat;
 
   bool dateOnly = false;
 
