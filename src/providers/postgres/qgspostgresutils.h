@@ -207,6 +207,13 @@ class QgsPostgresUtils
      * \since QGIS 4.0
      */
     static bool moveProjectVersions( QgsPostgresConn *conn, const QString &originalSchema, const QString &project, const QString &targetSchema );
+
+    /**
+     * List projects in the specified \a schema
+     *
+     * \since QGIS 4.0
+     */
+    static QStringList projectNamesInSchema( QgsPostgresConn *conn, const QString &schema );
 };
 
 #endif
