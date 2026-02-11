@@ -2402,6 +2402,65 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
         self.assertEqual(layer3D.extent(), QgsRectangle(-2, 3, 7, 12))
         self.assertEqual(layer3D.extent3D(), QgsBox3D(-2, 3, 2, 7, 12, 11))
 
+    def test_view_fields(self):
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            tmpfile = os.path.join(temp_dir, "test_view_fields.db")
+
+            ds = ogr.GetDriverByName("SQLite").CreateDataSource(
+                tmpfile, options=["SPATIALITE=YES"]
+            )
+            lyr = ds.CreateLayer("lyr1", geom_type=ogr.wkbPoint)
+            field1 = ogr.FieldDefn("id1", ogr.OFTInteger)
+            lyr.CreateField(field1)
+            field2 = ogr.FieldDefn("name1", ogr.OFTString)
+            lyr.CreateField(field2)
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(0 1)"))
+            f.SetField("id1", 1)
+            f.SetField("name1", "name1")
+            lyr.CreateFeature(f)
+
+            lyr = ds.CreateLayer("lyr2", geom_type=ogr.wkbPoint)
+            field1 = ogr.FieldDefn("id2", ogr.OFTInteger)
+            lyr.CreateField(field1)
+            field2 = ogr.FieldDefn("name2", ogr.OFTString)
+            lyr.CreateField(field2)
+            f = ogr.Feature(lyr.GetLayerDefn())
+            f.SetGeometry(ogr.CreateGeometryFromWkt("POINT(1 0)"))
+            f.SetField("id2", 2)
+            f.SetField("name2", "name2")
+            lyr.CreateFeature(f)
+
+            sql = "CREATE VIEW test_view_fields AS SELECT lyr1.GEOMETRY, lyr1.id1, lyr2.name2 FROM lyr1 JOIN lyr2 ON id1=id2"
+            ds.ExecuteSQL(sql)
+            sql = "INSERT into views_geometry_columns (view_name, view_geometry, view_rowid, f_table_name, f_geometry_column, read_only) VALUES ('test_view_fields', 'geom', 'rowid', 'lyr1', 'geometry', 1)"
+            ds.ExecuteSQL(sql)
+
+            ds = None
+
+            md = QgsProviderRegistry.instance().providerMetadata("ogr")
+            conn = md.createConnection(tmpfile, {})
+            conn.tables("")
+            conn.table("", "views_geometry_columns")
+            rows = conn.execSql(
+                "SELECT * FROM views_geometry_columns_field_infos WHERE view_name = 'test_view_fields'"
+            ).rows()
+
+            # Create a vector layer on the view and check that the fields are correctly retrieved
+            vl = QgsVectorLayer(
+                f"dbname='{tmpfile}' table='test_view_fields' (geom) sql=",
+                "test_view_fields",
+                "spatialite",
+            )
+
+            self.assertTrue(vl.isValid())
+            field_names = vl.fields().names()
+            self.assertIn("id1", field_names)
+            self.assertNotIn("id2", field_names)
+            self.assertIn("name2", field_names)
+            self.assertNotIn("name1", field_names)
+
 
 if __name__ == "__main__":
     unittest.main()
