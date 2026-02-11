@@ -15,6 +15,8 @@
 
 #include "qgsterraingenerator.h"
 
+#include <limits>
+
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsabstractterrainsettings.h"
@@ -55,7 +57,7 @@ float QgsTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContex
   Q_UNUSED( x )
   Q_UNUSED( y )
   Q_UNUSED( context )
-  return 0.f;
+  return std::numeric_limits<float>::quiet_NaN();
 }
 
 QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )

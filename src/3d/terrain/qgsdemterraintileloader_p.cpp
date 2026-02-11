@@ -15,6 +15,8 @@
 
 #include "qgsdemterraintileloader_p.h"
 
+#include <limits>
+
 #include "qgs3dmapsettings.h"
 #include "qgsabstractterrainsettings.h"
 #include "qgschunknode.h"
@@ -308,7 +310,7 @@ void QgsDemHeightMapGenerator::lazyLoadDtmCoarseData( int res, const QgsRectangl
 float QgsDemHeightMapGenerator::heightAt( double x, double y )
 {
   if ( !mClonedProvider )
-    return 0; // TODO: calculate heights for online DTM
+    return std::numeric_limits<float>::quiet_NaN(); // TODO: calculate heights for online DTM
 
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
