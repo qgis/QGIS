@@ -156,7 +156,7 @@ std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNode::conver
         {
           return nullptr;
         }
-        nodeList->append( convertedNode.release() );
+        nodeList->append( std::move( convertedNode ) );
       }
       return std::make_unique<QgsPointCloudExpressionNodeInOperator>( std::move( node ), std::move( nodeList ), notIn );
     }

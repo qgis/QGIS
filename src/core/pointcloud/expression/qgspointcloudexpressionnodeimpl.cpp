@@ -45,7 +45,7 @@ std::unique_ptr<QgsPointCloudExpressionNode::NodeList> QgsPointCloudExpressionNo
   auto nl = std::make_unique<NodeList>();
   for ( QgsPointCloudExpressionNode *node : mList )
   {
-    nl->mList.append( node->clone().release() );
+    nl->append( node->clone() );
   }
   nl->mNameList = mNameList;
 
