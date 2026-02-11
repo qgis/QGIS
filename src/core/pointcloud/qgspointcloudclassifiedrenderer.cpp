@@ -134,9 +134,16 @@ void QgsPointCloudClassifiedRenderer::renderBlock( const QgsPointCloudBlock *blo
 
     int attributeValue = 0;
     context.getAttribute( ptr, i * recordSize + attributeOffset, attributeType, attributeValue );
-    const QColor color = colors.value( attributeValue );
+    QColor color = colors.value( attributeValue );
     if ( !color.isValid() )
       continue;
+
+    if ( expressionIsValid() )
+    {
+      color = colorFromExpression( block, i, color, context );
+      if ( !color.isValid() )
+        continue;
+    }
 
     pointXY( context, ptr, i, x, y );
     if ( visibleExtent.contains( x, y ) )
@@ -272,9 +279,9 @@ QDomElement QgsPointCloudClassifiedRenderer::save( QDomDocument &doc, const QgsR
   return rendererElem;
 }
 
-QSet<QString> QgsPointCloudClassifiedRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
+QSet<QString> QgsPointCloudClassifiedRenderer::usedAttributes( const QgsPointCloudRenderContext &context ) const
 {
-  QSet<QString> res;
+  QSet<QString> res = QgsPointCloudRenderer::usedAttributes( context );;
   res << mAttribute;
   return res;
 }

@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgscircle.h"
 #include "qgselevationmap.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgslogger.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudlayer.h"
@@ -94,7 +95,9 @@ QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const 
 
 QSet<QString> QgsPointCloudRenderer::usedAttributes( const QgsPointCloudRenderContext & ) const
 {
-  return QSet< QString >();
+  QSet<QString> res;
+  res.unite( mExpression.referencedVariables() );
+  return res;
 }
 
 std::unique_ptr<QgsPreparedPointCloudRendererData> QgsPointCloudRenderer::prepare()
@@ -127,6 +130,14 @@ void QgsPointCloudRenderer::startRender( QgsPointCloudRenderContext &context )
     case Qgis::PointCloudSymbol::Circle:
       break;
   }
+
+  mExpression = QgsExpression( mExpressionString );
+  if ( mExpression.hasParserError() )
+    return;
+
+  mExpressionContext = QgsExpressionContext();
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope();
+  mExpressionContext << scope;
 }
 
 void QgsPointCloudRenderer::stopRender( QgsPointCloudRenderContext & )
@@ -230,6 +241,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setLabelTextFormat( mLabelTextFormat );
   destination->setZoomOutBehavior( mZoomOutBehavior );
   destination->setOverviewSwitchingScale( mOverviewSwitchingScale );
+  destination->setExpressionString( mExpressionString );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -256,6 +268,8 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   }
   mZoomOutBehavior = qgsEnumKeyToValue( element.attribute( u"zoomOutBehavior"_s ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
   mOverviewSwitchingScale = element.attribute( u"overviewSwitchingScale"_s, u"1.0"_s ).toDouble();
+
+  mExpressionString = element.attribute( u"expression"_s );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -286,6 +300,8 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
     element.setAttribute( u"zoomOutBehavior"_s, qgsEnumValueToKey( mZoomOutBehavior ) );
     element.setAttribute( u"overviewSwitchingScale"_s, qgsDoubleToString( mOverviewSwitchingScale ) );
   }
+
+  element.setAttribute( u"expression"_s, mExpressionString );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
@@ -306,6 +322,11 @@ Qgis::PointCloudDrawOrder QgsPointCloudRenderer::drawOrder2d() const
 void QgsPointCloudRenderer::setDrawOrder2d( Qgis::PointCloudDrawOrder order )
 {
   mDrawOrder2d = order;
+}
+
+void QgsPointCloudRenderer::setExpressionString( const QString &expression )
+{
+  mExpressionString = expression;
 }
 
 QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer, const QgsRenderContext &renderContext, const QgsGeometry &geometry, double toleranceForPointIdentification )
@@ -393,6 +414,88 @@ QVector<QVariantMap> QgsPointCloudRenderer::identify( QgsPointCloudLayer *layer,
   selectedPoints.erase( std::remove_if( selectedPoints.begin(), selectedPoints.end(), [this]( const QMap<QString, QVariant> &point ) { return !this->willRenderPoint( point ); } ), selectedPoints.end() );
 
   return selectedPoints;
+}
+
+QColor QgsPointCloudRenderer::colorFromExpression( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context )
+{
+  if ( mExpression.hasParserError() )
+    return rendererColor;
+
+  createPointExpressionContext( block, pointIndex, rendererColor, context );
+  QVariant res = mExpression.evaluate( &mExpressionContext );
+  QColor color = colorFromExpressionResult( res );
+
+  if ( !color.isValid() )
+    color = rendererColor;
+
+  return color;
+}
+
+void QgsPointCloudRenderer::createPointExpressionContext( const QgsPointCloudBlock *block, int pointIndex, const QColor &rendererColor, QgsPointCloudRenderContext &context )
+{
+  const char *ptr = block->data();
+  const auto &request = block->attributes();
+  const std::size_t recordSize = request.pointRecordSize();
+  const char *pointData = ptr + pointIndex * recordSize;
+
+  for ( const QString &attrName : mExpression.referencedVariables() )
+  {
+    int offset = 0;
+    if ( const QgsPointCloudAttribute *att = request.find( attrName, offset ) )
+    {
+      QVariant value;
+      context.getAttribute( pointData, offset, att->type(), value );
+      mExpressionContext.lastScope()->setVariable( attrName, value, false );
+    }
+    else
+    {
+      mExpressionContext.lastScope()->setVariable( attrName, QVariant(), false );
+    }
+  }
+
+  mExpressionContext.lastScope()->setVariable( u"point_color"_s, QVariant::fromValue( rendererColor ), false );
+}
+
+QColor QgsPointCloudRenderer::colorFromExpressionResult( const QVariant &result ) const
+{
+  if ( result.canConvert<QColor>() )
+  {
+    const QColor c = result.value<QColor>();
+    if ( c.isValid() )
+      return c;
+  }
+
+  if ( result.canConvert<QString>() )
+  {
+    const QColor c( result.toString() );
+    if ( c.isValid() )
+      return c;
+  }
+
+  // no dice, when color_rgb() is used in expression it produces output like "10,50,30"
+  // we can convert that to QColor by stripping away the parts of it
+  const QString s = result.toString();
+  const QStringList parts = s.split( ',' );
+  if ( parts.size() == 3 || parts.size() == 4 )
+  {
+    bool ok1 = false, ok2 = false, ok3 = false, ok4 = true;
+    const int r = parts[ 0 ].toInt( &ok1 );
+    const int g = parts[ 1 ].toInt( &ok2 );
+    const int b = parts[ 2 ].toInt( &ok3 );
+    int a = 255;
+
+    if ( parts.size() == 4 )
+      a = parts[ 3 ].toInt( &ok4 );
+
+    if ( ok1 && ok2 && ok3 && ok4 )
+    {
+      const QColor c( r, g, b, a );
+      if ( c.isValid() )
+        return c;
+    }
+  }
+
+  return QColor();
 }
 
 //
