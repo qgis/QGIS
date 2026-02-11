@@ -42,6 +42,7 @@ from qgis.core import (
     QgsMapLayerUtils,
     QgsMemoryProviderUtils,
     QgsMultiPolygon,
+    QgsNurbsCurve,
     QgsPoint,
     QgsPointXY,
     QgsProject,
@@ -2325,6 +2326,49 @@ class TestQgsVectorFileWriter(QgisTestCase):
                     source_fields.indexOf("FID"): layer_fields.lookupField("FID"),
                 },
             )
+
+    def testNURBSConversion(self):
+        """
+        Test conversion from NURBS to LineString
+        """
+        layer = QgsVectorLayer(
+            ("NurbsCurve?crs=epsg:4326"),
+            "test",
+            "memory",
+        )
+
+        self.assertTrue(layer.isValid())
+        myProvider = layer.dataProvider()
+
+        ft = QgsFeature()
+        control_points = [QgsPoint(0, 0), QgsPoint(5, 5), QgsPoint(10, 0)]
+        degree = 2
+        knots = [0, 0, 0, 1, 1, 1]
+        weights = [1, 1, 1]
+
+        curve = QgsNurbsCurve(control_points, degree, knots, weights)
+        ft.setGeometry(curve)
+        myResult, myFeatures = myProvider.addFeatures([ft])
+        self.assertTrue(myResult)
+        self.assertTrue(myFeatures)
+
+        options = QgsVectorFileWriter.SaveVectorOptions()
+
+        dest = os.path.join(str(QDir.tempPath()), "nurbs_as_linestring.gpkg")
+
+        write_result, error_message, new_file, new_layer = (
+            QgsVectorFileWriter.writeAsVectorFormatV3(
+                layer, dest, QgsProject.instance().transformContext(), options
+            )
+        )
+        self.assertEqual(write_result, QgsVectorFileWriter.WriterError.NoError)
+
+        res = QgsVectorLayer(dest, "result")
+        self.assertTrue(res.isValid())
+        self.assertEqual(res.wkbType(), QgsWkbTypes.Type.LineString)
+        features = [f for f in res.getFeatures()]
+        self.assertEqual(len(features), 1)
+        self.assertTrue(features[0].geometry().asWkt().startswith("LineString"))
 
 
 if __name__ == "__main__":
