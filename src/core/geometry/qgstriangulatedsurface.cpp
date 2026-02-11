@@ -313,6 +313,12 @@ bool QgsTriangulatedSurface::deleteVertex( QgsVertexId vId )
   return false;
 }
 
+bool QgsTriangulatedSurface::deleteVertices( const QList<QgsVertexId> &positions )
+{
+  Q_UNUSED( positions )
+  return false;
+}
+
 int QgsTriangulatedSurface::compareToSameClass( const QgsAbstractGeometry *other ) const
 {
   const QgsTriangulatedSurface *otherTriangulatedSurface = qgsgeometry_cast<const QgsTriangulatedSurface *>( other );

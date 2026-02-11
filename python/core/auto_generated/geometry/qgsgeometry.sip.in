@@ -855,6 +855,26 @@ LineString with less than 2 vertices), the geometry is cleared instead.
          vertex was successfully deleted or the geometry was cleared.
 %End
 
+    bool deleteVertices( const QList<int> &atVertices );
+%Docstring
+Deletes vertices at the given positions (first number is index 0)
+
+For Point geometries, this clears the geometry. For MultiPoint
+geometries, this removes point geometries at the specified indices. For
+other geometry types, this removes the vertices at the specified
+indices. If after removal of the vertices the geometry would become
+invalid (e.g. a LineString with less than 2 vertices), the geometry is
+cleared instead.
+
+:return: ``False`` if any of the given atVertices does not correspond to
+         a valid vertex on this geometry or if any vertices fail to be
+         deleted
+
+.. seealso:: :py:func:`deleteVertex`
+
+.. versionadded:: 4.0
+%End
+
     bool toggleCircularAtVertex( int atVertex );
 %Docstring
 Converts the vertex at the given position from/to circular

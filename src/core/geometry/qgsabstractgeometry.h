@@ -531,6 +531,16 @@ class CORE_EXPORT QgsAbstractGeometry
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 
     /**
+     * Deletes vertices within the geometry
+     * If a vertex cannot be deleted, the method returns FALSE and the geometry may be left in a partially modified and invalid state
+     * \param positions list of vertex ids for vertices to delete
+     * \returns TRUE if all requested vertices were deleted, FALSE if a single vertex could not be deleted
+     * \see deleteVertex
+     * \since QGIS 4.0
+     */
+    virtual bool deleteVertices( const QList<QgsVertexId> &positions ) = 0;
+
+    /**
      * Returns the planar, 2-dimensional length of the geometry.
      *
      * \warning QgsAbstractGeometry objects are inherently Cartesian/planar geometries, and the length
