@@ -59,30 +59,9 @@ bool QgsPointCloudExpressionNode::prepare( QgsPointCloudExpression *parent, cons
   }
 }
 
-QgsPointCloudExpressionNode::QgsPointCloudExpressionNode( const QgsPointCloudExpressionNode &other )
-  : parserFirstLine( other.parserFirstLine )
-  , parserFirstColumn( other.parserFirstColumn )
-  , parserLastLine( other.parserLastLine )
-  , parserLastColumn( other.parserLastColumn )
-  , mHasCachedValue( other.mHasCachedValue )
-  , mCachedStaticValue( other.mCachedStaticValue )
-{
+QgsPointCloudExpressionNode::QgsPointCloudExpressionNode( const QgsPointCloudExpressionNode & ) = default;
 
-}
-
-QgsPointCloudExpressionNode &QgsPointCloudExpressionNode::operator=( const QgsPointCloudExpressionNode &other )
-{
-  if ( &other == this )
-    return *this;
-
-  parserFirstLine = other.parserFirstLine;
-  parserFirstColumn = other.parserFirstColumn;
-  parserLastLine = other.parserLastLine;
-  parserLastColumn = other.parserLastColumn;
-  mHasCachedValue = other.mHasCachedValue;
-  mCachedStaticValue = other.mCachedStaticValue;
-  return *this;
-}
+QgsPointCloudExpressionNode &QgsPointCloudExpressionNode::operator=( const QgsPointCloudExpressionNode & ) = default;
 
 void QgsPointCloudExpressionNode::cloneTo( QgsPointCloudExpressionNode *target ) const
 {
@@ -94,7 +73,7 @@ void QgsPointCloudExpressionNode::cloneTo( QgsPointCloudExpressionNode *target )
   target->parserFirstLine = parserFirstLine;
 }
 
-QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpressionNode *expressionNode, QString &error )
+std::unique_ptr<QgsPointCloudExpressionNode> QgsPointCloudExpressionNode::convert( const QgsExpressionNode *expressionNode, QString &error )
 {
   error.clear();
   if ( !expressionNode )
@@ -123,7 +102,7 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
     }
     case QgsExpressionNode::NodeType::ntLiteral:
     {
-      const QgsExpressionNodeLiteral *n = static_cast<const QgsExpressionNodeLiteral *>( expressionNode );
+      const QgsExpressionNodeLiteral *n = qgis::down_cast<const QgsExpressionNodeLiteral *>( expressionNode );
       bool ok;
       const double value = n->value().toDouble( &ok );
       if ( !ok )
@@ -131,39 +110,38 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
         error = u"Literal %1 cannot be converted to double"_s.arg( n->value().toString() );
         return nullptr;
       }
-      return new QgsPointCloudExpressionNodeLiteral( value );
+      return std::make_unique<QgsPointCloudExpressionNodeLiteral>( value );
     }
     case QgsExpressionNode::NodeType::ntBinaryOperator:
     {
-      const QgsExpressionNodeBinaryOperator *n = static_cast<const QgsExpressionNodeBinaryOperator *>( expressionNode );
+      const QgsExpressionNodeBinaryOperator *n = qgis::down_cast<const QgsExpressionNodeBinaryOperator *>( expressionNode );
       QgsPointCloudExpressionNodeBinaryOperator::BinaryOperator op;
       if ( !QgsPointCloudExpressionNodeBinaryOperator::convert( n->op(), op ) )
       {
         error = u"Unsupported binary operator %1"_s.arg( n->text() );
         return nullptr;
       }
-      QgsPointCloudExpressionNode *opLeft = convert( n->opLeft(), error );
+      std::unique_ptr<QgsPointCloudExpressionNode> opLeft( convert( n->opLeft(), error ) );
       if ( !opLeft )
       {
         return nullptr;
       }
-      QgsPointCloudExpressionNode *opRight = convert( n->opRight(), error );
+      std::unique_ptr<QgsPointCloudExpressionNode> opRight( convert( n->opRight(), error ) );
       if ( !opRight )
       {
-        delete opLeft;
         return nullptr;
       }
-      return new QgsPointCloudExpressionNodeBinaryOperator( op, opLeft, opRight );
+      return std::make_unique<QgsPointCloudExpressionNodeBinaryOperator>( op, std::move( opLeft ), std::move( opRight ) );
     }
     case QgsExpressionNode::NodeType::ntColumnRef:
     {
-      const QgsExpressionNodeColumnRef *n = static_cast<const QgsExpressionNodeColumnRef *>( expressionNode );
-      return new QgsPointCloudExpressionNodeAttributeRef( n->name() );
+      const QgsExpressionNodeColumnRef *n = qgis::down_cast<const QgsExpressionNodeColumnRef *>( expressionNode );
+      return std::make_unique<QgsPointCloudExpressionNodeAttributeRef>( n->name() );
     }
     case QgsExpressionNode::NodeType::ntInOperator:
     {
-      const QgsExpressionNodeInOperator *n = static_cast<const QgsExpressionNodeInOperator *>( expressionNode );
-      QgsPointCloudExpressionNode *node = convert( n->node(), error );
+      const QgsExpressionNodeInOperator *n = qgis::down_cast<const QgsExpressionNodeInOperator *>( expressionNode );
+      std::unique_ptr<QgsPointCloudExpressionNode> node( convert( n->node(), error ) );
       if ( !node )
       {
         return nullptr;
@@ -173,31 +151,30 @@ QgsPointCloudExpressionNode *QgsPointCloudExpressionNode::convert( const QgsExpr
       const QList<QgsExpressionNode *> nNodeList = n->list()->list();
       for ( const QgsExpressionNode *nd : nNodeList )
       {
-        QgsPointCloudExpressionNode *convertedNode = convert( nd, error );
+        std::unique_ptr<QgsPointCloudExpressionNode> convertedNode( convert( nd, error ) );
         if ( !convertedNode )
         {
-          delete node;
           return nullptr;
         }
-        nodeList->append( convertedNode );
+        nodeList->append( convertedNode.release() );
       }
-      return new QgsPointCloudExpressionNodeInOperator( node, nodeList.release(), notIn );
+      return std::make_unique<QgsPointCloudExpressionNodeInOperator>( std::move( node ), std::move( nodeList ), notIn );
     }
     case QgsExpressionNode::NodeType::ntUnaryOperator:
     {
-      const QgsExpressionNodeUnaryOperator *n = static_cast<const QgsExpressionNodeUnaryOperator *>( expressionNode );
+      const QgsExpressionNodeUnaryOperator *n = qgis::down_cast<const QgsExpressionNodeUnaryOperator *>( expressionNode );
       QgsPointCloudExpressionNodeUnaryOperator::UnaryOperator op;
       if ( !QgsPointCloudExpressionNodeUnaryOperator::convert( n->op(), op ) )
       {
         error = u"Unsupported unary operator %1"_s.arg( n->text() );
         return nullptr;
       }
-      QgsPointCloudExpressionNode *operand = convert( n->operand(), error );
+      std::unique_ptr<QgsPointCloudExpressionNode> operand( convert( n->operand(), error ) );
       if ( !operand )
       {
         return nullptr;
       }
-      return new QgsPointCloudExpressionNodeUnaryOperator( op, operand );
+      return std::make_unique<QgsPointCloudExpressionNodeUnaryOperator>( op, std::move( operand ) );
     }
   }
   Q_ASSERT( false );
