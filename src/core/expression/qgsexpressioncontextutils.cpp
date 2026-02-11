@@ -32,6 +32,8 @@
 #include "qgsmapsettings.h"
 #include "qgsmarkersymbol.h"
 #include "qgsmeshlayer.h"
+#include "qgspointcloudattribute.h"
+#include "qgspointcloudlayer.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingmodelalgorithm.h"
@@ -401,10 +403,39 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layerScope( const QgsMapLa
     scope->addVariable( QgsExpressionContextScope::StaticVariable( u"layer_vertical_crs_wkt"_s, verticalCrs.toWkt( Qgis::CrsWktVariant::Preferred ), true ) );
   }
 
-  const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer );
-  if ( vLayer )
+
+  if ( const QgsVectorLayer *vLayer = qobject_cast< const QgsVectorLayer * >( layer ) )
   {
     scope->setFields( vLayer->fields() );
+  }
+  else if ( const QgsPointCloudLayer *pcLayer = qobject_cast< const QgsPointCloudLayer * >( layer ) )
+  {
+    const QgsPointCloudAttributeCollection attributes = pcLayer->attributes();
+    for ( const QgsPointCloudAttribute &attr : attributes.attributes() )
+    {
+      QVariant value;
+      switch ( attr.type() )
+      {
+        case QgsPointCloudAttribute::Char:
+        case QgsPointCloudAttribute::UChar:
+        case QgsPointCloudAttribute::Short:
+        case QgsPointCloudAttribute::UShort:
+        case QgsPointCloudAttribute::Int32:
+        case QgsPointCloudAttribute::UInt32:
+          value = QVariant( 0 );
+          break;
+        case QgsPointCloudAttribute::Int64:
+        case QgsPointCloudAttribute::UInt64:
+          value = QVariant( static_cast<qlonglong>( 0 ) );
+          break;
+        case QgsPointCloudAttribute::Float:
+        case QgsPointCloudAttribute::Double:
+          value = QVariant( 0.0 );
+          break;
+      }
+
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( attr.name(), value, true, false, QObject::tr( "Point cloud attribute: %1" ).arg( attr.name() ) ) );
+    }
   }
 
   //TODO - add functions. Possibilities include:
