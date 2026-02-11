@@ -242,7 +242,7 @@ void TestQgsCustomization::testLoadApply()
   QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
 
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" ) );
-  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
+  QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() ); // not visible by default
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" )->isVisible() );
 
@@ -560,7 +560,7 @@ void TestQgsCustomization::testClone()
   QVERIFY( !getItem<QgsCustomization::QgsDockItem>( customization.get(), "Docks/QgsAdvancedDigitizingDockWidgetBase" )->isVisible() );
 
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" ) );
-  QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
+  QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/mProgressBar" )->isVisible() );
   QVERIFY( getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" ) );
   QVERIFY( !getItem<QgsCustomization::QgsStatusBarWidgetItem>( customization.get(), "StatusBarWidgets/LocatorWidget" )->isVisible() );
 

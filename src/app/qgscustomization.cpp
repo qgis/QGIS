@@ -1099,8 +1099,9 @@ void QgsCustomization::loadApplicationStatusBarWidgets()
     QgsStatusBarWidgetItem *s = mStatusBarWidgets->getChild<QgsStatusBarWidgetItem>( name );
     if ( !s )
     {
-      auto statusBarWidget = std::make_unique<QgsStatusBarWidgetItem>( name, mStatusBarWidgets.get() );
-      mStatusBarWidgets->addChild( std::move( statusBarWidget ) );
+      auto statusBarWidgetItem = std::make_unique<QgsStatusBarWidgetItem>( name, mStatusBarWidgets.get() );
+      statusBarWidgetItem->setVisible( statusBarWidget->isVisible() );
+      mStatusBarWidgets->addChild( std::move( statusBarWidgetItem ) );
     }
   }
 }
