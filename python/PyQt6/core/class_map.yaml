@@ -19737,7 +19737,7 @@ QgsVectorFileWriter.HiddenOption.HiddenOption: src/core/qgsvectorfilewriter.h#L1
 QgsVectorFileWriter.HiddenOption: src/core/qgsvectorfilewriter.h#L144
 QgsVectorFileWriter.IntOption: src/core/qgsvectorfilewriter.h#L117
 QgsVectorFileWriter.Option: src/core/qgsvectorfilewriter.h#L67
-QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L1031
+QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L1035
 QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L155
 QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L768
 QgsVectorFileWriter.QgsVectorFileWriter: src/core/qgsvectorfilewriter.h#L814
